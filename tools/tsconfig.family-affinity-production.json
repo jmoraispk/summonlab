@@ -14,6 +14,7 @@
 		"check-family-affinity-production-compatibility.ts",
 		"family-affinity-production-dispatch.spec.ts",
 		"check-family-affinity-production-dispatch.ts",
+		"build-family-affinity-dispatch-bundle.ts",
 		"export-family-affinity-production.ts",
 		"family-affinity-review-lib.ts",
 		"family-affinity-review-lib.spec.ts",

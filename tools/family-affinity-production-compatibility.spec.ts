@@ -80,6 +80,7 @@ async function validReceipt() {
 		approvedSkillRoot: approved.approvedSkillRoot,
 		executionSurface: approved.executionSurface,
 		repositoryDispatch: approved.repositoryDispatch,
+		sealedLauncher: approved.sealedLauncher,
 		reviewedAt: '2026-09-02T12:00:00.000Z',
 		approvalReference: 'user-confirmed-summonlab-image-production-v3-2026-09-02'
 	};
@@ -165,6 +166,42 @@ describe('family affinity production compatibility gate', () => {
 				bytes
 			)
 		).toThrow(/profile|dispatch|drift/i);
+	});
+
+	it.each([
+		[
+			'Node runtime',
+			(receipt: Awaited<ReturnType<typeof validReceipt>>) => ({
+				...receipt.sealedLauncher,
+				node: { ...receipt.sealedLauncher.node, sha256: 'a'.repeat(64) }
+			})
+		],
+		[
+			'gate bundle',
+			(receipt: Awaited<ReturnType<typeof validReceipt>>) => ({
+				...receipt.sealedLauncher,
+				bundle: { ...receipt.sealedLauncher.bundle, sha256: 'a'.repeat(64) }
+			})
+		],
+		[
+			'source surface',
+			(receipt: Awaited<ReturnType<typeof validReceipt>>) => ({
+				...receipt.sealedLauncher,
+				sources: receipt.sealedLauncher.sources.map(
+					(source: { path: string; sha256: string }, index: number) =>
+						index === 0 ? { ...source, sha256: 'a'.repeat(64) } : source
+				)
+			})
+		]
+	])('rejects %s launcher drift from the sealed skill contract', async (_label, mutate) => {
+		const bytes = await loadContractBytes();
+		const receipt = await validReceipt();
+		expect(() =>
+			validateFamilyAffinityProductionCompatibility(
+				{ ...receipt, sealedLauncher: mutate(receipt) },
+				bytes
+			)
+		).toThrow(/profile|launcher|drift/i);
 	});
 
 	it('requires every ownership/hash binding and exact forbidden write classes', async () => {

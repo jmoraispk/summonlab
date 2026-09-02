@@ -27,6 +27,8 @@
 		"check:family-affinity-production": "tsx tools/export-family-affinity-production.ts --check",
 		"check:family-affinity-production-compatibility": "tsx tools/check-family-affinity-production-compatibility.ts",
 		"check:family-affinity-production-dispatch": "tsx tools/check-family-affinity-production-dispatch.ts",
+		"build:family-affinity-dispatch-bundle": "tsx tools/build-family-affinity-dispatch-bundle.ts --write",
+		"check:family-affinity-dispatch-bundle": "tsx tools/build-family-affinity-dispatch-bundle.ts --check",
 		"export:family-affinity-review": "tsx tools/export-family-affinity-review.ts",
 		"check:family-affinity-review": "tsx tools/export-family-affinity-review.ts --check",
 		"export:affinity-workflow": "tsx tools/export-affinity-workflow.ts",

@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { createReadStream } from 'node:fs';
 import { lstat, readFile, realpath } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import {
 	FamilyAffinityAssignmentSchema,
@@ -26,6 +28,43 @@ function frameLength(length: number): Buffer {
 	const value = Buffer.alloc(8);
 	value.writeBigUInt64BE(BigInt(length));
 	return value;
+}
+
+async function rawFileSha256(path: string): Promise<string> {
+	const digest = createHash('sha256');
+	for await (const chunk of createReadStream(path)) digest.update(chunk);
+	return digest.digest('hex');
+}
+
+async function assertRealRegularPath(root: string, relativePath: string): Promise<string> {
+	const absolute = resolve(root, relativePath);
+	if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) {
+		throw new Error(`Approved path escapes its root: ${relativePath}`);
+	}
+	let cursor = root;
+	for (const part of relative(root, absolute).split(sep).filter(Boolean)) {
+		cursor = join(cursor, part);
+		const metadata = await lstat(cursor);
+		if (metadata.isSymbolicLink()) throw new Error(`Approved path is symlinked: ${relativePath}`);
+		if (cursor === absolute && !metadata.isFile()) {
+			throw new Error(`Approved path is not a regular file: ${relativePath}`);
+		}
+	}
+	return absolute;
+}
+
+async function assertApprovedAbsoluteRegularPath(path: string): Promise<void> {
+	if (resolve(path) !== path)
+		throw new Error('Approved runtime path must be absolute and normalized');
+	let cursor: string = sep;
+	for (const part of path.split(sep).filter(Boolean)) {
+		cursor = join(cursor, part);
+		const metadata = await lstat(cursor);
+		if (metadata.isSymbolicLink()) throw new Error('Approved runtime path is symlinked');
+		if (cursor === path && !metadata.isFile()) {
+			throw new Error('Approved runtime path is not a regular file');
+		}
+	}
 }
 
 export async function computeFamilyAffinityProductionSurface(skillRoot: string) {
@@ -98,6 +137,11 @@ export async function validateFamilyAffinityProductionSurface(input: {
 			files: Array<{ path: string; sha256: string }>;
 			bundleSha256: string;
 		};
+		sealedLauncher: {
+			node: { path: string; sha256: string };
+			bundle: { path: string; sha256: string };
+			sources: Array<{ path: string; sha256: string }>;
+		};
 	};
 	const approvedRoot = await realpath(compatibility.approvedSkillRoot);
 	if (tracked.root !== approvedRoot || installed.root !== approvedRoot) {
@@ -149,6 +193,26 @@ export async function validateFamilyAffinityProductionSurface(input: {
 	const dispatchBytes = await readFile(dispatchAbsolute);
 	if (familyAffinityRawSha256(dispatchBytes) !== compatibility.repositoryDispatch.sha256) {
 		throw new Error('Repository dispatch entrypoint drifted from approval');
+	}
+	await assertApprovedAbsoluteRegularPath(compatibility.sealedLauncher.node.path);
+	if (
+		(await realpath(process.execPath)) !== compatibility.sealedLauncher.node.path ||
+		(await rawFileSha256(compatibility.sealedLauncher.node.path)) !==
+			compatibility.sealedLauncher.node.sha256
+	) {
+		throw new Error('Active Node runtime differs from the approved sealed launcher');
+	}
+	const launcherBundle = installed.files.find(
+		({ path }) => path === compatibility.sealedLauncher.bundle.path
+	);
+	if (!launcherBundle || launcherBundle.sha256 !== compatibility.sealedLauncher.bundle.sha256) {
+		throw new Error('Sealed family dispatch bundle drifted from approval');
+	}
+	for (const source of compatibility.sealedLauncher.sources) {
+		const absolute = await assertRealRegularPath(repositoryRoot, source.path);
+		if ((await rawFileSha256(absolute)) !== source.sha256) {
+			throw new Error(`Sealed family dispatch source drifted from approval: ${source.path}`);
+		}
 	}
 	return {
 		status: 'compatible' as const,
@@ -315,7 +379,12 @@ async function readJsonFromStdin(): Promise<unknown> {
 	return JSON.parse(bytes.toString('utf8'));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const cliEntrypoint = process.argv[1];
+if (
+	cliEntrypoint &&
+	(import.meta.url === pathToFileURL(cliEntrypoint).href ||
+		cliEntrypoint.startsWith('/proc/self/fd/'))
+) {
 	const argumentsAfterScript = process.argv.slice(2);
 	const tokens =
 		argumentsAfterScript[0] === '--' ? argumentsAfterScript.slice(1) : argumentsAfterScript;
@@ -323,15 +392,23 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	const assignmentPath = tokens.shift();
 	const repositoryRoot = tokens[0] && tokens[0] !== '--phase' ? tokens.shift()! : process.cwd();
 	let phase: 'candidate' | 'result' = 'candidate';
-	if (tokens.length === 2 && tokens[0] === '--phase' && tokens[1] === 'result') {
-		phase = 'result';
-		tokens.splice(0);
-	} else if (tokens.length === 2 && tokens[0] === '--phase' && tokens[1] === 'candidate') {
-		tokens.splice(0);
+	let installedSkillRoot: string | undefined;
+	while (tokens.length > 0) {
+		const option = tokens.shift();
+		const value = tokens.shift();
+		if (!value) break;
+		if (option === '--phase' && (value === 'candidate' || value === 'result')) {
+			phase = value;
+		} else if (option === '--installed-skill-root') {
+			installedSkillRoot = value;
+		} else {
+			tokens.unshift(value);
+			break;
+		}
 	}
 	if (!targetPath || !assignmentPath || tokens.length !== 0) {
 		console.error(
-			'usage: check-family-affinity-production-dispatch.ts TARGET ASSIGNMENT [REPOSITORY_ROOT] [--phase candidate|result]'
+			'usage: check-family-affinity-production-dispatch.ts TARGET ASSIGNMENT [REPOSITORY_ROOT] [--phase candidate|result] [--installed-skill-root PATH]'
 		);
 		process.exitCode = 2;
 	} else {
@@ -342,6 +419,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 					targetPath,
 					assignmentPath,
 					phase,
+					...(installedSkillRoot ? { installedSkillRoot } : {}),
 					result
 				})
 			)

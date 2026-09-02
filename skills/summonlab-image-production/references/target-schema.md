@@ -29,10 +29,14 @@ Candidate and result outputs are exclusive-create. A collision or symlink escape
 handoff. The producer may not write reviews, catalogs, contact sheets, wiki pages, runtime catalogs,
 or the manifest.
 
-The mandatory repository dispatch CLI is the approval boundary. A direct Python family invocation
-re-runs that CLI and fails if the receipt, installed/tracked execution bundle, active manifest pair,
-packet, prompt renderer, exact Normal review chain, or output-absence checks drift. Structural
-Python validation is additional defense, not a substitute authorization path.
+The sealed family dispatch bundle is the approval boundary. Every direct Python family invocation
+opens the approved absolute Node runtime and self-contained bundle with `O_NOFOLLOW`, verifies their
+raw hashes against the repository receipt and installed contract, and executes the held descriptors
+through Linux `/proc/self/fd` under a fixed environment. `PATH`, `pnpm`, workspace-local `tsx`,
+`node_modules`, loaders, and `NODE_OPTIONS` are outside the authorization chain. The bundle fails if
+the receipt, installed/tracked execution surface, source-freshness hashes, active manifest pair,
+packet, prompt renderer, exact Normal review chain, or output-absence checks drift. Structural Python
+validation is additional defense, not a substitute authorization path.
 
 Candidate phase requires both owned outputs absent. Result phase requires the exact owned candidate
 to be a regular no-symlink file whose raw hash matches the strict in-memory result material, while

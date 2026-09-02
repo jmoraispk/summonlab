@@ -31,15 +31,16 @@ Require:
 - a Summonlab workspace containing every declared reference and the experiment validator.
 
 Resolve every `scripts/...` path relative to this `SKILL.md`, never relative to the workspace
-current directory. For a family job, first run the mandatory repository gate:
-`pnpm check:family-affinity-production-dispatch -- <target> <assignment> <workspace-root>`.
-It binds the approved receipt, installed execution surface, active manifest pair, packet, prompt,
-Normal approval chain, and absent outputs. Do not dispatch or generate unless its JSON reports
-`dispatchable: true`. Then run
-`python3 <skill-directory>/scripts/validate_target.py <target> <assignment> <workspace-root>` before
-generation; family mode invokes the mandatory gate again and cannot bypass it. It verifies common
-fields, reference hashes, path containment, assignment ownership, and absence of pre-existing
-outputs. Stop with a no-output preflight failure if validation fails;
+current directory. For a family job, the mandatory approval boundary is
+`python3 <skill-directory>/scripts/validate_target.py <target> <assignment> <workspace-root>`.
+It opens the approved Node runtime and self-contained gate bundle without following links, verifies
+their exact raw hashes, and executes both through held Linux `/proc/self/fd` descriptors with a
+fixed environment. It never resolves `pnpm`, `tsx`, `node_modules/.bin`, or any executable through
+`PATH`. The sealed gate binds the approved receipt, installed execution surface, active manifest
+pair, packet, prompt, Normal approval chain, and absent outputs before structural Python validation.
+Do not treat the developer-facing `pnpm check:family-affinity-production-dispatch` command or shaped
+JSON from another process as production authorization. Stop with a no-output preflight failure if
+validation fails;
 do not trust an invalid target path enough to write a result, and do not repair shared inputs inside
 an image job.
 

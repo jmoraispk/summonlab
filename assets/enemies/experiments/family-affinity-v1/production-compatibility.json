@@ -54,18 +54,18 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-  "skillContractSha256": "092b491387e795abdbc7619b31b8c3d1323a66884b676eb9512c1808f0339ef1",
+  "skillContractSha256": "588404c0de8f9b0a0256e7006076b70248a3e1523a6ced8e857b9da353acc8a1",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-        "sha256": "092b491387e795abdbc7619b31b8c3d1323a66884b676eb9512c1808f0339ef1"
+        "sha256": "588404c0de8f9b0a0256e7006076b70248a3e1523a6ced8e857b9da353acc8a1"
       },
       {
         "path": "SKILL.md",
-        "sha256": "32eeb3e780cd04b535b41cc18753ba08551e4050def8606eeb3072ad4d64abfd"
+        "sha256": "97a4c6d3e4d0417e7f2dc36b17e5643c08c4c86db03ad717fae5c0b8a4ba3683"
       },
       {
         "path": "references/affinity-grammar.md",
@@ -85,11 +85,15 @@
       },
       {
         "path": "references/target-schema.md",
-        "sha256": "9c49f0d29d3627a12a5f2ab846ecc549258845d2fda5a9486f66f0eb837e3503"
+        "sha256": "be40a2e84bdc91af81284d934f2f7c022128c77a9c35b6dbe2c0a5f61d48d396"
       },
       {
         "path": "scripts/anchored_io.py",
         "sha256": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de"
+      },
+      {
+        "path": "scripts/family_dispatch_gate.mjs",
+        "sha256": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -101,7 +105,7 @@
       },
       {
         "path": "scripts/validate_target.py",
-        "sha256": "422ef0e82378a3078fc998ec8dbaf975f6fa464dfb77dc7b19c95011c9c8b892"
+        "sha256": "ba63eb813554f609285c0d650d0e2da79f2098be5d67d872ef3eb1ade5975e52"
       },
       {
         "path": "scripts/verify_result.py",
@@ -112,11 +116,44 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-    "bundleSha256": "6446e25d16dbd142fdd22a83c3a9f87eebceb46f0cae85afb42f4e48feecafb9"
+    "bundleSha256": "d19d9ae8f9e744640df746d1dbca47b493e01f58fc08879d9ccdea3ad185e9f8"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
-    "sha256": "c3a8da0829faef4d27c7d4dffcb553da32c8c5d7b00d1c8b13cc4a7ac9481f64"
+    "sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+  },
+  "sealedLauncher": {
+    "node": {
+      "path": "/home/joao/.nvm/versions/node/v24.14.1/bin/node",
+      "sha256": "bf9112eb83a827dc9f9c8d19bb7bddcbf00f7b2fedae18fdcaee05406981f20a"
+    },
+    "bundle": {
+      "path": "scripts/family_dispatch_gate.mjs",
+      "sha256": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93"
+    },
+    "sources": [
+      {
+        "path": "tools/check-family-affinity-production-dispatch.ts",
+        "sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+      },
+      {
+        "path": "tools/family-affinity-production-lib.ts",
+        "sha256": "8a9077403b3f88eb12fea540a8016aba15cf08e5db7d5e35a1563116b97023e7"
+      },
+      {
+        "path": "package.json",
+        "sha256": "919ae0045cd85fcf273f61a8008eee7d69334b25e997ca2a854367f02044651b"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
+      }
+    ],
+    "environment": {
+      "LANG": "C.UTF-8",
+      "LC_ALL": "C.UTF-8",
+      "TZ": "UTC"
+    }
   },
   "reviewedAt": "2026-09-02T15:01:44.000Z",
   "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"

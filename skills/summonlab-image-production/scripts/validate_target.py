@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
-import shutil
 import stat
 import subprocess
 import sys
@@ -639,9 +639,29 @@ def run_mandatory_family_dispatch_gate(
         raise ValueError("candidate dispatch cannot accept result material")
     if phase == "result" and result is None:
         raise ValueError("result dispatch requires exact in-memory result material")
-    contract = load_json(
-        Path(__file__).resolve().parents[1] / "references/contract-v3.json"
-    )
+    skill_root = Path(__file__).resolve().parents[1]
+    contract_path = skill_root / "references/contract-v3.json"
+    if contract_path.is_symlink() or not stat.S_ISREG(contract_path.lstat().st_mode):
+        raise ValueError("installed v3 contract is not a real regular file")
+    contract_bytes = contract_path.read_bytes()
+    contract = json.loads(contract_bytes)
+    receipt_path = workspace / FAMILY_ROOT / "production-compatibility.json"
+    cursor = workspace
+    for part in PurePosixPath(
+        f"{FAMILY_ROOT}/production-compatibility.json"
+    ).parts:
+        cursor /= part
+        metadata = cursor.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            raise ValueError("family production compatibility receipt path is symlinked")
+    if not stat.S_ISREG(receipt_path.lstat().st_mode):
+        raise ValueError("family production compatibility receipt is not a regular file")
+    receipt = json.loads(receipt_path.read_bytes())
+    if receipt.get("skillContractSha256") != hashlib.sha256(contract_bytes).hexdigest():
+        raise ValueError("installed v3 contract is not bound by the repository approval receipt")
+    launcher = contract.get("sealedLauncher")
+    if launcher != receipt.get("sealedLauncher") or not isinstance(launcher, dict):
+        raise ValueError("sealed family dispatch launcher drifted from repository approval")
     dispatch = contract.get("repositoryDispatch")
     if not isinstance(dispatch, dict) or set(dispatch) != {"path", "sha256"}:
         raise ValueError("installed v3 contract has no repository dispatch binding")
@@ -658,31 +678,88 @@ def run_mandatory_family_dispatch_gate(
         raise ValueError("repository dispatch entrypoint is not a regular file")
     if hashlib.sha256(entrypoint.read_bytes()).hexdigest() != dispatch.get("sha256"):
         raise ValueError("repository dispatch entrypoint drifted from the sealed contract")
-    pnpm = shutil.which("pnpm")
-    if pnpm is None:
-        raise ValueError(
-            "mandatory family dispatch gate requires pnpm; no unsafe fallback is allowed"
+    node = launcher.get("node")
+    bundle = launcher.get("bundle")
+    environment = launcher.get("environment")
+    if (
+        not isinstance(node, dict)
+        or set(node) != {"path", "sha256"}
+        or not isinstance(bundle, dict)
+        or set(bundle) != {"path", "sha256"}
+        or environment != {"LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC"}
+    ):
+        raise ValueError("installed v3 contract has no valid sealed launcher")
+    node_path = Path(node["path"])
+    if not node_path.is_absolute() or node_path != Path(
+        "/home/joao/.nvm/versions/node/v24.14.1/bin/node"
+    ):
+        raise ValueError("approved Node runtime path is invalid for this production host")
+    node_cursor = Path(node_path.anchor)
+    for part in node_path.parts[1:]:
+        node_cursor /= part
+        metadata = node_cursor.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            raise ValueError("approved Node runtime path is symlinked")
+    if bundle.get("path") != "scripts/family_dispatch_gate.mjs":
+        raise ValueError("sealed family dispatch bundle path is invalid")
+    bundle_path = skill_root / bundle["path"]
+    bundle_cursor = skill_root
+    for part in PurePosixPath(bundle["path"]).parts:
+        bundle_cursor /= part
+        metadata = bundle_cursor.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            raise ValueError("sealed family dispatch bundle path is symlinked")
+    if not Path("/proc/self/fd").is_dir():
+        raise ValueError("sealed family dispatch requires Linux procfs; no fallback is allowed")
+    node_fd = -1
+    bundle_fd = -1
+    try:
+        node_fd = os.open(node_path, os.O_RDONLY | os.O_NOFOLLOW)
+        bundle_fd = os.open(bundle_path, os.O_RDONLY | os.O_NOFOLLOW)
+        if not stat.S_ISREG(os.fstat(node_fd).st_mode) or not stat.S_ISREG(
+            os.fstat(bundle_fd).st_mode
+        ):
+            raise ValueError("sealed launcher components must be regular files")
+
+        def descriptor_sha256(descriptor: int) -> str:
+            digest = hashlib.sha256()
+            os.lseek(descriptor, 0, os.SEEK_SET)
+            while chunk := os.read(descriptor, 1024 * 1024):
+                digest.update(chunk)
+            os.lseek(descriptor, 0, os.SEEK_SET)
+            return digest.hexdigest()
+
+        if descriptor_sha256(node_fd) != node.get("sha256"):
+            raise ValueError("approved Node runtime bytes drifted from repository approval")
+        if descriptor_sha256(bundle_fd) != bundle.get("sha256"):
+            raise ValueError("sealed family dispatch bundle bytes drifted from approval")
+        command = [
+            f"/proc/self/fd/{node_fd}",
+            f"/proc/self/fd/{bundle_fd}",
+            target_path.relative_to(workspace).as_posix(),
+            assignment_path.relative_to(workspace).as_posix(),
+            str(workspace),
+            "--phase",
+            phase,
+            "--installed-skill-root",
+            str(skill_root),
+        ]
+        gate = subprocess.run(
+            command,
+            cwd=workspace,
+            check=False,
+            capture_output=True,
+            text=True,
+            input=canonical_json(result) if result is not None else None,
+            env=environment,
+            close_fds=True,
+            pass_fds=(node_fd, bundle_fd),
         )
-    command = [
-        pnpm,
-        "--silent",
-        "exec",
-        "tsx",
-        dispatch["path"],
-        target_path.relative_to(workspace).as_posix(),
-        assignment_path.relative_to(workspace).as_posix(),
-        str(workspace),
-        "--phase",
-        phase,
-    ]
-    gate = subprocess.run(
-        command,
-        cwd=workspace,
-        check=False,
-        capture_output=True,
-        text=True,
-        input=canonical_json(result) if result is not None else None,
-    )
+    finally:
+        if bundle_fd >= 0:
+            os.close(bundle_fd)
+        if node_fd >= 0:
+            os.close(node_fd)
     if gate.returncode != 0:
         detail = gate.stderr.strip() or gate.stdout.strip() or "unknown gate failure"
         raise ValueError(f"mandatory repository dispatch gate rejected target: {detail}")

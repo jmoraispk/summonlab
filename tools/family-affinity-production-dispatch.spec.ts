@@ -45,7 +45,8 @@ describe('mandatory family affinity production dispatch gate', () => {
 		'scripts/render_prompt.py',
 		'scripts/verify_result.py',
 		'scripts/write_family_result.py',
-		'scripts/persist_family_candidate.py'
+		'scripts/persist_family_candidate.py',
+		'scripts/family_dispatch_gate.mjs'
 	])('rejects installed execution-surface drift in %s', async (relativePath) => {
 		const temporary = await mkdtemp(join(tmpdir(), 'family-surface-'));
 		try {
@@ -126,6 +127,40 @@ describe('mandatory family affinity production dispatch gate', () => {
 		}
 	});
 
+	it.each([
+		'tools/check-family-affinity-production-dispatch.ts',
+		'tools/family-affinity-production-lib.ts',
+		'package.json',
+		'pnpm-lock.yaml'
+	])('rejects sealed bundle source drift in %s', async (mutatedSource) => {
+		const temporary = await mkdtemp(join(tmpdir(), 'family-launcher-source-drift-'));
+		try {
+			const copiedSkill = join(temporary, 'skills/summonlab-image-production');
+			await cp(trackedSkillRoot, copiedSkill, { recursive: true });
+			const receipt = JSON.parse(await readFile(join(repositoryRoot, receiptPath), 'utf8'));
+			for (const source of receipt.sealedLauncher.sources as Array<{ path: string }>) {
+				const destination = join(temporary, source.path);
+				await mkdir(dirname(destination), { recursive: true });
+				await cp(join(repositoryRoot, source.path), destination);
+			}
+			const mutationPath = join(temporary, mutatedSource);
+			await writeFile(
+				mutationPath,
+				Buffer.concat([await readFile(mutationPath), Buffer.from('\nDRIFT')])
+			);
+			await expect(
+				validateFamilyAffinityProductionSurface({
+					compatibility: { ...receipt, approvedSkillRoot: copiedSkill },
+					trackedSkillRoot: copiedSkill,
+					installedSkillRoot: copiedSkill,
+					repositoryRoot: temporary
+				})
+			).rejects.toThrow(/dispatch|source.*drift/i);
+		} finally {
+			await rm(temporary, { recursive: true, force: true });
+		}
+	});
+
 	it('dispatches the active canonical Normal only through receipt, bundle, manifest, packet, prompt, and absence gates', async () => {
 		const targetPath =
 			'assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-bog-troll/normal/target-v1.json';
@@ -174,6 +209,12 @@ describe('mandatory family affinity production dispatch gate', () => {
 				join(repositoryRoot, 'tools/check-family-affinity-production-dispatch.ts'),
 				copiedEntrypoint
 			);
+			await cp(
+				join(repositoryRoot, 'tools/family-affinity-production-lib.ts'),
+				join(temporary, 'tools/family-affinity-production-lib.ts')
+			);
+			await cp(join(repositoryRoot, 'package.json'), join(temporary, 'package.json'));
+			await cp(join(repositoryRoot, 'pnpm-lock.yaml'), join(temporary, 'pnpm-lock.yaml'));
 			const copiedReceiptPath = join(temporary, receiptPath);
 			const receipt = JSON.parse(await readFile(copiedReceiptPath, 'utf8'));
 			receipt.approvedSkillRoot = copiedSkill;

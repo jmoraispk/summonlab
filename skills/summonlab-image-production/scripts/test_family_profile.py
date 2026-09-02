@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -482,63 +483,176 @@ class FamilyProfileTests(unittest.TestCase):
             )
         self.assertFalse((self.workspace / target["ownedPaths"]["result"]).exists())
 
-    def test_mandatory_gate_uses_direct_silent_tsx_and_requires_one_json_document(
+    def test_fake_path_pnpm_cannot_authorize_any_public_family_writer(self) -> None:
+        self._assert_executable_substitution_rejected("path-pnpm")
+
+    def test_fake_workspace_tsx_cannot_authorize_any_public_family_writer(self) -> None:
+        self._assert_executable_substitution_rejected("workspace-tsx")
+
+    def _assert_executable_substitution_rejected(self, attack: str) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
+        source = self.workspace / "provider-output.png"
+        source.write_bytes(b"substitution candidate")
+        dispatch_source = (
+            Path(__file__).resolve().parents[3]
+            / "tools/check-family-affinity-production-dispatch.ts"
+        )
+        workspace_dispatch = self.workspace / dispatch_source.relative_to(
+            Path(__file__).resolve().parents[3]
+        )
+        workspace_dispatch.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(dispatch_source, workspace_dispatch)
+        fake_bin = self.workspace / "fake-bin"
+        fake_bin.mkdir()
+        fake_program = (
+            "#!/usr/bin/python3\n"
+            "import json,sys\n"
+            "phase=sys.argv[sys.argv.index('--phase')+1]\n"
+            "print(json.dumps({'dispatchable':True,'phase':phase}))\n"
+        )
+        if attack == "path-pnpm":
+            executable = fake_bin / "pnpm"
+            executable.write_text(fake_program, encoding="utf-8")
+            executable.chmod(0o755)
+            attack_path = str(fake_bin)
+        else:
+            executable = self.workspace / "node_modules/.bin/tsx"
+            executable.parent.mkdir(parents=True, exist_ok=True)
+            executable.write_text(fake_program, encoding="utf-8")
+            executable.chmod(0o755)
+            (self.workspace / "package.json").write_text(
+                '{"name":"adversarial-workspace","private":true}\n', encoding="utf-8"
+            )
+            attack_path = os.environ["PATH"]
+        scripts = Path(__file__).resolve().parent
+        base_env = {
+            **os.environ,
+            "PATH": attack_path,
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONPATH": str(scripts),
+        }
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        result_path = self.workspace / target["ownedPaths"]["result"]
+        draft = self.workspace / "result-draft.json"
+
+        for entrypoint in ("candidate-callable", "candidate-cli", "result-callable", "result-cli"):
+            with self.subTest(attack=attack, entrypoint=entrypoint):
+                candidate.unlink(missing_ok=True)
+                result_path.unlink(missing_ok=True)
+                if entrypoint.startswith("result"):
+                    candidate.parent.mkdir(parents=True, exist_ok=True)
+                    candidate.write_bytes(b"substitution candidate")
+                result = self._family_result(target, assignment, b"substitution candidate")
+                draft.write_text(canonical_json(result), encoding="utf-8")
+                if entrypoint == "candidate-callable":
+                    with patch.dict(os.environ, {"PATH": attack_path}):
+                        with self.assertRaises((OSError, ValueError)):
+                            persist_family_candidate(
+                                source, target_path, assignment_path, self.workspace
+                            )
+                    self.assertFalse(candidate.exists())
+                elif entrypoint == "result-callable":
+                    with patch.dict(os.environ, {"PATH": attack_path}):
+                        with self.assertRaises((OSError, ValueError)):
+                            exclusive_create_family_result(
+                                target_path,
+                                assignment_path,
+                                result,
+                                self.workspace,
+                            )
+                    self.assertFalse(result_path.exists())
+                else:
+                    command = (
+                        [
+                            sys.executable,
+                            str(scripts / "persist_family_candidate.py"),
+                            str(source),
+                            str(target_path),
+                            str(assignment_path),
+                            str(self.workspace),
+                        ]
+                        if entrypoint == "candidate-cli"
+                        else [
+                            sys.executable,
+                            str(scripts / "write_family_result.py"),
+                            str(target_path),
+                            str(assignment_path),
+                            str(draft),
+                            str(self.workspace),
+                        ]
+                    )
+                    completed = subprocess.run(
+                        command,
+                        cwd=self.workspace,
+                        env=base_env,
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    )
+                    self.assertNotEqual(completed.returncode, 0)
+                    self.assertFalse(
+                        candidate.exists()
+                        if entrypoint == "candidate-cli"
+                        else result_path.exists()
+                    )
+
+    def test_mandatory_gate_uses_sealed_fd_launcher_and_requires_one_json_document(
         self,
     ) -> None:
         target = self._target()
         assignment = self._assignment(target)
         target_path, assignment_path = self._persist_inputs(target, assignment)
+        repository = Path(__file__).resolve().parents[3]
         entrypoint = self.workspace / "tools/check-family-affinity-production-dispatch.ts"
         entrypoint.parent.mkdir(parents=True)
-        entrypoint.write_bytes(b"sealed dispatch")
-        contract = {
-            "repositoryDispatch": {
-                "path": "tools/check-family-affinity-production-dispatch.ts",
-                "sha256": hashlib.sha256(entrypoint.read_bytes()).hexdigest(),
-            }
-        }
+        shutil.copyfile(
+            repository / "tools/check-family-affinity-production-dispatch.ts", entrypoint
+        )
+        receipt = self.workspace / ROOT / "production-compatibility.json"
+        shutil.copyfile(repository / ROOT / "production-compatibility.json", receipt)
         approval = canonical_json({"dispatchable": True, "phase": "candidate"})
         completed = subprocess.CompletedProcess([], 0, stdout=approval, stderr="")
-        with patch("validate_target.load_json", return_value=contract), patch(
-            "validate_target.shutil.which", return_value="/usr/bin/pnpm"
-        ), patch(
-            "validate_target.subprocess.run", return_value=completed
-        ) as runner:
+        with patch.dict(
+            os.environ,
+            {
+                "PATH": str(self.workspace / "fake-bin"),
+                "NODE_OPTIONS": "--require=/tmp/fake-loader.cjs",
+                "NODE_PATH": "/tmp/fake-node-modules",
+                "LD_PRELOAD": "/tmp/fake-preload.so",
+            },
+        ), patch("validate_target.subprocess.run", return_value=completed) as runner:
             report = run_mandatory_family_dispatch_gate(
-                target_path,
-                assignment_path,
-                self.workspace,
-                phase="candidate",
+                target_path, assignment_path, self.workspace, phase="candidate"
             )
         self.assertTrue(report["dispatchable"])
         command = runner.call_args.args[0]
+        self.assertTrue(command[0].startswith("/proc/self/fd/"))
+        self.assertTrue(command[1].startswith("/proc/self/fd/"))
+        self.assertNotIn("pnpm", command)
+        self.assertNotIn("tsx", command)
         self.assertEqual(
-            command[:5],
-            [
-                "/usr/bin/pnpm",
-                "--silent",
-                "exec",
-                "tsx",
-                "tools/check-family-affinity-production-dispatch.ts",
-            ],
+            runner.call_args.kwargs["env"],
+            {"LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC"},
         )
         self.assertEqual(runner.call_args.kwargs["cwd"], self.workspace)
+        descriptors = runner.call_args.kwargs["pass_fds"]
+        self.assertEqual(len(descriptors), 2)
+        for descriptor in descriptors:
+            with self.assertRaises(OSError):
+                os.fstat(descriptor)
         entrypoint.write_bytes(b"drifted dispatch")
-        with patch("validate_target.load_json", return_value=contract), patch(
-            "validate_target.subprocess.run"
-        ) as blocked_runner:
+        with patch("validate_target.subprocess.run") as blocked_runner:
             with self.assertRaisesRegex(ValueError, "entrypoint drifted"):
                 run_mandatory_family_dispatch_gate(
-                    target_path,
-                    assignment_path,
-                    self.workspace,
-                    phase="candidate",
+                    target_path, assignment_path, self.workspace, phase="candidate"
                 )
             blocked_runner.assert_not_called()
-        entrypoint.write_bytes(b"sealed dispatch")
-        with patch("validate_target.load_json", return_value=contract), patch(
-            "validate_target.shutil.which", return_value="/usr/bin/pnpm"
-        ), patch(
+        shutil.copyfile(
+            repository / "tools/check-family-affinity-production-dispatch.ts", entrypoint
+        )
+        with patch(
             "validate_target.subprocess.run",
             return_value=subprocess.CompletedProcess([], 0, stdout="", stderr=""),
         ):

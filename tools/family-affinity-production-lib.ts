@@ -489,6 +489,46 @@ const FamilyAffinityForbiddenWriteClassesSchema = z.tuple([
 	z.literal('manifest')
 ]);
 
+const FamilyAffinitySealedLauncherSchema = z
+	.object({
+		node: z
+			.object({
+				path: z.literal('/home/joao/.nvm/versions/node/v24.14.1/bin/node'),
+				sha256: Sha256Schema
+			})
+			.strict(),
+		bundle: z
+			.object({
+				path: z.literal('scripts/family_dispatch_gate.mjs'),
+				sha256: Sha256Schema
+			})
+			.strict(),
+		sources: z.tuple([
+			z
+				.object({
+					path: z.literal('tools/check-family-affinity-production-dispatch.ts'),
+					sha256: Sha256Schema
+				})
+				.strict(),
+			z
+				.object({
+					path: z.literal('tools/family-affinity-production-lib.ts'),
+					sha256: Sha256Schema
+				})
+				.strict(),
+			z.object({ path: z.literal('package.json'), sha256: Sha256Schema }).strict(),
+			z.object({ path: z.literal('pnpm-lock.yaml'), sha256: Sha256Schema }).strict()
+		]),
+		environment: z
+			.object({
+				LANG: z.literal('C.UTF-8'),
+				LC_ALL: z.literal('C.UTF-8'),
+				TZ: z.literal('UTC')
+			})
+			.strict()
+	})
+	.strict();
+
 export const FamilyAffinityProductionCompatibilitySchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-production-compatibility-v1'),
@@ -518,7 +558,7 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 				framing: z.literal('length-prefixed-sha256-v1'),
 				files: z
 					.array(z.object({ path: RequiredTextSchema, sha256: Sha256Schema }).strict())
-					.length(13),
+					.length(14),
 				bundleSha256: Sha256Schema
 			})
 			.strict(),
@@ -528,6 +568,7 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 				sha256: Sha256Schema
 			})
 			.strict(),
+		sealedLauncher: FamilyAffinitySealedLauncherSchema,
 		reviewedAt: z
 			.string()
 			.regex(
@@ -558,6 +599,7 @@ const FamilyAffinitySkillContractSchema = z
 					z.literal('references/species-grammar.md'),
 					z.literal('references/target-schema.md'),
 					z.literal('scripts/anchored_io.py'),
+					z.literal('scripts/family_dispatch_gate.mjs'),
 					z.literal('scripts/persist_family_candidate.py'),
 					z.literal('scripts/render_prompt.py'),
 					z.literal('scripts/validate_target.py'),
@@ -573,6 +615,7 @@ const FamilyAffinitySkillContractSchema = z
 				sha256: Sha256Schema
 			})
 			.strict(),
+		sealedLauncher: FamilyAffinitySealedLauncherSchema,
 		profiles: z
 			.object({
 				'image-production-family-target-v1': z
@@ -660,6 +703,7 @@ export function validateFamilyAffinityProductionCompatibility(
 	const profile = contract.profiles[FAMILY_AFFINITY_PRODUCTION_PROFILE];
 	if (
 		stableJson(contract.repositoryDispatch) !== stableJson(compatibility.repositoryDispatch) ||
+		stableJson(contract.sealedLauncher) !== stableJson(compatibility.sealedLauncher) ||
 		profile.repositoryTargetSchema !== compatibility.targetSchema ||
 		profile.assignmentSchema !== compatibility.assignmentSchema ||
 		profile.resultSchema !== compatibility.resultSchema ||

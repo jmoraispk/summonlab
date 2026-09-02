@@ -45,6 +45,8 @@ export async function checkFamilyAffinityProductionCompatibility(repositoryRoot:
 		installedSkillPath: surface.root,
 		contractSha256: validated.skillContractSha256,
 		bundleSha256: surface.bundleSha256,
+		launcherNodeSha256: validated.sealedLauncher.node.sha256,
+		launcherBundleSha256: validated.sealedLauncher.bundle.sha256,
 		affinities: validated.affinities,
 		namespaces: validated.namespaces
 	};

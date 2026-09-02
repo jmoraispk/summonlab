@@ -12,6 +12,7 @@
 			"references/species-grammar.md",
 			"references/target-schema.md",
 			"scripts/anchored_io.py",
+			"scripts/family_dispatch_gate.mjs",
 			"scripts/persist_family_candidate.py",
 			"scripts/render_prompt.py",
 			"scripts/validate_target.py",
@@ -19,23 +20,57 @@
 			"scripts/write_family_result.py"
 		],
 		"expectedNonContractSha256": {
-			"SKILL.md": "32eeb3e780cd04b535b41cc18753ba08551e4050def8606eeb3072ad4d64abfd",
+			"SKILL.md": "97a4c6d3e4d0417e7f2dc36b17e5643c08c4c86db03ad717fae5c0b8a4ba3683",
 			"references/affinity-grammar.md": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda",
 			"references/result-schema.md": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce",
 			"references/review-rubric.md": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3",
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
-			"references/target-schema.md": "9c49f0d29d3627a12a5f2ab846ecc549258845d2fda5a9486f66f0eb837e3503",
+			"references/target-schema.md": "be40a2e84bdc91af81284d934f2f7c022128c77a9c35b6dbe2c0a5f61d48d396",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
+			"scripts/family_dispatch_gate.mjs": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93",
 			"scripts/persist_family_candidate.py": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
-			"scripts/validate_target.py": "422ef0e82378a3078fc998ec8dbaf975f6fa464dfb77dc7b19c95011c9c8b892",
+			"scripts/validate_target.py": "ba63eb813554f609285c0d650d0e2da79f2098be5d67d872ef3eb1ade5975e52",
 			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
 			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
 		}
 	},
 	"repositoryDispatch": {
 		"path": "tools/check-family-affinity-production-dispatch.ts",
-		"sha256": "c3a8da0829faef4d27c7d4dffcb553da32c8c5d7b00d1c8b13cc4a7ac9481f64"
+		"sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+	},
+	"sealedLauncher": {
+		"node": {
+			"path": "/home/joao/.nvm/versions/node/v24.14.1/bin/node",
+			"sha256": "bf9112eb83a827dc9f9c8d19bb7bddcbf00f7b2fedae18fdcaee05406981f20a"
+		},
+		"bundle": {
+			"path": "scripts/family_dispatch_gate.mjs",
+			"sha256": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93"
+		},
+		"sources": [
+			{
+				"path": "tools/check-family-affinity-production-dispatch.ts",
+				"sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+			},
+			{
+				"path": "tools/family-affinity-production-lib.ts",
+				"sha256": "8a9077403b3f88eb12fea540a8016aba15cf08e5db7d5e35a1563116b97023e7"
+			},
+			{
+				"path": "package.json",
+				"sha256": "919ae0045cd85fcf273f61a8008eee7d69334b25e997ca2a854367f02044651b"
+			},
+			{
+				"path": "pnpm-lock.yaml",
+				"sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
+			}
+		],
+		"environment": {
+			"LANG": "C.UTF-8",
+			"LC_ALL": "C.UTF-8",
+			"TZ": "UTC"
+		}
 	},
 	"profiles": {
 		"image-production-family-target-v1": {
