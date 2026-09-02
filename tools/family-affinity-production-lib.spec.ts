@@ -2727,6 +2727,7 @@ describe('family affinity production manifest', () => {
 		const provisional = FamilyAffinityTargetSchema.parse({
 			...source,
 			namespace: 'bridge',
+			canonicalCoordinateId: source.coordinateId,
 			coordinateId: `bridge-class/${source.familyId}/${source.formId}/earth`,
 			targetId: `bridge/bridge-class/${source.familyId}/${source.formId}/earth/v1`,
 			currentClassId: 'bridge-class',
@@ -2997,6 +2998,7 @@ describe('deterministic family affinity exporter', () => {
 			const bridgeTarget = FamilyAffinityTargetSchema.parse({
 				...sourceEarth,
 				namespace: 'bridge',
+				canonicalCoordinateId: sourceEarth.coordinateId,
 				coordinateId: bridgeCoordinateId,
 				targetId: `bridge/${bridgeCoordinateId}/v1`,
 				currentClassId: 'bridge-class',
@@ -3126,6 +3128,7 @@ async function makeRevisionFixture(options?: {
 		target = FamilyAffinityTargetSchema.parse({
 			...source,
 			namespace: 'bridge',
+			canonicalCoordinateId: `${source.familyId}/${source.formId}/earth`,
 			coordinateId,
 			targetId: `bridge/${coordinateId}/v1`,
 			currentClassId: 'bridge-class',

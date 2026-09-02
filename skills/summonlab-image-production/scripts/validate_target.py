@@ -147,18 +147,17 @@ def validate_family(
     target_path: Path | None = None,
     assignment_path: Path | None = None,
 ) -> dict[str, Any]:
-    require_exact_keys(
-        target,
-        {
-            "schemaVersion", "namespace", "coordinateId", "targetId", "familyId", "formId",
-            "currentClassId", "affinity", "tier", "primaryArchetype", "battlefieldDuty",
-            "identityInvariants", "anatomyInvariants", "constructionDimensions", "telegraph",
-            "counterplay", "forbiddenTreatments", "sources", "presentationContract",
-            "acceptanceCriteria", "ownedPaths", "anchor", "precedingAttempt", "version", "status",
-            "promotionCeiling", "runtimeCatalogMutationForbidden",
-        },
-        "family target",
-    )
+    target_keys = {
+        "schemaVersion", "namespace", "coordinateId", "targetId", "familyId", "formId",
+        "currentClassId", "affinity", "tier", "primaryArchetype", "battlefieldDuty",
+        "identityInvariants", "anatomyInvariants", "constructionDimensions", "telegraph",
+        "counterplay", "forbiddenTreatments", "sources", "presentationContract",
+        "acceptanceCriteria", "ownedPaths", "anchor", "precedingAttempt", "version", "status",
+        "promotionCeiling", "runtimeCatalogMutationForbidden",
+    }
+    if "canonicalCoordinateId" in target:
+        target_keys.add("canonicalCoordinateId")
+    require_exact_keys(target, target_keys, "family target")
     require_exact_keys(
         assignment,
         {
@@ -199,8 +198,22 @@ def validate_family(
     target_id = f"{namespace}/{coordinate}/v{version}"
     if target.get("targetId") != target_id:
         fail("family targetId must bind namespace, coordinate, and version")
-    if target.get("tier") not in {"T1", "T2", "T3", "T4", "T5"}:
-        fail("family target tier is invalid")
+    tier = target.get("tier")
+    canonical_coordinate = target.get("canonicalCoordinateId")
+    if namespace == "canonical" and tier not in {"T1", "T2", "T3", "T4", "T5"}:
+        fail("canonical family target tier is invalid")
+    if namespace == "canonical" and canonical_coordinate is not None:
+        fail("canonical targets cannot carry canonicalCoordinateId")
+    if namespace == "bridge" and canonical_coordinate is None and tier != "bridge-only":
+        fail("bridge-only targets must remain outside family tiers")
+    if namespace == "bridge" and canonical_coordinate is not None:
+        expected_canonical = f"{family_id}/{form_id}/earth"
+        if (
+            affinity != "earth"
+            or canonical_coordinate != expected_canonical
+            or tier not in {"T1", "T2", "T3", "T4", "T5"}
+        ):
+            fail("mapped-primary bridge target has an invalid canonical Earth reference")
     for field, minimum in (
         ("identityInvariants", 1), ("anatomyInvariants", 1),
         ("constructionDimensions", 2), ("forbiddenTreatments", 1),
@@ -242,22 +255,51 @@ def validate_family(
     sources = target.get("sources")
     if not isinstance(sources, dict):
         fail("family target sources must be an object")
-    require_exact_keys(
-        sources,
-        {"familyPacketPath", "familyPacketSha256", "sourcePage", "sourceReferences", "mappingPath"},
-        "family target sources",
-    )
+    source_keys = {
+        "familyPacketPath", "familyPacketSha256", "sourcePage", "sourceReferences", "mappingPath"
+    }
+    packet_kind = sources.get("packetKind", "canonical-family")
+    if "packetKind" in sources:
+        source_keys.add("packetKind")
+    require_exact_keys(sources, source_keys, "family target sources")
+    if packet_kind not in {"canonical-family", "bridge-identity"}:
+        fail("family target source packet kind is invalid")
+    if namespace == "canonical" and packet_kind != "canonical-family":
+        fail("canonical targets require canonical family sources")
+    if namespace == "bridge" and canonical_coordinate is not None and packet_kind != "canonical-family":
+        fail("mapped-primary bridge targets require canonical family sources")
+    if namespace == "bridge" and canonical_coordinate is None and packet_kind != "bridge-identity":
+        fail("bridge-only targets require bridge identity sources")
     packet_path = sources.get("familyPacketPath")
-    if not isinstance(packet_path, str) or not re.fullmatch(
-        rf"{re.escape(FAMILY_ROOT)}/families/[0-9]{{2}}-{re.escape(family_id)}\.json", packet_path
-    ):
-        fail("family packet path does not match the target family")
+    expected_canonical_packet = re.fullmatch(
+        rf"{re.escape(FAMILY_ROOT)}/families/[0-9]{{2}}-{re.escape(family_id)}\.json",
+        packet_path if isinstance(packet_path, str) else "",
+    )
+    expected_bridge_packet = (
+        f"{FAMILY_ROOT}/bridge/identities/{current_class}.json"
+        if namespace == "bridge" else None
+    )
+    if packet_kind == "canonical-family" and not expected_canonical_packet:
+        fail("canonical family packet path does not match the target family")
+    if packet_kind == "bridge-identity" and packet_path != expected_bridge_packet:
+        fail("bridge identity packet path does not match currentClassId")
     packet_absolute = absolute_project_path(workspace, packet_path)
     if not packet_absolute.is_file():
         fail("family packet source is missing")
     packet = load_json(packet_absolute)
-    if packet.get("schemaVersion") != "family-packet-v1" or packet.get("familyId") != family_id:
-        fail("family packet source does not match the target")
+    if packet_kind == "canonical-family":
+        if packet.get("schemaVersion") != "family-packet-v1" or packet.get("familyId") != family_id:
+            fail("family packet source does not match the target")
+    elif (
+        packet.get("schemaVersion") != "bridge-identity-packet-v1"
+        or packet.get("currentClassId") != current_class
+        or packet.get("bridgeFamilyId") != family_id
+        or packet.get("bridgeFormId") != form_id
+        or packet.get("status") != "bridge-only"
+        or packet.get("inferredTier") is not None
+        or packet.get("runtimeCatalogMutationForbidden") is not True
+    ):
+        fail("bridge identity packet source does not match the target")
     if canonical_sha256(packet) != require_sha(
         sources.get("familyPacketSha256"), "sources.familyPacketSha256"
     ):
@@ -313,8 +355,11 @@ def validate_family(
         if namespace != "bridge" or affinity != "earth" or status != "earth-bridge-provisional":
             fail("provisional Earth dispatch is only valid for bridge Earth")
         normal_path = anchor.get("normalCandidatePath")
-        expected_normal = f"{FAMILY_ROOT}/bridge/candidates/{current_class}/normal-v1.png"
-        if normal_path != expected_normal:
+        if not isinstance(normal_path, str) or not re.fullmatch(
+            r"assets/enemies/experiments/(?:affinity-workflow-v1|affinity-expansion-v1)/"
+            rf"candidates/{re.escape(current_class)}/normal-v[1-9][0-9]*\.png",
+            normal_path,
+        ):
             fail("provisional Earth Normal candidate path is invalid")
         normal_absolute = absolute_project_path(workspace, normal_path)
         if not normal_absolute.is_file() or hashlib.sha256(normal_absolute.read_bytes()).hexdigest() != require_sha(

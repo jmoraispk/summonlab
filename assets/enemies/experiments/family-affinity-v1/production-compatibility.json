@@ -6,6 +6,10 @@
   "assignmentSchema": "family-affinity-assignment-v1",
   "resultSchema": "family-affinity-result-v1",
   "promptMaterialSchema": "family-affinity-prompt-material-v1",
+  "sourcePacketSchemas": [
+    "family-packet-v1",
+    "bridge-identity-packet-v1"
+  ],
   "experimentId": "family-affinity-v1",
   "affinities": [
     "normal",
@@ -54,18 +58,18 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-  "skillContractSha256": "588404c0de8f9b0a0256e7006076b70248a3e1523a6ced8e857b9da353acc8a1",
+	"skillContractSha256": "6023ccae6c1d393670785f2e2315ddaeb96e7e88f931505b8caabb56e13765ed",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-        "sha256": "588404c0de8f9b0a0256e7006076b70248a3e1523a6ced8e857b9da353acc8a1"
+				"sha256": "6023ccae6c1d393670785f2e2315ddaeb96e7e88f931505b8caabb56e13765ed"
       },
       {
         "path": "SKILL.md",
-        "sha256": "97a4c6d3e4d0417e7f2dc36b17e5643c08c4c86db03ad717fae5c0b8a4ba3683"
+				"sha256": "b852e6ca55eb62c70304edbeb2d43aba39d2ef22fff8e288fecf131838ea9f13"
       },
       {
         "path": "references/affinity-grammar.md",
@@ -85,7 +89,7 @@
       },
       {
         "path": "references/target-schema.md",
-        "sha256": "be40a2e84bdc91af81284d934f2f7c022128c77a9c35b6dbe2c0a5f61d48d396"
+				"sha256": "5a4c4e0936eadcae97358914d232329827f07848dc932a749abbaa539b26068e"
       },
       {
         "path": "scripts/anchored_io.py",
@@ -93,7 +97,7 @@
       },
       {
         "path": "scripts/family_dispatch_gate.mjs",
-        "sha256": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93"
+				"sha256": "3781c44e5760a9cb72721f89b36be75518163f95206a5d7229240bb9661a1eac"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -105,7 +109,7 @@
       },
       {
         "path": "scripts/validate_target.py",
-        "sha256": "ba63eb813554f609285c0d650d0e2da79f2098be5d67d872ef3eb1ade5975e52"
+				"sha256": "c209e5f7d17ae34812db5b75be5bcd90cc51434dceb0fd5204d33ad518bda5c0"
       },
       {
         "path": "scripts/verify_result.py",
@@ -116,11 +120,11 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-    "bundleSha256": "d19d9ae8f9e744640df746d1dbca47b493e01f58fc08879d9ccdea3ad185e9f8"
+		"bundleSha256": "6fe16111533dcac17c4af1b9c191fa3b14d0717ae45c9e3ad32b13b62dbb5511"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
-    "sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+		"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
   },
   "sealedLauncher": {
     "node": {
@@ -129,20 +133,20 @@
     },
     "bundle": {
       "path": "scripts/family_dispatch_gate.mjs",
-      "sha256": "fb20ebb6f0d67c2a42ce800870e6c4ef2907421aeafbbbb31e1f7c06a474ab93"
+			"sha256": "3781c44e5760a9cb72721f89b36be75518163f95206a5d7229240bb9661a1eac"
     },
     "sources": [
       {
         "path": "tools/check-family-affinity-production-dispatch.ts",
-        "sha256": "360b87bdaeec7f596fff356d1dee8016a190efeaf8eacfb8fd99654b21555101"
+				"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
       },
       {
         "path": "tools/family-affinity-production-lib.ts",
-        "sha256": "8a9077403b3f88eb12fea540a8016aba15cf08e5db7d5e35a1563116b97023e7"
+				"sha256": "65e0c2fbb58186fb3457bd23ac1ad5aad453c86593465a558f10100e3b0cafb2"
       },
       {
         "path": "package.json",
-        "sha256": "919ae0045cd85fcf273f61a8008eee7d69334b25e997ca2a854367f02044651b"
+				"sha256": "c7f7975648e6cbd8c002d593c6af4aa645e7b7ed2fa15bbf84580c791eeec53c"
       },
       {
         "path": "pnpm-lock.yaml",
@@ -154,6 +158,12 @@
       "LC_ALL": "C.UTF-8",
       "TZ": "UTC"
     }
+  },
+  "bridgeExtension": {
+    "schemaVersion": "earth-bridge-production-extension-v1",
+    "wavePath": "assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json",
+    "reviewedAt": "2026-09-02T18:30:00.000Z",
+    "approvalReference": "root-approved-task10-bridge-production-extension-2026-09-02"
   },
   "reviewedAt": "2026-09-02T15:01:44.000Z",
   "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"

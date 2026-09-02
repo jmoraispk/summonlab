@@ -58,6 +58,7 @@ async function validReceipt() {
 		assignmentSchema: 'family-affinity-assignment-v1',
 		resultSchema: 'family-affinity-result-v1',
 		promptMaterialSchema: 'family-affinity-prompt-material-v1',
+		sourcePacketSchemas: ['family-packet-v1', 'bridge-identity-packet-v1'],
 		experimentId: 'family-affinity-v1',
 		affinities: ['normal', 'fire', 'earth', 'wind', 'water'],
 		namespaces: ['canonical', 'bridge'],
@@ -81,6 +82,12 @@ async function validReceipt() {
 		executionSurface: approved.executionSurface,
 		repositoryDispatch: approved.repositoryDispatch,
 		sealedLauncher: approved.sealedLauncher,
+		bridgeExtension: {
+			schemaVersion: 'earth-bridge-production-extension-v1',
+			wavePath: 'assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json',
+			reviewedAt: '2026-09-02T12:00:00.000Z',
+			approvalReference: 'root-approved-task10-bridge-production-extension-2026-09-02'
+		},
 		reviewedAt: '2026-09-02T12:00:00.000Z',
 		approvalReference: 'user-confirmed-summonlab-image-production-v3-2026-09-02'
 	};
@@ -298,6 +305,7 @@ describe('family affinity production compatibility gate', () => {
 		const bridgeTarget = FamilyAffinityTargetSchema.parse({
 			...earth,
 			namespace: 'bridge',
+			canonicalCoordinateId: earth.coordinateId,
 			coordinateId: 'goblin-skirmisher/trolls/troll-bog-troll/earth',
 			targetId: 'bridge/goblin-skirmisher/trolls/troll-bog-troll/earth/v1',
 			currentClassId: 'goblin-skirmisher',
@@ -305,7 +313,7 @@ describe('family affinity production compatibility gate', () => {
 			anchor: {
 				kind: 'earth-bridge-provisional',
 				normalCandidatePath:
-					'assets/enemies/experiments/family-affinity-v1/bridge/candidates/goblin-skirmisher/normal-v1.png',
+					'assets/enemies/experiments/affinity-expansion-v1/candidates/goblin-skirmisher/normal-v1.png',
 				normalCandidateSha256
 			},
 			ownedPaths: {

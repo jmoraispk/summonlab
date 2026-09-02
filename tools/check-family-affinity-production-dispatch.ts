@@ -13,6 +13,7 @@ import {
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
 	familyAffinitySha256,
+	familyAffinitySourcePacketBinding,
 	preflightFamilyAffinityProductionDispatch,
 	readFamilyAffinityOwnedFile,
 	stableFamilyAffinityJson,
@@ -307,7 +308,7 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 	});
 	const familyPacketBytes = await readFamilyAffinityOwnedFile(
 		repositoryRoot,
-		target.sources.familyPacketPath
+		familyAffinitySourcePacketBinding(target).path
 	);
 	const promptBytes = Buffer.from(
 		stableFamilyAffinityJson({

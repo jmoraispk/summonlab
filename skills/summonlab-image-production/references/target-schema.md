@@ -15,15 +15,20 @@ The assignment's `targetSha256` is SHA-256 of the target's recursively key-sorte
 the pretty-printed file bytes. It must cross-bind target ID, coordinate, namespace, version, status,
 and both output paths.
 
-The declared family packet must exist at the current source path and its canonical compact-JSON hash
-must equal `sources.familyPacketSha256`. The producer role allowlist is exactly `image-producer`, and
-the retry ceiling is `0 | 1`.
+The declared source packet must exist at the current source path and its canonical compact-JSON hash
+must equal `sources.familyPacketSha256`. Canonical jobs use `family-packet-v1`. Bridge-only current
+classes use `packetKind: bridge-identity` and `bridge-identity-packet-v1`; the packet binds the exact
+legacy Normal candidate bytes, current-class identity, duty, anatomy, framing, and Earth theme while
+explicitly remaining outside canonical family membership and T1–T5 progression. The producer role
+allowlist is exactly `image-producer`, and the retry ceiling is `0 | 1`.
 
 - Normal dispatch requires `planned` plus `normal-self`.
 - A canonical elemental target with `blocked-on-anchor` is a preflight rejection. A `planned`
   elemental target needs complete, current Normal target/candidate/result/approved-review evidence.
 - Bridge Earth may use `earth-bridge-provisional` with a hash-bound existing Normal candidate. Its
-  production ceiling remains candidate-only.
+  production ceiling remains candidate-only. A mapped-primary bridge target may carry
+  `canonicalCoordinateId` as a future provenance-copy destination but owns only its bridge paths.
+  A bridge-only target uses the literal tier `bridge-only`; no canonical tier may be inferred.
 
 Candidate and result outputs are exclusive-create. A collision or symlink escape is a no-mutation
 handoff. The producer may not write reviews, catalogs, contact sheets, wiki pages, runtime catalogs,

@@ -8,9 +8,11 @@ metadata:
 # Summonlab image production
 
 Produce one project-bound image from a versioned target manifest and execution envelope. The
-manifest owns the target; generated pixels never redefine it. Experiment-specific schemas and
-visual profiles are validated by the orchestrator before assignment; this skill enforces the common
-production, reference, inspection, persistence, and ownership workflow.
+manifest owns the target; generated pixels never redefine it. Canonical family jobs bind a
+`family-packet-v1`; bridge-only jobs bind a `bridge-identity-packet-v1` without claiming canonical
+family membership or a T1–T5 tier. Experiment-specific schemas and visual profiles are validated by
+the orchestrator before assignment; this skill enforces the common production, reference,
+inspection, persistence, and ownership workflow.
 
 This is `summonlab-image-production-v3`. Read the machine-readable
 [v3 contract](references/contract-v3.json) before accepting a family-affinity job. Dispatch by the
@@ -110,7 +112,10 @@ Read [target-schema.md](references/target-schema.md) and
 - For the family profile, provider or pre-candidate failures are no-output handoffs. Do not fabricate
   a compact result receipt without a retained, hash-bound candidate.
 - `earth-bridge-provisional` may produce candidate-only evidence, but the producer never approves
-  it. `blocked-on-anchor` canonical elemental targets are not dispatchable.
+  it. A mapped-primary bridge target carries its canonical Earth coordinate only as a future
+  copy-with-provenance destination; it does not write or count inside the canonical 750. A
+  bridge-only identity has the explicit `bridge-only` tier. `blocked-on-anchor` canonical elemental
+  targets and `blocked-on-identity-decision` wave records are not dispatchable.
 
 ## Prompt and image invariants
 

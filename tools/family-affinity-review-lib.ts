@@ -24,6 +24,7 @@ import {
 	FamilyAffinityReviewAssignmentSchema,
 	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
+	familyAffinitySourcePacketBinding,
 	PRODUCTION_AFFINITIES,
 	bridgeAttemptPaths,
 	canonicalAttemptPaths,
@@ -396,7 +397,10 @@ async function loadLiveReviewAttempt(
 	}
 	const candidateBytes = await requiredRealFile(repositoryRoot, target.ownedPaths.candidate);
 	const resultBytes = await requiredRealFile(repositoryRoot, target.ownedPaths.result);
-	const familyPacketBytes = await requiredRealFile(repositoryRoot, target.sources.familyPacketPath);
+	const familyPacketBytes = await requiredRealFile(
+		repositoryRoot,
+		familyAffinitySourcePacketBinding(target).path
+	);
 	const result = FamilyAffinityResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
 	evaluateFamilyAffinityReviewAttempt({
 		target,
@@ -758,7 +762,7 @@ export async function createReviewReceiptExclusive(
 }
 
 type ReviewCell = {
-	tier: 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
+	tier: 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'bridge-only';
 	formId: string;
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
 	coordinateId: string;
@@ -1278,7 +1282,7 @@ export async function buildFamilyAffinityReviewArtifacts(
 		}
 		const familyPacketBytes =
 			candidateBytes || resultBytes
-				? await requiredRealFile(repositoryRoot, target.sources.familyPacketPath)
+				? await requiredRealFile(repositoryRoot, familyAffinitySourcePacketBinding(target).path)
 				: undefined;
 		const evaluated = evaluateFamilyAffinityReviewAttempt({
 			target,

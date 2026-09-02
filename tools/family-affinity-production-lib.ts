@@ -213,8 +213,167 @@ const OwnedPathSchema = z
 	.string()
 	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
 	.refine((value) => !value.includes('..'), 'Owned paths cannot traverse directories');
+const LegacyNormalCandidatePathSchema = z
+	.string()
+	.regex(
+		/^assets\/enemies\/experiments\/(?:affinity-workflow-v1|affinity-expansion-v1)\/candidates\/[a-z][a-z0-9-]*\/normal-v[1-9][0-9]*\.png$/u,
+		'Expected an exact retained legacy Normal candidate path'
+	);
 const AttemptStatusSchema = z.enum(['planned', 'blocked-on-anchor', 'earth-bridge-provisional']);
 const NamespaceSchema = z.enum(['canonical', 'bridge']);
+
+export const BridgeIdentityPacketSchema = z
+	.object({
+		schemaVersion: z.literal('bridge-identity-packet-v1'),
+		currentClassId: IdSchema,
+		bridgeFamilyId: IdSchema,
+		bridgeFormId: IdSchema,
+		sourceFamilyLabel: RequiredTextSchema,
+		disposition: z.enum(['secondary-archetype', 'fauna']),
+		sourceRoster: z.literal(CURRENT_CLASS_SOURCE_ROSTER),
+		sourcePage: z.literal('docs/wiki/creatures/monsters/README.md'),
+		mappingRationale: RequiredTextSchema,
+		sourceNormalTarget: z
+			.object({
+				path: z
+					.string()
+					.regex(
+						/^assets\/enemies\/experiments\/(?:affinity-workflow-v1|affinity-expansion-v1)\/targets\/[a-z][a-z0-9-]*\/normal(?:-v[1-9][0-9]*)?\.json$/u
+					),
+				sha256: Sha256Schema
+			})
+			.strict(),
+		normalReference: z
+			.object({
+				candidatePath: LegacyNormalCandidatePathSchema,
+				candidateSha256: Sha256Schema,
+				referenceStatus: z.literal('earth-bridge-provisional'),
+				legacyResultStatus: z.enum(['candidate', 'revise', 'failed']),
+				approvalEvidence: z.literal(false)
+			})
+			.strict(),
+		inferredTier: z
+			.object({
+				tier: FormTierSchema,
+				evidenceField: z.literal('threat.canonicalGrade'),
+				evidencePath: RequiredTextSchema,
+				evidenceSha256: Sha256Schema
+			})
+			.strict()
+			.nullable(),
+		primaryArchetype: RequiredTextSchema,
+		battlefieldDuty: RequiredTextSchema,
+		identityInvariants: z.array(RequiredTextSchema).min(1),
+		anatomyInvariants: z.array(RequiredTextSchema).min(1),
+		telegraph: RequiredTextSchema,
+		counterplay: RequiredTextSchema,
+		signalSupport: z.enum(['source-exact', 'derived-approved']),
+		signalEvidence: z
+			.array(
+				z
+					.object({
+						path: RequiredTextSchema,
+						locator: RequiredTextSchema,
+						sha256: Sha256Schema
+					})
+					.strict()
+			)
+			.min(1),
+		controllerApprovalReference: z
+			.literal('root-approved-task10-derived-bridge-signals-2026-09-02')
+			.nullable(),
+		framing: RequiredTextSchema,
+		sourceReferences: z
+			.array(
+				z
+					.object({
+						path: RequiredTextSchema,
+						purpose: RequiredTextSchema,
+						contentHash: Sha256Schema
+					})
+					.strict()
+			)
+			.min(1),
+		earthTheme: z
+			.object({
+				constructionDimensions: z.array(RequiredTextSchema).min(2),
+				counterplaySignal: RequiredTextSchema,
+				forbidden: z.array(RequiredTextSchema).min(1)
+			})
+			.strict(),
+		presentationContract: z
+			.object({
+				framing: z.literal('full-body-readable'),
+				background: z.literal('cinematic-neutral-environment'),
+				featuredSubjects: z.literal(1),
+				textAllowed: z.literal(false),
+				watermarkAllowed: z.literal(false)
+			})
+			.strict(),
+		status: z.enum(['bridge-only', 'blocked-on-identity-decision']),
+		identityDecisionRequired: RequiredTextSchema.nullable(),
+		runtimeCatalogMutationForbidden: z.literal(true)
+	})
+	.strict()
+	.superRefine((packet, context) => {
+		if (
+			packet.bridgeFamilyId !==
+			`bridge-${packet.sourceFamilyLabel
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/gu, '-')
+				.replace(/^-|-$/gu, '')}`
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Bridge family ID must derive from source family label'
+			});
+		}
+		if (packet.bridgeFormId !== packet.currentClassId) {
+			context.addIssue({ code: 'custom', message: 'Bridge form ID must equal current class ID' });
+		}
+		if (
+			(packet.status === 'blocked-on-identity-decision') !==
+			(packet.identityDecisionRequired !== null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Blocked bridge packets require an identity decision'
+			});
+		}
+		if (
+			(packet.signalSupport === 'derived-approved') !==
+			(packet.controllerApprovalReference !== null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Derived bridge signals require the controller approval reference'
+			});
+		}
+	});
+
+export type BridgeIdentityPacket = z.infer<typeof BridgeIdentityPacketSchema>;
+
+const CanonicalFamilySourceSchema = z
+	.object({
+		packetKind: z.literal('canonical-family').optional(),
+		familyPacketPath: OwnedPathSchema,
+		familyPacketSha256: Sha256Schema,
+		sourcePage: RequiredTextSchema,
+		sourceReferences: z.array(RequiredTextSchema).min(1),
+		mappingPath: OwnedPathSchema
+	})
+	.strict();
+
+const BridgeIdentitySourceSchema = z
+	.object({
+		packetKind: z.literal('bridge-identity'),
+		familyPacketPath: OwnedPathSchema,
+		familyPacketSha256: Sha256Schema,
+		sourcePage: RequiredTextSchema,
+		sourceReferences: z.array(RequiredTextSchema).min(1),
+		mappingPath: OwnedPathSchema
+	})
+	.strict();
 
 export const FamilyAffinityTargetSchema = z
 	.object({
@@ -225,8 +384,9 @@ export const FamilyAffinityTargetSchema = z
 		familyId: IdSchema,
 		formId: IdSchema,
 		currentClassId: IdSchema.nullable(),
+		canonicalCoordinateId: RequiredTextSchema.optional(),
 		affinity: z.enum(PRODUCTION_AFFINITIES),
-		tier: FormTierSchema,
+		tier: z.union([FormTierSchema, z.literal('bridge-only')]),
 		primaryArchetype: RequiredTextSchema,
 		battlefieldDuty: RequiredTextSchema,
 		identityInvariants: z.array(RequiredTextSchema).min(1),
@@ -235,15 +395,7 @@ export const FamilyAffinityTargetSchema = z
 		telegraph: RequiredTextSchema,
 		counterplay: RequiredTextSchema,
 		forbiddenTreatments: z.array(RequiredTextSchema).min(1),
-		sources: z
-			.object({
-				familyPacketPath: OwnedPathSchema,
-				familyPacketSha256: Sha256Schema,
-				sourcePage: RequiredTextSchema,
-				sourceReferences: z.array(RequiredTextSchema).min(1),
-				mappingPath: OwnedPathSchema
-			})
-			.strict(),
+		sources: z.union([CanonicalFamilySourceSchema, BridgeIdentitySourceSchema]),
 		presentationContract: z
 			.object({
 				framing: z.literal('full-body-readable'),
@@ -282,7 +434,7 @@ export const FamilyAffinityTargetSchema = z
 			z
 				.object({
 					kind: z.literal('earth-bridge-provisional'),
-					normalCandidatePath: OwnedPathSchema,
+					normalCandidatePath: z.union([OwnedPathSchema, LegacyNormalCandidatePathSchema]),
 					normalCandidateSha256: Sha256Schema
 				})
 				.strict()
@@ -307,6 +459,42 @@ export const FamilyAffinityTargetSchema = z
 	})
 	.strict()
 	.superRefine((target, context) => {
+		if (target.namespace === 'canonical') {
+			if (target.canonicalCoordinateId !== undefined) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Canonical targets cannot carry canonicalCoordinateId'
+				});
+			}
+			if (target.tier === 'bridge-only') {
+				context.addIssue({ code: 'custom', message: 'Canonical targets require a form tier' });
+			}
+			if (target.sources.packetKind === 'bridge-identity') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Canonical targets require canonical family sources'
+				});
+			}
+		} else if (target.canonicalCoordinateId !== undefined) {
+			if (
+				target.canonicalCoordinateId !== `${target.familyId}/${target.formId}/earth` ||
+				target.affinity !== 'earth' ||
+				target.sources.packetKind === 'bridge-identity' ||
+				target.tier === 'bridge-only'
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Mapped-primary bridge targets require an exact canonical Earth reference'
+				});
+			}
+		} else {
+			if (target.tier !== 'bridge-only' || target.sources.packetKind !== 'bridge-identity') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Bridge-only targets require bridge identity sources and no family tier'
+				});
+			}
+		}
 		const expectedCoordinate =
 			target.namespace === 'canonical'
 				? `${target.familyId}/${target.formId}/${target.affinity}`
@@ -405,6 +593,65 @@ export const FamilyAffinityTargetSchema = z
 	});
 
 export type FamilyAffinityTarget = z.infer<typeof FamilyAffinityTargetSchema>;
+
+export function familyAffinitySourcePacketBinding(targetInput: unknown): {
+	path: string;
+	sha256: string;
+	kind: 'canonical-family' | 'bridge-identity';
+} {
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	return target.sources.packetKind !== 'bridge-identity'
+		? {
+				path: target.sources.familyPacketPath,
+				sha256: target.sources.familyPacketSha256,
+				kind: 'canonical-family'
+			}
+		: {
+				path: target.sources.familyPacketPath,
+				sha256: target.sources.familyPacketSha256,
+				kind: 'bridge-identity'
+			};
+}
+
+export function validateFamilyAffinitySourcePacket(
+	targetInput: unknown,
+	packetBytes: Uint8Array
+): FamilyPacket | BridgeIdentityPacket {
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	const binding = familyAffinitySourcePacketBinding(target);
+	const parsed = JSON.parse(Buffer.from(packetBytes).toString('utf8')) as unknown;
+	const packet =
+		binding.kind === 'canonical-family'
+			? FamilyPacketSchema.parse(parsed)
+			: BridgeIdentityPacketSchema.parse(parsed);
+	if (familyAffinitySha256(packet) !== binding.sha256) {
+		throw new Error('Source packet hash drifted from the dispatch target');
+	}
+	if (binding.kind === 'canonical-family') {
+		if (!('familyId' in packet) || packet.familyId !== target.familyId) {
+			throw new Error('Canonical family packet identity drifted from the dispatch target');
+		}
+		return packet;
+	}
+	if (
+		!('currentClassId' in packet) ||
+		target.namespace !== 'bridge' ||
+		packet.currentClassId !== target.currentClassId ||
+		packet.bridgeFamilyId !== target.familyId ||
+		packet.bridgeFormId !== target.formId ||
+		target.tier !== 'bridge-only' ||
+		packet.identityInvariants.join('\0') !== target.identityInvariants.join('\0') ||
+		packet.anatomyInvariants.join('\0') !== target.anatomyInvariants.join('\0') ||
+		packet.primaryArchetype !== target.primaryArchetype ||
+		packet.battlefieldDuty !== target.battlefieldDuty ||
+		packet.telegraph !== target.telegraph ||
+		!target.counterplay.includes(packet.counterplay) ||
+		packet.earthTheme.constructionDimensions.join('\0') !== target.constructionDimensions.join('\0')
+	) {
+		throw new Error('Bridge identity packet drifted from the dispatch target');
+	}
+	return packet;
+}
 
 export const FamilyAffinityAssignmentSchema = z
 	.object({
@@ -538,6 +785,10 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 		assignmentSchema: z.literal('family-affinity-assignment-v1'),
 		resultSchema: z.literal('family-affinity-result-v1'),
 		promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+		sourcePacketSchemas: z.tuple([
+			z.literal('family-packet-v1'),
+			z.literal('bridge-identity-packet-v1')
+		]),
 		experimentId: z.literal('family-affinity-v1'),
 		affinities: z.tuple([
 			z.literal('normal'),
@@ -569,6 +820,14 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 			})
 			.strict(),
 		sealedLauncher: FamilyAffinitySealedLauncherSchema,
+		bridgeExtension: z
+			.object({
+				schemaVersion: z.literal('earth-bridge-production-extension-v1'),
+				wavePath: z.literal(`${FAMILY_AFFINITY_ROOT}/waves/earth-bridge-v1.json`),
+				reviewedAt: z.string().regex(/^2026-09-02T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u),
+				approvalReference: z.literal('root-approved-task10-bridge-production-extension-2026-09-02')
+			})
+			.strict(),
 		reviewedAt: z
 			.string()
 			.regex(
@@ -624,6 +883,10 @@ const FamilyAffinitySkillContractSchema = z
 						assignmentSchema: z.literal('family-affinity-assignment-v1'),
 						resultSchema: z.literal('family-affinity-result-v1'),
 						promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+						sourcePacketSchemas: z.tuple([
+							z.literal('family-packet-v1'),
+							z.literal('bridge-identity-packet-v1')
+						]),
 						experimentId: z.literal('family-affinity-v1'),
 						affinities: z.tuple([
 							z.literal('normal'),
@@ -645,7 +908,8 @@ const FamilyAffinitySkillContractSchema = z
 							.strict(),
 						requiredBindings: z.tuple([
 							z.literal('target-assignment-cross-hash'),
-							z.literal('family-packet-canonical-json-hash'),
+							z.literal('namespace-source-packet-canonical-json-hash'),
+							z.literal('bridge-normal-reference-raw-bytes-hash'),
 							z.literal('candidate-raw-bytes-hash'),
 							z.literal('prompt-material-raw-bytes-hash'),
 							z.literal('source-path'),
@@ -708,6 +972,7 @@ export function validateFamilyAffinityProductionCompatibility(
 		profile.assignmentSchema !== compatibility.assignmentSchema ||
 		profile.resultSchema !== compatibility.resultSchema ||
 		profile.promptMaterialSchema !== compatibility.promptMaterialSchema ||
+		stableJson(profile.sourcePacketSchemas) !== stableJson(compatibility.sourcePacketSchemas) ||
 		profile.experimentId !== compatibility.experimentId ||
 		stableJson(profile.affinities) !== stableJson(compatibility.affinities) ||
 		stableJson(profile.namespaces) !== stableJson(compatibility.namespaces) ||
@@ -776,15 +1041,7 @@ export function preflightFamilyAffinityProductionDispatch(input: {
 	if (target.status === 'blocked-on-anchor') {
 		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
 	}
-	const packet = FamilyPacketSchema.parse(
-		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
-	);
-	if (
-		packet.familyId !== target.familyId ||
-		familyAffinitySha256(packet) !== target.sources.familyPacketSha256
-	) {
-		throw new Error('Family packet source drifted from the dispatch target');
-	}
+	validateFamilyAffinitySourcePacket(target, input.familyPacketBytes);
 	if (
 		familyAffinityRawSha256(input.renderedPromptBytes) !==
 		familyAffinityPromptSha256(target, assignment)
@@ -1241,13 +1498,12 @@ export function validateFamilyAffinityCandidateEvidence(input: {
 } {
 	const target = FamilyAffinityTargetSchema.parse(input.target);
 	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
-	const familyPacket = FamilyPacketSchema.parse(
-		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
-	);
+	const sourcePacket = validateFamilyAffinitySourcePacket(target, input.familyPacketBytes);
 	const result = FamilyAffinityResultSchema.parse(
 		JSON.parse(Buffer.from(input.resultBytes).toString('utf8'))
 	);
-	const sourceSha256 = familyAffinitySha256(familyPacket);
+	const sourceBinding = familyAffinitySourcePacketBinding(target);
+	const sourceSha256 = familyAffinitySha256(sourcePacket);
 	const promptSha256 = familyAffinityPromptSha256(target, assignment);
 	if (
 		result.targetId !== target.targetId ||
@@ -1257,9 +1513,8 @@ export function validateFamilyAffinityCandidateEvidence(input: {
 		result.candidatePath !== target.ownedPaths.candidate ||
 		result.candidateSha256 !== familyAffinityRawSha256(input.candidateBytes) ||
 		result.resultPath !== target.ownedPaths.result ||
-		result.sourcePath !== target.sources.familyPacketPath ||
-		familyPacket.familyId !== target.familyId ||
-		sourceSha256 !== target.sources.familyPacketSha256 ||
+		result.sourcePath !== sourceBinding.path ||
+		sourceSha256 !== sourceBinding.sha256 ||
 		result.sourceSha256 !== sourceSha256 ||
 		result.promptSha256 !== promptSha256 ||
 		result.producerId.trim().length === 0
@@ -2132,30 +2387,45 @@ async function exists(path: string): Promise<boolean> {
 
 function absoluteOwnedPath(repositoryRoot: string, ownedPath: string): string {
 	OwnedPathSchema.parse(ownedPath);
+	return absoluteRepositoryPath(repositoryRoot, ownedPath);
+}
+
+function absoluteRepositoryPath(repositoryRoot: string, repositoryPath: string): string {
+	if (!repositoryPath || repositoryPath.startsWith('/') || repositoryPath.includes('..')) {
+		throw new Error('Repository path must be a contained relative path');
+	}
 	const root = resolve(repositoryRoot);
-	const absolute = resolve(root, ownedPath);
+	const absolute = resolve(root, repositoryPath);
 	if (absolute !== root && !absolute.startsWith(`${root}${sep}`))
-		throw new Error('Owned path escapes repository root');
+		throw new Error('Repository path escapes repository root');
 	return absolute;
 }
 
-async function readOwnedFileNoSymlinks(repositoryRoot: string, ownedPath: string): Promise<Buffer> {
-	const absolute = absoluteOwnedPath(repositoryRoot, ownedPath);
+async function readRepositoryFileNoSymlinks(
+	repositoryRoot: string,
+	repositoryPath: string
+): Promise<Buffer> {
+	const absolute = absoluteRepositoryPath(repositoryRoot, repositoryPath);
 	const parts = relative(resolve(repositoryRoot), absolute).split(sep).filter(Boolean);
 	let cursor = resolve(repositoryRoot);
 	for (const [index, part] of parts.entries()) {
 		cursor = join(cursor, part);
 		const metadata = await lstat(cursor);
 		if (metadata.isSymbolicLink())
-			throw new Error(`Symlinked owned path is forbidden: ${ownedPath}`);
+			throw new Error(`Symlinked repository path is forbidden: ${repositoryPath}`);
 		if (index < parts.length - 1 && !metadata.isDirectory()) {
-			throw new Error(`Owned path parent must be a real directory: ${ownedPath}`);
+			throw new Error(`Repository path parent must be a real directory: ${repositoryPath}`);
 		}
 		if (index === parts.length - 1 && !metadata.isFile()) {
-			throw new Error(`Owned path must be a real file: ${ownedPath}`);
+			throw new Error(`Repository path must be a real file: ${repositoryPath}`);
 		}
 	}
 	return readFile(absolute);
+}
+
+async function readOwnedFileNoSymlinks(repositoryRoot: string, ownedPath: string): Promise<Buffer> {
+	absoluteOwnedPath(repositoryRoot, ownedPath);
+	return readRepositoryFileNoSymlinks(repositoryRoot, ownedPath);
 }
 
 export async function readFamilyAffinityOwnedFile(
@@ -2224,7 +2494,7 @@ async function validateAllocationAnchor(
 	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.resultPath);
 	const familyPacketBytes = await readOwnedFileNoSymlinks(
 		repositoryRoot,
-		normalTarget.sources.familyPacketPath
+		familyAffinitySourcePacketBinding(normalTarget).path
 	);
 	const evidence = validateFamilyAffinityCandidateEvidence({
 		target: normalTarget,
@@ -2347,6 +2617,25 @@ export async function validateFamilyAffinityNormalAnchorEvidence(input: {
 			(await readOwnedFileNoSymlinks(input.repositoryRoot, input.targetPath)).toString('utf8')
 		)
 	);
+	if (target.anchor.kind === 'earth-bridge-provisional') {
+		const normalBytes = await readRepositoryFileNoSymlinks(
+			input.repositoryRoot,
+			target.anchor.normalCandidatePath
+		);
+		if (familyAffinityRawSha256(normalBytes) !== target.anchor.normalCandidateSha256) {
+			throw new Error(`Earth bridge Normal reference hash drifted: ${target.targetId}`);
+		}
+		if (
+			target.canonicalCoordinateId !== undefined &&
+			!manifest.canonicalMatrix.activeCoordinates.some(
+				({ coordinateId, affinity }) =>
+					coordinateId === target.canonicalCoordinateId && affinity === 'earth'
+			)
+		) {
+			throw new Error(`Mapped-primary canonical coordinate is not active: ${target.targetId}`);
+		}
+		return;
+	}
 	await validateAllocationAnchor(
 		input.repositoryRoot,
 		manifest,
@@ -2467,7 +2756,7 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	);
 	const familyPacketBytes = await readOwnedFileNoSymlinks(
 		input.repositoryRoot,
-		currentTarget.sources.familyPacketPath
+		familyAffinitySourcePacketBinding(currentTarget).path
 	);
 	const evidence = validateFamilyAffinityCandidateEvidence({
 		target: currentTarget,

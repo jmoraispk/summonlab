@@ -1058,6 +1058,7 @@ describe('initial family review evidence', () => {
 		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 		await cp(source, destination, { recursive: true });
+		await rm(join(destination, 'bridge'), { recursive: true, force: true });
 		const canonicalPaths = canonicalAttemptPaths('goblins', 'goblin-runt', 'earth', 1);
 		const canonicalTarget = FamilyAffinityTargetSchema.parse(
 			JSON.parse(await readFile(join(root, canonicalPaths.target), 'utf8'))
@@ -1070,6 +1071,7 @@ describe('initial family review evidence', () => {
 		const bridgeTarget = FamilyAffinityTargetSchema.parse({
 			...canonicalTarget,
 			namespace: 'bridge',
+			canonicalCoordinateId: canonicalTarget.coordinateId,
 			coordinateId,
 			targetId: `bridge/${coordinateId}/v1`,
 			currentClassId: 'legacy-goblin',
@@ -1201,5 +1203,43 @@ describe('initial family review evidence', () => {
 		expect(await Promise.all(historyPaths.map((path) => readFile(join(root, path))))).toEqual(
 			before
 		);
+	}, 30_000);
+
+	it('tracks planned no-candidate bridge controls without changing canonical review totals', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-planned-bridge-'));
+		temporaryRoots.push(root);
+		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
+		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
+		await cp(source, destination, { recursive: true });
+
+		const materialized = await buildFamilyAffinityReviewArtifacts(root);
+		expect(materialized.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: 0,
+			approvedReviewCount: 0,
+			bridgeCoordinateCount: 39,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0,
+			runtimeCount: 0
+		});
+
+		const manifestPath = join(destination, 'manifest.json');
+		const manifest = FamilyAffinityManifestSchema.parse(
+			JSON.parse(await readFile(manifestPath, 'utf8'))
+		);
+		manifest.bridge = { targetCount: 0, assignmentCount: 0, activeCoordinates: [] };
+		await writeFile(manifestPath, stableFamilyAffinityJson(manifest));
+		await rm(join(destination, 'bridge'), { recursive: true, force: true });
+
+		const removed = await buildFamilyAffinityReviewArtifacts(root);
+		expect(removed.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: 0,
+			approvedReviewCount: 0,
+			bridgeCoordinateCount: 0,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0,
+			runtimeCount: 0
+		});
 	}, 30_000);
 });

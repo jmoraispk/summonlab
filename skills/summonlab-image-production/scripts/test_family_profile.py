@@ -74,7 +74,10 @@ class FamilyProfileTests(unittest.TestCase):
         if affinity == "normal":
             anchor = {"kind": "normal-self"}
         elif namespace == "bridge" and affinity == "earth":
-            normal_path = f"{ROOT}/bridge/candidates/{current}/normal-v1.png"
+            normal_path = (
+                "assets/enemies/experiments/affinity-expansion-v1/"
+                f"candidates/{current}/normal-v1.png"
+            )
             normal_bytes = b"existing normal candidate"
             normal_absolute = self.workspace / normal_path
             normal_absolute.parent.mkdir(parents=True, exist_ok=True)
@@ -101,7 +104,7 @@ class FamilyProfileTests(unittest.TestCase):
                 "normalResultSha256": None,
             }
             status = "blocked-on-anchor"
-        return {
+        target = {
             "schemaVersion": "family-affinity-target-v1",
             "namespace": namespace,
             "coordinateId": coordinate,
@@ -155,6 +158,9 @@ class FamilyProfileTests(unittest.TestCase):
             "promotionCeiling": "approved-review",
             "runtimeCatalogMutationForbidden": True,
         }
+        if namespace == "bridge":
+            target["canonicalCoordinateId"] = f"{family}/{form}/earth"
+        return target
 
     def _paths(self, target: dict) -> tuple[str, str]:
         if target["namespace"] == "canonical":
@@ -239,6 +245,52 @@ class FamilyProfileTests(unittest.TestCase):
         report = validate(target, assignment, self.workspace)
         self.assertEqual(report["status"], "earth-bridge-provisional")
         self.assertEqual(report["promotionCeiling"], "candidate-only")
+
+        normal_path = self.workspace / target["anchor"]["normalCandidatePath"]
+        normal_path.write_bytes(b"tampered normal candidate")
+        with self.assertRaisesRegex(ValueError, "Normal candidate evidence is stale"):
+            validate(target, assignment, self.workspace)
+
+    def test_bridge_only_identity_packet_is_hash_bound_without_a_family_tier(self) -> None:
+        target = self._target("earth", "bridge")
+        target.pop("canonicalCoordinateId")
+        target["familyId"] = "bridge-goblinoid-warband"
+        target["formId"] = target["currentClassId"]
+        target["tier"] = "bridge-only"
+        target["coordinateId"] = (
+            "goblin-skirmisher/bridge-goblinoid-warband/goblin-skirmisher/earth"
+        )
+        target["targetId"] = f'bridge/{target["coordinateId"]}/v1'
+        identity_path = f"{ROOT}/bridge/identities/goblin-skirmisher.json"
+        identity = {
+            "schemaVersion": "bridge-identity-packet-v1",
+            "currentClassId": "goblin-skirmisher",
+            "bridgeFamilyId": "bridge-goblinoid-warband",
+            "bridgeFormId": "goblin-skirmisher",
+            "status": "bridge-only",
+            "inferredTier": None,
+            "runtimeCatalogMutationForbidden": True,
+        }
+        self._write_json(identity_path, identity)
+        target["sources"] = {
+            "packetKind": "bridge-identity",
+            "familyPacketPath": identity_path,
+            "familyPacketSha256": hashlib.sha256(
+                canonical_json(identity).encode("utf-8")
+            ).hexdigest(),
+            "sourcePage": "docs/wiki/creatures/monsters/README.md",
+            "sourceReferences": ["goblin-skirmisher"],
+            "mappingPath": self.mapping_path,
+        }
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        report = validate(target, assignment, self.workspace)
+        self.assertEqual(report["status"], "earth-bridge-provisional")
+
+        identity["bridgeFormId"] = "forged"
+        self._write_json(identity_path, identity)
+        with self.assertRaisesRegex(ValueError, "packet source|hash"):
+            validate(target, assignment, self.workspace)
 
     def test_planned_elemental_requires_same_form_normal_approval_evidence(self) -> None:
         normal = self._target()
