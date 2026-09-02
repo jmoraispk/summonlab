@@ -10,6 +10,8 @@
 	"include": [
 		"family-affinity-production-lib.ts",
 		"family-affinity-production-lib.spec.ts",
+		"export-family-affinity-production.ts",
+		"allocate-family-affinity-revision.ts",
 		"retire-legacy-enemy-affinities-lib.ts",
 		"retire-legacy-enemy-affinities-lib.spec.ts",
 		"retire-legacy-enemy-affinities.integration.spec.ts",

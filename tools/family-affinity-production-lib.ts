@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+import { createHash } from 'node:crypto';
+import { mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { dirname, resolve, sep } from 'node:path';
+
 export const PRODUCTION_AFFINITIES = ['normal', 'fire', 'earth', 'wind', 'water'] as const;
 export const FORM_TIERS = ['T1', 'T2', 'T3', 'T4', 'T5'] as const;
 export const CURRENT_CLASS_DISPOSITIONS = [
@@ -204,6 +208,304 @@ export type CurrentClassMappingAudit = {
 	canonicalPrimaryCurrentClassIds: string[];
 };
 
+const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u, 'Expected lowercase SHA-256');
+const OwnedPathSchema = z
+	.string()
+	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
+	.refine((value) => !value.includes('..'), 'Owned paths cannot traverse directories');
+const AttemptStatusSchema = z.enum(['planned', 'blocked-on-anchor', 'earth-bridge-provisional']);
+const NamespaceSchema = z.enum(['canonical', 'bridge']);
+
+export const FamilyAffinityTargetSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-target-v1'),
+		namespace: NamespaceSchema,
+		coordinateId: RequiredTextSchema,
+		targetId: RequiredTextSchema,
+		familyId: IdSchema,
+		formId: IdSchema,
+		currentClassId: IdSchema.nullable(),
+		affinity: z.enum(PRODUCTION_AFFINITIES),
+		tier: FormTierSchema,
+		primaryArchetype: RequiredTextSchema,
+		battlefieldDuty: RequiredTextSchema,
+		identityInvariants: z.array(RequiredTextSchema).min(1),
+		anatomyInvariants: z.array(RequiredTextSchema).min(1),
+		constructionDimensions: z.array(RequiredTextSchema).min(2),
+		telegraph: RequiredTextSchema,
+		counterplay: RequiredTextSchema,
+		forbiddenTreatments: z.array(RequiredTextSchema).min(1),
+		sources: z
+			.object({
+				familyPacketPath: OwnedPathSchema,
+				sourcePage: RequiredTextSchema,
+				sourceReferences: z.array(RequiredTextSchema).min(1),
+				mappingPath: OwnedPathSchema
+			})
+			.strict(),
+		presentationContract: z
+			.object({
+				framing: z.literal('full-body-readable'),
+				background: z.literal('cinematic-neutral-environment'),
+				featuredSubjects: z.literal(1),
+				textAllowed: z.literal(false),
+				watermarkAllowed: z.literal(false)
+			})
+			.strict(),
+		acceptanceCriteria: z.array(RequiredTextSchema).min(8),
+		ownedPaths: z
+			.object({
+				candidate: OwnedPathSchema,
+				result: OwnedPathSchema,
+				decision: OwnedPathSchema,
+				blindReview: OwnedPathSchema
+			})
+			.strict(),
+		anchor: z.discriminatedUnion('kind', [
+			z.object({ kind: z.literal('normal-self') }).strict(),
+			z
+				.object({
+					kind: z.literal('normal-approved-review'),
+					normalCoordinateId: RequiredTextSchema,
+					reviewReceiptPath: OwnedPathSchema,
+					reviewReceiptSha256: Sha256Schema.nullable()
+				})
+				.strict(),
+			z
+				.object({
+					kind: z.literal('earth-bridge-provisional'),
+					normalCandidatePath: OwnedPathSchema,
+					normalCandidateSha256: Sha256Schema
+				})
+				.strict()
+		]),
+		precedingAttempt: z
+			.object({
+				targetId: RequiredTextSchema,
+				targetSha256: Sha256Schema,
+				candidatePath: OwnedPathSchema,
+				candidateSha256: Sha256Schema,
+				resultPath: OwnedPathSchema,
+				resultSha256: Sha256Schema,
+				reviewPath: OwnedPathSchema,
+				reviewSha256: Sha256Schema
+			})
+			.strict()
+			.nullable(),
+		version: z.number().int().positive(),
+		status: AttemptStatusSchema,
+		promotionCeiling: z.literal('approved-review'),
+		runtimeCatalogMutationForbidden: z.literal(true)
+	})
+	.strict()
+	.superRefine((target, context) => {
+		const expectedCoordinate =
+			target.namespace === 'canonical'
+				? `${target.familyId}/${target.formId}/${target.affinity}`
+				: `${target.currentClassId}/${target.familyId}/${target.formId}/${target.affinity}`;
+		if (target.coordinateId !== expectedCoordinate) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Target coordinate fields do not match coordinateId'
+			});
+		}
+		if (target.targetId !== `${target.namespace}/${target.coordinateId}/v${target.version}`) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Target ID must bind namespace, coordinate, and version'
+			});
+		}
+		if (target.namespace === 'canonical' && target.currentClassId !== null) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Canonical targets cannot carry currentClassId'
+			});
+		}
+		if (target.namespace === 'bridge' && target.currentClassId === null) {
+			context.addIssue({ code: 'custom', message: 'Bridge targets require currentClassId' });
+		}
+		if (target.affinity === 'normal' && target.anchor.kind !== 'normal-self') {
+			context.addIssue({
+				code: 'custom',
+				message: 'Normal targets must be their own identity anchor'
+			});
+		}
+		if (target.anchor.kind === 'earth-bridge-provisional') {
+			if (target.namespace !== 'bridge' || target.affinity !== 'earth') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Earth bridge provisional is only valid for bridge Earth targets'
+				});
+			}
+			if (target.status !== 'earth-bridge-provisional') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Earth bridge provisional targets require provisional status'
+				});
+			}
+		}
+	});
+
+export type FamilyAffinityTarget = z.infer<typeof FamilyAffinityTargetSchema>;
+
+export const FamilyAffinityAssignmentSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-assignment-v1'),
+		assignmentId: RequiredTextSchema,
+		targetId: RequiredTextSchema,
+		targetSha256: Sha256Schema,
+		coordinateId: RequiredTextSchema,
+		namespace: NamespaceSchema,
+		version: z.number().int().positive(),
+		producerRole: z.literal('image-producer'),
+		allowedOutputs: z.object({ candidate: OwnedPathSchema, result: OwnedPathSchema }).strict(),
+		retryCeiling: z.union([z.literal(0), z.literal(1)]),
+		dispatchStatus: AttemptStatusSchema,
+		selfPromotionForbidden: z.literal(true),
+		runtimeCatalogMutationForbidden: z.literal(true)
+	})
+	.strict()
+	.superRefine((assignment, context) => {
+		if (assignment.assignmentId !== `${assignment.targetId}/assignment`) {
+			context.addIssue({ code: 'custom', message: 'Assignment ID must bind its target ID' });
+		}
+	});
+
+export type FamilyAffinityAssignment = z.infer<typeof FamilyAffinityAssignmentSchema>;
+
+const ManifestCoordinateSchema = z
+	.object({
+		namespace: NamespaceSchema,
+		coordinateId: RequiredTextSchema,
+		familyId: IdSchema,
+		formId: IdSchema,
+		currentClassId: IdSchema.nullable(),
+		affinity: z.enum(PRODUCTION_AFFINITIES),
+		activeVersion: z.number().int().positive(),
+		targetPath: OwnedPathSchema,
+		targetSha256: Sha256Schema,
+		assignmentPath: OwnedPathSchema,
+		assignmentSha256: Sha256Schema,
+		status: AttemptStatusSchema
+	})
+	.strict();
+
+export const FamilyAffinityManifestSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-manifest-v1'),
+		experimentId: z.literal('family-affinity-v1'),
+		canonicalMatrix: z
+			.object({
+				familyCount: z.literal(30),
+				formCount: z.literal(150),
+				affinities: z.tuple([
+					z.literal('normal'),
+					z.literal('fire'),
+					z.literal('earth'),
+					z.literal('wind'),
+					z.literal('water')
+				]),
+				targetCount: z.literal(750),
+				assignmentCount: z.literal(750),
+				activeCoordinates: z.array(ManifestCoordinateSchema)
+			})
+			.strict(),
+		bridge: z
+			.object({
+				targetCount: z.number().int().nonnegative(),
+				assignmentCount: z.number().int().nonnegative(),
+				activeCoordinates: z.array(ManifestCoordinateSchema)
+			})
+			.strict(),
+		mappingReservations: z
+			.object({
+				sourcePath: OwnedPathSchema,
+				retainedCurrentClassCount: z.number().int().nonnegative(),
+				canonicalPrimaryCount: z.number().int().nonnegative(),
+				bridgeOnlyCount: z.number().int().nonnegative(),
+				secondaryArchetypeIds: z.array(IdSchema),
+				faunaIds: z.array(IdSchema)
+			})
+			.strict(),
+		ownership: z
+			.object({
+				controllerRole: z.literal('integration-controller'),
+				producerSelfPromotionForbidden: z.literal(true),
+				runtimeCatalogMutationForbidden: z.literal(true)
+			})
+			.strict()
+	})
+	.strict();
+
+export type FamilyAffinityManifest = z.infer<typeof FamilyAffinityManifestSchema>;
+
+export type FamilyAffinityProductionBundle = {
+	manifest: FamilyAffinityManifest;
+	targets: FamilyAffinityTarget[];
+	assignments: FamilyAffinityAssignment[];
+	artifacts: Array<{ path: string; value: unknown }>;
+};
+
+export const FamilyAffinityReviewReceiptSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-review-receipt-v1'),
+		targetId: RequiredTextSchema,
+		targetSha256: Sha256Schema,
+		resultPath: OwnedPathSchema,
+		resultSha256: Sha256Schema,
+		decision: z.enum(['approved-review', 'rejected', 'revise']),
+		reviewerRole: z.literal('independent-reviewer')
+	})
+	.strict();
+
+export const FamilyAffinityResultSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-result-v1'),
+		targetId: RequiredTextSchema,
+		targetSha256: Sha256Schema,
+		candidatePath: OwnedPathSchema,
+		candidateSha256: Sha256Schema,
+		state: z.enum(['candidate-only', 'rejected', 'revise'])
+	})
+	.strict();
+
+export function validateFamilyAffinityReviewPromotion(
+	targetInput: unknown,
+	receiptInput: unknown
+): void {
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
+	if (
+		receipt.targetId !== target.targetId ||
+		receipt.targetSha256 !== familyAffinitySha256(target)
+	) {
+		throw new Error('Review receipt target or hash is stale or mismatched');
+	}
+	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+		throw new Error(
+			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+		);
+	}
+}
+
+function stableJson(value: unknown): string {
+	if (value === null || typeof value !== 'object') return JSON.stringify(value);
+	if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
+	const record = value as Record<string, unknown>;
+	return `{${Object.keys(record)
+		.sort()
+		.map((key) => `${JSON.stringify(key)}:${stableJson(record[key])}`)
+		.join(',')}}`;
+}
+
+export function familyAffinitySha256(value: unknown): string {
+	return createHash('sha256').update(stableJson(value)).digest('hex');
+}
+
+export function stableFamilyAffinityJson(value: unknown): string {
+	return `${stableJson(value)}\n`;
+}
+
 function requireExactOrderedIds(mappingIds: string[], visualIndexIds: string[]): void {
 	const hasExactSet =
 		mappingIds.length === visualIndexIds.length &&
@@ -302,4 +604,613 @@ export function auditCurrentClassMapping(
 		bridgeOnlyCurrentClassIds,
 		canonicalPrimaryCurrentClassIds
 	};
+}
+
+function familyPacketPath(family: FamilyPacket): string {
+	return `${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`;
+}
+
+function canonicalAttemptPaths(
+	familyId: string,
+	formId: string,
+	affinity: (typeof PRODUCTION_AFFINITIES)[number],
+	version: number
+) {
+	return {
+		target: `${FAMILY_AFFINITY_ROOT}/targets/${familyId}/${formId}/${affinity}/target-v${version}.json`,
+		assignment: `${FAMILY_AFFINITY_ROOT}/assignments/${familyId}/${formId}/${affinity}/assignment-v${version}.json`,
+		candidate: `${FAMILY_AFFINITY_ROOT}/candidates/${familyId}/${formId}/${affinity}-v${version}.png`,
+		result: `${FAMILY_AFFINITY_ROOT}/results/${familyId}/${formId}/${affinity}-v${version}.json`,
+		decision: `${FAMILY_AFFINITY_ROOT}/reviews/${familyId}/${formId}/${affinity}/decision-v${version}.json`,
+		blindReview: `${FAMILY_AFFINITY_ROOT}/blind-reviews/${familyId}/${formId}/${affinity}/review-v${version}.json`
+	};
+}
+
+function formTelegraph(form: FamilyForm): string {
+	return form.telegraph ?? form.signatureMechanic ?? form.teachingGoal;
+}
+
+function formCounterplay(form: FamilyForm): string {
+	return form.counterplay ?? form.teachingGoal;
+}
+
+function buildCanonicalTarget(
+	family: FamilyPacket,
+	form: FamilyForm,
+	affinity: (typeof PRODUCTION_AFFINITIES)[number]
+): FamilyAffinityTarget {
+	const coordinateId = `${family.familyId}/${form.formId}/${affinity}`;
+	const version = 1;
+	const paths = canonicalAttemptPaths(family.familyId, form.formId, affinity, version);
+	const theme = family.affinityThemes[affinity];
+	const status = affinity === 'normal' ? 'planned' : 'blocked-on-anchor';
+	const target = {
+		schemaVersion: 'family-affinity-target-v1',
+		namespace: 'canonical',
+		coordinateId,
+		targetId: `canonical/${coordinateId}/v${version}`,
+		familyId: family.familyId,
+		formId: form.formId,
+		currentClassId: null,
+		affinity,
+		tier: form.tier,
+		primaryArchetype: form.primaryArchetype,
+		battlefieldDuty: form.battlefieldDuty,
+		identityInvariants: family.visualConstants,
+		anatomyInvariants: [
+			form.visualDelta,
+			`Signature mechanic: ${form.signatureMechanic ?? form.teachingGoal}`
+		],
+		constructionDimensions: theme.constructionDimensions,
+		telegraph: formTelegraph(form),
+		counterplay: `${formCounterplay(form)} Affinity signal: ${theme.counterplaySignal}`,
+		forbiddenTreatments: theme.forbidden,
+		sources: {
+			familyPacketPath: familyPacketPath(family),
+			sourcePage: family.sourcePage,
+			sourceReferences: form.sourceReferences,
+			mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
+		},
+		presentationContract: {
+			framing: 'full-body-readable',
+			background: 'cinematic-neutral-environment',
+			featuredSubjects: 1,
+			textAllowed: false,
+			watermarkAllowed: false
+		},
+		acceptanceCriteria: [
+			`Recognizably belongs to the ${family.displayName} family and preserves every identity invariant.`,
+			`Reads specifically as ${form.displayName}, ${form.tier}, rather than another family form.`,
+			`Communicates the ${form.primaryArchetype} archetype and its battlefield duty.`,
+			'Preserves coherent load-bearing anatomy, complete limbs, and believable ground contact.',
+			`Uses at least two ${affinity} construction dimensions without a palette-only or glow-only treatment.`,
+			'Keeps the attack telegraph and counterplay signal visible at gameplay scale.',
+			'Frames one complete featured subject with no crop, labels, UI text, or watermark.',
+			'Output remains a candidate until independent approved-review evidence exists; it is never a runtime asset.'
+		],
+		ownedPaths: {
+			candidate: paths.candidate,
+			result: paths.result,
+			decision: paths.decision,
+			blindReview: paths.blindReview
+		},
+		anchor:
+			affinity === 'normal'
+				? { kind: 'normal-self' as const }
+				: {
+						kind: 'normal-approved-review' as const,
+						normalCoordinateId: `${family.familyId}/${form.formId}/normal`,
+						reviewReceiptPath: `${FAMILY_AFFINITY_ROOT}/reviews/${family.familyId}/${form.formId}/normal/decision-v1.json`,
+						reviewReceiptSha256: null
+					},
+		precedingAttempt: null,
+		version,
+		status,
+		promotionCeiling: 'approved-review',
+		runtimeCatalogMutationForbidden: true
+	};
+	return FamilyAffinityTargetSchema.parse(target);
+}
+
+function buildAssignment(target: FamilyAffinityTarget): FamilyAffinityAssignment {
+	return FamilyAffinityAssignmentSchema.parse({
+		schemaVersion: 'family-affinity-assignment-v1',
+		assignmentId: `${target.targetId}/assignment`,
+		targetId: target.targetId,
+		targetSha256: familyAffinitySha256(target),
+		coordinateId: target.coordinateId,
+		namespace: target.namespace,
+		version: target.version,
+		producerRole: 'image-producer',
+		allowedOutputs: {
+			candidate: target.ownedPaths.candidate,
+			result: target.ownedPaths.result
+		},
+		retryCeiling: 1,
+		dispatchStatus: target.status,
+		selfPromotionForbidden: true,
+		runtimeCatalogMutationForbidden: true
+	});
+}
+
+export function buildFamilyAffinityProductionBundle(
+	familyInputs: unknown[],
+	mappingInput: unknown
+): FamilyAffinityProductionBundle {
+	const families = familyInputs.map((input) => FamilyPacketSchema.parse(input));
+	const mapping = CurrentClassMappingFileSchema.parse(mappingInput);
+	if (families.length !== 30) throw new Error('Canonical matrix requires exactly 30 families');
+	if (new Set(families.map(({ familyId }) => familyId)).size !== 30) {
+		throw new Error('Canonical matrix requires 30 unique family IDs');
+	}
+	if (new Set(families.map(({ sourceRaceNumber }) => sourceRaceNumber)).size !== 30) {
+		throw new Error('Canonical family source race numbers must be unique');
+	}
+	const sortedFamilies = [...families].sort(
+		(a, b) => a.sourceRaceNumber - b.sourceRaceNumber || a.familyId.localeCompare(b.familyId)
+	);
+	const targets = sortedFamilies.flatMap((family) =>
+		[...family.forms]
+			.sort((a, b) => FORM_TIERS.indexOf(a.tier) - FORM_TIERS.indexOf(b.tier))
+			.flatMap((form) =>
+				PRODUCTION_AFFINITIES.map((affinity) => buildCanonicalTarget(family, form, affinity))
+			)
+	);
+	const assignments = targets.map(buildAssignment);
+	const targetPathById = new Map(
+		targets.map((target) => [
+			target.targetId,
+			canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version).target
+		])
+	);
+	const assignmentPathById = new Map(
+		assignments.map((assignment) => [
+			assignment.assignmentId,
+			canonicalAttemptPaths(
+				targets.find(({ targetId }) => targetId === assignment.targetId)!.familyId,
+				targets.find(({ targetId }) => targetId === assignment.targetId)!.formId,
+				targets.find(({ targetId }) => targetId === assignment.targetId)!.affinity,
+				assignment.version
+			).assignment
+		])
+	);
+	const assignmentByTargetId = new Map(
+		assignments.map((assignment) => [assignment.targetId, assignment])
+	);
+	const activeCoordinates = targets.map((target) => {
+		const assignment = assignmentByTargetId.get(target.targetId)!;
+		return {
+			namespace: 'canonical' as const,
+			coordinateId: target.coordinateId,
+			familyId: target.familyId,
+			formId: target.formId,
+			currentClassId: null,
+			affinity: target.affinity,
+			activeVersion: target.version,
+			targetPath: targetPathById.get(target.targetId)!,
+			targetSha256: assignment.targetSha256,
+			assignmentPath: assignmentPathById.get(assignment.assignmentId)!,
+			assignmentSha256: familyAffinitySha256(assignment),
+			status: target.status
+		};
+	});
+	const secondaryArchetypeIds = mapping.entries
+		.filter(({ disposition }) => disposition === 'secondary-archetype')
+		.map(({ currentClassId }) => currentClassId);
+	const faunaIds = mapping.entries
+		.filter(({ disposition }) => disposition === 'fauna')
+		.map(({ currentClassId }) => currentClassId);
+	const manifest = FamilyAffinityManifestSchema.parse({
+		schemaVersion: 'family-affinity-manifest-v1',
+		experimentId: 'family-affinity-v1',
+		canonicalMatrix: {
+			familyCount: 30,
+			formCount: 150,
+			affinities: PRODUCTION_AFFINITIES,
+			targetCount: 750,
+			assignmentCount: 750,
+			activeCoordinates
+		},
+		bridge: { targetCount: 0, assignmentCount: 0, activeCoordinates: [] },
+		mappingReservations: {
+			sourcePath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`,
+			retainedCurrentClassCount: mapping.entries.filter(
+				({ disposition }) => disposition !== 'retire'
+			).length,
+			canonicalPrimaryCount: mapping.entries.filter(
+				({ disposition }) => disposition === 'map' || disposition === 'rename-map'
+			).length,
+			bridgeOnlyCount: secondaryArchetypeIds.length + faunaIds.length,
+			secondaryArchetypeIds,
+			faunaIds
+		},
+		ownership: {
+			controllerRole: 'integration-controller',
+			producerSelfPromotionForbidden: true,
+			runtimeCatalogMutationForbidden: true
+		}
+	});
+	const artifacts: Array<{ path: string; value: unknown }> = [
+		{ path: `${FAMILY_AFFINITY_ROOT}/manifest.json`, value: manifest },
+		...targets.map((target) => ({ path: targetPathById.get(target.targetId)!, value: target })),
+		...assignments.map((assignment) => ({
+			path: assignmentPathById.get(assignment.assignmentId)!,
+			value: assignment
+		}))
+	];
+	const bundle = { manifest, targets, assignments, artifacts };
+	validateFamilyAffinityProductionBundle(bundle);
+	return bundle;
+}
+
+export function validateFamilyAffinityProductionBundle(
+	bundleInput: FamilyAffinityProductionBundle,
+	reviewReceipts: Readonly<Record<string, unknown>> = {}
+) {
+	const manifest = FamilyAffinityManifestSchema.parse(bundleInput.manifest);
+	const targets = bundleInput.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const assignments = bundleInput.assignments.map((assignment) =>
+		FamilyAffinityAssignmentSchema.parse(assignment)
+	);
+	if (targets.length !== 750)
+		throw new Error(`Canonical target count must be 750, received ${targets.length}`);
+	if (assignments.length !== 750) {
+		throw new Error(`Canonical assignment count must be 750, received ${assignments.length}`);
+	}
+	if (manifest.canonicalMatrix.activeCoordinates.length !== 750) {
+		throw new Error('Manifest must contain exactly 750 active canonical coordinates');
+	}
+	if (manifest.bridge.targetCount !== manifest.bridge.activeCoordinates.length) {
+		throw new Error('Bridge target count must equal its separate active coordinate count');
+	}
+	if (manifest.bridge.assignmentCount !== manifest.bridge.activeCoordinates.length) {
+		throw new Error('Bridge assignment count must equal its separate active coordinate count');
+	}
+	const coordinateIds = targets.map(({ coordinateId }) => coordinateId);
+	if (new Set(coordinateIds).size !== 750)
+		throw new Error('Canonical target coordinates must be unique');
+	const assignmentCoordinates = assignments.map(({ coordinateId }) => coordinateId);
+	if (new Set(assignmentCoordinates).size !== 750) {
+		throw new Error('Canonical assignment coordinates must be unique');
+	}
+	const targetsById = new Map(targets.map((target) => [target.targetId, target]));
+	for (const assignment of assignments) {
+		const target = targetsById.get(assignment.targetId);
+		if (
+			!target ||
+			target.coordinateId !== assignment.coordinateId ||
+			target.version !== assignment.version
+		) {
+			throw new Error(
+				`Assignment does not bind the correct target coordinate: ${assignment.assignmentId}`
+			);
+		}
+		if (assignment.targetSha256 !== familyAffinitySha256(target)) {
+			throw new Error(`Assignment target hash mismatch: ${assignment.assignmentId}`);
+		}
+		if (
+			assignment.allowedOutputs.candidate !== target.ownedPaths.candidate ||
+			assignment.allowedOutputs.result !== target.ownedPaths.result
+		) {
+			throw new Error(
+				`Assignment outputs do not match target ownership: ${assignment.assignmentId}`
+			);
+		}
+		if (assignment.dispatchStatus !== target.status) {
+			throw new Error(
+				`Assignment dispatch status does not match target: ${assignment.assignmentId}`
+			);
+		}
+	}
+	const ownedOutputPaths = targets.flatMap(({ ownedPaths }) => [
+		ownedPaths.candidate,
+		ownedPaths.result
+	]);
+	if (new Set(ownedOutputPaths).size !== 1500)
+		throw new Error('Candidate and result paths must be unique');
+	const allAttemptPaths = bundleInput.artifacts
+		.map(({ path }) => path)
+		.concat(targets.flatMap(({ ownedPaths }) => Object.values(ownedPaths)));
+	if (new Set(allAttemptPaths).size !== allAttemptPaths.length) {
+		throw new Error('Generated and owned paths must not collide');
+	}
+	if (
+		allAttemptPaths.some((path) =>
+			/affinity-workflow-v1|enemy-affinity-expansion|\/bridge\//iu.test(path)
+		)
+	) {
+		throw new Error(
+			'Canonical paths must not overlap legacy, current bridge, or bridge namespaces'
+		);
+	}
+	const byFamily = new Map<string, FamilyAffinityTarget[]>();
+	for (const target of targets) {
+		byFamily.set(target.familyId, [...(byFamily.get(target.familyId) ?? []), target]);
+		if (target.affinity === 'normal') {
+			if (target.status !== 'planned') throw new Error('Normal targets must begin planned');
+			continue;
+		}
+		if (target.status === 'planned') {
+			if (
+				target.anchor.kind !== 'normal-approved-review' ||
+				target.anchor.reviewReceiptSha256 === null
+			) {
+				throw new Error(
+					`Elemental target cannot be unblocked without a Normal approved-review receipt: ${target.targetId}`
+				);
+			}
+			const anchor = target.anchor;
+			const receiptInput = reviewReceipts[anchor.reviewReceiptPath];
+			if (!receiptInput)
+				throw new Error(`Missing Normal approved-review receipt: ${anchor.reviewReceiptPath}`);
+			const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
+			const normalTarget = targets.find(
+				(candidate) => candidate.coordinateId === anchor.normalCoordinateId
+			);
+			const normalManifestCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+				(candidate) => candidate.coordinateId === anchor.normalCoordinateId
+			);
+			if (
+				receipt.decision !== 'approved-review' ||
+				familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
+				!normalTarget ||
+				!normalManifestCoordinate ||
+				receipt.targetId !== normalTarget.targetId ||
+				receipt.targetSha256 !== familyAffinitySha256(normalTarget) ||
+				normalManifestCoordinate.targetSha256 !== receipt.targetSha256
+			) {
+				throw new Error(`Stale or mismatched Normal approved-review receipt: ${target.targetId}`);
+			}
+		} else if (target.status !== 'blocked-on-anchor') {
+			throw new Error(`Canonical elemental target has illegal initial status: ${target.targetId}`);
+		}
+	}
+	if (byFamily.size !== 30 || [...byFamily.values()].some((entries) => entries.length !== 25)) {
+		throw new Error('Canonical matrix requires exactly 25 targets per family');
+	}
+	for (const entries of byFamily.values()) {
+		const byForm = new Map<string, FamilyAffinityTarget[]>();
+		for (const target of entries)
+			byForm.set(target.formId, [...(byForm.get(target.formId) ?? []), target]);
+		if (byForm.size !== 5) throw new Error('Each family requires exactly five forms');
+		for (const formEntries of byForm.values()) {
+			const affinities = formEntries.map(({ affinity }) => affinity);
+			if (
+				affinities.length !== 5 ||
+				PRODUCTION_AFFINITIES.some((affinity) => !affinities.includes(affinity))
+			) {
+				throw new Error('Each form requires exactly Normal, Fire, Earth, Wind, and Water');
+			}
+		}
+	}
+	for (const [path, receiptInput] of Object.entries(reviewReceipts)) {
+		const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
+		const target = targetsById.get(receipt.targetId);
+		if (
+			target?.anchor.kind === 'earth-bridge-provisional' &&
+			receipt.decision === 'approved-review'
+		) {
+			throw new Error(`Provisional Earth target cannot reach approved-review: ${path}`);
+		}
+	}
+	return {
+		canonicalTargetCount: targets.length,
+		canonicalAssignmentCount: assignments.length,
+		ownedOutputPathCount: ownedOutputPaths.length,
+		normalTargetCount: targets.filter(({ affinity }) => affinity === 'normal').length,
+		elementalTargetCount: targets.filter(({ affinity }) => affinity !== 'normal').length,
+		bridgeTargetCount: manifest.bridge.targetCount
+	};
+}
+
+async function exists(path: string): Promise<boolean> {
+	try {
+		await stat(path);
+		return true;
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
+		throw error;
+	}
+}
+
+function absoluteOwnedPath(repositoryRoot: string, ownedPath: string): string {
+	OwnedPathSchema.parse(ownedPath);
+	const root = resolve(repositoryRoot);
+	const absolute = resolve(root, ownedPath);
+	if (absolute !== root && !absolute.startsWith(`${root}${sep}`))
+		throw new Error('Owned path escapes repository root');
+	return absolute;
+}
+
+function nextVersionPath(path: string, currentVersion: number, nextVersion: number): string {
+	const patterns = [
+		[`target-v${currentVersion}.json`, `target-v${nextVersion}.json`],
+		[`assignment-v${currentVersion}.json`, `assignment-v${nextVersion}.json`],
+		[`-v${currentVersion}.png`, `-v${nextVersion}.png`],
+		[`-v${currentVersion}.json`, `-v${nextVersion}.json`]
+	] as const;
+	for (const [suffix, replacement] of patterns) {
+		if (path.endsWith(suffix)) return `${path.slice(0, -suffix.length)}${replacement}`;
+	}
+	throw new Error(`Attempt path is not versioned for v${currentVersion}: ${path}`);
+}
+
+export type AllocateFamilyAffinityRevisionInput = {
+	repositoryRoot: string;
+	manifestPath: string;
+	namespace: 'canonical' | 'bridge';
+	coordinateId: string;
+	callerRole: string;
+	reviewPath: string;
+};
+
+async function allocateFamilyAffinityRevisionUnlocked(
+	input: AllocateFamilyAffinityRevisionInput,
+	manifestAbsolute: string
+) {
+	const manifest = FamilyAffinityManifestSchema.parse(
+		JSON.parse(await readFile(manifestAbsolute, 'utf8'))
+	);
+	const collection = input.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
+	const coordinate = collection.activeCoordinates.find(
+		({ coordinateId }) => coordinateId === input.coordinateId
+	);
+	if (!coordinate || coordinate.namespace !== input.namespace)
+		throw new Error('Wrong or unknown manifest coordinate');
+	const targetAbsolute = absoluteOwnedPath(input.repositoryRoot, coordinate.targetPath);
+	const assignmentAbsolute = absoluteOwnedPath(input.repositoryRoot, coordinate.assignmentPath);
+	const currentTarget = FamilyAffinityTargetSchema.parse(
+		JSON.parse(await readFile(targetAbsolute, 'utf8'))
+	);
+	const currentAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(assignmentAbsolute, 'utf8'))
+	);
+	if (
+		currentTarget.coordinateId !== coordinate.coordinateId ||
+		currentTarget.version !== coordinate.activeVersion ||
+		currentAssignment.targetId !== currentTarget.targetId ||
+		currentAssignment.targetSha256 !== familyAffinitySha256(currentTarget) ||
+		coordinate.targetSha256 !== currentAssignment.targetSha256
+	) {
+		throw new Error('Current target, assignment, coordinate, or hash is stale or mismatched');
+	}
+	if (input.reviewPath !== currentTarget.ownedPaths.decision)
+		throw new Error('Review path does not match current target ownership');
+	const reviewAbsolute = absoluteOwnedPath(input.repositoryRoot, input.reviewPath);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(
+		JSON.parse(await readFile(reviewAbsolute, 'utf8'))
+	);
+	if (receipt.decision !== 'rejected' && receipt.decision !== 'revise') {
+		throw new Error('Current attempt must have a rejected or revise review decision');
+	}
+	const resultAbsolute = absoluteOwnedPath(input.repositoryRoot, currentTarget.ownedPaths.result);
+	const resultBytes = await readFile(resultAbsolute);
+	const result = FamilyAffinityResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	const candidateAbsolute = absoluteOwnedPath(
+		input.repositoryRoot,
+		currentTarget.ownedPaths.candidate
+	);
+	const candidateBytes = await readFile(candidateAbsolute);
+	if (
+		receipt.targetId !== currentTarget.targetId ||
+		receipt.targetSha256 !== familyAffinitySha256(currentTarget) ||
+		receipt.resultPath !== currentTarget.ownedPaths.result ||
+		receipt.resultSha256 !== createHash('sha256').update(resultBytes).digest('hex') ||
+		result.targetId !== currentTarget.targetId ||
+		result.targetSha256 !== familyAffinitySha256(currentTarget) ||
+		result.candidatePath !== currentTarget.ownedPaths.candidate ||
+		result.candidateSha256 !== createHash('sha256').update(candidateBytes).digest('hex') ||
+		(result.state !== 'rejected' && result.state !== 'revise')
+	) {
+		throw new Error('Rejected receipt or result is stale, mismatched, or not revision-eligible');
+	}
+	const nextVersion = currentTarget.version + 1;
+	const nextTargetPath = nextVersionPath(coordinate.targetPath, currentTarget.version, nextVersion);
+	const nextAssignmentPath = nextVersionPath(
+		coordinate.assignmentPath,
+		currentTarget.version,
+		nextVersion
+	);
+	const nextOwnedPaths = {
+		candidate: nextVersionPath(
+			currentTarget.ownedPaths.candidate,
+			currentTarget.version,
+			nextVersion
+		),
+		result: nextVersionPath(currentTarget.ownedPaths.result, currentTarget.version, nextVersion),
+		decision: nextVersionPath(
+			currentTarget.ownedPaths.decision,
+			currentTarget.version,
+			nextVersion
+		),
+		blindReview: nextVersionPath(
+			currentTarget.ownedPaths.blindReview,
+			currentTarget.version,
+			nextVersion
+		)
+	};
+	const proposedPaths = [nextTargetPath, nextAssignmentPath, ...Object.values(nextOwnedPaths)];
+	for (const proposed of proposedPaths) {
+		if (await exists(absoluteOwnedPath(input.repositoryRoot, proposed))) {
+			throw new Error(`Revision allocation collision: ${proposed}`);
+		}
+	}
+	const targetStatus =
+		currentTarget.status === 'earth-bridge-provisional'
+			? currentTarget.status
+			: currentAssignment.dispatchStatus;
+	const nextTarget = FamilyAffinityTargetSchema.parse({
+		...currentTarget,
+		targetId: `${currentTarget.namespace}/${currentTarget.coordinateId}/v${nextVersion}`,
+		version: nextVersion,
+		status: targetStatus,
+		ownedPaths: nextOwnedPaths,
+		precedingAttempt: {
+			targetId: currentTarget.targetId,
+			targetSha256: familyAffinitySha256(currentTarget),
+			candidatePath: currentTarget.ownedPaths.candidate,
+			candidateSha256: result.candidateSha256,
+			resultPath: currentTarget.ownedPaths.result,
+			resultSha256: receipt.resultSha256,
+			reviewPath: input.reviewPath,
+			reviewSha256: familyAffinitySha256(receipt)
+		}
+	});
+	const nextAssignment = buildAssignment(nextTarget);
+	const nextTargetAbsolute = absoluteOwnedPath(input.repositoryRoot, nextTargetPath);
+	const nextAssignmentAbsolute = absoluteOwnedPath(input.repositoryRoot, nextAssignmentPath);
+	await mkdir(dirname(nextTargetAbsolute), { recursive: true });
+	await mkdir(dirname(nextAssignmentAbsolute), { recursive: true });
+	const created: string[] = [];
+	try {
+		await writeFile(nextTargetAbsolute, stableFamilyAffinityJson(nextTarget), { flag: 'wx' });
+		created.push(nextTargetAbsolute);
+		await writeFile(nextAssignmentAbsolute, stableFamilyAffinityJson(nextAssignment), {
+			flag: 'wx'
+		});
+		created.push(nextAssignmentAbsolute);
+		coordinate.activeVersion = nextVersion;
+		coordinate.targetPath = nextTargetPath;
+		coordinate.targetSha256 = familyAffinitySha256(nextTarget);
+		coordinate.assignmentPath = nextAssignmentPath;
+		coordinate.assignmentSha256 = familyAffinitySha256(nextAssignment);
+		coordinate.status = nextTarget.status;
+		const temporaryManifest = `${manifestAbsolute}.revision-${process.pid}-${Date.now()}`;
+		await writeFile(temporaryManifest, stableFamilyAffinityJson(manifest), { flag: 'wx' });
+		await rename(temporaryManifest, manifestAbsolute);
+	} catch (error) {
+		for (const path of created.reverse()) await unlink(path).catch(() => undefined);
+		throw error;
+	}
+	return {
+		targetPath: nextTargetPath,
+		assignmentPath: nextAssignmentPath,
+		target: nextTarget,
+		assignment: nextAssignment
+	};
+}
+
+export async function allocateFamilyAffinityRevision(input: AllocateFamilyAffinityRevisionInput) {
+	if (input.callerRole !== 'integration-controller') {
+		throw new Error(
+			'Only the integration-controller may allocate revisions; producers and reviewers are forbidden'
+		);
+	}
+	const manifestAbsolute = absoluteOwnedPath(input.repositoryRoot, input.manifestPath);
+	const lockPath = `${manifestAbsolute}.revision-allocation.lock`;
+	try {
+		await writeFile(lockPath, `${process.pid}\n`, { flag: 'wx' });
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+			throw new Error(
+				'Revision allocation is already in progress under the exclusive controller lock'
+			);
+		}
+		throw error;
+	}
+	try {
+		return await allocateFamilyAffinityRevisionUnlocked(input, manifestAbsolute);
+	} finally {
+		await unlink(lockPath).catch(() => undefined);
+	}
 }
