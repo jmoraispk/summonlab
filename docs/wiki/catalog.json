@@ -687,6 +687,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "art.hero-identity-evolution",
+      "path": "docs/wiki/art/hero-identity-and-evolution.md",
+      "pageType": "visual-brief",
+      "owner": "visuals",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
+    },
+    {
       "wikiId": "art.living-village-heroes",
       "path": "docs/wiki/art/living-village-heroes.md",
       "pageType": "visual-brief",
