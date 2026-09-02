@@ -15,6 +15,8 @@
 		"equipment-image-packets.ts",
 		"equipment-image-packets.spec.ts",
 		"equipment-image-production.ts",
+		"persist-equipment-image-production-output.ts",
+		"persist-equipment-image-production-output.spec.ts",
 		"equipment-material-production-lib.ts",
 		"equipment-material-production-lib.spec.ts",
 		"export-equipment-image-profile.ts",
