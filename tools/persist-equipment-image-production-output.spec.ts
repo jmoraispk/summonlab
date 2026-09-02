@@ -1,9 +1,9 @@
-import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, open, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join } from 'node:path';
 
 import sharp from 'sharp';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
 	persistEquipmentImageProductionOutput,
@@ -17,7 +17,42 @@ const workspaces: string[] = [];
 async function createWorkspace(): Promise<string> {
 	const workspace = await mkdtemp(join(tmpdir(), 'summonlab-equipment-persistence-'));
 	workspaces.push(workspace);
+	await writeAssignment(workspace, DESTINATION);
 	return workspace;
+}
+
+async function writeAssignment(
+	workspace: string,
+	candidatePath: string,
+	permittedCandidatePath = candidatePath
+): Promise<void> {
+	const candidatePrefix = `${ROOT}/candidates/`;
+	const assignmentPath = `${ROOT}/assignments/${candidatePath.slice(candidatePrefix.length, -4)}.json`;
+	await mkdir(join(workspace, assignmentPath, '..'), { recursive: true });
+	await writeFile(
+		join(workspace, assignmentPath),
+		`${JSON.stringify({
+			schemaVersion: 'equipment-image-assignment-v1',
+			assignmentId: 'assignment-material-equipment-v1-copper-sword-v1',
+			targetId: 'material-equipment-v1-copper-sword-v1',
+			contractVersion: 'equipment-image-production-contract-v1',
+			rendererVersion: 'equipment-image-prompt-v1',
+			assignedAt: '2026-09-01T23:05:00.000Z',
+			dryRun: false,
+			retryCeiling: 0,
+			permittedOutputs: {
+				candidatePath: permittedCandidatePath,
+				resultPath: `${ROOT}/results/f/copper/sword-v1.json`
+			},
+			forbiddenSharedPaths: ['assets/enemies'],
+			completionContract: {
+				oneTargetOneImage: true,
+				structuredResultRequired: true,
+				sharedFilesMustRemainUntouched: true,
+				selfPromotionForbidden: true
+			}
+		})}\n`
+	);
 }
 
 async function createImage(
@@ -71,6 +106,52 @@ afterEach(async () => {
 });
 
 describe('persistEquipmentImageProductionOutput', () => {
+	it('reports an exact source read failure before validating a bad destination', async () => {
+		const workspace = await createWorkspace();
+		const missingSource = join(workspace, 'missing-source.png');
+
+		await expect(
+			persistEquipmentImageProductionOutput(
+				options(workspace, missingSource, { destinationPath: 'assets/enemies/bad.png' })
+			)
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('rejects a syntactically valid candidate path that has no matching assignment', async () => {
+		const workspace = await createWorkspace();
+		const source = await createImage(workspace, 'returned-source.png', {
+			width: 1024,
+			height: 1024,
+			format: 'png'
+		});
+		const unassignedDestination = `${ROOT}/candidates/f/copper/invented-v1.png`;
+
+		await expect(
+			persistEquipmentImageProductionOutput(
+				options(workspace, source, { destinationPath: unassignedDestination })
+			)
+		).rejects.toThrow(/assignment/u);
+		await expect(readFile(join(workspace, unassignedDestination))).rejects.toThrow();
+	});
+
+	it('rejects a candidate path not reserved by its derived assignment', async () => {
+		const workspace = await createWorkspace();
+		const source = await createImage(workspace, 'returned-source.png', {
+			width: 1024,
+			height: 1024,
+			format: 'png'
+		});
+		const mismatchedDestination = `${ROOT}/candidates/f/copper/invented-v1.png`;
+		await writeAssignment(workspace, mismatchedDestination, DESTINATION);
+
+		await expect(
+			persistEquipmentImageProductionOutput(
+				options(workspace, source, { destinationPath: mismatchedDestination })
+			)
+		).rejects.toThrow(/does not reserve/u);
+		await expect(readFile(join(workspace, mismatchedDestination))).rejects.toThrow();
+	});
+
 	it('exclusive-creates an exact PNG only at its assignment-owned Equipment candidate destination', async () => {
 		const workspace = await createWorkspace();
 		const source = await createImage(workspace, 'returned-source.png', {
@@ -149,6 +230,38 @@ describe('persistEquipmentImageProductionOutput', () => {
 		expect(await readdir(symlinkTarget)).toEqual([]);
 	});
 
+	it('does not unlink a replacement destination after an injected write failure', async () => {
+		const workspace = await createWorkspace();
+		const source = await createImage(workspace, 'returned-source.png', {
+			width: 1024,
+			height: 1024,
+			format: 'png'
+		});
+		const probePath = join(workspace, 'file-handle-probe');
+		const probeHandle = await open(probePath, 'w');
+		const fileHandlePrototype = Object.getPrototypeOf(probeHandle) as {
+			writeFile: (bytes: Uint8Array) => Promise<void>;
+		};
+		await probeHandle.close();
+		await rm(probePath);
+		const destinationPath = join(workspace, DESTINATION);
+		const replacementBytes = Buffer.from('replacement owned by another writer');
+		const writeSpy = vi.spyOn(fileHandlePrototype, 'writeFile').mockImplementationOnce(async () => {
+			await rm(destinationPath);
+			await writeFile(destinationPath, replacementBytes);
+			throw new Error('injected write failure');
+		});
+
+		try {
+			await expect(
+				persistEquipmentImageProductionOutput(options(workspace, source))
+			).rejects.toThrow('injected write failure');
+		} finally {
+			writeSpy.mockRestore();
+		}
+		expect(await readFile(destinationPath)).toEqual(replacementBytes);
+	});
+
 	it('rejects unsupported source formats', async () => {
 		const workspace = await createWorkspace();
 		const source = await createImage(workspace, 'returned-source.jpg', {
@@ -173,6 +286,25 @@ describe('persistEquipmentImageProductionOutput', () => {
 		await expect(persistEquipmentImageProductionOutput(options(workspace, source))).rejects.toThrow(
 			/aspect ratio/u
 		);
+	});
+
+	it('accepts an exact 0.5% source aspect-ratio error', async () => {
+		const workspace = await createWorkspace();
+		const source = await createImage(workspace, 'boundary-aspect.png', {
+			width: 995,
+			height: 1000,
+			format: 'png'
+		});
+
+		const receipt = await persistEquipmentImageProductionOutput(options(workspace, source));
+
+		expect(receipt.operation).toBe('exclusive-resize-near-match');
+		expect(receipt.source).toMatchObject({ width: 995, height: 1000 });
+		expect(await sharp(join(workspace, DESTINATION)).metadata()).toMatchObject({
+			format: 'png',
+			width: 1024,
+			height: 1024
+		});
 	});
 
 	it('rejects when source and destination resolve to the same file', async () => {

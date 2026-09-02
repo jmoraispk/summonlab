@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
 
-import { EQUIPMENT_PRODUCTION_ROOT } from './equipment-image-production-contract.js';
+import {
+	EQUIPMENT_PRODUCTION_ROOT,
+	EquipmentImageAssignmentSchema
+} from './equipment-image-production-contract.js';
 
 export interface PersistEquipmentImageProductionOptions {
 	readonly workspaceRoot: string;
@@ -49,6 +52,11 @@ interface NormalizedImage {
 	};
 }
 
+interface FileIdentity {
+	readonly device: number;
+	readonly inode: number;
+}
+
 function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -80,6 +88,30 @@ function destinationAbsolutePath(workspaceRoot: string, destinationPath: string)
 	return absolutePath;
 }
 
+async function assertAssignmentOwnership(
+	workspaceRoot: string,
+	destinationPath: string
+): Promise<void> {
+	const candidatePrefix = `${EQUIPMENT_PRODUCTION_ROOT}/candidates/`;
+	const candidateSuffix = destinationPath.slice(candidatePrefix.length, -4);
+	const assignmentPath = `${EQUIPMENT_PRODUCTION_ROOT}/assignments/${candidateSuffix}.json`;
+	let assignmentBytes: string;
+	try {
+		assignmentBytes = await readFile(resolve(workspaceRoot, assignmentPath), 'utf8');
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+			throw new Error(`No matching Equipment assignment reserves ${destinationPath}`, {
+				cause: error
+			});
+		}
+		throw error;
+	}
+	const assignment = EquipmentImageAssignmentSchema.parse(JSON.parse(assignmentBytes) as unknown);
+	if (assignment.permittedOutputs.candidatePath !== destinationPath) {
+		throw new Error(`Matching Equipment assignment does not reserve ${destinationPath}`);
+	}
+}
+
 function assertDeclaredMetadata(
 	options: PersistEquipmentImageProductionOptions
 ): asserts options is PersistEquipmentImageProductionOptions {
@@ -109,10 +141,13 @@ async function normalizeAndVerify(
 		throw new Error('Source image metadata is incomplete');
 	}
 	const sourceMediaType = mediaTypeForFormat(sourceMetadata.format);
-	const sourceRatio = sourceMetadata.width / sourceMetadata.height;
-	const declaredRatio = declaredCanvas.width / declaredCanvas.height;
-	const relativeRatioError = Math.abs(sourceRatio - declaredRatio) / declaredRatio;
-	if (relativeRatioError > 0.005) {
+	const sourceWidth = BigInt(sourceMetadata.width);
+	const sourceHeight = BigInt(sourceMetadata.height);
+	const declaredWidth = BigInt(declaredCanvas.width);
+	const declaredHeight = BigInt(declaredCanvas.height);
+	const signedAspectDelta = sourceWidth * declaredHeight - declaredWidth * sourceHeight;
+	const absoluteAspectDelta = signedAspectDelta < 0n ? -signedAspectDelta : signedAspectDelta;
+	if (absoluteAspectDelta * 200n > sourceHeight * declaredWidth) {
 		throw new Error(
 			`Source aspect ratio ${sourceMetadata.width}×${sourceMetadata.height} is not a supported near-match for ${declaredCanvas.width}×${declaredCanvas.height}`
 		);
@@ -194,36 +229,58 @@ async function ensureSafeDestinationParents(
 	}
 }
 
+async function destinationMatchesIdentity(
+	destinationPath: string,
+	identity: FileIdentity
+): Promise<boolean> {
+	try {
+		const metadata = await lstat(destinationPath);
+		return metadata.dev === identity.device && metadata.ino === identity.inode;
+	} catch {
+		return false;
+	}
+}
+
 export async function persistEquipmentImageProductionOutput(
 	options: PersistEquipmentImageProductionOptions
 ): Promise<EquipmentPersistenceReceipt> {
 	const started = performance.now();
 	const workspaceRoot = resolve(options.workspaceRoot);
-	const destinationPath = destinationAbsolutePath(workspaceRoot, options.destinationPath);
 	const sourcePath = resolve(options.sourcePath);
-	if (sourcePath === destinationPath) throw new Error('Source and destination must differ');
-	assertDeclaredMetadata(options);
-
 	const sourceBytes = await readFile(sourcePath);
+	assertDeclaredMetadata(options);
 	const normalized = await normalizeAndVerify(sourceBytes, {
 		width: options.width,
 		height: options.height
 	});
+
+	const destinationPath = destinationAbsolutePath(workspaceRoot, options.destinationPath);
+	if (sourcePath === destinationPath) throw new Error('Source and destination must differ');
+	await assertAssignmentOwnership(workspaceRoot, options.destinationPath);
 	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
 	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
 
 	let handle;
 	let createdDestination = false;
+	let createdIdentity: FileIdentity | undefined;
 	try {
 		handle = await open(destinationPath, 'wx');
 		createdDestination = true;
+		const createdMetadata = await handle.stat();
+		createdIdentity = { device: createdMetadata.dev, inode: createdMetadata.ino };
 		await handle.writeFile(normalized.bytes);
 		await handle.sync();
 		await handle.close();
 		handle = undefined;
 	} catch (error) {
 		await handle?.close().catch(() => undefined);
-		if (createdDestination) await unlink(destinationPath).catch(() => undefined);
+		if (
+			createdDestination &&
+			createdIdentity !== undefined &&
+			(await destinationMatchesIdentity(destinationPath, createdIdentity))
+		) {
+			await unlink(destinationPath).catch(() => undefined);
+		}
 		throw error;
 	}
 
