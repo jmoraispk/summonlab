@@ -44,6 +44,20 @@ prompt and seed may still produce a different person or composition. Therefore:
 The workflow is an authored, constraint-assisted character studio. It is not a promise of a fully
 procedural human generator.
 
+### Combat chibi derivative
+
+The chibi is the hero's combat representation, not a second independently invented character. It
+derives from the selected summon anchor and preserves the face, skin, age cues, dominant hairstyle
+silhouette, body-mass silhouette, wardrobe construction and palette, footwear, and the few
+accessories or tattoos that survive at combat scale. Chibi stylization may enlarge the head, hands,
+feet, hair mass, and identity anchors, but must not collapse broad, soft, muscular, slight, or
+unusually proportioned heroes into one generic mascot body.
+
+Candidate chibis are produced alongside 1★ summon candidates so identity transfer can influence
+selection. They do not become runtime assets at the same moment as the summon art: selected fighters
+still require clean alpha, consistent canvas and footprint normalization, small-scale recognition
+review, and explicit promotion.
+
 ## Generation order
 
 ```text
@@ -82,6 +96,13 @@ It does not independently roll every visible feature.
 These anchors persist through evolution. Hair arrangement, grooming, expression, clothing, and
 temporary marks may change, but the approved person cannot be regenerated as a new face or body at
 each rank.
+
+Hairstyle is a first-class silhouette control, not a finishing detail. Mass-generation batches
+should deliberately vary hair texture, mass, length, asymmetry, shaved areas, braids, twists, curls,
+head wraps, and grooming while avoiding the same fashionable silhouette on every hero. Jewelry,
+bracelets, necklaces, earrings, piercings, tattoos, and other durable personal marks may be used
+freely at 1★ when they clarify identity. They are personal design language, not automatic evidence
+of rank, affinity, aptitude, wealth, morality, or culture.
 
 ### Physical presentation
 
@@ -208,9 +229,12 @@ Production ultimately preserves, per hero:
 5. exact prompts, references, candidate hashes, review decisions, and approved source hashes;
 6. roster and combat-scale derivatives checked against the same recognition anchors.
 
-The first production experiment should cover twelve 1★ heroes with deliberately broad wardrobe and
-physical variation. The strongest identities then receive 1★, 3★, 5★, and 7★ evolution studies so
-the team can judge both initial variety and continuity before producing a large roster.
+Mass-generation review waves contain sixteen 1★ heroes with deliberately broad wardrobe, hair,
+body, accessory, and tattoo variation. A wave may carry forward explicitly requested favorites, but
+returning identities must be regenerated in the current rendering register and labeled separately
+from new or reinterpreted candidates. The strongest identities then receive 1★, 3★, 5★, and 7★
+evolution studies so the team can judge both initial variety and continuity before producing a
+large roster.
 
 ## Rendering decision record
 
