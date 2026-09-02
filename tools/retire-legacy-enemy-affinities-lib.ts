@@ -8,15 +8,18 @@ export const RETIREMENT_RECURSIVE_ROOTS = [
 	'apps/web/src/routes/forge/enemies/affinity-expansion'
 ] as const;
 
-export const RETIREMENT_EXACT_FILES = [
+export const RETIREMENT_EXACT_DELETION_FILES = [
+	'apps/web/src/routes/forge/enemies/affinity-workflow.e2e.ts',
+	'apps/web/src/routes/forge/enemies/affinity-expansion.e2e.ts'
+] as const;
+
+export const RETIREMENT_EXACT_EDIT_FILES = [
 	'apps/web/src/lib/components/wiki/MonsterVisualMatrix.svelte',
 	'apps/web/src/routes/wiki/monster-database.e2e.ts',
 	'apps/web/src/routes/forge/+page.svelte',
 	'apps/web/src/routes/forge/enemies/+page.svelte',
 	'apps/web/src/routes/forge/enemies/all/+page.svelte',
 	'apps/web/src/routes/forge/enemies/all.e2e.ts',
-	'apps/web/src/routes/forge/enemies/affinity-workflow.e2e.ts',
-	'apps/web/src/routes/forge/enemies/affinity-expansion.e2e.ts',
 	'apps/web/src/lib/server/wiki.spec.ts',
 	'docs/wiki/art/monster-gallery.md',
 	'docs/wiki/systems/visuals.md',
@@ -26,6 +29,11 @@ export const RETIREMENT_EXACT_FILES = [
 	'tools/export-wiki-monster-database.ts',
 	'tools/wiki-monster-database-lib.ts',
 	'tools/wiki-monster-database-lib.spec.ts'
+] as const;
+
+export const RETIREMENT_EXACT_FILES = [
+	...RETIREMENT_EXACT_EDIT_FILES,
+	...RETIREMENT_EXACT_DELETION_FILES
 ] as const;
 
 const LEGACY_AFFINITIES = new Set(['wood', 'metal']);
@@ -41,7 +49,13 @@ export type RetirementFile = {
 
 export type RetirementDeletion = {
 	readonly path: string;
-	readonly kind: 'legacy-json' | 'legacy-image' | 'public-derivative' | 'composite' | 'route';
+	readonly kind:
+		| 'legacy-json'
+		| 'legacy-image'
+		| 'public-derivative'
+		| 'composite'
+		| 'route'
+		| 'obsolete-route-test';
 };
 
 export type RetirementRewrite = { readonly path: string; readonly content: string };
@@ -74,6 +88,12 @@ function isAllowlisted(path: string): boolean {
 	return recursiveRoot(path) !== undefined || RETIREMENT_EXACT_FILES.includes(path as never);
 }
 
+function isDeletionAllowlisted(path: string): boolean {
+	return (
+		recursiveRoot(path) !== undefined || RETIREMENT_EXACT_DELETION_FILES.includes(path as never)
+	);
+}
+
 function parseJson(content: string | null): unknown | undefined {
 	if (content === null) return undefined;
 	try {
@@ -103,6 +123,9 @@ function structuredAffinityFromPath(path: string): string | undefined {
 }
 
 function deletionFor(file: RetirementFile, normalized: string): RetirementDeletion | undefined {
+	if (RETIREMENT_EXACT_DELETION_FILES.includes(normalized as never)) {
+		return { path: normalized, kind: 'obsolete-route-test' };
+	}
 	const root = recursiveRoot(normalized);
 	const parsed = normalized.endsWith('.json') ? parseJson(file.content) : undefined;
 	const affinity = affinityOf(parsed) ?? structuredAffinityFromPath(normalized);
@@ -249,7 +272,7 @@ export function planLegacyAffinityRetirement(files: readonly RetirementFile[]): 
 	for (const { file, normalized } of normalizedFiles) {
 		const candidate = deletionFor(file, normalized ?? file.path);
 		if (!candidate) continue;
-		if (!normalized || !isAllowlisted(normalized)) {
+		if (!normalized || !isDeletionAllowlisted(normalized)) {
 			escaped.add(file.path);
 			continue;
 		}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	planLegacyAffinityRetirement,
+	RETIREMENT_EXACT_DELETION_FILES,
 	RETIREMENT_RECURSIVE_ROOTS,
 	type RetirementFile
 } from './retire-legacy-enemy-affinities-lib.js';
@@ -20,6 +21,32 @@ describe('legacy enemy affinity retirement', () => {
 			'apps/web/src/routes/forge/enemies/affinity-workflow',
 			'apps/web/src/routes/forge/enemies/affinity-expansion'
 		]);
+	});
+
+	it('has exactly two separately authorized route-only E2E deletions', () => {
+		expect(RETIREMENT_EXACT_DELETION_FILES).toEqual([
+			'apps/web/src/routes/forge/enemies/affinity-workflow.e2e.ts',
+			'apps/web/src/routes/forge/enemies/affinity-expansion.e2e.ts'
+		]);
+		const plan = planLegacyAffinityRetirement([
+			...RETIREMENT_EXACT_DELETION_FILES.map((path) => ({ path, content: 'route-only test' })),
+			jsonFile('package.json', { affinity: 'wood' }),
+			{
+				path: 'apps/web/src/routes/forge/enemies/another-route.e2e.ts',
+				content: 'must remain'
+			}
+		]);
+
+		expect(plan.deletions).toEqual(
+			RETIREMENT_EXACT_DELETION_FILES.map((path) => ({ path, kind: 'obsolete-route-test' })).sort(
+				(left, right) => left.path.localeCompare(right.path)
+			)
+		);
+		expect(plan.deletions.map((entry) => entry.path)).not.toContain(
+			'apps/web/src/routes/forge/enemies/another-route.e2e.ts'
+		);
+		expect(plan.deletions.map((entry) => entry.path)).not.toContain('package.json');
+		expect(plan.escapedPaths).toContain('package.json');
 	});
 
 	it('uses parsed affinity fields and structured paths instead of deleting prose matches', () => {

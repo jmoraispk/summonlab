@@ -12,6 +12,7 @@
 		"family-affinity-production-lib.spec.ts",
 		"retire-legacy-enemy-affinities-lib.ts",
 		"retire-legacy-enemy-affinities-lib.spec.ts",
+		"retire-legacy-enemy-affinities.integration.spec.ts",
 		"retire-legacy-enemy-affinities.ts",
 		"wiki-monster-database-lib.ts",
 		"wiki-monster-database-lib.spec.ts",
