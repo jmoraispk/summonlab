@@ -160,17 +160,17 @@ for readable controls, initiative information, public intent, responsive layout,
 Both layers consume the same authoritative combat projection; neither invents timing, legality, or
 results.
 
-- Use a slightly top-down 2.5D camera: closer to overhead than the observatory direction proof, with
-  only enough pitch to preserve silhouettes, environmental depth, and elliptical contact shadows.
-- Make action timing unmistakable. The primary initiative display is a relative-time rail with a
-  visible origin and future offsets, such as `t0` and `t+5`, plus a dominant ready-actor treatment.
-  Labels must bind to engine-projected scheduling values. Until those values exist, use honest
-  ordinal markers rather than decorative seconds.
+- Use a steep top-down 2.5D camera, with only enough pitch to preserve silhouettes, environmental
+  depth, and elliptical contact shadows.
+- Make action order unmistakable. The primary initiative display is a portrait rail with a visible
+  `Now` origin and a dominant ready-actor treatment. Do not print relative-time labels beside every
+  portrait by default; exact engine-projected timing can appear on inspection and through accessible
+  descriptions.
 - On phone, anchor that rail horizontally to the top edge of the battlefield. It is a thin overlay,
   not an opaque header or a reserved band: the scene remains visible beneath it, with only a local
-  contrast veil behind portraits and labels. Future actors sweep left toward `Now`.
+  contrast veil behind portraits. Future actors sweep left toward `Now`.
 - Desktop may preserve the same top rail or reposition it within the wider combat shell, but it must
-  keep the same leftward time semantics, scheduling values, and ready-actor emphasis as phone.
+  keep the same leftward order semantics and ready-actor emphasis as phone.
 - Keep the battlefield dominant. Action controls and Manual, Assist, or Auto ownership remain quiet
   overlays and must not compete with the ready actor or the next material event.
 - Render environmental opportunities as part of the battlefield. Surprise, concealment, hazards,
@@ -179,6 +179,8 @@ results.
 - Preserve a flat chibi character language at combat scale: stable feet anchors, readable
   silhouettes, consistent directional frames, and soft elliptical shadows. Dimensionality comes
   from authored layers, overlap, lighting, and motion rather than requiring full 3D models.
+- Center each combatant's feet anchor and contact shadow on one tactical tile. Selection outlines
+  trace that tile's exact projected edges; they must not float inside it, exceed it, or straddle seams.
 
 ### Content and data visualization
 

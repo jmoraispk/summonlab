@@ -100,20 +100,22 @@ gathering, agentic intent, and model narration remain off.
 
 ### Accepted combat presentation direction
 
-The combat view is a slightly top-down 2.5D battlefield with flat chibi combatants, stable feet
-anchors, soft elliptical shadows, and environmental layers that create depth without requiring a
-full 3D renderer. The battlefield remains the primary surface on both phone and desktop.
+The combat view is a steep top-down 2.5D battlefield with flat chibi combatants, stable feet anchors,
+soft elliptical shadows, and environmental layers that create depth without requiring a full 3D
+renderer. The battlefield remains the primary surface on both phone and desktop. Every combatant's
+feet anchor and shadow are centered on one tactical tile. Selection outlines follow that tile's exact
+projected edges.
 
-Turn clarity uses an explicit relative-time rail rather than an ambiguous row of portraits. It
-shows the ready actor at the origin and later projected actors at engine-owned offsets such as `t+5`.
-If the current engine exposes only initiative order, the UI labels that order honestly until a
-versioned scheduler defines time units. A stronger ready-actor treatment must remain legible without
+Turn clarity uses an explicit portrait rail rather than an ambiguous row of portraits. It shows the
+ready actor at the `Now` origin and later projected actors in engine-owned order. Relative-time labels
+are not printed beside every portrait by default; exact projected timing remains available on
+inspection and to assistive technology. The ready-actor treatment must remain legible without
 depending on color or animation.
 
 On phone, the rail is horizontal and fixed to the top edge of the battlefield. It remains visually
 thin and scene-transparent rather than reserving an opaque header band; only a localized contrast
-veil may sit behind the portraits and timing labels. Future actors move left toward `Now`. Desktop
-may reposition the same rail in its wider shell, but it preserves the same values and time direction.
+veil may sit behind the portraits. Future actors move left toward `Now`. Desktop may reposition the
+same rail in its wider shell, but it preserves the same order and direction.
 
 Environmental interaction is part of combat, beginning with encounter advantage such as catching
 an enemy by surprise. Environment, perception, approach, and resulting legal modifiers remain
