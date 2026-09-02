@@ -52,7 +52,7 @@ export function buildEquipmentVisualProfile(): EquipmentVisualProfile {
 			construction:
 				'grounded medieval construction with structurally plausible joins, fastenings, grips, and weight',
 			materialResponse:
-				'honest surface wear and material response with narrow controlled highlights and restrained local magic',
+				'honest surface wear and material response with narrow controlled highlights and restrained local magic. Material identity uses one or two physical construction cues; palette alone never satisfies the material criterion; where the material calls for it, use one bounded supernatural behavior. Secondary materials stay neutral and subordinate and never assert a second rank.',
 			lighting: 'cold key light with a restrained warm rim',
 			background: 'midnight-charcoal presentation ground with a restrained floor plane'
 		},
@@ -84,7 +84,7 @@ export function buildEquipmentVisualProfile(): EquipmentVisualProfile {
 			mode: 'dependent-armour-piece',
 			subject: 'one-matching-object-or-required-pair',
 			composition:
-				'isolated matching object or required pair derived from the accepted complete-set reference',
+				'isolated matching object or required pair derived from the accepted complete-set reference. Legs means the complete paired or lower-body item. Boots means one matching pair.',
 			canvas: {
 				width: 1024,
 				height: 1024,

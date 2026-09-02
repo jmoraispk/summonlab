@@ -48,6 +48,22 @@ describe('Equipment image visual profile', () => {
 		);
 	});
 
+	it('encodes the approved material-identity authoring rules', () => {
+		const profile = buildEquipmentVisualProfile();
+
+		expect(profile.style.materialResponse).toBe(
+			'honest surface wear and material response with narrow controlled highlights and restrained local magic. Material identity uses one or two physical construction cues; palette alone never satisfies the material criterion; where the material calls for it, use one bounded supernatural behavior. Secondary materials stay neutral and subordinate and never assert a second rank.'
+		);
+	});
+
+	it('encodes the approved dependent-piece slot cardinality', () => {
+		const profile = buildEquipmentVisualProfile();
+
+		expect(profile.dependentPiecePresentation.composition).toBe(
+			'isolated matching object or required pair derived from the accepted complete-set reference. Legs means the complete paired or lower-body item. Boots means one matching pair.'
+		);
+	});
+
 	it('serializes the profile and all public schemas deterministically', () => {
 		expect(serializeEquipmentVisualProfile()).toBe(
 			`${JSON.stringify(buildEquipmentVisualProfile(), null, '\t')}\n`
