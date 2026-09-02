@@ -257,24 +257,28 @@ describe('persistSkillIconOutput', () => {
 		const previous = process.cwd();
 		try {
 			process.chdir(root);
-			const receipt = await persistSkillIconOutput({
-				sourcePath,
-				candidatePath,
-				expectedRole: 'skill-art',
-				geometry
-			});
+			const receipt = await persistSkillIconOutput(
+				{
+					sourcePath,
+					candidatePath,
+					expectedRole: 'skill-art',
+					geometry
+				},
+				{ now: () => new Date('2026-09-02T12:34:56.000Z') }
+			);
 			expect(receipt).toMatchObject({
 				jobId: target.jobId,
-				receivedAt: assignment.assignedAt,
+				receivedAt: '2026-09-02T12:34:56.000Z',
 				retained: { path: candidatePath }
 			});
+			expect(receipt.receivedAt).not.toBe(assignment.assignedAt);
 		} finally {
 			process.chdir(previous);
 		}
 	});
 
-	it('requires an explicit CLI receipt timestamp', () => {
-		expect(() =>
+	it('keeps the documented no-timestamp CLI grammar and accepts an optional timestamp', () => {
+		expect(
 			parsePersistSkillIconCliRequest([
 				'--source',
 				'/tmp/output.png',
@@ -283,7 +287,19 @@ describe('persistSkillIconOutput', () => {
 				'--assignment',
 				'assets/wiki/skills/icon-production-v1/assignments/icons/example-v1.json'
 			])
-		).toThrow(/--received-at/u);
+		).not.toHaveProperty('receivedAt');
+		expect(
+			parsePersistSkillIconCliRequest([
+				'--source',
+				'/tmp/output.png',
+				'--target',
+				'assets/wiki/skills/icon-production-v1/targets/icons/example-v1.json',
+				'--assignment',
+				'assets/wiki/skills/icon-production-v1/assignments/icons/example-v1.json',
+				'--received-at',
+				'2026-09-02T12:34:56.000Z'
+			])
+		).toHaveProperty('receivedAt', '2026-09-02T12:34:56.000Z');
 	});
 
 	it('rejects candidate and result ancestor swaps before either external write', async () => {

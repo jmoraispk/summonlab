@@ -31,6 +31,10 @@ export interface PersistSkillIconOutputOptions {
 	readonly geometry: SkillIconGeometry;
 }
 
+export interface PersistSkillIconOutputDependencies {
+	readonly now?: () => Date;
+}
+
 export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutputOptions {
 	readonly root?: string;
 	readonly target: SkillIconTarget;
@@ -366,7 +370,8 @@ function packetPathsForCandidate(candidatePath: string): {
 }
 
 export async function persistSkillIconOutput(
-	options: PersistSkillIconOutputOptions
+	options: PersistSkillIconOutputOptions,
+	dependencies: PersistSkillIconOutputDependencies = {}
 ): Promise<SkillIconAssetReceipt> {
 	const root = process.cwd();
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
@@ -379,14 +384,13 @@ export async function persistSkillIconOutput(
 			SkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
 		)
 	]);
-	// The compact four-field API uses the immutable assignment timestamp authored by its caller.
-	// CLI and orchestration code should use the bound variant with an explicit receipt timestamp.
+	const receivedAt = (dependencies.now?.() ?? new Date()).toISOString();
 	return persistSkillIconOutputBound({
 		...options,
 		root,
 		target,
 		assignment,
-		receivedAt: assignment.assignedAt
+		receivedAt
 	});
 }
 
@@ -401,7 +405,7 @@ export interface PersistSkillIconCliRequest {
 	readonly sourcePath: string;
 	readonly targetPath: string;
 	readonly assignmentPath: string;
-	readonly receivedAt: string;
+	readonly receivedAt?: string;
 	readonly expectedSourceHash?: string;
 }
 
@@ -426,13 +430,19 @@ export function parsePersistSkillIconCliRequest(
 	const request = {
 		sourcePath: option(args, '--source'),
 		targetPath: SkillIconTargetPathSchema.parse(option(args, '--target')),
-		assignmentPath: SkillIconAssignmentPathSchema.parse(option(args, '--assignment')),
-		receivedAt: IsoDateTimeSchema.parse(option(args, '--received-at'))
+		assignmentPath: SkillIconAssignmentPathSchema.parse(option(args, '--assignment'))
 	};
+	const receivedAt = seen.has('--received-at')
+		? IsoDateTimeSchema.parse(option(args, '--received-at'))
+		: undefined;
 	const expectedSourceHash = seen.has('--source-hash')
 		? StateHashSchema.parse(option(args, '--source-hash'))
 		: undefined;
-	return expectedSourceHash === undefined ? request : { ...request, expectedSourceHash };
+	return {
+		...request,
+		...(receivedAt === undefined ? {} : { receivedAt }),
+		...(expectedSourceHash === undefined ? {} : { expectedSourceHash })
+	};
 }
 
 async function runCli(args: readonly string[]): Promise<void> {
@@ -460,7 +470,7 @@ async function runCli(args: readonly string[]): Promise<void> {
 		geometry,
 		target,
 		assignment,
-		receivedAt: request.receivedAt,
+		receivedAt: request.receivedAt ?? new Date().toISOString(),
 		...(request.expectedSourceHash === undefined
 			? {}
 			: { expectedSourceHash: request.expectedSourceHash })

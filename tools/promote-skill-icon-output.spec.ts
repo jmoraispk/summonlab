@@ -1,11 +1,13 @@
-import { createHash } from 'node:crypto';
+import { createHash, createHmac, randomUUID } from 'node:crypto';
 import {
 	access,
 	copyFile,
 	mkdir,
 	mkdtemp,
+	lstat,
 	readFile,
 	readdir,
+	realpath,
 	rename,
 	rm,
 	symlink,
@@ -26,17 +28,17 @@ import {
 import {
 	SKILL_ICON_PROMOTION_JOURNAL_PATH,
 	SKILL_ICON_PROMOTION_LOCK_PATH,
+	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
 	parsePromotionCliRequest,
 	promoteReviewedSkillIconOutputs,
 	promoteSkillIconOutput,
-	recoverSkillIconPromotion
+	recoverSkillIconPromotion,
+	type SkillIconDerivativeResolver
 } from './promote-skill-icon-output.js';
 
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
 
-const trustedOwner = 'Skills visual owner';
-const trustedProducer = 'Assigned image producer';
 const aperturePoints = [
 	[512, 80],
 	[904, 304],
@@ -45,6 +47,17 @@ const aperturePoints = [
 	[120, 720],
 	[120, 304]
 ] as const;
+
+function signJournalForTest(journal: Record<string, unknown>, token: string) {
+	const unsigned = { ...journal, authorizationTag: '0'.repeat(64) };
+	const payload = Object.fromEntries(
+		Object.entries(unsigned).filter(([key]) => key !== 'authorizationTag')
+	);
+	return {
+		...unsigned,
+		authorizationTag: createHmac('sha256', token).update(JSON.stringify(payload)).digest('hex')
+	};
+}
 
 function inAperture(x: number, y: number): boolean {
 	let inside = false;
@@ -219,15 +232,62 @@ async function fixture(
 	return { root, reviewPath, candidatePath, resultPath, hash };
 }
 
+async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
+	const transactionId = randomUUID();
+	const transactionToken = randomUUID();
+	const masterPath =
+		'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png';
+	const master = path.join(item.root, masterPath);
+	await mkdir(path.dirname(master), { recursive: true });
+	const bytes = await readFile(path.join(item.root, item.candidatePath));
+	await writeFile(master, bytes);
+	const [parentMetadata, fileMetadata, parentRealPath] = await Promise.all([
+		lstat(path.dirname(master)),
+		lstat(master),
+		realpath(path.dirname(master))
+	]);
+	const lock = {
+		schemaVersion: 'skill-icon-promotion-lock-v1',
+		transactionId,
+		recoveryTokenHash: createHash('sha256').update(transactionToken).digest('hex'),
+		pid: 999_999,
+		acquiredAt: '2026-09-02T10:00:00.000Z'
+	};
+	const journal = {
+		schemaVersion: 'skill-icon-promotion-transaction-v1',
+		transactionId,
+		recoveryTokenHash: lock.recoveryTokenHash,
+		authorizationTag: '0'.repeat(64),
+		phase: 'outputs-writing',
+		jobs: [{ jobId: 'charcoal-forged-stone-v1', masterPath, contentHash: item.hash }],
+		planned: [{ path: masterPath, contentHash: item.hash }],
+		created: [
+			{
+				path: masterPath,
+				contentHash: item.hash,
+				parent: {
+					realPath: parentRealPath,
+					device: parentMetadata.dev,
+					inode: parentMetadata.ino
+				},
+				file: { device: fileMetadata.dev, inode: fileMetadata.ino }
+			}
+		],
+		shared: []
+	};
+	Object.assign(journal, signJournalForTest(journal, transactionToken));
+	await writeFile(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH), JSON.stringify(lock));
+	await writeFile(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH), JSON.stringify(journal));
+	return { transactionId, transactionToken, masterPath, master, lock, journal };
+}
+
 describe('promoteSkillIconOutput', () => {
 	it('copies the exact accepted owner-reviewed candidate and preserves evidence', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const record = await promoteSkillIconOutput({
 			jobId: 'charcoal-forged-stone-v1',
 			reviewPath: item.reviewPath,
-			root: item.root,
-			trustedOwner,
-			trustedProducer
+			root: item.root
 		});
 		expect(record).toMatchObject({
 			jobId: 'charcoal-forged-stone-v1',
@@ -244,14 +304,24 @@ describe('promoteSkillIconOutput', () => {
 		expect(await readFile(path.join(item.root, record.approvedMaster.path))).toEqual(
 			await readFile(path.join(item.root, item.candidatePath))
 		);
+		const receiptBytes = await readFile(path.join(item.root, record.promotionReceipt.path));
+		expect(createHash('sha256').update(receiptBytes).digest('hex')).toBe(
+			record.promotionReceipt.contentHash
+		);
+		expect(JSON.parse(receiptBytes.toString('utf8'))).toMatchObject({
+			transactionId: record.transactionId,
+			ownerReviewer: 'Skills visual owner',
+			review: { path: item.reviewPath },
+			result: { path: item.resultPath, contentHash: record.resultContentHash },
+			candidate: { path: item.candidatePath, contentHash: item.hash },
+			master: { path: record.approvedMaster.path, contentHash: item.hash }
+		});
 		await expect(access(path.join(item.root, item.resultPath))).resolves.toBeUndefined();
 		await expect(
 			promoteSkillIconOutput({
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
 		).rejects.toThrow(/exist|collision/iu);
 	});
@@ -265,9 +335,7 @@ describe('promoteSkillIconOutput', () => {
 		const record = await promoteSkillIconOutput({
 			jobId: 'blade-sweeping-cut-calibration-v1',
 			reviewPath: item.reviewPath,
-			root: item.root,
-			trustedOwner,
-			trustedProducer
+			root: item.root
 		});
 		expect(record).toMatchObject({
 			role: 'calibration-plate',
@@ -321,6 +389,9 @@ describe('promoteSkillIconOutput', () => {
 				observation: 'Prompt matched.'
 			}
 		];
+		const geometryReference = Buffer.from('deterministic geometry reference');
+		const geometryReferencePath =
+			'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
 		const exactPrompt = 'Paint one centered practice sword.';
 		const output = {
 			path: candidatePath,
@@ -341,9 +412,9 @@ describe('promoteSkillIconOutput', () => {
 			exactPrompt,
 			references: [
 				{
-					path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+					path: geometryReferencePath,
 					purpose: 'Geometry.',
-					contentHash: 'a'.repeat(64)
+					contentHash: createHash('sha256').update(geometryReference).digest('hex')
 				}
 			],
 			canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
@@ -431,6 +502,7 @@ describe('promoteSkillIconOutput', () => {
 		);
 		for (const [relativePath, value] of [
 			[SKILL_ICON_VISUAL_SPECS_PATH, JSON.stringify(sourceVisual)],
+			[geometryReferencePath, geometryReference],
 			[candidatePath, candidate],
 			[targetPath, JSON.stringify(target)],
 			[assignmentPath, JSON.stringify(assignment)],
@@ -456,9 +528,9 @@ describe('promoteSkillIconOutput', () => {
 		);
 		await exportSkillIconProduction({ root, mode: 'write' });
 
-		await expect(
-			promoteSkillIconOutput({ jobId, reviewPath, root, trustedOwner, trustedProducer })
-		).rejects.toThrow(/deterministic derivative builder/iu);
+		await expect(promoteSkillIconOutput({ jobId, reviewPath, root })).rejects.toThrow(
+			/deterministic derivative resolver/iu
+		);
 		const visualAfter = JSON.parse(
 			await readFile(path.join(root, SKILL_ICON_VISUAL_SPECS_PATH), 'utf8')
 		) as { records: Record<string, unknown>[] };
@@ -500,9 +572,80 @@ describe('promoteSkillIconOutput', () => {
 			path.join(root, SKILL_ICON_VISUAL_SPECS_PATH),
 			`${JSON.stringify(forgedVisual, null, '\t')}\n`
 		);
+		await expect(promoteSkillIconOutput({ jobId, reviewPath, root })).rejects.toThrow(
+			/result evidence hash/iu
+		);
+
+		await writeFile(
+			path.join(root, SKILL_ICON_VISUAL_SPECS_PATH),
+			`${JSON.stringify(visualAfter, null, '\t')}\n`
+		);
+		for (const relativePath of [
+			...([512, 256, 128] as const).map(
+				(size) => `apps/web/static/skill-icons/v1/${size}/${slug}.webp`
+			),
+			recognitionPath
+		]) {
+			await rm(path.join(root, relativePath));
+		}
+		let resolverSawBoundInputs = false;
+		const derivativeResolver: SkillIconDerivativeResolver = async (input) => {
+			resolverSawBoundInputs =
+				input.candidate.contentHash === candidateHash &&
+				input.references.length === 1 &&
+				createHash('sha256').update(input.references[0]!.bytes).digest('hex') ===
+					input.references[0]!.contentHash;
+			return {
+				runtime512: await sharp(input.candidate.bytes).resize(512, 512).webp().toBuffer(),
+				runtime256: await sharp(input.candidate.bytes).resize(256, 256).webp().toBuffer(),
+				runtime128: await sharp(input.candidate.bytes).resize(128, 128).webp().toBuffer(),
+				recognition96: await sharp(input.candidate.bytes).resize(96, 96).png().toBuffer()
+			};
+		};
 		await expect(
-			promoteSkillIconOutput({ jobId, reviewPath, root, trustedOwner, trustedProducer })
-		).rejects.toThrow(/result evidence hash/iu);
+			promoteSkillIconOutput({
+				jobId,
+				reviewPath,
+				root,
+				derivativeResolver,
+				testHooks: {
+					afterSharedWrite: ({ index }) => {
+						if (index === 0) throw new Error('injected shared-state failure');
+					}
+				}
+			})
+		).rejects.toThrow(/injected shared-state failure/iu);
+		expect(
+			JSON.parse(
+				await readFile(path.join(root, SKILL_ICON_VISUAL_SPECS_PATH), 'utf8')
+			).records.find((record: Record<string, unknown>) => record.targetId === targetId)
+		).toMatchObject({ status: 'candidate' });
+		for (const relativePath of [
+			`assets/wiki/skills/icon-production-v1/masters/icons/${slug}.png`,
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${jobId}.json`,
+			`apps/web/static/skill-icons/v1/512/${slug}.webp`
+		]) {
+			await expect(access(path.join(root, relativePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+		const promoted = await promoteSkillIconOutput({
+			jobId,
+			reviewPath,
+			root,
+			derivativeResolver
+		});
+		expect(resolverSawBoundInputs).toBe(true);
+		expect(promoted).toMatchObject({ role: 'skill-art', transactionId: expect.any(String) });
+		const approvedVisual = JSON.parse(
+			await readFile(path.join(root, SKILL_ICON_VISUAL_SPECS_PATH), 'utf8')
+		) as { records: Record<string, unknown>[] };
+		expect(approvedVisual.records.find((record) => record.targetId === targetId)).toMatchObject({
+			status: 'approved',
+			assets: {
+				approvedMaster: { contentHash: candidateHash },
+				runtime512: { width: 512 },
+				recognition96: { width: 96 }
+			}
+		});
 	});
 
 	it('rejects missing, non-accepted, non-owner, and hash-mismatched review evidence', async () => {
@@ -512,18 +655,14 @@ describe('promoteSkillIconOutput', () => {
 				jobId: item.reviewPath,
 				reviewPath:
 					'assets/wiki/skills/icon-production-v1/review/decisions/references/missing-v1.json',
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
 		).rejects.toThrow();
 		await expect(
 			promoteSkillIconOutput({
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
 		).rejects.toThrow(/accepted/u);
 		const reviewFile = path.join(item.root, item.reviewPath);
@@ -536,9 +675,7 @@ describe('promoteSkillIconOutput', () => {
 			promoteSkillIconOutput({
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
 		).rejects.toThrow(/owner|review/iu);
 		await writeFile(
@@ -549,36 +686,9 @@ describe('promoteSkillIconOutput', () => {
 			promoteSkillIconOutput({
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
 		).rejects.toThrow(/hash/u);
-	});
-
-	it('binds acceptance to a coordinator-supplied owner identity', async () => {
-		const item = await fixture('charcoal-forged-stone-v1');
-		await expect(
-			promoteSkillIconOutput({
-				jobId: 'charcoal-forged-stone-v1',
-				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner: 'Image producer',
-				trustedProducer
-			})
-		).rejects.toThrow(/trusted owner/iu);
-		const reviewFile = path.join(item.root, item.reviewPath);
-		const review = JSON.parse(await readFile(reviewFile, 'utf8'));
-		await writeFile(reviewFile, JSON.stringify({ ...review, reviewer: trustedProducer }));
-		await expect(
-			promoteSkillIconOutput({
-				jobId: 'charcoal-forged-stone-v1',
-				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner: trustedProducer,
-				trustedProducer
-			})
-		).rejects.toThrow(/owner.*producer|producer.*owner/iu);
 	});
 
 	it('serializes coordinators with an exclusive lock', async () => {
@@ -595,8 +705,6 @@ describe('promoteSkillIconOutput', () => {
 			jobId: 'charcoal-forged-stone-v1',
 			reviewPath: item.reviewPath,
 			root: item.root,
-			trustedOwner,
-			trustedProducer,
 			testHooks: {
 				afterLockAcquired: async () => {
 					entered();
@@ -609,11 +717,9 @@ describe('promoteSkillIconOutput', () => {
 			promoteSkillIconOutput({
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
-				root: item.root,
-				trustedOwner,
-				trustedProducer
+				root: item.root
 			})
-		).rejects.toThrow(/coordinator lock/iu);
+		).rejects.toThrow(/promotion lock/iu);
 		release();
 		await expect(first).resolves.toMatchObject({ jobId: 'charcoal-forged-stone-v1' });
 	});
@@ -629,8 +735,6 @@ describe('promoteSkillIconOutput', () => {
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
 				root: item.root,
-				trustedOwner,
-				trustedProducer,
 				testHooks: {
 					afterMasterWrite: () => {
 						throw new Error('injected failure');
@@ -647,6 +751,31 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
+	it('rolls back owned outputs when result evidence changes during the transaction', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					beforeMasterWrite: async () => {
+						const resultPath = path.join(item.root, item.resultPath);
+						await writeFile(resultPath, `${await readFile(resultPath, 'utf8')}\n`);
+					}
+				}
+			})
+		).rejects.toThrow(/result evidence changed/iu);
+		for (const relativePath of [
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png',
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v1.json`
+		]) {
+			await expect(access(path.join(item.root, relativePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
 	it('rejects an ancestor swap before writing and never writes through the symlink', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-outside-'));
@@ -656,8 +785,6 @@ describe('promoteSkillIconOutput', () => {
 				jobId: 'charcoal-forged-stone-v1',
 				reviewPath: item.reviewPath,
 				root: item.root,
-				trustedOwner,
-				trustedProducer,
 				testHooks: {
 					beforeMasterWrite: async ({ destination }) => {
 						const parent = path.dirname(destination);
@@ -672,30 +799,19 @@ describe('promoteSkillIconOutput', () => {
 
 	it('recovers hash-owned orphan masters from a durable stale journal', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
-		const masterPath =
-			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png';
-		const master = path.join(item.root, masterPath);
-		await mkdir(path.dirname(master), { recursive: true });
-		const bytes = await readFile(path.join(item.root, item.candidatePath));
-		await writeFile(master, bytes);
-		await writeFile(
-			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
-			JSON.stringify({
-				schemaVersion: 'skill-icon-promotion-transaction-v1',
-				transactionId: 'stale-test',
-				phase: 'masters-writing',
-				masters: [{ path: masterPath, contentHash: item.hash }],
-				createdMasterPaths: [masterPath],
-				originalVisual: null,
-				originalCatalog: null
+		const state = await recoveryState(item);
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: randomUUID()
 			})
-		);
-		await writeFile(
-			path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH),
-			JSON.stringify({ pid: 999_999, transactionId: 'stale-test' })
-		);
-		await recoverSkillIconPromotion({ root: item.root, force: true });
-		await expect(access(master)).rejects.toMatchObject({ code: 'ENOENT' });
+		).rejects.toThrow(/token/iu);
+		await expect(access(state.master)).resolves.toBeUndefined();
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken
+		});
+		await expect(access(state.master)).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH))
 		).rejects.toMatchObject({ code: 'ENOENT' });
@@ -704,17 +820,182 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('does not let forced recovery override an active coordinator lock', async () => {
+	it('fails closed on malformed lock state without deleting it', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
-		await writeFile(
-			path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH),
-			JSON.stringify({ pid: process.pid, transactionId: 'active-test' })
+		const lockPath = path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH);
+		await writeFile(lockPath, '');
+		await expect(
+			recoverSkillIconPromotion({ root: item.root, transactionToken: randomUUID() })
+		).rejects.toThrow(/invalid.*lock|fail-closed/iu);
+		await expect(readFile(lockPath, 'utf8')).resolves.toBe('');
+	});
+
+	it('rejects malicious or partial journals before mutating any repository file', async () => {
+		for (const mutate of [
+			(journal: Record<string, unknown>) => ({
+				...journal,
+				jobs: [
+					{
+						jobId: 'charcoal-forged-stone-v1',
+						masterPath: 'package.json',
+						contentHash: 'a'.repeat(64)
+					}
+				]
+			}),
+			(journal: Record<string, unknown>) => ({
+				...journal,
+				shared: [
+					{
+						path: 'package.json',
+						before: {
+							bytesBase64: Buffer.from('owned').toString('base64'),
+							contentHash: 'a'.repeat(64)
+						},
+						afterHash: 'b'.repeat(64),
+						parent: { realPath: '/tmp', device: 1, inode: 1 }
+					}
+				]
+			}),
+			(journal: Record<string, unknown>) => ({
+				...journal,
+				jobs: [...(journal.jobs as unknown[]), ...(journal.jobs as unknown[])]
+			}),
+			(journal: Record<string, unknown>) => ({
+				...journal,
+				created: [
+					{
+						...(journal.created as Record<string, unknown>[])[0],
+						path: '../victim'
+					}
+				]
+			}),
+			() => ({ schemaVersion: 'skill-icon-promotion-transaction-v1' })
+		] as const) {
+			const item = await fixture('charcoal-forged-stone-v1');
+			const state = await recoveryState(item);
+			const victimPath = path.join(item.root, 'package.json');
+			await writeFile(victimPath, 'victim-must-survive');
+			await writeFile(
+				path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+				JSON.stringify(mutate(state.journal))
+			);
+			await expect(
+				recoverSkillIconPromotion({
+					root: item.root,
+					transactionToken: state.transactionToken
+				})
+			).rejects.toThrow(/invalid.*journal|fail-closed/iu);
+			await expect(readFile(victimPath, 'utf8')).resolves.toBe('victim-must-survive');
+			await expect(access(state.master)).resolves.toBeUndefined();
+		}
+	});
+
+	it('rejects a self-consistent but unauthorized shared-state snapshot', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const sharedPath = path.join(item.root, SKILL_ICON_VISUAL_SPECS_PATH);
+		await mkdir(path.dirname(sharedPath), { recursive: true });
+		const current = Buffer.from('current-shared-state');
+		const malicious = Buffer.from('{"attacker":true}\n');
+		await writeFile(sharedPath, current);
+		const [parentMetadata, parentRealPath] = await Promise.all([
+			lstat(path.dirname(sharedPath)),
+			realpath(path.dirname(sharedPath))
+		]);
+		const crafted = signJournalForTest(
+			{
+				...state.journal,
+				phase: 'shared-writing',
+				shared: [
+					{
+						path: SKILL_ICON_VISUAL_SPECS_PATH,
+						before: {
+							bytesBase64: malicious.toString('base64'),
+							contentHash: createHash('sha256').update(malicious).digest('hex')
+						},
+						afterHash: createHash('sha256').update(current).digest('hex'),
+						parent: {
+							realPath: parentRealPath,
+							device: parentMetadata.dev,
+							inode: parentMetadata.ino
+						},
+						beforeFile: { device: 1, inode: 1 },
+						afterFile: await lstat(sharedPath).then((metadata) => ({
+							device: metadata.dev,
+							inode: metadata.ino
+						}))
+					}
+				]
+			},
+			randomUUID()
 		);
-		await expect(recoverSkillIconPromotion({ root: item.root, force: true })).rejects.toThrow(
-			/active.*lock/iu
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(crafted)
 		);
 		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken
+			})
+		).rejects.toThrow(/authorization/iu);
+		await expect(readFile(sharedPath)).resolves.toEqual(current);
+		await expect(access(state.master)).resolves.toBeUndefined();
+	});
+
+	it('retains recovery state and an outside victim when a recorded parent is swapped', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const parent = path.dirname(state.master);
+		const movedParent = `${parent}-moved`;
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-recovery-outside-'));
+		roots.push(outside);
+		const outsideVictim = path.join(outside, path.basename(state.master));
+		await writeFile(outsideVictim, 'outside-victim');
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken,
+				testHooks: {
+					beforeRecoveryMutation: async () => {
+						await rename(parent, movedParent);
+						await symlink(outside, parent);
+					}
+				}
+			})
+		).rejects.toThrow(/identity|symbolic link|cleanup required/iu);
+		await expect(readFile(outsideVictim, 'utf8')).resolves.toBe('outside-victim');
+		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
+		).resolves.toBeUndefined();
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH))
+		).resolves.toBeUndefined();
+		await expect(
+			access(path.join(movedParent, path.basename(state.master)))
+		).resolves.toBeUndefined();
+	});
+
+	it('retains recovery state for an untracked partial master instead of guessing ownership', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const journal = signJournalForTest({ ...state.journal, created: [] }, state.transactionToken);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
+		await expect(
+			recoverSkillIconPromotion({
+				root: item.root,
+				transactionToken: state.transactionToken
+			})
+		).rejects.toThrow(/untracked partial|manual cleanup/iu);
+		await expect(access(state.master)).resolves.toBeUndefined();
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
+		).resolves.toBeUndefined();
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH))
 		).resolves.toBeUndefined();
 	});
 
@@ -744,9 +1025,7 @@ describe('promoteSkillIconOutput', () => {
 		await expect(
 			promoteReviewedSkillIconOutputs({
 				reviewDirectory,
-				root: first.root,
-				trustedOwner,
-				trustedProducer
+				root: first.root
 			})
 		).rejects.toThrow(/accepted/u);
 		await expect(
@@ -782,9 +1061,7 @@ describe('promoteSkillIconOutput', () => {
 		await expect(
 			promoteReviewedSkillIconOutputs({
 				reviewDirectory,
-				root: first.root,
-				trustedOwner,
-				trustedProducer
+				root: first.root
 			})
 		).rejects.toThrow(/duplicate master destination/iu);
 		await expect(
@@ -797,7 +1074,7 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('rejects mixed CLI modes and requires explicit owner identity', () => {
+	it('rejects mixed CLI modes and preserves the documented command grammar', () => {
 		expect(() =>
 			parsePromotionCliRequest([
 				'--review-dir',
@@ -805,25 +1082,13 @@ describe('promoteSkillIconOutput', () => {
 				'--job',
 				'job-v1',
 				'--review',
-				'review.json',
-				'--owner',
-				trustedOwner,
-				'--producer',
-				trustedProducer
+				'review.json'
 			])
 		).toThrow(/cannot mix/iu);
-		expect(() => parsePromotionCliRequest(['--job', 'job-v1', '--review', 'review.json'])).toThrow(
-			/--owner/u
-		);
-		expect(() =>
-			parsePromotionCliRequest([
-				'--job',
-				'job-v1',
-				'--review',
-				'review.json',
-				'--owner',
-				trustedOwner
-			])
-		).toThrow(/--producer/u);
+		expect(parsePromotionCliRequest(['--job', 'job-v1', '--review', 'review.json'])).toEqual({
+			mode: 'single',
+			jobId: 'job-v1',
+			reviewPath: 'review.json'
+		});
 	});
 });

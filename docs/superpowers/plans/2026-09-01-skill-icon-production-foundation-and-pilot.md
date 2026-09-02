@@ -460,6 +460,12 @@ Decode to raw RGBA once. Treat alpha `<= 8` as transparent for bounds checks. En
 - `backing`: transparent outside the aperture, at least 85% aperture coverage, and no frame-like pixels outside it;
 - `calibration-plate`: PNG with dimensions recorded by its target and no alpha-safe-zone requirement.
 
+Alpha values `<= 8` are transparent; every value above 8 must remain inside the role's strict
+aperture or envelope. Reject degenerate outputs with geometry-relative minimums accepted by the
+production design: skill artwork covers at least 1% of the subject-safe disk, while rarity frames
+cover at least 3% of the aperture and 4% of every edge band. The percentages preserve thin valid
+silhouettes while distinguishing readable continuous material from isolated pixels.
+
 Keep thresholds named and exported so tests and reports use the same values.
 
 - [ ] **Step 4: Implement collision-safe persistence**

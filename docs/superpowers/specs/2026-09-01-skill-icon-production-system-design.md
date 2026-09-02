@@ -56,6 +56,13 @@ outer frame, inner aperture, backing mask, and icon safe zone are fixed by one g
 The painted subject stays within the central 64% safe zone; restrained supporting effects may
 extend to 72% but never enter the frame or rarity medallion exclusion zones.
 
+Automated alpha geometry treats alpha values through 8 as transparent and rejects every pixel
+above 8 outside the applicable aperture or envelope. Geometry-relative minimums reject degenerate
+registration specks without prescribing an art style: skill artwork must cover at least 1% of the
+64% subject-safe disk, and a rarity frame must cover at least 3% of the aperture area plus 4% of
+each of its six geometry-scaled edge bands. These thresholds represent a minimally readable emblem
+and continuous frame material at the 1024-pixel working scale; they are not absolute pixel counts.
+
 Approved masters retain their original lossless PNG. Runtime exports derive deterministically at
 `512×512`, `256×256`, and `128×128` without replacing the master.
 
