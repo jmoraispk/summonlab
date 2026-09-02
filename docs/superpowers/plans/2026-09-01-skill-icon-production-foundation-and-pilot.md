@@ -668,7 +668,7 @@ git commit -m "feat(skills): add icon production skill"
 - Create: `assets/wiki/skills/icon-production-v1/masters/frames/{f,e,d,c,b,a,s}.png` after owner acceptance
 - Create: `assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png` after owner acceptance
 - Create: `assets/wiki/skills/icon-production-v1/review/decisions/references/*.json`
-- Create: `assets/wiki/skills/icon-production-v1/review/reference-assets-v1.png`
+- Create: `assets/wiki/skills/icon-production-v1/review/reference-assets-vN.png`
 - Modify: `assets/wiki/skills/icon-production-v1/catalog.json`
 
 **Interfaces:**
@@ -700,7 +700,9 @@ pnpm export:skill-icon-runtime -- --scope references
 ```
 
 Expected: all eight files pass role-specific alpha/geometry checks and
-`review/reference-assets-v1.png` shows F through S plus the backing at equal scale.
+`review/reference-assets-vN.png` shows F through S plus the backing at equal scale. `N` is the
+highest selected packet revision; an incomplete newer packet blocks export, and older sheets remain
+immutable review evidence.
 
 - [ ] **Step 5: Pause for owner review**
 
@@ -851,7 +853,7 @@ git commit -m "feat(skills): calibrate pilot icon families"
 - Create: `assets/wiki/skills/icon-production-v1/results/icons/*.json`
 - Create: `assets/wiki/skills/icon-production-v1/masters/icons/{target-id}.png` after owner acceptance
 - Create: `assets/wiki/skills/icon-production-v1/review/decisions/icons/*.json`
-- Create: `assets/wiki/skills/icon-production-v1/review/pilot-icons-v1.png`
+- Create: `assets/wiki/skills/icon-production-v1/review/pilot-icons-vN.png`
 - Create: `apps/web/static/skill-icons/v1/{512,256,128}/*.{webp}` after promotion
 - Create: `apps/web/static/skill-icons/v1/manifest.json`
 - Modify: `assets/wiki/skills/icon-production-v1/visual-specs.json`
@@ -895,7 +897,10 @@ pnpm export:skill-icon-runtime -- --scope pilot
 pnpm validate:skill-icons
 ```
 
-Expected: `review/pilot-icons-v1.png` contains exactly 15 composed cards with skill name and example mastery/level text beneath each hexagon, while each underlying master remains standalone and text-free.
+Expected: `review/pilot-icons-vN.png` contains exactly 15 composed cards from the highest complete
+packet revision for each skill, with skill name and example mastery/level text beneath each hexagon.
+An incomplete newer packet blocks export, older sheets remain immutable, and every underlying
+master remains standalone and text-free.
 
 - [ ] **Step 6: Pause for owner pilot acceptance**
 

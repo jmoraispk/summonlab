@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { lstat, mkdir, open, readdir, realpath, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, readdir, realpath, rmdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -21,8 +21,12 @@ import {
 	type SkillIconMastery,
 	type SkillIconRarity
 } from '../packages/contracts/src/index.js';
-import { SKILL_ICON_CATALOG_PATH } from './export-skill-icon-production.js';
 import {
+	SKILL_ICON_CATALOG_PATH,
+	exportSkillIconProduction
+} from './export-skill-icon-production.js';
+import {
+	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
 	SkillIconPromotionReceiptSchema
 } from './skill-icon-promotion-contract.js';
@@ -112,8 +116,7 @@ export interface SkillIconRuntimeExportReport {
 		readonly assets: SkillIconDerivedAssets;
 	}[];
 	readonly contactSheet: {
-		readonly path:
-			typeof SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH | typeof SKILL_ICON_PILOT_CONTACT_SHEET_PATH;
+		readonly path: string;
 		readonly current: boolean;
 		readonly itemCount: number;
 		readonly bytes: number;
@@ -141,14 +144,36 @@ interface PlannedDerivative {
 }
 
 interface PlannedContactSheet {
-	readonly path:
-		typeof SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH | typeof SKILL_ICON_PILOT_CONTACT_SHEET_PATH;
+	readonly path: string;
 	readonly bytes: Buffer;
 	readonly itemCount: number;
 }
 
+export interface SkillIconRuntimeTestHooks {
+	readonly beforeContactSheetPublish?: (input: {
+		readonly path: string;
+		readonly stagePath: string;
+	}) => void | Promise<void>;
+}
+
+interface ParentFingerprint {
+	readonly realPath: string;
+	readonly device: number;
+	readonly inode: number;
+}
+
 function sha256(bytes: Buffer): string {
 	return createHash('sha256').update(bytes).digest('hex');
+}
+
+function jobRevision(jobId: string): number {
+	const match = /-v([1-9]\d*)$/u.exec(jobId);
+	if (!match) throw new Error(`Skill icon job lacks a positive revision suffix: ${jobId}`);
+	return Number(match[1]);
+}
+
+function reviewSheetPath(kind: 'reference-assets' | 'pilot-icons', revision: number): string {
+	return `assets/wiki/skills/icon-production-v1/review/${kind}-v${revision}.png`;
 }
 
 function inside(parent: string, child: string): boolean {
@@ -690,22 +715,55 @@ function escapeSvgText(value: string): string {
 		.replaceAll("'", '&apos;');
 }
 
-function wrapReviewName(value: string): string[] {
-	const normalized = value.replace(/\s+/gu, ' ').trim();
-	const characters = [...normalized];
-	const lineCount = Math.min(3, Math.max(1, Math.ceil(characters.length / 52)));
-	const targetLength = Math.ceil(characters.length / lineCount);
+async function renderedTextWidth(value: string, fontSize: number): Promise<number> {
+	const svg = Buffer.from(
+		`<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="96"><text x="8" y="${fontSize + 12}" fill="#fff" font-family="DejaVu Sans" font-size="${fontSize}" font-weight="700" font-kerning="none">${escapeSvgText(value)}</text></svg>`
+	);
+	const rendered = await sharp(svg).trim().png().toBuffer({ resolveWithObject: true });
+	return rendered.info.width;
+}
+
+function balancedNameLines(value: string, lineCount: number): string[] {
 	const lines: string[] = [];
-	let remaining = normalized;
+	let remaining = [...value];
 	for (let index = 0; index < lineCount - 1; index += 1) {
-		let split = targetLength;
-		const nextSpace = remaining.indexOf(' ', Math.max(1, targetLength - 12));
-		if (nextSpace >= 0 && nextSpace <= targetLength + 12) split = nextSpace;
-		lines.push(remaining.slice(0, split).trim());
-		remaining = remaining.slice(split).trim();
+		const remainingLines = lineCount - index;
+		const target = Math.ceil(remaining.length / remainingLines);
+		const minimum = Math.max(1, target - 12);
+		const maximum = Math.min(remaining.length - 1, target + 12);
+		const spaces = remaining.flatMap((character, position) =>
+			character === ' ' && position >= minimum && position <= maximum ? [position] : []
+		);
+		const split =
+			spaces.length > 0
+				? spaces.reduce((best, position) =>
+						Math.abs(position - target) < Math.abs(best - target) ? position : best
+					)
+				: target;
+		lines.push(remaining.slice(0, split).join('').trim());
+		remaining = [...remaining.slice(split).join('').trim()];
 	}
-	lines.push(remaining);
+	lines.push(remaining.join(''));
 	return lines;
+}
+
+async function fitReviewName(value: string): Promise<{ lines: string[]; fontSize: number }> {
+	const normalized = value.replace(/\s+/gu, ' ').trim();
+	for (const [lineCount, initialSize] of [
+		[1, 30],
+		[2, 23],
+		[3, 19]
+	] as const) {
+		const lines = balancedNameLines(normalized, lineCount);
+		let fontSize: number = initialSize;
+		while (fontSize >= 7) {
+			const widths = await Promise.all(lines.map((line) => renderedTextWidth(line, fontSize)));
+			if (Math.max(...widths) <= 480) return { lines, fontSize };
+			const next = Math.floor((fontSize * 480) / Math.max(...widths));
+			fontSize = Math.min(fontSize - 1, next);
+		}
+	}
+	throw new Error('Skill review name cannot fit within the review-card name region');
 }
 
 export function formatSkillReviewLabel(mastery: SkillIconMastery, level: number): string {
@@ -737,17 +795,20 @@ export async function renderSkillReviewCard(input: SkillIconReviewCardInput): Pr
 		.ensureAlpha()
 		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
 		.toBuffer();
-	const nameLines = wrapReviewName(input.name).map(escapeSvgText);
+	const fittedName = await fitReviewName(input.name);
+	const nameLines = fittedName.lines.map(escapeSvgText);
 	const label = escapeSvgText(formatSkillReviewLabel(input.mastery, input.level));
-	const nameFontSize = nameLines.length === 1 ? 30 : nameLines.length === 2 ? 23 : 19;
-	const nameLineHeight = nameLines.length === 1 ? 0 : nameLines.length === 2 ? 30 : 24;
-	const nameStartY = nameLines.length === 1 ? 48 : nameLines.length === 2 ? 27 : 20;
+	const nameFontSize = fittedName.fontSize;
+	const nameLineHeight = nameLines.length === 1 ? 0 : nameFontSize + 5;
+	const nameStartY =
+		nameLines.length === 1
+			? 48
+			: Math.max(nameFontSize + 2, Math.floor((100 - nameLineHeight * (nameLines.length - 1)) / 2));
 	const nameSvg = nameLines
-		.map((line, index) => {
-			const constrained =
-				[...line].length > 34 ? ' textLength="536" lengthAdjust="spacingAndGlyphs"' : '';
-			return `<text x="320" y="${nameStartY + index * nameLineHeight}" font-size="${nameFontSize}" font-weight="700"${constrained}>${line}</text>`;
-		})
+		.map(
+			(line, index) =>
+				`<text x="320" y="${nameStartY + index * nameLineHeight}" font-size="${nameFontSize}" font-weight="700">${line}</text>`
+		)
 		.join('');
 	const svg = Buffer.from(
 		[
@@ -867,16 +928,27 @@ async function loadBoundCandidate(
 ): Promise<Buffer> {
 	const candidatePath = target.output.candidatePath;
 	const resultPath = target.output.resultPath;
+	const scope = target.role === 'skill-art' ? 'icons' : 'references';
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${target.jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${target.jobId}.json`;
 	const candidate = await readRepositoryLayer(root, candidatePath, `Candidate ${target.jobId}`);
-	const resultLocation = await assertRepositoryPath(
-		root,
-		resultPath,
-		`Result ${target.jobId}`,
-		false
-	);
-	const resultBytes = await readDirectRegularFile(resultLocation, `Result ${target.jobId}`);
+	const [assignmentValue, resultBytes] = await Promise.all([
+		readRepositoryJson(root, assignmentPath, `Assignment ${target.jobId}`),
+		assertRepositoryPath(root, resultPath, `Result ${target.jobId}`, false).then((location) =>
+			readDirectRegularFile(location, `Result ${target.jobId}`)
+		)
+	]);
+	const assignment = SkillIconAssignmentSchema.parse(assignmentValue);
 	const result = SkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	SkillIconExecutionSchema.parse({
+		schemaVersion: 'skill-icon-execution-v1',
+		target,
+		assignment,
+		result
+	});
 	if (
+		assignment.targetPath !== targetPath ||
+		assignment.assignmentPath !== assignmentPath ||
 		result.jobId !== target.jobId ||
 		result.status !== 'candidate' ||
 		!result.output ||
@@ -938,8 +1010,10 @@ async function planReferenceContactSheet(root: string): Promise<PlannedContactSh
 	const selected = wanted.flatMap((item) => {
 		const matches = targets.filter(item.find);
 		if (matches.length === 0) missing.push(item.key);
-		if (matches.length > 1) duplicate.push(item.key);
-		return matches.length === 1 ? [{ ...item, target: matches[0]! }] : [];
+		const highestRevision = Math.max(...matches.map((target) => jobRevision(target.jobId)));
+		const active = matches.filter((target) => jobRevision(target.jobId) === highestRevision);
+		if (active.length > 1) duplicate.push(`${item.key} v${highestRevision}`);
+		return active.length === 1 ? [{ ...item, target: active[0]!, revision: highestRevision }] : [];
 	});
 	if (missing.length > 0 || duplicate.length > 0) {
 		throw new Error(
@@ -957,7 +1031,10 @@ async function planReferenceContactSheet(root: string): Promise<PlannedContactSh
 		)
 	);
 	return {
-		path: SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH,
+		path: reviewSheetPath(
+			'reference-assets',
+			Math.max(...selected.map(({ revision }) => revision))
+		),
 		bytes: await renderReferenceGrid(cells),
 		itemCount: cells.length
 	};
@@ -978,6 +1055,15 @@ async function loadPilotCatalog(root: string) {
 }
 
 async function planPilotContactSheet(root: string): Promise<PlannedContactSheet> {
+	const currency = await exportSkillIconProduction({ root, mode: 'check' });
+	if (!currency.inSync) {
+		throw new Error(
+			`Canonical skill-icon catalog is stale: ${currency.files
+				.filter((file) => !file.current)
+				.map((file) => file.path)
+				.join(', ')}`
+		);
+	}
 	const catalog = await loadPilotCatalog(root);
 	const byTargetId = new Map(catalog.records.map((record) => [record.targetId, record]));
 	const missing = SKILL_ICON_PILOT_TARGET_IDS.filter((targetId) => {
@@ -986,6 +1072,33 @@ async function planPilotContactSheet(root: string): Promise<PlannedContactSheet>
 	});
 	if (missing.length > 0) {
 		throw new Error(`Pilot contact sheet missing candidate visual records: ${missing.join(', ')}`);
+	}
+	const targetDirectory = 'assets/wiki/skills/icon-production-v1/targets/icons';
+	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory).catch(() => []);
+	const targets = await Promise.all(
+		targetPaths.map(async (targetPath) => {
+			const target = SkillIconTargetSchema.parse(
+				await readRepositoryJson(root, targetPath, `Pilot target ${targetPath}`)
+			);
+			if (targetPath !== `${targetDirectory}/${target.jobId}.json`) {
+				throw new Error(`Pilot target path does not match ${target.jobId}: ${targetPath}`);
+			}
+			if (target.role !== 'skill-art') {
+				throw new Error(`Unexpected pilot target role ${target.role}: ${target.jobId}`);
+			}
+			return target;
+		})
+	);
+	const selectedTargets = new Map<string, (typeof targets)[number]>();
+	for (const targetId of SKILL_ICON_PILOT_TARGET_IDS) {
+		const matches = targets.filter((target) => target.skillTargetId === targetId);
+		if (matches.length === 0) throw new Error(`Pilot contact sheet missing target: ${targetId}`);
+		const highestRevision = Math.max(...matches.map((target) => jobRevision(target.jobId)));
+		const active = matches.filter((target) => jobRevision(target.jobId) === highestRevision);
+		if (active.length !== 1) {
+			throw new Error(`Pilot contact sheet duplicate ${targetId} v${highestRevision}`);
+		}
+		selectedTargets.set(targetId, active[0]!);
 	}
 	const backingPromise = loadApprovedReference(
 		root,
@@ -1005,25 +1118,16 @@ async function planPilotContactSheet(root: string): Promise<PlannedContactSheet>
 			if (record.status !== 'candidate' && record.status !== 'approved') {
 				throw new Error(`Pilot record ${targetId} is not candidate-backed`);
 			}
-			const jobId = record.producerResult.jobId;
-			const targetPath = `assets/wiki/skills/icon-production-v1/targets/icons/${jobId}.json`;
-			const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/icons/${jobId}.json`;
-			const [targetValue, assignmentValue, resultValue] = await Promise.all([
-				readRepositoryJson(root, targetPath, `Pilot target ${jobId}`),
-				readRepositoryJson(root, assignmentPath, `Pilot assignment ${jobId}`),
-				readRepositoryJson(root, record.producerResult.path, `Pilot result ${jobId}`)
-			]);
-			const target = SkillIconTargetSchema.parse(targetValue);
-			const assignment = SkillIconAssignmentSchema.parse(assignmentValue);
-			const result = SkillIconResultSchema.parse(resultValue);
-			SkillIconExecutionSchema.parse({
-				schemaVersion: 'skill-icon-execution-v1',
-				target,
-				assignment,
-				result
-			});
+			const target = selectedTargets.get(targetId)!;
+			const jobId = target.jobId;
 			if (target.role !== 'skill-art' || target.skillTargetId !== targetId) {
 				throw new Error(`Pilot target identity mismatch for ${targetId}`);
+			}
+			const art = await loadBoundCandidate(root, target);
+			if (record.producerResult.jobId !== jobId) {
+				throw new Error(
+					`Pilot catalog does not select highest complete revision ${jobId} for ${targetId}`
+				);
 			}
 			const resultBytes = await readDirectRegularFile(
 				await assertRepositoryPath(root, record.producerResult.path, 'Pilot result', false),
@@ -1032,7 +1136,6 @@ async function planPilotContactSheet(root: string): Promise<PlannedContactSheet>
 			if (sha256(resultBytes) !== record.producerResult.contentHash) {
 				throw new Error(`Pilot result hash mismatch for ${targetId}`);
 			}
-			const art = await loadBoundCandidate(root, target);
 			if (
 				record.assets.candidate.path !== target.output.candidatePath ||
 				record.assets.candidate.contentHash !== sha256(art) ||
@@ -1055,7 +1158,10 @@ async function planPilotContactSheet(root: string): Promise<PlannedContactSheet>
 		})
 	);
 	return {
-		path: SKILL_ICON_PILOT_CONTACT_SHEET_PATH,
+		path: reviewSheetPath(
+			'pilot-icons',
+			Math.max(...[...selectedTargets.values()].map((target) => jobRevision(target.jobId)))
+		),
 		bytes: await renderSkillContactSheet(cards),
 		itemCount: cards.length
 	};
@@ -1138,27 +1244,158 @@ async function contactSheetState(
 		: 'drift';
 }
 
-async function writeContactSheet(root: string, sheet: PlannedContactSheet): Promise<void> {
-	const destination = await ensureSafeParent(root, sheet.path);
-	const handle = await open(destination, 'wx');
-	const opened = await handle.stat();
+async function directoryFingerprint(directory: string): Promise<ParentFingerprint> {
+	const metadata = await lstat(directory);
+	if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+		throw new Error(`Contact-sheet parent is unsafe: ${directory}`);
+	}
+	return { realPath: await realpath(directory), device: metadata.dev, inode: metadata.ino };
+}
+
+function sameDirectory(left: ParentFingerprint, right: ParentFingerprint): boolean {
+	return (
+		left.realPath === right.realPath && left.device === right.device && left.inode === right.inode
+	);
+}
+
+async function syncDirectory(directory: string): Promise<void> {
+	const handle = await open(
+		directory,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
 	try {
-		await handle.writeFile(sheet.bytes);
 		await handle.sync();
-	} catch (error) {
-		const current = await lstat(destination).catch(() => null);
-		if (
-			current &&
-			!current.isSymbolicLink() &&
-			current.isFile() &&
-			current.dev === opened.dev &&
-			current.ino === opened.ino
-		) {
-			await unlink(destination);
-		}
-		throw error;
 	} finally {
 		await handle.close();
+	}
+}
+
+async function assertNoConcurrentPromotion(root: string): Promise<void> {
+	const lock = path.resolve(root, SKILL_ICON_PROMOTION_LOCK_PATH);
+	if (await metadataOrNull(lock)) {
+		throw new Error('Contact-sheet publication refused while promotion coordinator lock exists');
+	}
+}
+
+async function writeContactSheet(
+	root: string,
+	sheet: PlannedContactSheet,
+	testHooks?: SkillIconRuntimeTestHooks
+): Promise<void> {
+	if (
+		!/^assets\/wiki\/skills\/icon-production-v1\/review\/(?:reference-assets|pilot-icons)-v[1-9]\d*\.png$/u.test(
+			sheet.path
+		)
+	) {
+		throw new Error(`Contact-sheet destination is outside fixed evidence authority: ${sheet.path}`);
+	}
+	await assertNoConcurrentPromotion(root);
+	const destination = await ensureSafeParent(root, sheet.path);
+	await assertNoConcurrentPromotion(root);
+	const destinationParent = await directoryFingerprint(path.dirname(destination));
+	const authority = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
+	const authorityIdentity = await directoryFingerprint(authority);
+	const stageDirectory = path.join(authority, `.contact-sheet-staging-${randomUUID()}`);
+	await mkdir(stageDirectory, { mode: 0o700 });
+	await syncDirectory(authority);
+	const stageDirectoryIdentity = await directoryFingerprint(stageDirectory);
+	const stagePath = path.join(stageDirectory, 'contact-sheet.stage');
+	let stageFile: { device: number; inode: number } | null = null;
+	let linked = false;
+	let completed = false;
+	try {
+		const handle = await open(
+			stagePath,
+			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+			0o644
+		);
+		try {
+			const opened = await handle.stat();
+			stageFile = { device: opened.dev, inode: opened.ino };
+			await handle.writeFile(sheet.bytes);
+			await handle.sync();
+		} finally {
+			await handle.close();
+		}
+		await syncDirectory(stageDirectory);
+		await testHooks?.beforeContactSheetPublish?.({ path: sheet.path, stagePath });
+		await assertNoConcurrentPromotion(root);
+		if (!sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent)) {
+			throw new Error(`Contact-sheet parent changed before publication: ${sheet.path}`);
+		}
+		if (!sameDirectory(await directoryFingerprint(authority), authorityIdentity)) {
+			throw new Error('Contact-sheet staging authority parent changed before publication');
+		}
+		if (!sameDirectory(await directoryFingerprint(stageDirectory), stageDirectoryIdentity)) {
+			throw new Error('Contact-sheet staging directory identity changed before publication');
+		}
+		const staged = await lstat(stagePath);
+		if (
+			!stageFile ||
+			staged.isSymbolicLink() ||
+			!staged.isFile() ||
+			staged.dev !== stageFile.device ||
+			staged.ino !== stageFile.inode ||
+			!(await readDirectRegularFile(stagePath, 'Staged contact sheet')).equals(sheet.bytes)
+		) {
+			throw new Error('Staged contact-sheet bytes or identity changed before publication');
+		}
+		await link(stagePath, destination);
+		linked = true;
+		await syncDirectory(path.dirname(destination));
+		const published = await lstat(destination);
+		if (
+			published.isSymbolicLink() ||
+			!published.isFile() ||
+			published.dev !== stageFile.device ||
+			published.ino !== stageFile.inode ||
+			!sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent) ||
+			!(await readDirectRegularFile(destination, 'Published contact sheet')).equals(sheet.bytes)
+		) {
+			throw new Error(`Contact-sheet identity changed during publication: ${sheet.path}`);
+		}
+		completed = true;
+	} finally {
+		if (linked && !completed && stageFile) {
+			const current = await lstat(destination).catch(() => null);
+			if (
+				current &&
+				!current.isSymbolicLink() &&
+				current.isFile() &&
+				current.dev === stageFile.device &&
+				current.ino === stageFile.inode &&
+				sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent)
+			) {
+				await unlink(destination);
+				await syncDirectory(path.dirname(destination));
+			}
+		}
+		const stageDirectoryCurrent = await lstat(stageDirectory).catch(() => null);
+		if (
+			stageDirectoryCurrent &&
+			!stageDirectoryCurrent.isSymbolicLink() &&
+			stageDirectoryCurrent.isDirectory() &&
+			stageDirectoryCurrent.dev === stageDirectoryIdentity.device &&
+			stageDirectoryCurrent.ino === stageDirectoryIdentity.inode &&
+			sameDirectory(await directoryFingerprint(authority), authorityIdentity)
+		) {
+			const stageCurrent = await lstat(stagePath).catch(() => null);
+			if (
+				stageCurrent &&
+				stageFile &&
+				!stageCurrent.isSymbolicLink() &&
+				stageCurrent.isFile() &&
+				stageCurrent.dev === stageFile.device &&
+				stageCurrent.ino === stageFile.inode
+			) {
+				await unlink(stagePath);
+				await syncDirectory(stageDirectory);
+			}
+			if ((await readdir(stageDirectory)).length === 0) {
+				await rmdir(stageDirectory);
+				await syncDirectory(authority);
+			}
+		}
 	}
 }
 
@@ -1166,6 +1403,7 @@ export async function exportSkillIconRuntime(options: {
 	readonly root?: string;
 	readonly mode: SkillIconRuntimeExportMode;
 	readonly scope?: SkillIconRuntimeExportScope;
+	readonly testHooks?: SkillIconRuntimeTestHooks;
 }): Promise<SkillIconRuntimeExportReport> {
 	const root = path.resolve(options.root ?? process.cwd());
 	const scope = options.scope ?? 'all';
@@ -1250,7 +1488,7 @@ export async function exportSkillIconRuntime(options: {
 			throw new Error(`Contact sheet collision/drift: ${contactSheet.path}`);
 		}
 		if (contactSheet && sheetState === 'missing') {
-			await writeContactSheet(root, contactSheet);
+			await writeContactSheet(root, contactSheet, options.testHooks);
 			sheetState = 'current';
 			written = true;
 			const sheetDriftIndex = drift.findIndex((item) => item.endsWith(contactSheet.path));

@@ -8,6 +8,8 @@ const JobIdSchema = z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u);
 
 export const SKILL_ICON_PROMOTION_RECEIPT_ROOT =
 	'assets/wiki/skills/icon-production-v1/promotion-receipts' as const;
+export const SKILL_ICON_PROMOTION_LOCK_PATH =
+	'assets/wiki/skills/icon-production-v1/.promotion.lock' as const;
 
 export const SkillIconPromotionReceiptSchema = z
 	.object({

@@ -146,8 +146,10 @@ text without generative editing. Every candidate is inspected in three views:
 2. the canonical composite at normal interface size;
 3. a `96×96` recognition thumbnail without text.
 
-The compositor also produces contact sheets for review, but those sheets remain derived evidence.
-They never become an image source.
+The compositor also produces revision-aware contact sheets for review, but those sheets remain
+derived evidence. It selects the highest complete target packet for every required slot, fails on
+an incomplete or colliding latest revision, and writes a new `*-vN.png` sheet without replacing
+older review evidence. Contact sheets never become an image source.
 
 ## Manifest model
 

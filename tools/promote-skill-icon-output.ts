@@ -46,11 +46,13 @@ import {
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 import { resolveDeterministicSkillIconDerivatives } from './compose-skill-icon-assets.js';
 import {
+	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
 	SkillIconPromotionReceiptSchema
 } from './skill-icon-promotion-contract.js';
 
 export {
+	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
 	SkillIconPromotionReceiptSchema
 } from './skill-icon-promotion-contract.js';
@@ -70,8 +72,6 @@ export interface SkillIconAssetRecord {
 	readonly promotionReceipt: { readonly path: string; readonly contentHash: string };
 }
 
-export const SKILL_ICON_PROMOTION_LOCK_PATH =
-	'assets/wiki/skills/icon-production-v1/.promotion.lock' as const;
 export const SKILL_ICON_PROMOTION_JOURNAL_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion-transaction.json' as const;
 export const SKILL_ICON_PROMOTION_TOKEN_PATH =

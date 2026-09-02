@@ -6,6 +6,7 @@ import {
 	mkdtemp,
 	readFile,
 	readdir,
+	rename,
 	rm,
 	symlink,
 	writeFile
@@ -29,6 +30,13 @@ import {
 	SKILL_ICON_PILOT_TARGET_IDS,
 	SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH
 } from './compose-skill-icon-assets.js';
+import {
+	SKILL_ICON_MOTIF_MAP_PATH,
+	SKILL_ICON_MOTIF_SOURCE_PATH,
+	SKILL_ICON_VISUAL_SPECS_PATH,
+	exportSkillIconProduction
+} from './export-skill-icon-production.js';
+import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
 
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
@@ -294,6 +302,10 @@ async function productionFixtureRoot(): Promise<string> {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-production-'));
 	roots.push(root);
 	for (const relativePath of [
+		...CANONICAL_SKILL_SOURCE_PATHS,
+		SKILL_ICON_MOTIF_SOURCE_PATH,
+		SKILL_ICON_MOTIF_MAP_PATH,
+		SKILL_ICON_VISUAL_SPECS_PATH,
 		'assets/wiki/skills/icon-production-v1/geometry.json',
 		'assets/wiki/skills/icon-production-v1/catalog.json'
 	]) {
@@ -334,9 +346,12 @@ async function installReferencePackets(root: string, accepted: boolean): Promise
 	}
 }
 
-async function installPilotCandidates(root: string): Promise<void> {
-	const catalogPath = path.join(root, 'assets/wiki/skills/icon-production-v1/catalog.json');
-	const catalog = JSON.parse(await readFile(catalogPath, 'utf8')) as {
+async function installPilotCandidates(
+	root: string,
+	revisions: ReadonlyMap<string, number> = new Map()
+): Promise<void> {
+	const visualPath = path.join(root, SKILL_ICON_VISUAL_SPECS_PATH);
+	const visual = JSON.parse(await readFile(visualPath, 'utf8')) as {
 		schemaVersion: string;
 		records: Record<string, unknown>[];
 	};
@@ -344,8 +359,9 @@ async function installPilotCandidates(root: string): Promise<void> {
 	const replacements = new Map<string, Record<string, unknown>>();
 	for (const targetId of SKILL_ICON_PILOT_TARGET_IDS) {
 		const slug = targetId.replaceAll(':', '-');
+		const revision = revisions.get(targetId) ?? 1;
 		const packet = await installCandidatePacket(root, {
-			jobId: `${slug}-v1`,
+			jobId: `${slug}-v${revision}`,
 			role: 'skill-art',
 			targetId,
 			bytes: art
@@ -374,11 +390,12 @@ async function installPilotCandidates(root: string): Promise<void> {
 			review: null
 		});
 	}
-	catalog.records = catalog.records.map((record) => {
+	visual.records = visual.records.map((record) => {
 		const targetId = record.targetId as string;
 		return replacements.has(targetId) ? { ...record, ...replacements.get(targetId)! } : record;
 	});
-	await writeFile(catalogPath, `${JSON.stringify(catalog, null, '\t')}\n`);
+	await writeFile(visualPath, `${JSON.stringify(visual, null, '\t')}\n`);
+	await exportSkillIconProduction({ root, mode: 'write' });
 }
 
 async function pixelAt(image: Buffer, x: number, y: number): Promise<number[]> {
@@ -512,7 +529,7 @@ describe('review evidence rendering', () => {
 		});
 		const baseline = await renderSkillReviewCard({
 			composite,
-			name: 'Short',
+			name: 'Swordsmanship',
 			mastery: 'Intermediate',
 			level: 7,
 			rarity: 'F'
@@ -529,10 +546,10 @@ describe('review evidence rendering', () => {
 				.raw()
 				.toBuffer()
 		]);
-		for (let y = 0; y < info.height; y += 1) {
+		for (let y = 0; y < 104; y += 1) {
 			for (const x of [
-				...Array.from({ length: 32 }, (_, index) => index),
-				...Array.from({ length: 32 }, (_, index) => 608 + index)
+				...Array.from({ length: 64 }, (_, index) => index),
+				...Array.from({ length: 64 }, (_, index) => 576 + index)
 			]) {
 				const offset = (y * info.width + x) * info.channels;
 				expect([...data.subarray(offset, offset + 4)]).toEqual([
@@ -540,7 +557,52 @@ describe('review evidence rendering', () => {
 				]);
 			}
 		}
-	});
+		const widths = await Promise.all(
+			[
+				'W'.repeat(33),
+				'W'.repeat(34),
+				`${'W'.repeat(40)} ${'i'.repeat(80)}`,
+				'unbroken'.repeat(20)
+			].map((name) =>
+				renderSkillReviewCard({
+					composite,
+					name,
+					mastery: 'Intermediate',
+					level: 7,
+					rarity: 'F'
+				})
+			)
+		);
+		expect(
+			new Set(widths.map((bytes) => createHash('sha256').update(bytes).digest('hex'))).size
+		).toBe(4);
+		expect(
+			await renderSkillReviewCard({
+				composite,
+				name: 'Swordsmanship',
+				mastery: 'Intermediate',
+				level: 7,
+				rarity: 'F'
+			})
+		).toEqual(baseline);
+		const normalNamePixels: { x: number; y: number }[] = [];
+		for (let y = 0; y < 104; y += 1) {
+			for (let x = 0; x < info.width; x += 1) {
+				const offset = (y * info.width + x) * info.channels;
+				if (baselineData[offset]! > 100) normalNamePixels.push({ x, y });
+			}
+		}
+		const normalWidth =
+			Math.max(...normalNamePixels.map(({ x }) => x)) -
+			Math.min(...normalNamePixels.map(({ x }) => x)) +
+			1;
+		const normalHeight =
+			Math.max(...normalNamePixels.map(({ y }) => y)) -
+			Math.min(...normalNamePixels.map(({ y }) => y)) +
+			1;
+		expect(normalWidth).toBeGreaterThan(200);
+		expect(normalHeight).toBeGreaterThan(20);
+	}, 30_000);
 
 	it('renders deterministic contact sheets from cards', async () => {
 		const composite = await sharp({
@@ -559,7 +621,7 @@ describe('review evidence rendering', () => {
 		const second = await renderSkillContactSheet([card, card]);
 		expect(first).toEqual(second);
 		expect(await sharp(first).metadata()).toMatchObject({ format: 'png', hasAlpha: true });
-	});
+	}, 30_000);
 });
 
 describe('skill icon runtime CLI grammar', () => {
@@ -587,6 +649,11 @@ describe('scoped contact-sheet export', () => {
 	it('writes and checks the eight pre-promotion reference candidates at equal scale', async () => {
 		const root = await productionFixtureRoot();
 		await installReferencePackets(root, false);
+		const before = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
+		expect(before).toMatchObject({ inSync: false, written: false });
+		await expect(
+			access(path.join(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
 		const written = await runSkillIconRuntimeCli(['--write', '--', '--scope', 'references'], {
 			root
 		});
@@ -613,6 +680,74 @@ describe('scoped contact-sheet export', () => {
 		}
 		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
 		expect(checked).toMatchObject({ inSync: true, written: false });
+	}, 30_000);
+
+	it('selects the highest complete reference revisions and preserves older review evidence', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' });
+		const firstBytes = await readFile(path.join(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH));
+		const rejectedPath =
+			'assets/wiki/skills/icon-production-v1/review/decisions/references/charcoal-forged-stone-v1.json';
+		await mkdir(path.dirname(path.join(root, rejectedPath)), { recursive: true });
+		await writeFile(path.join(root, rejectedPath), 'rejected-v1-evidence');
+		await installCandidatePacket(root, {
+			jobId: 'charcoal-forged-stone-v2',
+			role: 'backing',
+			bytes: await validBacking([65, 68, 75])
+		});
+		const second = await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' });
+		expect(second.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/reference-assets-v2.png'
+		);
+		expect(await readFile(path.join(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH))).toEqual(
+			firstBytes
+		);
+		expect(await readFile(path.join(root, rejectedPath), 'utf8')).toBe('rejected-v1-evidence');
+		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
+		expect(checked).toMatchObject({ inSync: true, orphanPaths: [], drift: [] });
+	}, 30_000);
+
+	it('rejects incomplete and duplicate highest reference revisions without falling back', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const incomplete = await installCandidatePacket(root, {
+			jobId: 'rarity-frame-f-v2',
+			role: 'rarity-frame',
+			rarity: 'F',
+			bytes: await validFrame([80, 100, 220])
+		});
+		await rm(path.join(root, incomplete.assignmentPath));
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).rejects.toThrow(/rarity-frame-f-v2.*assignment|assignment.*rarity-frame-f-v2/iu);
+		await writeFile(
+			path.join(root, incomplete.assignmentPath),
+			await readFile(
+				path.join(
+					root,
+					'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v1.json'
+				)
+			)
+		);
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).rejects.toThrow(/execution|assignment|job/iu);
+		await installCandidatePacket(root, {
+			jobId: 'rarity-frame-f-v2',
+			role: 'rarity-frame',
+			rarity: 'F',
+			bytes: incomplete.bytes
+		});
+		await installCandidatePacket(root, {
+			jobId: 'alternate-frame-f-v2',
+			role: 'rarity-frame',
+			rarity: 'F',
+			bytes: await validFrame([100, 120, 240])
+		});
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).rejects.toThrow(/duplicate.*rarity-frame:F.*v2/iu);
 	}, 30_000);
 
 	it('reports every missing reference role instead of treating an empty scope as current', async () => {
@@ -649,4 +784,106 @@ describe('scoped contact-sheet export', () => {
 			expect((await pixelAt(sheet, x, y))[3]).toBeGreaterThan(0);
 		}
 	}, 90_000);
+
+	it('rejects structurally valid but stale canonical pilot metadata', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		await installPilotCandidates(root);
+		const catalogPath = path.join(root, 'assets/wiki/skills/icon-production-v1/catalog.json');
+		const catalog = JSON.parse(await readFile(catalogPath, 'utf8')) as {
+			records: { targetId: string; name: string; rarity: string }[];
+		};
+		const record = catalog.records.find(
+			(item) => item.targetId === SKILL_ICON_PILOT_TARGET_IDS[0]
+		)!;
+		record.name = 'Wrong Canonical Name';
+		record.rarity = record.rarity === 'F' ? 'E' : 'F';
+		await writeFile(catalogPath, `${JSON.stringify(catalog, null, '\t')}\n`);
+		await expect(exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' })).rejects.toThrow(
+			/catalog.*stale|canonical.*catalog|not current/iu
+		);
+	}, 90_000);
+
+	it('rejects incomplete and duplicate highest pilot target revisions without fallback', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		await installPilotCandidates(root);
+		const targetId = SKILL_ICON_PILOT_TARGET_IDS[0];
+		const packet = await installCandidatePacket(root, {
+			jobId: `${targetId.replaceAll(':', '-')}-v2`,
+			role: 'skill-art',
+			targetId,
+			bytes: await validArt('#fb7185')
+		});
+		await rm(path.join(root, packet.assignmentPath));
+		await expect(exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' })).rejects.toThrow(
+			/v2.*assignment|assignment.*v2/iu
+		);
+		await installCandidatePacket(root, {
+			jobId: packet.jobId,
+			role: 'skill-art',
+			targetId,
+			bytes: packet.bytes
+		});
+		await installCandidatePacket(root, {
+			jobId: 'alternate-horizontal-slash-v2',
+			role: 'skill-art',
+			targetId,
+			bytes: packet.bytes
+		});
+		await expect(exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' })).rejects.toThrow(
+			/duplicate.*horizontal-slash.*v2/iu
+		);
+	}, 90_000);
+
+	it('advances pilot sheet revisions while preserving rejected and older evidence', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		await installPilotCandidates(root);
+		await exportSkillIconRuntime({ root, mode: 'write', scope: 'pilot' });
+		const firstBytes = await readFile(path.join(root, SKILL_ICON_PILOT_CONTACT_SHEET_PATH));
+		const revisedTarget = SKILL_ICON_PILOT_TARGET_IDS[0];
+		const v1Review = `assets/wiki/skills/icon-production-v1/review/decisions/icons/${revisedTarget.replaceAll(':', '-')}-v1.json`;
+		await mkdir(path.dirname(path.join(root, v1Review)), { recursive: true });
+		await writeFile(path.join(root, v1Review), 'rejected-pilot-v1');
+		await installPilotCandidates(root, new Map([[revisedTarget, 2]]));
+		const second = await exportSkillIconRuntime({ root, mode: 'write', scope: 'pilot' });
+		expect(second.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/pilot-icons-v2.png'
+		);
+		expect(await readFile(path.join(root, SKILL_ICON_PILOT_CONTACT_SHEET_PATH))).toEqual(
+			firstBytes
+		);
+		expect(await readFile(path.join(root, v1Review), 'utf8')).toBe('rejected-pilot-v1');
+		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' });
+		expect(checked).toMatchObject({ inSync: true, orphanPaths: [], drift: [] });
+	}, 120_000);
+
+	it('fails closed on contact-sheet ancestor replacement without writing outside authority', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-contact-outside-'));
+		roots.push(outside);
+		const review = path.join(root, 'assets/wiki/skills/icon-production-v1/review');
+		const retained = `${review}.retained`;
+		await expect(
+			exportSkillIconRuntime({
+				root,
+				mode: 'write',
+				scope: 'references',
+				testHooks: {
+					beforeContactSheetPublish: async () => {
+						await rename(review, retained);
+						await symlink(outside, review);
+					}
+				}
+			})
+		).rejects.toThrow(/parent.*changed|symbolic link|unsafe/iu);
+		expect(await readdir(outside)).toEqual([]);
+		expect(
+			(await readdir(path.join(root, 'assets/wiki/skills/icon-production-v1'))).filter((name) =>
+				name.includes('contact-sheet-staging')
+			)
+		).toEqual([]);
+	}, 30_000);
 });
