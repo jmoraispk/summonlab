@@ -1,5 +1,16 @@
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { constants as fsConstants } from 'node:fs';
+import {
+	lstat,
+	mkdir,
+	open,
+	readFile,
+	readdir,
+	stat,
+	unlink,
+	writeFile,
+	type FileHandle
+} from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 
 import sharp from 'sharp';
@@ -163,6 +174,150 @@ function absoluteOwnedPath(repositoryRoot: string, ownedPath: string): string {
 	return absolute;
 }
 
+type AnchoredOwnedParent = {
+	handle: FileHandle;
+	ownedPath: string;
+	basename: string;
+};
+
+const ANCHORED_DIRECTORY_FLAGS =
+	fsConstants.O_RDONLY | fsConstants.O_DIRECTORY | fsConstants.O_NOFOLLOW;
+const ANCHORED_CREATE_FLAGS =
+	fsConstants.O_WRONLY | fsConstants.O_CREAT | fsConstants.O_EXCL | fsConstants.O_NOFOLLOW;
+
+function procFdPath(handle: FileHandle, basename?: string): string {
+	const root = `/proc/self/fd/${handle.fd}`;
+	return basename === undefined ? root : `${root}/${basename}`;
+}
+
+async function verifyProcFdHandle(handle: FileHandle, context: string): Promise<void> {
+	if (process.platform !== 'linux') {
+		throw new Error('Anchored review mutation requires Linux O_NOFOLLOW and /proc/self/fd');
+	}
+	try {
+		const [held, throughProc] = await Promise.all([handle.stat(), stat(procFdPath(handle))]);
+		if (
+			!held.isDirectory() ||
+			!throughProc.isDirectory() ||
+			held.dev !== throughProc.dev ||
+			held.ino !== throughProc.ino
+		) {
+			throw new Error('proc-fd inode mismatch');
+		}
+	} catch (error) {
+		throw new Error(
+			`Anchored review mutation cannot verify Linux /proc/self/fd for ${context}; fail closed`,
+			{ cause: error }
+		);
+	}
+}
+
+async function openAnchoredOwnedParent(
+	repositoryRoot: string,
+	ownedPath: string,
+	createDirectories: boolean
+): Promise<AnchoredOwnedParent> {
+	absoluteOwnedPath(repositoryRoot, ownedPath);
+	const parts = ownedPath.split('/');
+	if (
+		parts.length < 2 ||
+		parts.some((part) => part.length === 0 || part === '.' || part === '..')
+	) {
+		throw new Error(`Anchored review mutation requires a normalized owned path: ${ownedPath}`);
+	}
+	const basename = parts.pop()!;
+	let current: FileHandle;
+	try {
+		current = await open(resolve(repositoryRoot), ANCHORED_DIRECTORY_FLAGS);
+	} catch (error) {
+		throw new Error(
+			'Anchored review mutation cannot open the repository root without following links',
+			{
+				cause: error
+			}
+		);
+	}
+	try {
+		await verifyProcFdHandle(current, repositoryRoot);
+		for (const part of parts) {
+			const childPath = procFdPath(current, part);
+			let child: FileHandle;
+			try {
+				child = await open(childPath, ANCHORED_DIRECTORY_FLAGS);
+			} catch (error) {
+				if ((error as NodeJS.ErrnoException).code !== 'ENOENT' || !createDirectories) {
+					throw new Error(
+						`Anchored review parent is missing, changed, or symlinked: ${ownedPath}`,
+						{ cause: error }
+					);
+				}
+				try {
+					await mkdir(childPath);
+				} catch (creationError) {
+					if ((creationError as NodeJS.ErrnoException).code !== 'EEXIST') throw creationError;
+				}
+				try {
+					child = await open(childPath, ANCHORED_DIRECTORY_FLAGS);
+				} catch (openError) {
+					throw new Error(
+						`Anchored review parent was replaced or symlinked during creation: ${ownedPath}`,
+						{ cause: openError }
+					);
+				}
+			}
+			try {
+				await verifyProcFdHandle(child, `${ownedPath}:${part}`);
+				await current.close();
+			} catch (error) {
+				await child.close().catch(() => undefined);
+				throw error;
+			}
+			current = child;
+		}
+		return { handle: current, ownedPath, basename };
+	} catch (error) {
+		await current.close().catch(() => undefined);
+		throw error;
+	}
+}
+
+async function verifyAnchoredOwnedParentBinding(
+	repositoryRoot: string,
+	anchored: AnchoredOwnedParent
+): Promise<void> {
+	let rebound: AnchoredOwnedParent;
+	try {
+		rebound = await openAnchoredOwnedParent(repositoryRoot, anchored.ownedPath, false);
+	} catch (error) {
+		throw new Error(
+			`Anchored review parent binding changed or became symlinked: ${anchored.ownedPath}`,
+			{
+				cause: error
+			}
+		);
+	}
+	try {
+		const [held, current] = await Promise.all([anchored.handle.stat(), rebound.handle.stat()]);
+		if (held.dev !== current.dev || held.ino !== current.ino) {
+			throw new Error(`Anchored review parent binding changed: ${anchored.ownedPath}`);
+		}
+	} finally {
+		await rebound.handle.close();
+	}
+}
+
+async function writeExclusiveThroughAnchoredParent(
+	parent: AnchoredOwnedParent,
+	bytes: Uint8Array
+): Promise<void> {
+	const file = await open(procFdPath(parent.handle, parent.basename), ANCHORED_CREATE_FLAGS, 0o600);
+	try {
+		await file.writeFile(bytes);
+	} finally {
+		await file.close();
+	}
+}
+
 async function ensureSafeParent(repositoryRoot: string, ownedPath: string): Promise<string> {
 	const absolute = absoluteOwnedPath(repositoryRoot, ownedPath);
 	const parent = dirname(absolute);
@@ -303,10 +458,11 @@ function reviewAssignmentIssuanceLockPath(target: FamilyAffinityTarget): string 
 async function acquireReviewAssignmentIssuanceLock(
 	repositoryRoot: string,
 	target: FamilyAffinityTarget,
-	input: { issuerId: string; kind: 'ordinary' | 'blind' }
-): Promise<{ absolutePath: string; ownedPath: string; bytes: Buffer }> {
+	input: { issuerId: string; kind: 'ordinary' | 'blind' },
+	afterParentAnchored?: () => Promise<void>
+): Promise<{ parent: AnchoredOwnedParent; bytes: Buffer }> {
 	const ownedPath = reviewAssignmentIssuanceLockPath(target);
-	const absolutePath = await ensureSafeParent(repositoryRoot, ownedPath);
+	const parent = await openAnchoredOwnedParent(repositoryRoot, ownedPath, true);
 	const bytes = Buffer.from(
 		stableFamilyAffinityJson({
 			schemaVersion: 'family-affinity-review-issuance-lock-v1',
@@ -318,27 +474,76 @@ async function acquireReviewAssignmentIssuanceLock(
 		})
 	);
 	try {
-		await writeFile(absolutePath, bytes, { flag: 'wx' });
+		await afterParentAnchored?.();
+		await verifyAnchoredOwnedParentBinding(repositoryRoot, parent);
+		await writeExclusiveThroughAnchoredParent(parent, bytes);
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-		throw new Error(
-			`Review assignment issuance lock is active or crash-stale: ${ownedPath}. Retry after the active issuance completes; remove only after controller audit.`
-		);
+		await parent.handle.close().catch(() => undefined);
+		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+			throw new Error(
+				`Review assignment issuance lock is active or crash-stale: ${ownedPath}. Retry after the active issuance completes; remove only after controller audit.`
+			);
+		}
+		throw error;
 	}
-	return { absolutePath, ownedPath, bytes };
+	return { parent, bytes };
 }
 
 async function releaseReviewAssignmentIssuanceLock(
-	repositoryRoot: string,
-	lock: Awaited<ReturnType<typeof acquireReviewAssignmentIssuanceLock>>
+	lock: Awaited<ReturnType<typeof acquireReviewAssignmentIssuanceLock>>,
+	beforeRelease?: () => Promise<void>
 ): Promise<void> {
-	const currentBytes = await requiredRealFile(repositoryRoot, lock.ownedPath);
-	if (!currentBytes.equals(lock.bytes)) {
-		throw new Error(
-			`Review assignment issuance lock changed while held; manual controller audit required: ${lock.ownedPath}`
-		);
+	try {
+		await beforeRelease?.();
+		let heldFile: FileHandle;
+		try {
+			heldFile = await open(
+				procFdPath(lock.parent.handle, lock.parent.basename),
+				fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW
+			);
+		} catch (error) {
+			throw new Error(
+				`Review assignment issuance lock cannot be opened through its anchored parent; manual controller audit required: ${lock.parent.ownedPath}`,
+				{ cause: error }
+			);
+		}
+		let currentBytes: Buffer;
+		try {
+			currentBytes = await heldFile.readFile();
+		} finally {
+			await heldFile.close();
+		}
+		if (!currentBytes.equals(lock.bytes)) {
+			throw new Error(
+				`Review assignment issuance lock changed while held; manual controller audit required: ${lock.parent.ownedPath}`
+			);
+		}
+		await unlink(procFdPath(lock.parent.handle, lock.parent.basename));
+	} finally {
+		await lock.parent.handle.close();
 	}
-	await unlink(lock.absolutePath);
+}
+
+type ReviewAssignmentIssuanceTestHooks = {
+	afterLockParentAnchored?: () => Promise<void>;
+	afterAssignmentParentAnchored?: () => Promise<void>;
+	beforeLockRelease?: () => Promise<void>;
+};
+
+async function writeReviewAssignmentExclusiveAnchored(
+	repositoryRoot: string,
+	ownedPath: string,
+	bytes: Uint8Array,
+	afterParentAnchored?: () => Promise<void>
+): Promise<void> {
+	const parent = await openAnchoredOwnedParent(repositoryRoot, ownedPath, true);
+	try {
+		await afterParentAnchored?.();
+		await verifyAnchoredOwnedParentBinding(repositoryRoot, parent);
+		await writeExclusiveThroughAnchoredParent(parent, bytes);
+	} finally {
+		await parent.handle.close();
+	}
 }
 
 export async function issueReviewAssignmentExclusive(
@@ -352,7 +557,8 @@ export async function issueReviewAssignmentExclusive(
 		productionAssignmentPath: string;
 		decisionVersion: number;
 		manifestPath?: string;
-	}
+	},
+	testHooks: ReviewAssignmentIssuanceTestHooks = {}
 ): Promise<{ path: string; assignment: FamilyAffinityReviewAssignment }> {
 	if (input.callerRole !== 'controller') {
 		throw new Error('Only callerRole controller may issue review assignments');
@@ -436,7 +642,8 @@ export async function issueReviewAssignmentExclusive(
 	const issuanceLock = await acquireReviewAssignmentIssuanceLock(
 		repositoryRoot,
 		live.target,
-		input
+		input,
+		testHooks.afterLockParentAnchored
 	);
 	try {
 		const oppositeKind = input.kind === 'ordinary' ? 'blind' : 'ordinary';
@@ -470,11 +677,15 @@ export async function issueReviewAssignmentExclusive(
 				? { ordinary: assignment, ...(oppositeAssignment ? { blind: oppositeAssignment } : {}) }
 				: { blind: assignment, ...(oppositeAssignment ? { ordinary: oppositeAssignment } : {}) })
 		});
-		const absolute = await ensureSafeParent(repositoryRoot, path);
-		await writeFile(absolute, stableFamilyAffinityJson(assignment), { flag: 'wx' });
+		await writeReviewAssignmentExclusiveAnchored(
+			repositoryRoot,
+			path,
+			Buffer.from(stableFamilyAffinityJson(assignment)),
+			testHooks.afterAssignmentParentAnchored
+		);
 		return { path, assignment };
 	} finally {
-		await releaseReviewAssignmentIssuanceLock(repositoryRoot, issuanceLock);
+		await releaseReviewAssignmentIssuanceLock(issuanceLock, testHooks.beforeLockRelease);
 	}
 }
 

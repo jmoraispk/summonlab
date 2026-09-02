@@ -1,5 +1,16 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import {
+	cp,
+	lstat,
+	mkdir,
+	mkdtemp,
+	readFile,
+	readdir,
+	rename,
+	rm,
+	symlink,
+	writeFile
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -138,6 +149,12 @@ async function existingReviewAssignmentPaths(root: string, paths: string[]): Pro
 	const reads = await Promise.allSettled(paths.map((path) => readFile(join(root, path))));
 	return paths.filter((_, index) => reads[index]?.status === 'fulfilled');
 }
+
+type IssuanceSwapHooks = {
+	afterLockParentAnchored?: () => Promise<void>;
+	afterAssignmentParentAnchored?: () => Promise<void>;
+	beforeLockRelease?: () => Promise<void>;
+};
 
 function reviewAssignmentWithIdentity(
 	live: Awaited<ReturnType<typeof stageLiveAttempt>>,
@@ -540,6 +557,59 @@ describe('family-affinity review receipt contract', () => {
 				code: 'ENOENT'
 			});
 		}
+	);
+
+	it.each(['lock-create', 'assignment-write', 'lock-release'] as const)(
+		'anchors %s mutation against a concurrent external symlink swap',
+		async (boundary) => {
+			const live = await stageLiveAttempt('T3');
+			const external = await mkdtemp(join(tmpdir(), 'family-review-external-'));
+			temporaryRoots.push(external);
+			const externalSentinel = join(external, 'sentinel.txt');
+			await writeFile(externalSentinel, 'external sentinel unchanged\n');
+			const lockPath = reviewIssuanceLockPath(live);
+			const assignmentPath = familyAffinityReviewAssignmentPath('ordinary', live.activeTarget, 1);
+			const visibleParent = join(
+				live.root,
+				boundary === 'assignment-write' ? dirname(assignmentPath) : dirname(lockPath)
+			);
+			const anchoredParent = `${visibleParent}.anchored`;
+			let seamCalled = false;
+			const swap = async () => {
+				seamCalled = true;
+				await rename(visibleParent, anchoredParent);
+				await symlink(external, visibleParent);
+			};
+			const hooks: IssuanceSwapHooks =
+				boundary === 'lock-create'
+					? { afterLockParentAnchored: swap }
+					: boundary === 'assignment-write'
+						? { afterAssignmentParentAnchored: swap }
+						: { beforeLockRelease: swap };
+			const issuance = issueReviewAssignmentExclusive(
+				live.root,
+				reviewIssueInput(live, 'ordinary', 'reviewer-beta'),
+				hooks
+			);
+			if (boundary === 'lock-release') {
+				await expect(issuance).resolves.toMatchObject({ path: assignmentPath });
+				await expect(readFile(join(live.root, assignmentPath))).resolves.toBeDefined();
+			} else {
+				await expect(issuance).rejects.toThrow(/anchored|changed|symlink|binding|no-follow/i);
+				await expect(readFile(join(live.root, assignmentPath))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			}
+			expect(seamCalled).toBe(true);
+			expect((await lstat(visibleParent)).isSymbolicLink()).toBe(true);
+			expect(await readdir(external)).toEqual(['sentinel.txt']);
+			expect(await readFile(externalSentinel, 'utf8')).toBe('external sentinel unchanged\n');
+			expect(await readdir(anchoredParent)).toEqual([]);
+			await expect(
+				readFile(join(live.root, familyAffinityReviewAssignmentPath('blind', live.activeTarget, 1)))
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		},
+		20_000
 	);
 
 	it.each([
