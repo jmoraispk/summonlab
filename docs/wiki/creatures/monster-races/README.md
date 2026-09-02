@@ -2,39 +2,26 @@
 
 Wiki ID: `creatures.monster-families`
 
-This is the textual bestiary index. It begins with families already represented by repository
-content and art, then grows into species, sapient peoples, factions, duties, and individual variants
-as those distinctions are authored.
+This is the textual source and taxonomy index for the monster-family program. The canonical
+production database now contains 30 families, exactly five T1–T5 forms per family, and five planned
+image coordinates per form: Normal, Fire, Earth, Wind, and Water.
 
 Read the [creature taxonomy](../taxonomy.md) before treating every family as a “race.”
 
-## Implemented or referenced first-wave families
+## Canonical family/form database
 
-| Family | Current archetypes | Earliest current floor | Text page | Visual status |
-| --- | --- | ---: | --- | --- |
-| Goblinoids | skirmisher, archer, hexweaver, chieftain | 1 | [Goblinoids](goblinoids.md) | candidate plate |
-| Beasts | grey wolf, dire wolf, tunnel boar, cave bear | 3 | planned | candidate plate |
-| Constructs | clay golem, stone golem, iron sentinel, crystal guardian | 8 | planned | candidate plate |
-| Large threats | ogoblin brute, cave troll, hill giant, frost giant | 10 | planned | candidate plate |
+The [canonical monster database](../monsters/README.md) is the generated review surface for all 30
+families and 150 forms. It publishes family classification caveats, visual constants, escalation,
+combat duties, teaching goals, telegraphs, counterplay, lower-form interactions, and the complete
+750-coordinate production plan.
 
-These archetypes exist in `enemy-review-roster-v1` and the Floors 1–20 progression preview. Their
-review images do not yet prove production combat rigs.
+Family means a shared visual and encounter grammar. It does not automatically mean species,
+ancestry, faction, personhood, culture, morality, or universal hostility. The individual family
+packets preserve those caveats rather than silently converting generator language into accepted
+lore.
 
-## Pack-two candidate families
-
-| Family | Candidate lineup | Taxonomy work needed |
-| --- | --- | --- |
-| Elementals | four elemental duties/forms | define origins, bodies, affinity embodiment, cognition |
-| Arachnids | four spider-scale threats | define species vs life stages and brood behavior |
-| Arcane hostiles | four adult hostile mage duties | this is likely a faction/archetype family, not a race |
-| Undead | sentinel, wraith, bone mage, death knight | define origin, autonomy, memory, personhood |
-| Draconic | cave drake, venom wyvern, elder drake, tower dragon | define species relationships and life cycle |
-| Dungeon predators | mimic, slime colony, basilisk, burrowing worm | visual family only; likely unrelated species/origins |
-
-See the [monster visual gallery](../../art/monster-gallery.md) for all current plates and honest
-candidate status. The [monster database](../monsters/README.md) separates the forty authored
-archetypes one by one and presents each identity reference above the Normal plus Fire, Earth, Wind,
-and Water production target. Available images remain candidate-only; Earth is still pending.
+All family floor slots remain unassigned. This database does not invent tower order, numerical
+difficulty, region, release grouping, or level scaling.
 
 ## Supplied thirty-race generator bestiary
 
@@ -47,18 +34,22 @@ The complete visual seed draft is preserved as five six-race volumes:
 - [Volume 5 — Werebeasts through Doppelgangers](generator-bestiary-05.md)
 - [Generator guidance, audit, and conflicts](generator-bestiary-guide.md)
 
-These are generator-ready **seed briefs**, not accepted species canon or runtime statistics. The
-source tiers mix age, office, caste, mutation, equipment, size, construction quality, and combat
-power; each race needs a taxonomy/mechanics pass before tier names become executable definitions.
+These remain **source briefs**, not accepted species canon or runtime statistics. Their 150 source
+positions have now been consolidated into explicit Initiate, Soldier, Specialist, Champion, and
+Sovereign forms without rewriting the source volumes in place.
 
-The accepted consolidation direction preserves all 30 families and their complete five-form
-coverage. Each floor has one primary family, and each family's T1–T5 forms become distinct combat
-classes following Initiate, Soldier, Specialist, Champion, and Sovereign functions. The detailed
-mapping remains a source-to-target consolidation task; the seed tables are not rewritten in place.
+The five production coordinates are ownership plans, not finished images. Normal begins as
+`planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor` until the form's Normal identity
+anchor passes review. Candidate, approved-review, and runtime are separate states. This wiki export
+does not promote assets.
 
-The resulting visual program contains 150 forms. Every form targets Normal plus Fire, Earth, Wind,
-and Water, for 750 candidate images before review. Dual-affinity images require separate explicit
-manifests.
+## Earlier forty-class reconciliation
+
+The prior forty-class visual database is an input, not an additional family roster. Ten identities
+map or rename-map into canonical forms. Thirty remain useful secondary archetypes or expedition
+fauna outside the 150-form count. Their earlier public images remain candidate-only references, and
+none is automatically eligible for canonical reuse. The exact forty-row ledger appears in the
+[canonical monster database](../monsters/README.md#current-class-reconciliation).
 
 ## Required entry depth
 
@@ -79,8 +70,7 @@ Use the [monster family template](../../templates/monster-race-template.md).
 
 ## Expansion workflow
 
-The owner's larger monster list should be brought in as `seed` entries first. A taxonomy pass then
-deduplicates synonyms, separates species from duties/factions, and identifies affinity/mechanical
-dependencies. Only accepted pages should commission large coherent image batches.
-
-That order prevents beautiful images from accidentally freezing unclear biology or mechanics.
+Future family additions enter as source packets first, pass taxonomy and five-form normalization,
+and receive a separate manifest revision. They do not enter the canonical count merely by adding an
+image or an occupational class. That order prevents visual production from freezing unclear biology
+or mechanics.

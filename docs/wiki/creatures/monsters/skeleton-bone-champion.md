@@ -1,0 +1,77 @@
+# Bone Champion
+
+Wiki ID: `monster.skeleton-bone-champion`
+
+[← Canonical monster database](README.md)
+
+Design status: **draft canonical form**
+
+Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+
+## Identity
+
+| Field | Canonical definition |
+| --- | --- |
+| Family | Skeletons (family 06) |
+| Canonical form ID | `skeleton-bone-champion` |
+| Tier | T4 — Champion |
+| Primary archetype | Spur-Crown Formation Architect (Champion) |
+| Floor assignment | Unassigned |
+| Source | [Generator bestiary](../monster-races/generator-bestiary-01.md) — Bone Champion |
+
+Source-draft Skeletons are treated as a necromantically animated-remains production family, not as a biological species or evidence about the identity, autonomy, rights, or allegiance of the original dead. The packet preserves humanlike bone gaps, grave goods, socket-fire binding, progressive fusion, and cheap reassembly while assigning each hostile form an explicit battlefield duty.
+
+## Family visual grammar
+
+- Human or humanoid skeletal proportions remain narrow, angular, and defined by empty negative space where flesh and organs would be.
+- Bone white or yellowed ivory is paired with rust, black iron, tattered grave-cloth, and one explained necromantic socket-fire accent such as green, blue, or gold.
+- Bone, rusted mail, corroded steel, grave-cloth, funerary jewelry, and crowns remain recognizable mortuary materials rather than living anatomy.
+- Carved skull runes, bone spurs, fused armor-like mass, grave regalia, and orbiting fragments accumulate as binding power becomes denser.
+- Bone density and the intensity and reach of the visible necromantic binding escalate together, but every form preserves gaps, joints, or binding anchors that can be deliberately broken.
+
+**Escalation axis:** Loose bones become mail-bound ranks, a Specialist that levies battlefield fragments, fused spur architecture, and finally a royal sepulcher engine that commands, rebuilds, and promotes the whole skeletal court.
+
+**This form's visual delta:** Bones fused into a solid armor-like mass while preserving joint gaps, with a horned skull and long bone spurs rising from the shoulders like a crown and matching seams at the hips.
+
+## Combat reading
+
+### Battlefield duty
+
+Fuse scattered remains into crown-shaped barricades that extend shield lines, define levy channels, and command lower skeletons through a deliberately breakable arena formation.
+
+### Teaching goal
+
+Teach formation dismantling: the Champion's fused mass is least vulnerable at the center, while every new spur wall creates an outer binding seam that can collapse the whole structure.
+
+### Signature mechanic
+
+Crownwork: the Champion plants one shoulder spur, draws loose bones into a curving wall, and completes it with the opposite spur to form a crown point. Bonesoldiers lock shields into the wall, Bone Knights levy through its interior channel, and Rattlers reform behind it. The Champion must keep one horned side turned toward each completed point, exposing the unfused hip seam on the opposite side.
+
+### Telegraph
+
+Shoulder spurs rise like crown tines, one horn on the skull aligns with a bone pile, and a bright binding line traces the planned curve across the floor before fragments move.
+
+### Counterplay
+
+Cross the planned curve before it closes, break the outermost shoulder-spur seam, or attack the hip opposite the Champion's turned horn; one broken crown point opens every lower-form route attached to it.
+
+### Lower-form interaction
+
+Rattlers reform behind crownwork, Bonesoldiers extend it with shield braces, and Bone Knights draw levy fragments through it; breaking one spur point removes protection and interrupts every attached interaction.
+
+## Five-coordinate candidate-production matrix
+
+| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- |
+| Normal | `planned` | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-champion/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-bone-champion/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-champion/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-champion/normal-v1.json` |
+| Fire | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-champion/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-bone-champion/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-champion/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-champion/fire-v1.json` |
+| Earth | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-champion/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-bone-champion/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-champion/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-champion/earth-v1.json` |
+| Wind | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-champion/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-bone-champion/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-champion/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-champion/wind-v1.json` |
+| Water | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-champion/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-bone-champion/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-champion/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-champion/water-v1.json` |
+
+### Status semantics
+
+- `planned` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
+- `blocked-on-anchor` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
+- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.

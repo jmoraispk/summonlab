@@ -6,10 +6,11 @@ This page is the first art-book surface of the wiki. Every image below is a **re
 None is presented as an approved runtime rig or proof of individual continuity. Exact file status,
 hashes, generation provenance, and prompts remain in the linked domain catalogs/records.
 
-For individual identities rather than family plates, open the
-[monster database](../creatures/monsters/README.md). It currently binds forty archetypes to 160
-Normal, Fire, Wind, and Water candidates or revision studies. The current production target is
-Normal plus Fire, Earth, Wind, and Water; Earth candidates remain pending.
+For canonical family and form identities rather than these historical plates, open the
+[monster database](../creatures/monsters/README.md). It publishes 30 families, 150 T1–T5 forms, and
+750 planned Normal/Fire/Earth/Wind/Water coordinates. The earlier forty classes and their 160 public
+images survive only in the database's candidate-only reconciliation records; none is automatically
+eligible as a canonical anchor.
 
 ## First progression families
 

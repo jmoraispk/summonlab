@@ -1,0 +1,77 @@
+# Grunt
+
+Wiki ID: `monster.orc-grunt`
+
+[← Canonical monster database](README.md)
+
+Design status: **draft canonical form**
+
+Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+
+## Identity
+
+| Field | Canonical definition |
+| --- | --- |
+| Family | Orcs (family 02) |
+| Canonical form ID | `orc-grunt` |
+| Tier | T1 — Initiate |
+| Primary archetype | Committed Shoulder-Tester (Initiate) |
+| Floor assignment | Unassigned |
+| Source | [Generator bestiary](../monster-races/generator-bestiary-01.md) — Grunt |
+
+Source-draft Orcs are treated as a visual and encounter-production family, not as proof of universal culture, allegiance, morality, or personhood. This packet preserves their top-heavy anatomy, tusks, battle marks, heavy equipment, and visible status language while assigning each hostile form a specific authored combat duty.
+
+## Family visual grammar
+
+- Tall, broad, top-heavy humanoid silhouette with a thick neck, wide shoulders, heavy jaw, forward lean, and lower tusks rising past the lip.
+- Grey-green or ash-grey skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.
+- Boiled leather, fur, riveted iron, bone, and crude steel remain thick, weighty, and practical rather than elegant or finely matched.
+- Scars, paint, tusk rings, piercings, skull trophies, spiked pauldrons, and clan totems communicate earned encounter rank without becoming a biological claim.
+- Tusk length, muscle mass, posture, and carried trophies escalate together, but every form retains committed heavy motion and exposed recovery as the family combat grammar.
+
+**Escalation axis:** Tusks lengthen and curve higher as muscle, scars, iron, trophies, and command authority accumulate; rising forms turn committed heavy attacks into rhythmic pursuit, formation control, and finally an arena-wide trial of standards.
+
+**This form's visual delta:** Lean and sinewy with hide wraps, small blunt tusks, almost no iron, and one crude spear or hand axe held close to the body.
+
+## Combat reading
+
+### Battlefield duty
+
+Probe the front line with a short spear or hand-axe rush that displaces a guarded target but leaves the lean attacker stranded if the rush misses.
+
+### Teaching goal
+
+Teach the Orc family's basic bargain: broad shoulders and heavy intent make the approach dangerous, while planted feet and a forward lean make the recovery readable and punishable.
+
+### Signature mechanic
+
+Shoulder Test: the Grunt lowers one hide-wrapped shoulder behind its crude weapon and drives straight through the first occupied space; contact shoves both combatants, while a miss carries the Grunt past the target before it can turn.
+
+### Telegraph
+
+It scrapes one bare foot backward, tucks its small blunt tusks, and draws the spear or axe tight beside the lowered shoulder.
+
+### Counterplay
+
+Step across the narrow line rather than retreating, then strike the unarmored ribs or back while the Grunt plants its forward foot and turns.
+
+### Lower-form interaction
+
+Not applicable for this form.
+
+## Five-coordinate candidate-production matrix
+
+| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- |
+| Normal | `planned` | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/normal-v1.json` |
+| Fire | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/fire-v1.json` |
+| Earth | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/earth-v1.json` |
+| Wind | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/wind-v1.json` |
+| Water | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/water-v1.json` |
+
+### Status semantics
+
+- `planned` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
+- `blocked-on-anchor` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
+- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.

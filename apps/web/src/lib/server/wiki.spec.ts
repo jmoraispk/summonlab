@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import catalog from '../../../../../docs/wiki/catalog.json';
 
-import { getMonsterVisualDatabase, getMonsterVisualEntry } from './monster-database';
+import {
+	getMonsterProductionDatabase,
+	getMonsterProductionEntry,
+	getMonsterVisualDatabase,
+	getMonsterVisualEntry
+} from './monster-database';
 import { getWikiAsset, getWikiNavigation, getWikiPage, getWikiPageCount } from './wiki';
 
 describe('online wiki registry', () => {
@@ -37,18 +42,21 @@ describe('online wiki registry', () => {
 		);
 	});
 
-	it('publishes one visual database page per canonical monster identity', () => {
-		const monsters = getMonsterVisualDatabase();
+	it('publishes one planned production record per canonical monster form', () => {
+		const monsters = getMonsterProductionDatabase();
 
-		expect(monsters).toHaveLength(40);
-		expect(monsters.every((monster) => monster.variants.length === 4)).toBe(true);
+		expect(monsters).toHaveLength(150);
+		expect(monsters.every((monster) => monster.variants.length === 5)).toBe(true);
 		expect(monsters.every((monster) => monster.variants[0]?.affinity === 'normal')).toBe(true);
-		expect(getWikiPage('creatures/monsters/death-knight')?.wikiId).toBe('monster.death-knight');
+		expect(monsters.every((monster) => monster.floorSlot === null)).toBe(true);
+		expect(getWikiPage('creatures/monsters/goblin-runt')?.wikiId).toBe('monster.goblin-runt');
 		expect(
-			getMonsterVisualEntry('monster.death-knight')?.variants.map((entry) => entry.affinity)
-		).toEqual(['normal', 'fire', 'wind', 'water']);
+			getMonsterProductionEntry('monster.goblin-runt')?.variants.map((entry) => entry.affinity)
+		).toEqual(['normal', 'fire', 'earth', 'wind', 'water']);
+		expect(getMonsterVisualDatabase()).toBeNull();
+		expect(getMonsterVisualEntry('monster.goblin-runt')).toBeNull();
 		expect(
-			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/death-knight')
+			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/goblin-runt')
 		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });
 	});
 

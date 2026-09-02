@@ -1,0 +1,77 @@
+# Archfiend
+
+Wiki ID: `monster.demon-archfiend`
+
+[← Canonical monster database](README.md)
+
+Design status: **draft canonical form**
+
+Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+
+## Identity
+
+| Field | Canonical definition |
+| --- | --- |
+| Family | Demons (family 11) |
+| Canonical form ID | `demon-archfiend` |
+| Tier | T4 — Champion |
+| Primary archetype | Soul-Chain Hierarchy Marshal (Champion) |
+| Floor assignment | Unassigned |
+| Source | [Generator bestiary](../monster-races/generator-bestiary-02.md) — Archfiend |
+
+Source-draft Demons are treated as physically manifested underworld spirits organized into an authored hostile hierarchy, not as a biological people or a universal claim about religion, evil, culture, cognition, personhood, or social worth. Their source-native embers, magma, smoke, live fire, and obsidian are infernal body materials and non-affinity rank signs; Fire affinity must add a distinct engineered combustion grammar rather than duplicate that identity.
+
+## Family visual grammar
+
+- A horned head, broadening shoulders, digitigrade or hooved legs, long tail, claws, and bat-like wing membranes remain legible from cat-sized pest to enthroned sovereign.
+- Blood red or ashen hide, char black, source-native ember orange, molten yellow, and obsidian preserve an infernal body whose internal fire is explained anatomy rather than affinity by default.
+- Charred hide, obsidian, blackened iron, native molten rock, smoke, and bat membrane retain distinct surfaces instead of collapsing into a generic flame silhouette.
+- Brands, infernal sigils, chains, spiked black armor, skull motifs, and horn arrangements communicate authored rank and command routes without implying a universal moral taxonomy.
+- Horn count, wing authority, and the proportion of source-native fire or obsidian increase with rank, but every form preserves visible hide, joints, brand routes, and an interruptible hierarchy anchor.
+
+**Escalation axis:** A pest steals brands, a line Fiend spends them, a plated Hellknight sentences targets through a seal, an Archfiend chains the hierarchy into formation, and a throne-bound Prince promotes legions until broken command brands strip away its corona and court.
+
+**This form's visual delta:** A twice-human-height Demon with obsidian armor fused to visible hide, wings of source-native black smoke supported by membrane spars, a crown of many horns, and three distinct chains of bound souls.
+
+## Combat reading
+
+### Battlefield duty
+
+Link brands, charge lines, and sentence cells into a command formation through separate bound-soul chains, each attached to one breakable fused-armor ring.
+
+### Teaching goal
+
+Teach hierarchy dismantling: each chain empowers one lower duty, but following its loaded arc reveals the exact armor ring whose destruction permanently removes that command.
+
+### Signature mechanic
+
+Black Chain of Office: the Archfiend's crown of horns selects one of three soul chains. The Pest chain transfers stolen brands, the Charge chain links Fiend stamp lines, and the Sentence chain lets a Hellknight move its square once. Wings of source-native black smoke spread only to screen the active chain. Its fused obsidian armor ring opens under load.
+
+### Telegraph
+
+One horn-crown branch hooks downward, a single soul chain straightens toward its lower form, black-smoke wings part around that route, and the matching armor ring opens.
+
+### Counterplay
+
+Trace the taut chain past the smoke screen, resolve the familiar lower-form tell, and strike the opened armor ring; each broken ring dismisses its soul chain and simplifies the formation.
+
+### Lower-form interaction
+
+The three chains coordinate Imp brand delivery, Fiend charge lines, and Hellknight sentence cells; breaking a chain ring removes that hierarchy benefit for all linked Demons.
+
+## Five-coordinate candidate-production matrix
+
+| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- |
+| Normal | `planned` | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-archfiend/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-archfiend/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-archfiend/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-archfiend/normal-v1.json` |
+| Fire | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-archfiend/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-archfiend/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-archfiend/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-archfiend/fire-v1.json` |
+| Earth | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-archfiend/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-archfiend/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-archfiend/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-archfiend/earth-v1.json` |
+| Wind | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-archfiend/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-archfiend/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-archfiend/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-archfiend/wind-v1.json` |
+| Water | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-archfiend/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-archfiend/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-archfiend/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-archfiend/water-v1.json` |
+
+### Status semantics
+
+- `planned` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
+- `blocked-on-anchor` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
+- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.

@@ -38,8 +38,8 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
-- [Monster database](creatures/monsters/README.md) — forty individual archetypes with a legacy
-  six-form candidate set migrating to Normal plus Fire, Earth, Wind, and Water.
+- [Monster database](creatures/monsters/README.md) — 30 families, 150 canonical T1–T5 forms, 750
+  Normal/Fire/Earth/Wind/Water production coordinates, and the exact forty-class reconciliation.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
 - [Living Village hero packet](art/living-village-heroes.md) — the fixed Dara, Mara, Jori, Kira,
@@ -92,14 +92,15 @@ must declare whether it is a brief, candidate, approved source, or runtime asset
 is not canon merely because it was generated. Promotion still requires identity/content binding,
 provenance, human review, and the relevant runtime validation.
 
-The gallery contains the repository's ten monster-family plates, while the
-[monster database](creatures/monsters/README.md) separates forty authored archetypes into individual
-pages and binds 240 legacy-roster affinity studies. They remain visibly marked as candidates or
-revisions while the four-affinity replacement set is produced, which lets the wiki become an art
-book without misrepresenting runtime approval.
+The gallery contains the repository's monster-family plates, while the
+[monster database](creatures/monsters/README.md) publishes 150 canonical form pages and 750 planned
+production coordinates. The earlier forty classes are reconciled separately: ten map into canonical
+forms, while thirty remain bridge-only secondary roles or expedition fauna. Their old images remain
+candidate-only references and are not automatic canonical anchors.
 
-The generator bestiary preserves thirty additional race seeds for parallel visual development.
-These remain draft briefs until taxonomy, representation, mechanics, and owner review are complete.
+The generator bestiary's thirty source families remain taxonomy-aware draft briefs even though
+their five-form production identities are now consolidated. Visual production does not silently
+turn a family label into accepted biology, culture, morality, or runtime content.
 
 ## Online presentation
 

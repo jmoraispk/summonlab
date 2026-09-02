@@ -1,0 +1,76 @@
+# Basalt Colossus
+
+Wiki ID: `monster.golem-basalt-colossus`
+
+[← Canonical monster database](README.md)
+
+Design status: **draft canonical form**
+
+Visual-production status: **planned; no coordinate on this page is approved or runtime art**
+
+## Identity
+
+| Field | Canonical definition |
+| --- | --- |
+| Family | Golems (family 20) |
+| Canonical form ID | `golem-basalt-colossus` |
+| Tier | T4 — Champion |
+| Primary archetype | Orbit-Plate Champion (Champion) |
+| Floor assignment | Unassigned |
+| Source | [Generator bestiary](../monster-races/generator-bestiary-04.md) — Basalt Colossus |
+
+Source-draft Golems are treated as a constructed visual and encounter-production family. Statements about servitude, animation, life, free will, makers, rank, and agency are proposals rather than accepted metaphysics or social taxonomy. The packet preserves blocky workmanship progression and readable magical joints without asserting universal personhood.
+
+## Family visual grammar
+
+- Blocky heavy humanoid construction, oversized hands, small or absent head, blank carved face, and visible joint gaps remain legible.
+- Clay, fieldstone, iron banding, granite, basalt, marble, gold inlay, and gemstone stay distinct construction materials.
+- Runes and seam light remain bounded animation hardware rather than generic affinity spectacle.
+- Workmanship and material quality progress from fingerprints and one scratched rune to sculptural relief and a gemstone heart.
+
+**Escalation axis:** Workmanship, material quality, and programmable rune behaviors rise from crude clay to a sovereign monument that reconfigures the arena.
+
+**This form's visual delta:** Huge black basalt body with source-supported floating plates and molten chest core.
+
+## Combat reading
+
+### Battlefield duty
+
+Control space by orbiting separated basalt plates between shield wall and crushing ring.
+
+### Teaching goal
+
+Teach that the native molten core is visible only when plate spacing changes.
+
+### Signature mechanic
+
+Plate Orbit: floating basalt plates widen into a ring, exposing the molten chest core before converging on marked lanes.
+
+### Telegraph
+
+Joint gaps widen, plate edges align, and the molten core pulses through the chest cavity.
+
+### Counterplay
+
+Cross a widening gap and strike the core shutter before the plates converge.
+
+### Lower-form interaction
+
+Rune Warriors supply one program line to the orbit; deleting it leaves a permanent gap.
+
+## Five-coordinate candidate-production matrix
+
+| Affinity | Production status | Target definition | Assignment | Candidate ownership path | Result ownership path |
+| --- | --- | --- | --- | --- | --- |
+| Normal | `planned` | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-basalt-colossus/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-basalt-colossus/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-basalt-colossus/normal-v1.json` |
+| Fire | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-basalt-colossus/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-basalt-colossus/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-basalt-colossus/fire-v1.json` |
+| Earth | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-basalt-colossus/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-basalt-colossus/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-basalt-colossus/earth-v1.json` |
+| Wind | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-basalt-colossus/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-basalt-colossus/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-basalt-colossus/wind-v1.json` |
+| Water | `blocked-on-anchor` | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-basalt-colossus/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-basalt-colossus/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-basalt-colossus/water-v1.json` |
+
+### Status semantics
+
+- `planned` means the Normal identity-anchor attempt is owned and may be produced; it does not mean an image exists.
+- `blocked-on-anchor` means an elemental attempt must wait for accepted Normal anchor evidence before production.
+- Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
+- Any future image remains candidate-only until independent review. Runtime promotion is a separate integration decision.
