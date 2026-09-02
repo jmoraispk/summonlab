@@ -903,14 +903,17 @@ Ask for one decision on each family and its member icons. The pilot is accepted 
 
 - [ ] **Step 7: Promote and export accepted pilot assets**
 
-After acceptance, write one hash-bound review per icon under `review/decisions/icons/`, run the
-atomic directory promotion, then generate the 512/256/128 derivatives and 96-pixel thumbnails and
-write the public runtime manifest containing only approved asset URLs and immutable hashes:
+After acceptance, write one hash-bound review per icon under `review/decisions/icons/`. The atomic
+directory promotion deterministically prepares the backing/art/rarity composite before opening its
+transaction, then commits each master together with its 512/256/128 derivatives, 96-pixel
+recognition thumbnail, receipt, visual record, and regenerated catalog. The promotion resolver
+uses the approved canonical backing and the frame selected by the skill record; it never adopts
+pre-existing derivative bytes. Check the committed runtime set afterward:
 
 ```bash
 pnpm promote:skill-icon-output -- \
   --review-dir assets/wiki/skills/icon-production-v1/review/decisions/icons
-pnpm export:skill-icon-runtime -- --scope pilot
+pnpm check:skill-icon-runtime -- --scope pilot
 ```
 
 - [ ] **Step 8: Run the pilot gate**

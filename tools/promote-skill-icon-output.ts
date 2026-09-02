@@ -44,6 +44,7 @@ import {
 	type SkillIconVisualSpecs
 } from './skill-icon-production-lib.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
+import { resolveDeterministicSkillIconDerivatives } from './compose-skill-icon-assets.js';
 
 export interface SkillIconAssetRecord {
 	readonly jobId: string;
@@ -312,7 +313,7 @@ export interface SkillIconDerivativeBuffers {
 
 export interface SkillIconDerivativeResolverInput {
 	readonly root: string;
-	readonly target: SkillIconTarget;
+	readonly target: Extract<SkillIconTarget, { role: 'skill-art' }>;
 	readonly candidate: { readonly bytes: Buffer; readonly contentHash: string };
 	readonly references: readonly {
 		readonly path: string;
@@ -931,15 +932,11 @@ async function preparePromotion(
 			record.resultContentHash,
 			record
 		);
-		if (!derivativeResolver)
-			throw new Error(
-				'Skill-art promotion requires the deterministic derivative resolver supplied by Task 5'
-			);
 		const derivatives = await resolveSkillDerivatives(
 			root,
 			target as Extract<SkillIconTarget, { role: 'skill-art' }>,
 			candidateBytes,
-			derivativeResolver
+			derivativeResolver ?? resolveDeterministicSkillIconDerivatives
 		);
 		visualState = {
 			...current,
@@ -2113,25 +2110,26 @@ export function parsePromotionCliRequest(args: readonly string[]): PromotionCliR
 	return { mode: 'single', jobId, reviewPath };
 }
 
-async function runCli(args: readonly string[]): Promise<void> {
+export async function runSkillIconPromotionCli(
+	args: readonly string[],
+	options: { readonly root?: string } = {}
+): Promise<SkillIconAssetRecord | readonly SkillIconAssetRecord[]> {
 	const request = parsePromotionCliRequest(args);
 	if (request.mode === 'directory') {
-		const records = await promoteReviewedSkillIconOutputs({
-			reviewDirectory: request.reviewDirectory
+		return promoteReviewedSkillIconOutputs({
+			reviewDirectory: request.reviewDirectory,
+			...(options.root ? { root: options.root } : {})
 		});
-		process.stdout.write(`${JSON.stringify(records, null, 2)}\n`);
-		return;
 	}
-	process.stdout.write(
-		`${JSON.stringify(
-			await promoteSkillIconOutput({
-				jobId: request.jobId,
-				reviewPath: request.reviewPath
-			}),
-			null,
-			2
-		)}\n`
-	);
+	return promoteSkillIconOutput({
+		jobId: request.jobId,
+		reviewPath: request.reviewPath,
+		...(options.root ? { root: options.root } : {})
+	});
+}
+
+async function runCli(args: readonly string[]): Promise<void> {
+	process.stdout.write(`${JSON.stringify(await runSkillIconPromotionCli(args), null, 2)}\n`);
 }
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {

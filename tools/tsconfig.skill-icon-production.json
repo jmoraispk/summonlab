@@ -21,6 +21,8 @@
 		"persist-skill-icon-output.spec.ts",
 		"promote-skill-icon-output.ts",
 		"promote-skill-icon-output.spec.ts",
+		"compose-skill-icon-assets.ts",
+		"compose-skill-icon-assets.spec.ts",
 		"report-skill-icon-readiness.ts",
 		"report-skill-icon-readiness.spec.ts"
 	]

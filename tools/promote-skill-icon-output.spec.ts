@@ -1,6 +1,7 @@
 import { createHash, createHmac, randomUUID } from 'node:crypto';
 import {
 	access,
+	cp,
 	copyFile,
 	mkdir,
 	mkdtemp,
@@ -34,6 +35,7 @@ import {
 	promoteReviewedSkillIconOutputs,
 	promoteSkillIconOutput,
 	recoverSkillIconPromotion,
+	runSkillIconPromotionCli,
 	type SkillIconDerivativeResolver
 } from './promote-skill-icon-output.js';
 
@@ -393,7 +395,7 @@ describe('promoteSkillIconOutput', () => {
 		});
 	});
 
-	it('refuses skill-art promotion until Task 5 supplies deterministic derivative verification', async () => {
+	it('rejects preseeded derivatives and atomically promotes skill art with recomputed defaults', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-skill-'));
 		roots.push(root);
 		for (const relativePath of [
@@ -440,6 +442,9 @@ describe('promoteSkillIconOutput', () => {
 		const geometryReference = Buffer.from('deterministic geometry reference');
 		const geometryReferencePath =
 			'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
+		const backingMasterPath =
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png';
+		const frameMasterPath = 'assets/wiki/skills/icon-production-v1/masters/frames/f.png';
 		const exactPrompt = 'Paint one centered practice sword.';
 		const output = {
 			path: candidatePath,
@@ -551,6 +556,8 @@ describe('promoteSkillIconOutput', () => {
 		for (const [relativePath, value] of [
 			[SKILL_ICON_VISUAL_SPECS_PATH, JSON.stringify(sourceVisual)],
 			[geometryReferencePath, geometryReference],
+			[backingMasterPath, candidate],
+			[frameMasterPath, candidate],
 			[candidatePath, candidate],
 			[targetPath, JSON.stringify(target)],
 			[assignmentPath, JSON.stringify(assignment)],
@@ -575,9 +582,34 @@ describe('promoteSkillIconOutput', () => {
 			await sharp(candidate).resize(96, 96).png().toBuffer()
 		);
 		await exportSkillIconProduction({ root, mode: 'write' });
+		const cliRoot = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-cli-'));
+		roots.push(cliRoot);
+		await cp(root, cliRoot, { recursive: true, force: false });
+		for (const relativePath of [
+			...([512, 256, 128] as const).map(
+				(size) => `apps/web/static/skill-icons/v1/${size}/${slug}.webp`
+			),
+			recognitionPath
+		]) {
+			await rm(path.join(cliRoot, relativePath));
+		}
+		const cliPromoted = await runSkillIconPromotionCli(['--job', jobId, '--review', reviewPath], {
+			root: cliRoot
+		});
+		expect(cliPromoted).toMatchObject({ role: 'skill-art' });
+		for (const relativePath of [
+			`assets/wiki/skills/icon-production-v1/masters/icons/${slug}.png`,
+			`apps/web/static/skill-icons/v1/512/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/256/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/128/${slug}.webp`,
+			`assets/wiki/skills/icon-production-v1/review/recognition/${slug}.png`,
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${jobId}.json`
+		]) {
+			await expect(access(path.join(cliRoot, relativePath))).resolves.toBeUndefined();
+		}
 
 		await expect(promoteSkillIconOutput({ jobId, reviewPath, root })).rejects.toThrow(
-			/deterministic derivative resolver/iu
+			/collision/iu
 		);
 		const visualAfter = JSON.parse(
 			await readFile(path.join(root, SKILL_ICON_VISUAL_SPECS_PATH), 'utf8')
@@ -672,15 +704,17 @@ describe('promoteSkillIconOutput', () => {
 		for (const relativePath of [
 			`assets/wiki/skills/icon-production-v1/masters/icons/${slug}.png`,
 			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${jobId}.json`,
-			`apps/web/static/skill-icons/v1/512/${slug}.webp`
+			`apps/web/static/skill-icons/v1/512/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/256/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/128/${slug}.webp`,
+			`assets/wiki/skills/icon-production-v1/review/recognition/${slug}.png`
 		]) {
 			await expect(access(path.join(root, relativePath))).rejects.toMatchObject({ code: 'ENOENT' });
 		}
 		const promoted = await promoteSkillIconOutput({
 			jobId,
 			reviewPath,
-			root,
-			derivativeResolver
+			root
 		});
 		expect(resolverSawBoundInputs).toBe(true);
 		expect(promoted).toMatchObject({ role: 'skill-art', transactionId: expect.any(String) });
@@ -695,7 +729,23 @@ describe('promoteSkillIconOutput', () => {
 				recognition96: { width: 96 }
 			}
 		});
-	});
+		for (const relativePath of [
+			`apps/web/static/skill-icons/v1/512/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/256/${slug}.webp`,
+			`apps/web/static/skill-icons/v1/128/${slug}.webp`,
+			`assets/wiki/skills/icon-production-v1/review/recognition/${slug}.png`,
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${jobId}.json`
+		]) {
+			await expect(access(path.join(root, relativePath))).resolves.toBeUndefined();
+		}
+		const approvedCatalog = JSON.parse(
+			await readFile(path.join(root, 'assets/wiki/skills/icon-production-v1/catalog.json'), 'utf8')
+		) as { records: Record<string, unknown>[] };
+		expect(approvedCatalog.records.find((record) => record.targetId === targetId)).toMatchObject({
+			status: 'approved',
+			assets: { runtime128: { width: 128 }, recognition96: { width: 96 } }
+		});
+	}, 30_000);
 
 	it('rejects missing, non-accepted, non-owner, and hash-mismatched review evidence', async () => {
 		const item = await fixture('charcoal-forged-stone-v1', 'rejected');
