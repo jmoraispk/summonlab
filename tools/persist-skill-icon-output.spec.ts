@@ -1,5 +1,15 @@
 import { createHash } from 'node:crypto';
-import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import {
+	access,
+	mkdir,
+	mkdtemp,
+	readFile,
+	readdir,
+	rename,
+	rm,
+	symlink,
+	writeFile
+} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -12,7 +22,11 @@ import {
 	type SkillIconGeometry,
 	type SkillIconTarget
 } from '../packages/contracts/src/index.js';
-import { persistSkillIconOutput } from './persist-skill-icon-output.js';
+import {
+	parsePersistSkillIconCliRequest,
+	persistSkillIconOutput,
+	persistSkillIconOutputBound
+} from './persist-skill-icon-output.js';
 
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
@@ -106,7 +120,7 @@ describe('persistSkillIconOutput', () => {
 		const { root, sourcePath } = await workspace();
 		const { target, assignment, candidatePath } = packet();
 		const receivedAt = '2026-09-02T09:10:11.000Z';
-		const receipt = await persistSkillIconOutput({
+		const receipt = await persistSkillIconOutputBound({
 			root,
 			sourcePath,
 			candidatePath,
@@ -143,7 +157,7 @@ describe('persistSkillIconOutput', () => {
 		});
 		expect(receipt.result.path).toBe(target.output.resultPath);
 		await expect(
-			persistSkillIconOutput({
+			persistSkillIconOutputBound({
 				root,
 				sourcePath,
 				candidatePath,
@@ -162,7 +176,7 @@ describe('persistSkillIconOutput', () => {
 		await mkdir(path.dirname(path.join(root, target.output.resultPath)), { recursive: true });
 		await writeFile(path.join(root, target.output.resultPath), 'existing evidence');
 		await expect(
-			persistSkillIconOutput({
+			persistSkillIconOutputBound({
 				root,
 				sourcePath,
 				candidatePath,
@@ -190,13 +204,13 @@ describe('persistSkillIconOutput', () => {
 			receivedAt: '2026-09-02T09:10:11.000Z'
 		};
 		await expect(
-			persistSkillIconOutput({ ...base, expectedSourceHash: 'b'.repeat(64) })
+			persistSkillIconOutputBound({ ...base, expectedSourceHash: 'b'.repeat(64) })
 		).rejects.toThrow(/hash mismatch/u);
-		await expect(persistSkillIconOutput({ ...base, candidatePath: 'outside.png' })).rejects.toThrow(
-			/candidate/u
-		);
 		await expect(
-			persistSkillIconOutput({ ...base, assignment: { ...assignment, jobId: 'different-v1' } })
+			persistSkillIconOutputBound({ ...base, candidatePath: 'outside.png' })
+		).rejects.toThrow(/candidate/u);
+		await expect(
+			persistSkillIconOutputBound({ ...base, assignment: { ...assignment, jobId: 'different-v1' } })
 		).rejects.toThrow(/assignment|identity|job/iu);
 
 		const wrong = path.join(root, 'wrong.png');
@@ -206,7 +220,7 @@ describe('persistSkillIconOutput', () => {
 				.png()
 				.toBuffer()
 		);
-		await expect(persistSkillIconOutput({ ...base, sourcePath: wrong })).rejects.toThrow(
+		await expect(persistSkillIconOutputBound({ ...base, sourcePath: wrong })).rejects.toThrow(
 			/1024|dimensions/u
 		);
 		const jpeg = path.join(root, 'wrong.jpg');
@@ -216,15 +230,93 @@ describe('persistSkillIconOutput', () => {
 				.jpeg()
 				.toBuffer()
 		);
-		await expect(persistSkillIconOutput({ ...base, sourcePath: jpeg })).rejects.toThrow(/PNG/u);
+		await expect(persistSkillIconOutputBound({ ...base, sourcePath: jpeg })).rejects.toThrow(
+			/PNG/u
+		);
 
 		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-outside-'));
 		roots.push(outside);
 		await mkdir(path.join(root, 'assets/wiki/skills'), { recursive: true });
 		await symlink(outside, path.join(root, 'assets/wiki/skills/icon-production-v1'));
-		await expect(persistSkillIconOutput(base)).rejects.toThrow(/symbolic link/u);
+		await expect(persistSkillIconOutputBound(base)).rejects.toThrow(/symbolic link/u);
 		await expect(
 			access(path.join(outside, 'candidates/icons', path.basename(candidatePath)))
 		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('supports the promised four-field API by resolving its immutable packet identity', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		for (const [relativePath, value] of [
+			[assignment.targetPath, target],
+			[assignment.assignmentPath, assignment]
+		] as const) {
+			await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+			await writeFile(path.join(root, relativePath), JSON.stringify(value));
+		}
+		const previous = process.cwd();
+		try {
+			process.chdir(root);
+			const receipt = await persistSkillIconOutput({
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry
+			});
+			expect(receipt).toMatchObject({
+				jobId: target.jobId,
+				receivedAt: assignment.assignedAt,
+				retained: { path: candidatePath }
+			});
+		} finally {
+			process.chdir(previous);
+		}
+	});
+
+	it('requires an explicit CLI receipt timestamp', () => {
+		expect(() =>
+			parsePersistSkillIconCliRequest([
+				'--source',
+				'/tmp/output.png',
+				'--target',
+				'assets/wiki/skills/icon-production-v1/targets/icons/example-v1.json',
+				'--assignment',
+				'assets/wiki/skills/icon-production-v1/assignments/icons/example-v1.json'
+			])
+		).toThrow(/--received-at/u);
+	});
+
+	it('rejects candidate and result ancestor swaps before either external write', async () => {
+		for (const swap of ['candidate', 'result'] as const) {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			const outside = await mkdtemp(path.join(os.tmpdir(), `skill-icon-${swap}-outside-`));
+			roots.push(outside);
+			const swappedParent = path.join(
+				root,
+				swap === 'candidate'
+					? 'assets/wiki/skills/icon-production-v1/candidates/icons'
+					: 'assets/wiki/skills/icon-production-v1/results/icons'
+			);
+			await expect(
+				persistSkillIconOutputBound({
+					root,
+					sourcePath,
+					candidatePath,
+					expectedRole: 'skill-art',
+					geometry,
+					target,
+					assignment,
+					receivedAt: '2026-09-02T09:10:11.000Z',
+					testHooks: {
+						[swap === 'candidate' ? 'beforeCandidateWrite' : 'beforeResultWrite']: async () => {
+							await rename(swappedParent, `${swappedParent}-moved`);
+							await symlink(outside, swappedParent);
+						}
+					}
+				})
+			).rejects.toThrow(/symbolic link|escaped/iu);
+			expect(await readdir(outside)).toEqual([]);
+		}
 	});
 });

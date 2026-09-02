@@ -20,7 +20,13 @@ export const SKILL_ICON_SUBJECT_SAFE_MINIMUM = 0.9;
 export const SKILL_ICON_BACKING_APERTURE_COVERAGE_MINIMUM = 0.85;
 export const SKILL_ICON_FRAME_INNER_APERTURE_SCALE = 0.78;
 export const SKILL_ICON_FRAME_EDGE_BAND_PERCENT = 4;
-export const SKILL_ICON_APERTURE_ANTIALIAS_TOLERANCE_PX = 1;
+// One percent of the subject-safe disk rejects dust/single-pixel artifacts while leaving
+// deliberately narrow weapon and tool silhouettes viable.
+export const SKILL_ICON_ART_MIN_VISIBLE_FRACTION_OF_SUBJECT_SAFE_AREA = 0.01;
+// Three percent of the aperture and four percent of each geometry-scaled edge band require a
+// continuous frame presence rather than six isolated registration pixels.
+export const SKILL_ICON_FRAME_MIN_VISIBLE_FRACTION_OF_APERTURE_AREA = 0.03;
+export const SKILL_ICON_FRAME_EDGE_BAND_MINIMUM_COVERAGE = 0.04;
 
 export interface SkillIconAssetInspection {
 	readonly mediaType: string;
@@ -137,8 +143,11 @@ export async function inspectSkillIconAsset(
 	const innerAperture = insetPolygon(aperture, center, SKILL_ICON_FRAME_INNER_APERTURE_SCALE);
 	const edgeBandWidth = (minimumDimension * SKILL_ICON_FRAME_EDGE_BAND_PERCENT) / 100;
 	const edgeHits = Array.from({ length: aperture.length }, () => false);
+	const edgeBandPixels = Array.from({ length: aperture.length }, () => 0);
+	const visibleEdgeBandPixels = Array.from({ length: aperture.length }, () => 0);
 	let visiblePixels = 0;
 	let subjectPixels = 0;
+	let subjectSafeAreaPixels = 0;
 	let aperturePixels = 0;
 	let apertureVisiblePixels = 0;
 	let outsideEffect = false;
@@ -153,24 +162,31 @@ export async function inspectSkillIconAsset(
 			const inAperture = pointInPolygon(pixelX, pixelY, aperture);
 			const alpha = decoded.data[(y * width + x) * 4 + 3] ?? 0;
 			const visible = alpha > SKILL_ICON_TRANSPARENT_ALPHA_MAX;
+			const distance = Math.hypot(pixelX - center[0], pixelY - center[1]);
+			if (distance <= subjectRadius) subjectSafeAreaPixels += 1;
 			if (inAperture) {
 				aperturePixels += 1;
 				if (visible) apertureVisiblePixels += 1;
 			}
+			for (let edge = 0; edge < aperture.length; edge += 1) {
+				if (
+					inAperture &&
+					distanceToSegment(
+						pixelX,
+						pixelY,
+						aperture[edge]!,
+						aperture[(edge + 1) % aperture.length]!
+					) <= edgeBandWidth
+				) {
+					edgeBandPixels[edge]! += 1;
+					if (visible) visibleEdgeBandPixels[edge]! += 1;
+				}
+			}
 			if (!visible) continue;
 			visiblePixels += 1;
-			const distance = Math.hypot(pixelX - center[0], pixelY - center[1]);
 			if (distance <= subjectRadius) subjectPixels += 1;
 			if (distance > effectRadius) outsideEffect = true;
-			if (
-				!inAperture &&
-				aperture.every(
-					(point, edge) =>
-						distanceToSegment(pixelX, pixelY, point, aperture[(edge + 1) % aperture.length]!) >
-						SKILL_ICON_APERTURE_ANTIALIAS_TOLERANCE_PX
-				)
-			)
-				outsideAperture = true;
+			if (!inAperture) outsideAperture = true;
 			if (pointInPolygon(pixelX, pixelY, exclusion)) insideExclusion = true;
 			if (pointInPolygon(pixelX, pixelY, innerAperture)) insideFrameAperture = true;
 			for (let edge = 0; edge < aperture.length; edge += 1) {
@@ -192,6 +208,11 @@ export async function inspectSkillIconAsset(
 	const apertureCoverage = aperturePixels === 0 ? 0 : apertureVisiblePixels / aperturePixels;
 	if (role === 'skill-art') {
 		if (visiblePixels === 0) violations.push('skill-art requires visible pixels');
+		if (
+			visiblePixels / Math.max(1, subjectSafeAreaPixels) <
+			SKILL_ICON_ART_MIN_VISIBLE_FRACTION_OF_SUBJECT_SAFE_AREA
+		)
+			violations.push('skill-art visible area is below the minimum emblem coverage');
 		if (outsideEffect) violations.push('visible pixels escape the 72% effect-safe region');
 		if (subjectSafeCoverage < SKILL_ICON_SUBJECT_SAFE_MINIMUM)
 			violations.push(
@@ -205,6 +226,19 @@ export async function inspectSkillIconAsset(
 		if (insideFrameAperture) violations.push('rarity-frame aperture must remain transparent');
 		if (edgeHits.some((hit) => !hit))
 			violations.push('rarity-frame material must intersect all six edge bands');
+		if (
+			visiblePixels / Math.max(1, aperturePixels) <
+			SKILL_ICON_FRAME_MIN_VISIBLE_FRACTION_OF_APERTURE_AREA
+		)
+			violations.push('rarity-frame visible area is below the minimum frame coverage');
+		if (
+			edgeBandPixels.some(
+				(count, edge) =>
+					(visibleEdgeBandPixels[edge] ?? 0) / Math.max(1, count) <
+					SKILL_ICON_FRAME_EDGE_BAND_MINIMUM_COVERAGE
+			)
+		)
+			violations.push('rarity-frame edge bands require substantial continuous coverage');
 	}
 	if (role === 'backing') {
 		if (outsideAperture) violations.push('backing pixels must remain inside the aperture');

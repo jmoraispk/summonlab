@@ -25,15 +25,22 @@ import {
 } from './validate-skill-icon-assets.js';
 
 export interface PersistSkillIconOutputOptions {
-	readonly root?: string;
 	readonly sourcePath: string;
 	readonly candidatePath: string;
 	readonly expectedRole: SkillIconRole;
 	readonly geometry: SkillIconGeometry;
+}
+
+export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutputOptions {
+	readonly root?: string;
 	readonly target: SkillIconTarget;
 	readonly assignment: SkillIconAssignment;
 	readonly receivedAt: string;
 	readonly expectedSourceHash?: string;
+	readonly testHooks?: {
+		readonly beforeCandidateWrite?: () => void | Promise<void>;
+		readonly beforeResultWrite?: () => void | Promise<void>;
+	};
 }
 
 export interface SkillIconAssetReceipt {
@@ -151,8 +158,8 @@ function assertPacketBinding(
 		throw new Error('Assignment paths do not match target identity and role');
 }
 
-export async function persistSkillIconOutput(
-	options: PersistSkillIconOutputOptions
+export async function persistSkillIconOutputBound(
+	options: PersistSkillIconOutputBoundOptions
 ): Promise<SkillIconAssetReceipt> {
 	if (!path.isAbsolute(options.sourcePath)) throw new Error('Source path must be absolute');
 	const receivedAt = IsoDateTimeSchema.parse(options.receivedAt);
@@ -212,6 +219,8 @@ export async function persistSkillIconOutput(
 		throw new Error(`Candidate output already exists (collision): ${candidatePath}`);
 	if (await metadataOrNull(resultDestination))
 		throw new Error(`Result output already exists (collision): ${target.output.resultPath}`);
+	await options.testHooks?.beforeCandidateWrite?.();
+	await ensureSafeParents(root, destination);
 	let destinationHandle: Awaited<ReturnType<typeof open>> | undefined;
 	let resultHandle: Awaited<ReturnType<typeof open>> | undefined;
 	let ownsDestination = false;
@@ -227,6 +236,7 @@ export async function persistSkillIconOutput(
 		await destinationHandle.sync();
 		await destinationHandle.close();
 		destinationHandle = undefined;
+		await ensureSafeParents(root, destination);
 		const retainedHandle = await open(destination, constants.O_RDONLY | constants.O_NOFOLLOW);
 		let retainedBytes: Buffer;
 		try {
@@ -283,6 +293,8 @@ export async function persistSkillIconOutput(
 			selfPromoted: false
 		});
 		const resultBytes = Buffer.from(`${JSON.stringify(result, null, '\t')}\n`);
+		await options.testHooks?.beforeResultWrite?.();
+		await ensureSafeParents(root, resultDestination);
 		resultHandle = await open(
 			resultDestination,
 			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
@@ -293,6 +305,7 @@ export async function persistSkillIconOutput(
 		await resultHandle.sync();
 		await resultHandle.close();
 		resultHandle = undefined;
+		await ensureSafeParents(root, resultDestination);
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
@@ -306,12 +319,75 @@ export async function persistSkillIconOutput(
 			}
 		};
 	} catch (error) {
-		await destinationHandle?.close().catch(() => undefined);
-		await resultHandle?.close().catch(() => undefined);
-		if (ownsDestination) await unlink(destination).catch(() => undefined);
-		if (ownsResult) await unlink(resultDestination).catch(() => undefined);
+		const cleanupFailures: unknown[] = [];
+		for (const handle of [destinationHandle, resultHandle]) {
+			if (!handle) continue;
+			try {
+				await handle.close();
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		for (const ownedPath of [
+			...(ownsDestination ? [destination] : []),
+			...(ownsResult ? [resultDestination] : [])
+		]) {
+			try {
+				await unlink(ownedPath);
+			} catch (cleanupError) {
+				if ((cleanupError as NodeJS.ErrnoException).code !== 'ENOENT')
+					cleanupFailures.push(cleanupError);
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				'Persistence failed and rollback was incomplete',
+				{ cause: error }
+			);
 		throw error;
 	}
+}
+
+function packetPathsForCandidate(candidatePath: string): {
+	readonly targetPath: string;
+	readonly assignmentPath: string;
+} {
+	const match =
+		/^assets\/wiki\/skills\/icon-production-v1\/candidates\/(references|calibration|icons)\/([a-z][a-z0-9]*(?:-[a-z0-9]+)*)\.png$/u.exec(
+			candidatePath
+		);
+	if (!match?.[1] || !match[2])
+		throw new Error('Candidate path cannot identify one target/assignment packet');
+	return {
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/${match[1]}/${match[2]}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/${match[1]}/${match[2]}.json`
+	};
+}
+
+export async function persistSkillIconOutput(
+	options: PersistSkillIconOutputOptions
+): Promise<SkillIconAssetReceipt> {
+	const root = process.cwd();
+	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
+	const { targetPath, assignmentPath } = packetPathsForCandidate(candidatePath);
+	const [target, assignment] = await Promise.all([
+		readSafePacket(root, targetPath, 'Target').then((bytes) =>
+			SkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
+		),
+		readSafePacket(root, assignmentPath, 'Assignment').then((bytes) =>
+			SkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
+		)
+	]);
+	// The compact four-field API uses the immutable assignment timestamp authored by its caller.
+	// CLI and orchestration code should use the bound variant with an explicit receipt timestamp.
+	return persistSkillIconOutputBound({
+		...options,
+		root,
+		target,
+		assignment,
+		receivedAt: assignment.assignedAt
+	});
 }
 
 function option(args: readonly string[], name: string): string {
@@ -321,10 +397,48 @@ function option(args: readonly string[], name: string): string {
 	return value;
 }
 
+export interface PersistSkillIconCliRequest {
+	readonly sourcePath: string;
+	readonly targetPath: string;
+	readonly assignmentPath: string;
+	readonly receivedAt: string;
+	readonly expectedSourceHash?: string;
+}
+
+export function parsePersistSkillIconCliRequest(
+	args: readonly string[]
+): PersistSkillIconCliRequest {
+	const allowed = new Set([
+		'--source',
+		'--target',
+		'--assignment',
+		'--received-at',
+		'--source-hash'
+	]);
+	const seen = new Set<string>();
+	for (let index = 0; index < args.length; index += 2) {
+		const flag = args[index];
+		if (!flag || !allowed.has(flag) || !args[index + 1])
+			throw new Error(`Unknown or incomplete argument: ${flag ?? '<missing>'}`);
+		if (seen.has(flag)) throw new Error(`Duplicate argument: ${flag}`);
+		seen.add(flag);
+	}
+	const request = {
+		sourcePath: option(args, '--source'),
+		targetPath: SkillIconTargetPathSchema.parse(option(args, '--target')),
+		assignmentPath: SkillIconAssignmentPathSchema.parse(option(args, '--assignment')),
+		receivedAt: IsoDateTimeSchema.parse(option(args, '--received-at'))
+	};
+	const expectedSourceHash = seen.has('--source-hash')
+		? StateHashSchema.parse(option(args, '--source-hash'))
+		: undefined;
+	return expectedSourceHash === undefined ? request : { ...request, expectedSourceHash };
+}
+
 async function runCli(args: readonly string[]): Promise<void> {
 	const root = process.cwd();
-	const targetPath = SkillIconTargetPathSchema.parse(option(args, '--target'));
-	const assignmentPath = SkillIconAssignmentPathSchema.parse(option(args, '--assignment'));
+	const request = parsePersistSkillIconCliRequest(args);
+	const { targetPath, assignmentPath } = request;
 	const [target, assignment, geometry] = await Promise.all([
 		readSafePacket(root, targetPath, 'Target').then((bytes) =>
 			SkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
@@ -338,22 +452,18 @@ async function runCli(args: readonly string[]): Promise<void> {
 	]);
 	if (assignment.targetPath !== targetPath || assignment.assignmentPath !== assignmentPath)
 		throw new Error('CLI target/assignment arguments do not match packet paths');
-	const expectedSourceHash = args.includes('--source-hash')
-		? option(args, '--source-hash')
-		: undefined;
-	const receivedAtIndex = args.indexOf('--received-at');
-	const receivedAt =
-		receivedAtIndex >= 0 ? option(args, '--received-at') : new Date().toISOString();
-	const receipt = await persistSkillIconOutput({
+	const receipt = await persistSkillIconOutputBound({
 		root,
-		sourcePath: option(args, '--source'),
+		sourcePath: request.sourcePath,
 		candidatePath: target.output.candidatePath,
 		expectedRole: target.role,
 		geometry,
 		target,
 		assignment,
-		receivedAt,
-		...(expectedSourceHash === undefined ? {} : { expectedSourceHash })
+		receivedAt: request.receivedAt,
+		...(request.expectedSourceHash === undefined
+			? {}
+			: { expectedSourceHash: request.expectedSourceHash })
 	});
 	process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
 }
