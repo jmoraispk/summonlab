@@ -1,6 +1,16 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { link, lstat, mkdir, open, readdir, realpath, rmdir, unlink } from 'node:fs/promises';
+import {
+	link,
+	lstat,
+	mkdir,
+	open,
+	readdir,
+	realpath,
+	rmdir,
+	type FileHandle,
+	unlink
+} from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -143,10 +153,14 @@ interface PlannedDerivative {
 	readonly bytes: Buffer;
 }
 
-interface PlannedContactSheet {
-	readonly path: string;
+interface DesiredContactSheet {
+	readonly kind: 'reference-assets' | 'pilot-icons';
 	readonly bytes: Buffer;
 	readonly itemCount: number;
+}
+
+interface PlannedContactSheet extends DesiredContactSheet {
+	readonly path: string;
 }
 
 export interface SkillIconRuntimeTestHooks {
@@ -154,6 +168,8 @@ export interface SkillIconRuntimeTestHooks {
 		readonly path: string;
 		readonly stagePath: string;
 	}) => void | Promise<void>;
+	readonly beforeContactSheetFinalLink?: () => void | Promise<void>;
+	readonly afterContactSheetFinalLink?: () => void | Promise<void>;
 }
 
 interface ParentFingerprint {
@@ -975,7 +991,7 @@ async function loadBoundCandidate(
 	return candidate;
 }
 
-async function planReferenceContactSheet(root: string): Promise<PlannedContactSheet> {
+async function planReferenceContactSheet(root: string): Promise<DesiredContactSheet> {
 	const targetDirectory = 'assets/wiki/skills/icon-production-v1/targets/references';
 	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory).catch(() => []);
 	const targets = await Promise.all(
@@ -1031,10 +1047,7 @@ async function planReferenceContactSheet(root: string): Promise<PlannedContactSh
 		)
 	);
 	return {
-		path: reviewSheetPath(
-			'reference-assets',
-			Math.max(...selected.map(({ revision }) => revision))
-		),
+		kind: 'reference-assets',
 		bytes: await renderReferenceGrid(cells),
 		itemCount: cells.length
 	};
@@ -1054,7 +1067,7 @@ async function loadPilotCatalog(root: string) {
 	);
 }
 
-async function planPilotContactSheet(root: string): Promise<PlannedContactSheet> {
+async function planPilotContactSheet(root: string): Promise<DesiredContactSheet> {
 	const currency = await exportSkillIconProduction({ root, mode: 'check' });
 	if (!currency.inSync) {
 		throw new Error(
@@ -1158,10 +1171,7 @@ async function planPilotContactSheet(root: string): Promise<PlannedContactSheet>
 		})
 	);
 	return {
-		path: reviewSheetPath(
-			'pilot-icons',
-			Math.max(...[...selectedTargets.values()].map((target) => jobRevision(target.jobId)))
-		),
+		kind: 'pilot-icons',
 		bytes: await renderSkillContactSheet(cards),
 		itemCount: cards.length
 	};
@@ -1229,21 +1239,6 @@ async function listManagedAssetFiles(root: string): Promise<string[]> {
 	return files.sort((left, right) => left.localeCompare(right));
 }
 
-async function contactSheetState(
-	root: string,
-	sheet: PlannedContactSheet
-): Promise<'missing' | 'current' | 'drift'> {
-	const location = await assertRepositoryPath(root, sheet.path, 'Contact sheet destination', true);
-	const metadata = await metadataOrNull(location);
-	if (!metadata) return 'missing';
-	if (metadata.isSymbolicLink() || !metadata.isFile()) {
-		throw new Error(`Contact sheet destination is unsafe: ${sheet.path}`);
-	}
-	return (await readDirectRegularFile(location, 'Contact sheet destination')).equals(sheet.bytes)
-		? 'current'
-		: 'drift';
-}
-
 async function directoryFingerprint(directory: string): Promise<ParentFingerprint> {
 	const metadata = await lstat(directory);
 	if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
@@ -1277,32 +1272,144 @@ async function assertNoConcurrentPromotion(root: string): Promise<void> {
 	}
 }
 
-async function writeContactSheet(
+interface BoundDirectory {
+	readonly path: string;
+	readonly procPath: string;
+	readonly identity: ParentFingerprint;
+	readonly handle: FileHandle;
+}
+
+async function openBoundDirectory(directory: string): Promise<BoundDirectory> {
+	const identity = await directoryFingerprint(directory);
+	const handle = await open(
+		directory,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
+	try {
+		const opened = await handle.stat();
+		if (opened.dev !== identity.device || opened.ino !== identity.inode) {
+			throw new Error(`Contact-sheet directory changed while opening: ${directory}`);
+		}
+		const procPath = `/proc/self/fd/${handle.fd}`;
+		if ((await realpath(procPath)) !== identity.realPath) {
+			throw new Error('Descriptor-bound contact-sheet paths are unavailable');
+		}
+		return { path: directory, procPath, identity, handle };
+	} catch (error) {
+		await handle.close();
+		throw error;
+	}
+}
+
+async function readBoundFile(directory: BoundDirectory, name: string): Promise<Buffer> {
+	const handle = await open(
+		path.join(directory.procPath, name),
+		constants.O_RDONLY | constants.O_NOFOLLOW
+	);
+	try {
+		const metadata = await handle.stat();
+		if (!metadata.isFile()) throw new Error(`Review evidence is not a regular file: ${name}`);
+		return await handle.readFile();
+	} finally {
+		await handle.close();
+	}
+}
+
+async function inventoryContactSheets(
+	directory: BoundDirectory | null,
+	desired: DesiredContactSheet
+): Promise<PlannedContactSheet> {
+	if (!directory) return { ...desired, path: reviewSheetPath(desired.kind, 1) };
+	const prefix = `${desired.kind}-`;
+	const entries = await readdir(directory.procPath, { withFileTypes: true });
+	const versions: { revision: number; bytes: Buffer }[] = [];
+	for (const entry of entries) {
+		if (!entry.name.startsWith(prefix)) continue;
+		const match = new RegExp(`^${desired.kind}-v([1-9]\\d*)\\.png$`, 'u').exec(entry.name);
+		if (!match || entry.isSymbolicLink() || !entry.isFile()) {
+			throw new Error(`Malformed or colliding ${desired.kind} review evidence: ${entry.name}`);
+		}
+		const bytes = await readBoundFile(directory, entry.name);
+		if ((await sharp(bytes).metadata()).format !== 'png') {
+			throw new Error(`Malformed ${desired.kind} PNG evidence: ${entry.name}`);
+		}
+		versions.push({ revision: Number(match[1]), bytes });
+	}
+	versions.sort((left, right) => left.revision - right.revision);
+	const latest = versions.at(-1);
+	if (latest?.bytes.equals(desired.bytes)) {
+		return { ...desired, path: reviewSheetPath(desired.kind, latest.revision) };
+	}
+	return { ...desired, path: reviewSheetPath(desired.kind, (latest?.revision ?? 0) + 1) };
+}
+
+async function acquireContactSheetLock(directory: BoundDirectory): Promise<{
+	readonly path: string;
+	readonly token: Buffer;
+	readonly device: number;
+	readonly inode: number;
+}> {
+	const lockPath = path.join(directory.procPath, '.contact-sheet.lock');
+	for (let attempt = 0; attempt < 500; attempt += 1) {
+		try {
+			const handle = await open(
+				lockPath,
+				constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+				0o600
+			);
+			const token = Buffer.from(randomUUID());
+			try {
+				const metadata = await handle.stat();
+				await handle.writeFile(token);
+				await handle.sync();
+				await directory.handle.sync();
+				return { path: lockPath, token, device: metadata.dev, inode: metadata.ino };
+			} finally {
+				await handle.close();
+			}
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+			await new Promise((resolve) => setTimeout(resolve, 10));
+		}
+	}
+	throw new Error('Timed out waiting for the contact-sheet coordinator lock');
+}
+
+async function releaseContactSheetLock(
+	directory: BoundDirectory,
+	lock: Awaited<ReturnType<typeof acquireContactSheetLock>>
+): Promise<void> {
+	const metadata = await lstat(lock.path);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== lock.device ||
+		metadata.ino !== lock.inode ||
+		!(await readBoundFile(directory, '.contact-sheet.lock')).equals(lock.token)
+	) {
+		throw new Error('Contact-sheet coordinator lock ownership changed; cleanup required');
+	}
+	await unlink(lock.path);
+	await directory.handle.sync();
+}
+
+async function publishContactSheet(
 	root: string,
+	review: BoundDirectory,
 	sheet: PlannedContactSheet,
 	testHooks?: SkillIconRuntimeTestHooks
 ): Promise<void> {
-	if (
-		!/^assets\/wiki\/skills\/icon-production-v1\/review\/(?:reference-assets|pilot-icons)-v[1-9]\d*\.png$/u.test(
-			sheet.path
-		)
-	) {
-		throw new Error(`Contact-sheet destination is outside fixed evidence authority: ${sheet.path}`);
-	}
-	await assertNoConcurrentPromotion(root);
-	const destination = await ensureSafeParent(root, sheet.path);
-	await assertNoConcurrentPromotion(root);
-	const destinationParent = await directoryFingerprint(path.dirname(destination));
+	const filename = path.basename(sheet.path);
+	const destination = path.join(review.procPath, filename);
 	const authority = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
 	const authorityIdentity = await directoryFingerprint(authority);
 	const stageDirectory = path.join(authority, `.contact-sheet-staging-${randomUUID()}`);
 	await mkdir(stageDirectory, { mode: 0o700 });
 	await syncDirectory(authority);
-	const stageDirectoryIdentity = await directoryFingerprint(stageDirectory);
-	const stagePath = path.join(stageDirectory, 'contact-sheet.stage');
+	const stage = await openBoundDirectory(stageDirectory);
+	const stagePath = path.join(stage.procPath, 'contact-sheet.stage');
 	let stageFile: { device: number; inode: number } | null = null;
 	let linked = false;
-	let completed = false;
 	try {
 		const handle = await open(
 			stagePath,
@@ -1310,92 +1417,129 @@ async function writeContactSheet(
 			0o644
 		);
 		try {
-			const opened = await handle.stat();
-			stageFile = { device: opened.dev, inode: opened.ino };
+			const metadata = await handle.stat();
+			stageFile = { device: metadata.dev, inode: metadata.ino };
 			await handle.writeFile(sheet.bytes);
 			await handle.sync();
 		} finally {
 			await handle.close();
 		}
-		await syncDirectory(stageDirectory);
+		await stage.handle.sync();
 		await testHooks?.beforeContactSheetPublish?.({ path: sheet.path, stagePath });
+		await testHooks?.beforeContactSheetFinalLink?.();
 		await assertNoConcurrentPromotion(root);
-		if (!sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent)) {
-			throw new Error(`Contact-sheet parent changed before publication: ${sheet.path}`);
-		}
-		if (!sameDirectory(await directoryFingerprint(authority), authorityIdentity)) {
-			throw new Error('Contact-sheet staging authority parent changed before publication');
-		}
-		if (!sameDirectory(await directoryFingerprint(stageDirectory), stageDirectoryIdentity)) {
-			throw new Error('Contact-sheet staging directory identity changed before publication');
-		}
 		const staged = await lstat(stagePath);
 		if (
 			!stageFile ||
-			staged.isSymbolicLink() ||
-			!staged.isFile() ||
 			staged.dev !== stageFile.device ||
 			staged.ino !== stageFile.inode ||
-			!(await readDirectRegularFile(stagePath, 'Staged contact sheet')).equals(sheet.bytes)
+			!(await readBoundFile(stage, 'contact-sheet.stage')).equals(sheet.bytes)
 		) {
 			throw new Error('Staged contact-sheet bytes or identity changed before publication');
 		}
 		await link(stagePath, destination);
 		linked = true;
-		await syncDirectory(path.dirname(destination));
+		await review.handle.sync();
+		await testHooks?.afterContactSheetFinalLink?.();
+		if (!sameDirectory(await directoryFingerprint(review.path), review.identity)) {
+			throw new Error(`Contact-sheet parent changed during publication: ${sheet.path}`);
+		}
 		const published = await lstat(destination);
 		if (
-			published.isSymbolicLink() ||
-			!published.isFile() ||
 			published.dev !== stageFile.device ||
 			published.ino !== stageFile.inode ||
-			!sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent) ||
-			!(await readDirectRegularFile(destination, 'Published contact sheet')).equals(sheet.bytes)
+			!(await readBoundFile(review, filename)).equals(sheet.bytes)
 		) {
 			throw new Error(`Contact-sheet identity changed during publication: ${sheet.path}`);
 		}
-		completed = true;
-	} finally {
-		if (linked && !completed && stageFile) {
+	} catch (error) {
+		if (linked && stageFile) {
 			const current = await lstat(destination).catch(() => null);
-			if (
-				current &&
-				!current.isSymbolicLink() &&
-				current.isFile() &&
-				current.dev === stageFile.device &&
-				current.ino === stageFile.inode &&
-				sameDirectory(await directoryFingerprint(path.dirname(destination)), destinationParent)
-			) {
+			if (current?.dev === stageFile.device && current.ino === stageFile.inode) {
 				await unlink(destination);
-				await syncDirectory(path.dirname(destination));
+				await review.handle.sync();
 			}
 		}
-		const stageDirectoryCurrent = await lstat(stageDirectory).catch(() => null);
+		throw error;
+	} finally {
+		const current = await lstat(stagePath).catch(() => null);
 		if (
-			stageDirectoryCurrent &&
-			!stageDirectoryCurrent.isSymbolicLink() &&
-			stageDirectoryCurrent.isDirectory() &&
-			stageDirectoryCurrent.dev === stageDirectoryIdentity.device &&
-			stageDirectoryCurrent.ino === stageDirectoryIdentity.inode &&
-			sameDirectory(await directoryFingerprint(authority), authorityIdentity)
+			current &&
+			stageFile &&
+			current.dev === stageFile.device &&
+			current.ino === stageFile.inode
 		) {
-			const stageCurrent = await lstat(stagePath).catch(() => null);
-			if (
-				stageCurrent &&
-				stageFile &&
-				!stageCurrent.isSymbolicLink() &&
-				stageCurrent.isFile() &&
-				stageCurrent.dev === stageFile.device &&
-				stageCurrent.ino === stageFile.inode
-			) {
-				await unlink(stagePath);
-				await syncDirectory(stageDirectory);
-			}
-			if ((await readdir(stageDirectory)).length === 0) {
-				await rmdir(stageDirectory);
-				await syncDirectory(authority);
-			}
+			await unlink(stagePath);
+			await stage.handle.sync();
 		}
+		await stage.handle.close();
+		if (
+			sameDirectory(await directoryFingerprint(authority), authorityIdentity) &&
+			(await readdir(stageDirectory)).length === 0
+		) {
+			await rmdir(stageDirectory);
+			await syncDirectory(authority);
+		}
+	}
+}
+
+async function writeContactSheet(
+	root: string,
+	desired: DesiredContactSheet,
+	testHooks?: SkillIconRuntimeTestHooks
+): Promise<{ sheet: PlannedContactSheet; written: boolean }> {
+	await assertNoConcurrentPromotion(root);
+	await ensureSafeParent(root, reviewSheetPath(desired.kind, 1));
+	const review = await openBoundDirectory(
+		path.resolve(root, 'assets/wiki/skills/icon-production-v1/review')
+	);
+	let lock: Awaited<ReturnType<typeof acquireContactSheetLock>> | null = null;
+	try {
+		lock = await acquireContactSheetLock(review);
+		await assertNoConcurrentPromotion(root);
+		const sheet = await inventoryContactSheets(review, desired);
+		const latestBytes = await readBoundFile(review, path.basename(sheet.path)).catch(
+			(error: NodeJS.ErrnoException) => {
+				if (error.code === 'ENOENT') return null;
+				throw error;
+			}
+		);
+		if (latestBytes?.equals(desired.bytes)) return { sheet, written: false };
+		await publishContactSheet(root, review, sheet, testHooks);
+		return { sheet, written: true };
+	} finally {
+		try {
+			if (lock) await releaseContactSheetLock(review, lock);
+		} finally {
+			await review.handle.close();
+		}
+	}
+}
+
+async function checkContactSheet(
+	root: string,
+	desired: DesiredContactSheet
+): Promise<{ sheet: PlannedContactSheet; current: boolean }> {
+	const reviewPath = path.resolve(root, 'assets/wiki/skills/icon-production-v1/review');
+	const metadata = await metadataOrNull(reviewPath);
+	if (!metadata) {
+		return { sheet: await inventoryContactSheets(null, desired), current: false };
+	}
+	if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+		throw new Error('Contact-sheet review authority is unsafe');
+	}
+	const review = await openBoundDirectory(reviewPath);
+	try {
+		const sheet = await inventoryContactSheets(review, desired);
+		const bytes = await readBoundFile(review, path.basename(sheet.path)).catch(
+			(error: NodeJS.ErrnoException) => {
+				if (error.code === 'ENOENT') return null;
+				throw error;
+			}
+		);
+		return { sheet, current: bytes?.equals(desired.bytes) ?? false };
+	} finally {
+		await review.handle.close();
 	}
 }
 
@@ -1422,7 +1566,7 @@ export async function exportSkillIconRuntime(options: {
 		(record): record is Extract<(typeof catalog.records)[number], { status: 'approved' }> =>
 			record.status === 'approved'
 	);
-	const contactSheet =
+	const desiredContactSheet =
 		scope === 'references'
 			? await planReferenceContactSheet(root)
 			: scope === 'pilot'
@@ -1471,28 +1615,24 @@ export async function exportSkillIconRuntime(options: {
 		(assetPath) => !expectedManagedPaths.has(assetPath)
 	);
 	for (const orphanPath of orphanPaths) drift.push(`orphan ${orphanPath}`);
-	let sheetState: 'missing' | 'current' | 'drift' | null = null;
-	if (contactSheet) {
-		sheetState = await contactSheetState(root, contactSheet);
-		if (sheetState !== 'current') drift.push(`${sheetState} ${contactSheet.path}`);
+	let contactSheet: PlannedContactSheet | null = null;
+	let sheetState: 'missing' | 'current' | null = null;
+	if (desiredContactSheet && options.mode === 'check') {
+		const checked = await checkContactSheet(root, desiredContactSheet);
+		contactSheet = checked.sheet;
+		sheetState = checked.current ? 'current' : 'missing';
+		if (!checked.current) drift.push(`missing ${contactSheet.path}`);
 	}
 	let written = false;
 	if (options.mode === 'write') {
-		const runtimeProblems = drift.filter(
-			(item) => !contactSheet || !item.endsWith(contactSheet.path)
-		);
-		if (runtimeProblems.length > 0) {
-			throw new Error(`Runtime export drift requires promotion: ${runtimeProblems.join(', ')}`);
+		if (drift.length > 0) {
+			throw new Error(`Runtime export drift requires promotion: ${drift.join(', ')}`);
 		}
-		if (contactSheet && sheetState === 'drift') {
-			throw new Error(`Contact sheet collision/drift: ${contactSheet.path}`);
-		}
-		if (contactSheet && sheetState === 'missing') {
-			await writeContactSheet(root, contactSheet, options.testHooks);
+		if (desiredContactSheet) {
+			const published = await writeContactSheet(root, desiredContactSheet, options.testHooks);
+			contactSheet = published.sheet;
 			sheetState = 'current';
-			written = true;
-			const sheetDriftIndex = drift.findIndex((item) => item.endsWith(contactSheet.path));
-			if (sheetDriftIndex >= 0) drift.splice(sheetDriftIndex, 1);
+			written = published.written;
 		}
 	}
 	return {
@@ -1513,7 +1653,7 @@ export async function exportSkillIconRuntime(options: {
 		inSync:
 			statuses.every((status) => status.current) &&
 			orphanPaths.length === 0 &&
-			(!contactSheet || sheetState === 'current'),
+			(!desiredContactSheet || sheetState === 'current'),
 		written
 	};
 }

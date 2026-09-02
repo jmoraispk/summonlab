@@ -701,8 +701,9 @@ pnpm export:skill-icon-runtime -- --scope references
 
 Expected: all eight files pass role-specific alpha/geometry checks and
 `review/reference-assets-vN.png` shows F through S plus the backing at equal scale. `N` is the
-highest selected packet revision; an incomplete newer packet blocks export, and older sheets remain
-immutable review evidence.
+sheet-specific monotonic revision: unchanged rendered bytes reuse the latest sheet, while any
+change allocates the next number after the highest historical sheet. An incomplete newer packet
+blocks export, and older sheets remain immutable review evidence.
 
 - [ ] **Step 5: Pause for owner review**
 
@@ -899,8 +900,9 @@ pnpm validate:skill-icons
 
 Expected: `review/pilot-icons-vN.png` contains exactly 15 composed cards from the highest complete
 packet revision for each skill, with skill name and example mastery/level text beneath each hexagon.
-An incomplete newer packet blocks export, older sheets remain immutable, and every underlying
-master remains standalone and text-free.
+The sheet-specific `N` reuses the latest file for unchanged rendered bytes and increments after the
+highest historical sheet when pixels change. An incomplete newer packet blocks export, older sheets
+remain immutable, and every underlying master remains standalone and text-free.
 
 - [ ] **Step 6: Pause for owner pilot acceptance**
 

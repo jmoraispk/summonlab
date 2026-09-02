@@ -355,11 +355,15 @@ async function installPilotCandidates(
 		schemaVersion: string;
 		records: Record<string, unknown>[];
 	};
-	const art = await validArt('#ef4444');
+	const arts = new Map<number, Buffer>([
+		[1, await validArt('#ef4444')],
+		[2, await validArt('#3b82f6')]
+	]);
 	const replacements = new Map<string, Record<string, unknown>>();
 	for (const targetId of SKILL_ICON_PILOT_TARGET_IDS) {
 		const slug = targetId.replaceAll(':', '-');
 		const revision = revisions.get(targetId) ?? 1;
+		const art = arts.get(revision) ?? (await validArt('#a855f7'));
 		const packet = await installCandidatePacket(root, {
 			jobId: `${slug}-v${revision}`,
 			role: 'skill-art',
@@ -704,8 +708,51 @@ describe('scoped contact-sheet export', () => {
 			firstBytes
 		);
 		expect(await readFile(path.join(root, rejectedPath), 'utf8')).toBe('rejected-v1-evidence');
+		await installCandidatePacket(root, {
+			jobId: 'rarity-frame-e-v2',
+			role: 'rarity-frame',
+			rarity: 'E',
+			bytes: await validFrame([120, 145, 245])
+		});
+		const pendingThird = await exportSkillIconRuntime({
+			root,
+			mode: 'check',
+			scope: 'references'
+		});
+		expect(pendingThird.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/reference-assets-v3.png'
+		);
+		expect(pendingThird.inSync).toBe(false);
+		const third = await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' });
+		expect(third.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/reference-assets-v3.png'
+		);
+		const unchanged = await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' });
+		expect(unchanged).toMatchObject({ written: false, inSync: true });
+		expect(unchanged.contactSheet?.path).toBe(third.contactSheet?.path);
 		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
 		expect(checked).toMatchObject({ inSync: true, orphanPaths: [], drift: [] });
+	}, 30_000);
+
+	it('allocates after the highest historical sheet gap and rejects malformed review collisions', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const review = path.join(root, 'assets/wiki/skills/icon-production-v1/review');
+		await mkdir(review, { recursive: true });
+		await writeFile(path.join(review, 'reference-assets-v4.png'), await validArt('#0f172a'));
+		const gap = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
+		expect(gap.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/reference-assets-v5.png'
+		);
+		await writeFile(path.join(review, 'reference-assets-v05.png'), 'collision');
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).rejects.toThrow(/malformed|colliding.*reference-assets/iu);
+		await rm(path.join(review, 'reference-assets-v05.png'));
+		await symlink('reference-assets-v4.png', path.join(review, 'reference-assets-v6.png'));
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).rejects.toThrow(/malformed|colliding.*reference-assets/iu);
 	}, 30_000);
 
 	it('rejects incomplete and duplicate highest reference revisions without falling back', async () => {
@@ -855,9 +902,66 @@ describe('scoped contact-sheet export', () => {
 			firstBytes
 		);
 		expect(await readFile(path.join(root, v1Review), 'utf8')).toBe('rejected-pilot-v1');
+		const secondRevisedTarget = SKILL_ICON_PILOT_TARGET_IDS[1];
+		await installPilotCandidates(
+			root,
+			new Map([
+				[revisedTarget, 2],
+				[secondRevisedTarget, 2]
+			])
+		);
+		const third = await exportSkillIconRuntime({ root, mode: 'write', scope: 'pilot' });
+		expect(third.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/pilot-icons-v3.png'
+		);
+		const unchanged = await exportSkillIconRuntime({ root, mode: 'write', scope: 'pilot' });
+		expect(unchanged).toMatchObject({ written: false, inSync: true });
+		expect(unchanged.contactSheet?.path).toBe(third.contactSheet?.path);
 		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' });
 		expect(checked).toMatchObject({ inSync: true, orphanPaths: [], drift: [] });
 	}, 120_000);
+
+	it('binds final publication to the opened review directory across a transient swap', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-contact-transient-'));
+		roots.push(outside);
+		await writeFile(path.join(outside, 'victim'), 'untouched');
+		const review = path.join(root, 'assets/wiki/skills/icon-production-v1/review');
+		const retained = `${review}.retained`;
+		const written = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'references',
+			testHooks: {
+				beforeContactSheetFinalLink: async () => {
+					await rename(review, retained);
+					await symlink(outside, review);
+				},
+				afterContactSheetFinalLink: async () => {
+					await rm(review);
+					await rename(retained, review);
+				}
+			}
+		});
+		expect(written).toMatchObject({ written: true, inSync: true });
+		expect(await readFile(path.join(outside, 'victim'), 'utf8')).toBe('untouched');
+		expect(await readdir(outside)).toEqual(['victim']);
+		await access(path.join(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH));
+	}, 30_000);
+
+	it('serializes concurrent writers so identical evidence owns one revision', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const reports = await Promise.all([
+			exportSkillIconRuntime({ root, mode: 'write', scope: 'references' }),
+			exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+		]);
+		expect(reports.map(({ written }) => written).sort()).toEqual([false, true]);
+		expect(new Set(reports.map(({ contactSheet }) => contactSheet?.path))).toEqual(
+			new Set([SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH])
+		);
+	}, 30_000);
 
 	it('fails closed on contact-sheet ancestor replacement without writing outside authority', async () => {
 		const root = await productionFixtureRoot();

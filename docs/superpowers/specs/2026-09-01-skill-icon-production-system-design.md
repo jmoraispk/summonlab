@@ -147,9 +147,10 @@ text without generative editing. Every candidate is inspected in three views:
 3. a `96×96` recognition thumbnail without text.
 
 The compositor also produces revision-aware contact sheets for review, but those sheets remain
-derived evidence. It selects the highest complete target packet for every required slot, fails on
-an incomplete or colliding latest revision, and writes a new `*-vN.png` sheet without replacing
-older review evidence. Contact sheets never become an image source.
+derived evidence. It selects the highest complete target packet for every required slot and fails
+on an incomplete or colliding latest packet. Sheet revisions are independent: unchanged rendered
+bytes reuse the latest `*-vN.png`, while changed bytes allocate `N + 1` after the highest historical
+sheet without replacing older review evidence. Contact sheets never become an image source.
 
 ## Manifest model
 
