@@ -1,0 +1,97 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "flame-elementals",
+	"displayName": "Flame Elementals",
+	"sourceRaceNumber": 21,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-04.md",
+	"classificationNotes": "Source-draft Flame Elementals are treated as a living-combustion visual and encounter-production family, not as accepted claims about origin, life, cognition, agency, personhood, or hostility. Native flame, heat, smoke, scorching, obsidian, and molten rock define family identity and do not automatically constitute the separately engineered Fire-affinity variant.",
+	"visualConstants": [
+		"A roughly humanoid upper silhouette dissolves into flame above and tapers or hovers below with no feet.",
+		"Temperature remains legible from dull orange through yellow-white to blue-white edges.",
+		"Open flame, ember, smoke, and later source-supported obsidian and molten rock stay materially distinct.",
+		"Core definition and directed combustion progress from a flicker to a sovereign star while heat remains readable rather than overexposed."
+	],
+	"escalationAxis": "Temperature, core definition, and control over combustion rise from one wandering flicker to a sovereign that phases the arena through learned heat states.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity living fire, heat, smoke, obsidian, molten rock, and base scorching are the source body's ordinary construction and environmental behavior, not evidence of engineered Fire affinity.",
+				"Native temperature color, cinders, heat shimmer, upward dissolution, and source cores remain bounded to the form with no added elemental apparatus."
+			],
+			"counterplaySignal": "The native flicker base, smoke arm, directed jet throat, obsidian fissure, or sovereign star rhythm preserves each established opening.",
+			"forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Labeling the family body itself as a Fire-affinity modification"]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown; T4 alone gains source-supported obsidian shell and molten rock; T5 alone gains its star, corona, and crown.",
+				"Engineered Fire affinity adds a distinct combustion process: ceramic fuel collars, segmented intake vanes, timed secondary ignition rings, black exhaust markers, and visible cooling shutters around the native flame body."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown, so the added intake collar opens between secondary burns; T4 obsidian shell and molten rock expose one cooling shutter; T5 star, corona, and crown dim when the ignition ring exhausts.",
+			"forbidden": ["Palette-only hotter native flame", "Glow-only fire treatment", "Calling temperature alone Fire affinity", "Premature high-tier core anatomy"]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown; T4 alone gains source-supported obsidian shell and molten rock; T5 alone gains its star, corona, and crown.",
+				"Compressed mineral cages, sediment baffles, load-bearing crystal braces, localized dust drops, and pale faults constrain flame motion without converting early forms into rock bodies."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown, so one mineral brace fractures after a grounded burst; T4 obsidian shell and molten rock expose a load fault; T5 star, corona, and crown pull against one cracked anchor.",
+			"forbidden": ["Palette-only brown flame", "Glow-only earth treatment", "Early obsidian or molten anatomy", "Rock mass that hides native combustion"]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown; T4 alone gains source-supported obsidian shell and molten rock; T5 alone gains its star, corona, and crown.",
+				"Directional intake flutes, split smoke ribbons, pressure-shaped flame edges, debris vectors, and a still combustion throat create an aerodynamic grammar beyond ordinary rising heat."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown, so the still throat appears between directed gusts; T4 obsidian shell and molten rock expose one intake gap; T5 star, corona, and crown align around a still pressure anchor.",
+			"forbidden": ["Palette-only pale flame", "Glow-only wind treatment", "Treating ordinary smoke rise as Wind affinity", "Directionless distortion"]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown; T4 alone gains source-supported obsidian shell and molten rock; T5 alone gains its star, corona, and crown.",
+				"Pressurized water jackets, coherent steam loops, wet reflective valve collars, visible condensation return, and exposed drainage cores sustain rather than extinguish the native body."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T3 have no obsidian shell, no molten rock, no star, no corona, and no crown, so pressure loss opens a jacket valve; T4 obsidian shell and molten rock expose a quench fissure; T5 star, corona, and crown contract when the return loop drains.",
+			"forbidden": ["Palette-only blue flame", "Glow-only water treatment", "Shapeless steam without a circuit", "Water that erases native living fire"]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1", "formId": "flame-elemental-wisp", "displayName": "Wisp", "primaryArchetype": "Cinder-Drift Initiate (Initiate)",
+			"battlefieldDuty": "Probe movement with one small drifting ignition point.", "teachingGoal": "Teach that falling cinders reveal the Wisp's next drift before the flame follows.",
+			"signatureMechanic": "Cinder Drift: three cinders arc toward a point and the candle-sized flame snaps there.", "telegraph": "The dull-orange flicker leans while three cinders leave its leading edge.",
+			"counterplay": "Leave the cinder endpoint and pass through the dim trail before it rekindles.", "visualDelta": "Candle-sized dull-orange flicker, barely shaped, with drifting cinders and no shell or solid core.",
+			"lowerFormInteraction": null, "sourceReferences": ["Wisp"]
+		},
+		{
+			"tier": "T2", "formId": "flame-elemental-flame-spirit", "displayName": "Flame Spirit", "primaryArchetype": "Smoke-Reach Soldier (Soldier)",
+			"battlefieldDuty": "Repeat mid-range pressure by extending one smoke-trailing arm across a readable lane.", "teachingGoal": "Teach that a smoke arm is committed until its yellow-orange base catches up.",
+			"signatureMechanic": "Smoke Reach: one flame arm stretches, fades into smoke, and reignites only at full extension.", "telegraph": "The faceless humanoid upper body narrows and one arm turns dark at the tip.",
+			"counterplay": "Cross behind the extended arm and strike the narrow body before the tip reignites.", "visualDelta": "Human-sized yellow-orange humanoid fire with no fixed face, smoke-trailing arms, and no feet.",
+			"lowerFormInteraction": "Wisps drift to the smoke endpoint; crossing the arm early separates them.", "sourceReferences": ["Flame Spirit"]
+		},
+		{
+			"tier": "T3", "formId": "flame-elemental-blaze-warden", "displayName": "Blaze Warden", "primaryArchetype": "Jet-Gate Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot into a lane controller that reshapes both arms into alternating directed jets.", "teachingGoal": "Teach that blue-edged jet throats announce the closed lane and expose the opposite white-hot core edge.",
+			"signatureMechanic": "Twin Jet Gate: one arm becomes a sweeping jet while the other compacts into a bright guard; the roles reverse after each sweep.", "telegraph": "One arm narrows to a blue-edged nozzle while the white-hot core leans toward the opposite arm.",
+			"counterplay": "Enter behind the sweeping nozzle and strike the exposed core edge before the two arms reverse.", "visualDelta": "White-hot central flame with blue edges, two arms shaped into directed jets, and a strong heat-shimmer aura.",
+			"lowerFormInteraction": "Flame Spirits extend the guarded lane; interrupting their smoke reach opens the core flank.", "sourceReferences": ["Blaze Warden"]
+		},
+		{
+			"tier": "T4", "formId": "flame-elemental-magma-lord", "displayName": "Magma Lord", "primaryArchetype": "Fissure-Mantle Champion (Champion)",
+			"battlefieldDuty": "Control alternating safe lanes by opening source-supported obsidian fissures beneath a smoke mantle.", "teachingGoal": "Teach that molten flow selects the next solid shell segment to break.",
+			"signatureMechanic": "Fissure Mantle: molten rock routes through three obsidian shell seams, then one segment opens into a sweeping flame gate.", "telegraph": "The smoke mantle lifts and one molten fissure brightens from chest to arm.",
+			"counterplay": "Stand behind the dark shell segment and break its cooling seam after the gate passes.", "visualDelta": "Cracked obsidian shell over living fire, molten rock in fissures, and a mantle of smoke.",
+			"lowerFormInteraction": "Blaze Wardens feed jets into lit fissures; disabling the linked Warden leaves that segment cold.", "sourceReferences": ["Magma Lord"]
+		},
+		{
+			"tier": "T5", "formId": "flame-elemental-conflagration-sovereign", "displayName": "Conflagration Sovereign", "primaryArchetype": "Temperature-Cycle Sovereign (Sovereign)",
+			"battlefieldDuty": "Transform the arena through dull, white-hot, and blue-white phases that recombine every lower-form heat lesson.", "teachingGoal": "Test cinder endpoints, smoke commitments, jet lanes, and fissure cooling without reducing the boss to brighter fire.",
+			"signatureMechanic": "Arena Transformation — Three Temperatures: the chest star shifts the scorched ring through Cinder Drift, Twin Jet, and Fissure Mantle phases; completing each learned response extinguishes one segment of the solar corona and lowers the standing flame crown.",
+			"telegraph": "The blue-white star changes edge color, the corona divides into the selected pattern, and one crown tine bends toward the active lower form.",
+			"counterplay": "Resolve the announced lower-form pattern, then strike the dimmed star edge; each success permanently removes one corona segment and shortens the final cycle.",
+			"visualDelta": "Blue-white chest star, whole-body solar corona, standing flame crown, and a source-native scorched ground ring.",
+			"lowerFormInteraction": "Wisps mark endpoints, Blaze Wardens define jets, and Magma Lords hold fissure segments; each defeated contributor removes its phase amplifier.", "sourceReferences": ["Conflagration Sovereign"]
+		}
+	]
+}

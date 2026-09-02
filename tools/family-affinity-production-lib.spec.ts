@@ -368,6 +368,99 @@ const waveCFamilyFixtures = [
 	}
 ] as const;
 
+const waveDFamilyFixtures = [
+	{
+		fileName: '19-slimes.json',
+		familyId: 'slimes',
+		displayName: 'Slimes',
+		sourceRaceNumber: 19,
+		forms: [
+			{ tier: 'T1', displayName: 'Droplet', sourceReferences: ['Droplet'] },
+			{ tier: 'T2', displayName: 'Blob', sourceReferences: ['Blob'] },
+			{ tier: 'T3', displayName: 'Ooze Knight', sourceReferences: ['Ooze Knight'] },
+			{ tier: 'T4', displayName: 'Devourer', sourceReferences: ['Devourer'] },
+			{ tier: 'T5', displayName: 'Primordial Ooze', sourceReferences: ['Primordial Ooze'] }
+		]
+	},
+	{
+		fileName: '20-golems.json',
+		familyId: 'golems',
+		displayName: 'Golems',
+		sourceRaceNumber: 20,
+		forms: [
+			{ tier: 'T1', displayName: 'Clay Figure', sourceReferences: ['Clay Figure'] },
+			{ tier: 'T2', displayName: 'Stone Servant', sourceReferences: ['Stone Servant'] },
+			{ tier: 'T3', displayName: 'Rune Warrior', sourceReferences: ['Rune Warrior'] },
+			{ tier: 'T4', displayName: 'Basalt Colossus', sourceReferences: ['Basalt Colossus'] },
+			{ tier: 'T5', displayName: 'Master Golem', sourceReferences: ['Master Golem'] }
+		]
+	},
+	{
+		fileName: '21-flame-elementals.json',
+		familyId: 'flame-elementals',
+		displayName: 'Flame Elementals',
+		sourceRaceNumber: 21,
+		forms: [
+			{ tier: 'T1', displayName: 'Wisp', sourceReferences: ['Wisp'] },
+			{ tier: 'T2', displayName: 'Flame Spirit', sourceReferences: ['Flame Spirit'] },
+			{ tier: 'T3', displayName: 'Blaze Warden', sourceReferences: ['Blaze Warden'] },
+			{ tier: 'T4', displayName: 'Magma Lord', sourceReferences: ['Magma Lord'] },
+			{
+				tier: 'T5',
+				displayName: 'Conflagration Sovereign',
+				sourceReferences: ['Conflagration Sovereign']
+			}
+		]
+	},
+	{
+		fileName: '22-treants.json',
+		familyId: 'treants',
+		displayName: 'Treants',
+		sourceRaceNumber: 22,
+		forms: [
+			{ tier: 'T1', displayName: 'Sapling-walker', sourceReferences: ['Sapling-walker'] },
+			{ tier: 'T2', displayName: 'Young Treant', sourceReferences: ['Young Treant'] },
+			{ tier: 'T3', displayName: 'Oakheart', sourceReferences: ['Oakheart'] },
+			{ tier: 'T4', displayName: 'Elder Warden', sourceReferences: ['Elder Warden'] },
+			{
+				tier: 'T5',
+				displayName: 'World-Tree Warden',
+				sourceReferences: ['World-Tree Warden']
+			}
+		]
+	},
+	{
+		fileName: '23-fungalfolk.json',
+		familyId: 'fungalfolk',
+		displayName: 'Fungalfolk',
+		sourceRaceNumber: 23,
+		forms: [
+			{ tier: 'T1', displayName: 'Sporeling', sourceReferences: ['Sporeling'] },
+			{ tier: 'T2', displayName: 'Mycon', sourceReferences: ['Mycon'] },
+			{ tier: 'T3', displayName: 'Sporeguard', sourceReferences: ['Sporeguard'] },
+			{ tier: 'T4', displayName: 'Fungal Shaman', sourceReferences: ['Fungal Shaman'] },
+			{
+				tier: 'T5',
+				displayName: 'Mycelial Sovereign',
+				sourceReferences: ['Mycelial Sovereign']
+			}
+		]
+	},
+	{
+		fileName: '24-deep-ones.json',
+		familyId: 'deep-ones',
+		displayName: 'Deep Ones',
+		sourceRaceNumber: 24,
+		forms: [
+			{ tier: 'T1', displayName: 'Fishman', sourceReferences: ['Fishman'] },
+			{ tier: 'T2', displayName: 'Tidewarrior', sourceReferences: ['Tidewarrior'] },
+			{ tier: 'T3', displayName: 'Abyssal Hunter', sourceReferences: ['Abyssal Hunter'] },
+			{ tier: 'T4', displayName: 'Deep Priest', sourceReferences: ['Deep Priest'] },
+			{ tier: 'T5', displayName: 'Leviathan Lord', sourceReferences: ['Leviathan Lord'] }
+		]
+	}
+] as const;
+
 describe('Wave A family packets', () => {
 	it.each(waveAFamilyFixtures)(
 		'loads $fileName with exact source identity and tier coverage',
@@ -842,6 +935,229 @@ describe('Wave C family packets', () => {
 		expect(queenCounterplay).toMatch(/abdomen valve|comb cistern/iu);
 		expect(queenCounterplay).not.toMatch(/active limb/iu);
 	});
+});
+
+describe('Wave D family packets', () => {
+	it.each(waveDFamilyFixtures)(
+		'loads $fileName with exact source identity and authored tier contracts',
+		async ({ fileName, familyId, displayName, sourceRaceNumber, forms }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+
+			expect(packet.familyId).toBe(familyId);
+			expect(packet.displayName).toBe(displayName);
+			expect(packet.sourceRaceNumber).toBe(sourceRaceNumber);
+			expect(packet.sourcePage).toBe('docs/wiki/creatures/monster-races/generator-bestiary-04.md');
+			expect(packet.floorSlot).toBeNull();
+			expect(
+				packet.forms.map(({ tier, displayName: formDisplayName, sourceReferences }) => ({
+					tier,
+					displayName: formDisplayName,
+					sourceReferences
+				}))
+			).toEqual(forms);
+			expect(new Set(packet.forms.map((form) => form.formId)).size).toBe(5);
+			expect(new Set(packet.forms.map((form) => form.battlefieldDuty)).size).toBe(5);
+			expect(packet.forms[2]!.primaryArchetype).toMatch(/Specialist/iu);
+			expect(packet.forms[2]!.signatureMechanic).toBeTruthy();
+			expect(packet.forms[2]!.telegraph).toBeTruthy();
+			expect(packet.forms[2]!.counterplay).toBeTruthy();
+			expect(packet.forms[4]!.primaryArchetype).toMatch(/Sovereign/iu);
+			expect(packet.forms[4]!.signatureMechanic).toMatch(/arena|phase|command|produc|transform/iu);
+			expect(packet.forms[4]!.lowerFormInteraction).toBeTruthy();
+		}
+	);
+
+	it('keeps Wave D family and form IDs unique across the batch', async () => {
+		const packets = await Promise.all(
+			waveDFamilyFixtures.map(async ({ fileName }) =>
+				FamilyPacketSchema.parse(
+					JSON.parse(
+						await readFile(
+							new URL(
+								`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+								import.meta.url
+							),
+							'utf8'
+						)
+					)
+				)
+			)
+		);
+		const familyIds = packets.map((packet) => packet.familyId);
+		const formIds = packets.flatMap((packet) => packet.forms.map((form) => form.formId));
+		expect(new Set(familyIds).size).toBe(6);
+		expect(new Set(formIds).size).toBe(30);
+	});
+
+	it.each([
+		{
+			fileName: '19-slimes.json',
+			motifs: [/translucent colors/iu, /core glow/iu]
+		},
+		{
+			fileName: '20-golems.json',
+			motifs: [
+				/rune glow/iu,
+				/seam glow/iu,
+				/stone/iu,
+				/clay/iu,
+				/material quality/iu,
+				/molten core/iu
+			]
+		},
+		{
+			fileName: '21-flame-elementals.json',
+			motifs: [
+				/living fire/iu,
+				/heat/iu,
+				/smoke/iu,
+				/obsidian/iu,
+				/molten rock/iu,
+				/base scorching/iu
+			]
+		},
+		{
+			fileName: '22-treants.json',
+			motifs: [
+				/tree/iu,
+				/wood/iu,
+				/roots/iu,
+				/moss/iu,
+				/amber heartwood/iu,
+				/waterfall/iu,
+				/stone in (?:the )?roots/iu
+			]
+		},
+		{
+			fileName: '23-fungalfolk.json',
+			motifs: [/bioluminescent glow/iu, /spores/iu, /mycelium/iu, /damp habitat/iu]
+		},
+		{
+			fileName: '24-deep-ones.json',
+			motifs: [/ocean/iu, /wetness/iu, /coral/iu, /lures/iu, /bioluminescence/iu]
+		}
+	])(
+		'binds every $fileName source-native risk motif independently in Normal',
+		async ({ fileName, motifs }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			const normalEntries = [
+				...packet.affinityThemes.normal.constructionDimensions,
+				packet.affinityThemes.normal.counterplaySignal,
+				...packet.affinityThemes.normal.forbidden
+			];
+			for (const motif of motifs) {
+				const boundEntry = normalEntries.find(
+					(entry) => /family-native|non-affinity/iu.test(entry) && motif.test(entry)
+				);
+				expect(boundEntry, `direct Normal binding for ${motif.source}`).toBeDefined();
+			}
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental anatomy/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained elemental glow/iu);
+			expect(normalEntries.join(' ')).toMatch(/unexplained environmental wake/iu);
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				expect(packet.affinityThemes[affinity].constructionDimensions).toHaveLength(2);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/palette-only/iu);
+				expect(packet.affinityThemes[affinity].forbidden.join(' ')).toMatch(/glow-only/iu);
+			}
+		}
+	);
+
+	it.each([
+		{
+			fileName: '19-slimes.json',
+			checks: [
+				/T1[–-]T2[^.]*no humanoid structure/iu,
+				/T3[–-]T4[^.]*humanoid/iu,
+				/T5[^.]*dozen cores/iu
+			]
+		},
+		{
+			fileName: '20-golems.json',
+			checks: [
+				/T1[–-]T3[^.]*no floating plates[^.]*no molten core[^.]*no gemstone[^.]*no halo/iu,
+				/T4[^.]*floating plates[^.]*molten core/iu,
+				/T5[^.]*gemstone heart[^.]*rune-halo/iu
+			]
+		},
+		{
+			fileName: '21-flame-elementals.json',
+			checks: [
+				/T1[–-]T3[^.]*no obsidian shell[^.]*no molten rock[^.]*no star[^.]*no corona[^.]*no crown/iu,
+				/T4[^.]*obsidian shell[^.]*molten rock/iu,
+				/T5[^.]*star[^.]*corona[^.]*crown/iu
+			]
+		},
+		{
+			fileName: '22-treants.json',
+			checks: [
+				/T1[–-]T3[^.]*no heartwood cavity[^.]*no waterfall[^.]*no boulders[^.]*no groves/iu,
+				/T4[^.]*heartwood cavity/iu,
+				/T5[^.]*waterfall[^.]*boulders[^.]*groves/iu
+			]
+		},
+		{
+			fileName: '23-fungalfolk.json',
+			checks: [
+				/T1[^.]*no glow[^.]*no constant spore cloud[^.]*no smaller mushrooms[^.]*no throne[^.]*no ground network/iu,
+				/T2[^.]*faint gill glow/iu,
+				/T3[^.]*constant spore cloud/iu,
+				/T4[^.]*smaller mushrooms/iu,
+				/T5[^.]*throne[^.]*ground network/iu
+			]
+		},
+		{
+			fileName: '24-deep-ones.json',
+			checks: [
+				/T1[–-]T2[^.]*no lure[^.]*no tentacles[^.]*no translucent organs[^.]*no kraken limbs[^.]*no crown/iu,
+				/T3[^.]*lure/iu,
+				/T4[^.]*tentacles[^.]*translucent organs/iu,
+				/T5[^.]*kraken limbs[^.]*crown/iu
+			]
+		}
+	])(
+		'keeps $fileName elemental construction and counterplay tier-safe',
+		async ({ fileName, checks }) => {
+			const packet = FamilyPacketSchema.parse(
+				JSON.parse(
+					await readFile(
+						new URL(
+							`../assets/enemies/experiments/family-affinity-v1/families/${fileName}`,
+							import.meta.url
+						),
+						'utf8'
+					)
+				)
+			);
+			for (const affinity of ['fire', 'earth', 'wind', 'water'] as const) {
+				const construction = packet.affinityThemes[affinity].constructionDimensions.join(' ');
+				const counterplay = packet.affinityThemes[affinity].counterplaySignal;
+				for (const check of checks) {
+					expect(construction, `${affinity} construction ${check.source}`).toMatch(check);
+					expect(counterplay, `${affinity} counterplay ${check.source}`).toMatch(check);
+				}
+			}
+		}
+	);
 });
 
 describe('family affinity production schemas', () => {

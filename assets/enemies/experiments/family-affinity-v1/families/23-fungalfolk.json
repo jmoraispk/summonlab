@@ -1,0 +1,97 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "fungalfolk",
+	"displayName": "Fungalfolk",
+	"sourceRaceNumber": 23,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-04.md",
+	"classificationNotes": "Source-draft Fungalfolk are treated as a mushroom-bodied visual and encounter-production family. Claims about habitat, communication, society, cognition, agency, personhood, reproduction, rank, and universal behavior are proposals pending taxonomy review. Bioluminescence, spores, mycelium, and damp surroundings are native fungal motifs rather than affinities.",
+	"visualConstants": [
+		"Cap-headed, stalk-bodied silhouette with gills, bulbous limbs, and a wider top than base remains recognizable.",
+		"Pale fungal flesh and one strong cap tone contrast with bounded cyan or green gill bioluminescence from T2 onward.",
+		"Fungal flesh, spongy cap, mycelium, damp moss, and spore dust remain organic and spatially coherent.",
+		"Cap breadth, gill light, spore density, secondary growth, and ground mycelium escalate at explicit source tiers."
+	],
+	"escalationAxis": "Cap reach and network control progress from a dust puff to battlefield spore writing and finally a sovereign throne connected to the arena floor.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity bioluminescent glow, spores, mycelium, and damp habitat remain fungal biology or environment, not elemental glow, Wind, Water, or any other affinity.",
+				"Cap tissue, gills, stalk fiber, ordinary spore drift, damp reflection, moss, and visible mycelial threads remain restrained and source-bound."
+			],
+			"counterplaySignal": "The established planted stalk, gill pause, spore intake gap, secondary mushroom stem, or throne-network node remains readable.",
+			"forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Treating native spores, dampness, or bioluminescence as affinity evidence"]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network; T2 alone adds faint gill glow; T3 adds its constant spore cloud; T4 adds smaller mushrooms; T5 adds throne and ground network.",
+				"Charred cap lamellae, resin fuel beads, heat-dark stalk bands, directional smoke pores, and timed ignition across existing spores add engineered combustion without replacing fungal tissue."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network, so a fuel bead exposes its stalk; T2 faint gill glow pauses at a pore; T3 constant spore cloud thins at intake; T4 smaller mushrooms reveal the active stem; T5 throne and ground network expose the lit node.",
+			"forbidden": ["Palette-only red cap", "Glow-only fire treatment", "Generic burning mushroom", "Premature network anatomy"]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network; T2 alone adds faint gill glow; T3 adds its constant spore cloud; T4 adds smaller mushrooms; T5 adds throne and ground network.",
+				"Mineralized stalk rings, sediment cap layers, crystal mycelial braces, localized dust, and pale load fractures create rooted mass without confusing damp substrate with affinity."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network, so a mineral ring fractures at its stalk; T2 faint gill glow pauses above a brace; T3 constant spore cloud reveals the planted fault; T4 smaller mushrooms mark the loaded stem; T5 throne and ground network expose the cracked node.",
+			"forbidden": ["Palette-only brown cap", "Glow-only earth treatment", "Pasted rocks", "Mineral bulk that hides stalk and gills"]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network; T2 alone adds faint gill glow; T3 adds its constant spore cloud; T4 adds smaller mushrooms; T5 adds throne and ground network.",
+				"Directional gill vanes, cap-edge streamers, pressure-carved stalk channels, aligned spore vectors, and one still air pocket distinguish affinity force from ordinary spore drift."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network, so the still pocket exposes its stalk; T2 faint gill glow pauses between gusts; T3 constant spore cloud parts at intake; T4 smaller mushrooms point to the pressure stem; T5 throne and ground network align around the still node.",
+			"forbidden": ["Palette-only pale cap", "Glow-only wind treatment", "Calling ordinary spore drift Wind affinity", "Directionless cloud"]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network; T2 alone adds faint gill glow; T3 adds its constant spore cloud; T4 adds smaller mushrooms; T5 adds throne and ground network.",
+				"Capillary mycelium, wet reflective cap tissue, pressurized gill valves, coherent droplets, mist release, and visible drainage distinguish Water affinity from a native damp habitat."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1 has no glow, no constant spore cloud, no smaller mushrooms, no throne, and no ground network, so pressure loss exposes its stalk; T2 faint gill glow dims at a valve; T3 constant spore cloud clears around intake; T4 smaller mushrooms drain through the active stem; T5 throne and ground network expose the empty node.",
+			"forbidden": ["Palette-only blue cap", "Glow-only water treatment", "Treating damp habitat as Water affinity", "Opaque mist that hides gills"]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1", "formId": "fungalfolk-sporeling", "displayName": "Sporeling", "primaryArchetype": "Dust-Puff Initiate (Initiate)",
+			"battlefieldDuty": "Probe approach timing with one short dust puff after each planted step.", "teachingGoal": "Teach that the plain cap tilts away from the safe side before dust releases.",
+			"signatureMechanic": "Stub Step: a bulbous foot plants, the plain brown cap tips, and one faint nonpersistent dust puff marks the opposite side.", "telegraph": "The knee-high stalk compresses and its unlit cap edge lifts.",
+			"counterplay": "Move under the lifted edge and strike the planted stalk after the puff.", "visualDelta": "Knee-high plain brown cap, stubby limbs, no glow, and only a faint movement puff.",
+			"lowerFormInteraction": null, "sourceReferences": ["Sporeling"]
+		},
+		{
+			"tier": "T2", "formId": "fungalfolk-mycon", "displayName": "Mycon", "primaryArchetype": "Gill-Club Soldier (Soldier)",
+			"battlefieldDuty": "Repeat close pressure with a hardened stalk club and a readable gill-lit recovery.", "teachingGoal": "Teach that the first faint gill light marks breathing cadence rather than an affinity attack.",
+			"signatureMechanic": "Gill Beat: the spotted cap lifts, faint cyan gills inhale, and the hardened stalk club swings once before exhale.", "telegraph": "Faint gill light gathers while the human-sized stalk draws the club behind its body.",
+			"counterplay": "Cross under the cap during inhale and punish the club-side stalk on exhale.", "visualDelta": "Human-sized spotted cap, first faint cyan gill glow, and a club made from hardened stalk.",
+			"lowerFormInteraction": "Sporelings puff on the exhale side; interrupting the Mycon leaves them uncoordinated.", "sourceReferences": ["Mycon"]
+		},
+		{
+			"tier": "T3", "formId": "fungalfolk-sporeguard", "displayName": "Sporeguard", "primaryArchetype": "Breathing-Cloud Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot into a controller that writes inhaling and exhaling lanes through a constant thin spore cloud.", "teachingGoal": "Teach that visible mycelium veins and cloud density reveal when a lane draws inward or pushes outward.",
+			"signatureMechanic": "Two-Breath Guard: shoulder spores alternately inhale along bright mycelium veins and exhale through the wide luminous cap, reversing safe movement.", "telegraph": "One side's veins brighten under translucent skin as its constant cloud narrows toward the gills.",
+			"counterplay": "Move with the visible breath direction and cut the dim opposite vein during the reversal.", "visualDelta": "Wide luminous cap, visible mycelium veins under translucent skin, and the first constant thin shoulder spore cloud.",
+			"lowerFormInteraction": "Mycons synchronize club swings to exhale; breaking their gill rhythm opens the reversing lane.", "sourceReferences": ["Sporeguard"]
+		},
+		{
+			"tier": "T4", "formId": "fungalfolk-fungal-shaman", "displayName": "Fungal Shaman", "primaryArchetype": "Spore-Script Champion (Champion)",
+			"battlefieldDuty": "Control three zones by writing temporary script in suspended spores and routing it through smaller arm mushrooms.", "teachingGoal": "Teach that the lowest secondary cap authors the first stroke and remains vulnerable after writing.",
+			"signatureMechanic": "Living Script: three smaller mushrooms pulse in sequence, drawing a visible spore glyph whose open stroke remains the safe route.", "telegraph": "One arm mushroom opens its gills and the parasol cap tilts toward the first suspended symbol.",
+			"counterplay": "Follow the open glyph stroke and sever the first small mushroom stem before the script repeats.", "visualDelta": "Parasol cap, glowing suspended spore script, and the first smaller mushrooms growing along both arms.",
+			"lowerFormInteraction": "Sporeguards supply the script cloud; thinning it makes every open stroke wider.", "sourceReferences": ["Fungal Shaman"]
+		},
+		{
+			"tier": "T5", "formId": "fungalfolk-mycelial-sovereign", "displayName": "Mycelial Sovereign", "primaryArchetype": "Courtyard-Network Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a throne-linked ground network that produces lower-form fruiting bodies at four readable nodes.", "teachingGoal": "Test cap tilt, gill cadence, cloud direction, and spore script while each solved node permanently severs arena control.",
+			"signatureMechanic": "Arena Production — Four Fruiting Nodes: the courtyard-wide cap lights one ground-mycelium route from the interlocked mushroom throne, producing the announced lower form; solving its lesson exposes that node beneath the drifting spore aurora.",
+			"telegraph": "The aurora narrows over one network route, one throne mushroom opens, and the linked lower-form silhouette fruits at its endpoint.",
+			"counterplay": "Resolve the announced lower-form rule, then sever the exposed mycelial node; every cut collapses one throne section and prevents that production pattern.",
+			"visualDelta": "Courtyard-wide cap, drifting spore aurora, throne of interlocked mushrooms, and luminous mycelium across the ground.",
+			"lowerFormInteraction": "Sporeling, Mycon, Sporeguard, and Fungal Shaman each fruit from one node; its learned counterplay exposes the node for permanent removal.", "sourceReferences": ["Mycelial Sovereign"]
+		}
+	]
+}

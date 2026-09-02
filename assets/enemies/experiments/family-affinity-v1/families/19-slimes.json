@@ -1,0 +1,135 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "slimes",
+	"displayName": "Slimes",
+	"sourceRaceNumber": 19,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-04.md",
+	"classificationNotes": "Source-draft Slimes are treated as an amorphous visual and encounter-production family, not as accepted claims about biology, cognition, feeding, agency, personhood, or universal hostility. Engulfing and digestion are encounter proposals; the packet preserves gravity-led jelly, visible contents, and a core weak point while humanoid structure begins only at T3.",
+	"visualConstants": [
+		"Rounded, drooping, gravity-obeying jelly with surface-tension edges and a readable internal core remains the family silhouette.",
+		"Translucent blue, acid green, amber, or violet is chosen per individual, with suspended debris and a brighter but bounded core.",
+		"Viscous flow, drip trails, swallowed objects, crystalline cores, and later crust plates remain spatially coherent.",
+		"Internal structure emerges by tier: pseudopod, debris-bearing blob, humanoid crust frame, suspended skeleton, then a multicore tide."
+	],
+	"escalationAxis": "Internal structure and battlefield coordination emerge from formlessness, culminating in a multicore sovereign that redistributes its own mass through lesser slimes.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity translucent colors and core glow remain ordinary slime optics and cognition markers; neither implies Water nor a generic magical affinity.",
+				"Jelly flow, surface sheen, suspended debris, crystalline core, crust, and drip wake remain physical and restrained without elemental substitutions."
+			],
+			"counterplaySignal": "The established core, debris gap, crust joint, skeleton brace, or active T5 core remains visible through native jelly.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating translucent color or core light as an affinity"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 have no humanoid structure and carry ember grit around the existing core; T3–T4 preserve their source-supported humanoid crust frame; T5 alone retains its dozen cores across a heat-baffled tide.",
+				"Fuel-bearing char crust, smoke vents, pulsing ember seams, and boiled-clear jelly create directional combustion cycles without replacing the viscous body."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T2 have no humanoid structure and vent around one core; T3–T4 expose a humanoid crust joint after combustion; T5 exposes one of its dozen cores when heat baffles cycle.",
+			"forbidden": ["Palette-only orange jelly", "Glow-only fire treatment", "Flame that hides the core", "Premature humanoid anatomy"]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 have no humanoid structure and suspend grit around the existing core; T3–T4 preserve their source-supported humanoid crust frame; T5 alone retains its dozen cores within sediment cells.",
+				"Layered mineral inclusions, load-bearing crust ribs, compressed foot pools, localized dust, and pale fracture seams make mass and faults legible."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T2 have no humanoid structure and expose one grit-ringed core; T3–T4 expose a humanoid crust joint after a planted push; T5 exposes one of its dozen cores when a sediment cell fractures.",
+			"forbidden": ["Palette-only brown jelly", "Glow-only earth treatment", "Pasted rocks without load paths", "Premature humanoid anatomy"]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 have no humanoid structure and streamline around the existing core; T3–T4 preserve their source-supported humanoid crust frame; T5 alone retains its dozen cores in separated pressure lobes.",
+				"Directional membrane ridges, debris streamers, vapor channels, flattened leading edges, and a still pocket behind the core show coherent pressure flow."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T2 have no humanoid structure and reveal one still core; T3–T4 expose a humanoid crust joint when flow reverses; T5 exposes one of its dozen cores when a pressure lobe collapses.",
+			"forbidden": ["Palette-only pale jelly", "Glow-only wind treatment", "Transparency without force direction", "Premature humanoid anatomy"]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe anatomy: T1–T2 have no humanoid structure and route pressure around the existing core; T3–T4 preserve their source-supported humanoid crust frame; T5 alone retains its dozen cores in valved chambers.",
+				"Coherent clear-water channels, wet reflection, misted pressure vents, membrane valves, and visible drainage distinguish engineered Water affinity from native jelly."
+			],
+			"counterplaySignal": "Tier-safe anchors: T1–T2 have no humanoid structure and expose one core after pressure loss; T3–T4 expose a humanoid crust joint when a valve drains; T5 exposes one of its dozen cores as each chamber empties.",
+			"forbidden": ["Palette-only blue jelly", "Glow-only water treatment", "Shapeless water body", "Premature humanoid anatomy"]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "slime-droplet",
+			"displayName": "Droplet",
+			"primaryArchetype": "Core-Hop Initiate (Initiate)",
+			"battlefieldDuty": "Probe footwork with one tiny core-led hop and a short corrosive puddle.",
+			"teachingGoal": "Teach that the dark core chooses the landing point before the jelly follows.",
+			"signatureMechanic": "Core Hop: the dark dot shifts to one side and the single pseudopod springs toward that line.",
+			"telegraph": "The clear mass stretches behind the displaced dark core.",
+			"counterplay": "Leave the core line and strike the overextended dot before the body recoils.",
+			"visualDelta": "Fist-sized, almost clear droplet with one dark core dot and one wobbling pseudopod; no humanoid structure.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Droplet"]
+		},
+		{
+			"tier": "T2",
+			"formId": "slime-blob",
+			"displayName": "Blob",
+			"primaryArchetype": "Debris-Roll Soldier (Soldier)",
+			"battlefieldDuty": "Repeat lane pressure by rolling swallowed debris toward its leading edge.",
+			"teachingGoal": "Teach players to read internal contents as the next impact side.",
+			"signatureMechanic": "Debris Roll: coins and bones gather ahead of the core before the knee-high mass surges.",
+			"telegraph": "Cloudy jelly clears along one edge while coins and bones tumble toward it.",
+			"counterplay": "Cross behind the debris line and hit the core through the newly clear rear wall.",
+			"visualDelta": "Knee-high cloudy blob with coins, small bones, a slow drip trail, and no humanoid structure.",
+			"lowerFormInteraction": "Its wake gives Droplets a faster Core Hop, but crossing behind the Blob denies both lanes.",
+			"sourceReferences": ["Blob"]
+		},
+		{
+			"tier": "T3",
+			"formId": "slime-ooze-knight",
+			"displayName": "Ooze Knight",
+			"primaryArchetype": "Crust-Stance Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot into a stance controller that moves its first humanoid crust between guard and thrust shapes.",
+			"teachingGoal": "Teach that hardened shoulders protect only the side facing the crystalline chest core.",
+			"signatureMechanic": "Crust Stance: shoulder crust flows into one arm-like brace, guarding a lane while leaving the opposite core edge clear.",
+			"telegraph": "The glowing chest core slides under one shoulder and the crust audibly crystallizes there.",
+			"counterplay": "Circle to the unarmored side and strike the exposed core edge before the brace liquefies and transfers.",
+			"visualDelta": "First roughly humanoid jelly outline, glowing crystalline chest core, and hardened shoulder crust arranged like armor.",
+			"lowerFormInteraction": "Blob debris can reinforce the chosen brace; clearing the Blob keeps the exposed side soft.",
+			"sourceReferences": ["Ooze Knight"]
+		},
+		{
+			"tier": "T4",
+			"formId": "slime-devourer",
+			"displayName": "Devourer",
+			"primaryArchetype": "Skeleton-Cage Champion (Champion)",
+			"battlefieldDuty": "Control space by posing its suspended skeleton as a brace, cage, or striking frame.",
+			"teachingGoal": "Teach that each armor plate follows a visible bone and collapses when that bone is displaced.",
+			"signatureMechanic": "Borrowed Frame: the full skeleton locks into one of three poses and absorbed armor plates float onto its load-bearing bones.",
+			"telegraph": "Bones rotate into alignment and matching armor plates click toward them through the jelly.",
+			"counterplay": "Break the unplated pivot bone during commitment to collapse the pose and expose the core.",
+			"visualDelta": "Towering humanoid mass with a full posed skeleton and absorbed armor plates suspended in place.",
+			"lowerFormInteraction": "It absorbs Blob debris to repair one plate; interrupting the debris roll prevents the repair.",
+			"sourceReferences": ["Devourer"]
+		},
+		{
+			"tier": "T5",
+			"formId": "slime-primordial-ooze",
+			"displayName": "Primordial Ooze",
+			"primaryArchetype": "Multicore Tide Sovereign (Sovereign)",
+			"battlefieldDuty": "Transform the arena into three moving tide basins while delegating distinct core patterns to lesser slimes.",
+			"teachingGoal": "Test core reads, debris direction, crust stance, and skeletal pivots as the sovereign redistributes mass.",
+			"signatureMechanic": "Arena Transformation — Twelve-Core Tide: four cores enter each basin and command Droplet hops, Blob rolls, or Ooze Knight crust walls; clearing the announced pattern exposes that basin's lead core and permanently lowers its tide.",
+			"telegraph": "Absorbed weapons form a face toward one basin while four of the dozen cores align beneath it and its tide rises.",
+			"counterplay": "Answer the called lower-form pattern, then strike the aligned lead core; each broken lead core drains one basin and removes that command set.",
+			"visualDelta": "Near-liquid titan with a dozen cores, absorbed weapons and armor suggesting a face, and a tide of lesser slimes at its base.",
+			"lowerFormInteraction": "Droplets, Blobs, and Ooze Knights carry one basin's learned rule; defeating them opens their aligned lead core instead of merely adding bodies.",
+			"sourceReferences": ["Primordial Ooze"]
+		}
+	]
+}
