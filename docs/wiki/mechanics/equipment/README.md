@@ -183,12 +183,12 @@ an 8% framing target with a 5% hard minimum, and requires empty self-supporting 
 
 The owner has accepted the v2 visual profile through a canonical-hash and reference-byte-bound
 receipt whose scope is visual-profile-only. Additive v2 schemas now define the future target,
-assignment, result, Armour-review, and contract-readiness records. Its deterministic renderer now
-builds and validates the 77 root envelopes in memory with class-scoped references. V2 remains inert:
-it has no materialized target packets, assignments, run, activation, review receipts, candidates,
-results, approved sources, or runtime exports. Packet materialization, immutable run state, and a
-byte- and PNG-metadata-verifying v2 persistence path remain required. The v1 runner intentionally
-cannot write v2.
+assignment, result, Armour-review, and contract-readiness records. Its deterministic renderer has
+materialized the 77 root target/assignment pairs with class-scoped references. The immutable
+`material-equipment-v2-run-001` activation authorizes only those roots at concurrency 16, backed by
+byte- and PNG-metadata-verifying exclusive persistence. The 84 Armour pieces remain gated and
+unmaterialized. Candidates and results remain review evidence rather than approved or runtime
+assets; the v1/shared runner remains separate.
 
 ### Root-production review state
 
@@ -378,6 +378,8 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-02 — v2 root activation — Materialized 77 root packet pairs and activated one immutable,
+  root-only, 16-worker Equipment run; all 84 Armour pieces remain review-gated.
 - 2026-09-02 — v2 profile acceptance — Recorded the owner's profile-only acceptance and added the
   isolated v2 execution-record schemas and in-memory packet renderer without materializing packets
   or authorizing a run or image generation.

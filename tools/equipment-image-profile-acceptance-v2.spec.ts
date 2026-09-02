@@ -29,11 +29,24 @@ function absolute(root: string, repositoryPath: string): string {
 async function makeFixture(): Promise<string> {
 	const root = await mkdtemp(path.join(tmpdir(), 'equipment-v2-acceptance-'));
 	temporaryRoots.push(root);
-	await cp(
-		absolute(SOURCE_ROOT, EQUIPMENT_V2_PRODUCTION_ROOT),
-		absolute(root, EQUIPMENT_V2_PRODUCTION_ROOT),
-		{ recursive: true }
-	);
+	const sourceProductionRoot = absolute(SOURCE_ROOT, EQUIPMENT_V2_PRODUCTION_ROOT);
+	const excludedProductionDirectories = new Set([
+		'targets',
+		'assignments',
+		'runs',
+		'reviews',
+		'candidates',
+		'results'
+	]);
+	await cp(sourceProductionRoot, absolute(root, EQUIPMENT_V2_PRODUCTION_ROOT), {
+		recursive: true,
+		filter: (source) => {
+			const relative = path.relative(sourceProductionRoot, source);
+			return (
+				relative.length === 0 || !excludedProductionDirectories.has(relative.split(path.sep)[0]!)
+			);
+		}
+	});
 	await rm(absolute(root, EQUIPMENT_V2_PROFILE_ACCEPTANCE_PATH), { force: true });
 	for (const reference of buildEquipmentVisualProfileV2().references) {
 		const destination = absolute(root, reference.path);

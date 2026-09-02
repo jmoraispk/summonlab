@@ -30,6 +30,7 @@ import {
 	buildEquipmentMaterialProductionManifestV2
 } from './equipment-material-production-v2.js';
 import {
+	exclusiveCreateEquipmentRepositoryFile,
 	equipmentRepositoryPathState,
 	readEquipmentRepositoryFile,
 	readEquipmentRepositoryJson
@@ -420,6 +421,82 @@ export function buildRootEquipmentPacketsV2(input: {
 	]);
 	if (new Set(allPaths).size !== allPaths.length) throw new Error('V2 root packet paths collide');
 	return packets;
+}
+
+function serializeJson(value: unknown): string {
+	return `${JSON.stringify(value, null, '\t')}\n`;
+}
+
+/**
+ * Writes only the deterministic v2 root target and assignment packets. Candidate
+ * images and result evidence remain outside this function's ownership.
+ */
+export async function materializeRootEquipmentPacketsV2(input: {
+	readonly workspaceRoot: string;
+	readonly manifest: EquipmentV2Manifest;
+	readonly allocation: EquipmentV2Allocation;
+	readonly profile: EquipmentV2Profile;
+	readonly acceptance: EquipmentV2ProfileAcceptance;
+	readonly check?: boolean;
+}): Promise<{
+	readonly mode: 'write' | 'check';
+	readonly targetCount: 77;
+	readonly assignmentCount: 77;
+	readonly writesPerformed: 0 | 154;
+}> {
+	const packets = buildRootEquipmentPacketsV2(input);
+	if (packets.length !== 77) {
+		throw new Error(
+			`V2 root packet materialization requires exactly 77 pairs, got ${packets.length}`
+		);
+	}
+	const artifacts = packets.flatMap(({ targetPath, assignmentPath, target, assignment }) => [
+		{ repositoryPath: targetPath, contents: serializeJson(target) },
+		{ repositoryPath: assignmentPath, contents: serializeJson(assignment) }
+	]);
+	if (
+		artifacts.length !== 154 ||
+		new Set(artifacts.map(({ repositoryPath }) => repositoryPath)).size !== 154
+	) {
+		throw new Error('V2 root packet materialization paths are not exactly 154 unique JSON files');
+	}
+
+	if (input.check) {
+		for (const artifact of artifacts) {
+			const state = await equipmentRepositoryPathState(
+				input.workspaceRoot,
+				artifact.repositoryPath
+			);
+			const current =
+				state === 'file'
+					? (
+							await readEquipmentRepositoryFile(input.workspaceRoot, artifact.repositoryPath)
+						).toString('utf8')
+					: null;
+			if (current !== artifact.contents) {
+				throw new Error(`V2 root packet is missing or stale: ${artifact.repositoryPath}`);
+			}
+		}
+		return { mode: 'check', targetCount: 77, assignmentCount: 77, writesPerformed: 0 };
+	}
+
+	// Preflight the entire batch so known collisions cannot produce a partial export.
+	for (const artifact of artifacts) {
+		if (
+			(await equipmentRepositoryPathState(input.workspaceRoot, artifact.repositoryPath)) !==
+			'absent'
+		) {
+			throw new Error(`V2 root packet collision: ${artifact.repositoryPath}`);
+		}
+	}
+	for (const artifact of artifacts) {
+		await exclusiveCreateEquipmentRepositoryFile(
+			input.workspaceRoot,
+			artifact.repositoryPath,
+			artifact.contents
+		);
+	}
+	return { mode: 'write', targetCount: 77, assignmentCount: 77, writesPerformed: 154 };
 }
 
 function dependentComposition(slot: 'head' | 'torso' | 'legs' | 'boots'): string {

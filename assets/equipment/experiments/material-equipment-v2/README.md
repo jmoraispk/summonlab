@@ -1,6 +1,6 @@
 # Material Equipment v2 planning package
 
-Status: **owner-accepted visual profile; execution remains inert**.
+Status: **root-only run activated; 77 root images authorized**.
 
 This directory prepares the collision-safe successor to `material-equipment-v1`. It contains only:
 
@@ -10,10 +10,11 @@ This directory prepares the collision-safe successor to `material-equipment-v1`.
 - an approval-candidate [visual profile](visual-profile/profile.json), its hash-bound owner
   [acceptance receipt](visual-profile/acceptance.json), and local structural schemas.
 
-The acceptance scope is `visual-profile-only`: it does not authorize packet materialization, a run,
-or image generation. This directory still contains no target packets, assignments, run, Armour
-review receipts, candidates, results, approved sources, or runtime exports. Existing v1 evidence is
-immutable and explicitly forbidden as an output destination.
+The profile acceptance remains `visual-profile-only`. Separate immutable run evidence now binds 77
+materialized root target/assignment pairs and authorizes those roots at concurrency 16. The 84
+Armour-piece targets remain unmaterialized and unauthorized behind their 21 full-set review gates.
+There are no approved sources or runtime exports. Existing v1 evidence is immutable and explicitly
+forbidden as an output destination.
 
 ## Locked v2 changes
 
@@ -42,18 +43,19 @@ corepack pnpm tsx tools/export-equipment-image-profile-v2.ts
 corepack pnpm tsx tools/export-equipment-image-contracts-v2.ts --check
 corepack pnpm tsx tools/export-equipment-material-production-v2.ts --check
 corepack pnpm tsx tools/export-equipment-image-profile-v2.ts --check
+corepack pnpm tsx tools/equipment-image-production-v2.ts check-root-packets
+corepack pnpm tsx tools/equipment-image-production-v2.ts report-readiness \
+  --created-at 2026-09-02T22:15:00.000Z --checked-at 2026-09-02T22:15:03.000Z
 ```
 
 ## Execution boundary
 
 The additive v2 schemas define profile acceptance, target, assignment, result, Armour-source review,
-and contract-readiness records. The deterministic renderer builds and validates all 77 root envelopes
-in memory with class-scoped references, but does not materialize them. The current runner still
-supports v1 only and must not persist v2 results or activate a v2 run. Before generation, Equipment
-still needs reviewed packet materialization, an immutable v2 run plan and journal, a byte- and
-PNG-metadata-verifying exclusive persistence path, explicit activation, and provider-capacity
-evidence. That work remains Equipment-local and must not modify engine contracts or shared runtime
-catalogs.
+and contract-readiness records. The Equipment-local v2 path materializes and validates all 77 root
+envelopes with class-scoped references, binds them into one immutable root-only run, and verifies and
+exclusively persists PNG candidates and their result evidence. The v1/shared runner remains separate.
+Only the activated roots may run; Armour pieces require a later accepted full-set receipt. No worker
+may modify engine contracts, shared runtime catalogs, reviews, or approved assets.
 
 The JSON schemas are structural documentation. Acceptance also parses the profile with
 `EquipmentVisualProfileV2Schema.parse`, verifies the deterministic canonical hash, and verifies all
