@@ -512,6 +512,16 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 		forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
 		skillContractPath: z.literal(FAMILY_AFFINITY_SKILL_CONTRACT_PATH),
 		skillContractSha256: Sha256Schema,
+		approvedSkillRoot: RequiredTextSchema,
+		executionSurface: z
+			.object({
+				framing: z.literal('length-prefixed-sha256-v1'),
+				files: z
+					.array(z.object({ path: RequiredTextSchema, sha256: Sha256Schema }).strict())
+					.length(13),
+				bundleSha256: Sha256Schema
+			})
+			.strict(),
 		reviewedAt: z
 			.string()
 			.regex(
@@ -530,6 +540,27 @@ const FamilyAffinitySkillContractSchema = z
 	.object({
 		schemaVersion: z.literal('summonlab-image-production-contract-v3'),
 		skillVersion: z.literal(FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION),
+		executionSurface: z
+			.object({
+				framing: z.literal('length-prefixed-sha256-v1'),
+				files: z.tuple([
+					z.literal('references/contract-v3.json'),
+					z.literal('SKILL.md'),
+					z.literal('references/affinity-grammar.md'),
+					z.literal('references/result-schema.md'),
+					z.literal('references/review-rubric.md'),
+					z.literal('references/species-grammar.md'),
+					z.literal('references/target-schema.md'),
+					z.literal('scripts/anchored_io.py'),
+					z.literal('scripts/persist_family_candidate.py'),
+					z.literal('scripts/render_prompt.py'),
+					z.literal('scripts/validate_target.py'),
+					z.literal('scripts/verify_result.py'),
+					z.literal('scripts/write_family_result.py')
+				]),
+				expectedNonContractSha256: z.record(z.string(), Sha256Schema)
+			})
+			.strict(),
 		profiles: z
 			.object({
 				'image-production-family-target-v1': z

@@ -31,10 +31,15 @@ Require:
 - a Summonlab workspace containing every declared reference and the experiment validator.
 
 Resolve every `scripts/...` path relative to this `SKILL.md`, never relative to the workspace
-current directory. Run
+current directory. For a family job, first run the mandatory repository gate:
+`pnpm check:family-affinity-production-dispatch -- <target> <assignment> <workspace-root>`.
+It binds the approved receipt, installed execution surface, active manifest pair, packet, prompt,
+Normal approval chain, and absent outputs. Do not dispatch or generate unless its JSON reports
+`dispatchable: true`. Then run
 `python3 <skill-directory>/scripts/validate_target.py <target> <assignment> <workspace-root>` before
-generation. It verifies common fields, reference hashes, path containment, assignment ownership,
-and absence of pre-existing outputs. Stop with a no-output preflight failure if validation fails;
+generation; family mode invokes the mandatory gate again and cannot bypass it. It verifies common
+fields, reference hashes, path containment, assignment ownership, and absence of pre-existing
+outputs. Stop with a no-output preflight failure if validation fails;
 do not trust an invalid target path enough to write a result, and do not repair shared inputs inside
 an image job.
 
@@ -65,9 +70,11 @@ Read [target-schema.md](references/target-schema.md) and
    restate all invariants, preserve passing traits, and declare whether the correction is an edit or
    a complete regeneration. A blank or incomplete canvas normally requires a new complete render.
 8. Persist only the exact source path returned by that tool invocation. Never discover “the newest”
-   file in a shared generation directory. Use the workspace persistence helper to verify the source,
-   normalize only a supported near-match, refuse an existing destination, and exclusive-create the
-   assigned candidate while recording source and retained hashes plus timing.
+   file in a shared generation directory. Family jobs must exclusively run
+   `python3 <skill-directory>/scripts/persist_family_candidate.py <source> <target> <assignment> <workspace>`;
+   it retains the exact source bytes through Linux directory-handle anchored O_EXCL creation. Never
+   route family output through the shared legacy persistence helper. Legacy jobs retain their
+   existing helper, supported near-match normalization, and evidence contract.
 9. Write only the profile's assigned result. A family job persists the repository-owned strict
    `family-affinity-result-v1` through
    `python3 <skill-directory>/scripts/write_family_result.py <target> <assignment> <draft> <workspace>`.

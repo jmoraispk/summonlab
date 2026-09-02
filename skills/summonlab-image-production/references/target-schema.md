@@ -29,6 +29,11 @@ Candidate and result outputs are exclusive-create. A collision or symlink escape
 handoff. The producer may not write reviews, catalogs, contact sheets, wiki pages, runtime catalogs,
 or the manifest.
 
+The mandatory repository dispatch CLI is the approval boundary. A direct Python family invocation
+re-runs that CLI and fails if the receipt, installed/tracked execution bundle, active manifest pair,
+packet, prompt renderer, exact Normal review chain, or output-absence checks drift. Structural
+Python validation is additional defense, not a substitute authorization path.
+
 ## Legacy profiles (v1/v2)
 
 ## Target

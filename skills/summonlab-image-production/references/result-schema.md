@@ -9,6 +9,11 @@ candidate/result paths, current canonical family-packet path/hash, and exact pro
 `state` is always `candidate-only`; `runtimeCatalogMutationForbidden` is always true. No extra field
 is permitted.
 
+Family candidate and result creation require Linux `/proc/self/fd`, `O_DIRECTORY|O_NOFOLLOW`
+directory traversal, device/inode rebinding, and final `O_CREAT|O_EXCL|O_NOFOLLOW`. Cleanup after a
+failed create is relative to the held parent and refuses an inode mismatch. There is no pathname or
+non-Linux fallback.
+
 This compact repository receipt intentionally has no legacy attempt, timing, finding, provider, or
 inspection fields. Return those details in the image job handoff. A provider failure or any failure
 before a valid candidate exists produces no result receipt. Do not fabricate failure receipts and do

@@ -14,7 +14,9 @@ contract. It does not generate, approve, promote, or catalog an image.
 - Affinities, in order: Normal, Fire, Earth, Wind, Water
 - Namespaces: canonical and bridge
 - Approval: `user-confirmed-summonlab-image-production-v3-2026-09-02`
-- Contract SHA-256: `80264409523e26a12f3427a969767340393a298a434031f5f7022c5e006deffe`
+- Contract SHA-256: `2bd23b35550c3f039ad63d05854891c80e292a32c2ea71cf24eaf7cc4fababbf`
+- Approved execution-surface SHA-256:
+  `fa9da223ccf2836537b2766a68488ed2b1ca88b8ab4ec006aa5473c851b3cba9`
 
 The family profile requires exact versioned paths, target/assignment cross-hashes, the current
 canonical family-packet hash, raw candidate and prompt hashes, exclusive candidate creation, and an
@@ -58,3 +60,41 @@ No image-generation tool was called and no candidate or result was written by th
 - Full repository tests: 708 pass; 24 expected database-dependent skips
 - Full repository typecheck: pass; Svelte reports 0 errors and 0 warnings
 - Targeted formatting and diff checks: pass
+
+## Fix round 1 — anchored outputs and mandatory dispatch
+
+Independent review found three important gaps. All three are now closed without generating pixels
+or changing the legacy v1/v2 workflow.
+
+1. Family candidate and result persistence now fail closed on non-Linux systems or unavailable
+   `/proc/self/fd`, traverse through held `O_DIRECTORY | O_NOFOLLOW` handles, rebind device/inode
+   identity before final creation, create the final file with `O_CREAT | O_EXCL | O_NOFOLLOW`, and
+   clean up relative to the held parent inode. The family workflow uses the new candidate persister
+   and anchored result writer exclusively. Six deterministic parent-rename/symlink swap probes
+   leave external sentinels byte-identical and create no external output; collisions, symlinked
+   provider sources, and leaked handles are rejected.
+2. The approval receipt binds an exact 13-file v3 execution surface: contract, skill instructions,
+   family references, validator, renderer, verifier, candidate persister, and result writer. A
+   length-prefixed framed digest and per-file hashes bind both the tracked and installed skill roots.
+   The installed resolved root must exactly equal the approved worktree skill root. Contract,
+   documentation, validator, renderer, verifier, writer, persister, bundle, or root drift fails.
+3. `pnpm check:family-affinity-production-dispatch -- TARGET ASSIGNMENT [ROOT]` is the mandatory
+   production boundary. It validates the receipt, installed bundle, active manifest paths and
+   hashes, packet, exact no-newline prompt bytes, output absence/symlink containment, and complete
+   Normal approval evidence. The Python family validator invokes this gate before structural
+   validation. Planned elementals require strict candidate/result bytes, ordinary controller
+   assignment/attestation and receipt; T3/T5 additionally require a separate agreeing blind
+   assignment/receipt with independent identities. Seven-field pseudo-review plus
+   `{"normal":"result"}`, missing/tampered evidence, and foreign identities/paths/hashes all fail.
+
+Fix-round validation:
+
+- Skill quick validation: pass
+- Python family profile: 13/13 pass, including six swap subtests and symlinked-source rejection
+- Family production/review/compatibility/dispatch: 211/211 pass
+- Production determinism: 1,501 artifacts verified
+- Review determinism: 61 artifacts, 30 sheets, 750/750 `NOT GENERATED`, digest
+  `2d9fb17773390efcd70da3a7034d4ce267d58cdcbac7cf18eabb6ac363437bca`
+- Full repository tests: 721 pass; 24 expected database-dependent skips
+- Full repository typecheck: pass; Svelte reports 0 errors and 0 warnings
+- No image-generation call, candidate, result, review, catalog, manifest, wiki, or runtime write

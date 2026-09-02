@@ -4,11 +4,11 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 from typing import Any
 
+from anchored_io import AnchoredCreateHooks, anchored_exclusive_create
 from validate_target import canonical_json, load_json
 from verify_result import verify_family_result
 
@@ -19,6 +19,8 @@ def exclusive_create_family_result(
     result: dict[str, Any],
     result_path: Path,
     workspace: Path,
+    *,
+    hooks: AnchoredCreateHooks | None = None,
 ) -> dict[str, Any]:
     """Validate all bytes before one O_EXCL receipt create; never repair in place."""
     verification = verify_family_result(
@@ -30,25 +32,14 @@ def exclusive_create_family_result(
         require_result_file=False,
     )
     payload = canonical_json(result).encode("utf-8")
-    result_path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        descriptor = os.open(result_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
-    except FileExistsError as error:
-        raise FileExistsError(f"family result collision: {result_path}") from error
-    try:
-        with os.fdopen(descriptor, "wb") as handle:
-            handle.write(payload)
-            handle.flush()
-            os.fsync(handle.fileno())
-    except BaseException:
-        # A failed first write is not a valid receipt. Remove only the inode created by this call.
-        result_path.unlink(missing_ok=True)
-        raise
+    persistence = anchored_exclusive_create(
+        workspace, result["resultPath"], payload, hooks=hooks
+    )
     return {
         **verification,
-        "operation": "exclusive-create",
-        "bytes": len(payload),
-        "resultPath": str(result_path.relative_to(workspace).as_posix()),
+        **persistence,
+        "operation": "anchored-exclusive-create",
+        "resultPath": result["resultPath"],
     }
 
 

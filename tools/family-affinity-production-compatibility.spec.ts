@@ -41,6 +41,15 @@ async function loadContractBytes(): Promise<Buffer> {
 
 async function validReceipt() {
 	const contractBytes = await loadContractBytes();
+	const approved = JSON.parse(
+		await readFile(
+			join(
+				repositoryRoot,
+				'assets/enemies/experiments/family-affinity-v1/production-compatibility.json'
+			),
+			'utf8'
+		)
+	);
 	return {
 		schemaVersion: 'family-affinity-production-compatibility-v1',
 		skillVersion: 'summonlab-image-production-v3',
@@ -68,6 +77,8 @@ async function validReceipt() {
 		forbiddenWriteClasses: ['review', 'catalog', 'contact-sheet', 'wiki', 'runtime', 'manifest'],
 		skillContractPath,
 		skillContractSha256: familyAffinityRawSha256(contractBytes),
+		approvedSkillRoot: approved.approvedSkillRoot,
+		executionSurface: approved.executionSurface,
 		reviewedAt: '2026-09-02T12:00:00.000Z',
 		approvalReference: 'user-confirmed-summonlab-image-production-v3-2026-09-02'
 	};

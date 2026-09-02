@@ -6,11 +6,14 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 
 from render_prompt import render, render_family_prompt
+from persist_family_candidate import persist_family_candidate
+from anchored_io import AnchoredCreateHooks
 from validate_target import validate
 from verify_result import verify_family_result
 from write_family_result import exclusive_create_family_result
@@ -409,11 +412,139 @@ class FamilyProfileTests(unittest.TestCase):
             target, assignment, result, result_path, self.workspace
         )
         original = result_path.read_bytes()
-        self.assertEqual(report["operation"], "exclusive-create")
+        self.assertEqual(report["operation"], "anchored-exclusive-create")
         self.assertEqual(original, canonical_json(result).encode("utf-8"))
-        with self.assertRaisesRegex(FileExistsError, "result collision"):
+        with self.assertRaisesRegex(FileExistsError, "collision"):
             exclusive_create_family_result(target, assignment, result, result_path, self.workspace)
         self.assertEqual(result_path.read_bytes(), original)
+
+    def test_family_candidate_is_anchored_exclusive_and_retains_exact_source_bytes(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        source = self.workspace / "provider-output.png"
+        source_bytes = b"exact provider bytes"
+        source.write_bytes(source_bytes)
+        report = persist_family_candidate(
+            source, target, assignment, self.workspace
+        )
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        self.assertEqual(candidate.read_bytes(), source_bytes)
+        self.assertEqual(report["operation"], "anchored-exclusive-copy")
+        with self.assertRaisesRegex(FileExistsError, "collision"):
+            persist_family_candidate(source, target, assignment, self.workspace)
+
+    def test_family_candidate_rejects_a_symlinked_provider_source(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        real_source = self.workspace / "provider-output-real.png"
+        real_source.write_bytes(b"provider bytes")
+        symlink_source = self.workspace / "provider-output.png"
+        symlink_source.symlink_to(real_source)
+        with self.assertRaisesRegex(ValueError, "symlinked"):
+            persist_family_candidate(symlink_source, target, assignment, self.workspace)
+        self.assertFalse((self.workspace / target["ownedPaths"]["candidate"]).exists())
+
+    def test_candidate_and_result_writes_resist_parent_swap_at_all_mutation_seams(self) -> None:
+        for artifact, seam in (
+            ("candidate", "after_parent_anchored"),
+            ("candidate", "before_final_create"),
+            ("candidate", "before_cleanup"),
+            ("result", "after_parent_anchored"),
+            ("result", "before_final_create"),
+            ("result", "before_cleanup"),
+        ):
+            with self.subTest(artifact=artifact, seam=seam):
+                self._assert_swap_resistance(artifact, seam)
+
+    def _assert_swap_resistance(self, artifact: str, seam: str) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        candidate_bytes = b"candidate bytes"
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        source = self.workspace / "provider-output.png"
+        source.write_bytes(candidate_bytes)
+        if artifact == "result":
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            candidate.write_bytes(candidate_bytes)
+        result = {
+            "schemaVersion": "family-affinity-result-v1",
+            "targetId": target["targetId"],
+            "targetSha256": assignment["targetSha256"],
+            "coordinateId": target["coordinateId"],
+            "candidateVersion": 1,
+            "producerId": "image-producer-01",
+            "candidatePath": target["ownedPaths"]["candidate"],
+            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "resultPath": target["ownedPaths"]["result"],
+            "sourcePath": self.packet_path,
+            "sourceSha256": self._packet_hash(),
+            "promptSha256": hashlib.sha256(
+                render_family_prompt(target, assignment).encode("utf-8")
+            ).hexdigest(),
+            "state": "candidate-only",
+            "runtimeCatalogMutationForbidden": True,
+        }
+        owned = target["ownedPaths"][artifact]
+        parent = (self.workspace / owned).parent
+        parked = parent.with_name(f"{parent.name}-held")
+        outside = Path(self.temporary.name).parent / f"outside-{os.getpid()}-{artifact}-{seam}"
+        outside.mkdir(exist_ok=True)
+        sentinel = outside / "sentinel"
+        sentinel.write_bytes(b"external sentinel")
+        swapped = False
+
+        def swap_parent() -> None:
+            nonlocal swapped
+            if swapped:
+                return
+            parent.rename(parked)
+            parent.symlink_to(outside, target_is_directory=True)
+            swapped = True
+
+        def force_post_create_failure() -> None:
+            raise RuntimeError("deterministic post-create failure")
+
+        hooks = AnchoredCreateHooks(
+            after_parent_anchored=swap_parent if seam == "after_parent_anchored" else None,
+            before_final_create=swap_parent if seam == "before_final_create" else None,
+            after_final_create=force_post_create_failure if seam == "before_cleanup" else None,
+            before_cleanup=swap_parent if seam == "before_cleanup" else None,
+        )
+        try:
+            with self.assertRaises((ValueError, RuntimeError)):
+                if artifact == "candidate":
+                    persist_family_candidate(source, target, assignment, self.workspace, hooks=hooks)
+                else:
+                    exclusive_create_family_result(
+                        target,
+                        assignment,
+                        result,
+                        self.workspace / target["ownedPaths"]["result"],
+                        self.workspace,
+                        hooks=hooks,
+                    )
+            self.assertEqual(sentinel.read_bytes(), b"external sentinel")
+            self.assertFalse((outside / Path(owned).name).exists())
+            if swapped:
+                self.assertFalse((parked / Path(owned).name).exists())
+        finally:
+            if parent.is_symlink():
+                parent.unlink()
+            if parked.exists():
+                parked.rename(parent)
+            shutil.rmtree(outside)
+        leaked = []
+        for descriptor in Path("/proc/self/fd").iterdir():
+            try:
+                destination = descriptor.resolve()
+            except FileNotFoundError:
+                continue
+            if str(destination).startswith(str(self.workspace)):
+                leaked.append(str(destination))
+        self.assertEqual(leaked, [], "anchored persistence leaked workspace file handles")
 
 
 class LegacyDispatchPreservationTests(unittest.TestCase):

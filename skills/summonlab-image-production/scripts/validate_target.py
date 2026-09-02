@@ -6,6 +6,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -630,9 +632,36 @@ def main() -> None:
     if workspace not in target_path.parents or workspace not in assignment_path.parents:
         raise SystemExit("target validation failed: input file is outside workspace")
     try:
+        target = load_json(target_path)
+        assignment = load_json(assignment_path)
+        if target.get("schemaVersion") == FAMILY_TARGET_VERSION:
+            pnpm = shutil.which("pnpm")
+            if pnpm is None:
+                raise ValueError(
+                    "mandatory family dispatch gate requires pnpm; no unsafe fallback is allowed"
+                )
+            target_relative = target_path.relative_to(workspace).as_posix()
+            assignment_relative = assignment_path.relative_to(workspace).as_posix()
+            gate = subprocess.run(
+                [
+                    pnpm,
+                    "check:family-affinity-production-dispatch",
+                    "--",
+                    target_relative,
+                    assignment_relative,
+                    str(workspace),
+                ],
+                cwd=workspace,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if gate.returncode != 0:
+                detail = gate.stderr.strip() or gate.stdout.strip() or "unknown gate failure"
+                raise ValueError(f"mandatory repository dispatch gate rejected target: {detail}")
         report = validate(
-            load_json(target_path),
-            load_json(assignment_path),
+            target,
+            assignment,
             workspace,
             allow_existing_outputs=allow_existing_outputs,
             target_path=target_path,

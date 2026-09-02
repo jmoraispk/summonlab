@@ -54,7 +54,66 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-  "skillContractSha256": "80264409523e26a12f3427a969767340393a298a434031f5f7022c5e006deffe",
+  "skillContractSha256": "2bd23b35550c3f039ad63d05854891c80e292a32c2ea71cf24eaf7cc4fababbf",
+  "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
+  "executionSurface": {
+    "framing": "length-prefixed-sha256-v1",
+    "files": [
+      {
+        "path": "references/contract-v3.json",
+        "sha256": "2bd23b35550c3f039ad63d05854891c80e292a32c2ea71cf24eaf7cc4fababbf"
+      },
+      {
+        "path": "SKILL.md",
+        "sha256": "4ecc5e36b46ec73b365f9a9ffca47fbe8c8b93f7f7cb68eb43e45c87f8472f13"
+      },
+      {
+        "path": "references/affinity-grammar.md",
+        "sha256": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda"
+      },
+      {
+        "path": "references/result-schema.md",
+        "sha256": "4cbf81049797cdcfd4792bf45cfa1b7b97442396afbe0d5a7d5fb9c8a7ed5169"
+      },
+      {
+        "path": "references/review-rubric.md",
+        "sha256": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3"
+      },
+      {
+        "path": "references/species-grammar.md",
+        "sha256": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57"
+      },
+      {
+        "path": "references/target-schema.md",
+        "sha256": "7aff98167c4c2c7c6c0f62c5468f32e8d8998434fd4681a55539b65c30d9c2b4"
+      },
+      {
+        "path": "scripts/anchored_io.py",
+        "sha256": "a4ae6b663f7e6af44ef5f4884d5d5b1ade1bdfa8f7d793b7e296ff1e929b3a0c"
+      },
+      {
+        "path": "scripts/persist_family_candidate.py",
+        "sha256": "dad1c602cdd72b8bacb4aa2f55ea6a6ed202bf84b92611dcbf9e8f1292ce9786"
+      },
+      {
+        "path": "scripts/render_prompt.py",
+        "sha256": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f"
+      },
+      {
+        "path": "scripts/validate_target.py",
+        "sha256": "534502b2976fa4d58e0566518e8547c433c02f52fdca917a3b6d5b15bce5ac3d"
+      },
+      {
+        "path": "scripts/verify_result.py",
+        "sha256": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa"
+      },
+      {
+        "path": "scripts/write_family_result.py",
+        "sha256": "6c670320367755fb96f14567b86d1c9400044b48020dcc5d518d96b2c174ee94"
+      }
+    ],
+    "bundleSha256": "fa9da223ccf2836537b2766a68488ed2b1ca88b8ab4ec006aa5473c851b3cba9"
+  },
   "reviewedAt": "2026-09-02T15:01:44.000Z",
   "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"
 }

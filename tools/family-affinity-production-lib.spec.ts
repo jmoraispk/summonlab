@@ -3092,6 +3092,7 @@ async function writeOwnedFixture(root: string, path: string, value: string | obj
 async function makeRevisionFixture(options?: {
 	namespace?: 'canonical' | 'bridge';
 	decision?: 'rejected' | 'revise' | 'approved-review';
+	formId?: 'goblin-runt' | 'goblin-cutter' | 'goblin-raider' | 'goblin-king';
 }) {
 	const root = await mkdtemp(join(tmpdir(), 'family-affinity-revision-'));
 	const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
@@ -3108,7 +3109,9 @@ async function makeRevisionFixture(options?: {
 	}
 	const source = bundle.targets.find(
 		({ familyId, formId, affinity }) =>
-			familyId === 'goblins' && formId === 'goblin-runt' && affinity === 'normal'
+			familyId === 'goblins' &&
+			formId === (options?.formId ?? 'goblin-runt') &&
+			affinity === 'normal'
 	)!;
 	let target = source;
 	let manifest = structuredClone(bundle.manifest);
@@ -3217,17 +3220,79 @@ async function makeRevisionFixture(options?: {
 	await writeOwnedFixture(root, manifestPath, manifest);
 	const manifestBytes = await readFile(join(root, manifestPath));
 	const manifestSha256 = familyAffinityRawSha256(manifestBytes);
+	const ordinaryReviewAssignment = {
+		schemaVersion: 'family-affinity-review-assignment-v1',
+		issuerRole: 'controller',
+		issuerId: 'review-controller-alpha',
+		issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
+			issuerId: 'review-controller-alpha',
+			reviewerId: receipt.reviewerId,
+			kind: 'ordinary',
+			manifestPath,
+			manifestSha256,
+			target,
+			targetPath,
+			productionAssignment,
+			productionAssignmentPath: assignmentPath,
+			result,
+			resultSha256: receipt.resultSha256,
+			decisionVersion: target.version,
+			permittedReceiptPath: target.ownedPaths.decision
+		}),
+		reviewKind: 'ordinary',
+		assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
+		reviewerId: receipt.reviewerId,
+		producerId: result.producerId,
+		producerIdentitySha256: receipt.producerIdentitySha256,
+		manifestPath,
+		manifestSha256,
+		targetId: target.targetId,
+		targetPath,
+		targetSha256: familyAffinitySha256(target),
+		productionAssignmentPath: assignmentPath,
+		productionAssignmentSha256: familyAffinitySha256(productionAssignment),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		decisionVersion: target.version,
+		candidatePath: result.candidatePath,
+		candidateSha256: result.candidateSha256,
+		resultPath: result.resultPath,
+		resultSha256: receipt.resultSha256,
+		sourcePath: result.sourcePath,
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256,
+		permittedReceiptPath: target.ownedPaths.decision,
+		exclusiveCreateRequired: true,
+		runtimeCatalogMutationForbidden: true
+	};
 	await writeOwnedFixture(
 		root,
 		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
-		{
-			schemaVersion: 'family-affinity-review-assignment-v1',
-			issuerRole: 'controller',
-			issuerId: 'review-controller-alpha',
+		ordinaryReviewAssignment
+	);
+	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
+	if (target.tier === 'T3' || target.tier === 'T5') {
+		const { producerId: _concealedProducerId, ...ordinaryWithoutProducer } = receipt;
+		const blindReceipt = {
+			...ordinaryWithoutProducer,
+			schemaVersion: 'family-affinity-blind-review-v1',
+			receiptType: 'blind',
+			reviewerId: 'reviewer-gamma',
+			blindToProducerIdentity: true,
+			blindToOrdinaryDecision: true
+		};
+		const blindReviewAssignment = {
+			...ordinaryReviewAssignment,
+			issuerId: 'review-controller-gamma',
+			reviewKind: 'blind',
+			assignmentId: `${target.targetId}/blind-review-v${target.version}/assignment`,
+			reviewerId: blindReceipt.reviewerId,
+			producerId: null,
+			permittedReceiptPath: target.ownedPaths.blindReview,
 			issuerAttestationSha256: familyAffinityReviewIssuerAttestationSha256({
-				issuerId: 'review-controller-alpha',
-				reviewerId: receipt.reviewerId,
-				kind: 'ordinary',
+				issuerId: 'review-controller-gamma',
+				reviewerId: blindReceipt.reviewerId,
+				kind: 'blind',
 				manifestPath,
 				manifestSha256,
 				target,
@@ -3237,84 +3302,76 @@ async function makeRevisionFixture(options?: {
 				result,
 				resultSha256: receipt.resultSha256,
 				decisionVersion: target.version,
-				permittedReceiptPath: target.ownedPaths.decision
-			}),
-			reviewKind: 'ordinary',
-			assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
-			reviewerId: receipt.reviewerId,
-			producerId: result.producerId,
-			producerIdentitySha256: receipt.producerIdentitySha256,
-			manifestPath,
-			manifestSha256,
-			targetId: target.targetId,
-			targetPath,
-			targetSha256: familyAffinitySha256(target),
-			productionAssignmentPath: assignmentPath,
-			productionAssignmentSha256: familyAffinitySha256(productionAssignment),
-			coordinateId: target.coordinateId,
-			candidateVersion: target.version,
-			decisionVersion: target.version,
-			candidatePath: result.candidatePath,
-			candidateSha256: result.candidateSha256,
-			resultPath: result.resultPath,
-			resultSha256: receipt.resultSha256,
-			sourcePath: result.sourcePath,
-			sourceSha256: result.sourceSha256,
-			promptSha256: result.promptSha256,
-			permittedReceiptPath: target.ownedPaths.decision,
-			exclusiveCreateRequired: true,
-			runtimeCatalogMutationForbidden: true
-		}
+				permittedReceiptPath: target.ownedPaths.blindReview
+			})
+		};
+		await writeOwnedFixture(
+			root,
+			familyAffinityReviewAssignmentPath('blind', target, target.version),
+			blindReviewAssignment
+		);
+		await writeOwnedFixture(root, target.ownedPaths.blindReview, blindReceipt);
+	}
+	return { root, target, manifestPath, coordinate, receipt, result };
+}
+
+async function stagePlannedElemental(
+	fixture: Awaited<ReturnType<typeof makeRevisionFixture>>,
+	affinity: 'fire' | 'earth' | 'wind' | 'water' = 'fire'
+) {
+	const manifest = FamilyAffinityManifestSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, fixture.manifestPath), 'utf8'))
 	);
-	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
-	return { root, target, manifestPath, coordinate, receipt };
+	const coordinate = manifest.canonicalMatrix.activeCoordinates.find(
+		({ coordinateId }) =>
+			coordinateId === `${fixture.target.familyId}/${fixture.target.formId}/${affinity}`
+	)!;
+	const elementalTarget = FamilyAffinityTargetSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, coordinate.targetPath), 'utf8'))
+	);
+	const elementalAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(fixture.root, coordinate.assignmentPath), 'utf8'))
+	);
+	const receiptBytes = await readFile(join(fixture.root, fixture.target.ownedPaths.decision));
+	const target = FamilyAffinityTargetSchema.parse({
+		...elementalTarget,
+		status: 'planned',
+		anchor: {
+			kind: 'normal-approved-review',
+			normalCoordinateId: fixture.target.coordinateId,
+			normalVersion: fixture.target.version,
+			normalTargetPath: fixture.coordinate.targetPath,
+			normalTargetSha256: fixture.coordinate.targetSha256,
+			reviewReceiptPath: fixture.target.ownedPaths.decision,
+			reviewReceiptSha256: familyAffinityRawSha256(receiptBytes),
+			normalCandidatePath: fixture.receipt.candidatePath,
+			normalCandidateSha256: fixture.receipt.candidateSha256,
+			normalResultPath: fixture.receipt.resultPath,
+			normalResultSha256: fixture.receipt.resultSha256
+		}
+	});
+	const assignment = FamilyAffinityAssignmentSchema.parse({
+		...elementalAssignment,
+		targetSha256: familyAffinitySha256(target),
+		dispatchStatus: 'planned'
+	});
+	coordinate.status = 'planned';
+	coordinate.targetSha256 = familyAffinitySha256(target);
+	coordinate.assignmentSha256 = familyAffinitySha256(assignment);
+	await writeOwnedFixture(fixture.root, coordinate.targetPath, target);
+	await writeOwnedFixture(fixture.root, coordinate.assignmentPath, assignment);
+	await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+	return { coordinate, target, assignment };
 }
 
 describe('controller-only family affinity revision allocation', () => {
 	it('validates an approved Normal receipt as the exact filesystem anchor for an elemental target', async () => {
-		const fixture = await makeRevisionFixture({ decision: 'approved-review' });
+		const fixture = await makeRevisionFixture({
+			formId: 'goblin-cutter',
+			decision: 'approved-review'
+		});
 		try {
-			const manifest = FamilyAffinityManifestSchema.parse(
-				JSON.parse(await readFile(join(fixture.root, fixture.manifestPath), 'utf8'))
-			);
-			const fireCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
-				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
-			)!;
-			const fireTarget = FamilyAffinityTargetSchema.parse(
-				JSON.parse(await readFile(join(fixture.root, fireCoordinate.targetPath), 'utf8'))
-			);
-			const fireAssignment = FamilyAffinityAssignmentSchema.parse(
-				JSON.parse(await readFile(join(fixture.root, fireCoordinate.assignmentPath), 'utf8'))
-			);
-			const receiptBytes = await readFile(join(fixture.root, fixture.target.ownedPaths.decision));
-			const plannedFire = FamilyAffinityTargetSchema.parse({
-				...fireTarget,
-				status: 'planned',
-				anchor: {
-					kind: 'normal-approved-review',
-					normalCoordinateId: fixture.target.coordinateId,
-					normalVersion: fixture.target.version,
-					normalTargetPath: fixture.coordinate.targetPath,
-					normalTargetSha256: fixture.coordinate.targetSha256,
-					reviewReceiptPath: fixture.target.ownedPaths.decision,
-					reviewReceiptSha256: familyAffinityRawSha256(receiptBytes),
-					normalCandidatePath: fixture.receipt.candidatePath,
-					normalCandidateSha256: fixture.receipt.candidateSha256,
-					normalResultPath: fixture.receipt.resultPath,
-					normalResultSha256: fixture.receipt.resultSha256
-				}
-			});
-			const plannedAssignment = FamilyAffinityAssignmentSchema.parse({
-				...fireAssignment,
-				targetSha256: familyAffinitySha256(plannedFire),
-				dispatchStatus: 'planned'
-			});
-			fireCoordinate.status = 'planned';
-			fireCoordinate.targetSha256 = familyAffinitySha256(plannedFire);
-			fireCoordinate.assignmentSha256 = familyAffinitySha256(plannedAssignment);
-			await writeOwnedFixture(fixture.root, fireCoordinate.targetPath, plannedFire);
-			await writeOwnedFixture(fixture.root, fireCoordinate.assignmentPath, plannedAssignment);
-			await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+			const { coordinate: fireCoordinate } = await stagePlannedElemental(fixture);
 			await expect(
 				validateFamilyAffinityNormalAnchorEvidence({
 					repositoryRoot: fixture.root,
@@ -3323,10 +3380,51 @@ describe('controller-only family affinity revision allocation', () => {
 				})
 			).resolves.toBeUndefined();
 
-			await writeFile(
-				join(fixture.root, fixture.receipt.resultPath),
-				`${await readFile(join(fixture.root, fixture.receipt.resultPath), 'utf8')}\n`
+			const resultPath = join(fixture.root, fixture.receipt.resultPath);
+			const receiptPath = join(fixture.root, fixture.target.ownedPaths.decision);
+			const ordinaryAssignmentPath = join(
+				fixture.root,
+				familyAffinityReviewAssignmentPath('ordinary', fixture.target, fixture.target.version)
 			);
+			const [resultBytes, receiptBytes, ordinaryAssignmentBytes] = await Promise.all([
+				readFile(resultPath),
+				readFile(receiptPath),
+				readFile(ordinaryAssignmentPath)
+			]);
+			await writeFile(resultPath, '{"normal":"result"}\n');
+			await writeFile(
+				receiptPath,
+				stableFamilyAffinityJson({
+					targetId: fixture.target.targetId,
+					candidatePath: fixture.receipt.candidatePath,
+					candidateSha256: fixture.receipt.candidateSha256,
+					resultPath: fixture.receipt.resultPath,
+					resultSha256: fixture.receipt.resultSha256,
+					decision: 'approved-review',
+					reviewerId: 'reviewer-beta'
+				})
+			);
+			await expect(
+				validateFamilyAffinityNormalAnchorEvidence({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					targetPath: fireCoordinate.targetPath
+				})
+			).rejects.toThrow();
+			await writeFile(resultPath, resultBytes);
+			await writeFile(receiptPath, receiptBytes);
+
+			await rm(ordinaryAssignmentPath);
+			await expect(
+				validateFamilyAffinityNormalAnchorEvidence({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					targetPath: fireCoordinate.targetPath
+				})
+			).rejects.toThrow();
+			await writeFile(ordinaryAssignmentPath, ordinaryAssignmentBytes);
+
+			await writeFile(resultPath, `${resultBytes.toString('utf8')}\n`);
 			await expect(
 				validateFamilyAffinityNormalAnchorEvidence({
 					repositoryRoot: fixture.root,
@@ -3336,6 +3434,44 @@ describe('controller-only family affinity revision allocation', () => {
 			).rejects.toThrow(/stale|forged|cross-bound|mismatch/i);
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
+	it('requires a complete independent blind-review chain for T3 and T5 Normal anchors', async () => {
+		for (const formId of ['goblin-raider', 'goblin-king'] as const) {
+			const fixture = await makeRevisionFixture({ formId, decision: 'approved-review' });
+			try {
+				const { coordinate } = await stagePlannedElemental(fixture);
+				const input = {
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					targetPath: coordinate.targetPath
+				};
+				await expect(validateFamilyAffinityNormalAnchorEvidence(input)).resolves.toBeUndefined();
+				const blindReceiptPath = join(fixture.root, fixture.target.ownedPaths.blindReview);
+				const blindAssignmentPath = join(
+					fixture.root,
+					familyAffinityReviewAssignmentPath('blind', fixture.target, fixture.target.version)
+				);
+				const [blindReceiptBytes, blindAssignmentBytes] = await Promise.all([
+					readFile(blindReceiptPath),
+					readFile(blindAssignmentPath)
+				]);
+				await rm(blindReceiptPath);
+				await expect(validateFamilyAffinityNormalAnchorEvidence(input)).rejects.toThrow();
+				await writeFile(blindReceiptPath, blindReceiptBytes);
+				await rm(blindAssignmentPath);
+				await expect(validateFamilyAffinityNormalAnchorEvidence(input)).rejects.toThrow();
+				await writeFile(blindAssignmentPath, blindAssignmentBytes);
+				const blindReceipt = JSON.parse(blindReceiptBytes.toString('utf8'));
+				blindReceipt.reviewerId = fixture.receipt.reviewerId;
+				await writeOwnedFixture(fixture.root, fixture.target.ownedPaths.blindReview, blindReceipt);
+				await expect(validateFamilyAffinityNormalAnchorEvidence(input)).rejects.toThrow(
+					/independent|forged|cross-bound|mismatch/i
+				);
+			} finally {
+				await rm(fixture.root, { recursive: true, force: true });
+			}
 		}
 	});
 
