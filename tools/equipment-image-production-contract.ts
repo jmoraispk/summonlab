@@ -376,7 +376,10 @@ export const EquipmentImageResultSchema = z
 		candidateSha256: HashSchema.nullable(),
 		startedAt: IsoDateTimeSchema,
 		completedAt: IsoDateTimeSchema,
-		writtenOutputPaths: z.array(EquipmentPathSchema).min(1).max(2),
+		writtenOutputPaths: z
+			.array(z.union([CandidatePathSchema, ResultPathSchema]))
+			.min(1)
+			.max(2),
 		noSharedFilesEdited: z.literal(true),
 		selfPromoted: z.literal(false)
 	})
@@ -468,10 +471,10 @@ export const EquipmentRunPlanSchema = z
 		maximumConcurrency: z.literal(16),
 		boundArtifacts: BoundArtifactsSchema,
 		versions: RunVersionsSchema,
-		targetIds: z.array(SlugSchema).min(1).max(161),
-		rootPackets: z.array(RootPacketSchema).min(1).max(77),
-		reviewGates: z.array(RunReviewGateSchema).min(1).max(21),
-		unmaterializedReviewGatedTargetIds: z.array(SlugSchema).min(1).max(84),
+		targetIds: z.array(SlugSchema).length(161),
+		rootPackets: z.array(RootPacketSchema).length(77),
+		reviewGates: z.array(RunReviewGateSchema).length(21),
+		unmaterializedReviewGatedTargetIds: z.array(SlugSchema).length(84),
 		reservedPaths: z
 			.object({
 				candidates: z.array(CandidatePathSchema).min(1).max(161),
@@ -483,15 +486,48 @@ export const EquipmentRunPlanSchema = z
 	})
 	.strict()
 	.superRefine((plan, context) => {
+		const rootTargetIds = plan.rootPackets.map(({ targetId }) => targetId);
+		const gateSourceTargetIds = plan.reviewGates.map(({ sourceTargetId }) => sourceTargetId);
+		const gateChildren = plan.reviewGates.flatMap(({ unlocksTargetIds }) => unlocksTargetIds);
 		for (const [label, values] of [
 			['target IDs', plan.targetIds],
-			['root packet target IDs', plan.rootPackets.map(({ targetId }) => targetId)],
+			['root packet target IDs', rootTargetIds],
 			['review gate IDs', plan.reviewGates.map(({ gateId }) => gateId)],
+			['review gate source target IDs', gateSourceTargetIds],
+			['review gate child target IDs', gateChildren],
+			['unmaterialized review-gated target IDs', plan.unmaterializedReviewGatedTargetIds],
 			['reserved paths', Object.values(plan.reservedPaths).flat()]
 		] as const) {
 			if (new Set(values).size !== values.length) {
 				context.addIssue({ code: 'custom', message: `Run plan ${label} must be unique` });
 			}
+		}
+
+		const rootTargetIdSet = new Set(rootTargetIds);
+		if (gateSourceTargetIds.some((targetId) => !rootTargetIdSet.has(targetId))) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Every review gate source must be a materialized root target'
+			});
+		}
+
+		const sameMembers = (left: readonly string[], right: readonly string[]) => {
+			const rightSet = new Set(right);
+			return left.length === right.length && left.every((value) => rightSet.has(value));
+		};
+		if (!sameMembers(gateChildren, plan.unmaterializedReviewGatedTargetIds)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Review gate children must equal the unmaterialized review-gated target set'
+			});
+		}
+		if (
+			!sameMembers([...rootTargetIds, ...plan.unmaterializedReviewGatedTargetIds], plan.targetIds)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Run targets must partition exactly into root packets and review-gated children'
+			});
 		}
 	});
 

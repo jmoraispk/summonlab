@@ -223,6 +223,48 @@ const validReceipt = {
 	reviewedAt: '2026-09-01T23:10:00.000Z'
 };
 
+const armourSlots = ['head', 'torso', 'legs', 'boots'] as const;
+const rootTargetIds = Array.from({ length: 77 }, (_, index) => {
+	if (index === 0) return validTarget.targetId;
+	if (index === 1) return validReceipt.sourceTargetId;
+	return `material-equipment-v1-root-${String(index + 1).padStart(3, '0')}`;
+});
+const gatedTargetIdsByGate = Array.from({ length: 21 }, (_, gateIndex) =>
+	armourSlots.map((slot) =>
+		gateIndex === 0
+			? `material-equipment-v1-copper-heavy-armour-${slot}-v1`
+			: `material-equipment-v1-armour-set-${String(gateIndex + 1).padStart(2, '0')}-${slot}-v1`
+	)
+);
+const gatedTargetIds = gatedTargetIdsByGate.flat();
+const rootPackets = rootTargetIds.map((targetId, index) => {
+	const fixtureId = String(index + 1).padStart(3, '0');
+	return {
+		targetId,
+		targetPath: `${root}/targets/f/fixture/root-${fixtureId}.json`,
+		targetCanonicalSha256: hash,
+		assignmentPath: `${root}/assignments/f/fixture/root-${fixtureId}.json`,
+		assignmentCanonicalSha256: secondHash
+	};
+});
+const reviewGates = gatedTargetIdsByGate.map((unlocksTargetIds, gateIndex) => {
+	if (gateIndex === 0) {
+		return {
+			gateId: validReceipt.gateId,
+			sourceTargetId: validReceipt.sourceTargetId,
+			unlocksTargetIds,
+			reviewPath: `${root}/reviews/f/copper/heavy-armour-full-set-v1.json`
+		};
+	}
+	const fixtureId = String(gateIndex + 1).padStart(2, '0');
+	return {
+		gateId: `material-equipment-v1-armour-set-${fixtureId}-review-pass`,
+		sourceTargetId: rootTargetIds[gateIndex + 1]!,
+		unlocksTargetIds,
+		reviewPath: `${root}/reviews/f/fixture/armour-set-${fixtureId}.json`
+	};
+});
+
 const validRunPlan = {
 	schemaVersion: 'equipment-production-run-plan-v1' as const,
 	runId: 'material-equipment-v1-run-001',
@@ -242,30 +284,10 @@ const validRunPlan = {
 		persistence: 'equipment-image-persistence-v1',
 		journal: 'equipment-production-journal-v1'
 	},
-	targetIds: [validTarget.targetId],
-	rootPackets: [
-		{
-			targetId: validTarget.targetId,
-			targetPath: `${root}/targets/f/copper/sword-v1.json`,
-			targetCanonicalSha256: hash,
-			assignmentPath: `${root}/assignments/f/copper/sword-v1.json`,
-			assignmentCanonicalSha256: secondHash
-		}
-	],
-	reviewGates: [
-		{
-			gateId: validReceipt.gateId,
-			sourceTargetId: validReceipt.sourceTargetId,
-			unlocksTargetIds: [
-				'material-equipment-v1-copper-heavy-armour-head-v1',
-				'material-equipment-v1-copper-heavy-armour-torso-v1',
-				'material-equipment-v1-copper-heavy-armour-legs-v1',
-				'material-equipment-v1-copper-heavy-armour-boots-v1'
-			],
-			reviewPath: `${root}/reviews/f/copper/heavy-armour-full-set-v1.json`
-		}
-	],
-	unmaterializedReviewGatedTargetIds: ['material-equipment-v1-copper-heavy-armour-head-v1'],
+	targetIds: [...rootTargetIds, ...gatedTargetIds],
+	rootPackets,
+	reviewGates,
+	unmaterializedReviewGatedTargetIds: gatedTargetIds,
 	reservedPaths: {
 		candidates: [candidatePath],
 		results: [resultPath],
@@ -404,6 +426,116 @@ describe('Equipment image-production contracts', () => {
 			EquipmentArmourSourceReviewReceiptSchema.parse({
 				...validReceipt,
 				candidateSha256: 'A'.repeat(64)
+			})
+		).toThrow();
+	});
+
+	it('requires the exact 161-target, 77-root, 21-gate, and 84-gated topology', () => {
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				targetIds: validRunPlan.targetIds.slice(0, -1)
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				rootPackets: validRunPlan.rootPackets.slice(0, -1)
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				reviewGates: validRunPlan.reviewGates.slice(0, -1)
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				unmaterializedReviewGatedTargetIds: validRunPlan.unmaterializedReviewGatedTargetIds.slice(
+					0,
+					-1
+				)
+			})
+		).toThrow();
+	});
+
+	it('requires four distinct children per gate and 84 globally distinct children', () => {
+		const firstGate = validRunPlan.reviewGates[0]!;
+		const secondGate = validRunPlan.reviewGates[1]!;
+		const firstChild = firstGate.unlocksTargetIds[0]!;
+
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				reviewGates: [
+					{
+						...firstGate,
+						unlocksTargetIds: [firstChild, firstChild, ...firstGate.unlocksTargetIds.slice(2)]
+					},
+					...validRunPlan.reviewGates.slice(1)
+				]
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				reviewGates: [
+					firstGate,
+					{
+						...secondGate,
+						unlocksTargetIds: [firstChild, ...secondGate.unlocksTargetIds.slice(1)]
+					},
+					...validRunPlan.reviewGates.slice(2)
+				]
+			})
+		).toThrow();
+	});
+
+	it('partitions target IDs exactly between root packets and review-gated children', () => {
+		const rootTargetId = validRunPlan.rootPackets[0]!.targetId;
+		const gatedTargetId = validRunPlan.unmaterializedReviewGatedTargetIds[0]!;
+
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				unmaterializedReviewGatedTargetIds: [
+					rootTargetId,
+					...validRunPlan.unmaterializedReviewGatedTargetIds.slice(1)
+				]
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				targetIds: ['material-equipment-v1-unowned-target-v1', ...validRunPlan.targetIds.slice(1)]
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRunPlanSchema.parse({
+				...validRunPlan,
+				reviewGates: [
+					{ ...validRunPlan.reviewGates[0]!, sourceTargetId: gatedTargetId },
+					...validRunPlan.reviewGates.slice(1)
+				]
+			})
+		).toThrow();
+	});
+
+	it('rejects reviewer-owned and run-owned result write claims', () => {
+		expect(() =>
+			EquipmentImageResultSchema.parse({
+				...validResult,
+				writtenOutputPaths: [
+					candidatePath,
+					`${root}/reviews/f/copper/heavy-armour-full-set-v1.json`
+				]
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentImageResultSchema.parse({
+				...validResult,
+				writtenOutputPaths: [candidatePath, `${root}/runs/material-equipment-v1-run-001/plan.json`]
 			})
 		).toThrow();
 	});
