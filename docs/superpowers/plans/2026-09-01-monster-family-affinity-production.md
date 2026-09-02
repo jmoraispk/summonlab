@@ -25,6 +25,10 @@
 - The former Flame Elementals packet and Ember Wisp bridge attempts are immutable provenance, not
   active production. Future Wisp production uses `elementals/elemental-wisp/*` after its Normal
   anchor is independently approved.
+- Owner accepted the Elementals T1–T5 names on 2026-09-02. The first Normal-anchor wave produced
+  five hash-bound candidates and results; all remain candidate-only pending owner review. The
+  generated family contact sheet is the review checkpoint before any Fire, Earth, Wind, or Water
+  Elementals target may be dispatched.
 - Do not modify `packages/contracts`, engine code, skills, unrelated visual domains, or shared runtime catalogs. Any later runtime promotion is a separate integration request to the root orchestrator.
 - Family authors own only one numbered family packet. Producers own only one target's candidate and result receipt. The controller alone writes aggregate manifests, indexes, contact sheets, and wiki output.
 - Each implementation task ends with focused tests, a concise Conventional Commit, and a push of the current branch.

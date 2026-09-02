@@ -96,13 +96,19 @@ function packetBytesFor(activeTarget: FamilyAffinityTarget): Buffer {
 	return Buffer.from(requireRead(join(process.cwd(), activeTarget.sources.familyPacketPath)));
 }
 
-async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
+async function stageLiveAttempt(
+	tier: 'T1' | 'T3' = 'T1',
+	captureBaseline = false
+) {
 	const root = await mkdtemp(join(tmpdir(), 'family-review-live-'));
 	temporaryRoots.push(root);
 	const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 	const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 	await cp(source, destination, { recursive: true });
 	await stripBridgeFixture(root);
+	const baselineCatalog = captureBaseline
+		? (await buildFamilyAffinityReviewArtifacts(root)).catalog
+		: undefined;
 	const activeTarget = target(tier);
 	const paths = canonicalAttemptPaths(
 		activeTarget.familyId,
@@ -123,7 +129,7 @@ async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
 		await mkdir(dirname(join(root, path)), { recursive: true });
 		await writeFile(join(root, path), bytes);
 	}
-	return { root, activeTarget, paths, candidateBytes, result };
+	return { root, activeTarget, paths, candidateBytes, result, baselineCatalog };
 }
 
 const familyAffinityRoot = 'assets/enemies/experiments/family-affinity-v1';
@@ -826,7 +832,7 @@ describe('family-affinity review receipt contract', () => {
 	});
 
 	it('runs producer result through independent ordinary and T3 blind approval into aggregation', async () => {
-		const live = await stageLiveAttempt('T3');
+		const live = await stageLiveAttempt('T3', true);
 		const ordinaryAssignment = await issueReviewAssignmentExclusive(
 			live.root,
 			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
@@ -852,11 +858,14 @@ describe('family-affinity review receipt contract', () => {
 				({ coordinateId }) => coordinateId === live.activeTarget.coordinateId
 			)
 		).toMatchObject({ state: 'approved-review', candidateSha256: live.result.candidateSha256 });
-		expect(artifacts.catalog).toMatchObject({ generatedCount: 1, approvedReviewCount: 1 });
+		expect(artifacts.catalog).toMatchObject({
+			generatedCount: live.baselineCatalog!.generatedCount + 1,
+			approvedReviewCount: live.baselineCatalog!.approvedReviewCount + 1
+		});
 	}, 15_000);
 
 	it('retains immutable rejected v1 history while deriving current review state only from active v2', async () => {
-		const live = await stageLiveAttempt();
+		const live = await stageLiveAttempt('T1', true);
 		const issued = await issueReviewAssignmentExclusive(
 			live.root,
 			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
@@ -893,10 +902,11 @@ describe('family-affinity review receipt contract', () => {
 			historyRevisionRequiredCount: 1
 		});
 		expect(artifacts.catalog).toMatchObject({
-			generatedCount: 0,
-			approvedReviewCount: 0,
-			historicalAttemptCount: 1,
-			historicalRevisionRequiredCount: 1
+			generatedCount: live.baselineCatalog!.generatedCount,
+			approvedReviewCount: live.baselineCatalog!.approvedReviewCount,
+			historicalAttemptCount: live.baselineCatalog!.historicalAttemptCount + 1,
+			historicalRevisionRequiredCount:
+				live.baselineCatalog!.historicalRevisionRequiredCount + 1
 		});
 		await exportFamilyAffinityReview(live.root, 'write');
 		await exportFamilyAffinityReview(live.root, 'check');
@@ -1047,26 +1057,35 @@ describe('family-affinity review receipt contract', () => {
 });
 
 describe('initial family review evidence', () => {
-	it('builds thirty deterministic 5x5 NOT GENERATED sheets and truthful zero counts', async () => {
+	it('builds thirty deterministic 5x5 sheets with truthful live counts', async () => {
 		const first = await buildFamilyAffinityReviewArtifacts(process.cwd());
 		const second = await buildFamilyAffinityReviewArtifacts(process.cwd());
 		expect(first.catalog).toMatchObject({
 			schemaVersion: 'family-affinity-review-catalog-v1',
 			familyCount: 30,
 			coordinateCount: 750,
-			generatedCount: 0,
-			approvedReviewCount: 0,
 			runtimeCount: 0
 		});
 		expect(first.families).toHaveLength(30);
-		expect(first.families.every(({ summary }) => summary.notGeneratedCount === 25)).toBe(true);
-		expect(first.families.every(({ summary }) => summary.generatedCount === 0)).toBe(true);
-		expect(first.families.every(({ summary }) => summary.cells.length === 25)).toBe(true);
 		expect(
-			first.families.every(({ summary }) =>
-				summary.cells.every((cell) => cell.label === 'NOT GENERATED')
+			first.families.every(
+				({ summary }) => summary.notGeneratedCount + summary.generatedCount === 25
 			)
 		).toBe(true);
+		expect(first.families.every(({ summary }) => summary.cells.length === 25)).toBe(true);
+		expect(
+			first.families.every(
+				({ summary }) =>
+					summary.cells.filter((cell) => cell.label === 'NOT GENERATED').length ===
+					summary.notGeneratedCount
+			)
+		).toBe(true);
+		expect(first.catalog.generatedCount).toBe(
+			first.families.reduce((count, { summary }) => count + summary.generatedCount, 0)
+		);
+		expect(first.catalog.approvedReviewCount).toBe(
+			first.families.reduce((count, { summary }) => count + summary.approvedReviewCount, 0)
+		);
 		expect(first.digest).toBe(second.digest);
 		for (let index = 0; index < first.families.length; index += 1) {
 			expect(first.families[index]!.contactSheet.equals(second.families[index]!.contactSheet)).toBe(
@@ -1119,6 +1138,7 @@ describe('initial family review evidence', () => {
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
 		await cp(source, destination, { recursive: true });
 		await stripBridgeFixture(root);
+		const canonicalBaseline = (await buildFamilyAffinityReviewArtifacts(root)).catalog;
 		const canonicalPaths = canonicalAttemptPaths('goblins', 'goblin-runt', 'earth', 1);
 		const canonicalTarget = FamilyAffinityTargetSchema.parse(
 			JSON.parse(await readFile(join(root, canonicalPaths.target), 'utf8'))
@@ -1219,8 +1239,8 @@ describe('initial family review evidence', () => {
 		const artifacts = await buildFamilyAffinityReviewArtifacts(root);
 		expect(artifacts.catalog).toMatchObject({
 			coordinateCount: 750,
-			generatedCount: 0,
-			approvedReviewCount: 0,
+			generatedCount: canonicalBaseline.generatedCount,
+			approvedReviewCount: canonicalBaseline.approvedReviewCount,
 			bridgeCoordinateCount: 1,
 			bridgeGeneratedCount: 1,
 			bridgeApprovedReviewCount: 0
@@ -1252,8 +1272,8 @@ describe('initial family review evidence', () => {
 		const afterRevision = await buildFamilyAffinityReviewArtifacts(root);
 		expect(afterRevision.catalog).toMatchObject({
 			coordinateCount: 750,
-			generatedCount: 0,
-			approvedReviewCount: 0,
+			generatedCount: canonicalBaseline.generatedCount,
+			approvedReviewCount: canonicalBaseline.approvedReviewCount,
 			bridgeCoordinateCount: 1,
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
@@ -1276,8 +1296,6 @@ describe('initial family review evidence', () => {
 		const materialized = await buildFamilyAffinityReviewArtifacts(root);
 		expect(materialized.catalog).toMatchObject({
 			coordinateCount: 750,
-			generatedCount: 0,
-			approvedReviewCount: 0,
 			bridgeCoordinateCount,
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
@@ -1295,8 +1313,8 @@ describe('initial family review evidence', () => {
 		const removed = await buildFamilyAffinityReviewArtifacts(root);
 		expect(removed.catalog).toMatchObject({
 			coordinateCount: 750,
-			generatedCount: 0,
-			approvedReviewCount: 0,
+			generatedCount: materialized.catalog.generatedCount,
+			approvedReviewCount: materialized.catalog.approvedReviewCount,
 			bridgeCoordinateCount: 0,
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
