@@ -419,10 +419,9 @@ export function buildEquipmentMaterialAllocationPlan() {
 			mode: 'dependency-aware-ready-queue' as const,
 			logicalProductionRunCount: 1 as const,
 			configuredMaximumConcurrency: 16 as const,
-			reservedOrchestratorSlots: 1 as const,
 			admissionFormula:
-				'max(0, min(configuredMaximumConcurrency, effectiveTaskSlots - reservedOrchestratorSlots))' as const,
-			capacityProbeCeilings: [2, 4, 8, 12, 16] as const,
+				'min(16 - activeEquipmentWorkers, availableWorkerSlots, readyUnclaimedJobs)' as const,
+			parallelWorkPolicy: 'no-voluntary-throttling-for-unrelated-work' as const,
 			technicalFailureCircuitBreaker: {
 				failureCountPerEpoch: 3 as const,
 				action: 'stop-new-starts-drain-active-resume-with-backoff' as const,

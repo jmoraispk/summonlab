@@ -93,10 +93,9 @@ describe('Equipment material production manifest', () => {
 			mode: 'dependency-aware-ready-queue',
 			logicalProductionRunCount: 1,
 			configuredMaximumConcurrency: 16,
-			reservedOrchestratorSlots: 1,
 			admissionFormula:
-				'max(0, min(configuredMaximumConcurrency, effectiveTaskSlots - reservedOrchestratorSlots))',
-			capacityProbeCeilings: [2, 4, 8, 12, 16],
+				'min(16 - activeEquipmentWorkers, availableWorkerSlots, readyUnclaimedJobs)',
+			parallelWorkPolicy: 'no-voluntary-throttling-for-unrelated-work',
 			technicalFailureCircuitBreaker: {
 				failureCountPerEpoch: 3,
 				action: 'stop-new-starts-drain-active-resume-with-backoff',

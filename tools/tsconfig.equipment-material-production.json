@@ -8,6 +8,8 @@
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
+		"equipment-image-production-contract.ts",
+		"equipment-image-production-contract.spec.ts",
 		"equipment-material-production-lib.ts",
 		"equipment-material-production-lib.spec.ts",
 		"export-equipment-material-production.ts"
