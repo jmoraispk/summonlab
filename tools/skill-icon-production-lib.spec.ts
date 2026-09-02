@@ -240,7 +240,7 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 		const rows = [row('martial:blade:first', 'First')];
 		const markdown = `<script>
 **Status:** Proposed
-</style>
+</script>
 
 <!-- **Status:** Proposed -->
 
@@ -306,6 +306,81 @@ This **prose bolding** is not an assignment and \`prose.id\` is not a table row.
 			expect(parseAcceptedMotifMap(markdown, rows).entries[0]?.mapEntryId).toBe('blade.first');
 		}
 	);
+
+	it.each([
+		['pre', 'script'],
+		['script', 'style'],
+		['style', 'textarea'],
+		['textarea', 'pre']
+	])('keeps a type-1 <%s> block open across a mismatched </%s>', (opener, wrongCloser) => {
+		const markdown = `<${opener}>
+</${wrongCloser}>
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+</${opener}>`;
+		expect(() => parseAcceptedMotifMap(markdown, [row('martial:blade:first', 'First')])).toThrow(
+			/accepted status/u
+		);
+	});
+
+	it.each(['pre', 'script', 'style', 'textarea'])(
+		'resumes after a same-line case-insensitive matching </%s> close',
+		(tag) => {
+			const markdown = `<${tag}></${tag.toUpperCase()}>
+**Status:** Accepted
+## Martial
+### Blade
+| Motif ID | Proposed primary visual lineage |
+| --- | --- |
+| \`blade.first\` | **First** |`;
+			expect(
+				parseAcceptedMotifMap(markdown, [row('martial:blade:first', 'First')]).entries[0]
+					?.mapEntryId
+			).toBe('blade.first');
+		}
+	);
+
+	it.each([
+		[
+			'thematic break',
+			`---
+<retired-example>
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+</retired-example>`
+		],
+		[
+			'setext heading',
+			`Retired section
+---
+<retired-example>
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+</retired-example>`
+		],
+		[
+			'GFM table',
+			`| Retired | Value |
+| --- | --- |
+| old | map |
+<retired-example>
+**Status:** Accepted
+## Martial
+### Blade
+| \`blade.first\` | **First** |
+</retired-example>`
+		]
+	])('does not expose a type-7 HTML mapping after a %s boundary', (_label, markdown) => {
+		expect(() => parseAcceptedMotifMap(markdown, [row('martial:blade:first', 'First')])).toThrow(
+			/accepted status/u
+		);
+	});
 
 	it('rejects cycles and parents outside a motif family', () => {
 		expect(() =>

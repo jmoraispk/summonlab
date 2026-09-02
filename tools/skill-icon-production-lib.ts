@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 
 import {
@@ -78,109 +79,32 @@ const VISUAL_STATE_KEYS = new Set([
 	'review'
 ]);
 
-function skillKey(domain: SkillDomain, family: string, name: string): string {
-	return `${domain}\u0000${family}\u0000${name}`;
+interface MarkdownBlockToken {
+	readonly type: string;
+	readonly raw: string;
+	readonly depth?: number;
 }
 
-const COMMONMARK_BLOCK_TAG_NAMES = [
-	'address',
-	'article',
-	'aside',
-	'base',
-	'basefont',
-	'blockquote',
-	'body',
-	'caption',
-	'center',
-	'col',
-	'colgroup',
-	'dd',
-	'details',
-	'dialog',
-	'dir',
-	'div',
-	'dl',
-	'dt',
-	'fieldset',
-	'figcaption',
-	'figure',
-	'footer',
-	'form',
-	'frame',
-	'frameset',
-	'h1',
-	'h2',
-	'h3',
-	'h4',
-	'h5',
-	'h6',
-	'head',
-	'header',
-	'hr',
-	'html',
-	'iframe',
-	'legend',
-	'li',
-	'link',
-	'main',
-	'menu',
-	'menuitem',
-	'nav',
-	'noframes',
-	'ol',
-	'optgroup',
-	'option',
-	'p',
-	'param',
-	'search',
-	'section',
-	'summary',
-	'table',
-	'tbody',
-	'td',
-	'tfoot',
-	'th',
-	'thead',
-	'title',
-	'tr',
-	'track',
-	'ul'
-].join('|');
+interface MarkdownLexer {
+	lexer(source: string, options: { readonly gfm: boolean }): readonly MarkdownBlockToken[];
+}
 
-const COMMONMARK_TYPE_1_START = /^ {0,3}<(pre|script|style|textarea)(?:[ \t]|>|$)/iu;
-const COMMONMARK_TYPE_1_END = /<\/(?:pre|script|style|textarea)>/iu;
-const COMMONMARK_TYPE_6_START = new RegExp(
-	`^ {0,3}</?(?:${COMMONMARK_BLOCK_TAG_NAMES})(?:[ \\t]|/?>|$)`,
-	'iu'
-);
-const COMMONMARK_TYPE_7_TAG =
-	/^ {0,3}(?:<[A-Za-z][A-Za-z0-9-]*(?:[ \t]+[A-Za-z_:][A-Za-z0-9_.:-]*(?:[ \t]*=[ \t]*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*[ \t]*\/?>|<\/[A-Za-z][A-Za-z0-9-]*[ \t]*>)[ \t]*$/u;
+const webRequire = createRequire(new URL('../apps/web/package.json', import.meta.url));
+const { marked } = webRequire('marked') as { readonly marked: MarkdownLexer };
 
-type HtmlBlockEnd =
-	{ readonly kind: 'blank' } | { readonly kind: 'marker'; readonly pattern: RegExp };
-
-function htmlBlockStart(line: string, allowTypeSeven: boolean): HtmlBlockEnd | null {
-	if (COMMONMARK_TYPE_1_START.test(line)) {
-		return { kind: 'marker', pattern: COMMONMARK_TYPE_1_END };
-	}
-	if (/^ {0,3}<\?/u.test(line)) return { kind: 'marker', pattern: /\?>/u };
-	if (/^ {0,3}<![A-Z]/u.test(line)) return { kind: 'marker', pattern: />/u };
-	if (/^ {0,3}<!\[CDATA\[/u.test(line)) return { kind: 'marker', pattern: /\]\]>/u };
-	if (COMMONMARK_TYPE_6_START.test(line)) return { kind: 'blank' };
-	if (allowTypeSeven && COMMONMARK_TYPE_7_TAG.test(line)) return { kind: 'blank' };
-	return null;
+function skillKey(domain: SkillDomain, family: string, name: string): string {
+	return `${domain}\u0000${family}\u0000${name}`;
 }
 
 function stripHtmlComments(
 	line: string,
 	inComment: boolean
-): { readonly line: string; readonly inComment: boolean; readonly changed: boolean } {
+): { readonly line: string; readonly inComment: boolean } {
 	let output = '';
 	let cursor = 0;
-	let changed = inComment;
 	if (inComment) {
 		const commentEnd = line.indexOf('-->');
-		if (commentEnd === -1) return { line: '', inComment: true, changed: true };
+		if (commentEnd === -1) return { line: '', inComment: true };
 		cursor = commentEnd + 3;
 		inComment = false;
 	}
@@ -190,26 +114,18 @@ function stripHtmlComments(
 			output += line.slice(cursor);
 			break;
 		}
-		changed = true;
 		output += line.slice(cursor, commentStart);
 		const commentEnd = line.indexOf('-->', commentStart + 4);
-		if (commentEnd === -1) return { line: output, inComment: true, changed };
+		if (commentEnd === -1) return { line: output, inComment: true };
 		cursor = commentEnd + 3;
 	}
-	return { line: output, inComment, changed };
+	return { line: output, inComment };
 }
 
-function opensMarkdownParagraph(line: string): boolean {
-	if (line.trim() === '') return false;
-	return !/^ {0,3}(?:#{1,6}(?:[ \t]|$)|>|(?:[-+*]|\d+[.)])(?:[ \t]|$))/u.test(line);
-}
-
-function liveMarkdownLines(markdown: string): string[] {
+function stripHtmlCommentsFromMarkdown(markdown: string): string {
 	const lines: string[] = [];
 	let fence: { marker: '`' | '~'; length: number } | null = null;
-	let htmlBlock: HtmlBlockEnd | null = null;
 	let inHtmlComment = false;
-	let paragraphOpen = false;
 	for (const line of markdown.split(/\r?\n/u)) {
 		if (fence) {
 			const closingFence = new RegExp(
@@ -217,22 +133,11 @@ function liveMarkdownLines(markdown: string): string[] {
 				'u'
 			);
 			if (closingFence.test(line)) fence = null;
-			lines.push('');
+			lines.push(line);
 			continue;
 		}
-		if (htmlBlock) {
-			if (
-				(htmlBlock.kind === 'blank' && line.trim() === '') ||
-				(htmlBlock.kind === 'marker' && htmlBlock.pattern.test(line))
-			) {
-				htmlBlock = null;
-			}
-			lines.push('');
-			continue;
-		}
-
 		if (!inHtmlComment && /^(?: {4}|\t)/u.test(line)) {
-			lines.push('');
+			lines.push(line);
 			continue;
 		}
 		const openingFence = !inHtmlComment
@@ -243,53 +148,15 @@ function liveMarkdownLines(markdown: string): string[] {
 				marker: openingFence[0] as '`' | '~',
 				length: openingFence.length
 			};
-			paragraphOpen = false;
-			lines.push('');
+			lines.push(line);
 			continue;
 		}
 
-		let liveLine = line;
-		const startsWithComment = inHtmlComment || /^ {0,3}<!--/u.test(liveLine);
-		if (!startsWithComment) {
-			const blockStart = htmlBlockStart(liveLine, !paragraphOpen);
-			if (blockStart) {
-				if (blockStart.kind === 'blank' || !blockStart.pattern.test(liveLine)) {
-					htmlBlock = blockStart;
-				}
-				paragraphOpen = false;
-				lines.push('');
-				continue;
-			}
-		}
-
-		const stripped = stripHtmlComments(liveLine, inHtmlComment);
-		liveLine = stripped.line;
+		const stripped = stripHtmlComments(line, inHtmlComment);
 		inHtmlComment = stripped.inComment;
-		if (stripped.changed) {
-			const rescannedFence = /^ {0,3}(`{3,}|~{3,})[^\r\n]*$/u.exec(liveLine)?.[1];
-			if (rescannedFence) {
-				fence = {
-					marker: rescannedFence[0] as '`' | '~',
-					length: rescannedFence.length
-				};
-				paragraphOpen = false;
-				lines.push('');
-				continue;
-			}
-			const rescannedBlock = htmlBlockStart(liveLine, !paragraphOpen);
-			if (rescannedBlock) {
-				if (rescannedBlock.kind === 'blank' || !rescannedBlock.pattern.test(liveLine)) {
-					htmlBlock = rescannedBlock;
-				}
-				paragraphOpen = false;
-				lines.push('');
-				continue;
-			}
-		}
-		lines.push(liveLine);
-		paragraphOpen = opensMarkdownParagraph(liveLine);
+		lines.push(stripped.line);
 	}
-	return lines;
+	return lines.join('\n');
 }
 
 export async function loadCanonicalSkillRows(
@@ -330,11 +197,12 @@ export function parseAcceptedMotifMap(
 	markdown: string,
 	canonicalRows: readonly TargetSkillRow[]
 ): SkillIconMotifMap {
-	const liveLines = liveMarkdownLines(markdown);
-	const liveMarkdown = liveLines.join('\n');
-	const statuses = [...liveMarkdown.matchAll(/^\*\*Status:\*\*\s+(.+?)\s*$/gmu)].map(
-		(match) => match[1]
-	);
+	const tokens = marked.lexer(stripHtmlCommentsFromMarkdown(markdown), { gfm: true });
+	const statuses = tokens.flatMap((token) => {
+		if (token.type !== 'paragraph') return [];
+		const status = /^\*\*Status:\*\*\s+(.+?)\s*$/u.exec(token.raw.trim());
+		return status?.[1] ? [status[1]] : [];
+	});
 	if (statuses.length !== 1 || statuses[0] !== 'Accepted') {
 		throw new Error('Skill icon motif map requires explicit accepted status');
 	}
@@ -346,48 +214,68 @@ export function parseAcceptedMotifMap(
 	let domain: SkillDomain | undefined;
 	let family: string | undefined;
 
-	for (const line of liveLines) {
-		const domainHeading = /^##\s+(Martial|Magical|Craft)\s*$/u.exec(line);
+	for (const token of tokens) {
+		const domainHeading =
+			token.type === 'heading' && token.depth === 2
+				? /^##\s+(Martial|Magical|Craft)\s*$/u.exec(token.raw.trim())
+				: null;
 		if (domainHeading) {
 			domain = domainHeading[1] as SkillDomain;
 			family = undefined;
 			continue;
 		}
-		const familyHeading = /^###\s+(.+?)(?:\s+—\s+\d+\s+skills?)?\s*$/u.exec(line);
+		const familyHeading =
+			token.type === 'heading' && token.depth === 3
+				? /^###\s+(.+?)(?:\s+—\s+\d+\s+skills?)?\s*$/u.exec(token.raw.trim())
+				: null;
 		if (familyHeading) {
 			family = familyHeading[1]?.trim();
 			continue;
 		}
-		if (!domain || !family) continue;
-		const anyTableRow = /^\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*$/u.exec(line);
-		if (
-			anyTableRow &&
-			/\*\*[^*]+\*\*/u.test(anyTableRow[2] ?? '') &&
-			!/^`[^`]+`$/u.test(anyTableRow[1] ?? '')
-		) {
-			throw new Error(`Motif IDs in assignment table rows must be backticked: ${line}`);
+		if (!domain || !family || token.type !== 'table') continue;
+
+		// Marked can extend a GFM table token across non-pipe lines. Only the authored,
+		// contiguous pipe table belongs to the mapping; any following raw HTML remains inert.
+		for (const line of token.raw.split(/\r?\n/u)) {
+			if (!/^\s*\|.*\|\s*$/u.test(line)) break;
+			const anyTableRow = /^\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*$/u.exec(line);
+			if (
+				anyTableRow &&
+				/\*\*[^*]+\*\*/u.test(anyTableRow[2] ?? '') &&
+				!/^`[^`]+`$/u.test(anyTableRow[1] ?? '')
+			) {
+				throw new Error(`Motif IDs in assignment table rows must be backticked: ${line}`);
+			}
+			const tableRow = /^\|\s*`([^`]+)`\s*\|\s*(.*?)\s*\|\s*$/u.exec(line);
+			if (!tableRow) continue;
+			const mapEntryId = tableRow[1] ?? '';
+			if (!MOTIF_ID_PATTERN.test(mapEntryId)) {
+				throw new Error(`Invalid backticked motif ID: ${mapEntryId}`);
+			}
+			const names = [...(tableRow[2] ?? '').matchAll(/\*\*([^*]+)\*\*/gu)].map(
+				(match) => match[1]?.trim() ?? ''
+			);
+			if (names.length === 0) {
+				throw new Error(`Motif entry ${mapEntryId} has no bold skill sequence`);
+			}
+			const currentDomain = domain;
+			const currentFamily = family;
+			const memberTargetIds = names.map((name) => {
+				const row = rowsByKey.get(skillKey(currentDomain, currentFamily, name));
+				if (!row) {
+					throw new Error(
+						`${mapEntryId} references unknown ${currentDomain}/${currentFamily}/${name}`
+					);
+				}
+				return row.targetId;
+			});
+			entries.push({
+				mapEntryId,
+				domain: currentDomain,
+				family: currentFamily,
+				memberTargetIds
+			});
 		}
-		const tableRow = /^\|\s*`([^`]+)`\s*\|\s*(.*?)\s*\|\s*$/u.exec(line);
-		if (!tableRow) continue;
-		const mapEntryId = tableRow[1] ?? '';
-		if (!MOTIF_ID_PATTERN.test(mapEntryId)) {
-			throw new Error(`Invalid backticked motif ID: ${mapEntryId}`);
-		}
-		const names = [...(tableRow[2] ?? '').matchAll(/\*\*([^*]+)\*\*/gu)].map(
-			(match) => match[1]?.trim() ?? ''
-		);
-		if (names.length === 0) throw new Error(`Motif entry ${mapEntryId} has no bold skill sequence`);
-		const currentDomain = domain;
-		const currentFamily = family;
-		const memberTargetIds = names.map((name) => {
-			const row = rowsByKey.get(skillKey(currentDomain, currentFamily, name));
-			if (!row)
-				throw new Error(
-					`${mapEntryId} references unknown ${currentDomain}/${currentFamily}/${name}`
-				);
-			return row.targetId;
-		});
-		entries.push({ mapEntryId, domain: currentDomain, family: currentFamily, memberTargetIds });
 	}
 
 	const mapEntryIds = new Set<string>();
