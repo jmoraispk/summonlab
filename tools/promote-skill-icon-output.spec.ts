@@ -29,6 +29,7 @@ import {
 	SKILL_ICON_PROMOTION_JOURNAL_PATH,
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
+	SKILL_ICON_PROMOTION_TOKEN_PATH,
 	parsePromotionCliRequest,
 	promoteReviewedSkillIconOutputs,
 	promoteSkillIconOutput,
@@ -260,7 +261,18 @@ async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 		authorizationTag: '0'.repeat(64),
 		phase: 'outputs-writing',
 		jobs: [{ jobId: 'charcoal-forged-stone-v1', masterPath, contentHash: item.hash }],
-		planned: [{ path: masterPath, contentHash: item.hash }],
+		planned: [
+			{
+				path: masterPath,
+				contentHash: item.hash,
+				parent: {
+					realPath: parentRealPath,
+					device: parentMetadata.dev,
+					inode: parentMetadata.ino
+				},
+				file: { device: fileMetadata.dev, inode: fileMetadata.ino }
+			}
+		],
 		created: [
 			{
 				path: masterPath,
@@ -276,6 +288,16 @@ async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 		shared: []
 	};
 	Object.assign(journal, signJournalForTest(journal, transactionToken));
+	await writeFile(
+		path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH),
+		JSON.stringify({
+			schemaVersion: 'skill-icon-promotion-recovery-token-v1',
+			transactionId,
+			recoveryToken: transactionToken,
+			createdAt: '2026-09-02T10:00:00.000Z'
+		}),
+		{ mode: 0o600 }
+	);
 	await writeFile(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH), JSON.stringify(lock));
 	await writeFile(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH), JSON.stringify(journal));
 	return { transactionId, transactionToken, masterPath, master, lock, journal };
@@ -609,8 +631,9 @@ describe('promoteSkillIconOutput', () => {
 				root,
 				derivativeResolver,
 				testHooks: {
-					afterSharedWrite: ({ index }) => {
-						if (index === 0) throw new Error('injected shared-state failure');
+					afterSharedReplaceBeforeProgress: ({ path: sharedPath }) => {
+						if (sharedPath === SKILL_ICON_VISUAL_SPECS_PATH)
+							throw new Error('injected shared-state failure');
 					}
 				}
 			})
@@ -719,7 +742,7 @@ describe('promoteSkillIconOutput', () => {
 				reviewPath: item.reviewPath,
 				root: item.root
 			})
-		).rejects.toThrow(/promotion lock/iu);
+		).rejects.toThrow(/promotion (?:lock|recovery token)/iu);
 		release();
 		await expect(first).resolves.toMatchObject({ jobId: 'charcoal-forged-stone-v1' });
 	});
@@ -736,7 +759,7 @@ describe('promoteSkillIconOutput', () => {
 				reviewPath: item.reviewPath,
 				root: item.root,
 				testHooks: {
-					afterMasterWrite: () => {
+					afterOutputWriteBeforeProgress: () => {
 						throw new Error('injected failure');
 					}
 				}
@@ -748,6 +771,9 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(
 			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
@@ -822,12 +848,54 @@ describe('promoteSkillIconOutput', () => {
 
 	it('fails closed on malformed lock state without deleting it', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
 		const lockPath = path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH);
 		await writeFile(lockPath, '');
 		await expect(
-			recoverSkillIconPromotion({ root: item.root, transactionToken: randomUUID() })
+			recoverSkillIconPromotion({ root: item.root, transactionToken: state.transactionToken })
 		).rejects.toThrow(/invalid.*lock|fail-closed/iu);
 		await expect(readFile(lockPath, 'utf8')).resolves.toBe('');
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
+		).resolves.toBeUndefined();
+	});
+
+	it('persists a private recovery token before lock creation and cleans token-only state explicitly', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		let observedToken = '';
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					beforeLockWrite: async ({ tokenPath, recoveryToken }) => {
+						observedToken = recoveryToken;
+						expect((await lstat(tokenPath)).mode & 0o777).toBe(0o600);
+						throw new Error('simulated process death before lock write');
+					}
+				}
+			})
+		).rejects.toThrow(/explicit cleanup requires recovery token/iu);
+		const tokenPath = path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH);
+		await expect(access(tokenPath)).resolves.toBeUndefined();
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		await recoverSkillIconPromotion({ root: item.root, transactionToken: observedToken });
+		await expect(access(tokenPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('retains the durable token when a partial lock cannot be parsed', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		await writeFile(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH), '{');
+		await expect(
+			recoverSkillIconPromotion({ root: item.root, transactionToken: state.transactionToken })
+		).rejects.toThrow(/invalid promotion lock/iu);
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
+		).resolves.toBeUndefined();
 	});
 
 	it('rejects malicious or partial journals before mutating any repository file', async () => {
@@ -976,7 +1044,7 @@ describe('promoteSkillIconOutput', () => {
 		).resolves.toBeUndefined();
 	});
 
-	it('retains recovery state for an untracked partial master instead of guessing ownership', async () => {
+	it('recovers a planned output created before its progress update', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const state = await recoveryState(item);
 		const journal = signJournalForTest({ ...state.journal, created: [] }, state.transactionToken);
@@ -984,19 +1052,144 @@ describe('promoteSkillIconOutput', () => {
 			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
 			JSON.stringify(journal)
 		);
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken
+		});
+		await expect(access(state.master)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('treats a missing planned output as an already-completed rollback step', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		await rm(state.master);
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken
+		});
+		await expect(
+			access(path.join(item.root, SKILL_ICON_PROMOTION_TOKEN_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('retries recovery after one planned output was already deleted', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const receiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v1.json`;
+		const receipt = path.join(item.root, receiptPath);
+		const receiptBytes = Buffer.from('{"owned":true}\n');
+		await mkdir(path.dirname(receipt), { recursive: true });
+		await writeFile(receipt, receiptBytes);
+		const [receiptParent, receiptFile, receiptRealPath] = await Promise.all([
+			lstat(path.dirname(receipt)),
+			lstat(receipt),
+			realpath(path.dirname(receipt))
+		]);
+		const entry = {
+			path: receiptPath,
+			contentHash: createHash('sha256').update(receiptBytes).digest('hex'),
+			parent: {
+				realPath: receiptRealPath,
+				device: receiptParent.dev,
+				inode: receiptParent.ino
+			},
+			file: { device: receiptFile.dev, inode: receiptFile.ino }
+		};
+		const journal = signJournalForTest(
+			{
+				...state.journal,
+				planned: [
+					...state.journal.planned,
+					{
+						path: entry.path,
+						contentHash: entry.contentHash,
+						parent: entry.parent,
+						file: entry.file
+					}
+				],
+				created: [...state.journal.created, entry]
+			},
+			state.transactionToken
+		);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
 		await expect(
 			recoverSkillIconPromotion({
 				root: item.root,
-				transactionToken: state.transactionToken
+				transactionToken: state.transactionToken,
+				testHooks: {
+					afterRecoveryOutputDelete: () => {
+						throw new Error('simulated recovery crash');
+					}
+				}
 			})
-		).rejects.toThrow(/untracked partial|manual cleanup/iu);
+		).rejects.toThrow(/simulated recovery crash/u);
+		await expect(access(receipt)).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(access(state.master)).resolves.toBeUndefined();
-		await expect(
-			access(path.join(item.root, SKILL_ICON_PROMOTION_LOCK_PATH))
-		).resolves.toBeUndefined();
-		await expect(
-			access(path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH))
-		).resolves.toBeUndefined();
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken
+		});
+		await expect(access(state.master)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each([
+		['already-restored shared state', false],
+		['shared replacement before its progress update', true]
+	] as const)('recovers %s idempotently', async (_label, replacedBeforeProgress) => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const state = await recoveryState(item);
+		const sharedPath = path.join(item.root, SKILL_ICON_VISUAL_SPECS_PATH);
+		await mkdir(path.dirname(sharedPath), { recursive: true });
+		const before = Buffer.from('{"state":"before"}\n');
+		const after = Buffer.from('{"state":"after"}\n');
+		await writeFile(sharedPath, replacedBeforeProgress ? after : before);
+		const [parentMetadata, beforeFile, parentRealPath] = await Promise.all([
+			lstat(path.dirname(sharedPath)),
+			lstat(sharedPath),
+			realpath(path.dirname(sharedPath))
+		]);
+		const journal = signJournalForTest(
+			{
+				...state.journal,
+				phase: 'shared-writing',
+				shared: [
+					{
+						path: SKILL_ICON_VISUAL_SPECS_PATH,
+						before: {
+							bytesBase64: before.toString('base64'),
+							contentHash: createHash('sha256').update(before).digest('hex')
+						},
+						afterHash: createHash('sha256').update(after).digest('hex'),
+						parent: {
+							realPath: parentRealPath,
+							device: parentMetadata.dev,
+							inode: parentMetadata.ino
+						},
+						beforeFile: { device: beforeFile.dev, inode: beforeFile.ino },
+						afterFile: null
+					}
+				]
+			},
+			state.transactionToken
+		);
+		await writeFile(
+			path.join(item.root, SKILL_ICON_PROMOTION_JOURNAL_PATH),
+			JSON.stringify(journal)
+		);
+		await recoverSkillIconPromotion({
+			root: item.root,
+			transactionToken: state.transactionToken
+		});
+		await expect(readFile(sharedPath)).resolves.toEqual(before);
 	});
 
 	it('preflights the whole directory before writing the first master', async () => {

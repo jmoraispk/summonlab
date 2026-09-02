@@ -335,4 +335,38 @@ describe('persistSkillIconOutput', () => {
 			expect(await readdir(outside)).toEqual([]);
 		}
 	});
+
+	it('never deletes an outside same-name victim when rollback sees a swapped candidate parent', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-rollback-outside-'));
+		roots.push(outside);
+		const candidateParent = path.dirname(path.join(root, candidatePath));
+		const movedParent = `${candidateParent}-moved`;
+		const outsideVictim = path.join(outside, path.basename(candidatePath));
+		await writeFile(outsideVictim, 'outside-victim');
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				testHooks: {
+					beforeResultWrite: async () => {
+						await rename(candidateParent, movedParent);
+						await symlink(outside, candidateParent);
+						throw new Error('trigger safe rollback');
+					}
+				}
+			})
+		).rejects.toThrow(/cleanup required|rollback was incomplete/iu);
+		await expect(readFile(outsideVictim, 'utf8')).resolves.toBe('outside-victim');
+		await expect(
+			access(path.join(movedParent, path.basename(candidatePath)))
+		).resolves.toBeUndefined();
+	});
 });

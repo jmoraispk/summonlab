@@ -53,6 +53,8 @@ export const SKILL_ICON_PROMOTION_LOCK_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion.lock' as const;
 export const SKILL_ICON_PROMOTION_JOURNAL_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion-transaction.json' as const;
+export const SKILL_ICON_PROMOTION_TOKEN_PATH =
+	'assets/wiki/skills/icon-production-v1/.promotion-recovery-token.json' as const;
 export const SKILL_ICON_PROMOTION_RECEIPT_ROOT =
 	'assets/wiki/skills/icon-production-v1/promotion-receipts' as const;
 
@@ -113,6 +115,15 @@ export const SkillIconPromotionLockSchema = z
 	})
 	.strict();
 
+export const SkillIconPromotionTokenSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-promotion-recovery-token-v1'),
+		transactionId: TransactionTokenSchema,
+		recoveryToken: TransactionTokenSchema,
+		createdAt: z.string().datetime({ offset: true })
+	})
+	.strict();
+
 export const SkillIconPromotionJournalSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-promotion-transaction-v1'),
@@ -128,7 +139,14 @@ export const SkillIconPromotionJournalSchema = z
 			)
 			.min(1),
 		planned: z.array(
-			z.object({ path: ManagedOutputPathSchema, contentHash: Sha256Schema }).strict()
+			z
+				.object({
+					path: ManagedOutputPathSchema,
+					contentHash: Sha256Schema,
+					parent: ParentFingerprintSchema,
+					file: FileFingerprintSchema.nullable()
+				})
+				.strict()
 		),
 		created: z.array(
 			z
@@ -173,6 +191,16 @@ export const SkillIconPromotionJournalSchema = z
 		for (const created of journal.created) {
 			if (planned.get(created.path) !== created.contentHash)
 				context.addIssue({ code: 'custom', message: 'Created output is not exactly planned' });
+			const plannedEntry = journal.planned.find((item) => item.path === created.path);
+			if (
+				!plannedEntry?.file ||
+				plannedEntry.file.device !== created.file.device ||
+				plannedEntry.file.inode !== created.file.inode
+			)
+				context.addIssue({
+					code: 'custom',
+					message: 'Created output inode is not exactly reserved in the plan'
+				});
 		}
 	});
 
@@ -191,6 +219,10 @@ export const SkillIconPromotionReceiptSchema = z
 	.strict();
 
 export interface PromotionTestHooks {
+	readonly beforeLockWrite?: (input: {
+		readonly tokenPath: string;
+		readonly recoveryToken: string;
+	}) => void | Promise<void>;
 	readonly afterLockAcquired?: () => void | Promise<void>;
 	readonly beforeMasterWrite?: (input: {
 		readonly index: number;
@@ -200,12 +232,23 @@ export interface PromotionTestHooks {
 		readonly index: number;
 		readonly destination: string;
 	}) => void | Promise<void>;
+	readonly afterOutputWriteBeforeProgress?: (input: {
+		readonly path: string;
+	}) => void | Promise<void>;
 	readonly beforeSharedWrite?: () => void | Promise<void>;
 	readonly afterSharedWrite?: (input: {
 		readonly index: number;
 		readonly path: string;
 	}) => void | Promise<void>;
+	readonly afterSharedReplaceBeforeProgress?: (input: {
+		readonly path: string;
+	}) => void | Promise<void>;
 	readonly beforeRecoveryMutation?: () => void | Promise<void>;
+	readonly afterRecoveryOutputDelete?: (input: {
+		readonly index: number;
+		readonly path: string;
+	}) => void | Promise<void>;
+	readonly afterRecoverySharedRestore?: (input: { readonly path: string }) => void | Promise<void>;
 }
 
 export interface SkillIconDerivativeBuffers {
@@ -251,6 +294,13 @@ type PromotionJournal = z.infer<typeof SkillIconPromotionJournalSchema>;
 interface PromotionAuthority {
 	readonly lock: PromotionLock;
 	readonly recoveryToken: string;
+}
+
+interface AuthorityFileIdentity {
+	readonly path: string;
+	readonly contentHash: string;
+	readonly parent: z.infer<typeof ParentFingerprintSchema>;
+	readonly file: z.infer<typeof FileFingerprintSchema>;
 }
 
 function inside(parent: string, child: string): boolean {
@@ -410,6 +460,97 @@ async function fileFingerprint(
 	if (metadata.isSymbolicLink() || !metadata.isFile())
 		throw new Error(`Promotion file identity is unsafe: ${destination}`);
 	return { device: metadata.dev, inode: metadata.ino };
+}
+
+async function readAuthorityFileIdentity(
+	root: string,
+	destination: string,
+	label: string
+): Promise<{ readonly bytes: Buffer; readonly identity: AuthorityFileIdentity }> {
+	await ensureSafeParents(root, destination, false);
+	const parent = await parentFingerprint(destination);
+	const metadata = await lstat(destination);
+	const bytes = await readRepositoryRegular(root, destination, label);
+	return {
+		bytes,
+		identity: {
+			path: destination,
+			contentHash: sha256(bytes),
+			parent,
+			file: { device: metadata.dev, inode: metadata.ino }
+		}
+	};
+}
+
+async function writeAuthorityFileExclusive(
+	root: string,
+	destination: string,
+	bytes: Buffer,
+	mode: number,
+	label: string
+): Promise<AuthorityFileIdentity> {
+	await ensureSafeParents(root, destination, true);
+	const parent = await parentFingerprint(destination);
+	const handle = await open(
+		destination,
+		constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+		mode
+	);
+	try {
+		await handle.writeFile(bytes);
+		await handle.sync();
+	} catch (error) {
+		throw new Error(`${label} write failed; partial authority state may require cleanup`, {
+			cause: error
+		});
+	} finally {
+		await handle.close();
+	}
+	await syncDirectory(path.dirname(destination));
+	const current = await readAuthorityFileIdentity(root, destination, label);
+	if (!current.bytes.equals(bytes) || !sameParentFingerprint(parent, current.identity.parent))
+		throw new Error(`${label} identity changed during creation`);
+	const permissions = (await lstat(destination)).mode & 0o777;
+	if (permissions !== mode)
+		throw new Error(`${label} permissions changed during creation: ${permissions.toString(8)}`);
+	return current.identity;
+}
+
+async function removeAuthorityFile(identity: AuthorityFileIdentity): Promise<void> {
+	const currentParent = await parentFingerprint(identity.path);
+	if (!sameParentFingerprint(currentParent, identity.parent))
+		throw new Error(`Authority parent identity changed; cleanup required: ${identity.path}`);
+	const metadata = await lstat(identity.path);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== identity.file.device ||
+		metadata.ino !== identity.file.inode
+	)
+		throw new Error(`Authority file identity changed; cleanup required: ${identity.path}`);
+	const handle = await open(identity.path, constants.O_RDONLY | constants.O_NOFOLLOW);
+	let bytes: Buffer;
+	try {
+		const opened = await handle.stat();
+		if (opened.dev !== identity.file.device || opened.ino !== identity.file.inode)
+			throw new Error(`Authority file changed while opening; cleanup required: ${identity.path}`);
+		bytes = await handle.readFile();
+	} finally {
+		await handle.close();
+	}
+	if (sha256(bytes) !== identity.contentHash)
+		throw new Error(`Authority file hash changed; cleanup required: ${identity.path}`);
+	const immediatelyBefore = await lstat(identity.path);
+	if (
+		immediatelyBefore.isSymbolicLink() ||
+		!immediatelyBefore.isFile() ||
+		immediatelyBefore.dev !== identity.file.device ||
+		immediatelyBefore.ino !== identity.file.inode ||
+		!sameParentFingerprint(await parentFingerprint(identity.path), identity.parent)
+	)
+		throw new Error(`Authority file changed before unlink; cleanup required: ${identity.path}`);
+	await unlink(identity.path);
+	await syncDirectory(path.dirname(identity.path));
 }
 
 function scopeForRole(role: SkillIconRole): 'references' | 'calibration' | 'icons' {
@@ -725,32 +866,52 @@ async function preparePromotion(
 
 async function atomicJsonReplace(root: string, destination: string, bytes: Buffer): Promise<void> {
 	await ensureSafeParents(root, destination, false);
+	const destinationParent = await parentFingerprint(destination);
 	const before = await metadataOrNull(destination);
 	if (before?.isSymbolicLink() || (before && !before.isFile()))
 		throw new Error(`Shared JSON destination identity is unsafe: ${destination}`);
 	const temporary = `${destination}.stage-${process.pid}-${randomUUID()}.tmp`;
 	const handle = await open(temporary, 'wx');
+	const temporaryParent = await parentFingerprint(temporary);
+	let temporaryMetadata: Awaited<ReturnType<typeof handle.stat>>;
 	try {
 		await handle.writeFile(bytes);
 		await handle.sync();
+		temporaryMetadata = await handle.stat();
 	} finally {
 		await handle.close();
 	}
+	const temporaryIdentity: AuthorityFileIdentity = {
+		path: temporary,
+		contentHash: sha256(bytes),
+		parent: temporaryParent,
+		file: { device: temporaryMetadata.dev, inode: temporaryMetadata.ino }
+	};
 	try {
 		await ensureSafeParents(root, destination, false);
 		const immediatelyBefore = await metadataOrNull(destination);
 		if (immediatelyBefore?.isSymbolicLink() || (immediatelyBefore && !immediatelyBefore.isFile()))
 			throw new Error(`Shared JSON destination identity changed before rename: ${destination}`);
+		if (
+			!sameParentFingerprint(await parentFingerprint(destination), destinationParent) ||
+			Boolean(before) !== Boolean(immediatelyBefore) ||
+			(before &&
+				immediatelyBefore &&
+				(before.dev !== immediatelyBefore.dev || before.ino !== immediatelyBefore.ino))
+		)
+			throw new Error(`Shared JSON destination changed before rename: ${destination}`);
 		await rename(temporary, destination);
 		await syncDirectory(path.dirname(destination));
 		await ensureSafeParents(root, destination, false);
+		if (!sameParentFingerprint(await parentFingerprint(destination), destinationParent))
+			throw new Error(`Shared JSON parent changed during rename: ${destination}`);
 		const committed = await readRepositoryRegular(root, destination, 'Committed shared JSON');
 		if (!committed.equals(bytes))
 			throw new Error(`Shared JSON destination identity changed during rename: ${destination}`);
 	} catch (error) {
 		let cleanupError: unknown;
 		try {
-			await unlink(temporary);
+			if (await metadataOrNull(temporary)) await removeAuthorityFile(temporaryIdentity);
 		} catch (candidateCleanupError) {
 			if ((candidateCleanupError as NodeJS.ErrnoException).code !== 'ENOENT') {
 				cleanupError = candidateCleanupError;
@@ -823,10 +984,33 @@ async function writeJournal(
 	await atomicJsonReplace(root, destination, journalBytes(signedJournal));
 }
 
+async function removeAuthorizedJournal(
+	root: string,
+	transactionId: string,
+	recoveryToken: string
+): Promise<void> {
+	const destination = path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH);
+	const current = await readAuthorityFileIdentity(root, destination, 'Promotion journal');
+	const journal = parseTransactionJson(
+		SkillIconPromotionJournalSchema,
+		current.bytes,
+		'promotion journal'
+	);
+	if (
+		journal.transactionId !== transactionId ||
+		journal.recoveryTokenHash !== sha256(Buffer.from(recoveryToken))
+	)
+		throw new Error('Promotion journal authority changed; cleanup required');
+	assertJournalAuthorization(journal, recoveryToken);
+	await removeAuthorityFile(current.identity);
+}
+
 async function writeOwnedOutput(
 	root: string,
 	relativePath: string,
-	bytes: Buffer
+	bytes: Buffer,
+	afterReservation: (planned: PromotionJournal['planned'][number]) => Promise<void>,
+	afterWrite?: (input: { readonly path: string }) => void | Promise<void>
 ): Promise<PromotionJournal['created'][number]> {
 	ManagedOutputPathSchema.parse(relativePath);
 	const destination = path.resolve(root, relativePath);
@@ -837,11 +1021,17 @@ async function writeOwnedOutput(
 		constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 		0o644
 	);
-	let metadata: Awaited<ReturnType<typeof handle.stat>>;
+	const metadata = await handle.stat();
 	try {
+		await afterReservation({
+			path: relativePath,
+			contentHash: sha256(bytes),
+			parent,
+			file: { device: metadata.dev, inode: metadata.ino }
+		});
 		await handle.writeFile(bytes);
 		await handle.sync();
-		metadata = await handle.stat();
+		await afterWrite?.({ path: relativePath });
 	} finally {
 		await handle.close();
 	}
@@ -862,27 +1052,6 @@ async function writeOwnedOutput(
 	};
 }
 
-async function assertCreatedIdentity(
-	root: string,
-	item: PromotionJournal['created'][number]
-): Promise<void> {
-	const destination = path.resolve(root, item.path);
-	await ensureSafeParents(root, destination, false);
-	if (!sameParentFingerprint(await parentFingerprint(destination), item.parent))
-		throw new Error(`Promotion output parent identity changed; cleanup required: ${item.path}`);
-	const metadata = await lstat(destination);
-	if (
-		metadata.isSymbolicLink() ||
-		!metadata.isFile() ||
-		metadata.dev !== item.file.device ||
-		metadata.ino !== item.file.inode
-	)
-		throw new Error(`Promotion output file identity changed; cleanup required: ${item.path}`);
-	const bytes = await readRepositoryRegular(root, destination, `Recovery output ${item.path}`);
-	if (sha256(bytes) !== item.contentHash)
-		throw new Error(`Promotion output hash changed; cleanup required: ${item.path}`);
-}
-
 async function assertSharedIdentity(
 	root: string,
 	item: PromotionJournal['shared'][number]
@@ -900,17 +1069,11 @@ async function assertSharedIdentity(
 		`Recovery shared state ${item.path}`
 	);
 	const hash = sha256(bytes);
-	if (
-		hash === item.before.contentHash &&
-		metadata.dev === item.beforeFile.device &&
-		metadata.ino === item.beforeFile.inode
-	)
-		return 'before';
+	if (hash === item.before.contentHash) return 'before';
 	if (
 		hash === item.afterHash &&
-		item.afterFile &&
-		metadata.dev === item.afterFile.device &&
-		metadata.ino === item.afterFile.inode
+		(!item.afterFile ||
+			(metadata.dev === item.afterFile.device && metadata.ino === item.afterFile.inode))
 	)
 		return 'after';
 	throw new Error(`Shared state hash changed; cleanup required: ${item.path}`);
@@ -921,25 +1084,38 @@ async function rollbackJournal(
 	journal: PromotionJournal,
 	testHooks?: PromotionTestHooks
 ): Promise<void> {
-	const createdPaths = new Set(journal.created.map((item) => item.path));
+	const createdByPath = new Map(journal.created.map((item) => [item.path, item]));
+	const outputs: { planned: PromotionJournal['planned'][number]; exists: boolean }[] = [];
 	for (const planned of journal.planned) {
-		if (createdPaths.has(planned.path)) continue;
-		if (await metadataOrNull(path.resolve(root, planned.path)))
-			throw new Error(
-				`Untracked partial promotion output requires manual cleanup: ${planned.path}`
-			);
+		const destination = path.resolve(root, planned.path);
+		const metadata = await metadataOrNull(destination);
+		if (!metadata) {
+			outputs.push({ planned, exists: false });
+			continue;
+		}
+		await ensureSafeParents(root, destination, false);
+		if (!sameParentFingerprint(await parentFingerprint(destination), planned.parent))
+			throw new Error(`Planned output parent identity changed; cleanup required: ${planned.path}`);
+		if (metadata.isSymbolicLink() || !metadata.isFile())
+			throw new Error(`Planned output identity is unsafe: ${planned.path}`);
+		const bytes = await readRepositoryRegular(root, destination, `Recovery output ${planned.path}`);
+		if (sha256(bytes) !== planned.contentHash)
+			throw new Error(`Planned output hash changed; cleanup required: ${planned.path}`);
+		if (
+			!planned.file ||
+			metadata.dev !== planned.file.device ||
+			metadata.ino !== planned.file.inode
+		)
+			throw new Error(`Planned output inode changed; cleanup required: ${planned.path}`);
+		const created = createdByPath.get(planned.path);
+		if (created && (metadata.dev !== created.file.device || metadata.ino !== created.file.inode))
+			throw new Error(`Created output inode changed; cleanup required: ${planned.path}`);
+		outputs.push({ planned, exists: true });
 	}
 	const sharedStates = await Promise.all(
 		journal.shared.map(async (item) => ({ item, state: await assertSharedIdentity(root, item) }))
 	);
-	await Promise.all(journal.created.map((item) => assertCreatedIdentity(root, item)));
 	await testHooks?.beforeRecoveryMutation?.();
-	for (const item of [...journal.created].reverse()) {
-		await assertCreatedIdentity(root, item);
-		const destination = path.resolve(root, item.path);
-		await unlink(destination);
-		await syncDirectory(path.dirname(destination));
-	}
 	for (const { item, state } of sharedStates) {
 		if (state === 'before') continue;
 		if ((await assertSharedIdentity(root, item)) !== 'after')
@@ -949,6 +1125,43 @@ async function rollbackJournal(
 			path.resolve(root, item.path),
 			Buffer.from(item.before.bytesBase64, 'base64')
 		);
+		await testHooks?.afterRecoverySharedRestore?.({ path: item.path });
+	}
+	for (const [index, output] of [...outputs].reverse().entries()) {
+		if (!output.exists) continue;
+		const destination = path.resolve(root, output.planned.path);
+		const current = await metadataOrNull(destination);
+		if (!current) continue;
+		if (!sameParentFingerprint(await parentFingerprint(destination), output.planned.parent))
+			throw new Error(`Planned output parent changed during recovery: ${output.planned.path}`);
+		const bytes = await readRepositoryRegular(
+			root,
+			destination,
+			`Recovery output ${output.planned.path}`
+		);
+		if (sha256(bytes) !== output.planned.contentHash)
+			throw new Error(`Planned output changed during recovery: ${output.planned.path}`);
+		if (
+			!output.planned.file ||
+			current.dev !== output.planned.file.device ||
+			current.ino !== output.planned.file.inode
+		)
+			throw new Error(`Planned output inode changed during recovery: ${output.planned.path}`);
+		const created = createdByPath.get(output.planned.path);
+		if (created && (current.dev !== created.file.device || current.ino !== created.file.inode))
+			throw new Error(`Created output inode changed during recovery: ${output.planned.path}`);
+		const immediatelyBefore = await lstat(destination);
+		if (
+			immediatelyBefore.isSymbolicLink() ||
+			!immediatelyBefore.isFile() ||
+			immediatelyBefore.dev !== output.planned.file.device ||
+			immediatelyBefore.ino !== output.planned.file.inode ||
+			!sameParentFingerprint(await parentFingerprint(destination), output.planned.parent)
+		)
+			throw new Error(`Planned output changed before unlink: ${output.planned.path}`);
+		await unlink(destination);
+		await syncDirectory(path.dirname(destination));
+		await testHooks?.afterRecoveryOutputDelete?.({ index, path: output.planned.path });
 	}
 }
 
@@ -958,22 +1171,54 @@ export async function recoverSkillIconPromotion(options: {
 	readonly testHooks?: PromotionTestHooks;
 }): Promise<void> {
 	const root = path.resolve(options.root ?? process.cwd());
+	const tokenPath = path.resolve(root, SKILL_ICON_PROMOTION_TOKEN_PATH);
 	const lockPath = path.resolve(root, SKILL_ICON_PROMOTION_LOCK_PATH);
 	const journalPath = path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH);
 	const token = TransactionTokenSchema.parse(options.transactionToken);
-	if (!(await metadataOrNull(lockPath))) throw new Error('Recovery requires an existing lock');
+	if (!(await metadataOrNull(tokenPath)))
+		throw new Error('Recovery requires the durable promotion token file');
+	const tokenAuthority = await readAuthorityFileIdentity(
+		root,
+		tokenPath,
+		'Promotion recovery token'
+	);
+	if (((await lstat(tokenPath)).mode & 0o777) !== 0o600)
+		throw new Error('Promotion recovery token permissions are unsafe; cleanup required');
+	const tokenRecord = parseTransactionJson(
+		SkillIconPromotionTokenSchema,
+		tokenAuthority.bytes,
+		'promotion recovery token'
+	);
+	if (tokenRecord.recoveryToken !== token)
+		throw new Error('Recovery token does not authorize this promotion transaction');
+	const lockMetadata = await metadataOrNull(lockPath);
+	const journalMetadata = await metadataOrNull(journalPath);
+	if (!lockMetadata) {
+		if (journalMetadata)
+			throw new Error('Promotion journal exists without its transaction lock; cleanup required');
+		await removeAuthorityFile(tokenAuthority.identity);
+		return;
+	}
+	const lockAuthority = await readAuthorityFileIdentity(root, lockPath, 'Coordinator lock');
 	const lock = parseTransactionJson(
 		SkillIconPromotionLockSchema,
-		await readRepositoryRegular(root, lockPath, 'Coordinator lock'),
+		lockAuthority.bytes,
 		'promotion lock'
 	);
-	if (lock.recoveryTokenHash !== sha256(Buffer.from(token)))
-		throw new Error('Recovery token does not authorize this promotion transaction');
-	const journalMetadata = await metadataOrNull(journalPath);
+	if (
+		lock.transactionId !== tokenRecord.transactionId ||
+		lock.recoveryTokenHash !== sha256(Buffer.from(token))
+	)
+		throw new Error('Recovery token and lock transaction authority do not match');
 	if (journalMetadata) {
+		const journalAuthority = await readAuthorityFileIdentity(
+			root,
+			journalPath,
+			'Promotion journal'
+		);
 		const journal = parseTransactionJson(
 			SkillIconPromotionJournalSchema,
-			await readRepositoryRegular(root, journalPath, 'Promotion journal'),
+			journalAuthority.bytes,
 			'promotion journal'
 		);
 		if (
@@ -983,21 +1228,10 @@ export async function recoverSkillIconPromotion(options: {
 			throw new Error('Lock and journal transaction authority do not match');
 		assertJournalAuthorization(journal, token);
 		await rollbackJournal(root, journal, options.testHooks);
-		await unlink(journalPath);
-		await syncDirectory(path.dirname(journalPath));
+		await removeAuthorityFile(journalAuthority.identity);
 	}
-	const currentLock = parseTransactionJson(
-		SkillIconPromotionLockSchema,
-		await readRepositoryRegular(root, lockPath, 'Coordinator lock'),
-		'promotion lock'
-	);
-	if (
-		currentLock.transactionId !== lock.transactionId ||
-		currentLock.recoveryTokenHash !== lock.recoveryTokenHash
-	)
-		throw new Error('Coordinator lock changed during recovery');
-	await unlink(lockPath);
-	await syncDirectory(path.dirname(lockPath));
+	await removeAuthorityFile(lockAuthority.identity);
+	await removeAuthorityFile(tokenAuthority.identity);
 }
 
 async function withCoordinatorLock<T>(
@@ -1005,9 +1239,20 @@ async function withCoordinatorLock<T>(
 	testHooks: PromotionTestHooks | undefined,
 	operation: (authority: PromotionAuthority) => Promise<T>
 ): Promise<T> {
+	const tokenPath = path.resolve(root, SKILL_ICON_PROMOTION_TOKEN_PATH);
 	const lockPath = path.resolve(root, SKILL_ICON_PROMOTION_LOCK_PATH);
 	const journalPath = path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH);
 	await ensureSafeParents(root, lockPath, true);
+	if (await metadataOrNull(tokenPath)) {
+		parseTransactionJson(
+			SkillIconPromotionTokenSchema,
+			await readRepositoryRegular(root, tokenPath, 'promotion recovery token'),
+			'promotion recovery token'
+		);
+		throw new Error(
+			'Existing promotion recovery token blocks promotion; explicit token-bound recovery is required'
+		);
+	}
 	if (await metadataOrNull(lockPath)) {
 		parseTransactionJson(
 			SkillIconPromotionLockSchema,
@@ -1039,65 +1284,88 @@ async function withCoordinatorLock<T>(
 			acquiredAt: new Date().toISOString()
 		}
 	};
-	let handle: Awaited<ReturnType<typeof open>> | undefined;
+	const tokenBytes = journalBytes({
+		schemaVersion: 'skill-icon-promotion-recovery-token-v1',
+		transactionId: authority.lock.transactionId,
+		recoveryToken,
+		createdAt: authority.lock.acquiredAt
+	});
+	let tokenIdentity: AuthorityFileIdentity;
 	try {
-		handle = await open(
-			lockPath,
-			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
-			0o600
+		tokenIdentity = await writeAuthorityFileExclusive(
+			root,
+			tokenPath,
+			tokenBytes,
+			0o600,
+			'Promotion recovery token'
 		);
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-			throw new Error('Skill-icon coordinator lock is already held', { cause: error });
-		}
-		throw error;
+		throw new Error(
+			`Promotion recovery-token initialization failed; recovery token ${recoveryToken}`,
+			{ cause: error }
+		);
 	}
+	let lockIdentity: AuthorityFileIdentity;
 	try {
-		await handle.writeFile(journalBytes(authority.lock));
-		await handle.sync();
-	} finally {
-		await handle.close();
+		await testHooks?.beforeLockWrite?.({ tokenPath, recoveryToken });
+		lockIdentity = await writeAuthorityFileExclusive(
+			root,
+			lockPath,
+			journalBytes(authority.lock),
+			0o600,
+			'Promotion coordinator lock'
+		);
+	} catch (error) {
+		// The durable token is intentionally retained. This covers process death and partial lock
+		// creation without guessing whether a pathname is still owned by this transaction.
+		throw new Error(
+			`Promotion lock initialization failed; explicit cleanup requires recovery token ${recoveryToken}`,
+			{ cause: error }
+		);
 	}
-	await syncDirectory(path.dirname(lockPath));
 	if (await metadataOrNull(journalPath)) {
 		throw new Error(
 			`A promotion journal appeared after lock acquisition; lock retained for recovery token ${authority.recoveryToken}`
 		);
 	}
+	let result: T;
 	try {
 		await testHooks?.afterLockAcquired?.();
-		const result = await operation(authority);
+		result = await operation(authority);
 		if (await metadataOrNull(journalPath))
 			throw new Error('Promotion returned while its durable journal still exists');
-		const current = parseTransactionJson(
-			SkillIconPromotionLockSchema,
-			await readRepositoryRegular(root, lockPath, 'Coordinator lock'),
-			'promotion lock'
-		);
-		if (current.transactionId !== authority.lock.transactionId)
-			throw new Error('Coordinator lock identity changed before release');
-		await unlink(lockPath);
-		await syncDirectory(path.dirname(lockPath));
-		return result;
 	} catch (error) {
 		if (await metadataOrNull(journalPath))
 			throw new Error(
 				`Promotion failed with durable recovery state retained; recovery token ${authority.recoveryToken}`,
 				{ cause: error }
 			);
-		const current = parseTransactionJson(
-			SkillIconPromotionLockSchema,
-			await readRepositoryRegular(root, lockPath, 'Coordinator lock'),
-			'promotion lock'
-		);
-		if (current.transactionId !== authority.lock.transactionId)
-			throw new AggregateError([error], 'Promotion failed and lock identity changed', {
-				cause: error
-			});
-		await unlink(lockPath);
-		await syncDirectory(path.dirname(lockPath));
+		const cleanupFailures: unknown[] = [];
+		for (const identity of [lockIdentity, tokenIdentity]) {
+			try {
+				await removeAuthorityFile(identity);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				`Promotion failed and authority cleanup requires recovery token ${recoveryToken}`,
+				{ cause: error }
+			);
 		throw error;
 	}
+	try {
+		await removeAuthorityFile(lockIdentity);
+		await removeAuthorityFile(tokenIdentity);
+	} catch (error) {
+		throw new Error(
+			`Promotion committed but authority cleanup requires recovery token ${recoveryToken}`,
+			{ cause: error }
+		);
+	}
+	return result;
 }
 
 function promotionReceiptBytes(item: PreparedPromotion, authority: PromotionAuthority): Buffer {
@@ -1241,7 +1509,7 @@ async function commitPromotions(
 	const receiptBytesByJob = new Map(
 		prepared.map((item) => [item.record.jobId, promotionReceiptBytes(item, authority)] as const)
 	);
-	const planned = prepared.flatMap((item) => {
+	const plannedSpecs = prepared.flatMap((item) => {
 		const receiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${item.record.jobId}.json`;
 		const receiptBytes = receiptBytesByJob.get(item.record.jobId)!;
 		return [
@@ -1256,6 +1524,13 @@ async function commitPromotions(
 			{ path: receiptPath, contentHash: sha256(receiptBytes) }
 		];
 	});
+	const planned = await Promise.all(
+		plannedSpecs.map(async (item) => {
+			const destination = path.resolve(root, item.path);
+			await ensureSafeParents(root, destination, true);
+			return { ...item, parent: await parentFingerprint(destination), file: null };
+		})
+	);
 
 	let journal: PromotionJournal = {
 		schemaVersion: 'skill-icon-promotion-transaction-v1',
@@ -1275,11 +1550,29 @@ async function commitPromotions(
 	await writeJournal(root, journal, true, authority.recoveryToken);
 	const records: SkillIconAssetRecord[] = [];
 	try {
+		const recordReservation = async (
+			reservation: PromotionJournal['planned'][number]
+		): Promise<void> => {
+			journal = {
+				...journal,
+				phase: 'outputs-writing',
+				planned: journal.planned.map((item) =>
+					item.path === reservation.path ? reservation : item
+				)
+			};
+			await writeJournal(root, journal, false, authority.recoveryToken);
+		};
 		for (const [index, item] of prepared.entries()) {
 			await ensureSafeParents(root, item.destination, true);
 			await testHooks?.beforeMasterWrite?.({ index, destination: item.destination });
 			await ensureSafeParents(root, item.destination, false);
-			const master = await writeOwnedOutput(root, item.record.approvedMaster.path, item.bytes);
+			const master = await writeOwnedOutput(
+				root,
+				item.record.approvedMaster.path,
+				item.bytes,
+				recordReservation,
+				testHooks?.afterOutputWriteBeforeProgress
+			);
 			journal = {
 				...journal,
 				phase: 'outputs-writing',
@@ -1288,14 +1581,26 @@ async function commitPromotions(
 			await writeJournal(root, journal, false, authority.recoveryToken);
 			await testHooks?.afterMasterWrite?.({ index, destination: item.destination });
 			for (const output of item.additionalOutputs) {
-				const createdOutput = await writeOwnedOutput(root, output.asset.path, output.bytes);
+				const createdOutput = await writeOwnedOutput(
+					root,
+					output.asset.path,
+					output.bytes,
+					recordReservation,
+					testHooks?.afterOutputWriteBeforeProgress
+				);
 				journal = { ...journal, created: [...journal.created, createdOutput] };
 				await writeJournal(root, journal, false, authority.recoveryToken);
 			}
 
 			const receiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${item.record.jobId}.json`;
 			const receiptBytes = receiptBytesByJob.get(item.record.jobId)!;
-			const receipt = await writeOwnedOutput(root, receiptPath, receiptBytes);
+			const receipt = await writeOwnedOutput(
+				root,
+				receiptPath,
+				receiptBytes,
+				recordReservation,
+				testHooks?.afterOutputWriteBeforeProgress
+			);
 			journal = { ...journal, created: [...journal.created, receipt] };
 			await writeJournal(root, journal, false, authority.recoveryToken);
 			records.push({
@@ -1309,6 +1614,9 @@ async function commitPromotions(
 			journal = { ...journal, phase: 'shared-writing' };
 			await writeJournal(root, journal, false, authority.recoveryToken);
 			await atomicJsonReplace(root, visualPath, nextVisual);
+			await testHooks?.afterSharedReplaceBeforeProgress?.({
+				path: SKILL_ICON_VISUAL_SPECS_PATH
+			});
 			const visualFile = await fileFingerprint(visualPath);
 			journal = {
 				...journal,
@@ -1320,6 +1628,7 @@ async function commitPromotions(
 			await testHooks?.afterSharedWrite?.({ index: 0, path: SKILL_ICON_VISUAL_SPECS_PATH });
 			const catalogDestination = path.resolve(root, SKILL_ICON_CATALOG_PATH);
 			await atomicJsonReplace(root, catalogDestination, nextCatalog);
+			await testHooks?.afterSharedReplaceBeforeProgress?.({ path: SKILL_ICON_CATALOG_PATH });
 			const catalogFile = await fileFingerprint(catalogDestination);
 			journal = {
 				...journal,
@@ -1331,8 +1640,7 @@ async function commitPromotions(
 			await testHooks?.afterSharedWrite?.({ index: 1, path: SKILL_ICON_CATALOG_PATH });
 		}
 		await Promise.all(prepared.map((item) => assertPromotionEvidenceCurrent(root, item)));
-		await unlink(path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH));
-		await syncDirectory(path.resolve(root, 'assets/wiki/skills/icon-production-v1'));
+		await removeAuthorizedJournal(root, authority.lock.transactionId, authority.recoveryToken);
 		return records;
 	} catch (error) {
 		const rollbackFailures: unknown[] = [];
@@ -1348,8 +1656,7 @@ async function commitPromotions(
 				{ cause: error }
 			);
 		try {
-			await unlink(path.resolve(root, SKILL_ICON_PROMOTION_JOURNAL_PATH));
-			await syncDirectory(path.resolve(root, 'assets/wiki/skills/icon-production-v1'));
+			await removeAuthorizedJournal(root, authority.lock.transactionId, authority.recoveryToken);
 		} catch (journalError) {
 			if ((journalError as NodeJS.ErrnoException).code !== 'ENOENT')
 				rollbackFailures.push(journalError);

@@ -98,6 +98,76 @@ async function ensureSafeParents(root: string, destination: string): Promise<voi
 	}
 }
 
+interface OwnedPersistedFile {
+	readonly path: string;
+	readonly contentHash: string;
+	readonly parent: { readonly realPath: string; readonly device: number; readonly inode: number };
+	readonly file: { readonly device: number; readonly inode: number };
+}
+
+async function persistenceParentFingerprint(
+	destination: string
+): Promise<OwnedPersistedFile['parent']> {
+	const parent = path.dirname(destination);
+	const [realPath, metadata] = await Promise.all([realpath(parent), lstat(parent)]);
+	if (metadata.isSymbolicLink() || !metadata.isDirectory())
+		throw new Error(`Persistence parent identity is unsafe: ${parent}`);
+	return { realPath, device: metadata.dev, inode: metadata.ino };
+}
+
+async function removeOwnedPersistedFile(owned: OwnedPersistedFile): Promise<void> {
+	const currentParent = await persistenceParentFingerprint(owned.path);
+	if (
+		currentParent.realPath !== owned.parent.realPath ||
+		currentParent.device !== owned.parent.device ||
+		currentParent.inode !== owned.parent.inode
+	)
+		throw new Error(`Persistence parent identity changed; cleanup required: ${owned.path}`);
+	const metadata = await metadataOrNull(owned.path);
+	if (!metadata) return;
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== owned.file.device ||
+		metadata.ino !== owned.file.inode
+	)
+		throw new Error(`Persistence file identity changed; cleanup required: ${owned.path}`);
+	const handle = await open(owned.path, constants.O_RDONLY | constants.O_NOFOLLOW);
+	let bytes: Buffer;
+	try {
+		const opened = await handle.stat();
+		if (opened.dev !== owned.file.device || opened.ino !== owned.file.inode)
+			throw new Error(`Persistence file changed while opening; cleanup required: ${owned.path}`);
+		bytes = await handle.readFile();
+	} finally {
+		await handle.close();
+	}
+	if (createHash('sha256').update(bytes).digest('hex') !== owned.contentHash)
+		throw new Error(`Persistence file hash changed; cleanup required: ${owned.path}`);
+	const immediatelyBefore = await lstat(owned.path);
+	const parentImmediatelyBefore = await persistenceParentFingerprint(owned.path);
+	if (
+		immediatelyBefore.isSymbolicLink() ||
+		!immediatelyBefore.isFile() ||
+		immediatelyBefore.dev !== owned.file.device ||
+		immediatelyBefore.ino !== owned.file.inode ||
+		parentImmediatelyBefore.realPath !== owned.parent.realPath ||
+		parentImmediatelyBefore.device !== owned.parent.device ||
+		parentImmediatelyBefore.inode !== owned.parent.inode
+	)
+		throw new Error(`Persistence file changed before unlink; cleanup required: ${owned.path}`);
+	await unlink(owned.path);
+	const parentHandle = await open(
+		path.dirname(owned.path),
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
+	try {
+		await parentHandle.sync();
+	} finally {
+		await parentHandle.close();
+	}
+}
+
 async function readSafePacket(
 	root: string,
 	relativePath: string,
@@ -216,8 +286,6 @@ export async function persistSkillIconOutputBound(
 		throw new Error(`Skill icon asset validation failed: ${inspection.violations.join('; ')}`);
 
 	await ensureSafeParents(root, destination);
-	await ensureSafeParents(root, destination);
-	await ensureSafeParents(root, resultDestination);
 	await ensureSafeParents(root, resultDestination);
 	if (await metadataOrNull(destination))
 		throw new Error(`Candidate output already exists (collision): ${candidatePath}`);
@@ -227,20 +295,38 @@ export async function persistSkillIconOutputBound(
 	await ensureSafeParents(root, destination);
 	let destinationHandle: Awaited<ReturnType<typeof open>> | undefined;
 	let resultHandle: Awaited<ReturnType<typeof open>> | undefined;
-	let ownsDestination = false;
-	let ownsResult = false;
+	let candidateOwnership: OwnedPersistedFile | undefined;
+	let resultOwnership: OwnedPersistedFile | undefined;
+	let unverifiedCandidate = false;
+	let unverifiedResult = false;
 	try {
+		const candidateParent = await persistenceParentFingerprint(destination);
 		destinationHandle = await open(
 			destination,
 			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 			0o644
 		);
-		ownsDestination = true;
+		unverifiedCandidate = true;
 		await destinationHandle.writeFile(sourceBytes);
 		await destinationHandle.sync();
+		const candidateFile = await destinationHandle.stat();
 		await destinationHandle.close();
 		destinationHandle = undefined;
+		candidateOwnership = {
+			path: destination,
+			contentHash: inspection.contentHash,
+			parent: candidateParent,
+			file: { device: candidateFile.dev, inode: candidateFile.ino }
+		};
+		unverifiedCandidate = false;
 		await ensureSafeParents(root, destination);
+		const retainedParent = await persistenceParentFingerprint(destination);
+		if (
+			retainedParent.realPath !== candidateParent.realPath ||
+			retainedParent.device !== candidateParent.device ||
+			retainedParent.inode !== candidateParent.inode
+		)
+			throw new Error(`Candidate parent identity changed during persistence: ${candidatePath}`);
 		const retainedHandle = await open(destination, constants.O_RDONLY | constants.O_NOFOLLOW);
 		let retainedBytes: Buffer;
 		try {
@@ -299,17 +385,38 @@ export async function persistSkillIconOutputBound(
 		const resultBytes = Buffer.from(`${JSON.stringify(result, null, '\t')}\n`);
 		await options.testHooks?.beforeResultWrite?.();
 		await ensureSafeParents(root, resultDestination);
+		const resultParent = await persistenceParentFingerprint(resultDestination);
 		resultHandle = await open(
 			resultDestination,
 			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 			0o644
 		);
-		ownsResult = true;
+		unverifiedResult = true;
 		await resultHandle.writeFile(resultBytes);
 		await resultHandle.sync();
+		const resultFile = await resultHandle.stat();
 		await resultHandle.close();
 		resultHandle = undefined;
+		resultOwnership = {
+			path: resultDestination,
+			contentHash: createHash('sha256').update(resultBytes).digest('hex'),
+			parent: resultParent,
+			file: { device: resultFile.dev, inode: resultFile.ino }
+		};
+		unverifiedResult = false;
 		await ensureSafeParents(root, resultDestination);
+		const retainedResultParent = await persistenceParentFingerprint(resultDestination);
+		if (
+			retainedResultParent.realPath !== resultParent.realPath ||
+			retainedResultParent.device !== resultParent.device ||
+			retainedResultParent.inode !== resultParent.inode
+		)
+			throw new Error(
+				`Result parent identity changed during persistence: ${target.output.resultPath}`
+			);
+		const retainedResult = await readSafePacket(root, target.output.resultPath, 'Retained result');
+		if (!retainedResult.equals(resultBytes))
+			throw new Error('Result bytes changed during persistence');
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
@@ -332,17 +439,22 @@ export async function persistSkillIconOutputBound(
 				cleanupFailures.push(cleanupError);
 			}
 		}
-		for (const ownedPath of [
-			...(ownsDestination ? [destination] : []),
-			...(ownsResult ? [resultDestination] : [])
-		]) {
+		for (const owned of [candidateOwnership, resultOwnership]) {
+			if (!owned) continue;
 			try {
-				await unlink(ownedPath);
+				await removeOwnedPersistedFile(owned);
 			} catch (cleanupError) {
-				if ((cleanupError as NodeJS.ErrnoException).code !== 'ENOENT')
-					cleanupFailures.push(cleanupError);
+				cleanupFailures.push(cleanupError);
 			}
 		}
+		if (unverifiedCandidate)
+			cleanupFailures.push(
+				new Error(`Unverified candidate partial requires cleanup: ${destination}`)
+			);
+		if (unverifiedResult)
+			cleanupFailures.push(
+				new Error(`Unverified result partial requires cleanup: ${resultDestination}`)
+			);
 		if (cleanupFailures.length > 0)
 			throw new AggregateError(
 				[error, ...cleanupFailures],
