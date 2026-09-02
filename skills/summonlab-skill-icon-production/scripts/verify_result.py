@@ -9,7 +9,7 @@ import json
 import os
 import stat
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +40,61 @@ def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> N
         fail("attempt count must be an integer")
     if not 1 <= attempt_count <= 1 + assignment["retryCeiling"]:
         fail("attempt count violates the assignment retry ceiling")
+
+
+def _parse_timestamp(raw: Any, label: str) -> datetime:
+    if not isinstance(raw, str) or not raw:
+        fail(f"{label} timestamp must be a non-empty ISO-8601 string")
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError as error:
+        fail(f"{label} timestamp must be a valid ISO-8601 timestamp: {error}")
+    if parsed.utcoffset() is None:
+        fail(f"{label} timestamp must include a UTC offset")
+    return parsed
+
+
+def _format_timestamp(value: datetime) -> str:
+    return value.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def _resolve_failure_timing(
+    started_at: str,
+    completed_at: str | None,
+    total_wall_time_ms: int | None,
+) -> tuple[str, str, int]:
+    started = _parse_timestamp(started_at, "started-at")
+    if total_wall_time_ms is not None and (
+        isinstance(total_wall_time_ms, bool)
+        or not isinstance(total_wall_time_ms, int)
+        or total_wall_time_ms < 0
+    ):
+        fail("total wall-time duration must be a non-negative integer in milliseconds")
+    if completed_at is None and total_wall_time_ms is None:
+        fail("failure timing requires completed-at or total wall-time duration")
+
+    completed: datetime | None = None
+    elapsed_ms: int | None = None
+    if completed_at is not None:
+        completed = _parse_timestamp(completed_at, "completed-at")
+        if completed < started:
+            fail("failure timing is not chronological")
+        elapsed_microseconds = round((completed - started).total_seconds() * 1_000_000)
+        if elapsed_microseconds % 1_000 != 0:
+            fail("failure timing duration must resolve to whole milliseconds")
+        elapsed_ms = elapsed_microseconds // 1_000
+        if total_wall_time_ms is not None and total_wall_time_ms != elapsed_ms:
+            fail("declared total wall-time duration does not match the timestamps")
+
+    if completed is None:
+        assert total_wall_time_ms is not None
+        completed = started + timedelta(milliseconds=total_wall_time_ms)
+        completed_at = _format_timestamp(completed)
+    if total_wall_time_ms is None:
+        assert elapsed_ms is not None
+        total_wall_time_ms = elapsed_ms
+    assert completed_at is not None
+    return started_at, completed_at, total_wall_time_ms
 
 
 def _changed_repository_paths(workspace: Path) -> set[str]:
@@ -236,6 +291,9 @@ def persist_failed_result(
     attempt_count: int,
     failure_kind: str,
     failure_message: str,
+    started_at: str,
+    completed_at: str | None = None,
+    total_wall_time_ms: int | None = None,
     contract_root: Path | None = None,
     target_path: Path | None = None,
     assignment_path: Path | None = None,
@@ -255,12 +313,12 @@ def persist_failed_result(
         fail("failure kind is unsupported")
     if not isinstance(failure_message, str) or not failure_message.strip():
         fail("failure message must be non-empty")
+    started_at, completed_at, total_wall_time_ms = _resolve_failure_timing(
+        started_at, completed_at, total_wall_time_ms
+    )
     dirty = _changed_repository_paths(root)
     if dirty:
         fail(f"cannot persist failure result in a dirty workspace: {sorted(dirty)}")
-    completed_at = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace(
-        "+00:00", "Z"
-    )
     exact_prompt = target["exactPrompt"]
     result = {
         "schemaVersion": "skill-icon-result-v1",
@@ -288,9 +346,9 @@ def persist_failed_result(
             "kind": failure_kind,
             "message": failure_message.strip(),
         },
-        "startedAt": completed_at,
+        "startedAt": started_at,
         "completedAt": completed_at,
-        "totalWallTimeMs": 0,
+        "totalWallTimeMs": total_wall_time_ms,
         "writtenOutputPaths": [target["output"]["resultPath"]],
         "noSharedFilesEdited": True,
         "selfPromoted": False,
@@ -410,6 +468,19 @@ def main() -> None:
     )
     parser.add_argument("--failure-kind", choices=sorted(FAILURE_KINDS))
     parser.add_argument("--failure-message")
+    parser.add_argument(
+        "--started-at",
+        help="actual ISO-8601 time when the first provider attempt started",
+    )
+    parser.add_argument(
+        "--completed-at",
+        help="actual ISO-8601 completion time (or supply --total-wall-time-ms)",
+    )
+    parser.add_argument(
+        "--total-wall-time-ms",
+        type=int,
+        help="actual elapsed milliseconds (or supply --completed-at)",
+    )
     args = parser.parse_args()
     try:
         workspace = Path(args.workspace_root).absolute()
@@ -426,8 +497,16 @@ def main() -> None:
         if supplied_result_path.absolute() != declared_result_path:
             fail("RESULT argument does not match target.output.resultPath")
         if args.write_failure:
-            if args.failure_kind is None or args.failure_message is None:
-                fail("--write-failure requires --failure-kind and --failure-message")
+            if (
+                args.failure_kind is None
+                or args.failure_message is None
+                or args.started_at is None
+                or (args.completed_at is None and args.total_wall_time_ms is None)
+            ):
+                fail(
+                    "--write-failure requires --failure-kind, --failure-message, "
+                    "--started-at, and either --completed-at or --total-wall-time-ms"
+                )
             report = persist_failed_result(
                 target,
                 assignment,
@@ -435,11 +514,23 @@ def main() -> None:
                 attempt_count=args.attempt_count,
                 failure_kind=args.failure_kind,
                 failure_message=args.failure_message,
+                started_at=args.started_at,
+                completed_at=args.completed_at,
+                total_wall_time_ms=args.total_wall_time_ms,
                 target_path=target_path,
                 assignment_path=assignment_path,
             )
         else:
-            if args.failure_kind is not None or args.failure_message is not None:
+            if any(
+                option is not None
+                for option in (
+                    args.failure_kind,
+                    args.failure_message,
+                    args.started_at,
+                    args.completed_at,
+                    args.total_wall_time_ms,
+                )
+            ):
                 fail("failure options require --write-failure")
             result_path = _path_argument(workspace, args.result, "result")
             report = verify(

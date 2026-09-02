@@ -23,6 +23,10 @@ STYLE_AUTHORITY_PATH = (
 GEOMETRY_GUIDE_PATH = (
     "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
 )
+STYLE_AUTHORITY_PURPOSE = "Global Painted Emblem style authority."
+GEOMETRY_GUIDE_PURPOSE = "Geometry guide for registration and safe zones."
+CALIBRATION_PURPOSE = "Approved motif-family calibration plate."
+PRIMARY_PARENT_PURPOSE = "Approved primary-parent master."
 
 _CONTRACT_PROGRAM = r"""
 import fs from 'node:fs';
@@ -238,15 +242,17 @@ def _validate_input_path(
 def _required_reference(
     references: list[dict[str, Any]],
     expected_path: str,
-    required_terms: tuple[str, ...],
+    expected_purpose: str,
     label: str,
 ) -> dict[str, Any]:
     matches = [reference for reference in references if reference.get("path") == expected_path]
     if len(matches) != 1:
         fail(f"individual skill art requires distinct {label}: {expected_path}")
-    purpose = " ".join(str(matches[0].get("purpose", "")).lower().split())
-    if not all(term in purpose for term in required_terms):
-        fail(f"{label} reference has the wrong purpose binding")
+    if matches[0].get("purpose") != expected_purpose:
+        fail(
+            f"{label} reference must use the exact canonical purpose: "
+            f"{expected_purpose!r}"
+        )
     return matches[0]
 
 
@@ -267,13 +273,13 @@ def _require_individual_authorities(
     _required_reference(
         references,
         STYLE_AUTHORITY_PATH,
-        ("painted emblem", "style", "authority"),
+        STYLE_AUTHORITY_PURPOSE,
         "global Painted Emblem style authority",
     )
     _required_reference(
         references,
         GEOMETRY_GUIDE_PATH,
-        ("geometry", "registration", "safe zone"),
+        GEOMETRY_GUIDE_PURPOSE,
         "geometry guide",
     )
     motif_family = record.get("motifFamily")
@@ -285,7 +291,7 @@ def _require_individual_authorities(
         _required_reference(
             references,
             calibration_path,
-            ("approved", "motif", "family", "calibration"),
+            CALIBRATION_PURPOSE,
             "approved motif-family calibration plate",
         )
     parent_id = record.get("primaryVisualParent")
@@ -313,7 +319,7 @@ def _require_individual_authorities(
         parent_reference = _required_reference(
             references,
             expected_parent_path,
-            ("approved", "primary", "parent", "master"),
+            PRIMARY_PARENT_PURPOSE,
             "approved primary-parent master",
         )
         if parent_reference.get("contentHash") != approved_master.get("contentHash"):

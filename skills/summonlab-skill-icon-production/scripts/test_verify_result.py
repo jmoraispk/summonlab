@@ -31,6 +31,9 @@ GEOMETRY_REFERENCE_PATH = (
 CALIBRATION_PATH = (
     "assets/wiki/skills/icon-production-v1/masters/calibration/blade-sweeping-cut.png"
 )
+STARTED_AT = "2026-09-01T17:01:00.000Z"
+COMPLETED_AT = "2026-09-01T17:04:00.000Z"
+TOTAL_WALL_TIME_MS = 180000
 CANDIDATE_PATH = (
     "assets/wiki/skills/icon-production-v1/candidates/icons/"
     f"{JOB_ID}.png"
@@ -402,6 +405,27 @@ class SkillIconVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Painted Emblem"):
             self.packet.verify()
 
+    def test_negated_authority_purpose_cannot_spoof_exact_literal(self) -> None:
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        references[0]["purpose"] = "Not the global Painted Emblem style authority."
+        with self.assertRaisesRegex(ValueError, "exact canonical purpose"):
+            self.packet.verify()
+
+    def test_authority_purpose_variant_is_rejected(self) -> None:
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        references[0]["purpose"] = "Global Painted Emblem style authority"
+        with self.assertRaisesRegex(ValueError, "exact canonical purpose"):
+            self.packet.verify()
+
+    def test_negated_calibration_purpose_is_rejected(self) -> None:
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        references[2]["purpose"] = "Not an approved motif-family calibration plate."
+        with self.assertRaisesRegex(ValueError, "exact canonical purpose"):
+            self.packet.verify()
+
     def test_one_spoofing_reference_cannot_satisfy_multiple_authorities(self) -> None:
         references = self.packet.target["references"]
         inputs = self.packet.result["referenceInputs"]
@@ -679,6 +703,9 @@ class SkillIconVerifierTests(unittest.TestCase):
             attempt_count=1,
             failure_kind="provider-failure",
             failure_message="The provider returned no image bytes.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            total_wall_time_ms=TOTAL_WALL_TIME_MS,
             contract_root=REPOSITORY_ROOT,
         )
         retained = load_json(self.packet.root / RESULT_PATH)
@@ -686,6 +713,9 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.assertEqual(retained["status"], "failed")
         self.assertIsNone(retained["output"])
         self.assertEqual(retained["writtenOutputPaths"], [RESULT_PATH])
+        self.assertEqual(retained["startedAt"], STARTED_AT)
+        self.assertEqual(retained["completedAt"], COMPLETED_AT)
+        self.assertEqual(retained["totalWallTimeMs"], TOTAL_WALL_TIME_MS)
         self.assertFalse(self.packet.candidate_file.exists())
         (self.packet.root / RESULT_PATH).unlink()
         second_report = persist_failed_result(
@@ -695,6 +725,9 @@ class SkillIconVerifierTests(unittest.TestCase):
             attempt_count=1,
             failure_kind="malformed-output",
             failure_message="The provider returned undecodable image bytes.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            total_wall_time_ms=TOTAL_WALL_TIME_MS,
             contract_root=REPOSITORY_ROOT,
         )
         second = load_json(self.packet.root / RESULT_PATH)
@@ -711,8 +744,78 @@ class SkillIconVerifierTests(unittest.TestCase):
                 attempt_count=1,
                 failure_kind="malformed-output",
                 failure_message="The provider returned undecodable bytes.",
+                started_at=STARTED_AT,
+                completed_at=COMPLETED_AT,
+                total_wall_time_ms=TOTAL_WALL_TIME_MS,
                 contract_root=REPOSITORY_ROOT,
             )
+
+    def test_timeout_after_two_attempts_preserves_actual_timing(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        report = persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=2,
+            failure_kind="timeout",
+            failure_message="Both permitted provider attempts timed out.",
+            started_at="2026-09-01T17:01:00.000Z",
+            total_wall_time_ms=300000,
+            contract_root=REPOSITORY_ROOT,
+        )
+        retained = load_json(self.packet.root / RESULT_PATH)
+        self.assertEqual(report["attemptCount"], 2)
+        self.assertEqual(retained["failureReason"]["kind"], "timeout")
+        self.assertEqual(retained["completedAt"], "2026-09-01T17:06:00.000Z")
+        self.assertEqual(retained["totalWallTimeMs"], 300000)
+
+    def test_result_only_failure_derives_duration_from_actual_completion(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="provider-throttle",
+            failure_message="The provider throttled the request.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            contract_root=REPOSITORY_ROOT,
+        )
+        retained = load_json(self.packet.root / RESULT_PATH)
+        self.assertEqual(retained["completedAt"], COMPLETED_AT)
+        self.assertEqual(retained["totalWallTimeMs"], TOTAL_WALL_TIME_MS)
+
+    def test_result_only_failure_rejects_invalid_timing_without_writing(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        invalid_timings = [
+            (COMPLETED_AT, STARTED_AT, TOTAL_WALL_TIME_MS),
+            (STARTED_AT, COMPLETED_AT, 1),
+            ("2026-09-01T17:01:00", COMPLETED_AT, TOTAL_WALL_TIME_MS),
+        ]
+        for started_at, completed_at, total_wall_time_ms in invalid_timings:
+            with self.subTest(
+                started_at=started_at,
+                completed_at=completed_at,
+                total_wall_time_ms=total_wall_time_ms,
+            ):
+                with self.assertRaisesRegex(ValueError, "timestamp|timing|duration"):
+                    persist_failed_result(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        attempt_count=1,
+                        failure_kind="timeout",
+                        failure_message="The provider timed out.",
+                        started_at=started_at,
+                        completed_at=completed_at,
+                        total_wall_time_ms=total_wall_time_ms,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+                self.assertFalse((self.packet.root / RESULT_PATH).exists())
 
     def test_failed_result_cannot_coexist_with_candidate_bytes(self) -> None:
         self.packet.result.update(

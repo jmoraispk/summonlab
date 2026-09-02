@@ -45,11 +45,16 @@ clean preflight state, exclusive-create and immediately verify the result-only f
 ```bash
 python3 <skill-directory>/scripts/verify_result.py \
   TARGET ASSIGNMENT RESULT WORKSPACE_ROOT --attempt-count ACTUAL_CALLS \
-  --write-failure --failure-kind FAILURE_KIND --failure-message "HONEST DETAIL"
+  --write-failure --failure-kind FAILURE_KIND --failure-message "HONEST DETAIL" \
+  --started-at ACTUAL_ISO_START \
+  --completed-at ACTUAL_ISO_COMPLETION --total-wall-time-ms ACTUAL_ELAPSED_MS
 ```
 
 This mode refuses either pre-existing output or any other repository change, writes only the
 assigned result path with `output: null`, and verifies the strict execution and ownership contract.
+Supply the real start plus either completion or elapsed milliseconds; when both are supplied they
+must agree exactly. The helper derives only the omitted value and rejects naive, reversed, or
+inconsistent timing instead of synthesizing a zero-duration attempt.
 
 If verification fails after this job newly created outputs, report the failure for coordinator
 handling. Do not delete, replace, promote, or move evidence and do not touch shared files.

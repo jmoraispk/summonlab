@@ -1,6 +1,6 @@
 # Producer review rubric
 
-Inspect the exact selected raster at full 1024 resolution and as a 96×96 view before persistence.
+Inspect the exact selected raster at its full declared target resolution and as a 96×96 view before persistence.
 Record concise `pass`, `concern`, or `fail` findings for both views of every retained image,
 including `revise`; `not-applicable` does not satisfy either required view. A candidate explicitly
 passes both views and has no concern or failure; unrelated role-inapplicable criteria may remain
@@ -12,8 +12,9 @@ passes both views and has no concern or failure; unrelated role-inapplicable cri
   are present without undeclared narrative content.
 - **Geometry:** canvas, registration, aperture, subject/effect safe zones, and medallion exclusion
   follow the geometry guide for the role.
-- **Alpha:** the output is a real transparent RGBA PNG with no visible pixels outside its allowed
-  mask or envelope.
+- **Alpha:** standalone `skill-art`, `rarity-frame`, and `backing` outputs are genuine RGBA PNGs
+  and satisfy their role-specific transparency or coverage rules. A `calibration-plate` may be RGB
+  or RGBA when its declared canvas and the role-aware inspector permit it.
 - **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
   uncluttered, and different from adjacent family stages.
 - **Reference discipline:** each reference influenced only its declared purpose. No calibration
