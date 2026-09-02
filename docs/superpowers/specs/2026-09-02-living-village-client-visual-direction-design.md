@@ -1,6 +1,6 @@
 # Living Village client visual direction
 
-**Status:** Proposed for visual approval
+**Status:** Visual foundation approved; system flows exploratory
 
 **Date:** 2026-09-02
 
@@ -19,6 +19,8 @@ not alter gameplay contracts or shared content catalogs.
 ## Approved product decisions
 
 1. The title page contains the Summonlab mark, one `Enter Village` action, and a quiet `Wiki` link.
+   The primary action uses a restrained 10–12 px corner radius: warmer and more clickable, but not a
+   pill.
 2. Sign-in may follow `Enter Village` later, but is outside this phase.
 3. Village navigation exists only inside the Village experience.
 4. The Wiki remains a separate destination, not a persistent game-navigation item.
@@ -31,6 +33,21 @@ not alter gameplay contracts or shared content catalogs.
 9. Inventory has two meanings only: the shared Village Inventory and a temporary per-hero Mission
    Inventory.
 10. Mission packs are suggested automatically and remain editable before departure.
+
+## Freeze boundary
+
+The following visual foundation is approved and should not be reopened during routine screen design:
+
+- the title gateway composition on desktop and phone;
+- the dark observatory material language, ember-gold structure, and cyan living-focus accent;
+- the centered, scene-first desktop Village composition;
+- bright facility labels attached to their targets with fine leader lines;
+- the cyan circle and arrow used to identify a selected hero in the scene;
+- the five-destination phone navigation pattern and bottom placement.
+
+Approval of the composition does not freeze the mature settlement shown in the exploratory Village
+mockups as the launch-state population or construction state. Inventory layout, mission packing details,
+return reconciliation, Tower/Gate separation, and settlement progression remain open design work.
 
 ## Visual thesis: the inhabited observatory
 
@@ -128,6 +145,26 @@ Phone treats the Village as a vertical, explorable home rather than a compressed
 - when the keyboard or a blocking confirmation opens, the bar may temporarily yield.
 
 Mockup: [phone Village home](../../design-proposals/living-village-ui/mockups/village-home-phone.png).
+
+### Settlement growth
+
+The current panorama represents the visual ceiling of a mature, inhabited Village, not the initial
+state. The home surface must tell the truth about the player's settlement and roster.
+
+| Visual stage | World presentation |
+| --- | --- |
+| Starting Village | Three to five visible summoned residents, the portal/gate landmark, only the facilities actually available, dark or empty plots, and generous negative space |
+| Growing Village | Newly built structures occupy established plots; scaffolding, work light, smoke, and a few purposeful residents communicate progress without background crowds |
+| Mature Village | The denser illuminated panorama, broader activity, and full facility labeling shown by the current exploratory mockups |
+
+These are visual stages, not gameplay thresholds or content-catalog definitions. The runtime scene should
+derive visible residents from the actual roster and facility presence from actual settlement state. It
+must not use decorative crowds that imply heroes or workers the player does not have.
+
+The camera composition, navigation anchors, and major plots should remain stable across stages so growth
+feels additive. Construction fills deliberate absences; it should not replace the whole Village with an
+unrelated background. A future design pass must establish the starting plot map, the first available
+facility set, and transitions for construction and arrival.
 
 ### Facility pointer states
 
@@ -271,10 +308,11 @@ entries.
 - replacing the Wiki content system;
 - finalizing illustration, portrait, or icon production assets;
 - defining inventory balance, capacity, item rarity, or mission rewards.
+- defining gameplay thresholds for settlement population or construction stages.
 
-## Visual acceptance criteria
+## Remaining visual acceptance criteria
 
-The direction is ready for implementation planning when reviewers agree that:
+The unresolved system work is ready for implementation planning when reviewers agree that:
 
 1. the title reads as a gateway with one unmistakable action;
 2. Wiki and Village feel related but remain structurally independent;
@@ -288,6 +326,9 @@ The direction is ready for implementation planning when reviewers agree that:
 10. the return-to-Village custody rule is visible before departure;
 11. the direction does not imply new runtime contracts or canonical catalog content;
 12. reduced-motion and keyboard/touch behavior are defined, not deferred.
+13. the starting Village visibly contains only the roster and constructed facilities the player has;
+14. settlement growth preserves the approved composition while making progression visible;
+15. Tower and Gate either have clearly distinct jobs or are intentionally consolidated.
 
 ## Phase-one deliverable
 

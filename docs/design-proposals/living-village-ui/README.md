@@ -1,12 +1,34 @@
 # Living Village client visual proposal
 
-**Status:** Proposed for visual approval
+**Status:** Visual foundation approved; system flows exploratory
 
 **Date:** 2026-09-02
 
 This packet turns the current client audit and the approved concept discussion into a durable phase-one
 design proposal. It contains mockups and interaction guidance only. It does not modify runtime code,
 gameplay contracts, or shared content catalogs.
+
+## Decision status
+
+### Freeze now
+
+- the minimal title gateway and its restrained, slightly rounded `Enter Village` button;
+- the dark observatory palette, ember-gold structure, and cyan living-focus accent;
+- a scene-first, centered Village composition on desktop;
+- direct facility labels with fine leader lines;
+- the cyan circle and arrow that connect a selected hero to the world;
+- the five-destination phone navigation pattern and placement.
+
+### Continue designing
+
+- the sparse starting Village and its visible growth into the mature panorama;
+- the exact Village Inventory organization and assignment interactions;
+- the detailed suggested-packing and return-reconciliation sequence;
+- whether Tower and Gate remain separate destinations;
+- production feasibility, responsive collision handling, and final asset requirements.
+
+The immediate goal is to freeze the foundation above, then use it to design the unresolved gameplay
+surfaces without repeatedly reopening the entire art direction.
 
 ## Review order
 
