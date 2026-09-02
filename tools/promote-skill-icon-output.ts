@@ -45,6 +45,15 @@ import {
 } from './skill-icon-production-lib.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 import { resolveDeterministicSkillIconDerivatives } from './compose-skill-icon-assets.js';
+import {
+	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
+	SkillIconPromotionReceiptSchema
+} from './skill-icon-promotion-contract.js';
+
+export {
+	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
+	SkillIconPromotionReceiptSchema
+} from './skill-icon-promotion-contract.js';
 
 export interface SkillIconAssetRecord {
 	readonly jobId: string;
@@ -67,9 +76,6 @@ export const SKILL_ICON_PROMOTION_JOURNAL_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion-transaction.json' as const;
 export const SKILL_ICON_PROMOTION_TOKEN_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion-recovery-token.json' as const;
-export const SKILL_ICON_PROMOTION_RECEIPT_ROOT =
-	'assets/wiki/skills/icon-production-v1/promotion-receipts' as const;
-
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
 const TransactionTokenSchema = z.string().uuid();
 const JobIdSchema = z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u);
@@ -257,21 +263,8 @@ export const SkillIconPromotionJournalSchema = z
 		}
 	});
 
-export const SkillIconPromotionReceiptSchema = z
-	.object({
-		schemaVersion: z.literal('skill-icon-promotion-receipt-v1'),
-		transactionId: TransactionTokenSchema,
-		jobId: JobIdSchema,
-		role: z.enum(['rarity-frame', 'backing', 'calibration-plate', 'skill-art']),
-		ownerReviewer: z.string().trim().min(1).max(160),
-		review: z.object({ path: z.string().min(1), contentHash: Sha256Schema }).strict(),
-		result: z.object({ path: z.string().min(1), contentHash: Sha256Schema }).strict(),
-		candidate: z.object({ path: z.string().min(1), contentHash: Sha256Schema }).strict(),
-		master: z.object({ path: MasterPathSchema, contentHash: Sha256Schema }).strict()
-	})
-	.strict();
-
 export interface PromotionTestHooks {
+	readonly derivativeResolver?: SkillIconDerivativeResolver;
 	readonly beforeLockWrite?: (input: {
 		readonly tokenPath: string;
 		readonly recoveryToken: string;
@@ -330,7 +323,6 @@ export interface PromotionOptions {
 	readonly jobId: string;
 	readonly reviewPath: string;
 	readonly root?: string;
-	readonly derivativeResolver?: SkillIconDerivativeResolver;
 	readonly testHooks?: PromotionTestHooks;
 }
 
@@ -745,7 +737,7 @@ async function resolveSkillDerivatives(
 	root: string,
 	target: Extract<SkillIconTarget, { role: 'skill-art' }>,
 	candidateBytes: Buffer,
-	resolver: SkillIconDerivativeResolver
+	testResolver?: SkillIconDerivativeResolver
 ): Promise<{
 	readonly assets: {
 		readonly runtime512: SkillIconAsset;
@@ -767,12 +759,21 @@ async function resolveSkillDerivatives(
 			return { path: reference.path, contentHash: reference.contentHash, bytes };
 		})
 	);
-	const buffers = await resolver({
+	const resolverInput = {
 		root,
 		target,
 		candidate: { bytes: candidateBytes, contentHash: sha256(candidateBytes) },
 		references
-	});
+	};
+	const buffers = await resolveDeterministicSkillIconDerivatives(resolverInput);
+	if (testResolver) {
+		const injected = await testResolver(resolverInput);
+		for (const name of ['runtime512', 'runtime256', 'runtime128', 'recognition96'] as const) {
+			if (!injected[name].equals(buffers[name])) {
+				throw new Error(`Test derivative resolver did not match fixed ${name} bytes`);
+			}
+		}
+	}
 	const slug = target.skillTargetId.replaceAll(':', '-');
 	const entries = [
 		[
@@ -826,7 +827,7 @@ async function preparePromotion(
 	root: string,
 	jobId: string,
 	reviewInput: string,
-	derivativeResolver?: SkillIconDerivativeResolver
+	testHooks?: PromotionTestHooks
 ): Promise<PreparedPromotion> {
 	const reviewLocation = repositoryPath(
 		root,
@@ -936,7 +937,7 @@ async function preparePromotion(
 			root,
 			target as Extract<SkillIconTarget, { role: 'skill-art' }>,
 			candidateBytes,
-			derivativeResolver ?? resolveDeterministicSkillIconDerivatives
+			testHooks?.derivativeResolver
 		);
 		visualState = {
 			...current,
@@ -2030,7 +2031,7 @@ export async function promoteSkillIconOutput(
 			root,
 			options.jobId,
 			options.reviewPath,
-			options.derivativeResolver
+			options.testHooks
 		);
 		return (await commitPromotions(root, [prepared], authority, options.testHooks))[0]!;
 	});
@@ -2039,7 +2040,6 @@ export async function promoteSkillIconOutput(
 export async function promoteReviewedSkillIconOutputs(options: {
 	readonly reviewDirectory: string;
 	readonly root?: string;
-	readonly derivativeResolver?: SkillIconDerivativeResolver;
 	readonly testHooks?: PromotionTestHooks;
 }): Promise<readonly SkillIconAssetRecord[]> {
 	const root = path.resolve(options.root ?? process.cwd());
@@ -2065,7 +2065,7 @@ export async function promoteReviewedSkillIconOutputs(options: {
 					root,
 					entry.name.replace(/\.json$/u, ''),
 					path.join(directory.relative, entry.name),
-					options.derivativeResolver
+					options.testHooks
 				)
 			)
 		);

@@ -21,6 +21,7 @@ import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
+import { exportSkillIconRuntime } from './compose-skill-icon-assets.js';
 import {
 	SKILL_ICON_MOTIF_SOURCE_PATH,
 	SKILL_ICON_VISUAL_SPECS_PATH,
@@ -90,6 +91,185 @@ async function backingPng(): Promise<Buffer> {
 	return sharp(pixels, { raw: { width: 1024, height: 1024, channels: 4 } })
 		.png()
 		.toBuffer();
+}
+
+async function framePng(): Promise<Buffer> {
+	const inner = aperturePoints.map(
+		([x, y]) => [512 + (x - 512) * 0.86, 512 + (y - 512) * 0.86] as const
+	);
+	const pixels = Buffer.alloc(1024 * 1024 * 4);
+	for (let y = 0; y < 1024; y += 1) {
+		for (let x = 0; x < 1024; x += 1) {
+			const offset = (y * 1024 + x) * 4;
+			pixels[offset + 2] = 200;
+			pixels[offset + 3] =
+				inAperture(x + 0.5, y + 0.5) &&
+				!(() => {
+					let inside = false;
+					for (
+						let index = 0, previous = inner.length - 1;
+						index < inner.length;
+						previous = index++
+					) {
+						const [xi, yi] = inner[index]!;
+						const [xj, yj] = inner[previous]!;
+						if (
+							yi > y + 0.5 !== yj > y + 0.5 &&
+							x + 0.5 < ((xj - xi) * (y + 0.5 - yi)) / (yj - yi) + xi
+						)
+							inside = !inside;
+					}
+					return inside;
+				})()
+					? 255
+					: 0;
+		}
+	}
+	return sharp(pixels, { raw: { width: 1024, height: 1024, channels: 4 } })
+		.png()
+		.toBuffer();
+}
+
+async function installApprovedReferenceEvidence(
+	root: string,
+	role: 'backing' | 'rarity-frame',
+	bytes: Buffer,
+	rarity: 'F' | null
+): Promise<void> {
+	const jobId =
+		role === 'backing' ? 'charcoal-forged-stone-v1' : `rarity-frame-${rarity!.toLowerCase()}-v1`;
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/references/${jobId}.json`;
+	const masterPath =
+		role === 'backing'
+			? 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+			: `assets/wiki/skills/icon-production-v1/masters/frames/${rarity!.toLowerCase()}.png`;
+	const contentHash = createHash('sha256').update(bytes).digest('hex');
+	const exactPrompt =
+		role === 'backing' ? 'Paint the canonical backing.' : `Paint rarity ${rarity}.`;
+	const referenceBytes = Buffer.from('reference authority');
+	const target = {
+		schemaVersion: 'skill-icon-target-v1',
+		jobId,
+		role,
+		skillTargetId: null,
+		motifFamily: null,
+		rarity,
+		exactPrompt,
+		references: [
+			{
+				path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+				purpose: 'Geometry.',
+				contentHash: createHash('sha256').update(referenceBytes).digest('hex')
+			}
+		],
+		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: { candidatePath, resultPath }
+	};
+	const assignment = {
+		schemaVersion: 'skill-icon-assignment-v1',
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		targetPath,
+		assignmentPath,
+		skillVersion: 'summonlab-skill-icon-production-v1',
+		assignedAt: '2026-09-02T08:00:00.000Z',
+		retryCeiling: 1,
+		permittedOutputs: { candidatePath, resultPath },
+		forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+		completionContract: {
+			oneTargetOneImage: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	};
+	const findings = [
+		{ category: 'geometry', evaluator: 'automated', outcome: 'pass', observation: 'Valid.' },
+		{
+			category: 'manifest-fidelity',
+			evaluator: 'producer',
+			outcome: 'pass',
+			observation: 'Matched.'
+		}
+	];
+	const result = {
+		schemaVersion: 'skill-icon-result-v1',
+		resultId: `result-${jobId}`,
+		jobId,
+		assignmentId: assignment.assignmentId,
+		status: 'candidate',
+		exactPrompt,
+		promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+		referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+		output: {
+			path: candidatePath,
+			mediaType: 'image/png',
+			width: 1024,
+			height: 1024,
+			bytes: bytes.byteLength,
+			alphaMode: 'rgba',
+			contentHash
+		},
+		resultPath,
+		findings,
+		startedAt: '2026-09-02T08:01:00.000Z',
+		completedAt: '2026-09-02T08:02:00.000Z',
+		totalWallTimeMs: 60000,
+		writtenOutputPaths: [candidatePath, resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	};
+	const resultBytes = Buffer.from(JSON.stringify(result));
+	const review = {
+		schemaVersion: 'skill-icon-review-v1',
+		reviewId: `review-${jobId}`,
+		jobId,
+		role,
+		skillTargetId: null,
+		candidatePath,
+		candidateHash: contentHash,
+		reviewer: 'Skills visual owner',
+		reviewerRole: 'owner',
+		decision: 'accepted',
+		rationale: 'Accepted authority.',
+		findings: [{ criterion: 'geometry', outcome: 'pass', observation: 'Valid.' }],
+		reviewedAt: '2026-09-02T10:00:00.000Z'
+	};
+	const reviewBytes = Buffer.from(JSON.stringify(review));
+	const receiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${jobId}.json`;
+	const receipt = {
+		schemaVersion: 'skill-icon-promotion-receipt-v1',
+		transactionId: '11111111-1111-4111-8111-111111111111',
+		jobId,
+		role,
+		ownerReviewer: review.reviewer,
+		review: {
+			path: reviewPath,
+			contentHash: createHash('sha256').update(reviewBytes).digest('hex')
+		},
+		result: {
+			path: resultPath,
+			contentHash: createHash('sha256').update(resultBytes).digest('hex')
+		},
+		candidate: { path: candidatePath, contentHash },
+		master: { path: masterPath, contentHash }
+	};
+	for (const [relativePath, value] of [
+		[candidatePath, bytes],
+		[masterPath, bytes],
+		[targetPath, JSON.stringify(target)],
+		[assignmentPath, JSON.stringify(assignment)],
+		[resultPath, resultBytes],
+		[reviewPath, reviewBytes],
+		[receiptPath, JSON.stringify(receipt)]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), value);
+	}
 }
 
 async function fixture(
@@ -442,9 +622,6 @@ describe('promoteSkillIconOutput', () => {
 		const geometryReference = Buffer.from('deterministic geometry reference');
 		const geometryReferencePath =
 			'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
-		const backingMasterPath =
-			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png';
-		const frameMasterPath = 'assets/wiki/skills/icon-production-v1/masters/frames/f.png';
 		const exactPrompt = 'Paint one centered practice sword.';
 		const output = {
 			path: candidatePath,
@@ -556,8 +733,6 @@ describe('promoteSkillIconOutput', () => {
 		for (const [relativePath, value] of [
 			[SKILL_ICON_VISUAL_SPECS_PATH, JSON.stringify(sourceVisual)],
 			[geometryReferencePath, geometryReference],
-			[backingMasterPath, candidate],
-			[frameMasterPath, candidate],
 			[candidatePath, candidate],
 			[targetPath, JSON.stringify(target)],
 			[assignmentPath, JSON.stringify(assignment)],
@@ -567,6 +742,8 @@ describe('promoteSkillIconOutput', () => {
 			await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
 			await writeFile(path.join(root, relativePath), value);
 		}
+		await installApprovedReferenceEvidence(root, 'backing', await backingPng(), null);
+		await installApprovedReferenceEvidence(root, 'rarity-frame', await framePng(), 'F');
 		for (const size of [512, 256, 128] as const) {
 			const relativePath = `apps/web/static/skill-icons/v1/${size}/${slug}.webp`;
 			await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
@@ -607,6 +784,37 @@ describe('promoteSkillIconOutput', () => {
 		]) {
 			await expect(access(path.join(cliRoot, relativePath))).resolves.toBeUndefined();
 		}
+		const unreviewedRoot = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-unreviewed-ref-'));
+		roots.push(unreviewedRoot);
+		await cp(root, unreviewedRoot, { recursive: true, force: false });
+		await rm(
+			path.join(unreviewedRoot, SKILL_ICON_PROMOTION_RECEIPT_ROOT, 'charcoal-forged-stone-v1.json')
+		);
+		await expect(
+			promoteSkillIconOutput({ jobId, reviewPath, root: unreviewedRoot })
+		).rejects.toThrow(/exactly one accepted promotion receipt/iu);
+
+		const replacedRoot = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-replaced-ref-'));
+		roots.push(replacedRoot);
+		await cp(root, replacedRoot, { recursive: true, force: false });
+		await writeFile(
+			path.join(
+				replacedRoot,
+				'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+			),
+			candidate
+		);
+		await expect(promoteSkillIconOutput({ jobId, reviewPath, root: replacedRoot })).rejects.toThrow(
+			/evidence hash mismatch/iu
+		);
+
+		const invalidRoot = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-invalid-ref-'));
+		roots.push(invalidRoot);
+		await cp(root, invalidRoot, { recursive: true, force: false });
+		await installApprovedReferenceEvidence(invalidRoot, 'backing', candidate, null);
+		await expect(promoteSkillIconOutput({ jobId, reviewPath, root: invalidRoot })).rejects.toThrow(
+			/reference geometry is invalid/iu
+		);
 
 		await expect(promoteSkillIconOutput({ jobId, reviewPath, root })).rejects.toThrow(
 			/collision/iu
@@ -668,13 +876,7 @@ describe('promoteSkillIconOutput', () => {
 		]) {
 			await rm(path.join(root, relativePath));
 		}
-		let resolverSawBoundInputs = false;
 		const derivativeResolver: SkillIconDerivativeResolver = async (input) => {
-			resolverSawBoundInputs =
-				input.candidate.contentHash === candidateHash &&
-				input.references.length === 1 &&
-				createHash('sha256').update(input.references[0]!.bytes).digest('hex') ===
-					input.references[0]!.contentHash;
 			return {
 				runtime512: await sharp(input.candidate.bytes).resize(512, 512).webp().toBuffer(),
 				runtime256: await sharp(input.candidate.bytes).resize(256, 256).webp().toBuffer(),
@@ -687,7 +889,14 @@ describe('promoteSkillIconOutput', () => {
 				jobId,
 				reviewPath,
 				root,
-				derivativeResolver,
+				testHooks: { derivativeResolver }
+			})
+		).rejects.toThrow(/did not match fixed/iu);
+		await expect(
+			promoteSkillIconOutput({
+				jobId,
+				reviewPath,
+				root,
 				testHooks: {
 					afterSharedReplaceBeforeProgress: ({ path: sharedPath }) => {
 						if (sharedPath === SKILL_ICON_VISUAL_SPECS_PATH)
@@ -716,7 +925,6 @@ describe('promoteSkillIconOutput', () => {
 			reviewPath,
 			root
 		});
-		expect(resolverSawBoundInputs).toBe(true);
 		expect(promoted).toMatchObject({ role: 'skill-art', transactionId: expect.any(String) });
 		const approvedVisual = JSON.parse(
 			await readFile(path.join(root, SKILL_ICON_VISUAL_SPECS_PATH), 'utf8')
@@ -745,7 +953,29 @@ describe('promoteSkillIconOutput', () => {
 			status: 'approved',
 			assets: { runtime128: { width: 128 }, recognition96: { width: 96 } }
 		});
-	}, 30_000);
+		expect(await exportSkillIconRuntime({ root, mode: 'check' })).toMatchObject({
+			inSync: true,
+			orphanPaths: [],
+			drift: []
+		});
+		const approvedRecord = approvedCatalog.records.find((record) => record.targetId === targetId)!;
+		const approvedAssets = approvedRecord.assets as {
+			runtime128: { contentHash: string };
+		};
+		approvedAssets.runtime128.contentHash = 'b'.repeat(64);
+		const catalogPath = path.join(root, 'assets/wiki/skills/icon-production-v1/catalog.json');
+		await writeFile(catalogPath, `${JSON.stringify(approvedCatalog, null, '\t')}\n`);
+		const tamperedCatalog = await readFile(catalogPath);
+		const descriptorDrift = await exportSkillIconRuntime({ root, mode: 'check' });
+		expect(descriptorDrift.inSync).toBe(false);
+		expect(descriptorDrift.drift).toContain(`descriptor ${targetId}:runtime128`);
+		expect(await readFile(catalogPath)).toEqual(tamperedCatalog);
+		await exportSkillIconProduction({ root, mode: 'write' });
+		const orphanPath = 'apps/web/static/skill-icons/v1/512/unclaimed-orphan.webp';
+		await writeFile(path.join(root, orphanPath), Buffer.from('orphan'));
+		const orphanDrift = await exportSkillIconRuntime({ root, mode: 'check' });
+		expect(orphanDrift).toMatchObject({ inSync: false, orphanPaths: [orphanPath] });
+	}, 60_000);
 
 	it('rejects missing, non-accepted, non-owner, and hash-mismatched review evidence', async () => {
 		const item = await fixture('charcoal-forged-stone-v1', 'rejected');

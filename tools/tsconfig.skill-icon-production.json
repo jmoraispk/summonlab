@@ -20,6 +20,7 @@
 		"persist-skill-icon-output.ts",
 		"persist-skill-icon-output.spec.ts",
 		"promote-skill-icon-output.ts",
+		"skill-icon-promotion-contract.ts",
 		"promote-skill-icon-output.spec.ts",
 		"compose-skill-icon-assets.ts",
 		"compose-skill-icon-assets.spec.ts",
