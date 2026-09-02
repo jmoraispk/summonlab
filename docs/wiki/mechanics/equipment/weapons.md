@@ -65,8 +65,8 @@ item stands clear of the ground plane; it is never presented lying on the floor.
 - Bow tiers preserve the same placement, cant, draw profile, and normalized height.
 - Mace hafts remain shorter than a Sword but long enough to read as practical weapons rather than
   clubs.
-- Weapon subtype is not a rank cue. If single-bit and double-bit Axes both exist, they are authored
-  variants rather than automatic low-rank/high-rank stages.
+- The primary material ladder uses a standard single-bit Axe. Double-bit war axes may be authored
+  later as variants within the same Axe class; they are not a rank stage or another skill family.
 
 These are visual-comparison rules. Weapons remain independent and do not need to match an Armour
 set unless a later named set explicitly binds them.

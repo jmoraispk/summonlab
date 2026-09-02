@@ -2,7 +2,7 @@
 
 Wiki ID: `mechanics.equipment.materials`
 
-Design status: **draft**.
+Design status: **owner-revised draft**.
 
 Each material family has one canonical material at each rank. The material supplies an item's base
 rank. Item and material difficulty determine how hard the item is to make, while the smith's
@@ -14,7 +14,7 @@ Used as the rank-bearing material for most Weapons, Heavy Armour, Shield, Access
 
 | R | Material | Character |
 | --- | --- | --- |
-| F | **Copper** | Soft, heavy for its strength, easy to work. The first thing a smith learns on. |
+| F | **Bronze** | Familiar early weapon alloy; easy to cast and work for first-rank equipment. |
 | E | **Iron** | The workhorse. Cheap, plentiful, unremarkable. |
 | D | **Steel** | Properly worked. The standard for a serious weapon. |
 | C | **Blacksteel** | Dense, dark, resists heat. Favours heavy weapons and plate. |
@@ -30,7 +30,7 @@ thing is the primary route to armour that protects without weighing.
 | R | Material | Source |
 | --- | --- | --- |
 | F | **Coarse Hide** | Common beasts |
-| E | **Boiled Leather** | Worked hide; the standard light armour material |
+| E | **Hard Leather** | Hardened, worked hide; the standard light armour material |
 | D | **Beast Scale** | Reptilian monsters; light for its protection |
 | C | **Chitin** | Insectoid monsters; very light, poor against blunt |
 | B | **Drakescale** | Lesser dragons; heat resistance, near-plate protection at medium weight |

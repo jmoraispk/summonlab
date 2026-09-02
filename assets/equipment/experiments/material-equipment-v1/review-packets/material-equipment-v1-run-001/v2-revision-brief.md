@@ -1,6 +1,6 @@
 # Material Equipment v2 revision brief
 
-Status: **owner feedback recorded; vocabulary decisions pending**.
+Status: **owner feedback and v2 vocabulary locked**.
 
 This brief translates review feedback from `material-equipment-v1-run-001` into rules for a future
 revision. It does not modify, relabel, approve, or promote any v1 production evidence. Revised
@@ -45,10 +45,9 @@ direction. Ash Staff needs a new image. Spiritwood Staff may keep its owner-like
 leading branch follows the same gesture. Sunsteel Shield should return to the established upright
 heater-shield family if it is regenerated.
 
-A double-bit war axe is useful visual variety, but putting it only at selected ranks would make
-rank read as weapon subtype. Recommended boundary: keep the primary material ladder on one
-single-bit comparison silhouette and reserve double-bit war axes for a later named or crafted
-variant. If double-bit becomes the canonical Axe instead, apply it consistently to every rank.
+The primary material ladder is locked to one standard single-bit comparison silhouette. Double-bit
+war axes are deferred as later named or crafted variants within the same Axe class; they do not
+become a rank stage or another skill family.
 
 ## Armour consistency anchor
 
@@ -79,19 +78,18 @@ black oval display form. “Sheeting armour” most likely refers to Chitin. The
 provisional until owner confirmation. Spellweave and Chitin are positive design references,
 subject to the common camera and empty-interior rules.
 
-## Vocabulary proposals
+## Locked vocabulary
 
-These names are proposed for the canonical wiki and v2; they must not be applied to v1 evidence.
+These owner-confirmed names are canonical in the wiki and required for v2. They must not be applied
+retroactively to v1 evidence.
 
-| V1 name | Proposed v2 name | Rationale | Impact |
+| V1 name | Canonical and v2 name | Rationale | Impact |
 | --- | --- | --- | --- |
 | Copper | Bronze | More credible and recognizable as a weapon and armour alloy | 11 planned images; 7 generated roots |
-| Ash | Ash or Oak | Ash is a real, strong, elastic weapon wood; Oak is the more immediately familiar name | 2 planned and generated roots; Ash Staff has no image |
+| Ash | Ash | Real, strong, elastic weapon wood suitable for bows, staves, and hafts | 2 planned and generated roots; Ash Staff has no image |
 | Boiled Leather | Hard Leather | Simpler player-facing term for hardened leather | 5 planned images; 1 generated root |
 
-Recommended simplicity choice: **Bronze**, **Ash**, and **Hard Leather**. Ash remains preferable to
-Oak when one F-rank wood must plausibly cover bows, staves, and hafts; choosing Oak instead is a
-vocabulary/readability decision, not a realism correction.
+The locked simplicity choice is **Bronze**, **Ash**, and **Hard Leather**.
 
 ## Revision boundary
 

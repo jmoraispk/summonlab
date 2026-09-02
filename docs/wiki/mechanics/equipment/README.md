@@ -94,7 +94,7 @@ This Common/Uncommon pool exercises the current production baseline without addi
 | Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
 | Defence | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
 | Magical equipment | Staff |
-| Materials sufficient for those items | Copper, Iron, Coarse Hide, Boiled Leather, Hemp Weave, Wool, Ash, Yew |
+| Materials sufficient for those items | Bronze, Iron, Coarse Hide, Hard Leather, Hemp Weave, Wool, Ash, Yew |
 
 The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
 deliberate milestone reward.
@@ -367,6 +367,8 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-02 — owner material lock — Locked Bronze, Ash, and Hard Leather; deferred double-bit Axes
+  as later variants.
 - 2026-09-02 — owner visual review — Made within-class weapon pose and full-set Armour camera,
   empty-interior, and Head-item consistency explicit; recorded v2 revision feedback without
   mutating v1 evidence.
