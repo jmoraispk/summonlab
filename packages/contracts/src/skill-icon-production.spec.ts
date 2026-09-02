@@ -627,6 +627,76 @@ describe('skill-icon production contracts', () => {
 		).toBe(true);
 	});
 
+	it('enforces coherent revise and failed result evidence', () => {
+		const concern = {
+			category: 'recognition' as const,
+			evaluator: 'producer' as const,
+			outcome: 'concern' as const,
+			observation: 'The mark is not yet distinct at recognition size.'
+		};
+		const failure = {
+			category: 'geometry' as const,
+			evaluator: 'automated' as const,
+			outcome: 'fail' as const,
+			observation: 'The output dimensions do not match the target.'
+		};
+
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'revise',
+				findings: [concern]
+			}).success
+		).toBe(true);
+		expect(SkillIconResultSchema.safeParse({ ...result(), status: 'revise' }).success).toBe(false);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'revise',
+				output: null,
+				findings: [concern],
+				writtenOutputPaths: [resultPath]
+			}).success
+		).toBe(false);
+
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'failed',
+				output: null,
+				findings: [failure],
+				writtenOutputPaths: [resultPath]
+			}).success
+		).toBe(true);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'failed',
+				findings: [failure]
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'failed',
+				output: null,
+				writtenOutputPaths: [resultPath]
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				status: 'failed',
+				output: null,
+				writtenOutputPaths: [resultPath],
+				failureReason: {
+					kind: 'provider-failure',
+					message: 'The provider returned no image bytes.'
+				}
+			}).success
+		).toBe(true);
+	});
+
 	it('preserves exact prompt whitespace and hashes the original bytes', () => {
 		const exactPrompt = '  Paint one polished sword.\n';
 		const target = { ...skillTarget(), exactPrompt };

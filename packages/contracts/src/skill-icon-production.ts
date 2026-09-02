@@ -777,6 +777,24 @@ export const SkillIconAssignmentSchema = z
 		}
 	});
 
+export const SkillIconFailureReasonSchema = z
+	.object({
+		kind: z.enum([
+			'provider-failure',
+			'provider-throttle',
+			'timeout',
+			'malformed-output',
+			'persistence',
+			'validation',
+			'other'
+		]),
+		message: z
+			.string()
+			.max(1_000)
+			.refine((value) => value.trim().length > 0, 'Failure message cannot be blank')
+	})
+	.strict();
+
 export const SkillIconResultSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-result-v1'),
@@ -800,6 +818,7 @@ export const SkillIconResultSchema = z
 		output: SkillIconCandidateAssetSchema.nullable(),
 		resultPath: SkillIconResultPathSchema,
 		findings: z.array(SkillIconResultFindingSchema).min(1).max(100),
+		failureReason: SkillIconFailureReasonSchema.optional(),
 		startedAt: IsoDateTimeSchema,
 		completedAt: IsoDateTimeSchema,
 		totalWallTimeMs: z.number().int().nonnegative(),
@@ -846,6 +865,13 @@ export const SkillIconResultSchema = z
 				message: 'Candidate and revise results require a retained candidate output'
 			});
 		}
+		if (result.status !== 'failed' && result.failureReason !== undefined) {
+			context.addIssue({
+				code: 'custom',
+				path: ['failureReason'],
+				message: 'Only failed results may declare a structured failure reason'
+			});
+		}
 		if (result.status === 'candidate') {
 			if (result.findings.some((finding) => finding.outcome === 'fail')) {
 				context.addIssue({
@@ -866,6 +892,37 @@ export const SkillIconResultSchema = z
 						message: `Candidate results require at least one ${evaluator} pass`
 					});
 				}
+			}
+		}
+		if (
+			result.status === 'revise' &&
+			!result.findings.some(
+				(finding) => finding.outcome === 'concern' || finding.outcome === 'fail'
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['findings'],
+				message: 'Revise results require at least one concern or failed finding'
+			});
+		}
+		if (result.status === 'failed') {
+			if (result.output !== null) {
+				context.addIssue({
+					code: 'custom',
+					path: ['output'],
+					message: 'Failed results cannot retain a candidate output'
+				});
+			}
+			if (
+				result.failureReason === undefined &&
+				!result.findings.some((finding) => finding.outcome === 'fail')
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['failureReason'],
+					message: 'Failed results require a failed finding or structured failure reason'
+				});
 			}
 		}
 		const expectedPromptHash = createHash('sha256').update(result.exactPrompt).digest('hex');
@@ -1009,6 +1066,7 @@ export type SkillIconStandaloneCanvas = z.infer<typeof SkillIconStandaloneCanvas
 export type SkillIconCalibrationCanvas = z.infer<typeof SkillIconCalibrationCanvasSchema>;
 export type SkillIconTarget = z.infer<typeof SkillIconTargetSchema>;
 export type SkillIconAssignment = z.infer<typeof SkillIconAssignmentSchema>;
+export type SkillIconFailureReason = z.infer<typeof SkillIconFailureReasonSchema>;
 export type SkillIconResultFinding = z.infer<typeof SkillIconResultFindingSchema>;
 export type SkillIconResult = z.infer<typeof SkillIconResultSchema>;
 export type SkillIconExecution = z.infer<typeof SkillIconExecutionSchema>;
