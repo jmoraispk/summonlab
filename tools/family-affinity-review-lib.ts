@@ -3,16 +3,41 @@ import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 
 import sharp from 'sharp';
-import { z } from 'zod';
 
 import {
 	FAMILY_AFFINITY_ROOT,
+	FamilyAffinityAssignmentSchema,
+	FamilyAffinityBlindReviewReceiptSchema,
 	FamilyAffinityManifestSchema,
+	FamilyAffinityResultSchema,
+	FamilyAffinityReviewAssignmentSchema,
+	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
 	PRODUCTION_AFFINITIES,
+	bridgeAttemptPaths,
+	canonicalAttemptPaths,
+	familyAffinityProducerIdentitySha256,
+	familyAffinityPromptSha256,
+	familyAffinityRawSha256,
+	familyAffinityReviewAssignmentPath,
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
+	validateFamilyAffinityCandidateEvidence,
+	validateFamilyAffinityReceiptEvidence,
+	validateFamilyAffinityReviewAssignmentEvidence,
+	type FamilyAffinityAssignment,
+	type FamilyAffinityBlindReviewReceipt,
+	type FamilyAffinityResult,
+	type FamilyAffinityReviewAssignment,
+	type FamilyAffinityReviewReceipt,
 	type FamilyAffinityTarget
+} from './family-affinity-production-lib.js';
+
+export {
+	FamilyAffinityBlindReviewReceiptSchema as BlindReviewReceiptSchema,
+	FamilyAffinityResultSchema as FamilyAffinityCandidateResultSchema,
+	FamilyAffinityReviewAssignmentSchema,
+	FamilyAffinityReviewReceiptSchema as OrdinaryReviewReceiptSchema
 } from './family-affinity-production-lib.js';
 
 export const FAMILY_AFFINITY_REVIEW_ROOT = `${FAMILY_AFFINITY_ROOT}/review` as const;
@@ -21,116 +46,10 @@ export const FAMILY_AFFINITY_REVIEW_CATALOG_PATH =
 export const FAMILY_CONTACT_SHEET_WIDTH = 1600 as const;
 export const FAMILY_CONTACT_SHEET_HEIGHT = 1200 as const;
 
-const RequiredTextSchema = z.string().trim().min(1);
-const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
-const OwnedPathSchema = z
-	.string()
-	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
-	.refine((path) => !path.includes('..'), 'Owned paths cannot traverse directories');
-const DecisionSchema = z.enum(['approved-review', 'rejected', 'revise']);
-const RubricDimensionSchema = z
-	.object({ verdict: z.enum(['pass', 'fail']), notes: RequiredTextSchema })
-	.strict();
-const RubricSchema = z
-	.object({
-		identity: RubricDimensionSchema,
-		tier: RubricDimensionSchema,
-		archetype: RubricDimensionSchema,
-		anatomy: RubricDimensionSchema,
-		affinity: RubricDimensionSchema,
-		counterplay: RubricDimensionSchema,
-		framing: RubricDimensionSchema,
-		finish: RubricDimensionSchema
-	})
-	.strict();
-
-export const FamilyAffinityCandidateResultSchema = z
-	.object({
-		schemaVersion: z.literal('family-affinity-candidate-result-v1'),
-		targetId: RequiredTextSchema,
-		targetSha256: Sha256Schema,
-		coordinateId: RequiredTextSchema,
-		candidateVersion: z.number().int().positive(),
-		producerId: RequiredTextSchema,
-		candidatePath: OwnedPathSchema,
-		candidateSha256: Sha256Schema,
-		resultPath: OwnedPathSchema,
-		sourceSha256: Sha256Schema,
-		promptSha256: Sha256Schema,
-		state: z.literal('candidate'),
-		runtimeCatalogMutationForbidden: z.literal(true)
-	})
-	.strict();
-
-const CommonReceiptShape = {
-	targetId: RequiredTextSchema,
-	targetSha256: Sha256Schema,
-	coordinateId: RequiredTextSchema,
-	candidateVersion: z.number().int().positive(),
-	decisionVersion: z.number().int().positive(),
-	producerId: RequiredTextSchema,
-	reviewerId: RequiredTextSchema,
-	candidatePath: OwnedPathSchema,
-	candidateSha256: Sha256Schema,
-	resultPath: OwnedPathSchema,
-	resultSha256: Sha256Schema,
-	sourceSha256: Sha256Schema,
-	promptSha256: Sha256Schema,
-	decision: DecisionSchema,
-	rubric: RubricSchema,
-	runtimeCatalogMutationForbidden: z.literal(true)
-} as const;
-
-export const OrdinaryReviewReceiptSchema = z
-	.object({
-		schemaVersion: z.literal('family-affinity-review-decision-v1'),
-		receiptType: z.literal('ordinary'),
-		...CommonReceiptShape
-	})
-	.strict()
-	.superRefine((receipt, context) => {
-		if (receipt.reviewerId === receipt.producerId) {
-			context.addIssue({ code: 'custom', message: 'Producer self-approval is forbidden' });
-		}
-		if (
-			receipt.decision === 'approved-review' &&
-			Object.values(receipt.rubric).some(({ verdict }) => verdict !== 'pass')
-		) {
-			context.addIssue({
-				code: 'custom',
-				message: 'Approved-review requires every rubric dimension to pass'
-			});
-		}
-	});
-
-export const BlindReviewReceiptSchema = z
-	.object({
-		schemaVersion: z.literal('family-affinity-blind-review-v1'),
-		receiptType: z.literal('blind'),
-		...CommonReceiptShape,
-		blindToProducerIdentity: z.literal(true),
-		blindToOrdinaryDecision: z.literal(true)
-	})
-	.strict()
-	.superRefine((receipt, context) => {
-		if (receipt.reviewerId === receipt.producerId) {
-			context.addIssue({ code: 'custom', message: 'Producer self-approval is forbidden' });
-		}
-		if (
-			receipt.decision === 'approved-review' &&
-			Object.values(receipt.rubric).some(({ verdict }) => verdict !== 'pass')
-		) {
-			context.addIssue({
-				code: 'custom',
-				message: 'Approved-review requires every rubric dimension to pass'
-			});
-		}
-	});
-
-export type FamilyAffinityCandidateResult = z.infer<typeof FamilyAffinityCandidateResultSchema>;
-export type OrdinaryReviewReceipt = z.infer<typeof OrdinaryReviewReceiptSchema>;
-export type BlindReviewReceipt = z.infer<typeof BlindReviewReceiptSchema>;
-export type ReviewDecision = z.infer<typeof DecisionSchema>;
+export type FamilyAffinityCandidateResult = FamilyAffinityResult;
+export type OrdinaryReviewReceipt = FamilyAffinityReviewReceipt;
+export type BlindReviewReceipt = FamilyAffinityBlindReviewReceipt;
+export type ReviewDecision = 'approved-review' | 'rejected' | 'revise';
 export type ReviewState = 'planned' | 'candidate' | 'approved-review' | 'rejected' | 'revise';
 
 export function reviewReceiptPath(
@@ -162,104 +81,71 @@ export function validateReviewTransition(from: ReviewState, to: ReviewState): vo
 	throw new Error(`Illegal review transition ${from} → ${to}; approval requires candidate state`);
 }
 
-function rawSha256(bytes: Uint8Array): string {
-	return createHash('sha256').update(bytes).digest('hex');
-}
-
-function requireReceiptBinding(
-	target: FamilyAffinityTarget,
-	result: FamilyAffinityCandidateResult,
-	receipt: OrdinaryReviewReceipt | BlindReviewReceipt
-): void {
-	const targetSha256 = familyAffinitySha256(target);
-	const resultSha256 = familyAffinitySha256(result);
-	const exactBindings =
-		receipt.targetId === target.targetId &&
-		receipt.targetSha256 === targetSha256 &&
-		receipt.coordinateId === target.coordinateId &&
-		receipt.candidateVersion === target.version &&
-		receipt.producerId === result.producerId &&
-		receipt.candidatePath === result.candidatePath &&
-		receipt.candidateSha256 === result.candidateSha256 &&
-		receipt.resultPath === result.resultPath &&
-		receipt.resultSha256 === resultSha256 &&
-		receipt.sourceSha256 === result.sourceSha256 &&
-		receipt.promptSha256 === result.promptSha256;
-	if (!exactBindings) throw new Error('Review receipt version/hash binding is stale or mismatched');
-	if (receipt.reviewerId === result.producerId)
-		throw new Error('Producer self-approval is forbidden');
-}
-
 export function evaluateFamilyAffinityReviewAttempt(input: {
 	target: unknown;
+	assignment?: unknown;
+	familyPacketBytes?: Uint8Array;
 	candidateBytes?: Uint8Array;
-	result?: unknown;
 	resultBytes?: Uint8Array;
 	ordinary?: unknown;
 	blind?: unknown;
 }): { state: ReviewState; revisionRequired: boolean; approved: boolean } {
 	const target = FamilyAffinityTargetSchema.parse(input.target);
-	if (
-		!input.candidateBytes &&
-		!input.result &&
-		!input.resultBytes &&
-		!input.ordinary &&
-		!input.blind
-	) {
+	if (!input.candidateBytes && !input.resultBytes && !input.ordinary && !input.blind) {
 		return { state: 'planned', revisionRequired: false, approved: false };
 	}
-	if (!input.result || !input.resultBytes)
-		throw new Error('Candidate requires an immutable result receipt');
+	if (!input.resultBytes) throw new Error('Candidate requires an immutable result receipt');
 	if (!input.candidateBytes) throw new Error('Result receipt requires candidate bytes');
-	if (target.status !== 'planned')
+	if (target.status !== 'planned' && target.status !== 'earth-bridge-provisional')
 		throw new Error('Only a planned production target may enter candidate state');
 	validateReviewTransition('planned', 'candidate');
 
-	let parsedResultBytes: unknown;
-	try {
-		parsedResultBytes = JSON.parse(Buffer.from(input.resultBytes).toString('utf8'));
-	} catch {
-		throw new Error('Result receipt bytes are malformed');
-	}
-	const result = FamilyAffinityCandidateResultSchema.parse(input.result);
-	const resultFromBytes = FamilyAffinityCandidateResultSchema.parse(parsedResultBytes);
-	if (familyAffinitySha256(resultFromBytes) !== familyAffinitySha256(result)) {
-		throw new Error('Result receipt bytes are stale or mismatched');
-	}
-	if (
-		result.targetId !== target.targetId ||
-		result.targetSha256 !== familyAffinitySha256(target) ||
-		result.coordinateId !== target.coordinateId ||
-		result.candidateVersion !== target.version ||
-		result.candidatePath !== target.ownedPaths.candidate ||
-		result.resultPath !== target.ownedPaths.result ||
-		result.sourceSha256 !== target.sources.familyPacketSha256
-	) {
-		throw new Error('Candidate result receipt is stale or cross-bound');
-	}
-	if (result.candidateSha256 !== rawSha256(input.candidateBytes)) {
-		throw new Error('Candidate hash mismatch');
-	}
-	if (!input.ordinary) return { state: 'candidate', revisionRequired: false, approved: false };
-	const ordinary = OrdinaryReviewReceiptSchema.parse(input.ordinary);
-	requireReceiptBinding(target, result, ordinary);
-
+	if (!input.assignment)
+		throw new Error('Candidate review requires production assignment evidence');
+	if (!input.familyPacketBytes) throw new Error('Candidate review requires family packet evidence');
+	const evidence = validateFamilyAffinityCandidateEvidence({
+		target,
+		assignment: input.assignment,
+		familyPacketBytes: input.familyPacketBytes,
+		candidateBytes: input.candidateBytes,
+		resultBytes: input.resultBytes
+	});
+	const result = evidence.result;
 	const requiresBlind = target.tier === 'T3' || target.tier === 'T5';
 	let blind: BlindReviewReceipt | undefined;
 	if (input.blind) {
-		blind = BlindReviewReceiptSchema.parse(input.blind);
-		requireReceiptBinding(target, result, blind);
+		blind = validateFamilyAffinityReceiptEvidence({
+			target,
+			result,
+			resultSha256: evidence.resultSha256,
+			receipt: input.blind,
+			kind: 'blind'
+		}) as BlindReviewReceipt;
 		if (!requiresBlind)
 			throw new Error('Blind receipts are owned only by T3/T5 candidate versions');
-		if (blind.reviewerId === ordinary.reviewerId) {
-			throw new Error('Blind reviewer must be independent from the ordinary reviewer');
-		}
-		if (blind.decision !== ordinary.decision) {
-			throw new Error('Ordinary and blind review decisions disagree');
-		}
+	}
+	if (!input.ordinary) return { state: 'candidate', revisionRequired: false, approved: false };
+	const ordinary = validateFamilyAffinityReceiptEvidence({
+		target,
+		result,
+		resultSha256: evidence.resultSha256,
+		receipt: input.ordinary,
+		kind: 'ordinary'
+	}) as OrdinaryReviewReceipt;
+	if (blind?.reviewerId === ordinary.reviewerId) {
+		throw new Error('Blind reviewer must be independent from the ordinary reviewer');
+	}
+	if (blind && blind.decision !== ordinary.decision) {
+		throw new Error('Ordinary and blind review decisions disagree');
 	}
 	if (requiresBlind && !blind)
 		throw new Error('T3/T5 candidate version requires a blind review receipt');
+	if (
+		target.anchor.kind === 'earth-bridge-provisional' &&
+		ordinary.decision === 'approved-review'
+	) {
+		throw new Error('Provisional Earth target cannot reach approved-review before Normal anchor');
+	}
 	if (ordinary.decision !== 'approved-review') {
 		return { state: ordinary.decision, revisionRequired: true, approved: false };
 	}
@@ -296,37 +182,207 @@ async function ensureSafeParent(repositoryRoot: string, ownedPath: string): Prom
 	return absolute;
 }
 
-function assertExactReceiptPath(
-	ownedPath: string,
-	receipt: OrdinaryReviewReceipt | BlindReviewReceipt
-): void {
-	const [familyId, formId, affinity] = receipt.coordinateId.split('/');
-	if (!familyId || !formId || !PRODUCTION_AFFINITIES.includes(affinity as never)) {
-		throw new Error('Review receipt coordinate is malformed');
-	}
-	const expected = reviewReceiptPath(
-		receipt.receiptType,
-		familyId,
-		formId,
-		affinity as (typeof PRODUCTION_AFFINITIES)[number],
-		receipt.candidateVersion,
-		receipt.decisionVersion
+async function requiredRealFile(repositoryRoot: string, ownedPath: string): Promise<Buffer> {
+	const bytes = await optionalRealFile(repositoryRoot, ownedPath);
+	if (!bytes) throw new Error(`Missing immutable review artifact: ${ownedPath}`);
+	return bytes;
+}
+
+async function loadLiveReviewAttempt(
+	repositoryRoot: string,
+	targetPath: string,
+	productionAssignmentPath: string,
+	manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`
+) {
+	const manifestBytes = await requiredRealFile(repositoryRoot, manifestPath);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const targetBytes = await requiredRealFile(repositoryRoot, targetPath);
+	const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+	const productionAssignmentBytes = await requiredRealFile(
+		repositoryRoot,
+		productionAssignmentPath
 	);
-	if (ownedPath !== expected) throw new Error(`Expected exact review receipt path ${expected}`);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(productionAssignmentBytes.toString('utf8'))
+	);
+	const expectedPaths =
+		target.namespace === 'canonical'
+			? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+			: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version);
+	if (
+		targetPath !== expectedPaths.target ||
+		productionAssignmentPath !== expectedPaths.assignment
+	) {
+		throw new Error('Review authorization target/assignment paths are not exact');
+	}
+	const collection = target.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
+	const coordinate = collection.activeCoordinates.find(
+		(entry) => entry.coordinateId === target.coordinateId
+	);
+	if (
+		!coordinate ||
+		coordinate.activeVersion !== target.version ||
+		coordinate.targetPath !== targetPath ||
+		coordinate.targetSha256 !== familyAffinitySha256(target) ||
+		coordinate.assignmentPath !== productionAssignmentPath ||
+		coordinate.assignmentSha256 !== familyAffinitySha256(productionAssignment)
+	) {
+		throw new Error('Review authorization is stale or manifest-unbound');
+	}
+	const candidateBytes = await requiredRealFile(repositoryRoot, target.ownedPaths.candidate);
+	const resultBytes = await requiredRealFile(repositoryRoot, target.ownedPaths.result);
+	const familyPacketBytes = await requiredRealFile(repositoryRoot, target.sources.familyPacketPath);
+	const result = FamilyAffinityResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	evaluateFamilyAffinityReviewAttempt({
+		target,
+		assignment: productionAssignment,
+		familyPacketBytes,
+		candidateBytes,
+		resultBytes
+	});
+	return {
+		manifestBytes,
+		target,
+		productionAssignment,
+		productionAssignmentBytes,
+		candidateBytes,
+		result,
+		resultBytes,
+		familyPacketBytes
+	};
+}
+
+export async function issueReviewAssignmentExclusive(
+	repositoryRoot: string,
+	input: {
+		kind: 'ordinary' | 'blind';
+		reviewerId: string;
+		targetPath: string;
+		productionAssignmentPath: string;
+		decisionVersion: number;
+		manifestPath?: string;
+	}
+): Promise<{ path: string; assignment: FamilyAffinityReviewAssignment }> {
+	const manifestPath = input.manifestPath ?? `${FAMILY_AFFINITY_ROOT}/manifest.json`;
+	const live = await loadLiveReviewAttempt(
+		repositoryRoot,
+		input.targetPath,
+		input.productionAssignmentPath,
+		manifestPath
+	);
+	if (input.reviewerId === live.result.producerId) {
+		throw new Error('Producer cannot receive a review assignment for self-approval');
+	}
+	const requiresBlind = live.target.tier === 'T3' || live.target.tier === 'T5';
+	if (input.kind === 'blind' && !requiresBlind) {
+		throw new Error('Blind assignments are only valid for T3/T5 candidates');
+	}
+	if (input.decisionVersion !== live.target.version) {
+		throw new Error('One immutable review assignment is permitted per active candidate version');
+	}
+	const permittedReceiptPath =
+		input.kind === 'ordinary'
+			? live.target.ownedPaths.decision
+			: live.target.ownedPaths.blindReview;
+	const path = familyAffinityReviewAssignmentPath(input.kind, live.target, input.decisionVersion);
+	const assignment = FamilyAffinityReviewAssignmentSchema.parse({
+		schemaVersion: 'family-affinity-review-assignment-v1',
+		reviewKind: input.kind,
+		assignmentId: `${live.target.targetId}/${input.kind}-review-v${input.decisionVersion}/assignment`,
+		reviewerId: input.reviewerId,
+		producerId: input.kind === 'ordinary' ? live.result.producerId : null,
+		producerIdentitySha256: familyAffinityProducerIdentitySha256(live.result.producerId),
+		manifestPath,
+		manifestSha256: familyAffinityRawSha256(live.manifestBytes),
+		targetId: live.target.targetId,
+		targetPath: input.targetPath,
+		targetSha256: familyAffinitySha256(live.target),
+		productionAssignmentPath: input.productionAssignmentPath,
+		productionAssignmentSha256: familyAffinitySha256(live.productionAssignment),
+		coordinateId: live.target.coordinateId,
+		candidateVersion: live.target.version,
+		decisionVersion: input.decisionVersion,
+		candidatePath: live.result.candidatePath,
+		candidateSha256: live.result.candidateSha256,
+		resultPath: live.result.resultPath,
+		resultSha256: familyAffinityRawSha256(live.resultBytes),
+		sourcePath: live.result.sourcePath,
+		sourceSha256: live.result.sourceSha256,
+		promptSha256: live.result.promptSha256,
+		permittedReceiptPath,
+		exclusiveCreateRequired: true,
+		runtimeCatalogMutationForbidden: true
+	});
+	const absolute = await ensureSafeParent(repositoryRoot, path);
+	await writeFile(absolute, stableFamilyAffinityJson(assignment), { flag: 'wx' });
+	return { path, assignment };
 }
 
 export async function createReviewReceiptExclusive(
 	repositoryRoot: string,
-	ownedPath: string,
+	reviewAssignmentPath: string,
 	receiptInput: unknown
 ): Promise<void> {
-	const discriminator = (receiptInput as { receiptType?: unknown })?.receiptType;
+	const assignmentBytes = await requiredRealFile(repositoryRoot, reviewAssignmentPath);
+	const assignment = FamilyAffinityReviewAssignmentSchema.parse(
+		JSON.parse(assignmentBytes.toString('utf8'))
+	);
+	if (
+		reviewAssignmentPath !==
+		familyAffinityReviewAssignmentPath(
+			assignment.reviewKind,
+			FamilyAffinityTargetSchema.parse(
+				JSON.parse((await requiredRealFile(repositoryRoot, assignment.targetPath)).toString('utf8'))
+			),
+			assignment.decisionVersion
+		)
+	) {
+		throw new Error('Review assignment path is not controller-owned or exact');
+	}
+	const live = await loadLiveReviewAttempt(
+		repositoryRoot,
+		assignment.targetPath,
+		assignment.productionAssignmentPath,
+		assignment.manifestPath
+	);
+	validateFamilyAffinityReviewAssignmentEvidence({
+		reviewAssignment: assignment,
+		reviewAssignmentPath,
+		kind: assignment.reviewKind,
+		manifestPath: assignment.manifestPath,
+		manifestSha256: familyAffinityRawSha256(live.manifestBytes),
+		target: live.target,
+		targetPath: assignment.targetPath,
+		productionAssignment: live.productionAssignment,
+		productionAssignmentPath: assignment.productionAssignmentPath,
+		result: live.result,
+		resultSha256: familyAffinityRawSha256(live.resultBytes)
+	});
 	const receipt =
-		discriminator === 'ordinary'
-			? OrdinaryReviewReceiptSchema.parse(receiptInput)
-			: BlindReviewReceiptSchema.parse(receiptInput);
-	assertExactReceiptPath(ownedPath, receipt);
-	const absolute = await ensureSafeParent(repositoryRoot, ownedPath);
+		assignment.reviewKind === 'ordinary'
+			? FamilyAffinityReviewReceiptSchema.parse(receiptInput)
+			: FamilyAffinityBlindReviewReceiptSchema.parse(receiptInput);
+	if (
+		receipt.receiptType !== assignment.reviewKind ||
+		receipt.reviewerId !== assignment.reviewerId ||
+		receipt.targetId !== assignment.targetId ||
+		receipt.targetSha256 !== assignment.targetSha256 ||
+		receipt.coordinateId !== assignment.coordinateId ||
+		receipt.candidateVersion !== assignment.candidateVersion ||
+		receipt.decisionVersion !== assignment.decisionVersion ||
+		receipt.producerIdentitySha256 !== assignment.producerIdentitySha256 ||
+		(receipt.receiptType === 'ordinary' && receipt.producerId !== assignment.producerId) ||
+		receipt.candidatePath !== assignment.candidatePath ||
+		receipt.candidateSha256 !== assignment.candidateSha256 ||
+		receipt.resultPath !== assignment.resultPath ||
+		receipt.resultSha256 !== assignment.resultSha256 ||
+		receipt.sourcePath !== assignment.sourcePath ||
+		receipt.sourceSha256 !== assignment.sourceSha256 ||
+		receipt.promptSha256 !== assignment.promptSha256
+	) {
+		throw new Error('Receipt exceeds or mismatches controller review assignment');
+	}
+	const absolute = await ensureSafeParent(repositoryRoot, assignment.permittedReceiptPath);
 	await writeFile(absolute, stableFamilyAffinityJson(receipt), { flag: 'wx' });
 }
 
@@ -362,8 +418,11 @@ export type FamilyAffinityReviewCatalog = {
 	experimentId: 'family-affinity-v1';
 	familyCount: 30;
 	coordinateCount: 750;
+	bridgeCoordinateCount: number;
 	generatedCount: number;
 	approvedReviewCount: number;
+	bridgeGeneratedCount: number;
+	bridgeApprovedReviewCount: number;
 	revisionRequiredCount: number;
 	runtimeCount: 0;
 	stateCeiling: 'approved-review';
@@ -393,6 +452,12 @@ const ORDINARY_RECEIPT_PATTERN =
 	/^assets\/enemies\/experiments\/family-affinity-v1\/review\/decisions\/([a-z][a-z0-9-]*)\/([a-z][a-z0-9-]*)\/(normal|fire|earth|wind|water)\/candidate-v([1-9][0-9]*)-review-v([1-9][0-9]*)\.json$/u;
 const BLIND_RECEIPT_PATTERN =
 	/^assets\/enemies\/experiments\/family-affinity-v1\/review\/blind\/([a-z][a-z0-9-]*)\/([a-z][a-z0-9-]*)\/(normal|fire|earth|wind|water)\/candidate-v([1-9][0-9]*)-blind-v([1-9][0-9]*)\.json$/u;
+const BRIDGE_ORDINARY_RECEIPT_PATTERN =
+	/^assets\/enemies\/experiments\/family-affinity-v1\/review\/bridge\/decisions\/([a-z][a-z0-9-]*)\/(normal|fire|earth|wind|water)\/candidate-v([1-9][0-9]*)-review-v([1-9][0-9]*)\.json$/u;
+const BRIDGE_BLIND_RECEIPT_PATTERN =
+	/^assets\/enemies\/experiments\/family-affinity-v1\/review\/bridge\/blind\/([a-z][a-z0-9-]*)\/(normal|fire|earth|wind|water)\/candidate-v([1-9][0-9]*)-blind-v([1-9][0-9]*)\.json$/u;
+const REVIEW_ASSIGNMENT_PATTERN =
+	/^assets\/enemies\/experiments\/family-affinity-v1\/review\/(?:bridge\/)?assignments\/(?:decisions|blind)\/.*-assignment\.json$/u;
 
 async function optionalRealFile(
 	repositoryRoot: string,
@@ -526,32 +591,37 @@ async function renderFamilyContactSheet(
 export async function buildFamilyAffinityReviewArtifacts(
 	repositoryRoot: string
 ): Promise<FamilyAffinityReviewArtifacts> {
-	const manifest = FamilyAffinityManifestSchema.parse(
-		JSON.parse(
-			await readFile(
-				absoluteOwnedPath(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/manifest.json`),
-				'utf8'
-			)
-		)
-	);
-	if (manifest.bridge.activeCoordinates.length !== 0) {
-		throw new Error('Task 8 initial review export expects no materialized bridge coordinates');
-	}
-
-	const targets = await Promise.all(
-		manifest.canonicalMatrix.activeCoordinates.map(async (coordinate) => {
+	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
+	const manifestBytes = await requiredRealFile(repositoryRoot, manifestPath);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const allCoordinates = [
+		...manifest.canonicalMatrix.activeCoordinates,
+		...manifest.bridge.activeCoordinates
+	];
+	const attempts = await Promise.all(
+		allCoordinates.map(async (coordinate) => {
 			const bytes = await optionalRealFile(repositoryRoot, coordinate.targetPath);
 			if (!bytes) throw new Error(`Missing active target: ${coordinate.targetPath}`);
 			const target = FamilyAffinityTargetSchema.parse(JSON.parse(bytes.toString('utf8')));
 			if (familyAffinitySha256(target) !== coordinate.targetSha256) {
 				throw new Error(`Active target hash mismatch: ${coordinate.targetPath}`);
 			}
-			return target;
+			const assignmentBytes = await requiredRealFile(repositoryRoot, coordinate.assignmentPath);
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(assignmentBytes.toString('utf8'))
+			);
+			if (familyAffinitySha256(assignment) !== coordinate.assignmentSha256) {
+				throw new Error(`Active assignment hash mismatch: ${coordinate.assignmentPath}`);
+			}
+			familyAffinityPromptSha256(target, assignment);
+			return { target, assignment, coordinate };
 		})
 	);
+	const targets = attempts.map(({ target }) => target);
+	const canonicalTargets = targets.filter(({ namespace }) => namespace === 'canonical');
 
 	const expectedGeneratedPaths = new Set<string>([FAMILY_AFFINITY_REVIEW_CATALOG_PATH]);
-	for (const familyId of [...new Set(targets.map(({ familyId }) => familyId))]) {
+	for (const familyId of [...new Set(canonicalTargets.map(({ familyId }) => familyId))]) {
 		expectedGeneratedPaths.add(`${FAMILY_AFFINITY_REVIEW_ROOT}/families/${familyId}/summary.json`);
 		expectedGeneratedPaths.add(
 			`${FAMILY_AFFINITY_REVIEW_ROOT}/families/${familyId}/contact-sheet.png`
@@ -559,29 +629,89 @@ export async function buildFamilyAffinityReviewArtifacts(
 	}
 	const allReviewFiles = await walkFilesNoSymlinks(repositoryRoot, FAMILY_AFFINITY_REVIEW_ROOT);
 	const receiptFiles = allReviewFiles.filter(
-		(path) => ORDINARY_RECEIPT_PATTERN.test(path) || BLIND_RECEIPT_PATTERN.test(path)
+		(path) =>
+			ORDINARY_RECEIPT_PATTERN.test(path) ||
+			BLIND_RECEIPT_PATTERN.test(path) ||
+			BRIDGE_ORDINARY_RECEIPT_PATTERN.test(path) ||
+			BRIDGE_BLIND_RECEIPT_PATTERN.test(path)
+	);
+	const reviewAssignmentFiles = allReviewFiles.filter((path) =>
+		REVIEW_ASSIGNMENT_PATTERN.test(path)
 	);
 	for (const path of allReviewFiles) {
-		if (!expectedGeneratedPaths.has(path) && !receiptFiles.includes(path)) {
+		if (
+			!expectedGeneratedPaths.has(path) &&
+			!receiptFiles.includes(path) &&
+			!reviewAssignmentFiles.includes(path)
+		) {
 			throw new Error(`Malformed or extraneous review-owned path: ${path}`);
 		}
 	}
+	const attemptByTargetId = new Map(attempts.map((attempt) => [attempt.target.targetId, attempt]));
+	const reviewAssignmentByPath = new Map<string, FamilyAffinityReviewAssignment>();
+	for (const path of reviewAssignmentFiles) {
+		const bytes = await requiredRealFile(repositoryRoot, path);
+		const reviewAssignment = FamilyAffinityReviewAssignmentSchema.parse(
+			JSON.parse(bytes.toString('utf8'))
+		);
+		const attempt = attemptByTargetId.get(reviewAssignment.targetId);
+		if (!attempt) throw new Error(`Review assignment targets a non-active attempt: ${path}`);
+		const { target, assignment, coordinate } = attempt;
+		const expectedPath = familyAffinityReviewAssignmentPath(
+			reviewAssignment.reviewKind,
+			target,
+			reviewAssignment.decisionVersion
+		);
+		if (path !== expectedPath) {
+			throw new Error(`Review assignment is stale, malformed, or cross-bound: ${path}`);
+		}
+		const candidateBytes = await requiredRealFile(repositoryRoot, reviewAssignment.candidatePath);
+		const resultBytes = await requiredRealFile(repositoryRoot, reviewAssignment.resultPath);
+		const familyPacketBytes = await requiredRealFile(repositoryRoot, reviewAssignment.sourcePath);
+		const evidence = validateFamilyAffinityCandidateEvidence({
+			target,
+			assignment,
+			familyPacketBytes,
+			candidateBytes,
+			resultBytes
+		});
+		reviewAssignmentByPath.set(
+			path,
+			validateFamilyAffinityReviewAssignmentEvidence({
+				reviewAssignment,
+				reviewAssignmentPath: path,
+				kind: reviewAssignment.reviewKind,
+				manifestPath,
+				target,
+				targetPath: coordinate.targetPath,
+				productionAssignment: assignment,
+				productionAssignmentPath: coordinate.assignmentPath,
+				result: evidence.result,
+				resultSha256: evidence.resultSha256
+			})
+		);
+	}
 
-	const ordinaryByKey = new Map<string, OrdinaryReviewReceipt[]>();
-	const blindByKey = new Map<string, BlindReviewReceipt[]>();
+	const ordinaryByKey = new Map<
+		string,
+		Array<{ path: string; receipt: OrdinaryReviewReceipt; bytes: Buffer }>
+	>();
+	const blindByKey = new Map<
+		string,
+		Array<{ path: string; receipt: BlindReviewReceipt; bytes: Buffer }>
+	>();
 	for (const path of receiptFiles) {
 		const bytes = await optionalRealFile(repositoryRoot, path);
 		if (!bytes) throw new Error(`Review receipt disappeared during scan: ${path}`);
-		const ordinaryMatch = path.match(ORDINARY_RECEIPT_PATTERN);
-		const blindMatch = path.match(BLIND_RECEIPT_PATTERN);
+		const ordinaryMatch =
+			ORDINARY_RECEIPT_PATTERN.test(path) || BRIDGE_ORDINARY_RECEIPT_PATTERN.test(path);
 		const receipt = ordinaryMatch
-			? OrdinaryReviewReceiptSchema.parse(JSON.parse(bytes.toString('utf8')))
-			: BlindReviewReceiptSchema.parse(JSON.parse(bytes.toString('utf8')));
-		assertExactReceiptPath(path, receipt);
+			? FamilyAffinityReviewReceiptSchema.parse(JSON.parse(bytes.toString('utf8')))
+			: FamilyAffinityBlindReviewReceiptSchema.parse(JSON.parse(bytes.toString('utf8')));
 		const key = `${receipt.coordinateId}/v${receipt.candidateVersion}`;
 		const bucket = ordinaryMatch ? ordinaryByKey : blindByKey;
 		const values = bucket.get(key) ?? [];
-		values.push(receipt as never);
+		values.push({ path, receipt, bytes } as never);
 		bucket.set(key, values as never);
 	}
 	for (const [key, receipts] of [...ordinaryByKey, ...blindByKey]) {
@@ -591,25 +721,61 @@ export async function buildFamilyAffinityReviewArtifacts(
 
 	const candidateBytesByCoordinate = new Map<string, Buffer>();
 	const cellByCoordinate = new Map<string, ReviewCell>();
-	for (const target of targets) {
+	for (const { target, assignment, coordinate } of attempts) {
 		const candidateBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.candidate);
 		const resultBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.result);
 		const key = `${target.coordinateId}/v${target.version}`;
-		const ordinary = ordinaryByKey.get(key)?.[0];
-		const blind = blindByKey.get(key)?.[0];
-		if (!candidateBytes && !resultBytes && (ordinary || blind)) {
+		const ordinaryRecord = ordinaryByKey.get(key)?.[0];
+		const blindRecord = blindByKey.get(key)?.[0];
+		if (!candidateBytes && !resultBytes && (ordinaryRecord || blindRecord)) {
 			throw new Error(`Review receipt exists without candidate/result for ${target.coordinateId}`);
 		}
-		const result = resultBytes
-			? FamilyAffinityCandidateResultSchema.parse(JSON.parse(resultBytes.toString('utf8')))
-			: undefined;
+		for (const record of [ordinaryRecord, blindRecord].filter(
+			(value): value is NonNullable<typeof value> => Boolean(value)
+		)) {
+			const kind = record.receipt.receiptType;
+			const expectedReceiptPath =
+				kind === 'ordinary' ? target.ownedPaths.decision : target.ownedPaths.blindReview;
+			if (record.path !== expectedReceiptPath) {
+				throw new Error(`Receipt path is not target-owned: ${record.path}`);
+			}
+			const reviewAssignmentPath = familyAffinityReviewAssignmentPath(
+				kind,
+				target,
+				record.receipt.decisionVersion
+			);
+			if (!reviewAssignmentFiles.includes(reviewAssignmentPath)) {
+				throw new Error(`Receipt lacks controller-issued review assignment: ${record.path}`);
+			}
+			const reviewAssignment = reviewAssignmentByPath.get(reviewAssignmentPath)!;
+			if (
+				reviewAssignment.reviewKind !== kind ||
+				reviewAssignment.reviewerId !== record.receipt.reviewerId ||
+				reviewAssignment.targetPath !== coordinate.targetPath ||
+				reviewAssignment.productionAssignmentPath !== coordinate.assignmentPath ||
+				reviewAssignment.permittedReceiptPath !== record.path ||
+				reviewAssignment.targetSha256 !== coordinate.targetSha256 ||
+				reviewAssignment.productionAssignmentSha256 !== coordinate.assignmentSha256 ||
+				reviewAssignment.candidateSha256 !== record.receipt.candidateSha256 ||
+				reviewAssignment.resultSha256 !== record.receipt.resultSha256 ||
+				reviewAssignment.sourceSha256 !== record.receipt.sourceSha256 ||
+				reviewAssignment.promptSha256 !== record.receipt.promptSha256
+			) {
+				throw new Error(`Receipt is stale or exceeds controller assignment: ${record.path}`);
+			}
+		}
+		const familyPacketBytes =
+			candidateBytes || resultBytes
+				? await requiredRealFile(repositoryRoot, target.sources.familyPacketPath)
+				: undefined;
 		const evaluated = evaluateFamilyAffinityReviewAttempt({
 			target,
+			assignment,
+			...(familyPacketBytes ? { familyPacketBytes } : {}),
 			...(candidateBytes ? { candidateBytes } : {}),
-			...(result ? { result } : {}),
 			...(resultBytes ? { resultBytes } : {}),
-			...(ordinary ? { ordinary } : {}),
-			...(blind ? { blind } : {})
+			...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
+			...(blindRecord ? { blind: blindRecord.receipt } : {})
 		});
 		if (candidateBytes) candidateBytesByCoordinate.set(target.coordinateId, candidateBytes);
 		cellByCoordinate.set(target.coordinateId, {
@@ -628,16 +794,16 @@ export async function buildFamilyAffinityReviewArtifacts(
 							? 'CANDIDATE'
 							: 'REVISION REQUIRED',
 			candidatePath: candidateBytes ? target.ownedPaths.candidate : null,
-			candidateSha256: candidateBytes ? rawSha256(candidateBytes) : null,
+			candidateSha256: candidateBytes ? familyAffinityRawSha256(candidateBytes) : null,
 			revisionRequired: evaluated.revisionRequired
 		});
 	}
 
-	const familyIds = [...new Set(targets.map(({ familyId }) => familyId))];
+	const familyIds = [...new Set(canonicalTargets.map(({ familyId }) => familyId))];
 	if (familyIds.length !== 30) throw new Error(`Expected 30 families, found ${familyIds.length}`);
 	const families: FamilyAffinityReviewArtifacts['families'] = [];
 	for (const familyId of familyIds) {
-		const familyTargets = targets.filter((target) => target.familyId === familyId);
+		const familyTargets = canonicalTargets.filter((target) => target.familyId === familyId);
 		const orderedCells = FORM_TIERS.flatMap((tier) =>
 			PRODUCTION_AFFINITIES.map((affinity) => {
 				const target = familyTargets.find(
@@ -689,13 +855,20 @@ export async function buildFamilyAffinityReviewArtifacts(
 		(sum, family) => sum + family.summary.revisionRequiredCount,
 		0
 	);
+	const bridgeCells = targets
+		.filter(({ namespace }) => namespace === 'bridge')
+		.map(({ coordinateId }) => cellByCoordinate.get(coordinateId)!);
 	const catalog: FamilyAffinityReviewCatalog = {
 		schemaVersion: 'family-affinity-review-catalog-v1',
 		experimentId: 'family-affinity-v1',
 		familyCount: 30,
 		coordinateCount: 750,
+		bridgeCoordinateCount: bridgeCells.length,
 		generatedCount,
 		approvedReviewCount,
+		bridgeGeneratedCount: bridgeCells.filter(({ state }) => state !== 'planned').length,
+		bridgeApprovedReviewCount: bridgeCells.filter(({ state }) => state === 'approved-review')
+			.length,
 		revisionRequiredCount,
 		runtimeCount: 0,
 		stateCeiling: 'approved-review',
@@ -713,7 +886,7 @@ export async function buildFamilyAffinityReviewArtifacts(
 			families
 				.map(
 					(family) =>
-						`${family.summaryPath}\0${familyAffinitySha256(family.summary)}\0${family.contactSheetPath}\0${rawSha256(family.contactSheet)}`
+						`${family.summaryPath}\0${familyAffinitySha256(family.summary)}\0${family.contactSheetPath}\0${familyAffinityRawSha256(family.contactSheet)}`
 				)
 				.join('\n')
 		)

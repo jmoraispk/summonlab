@@ -10,14 +10,20 @@ import {
 	allocateFamilyAffinityRevision,
 	buildFamilyAffinityProductionBundle,
 	bridgeAttemptPaths,
+	canonicalAttemptPaths,
 	FamilyAffinityAssignmentSchema,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
+	familyAffinityProducerIdentitySha256,
+	familyAffinityPromptSha256,
+	familyAffinityRawSha256,
+	familyAffinityReviewAssignmentPath,
 	familyAffinitySha256,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityProductionBundle,
 	validateFamilyAffinityAttemptCrossBinding,
+	validateFamilyAffinityNormalAnchorEvidence,
 	validateFamilyAffinityReviewPromotion,
 	CurrentClassMappingFileSchema,
 	FamilyPacketSchema
@@ -27,6 +33,46 @@ import type {
 	FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
 import { exportFamilyAffinityProduction } from './export-family-affinity-production.js';
+
+const passingReviewRubric = Object.fromEntries(
+	['identity', 'tier', 'archetype', 'anatomy', 'affinity', 'counterplay', 'framing', 'finish'].map(
+		(key) => [key, { verdict: 'pass', notes: `${key} independently reviewed` }]
+	)
+);
+
+function makeOrdinaryReviewReceipt(
+	target: FamilyAffinityTarget,
+	input: {
+		decision?: 'approved-review' | 'rejected' | 'revise';
+		candidateSha256?: string;
+		resultSha256?: string;
+		producerId?: string;
+	} = {}
+) {
+	const producerId = input.producerId ?? 'producer-alpha';
+	return {
+		schemaVersion: 'family-affinity-review-decision-v1' as const,
+		receiptType: 'ordinary' as const,
+		targetId: target.targetId,
+		targetSha256: familyAffinitySha256(target),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		decisionVersion: target.version,
+		producerId,
+		reviewerId: 'reviewer-beta',
+		producerIdentitySha256: familyAffinityProducerIdentitySha256(producerId),
+		candidatePath: target.ownedPaths.candidate,
+		candidateSha256: input.candidateSha256 ?? 'c'.repeat(64),
+		resultPath: target.ownedPaths.result,
+		resultSha256: input.resultSha256 ?? 'b'.repeat(64),
+		sourcePath: target.sources.familyPacketPath,
+		sourceSha256: target.sources.familyPacketSha256,
+		promptSha256: 'd'.repeat(64),
+		decision: input.decision ?? 'approved-review',
+		rubric: passingReviewRubric,
+		runtimeCatalogMutationForbidden: true as const
+	};
+}
 
 const validFamily = {
 	schemaVersion: 'family-packet-v1',
@@ -2605,19 +2651,10 @@ describe('family affinity production manifest', () => {
 		const fire = approved.targets.find(
 			({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
 		)!;
-		const receipt = {
-			schemaVersion: 'family-affinity-review-receipt-v1' as const,
-			targetId: normal.targetId,
-			targetSha256: familyAffinitySha256(normal),
-			resultPath: normal.ownedPaths.result,
-			resultSha256: 'b'.repeat(64),
-			candidatePath: normal.ownedPaths.candidate,
-			candidateSha256: 'c'.repeat(64),
-			decision: 'approved-review' as const,
-			reviewerRole: 'independent-reviewer' as const
-		};
+		const receipt = makeOrdinaryReviewReceipt(normal);
+		const receiptBytes = Buffer.from(stableFamilyAffinityJson(receipt));
 		if (fire.anchor.kind !== 'normal-approved-review') throw new Error('Expected Normal anchor');
-		fire.anchor.reviewReceiptSha256 = familyAffinitySha256(receipt);
+		fire.anchor.reviewReceiptSha256 = familyAffinityRawSha256(receiptBytes);
 		fire.anchor.normalCandidatePath = receipt.candidatePath;
 		fire.anchor.normalCandidateSha256 = receipt.candidateSha256;
 		fire.anchor.normalResultPath = receipt.resultPath;
@@ -2642,7 +2679,7 @@ describe('family affinity production manifest', () => {
 		rebindFire(approved);
 		expect(() =>
 			validateFamilyAffinityProductionBundle(approved, {
-				[normal.ownedPaths.decision]: receipt
+				[normal.ownedPaths.decision]: { receipt, bytes: receiptBytes }
 			})
 		).not.toThrow();
 
@@ -2675,7 +2712,7 @@ describe('family affinity production manifest', () => {
 			rebindFire(changed);
 			expect(() =>
 				validateFamilyAffinityProductionBundle(changed, {
-					[reviewPath]: receipt
+					[reviewPath]: { receipt, bytes: receiptBytes }
 				})
 			).toThrow(/anchor|receipt|family|form/i);
 		}
@@ -2705,17 +2742,7 @@ describe('family affinity production manifest', () => {
 				normalCandidateSha256: 'a'.repeat(64)
 			}
 		});
-		const receipt = {
-			schemaVersion: 'family-affinity-review-receipt-v1',
-			targetId: provisional.targetId,
-			targetSha256: familyAffinitySha256(provisional),
-			resultPath: provisional.ownedPaths.result,
-			resultSha256: 'b'.repeat(64),
-			candidatePath: provisional.ownedPaths.candidate,
-			candidateSha256: 'c'.repeat(64),
-			decision: 'approved-review',
-			reviewerRole: 'independent-reviewer'
-		};
+		const receipt = makeOrdinaryReviewReceipt(provisional);
 		expect(() => validateFamilyAffinityReviewPromotion(provisional, receipt)).toThrow(
 			/provisional Earth.*cannot reach approved-review/i
 		);
@@ -2759,29 +2786,80 @@ async function stageFamilyProductionSource(root: string) {
 }
 
 async function writeRejectedAttemptEvidence(root: string, target: FamilyAffinityTarget) {
+	const attemptPaths =
+		target.namespace === 'canonical'
+			? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+			: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version);
+	const assignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(root, attemptPaths.assignment), 'utf8'))
+	);
 	const candidateBytes = `candidate:${target.targetId}`;
 	await writeOwnedFixture(root, target.ownedPaths.candidate, candidateBytes);
 	const result = {
-		schemaVersion: 'family-affinity-result-v1',
+		schemaVersion: 'family-affinity-result-v1' as const,
 		targetId: target.targetId,
 		targetSha256: familyAffinitySha256(target),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		producerId: 'producer-alpha',
 		candidatePath: target.ownedPaths.candidate,
-		candidateSha256: createHash('sha256').update(candidateBytes).digest('hex'),
-		state: 'rejected'
+		candidateSha256: familyAffinityRawSha256(candidateBytes),
+		resultPath: target.ownedPaths.result,
+		sourcePath: target.sources.familyPacketPath,
+		sourceSha256: target.sources.familyPacketSha256,
+		promptSha256: familyAffinityPromptSha256(target, assignment),
+		state: 'candidate-only' as const,
+		runtimeCatalogMutationForbidden: true as const
 	};
 	const resultBytes = stableFamilyAffinityJson(result);
 	await writeOwnedFixture(root, target.ownedPaths.result, resultBytes);
-	await writeOwnedFixture(root, target.ownedPaths.decision, {
-		schemaVersion: 'family-affinity-review-receipt-v1',
+	const receipt = {
+		...makeOrdinaryReviewReceipt(target, {
+			decision: 'rejected',
+			candidateSha256: result.candidateSha256,
+			resultSha256: familyAffinityRawSha256(resultBytes)
+		}),
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256
+	};
+	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
+	const manifestBytes = await readFile(join(root, manifestPath));
+	const reviewAssignment = {
+		schemaVersion: 'family-affinity-review-assignment-v1' as const,
+		reviewKind: 'ordinary' as const,
+		assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
+		reviewerId: receipt.reviewerId,
+		producerId: result.producerId,
+		producerIdentitySha256: result.producerId
+			? familyAffinityProducerIdentitySha256(result.producerId)
+			: receipt.producerIdentitySha256,
+		manifestPath,
+		manifestSha256: familyAffinityRawSha256(manifestBytes),
 		targetId: target.targetId,
+		targetPath: attemptPaths.target,
 		targetSha256: familyAffinitySha256(target),
-		resultPath: target.ownedPaths.result,
-		resultSha256: createHash('sha256').update(resultBytes).digest('hex'),
-		candidatePath: target.ownedPaths.candidate,
+		productionAssignmentPath: attemptPaths.assignment,
+		productionAssignmentSha256: familyAffinitySha256(assignment),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		decisionVersion: target.version,
+		candidatePath: result.candidatePath,
 		candidateSha256: result.candidateSha256,
-		decision: 'rejected',
-		reviewerRole: 'independent-reviewer'
-	});
+		resultPath: result.resultPath,
+		resultSha256: receipt.resultSha256,
+		sourcePath: result.sourcePath,
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256,
+		permittedReceiptPath: target.ownedPaths.decision,
+		exclusiveCreateRequired: true as const,
+		runtimeCatalogMutationForbidden: true as const
+	};
+	await writeOwnedFixture(
+		root,
+		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
+		reviewAssignment
+	);
+	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
 }
 
 describe('deterministic family affinity exporter', () => {
@@ -2998,6 +3076,13 @@ async function makeRevisionFixture(options?: {
 	const root = await mkdtemp(join(tmpdir(), 'family-affinity-revision-'));
 	const { mapping, familyPackets } = await loadCurrentClassAuditFixtures();
 	const bundle = buildFamilyAffinityProductionBundle(familyPackets, mapping);
+	for (const family of familyPackets) {
+		await writeOwnedFixture(
+			root,
+			`${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`,
+			family
+		);
+	}
 	for (const artifact of bundle.artifacts) {
 		await writeOwnedFixture(root, artifact.path, artifact.value as object);
 	}
@@ -3077,34 +3162,145 @@ async function makeRevisionFixture(options?: {
 	await writeOwnedFixture(root, targetPath, target);
 	const candidateBytes = 'candidate-pixels-v1';
 	await writeOwnedFixture(root, target.ownedPaths.candidate, candidateBytes);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(await readFile(join(root, assignmentPath), 'utf8'))
+	);
 	const result = {
-		schemaVersion: 'family-affinity-result-v1',
+		schemaVersion: 'family-affinity-result-v1' as const,
 		targetId: target.targetId,
 		targetSha256: familyAffinitySha256(target),
+		coordinateId: target.coordinateId,
+		candidateVersion: target.version,
+		producerId: 'producer-alpha',
 		candidatePath: target.ownedPaths.candidate,
-		candidateSha256: createHash('sha256').update(candidateBytes).digest('hex'),
-		state: options?.decision === 'revise' ? 'revise' : 'rejected'
+		candidateSha256: familyAffinityRawSha256(candidateBytes),
+		resultPath: target.ownedPaths.result,
+		sourcePath: target.sources.familyPacketPath,
+		sourceSha256: target.sources.familyPacketSha256,
+		promptSha256: familyAffinityPromptSha256(target, productionAssignment),
+		state: 'candidate-only' as const,
+		runtimeCatalogMutationForbidden: true as const
 	};
 	const resultBytes = stableFamilyAffinityJson(result);
 	await writeOwnedFixture(root, target.ownedPaths.result, resultBytes);
 	const receipt = {
-		schemaVersion: 'family-affinity-review-receipt-v1',
-		targetId: target.targetId,
-		targetSha256: familyAffinitySha256(target),
-		resultPath: target.ownedPaths.result,
-		resultSha256: createHash('sha256').update(resultBytes).digest('hex'),
-		candidatePath: target.ownedPaths.candidate,
-		candidateSha256: result.candidateSha256,
-		decision: options?.decision ?? 'rejected',
-		reviewerRole: 'independent-reviewer'
+		...makeOrdinaryReviewReceipt(target, {
+			decision: options?.decision ?? 'rejected',
+			candidateSha256: result.candidateSha256,
+			resultSha256: familyAffinityRawSha256(resultBytes),
+			producerId: result.producerId
+		}),
+		sourceSha256: result.sourceSha256,
+		promptSha256: result.promptSha256
 	};
-	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
 	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
 	await writeOwnedFixture(root, manifestPath, manifest);
+	const manifestBytes = await readFile(join(root, manifestPath));
+	await writeOwnedFixture(
+		root,
+		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
+		{
+			schemaVersion: 'family-affinity-review-assignment-v1',
+			reviewKind: 'ordinary',
+			assignmentId: `${target.targetId}/ordinary-review-v${target.version}/assignment`,
+			reviewerId: receipt.reviewerId,
+			producerId: result.producerId,
+			producerIdentitySha256: receipt.producerIdentitySha256,
+			manifestPath,
+			manifestSha256: familyAffinityRawSha256(manifestBytes),
+			targetId: target.targetId,
+			targetPath,
+			targetSha256: familyAffinitySha256(target),
+			productionAssignmentPath: assignmentPath,
+			productionAssignmentSha256: familyAffinitySha256(productionAssignment),
+			coordinateId: target.coordinateId,
+			candidateVersion: target.version,
+			decisionVersion: target.version,
+			candidatePath: result.candidatePath,
+			candidateSha256: result.candidateSha256,
+			resultPath: result.resultPath,
+			resultSha256: receipt.resultSha256,
+			sourcePath: result.sourcePath,
+			sourceSha256: result.sourceSha256,
+			promptSha256: result.promptSha256,
+			permittedReceiptPath: target.ownedPaths.decision,
+			exclusiveCreateRequired: true,
+			runtimeCatalogMutationForbidden: true
+		}
+	);
+	await writeOwnedFixture(root, target.ownedPaths.decision, receipt);
 	return { root, target, manifestPath, coordinate, receipt };
 }
 
 describe('controller-only family affinity revision allocation', () => {
+	it('validates an approved Normal receipt as the exact filesystem anchor for an elemental target', async () => {
+		const fixture = await makeRevisionFixture({ decision: 'approved-review' });
+		try {
+			const manifest = FamilyAffinityManifestSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fixture.manifestPath), 'utf8'))
+			);
+			const fireCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === 'goblins/goblin-runt/fire'
+			)!;
+			const fireTarget = FamilyAffinityTargetSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fireCoordinate.targetPath), 'utf8'))
+			);
+			const fireAssignment = FamilyAffinityAssignmentSchema.parse(
+				JSON.parse(await readFile(join(fixture.root, fireCoordinate.assignmentPath), 'utf8'))
+			);
+			const receiptBytes = await readFile(join(fixture.root, fixture.target.ownedPaths.decision));
+			const plannedFire = FamilyAffinityTargetSchema.parse({
+				...fireTarget,
+				status: 'planned',
+				anchor: {
+					kind: 'normal-approved-review',
+					normalCoordinateId: fixture.target.coordinateId,
+					normalVersion: fixture.target.version,
+					normalTargetPath: fixture.coordinate.targetPath,
+					normalTargetSha256: fixture.coordinate.targetSha256,
+					reviewReceiptPath: fixture.target.ownedPaths.decision,
+					reviewReceiptSha256: familyAffinityRawSha256(receiptBytes),
+					normalCandidatePath: fixture.receipt.candidatePath,
+					normalCandidateSha256: fixture.receipt.candidateSha256,
+					normalResultPath: fixture.receipt.resultPath,
+					normalResultSha256: fixture.receipt.resultSha256
+				}
+			});
+			const plannedAssignment = FamilyAffinityAssignmentSchema.parse({
+				...fireAssignment,
+				targetSha256: familyAffinitySha256(plannedFire),
+				dispatchStatus: 'planned'
+			});
+			fireCoordinate.status = 'planned';
+			fireCoordinate.targetSha256 = familyAffinitySha256(plannedFire);
+			fireCoordinate.assignmentSha256 = familyAffinitySha256(plannedAssignment);
+			await writeOwnedFixture(fixture.root, fireCoordinate.targetPath, plannedFire);
+			await writeOwnedFixture(fixture.root, fireCoordinate.assignmentPath, plannedAssignment);
+			await writeOwnedFixture(fixture.root, fixture.manifestPath, manifest);
+			await expect(
+				validateFamilyAffinityNormalAnchorEvidence({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					targetPath: fireCoordinate.targetPath
+				})
+			).resolves.toBeUndefined();
+
+			await writeFile(
+				join(fixture.root, fixture.receipt.resultPath),
+				`${await readFile(join(fixture.root, fixture.receipt.resultPath), 'utf8')}\n`
+			);
+			await expect(
+				validateFamilyAffinityNormalAnchorEvidence({
+					repositoryRoot: fixture.root,
+					manifestPath: fixture.manifestPath,
+					targetPath: fireCoordinate.targetPath
+				})
+			).rejects.toThrow(/stale|forged|cross-bound|mismatch/i);
+		} finally {
+			await rm(fixture.root, { recursive: true, force: true });
+		}
+	});
+
 	it('rejects a foreign bridge path even when every generic suffix is valid', async () => {
 		const fixture = await makeRevisionFixture({ namespace: 'bridge' });
 		try {
@@ -3296,13 +3492,12 @@ describe('controller-only family affinity revision allocation', () => {
 		async (kind) => {
 			const fixture = await makeRevisionFixture();
 			try {
-				const current =
-					kind === 'target'
-						? fixture.coordinate.targetPath
-						: kind === 'assignment'
-							? fixture.coordinate.assignmentPath
-							: fixture.target.ownedPaths[kind];
-				const proposed = current.replace(/v1(?=\.(?:png|json)$)/u, 'v2');
+				const proposed = canonicalAttemptPaths(
+					fixture.target.familyId,
+					fixture.target.formId,
+					fixture.target.affinity,
+					2
+				)[kind];
 				await writeOwnedFixture(fixture.root, proposed, 'occupied');
 				await expect(
 					allocateFamilyAffinityRevision({

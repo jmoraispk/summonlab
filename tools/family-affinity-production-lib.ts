@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname, resolve, sep } from 'node:path';
+import { lstat, mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 
 export const PRODUCTION_AFFINITIES = ['normal', 'fire', 'earth', 'wind', 'water'] as const;
 export const FORM_TIERS = ['T1', 'T2', 'T3', 'T4', 'T5'] as const;
@@ -569,17 +569,20 @@ export type FamilyAffinityProductionBundle = {
 	artifacts: Array<{ path: string; value: unknown }>;
 };
 
-export const FamilyAffinityReviewReceiptSchema = z
+const ReviewDecisionSchema = z.enum(['approved-review', 'rejected', 'revise']);
+const ReviewRubricDimensionSchema = z
+	.object({ verdict: z.enum(['pass', 'fail']), notes: RequiredTextSchema })
+	.strict();
+const ReviewRubricSchema = z
 	.object({
-		schemaVersion: z.literal('family-affinity-review-receipt-v1'),
-		targetId: RequiredTextSchema,
-		targetSha256: Sha256Schema,
-		resultPath: OwnedPathSchema,
-		resultSha256: Sha256Schema,
-		candidatePath: OwnedPathSchema,
-		candidateSha256: Sha256Schema,
-		decision: z.enum(['approved-review', 'rejected', 'revise']),
-		reviewerRole: z.literal('independent-reviewer')
+		identity: ReviewRubricDimensionSchema,
+		tier: ReviewRubricDimensionSchema,
+		archetype: ReviewRubricDimensionSchema,
+		anatomy: ReviewRubricDimensionSchema,
+		affinity: ReviewRubricDimensionSchema,
+		counterplay: ReviewRubricDimensionSchema,
+		framing: ReviewRubricDimensionSchema,
+		finish: ReviewRubricDimensionSchema
 	})
 	.strict();
 
@@ -588,11 +591,138 @@ export const FamilyAffinityResultSchema = z
 		schemaVersion: z.literal('family-affinity-result-v1'),
 		targetId: RequiredTextSchema,
 		targetSha256: Sha256Schema,
+		coordinateId: RequiredTextSchema,
+		candidateVersion: z.number().int().positive(),
+		producerId: RequiredTextSchema,
 		candidatePath: OwnedPathSchema,
 		candidateSha256: Sha256Schema,
-		state: z.enum(['candidate-only', 'rejected', 'revise'])
+		resultPath: OwnedPathSchema,
+		sourcePath: OwnedPathSchema,
+		sourceSha256: Sha256Schema,
+		promptSha256: Sha256Schema,
+		state: z.literal('candidate-only'),
+		runtimeCatalogMutationForbidden: z.literal(true)
 	})
 	.strict();
+
+const CommonReviewReceiptShape = {
+	targetId: RequiredTextSchema,
+	targetSha256: Sha256Schema,
+	coordinateId: RequiredTextSchema,
+	candidateVersion: z.number().int().positive(),
+	decisionVersion: z.number().int().positive(),
+	reviewerId: RequiredTextSchema,
+	producerIdentitySha256: Sha256Schema,
+	candidatePath: OwnedPathSchema,
+	candidateSha256: Sha256Schema,
+	resultPath: OwnedPathSchema,
+	resultSha256: Sha256Schema,
+	sourcePath: OwnedPathSchema,
+	sourceSha256: Sha256Schema,
+	promptSha256: Sha256Schema,
+	decision: ReviewDecisionSchema,
+	rubric: ReviewRubricSchema,
+	runtimeCatalogMutationForbidden: z.literal(true)
+} as const;
+
+export const FamilyAffinityReviewReceiptSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-review-decision-v1'),
+		receiptType: z.literal('ordinary'),
+		producerId: RequiredTextSchema,
+		...CommonReviewReceiptShape
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		if (receipt.reviewerId === receipt.producerId) {
+			context.addIssue({ code: 'custom', message: 'Producer self-approval is forbidden' });
+		}
+		if (
+			receipt.decision === 'approved-review' &&
+			Object.values(receipt.rubric).some(({ verdict }) => verdict !== 'pass')
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Approved-review requires every rubric dimension to pass'
+			});
+		}
+	});
+
+export const FamilyAffinityBlindReviewReceiptSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-blind-review-v1'),
+		receiptType: z.literal('blind'),
+		...CommonReviewReceiptShape,
+		blindToProducerIdentity: z.literal(true),
+		blindToOrdinaryDecision: z.literal(true)
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		if (
+			receipt.decision === 'approved-review' &&
+			Object.values(receipt.rubric).some(({ verdict }) => verdict !== 'pass')
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Approved-review requires every rubric dimension to pass'
+			});
+		}
+	});
+
+export const FamilyAffinityReviewAssignmentSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-review-assignment-v1'),
+		reviewKind: z.enum(['ordinary', 'blind']),
+		assignmentId: RequiredTextSchema,
+		reviewerId: RequiredTextSchema,
+		producerId: RequiredTextSchema.nullable(),
+		producerIdentitySha256: Sha256Schema,
+		manifestPath: OwnedPathSchema,
+		manifestSha256: Sha256Schema,
+		targetId: RequiredTextSchema,
+		targetPath: OwnedPathSchema,
+		targetSha256: Sha256Schema,
+		productionAssignmentPath: OwnedPathSchema,
+		productionAssignmentSha256: Sha256Schema,
+		coordinateId: RequiredTextSchema,
+		candidateVersion: z.number().int().positive(),
+		decisionVersion: z.number().int().positive(),
+		candidatePath: OwnedPathSchema,
+		candidateSha256: Sha256Schema,
+		resultPath: OwnedPathSchema,
+		resultSha256: Sha256Schema,
+		sourcePath: OwnedPathSchema,
+		sourceSha256: Sha256Schema,
+		promptSha256: Sha256Schema,
+		permittedReceiptPath: OwnedPathSchema,
+		exclusiveCreateRequired: z.literal(true),
+		runtimeCatalogMutationForbidden: z.literal(true)
+	})
+	.strict()
+	.superRefine((assignment, context) => {
+		if (
+			assignment.assignmentId !==
+			`${assignment.targetId}/${assignment.reviewKind}-review-v${assignment.decisionVersion}/assignment`
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Review assignment ID must bind target, review kind, and decision version'
+			});
+		}
+		if (assignment.reviewKind === 'ordinary' && assignment.producerId === null) {
+			context.addIssue({ code: 'custom', message: 'Ordinary assignment requires producer ID' });
+		}
+		if (assignment.reviewKind === 'blind' && assignment.producerId !== null) {
+			context.addIssue({ code: 'custom', message: 'Blind assignment must conceal producer ID' });
+		}
+	});
+
+export type FamilyAffinityResult = z.infer<typeof FamilyAffinityResultSchema>;
+export type FamilyAffinityReviewReceipt = z.infer<typeof FamilyAffinityReviewReceiptSchema>;
+export type FamilyAffinityBlindReviewReceipt = z.infer<
+	typeof FamilyAffinityBlindReviewReceiptSchema
+>;
+export type FamilyAffinityReviewAssignment = z.infer<typeof FamilyAffinityReviewAssignmentSchema>;
 
 export function validateFamilyAffinityReviewPromotion(
 	targetInput: unknown,
@@ -625,6 +755,190 @@ function stableJson(value: unknown): string {
 
 export function familyAffinitySha256(value: unknown): string {
 	return createHash('sha256').update(stableJson(value)).digest('hex');
+}
+
+export function familyAffinityRawSha256(bytes: Uint8Array | string): string {
+	return createHash('sha256').update(bytes).digest('hex');
+}
+
+export function familyAffinityProducerIdentitySha256(producerId: string): string {
+	return familyAffinityRawSha256(`family-affinity-producer-v1\0${producerId}`);
+}
+
+export function familyAffinityPromptSha256(targetInput: unknown, assignmentInput: unknown): string {
+	const target = FamilyAffinityTargetSchema.parse(targetInput);
+	const assignment = FamilyAffinityAssignmentSchema.parse(assignmentInput);
+	validateFamilyAffinityAttemptCrossBinding(
+		{
+			namespace: target.namespace,
+			coordinateId: target.coordinateId,
+			familyId: target.familyId,
+			formId: target.formId,
+			currentClassId: target.currentClassId,
+			affinity: target.affinity,
+			activeVersion: target.version,
+			targetPath:
+				target.namespace === 'canonical'
+					? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+							.target
+					: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version).target,
+			targetSha256: familyAffinitySha256(target),
+			assignmentPath:
+				target.namespace === 'canonical'
+					? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+							.assignment
+					: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version).assignment,
+			assignmentSha256: familyAffinitySha256(assignment),
+			status: target.status
+		},
+		target,
+		assignment
+	);
+	return familyAffinitySha256({
+		schemaVersion: 'family-affinity-prompt-material-v1',
+		target,
+		assignment
+	});
+}
+
+export function validateFamilyAffinityCandidateEvidence(input: {
+	target: unknown;
+	assignment: unknown;
+	familyPacketBytes: Uint8Array;
+	candidateBytes: Uint8Array;
+	resultBytes: Uint8Array;
+}): {
+	target: FamilyAffinityTarget;
+	assignment: FamilyAffinityAssignment;
+	result: FamilyAffinityResult;
+	resultSha256: string;
+} {
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
+	const familyPacket = FamilyPacketSchema.parse(
+		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
+	);
+	const result = FamilyAffinityResultSchema.parse(
+		JSON.parse(Buffer.from(input.resultBytes).toString('utf8'))
+	);
+	const sourceSha256 = familyAffinitySha256(familyPacket);
+	const promptSha256 = familyAffinityPromptSha256(target, assignment);
+	if (
+		result.targetId !== target.targetId ||
+		result.targetSha256 !== familyAffinitySha256(target) ||
+		result.coordinateId !== target.coordinateId ||
+		result.candidateVersion !== target.version ||
+		result.candidatePath !== target.ownedPaths.candidate ||
+		result.candidateSha256 !== familyAffinityRawSha256(input.candidateBytes) ||
+		result.resultPath !== target.ownedPaths.result ||
+		result.sourcePath !== target.sources.familyPacketPath ||
+		familyPacket.familyId !== target.familyId ||
+		sourceSha256 !== target.sources.familyPacketSha256 ||
+		result.sourceSha256 !== sourceSha256 ||
+		result.promptSha256 !== promptSha256 ||
+		result.producerId.trim().length === 0
+	) {
+		throw new Error('Candidate result evidence is stale, forged, or cross-bound');
+	}
+	return {
+		target,
+		assignment,
+		result,
+		resultSha256: familyAffinityRawSha256(input.resultBytes)
+	};
+}
+
+export function validateFamilyAffinityReceiptEvidence(input: {
+	target: unknown;
+	result: FamilyAffinityResult;
+	resultSha256: string;
+	receipt: unknown;
+	kind: 'ordinary' | 'blind';
+}): FamilyAffinityReviewReceipt | FamilyAffinityBlindReviewReceipt {
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const receipt =
+		input.kind === 'ordinary'
+			? FamilyAffinityReviewReceiptSchema.parse(input.receipt)
+			: FamilyAffinityBlindReviewReceiptSchema.parse(input.receipt);
+	if (
+		receipt.receiptType !== input.kind ||
+		receipt.targetId !== target.targetId ||
+		receipt.targetSha256 !== familyAffinitySha256(target) ||
+		receipt.coordinateId !== target.coordinateId ||
+		receipt.candidateVersion !== target.version ||
+		receipt.producerIdentitySha256 !==
+			familyAffinityProducerIdentitySha256(input.result.producerId) ||
+		(receipt.receiptType === 'ordinary' && receipt.producerId !== input.result.producerId) ||
+		receipt.reviewerId === input.result.producerId ||
+		receipt.candidatePath !== input.result.candidatePath ||
+		receipt.candidateSha256 !== input.result.candidateSha256 ||
+		receipt.resultPath !== input.result.resultPath ||
+		receipt.resultSha256 !== input.resultSha256 ||
+		receipt.sourcePath !== input.result.sourcePath ||
+		receipt.sourceSha256 !== input.result.sourceSha256 ||
+		receipt.promptSha256 !== input.result.promptSha256
+	) {
+		throw new Error('Review receipt evidence is stale, forged, or cross-bound');
+	}
+	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+		throw new Error(
+			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+		);
+	}
+	return receipt;
+}
+
+export function validateFamilyAffinityReviewAssignmentEvidence(input: {
+	reviewAssignment: unknown;
+	reviewAssignmentPath: string;
+	kind: 'ordinary' | 'blind';
+	manifestPath: string;
+	manifestSha256?: string;
+	target: unknown;
+	targetPath: string;
+	productionAssignment: unknown;
+	productionAssignmentPath: string;
+	result: FamilyAffinityResult;
+	resultSha256: string;
+}): FamilyAffinityReviewAssignment {
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const productionAssignment = FamilyAffinityAssignmentSchema.parse(input.productionAssignment);
+	const assignment = FamilyAffinityReviewAssignmentSchema.parse(input.reviewAssignment);
+	const permittedReceiptPath =
+		input.kind === 'ordinary' ? target.ownedPaths.decision : target.ownedPaths.blindReview;
+	if (
+		assignment.reviewKind !== input.kind ||
+		input.reviewAssignmentPath !==
+			familyAffinityReviewAssignmentPath(input.kind, target, assignment.decisionVersion) ||
+		assignment.manifestPath !== input.manifestPath ||
+		(input.manifestSha256 !== undefined && assignment.manifestSha256 !== input.manifestSha256) ||
+		assignment.targetId !== target.targetId ||
+		assignment.targetPath !== input.targetPath ||
+		assignment.targetSha256 !== familyAffinitySha256(target) ||
+		assignment.productionAssignmentPath !== input.productionAssignmentPath ||
+		assignment.productionAssignmentSha256 !== familyAffinitySha256(productionAssignment) ||
+		assignment.coordinateId !== target.coordinateId ||
+		assignment.candidateVersion !== target.version ||
+		assignment.decisionVersion !== target.version ||
+		assignment.reviewerId === input.result.producerId ||
+		assignment.producerIdentitySha256 !==
+			familyAffinityProducerIdentitySha256(input.result.producerId) ||
+		(input.kind === 'ordinary'
+			? assignment.producerId !== input.result.producerId
+			: assignment.producerId !== null) ||
+		assignment.candidatePath !== input.result.candidatePath ||
+		assignment.candidateSha256 !== input.result.candidateSha256 ||
+		assignment.resultPath !== input.result.resultPath ||
+		assignment.resultSha256 !== input.resultSha256 ||
+		assignment.sourcePath !== input.result.sourcePath ||
+		assignment.sourceSha256 !== input.result.sourceSha256 ||
+		assignment.promptSha256 !== input.result.promptSha256 ||
+		assignment.permittedReceiptPath !== permittedReceiptPath ||
+		(input.kind === 'blind' && target.tier !== 'T3' && target.tier !== 'T5')
+	) {
+		throw new Error('Review assignment is stale, forged, unauthorized, or cross-bound');
+	}
+	return assignment;
 }
 
 export function stableFamilyAffinityJson(value: unknown): string {
@@ -735,7 +1049,7 @@ function familyPacketPath(family: FamilyPacket): string {
 	return `${FAMILY_AFFINITY_ROOT}/families/${String(family.sourceRaceNumber).padStart(2, '0')}-${family.familyId}.json`;
 }
 
-function canonicalAttemptPaths(
+export function canonicalAttemptPaths(
 	familyId: string,
 	formId: string,
 	affinity: (typeof PRODUCTION_AFFINITIES)[number],
@@ -746,8 +1060,8 @@ function canonicalAttemptPaths(
 		assignment: `${FAMILY_AFFINITY_ROOT}/assignments/${familyId}/${formId}/${affinity}/assignment-v${version}.json`,
 		candidate: `${FAMILY_AFFINITY_ROOT}/candidates/${familyId}/${formId}/${affinity}-v${version}.png`,
 		result: `${FAMILY_AFFINITY_ROOT}/results/${familyId}/${formId}/${affinity}-v${version}.json`,
-		decision: `${FAMILY_AFFINITY_ROOT}/reviews/${familyId}/${formId}/${affinity}/decision-v${version}.json`,
-		blindReview: `${FAMILY_AFFINITY_ROOT}/blind-reviews/${familyId}/${formId}/${affinity}/review-v${version}.json`
+		decision: `${FAMILY_AFFINITY_ROOT}/review/decisions/${familyId}/${formId}/${affinity}/candidate-v${version}-review-v${version}.json`,
+		blindReview: `${FAMILY_AFFINITY_ROOT}/review/blind/${familyId}/${formId}/${affinity}/candidate-v${version}-blind-v${version}.json`
 	};
 }
 
@@ -765,9 +1079,24 @@ export function bridgeAttemptPaths(
 		assignment: `${bridgeRoot}/assignments/${currentClassId}/${affinity}/assignment-v${version}.json`,
 		candidate: `${bridgeRoot}/candidates/${currentClassId}/${affinity}-v${version}.png`,
 		result: `${bridgeRoot}/results/${currentClassId}/${affinity}-v${version}.json`,
-		decision: `${bridgeRoot}/reviews/${currentClassId}/${affinity}/decision-v${version}.json`,
-		blindReview: `${bridgeRoot}/blind-reviews/${currentClassId}/${affinity}/review-v${version}.json`
+		decision: `${FAMILY_AFFINITY_ROOT}/review/bridge/decisions/${currentClassId}/${affinity}/candidate-v${version}-review-v${version}.json`,
+		blindReview: `${FAMILY_AFFINITY_ROOT}/review/bridge/blind/${currentClassId}/${affinity}/candidate-v${version}-blind-v${version}.json`
 	};
+}
+
+export function familyAffinityReviewAssignmentPath(
+	kind: 'ordinary' | 'blind',
+	target: FamilyAffinityTarget,
+	decisionVersion: number
+): string {
+	if (!Number.isInteger(decisionVersion) || decisionVersion < 1) {
+		throw new Error('Review decision version must be positive');
+	}
+	const bucket = kind === 'ordinary' ? 'decisions' : 'blind';
+	if (target.namespace === 'bridge') {
+		return `${FAMILY_AFFINITY_ROOT}/review/bridge/assignments/${bucket}/${target.currentClassId}/${target.affinity}/candidate-v${target.version}-${kind}-v${decisionVersion}-assignment.json`;
+	}
+	return `${FAMILY_AFFINITY_ROOT}/review/assignments/${bucket}/${target.familyId}/${target.formId}/${target.affinity}/candidate-v${target.version}-${kind}-v${decisionVersion}-assignment.json`;
 }
 
 function formTelegraph(form: FamilyForm): string {
@@ -1135,7 +1464,7 @@ export function validateFamilyAffinityAttemptCrossBinding(
 
 export function validateFamilyAffinityProductionBundle(
 	bundleInput: FamilyAffinityProductionBundle,
-	reviewReceipts: Readonly<Record<string, unknown>> = {}
+	reviewReceipts: Readonly<Record<string, { receipt: unknown; bytes: Uint8Array }>> = {}
 ) {
 	const manifest = FamilyAffinityManifestSchema.parse(bundleInput.manifest);
 	const targets = bundleInput.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
@@ -1285,13 +1614,13 @@ export function validateFamilyAffinityProductionBundle(
 					`Elemental target cannot be unblocked without a Normal approved-review receipt: ${target.targetId}`
 				);
 			}
-			const receiptInput = reviewReceipts[anchor.reviewReceiptPath];
-			if (!receiptInput)
+			const receiptEvidence = reviewReceipts[anchor.reviewReceiptPath];
+			if (!receiptEvidence)
 				throw new Error(`Missing Normal approved-review receipt: ${anchor.reviewReceiptPath}`);
-			const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
+			const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptEvidence.receipt);
 			if (
 				receipt.decision !== 'approved-review' ||
-				familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
+				familyAffinityRawSha256(receiptEvidence.bytes) !== anchor.reviewReceiptSha256 ||
 				receipt.targetId !== normalTarget.targetId ||
 				receipt.targetSha256 !== familyAffinitySha256(normalTarget) ||
 				normalManifestCoordinate.targetSha256 !== receipt.targetSha256 ||
@@ -1327,8 +1656,8 @@ export function validateFamilyAffinityProductionBundle(
 			}
 		}
 	}
-	for (const [path, receiptInput] of Object.entries(reviewReceipts)) {
-		const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptInput);
+	for (const [path, receiptEvidence] of Object.entries(reviewReceipts)) {
+		const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptEvidence.receipt);
 		const target = targetsById.get(receipt.targetId);
 		if (
 			target?.anchor.kind === 'earth-bridge-provisional' &&
@@ -1366,17 +1695,30 @@ function absoluteOwnedPath(repositoryRoot: string, ownedPath: string): string {
 	return absolute;
 }
 
-function nextVersionPath(path: string, currentVersion: number, nextVersion: number): string {
-	const patterns = [
-		[`target-v${currentVersion}.json`, `target-v${nextVersion}.json`],
-		[`assignment-v${currentVersion}.json`, `assignment-v${nextVersion}.json`],
-		[`-v${currentVersion}.png`, `-v${nextVersion}.png`],
-		[`-v${currentVersion}.json`, `-v${nextVersion}.json`]
-	] as const;
-	for (const [suffix, replacement] of patterns) {
-		if (path.endsWith(suffix)) return `${path.slice(0, -suffix.length)}${replacement}`;
+async function readOwnedFileNoSymlinks(repositoryRoot: string, ownedPath: string): Promise<Buffer> {
+	const absolute = absoluteOwnedPath(repositoryRoot, ownedPath);
+	const parts = relative(resolve(repositoryRoot), absolute).split(sep).filter(Boolean);
+	let cursor = resolve(repositoryRoot);
+	for (const [index, part] of parts.entries()) {
+		cursor = join(cursor, part);
+		const metadata = await lstat(cursor);
+		if (metadata.isSymbolicLink())
+			throw new Error(`Symlinked owned path is forbidden: ${ownedPath}`);
+		if (index < parts.length - 1 && !metadata.isDirectory()) {
+			throw new Error(`Owned path parent must be a real directory: ${ownedPath}`);
+		}
+		if (index === parts.length - 1 && !metadata.isFile()) {
+			throw new Error(`Owned path must be a real file: ${ownedPath}`);
+		}
 	}
-	throw new Error(`Attempt path is not versioned for v${currentVersion}: ${path}`);
+	return readFile(absolute);
+}
+
+export async function readFamilyAffinityOwnedFile(
+	repositoryRoot: string,
+	ownedPath: string
+): Promise<Buffer> {
+	return readOwnedFileNoSymlinks(repositoryRoot, ownedPath);
 }
 
 export type AllocateFamilyAffinityRevisionInput = {
@@ -1391,13 +1733,10 @@ export type AllocateFamilyAffinityRevisionInput = {
 async function validateAllocationAnchor(
 	repositoryRoot: string,
 	manifest: FamilyAffinityManifest,
-	target: FamilyAffinityTarget
+	target: FamilyAffinityTarget,
+	manifestPath: string
 ): Promise<void> {
-	if (
-		target.namespace !== 'canonical' ||
-		target.affinity === 'normal' ||
-		target.status !== 'planned'
-	) {
+	if (target.affinity === 'normal' || target.status !== 'planned') {
 		return;
 	}
 	if (target.anchor.kind !== 'normal-approved-review') {
@@ -1417,14 +1756,107 @@ async function validateAllocationAnchor(
 	}
 	const normalTarget = FamilyAffinityTargetSchema.parse(
 		JSON.parse(
-			await readFile(absoluteOwnedPath(repositoryRoot, normalCoordinate.targetPath), 'utf8')
+			(await readOwnedFileNoSymlinks(repositoryRoot, normalCoordinate.targetPath)).toString('utf8')
 		)
 	);
-	const receipt = FamilyAffinityReviewReceiptSchema.parse(
-		JSON.parse(await readFile(absoluteOwnedPath(repositoryRoot, anchor.reviewReceiptPath), 'utf8'))
+	const normalAssignment = FamilyAffinityAssignmentSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(repositoryRoot, normalCoordinate.assignmentPath)).toString(
+				'utf8'
+			)
+		)
 	);
-	const candidateBytes = await readFile(absoluteOwnedPath(repositoryRoot, receipt.candidatePath));
-	const resultBytes = await readFile(absoluteOwnedPath(repositoryRoot, receipt.resultPath));
+	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(
+		JSON.parse(receiptBytes.toString('utf8'))
+	);
+	const candidateBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.candidatePath);
+	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.resultPath);
+	const familyPacketBytes = await readOwnedFileNoSymlinks(
+		repositoryRoot,
+		normalTarget.sources.familyPacketPath
+	);
+	const evidence = validateFamilyAffinityCandidateEvidence({
+		target: normalTarget,
+		assignment: normalAssignment,
+		familyPacketBytes,
+		candidateBytes,
+		resultBytes
+	});
+	validateFamilyAffinityReceiptEvidence({
+		target: normalTarget,
+		result: evidence.result,
+		resultSha256: evidence.resultSha256,
+		receipt,
+		kind: 'ordinary'
+	});
+	const ordinaryReviewAssignmentPath = familyAffinityReviewAssignmentPath(
+		'ordinary',
+		normalTarget,
+		receipt.decisionVersion
+	);
+	const ordinaryReviewAssignment = FamilyAffinityReviewAssignmentSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(repositoryRoot, ordinaryReviewAssignmentPath)).toString('utf8')
+		)
+	);
+	validateFamilyAffinityReviewAssignmentEvidence({
+		reviewAssignment: ordinaryReviewAssignment,
+		reviewAssignmentPath: ordinaryReviewAssignmentPath,
+		kind: 'ordinary',
+		manifestPath,
+		target: normalTarget,
+		targetPath: normalCoordinate.targetPath,
+		productionAssignment: normalAssignment,
+		productionAssignmentPath: normalCoordinate.assignmentPath,
+		result: evidence.result,
+		resultSha256: evidence.resultSha256
+	});
+	if (ordinaryReviewAssignment.reviewerId !== receipt.reviewerId) {
+		throw new Error('Normal approval reviewer does not match controller assignment');
+	}
+	if (normalTarget.tier === 'T3' || normalTarget.tier === 'T5') {
+		const blindBytes = await readOwnedFileNoSymlinks(
+			repositoryRoot,
+			normalTarget.ownedPaths.blindReview
+		);
+		const blind = validateFamilyAffinityReceiptEvidence({
+			target: normalTarget,
+			result: evidence.result,
+			resultSha256: evidence.resultSha256,
+			receipt: JSON.parse(blindBytes.toString('utf8')),
+			kind: 'blind'
+		}) as FamilyAffinityBlindReviewReceipt;
+		const blindAssignmentPath = familyAffinityReviewAssignmentPath(
+			'blind',
+			normalTarget,
+			blind.decisionVersion
+		);
+		const blindAssignment = FamilyAffinityReviewAssignmentSchema.parse(
+			JSON.parse(
+				(await readOwnedFileNoSymlinks(repositoryRoot, blindAssignmentPath)).toString('utf8')
+			)
+		);
+		validateFamilyAffinityReviewAssignmentEvidence({
+			reviewAssignment: blindAssignment,
+			reviewAssignmentPath: blindAssignmentPath,
+			kind: 'blind',
+			manifestPath,
+			target: normalTarget,
+			targetPath: normalCoordinate.targetPath,
+			productionAssignment: normalAssignment,
+			productionAssignmentPath: normalCoordinate.assignmentPath,
+			result: evidence.result,
+			resultSha256: evidence.resultSha256
+		});
+		if (
+			blind.decision !== 'approved-review' ||
+			blind.reviewerId === receipt.reviewerId ||
+			blindAssignment.reviewerId !== blind.reviewerId
+		) {
+			throw new Error('Normal T3/T5 anchor lacks independent agreeing blind approval');
+		}
+	}
 	if (
 		normalTarget.coordinateId !== anchor.normalCoordinateId ||
 		normalTarget.familyId !== target.familyId ||
@@ -1432,7 +1864,7 @@ async function validateAllocationAnchor(
 		normalTarget.affinity !== 'normal' ||
 		familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256 ||
 		anchor.reviewReceiptPath !== normalTarget.ownedPaths.decision ||
-		familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
+		familyAffinityRawSha256(receiptBytes) !== anchor.reviewReceiptSha256 ||
 		receipt.decision !== 'approved-review' ||
 		receipt.targetId !== normalTarget.targetId ||
 		receipt.targetSha256 !== anchor.normalTargetSha256 ||
@@ -1442,8 +1874,8 @@ async function validateAllocationAnchor(
 		receipt.resultPath !== normalTarget.ownedPaths.result ||
 		receipt.resultPath !== anchor.normalResultPath ||
 		receipt.resultSha256 !== anchor.normalResultSha256 ||
-		createHash('sha256').update(candidateBytes).digest('hex') !== receipt.candidateSha256 ||
-		createHash('sha256').update(resultBytes).digest('hex') !== receipt.resultSha256
+		familyAffinityRawSha256(candidateBytes) !== receipt.candidateSha256 ||
+		familyAffinityRawSha256(resultBytes) !== receipt.resultSha256
 	) {
 		throw new Error(
 			'Planned elemental allocation Normal evidence is stale, foreign, or mismatched'
@@ -1451,9 +1883,25 @@ async function validateAllocationAnchor(
 	}
 }
 
+export async function validateFamilyAffinityNormalAnchorEvidence(input: {
+	repositoryRoot: string;
+	manifestPath: string;
+	targetPath: string;
+}): Promise<void> {
+	const manifestBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.manifestPath);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const target = FamilyAffinityTargetSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(input.repositoryRoot, input.targetPath)).toString('utf8')
+		)
+	);
+	await validateAllocationAnchor(input.repositoryRoot, manifest, target, input.manifestPath);
+}
+
 async function validateFullActiveCorpusBeforeAllocation(
 	repositoryRoot: string,
-	manifest: FamilyAffinityManifest
+	manifest: FamilyAffinityManifest,
+	manifestPath: string
 ): Promise<void> {
 	const seenTargetIds = new Set<string>();
 	const seenAssignmentIds = new Set<string>();
@@ -1462,11 +1910,13 @@ async function validateFullActiveCorpusBeforeAllocation(
 		...manifest.bridge.activeCoordinates
 	]) {
 		const target = FamilyAffinityTargetSchema.parse(
-			JSON.parse(await readFile(absoluteOwnedPath(repositoryRoot, coordinate.targetPath), 'utf8'))
+			JSON.parse(
+				(await readOwnedFileNoSymlinks(repositoryRoot, coordinate.targetPath)).toString('utf8')
+			)
 		);
 		const assignment = FamilyAffinityAssignmentSchema.parse(
 			JSON.parse(
-				await readFile(absoluteOwnedPath(repositoryRoot, coordinate.assignmentPath), 'utf8')
+				(await readOwnedFileNoSymlinks(repositoryRoot, coordinate.assignmentPath)).toString('utf8')
 			)
 		);
 		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
@@ -1475,14 +1925,16 @@ async function validateFullActiveCorpusBeforeAllocation(
 		}
 		seenTargetIds.add(target.targetId);
 		seenAssignmentIds.add(assignment.assignmentId);
-		await validateAllocationAnchor(repositoryRoot, manifest, target);
+		await validateAllocationAnchor(repositoryRoot, manifest, target, manifestPath);
 		if (
 			target.anchor.kind === 'earth-bridge-provisional' &&
 			(await exists(absoluteOwnedPath(repositoryRoot, target.ownedPaths.decision)))
 		) {
 			const receipt = FamilyAffinityReviewReceiptSchema.parse(
 				JSON.parse(
-					await readFile(absoluteOwnedPath(repositoryRoot, target.ownedPaths.decision), 'utf8')
+					(await readOwnedFileNoSymlinks(repositoryRoot, target.ownedPaths.decision)).toString(
+						'utf8'
+					)
 				)
 			);
 			validateFamilyAffinityReviewPromotion(target, receipt);
@@ -1494,26 +1946,33 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	input: AllocateFamilyAffinityRevisionInput,
 	manifestAbsolute: string
 ) {
-	const manifest = FamilyAffinityManifestSchema.parse(
-		JSON.parse(await readFile(manifestAbsolute, 'utf8'))
+	const manifestBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.manifestPath);
+	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	await validateFullActiveCorpusBeforeAllocation(
+		input.repositoryRoot,
+		manifest,
+		input.manifestPath
 	);
-	await validateFullActiveCorpusBeforeAllocation(input.repositoryRoot, manifest);
 	const collection = input.namespace === 'canonical' ? manifest.canonicalMatrix : manifest.bridge;
 	const coordinate = collection.activeCoordinates.find(
 		({ coordinateId }) => coordinateId === input.coordinateId
 	);
 	if (!coordinate || coordinate.namespace !== input.namespace)
 		throw new Error('Wrong or unknown manifest coordinate');
-	const targetAbsolute = absoluteOwnedPath(input.repositoryRoot, coordinate.targetPath);
-	const assignmentAbsolute = absoluteOwnedPath(input.repositoryRoot, coordinate.assignmentPath);
 	const currentTarget = FamilyAffinityTargetSchema.parse(
-		JSON.parse(await readFile(targetAbsolute, 'utf8'))
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(input.repositoryRoot, coordinate.targetPath)).toString('utf8')
+		)
 	);
 	const currentAssignment = FamilyAffinityAssignmentSchema.parse(
-		JSON.parse(await readFile(assignmentAbsolute, 'utf8'))
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(input.repositoryRoot, coordinate.assignmentPath)).toString(
+				'utf8'
+			)
+		)
 	);
 	validateFamilyAffinityAttemptCrossBinding(coordinate, currentTarget, currentAssignment);
-	await validateAllocationAnchor(input.repositoryRoot, manifest, currentTarget);
+	await validateAllocationAnchor(input.repositoryRoot, manifest, currentTarget, input.manifestPath);
 	if (
 		currentTarget.coordinateId !== coordinate.coordinateId ||
 		currentTarget.version !== coordinate.activeVersion ||
@@ -1525,61 +1984,126 @@ async function allocateFamilyAffinityRevisionUnlocked(
 	}
 	if (input.reviewPath !== currentTarget.ownedPaths.decision)
 		throw new Error('Review path does not match current target ownership');
-	const reviewAbsolute = absoluteOwnedPath(input.repositoryRoot, input.reviewPath);
+	const receiptBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.reviewPath);
 	const receipt = FamilyAffinityReviewReceiptSchema.parse(
-		JSON.parse(await readFile(reviewAbsolute, 'utf8'))
+		JSON.parse(receiptBytes.toString('utf8'))
 	);
 	if (receipt.decision !== 'rejected' && receipt.decision !== 'revise') {
 		throw new Error('Current attempt must have a rejected or revise review decision');
 	}
-	const resultAbsolute = absoluteOwnedPath(input.repositoryRoot, currentTarget.ownedPaths.result);
-	const resultBytes = await readFile(resultAbsolute);
-	const result = FamilyAffinityResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-	const candidateAbsolute = absoluteOwnedPath(
+	const resultBytes = await readOwnedFileNoSymlinks(
+		input.repositoryRoot,
+		currentTarget.ownedPaths.result
+	);
+	const candidateBytes = await readOwnedFileNoSymlinks(
 		input.repositoryRoot,
 		currentTarget.ownedPaths.candidate
 	);
-	const candidateBytes = await readFile(candidateAbsolute);
-	if (
-		receipt.targetId !== currentTarget.targetId ||
-		receipt.targetSha256 !== familyAffinitySha256(currentTarget) ||
-		receipt.resultPath !== currentTarget.ownedPaths.result ||
-		receipt.resultSha256 !== createHash('sha256').update(resultBytes).digest('hex') ||
-		receipt.candidatePath !== currentTarget.ownedPaths.candidate ||
-		receipt.candidateSha256 !== createHash('sha256').update(candidateBytes).digest('hex') ||
-		result.targetId !== currentTarget.targetId ||
-		result.targetSha256 !== familyAffinitySha256(currentTarget) ||
-		result.candidatePath !== currentTarget.ownedPaths.candidate ||
-		result.candidateSha256 !== createHash('sha256').update(candidateBytes).digest('hex') ||
-		(result.state !== 'rejected' && result.state !== 'revise')
-	) {
-		throw new Error('Rejected receipt or result is stale, mismatched, or not revision-eligible');
+	const familyPacketBytes = await readOwnedFileNoSymlinks(
+		input.repositoryRoot,
+		currentTarget.sources.familyPacketPath
+	);
+	const evidence = validateFamilyAffinityCandidateEvidence({
+		target: currentTarget,
+		assignment: currentAssignment,
+		familyPacketBytes,
+		candidateBytes,
+		resultBytes
+	});
+	validateFamilyAffinityReceiptEvidence({
+		target: currentTarget,
+		result: evidence.result,
+		resultSha256: evidence.resultSha256,
+		receipt,
+		kind: 'ordinary'
+	});
+	const reviewAssignmentPath = familyAffinityReviewAssignmentPath(
+		'ordinary',
+		currentTarget,
+		receipt.decisionVersion
+	);
+	const reviewAssignment = FamilyAffinityReviewAssignmentSchema.parse(
+		JSON.parse(
+			(await readOwnedFileNoSymlinks(input.repositoryRoot, reviewAssignmentPath)).toString('utf8')
+		)
+	);
+	validateFamilyAffinityReviewAssignmentEvidence({
+		reviewAssignment,
+		reviewAssignmentPath,
+		kind: 'ordinary',
+		manifestPath: input.manifestPath,
+		manifestSha256: familyAffinityRawSha256(manifestBytes),
+		target: currentTarget,
+		targetPath: coordinate.targetPath,
+		productionAssignment: currentAssignment,
+		productionAssignmentPath: coordinate.assignmentPath,
+		result: evidence.result,
+		resultSha256: evidence.resultSha256
+	});
+	if (reviewAssignment.reviewerId !== receipt.reviewerId) {
+		throw new Error('Rejected receipt reviewer does not match controller assignment');
+	}
+	if (currentTarget.tier === 'T3' || currentTarget.tier === 'T5') {
+		const blindBytes = await readOwnedFileNoSymlinks(
+			input.repositoryRoot,
+			currentTarget.ownedPaths.blindReview
+		);
+		const blind = validateFamilyAffinityReceiptEvidence({
+			target: currentTarget,
+			result: evidence.result,
+			resultSha256: evidence.resultSha256,
+			receipt: JSON.parse(blindBytes.toString('utf8')),
+			kind: 'blind'
+		}) as FamilyAffinityBlindReviewReceipt;
+		const blindAssignmentPath = familyAffinityReviewAssignmentPath(
+			'blind',
+			currentTarget,
+			blind.decisionVersion
+		);
+		const blindAssignment = FamilyAffinityReviewAssignmentSchema.parse(
+			JSON.parse(
+				(await readOwnedFileNoSymlinks(input.repositoryRoot, blindAssignmentPath)).toString('utf8')
+			)
+		);
+		validateFamilyAffinityReviewAssignmentEvidence({
+			reviewAssignment: blindAssignment,
+			reviewAssignmentPath: blindAssignmentPath,
+			kind: 'blind',
+			manifestPath: input.manifestPath,
+			manifestSha256: familyAffinityRawSha256(manifestBytes),
+			target: currentTarget,
+			targetPath: coordinate.targetPath,
+			productionAssignment: currentAssignment,
+			productionAssignmentPath: coordinate.assignmentPath,
+			result: evidence.result,
+			resultSha256: evidence.resultSha256
+		});
+		if (
+			blind.decision !== receipt.decision ||
+			blind.reviewerId === receipt.reviewerId ||
+			blindAssignment.reviewerId !== blind.reviewerId
+		) {
+			throw new Error('Ordinary and blind revision decisions must agree independently');
+		}
 	}
 	const nextVersion = currentTarget.version + 1;
-	const nextTargetPath = nextVersionPath(coordinate.targetPath, currentTarget.version, nextVersion);
-	const nextAssignmentPath = nextVersionPath(
-		coordinate.assignmentPath,
-		currentTarget.version,
-		nextVersion
-	);
+	const nextPaths =
+		currentTarget.namespace === 'canonical'
+			? canonicalAttemptPaths(
+					currentTarget.familyId,
+					currentTarget.formId,
+					currentTarget.affinity,
+					nextVersion
+				)
+			: bridgeAttemptPaths(currentTarget.currentClassId!, currentTarget.affinity, nextVersion);
 	const nextOwnedPaths = {
-		candidate: nextVersionPath(
-			currentTarget.ownedPaths.candidate,
-			currentTarget.version,
-			nextVersion
-		),
-		result: nextVersionPath(currentTarget.ownedPaths.result, currentTarget.version, nextVersion),
-		decision: nextVersionPath(
-			currentTarget.ownedPaths.decision,
-			currentTarget.version,
-			nextVersion
-		),
-		blindReview: nextVersionPath(
-			currentTarget.ownedPaths.blindReview,
-			currentTarget.version,
-			nextVersion
-		)
+		candidate: nextPaths.candidate,
+		result: nextPaths.result,
+		decision: nextPaths.decision,
+		blindReview: nextPaths.blindReview
 	};
+	const nextTargetPath = nextPaths.target;
+	const nextAssignmentPath = nextPaths.assignment;
 	const proposedPaths = [nextTargetPath, nextAssignmentPath, ...Object.values(nextOwnedPaths)];
 	for (const proposed of proposedPaths) {
 		if (await exists(absoluteOwnedPath(input.repositoryRoot, proposed))) {
@@ -1600,11 +2124,11 @@ async function allocateFamilyAffinityRevisionUnlocked(
 			targetId: currentTarget.targetId,
 			targetSha256: familyAffinitySha256(currentTarget),
 			candidatePath: currentTarget.ownedPaths.candidate,
-			candidateSha256: result.candidateSha256,
+			candidateSha256: evidence.result.candidateSha256,
 			resultPath: currentTarget.ownedPaths.result,
 			resultSha256: receipt.resultSha256,
 			reviewPath: input.reviewPath,
-			reviewSha256: familyAffinitySha256(receipt)
+			reviewSha256: familyAffinityRawSha256(receiptBytes)
 		}
 	});
 	const nextAssignment = buildAssignment(nextTarget);

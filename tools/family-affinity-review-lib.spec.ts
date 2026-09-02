@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -13,12 +13,22 @@ import {
 	buildFamilyAffinityReviewArtifacts,
 	createReviewReceiptExclusive,
 	evaluateFamilyAffinityReviewAttempt,
+	issueReviewAssignmentExclusive,
 	reviewReceiptPath,
 	validateReviewTransition
 } from './family-affinity-review-lib.js';
 import {
+	FamilyAffinityAssignmentSchema,
+	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
+	bridgeAttemptPaths,
+	canonicalAttemptPaths,
+	familyAffinityProducerIdentitySha256,
+	familyAffinityPromptSha256,
+	familyAffinityRawSha256,
 	familyAffinitySha256,
+	stableFamilyAffinityJson,
+	type FamilyAffinityAssignment,
 	type FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
 
@@ -27,25 +37,82 @@ const sha = (character: string) => character.repeat(64);
 
 function target(tier: 'T1' | 'T3' | 'T5' = 'T1'): FamilyAffinityTarget {
 	const formId = tier === 'T1' ? 'goblin-runt' : tier === 'T3' ? 'goblin-raider' : 'goblin-king';
-	return FamilyAffinityTargetSchema.parse(
-		JSON.parse(
-			requireRead(
-				join(
-					process.cwd(),
-					`assets/enemies/experiments/family-affinity-v1/targets/goblins/${formId}/normal/target-v1.json`
-				)
+	const raw = JSON.parse(
+		requireRead(
+			join(
+				process.cwd(),
+				`assets/enemies/experiments/family-affinity-v1/targets/goblins/${formId}/normal/target-v1.json`
 			)
 		)
-	);
+	) as Record<string, unknown>;
+	const paths = canonicalAttemptPaths('goblins', formId, 'normal', 1);
+	raw.ownedPaths = {
+		candidate: paths.candidate,
+		result: paths.result,
+		decision: paths.decision,
+		blindReview: paths.blindReview
+	};
+	return FamilyAffinityTargetSchema.parse(raw);
 }
 
 function requireRead(path: string): string {
 	return process.getBuiltinModule('node:fs').readFileSync(path, 'utf8');
 }
 
+function assignmentFor(activeTarget: FamilyAffinityTarget): FamilyAffinityAssignment {
+	const raw = JSON.parse(
+		requireRead(
+			join(
+				process.cwd(),
+				canonicalAttemptPaths(
+					activeTarget.familyId,
+					activeTarget.formId,
+					activeTarget.affinity,
+					activeTarget.version
+				).assignment
+			)
+		)
+	) as FamilyAffinityAssignment;
+	return { ...raw, targetSha256: familyAffinitySha256(activeTarget) };
+}
+
+function packetBytesFor(activeTarget: FamilyAffinityTarget): Buffer {
+	return Buffer.from(requireRead(join(process.cwd(), activeTarget.sources.familyPacketPath)));
+}
+
+async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1') {
+	const root = await mkdtemp(join(tmpdir(), 'family-review-live-'));
+	temporaryRoots.push(root);
+	const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
+	const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
+	await cp(source, destination, { recursive: true });
+	const activeTarget = target(tier);
+	const paths = canonicalAttemptPaths(
+		activeTarget.familyId,
+		activeTarget.formId,
+		activeTarget.affinity,
+		activeTarget.version
+	);
+	const candidateBytes = await sharp({
+		create: { width: 8, height: 8, channels: 3, background: '#497a53' }
+	})
+		.png({ compressionLevel: 9, adaptiveFiltering: false })
+		.toBuffer();
+	const result = resultFor(activeTarget, candidateBytes);
+	for (const [path, bytes] of [
+		[activeTarget.ownedPaths.candidate, candidateBytes],
+		[activeTarget.ownedPaths.result, Buffer.from(stableFamilyAffinityJson(result))]
+	] as const) {
+		await mkdir(dirname(join(root, path)), { recursive: true });
+		await writeFile(join(root, path), bytes);
+	}
+	return { root, activeTarget, paths, candidateBytes, result };
+}
+
 function resultFor(activeTarget: FamilyAffinityTarget, candidateBytes = Buffer.from('candidate')) {
+	const assignment = assignmentFor(activeTarget);
 	return FamilyAffinityCandidateResultSchema.parse({
-		schemaVersion: 'family-affinity-candidate-result-v1',
+		schemaVersion: 'family-affinity-result-v1',
 		targetId: activeTarget.targetId,
 		targetSha256: familyAffinitySha256(activeTarget),
 		coordinateId: activeTarget.coordinateId,
@@ -54,9 +121,10 @@ function resultFor(activeTarget: FamilyAffinityTarget, candidateBytes = Buffer.f
 		candidatePath: activeTarget.ownedPaths.candidate,
 		candidateSha256: createHash('sha256').update(candidateBytes).digest('hex'),
 		resultPath: activeTarget.ownedPaths.result,
+		sourcePath: activeTarget.sources.familyPacketPath,
 		sourceSha256: activeTarget.sources.familyPacketSha256,
-		promptSha256: sha('b'),
-		state: 'candidate',
+		promptSha256: familyAffinityPromptSha256(activeTarget, assignment),
+		state: 'candidate-only',
 		runtimeCatalogMutationForbidden: true
 	});
 }
@@ -76,10 +144,12 @@ function ordinaryFor(
 		decisionVersion: 1,
 		producerId: result.producerId,
 		reviewerId: 'reviewer-beta',
+		producerIdentitySha256: familyAffinityProducerIdentitySha256(result.producerId),
 		candidatePath: result.candidatePath,
 		candidateSha256: result.candidateSha256,
 		resultPath: result.resultPath,
-		resultSha256: familyAffinitySha256(result),
+		resultSha256: familyAffinityRawSha256(stableFamilyAffinityJson(result)),
+		sourcePath: result.sourcePath,
 		sourceSha256: result.sourceSha256,
 		promptSha256: result.promptSha256,
 		decision,
@@ -105,7 +175,11 @@ function blindFor(
 	decision: 'approved-review' | 'rejected' | 'revise' = 'approved-review'
 ) {
 	return BlindReviewReceiptSchema.parse({
-		...ordinaryFor(activeTarget, result, decision),
+		...Object.fromEntries(
+			Object.entries(ordinaryFor(activeTarget, result, decision)).filter(
+				([key]) => key !== 'producerId'
+			)
+		),
 		schemaVersion: 'family-affinity-blind-review-v1',
 		receiptType: 'blind',
 		reviewerId: 'reviewer-gamma',
@@ -147,9 +221,10 @@ describe('family-affinity review receipt contract', () => {
 		expect(
 			evaluateFamilyAffinityReviewAttempt({
 				target: activeTarget,
+				assignment: assignmentFor(activeTarget),
+				familyPacketBytes: packetBytesFor(activeTarget),
 				candidateBytes,
-				result,
-				resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+				resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 				ordinary
 			})
 		).toMatchObject({ state: 'approved-review', revisionRequired: false });
@@ -160,18 +235,20 @@ describe('family-affinity review receipt contract', () => {
 		expect(() =>
 			evaluateFamilyAffinityReviewAttempt({
 				target: activeTarget,
+				assignment: assignmentFor(activeTarget),
+				familyPacketBytes: packetBytesFor(activeTarget),
 				candidateBytes: Buffer.from('stale'),
-				result,
-				resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+				resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 				ordinary
 			})
-		).toThrow(/candidate hash/i);
+		).toThrow(/candidate.*(stale|forged|cross-bound)/i);
 		expect(() =>
 			evaluateFamilyAffinityReviewAttempt({
 				target: activeTarget,
+				assignment: assignmentFor(activeTarget),
+				familyPacketBytes: packetBytesFor(activeTarget),
 				candidateBytes,
-				result,
-				resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+				resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 				ordinary: { ...ordinary, reviewerId: result.producerId }
 			})
 		).toThrow(/self-approval/i);
@@ -186,18 +263,20 @@ describe('family-affinity review receipt contract', () => {
 			expect(() =>
 				evaluateFamilyAffinityReviewAttempt({
 					target: activeTarget,
+					assignment: assignmentFor(activeTarget),
+					familyPacketBytes: packetBytesFor(activeTarget),
 					candidateBytes,
-					result,
-					resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+					resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 					ordinary
 				})
 			).toThrow(/blind/i);
 			expect(
 				evaluateFamilyAffinityReviewAttempt({
 					target: activeTarget,
+					assignment: assignmentFor(activeTarget),
+					familyPacketBytes: packetBytesFor(activeTarget),
 					candidateBytes,
-					result,
-					resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+					resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 					ordinary,
 					blind: blindFor(activeTarget, result)
 				})
@@ -205,9 +284,10 @@ describe('family-affinity review receipt contract', () => {
 			expect(() =>
 				evaluateFamilyAffinityReviewAttempt({
 					target: activeTarget,
+					assignment: assignmentFor(activeTarget),
+					familyPacketBytes: packetBytesFor(activeTarget),
 					candidateBytes,
-					result,
-					resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+					resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 					ordinary,
 					blind: { ...blindFor(activeTarget, result, 'revise'), reviewerId: 'reviewer-beta' }
 				})
@@ -223,27 +303,207 @@ describe('family-affinity review receipt contract', () => {
 			expect(
 				evaluateFamilyAffinityReviewAttempt({
 					target: activeTarget,
+					assignment: assignmentFor(activeTarget),
+					familyPacketBytes: packetBytesFor(activeTarget),
 					candidateBytes,
-					result,
-					resultBytes: Buffer.from(`${JSON.stringify(result)}\n`),
+					resultBytes: Buffer.from(stableFamilyAffinityJson(result)),
 					ordinary: ordinaryFor(activeTarget, result, decision)
 				})
 			).toEqual({ state: decision, revisionRequired: true, approved: false });
 		}
 	});
 
-	it('uses exclusive create and refuses receipt overwrites or non-review-owned paths', async () => {
+	it('refuses receipt creation without controller-issued reviewer authorization', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-'));
 		temporaryRoots.push(root);
 		const activeTarget = target();
 		const result = resultFor(activeTarget);
 		const receipt = ordinaryFor(activeTarget, result);
 		const path = reviewReceiptPath('ordinary', 'goblins', 'goblin-runt', 'normal', 1, 1);
-		await createReviewReceiptExclusive(root, path, receipt);
-		await expect(createReviewReceiptExclusive(root, path, receipt)).rejects.toThrow(/exists/i);
+		await expect(createReviewReceiptExclusive(root, path, receipt)).rejects.toThrow(
+			/missing immutable review artifact/i
+		);
+	});
+
+	it('runs producer result through independent ordinary and T3 blind approval into aggregation', async () => {
+		const live = await stageLiveAttempt('T3');
+		const ordinaryAssignment = await issueReviewAssignmentExclusive(live.root, {
+			kind: 'ordinary',
+			reviewerId: 'reviewer-beta',
+			targetPath: live.paths.target,
+			productionAssignmentPath: live.paths.assignment,
+			decisionVersion: 1
+		});
+		const blindAssignment = await issueReviewAssignmentExclusive(live.root, {
+			kind: 'blind',
+			reviewerId: 'reviewer-gamma',
+			targetPath: live.paths.target,
+			productionAssignmentPath: live.paths.assignment,
+			decisionVersion: 1
+		});
+		await createReviewReceiptExclusive(
+			live.root,
+			ordinaryAssignment.path,
+			ordinaryFor(live.activeTarget, live.result)
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			blindAssignment.path,
+			blindFor(live.activeTarget, live.result)
+		);
+		const artifacts = await buildFamilyAffinityReviewArtifacts(live.root);
+		const goblins = artifacts.families.find(({ familyId }) => familyId === 'goblins')!;
+		expect(
+			goblins.summary.cells.find(
+				({ coordinateId }) => coordinateId === live.activeTarget.coordinateId
+			)
+		).toMatchObject({ state: 'approved-review', candidateSha256: live.result.candidateSha256 });
+		expect(artifacts.catalog).toMatchObject({ generatedCount: 1, approvedReviewCount: 1 });
+	}, 15_000);
+
+	it('binds resultSha256 to raw result bytes, including otherwise harmless whitespace', async () => {
+		const live = await stageLiveAttempt();
+		const reviewAssignment = await issueReviewAssignmentExclusive(live.root, {
+			kind: 'ordinary',
+			reviewerId: 'reviewer-beta',
+			targetPath: live.paths.target,
+			productionAssignmentPath: live.paths.assignment,
+			decisionVersion: 1
+		});
+		await writeFile(
+			join(live.root, live.activeTarget.ownedPaths.result),
+			`${stableFamilyAffinityJson(live.result)}\n`
+		);
 		await expect(
-			createReviewReceiptExclusive(root, activeTarget.ownedPaths.result, receipt)
-		).rejects.toThrow(/review receipt path/i);
+			createReviewReceiptExclusive(
+				live.root,
+				reviewAssignment.path,
+				ordinaryFor(live.activeTarget, live.result)
+			)
+		).rejects.toThrow(/stale|cross-bound/i);
+	});
+
+	it('rejects echoed source or prompt hashes that disagree with authoritative artifacts', async () => {
+		for (const field of ['sourceSha256', 'promptSha256'] as const) {
+			const live = await stageLiveAttempt();
+			await writeFile(
+				join(live.root, live.activeTarget.ownedPaths.result),
+				stableFamilyAffinityJson({ ...live.result, [field]: sha('0') })
+			);
+			await expect(
+				issueReviewAssignmentExclusive(live.root, {
+					kind: 'ordinary',
+					reviewerId: 'reviewer-beta',
+					targetPath: live.paths.target,
+					productionAssignmentPath: live.paths.assignment,
+					decisionVersion: 1
+				})
+			).rejects.toThrow(/stale|forged|cross-bound/i);
+		}
+	});
+
+	it('parses and cross-binds any supplied blind receipt before ordinary-review early returns', () => {
+		const t1 = target('T1');
+		const t1Bytes = Buffer.from('candidate-T1');
+		const t1Result = resultFor(t1, t1Bytes);
+		expect(() =>
+			evaluateFamilyAffinityReviewAttempt({
+				target: t1,
+				assignment: assignmentFor(t1),
+				familyPacketBytes: packetBytesFor(t1),
+				candidateBytes: t1Bytes,
+				resultBytes: Buffer.from(stableFamilyAffinityJson(t1Result)),
+				blind: blindFor(t1, t1Result)
+			})
+		).toThrow(/T3\/T5/i);
+
+		const t3 = target('T3');
+		const t3Bytes = Buffer.from('candidate-T3');
+		const t3Result = resultFor(t3, t3Bytes);
+		expect(() =>
+			evaluateFamilyAffinityReviewAttempt({
+				target: t3,
+				assignment: assignmentFor(t3),
+				familyPacketBytes: packetBytesFor(t3),
+				candidateBytes: t3Bytes,
+				resultBytes: Buffer.from(stableFamilyAffinityJson(t3Result)),
+				blind: { ...blindFor(t3, t3Result), candidateSha256: sha('0') }
+			})
+		).toThrow(/stale|forged|cross-bound/i);
+	});
+
+	it.each(['manifest', 'packet', 'target', 'assignment', 'candidate', 'result'] as const)(
+		'fails closed when the live %s artifact is symlinked',
+		async (kind) => {
+			const live = await stageLiveAttempt();
+			const ownedPath =
+				kind === 'manifest'
+					? 'assets/enemies/experiments/family-affinity-v1/manifest.json'
+					: kind === 'packet'
+						? live.activeTarget.sources.familyPacketPath
+						: kind === 'target'
+							? live.paths.target
+							: kind === 'assignment'
+								? live.paths.assignment
+								: live.activeTarget.ownedPaths[kind];
+			const absolute = join(live.root, ownedPath);
+			const external = join(live.root, `outside-${kind}`);
+			await writeFile(external, await readFile(absolute));
+			await rm(absolute);
+			await symlink(external, absolute);
+			await expect(
+				issueReviewAssignmentExclusive(live.root, {
+					kind: 'ordinary',
+					reviewerId: 'reviewer-beta',
+					targetPath: live.paths.target,
+					productionAssignmentPath: live.paths.assignment,
+					decisionVersion: 1
+				})
+			).rejects.toThrow(/symlink/i);
+		}
+	);
+
+	it('fails closed on symlinked controller assignments and immutable receipt collisions', async () => {
+		const live = await stageLiveAttempt();
+		const issued = await issueReviewAssignmentExclusive(live.root, {
+			kind: 'ordinary',
+			reviewerId: 'reviewer-beta',
+			targetPath: live.paths.target,
+			productionAssignmentPath: live.paths.assignment,
+			decisionVersion: 1
+		});
+		const assignmentAbsolute = join(live.root, issued.path);
+		const external = join(live.root, 'outside-review-assignment.json');
+		await writeFile(external, await readFile(assignmentAbsolute));
+		await rm(assignmentAbsolute);
+		await symlink(external, assignmentAbsolute);
+		await expect(
+			createReviewReceiptExclusive(
+				live.root,
+				issued.path,
+				ordinaryFor(live.activeTarget, live.result)
+			)
+		).rejects.toThrow(/symlink/i);
+
+		const collision = await stageLiveAttempt();
+		const collisionAssignment = await issueReviewAssignmentExclusive(collision.root, {
+			kind: 'ordinary',
+			reviewerId: 'reviewer-beta',
+			targetPath: collision.paths.target,
+			productionAssignmentPath: collision.paths.assignment,
+			decisionVersion: 1
+		});
+		const receipt = ordinaryFor(collision.activeTarget, collision.result);
+		await createReviewReceiptExclusive(collision.root, collisionAssignment.path, receipt);
+		await expect(
+			createReviewReceiptExclusive(collision.root, collisionAssignment.path, receipt)
+		).rejects.toThrow(/EEXIST|exist/i);
+		const receiptAbsolute = join(collision.root, collision.activeTarget.ownedPaths.decision);
+		const receiptExternal = join(collision.root, 'outside-review-receipt.json');
+		await writeFile(receiptExternal, await readFile(receiptAbsolute));
+		await rm(receiptAbsolute);
+		await symlink(receiptExternal, receiptAbsolute);
+		await expect(buildFamilyAffinityReviewArtifacts(collision.root)).rejects.toThrow(/symlink/i);
 	});
 });
 
@@ -309,5 +569,118 @@ describe('initial family review evidence', () => {
 		await mkdir(join(destination, 'review/decisions'), { recursive: true });
 		await writeFile(join(destination, 'review/decisions/not-a-receipt.json'), '{}');
 		await expect(buildFamilyAffinityReviewArtifacts(root)).rejects.toThrow(/extraneous/i);
+	});
+
+	it('reports provisional Earth bridge candidates separately from the canonical 750', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-bridge-'));
+		temporaryRoots.push(root);
+		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
+		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
+		await cp(source, destination, { recursive: true });
+		const canonicalPaths = canonicalAttemptPaths('goblins', 'goblin-runt', 'earth', 1);
+		const canonicalTarget = FamilyAffinityTargetSchema.parse(
+			JSON.parse(await readFile(join(root, canonicalPaths.target), 'utf8'))
+		);
+		const canonicalAssignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(await readFile(join(root, canonicalPaths.assignment), 'utf8'))
+		);
+		const bridgePaths = bridgeAttemptPaths('legacy-goblin', 'earth', 1);
+		const coordinateId = 'legacy-goblin/goblins/goblin-runt/earth';
+		const bridgeTarget = FamilyAffinityTargetSchema.parse({
+			...canonicalTarget,
+			namespace: 'bridge',
+			coordinateId,
+			targetId: `bridge/${coordinateId}/v1`,
+			currentClassId: 'legacy-goblin',
+			ownedPaths: {
+				candidate: bridgePaths.candidate,
+				result: bridgePaths.result,
+				decision: bridgePaths.decision,
+				blindReview: bridgePaths.blindReview
+			},
+			anchor: {
+				kind: 'earth-bridge-provisional',
+				normalCandidatePath: canonicalAttemptPaths('goblins', 'goblin-runt', 'normal', 1).candidate,
+				normalCandidateSha256: sha('a')
+			},
+			status: 'earth-bridge-provisional'
+		});
+		const bridgeAssignment = FamilyAffinityAssignmentSchema.parse({
+			...canonicalAssignment,
+			assignmentId: `${bridgeTarget.targetId}/assignment`,
+			targetId: bridgeTarget.targetId,
+			targetSha256: familyAffinitySha256(bridgeTarget),
+			coordinateId,
+			namespace: 'bridge',
+			allowedOutputs: {
+				candidate: bridgePaths.candidate,
+				result: bridgePaths.result
+			},
+			dispatchStatus: 'earth-bridge-provisional'
+		});
+		const manifestPath = 'assets/enemies/experiments/family-affinity-v1/manifest.json';
+		const manifest = FamilyAffinityManifestSchema.parse(
+			JSON.parse(await readFile(join(root, manifestPath), 'utf8'))
+		);
+		manifest.bridge = {
+			targetCount: 1,
+			assignmentCount: 1,
+			activeCoordinates: [
+				{
+					namespace: 'bridge',
+					coordinateId,
+					familyId: bridgeTarget.familyId,
+					formId: bridgeTarget.formId,
+					currentClassId: 'legacy-goblin',
+					affinity: 'earth',
+					activeVersion: 1,
+					targetPath: bridgePaths.target,
+					targetSha256: familyAffinitySha256(bridgeTarget),
+					assignmentPath: bridgePaths.assignment,
+					assignmentSha256: familyAffinitySha256(bridgeAssignment),
+					status: 'earth-bridge-provisional'
+				}
+			]
+		};
+		const candidateBytes = await sharp({
+			create: { width: 8, height: 8, channels: 3, background: '#745a38' }
+		})
+			.png({ compressionLevel: 9, adaptiveFiltering: false })
+			.toBuffer();
+		const result = FamilyAffinityCandidateResultSchema.parse({
+			schemaVersion: 'family-affinity-result-v1',
+			targetId: bridgeTarget.targetId,
+			targetSha256: familyAffinitySha256(bridgeTarget),
+			coordinateId,
+			candidateVersion: 1,
+			producerId: 'producer-alpha',
+			candidatePath: bridgePaths.candidate,
+			candidateSha256: familyAffinityRawSha256(candidateBytes),
+			resultPath: bridgePaths.result,
+			sourcePath: bridgeTarget.sources.familyPacketPath,
+			sourceSha256: bridgeTarget.sources.familyPacketSha256,
+			promptSha256: familyAffinityPromptSha256(bridgeTarget, bridgeAssignment),
+			state: 'candidate-only',
+			runtimeCatalogMutationForbidden: true
+		});
+		for (const [path, value] of [
+			[bridgePaths.target, stableFamilyAffinityJson(bridgeTarget)],
+			[bridgePaths.assignment, stableFamilyAffinityJson(bridgeAssignment)],
+			[bridgePaths.candidate, candidateBytes],
+			[bridgePaths.result, stableFamilyAffinityJson(result)],
+			[manifestPath, stableFamilyAffinityJson(manifest)]
+		] as const) {
+			await mkdir(dirname(join(root, path)), { recursive: true });
+			await writeFile(join(root, path), value);
+		}
+		const artifacts = await buildFamilyAffinityReviewArtifacts(root);
+		expect(artifacts.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: 0,
+			approvedReviewCount: 0,
+			bridgeCoordinateCount: 1,
+			bridgeGeneratedCount: 1,
+			bridgeApprovedReviewCount: 0
+		});
 	});
 });

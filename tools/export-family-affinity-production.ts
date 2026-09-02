@@ -1,5 +1,4 @@
-import { mkdir, readdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
+import { lstat, mkdir, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -11,10 +10,12 @@ import {
 	FamilyAffinityManifestSchema,
 	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
+	readFamilyAffinityOwnedFile,
 	familyAffinitySha256,
 	FamilyPacketSchema,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityAttemptCrossBinding,
+	validateFamilyAffinityNormalAnchorEvidence,
 	validateFamilyAffinityProductionBundle,
 	validateFamilyAffinityReviewPromotion,
 	type FamilyAffinityAssignment,
@@ -38,10 +39,132 @@ async function listFiles(directory: string): Promise<string[]> {
 	const nested = await Promise.all(
 		entries.map(async (entry) => {
 			const path = join(directory, entry.name);
+			if (entry.isSymbolicLink()) throw new Error(`Symlinked owned path is forbidden: ${path}`);
 			return entry.isDirectory() ? listFiles(path) : [path];
 		})
 	);
 	return nested.flat().sort();
+}
+
+function legacyReviewPathTarget(target: FamilyAffinityTarget): FamilyAffinityTarget {
+	return {
+		...target,
+		anchor:
+			target.anchor.kind === 'normal-approved-review'
+				? {
+						...target.anchor,
+						reviewReceiptPath: `${FAMILY_AFFINITY_ROOT}/reviews/${target.familyId}/${target.formId}/normal/decision-v${target.anchor.normalVersion}.json`
+					}
+				: target.anchor,
+		ownedPaths: {
+			...target.ownedPaths,
+			decision: `${FAMILY_AFFINITY_ROOT}/reviews/${target.familyId}/${target.formId}/${target.affinity}/decision-v${target.version}.json`,
+			blindReview: `${FAMILY_AFFINITY_ROOT}/blind-reviews/${target.familyId}/${target.formId}/${target.affinity}/review-v${target.version}.json`
+		}
+	};
+}
+
+async function migrateExactLegacyReviewPaths(
+	repositoryRoot: string,
+	manifestPath: string,
+	bundle: ReturnType<typeof buildFamilyAffinityProductionBundle>,
+	check: boolean
+): Promise<boolean> {
+	const legacyPathTargets = bundle.targets.map(legacyReviewPathTarget);
+	const legacyNormalShaByForm = new Map(
+		legacyPathTargets
+			.filter(({ affinity }) => affinity === 'normal')
+			.map(
+				(target) => [`${target.familyId}/${target.formId}`, familyAffinitySha256(target)] as const
+			)
+	);
+	const legacyTargets = legacyPathTargets.map((target) =>
+		target.anchor.kind === 'normal-approved-review'
+			? {
+					...target,
+					anchor: {
+						...target.anchor,
+						normalTargetSha256: legacyNormalShaByForm.get(`${target.familyId}/${target.formId}`)!
+					}
+				}
+			: target
+	);
+	const legacyTargetByCoordinate = new Map(
+		legacyTargets.map((target) => [target.coordinateId, target] as const)
+	);
+	const legacyAssignments = bundle.assignments.map((assignment) => ({
+		...assignment,
+		targetSha256: familyAffinitySha256(legacyTargetByCoordinate.get(assignment.coordinateId)!)
+	}));
+	const legacyAssignmentByCoordinate = new Map(
+		legacyAssignments.map((assignment) => [assignment.coordinateId, assignment] as const)
+	);
+	const legacyManifest = {
+		...bundle.manifest,
+		canonicalMatrix: {
+			...bundle.manifest.canonicalMatrix,
+			activeCoordinates: bundle.manifest.canonicalMatrix.activeCoordinates.map((coordinate) => ({
+				...coordinate,
+				targetSha256: familyAffinitySha256(legacyTargetByCoordinate.get(coordinate.coordinateId)!),
+				assignmentSha256: familyAffinitySha256(
+					legacyAssignmentByCoordinate.get(coordinate.coordinateId)!
+				)
+			}))
+		}
+	};
+	const legacyArtifacts = [
+		{ path: manifestPath, value: legacyManifest },
+		...bundle.manifest.canonicalMatrix.activeCoordinates.flatMap((coordinate) => [
+			{
+				path: coordinate.targetPath,
+				value: legacyTargetByCoordinate.get(coordinate.coordinateId)!
+			},
+			{
+				path: coordinate.assignmentPath,
+				value: legacyAssignmentByCoordinate.get(coordinate.coordinateId)!
+			}
+		])
+	];
+	for (const artifact of legacyArtifacts) {
+		const absolute = join(repositoryRoot, artifact.path);
+		if (!(await fileExists(absolute))) return false;
+		if (
+			(await readFamilyAffinityOwnedFile(repositoryRoot, artifact.path)).toString('utf8') !==
+			stableFamilyAffinityJson(artifact.value)
+		)
+			return false;
+	}
+	const evidenceRoots = [
+		'candidates',
+		'results',
+		'reviews',
+		'blind-reviews',
+		'review/decisions',
+		'review/blind',
+		'review/assignments',
+		'review/bridge'
+	];
+	for (const directory of evidenceRoots) {
+		if ((await listFiles(join(repositoryRoot, FAMILY_AFFINITY_ROOT, directory))).length !== 0) {
+			return false;
+		}
+	}
+	if (check) {
+		throw new Error(
+			'Family affinity production export check failed: legacy review paths require migration'
+		);
+	}
+	for (const artifact of bundle.artifacts) {
+		const absolute = join(repositoryRoot, artifact.path);
+		const temporary = `${absolute}.review-path-migration-${process.pid}`;
+		try {
+			await writeFile(temporary, stableFamilyAffinityJson(artifact.value), { flag: 'wx' });
+			await rename(temporary, absolute);
+		} finally {
+			await unlink(temporary).catch(() => undefined);
+		}
+	}
+	return true;
 }
 
 function pathAtVersion(path: string, activeVersion: number, version: number): string {
@@ -63,7 +186,7 @@ async function loadAndValidateExistingCorpus(
 	sourceBundle: ReturnType<typeof buildFamilyAffinityProductionBundle>
 ): Promise<LoadedCorpus> {
 	const manifest = FamilyAffinityManifestSchema.parse(
-		JSON.parse(await readFile(join(repositoryRoot, manifestPath), 'utf8'))
+		JSON.parse((await readFamilyAffinityOwnedFile(repositoryRoot, manifestPath)).toString('utf8'))
 	);
 	const expectedV1 = new Map(
 		sourceBundle.artifacts
@@ -113,8 +236,12 @@ async function loadAndValidateExistingCorpus(
 			if (!(await fileExists(join(repositoryRoot, assignmentPath)))) {
 				throw new Error(`Missing immutable attempt assignment: ${assignmentPath}`);
 			}
-			const targetBytes = await readFile(join(repositoryRoot, targetPath), 'utf8');
-			const assignmentBytes = await readFile(join(repositoryRoot, assignmentPath), 'utf8');
+			const targetBytes = (await readFamilyAffinityOwnedFile(repositoryRoot, targetPath)).toString(
+				'utf8'
+			);
+			const assignmentBytes = (
+				await readFamilyAffinityOwnedFile(repositoryRoot, assignmentPath)
+			).toString('utf8');
 			if (coordinate.namespace === 'canonical' && version === 1) {
 				if (targetBytes !== expectedV1.get(targetPath)) {
 					throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
@@ -182,25 +309,28 @@ async function loadAndValidateExistingCorpus(
 	const canonicalAssignments = activeAssignments.filter(
 		({ namespace }) => namespace === 'canonical'
 	);
-	const reviewReceipts: Record<string, unknown> = {};
+	const reviewReceipts: Record<string, { receipt: unknown; bytes: Uint8Array }> = {};
 	for (const target of canonicalTargets) {
 		if (
 			target.affinity !== 'normal' &&
 			target.status === 'planned' &&
 			target.anchor.kind === 'normal-approved-review'
 		) {
-			const receipt = FamilyAffinityReviewReceiptSchema.parse(
-				JSON.parse(await readFile(join(repositoryRoot, target.anchor.reviewReceiptPath), 'utf8'))
+			await validateFamilyAffinityNormalAnchorEvidence({
+				repositoryRoot,
+				manifestPath,
+				targetPath: manifest.canonicalMatrix.activeCoordinates.find(
+					({ coordinateId }) => coordinateId === target.coordinateId
+				)!.targetPath
+			});
+			const receiptBytes = await readFamilyAffinityOwnedFile(
+				repositoryRoot,
+				target.anchor.reviewReceiptPath
 			);
-			const candidateBytes = await readFile(join(repositoryRoot, receipt.candidatePath));
-			const resultBytes = await readFile(join(repositoryRoot, receipt.resultPath));
-			if (
-				createHash('sha256').update(candidateBytes).digest('hex') !== receipt.candidateSha256 ||
-				createHash('sha256').update(resultBytes).digest('hex') !== receipt.resultSha256
-			) {
-				throw new Error(`Normal approval candidate/result hash mismatch: ${target.targetId}`);
-			}
-			reviewReceipts[target.anchor.reviewReceiptPath] = receipt;
+			const receipt = FamilyAffinityReviewReceiptSchema.parse(
+				JSON.parse(receiptBytes.toString('utf8'))
+			);
+			reviewReceipts[target.anchor.reviewReceiptPath] = { receipt, bytes: receiptBytes };
 		}
 	}
 	validateFamilyAffinityProductionBundle(
@@ -220,48 +350,22 @@ async function loadAndValidateExistingCorpus(
 	);
 	for (const target of activeTargets.filter(({ namespace }) => namespace === 'bridge')) {
 		if (target.affinity !== 'normal' && target.status === 'planned') {
-			if (target.anchor.kind !== 'normal-approved-review') {
-				throw new Error(`Bridge elemental target lacks an exact Normal anchor: ${target.targetId}`);
-			}
-			const anchor = target.anchor;
-			const normalCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
-				({ coordinateId }) => coordinateId === `${target.familyId}/${target.formId}/normal`
-			);
-			const normalTarget = canonicalTargets.find(
-				({ coordinateId }) => coordinateId === normalCoordinate?.coordinateId
-			);
-			const receipt = FamilyAffinityReviewReceiptSchema.parse(
-				JSON.parse(await readFile(join(repositoryRoot, anchor.reviewReceiptPath), 'utf8'))
-			);
-			const candidateBytes = await readFile(join(repositoryRoot, receipt.candidatePath));
-			const resultBytes = await readFile(join(repositoryRoot, receipt.resultPath));
-			if (
-				!normalCoordinate ||
-				!normalTarget ||
-				normalCoordinate.activeVersion !== anchor.normalVersion ||
-				normalCoordinate.targetPath !== anchor.normalTargetPath ||
-				normalCoordinate.targetSha256 !== anchor.normalTargetSha256 ||
-				familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256 ||
-				anchor.reviewReceiptPath !== normalTarget.ownedPaths.decision ||
-				familyAffinitySha256(receipt) !== anchor.reviewReceiptSha256 ||
-				receipt.decision !== 'approved-review' ||
-				receipt.targetId !== normalTarget.targetId ||
-				receipt.targetSha256 !== anchor.normalTargetSha256 ||
-				receipt.candidatePath !== anchor.normalCandidatePath ||
-				receipt.candidateSha256 !== anchor.normalCandidateSha256 ||
-				receipt.resultPath !== anchor.normalResultPath ||
-				receipt.resultSha256 !== anchor.normalResultSha256 ||
-				createHash('sha256').update(candidateBytes).digest('hex') !== receipt.candidateSha256 ||
-				createHash('sha256').update(resultBytes).digest('hex') !== receipt.resultSha256
-			) {
-				throw new Error(
-					`Bridge elemental target has stale or foreign Normal evidence: ${target.targetId}`
-				);
-			}
+			const coordinate = manifest.bridge.activeCoordinates.find(
+				({ coordinateId }) => coordinateId === target.coordinateId
+			)!;
+			await validateFamilyAffinityNormalAnchorEvidence({
+				repositoryRoot,
+				manifestPath,
+				targetPath: coordinate.targetPath
+			});
 		}
 		if (await fileExists(join(repositoryRoot, target.ownedPaths.decision))) {
 			const receipt = FamilyAffinityReviewReceiptSchema.parse(
-				JSON.parse(await readFile(join(repositoryRoot, target.ownedPaths.decision), 'utf8'))
+				JSON.parse(
+					(await readFamilyAffinityOwnedFile(repositoryRoot, target.ownedPaths.decision)).toString(
+						'utf8'
+					)
+				)
 			);
 			validateFamilyAffinityReviewPromotion(target, receipt);
 		}
@@ -293,20 +397,35 @@ export async function exportFamilyAffinityProduction(options: {
 	check: boolean;
 }) {
 	const familyDirectory = join(options.repositoryRoot, FAMILY_AFFINITY_ROOT, 'families');
+	const familyDirectoryMetadata = await lstat(familyDirectory);
+	if (familyDirectoryMetadata.isSymbolicLink() || !familyDirectoryMetadata.isDirectory()) {
+		throw new Error('Family packet directory must be a real directory');
+	}
 	const familyFileNames = (await readdir(familyDirectory))
 		.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
 		.sort();
 	const families = await Promise.all(
 		familyFileNames.map(async (fileName) =>
-			FamilyPacketSchema.parse(JSON.parse(await readFile(join(familyDirectory, fileName), 'utf8')))
+			FamilyPacketSchema.parse(
+				JSON.parse(
+					(
+						await readFamilyAffinityOwnedFile(
+							options.repositoryRoot,
+							`${FAMILY_AFFINITY_ROOT}/families/${fileName}`
+						)
+					).toString('utf8')
+				)
+			)
 		)
 	);
 	const mapping = CurrentClassMappingFileSchema.parse(
 		JSON.parse(
-			await readFile(
-				join(options.repositoryRoot, FAMILY_AFFINITY_ROOT, 'current-class-mapping.json'),
-				'utf8'
-			)
+			(
+				await readFamilyAffinityOwnedFile(
+					options.repositoryRoot,
+					`${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`
+				)
+			).toString('utf8')
 		)
 	);
 	const bundle = buildFamilyAffinityProductionBundle(families, mapping);
@@ -324,6 +443,12 @@ export async function exportFamilyAffinityProduction(options: {
 	}
 	try {
 		if (await fileExists(manifestAbsolute)) {
+			await migrateExactLegacyReviewPaths(
+				options.repositoryRoot,
+				manifestPath,
+				bundle,
+				options.check
+			);
 			const loaded = await loadAndValidateExistingCorpus(
 				options.repositoryRoot,
 				manifestPath,
@@ -331,7 +456,9 @@ export async function exportFamilyAffinityProduction(options: {
 			);
 			const merged = mergedDerivedManifest(loaded.manifest, bundle.manifest);
 			const mergedBytes = stableFamilyAffinityJson(merged);
-			const currentBytes = await readFile(manifestAbsolute, 'utf8');
+			const currentBytes = (
+				await readFamilyAffinityOwnedFile(options.repositoryRoot, manifestPath)
+			).toString('utf8');
 			if (options.check && currentBytes !== mergedBytes) {
 				throw new Error(
 					'Family affinity production export check failed: drifted safe manifest metadata'
