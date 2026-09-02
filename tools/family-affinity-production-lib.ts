@@ -255,6 +255,14 @@ export function auditCurrentClassMapping(
 		if (entry.sourceFamilyLabel !== sourceClass.familyName) {
 			throw new Error(`${entry.currentClassId} sourceFamilyLabel must match the visual index`);
 		}
+		const requestedReuseAffinity = PRODUCTION_AFFINITIES.find(
+			(affinity) => entry.candidateReuseByAffinity[affinity]
+		);
+		if (requestedReuseAffinity) {
+			throw new Error(
+				`${entry.currentClassId} ${requestedReuseAffinity} candidate reuse is unavailable until source/canonical-bound structured review evidence exists`
+			);
+		}
 
 		dispositionCounts[entry.disposition] += 1;
 		if (entry.disposition === 'map' || entry.disposition === 'rename-map') {
@@ -268,28 +276,6 @@ export function auditCurrentClassMapping(
 				throw new Error(`Canonical primary form is claimed more than once: ${canonicalPair}`);
 			}
 			claimedCanonicalPairs.add(canonicalPair);
-		}
-
-		for (const affinity of PRODUCTION_AFFINITIES) {
-			if (!entry.candidateReuseByAffinity[affinity]) continue;
-			candidateReuseCounts[affinity] += 1;
-
-			const candidate = sourceClass.variants.find((variant) => variant.affinity === affinity);
-			if (
-				!candidate?.candidatePath?.trim() ||
-				!candidate.contentHash ||
-				!/^[a-f0-9]{64}$/u.test(candidate.contentHash)
-			) {
-				throw new Error(
-					`${entry.currentClassId} reusable ${affinity} candidate requires a candidate path and content hash`
-				);
-			}
-
-			if (!/family[\s\S]*form[\s\S]*duty[\s\S]*anatomy[\s\S]*framing/iu.test(entry.rationale)) {
-				throw new Error(
-					`${entry.currentClassId} reuse rationale must explain family, form, duty, anatomy, and framing compatibility`
-				);
-			}
 		}
 	}
 

@@ -2278,31 +2278,45 @@ describe('current class reconciliation', () => {
 		);
 	});
 
-	it('rejects candidate reuse without a source path and content hash', async () => {
+	it('rejects bridge-only reuse even with source provenance and the former magic phrase', async () => {
 		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
-		const changedMapping = structuredClone(mapping);
-		const changedVisualIndex = structuredClone(visualIndex);
-		const entry = changedMapping.entries[0]!;
+		const changed = structuredClone(mapping);
+		const entry = changed.entries.find(({ disposition }) => disposition === 'secondary-archetype')!;
 		entry.candidateReuseByAffinity.normal = true;
 		entry.rationale +=
 			' Reuse: family, form, duty, anatomy, and framing are compatible for the Normal candidate.';
-		const source = changedVisualIndex.monsters.find(({ id }) => id === entry.currentClassId)!;
-		const normal = source.variants.find(({ affinity }) => affinity === 'normal')!;
-		normal.contentHash = null;
-
-		expect(() =>
-			auditCurrentClassMapping(changedMapping, changedVisualIndex.monsters, familyPackets)
-		).toThrow(/reusable normal candidate requires a candidate path and content hash/i);
-	});
-
-	it('rejects reuse rationales that do not bind family, form, duty, anatomy, and framing', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
-		const changed = structuredClone(mapping);
-		changed.entries[0]!.candidateReuseByAffinity.normal = true;
 
 		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
-			/reuse rationale.*family.*form.*duty.*anatomy.*framing/i
+			/reuse is unavailable until source\/canonical-bound structured review evidence exists/i
 		);
+	});
+
+	it('rejects canonical reuse with valid provenance and plausible prose but no structured evidence', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const canonical = changed.entries.find(
+			({ disposition }) => disposition === 'map' || disposition === 'rename-map'
+		)!;
+		canonical.candidateReuseByAffinity.normal = true;
+		canonical.rationale +=
+			' The family and form identity, battlefield duty, visible anatomy, and full-body framing appear compatible.';
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/reuse is unavailable until source\/canonical-bound structured review evidence exists/i
+		);
+	});
+
+	it('accepts the current mapping with every candidate reuse flag false', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const audit = auditCurrentClassMapping(mapping, visualIndex.monsters, familyPackets);
+
+		expect(audit.candidateReuseCounts).toEqual({
+			normal: 0,
+			fire: 0,
+			earth: 0,
+			wind: 0,
+			water: 0
+		});
 	});
 
 	it('rejects candidate reuse on retired records', async () => {
