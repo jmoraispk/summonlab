@@ -36,6 +36,10 @@ not alter gameplay contracts or shared content catalogs.
 11. The starting settlement is already a functioning Village with four critical facilities:
     `Residence`, `Forge`, `Training Grounds`, and `Kitchen`.
 12. Starting buildings are humble, complete tier-one versions that can visibly upgrade in place.
+13. The current composition places Residence and Kitchen on the left, Training Grounds and Forge on the
+    right, and the portal landmark on the centerline.
+14. The controlled character physically moves through the Village. Facility pointers and navigation
+    support that spatial experience; they do not reduce the Village to a static image map.
 
 ## Freeze boundary
 
@@ -179,11 +183,16 @@ the permanent road and plot logic but felt too bare to communicate that play beg
 It is superseded as the active direction.
 
 The second candidate begins with four complete but modest facilities around the permanent road and a
-Portal Tower. It uses exactly four visible residents and preserves enough space for every structure to
-gain height, wings, ornament, and activity. This candidate remains exploratory pending visual review.
+Portal Tower. It established the right settlement density but placed Forge on the left and Kitchen on
+the right and allowed some labels to approach the frame edge.
 
-Mockups: [current tier-one Village candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v2.png)
-and [superseded sparse-site study](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
+The third candidate switches Kitchen to the left and Forge to the right, pulls the Training Grounds and
+side labels into a comfortable safe area, and preserves the connected paths needed for direct character
+movement. It remains exploratory pending visual review.
+
+Mockups: [current tier-one Village candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v3.png),
+[second candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v2.png), and
+[superseded sparse-site study](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
 
 ### Portal Tower working hypothesis
 
@@ -198,6 +207,19 @@ Pointers have three states: ambient, focused, and suppressed. Ambient labels use
 hover, focus, or nearby resident activity brightens the leader and target; suppressed labels disappear
 when they would collide. Labels are buttons only when the facility is actionable, and their hit target
 extends beyond the drawn text and line.
+
+### Character movement
+
+The Village home is a navigable world scene, not a static background with hotspots. The player controls
+one visible character and can move them along the connected roads and facility approaches. The cyan
+circle and arrow follow the controlled character and communicate control focus, not a fixed menu
+selection.
+
+Facility pointers remain useful for recognition, focus, and opening a destination, but they must not be
+the only way to traverse the settlement. The exact input mapping remains open for implementation design:
+desktop may combine keyboard, controller, and point-to-move behavior, while phone needs a movement model
+that coexists with the fixed bottom navigation. If the Village later exceeds one viewport, the camera
+may track within bounded areas without changing the stable facility layout.
 
 ## Hero inspection
 

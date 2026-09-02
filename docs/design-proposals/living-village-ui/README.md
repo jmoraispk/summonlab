@@ -55,14 +55,18 @@ this composition rather than turn the gateway into a conventional login form.
 
 ### Exploratory opening Village
 
-The current candidate starts with a functioning tier-one Village: Residence, Forge, Training Grounds,
-Kitchen, and a Portal Tower. Exactly four visible residents keep it intimate, while modest building
-footprints leave room for upgrades in place.
+The current candidate starts with a functioning tier-one Village: Residence and Kitchen on the left,
+Training Grounds and Forge on the right, and a Portal Tower on the centerline. Exactly four visible
+residents keep it intimate, while modest building footprints leave room for upgrades in place. All
+buildings and labels remain inside a comfortable viewing safe area.
 
-![Opening Village desktop candidate v2](./mockups/opening-village-desktop-v2.png)
+![Opening Village desktop candidate v3](./mockups/opening-village-desktop-v3.png)
 
 The [superseded sparse-site study](./mockups/opening-village-desktop-v1.png) remains as design history;
 it felt too much like a construction yard and did not provide enough sense of starting in a village.
+The [second candidate](./mockups/opening-village-desktop-v2.png) established the complete tier-one
+facilities but placed Forge on the left and Kitchen on the right and pushed some content too close to
+the frame edges.
 
 ### Shared Village Inventory
 
