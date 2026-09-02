@@ -1,6 +1,6 @@
 # Living Village client visual proposal
 
-**Status:** Visual foundation approved; system flows exploratory
+**Status:** Title gateway locked; remaining system flows exploratory
 
 **Date:** 2026-09-02
 
@@ -12,7 +12,7 @@ gameplay contracts, or shared content catalogs.
 
 ### Freeze now
 
-- the minimal title gateway and its restrained, slightly rounded `Enter Village` button;
+- the minimal title gateway and its square, architectural `Enter Village` button;
 - the dark observatory palette, ember-gold structure, and cyan living-focus accent;
 - a scene-first, centered Village composition on desktop;
 - direct facility labels with fine leader lines;
@@ -29,6 +29,9 @@ gameplay contracts, or shared content catalogs.
 
 The immediate goal is to freeze the foundation above, then use it to design the unresolved gameplay
 surfaces without repeatedly reopening the entire art direction.
+
+The title gateway is now locked. A future sign-in step may follow `Enter Village`, but it should inherit
+this composition rather than turn the gateway into a conventional login form.
 
 ## Review order
 

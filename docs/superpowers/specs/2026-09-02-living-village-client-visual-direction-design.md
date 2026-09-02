@@ -1,6 +1,6 @@
 # Living Village client visual direction
 
-**Status:** Visual foundation approved; system flows exploratory
+**Status:** Title gateway locked; remaining system flows exploratory
 
 **Date:** 2026-09-02
 
@@ -19,8 +19,8 @@ not alter gameplay contracts or shared content catalogs.
 ## Approved product decisions
 
 1. The title page contains the Summonlab mark, one `Enter Village` action, and a quiet `Wiki` link.
-   The primary action uses a restrained 10–12 px corner radius: warmer and more clickable, but not a
-   pill.
+   The primary action remains square and architectural. The portal supplies the visual warmth while the
+   control preserves the gateway's bare-bones simplicity.
 2. Sign-in may follow `Enter Village` later, but is outside this phase.
 3. Village navigation exists only inside the Village experience.
 4. The Wiki remains a separate destination, not a persistent game-navigation item.
@@ -48,6 +48,9 @@ The following visual foundation is approved and should not be reopened during ro
 Approval of the composition does not freeze the mature settlement shown in the exploratory Village
 mockups as the launch-state population or construction state. Inventory layout, mission packing details,
 return reconciliation, Tower/Gate separation, and settlement progression remain open design work.
+
+The title gateway is locked. Subsequent design passes may define the sign-in step after `Enter Village`,
+but should not add login fields, account navigation, or secondary actions to the gateway itself.
 
 ## Visual thesis: the inhabited observatory
 
@@ -104,6 +107,8 @@ The title page should behave like a threshold rather than a marketing homepage.
 
 - The full viewport belongs to the gate artwork.
 - `Enter Village` is the sole primary action.
+- The action uses square corners and a thin ember-gold outline. It should feel like part of the gate's
+  architecture rather than a soft application control.
 - `Wiki` sits quietly in a top corner and remains keyboard reachable.
 - Remove seed selection, consent explanations, runtime diagnostics, and developer-route links from the
   normal gateway presentation.
