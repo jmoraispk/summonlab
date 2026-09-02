@@ -1,6 +1,6 @@
 # Proposed skill icon motif map
 
-**Status:** Proposed for owner review
+**Status:** Accepted
 
 **Date:** 2026-09-01
 

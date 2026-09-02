@@ -1,6 +1,6 @@
 # Skill icon production system design
 
-**Status:** Proposed for owner review
+**Status:** Accepted
 
 **Date:** 2026-09-01
 
