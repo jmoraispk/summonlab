@@ -1057,6 +1057,71 @@ describe('scoped contact-sheet export', () => {
 		).toMatchObject({ inSync: true, drift: [] });
 	}, 90_000);
 
+	it('retries when a repeatedly read geometry file persistently changes during planning', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const geometryPath = path.join(root, 'assets/wiki/skills/icon-production-v1/geometry.json');
+		const replacementPath = `${geometryPath}.replacement`;
+		await copyFile(geometryPath, replacementPath);
+		let replaced = false;
+		const report = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'references',
+			testHooks: {
+				afterContactSheetReadObservation: async ({ kind, path: observedPath }) => {
+					if (
+						replaced ||
+						kind !== 'file' ||
+						observedPath !== 'assets/wiki/skills/icon-production-v1/geometry.json'
+					) {
+						return;
+					}
+					replaced = true;
+					await rename(replacementPath, geometryPath);
+				}
+			}
+		});
+		expect(replaced).toBe(true);
+		expect(report.contactSheet?.path).toBe(SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH);
+		expect(
+			await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
+		).toMatchObject({ inSync: true, drift: [] });
+	}, 60_000);
+
+	it('retries when a repeatedly inventoried receipt directory persistently changes', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		await installPilotCandidates(root);
+		const relativeReceipts = 'assets/wiki/skills/icon-production-v1/promotion-receipts';
+		const receiptDirectory = path.join(root, relativeReceipts);
+		const replacementDirectory = `${receiptDirectory}.replacement`;
+		await mkdir(replacementDirectory);
+		for (const name of await readdir(receiptDirectory)) {
+			await copyFile(path.join(receiptDirectory, name), path.join(replacementDirectory, name));
+		}
+		let replaced = false;
+		const report = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'pilot',
+			testHooks: {
+				afterContactSheetReadObservation: async ({ kind, path: observedPath }) => {
+					if (replaced || kind !== 'directory' || observedPath !== relativeReceipts) return;
+					replaced = true;
+					await rename(receiptDirectory, `${receiptDirectory}.original`);
+					await rename(replacementDirectory, receiptDirectory);
+				}
+			}
+		});
+		expect(replaced).toBe(true);
+		expect(report.contactSheet?.path).toBe(SKILL_ICON_PILOT_CONTACT_SHEET_PATH);
+		expect(await exportSkillIconRuntime({ root, mode: 'check', scope: 'pilot' })).toMatchObject({
+			inSync: true,
+			drift: []
+		});
+	}, 90_000);
+
 	it('cleans a private pre-link lock stage so a simulated crash never blocks the next writer', async () => {
 		const root = await productionFixtureRoot();
 		await installReferencePackets(root, false);
@@ -1150,6 +1215,103 @@ describe('scoped contact-sheet export', () => {
 		expect(
 			await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
 		).toMatchObject({ inSync: true, written: true });
+	}, 60_000);
+
+	it('retries when a compliant lock owner releases between observation and bound read', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const authority = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const review = path.join(authority, 'review');
+		await mkdir(review, { recursive: true });
+		const transactionId = '44444444-4444-4444-8444-444444444444';
+		const stageNamespace = `.contact-sheet-staging-${transactionId}`;
+		const stage = path.join(authority, stageNamespace);
+		await mkdir(stage, { mode: 0o700 });
+		const processStat = await readFile(`/proc/${process.pid}/stat`, 'utf8');
+		const record = {
+			schemaVersion: 'skill-icon-contact-sheet-lock-v1',
+			transactionId,
+			pid: process.pid,
+			processIdentity: {
+				bootId: (await readFile('/proc/sys/kernel/random/boot_id', 'utf8')).trim(),
+				startTicks: processStat
+					.slice(processStat.lastIndexOf(')') + 2)
+					.trim()
+					.split(/\s+/u)[19]
+			},
+			createdAt: '2026-09-02T12:00:00.000Z',
+			stageNamespace
+		};
+		const bytes = `${JSON.stringify(record)}\n`;
+		const privateLock = path.join(stage, 'lock.stage');
+		const lockPath = path.join(review, '.contact-sheet.lock');
+		await writeFile(privateLock, bytes);
+		await chmod(privateLock, 0o600);
+		await writeFile(lockPath, bytes);
+		await chmod(lockPath, 0o600);
+		let released = false;
+		const report = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'references',
+			testHooks: {
+				afterContactSheetLockObservation: async () => {
+					if (released) return;
+					released = true;
+					await unlink(lockPath);
+					await unlink(privateLock);
+					await rm(stage, { recursive: true });
+				}
+			}
+		});
+		expect(released).toBe(true);
+		expect(report).toMatchObject({ inSync: true, written: true });
+	}, 60_000);
+
+	it('lets concurrent dead-owner recoverers retry and serialize normally', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const authority = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const review = path.join(authority, 'review');
+		await mkdir(review, { recursive: true });
+		const transactionId = '55555555-5555-4555-8555-555555555555';
+		const stageNamespace = `.contact-sheet-staging-${transactionId}`;
+		const stage = path.join(authority, stageNamespace);
+		await mkdir(stage, { mode: 0o700 });
+		const record = {
+			schemaVersion: 'skill-icon-contact-sheet-lock-v1',
+			transactionId,
+			pid: 999_999_999,
+			processIdentity: {
+				bootId: (await readFile('/proc/sys/kernel/random/boot_id', 'utf8')).trim(),
+				startTicks: '1'
+			},
+			createdAt: '2026-09-02T12:00:00.000Z',
+			stageNamespace
+		};
+		const bytes = `${JSON.stringify(record)}\n`;
+		await writeFile(path.join(stage, 'lock.stage'), bytes);
+		await chmod(path.join(stage, 'lock.stage'), 0o600);
+		await writeFile(path.join(review, '.contact-sheet.lock'), bytes);
+		await chmod(path.join(review, '.contact-sheet.lock'), 0o600);
+		let observations = 0;
+		let releaseBarrier: (() => void) | undefined;
+		const barrier = new Promise<void>((resolve) => {
+			releaseBarrier = resolve;
+		});
+		const hooks = {
+			afterContactSheetLockObservation: async () => {
+				observations += 1;
+				if (observations === 2) releaseBarrier?.();
+				await barrier;
+			}
+		};
+		const reports = await Promise.all([
+			exportSkillIconRuntime({ root, mode: 'write', scope: 'references', testHooks: hooks }),
+			exportSkillIconRuntime({ root, mode: 'write', scope: 'references', testHooks: hooks })
+		]);
+		expect(observations).toBeGreaterThanOrEqual(2);
+		expect(reports.map(({ written }) => written).sort()).toEqual([false, true]);
 	}, 60_000);
 
 	it('recovers only a strict dead or PID-reused lock stage and preserves malformed locks', async () => {

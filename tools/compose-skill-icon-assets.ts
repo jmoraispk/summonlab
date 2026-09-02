@@ -176,6 +176,13 @@ interface PlannedContactSheet extends DesiredContactSheet {
 }
 
 export interface SkillIconRuntimeTestHooks {
+	readonly afterContactSheetReadObservation?: (input: {
+		readonly kind: 'file' | 'directory';
+		readonly path: string;
+	}) => void | Promise<void>;
+	readonly afterContactSheetLockObservation?: (input: {
+		readonly lockPath: string;
+	}) => void | Promise<void>;
 	readonly beforeContactSheetPlanner?: (input: {
 		readonly attempt: number;
 	}) => void | Promise<void>;
@@ -228,11 +235,14 @@ class ContactSheetReadSetChanged extends Error {
 
 class ContactSheetReadSession {
 	readonly #root: string;
+	readonly #testHooks: SkillIconRuntimeTestHooks | undefined;
 	readonly #files = new Map<string, ReadSetFile>();
 	readonly #directories = new Map<string, ReadSetDirectory>();
+	readonly #readQueues = new Map<string, Promise<void>>();
 
-	constructor(root: string) {
+	constructor(root: string, testHooks?: SkillIconRuntimeTestHooks) {
 		this.#root = path.resolve(root);
+		this.#testHooks = testHooks;
 	}
 
 	#relative(absolute: string): string {
@@ -243,42 +253,99 @@ class ContactSheetReadSession {
 		return relative;
 	}
 
+	async #serialize<T>(key: string, operation: () => Promise<T>): Promise<T> {
+		const predecessor = this.#readQueues.get(key) ?? Promise.resolve();
+		let release!: () => void;
+		const gate = new Promise<void>((resolve) => {
+			release = resolve;
+		});
+		const queued = predecessor.then(() => gate);
+		this.#readQueues.set(key, queued);
+		await predecessor;
+		try {
+			return await operation();
+		} finally {
+			release();
+			if (this.#readQueues.get(key) === queued) this.#readQueues.delete(key);
+		}
+	}
+
 	async readFile(location: string, label: string): Promise<Buffer> {
 		const absolute = path.resolve(location);
-		const parent = await directoryFingerprint(path.dirname(absolute));
-		const { bytes, device, inode } = await readDirectRegularFileIdentity(absolute, label);
-		this.#files.set(this.#relative(absolute), {
-			path: this.#relative(absolute),
-			parent,
-			device,
-			inode,
-			bytes: bytes.byteLength,
-			hash: sha256(bytes)
+		const relative = this.#relative(absolute);
+		return this.#serialize(`file:${relative}`, async () => {
+			const parent = await directoryFingerprint(path.dirname(absolute));
+			const { bytes, device, inode } = await readDirectRegularFileIdentity(absolute, label);
+			const observation = {
+				path: relative,
+				parent,
+				device,
+				inode,
+				bytes: bytes.byteLength,
+				hash: sha256(bytes)
+			};
+			const recorded = this.#files.get(relative);
+			if (recorded) {
+				if (
+					!sameDirectory(recorded.parent, observation.parent) ||
+					recorded.device !== observation.device ||
+					recorded.inode !== observation.inode ||
+					recorded.bytes !== observation.bytes ||
+					recorded.hash !== observation.hash
+				) {
+					throw new ContactSheetReadSetChanged();
+				}
+			} else {
+				this.#files.set(relative, observation);
+				await this.#testHooks?.afterContactSheetReadObservation?.({
+					kind: 'file',
+					path: relative
+				});
+			}
+			return bytes;
 		});
-		return bytes;
 	}
 
 	async readDirectory(location: string): Promise<Dirent[]> {
 		const absolute = path.resolve(location);
-		const bound = await openBoundDirectory(absolute);
-		try {
-			const entries = await readdir(bound.procPath, { withFileTypes: true });
-			const identities = await Promise.all(
-				entries.map(async (entry) => {
-					const metadata = await lstat(path.join(bound.procPath, entry.name));
-					return `${entry.name}\0${metadata.dev}\0${metadata.ino}\0${metadata.mode}`;
-				})
-			);
-			this.#directories.set(this.#relative(absolute), {
-				path: this.#relative(absolute),
-				device: bound.identity.device,
-				inode: bound.identity.inode,
-				entries: identities.sort((left, right) => left.localeCompare(right))
-			});
-			return entries;
-		} finally {
-			await bound.handle.close();
-		}
+		const relative = this.#relative(absolute);
+		return this.#serialize(`directory:${relative}`, async () => {
+			const bound = await openBoundDirectory(absolute);
+			try {
+				const entries = await readdir(bound.procPath, { withFileTypes: true });
+				const identities = await Promise.all(
+					entries.map(async (entry) => {
+						const metadata = await lstat(path.join(bound.procPath, entry.name));
+						return `${entry.name}\0${metadata.dev}\0${metadata.ino}\0${metadata.mode}`;
+					})
+				);
+				const observation = {
+					path: relative,
+					device: bound.identity.device,
+					inode: bound.identity.inode,
+					entries: identities.sort((left, right) => left.localeCompare(right))
+				};
+				const recorded = this.#directories.get(relative);
+				if (recorded) {
+					if (
+						recorded.device !== observation.device ||
+						recorded.inode !== observation.inode ||
+						JSON.stringify(recorded.entries) !== JSON.stringify(observation.entries)
+					) {
+						throw new ContactSheetReadSetChanged();
+					}
+				} else {
+					this.#directories.set(relative, observation);
+					await this.#testHooks?.afterContactSheetReadObservation?.({
+						kind: 'directory',
+						path: relative
+					});
+				}
+				return entries;
+			} finally {
+				await bound.handle.close();
+			}
+		});
 	}
 
 	async verify(): Promise<boolean> {
@@ -339,6 +406,15 @@ class ContactSheetReadSession {
 async function assertContactSheetReadSetCurrent(): Promise<void> {
 	const session = contactSheetReadContext.getStore();
 	if (session && !(await session.verify())) throw new ContactSheetReadSetChanged();
+}
+
+async function settleContactSheetReads<T>(operations: readonly Promise<T>[]): Promise<T[]> {
+	const results = await Promise.allSettled(operations);
+	const rejected = results.find(
+		(result): result is PromiseRejectedResult => result.status === 'rejected'
+	);
+	if (rejected) throw rejected.reason;
+	return results.map((result) => (result as PromiseFulfilledResult<T>).value);
 }
 
 function sha256(bytes: Buffer): string {
@@ -1219,7 +1295,7 @@ async function planReferenceContactSheet(root: string): Promise<DesiredContactSh
 				.join('; ')
 		);
 	}
-	const cellInputs = await Promise.all(
+	const cellInputs = await settleContactSheetReads(
 		selected.map(async ({ target, label }) => ({
 			candidate: await loadBoundCandidate(root, target),
 			label
@@ -1307,19 +1383,15 @@ async function planPilotContactSheet(root: string): Promise<DesiredContactSheet>
 		}
 		selectedTargets.set(targetId, active[0]!);
 	}
-	const backingPromise = loadApprovedReference(
-		root,
-		SKILL_ICON_BACKING_MASTER_PATH,
-		'backing',
-		null
-	);
-	const framePromises = new Map(
-		(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const).map((rarity) => [
-			rarity,
+	const rarities = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
+	const [backing, ...frames] = await settleContactSheetReads([
+		loadApprovedReference(root, SKILL_ICON_BACKING_MASTER_PATH, 'backing', null),
+		...rarities.map((rarity) =>
 			loadApprovedReference(root, framePathFor(rarity), 'rarity-frame', rarity)
-		])
-	);
-	const cardInputs = await Promise.all(
+		)
+	]);
+	const frameBuffers = new Map(rarities.map((rarity, index) => [rarity, frames[index]!]));
+	const cardInputs = await settleContactSheetReads(
 		SKILL_ICON_PILOT_TARGET_IDS.map(async (targetId) => {
 			const record = byTargetId.get(targetId)!;
 			if (record.status !== 'candidate' && record.status !== 'approved') {
@@ -1350,10 +1422,7 @@ async function planPilotContactSheet(root: string): Promise<DesiredContactSheet>
 			) {
 				throw new Error(`Pilot catalog candidate binding mismatch for ${targetId}`);
 			}
-			const [backing, frame] = await Promise.all([
-				backingPromise,
-				framePromises.get(record.rarity)!
-			]);
+			const frame = frameBuffers.get(record.rarity)!;
 			const composite = await composeSkillHexBuffers({ backing, art, frame });
 			return {
 				composite,
@@ -1654,6 +1723,12 @@ async function acquireContactSheetLock(
 			throw error;
 		});
 		if (existing) {
+			await testHooks?.afterContactSheetLockObservation?.({ lockPath });
+			const observed = await lstat(lockPath).catch((error: NodeJS.ErrnoException) => {
+				if (error.code === 'ENOENT') return null;
+				throw error;
+			});
+			if (!observed || observed.dev !== existing.dev || observed.ino !== existing.ino) continue;
 			if (existing.isSymbolicLink() || !existing.isFile() || (existing.mode & 0o777) !== 0o600) {
 				throw new Error('Malformed contact-sheet lock is preserved; recovery required');
 			}
@@ -1661,8 +1736,20 @@ async function acquireContactSheetLock(
 			let existingBytes: Buffer;
 			try {
 				existingBytes = await readBoundFile(directory, '.contact-sheet.lock');
+			} catch (error) {
+				const current = await lstat(lockPath).catch(() => null);
+				if (!current || current.dev !== existing.dev || current.ino !== existing.ino) continue;
+				throw new Error('Malformed contact-sheet lock is preserved; recovery required', {
+					cause: error
+				});
+			}
+			const afterRead = await lstat(lockPath).catch(() => null);
+			if (!afterRead || afterRead.dev !== existing.dev || afterRead.ino !== existing.ino) continue;
+			try {
 				record = ContactSheetLockSchema.parse(JSON.parse(existingBytes.toString('utf8')));
 			} catch (error) {
+				const current = await lstat(lockPath).catch(() => null);
+				if (!current || current.dev !== existing.dev || current.ino !== existing.ino) continue;
 				throw new Error('Malformed contact-sheet lock is preserved; recovery required', {
 					cause: error
 				});
@@ -1674,17 +1761,45 @@ async function acquireContactSheetLock(
 				await new Promise((resolve) => setTimeout(resolve, 10));
 				continue;
 			}
-			const before = await lstat(lockPath);
-			await cleanupDerivedStage(root, record);
-			const immediatelyBefore = await lstat(lockPath);
+			const before = await lstat(lockPath).catch(() => null);
+			if (!before || before.dev !== existing.dev || before.ino !== existing.ino) continue;
+			try {
+				await cleanupDerivedStage(root, record);
+			} catch (error) {
+				const current = await lstat(lockPath).catch(() => null);
+				if (
+					!current ||
+					current.dev !== existing.dev ||
+					current.ino !== existing.ino ||
+					(error as NodeJS.ErrnoException).code === 'ENOENT'
+				) {
+					await new Promise((resolve) => setTimeout(resolve, 10));
+					continue;
+				}
+				throw error;
+			}
+			const immediatelyBefore = await lstat(lockPath).catch(() => null);
+			if (!immediatelyBefore) continue;
+			const immediatelyBeforeBytes = await readBoundFile(directory, '.contact-sheet.lock').catch(
+				() => null
+			);
+			const afterImmediateRead = await lstat(lockPath).catch(() => null);
 			if (
 				before.dev !== immediatelyBefore.dev ||
 				before.ino !== immediatelyBefore.ino ||
-				!(await readBoundFile(directory, '.contact-sheet.lock')).equals(existingBytes)
+				!immediatelyBeforeBytes?.equals(existingBytes) ||
+				!afterImmediateRead ||
+				afterImmediateRead.dev !== immediatelyBefore.dev ||
+				afterImmediateRead.ino !== immediatelyBefore.ino
 			) {
-				throw new Error('Dead contact-sheet lock identity changed; recovery required');
+				continue;
 			}
-			await unlink(lockPath);
+			try {
+				await unlink(lockPath);
+			} catch (error) {
+				if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue;
+				throw error;
+			}
 			await directory.handle.sync();
 			continue;
 		}
@@ -1933,7 +2048,7 @@ async function writeContactSheet(
 		await assertNoConcurrentPromotion(root);
 		let wrote = false;
 		for (let attempt = 0; attempt < 3; attempt += 1) {
-			const readSession = new ContactSheetReadSession(root);
+			const readSession = new ContactSheetReadSession(root, testHooks);
 			await testHooks?.beforeContactSheetPlanner?.({ attempt });
 			let desired: DesiredContactSheet;
 			try {
