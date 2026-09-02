@@ -238,6 +238,7 @@ export const FamilyAffinityTargetSchema = z
 		sources: z
 			.object({
 				familyPacketPath: OwnedPathSchema,
+				familyPacketSha256: Sha256Schema,
 				sourcePage: RequiredTextSchema,
 				sourceReferences: z.array(RequiredTextSchema).min(1),
 				mappingPath: OwnedPathSchema
@@ -811,6 +812,7 @@ function buildCanonicalTarget(
 		forbiddenTreatments: theme.forbidden,
 		sources: {
 			familyPacketPath: familyPacketPath(family),
+			familyPacketSha256: familyAffinitySha256(family),
 			sourcePage: family.sourcePage,
 			sourceReferences: form.sourceReferences,
 			mappingPath: `${FAMILY_AFFINITY_ROOT}/current-class-mapping.json`

@@ -2101,15 +2101,17 @@ describe('family affinity production schemas', () => {
 });
 
 type VisualIndexFixture = {
-	monsters: Array<{
-		id: string;
-		familyName: string;
-		variants: Array<{
-			affinity: string;
-			candidatePath?: string | null;
-			contentHash?: string | null;
+	reconciliation: {
+		entries: Array<{
+			currentClassId: string;
+			sourceFamilyLabel: string;
+			references: Array<{
+				affinity: string;
+				candidatePath: string;
+				contentHash: string;
+			}>;
 		}>;
-	}>;
+	};
 };
 
 async function loadCurrentClassAuditFixtures() {
@@ -2144,17 +2146,22 @@ async function loadCurrentClassAuditFixtures() {
 			)
 		)
 	);
+	const currentClassSources = visualIndex.reconciliation.entries.map((entry) => ({
+		id: entry.currentClassId,
+		familyName: entry.sourceFamilyLabel,
+		variants: entry.references
+	}));
 
-	return { mapping, visualIndex, familyPackets };
+	return { mapping, currentClassSources, familyPackets };
 }
 
 describe('current class reconciliation', () => {
 	it('reconciles the exact forty visual-index classes in source order', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
-		const audit = auditCurrentClassMapping(mapping, visualIndex.monsters, familyPackets);
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
+		const audit = auditCurrentClassMapping(mapping, currentClassSources, familyPackets);
 
 		expect(mapping.entries.map(({ currentClassId }) => currentClassId)).toEqual(
-			visualIndex.monsters.map(({ id }) => id)
+			currentClassSources.map(({ id }) => id)
 		);
 		expect(audit).toEqual({
 			dispositionCounts: {
@@ -2169,7 +2176,7 @@ describe('current class reconciliation', () => {
 			canonicalPrimaryCount: 10,
 			uniqueCanonicalClaims: 10,
 			candidateReuseCounts: { normal: 0, fire: 0, earth: 0, wind: 0, water: 0 },
-			retainedBridgeCurrentClassIds: visualIndex.monsters.map(({ id }) => id),
+			retainedBridgeCurrentClassIds: currentClassSources.map(({ id }) => id),
 			bridgeOnlyCurrentClassIds: [
 				'armored-brood-guard',
 				'web-caster',
@@ -2218,28 +2225,28 @@ describe('current class reconciliation', () => {
 	});
 
 	it('rejects an exact-set substitution even when forty unique records remain', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		changed.entries[39]!.currentClassId = 'fabricated-enemy';
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/exactly match.*visual index/i
 		);
 	});
 
 	it('rejects a canonical form claimed under the wrong family', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const mapped = changed.entries.find(({ disposition }) => disposition === 'map')!;
 		mapped.canonicalFamilyId = 'goblins';
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/canonical family\/form pair does not exist/i
 		);
 	});
 
 	it('rejects duplicate canonical primary claims', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const firstClaim = changed.entries.find(
 			({ disposition }) => disposition === 'map' || disposition === 'rename-map'
@@ -2251,13 +2258,13 @@ describe('current class reconciliation', () => {
 		bridgeOnly.canonicalFamilyId = firstClaim.canonicalFamilyId;
 		bridgeOnly.canonicalFormId = firstClaim.canonicalFormId;
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/canonical primary form.*claimed more than once/i
 		);
 	});
 
 	it('rejects secondary archetypes that attempt to count as canonical forms', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const bridgeOnly = changed.entries.find(
 			({ disposition }) => disposition === 'secondary-archetype'
@@ -2265,20 +2272,20 @@ describe('current class reconciliation', () => {
 		bridgeOnly.canonicalFamilyId = 'goblins';
 		bridgeOnly.canonicalFormId = 'goblin-runt';
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/secondary-archetype.*canonical IDs to be null/i
 		);
 	});
 
 	it('derives retained and bridge-only counts without adding bridge records to the 150', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const retired = changed.entries.find(
 			({ disposition }) => disposition === 'secondary-archetype'
 		)!;
 		retired.disposition = 'retire';
 
-		const audit = auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets);
+		const audit = auditCurrentClassMapping(changed, currentClassSources, familyPackets);
 		expect(audit.retainedBridgeCount).toBe(39);
 		expect(audit.bridgeOnlyCount).toBe(29);
 		expect(audit.canonicalPrimaryCount).toBe(10);
@@ -2288,30 +2295,30 @@ describe('current class reconciliation', () => {
 	});
 
 	it('rejects Earth candidate reuse because the current roster has no Earth candidates', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		changed.entries[0]!.candidateReuseByAffinity.earth = true;
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/Earth candidate reuse must be false/i
 		);
 	});
 
 	it('rejects bridge-only reuse even with source provenance and the former magic phrase', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const entry = changed.entries.find(({ disposition }) => disposition === 'secondary-archetype')!;
 		entry.candidateReuseByAffinity.normal = true;
 		entry.rationale +=
 			' Reuse: family, form, duty, anatomy, and framing are compatible for the Normal candidate.';
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/reuse is unavailable until source\/canonical-bound structured review evidence exists/i
 		);
 	});
 
 	it('rejects canonical reuse with valid provenance and plausible prose but no structured evidence', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const canonical = changed.entries.find(
 			({ disposition }) => disposition === 'map' || disposition === 'rename-map'
@@ -2320,14 +2327,14 @@ describe('current class reconciliation', () => {
 		canonical.rationale +=
 			' The family and form identity, battlefield duty, visible anatomy, and full-body framing appear compatible.';
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/reuse is unavailable until source\/canonical-bound structured review evidence exists/i
 		);
 	});
 
 	it('accepts the current mapping with every candidate reuse flag false', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
-		const audit = auditCurrentClassMapping(mapping, visualIndex.monsters, familyPackets);
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
+		const audit = auditCurrentClassMapping(mapping, currentClassSources, familyPackets);
 
 		expect(audit.candidateReuseCounts).toEqual({
 			normal: 0,
@@ -2339,7 +2346,7 @@ describe('current class reconciliation', () => {
 	});
 
 	it('rejects candidate reuse on retired records', async () => {
-		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const { mapping, currentClassSources, familyPackets } = await loadCurrentClassAuditFixtures();
 		const changed = structuredClone(mapping);
 		const retired = changed.entries.find(
 			({ disposition }) => disposition === 'secondary-archetype'
@@ -2347,7 +2354,7 @@ describe('current class reconciliation', () => {
 		retired.disposition = 'retire';
 		retired.candidateReuseByAffinity.normal = true;
 
-		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+		expect(() => auditCurrentClassMapping(changed, currentClassSources, familyPackets)).toThrow(
 			/retire.*candidate reuse must be false/i
 		);
 	});

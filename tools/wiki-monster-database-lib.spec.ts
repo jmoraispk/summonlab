@@ -422,6 +422,23 @@ describe('canonical monster wiki database', () => {
 		[
 			'constant',
 			(input: MonsterWikiBuildInput) => (input.families[0]!.visualConstants[0] += ' drift')
+		],
+		[
+			'T5 teaching goal',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.forms[4]!.teachingGoal += ' drift')
+		],
+		[
+			'T5 lower-form interaction',
+			(input: MonsterWikiBuildInput) =>
+				(input.families[0]!.forms[4]!.lowerFormInteraction! += ' drift')
+		],
+		[
+			'escalation axis',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.escalationAxis += ' drift')
+		],
+		[
+			'classification notes',
+			(input: MonsterWikiBuildInput) => (input.families[0]!.classificationNotes += ' drift')
 		]
 	] as const)('rejects packet-to-target %s drift', async (_label, mutate) => {
 		const input = cloneInput(await productionInput());
