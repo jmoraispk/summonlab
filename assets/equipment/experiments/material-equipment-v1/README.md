@@ -151,7 +151,6 @@ EQUIPMENT_WORKER_ID='replace-with-claim-worker-id'
 EQUIPMENT_CLAIM_ID='replace-with-claim-id'
 EQUIPMENT_CANDIDATE_PATH='replace-with-assignment-candidate-path'
 EQUIPMENT_RESULT_PATH='replace-with-assignment-result-path'
-EQUIPMENT_RESULT_CANONICAL_SHA256='replace-with-verified-result-canonical-sha256'
 EQUIPMENT_SOURCE_IMAGE=/absolute/path/to/exact-imagegen-output.png
 EQUIPMENT_RESULT_JSON=/absolute/path/to/worker-result.json
 
@@ -184,9 +183,14 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
   corepack pnpm tsx tools/equipment-image-production.ts record-terminal \
     --run-id "$EQUIPMENT_RUN_ID" --event-id terminal-001 --actor root-orchestrator \
     --requested-at 2026-09-02T01:10:00.000Z --recorded-at 2026-09-02T01:10:01.000Z \
-    --target-id "$EQUIPMENT_TARGET_ID" --worker-id "$EQUIPMENT_WORKER_ID" \
-    --status candidate --result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
+    --target-id "$EQUIPMENT_TARGET_ID" --worker-id "$EQUIPMENT_WORKER_ID"
 ```
+
+Both `persist-result` and `verify-result` return `resultCanonicalSha256`. Normal
+`record-terminal` does not accept a caller-supplied status, hash, or failure kind: while holding the
+journal lock it resolves the active claim's immutable packet, completely verifies the stored result
+and any candidate/reference bytes, derives the terminal status and canonical result hash, then
+revalidates that evidence immediately before the exclusive journal append.
 
 Use `--height 1536` for a complete Armour set. A human decision on a full set accepts it only as
 the four children’s consistency source; it does not approve or promote the candidate:
@@ -202,8 +206,9 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
 ```
 
 After a controller crash, inspect reconciliation first without authorization. A complete verified
-pair reports one required append; either partial pair blocks; no output preserves the active worker
-regardless of elapsed time. Copy the dry response’s exact `terminalStatus` and
+candidate/result pair or a verified structured failed-result-only output reports one required
+append. Candidate/revise result-only output and candidate-without-result output remain blocked;
+no output preserves the active worker regardless of elapsed time. Copy the dry response’s exact `terminalStatus` and
 `resultCanonicalSha256`; terminal authorization is invalid if either value or the underlying
 evidence changes before the locked append:
 

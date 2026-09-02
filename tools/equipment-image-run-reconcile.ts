@@ -1,5 +1,4 @@
-import { lstat, readdir } from 'node:fs/promises';
-import path from 'node:path';
+import { readdir } from 'node:fs/promises';
 
 import {
 	EQUIPMENT_PRODUCTION_ROOT,
@@ -12,14 +11,17 @@ import {
 	type EquipmentRunPlan
 } from './equipment-image-production-contract.js';
 import { canonicalJsonSha256 } from './equipment-image-packets.js';
+import { verifyEquipmentImageResult } from './equipment-image-result.js';
 import {
-	readEquipmentRepositoryJson,
-	verifyEquipmentImageResult
-} from './equipment-image-result.js';
+	equipmentRepositoryAbsolute,
+	equipmentRepositoryPathState,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 import { replayEquipmentRunJournal } from './equipment-image-run-journal.js';
 import {
 	buildEquipmentRunJournalContext,
-	recordEquipmentRunEvent
+	recordOperatorConfirmedEquipmentRunFailure,
+	recordVerifiedEquipmentRunTerminal
 } from './equipment-image-run-recorder.js';
 import {
 	buildEquipmentRunPlan,
@@ -32,7 +34,7 @@ import {
 
 interface TerminalAuthorization {
 	readonly acknowledged: boolean;
-	readonly expectedTerminalStatus: 'candidate' | 'revise';
+	readonly expectedTerminalStatus: 'candidate' | 'revise' | 'failed';
 	readonly expectedResultCanonicalSha256: string;
 	readonly eventId: string;
 	readonly actor: string;
@@ -83,41 +85,15 @@ function runPaths(runId: string) {
 	};
 }
 
-function repositoryAbsolute(workspaceRoot: string, repositoryPath: string): string {
-	const root = path.resolve(workspaceRoot);
-	const absolute = path.resolve(root, ...repositoryPath.split('/'));
-	if (absolute === root || !absolute.startsWith(`${root}${path.sep}`)) {
-		throw new Error(`Equipment repository path escapes the workspace root: ${repositoryPath}`);
-	}
-	return absolute;
-}
-
-async function repositoryPathState(
-	workspaceRoot: string,
-	repositoryPath: string
-): Promise<'absent' | 'file' | 'directory'> {
-	const metadata = await lstat(repositoryAbsolute(workspaceRoot, repositoryPath)).catch(
-		(error: NodeJS.ErrnoException) => {
-			if (error.code === 'ENOENT') return null;
-			throw error;
-		}
-	);
-	if (metadata === null) return 'absent';
-	if (metadata.isSymbolicLink()) {
-		throw new Error(`Equipment reconciliation refuses symbolic links: ${repositoryPath}`);
-	}
-	if (metadata.isFile()) return 'file';
-	if (metadata.isDirectory()) return 'directory';
-	throw new Error(`Equipment reconciliation found an unsupported artifact: ${repositoryPath}`);
-}
-
 async function readEvents(workspaceRoot: string, runId: string): Promise<EquipmentRunEvent[]> {
 	const eventsDirectory = runPaths(runId).eventsDirectory;
-	const state = await repositoryPathState(workspaceRoot, eventsDirectory);
+	const state = await equipmentRepositoryPathState(workspaceRoot, eventsDirectory);
 	if (state === 'absent') return [];
 	if (state !== 'directory') throw new Error('Equipment event journal must be a directory');
 	const events: EquipmentRunEvent[] = [];
-	for (const name of (await readdir(repositoryAbsolute(workspaceRoot, eventsDirectory))).sort()) {
+	for (const name of (
+		await readdir(equipmentRepositoryAbsolute(workspaceRoot, eventsDirectory))
+	).sort()) {
 		const match = /^(\d{6})-([a-z][a-z0-9-]{1,119})\.json$/u.exec(name);
 		if (match === null) throw new Error(`Unexpected Equipment journal entry: ${name}`);
 		const event = EquipmentRunEventSchema.parse(
@@ -196,15 +172,21 @@ async function verifyTerminalEvidence(input: {
 	readonly resultPath: string;
 }) {
 	const [candidateState, resultState] = await Promise.all([
-		repositoryPathState(input.workspaceRoot, input.candidatePath),
-		repositoryPathState(input.workspaceRoot, input.resultPath)
+		equipmentRepositoryPathState(input.workspaceRoot, input.candidatePath),
+		equipmentRepositoryPathState(input.workspaceRoot, input.resultPath)
 	]);
-	if (candidateState !== 'file' || resultState !== 'file') {
-		throw new Error('Authorized terminal reconciliation requires a complete candidate/result pair');
+	if (resultState !== 'file') {
+		throw new Error('Authorized terminal reconciliation requires a persisted result');
 	}
 	const resultValue = EquipmentImageResultSchema.parse(
 		await readEquipmentRepositoryJson(input.workspaceRoot, input.resultPath)
 	);
+	if (
+		(resultValue.status === 'failed' && candidateState !== 'absent') ||
+		(resultValue.status !== 'failed' && candidateState !== 'file')
+	) {
+		throw new Error('Terminal reconciliation output shape does not match the result status');
+	}
 	const verified = await verifyEquipmentImageResult({
 		workspaceRoot: input.workspaceRoot,
 		targetPath: input.targetPath,
@@ -212,9 +194,6 @@ async function verifyTerminalEvidence(input: {
 		resultPath: input.resultPath,
 		result: resultValue
 	});
-	if (verified.status === 'failed') {
-		throw new Error('A failed Equipment result cannot coexist with candidate output');
-	}
 	return {
 		terminalStatus: verified.status,
 		resultCanonicalSha256: canonicalJsonSha256(resultValue)
@@ -255,12 +234,12 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 	assertExactActiveWorker(evidence.journal, input.targetId, input.workerId);
 	const paths = packetPaths(evidence.plan, input.targetId);
 	const [candidateState, resultState] = await Promise.all([
-		repositoryPathState(input.workspaceRoot, paths.candidatePath),
-		repositoryPathState(input.workspaceRoot, paths.resultPath)
+		equipmentRepositoryPathState(input.workspaceRoot, paths.candidatePath),
+		equipmentRepositoryPathState(input.workspaceRoot, paths.resultPath)
 	]);
 	const candidateExists = candidateState !== 'absent';
 	const resultExists = resultState !== 'absent';
-	if (candidateExists !== resultExists) {
+	if (candidateExists && !resultExists) {
 		return {
 			action: 'blocked-partial-output' as const,
 			writesRequired: 0 as const,
@@ -269,8 +248,22 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 			resultExists
 		};
 	}
+	if (!candidateExists && resultExists) {
+		const parsedResult = EquipmentImageResultSchema.safeParse(
+			await readEquipmentRepositoryJson(input.workspaceRoot, paths.resultPath)
+		);
+		if (!parsedResult.success || parsedResult.data.status !== 'failed') {
+			return {
+				action: 'blocked-partial-output' as const,
+				writesRequired: 0 as const,
+				writesPerformed: 0 as const,
+				candidateExists,
+				resultExists
+			};
+		}
+	}
 
-	if (!candidateExists) {
+	if (!candidateExists && !resultExists) {
 		const failure = input.operatorConfirmedFailure;
 		if (failure === undefined) {
 			return {
@@ -297,27 +290,16 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 		) {
 			throw new Error('Operator-confirmed failure requires exact append-only evidence fields');
 		}
-		const actorEvidence = `${failure.operator}; acknowledged=true; reason=${failure.reason}`;
-		if (actorEvidence.length > 120) {
-			throw new Error('Operator-confirmed failure evidence exceeds the event actor limit');
-		}
-		const appended = await recordEquipmentRunEvent({
+		const appended = await recordOperatorConfirmedEquipmentRunFailure({
 			workspaceRoot: input.workspaceRoot,
 			runId: input.runId,
-			request: {
-				schemaVersion: 'equipment-production-event-request-v1',
-				eventId: failure.eventId,
-				runId: input.runId,
-				requestedAt: failure.confirmedAt,
-				actor: actorEvidence,
-				kind: 'job-terminal',
-				targetId: input.targetId,
-				workerId: input.workerId,
-				status: 'failed',
-				resultCanonicalSha256: null,
-				failureKind: 'operator-confirmed'
-			},
+			eventId: failure.eventId,
+			operator: failure.operator,
+			reason: failure.reason,
+			requestedAt: failure.confirmedAt,
 			recordedAt: failure.recordedAt,
+			targetId: input.targetId,
+			workerId: input.workerId,
 			lockOwnerId: `${failure.operator}-reconcile-controller`
 		});
 		return {
@@ -348,43 +330,27 @@ export async function reconcileEquipmentRun(input: ReconcileEquipmentRunInput) {
 		};
 	}
 	assertTerminalAuthorizationMatches(authorization, terminalEvidence);
-	const appended = await recordEquipmentRunEvent({
+	const appended = await recordVerifiedEquipmentRunTerminal({
 		workspaceRoot: input.workspaceRoot,
 		runId: input.runId,
-		request: {
-			schemaVersion: 'equipment-production-event-request-v1',
-			eventId: authorization.eventId,
-			runId: input.runId,
-			requestedAt: authorization.requestedAt,
-			actor: authorization.actor,
-			kind: 'job-terminal',
-			targetId: input.targetId,
-			workerId: input.workerId,
-			status: authorization.expectedTerminalStatus,
-			resultCanonicalSha256: authorization.expectedResultCanonicalSha256,
-			failureKind: null
-		},
+		eventId: authorization.eventId,
+		actor: authorization.actor,
+		requestedAt: authorization.requestedAt,
 		recordedAt: authorization.recordedAt,
-		lockOwnerId: `${authorization.actor}-reconcile-controller`,
-		testHooks: {
-			afterEventFileCreated: async () => {
-				const lockedEvidence = await verifyTerminalEvidence({
-					workspaceRoot: input.workspaceRoot,
-					targetPath: paths.targetPath,
-					assignmentPath: paths.assignmentPath,
-					candidatePath: paths.candidatePath,
-					resultPath: paths.resultPath
-				});
-				assertTerminalAuthorizationMatches(authorization, lockedEvidence);
-			}
-		}
+		targetId: input.targetId,
+		workerId: input.workerId,
+		expectedEvidence: {
+			terminalStatus: authorization.expectedTerminalStatus,
+			resultCanonicalSha256: authorization.expectedResultCanonicalSha256
+		},
+		lockOwnerId: `${authorization.actor}-reconcile-controller`
 	});
 	return {
 		action: 'append-terminal-event' as const,
 		writesRequired: 1 as const,
 		writesPerformed: 1 as const,
-		terminalStatus: authorization.expectedTerminalStatus,
-		resultCanonicalSha256: authorization.expectedResultCanonicalSha256,
+		terminalStatus: appended.terminalStatus,
+		resultCanonicalSha256: appended.resultCanonicalSha256,
 		event: appended.event,
 		eventPath: appended.eventPath
 	};
@@ -585,7 +551,7 @@ export function simulateEquipmentRun(input: SimulateEquipmentRunInput) {
 				targetId,
 				workerId,
 				status: 'failed',
-				resultCanonicalSha256: null,
+				resultCanonicalSha256: 'f'.repeat(64),
 				failureKind: 'provider-throttle'
 			},
 			'2026-09-02T03:00:00.000Z'
@@ -663,8 +629,8 @@ export function simulateEquipmentRun(input: SimulateEquipmentRunInput) {
 export async function reportEquipmentRun(input: ReportEquipmentRunInput) {
 	const paths = runPaths(input.runId);
 	const [planState, activationState] = await Promise.all([
-		repositoryPathState(input.workspaceRoot, paths.planPath),
-		repositoryPathState(input.workspaceRoot, paths.activationPath)
+		equipmentRepositoryPathState(input.workspaceRoot, paths.planPath),
+		equipmentRepositoryPathState(input.workspaceRoot, paths.activationPath)
 	]);
 	if (planState === 'absent' && activationState === 'absent') {
 		const readiness = await reportEquipmentRunReadiness({

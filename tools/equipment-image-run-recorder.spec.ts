@@ -206,6 +206,41 @@ describe('Equipment run recorder and admission', () => {
 		expect(await claimNextEquipmentJobs(claimOptions(zeroSlotFixture, 0))).toHaveLength(0);
 	});
 
+	it('rejects caller-supplied arbitrary terminal evidence through the generic recorder', async () => {
+		const workspaceRoot = await makeActivatedFixture();
+		const [claim] = await claimNextEquipmentJobs(claimOptions(workspaceRoot, 1));
+		if (claim === undefined) throw new Error('Expected one claim');
+		await recordEquipmentRunEvent({
+			workspaceRoot,
+			runId: DEFAULT_EQUIPMENT_RUN_ID,
+			request: lifecycleRequest('worker-started', 'arbitrary-terminal-start', {
+				claimId: claim.claimId,
+				targetId: claim.targetId,
+				workerId: claim.workerId
+			}),
+			recordedAt: '2026-09-02T00:02:00.000Z',
+			lockOwnerId: 'arbitrary-terminal-start-controller'
+		});
+		const beforeEvents = await eventFiles(workspaceRoot);
+
+		await expect(
+			recordEquipmentRunEvent({
+				workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				request: lifecycleRequest('job-terminal', 'arbitrary-terminal-event', {
+					targetId: claim.targetId,
+					workerId: claim.workerId,
+					status: 'candidate',
+					resultCanonicalSha256: 'a'.repeat(64),
+					failureKind: null
+				}),
+				recordedAt: '2026-09-02T00:03:00.000Z',
+				lockOwnerId: 'arbitrary-terminal-controller'
+			})
+		).rejects.toThrow(/verified terminal|terminal evidence/iu);
+		expect(await eventFiles(workspaceRoot)).toEqual(beforeEvents);
+	});
+
 	it('serializes concurrent claims into unique contiguous exclusive event files', async () => {
 		const workspaceRoot = await makeActivatedFixture();
 		const [left, right] = await Promise.all([
@@ -586,7 +621,7 @@ describe('Equipment run recorder and admission', () => {
 						'timeout'
 					]
 				})
-			).rejects.toThrow(new RegExp(`failure-kind.*${status}|${status}.*failure-kind`, 'iu'));
+			).rejects.toThrow(/Unknown argument: --status/iu);
 		}
 		await expect(
 			runEquipmentImageProductionCli({
@@ -602,31 +637,32 @@ describe('Equipment run recorder and admission', () => {
 					'timeout'
 				]
 			})
-		).rejects.toThrow(/result-canonical-sha256.*failed|failed.*result-canonical-sha256/iu);
+		).rejects.toThrow(/Unknown argument: --status/iu);
 
-		const terminal = await runEquipmentImageProductionCli({
-			workspaceRoot,
-			args: [
-				'record-terminal',
-				'--event-id',
-				'cli-terminal-one',
-				'--target-id',
-				claims[0]!.targetId,
-				'--worker-id',
-				claims[0]!.workerId,
-				'--status',
-				'candidate',
-				'--result-canonical-sha256',
-				'a'.repeat(64),
-				'--actor',
-				'root-orchestrator',
-				'--requested-at',
-				'2026-09-02T00:03:00.000Z',
-				'--recorded-at',
-				'2026-09-02T00:03:01.000Z'
-			]
-		});
-		expect(terminal.event).toMatchObject({ request: { kind: 'job-terminal' } });
+		await expect(
+			runEquipmentImageProductionCli({
+				workspaceRoot,
+				args: [
+					'record-terminal',
+					'--event-id',
+					'cli-terminal-one',
+					'--target-id',
+					claims[0]!.targetId,
+					'--worker-id',
+					claims[0]!.workerId,
+					'--status',
+					'candidate',
+					'--result-canonical-sha256',
+					'a'.repeat(64),
+					'--actor',
+					'root-orchestrator',
+					'--requested-at',
+					'2026-09-02T00:03:00.000Z',
+					'--recorded-at',
+					'2026-09-02T00:03:01.000Z'
+				]
+			})
+		).rejects.toThrow(/Unknown argument: --status/iu);
 
 		const release = await runEquipmentImageProductionCli({
 			workspaceRoot,

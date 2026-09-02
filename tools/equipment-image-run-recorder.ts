@@ -16,7 +16,11 @@ import {
 	type EquipmentRunPlan
 } from './equipment-image-production-contract.js';
 import { canonicalJsonSha256 } from './equipment-image-packets.js';
-import { readEquipmentRepositoryJson } from './equipment-image-result.js';
+import { verifyEquipmentImageResult } from './equipment-image-result.js';
+import {
+	equipmentRepositoryPathState,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 import {
 	replayEquipmentRunJournal,
 	type EquipmentRunJournalContext,
@@ -49,6 +53,13 @@ export interface EquipmentRunRecorderTestHooks {
 		readonly event: EquipmentRunEvent;
 		readonly eventPath: string;
 	}) => void | Promise<void>;
+	readonly beforeVerifiedTerminalEvidenceRevalidation?: (input: {
+		readonly targetId: string;
+		readonly targetPath: string;
+		readonly assignmentPath: string;
+		readonly candidatePath: string;
+		readonly resultPath: string;
+	}) => void | Promise<void>;
 }
 
 interface RecorderLockOptions {
@@ -74,6 +85,29 @@ export interface ClaimNextEquipmentJobsOptions extends RecorderLockOptions {
 	readonly requestedAt: string;
 	readonly recordedAt: string;
 	readonly unrelatedTaskMetadata?: unknown;
+}
+
+export interface RecordVerifiedEquipmentRunTerminalOptions extends RecorderLockOptions {
+	readonly targetId: string;
+	readonly workerId: string;
+	readonly eventId: string;
+	readonly actor: string;
+	readonly requestedAt: string;
+	readonly recordedAt: string;
+	readonly expectedEvidence?: {
+		readonly terminalStatus: 'candidate' | 'revise' | 'failed';
+		readonly resultCanonicalSha256: string;
+	};
+}
+
+export interface RecordOperatorConfirmedEquipmentRunFailureOptions extends RecorderLockOptions {
+	readonly targetId: string;
+	readonly workerId: string;
+	readonly eventId: string;
+	readonly operator: string;
+	readonly reason: string;
+	readonly requestedAt: string;
+	readonly recordedAt: string;
 }
 
 export interface EquipmentJobClaim {
@@ -598,6 +632,7 @@ async function appendEventUnderLock(input: {
 	readonly request: unknown;
 	readonly recordedAt: string;
 	readonly testHooks?: EquipmentRunRecorderTestHooks | undefined;
+	readonly beforeDurableAppend?: () => Promise<void>;
 }): Promise<{ event: EquipmentRunEvent; eventPath: string; state: EquipmentRunJournalState }> {
 	await assertRunEvidenceUnchanged(input.workspaceRoot, input.evidence);
 	const currentEvents = await readEvents(input.workspaceRoot, input.evidence);
@@ -611,6 +646,7 @@ async function appendEventUnderLock(input: {
 		request
 	});
 	replayEquipmentRunJournal(input.evidence.context, [...currentEvents, event]);
+	await input.beforeDurableAppend?.();
 	const eventPath = await exclusiveCreateEvent({
 		workspaceRoot: input.workspaceRoot,
 		eventsDirectory: runPaths(input.evidence.plan.runId).eventsDirectory,
@@ -642,6 +678,15 @@ async function withRunLock<T>(
 export async function recordEquipmentRunEvent(
 	options: RecordEquipmentRunEventOptions
 ): Promise<{ event: EquipmentRunEvent; eventPath: string; state: EquipmentRunJournalState }> {
+	if (
+		options.request !== null &&
+		typeof options.request === 'object' &&
+		(options.request as { readonly kind?: unknown }).kind === 'job-terminal'
+	) {
+		throw new Error(
+			'Generic Equipment event recording rejects terminal evidence; use a verified terminal primitive'
+		);
+	}
 	return withRunLock(options, async (evidence) =>
 		appendEventUnderLock({
 			workspaceRoot: options.workspaceRoot,
@@ -712,6 +757,236 @@ async function resolvePacket(
 		assignmentPath,
 		assignmentCanonicalSha256: canonicalJsonSha256(assignment)
 	};
+}
+
+interface EquipmentPacketOutputEvidence {
+	readonly targetPath: string;
+	readonly targetCanonicalSha256: string;
+	readonly assignmentPath: string;
+	readonly assignmentCanonicalSha256: string;
+	readonly candidatePath: string;
+	readonly resultPath: string;
+}
+
+interface VerifiedTerminalEvidence extends EquipmentPacketOutputEvidence {
+	readonly terminalStatus: 'candidate' | 'revise' | 'failed';
+	readonly resultCanonicalSha256: string;
+}
+
+function assertExactActiveTerminalWorker(
+	state: EquipmentRunJournalState,
+	targetId: string,
+	workerId: string
+): void {
+	const active = state.active.get(targetId);
+	if (active === undefined || active.workerId !== workerId) {
+		throw new Error('Verified terminal recording requires the exact active target and worker');
+	}
+}
+
+async function resolvePacketOutputEvidence(
+	workspaceRoot: string,
+	plan: EquipmentRunPlan,
+	targetId: string
+): Promise<EquipmentPacketOutputEvidence> {
+	const binding = await resolvePacket(workspaceRoot, plan, targetId);
+	const [target, assignment] = await Promise.all([
+		readEquipmentRepositoryJson(workspaceRoot, binding.targetPath).then((value) =>
+			EquipmentImageTargetSchema.parse(value)
+		),
+		readEquipmentRepositoryJson(workspaceRoot, binding.assignmentPath).then((value) =>
+			EquipmentImageAssignmentSchema.parse(value)
+		)
+	]);
+	if (
+		target.targetId !== targetId ||
+		assignment.targetId !== targetId ||
+		canonicalJsonSha256(target) !== binding.targetCanonicalSha256 ||
+		canonicalJsonSha256(assignment) !== binding.assignmentCanonicalSha256
+	) {
+		throw new Error(`Equipment terminal packet changed after resolution: ${targetId}`);
+	}
+	const targetIndex = plan.targetIds.indexOf(targetId);
+	const candidatePath = plan.reservedPaths.candidates[targetIndex];
+	const resultPath = plan.reservedPaths.results[targetIndex];
+	if (
+		targetIndex < 0 ||
+		candidatePath === undefined ||
+		resultPath === undefined ||
+		target.output.candidatePath !== candidatePath ||
+		target.output.resultPath !== resultPath ||
+		canonicalJsonSha256(assignment.permittedOutputs) !== canonicalJsonSha256(target.output)
+	) {
+		throw new Error(
+			`Equipment terminal packet does not match immutable run reservations: ${targetId}`
+		);
+	}
+	return { ...binding, candidatePath, resultPath };
+}
+
+async function verifyStoredTerminalEvidence(
+	workspaceRoot: string,
+	plan: EquipmentRunPlan,
+	targetId: string
+): Promise<VerifiedTerminalEvidence> {
+	const packet = await resolvePacketOutputEvidence(workspaceRoot, plan, targetId);
+	const resultValue = await readEquipmentRepositoryJson(workspaceRoot, packet.resultPath);
+	const verified = await verifyEquipmentImageResult({
+		workspaceRoot,
+		targetPath: packet.targetPath,
+		assignmentPath: packet.assignmentPath,
+		resultPath: packet.resultPath,
+		result: resultValue
+	});
+	return {
+		...packet,
+		terminalStatus: verified.status,
+		resultCanonicalSha256: verified.resultCanonicalSha256
+	};
+}
+
+function assertExpectedTerminalEvidence(
+	expected: RecordVerifiedEquipmentRunTerminalOptions['expectedEvidence'],
+	actual: VerifiedTerminalEvidence
+): void {
+	if (expected === undefined) return;
+	if (
+		expected.terminalStatus !== actual.terminalStatus ||
+		expected.resultCanonicalSha256 !== actual.resultCanonicalSha256
+	) {
+		throw new Error('Expected terminal authorization does not match verified stored evidence');
+	}
+}
+
+export async function recordVerifiedEquipmentRunTerminal(
+	options: RecordVerifiedEquipmentRunTerminalOptions
+): Promise<{
+	readonly event: EquipmentRunEvent;
+	readonly eventPath: string;
+	readonly state: EquipmentRunJournalState;
+	readonly terminalStatus: 'candidate' | 'revise' | 'failed';
+	readonly resultCanonicalSha256: string;
+}> {
+	return withRunLock(options, async (runEvidence) => {
+		const currentEvents = await readEvents(options.workspaceRoot, runEvidence);
+		const currentState = replayEquipmentRunJournal(runEvidence.context, currentEvents);
+		assertExactActiveTerminalWorker(currentState, options.targetId, options.workerId);
+		const verified = await verifyStoredTerminalEvidence(
+			options.workspaceRoot,
+			runEvidence.plan,
+			options.targetId
+		);
+		assertExpectedTerminalEvidence(options.expectedEvidence, verified);
+		const appended = await appendEventUnderLock({
+			workspaceRoot: options.workspaceRoot,
+			evidence: runEvidence,
+			request: {
+				schemaVersion: 'equipment-production-event-request-v1',
+				eventId: options.eventId,
+				runId: options.runId,
+				requestedAt: options.requestedAt,
+				actor: options.actor,
+				kind: 'job-terminal',
+				targetId: options.targetId,
+				workerId: options.workerId,
+				status: verified.terminalStatus,
+				resultCanonicalSha256: verified.resultCanonicalSha256,
+				failureKind: verified.terminalStatus === 'failed' ? 'other' : null
+			},
+			recordedAt: options.recordedAt,
+			testHooks: options.testHooks,
+			beforeDurableAppend: async () => {
+				await options.testHooks?.beforeVerifiedTerminalEvidenceRevalidation?.({
+					targetId: options.targetId,
+					targetPath: verified.targetPath,
+					assignmentPath: verified.assignmentPath,
+					candidatePath: verified.candidatePath,
+					resultPath: verified.resultPath
+				});
+				const locked = await verifyStoredTerminalEvidence(
+					options.workspaceRoot,
+					runEvidence.plan,
+					options.targetId
+				);
+				assertExpectedTerminalEvidence(options.expectedEvidence, locked);
+				if (canonicalJsonSha256(locked) !== canonicalJsonSha256(verified)) {
+					throw new Error('Verified terminal evidence changed under the journal lock');
+				}
+			}
+		});
+		return {
+			...appended,
+			terminalStatus: verified.terminalStatus,
+			resultCanonicalSha256: verified.resultCanonicalSha256
+		};
+	});
+}
+
+async function assertNoOutputEvidence(
+	workspaceRoot: string,
+	plan: EquipmentRunPlan,
+	targetId: string
+): Promise<EquipmentPacketOutputEvidence> {
+	const packet = await resolvePacketOutputEvidence(workspaceRoot, plan, targetId);
+	const [candidateState, resultState] = await Promise.all([
+		equipmentRepositoryPathState(workspaceRoot, packet.candidatePath),
+		equipmentRepositoryPathState(workspaceRoot, packet.resultPath)
+	]);
+	if (candidateState !== 'absent' || resultState !== 'absent') {
+		throw new Error('Operator-confirmed failure requires exact no-output evidence');
+	}
+	return packet;
+}
+
+export async function recordOperatorConfirmedEquipmentRunFailure(
+	options: RecordOperatorConfirmedEquipmentRunFailureOptions
+): Promise<{ event: EquipmentRunEvent; eventPath: string; state: EquipmentRunJournalState }> {
+	if (options.reason.trim().length === 0) {
+		throw new Error('Operator-confirmed failure requires an exact non-empty reason');
+	}
+	const actorEvidence = `${options.operator}; acknowledged=true; reason=${options.reason}`;
+	if (actorEvidence.length > 120) {
+		throw new Error('Operator-confirmed failure evidence exceeds the event actor limit');
+	}
+	return withRunLock(options, async (runEvidence) => {
+		const currentEvents = await readEvents(options.workspaceRoot, runEvidence);
+		const currentState = replayEquipmentRunJournal(runEvidence.context, currentEvents);
+		assertExactActiveTerminalWorker(currentState, options.targetId, options.workerId);
+		const packet = await assertNoOutputEvidence(
+			options.workspaceRoot,
+			runEvidence.plan,
+			options.targetId
+		);
+		return appendEventUnderLock({
+			workspaceRoot: options.workspaceRoot,
+			evidence: runEvidence,
+			request: {
+				schemaVersion: 'equipment-production-event-request-v1',
+				eventId: options.eventId,
+				runId: options.runId,
+				requestedAt: options.requestedAt,
+				actor: actorEvidence,
+				kind: 'job-terminal',
+				targetId: options.targetId,
+				workerId: options.workerId,
+				status: 'failed',
+				resultCanonicalSha256: null,
+				failureKind: 'operator-confirmed'
+			},
+			recordedAt: options.recordedAt,
+			testHooks: options.testHooks,
+			beforeDurableAppend: async () => {
+				const lockedPacket = await assertNoOutputEvidence(
+					options.workspaceRoot,
+					runEvidence.plan,
+					options.targetId
+				);
+				if (canonicalJsonSha256(lockedPacket) !== canonicalJsonSha256(packet)) {
+					throw new Error('Operator-confirmed no-output evidence changed under the journal lock');
+				}
+			}
+		});
+	});
 }
 
 type EquipmentPacketBinding = Awaited<ReturnType<typeof resolvePacket>>;

@@ -85,7 +85,7 @@ const terminal = (
 		targetId,
 		workerId,
 		status,
-		resultCanonicalSha256: status === 'failed' ? null : HASH,
+		resultCanonicalSha256: HASH,
 		failureKind: status === 'failed' ? 'provider-throttle' : null
 	});
 
@@ -102,6 +102,66 @@ describe('Equipment run journal replay', () => {
 		expect(state.readyUnclaimedTargetIds).toEqual(TARGET_IDS.slice(1));
 		expect(state.peakActiveWorkerCount).toBe(1);
 		expect([...state.peakActiveWorkerIds]).toEqual(['worker-one']);
+	});
+
+	it('distinguishes a hash-bound persisted failure from operator-confirmed no-output failure', () => {
+		const persisted = replayEquipmentRunJournal(
+			context,
+			journal([
+				runStarted(),
+				claimed(),
+				started(),
+				terminal(TARGET_IDS[0], 'worker-one', 'event-04', 'failed')
+			])
+		);
+		expect(persisted.terminal.get(TARGET_IDS[0])).toMatchObject({
+			status: 'failed',
+			resultCanonicalSha256: HASH,
+			failureKind: 'provider-throttle'
+		});
+
+		const operatorConfirmed = replayEquipmentRunJournal(
+			context,
+			journal([
+				runStarted(),
+				claimed(),
+				started(),
+				request('job-terminal', 'event-04', {
+					targetId: TARGET_IDS[0],
+					workerId: 'worker-one',
+					status: 'failed',
+					resultCanonicalSha256: null,
+					failureKind: 'operator-confirmed'
+				})
+			])
+		);
+		expect(operatorConfirmed.terminal.get(TARGET_IDS[0])).toMatchObject({
+			status: 'failed',
+			resultCanonicalSha256: null,
+			failureKind: 'operator-confirmed'
+		});
+
+		for (const invalid of [
+			{ resultCanonicalSha256: null, failureKind: 'timeout' },
+			{ resultCanonicalSha256: HASH, failureKind: 'operator-confirmed' }
+		]) {
+			expect(() =>
+				replayEquipmentRunJournal(
+					context,
+					journal([
+						runStarted(),
+						claimed(),
+						started(),
+						request('job-terminal', 'event-04', {
+							targetId: TARGET_IDS[0],
+							workerId: 'worker-one',
+							status: 'failed',
+							...invalid
+						})
+					])
+				)
+			).toThrow(/persisted result|operator-confirmed|result hash/iu);
+		}
 	});
 
 	it('requires an exact live claim before a worker starts', () => {

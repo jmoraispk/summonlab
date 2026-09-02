@@ -16,7 +16,11 @@ import { canonicalJsonSha256, renderEquipmentPrompt } from './equipment-image-pa
 import { runEquipmentImageProductionCli } from './equipment-image-production.js';
 import { persistEquipmentImageResult } from './equipment-image-result.js';
 import { activateEquipmentRun, DEFAULT_EQUIPMENT_RUN_ID } from './equipment-image-run-readiness.js';
-import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
+import {
+	claimNextEquipmentJobs,
+	recordEquipmentRunEvent,
+	recordVerifiedEquipmentRunTerminal
+} from './equipment-image-run-recorder.js';
 import {
 	buildArmourSourceReviewReceipt,
 	materializeDependentArmourPackets,
@@ -190,23 +194,14 @@ async function makeCandidateFixture() {
 		assignmentPath: sourceClaim.assignmentPath,
 		result
 	});
-	const sourceResultCanonicalSha256 = canonicalJsonSha256(result);
-	await recordEquipmentRunEvent({
+	await recordVerifiedEquipmentRunTerminal({
 		workspaceRoot,
 		runId: DEFAULT_EQUIPMENT_RUN_ID,
-		request: {
-			schemaVersion: 'equipment-production-event-request-v1',
-			eventId: 'copper-heavy-armour-terminal',
-			runId: DEFAULT_EQUIPMENT_RUN_ID,
-			requestedAt: '2026-09-02T00:06:00.000Z',
-			actor: 'root-orchestrator',
-			kind: 'job-terminal',
-			targetId: sourceClaim.targetId,
-			workerId: sourceClaim.workerId,
-			status: 'candidate',
-			resultCanonicalSha256: sourceResultCanonicalSha256,
-			failureKind: null
-		},
+		eventId: 'copper-heavy-armour-terminal',
+		requestedAt: '2026-09-02T00:06:00.000Z',
+		actor: 'root-orchestrator',
+		targetId: sourceClaim.targetId,
+		workerId: sourceClaim.workerId,
 		recordedAt: '2026-09-02T00:06:01.000Z',
 		lockOwnerId: 'root-orchestrator-terminal-controller'
 	});

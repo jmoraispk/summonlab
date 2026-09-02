@@ -246,12 +246,20 @@ export function replayEquipmentRunJournal(
 			if (start.workerId !== request.workerId) {
 				throw new Error(`Terminal event changed worker identity: ${request.targetId}`);
 			}
-			if (
-				(request.status === 'failed' &&
-					(request.failureKind === null || request.resultCanonicalSha256 !== null)) ||
-				(request.status !== 'failed' &&
-					(request.failureKind !== null || request.resultCanonicalSha256 === null))
-			) {
+			const operatorConfirmedNoOutput =
+				request.status === 'failed' &&
+				request.resultCanonicalSha256 === null &&
+				request.failureKind === 'operator-confirmed';
+			const verifiedPersistedFailure =
+				request.status === 'failed' &&
+				request.resultCanonicalSha256 !== null &&
+				request.failureKind !== null &&
+				request.failureKind !== 'operator-confirmed';
+			const verifiedCandidateOrRevise =
+				request.status !== 'failed' &&
+				request.resultCanonicalSha256 !== null &&
+				request.failureKind === null;
+			if (!operatorConfirmedNoOutput && !verifiedPersistedFailure && !verifiedCandidateOrRevise) {
 				throw new Error('Terminal result hash and failure kind do not match terminal status');
 			}
 			active.delete(request.targetId);

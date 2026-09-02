@@ -1,5 +1,15 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import {
+	mkdir,
+	mkdtemp,
+	readFile,
+	readdir,
+	rename,
+	rm,
+	stat,
+	symlink,
+	writeFile
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -446,6 +456,51 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 		expect(after.mtimeMs).toBe(before.mtimeMs);
 	});
 
+	it('rejects a stable root-packet export symlink ancestor before any inside or outside write', async () => {
+		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-root-export-symlink-'));
+		const outsideRoot = await mkdtemp(path.join(tmpdir(), 'equipment-root-export-outside-'));
+		temporaryDirectories.push(workspaceRoot, outsideRoot);
+		const productionRoot = path.join(workspaceRoot, ROOT);
+		await mkdir(productionRoot, { recursive: true });
+		await symlink(outsideRoot, path.join(productionRoot, 'targets'), 'dir');
+
+		await expect(
+			materializeRootEquipmentPackets({
+				...fixture(),
+				assignedAt: ASSIGNED_AT,
+				workspaceRoot
+			})
+		).rejects.toThrow(/symbolic|symlink/iu);
+		expect(await readdir(outsideRoot)).toEqual([]);
+		expect((await readdir(productionRoot)).sort()).toEqual(['targets']);
+	});
+
+	it('rejects a stable root-packet check symlink ancestor without changing either tree', async () => {
+		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-root-check-symlink-'));
+		const outsideRoot = await mkdtemp(path.join(tmpdir(), 'equipment-root-check-outside-'));
+		temporaryDirectories.push(workspaceRoot, outsideRoot);
+		const input = { ...fixture(), assignedAt: ASSIGNED_AT, workspaceRoot };
+		await materializeRootEquipmentPackets(input);
+		const targetsRoot = path.join(workspaceRoot, ROOT, 'targets');
+		const outsideTargetsRoot = path.join(outsideRoot, 'targets');
+		await rename(targetsRoot, outsideTargetsRoot);
+		await symlink(outsideTargetsRoot, targetsRoot, 'dir');
+		const outsideTarget = path.join(outsideTargetsRoot, 'f/copper/sword-v1.json');
+		const insideAssignment = path.join(workspaceRoot, ROOT, 'assignments/f/copper/sword-v1.json');
+		const outsideBefore = await readFile(outsideTarget);
+		const outsideBeforeStat = await stat(outsideTarget);
+		const insideBefore = await readFile(insideAssignment);
+		const insideBeforeStat = await stat(insideAssignment);
+
+		await expect(materializeRootEquipmentPackets({ ...input, check: true })).rejects.toThrow(
+			/symbolic|symlink/iu
+		);
+		expect(await readFile(outsideTarget)).toEqual(outsideBefore);
+		expect((await stat(outsideTarget)).mtimeMs).toBe(outsideBeforeStat.mtimeMs);
+		expect(await readFile(insideAssignment)).toEqual(insideBefore);
+		expect((await stat(insideAssignment)).mtimeMs).toBe(insideBeforeStat.mtimeMs);
+	});
+
 	it('requires a literal valid acknowledged digest before exclusively recording acceptance', async () => {
 		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-profile-acceptance-'));
 		temporaryDirectories.push(workspaceRoot);
@@ -500,5 +555,59 @@ Output exactly one candidate image and do not add text, labels, UI, borders, fra
 				workspaceRoot
 			})
 		).rejects.toThrow('collision');
+	});
+
+	it('rejects a stable profile-acceptance symlink ancestor before any inside or outside write', async () => {
+		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-acceptance-symlink-'));
+		const outsideRoot = await mkdtemp(path.join(tmpdir(), 'equipment-acceptance-outside-'));
+		temporaryDirectories.push(workspaceRoot, outsideRoot);
+		const profile = buildEquipmentVisualProfile();
+		const productionRoot = path.join(workspaceRoot, ROOT);
+		await mkdir(productionRoot, { recursive: true });
+		await writeFile(
+			path.join(outsideRoot, 'profile.json'),
+			`${JSON.stringify(profile, null, '\t')}\n`,
+			'utf8'
+		);
+		await symlink(outsideRoot, path.join(productionRoot, 'visual-profile'), 'dir');
+
+		await expect(
+			runEquipmentImageProductionCli({
+				args: [
+					'accept-profile',
+					'--reviewer',
+					'owner',
+					'--acknowledge-profile-sha256',
+					EXPECTED_PROFILE_SHA256
+				],
+				workspaceRoot
+			})
+		).rejects.toThrow(/symbolic|symlink/iu);
+		expect((await readdir(outsideRoot)).sort()).toEqual(['profile.json']);
+		expect((await readdir(productionRoot)).sort()).toEqual(['visual-profile']);
+	});
+
+	it('rejects a CLI JSON read through a stable target-directory symlink ancestor', async () => {
+		const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'equipment-cli-read-symlink-'));
+		const outsideRoot = await mkdtemp(path.join(tmpdir(), 'equipment-cli-read-outside-'));
+		temporaryDirectories.push(workspaceRoot, outsideRoot);
+		const packet = buildRootEquipmentPackets({ ...fixture(), assignedAt: ASSIGNED_AT })[0]!;
+		const outsideTarget = path.join(outsideRoot, 'f/copper/sword-v1.json');
+		await mkdir(path.dirname(outsideTarget), { recursive: true });
+		await writeFile(outsideTarget, `${JSON.stringify(packet.target, null, '\t')}\n`, 'utf8');
+		const productionRoot = path.join(workspaceRoot, ROOT);
+		await mkdir(productionRoot, { recursive: true });
+		await symlink(outsideRoot, path.join(productionRoot, 'targets'), 'dir');
+
+		await expect(
+			runEquipmentImageProductionCli({
+				args: ['render-prompt', '--target', packet.targetPath],
+				workspaceRoot
+			})
+		).rejects.toThrow(/symbolic|symlink/iu);
+		expect((await readdir(productionRoot)).sort()).toEqual(['targets']);
+		expect(await readFile(outsideTarget, 'utf8')).toBe(
+			`${JSON.stringify(packet.target, null, '\t')}\n`
+		);
 	});
 });

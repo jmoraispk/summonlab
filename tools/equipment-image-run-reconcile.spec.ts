@@ -13,8 +13,12 @@ import {
 } from './equipment-image-production-contract.js';
 import { canonicalJsonSha256, renderEquipmentPrompt } from './equipment-image-packets.js';
 import { runEquipmentImageProductionCli } from './equipment-image-production.js';
-import { reconcileEquipmentRun } from './equipment-image-run-reconcile.js';
-import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
+import { reconcileEquipmentRun, reportEquipmentRun } from './equipment-image-run-reconcile.js';
+import {
+	claimNextEquipmentJobs,
+	recordEquipmentRunEvent,
+	recordVerifiedEquipmentRunTerminal
+} from './equipment-image-run-recorder.js';
 import { DEFAULT_EQUIPMENT_RUN_ID, activateEquipmentRun } from './equipment-image-run-readiness.js';
 
 const SOURCE_WORKSPACE_ROOT = process.cwd();
@@ -102,8 +106,9 @@ async function makeStartedFixture() {
 }
 
 async function materializeCandidateAndResult(
-	fixture: Awaited<ReturnType<typeof makeStartedFixture>>
-): Promise<void> {
+	fixture: Awaited<ReturnType<typeof makeStartedFixture>>,
+	status: 'candidate' | 'revise' | 'failed' = 'candidate'
+) {
 	const candidateBytes = await sharp({
 		create: {
 			width: fixture.target.presentation.canvas.width,
@@ -120,7 +125,7 @@ async function materializeCandidateAndResult(
 		resultId: `result-${fixture.target.targetId}`,
 		targetId: fixture.target.targetId,
 		assignmentId: fixture.assignment.assignmentId,
-		status: 'candidate',
+		status,
 		promptSha256: sha256(renderEquipmentPrompt(fixture.target)),
 		referenceInputs: fixture.target.references.map(({ path: referencePath, contentHash }) => ({
 			path: referencePath,
@@ -130,40 +135,59 @@ async function materializeCandidateAndResult(
 			{
 				attemptId: `attempt-${fixture.target.targetId}`,
 				attemptNumber: 1,
-				sourceOutputId: `imagegen-output-${fixture.target.targetId}`,
+				sourceOutputId: status === 'failed' ? null : `imagegen-output-${fixture.target.targetId}`,
 				requestStartedAt: '2026-09-02T00:01:02.000Z',
 				generationCompletedAt: '2026-09-02T00:01:03.000Z',
 				inspectionCompletedAt: '2026-09-02T00:01:04.000Z'
 			}
 		],
-		findings: fixture.target.acceptanceCriteria.map(({ criterionId }) => ({
+		findings: fixture.target.acceptanceCriteria.map(({ criterionId }, index) => ({
 			criterionId,
-			outcome: 'pass',
-			observation: `Inspected ${criterionId}.`
+			outcome:
+				status === 'failed' ? 'fail' : status === 'revise' && index === 0 ? 'concern' : 'pass',
+			observation:
+				status === 'failed'
+					? `Generation failed before ${criterionId} could pass.`
+					: `Inspected ${criterionId}.`
 		})),
-		candidate: {
-			path: fixture.target.output.candidatePath,
-			mediaType: 'image/png',
-			width: fixture.target.presentation.canvas.width,
-			height: fixture.target.presentation.canvas.height,
-			bytes: candidateBytes.byteLength,
-			sha256: candidateSha256
-		},
-		candidateSha256,
+		candidate:
+			status === 'failed'
+				? null
+				: {
+						path: fixture.target.output.candidatePath,
+						mediaType: 'image/png',
+						width: fixture.target.presentation.canvas.width,
+						height: fixture.target.presentation.canvas.height,
+						bytes: candidateBytes.byteLength,
+						sha256: candidateSha256
+					},
+		candidateSha256: status === 'failed' ? null : candidateSha256,
 		startedAt: '2026-09-02T00:01:02.000Z',
 		completedAt: '2026-09-02T00:01:05.000Z',
-		writtenOutputPaths: [fixture.target.output.candidatePath, fixture.target.output.resultPath],
+		writtenOutputPaths:
+			status === 'failed'
+				? [fixture.target.output.resultPath]
+				: [fixture.target.output.candidatePath, fixture.target.output.resultPath],
 		noSharedFilesEdited: true,
 		selfPromoted: false
 	};
 	await Promise.all([
-		writeRepositoryFile(fixture.workspaceRoot, fixture.target.output.candidatePath, candidateBytes),
+		...(status === 'failed'
+			? []
+			: [
+					writeRepositoryFile(
+						fixture.workspaceRoot,
+						fixture.target.output.candidatePath,
+						candidateBytes
+					)
+				]),
 		writeRepositoryFile(
 			fixture.workspaceRoot,
 			fixture.target.output.resultPath,
 			`${JSON.stringify(result, null, '\t')}\n`
 		)
 	]);
+	return result;
 }
 
 async function eventNames(workspaceRoot: string): Promise<string[]> {
@@ -183,6 +207,147 @@ afterEach(async () => {
 });
 
 describe('Equipment run reconciliation', () => {
+	it.each(['candidate', 'revise', 'failed'] as const)(
+		'records exact verified %s evidence and derives its canonical terminal fields',
+		async (status) => {
+			const fixture = await makeStartedFixture();
+			const resultValue = await materializeCandidateAndResult(fixture, status);
+			const appended = await recordVerifiedEquipmentRunTerminal({
+				workspaceRoot: fixture.workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				targetId: fixture.claim.targetId,
+				workerId: fixture.claim.workerId,
+				eventId: `verified-${status}-terminal`,
+				actor: 'root-orchestrator',
+				requestedAt: '2026-09-02T00:08:00.000Z',
+				recordedAt: '2026-09-02T00:08:01.000Z',
+				lockOwnerId: `verified-${status}-terminal-controller`
+			});
+
+			expect(appended).toMatchObject({
+				terminalStatus: status,
+				resultCanonicalSha256: canonicalJsonSha256(resultValue),
+				event: {
+					request: {
+						kind: 'job-terminal',
+						status,
+						resultCanonicalSha256: canonicalJsonSha256(resultValue),
+						failureKind: status === 'failed' ? 'other' : null
+					}
+				}
+			});
+			expect(await eventNames(fixture.workspaceRoot)).toHaveLength(4);
+		}
+	);
+
+	it('rejects missing or invalid stored terminal evidence without appending', async () => {
+		const missingFixture = await makeStartedFixture();
+		const missingBefore = await eventNames(missingFixture.workspaceRoot);
+		await expect(
+			recordVerifiedEquipmentRunTerminal({
+				workspaceRoot: missingFixture.workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				targetId: missingFixture.claim.targetId,
+				workerId: missingFixture.claim.workerId,
+				eventId: 'missing-evidence-terminal',
+				actor: 'root-orchestrator',
+				requestedAt: '2026-09-02T00:08:00.000Z',
+				recordedAt: '2026-09-02T00:08:01.000Z',
+				lockOwnerId: 'missing-evidence-terminal-controller'
+			})
+		).rejects.toThrow(/result|evidence|regular file/iu);
+		expect(await eventNames(missingFixture.workspaceRoot)).toEqual(missingBefore);
+
+		const wrongFixture = await makeStartedFixture();
+		await materializeCandidateAndResult(wrongFixture);
+		const wrongResult = { ...(await readResult(wrongFixture)), promptSha256: '0'.repeat(64) };
+		await writeRepositoryFile(
+			wrongFixture.workspaceRoot,
+			wrongFixture.target.output.resultPath,
+			`${JSON.stringify(wrongResult, null, '\t')}\n`
+		);
+		const wrongBefore = await eventNames(wrongFixture.workspaceRoot);
+		await expect(
+			recordVerifiedEquipmentRunTerminal({
+				workspaceRoot: wrongFixture.workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				targetId: wrongFixture.claim.targetId,
+				workerId: wrongFixture.claim.workerId,
+				eventId: 'wrong-evidence-terminal',
+				actor: 'root-orchestrator',
+				requestedAt: '2026-09-02T00:08:00.000Z',
+				recordedAt: '2026-09-02T00:08:01.000Z',
+				lockOwnerId: 'wrong-evidence-terminal-controller'
+			})
+		).rejects.toThrow(/prompt/iu);
+		expect(await eventNames(wrongFixture.workspaceRoot)).toEqual(wrongBefore);
+	});
+
+	it('rejects result mutation at the lock-time revalidation before creating an event', async () => {
+		const fixture = await makeStartedFixture();
+		await materializeCandidateAndResult(fixture);
+		const beforeEvents = await eventNames(fixture.workspaceRoot);
+
+		await expect(
+			recordVerifiedEquipmentRunTerminal({
+				workspaceRoot: fixture.workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				targetId: fixture.claim.targetId,
+				workerId: fixture.claim.workerId,
+				eventId: 'lock-time-mutation-terminal',
+				actor: 'root-orchestrator',
+				requestedAt: '2026-09-02T00:08:00.000Z',
+				recordedAt: '2026-09-02T00:08:01.000Z',
+				lockOwnerId: 'lock-time-mutation-controller',
+				testHooks: {
+					beforeVerifiedTerminalEvidenceRevalidation: async () => {
+						const changed = {
+							...(await readResult(fixture)),
+							resultId: `changed-${fixture.target.targetId}`
+						};
+						await writeRepositoryFile(
+							fixture.workspaceRoot,
+							fixture.target.output.resultPath,
+							`${JSON.stringify(changed, null, '\t')}\n`
+						);
+					}
+				}
+			})
+		).rejects.toThrow(/changed.*lock|terminal evidence/iu);
+		expect(await eventNames(fixture.workspaceRoot)).toEqual(beforeEvents);
+	});
+
+	it('routes normal record-terminal CLI completion through stored verified evidence', async () => {
+		const fixture = await makeStartedFixture();
+		const resultValue = await materializeCandidateAndResult(fixture, 'revise');
+
+		await expect(
+			runEquipmentImageProductionCli({
+				workspaceRoot: fixture.workspaceRoot,
+				args: [
+					'record-terminal',
+					'--event-id',
+					'verified-terminal-cli',
+					'--target-id',
+					fixture.claim.targetId,
+					'--worker-id',
+					fixture.claim.workerId,
+					'--actor',
+					'root-orchestrator',
+					'--requested-at',
+					'2026-09-02T00:08:00.000Z',
+					'--recorded-at',
+					'2026-09-02T00:08:01.000Z'
+				]
+			})
+		).resolves.toMatchObject({
+			command: 'record-terminal',
+			terminalStatus: 'revise',
+			resultCanonicalSha256: canonicalJsonSha256(resultValue),
+			event: { request: { kind: 'job-terminal', status: 'revise' } }
+		});
+	});
+
 	it('requires one authorized append for a verified candidate and result pair', async () => {
 		const fixture = await makeStartedFixture();
 		await materializeCandidateAndResult(fixture);
@@ -206,30 +371,103 @@ describe('Equipment run reconciliation', () => {
 	});
 
 	it.each([
-		['candidate without result', true, false],
-		['result without candidate', false, true]
-	] as const)('blocks %s without writing', async (_label, candidateExists, resultExists) => {
+		['candidate without result', 'candidate', true, false],
+		['candidate result without candidate', 'candidate', false, true],
+		['revise result without candidate', 'revise', false, true]
+	] as const)(
+		'blocks %s without writing',
+		async (_label, status, candidateExists, resultExists) => {
+			const fixture = await makeStartedFixture();
+			await materializeCandidateAndResult(fixture, status);
+			if (!candidateExists)
+				await rm(absolute(fixture.workspaceRoot, fixture.target.output.candidatePath));
+			if (!resultExists)
+				await rm(absolute(fixture.workspaceRoot, fixture.target.output.resultPath));
+			const beforeEvents = await eventNames(fixture.workspaceRoot);
+
+			await expect(
+				reconcileEquipmentRun({
+					workspaceRoot: fixture.workspaceRoot,
+					runId: DEFAULT_EQUIPMENT_RUN_ID,
+					targetId: fixture.claim.targetId,
+					workerId: fixture.claim.workerId,
+					observedAt: '2026-09-20T00:00:00.000Z'
+				})
+			).resolves.toMatchObject({
+				action: 'blocked-partial-output',
+				writesRequired: 0,
+				writesPerformed: 0
+			});
+			expect(await eventNames(fixture.workspaceRoot)).toEqual(beforeEvents);
+		}
+	);
+
+	it('reconciles a verified persisted failed-result-only crash and reports its bound hash', async () => {
 		const fixture = await makeStartedFixture();
-		await materializeCandidateAndResult(fixture);
-		if (!candidateExists)
-			await rm(absolute(fixture.workspaceRoot, fixture.target.output.candidatePath));
-		if (!resultExists) await rm(absolute(fixture.workspaceRoot, fixture.target.output.resultPath));
+		const failedResult = await materializeCandidateAndResult(fixture, 'failed');
+		const failedHash = canonicalJsonSha256(failedResult);
 		const beforeEvents = await eventNames(fixture.workspaceRoot);
 
-		await expect(
-			reconcileEquipmentRun({
-				workspaceRoot: fixture.workspaceRoot,
-				runId: DEFAULT_EQUIPMENT_RUN_ID,
-				targetId: fixture.claim.targetId,
-				workerId: fixture.claim.workerId,
-				observedAt: '2026-09-20T00:00:00.000Z'
-			})
-		).resolves.toMatchObject({
-			action: 'blocked-partial-output',
-			writesRequired: 0,
-			writesPerformed: 0
+		const dry = await reconcileEquipmentRun({
+			workspaceRoot: fixture.workspaceRoot,
+			runId: DEFAULT_EQUIPMENT_RUN_ID,
+			targetId: fixture.claim.targetId,
+			workerId: fixture.claim.workerId,
+			observedAt: '2026-09-02T00:09:00.000Z'
+		});
+		expect(dry).toMatchObject({
+			action: 'append-terminal-event',
+			writesRequired: 1,
+			writesPerformed: 0,
+			terminalStatus: 'failed',
+			resultCanonicalSha256: failedHash
 		});
 		expect(await eventNames(fixture.workspaceRoot)).toEqual(beforeEvents);
+		if (dry.action !== 'append-terminal-event') throw new Error('Expected failed dry append');
+
+		const appended = await reconcileEquipmentRun({
+			workspaceRoot: fixture.workspaceRoot,
+			runId: DEFAULT_EQUIPMENT_RUN_ID,
+			targetId: fixture.claim.targetId,
+			workerId: fixture.claim.workerId,
+			observedAt: '2026-09-02T00:10:00.000Z',
+			terminalAuthorization: {
+				acknowledged: true,
+				expectedTerminalStatus: dry.terminalStatus,
+				expectedResultCanonicalSha256: dry.resultCanonicalSha256,
+				eventId: 'reconciled-failed-result-only',
+				actor: 'root-orchestrator',
+				requestedAt: '2026-09-02T00:10:00.000Z',
+				recordedAt: '2026-09-02T00:10:01.000Z'
+			}
+		});
+		expect(appended).toMatchObject({
+			action: 'append-terminal-event',
+			writesRequired: 1,
+			writesPerformed: 1,
+			terminalStatus: 'failed',
+			resultCanonicalSha256: failedHash,
+			event: {
+				request: {
+					status: 'failed',
+					resultCanonicalSha256: failedHash,
+					failureKind: 'other'
+				}
+			}
+		});
+
+		await expect(
+			reportEquipmentRun({
+				workspaceRoot: fixture.workspaceRoot,
+				runId: DEFAULT_EQUIPMENT_RUN_ID,
+				createdAt: CREATED_AT,
+				generatedAt: '2026-09-02T00:11:00.000Z'
+			})
+		).resolves.toMatchObject({
+			status: 'running',
+			summary: { terminalJobs: 1, activeJobs: 0, technicalFailuresInEpoch: 1 },
+			terminalTargetIds: [fixture.claim.targetId]
+		});
 	});
 
 	it('never time-reaps an active started worker', async () => {

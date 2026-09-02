@@ -568,77 +568,105 @@ const FailureKindSchema = z.enum([
 	'other'
 ]);
 
-export const EquipmentRunEventRequestSchema = z.discriminatedUnion('kind', [
-	z.object({ ...EventRequestCommon, kind: z.literal('run-started'), epochId: SlugSchema }).strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('job-claimed'),
-			epochId: SlugSchema,
-			claimId: SlugSchema,
-			targetId: SlugSchema,
-			workerId: SlugSchema
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('claim-released'),
-			claimId: SlugSchema,
-			targetId: SlugSchema,
-			workerId: SlugSchema,
-			reason: NonEmptyTextSchema
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('worker-started'),
-			claimId: SlugSchema,
-			targetId: SlugSchema,
-			workerId: SlugSchema
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('job-terminal'),
-			targetId: SlugSchema,
-			workerId: SlugSchema,
-			status: z.enum(['candidate', 'revise', 'failed']),
-			resultCanonicalSha256: HashSchema.nullable(),
-			failureKind: FailureKindSchema.nullable()
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('armour-source-reviewed'),
-			gateId: SlugSchema,
-			sourceTargetId: SlugSchema,
-			decision: z.enum(['accepted', 'rejected']),
-			receiptCanonicalSha256: HashSchema
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('epoch-paused'),
-			epochId: SlugSchema,
-			technicalFailureCount: z.literal(3),
-			reason: NonEmptyTextSchema
-		})
-		.strict(),
-	z
-		.object({
-			...EventRequestCommon,
-			kind: z.literal('epoch-resumed'),
-			previousEpochId: SlugSchema,
-			epochId: SlugSchema,
-			reason: NonEmptyTextSchema
-		})
-		.strict()
-]);
+export const EquipmentRunEventRequestSchema = z
+	.discriminatedUnion('kind', [
+		z
+			.object({ ...EventRequestCommon, kind: z.literal('run-started'), epochId: SlugSchema })
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('job-claimed'),
+				epochId: SlugSchema,
+				claimId: SlugSchema,
+				targetId: SlugSchema,
+				workerId: SlugSchema
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('claim-released'),
+				claimId: SlugSchema,
+				targetId: SlugSchema,
+				workerId: SlugSchema,
+				reason: NonEmptyTextSchema
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('worker-started'),
+				claimId: SlugSchema,
+				targetId: SlugSchema,
+				workerId: SlugSchema
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('job-terminal'),
+				targetId: SlugSchema,
+				workerId: SlugSchema,
+				status: z.enum(['candidate', 'revise', 'failed']),
+				resultCanonicalSha256: HashSchema.nullable(),
+				failureKind: FailureKindSchema.nullable()
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('armour-source-reviewed'),
+				gateId: SlugSchema,
+				sourceTargetId: SlugSchema,
+				decision: z.enum(['accepted', 'rejected']),
+				receiptCanonicalSha256: HashSchema
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('epoch-paused'),
+				epochId: SlugSchema,
+				technicalFailureCount: z.literal(3),
+				reason: NonEmptyTextSchema
+			})
+			.strict(),
+		z
+			.object({
+				...EventRequestCommon,
+				kind: z.literal('epoch-resumed'),
+				previousEpochId: SlugSchema,
+				epochId: SlugSchema,
+				reason: NonEmptyTextSchema
+			})
+			.strict()
+	])
+	.superRefine((request, context) => {
+		if (request.kind !== 'job-terminal') return;
+		if (request.status !== 'failed') {
+			if (request.resultCanonicalSha256 === null || request.failureKind !== null) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Candidate and revise terminals require verified result evidence only'
+				});
+			}
+			return;
+		}
+		const operatorConfirmedNoOutput =
+			request.resultCanonicalSha256 === null && request.failureKind === 'operator-confirmed';
+		const verifiedPersistedFailure =
+			request.resultCanonicalSha256 !== null &&
+			request.failureKind !== null &&
+			request.failureKind !== 'operator-confirmed';
+		if (!operatorConfirmedNoOutput && !verifiedPersistedFailure) {
+			context.addIssue({
+				code: 'custom',
+				message:
+					'Failed terminals require either verified persisted result evidence or operator-confirmed no-output evidence'
+			});
+		}
+	});
 
 export const EquipmentRunEventSchema = z
 	.object({

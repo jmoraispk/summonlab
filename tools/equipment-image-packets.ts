@@ -1,6 +1,4 @@
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, open, readFile } from 'node:fs/promises';
-import path from 'node:path';
 
 import {
 	EQUIPMENT_PRODUCTION_ROOT,
@@ -19,6 +17,12 @@ import {
 	buildEquipmentMaterialAllocationPlan,
 	buildEquipmentMaterialProductionManifest
 } from './equipment-material-production-lib.js';
+import {
+	equipmentRepositoryPathState,
+	exclusiveCreateEquipmentRepositoryFile,
+	readEquipmentRepositoryFile,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 
 type EquipmentManifest = ReturnType<typeof buildEquipmentMaterialProductionManifest>;
 type EquipmentAllocation = ReturnType<typeof buildEquipmentMaterialAllocationPlan>;
@@ -560,58 +564,11 @@ export function renderEquipmentPrompt(unparsedTarget: EquipmentImageTarget): str
 	].join('\n');
 }
 
-function repositoryAbsolute(workspaceRoot: string, repositoryPath: string): string {
-	if (
-		path.posix.isAbsolute(repositoryPath) ||
-		repositoryPath.includes('\\') ||
-		repositoryPath
-			.split('/')
-			.some((segment) => segment === '' || segment === '.' || segment === '..')
-	) {
-		throw new Error(`Invalid repository-relative POSIX path: ${repositoryPath}`);
-	}
-	const root = path.resolve(workspaceRoot);
-	const absolute = path.resolve(root, ...repositoryPath.split('/'));
-	if (absolute === root || !absolute.startsWith(`${root}${path.sep}`)) {
-		throw new Error(`Repository path escapes the workspace root: ${repositoryPath}`);
-	}
-	return absolute;
-}
-
-async function pathExists(absolutePath: string): Promise<boolean> {
-	return lstat(absolutePath).then(
-		() => true,
-		(error: NodeJS.ErrnoException) => {
-			if (error.code === 'ENOENT') return false;
-			throw error;
-		}
-	);
-}
-
-async function readRegularRepositoryFile(
-	workspaceRoot: string,
-	repositoryPath: string
-): Promise<Buffer> {
-	const absolute = repositoryAbsolute(workspaceRoot, repositoryPath);
-	const metadata = await lstat(absolute);
-	if (!metadata.isFile() || metadata.isSymbolicLink()) {
-		throw new Error(`Reference must be a regular non-symbolic file: ${repositoryPath}`);
-	}
-	return readFile(absolute);
-}
-
 async function readEquipmentRepositoryJsonForPacket(
 	workspaceRoot: string,
 	repositoryPath: string
 ): Promise<unknown> {
-	const bytes = await readRegularRepositoryFile(workspaceRoot, repositoryPath);
-	try {
-		return JSON.parse(bytes.toString('utf8')) as unknown;
-	} catch (error) {
-		throw new Error(`Invalid JSON in Equipment packet evidence: ${repositoryPath}`, {
-			cause: error
-		});
-	}
+	return readEquipmentRepositoryJson(workspaceRoot, repositoryPath);
 }
 
 export async function validateEquipmentPacket(input: {
@@ -689,13 +646,13 @@ export async function validateEquipmentPacket(input: {
 		}).find((packet) => packet.target.targetId === target.targetId);
 	}
 	for (const reference of target.references) {
-		const bytes = await readRegularRepositoryFile(input.workspaceRoot, reference.path);
+		const bytes = await readEquipmentRepositoryFile(input.workspaceRoot, reference.path);
 		if (byteSha256(bytes) !== reference.contentHash) {
 			throw new Error(`Reference byte hash mismatch: ${reference.path}`);
 		}
 	}
 	for (const ownedPath of [target.output.candidatePath, target.output.resultPath]) {
-		if (await pathExists(repositoryAbsolute(input.workspaceRoot, ownedPath))) {
+		if ((await equipmentRepositoryPathState(input.workspaceRoot, ownedPath)) !== 'absent') {
 			throw new Error(`Assigned output already exists: ${ownedPath}`);
 		}
 	}
@@ -739,10 +696,16 @@ export async function materializeRootEquipmentPackets(input: {
 	]);
 	if (input.check) {
 		for (const artifact of artifacts) {
-			const current = await readFile(
-				repositoryAbsolute(input.workspaceRoot, artifact.repositoryPath),
-				'utf8'
-			).catch(() => null);
+			const state = await equipmentRepositoryPathState(
+				input.workspaceRoot,
+				artifact.repositoryPath
+			);
+			const current =
+				state === 'file'
+					? (
+							await readEquipmentRepositoryFile(input.workspaceRoot, artifact.repositoryPath)
+						).toString('utf8')
+					: null;
 			if (current !== artifact.contents) {
 				throw new Error(`Root packet is missing or stale: ${artifact.repositoryPath}`);
 			}
@@ -751,20 +714,19 @@ export async function materializeRootEquipmentPackets(input: {
 	}
 
 	for (const artifact of artifacts) {
-		if (await pathExists(repositoryAbsolute(input.workspaceRoot, artifact.repositoryPath))) {
+		if (
+			(await equipmentRepositoryPathState(input.workspaceRoot, artifact.repositoryPath)) !==
+			'absent'
+		) {
 			throw new Error(`Root packet collision: ${artifact.repositoryPath}`);
 		}
 	}
 	for (const artifact of artifacts) {
-		const absolute = repositoryAbsolute(input.workspaceRoot, artifact.repositoryPath);
-		await mkdir(path.dirname(absolute), { recursive: true });
-		const handle = await open(absolute, 'wx');
-		try {
-			await handle.writeFile(artifact.contents, 'utf8');
-			await handle.sync();
-		} finally {
-			await handle.close();
-		}
+		await exclusiveCreateEquipmentRepositoryFile(
+			input.workspaceRoot,
+			artifact.repositoryPath,
+			artifact.contents
+		);
 	}
 	return { mode: 'write', targetCount: 77, assignmentCount: 77, writesPerformed: 154 };
 }

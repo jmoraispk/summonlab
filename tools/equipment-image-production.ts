@@ -1,4 +1,3 @@
-import { mkdir, open, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -17,7 +16,6 @@ import {
 } from './equipment-image-packets.js';
 import {
 	persistEquipmentImageResult,
-	readEquipmentRepositoryJson,
 	verifyEquipmentImageResult
 } from './equipment-image-result.js';
 import {
@@ -30,8 +28,16 @@ import {
 	reportEquipmentRun,
 	simulateEquipmentRun
 } from './equipment-image-run-reconcile.js';
-import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
+import {
+	claimNextEquipmentJobs,
+	recordEquipmentRunEvent,
+	recordVerifiedEquipmentRunTerminal
+} from './equipment-image-run-recorder.js';
 import { materializeDependentArmourPackets } from './equipment-armour-review.js';
+import {
+	exclusiveCreateEquipmentRepositoryFile,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 const MANIFEST_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/manifest.json` as const;
@@ -41,8 +47,7 @@ const ACCEPTED_AT = '2026-09-01T23:00:00.000Z' as const;
 type PacketSources = Parameters<typeof buildRootEquipmentPackets>[0];
 
 async function readJson(workspaceRoot: string, repositoryPath: string): Promise<unknown> {
-	const contents = await readFile(path.resolve(workspaceRoot, repositoryPath), 'utf8');
-	return JSON.parse(contents) as unknown;
+	return readEquipmentRepositoryJson(workspaceRoot, repositoryPath);
 }
 
 async function readPacketSources(workspaceRoot: string): Promise<PacketSources> {
@@ -120,23 +125,11 @@ async function exclusiveJsonWrite(
 	repositoryPath: string,
 	value: unknown
 ): Promise<void> {
-	const absolute = path.resolve(workspaceRoot, repositoryPath);
-	await mkdir(path.dirname(absolute), { recursive: true });
-	let handle;
-	try {
-		handle = await open(absolute, 'wx');
-	} catch (error) {
-		const code = (error as NodeJS.ErrnoException).code;
-		if (code === 'EEXIST')
-			throw new Error(`Exclusive-create collision: ${repositoryPath}`, { cause: error });
-		throw error;
-	}
-	try {
-		await handle.writeFile(`${JSON.stringify(value, null, '\t')}\n`, 'utf8');
-		await handle.sync();
-	} finally {
-		await handle.close();
-	}
+	await exclusiveCreateEquipmentRepositoryFile(
+		workspaceRoot,
+		repositoryPath,
+		`${JSON.stringify(value, null, '\t')}\n`
+	);
 }
 
 export async function runEquipmentImageProductionCli(input: {
@@ -355,9 +348,10 @@ export async function runEquipmentImageProductionCli(input: {
 		if (
 			completeTerminalMode &&
 			expectedTerminalStatus !== 'candidate' &&
-			expectedTerminalStatus !== 'revise'
+			expectedTerminalStatus !== 'revise' &&
+			expectedTerminalStatus !== 'failed'
 		) {
-			throw new Error('--expected-terminal-status must be candidate or revise');
+			throw new Error('--expected-terminal-status must be candidate, revise, or failed');
 		}
 		const expectedResultCanonicalSha256 = options.get('--expected-result-canonical-sha256');
 		if (
@@ -382,7 +376,7 @@ export async function runEquipmentImageProductionCli(input: {
 					: {
 							terminalAuthorization: {
 								acknowledged: true,
-								expectedTerminalStatus: expectedTerminalStatus as 'candidate' | 'revise',
+								expectedTerminalStatus: expectedTerminalStatus as 'candidate' | 'revise' | 'failed',
 								expectedResultCanonicalSha256: expectedResultCanonicalSha256!,
 								eventId: eventId!,
 								actor: actor!,
@@ -479,13 +473,7 @@ export async function runEquipmentImageProductionCli(input: {
 			command === 'record-start'
 				? ['--claim-id', '--target-id', '--worker-id']
 				: command === 'record-terminal'
-					? [
-							'--target-id',
-							'--worker-id',
-							'--status',
-							'--result-canonical-sha256',
-							'--failure-kind'
-						]
+					? ['--target-id', '--worker-id']
 					: command === 'release-claim'
 						? ['--claim-id', '--target-id', '--worker-id', '--reason']
 						: command === 'pause-epoch'
@@ -502,6 +490,20 @@ export async function runEquipmentImageProductionCli(input: {
 			requestedAt: requireOption(options, '--requested-at'),
 			actor
 		};
+		if (command === 'record-terminal') {
+			const result = await recordVerifiedEquipmentRunTerminal({
+				workspaceRoot: input.workspaceRoot,
+				runId,
+				eventId,
+				actor,
+				requestedAt: requestCommon.requestedAt,
+				recordedAt: requireOption(options, '--recorded-at'),
+				targetId: requireOption(options, '--target-id'),
+				workerId: requireOption(options, '--worker-id'),
+				lockOwnerId: `${actor}-${command}-controller`
+			});
+			return { command, ...result };
+		}
 		let request: unknown;
 		if (command === 'record-start') {
 			request = {
@@ -510,27 +512,6 @@ export async function runEquipmentImageProductionCli(input: {
 				claimId: requireOption(options, '--claim-id'),
 				targetId: requireOption(options, '--target-id'),
 				workerId: requireOption(options, '--worker-id')
-			};
-		} else if (command === 'record-terminal') {
-			const status = requireOption(options, '--status');
-			if (!['candidate', 'revise', 'failed'].includes(status)) {
-				throw new Error('--status must be candidate, revise, or failed');
-			}
-			if (status === 'failed' && options.has('--result-canonical-sha256')) {
-				throw new Error('--result-canonical-sha256 is forbidden for failed terminal events');
-			}
-			if (status !== 'failed' && options.has('--failure-kind')) {
-				throw new Error(`--failure-kind is forbidden for ${status} terminal events`);
-			}
-			request = {
-				...requestCommon,
-				kind: 'job-terminal',
-				targetId: requireOption(options, '--target-id'),
-				workerId: requireOption(options, '--worker-id'),
-				status,
-				resultCanonicalSha256:
-					status === 'failed' ? null : requireOption(options, '--result-canonical-sha256'),
-				failureKind: status === 'failed' ? requireOption(options, '--failure-kind') : null
 			};
 		} else if (command === 'release-claim') {
 			request = {

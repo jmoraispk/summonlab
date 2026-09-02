@@ -1,4 +1,15 @@
-import { mkdtemp, mkdir, open, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
+import {
+	lstat,
+	mkdtemp,
+	mkdir,
+	open,
+	readFile,
+	readdir,
+	rename,
+	rm,
+	symlink,
+	writeFile
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join } from 'node:path';
 
@@ -228,6 +239,32 @@ describe('persistEquipmentImageProductionOutput', () => {
 			/symbolic link/u
 		);
 		expect(await readdir(symlinkTarget)).toEqual([]);
+	});
+
+	it('rejects assignment authorization through a stable symlink ancestor with zero writes', async () => {
+		const workspace = await createWorkspace();
+		const outsideRoot = await mkdtemp(join(tmpdir(), 'equipment-assignment-outside-'));
+		workspaces.push(outsideRoot);
+		const source = await createImage(workspace, 'returned-source.png', {
+			width: 1024,
+			height: 1024,
+			format: 'png'
+		});
+		const assignmentsRoot = join(workspace, ROOT, 'assignments');
+		const outsideAssignmentsRoot = join(outsideRoot, 'assignments');
+		await rename(assignmentsRoot, outsideAssignmentsRoot);
+		await symlink(outsideAssignmentsRoot, assignmentsRoot, 'dir');
+		const assignmentPath = join(outsideAssignmentsRoot, 'f/copper/sword-v1.json');
+		const assignmentBefore = await readFile(assignmentPath);
+
+		await expect(persistEquipmentImageProductionOutput(options(workspace, source))).rejects.toThrow(
+			/symbolic|symlink/iu
+		);
+		expect(await readFile(assignmentPath)).toEqual(assignmentBefore);
+		await expect(lstat(join(workspace, DESTINATION))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			lstat(join(outsideRoot, 'candidates/f/copper/sword-v1.png'))
+		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
 	it('does not unlink a replacement destination after an injected write failure', async () => {

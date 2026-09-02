@@ -182,6 +182,7 @@ describe('Equipment image worker result verification', () => {
 		await expect(verify(valid)).resolves.toMatchObject({
 			status: 'candidate',
 			candidateSha256: valid.candidateSha256,
+			resultCanonicalSha256: canonicalJsonSha256(valid.result),
 			ownedPaths: [valid.packet.target.output.candidatePath, valid.resultPath]
 		});
 	});
@@ -633,7 +634,11 @@ describe('Equipment image result persistence and CLI', () => {
 				workspaceRoot: valid.workspaceRoot,
 				stdin: JSON.stringify(valid.result)
 			})
-		).resolves.toMatchObject({ command: 'persist-result', status: 'candidate' });
+		).resolves.toMatchObject({
+			command: 'persist-result',
+			status: 'candidate',
+			resultCanonicalSha256: canonicalJsonSha256(valid.result)
+		});
 		await expect(
 			runEquipmentImageProductionCli({
 				args: [
@@ -647,7 +652,11 @@ describe('Equipment image result persistence and CLI', () => {
 				],
 				workspaceRoot: valid.workspaceRoot
 			})
-		).resolves.toMatchObject({ command: 'verify-result', status: 'candidate' });
+		).resolves.toMatchObject({
+			command: 'verify-result',
+			status: 'candidate',
+			resultCanonicalSha256: canonicalJsonSha256(valid.result)
+		});
 	});
 
 	it('verify-result refuses a symlinked result file', async () => {

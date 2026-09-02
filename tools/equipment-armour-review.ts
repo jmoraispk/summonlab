@@ -23,10 +23,8 @@ import {
 	buildDependentArmourPackets,
 	canonicalJsonSha256
 } from './equipment-image-packets.js';
-import {
-	readEquipmentRepositoryJson,
-	verifyEquipmentImageResult
-} from './equipment-image-result.js';
+import { verifyEquipmentImageResult } from './equipment-image-result.js';
+import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
 import { replayEquipmentRunJournal } from './equipment-image-run-journal.js';
 import { buildEquipmentRunJournalContext } from './equipment-image-run-recorder.js';
 import { buildEquipmentRunPlan } from './equipment-image-run-readiness.js';

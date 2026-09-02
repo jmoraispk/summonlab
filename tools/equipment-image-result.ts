@@ -1,7 +1,4 @@
 import { createHash } from 'node:crypto';
-import { constants as fsConstants } from 'node:fs';
-import { lstat, mkdir, open, unlink } from 'node:fs/promises';
-import path from 'node:path';
 
 import sharp from 'sharp';
 
@@ -21,6 +18,12 @@ import {
 	canonicalJsonSha256,
 	renderEquipmentPrompt
 } from './equipment-image-packets.js';
+import {
+	equipmentRepositoryPathState,
+	exclusiveCreateEquipmentRepositoryFile,
+	readEquipmentRepositoryFile,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 
 const PROFILE_PATH = `${EQUIPMENT_PRODUCTION_ROOT}/visual-profile/profile.json` as const;
 
@@ -34,96 +37,11 @@ export interface VerifyEquipmentImageResultInput {
 
 export interface VerifiedEquipmentImageResult extends EquipmentImageResult {
 	readonly ownedPaths: readonly string[];
-}
-
-interface FileIdentity {
-	readonly device: number;
-	readonly inode: number;
+	readonly resultCanonicalSha256: string;
 }
 
 function sha256(bytes: string | Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
-}
-
-function repositoryAbsolute(workspaceRoot: string, repositoryPath: string): string {
-	if (
-		path.posix.isAbsolute(repositoryPath) ||
-		repositoryPath.includes('\\') ||
-		repositoryPath
-			.split('/')
-			.some((component) => component === '' || component === '.' || component === '..')
-	) {
-		throw new Error(`Invalid repository-relative POSIX path: ${repositoryPath}`);
-	}
-	const root = path.resolve(workspaceRoot);
-	const absolute = path.resolve(root, ...repositoryPath.split('/'));
-	if (absolute === root || !absolute.startsWith(`${root}${path.sep}`)) {
-		throw new Error(`Repository path escapes the workspace root: ${repositoryPath}`);
-	}
-	return absolute;
-}
-
-async function assertNoSymbolicPathComponents(
-	workspaceRoot: string,
-	repositoryPath: string,
-	expectFile: boolean
-): Promise<void> {
-	const root = path.resolve(workspaceRoot);
-	const rootMetadata = await lstat(root);
-	if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory()) {
-		throw new Error('Workspace root must be a real directory, not a symbolic link');
-	}
-
-	let cursor = root;
-	const components = repositoryPath.split('/');
-	for (const [index, component] of components.entries()) {
-		cursor = path.join(cursor, component);
-		const metadata = await lstat(cursor);
-		if (metadata.isSymbolicLink()) {
-			throw new Error(`Repository reads refuse symbolic links: ${repositoryPath}`);
-		}
-		const final = index === components.length - 1;
-		if ((!final || !expectFile) && !metadata.isDirectory()) {
-			throw new Error(`Repository path component is not a directory: ${repositoryPath}`);
-		}
-		if (final && expectFile && !metadata.isFile()) {
-			throw new Error(`Repository read requires a regular file: ${repositoryPath}`);
-		}
-	}
-
-	repositoryAbsolute(root, repositoryPath);
-}
-
-export async function readEquipmentRepositoryFile(
-	workspaceRoot: string,
-	repositoryPath: string
-): Promise<Buffer> {
-	const absolute = repositoryAbsolute(workspaceRoot, repositoryPath);
-	await assertNoSymbolicPathComponents(workspaceRoot, repositoryPath, true);
-	const handle = await open(absolute, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW);
-	try {
-		const metadata = await handle.stat();
-		if (!metadata.isFile()) {
-			throw new Error(`Repository read requires a regular file: ${repositoryPath}`);
-		}
-		return await handle.readFile();
-	} finally {
-		await handle.close();
-	}
-}
-
-export async function readEquipmentRepositoryJson(
-	workspaceRoot: string,
-	repositoryPath: string
-): Promise<unknown> {
-	const bytes = await readEquipmentRepositoryFile(workspaceRoot, repositoryPath);
-	try {
-		return JSON.parse(bytes.toString('utf8')) as unknown;
-	} catch (error) {
-		throw new Error(`Invalid JSON in Equipment repository file: ${repositoryPath}`, {
-			cause: error
-		});
-	}
 }
 
 function packetPathForCandidate(
@@ -284,12 +202,10 @@ async function verifyCandidate(
 	result: EquipmentImageResult
 ): Promise<void> {
 	if (result.status === 'failed') {
-		const candidateAbsolute = repositoryAbsolute(workspaceRoot, target.output.candidatePath);
-		try {
-			await lstat(candidateAbsolute);
+		if (
+			(await equipmentRepositoryPathState(workspaceRoot, target.output.candidatePath)) !== 'absent'
+		) {
 			throw new Error('Failed result cannot coexist with a candidate output');
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 		}
 		return;
 	}
@@ -357,52 +273,7 @@ export async function verifyEquipmentImageResult(
 	const ownedPaths = assertResultSemantics(target, assignment, result);
 	await verifyProfileAndReferences(input.workspaceRoot, target, result);
 	await verifyCandidate(input.workspaceRoot, target, result);
-	return { ...result, ownedPaths };
-}
-
-async function ensureSafeResultParent(
-	workspaceRoot: string,
-	repositoryPath: string
-): Promise<void> {
-	const root = path.resolve(workspaceRoot);
-	const components = repositoryPath.split('/').slice(0, -1);
-	const rootMetadata = await lstat(root);
-	if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory()) {
-		throw new Error('Workspace root must be a real directory, not a symbolic link');
-	}
-	let cursor = root;
-	for (const component of components) {
-		cursor = path.join(cursor, component);
-		let metadata;
-		try {
-			metadata = await lstat(cursor);
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-			try {
-				await mkdir(cursor);
-			} catch (mkdirError) {
-				if ((mkdirError as NodeJS.ErrnoException).code !== 'EEXIST') throw mkdirError;
-			}
-			metadata = await lstat(cursor);
-		}
-		if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
-			throw new Error(
-				`Result parent cannot be a symbolic link or non-directory: ${repositoryPath}`
-			);
-		}
-	}
-}
-
-async function resultPathMatchesIdentity(
-	absolutePath: string,
-	identity: FileIdentity
-): Promise<boolean> {
-	try {
-		const metadata = await lstat(absolutePath);
-		return metadata.dev === identity.device && metadata.ino === identity.inode;
-	} catch {
-		return false;
-	}
+	return { ...result, ownedPaths, resultCanonicalSha256: canonicalJsonSha256(result) };
 }
 
 export async function persistEquipmentImageResult(
@@ -411,47 +282,16 @@ export async function persistEquipmentImageResult(
 	const verifiedBeforeWrite = await verifyEquipmentImageResult(input);
 	const resultPath = verifiedBeforeWrite.writtenOutputPaths.at(-1)!;
 	const serialized = `${JSON.stringify(input.result, null, '\t')}\n`;
-	await ensureSafeResultParent(input.workspaceRoot, resultPath);
-	await ensureSafeResultParent(input.workspaceRoot, resultPath);
-	const absolute = repositoryAbsolute(input.workspaceRoot, resultPath);
-	let handle;
-	let createdIdentity: FileIdentity | undefined;
-	try {
-		handle = await open(absolute, 'wx');
-	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-			throw new Error(`Exclusive-create collision: existing Equipment result ${resultPath}`, {
-				cause: error
-			});
-		}
-		throw error;
+	await exclusiveCreateEquipmentRepositoryFile(input.workspaceRoot, resultPath, serialized);
+	const persistedBytes = await readEquipmentRepositoryFile(input.workspaceRoot, resultPath);
+	if (persistedBytes.toString('utf8') !== serialized) {
+		throw new Error(
+			`Persisted Equipment result bytes do not match the verified result: ${resultPath}`
+		);
 	}
-	try {
-		const metadata = await handle.stat();
-		createdIdentity = { device: metadata.dev, inode: metadata.ino };
-		await handle.writeFile(serialized, 'utf8');
-		await handle.sync();
-		await handle.close();
-		handle = undefined;
-		const persistedBytes = await readEquipmentRepositoryFile(input.workspaceRoot, resultPath);
-		if (persistedBytes.toString('utf8') !== serialized) {
-			throw new Error(
-				`Persisted Equipment result bytes do not match the verified result: ${resultPath}`
-			);
-		}
-		return await verifyEquipmentImageResult({
-			...input,
-			resultPath,
-			result: JSON.parse(persistedBytes.toString('utf8')) as unknown
-		});
-	} catch (error) {
-		await handle?.close().catch(() => undefined);
-		if (
-			createdIdentity !== undefined &&
-			(await resultPathMatchesIdentity(absolute, createdIdentity))
-		) {
-			await unlink(absolute).catch(() => undefined);
-		}
-		throw error;
-	}
+	return verifyEquipmentImageResult({
+		...input,
+		resultPath,
+		result: JSON.parse(persistedBytes.toString('utf8')) as unknown
+	});
 }

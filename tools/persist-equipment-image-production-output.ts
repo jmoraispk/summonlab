@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, open, readFile, unlink } from 'node:fs/promises';
-import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { isAbsolute, relative, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 
@@ -10,6 +10,10 @@ import {
 	EQUIPMENT_PRODUCTION_ROOT,
 	EquipmentImageAssignmentSchema
 } from './equipment-image-production-contract.js';
+import {
+	exclusiveCreateEquipmentRepositoryFile,
+	readEquipmentRepositoryJson
+} from './equipment-repository-io.js';
 
 export interface PersistEquipmentImageProductionOptions {
 	readonly workspaceRoot: string;
@@ -52,11 +56,6 @@ interface NormalizedImage {
 	};
 }
 
-interface FileIdentity {
-	readonly device: number;
-	readonly inode: number;
-}
-
 function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -95,9 +94,9 @@ async function assertAssignmentOwnership(
 	const candidatePrefix = `${EQUIPMENT_PRODUCTION_ROOT}/candidates/`;
 	const candidateSuffix = destinationPath.slice(candidatePrefix.length, -4);
 	const assignmentPath = `${EQUIPMENT_PRODUCTION_ROOT}/assignments/${candidateSuffix}.json`;
-	let assignmentBytes: string;
+	let assignmentValue: unknown;
 	try {
-		assignmentBytes = await readFile(resolve(workspaceRoot, assignmentPath), 'utf8');
+		assignmentValue = await readEquipmentRepositoryJson(workspaceRoot, assignmentPath);
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
 			throw new Error(`No matching Equipment assignment reserves ${destinationPath}`, {
@@ -106,7 +105,7 @@ async function assertAssignmentOwnership(
 		}
 		throw error;
 	}
-	const assignment = EquipmentImageAssignmentSchema.parse(JSON.parse(assignmentBytes) as unknown);
+	const assignment = EquipmentImageAssignmentSchema.parse(assignmentValue);
 	if (assignment.permittedOutputs.candidatePath !== destinationPath) {
 		throw new Error(`Matching Equipment assignment does not reserve ${destinationPath}`);
 	}
@@ -192,55 +191,6 @@ async function normalizeAndVerify(
 	};
 }
 
-async function ensureSafeDestinationParents(
-	workspaceRoot: string,
-	destinationPath: string
-): Promise<void> {
-	const parentPath = dirname(destinationPath);
-	const relativeParentPath = relative(workspaceRoot, parentPath);
-	const components = relativeParentPath === '' ? [] : relativeParentPath.split(sep);
-	let cursor = workspaceRoot;
-
-	const workspaceMetadata = await lstat(cursor);
-	if (workspaceMetadata.isSymbolicLink() || !workspaceMetadata.isDirectory()) {
-		throw new Error('Workspace root must be a real directory, not a symbolic link');
-	}
-
-	for (const component of components) {
-		cursor = resolve(cursor, component);
-		let metadata;
-		try {
-			metadata = await lstat(cursor);
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-			try {
-				await mkdir(cursor);
-			} catch (mkdirError) {
-				if ((mkdirError as NodeJS.ErrnoException).code !== 'EEXIST') throw mkdirError;
-			}
-			metadata = await lstat(cursor);
-		}
-		if (metadata.isSymbolicLink()) {
-			throw new Error(`Destination parent cannot be a symbolic link: ${cursor}`);
-		}
-		if (!metadata.isDirectory()) {
-			throw new Error(`Destination parent is not a directory: ${cursor}`);
-		}
-	}
-}
-
-async function destinationMatchesIdentity(
-	destinationPath: string,
-	identity: FileIdentity
-): Promise<boolean> {
-	try {
-		const metadata = await lstat(destinationPath);
-		return metadata.dev === identity.device && metadata.ino === identity.inode;
-	} catch {
-		return false;
-	}
-}
-
 export async function persistEquipmentImageProductionOutput(
 	options: PersistEquipmentImageProductionOptions
 ): Promise<EquipmentPersistenceReceipt> {
@@ -257,32 +207,11 @@ export async function persistEquipmentImageProductionOutput(
 	const destinationPath = destinationAbsolutePath(workspaceRoot, options.destinationPath);
 	if (sourcePath === destinationPath) throw new Error('Source and destination must differ');
 	await assertAssignmentOwnership(workspaceRoot, options.destinationPath);
-	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
-	await ensureSafeDestinationParents(workspaceRoot, destinationPath);
-
-	let handle;
-	let createdDestination = false;
-	let createdIdentity: FileIdentity | undefined;
-	try {
-		handle = await open(destinationPath, 'wx');
-		createdDestination = true;
-		const createdMetadata = await handle.stat();
-		createdIdentity = { device: createdMetadata.dev, inode: createdMetadata.ino };
-		await handle.writeFile(normalized.bytes);
-		await handle.sync();
-		await handle.close();
-		handle = undefined;
-	} catch (error) {
-		await handle?.close().catch(() => undefined);
-		if (
-			createdDestination &&
-			createdIdentity !== undefined &&
-			(await destinationMatchesIdentity(destinationPath, createdIdentity))
-		) {
-			await unlink(destinationPath).catch(() => undefined);
-		}
-		throw error;
-	}
+	await exclusiveCreateEquipmentRepositoryFile(
+		workspaceRoot,
+		options.destinationPath,
+		normalized.bytes
+	);
 
 	return {
 		operation: normalized.operation,
