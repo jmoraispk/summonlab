@@ -5,6 +5,7 @@ import {
 	lstat,
 	mkdir,
 	open,
+	readFile,
 	readdir,
 	realpath,
 	rmdir,
@@ -15,6 +16,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import sharp from 'sharp';
+import { z } from 'zod';
 
 import {
 	SkillIconCatalogSchema,
@@ -33,8 +35,10 @@ import {
 } from '../packages/contracts/src/index.js';
 import {
 	SKILL_ICON_CATALOG_PATH,
+	SKILL_ICON_MOTIF_SOURCE_PATH,
 	exportSkillIconProduction
 } from './export-skill-icon-production.js';
+import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
 import {
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
@@ -159,6 +163,10 @@ interface DesiredContactSheet {
 	readonly itemCount: number;
 }
 
+interface SnapshottedContactSheet extends DesiredContactSheet {
+	readonly sourceSnapshot: string;
+}
+
 interface PlannedContactSheet extends DesiredContactSheet {
 	readonly path: string;
 }
@@ -170,6 +178,7 @@ export interface SkillIconRuntimeTestHooks {
 	}) => void | Promise<void>;
 	readonly beforeContactSheetFinalLink?: () => void | Promise<void>;
 	readonly afterContactSheetFinalLink?: () => void | Promise<void>;
+	readonly afterContactSheetLockStage?: () => void | Promise<void>;
 }
 
 interface ParentFingerprint {
@@ -190,6 +199,43 @@ function jobRevision(jobId: string): number {
 
 function reviewSheetPath(kind: 'reference-assets' | 'pilot-icons', revision: number): string {
 	return `assets/wiki/skills/icon-production-v1/review/${kind}-v${revision}.png`;
+}
+
+function excludedSnapshotEntry(relativePath: string): boolean {
+	const name = path.basename(relativePath);
+	return (
+		name === '.contact-sheet.lock' ||
+		name.startsWith('.contact-sheet-staging-') ||
+		/^(?:reference-assets|pilot-icons)-v[1-9]\d*\.png$/u.test(name)
+	);
+}
+
+async function sourceSnapshotDigest(root: string): Promise<string> {
+	const digest = createHash('sha256');
+	const visit = async (absolute: string, relative: string): Promise<void> => {
+		if (excludedSnapshotEntry(relative)) return;
+		const metadata = await lstat(absolute);
+		if (metadata.isSymbolicLink()) {
+			throw new Error(`Source snapshot contains unsafe symbolic link: ${relative}`);
+		}
+		if (metadata.isDirectory()) {
+			digest.update(`D\0${relative}\0${metadata.dev}\0${metadata.ino}\0`);
+			const entries = (await readdir(absolute)).sort((left, right) => left.localeCompare(right));
+			for (const entry of entries) await visit(path.join(absolute, entry), `${relative}/${entry}`);
+			return;
+		}
+		if (!metadata.isFile()) throw new Error(`Source snapshot entry is unsafe: ${relative}`);
+		const bytes = await readDirectRegularFile(absolute, `Source snapshot ${relative}`);
+		digest.update(
+			`F\0${relative}\0${metadata.dev}\0${metadata.ino}\0${metadata.size}\0${sha256(bytes)}\0`
+		);
+	};
+	const productionRoot = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
+	await visit(productionRoot, 'assets/wiki/skills/icon-production-v1');
+	for (const relative of [...CANONICAL_SKILL_SOURCE_PATHS, SKILL_ICON_MOTIF_SOURCE_PATH]) {
+		await visit(path.resolve(root, relative), relative);
+	}
+	return digest.digest('hex');
 }
 
 function inside(parent: string, child: string): boolean {
@@ -616,7 +662,11 @@ async function ensureSafeParent(root: string, relativePath: string): Promise<str
 	for (const segment of segments) {
 		current = path.join(current, segment);
 		const metadata = await metadataOrNull(current);
-		if (!metadata) await mkdir(current);
+		if (!metadata) {
+			await mkdir(current).catch((error: NodeJS.ErrnoException) => {
+				if (error.code !== 'EEXIST') throw error;
+			});
+		}
 		const confirmed = await lstat(current);
 		if (confirmed.isSymbolicLink() || !confirmed.isDirectory()) {
 			throw new Error(`Derivative parent is unsafe: ${relativePath}`);
@@ -1279,6 +1329,57 @@ interface BoundDirectory {
 	readonly handle: FileHandle;
 }
 
+const ContactSheetLockSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-contact-sheet-lock-v1'),
+		transactionId: z.string().uuid(),
+		pid: z.number().int().positive(),
+		processIdentity: z
+			.object({ bootId: z.string().min(1), startTicks: z.string().regex(/^\d+$/u) })
+			.strict(),
+		createdAt: z.string().datetime(),
+		stageNamespace: z.string().regex(/^\.contact-sheet-staging-[a-f0-9-]{36}$/u)
+	})
+	.strict();
+
+type ContactSheetLockRecord = z.infer<typeof ContactSheetLockSchema>;
+
+async function linuxProcessIdentity(
+	pid: number
+): Promise<ContactSheetLockRecord['processIdentity']> {
+	const [bootId, stat] = await Promise.all([
+		readFile('/proc/sys/kernel/random/boot_id', 'utf8'),
+		readFile(`/proc/${pid}/stat`, 'utf8')
+	]);
+	const closing = stat.lastIndexOf(')');
+	const startTicks = stat
+		.slice(closing + 2)
+		.trim()
+		.split(/\s+/u)[19];
+	if (!startTicks || !/^\d+$/u.test(startTicks)) {
+		throw new Error('Linux process epoch is unavailable for contact-sheet coordination');
+	}
+	return { bootId: bootId.trim(), startTicks };
+}
+
+async function contactLockOwnerLive(record: ContactSheetLockRecord): Promise<boolean> {
+	try {
+		process.kill(record.pid, 0);
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ESRCH') return false;
+		return true;
+	}
+	try {
+		const current = await linuxProcessIdentity(record.pid);
+		return (
+			current.bootId === record.processIdentity.bootId &&
+			current.startTicks === record.processIdentity.startTicks
+		);
+	} catch {
+		return true;
+	}
+}
+
 async function openBoundDirectory(directory: string): Promise<BoundDirectory> {
 	const identity = await directoryFingerprint(directory);
 	const handle = await open(
@@ -1343,41 +1444,167 @@ async function inventoryContactSheets(
 	return { ...desired, path: reviewSheetPath(desired.kind, (latest?.revision ?? 0) + 1) };
 }
 
-async function acquireContactSheetLock(directory: BoundDirectory): Promise<{
+interface ContactSheetLock {
 	readonly path: string;
-	readonly token: Buffer;
+	readonly bytes: Buffer;
 	readonly device: number;
 	readonly inode: number;
-}> {
+	readonly record: ContactSheetLockRecord;
+	readonly stage: BoundDirectory;
+}
+
+async function cleanupDerivedStage(root: string, record: ContactSheetLockRecord): Promise<void> {
+	if (record.stageNamespace !== `.contact-sheet-staging-${record.transactionId}`) {
+		throw new Error('Contact-sheet lock stage namespace is not derived from its transaction');
+	}
+	const authority = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
+	const stagePath = path.join(authority, record.stageNamespace);
+	const metadata = await lstat(stagePath).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	if (!metadata) return;
+	if (metadata.isSymbolicLink() || !metadata.isDirectory() || (metadata.mode & 0o777) !== 0o700) {
+		throw new Error('Dead contact-sheet stage is unsafe; cleanup required');
+	}
+	const stage = await openBoundDirectory(stagePath);
+	try {
+		for (const entry of await readdir(stage.procPath, { withFileTypes: true })) {
+			if (
+				!['lock.stage', 'contact-sheet.stage'].includes(entry.name) ||
+				entry.isSymbolicLink() ||
+				!entry.isFile()
+			) {
+				throw new Error(`Unexpected dead contact-sheet stage entry: ${entry.name}`);
+			}
+			await unlink(path.join(stage.procPath, entry.name));
+		}
+		await stage.handle.sync();
+	} finally {
+		await stage.handle.close();
+	}
+	const finalStage = await lstat(stagePath);
+	if (
+		finalStage.isSymbolicLink() ||
+		!finalStage.isDirectory() ||
+		finalStage.dev !== stage.identity.device ||
+		finalStage.ino !== stage.identity.inode
+	) {
+		throw new Error('Dead contact-sheet stage identity changed before cleanup');
+	}
+	await rmdir(stagePath);
+	await syncDirectory(authority);
+}
+
+async function acquireContactSheetLock(
+	root: string,
+	directory: BoundDirectory,
+	testHooks?: SkillIconRuntimeTestHooks
+): Promise<ContactSheetLock> {
 	const lockPath = path.join(directory.procPath, '.contact-sheet.lock');
 	for (let attempt = 0; attempt < 500; attempt += 1) {
+		const existing = await lstat(lockPath).catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return null;
+			throw error;
+		});
+		if (existing) {
+			if (existing.isSymbolicLink() || !existing.isFile() || (existing.mode & 0o777) !== 0o600) {
+				throw new Error('Malformed contact-sheet lock is preserved; recovery required');
+			}
+			let record: ContactSheetLockRecord;
+			let existingBytes: Buffer;
+			try {
+				existingBytes = await readBoundFile(directory, '.contact-sheet.lock');
+				record = ContactSheetLockSchema.parse(JSON.parse(existingBytes.toString('utf8')));
+			} catch (error) {
+				throw new Error('Malformed contact-sheet lock is preserved; recovery required', {
+					cause: error
+				});
+			}
+			if (record.stageNamespace !== `.contact-sheet-staging-${record.transactionId}`) {
+				throw new Error('Mismatched contact-sheet lock is preserved; recovery required');
+			}
+			if (await contactLockOwnerLive(record)) {
+				await new Promise((resolve) => setTimeout(resolve, 10));
+				continue;
+			}
+			const before = await lstat(lockPath);
+			await cleanupDerivedStage(root, record);
+			const immediatelyBefore = await lstat(lockPath);
+			if (
+				before.dev !== immediatelyBefore.dev ||
+				before.ino !== immediatelyBefore.ino ||
+				!(await readBoundFile(directory, '.contact-sheet.lock')).equals(existingBytes)
+			) {
+				throw new Error('Dead contact-sheet lock identity changed; recovery required');
+			}
+			await unlink(lockPath);
+			await directory.handle.sync();
+			continue;
+		}
+		const transactionId = randomUUID();
+		const stageNamespace = `.contact-sheet-staging-${transactionId}`;
+		const authority = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
+		const stagePath = path.join(authority, stageNamespace);
+		await mkdir(stagePath, { mode: 0o700 });
+		await syncDirectory(authority);
+		const stage = await openBoundDirectory(stagePath);
 		try {
+			const record = ContactSheetLockSchema.parse({
+				schemaVersion: 'skill-icon-contact-sheet-lock-v1',
+				transactionId,
+				pid: process.pid,
+				processIdentity: await linuxProcessIdentity(process.pid),
+				createdAt: new Date().toISOString(),
+				stageNamespace
+			});
+			const bytes = Buffer.from(`${JSON.stringify(record)}\n`);
+			const privatePath = path.join(stage.procPath, 'lock.stage');
 			const handle = await open(
-				lockPath,
+				privatePath,
 				constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 				0o600
 			);
-			const token = Buffer.from(randomUUID());
 			try {
 				const metadata = await handle.stat();
-				await handle.writeFile(token);
+				await handle.writeFile(bytes);
 				await handle.sync();
+				await stage.handle.sync();
+				await testHooks?.afterContactSheetLockStage?.();
+				await link(privatePath, lockPath);
 				await directory.handle.sync();
-				return { path: lockPath, token, device: metadata.dev, inode: metadata.ino };
+				return {
+					path: lockPath,
+					bytes,
+					device: metadata.dev,
+					inode: metadata.ino,
+					record,
+					stage
+				};
 			} finally {
 				await handle.close();
 			}
 		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-			await new Promise((resolve) => setTimeout(resolve, 10));
+			await stage.handle.close();
+			await cleanupDerivedStage(root, {
+				schemaVersion: 'skill-icon-contact-sheet-lock-v1',
+				transactionId,
+				pid: process.pid,
+				processIdentity: await linuxProcessIdentity(process.pid),
+				createdAt: new Date().toISOString(),
+				stageNamespace
+			});
+			if ((error as NodeJS.ErrnoException).code === 'EEXIST') continue;
+			throw error;
 		}
 	}
 	throw new Error('Timed out waiting for the contact-sheet coordinator lock');
 }
 
 async function releaseContactSheetLock(
+	root: string,
 	directory: BoundDirectory,
-	lock: Awaited<ReturnType<typeof acquireContactSheetLock>>
+	lock: ContactSheetLock
 ): Promise<void> {
 	const metadata = await lstat(lock.path);
 	if (
@@ -1385,28 +1612,47 @@ async function releaseContactSheetLock(
 		!metadata.isFile() ||
 		metadata.dev !== lock.device ||
 		metadata.ino !== lock.inode ||
-		!(await readBoundFile(directory, '.contact-sheet.lock')).equals(lock.token)
+		!(await readBoundFile(directory, '.contact-sheet.lock')).equals(lock.bytes)
 	) {
 		throw new Error('Contact-sheet coordinator lock ownership changed; cleanup required');
 	}
+	const privateLock = path.join(lock.stage.procPath, 'lock.stage');
+	const privateMetadata = await lstat(privateLock);
+	if (privateMetadata.dev !== lock.device || privateMetadata.ino !== lock.inode) {
+		throw new Error('Private contact-sheet lock identity changed; cleanup required');
+	}
 	await unlink(lock.path);
 	await directory.handle.sync();
+	await unlink(privateLock);
+	await lock.stage.handle.sync();
+	await lock.stage.handle.close();
+	const stagePath = path.resolve(
+		root,
+		'assets/wiki/skills/icon-production-v1',
+		lock.record.stageNamespace
+	);
+	const stageMetadata = await lstat(stagePath);
+	if (
+		stageMetadata.isSymbolicLink() ||
+		!stageMetadata.isDirectory() ||
+		stageMetadata.dev !== lock.stage.identity.device ||
+		stageMetadata.ino !== lock.stage.identity.inode
+	) {
+		throw new Error('Owned contact-sheet stage identity changed before cleanup');
+	}
+	await rmdir(stagePath);
+	await syncDirectory(path.resolve(root, 'assets/wiki/skills/icon-production-v1'));
 }
 
 async function publishContactSheet(
 	root: string,
 	review: BoundDirectory,
-	sheet: PlannedContactSheet,
+	stage: BoundDirectory,
+	sheet: PlannedContactSheet & SnapshottedContactSheet,
 	testHooks?: SkillIconRuntimeTestHooks
-): Promise<void> {
+): Promise<boolean> {
 	const filename = path.basename(sheet.path);
 	const destination = path.join(review.procPath, filename);
-	const authority = path.resolve(root, 'assets/wiki/skills/icon-production-v1');
-	const authorityIdentity = await directoryFingerprint(authority);
-	const stageDirectory = path.join(authority, `.contact-sheet-staging-${randomUUID()}`);
-	await mkdir(stageDirectory, { mode: 0o700 });
-	await syncDirectory(authority);
-	const stage = await openBoundDirectory(stageDirectory);
 	const stagePath = path.join(stage.procPath, 'contact-sheet.stage');
 	let stageFile: { device: number; inode: number } | null = null;
 	let linked = false;
@@ -1426,8 +1672,8 @@ async function publishContactSheet(
 		}
 		await stage.handle.sync();
 		await testHooks?.beforeContactSheetPublish?.({ path: sheet.path, stagePath });
-		await testHooks?.beforeContactSheetFinalLink?.();
 		await assertNoConcurrentPromotion(root);
+		if ((await sourceSnapshotDigest(root)) !== sheet.sourceSnapshot) return false;
 		const staged = await lstat(stagePath);
 		if (
 			!stageFile ||
@@ -1437,6 +1683,7 @@ async function publishContactSheet(
 		) {
 			throw new Error('Staged contact-sheet bytes or identity changed before publication');
 		}
+		await testHooks?.beforeContactSheetFinalLink?.();
 		await link(stagePath, destination);
 		linked = true;
 		await review.handle.sync();
@@ -1452,6 +1699,7 @@ async function publishContactSheet(
 		) {
 			throw new Error(`Contact-sheet identity changed during publication: ${sheet.path}`);
 		}
+		return (await sourceSnapshotDigest(root)) === sheet.sourceSnapshot;
 	} catch (error) {
 		if (linked && stageFile) {
 			const current = await lstat(destination).catch(() => null);
@@ -1472,44 +1720,53 @@ async function publishContactSheet(
 			await unlink(stagePath);
 			await stage.handle.sync();
 		}
-		await stage.handle.close();
-		if (
-			sameDirectory(await directoryFingerprint(authority), authorityIdentity) &&
-			(await readdir(stageDirectory)).length === 0
-		) {
-			await rmdir(stageDirectory);
-			await syncDirectory(authority);
-		}
 	}
 }
 
 async function writeContactSheet(
 	root: string,
-	desired: DesiredContactSheet,
+	planner: () => Promise<DesiredContactSheet>,
 	testHooks?: SkillIconRuntimeTestHooks
 ): Promise<{ sheet: PlannedContactSheet; written: boolean }> {
 	await assertNoConcurrentPromotion(root);
-	await ensureSafeParent(root, reviewSheetPath(desired.kind, 1));
+	await ensureSafeParent(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH);
 	const review = await openBoundDirectory(
 		path.resolve(root, 'assets/wiki/skills/icon-production-v1/review')
 	);
-	let lock: Awaited<ReturnType<typeof acquireContactSheetLock>> | null = null;
+	let lock: ContactSheetLock | null = null;
 	try {
-		lock = await acquireContactSheetLock(review);
+		lock = await acquireContactSheetLock(root, review, testHooks);
 		await assertNoConcurrentPromotion(root);
-		const sheet = await inventoryContactSheets(review, desired);
-		const latestBytes = await readBoundFile(review, path.basename(sheet.path)).catch(
-			(error: NodeJS.ErrnoException) => {
-				if (error.code === 'ENOENT') return null;
-				throw error;
-			}
-		);
-		if (latestBytes?.equals(desired.bytes)) return { sheet, written: false };
-		await publishContactSheet(root, review, sheet, testHooks);
-		return { sheet, written: true };
+		let wrote = false;
+		for (let attempt = 0; attempt < 3; attempt += 1) {
+			const before = await sourceSnapshotDigest(root);
+			const desired = await planner();
+			const sourceSnapshot = await sourceSnapshotDigest(root);
+			if (before !== sourceSnapshot) continue;
+			const sheet = await inventoryContactSheets(review, desired);
+			const latestBytes = await readBoundFile(review, path.basename(sheet.path)).catch(
+				(error: NodeJS.ErrnoException) => {
+					if (error.code === 'ENOENT') return null;
+					throw error;
+				}
+			);
+			if (latestBytes?.equals(desired.bytes)) return { sheet, written: wrote };
+			const current = await publishContactSheet(
+				root,
+				review,
+				lock.stage,
+				{ ...sheet, sourceSnapshot },
+				testHooks
+			);
+			if (current) return { sheet, written: true };
+			wrote =
+				wrote ||
+				(await readBoundFile(review, path.basename(sheet.path)).catch(() => null)) !== null;
+		}
+		throw new Error('source snapshot changed during export');
 	} finally {
 		try {
-			if (lock) await releaseContactSheetLock(review, lock);
+			if (lock) await releaseContactSheetLock(root, review, lock);
 		} finally {
 			await review.handle.close();
 		}
@@ -1566,12 +1823,14 @@ export async function exportSkillIconRuntime(options: {
 		(record): record is Extract<(typeof catalog.records)[number], { status: 'approved' }> =>
 			record.status === 'approved'
 	);
-	const desiredContactSheet =
+	const contactSheetPlanner =
 		scope === 'references'
-			? await planReferenceContactSheet(root)
+			? () => planReferenceContactSheet(root)
 			: scope === 'pilot'
-				? await planPilotContactSheet(root)
+				? () => planPilotContactSheet(root)
 				: null;
+	const desiredContactSheet =
+		contactSheetPlanner && options.mode === 'check' ? await contactSheetPlanner() : null;
 	const plans = await Promise.all(
 		scopeRecords(approved, scope).map(async (record) => ({
 			record,
@@ -1628,8 +1887,8 @@ export async function exportSkillIconRuntime(options: {
 		if (drift.length > 0) {
 			throw new Error(`Runtime export drift requires promotion: ${drift.join(', ')}`);
 		}
-		if (desiredContactSheet) {
-			const published = await writeContactSheet(root, desiredContactSheet, options.testHooks);
+		if (contactSheetPlanner) {
+			const published = await writeContactSheet(root, contactSheetPlanner, options.testHooks);
 			contactSheet = published.sheet;
 			sheetState = 'current';
 			written = published.written;
@@ -1653,7 +1912,7 @@ export async function exportSkillIconRuntime(options: {
 		inSync:
 			statuses.every((status) => status.current) &&
 			orphanPaths.length === 0 &&
-			(!desiredContactSheet || sheetState === 'current'),
+			(!contactSheetPlanner || sheetState === 'current'),
 		written
 	};
 }

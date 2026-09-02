@@ -703,7 +703,8 @@ Expected: all eight files pass role-specific alpha/geometry checks and
 `review/reference-assets-vN.png` shows F through S plus the backing at equal scale. `N` is the
 sheet-specific monotonic revision: unchanged rendered bytes reuse the latest sheet, while any
 change allocates the next number after the highest historical sheet. An incomplete newer packet
-blocks export, and older sheets remain immutable review evidence.
+blocks export, source-snapshot changes trigger a bounded replan under the review coordinator lock,
+and older sheets remain immutable review evidence.
 
 - [ ] **Step 5: Pause for owner review**
 

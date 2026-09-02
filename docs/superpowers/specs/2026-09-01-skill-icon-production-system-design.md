@@ -151,6 +151,9 @@ derived evidence. It selects the highest complete target packet for every requir
 on an incomplete or colliding latest packet. Sheet revisions are independent: unchanged rendered
 bytes reuse the latest `*-vN.png`, while changed bytes allocate `N + 1` after the highest historical
 sheet without replacing older review evidence. Contact sheets never become an image source.
+Each write is serialized by a crash-recoverable, process-epoch-bound coordinator lock and guarded
+by a digest of the complete authoritative source snapshot before and after descriptor-bound
+publication; a changed snapshot is replanned with bounded retries and is never reported current.
 
 ## Manifest model
 

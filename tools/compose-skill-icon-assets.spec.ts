@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import {
 	access,
+	chmod,
 	copyFile,
 	mkdir,
 	mkdtemp,
@@ -962,6 +963,127 @@ describe('scoped contact-sheet export', () => {
 			new Set([SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH])
 		);
 	}, 30_000);
+
+	it('replans against a source snapshot changed immediately after publication', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		let injected = false;
+		const report = await exportSkillIconRuntime({
+			root,
+			mode: 'write',
+			scope: 'references',
+			testHooks: {
+				afterContactSheetFinalLink: async () => {
+					if (injected) return;
+					injected = true;
+					await installCandidatePacket(root, {
+						jobId: 'charcoal-forged-stone-v2',
+						role: 'backing',
+						bytes: await validBacking([85, 88, 95])
+					});
+				}
+			}
+		});
+		expect(report.contactSheet?.path).toBe(
+			'assets/wiki/skills/icon-production-v1/review/reference-assets-v2.png'
+		);
+		const checked = await exportSkillIconRuntime({ root, mode: 'check', scope: 'references' });
+		expect(checked).toMatchObject({ inSync: true, drift: [] });
+	}, 60_000);
+
+	it('fails at a controlled limit when the source snapshot changes on every attempt', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		let revision = 1;
+		await expect(
+			exportSkillIconRuntime({
+				root,
+				mode: 'write',
+				scope: 'references',
+				testHooks: {
+					beforeContactSheetPublish: async () => {
+						revision += 1;
+						await installCandidatePacket(root, {
+							jobId: `charcoal-forged-stone-v${revision}`,
+							role: 'backing',
+							bytes: await validBacking([45 + revision, 48, 55])
+						});
+					}
+				}
+			})
+		).rejects.toThrow(/source snapshot changed during export/iu);
+	}, 60_000);
+
+	it('cleans a private pre-link lock stage so a simulated crash never blocks the next writer', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		await expect(
+			exportSkillIconRuntime({
+				root,
+				mode: 'write',
+				scope: 'references',
+				testHooks: {
+					afterContactSheetLockStage: () => {
+						throw new Error('simulated crash before lock link');
+					}
+				}
+			})
+		).rejects.toThrow(/simulated crash/iu);
+		const authority = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		expect(
+			(await readdir(authority)).filter((name) => name.startsWith('.contact-sheet-staging-'))
+		).toEqual([]);
+		await expect(access(path.join(authority, 'review/.contact-sheet.lock'))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+		expect(
+			await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+		).toMatchObject({ inSync: true, written: true });
+	}, 60_000);
+
+	it('recovers only a strict dead or PID-reused lock stage and preserves malformed locks', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, false);
+		const authority = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const review = path.join(authority, 'review');
+		await mkdir(review, { recursive: true });
+		const lockPath = path.join(review, '.contact-sheet.lock');
+		await writeFile(lockPath, '{malformed');
+		await chmod(lockPath, 0o600);
+		await expect(
+			exportSkillIconRuntime({ root, mode: 'write', scope: 'references' })
+		).rejects.toThrow(/malformed.*preserved/iu);
+		expect(await readFile(lockPath, 'utf8')).toBe('{malformed');
+		await rm(lockPath);
+		for (const [transactionId, pid, startTicks] of [
+			['22222222-2222-4222-8222-222222222222', 999_999_999, '1'],
+			['33333333-3333-4333-8333-333333333333', process.pid, '0']
+		] as const) {
+			const stageNamespace = `.contact-sheet-staging-${transactionId}`;
+			const record = {
+				schemaVersion: 'skill-icon-contact-sheet-lock-v1',
+				transactionId,
+				pid,
+				processIdentity: {
+					bootId: (await readFile('/proc/sys/kernel/random/boot_id', 'utf8')).trim(),
+					startTicks
+				},
+				createdAt: '2026-09-02T12:00:00.000Z',
+				stageNamespace
+			};
+			const bytes = `${JSON.stringify(record)}\n`;
+			const stage = path.join(authority, stageNamespace);
+			await mkdir(stage, { mode: 0o700 });
+			await writeFile(path.join(stage, 'lock.stage'), bytes);
+			await chmod(path.join(stage, 'lock.stage'), 0o600);
+			await writeFile(lockPath, bytes);
+			await chmod(lockPath, 0o600);
+			const report = await exportSkillIconRuntime({ root, mode: 'write', scope: 'references' });
+			expect(report.inSync).toBe(true);
+			await expect(access(stage)).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(access(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+	}, 90_000);
 
 	it('fails closed on contact-sheet ancestor replacement without writing outside authority', async () => {
 		const root = await productionFixtureRoot();
