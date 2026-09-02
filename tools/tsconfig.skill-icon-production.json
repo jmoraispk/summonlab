@@ -15,6 +15,12 @@
 		"export-skill-icon-geometry.ts",
 		"export-skill-icon-geometry.spec.ts",
 		"export-skill-icon-production.ts",
+		"validate-skill-icon-assets.ts",
+		"validate-skill-icon-assets.spec.ts",
+		"persist-skill-icon-output.ts",
+		"persist-skill-icon-output.spec.ts",
+		"promote-skill-icon-output.ts",
+		"promote-skill-icon-output.spec.ts",
 		"report-skill-icon-readiness.ts",
 		"report-skill-icon-readiness.spec.ts"
 	]
