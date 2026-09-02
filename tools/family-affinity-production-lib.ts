@@ -10,6 +10,8 @@ export const CURRENT_CLASS_DISPOSITIONS = [
 	'retire'
 ] as const;
 export const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1' as const;
+export const CURRENT_CLASS_SOURCE_ROSTER =
+	'docs/wiki/creatures/monsters/visual-index.json' as const;
 
 const FormTierSchema = z.enum(FORM_TIERS);
 const CurrentClassDispositionSchema = z.enum(CURRENT_CLASS_DISPOSITIONS);
@@ -132,6 +134,17 @@ export const CurrentClassMappingEntrySchema = z
 	})
 	.strict()
 	.superRefine((entry, context) => {
+		if (entry.candidateReuseByAffinity.earth) {
+			context.addIssue({ code: 'custom', message: 'Earth candidate reuse must be false' });
+		}
+
+		if (
+			entry.disposition === 'retire' &&
+			Object.values(entry.candidateReuseByAffinity).some(Boolean)
+		) {
+			context.addIssue({ code: 'custom', message: 'Retire candidate reuse must be false' });
+		}
+
 		const hasCanonicalIds = entry.canonicalFamilyId !== null && entry.canonicalFormId !== null;
 		if (entry.disposition === 'map' || entry.disposition === 'rename-map') {
 			if (!hasCanonicalIds) {
@@ -168,3 +181,139 @@ export const CurrentClassMappingFileSchema = z
 
 export type CurrentClassMappingEntry = z.infer<typeof CurrentClassMappingEntrySchema>;
 export type CurrentClassMappingFile = z.infer<typeof CurrentClassMappingFileSchema>;
+
+export type CurrentClassVisualSource = {
+	id: string;
+	familyName: string;
+	variants: Array<{
+		affinity: string;
+		candidatePath?: string | null;
+		contentHash?: string | null;
+	}>;
+};
+
+export type CurrentClassMappingAudit = {
+	dispositionCounts: Record<(typeof CURRENT_CLASS_DISPOSITIONS)[number], number>;
+	retainedBridgeCount: number;
+	bridgeOnlyCount: number;
+	canonicalPrimaryCount: number;
+	uniqueCanonicalClaims: number;
+	candidateReuseCounts: Record<(typeof PRODUCTION_AFFINITIES)[number], number>;
+	retainedBridgeCurrentClassIds: string[];
+	bridgeOnlyCurrentClassIds: string[];
+	canonicalPrimaryCurrentClassIds: string[];
+};
+
+function requireExactOrderedIds(mappingIds: string[], visualIndexIds: string[]): void {
+	const hasExactSet =
+		mappingIds.length === visualIndexIds.length &&
+		new Set(mappingIds).size === mappingIds.length &&
+		mappingIds.every((id) => visualIndexIds.includes(id));
+	if (!hasExactSet) {
+		throw new Error('Current class mapping IDs must exactly match the visual index IDs');
+	}
+	if (mappingIds.some((id, index) => id !== visualIndexIds[index])) {
+		throw new Error('Current class mapping entries must preserve visual index order');
+	}
+}
+
+export function auditCurrentClassMapping(
+	mappingInput: unknown,
+	visualIndexClasses: CurrentClassVisualSource[],
+	familyPackets: FamilyPacket[]
+): CurrentClassMappingAudit {
+	const mapping = CurrentClassMappingFileSchema.parse(mappingInput);
+	const mappingIds = mapping.entries.map(({ currentClassId }) => currentClassId);
+	const visualIndexIds = visualIndexClasses.map(({ id }) => id);
+	requireExactOrderedIds(mappingIds, visualIndexIds);
+
+	if (new Set(visualIndexIds).size !== visualIndexIds.length) {
+		throw new Error('Visual index current class IDs must be unique');
+	}
+
+	const sourceClassesById = new Map(visualIndexClasses.map((entry) => [entry.id, entry]));
+	const canonicalPairs = new Set(
+		familyPackets.flatMap((family) =>
+			family.forms.map((form) => `${family.familyId}/${form.formId}`)
+		)
+	);
+	const claimedCanonicalPairs = new Set<string>();
+	const dispositionCounts = Object.fromEntries(
+		CURRENT_CLASS_DISPOSITIONS.map((disposition) => [disposition, 0])
+	) as CurrentClassMappingAudit['dispositionCounts'];
+	const candidateReuseCounts = Object.fromEntries(
+		PRODUCTION_AFFINITIES.map((affinity) => [affinity, 0])
+	) as CurrentClassMappingAudit['candidateReuseCounts'];
+
+	for (const entry of mapping.entries) {
+		const sourceClass = sourceClassesById.get(entry.currentClassId)!;
+		if (entry.sourceRoster !== CURRENT_CLASS_SOURCE_ROSTER) {
+			throw new Error(
+				`${entry.currentClassId} sourceRoster must be ${CURRENT_CLASS_SOURCE_ROSTER}`
+			);
+		}
+		if (entry.sourceFamilyLabel !== sourceClass.familyName) {
+			throw new Error(`${entry.currentClassId} sourceFamilyLabel must match the visual index`);
+		}
+
+		dispositionCounts[entry.disposition] += 1;
+		if (entry.disposition === 'map' || entry.disposition === 'rename-map') {
+			const canonicalPair = `${entry.canonicalFamilyId}/${entry.canonicalFormId}`;
+			if (!canonicalPairs.has(canonicalPair)) {
+				throw new Error(
+					`${entry.currentClassId} canonical family/form pair does not exist: ${canonicalPair}`
+				);
+			}
+			if (claimedCanonicalPairs.has(canonicalPair)) {
+				throw new Error(`Canonical primary form is claimed more than once: ${canonicalPair}`);
+			}
+			claimedCanonicalPairs.add(canonicalPair);
+		}
+
+		for (const affinity of PRODUCTION_AFFINITIES) {
+			if (!entry.candidateReuseByAffinity[affinity]) continue;
+			candidateReuseCounts[affinity] += 1;
+
+			const candidate = sourceClass.variants.find((variant) => variant.affinity === affinity);
+			if (
+				!candidate?.candidatePath?.trim() ||
+				!candidate.contentHash ||
+				!/^[a-f0-9]{64}$/u.test(candidate.contentHash)
+			) {
+				throw new Error(
+					`${entry.currentClassId} reusable ${affinity} candidate requires a candidate path and content hash`
+				);
+			}
+
+			if (!/family[\s\S]*form[\s\S]*duty[\s\S]*anatomy[\s\S]*framing/iu.test(entry.rationale)) {
+				throw new Error(
+					`${entry.currentClassId} reuse rationale must explain family, form, duty, anatomy, and framing compatibility`
+				);
+			}
+		}
+	}
+
+	const canonicalPrimaryCount = dispositionCounts.map + dispositionCounts['rename-map'];
+	const bridgeOnlyCount = dispositionCounts['secondary-archetype'] + dispositionCounts.fauna;
+	const retainedBridgeCurrentClassIds = mapping.entries
+		.filter(({ disposition }) => disposition !== 'retire')
+		.map(({ currentClassId }) => currentClassId);
+	const bridgeOnlyCurrentClassIds = mapping.entries
+		.filter(({ disposition }) => disposition === 'secondary-archetype' || disposition === 'fauna')
+		.map(({ currentClassId }) => currentClassId);
+	const canonicalPrimaryCurrentClassIds = mapping.entries
+		.filter(({ disposition }) => disposition === 'map' || disposition === 'rename-map')
+		.map(({ currentClassId }) => currentClassId);
+
+	return {
+		dispositionCounts,
+		retainedBridgeCount: retainedBridgeCurrentClassIds.length,
+		bridgeOnlyCount,
+		canonicalPrimaryCount,
+		uniqueCanonicalClaims: claimedCanonicalPairs.size,
+		candidateReuseCounts,
+		retainedBridgeCurrentClassIds,
+		bridgeOnlyCurrentClassIds,
+		canonicalPrimaryCurrentClassIds
+	};
+}

@@ -1,0 +1,645 @@
+{
+	"schemaVersion": "current-class-mapping-v1",
+	"entries": [
+		{
+			"currentClassId": "armored-brood-guard",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arachnids",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the plate-closing chokepoint tank as a bridge-only Arachnid role. None of the five primary forms combines its armored shove duty and lateral leg-joint counterplay, so assigning it to Broodmother or Weaver would erase a useful identity. Existing candidates remain ineligible because they do not establish a canonical form duty, anatomy, or framing contract.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "giant-broodmother",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arachnids",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "arachnids",
+			"canonicalFormId": "arachnid-broodmother",
+			"rationale": "Consolidate the egg-cluster spawner into the T4 Broodmother: both identities visibly carry brood, telegraph deployment through the abdomen, and expose that apparatus while producing spiderlings. Existing candidates remain ineligible because the canonical form adds a humanoid torso, three carried sacs, silk robes, and zone-command framing that the old giant-spider composition did not prove.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tunnel-spider",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arachnids",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "arachnids",
+			"canonicalFormId": "arachnid-stalker",
+			"rationale": "Consolidate the pure-spider low flanker into the T2 Stalker, preserving barbed legs, venom pressure, lateral ambush movement, and a soft abdomen punish window while adding the authored tripline lesson. Existing candidates remain ineligible because they were not framed to show the tripline duty or the canonical bright-abdomen telegraph across all five target affinities.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "web-caster",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arachnids",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the pure-spider ranged restraint role as bridge-only. The canonical T3 Weaver is the family's first humanoid-torso Specialist and rewrites existing lines rather than merely casting one, so this class cannot claim that primary coordinate. Existing candidates remain ineligible because their anatomy, battlefield duty, and single-cast framing contradict the Weaver form contract.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "hex-adept",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arcane hostiles",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the marked-target debuff skirmisher as a bridge-only hostile duty. Arcane hostiles are an occupational grouping rather than one of the thirty biological or constructed primary families, and no canonical form shares its three-tag casting grammar. Existing candidates remain ineligible until a bridge target defines stable family, form, anatomy, duty, and framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tower-archmage",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arcane hostiles",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the multi-school, multi-phase commander as a bridge-only tower role. Its identity is a combat office with changing magical schools rather than a member of a canonical monster family. Existing candidates remain ineligible until a separate bridge packet locks the phase duty, caster anatomy, focus telegraphs, and boss framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tower-summoner",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arcane hostiles",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the gate-building reinforcement controller as a bridge-only tower role. Its pylon channel is an occupational spell grammar that does not match any canonical family's authored lower-form production identity. Existing candidates remain ineligible until the bridge target fixes summoner anatomy, gate duty, pylon counterplay, and safe full-body framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "ward-mage",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Arcane hostiles",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the ally-facing barrier support as a bridge-only role. The rotating ward facets and exposed channeling back are a useful duty but not a primary form in the thirty-family roster. Existing candidates remain ineligible until a bridge specification establishes family context, form identity, anatomy, barrier duty, and framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "cave-bear",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Beasts",
+			"disposition": "fauna",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Keep the ordinary cave bear as expedition fauna outside the thirty floor families. Its maul, roar, and overrun remain useful open-world pressure without consuming a canonical form. Existing candidates remain ineligible for automatic reuse because a bridge-only fauna target still needs explicit anatomy, duty, counterplay, and framing review under the five-affinity contract.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "dire-wolf",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Beasts",
+			"disposition": "fauna",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Keep the dire wolf as expedition fauna outside the thirty floor families. Coordinated pursuit and hamstring pressure define a useful pack predator without claiming a canonical family form. Existing candidates remain ineligible until the fauna bridge defines exact pack duty, lupine anatomy, affinity construction, and framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "grey-wolf",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Beasts",
+			"disposition": "fauna",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Keep the grey wolf as ordinary expedition fauna outside the thirty floor families. Its fast flanking and trip lesson is distinct from the dire wolf's relentless pack pressure and remains useful in exploration. Existing candidates remain ineligible until a fauna bridge target binds exact duty, anatomy, counterplay, and framing to each affinity.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tunnel-boar",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Beasts",
+			"disposition": "fauna",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Keep the tunnel boar as ordinary expedition fauna outside the thirty floor families. Its brace-and-charge line-breaking lesson remains an open-world encounter tool rather than a canonical tier. Existing candidates remain ineligible until the fauna bridge target fixes boar anatomy, armored duty, terrain counterplay, and framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "bone-mage",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Bound undead",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the rib-opening ranged artillery role as bridge-only Skeleton support. None of the five primary Skeleton forms is an artillery caster; mapping it to Bone Knight or Lich King would overwrite their intercept and sovereign duties. Existing candidates remain ineligible because their caster anatomy, trajectory duty, and framing do not satisfy a canonical form contract.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "death-knight",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Bound undead",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the pennant-bearing formation commander as a bridge-only undead role. The canonical Bone Champion commands fused-bone levy channels through its own body construction, not a knightly sword-and-pennant office. Existing candidates remain ineligible because duty, armor anatomy, command seal, and framing do not match that primary form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "grave-sentinel",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Bound undead",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "skeletons",
+			"canonicalFormId": "skeleton-bonesoldier",
+			"rationale": "Consolidate the shield-first Grave Sentinel into the T2 Bonesoldier. Both hold a narrow attrition front, announce a committed block through the shield, and expose the binding hardware on the strapped arm afterward. Existing candidates remain ineligible because the canonical form requires rusted mail tension and baseline loose-bone anatomy that the old grave armor and static framing did not prove.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tower-wraith",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Bound undead",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the mask-anchored phasing pursuer as bridge-only. The canonical Wraith progression teaches eye condensation, chain thresholds, borrowed edges, and cloak territory; none uses a solid mask grasp as its primary duty. Existing candidates remain ineligible because the mask anatomy and pursuit framing conflict with every canonical Wraith form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "clay-golem",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Construct escalation",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "golems",
+			"canonicalFormId": "golem-clay-figure",
+			"rationale": "Consolidate the clay-bodied construct into the T1 Clay Figure, preserving crude earthen construction and a readable reformable body while replacing the old attrition-wall duty with the authored command-rune probe. Existing candidates remain ineligible because they depict mature wall mass rather than uneven initiate anatomy and do not frame the forehead-rune swing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "crystal-guardian",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Construct escalation",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the refractive crystal boss as bridge-only. Its shard field, refraction duty, and crystal body are a distinct material specialist rather than the marble Master Golem or granite Rune Warrior. Existing candidates remain ineligible because family form, reflective duty, crystalline anatomy, and boss framing do not match a canonical coordinate.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "iron-sentinel",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Construct escalation",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the parry-and-counter iron sentinel as bridge-only. Its disciplined metal formation role and humanoid armor construction are not any of the five clay, stone, granite, basalt, or marble primary forms. Existing candidates remain ineligible because their duty, iron anatomy, counter stance, and framing cannot substitute for a canonical Golem form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "stone-golem",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Construct escalation",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "golems",
+			"canonicalFormId": "golem-stone-servant",
+			"rationale": "Consolidate the baseline Stone Golem into the T2 Stone Servant, retaining fieldstone mass, armored line holding, and joint-seam counterplay while replacing the old reset pattern with alternating iron-bound joints. Existing candidates remain ineligible because they do not prove the canonical blank slab face, banded anatomy, alternating duty, or required framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "armored-elder-drake",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Draconic escalation",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "dragons",
+			"canonicalFormId": "dragon-elder-wyrm",
+			"rationale": "Consolidate the ancient armored breath-line Drake into the T4 Elder Wyrm. Both are immense scarred winged Dragons whose plated body opens readable gaps during committed breath or roost control. Existing candidates remain ineligible because they do not establish fused belly coins, younger-Dragon route command, landing-zone duty, or the canonical wide-wing framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "cave-drake",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Draconic escalation",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the subterranean lunge ambusher as bridge-only. The canonical T1 Whelp claims hoard-centered pounces and the T2 Fledgling claims wing-assisted hops, so the Cave Drake's tunnel anatomy and stone-dust duty should not replace either. Existing candidates remain ineligible because their family role, anatomy, duty, and tunnel framing are not a canonical form match.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "giant-tower-dragon",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Draconic escalation",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "dragons",
+			"canonicalFormId": "dragon-emperor",
+			"rationale": "Consolidate the arena-scale apex Dragon into the T5 Dragon Emperor, preserving a multi-part wing, throat, and tail boss that exposes weak scars after committed attacks while adding hoard-pylon command phases. Existing candidates remain ineligible because they do not show the canonical horn crown, armor quadrants, four pylons, or arena-command framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "venom-wyvern",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Draconic escalation",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the two-winged poison dive striker as bridge-only. Its wyvern anatomy, stinger sac, and toxic aerial duty do not match the four-legged horn-and-hoard progression of the five primary Dragons. Existing candidates remain ineligible because family form, anatomy, poison duty, and dive framing all remain outside the canonical matrix.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "burrowing-worm",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Dungeon predators",
+			"disposition": "fauna",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Keep the burrowing worm as expedition fauna outside the thirty primary floor families. Its moving-ridge eruption remains a useful environmental predator lesson without consuming a canonical form. Existing candidates remain ineligible until a fauna bridge target locks segmented anatomy, eruption duty, rear-segment counterplay, and ground-context framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "hungry-mimic",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Dungeon predators",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the object ambusher as bridge-only. Despite the shared word Mimic, the canonical Doppelganger T3 is a humanoid action-copy Specialist with wrong hand anatomy, not a hinged chest predator. Existing candidates remain ineligible because identity, family, anatomy, bite duty, and object framing contradict the canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "slime-colony",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Dungeon predators",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the splitting multi-core floor hazard as bridge-only Slime content. The primary tiers use a single Droplet, debris-rolling Blob, humanoid Ooze Knight, skeleton-braced Devourer, and arena-scale Primordial Ooze; none is this colony duty. Existing candidates remain ineligible because core count, anatomy, division duty, and colony framing do not match one canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "tower-basilisk",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Dungeon predators",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the eye-crown petrification controller as a bridge-only tower predator. No canonical primary family has its quadrupedal basilisk anatomy and gaze-lane duty, and treating a named tower controller as ordinary fauna would lose encounter intent. Existing candidates remain ineligible until a bridge packet defines exact family context, form anatomy, gaze duty, and lane framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "ember-wisp",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Elemental manifestations",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "flame-elementals",
+			"canonicalFormId": "flame-elemental-wisp",
+			"rationale": "Consolidate the small ignition harrier into the T1 Wisp, preserving a compact drifting ember identity and post-pass vulnerability while reducing its attack to the authored single ignition point. Existing candidates remain ineligible because the old cool mineral core contradicts the canonical no-solid-core anatomy and its darting attack framing is too mature for the initiate duty.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "frost-colossus",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Elemental manifestations",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the ice-and-stone zone-denial boss as bridge-only. Frost is not one of the thirty primary family identities, and mapping it into Flame Elementals or Golems would erase its freezing sweep and cracked-ice heart. Existing candidates remain ineligible because family identity, composite anatomy, cold-field duty, and boss framing do not match a canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "stone-breaker",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Elemental manifestations",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the planted slab-arm siege bruiser as bridge-only. Although stone-bodied, it lacks the programmable construction grammar of Golems and does not match the plate-orbit duty of the Basalt Colossus. Existing candidates remain ineligible because family identity, slab anatomy, committed-smash duty, and siege framing differ from every canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "storm-stalker",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Elemental manifestations",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the ionized-lane assassin as bridge-only. Storm is not a primary family in the thirty-form roster, and its prongs, charge lane, and condensate node do not match a Flame Elemental or Wind affinity applied to another family. Existing candidates remain ineligible because identity, anatomy, duty, and lane framing remain bridge-specific.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "goblin-archer",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Goblinoid warband",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the shortbow lane controller as a bridge-only Goblin role. None of the five primary Goblins uses a bow: Raider edits space with a door shield and Warboss commands a banner zone. Existing candidates remain ineligible because ranged duty, bow anatomy, lane telegraph, and firing framing do not match a canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "goblin-chieftain",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Goblinoid warband",
+			"disposition": "rename-map",
+			"canonicalFamilyId": "goblins",
+			"canonicalFormId": "goblin-warboss",
+			"rationale": "Consolidate the formation-leading Chieftain into the T4 Warboss. Both command, rally, deliver heavy committed cleaves, and teach threat prioritization; the canonical form makes that duty concrete through the helm-tree banner zone. Existing candidates remain ineligible because they do not establish the oversized chestplate, dragging helm banner, rally-zone mechanic, or full banner-safe framing.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "goblin-hexweaver",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Goblinoid warband",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the interruptible mark-and-hex caster as a bridge-only Goblin role. The primary progression has no caster form, and mapping it to Raider would replace the defining door-shield space-control pivot. Existing candidates remain ineligible because caster duty, spell-focus anatomy, mark counterplay, and casting framing do not match a canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "goblin-skirmisher",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Goblinoid warband",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the knife-feint pack skirmisher as a bridge-only Goblin role. The T2 Cutter is a pinning front-line bully with a cleaver hook, so folding this mobile pressure duty into that form would erase both reads. Existing candidates remain ineligible because knife anatomy, feint duty, pack movement, and mobile framing do not match a canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "cave-troll",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Large threats",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the long-reach cave regenerator as a bridge-only Troll role. The canonical T2 Bog Troll is defined by a lodged blade and rope grapple, while the T1 Scrag teaches visible wound buds; this generic reach threat matches neither exact duty. Existing candidates remain ineligible because anatomy, regeneration tell, duty, and cave framing do not match a canonical form.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "frost-giant",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Large threats",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the whiteout-command threshold boss as a bridge-only Giant role. Frost is a baked identity rather than an affinity variant, and its cold field does not match the watershed command or walking-valley mechanics of the canonical upper tiers. Existing candidates remain ineligible because form duty, ice anatomy, cold counterplay, and boss framing differ from canonical Giants.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "hill-giant",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Large threats",
+			"disposition": "map",
+			"canonicalFamilyId": "giants",
+			"canonicalFormId": "giant-hill-giant",
+			"rationale": "Retain Hill Giant as the canonical T2 identity without semantic renaming. Its boulder-scale displacement and arena-awareness lesson become the authored rope-cradle slope roll while preserving mature Giant mass and visible load paths. Existing candidates remain ineligible because the stone maul and hand-held debris framing do not show the required rope belt, carried boulders, slope duty, or trailing-loop counterplay.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		},
+		{
+			"currentClassId": "ogoblin-brute",
+			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
+			"sourceFamilyLabel": "Large threats",
+			"disposition": "secondary-archetype",
+			"canonicalFamilyId": null,
+			"canonicalFormId": null,
+			"rationale": "Retain the hybrid boss-scale grab bruiser as bridge-only. Ogoblin is neither a clean Goblin tier nor an Orc form, and its sweep, grab, and berserk duty would displace authored family mechanics if forced into either roster. Existing candidates remain ineligible because family identity, hybrid anatomy, restraint duty, and boss framing have no canonical match.",
+			"candidateReuseByAffinity": {
+				"normal": false,
+				"fire": false,
+				"earth": false,
+				"wind": false,
+				"water": false
+			}
+		}
+	]
+}

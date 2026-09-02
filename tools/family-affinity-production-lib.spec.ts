@@ -3,6 +3,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 
 import {
+	auditCurrentClassMapping,
 	CurrentClassMappingFileSchema,
 	FamilyPacketSchema
 } from './family-affinity-production-lib.js';
@@ -2077,5 +2078,244 @@ describe('family affinity production schemas', () => {
 				entries: retiredWithCanonicalIds
 			})
 		).toThrow(/retire.*canonical IDs to be null/i);
+	});
+});
+
+type VisualIndexFixture = {
+	monsters: Array<{
+		id: string;
+		familyName: string;
+		variants: Array<{
+			affinity: string;
+			candidatePath?: string | null;
+			contentHash?: string | null;
+		}>;
+	}>;
+};
+
+async function loadCurrentClassAuditFixtures() {
+	const mapping = CurrentClassMappingFileSchema.parse(
+		JSON.parse(
+			await readFile(
+				new URL(
+					'../assets/enemies/experiments/family-affinity-v1/current-class-mapping.json',
+					import.meta.url
+				),
+				'utf8'
+			)
+		)
+	);
+	const visualIndex = JSON.parse(
+		await readFile(
+			new URL('../docs/wiki/creatures/monsters/visual-index.json', import.meta.url),
+			'utf8'
+		)
+	) as VisualIndexFixture;
+	const familyDirectory = new URL(
+		'../assets/enemies/experiments/family-affinity-v1/families/',
+		import.meta.url
+	);
+	const familyFileNames = (await readdir(familyDirectory))
+		.filter((fileName) => /^\d{2}-[a-z0-9-]+\.json$/u.test(fileName))
+		.sort();
+	const familyPackets = await Promise.all(
+		familyFileNames.map(async (fileName) =>
+			FamilyPacketSchema.parse(
+				JSON.parse(await readFile(new URL(fileName, familyDirectory), 'utf8'))
+			)
+		)
+	);
+
+	return { mapping, visualIndex, familyPackets };
+}
+
+describe('current class reconciliation', () => {
+	it('reconciles the exact forty visual-index classes in source order', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const audit = auditCurrentClassMapping(mapping, visualIndex.monsters, familyPackets);
+
+		expect(mapping.entries.map(({ currentClassId }) => currentClassId)).toEqual(
+			visualIndex.monsters.map(({ id }) => id)
+		);
+		expect(audit).toEqual({
+			dispositionCounts: {
+				map: 1,
+				'rename-map': 9,
+				'secondary-archetype': 25,
+				fauna: 5,
+				retire: 0
+			},
+			retainedBridgeCount: 40,
+			bridgeOnlyCount: 30,
+			canonicalPrimaryCount: 10,
+			uniqueCanonicalClaims: 10,
+			candidateReuseCounts: { normal: 0, fire: 0, earth: 0, wind: 0, water: 0 },
+			retainedBridgeCurrentClassIds: visualIndex.monsters.map(({ id }) => id),
+			bridgeOnlyCurrentClassIds: [
+				'armored-brood-guard',
+				'web-caster',
+				'hex-adept',
+				'tower-archmage',
+				'tower-summoner',
+				'ward-mage',
+				'cave-bear',
+				'dire-wolf',
+				'grey-wolf',
+				'tunnel-boar',
+				'bone-mage',
+				'death-knight',
+				'tower-wraith',
+				'crystal-guardian',
+				'iron-sentinel',
+				'cave-drake',
+				'venom-wyvern',
+				'burrowing-worm',
+				'hungry-mimic',
+				'slime-colony',
+				'tower-basilisk',
+				'frost-colossus',
+				'stone-breaker',
+				'storm-stalker',
+				'goblin-archer',
+				'goblin-hexweaver',
+				'goblin-skirmisher',
+				'cave-troll',
+				'frost-giant',
+				'ogoblin-brute'
+			],
+			canonicalPrimaryCurrentClassIds: [
+				'giant-broodmother',
+				'tunnel-spider',
+				'grave-sentinel',
+				'clay-golem',
+				'stone-golem',
+				'armored-elder-drake',
+				'giant-tower-dragon',
+				'ember-wisp',
+				'goblin-chieftain',
+				'hill-giant'
+			]
+		});
+	});
+
+	it('rejects an exact-set substitution even when forty unique records remain', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		changed.entries[39]!.currentClassId = 'fabricated-enemy';
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/exactly match.*visual index/i
+		);
+	});
+
+	it('rejects a canonical form claimed under the wrong family', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const mapped = changed.entries.find(({ disposition }) => disposition === 'map')!;
+		mapped.canonicalFamilyId = 'goblins';
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/canonical family\/form pair does not exist/i
+		);
+	});
+
+	it('rejects duplicate canonical primary claims', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const firstClaim = changed.entries.find(
+			({ disposition }) => disposition === 'map' || disposition === 'rename-map'
+		)!;
+		const bridgeOnly = changed.entries.find(
+			({ disposition }) => disposition === 'secondary-archetype'
+		)!;
+		bridgeOnly.disposition = 'rename-map';
+		bridgeOnly.canonicalFamilyId = firstClaim.canonicalFamilyId;
+		bridgeOnly.canonicalFormId = firstClaim.canonicalFormId;
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/canonical primary form.*claimed more than once/i
+		);
+	});
+
+	it('rejects secondary archetypes that attempt to count as canonical forms', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const bridgeOnly = changed.entries.find(
+			({ disposition }) => disposition === 'secondary-archetype'
+		)!;
+		bridgeOnly.canonicalFamilyId = 'goblins';
+		bridgeOnly.canonicalFormId = 'goblin-runt';
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/secondary-archetype.*canonical IDs to be null/i
+		);
+	});
+
+	it('derives retained and bridge-only counts without adding bridge records to the 150', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const retired = changed.entries.find(
+			({ disposition }) => disposition === 'secondary-archetype'
+		)!;
+		retired.disposition = 'retire';
+
+		const audit = auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets);
+		expect(audit.retainedBridgeCount).toBe(39);
+		expect(audit.bridgeOnlyCount).toBe(29);
+		expect(audit.canonicalPrimaryCount).toBe(10);
+		expect(audit.retainedBridgeCurrentClassIds).not.toContain(retired.currentClassId);
+		expect(audit.bridgeOnlyCurrentClassIds).not.toContain(retired.currentClassId);
+		expect(audit.canonicalPrimaryCurrentClassIds).not.toContain(retired.currentClassId);
+	});
+
+	it('rejects Earth candidate reuse because the current roster has no Earth candidates', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		changed.entries[0]!.candidateReuseByAffinity.earth = true;
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/Earth candidate reuse must be false/i
+		);
+	});
+
+	it('rejects candidate reuse without a source path and content hash', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changedMapping = structuredClone(mapping);
+		const changedVisualIndex = structuredClone(visualIndex);
+		const entry = changedMapping.entries[0]!;
+		entry.candidateReuseByAffinity.normal = true;
+		entry.rationale +=
+			' Reuse: family, form, duty, anatomy, and framing are compatible for the Normal candidate.';
+		const source = changedVisualIndex.monsters.find(({ id }) => id === entry.currentClassId)!;
+		const normal = source.variants.find(({ affinity }) => affinity === 'normal')!;
+		normal.contentHash = null;
+
+		expect(() =>
+			auditCurrentClassMapping(changedMapping, changedVisualIndex.monsters, familyPackets)
+		).toThrow(/reusable normal candidate requires a candidate path and content hash/i);
+	});
+
+	it('rejects reuse rationales that do not bind family, form, duty, anatomy, and framing', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		changed.entries[0]!.candidateReuseByAffinity.normal = true;
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/reuse rationale.*family.*form.*duty.*anatomy.*framing/i
+		);
+	});
+
+	it('rejects candidate reuse on retired records', async () => {
+		const { mapping, visualIndex, familyPackets } = await loadCurrentClassAuditFixtures();
+		const changed = structuredClone(mapping);
+		const retired = changed.entries.find(
+			({ disposition }) => disposition === 'secondary-archetype'
+		)!;
+		retired.disposition = 'retire';
+		retired.candidateReuseByAffinity.normal = true;
+
+		expect(() => auditCurrentClassMapping(changed, visualIndex.monsters, familyPackets)).toThrow(
+			/retire.*candidate reuse must be false/i
+		);
 	});
 });
