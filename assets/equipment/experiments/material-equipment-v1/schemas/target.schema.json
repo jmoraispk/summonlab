@@ -1,0 +1,472 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-image-target-v1"
+		},
+		"targetId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"productionId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"profileId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"manifestCanonicalSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"allocationCanonicalSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"profileCanonicalSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"profileAcceptanceCanonicalSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"material": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"name": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 120
+				},
+				"family": {
+					"type": "string",
+					"enum": [
+						"metal",
+						"wood",
+						"hide-scale",
+						"cloth-fibre"
+					]
+				},
+				"rank": {
+					"type": "string",
+					"enum": [
+						"F",
+						"E",
+						"D",
+						"C",
+						"B",
+						"A",
+						"S"
+					]
+				},
+				"craftsmanship": {
+					"type": "string",
+					"const": "Standard"
+				}
+			},
+			"required": [
+				"id",
+				"name",
+				"family",
+				"rank",
+				"craftsmanship"
+			],
+			"additionalProperties": false
+		},
+		"equipment": {
+			"type": "object",
+			"properties": {
+				"class": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"artifactRole": {
+					"type": "string",
+					"enum": [
+						"item",
+						"set-source"
+					]
+				},
+				"slot": {
+					"anyOf": [
+						{
+							"type": "string",
+							"enum": [
+								"head",
+								"torso",
+								"legs",
+								"boots"
+							]
+						},
+						{
+							"type": "null"
+						}
+					]
+				}
+			},
+			"required": [
+				"class",
+				"artifactRole",
+				"slot"
+			],
+			"additionalProperties": false
+		},
+		"consistencySource": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"targetId": {
+							"type": "string",
+							"pattern": "^[a-z][a-z0-9-]{1,119}$"
+						},
+						"candidatePath": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 500
+						},
+						"candidateSha256": {
+							"type": "string",
+							"pattern": "^[a-f0-9]{64}$"
+						},
+						"reviewReceiptPath": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 500
+						},
+						"reviewReceiptCanonicalSha256": {
+							"type": "string",
+							"pattern": "^[a-f0-9]{64}$"
+						}
+					},
+					"required": [
+						"targetId",
+						"candidatePath",
+						"candidateSha256",
+						"reviewReceiptPath",
+						"reviewReceiptCanonicalSha256"
+					],
+					"additionalProperties": false
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"references": {
+			"minItems": 1,
+			"maxItems": 20,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"path": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					},
+					"contentHash": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"purpose": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					}
+				},
+				"required": [
+					"path",
+					"contentHash",
+					"purpose"
+				],
+				"additionalProperties": false
+			}
+		},
+		"presentation": {
+			"oneOf": [
+				{
+					"type": "object",
+					"properties": {
+						"mode": {
+							"type": "string",
+							"const": "isolated-item"
+						},
+						"subject": {
+							"type": "string",
+							"const": "one-complete-object-or-required-pair"
+						},
+						"composition": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 2000
+						},
+						"canvas": {
+							"type": "object",
+							"properties": {
+								"width": {
+									"type": "number",
+									"const": 1024
+								},
+								"height": {
+									"type": "number",
+									"const": 1024
+								},
+								"mediaType": {
+									"type": "string",
+									"const": "image/png"
+								},
+								"safeMarginPercent": {
+									"type": "number",
+									"const": 8
+								}
+							},
+							"required": [
+								"width",
+								"height",
+								"mediaType",
+								"safeMarginPercent"
+							],
+							"additionalProperties": false
+						},
+						"negativeConstraints": {
+							"minItems": 1,
+							"maxItems": 50,
+							"type": "array",
+							"items": {
+								"type": "string",
+								"pattern": "^[a-z][a-z0-9-]{1,119}$"
+							}
+						}
+					},
+					"required": [
+						"mode",
+						"subject",
+						"composition",
+						"canvas",
+						"negativeConstraints"
+					],
+					"additionalProperties": false
+				},
+				{
+					"type": "object",
+					"properties": {
+						"mode": {
+							"type": "string",
+							"const": "complete-armour-set"
+						},
+						"subject": {
+							"type": "string",
+							"const": "featureless-charcoal-display-form"
+						},
+						"composition": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 2000
+						},
+						"canvas": {
+							"type": "object",
+							"properties": {
+								"width": {
+									"type": "number",
+									"const": 1024
+								},
+								"height": {
+									"type": "number",
+									"const": 1536
+								},
+								"mediaType": {
+									"type": "string",
+									"const": "image/png"
+								},
+								"safeMarginPercent": {
+									"type": "number",
+									"const": 8
+								}
+							},
+							"required": [
+								"width",
+								"height",
+								"mediaType",
+								"safeMarginPercent"
+							],
+							"additionalProperties": false
+						},
+						"negativeConstraints": {
+							"minItems": 1,
+							"maxItems": 50,
+							"type": "array",
+							"items": {
+								"type": "string",
+								"pattern": "^[a-z][a-z0-9-]{1,119}$"
+							}
+						}
+					},
+					"required": [
+						"mode",
+						"subject",
+						"composition",
+						"canvas",
+						"negativeConstraints"
+					],
+					"additionalProperties": false
+				},
+				{
+					"type": "object",
+					"properties": {
+						"mode": {
+							"type": "string",
+							"const": "dependent-armour-piece"
+						},
+						"subject": {
+							"type": "string",
+							"const": "one-matching-object-or-required-pair"
+						},
+						"composition": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 2000
+						},
+						"canvas": {
+							"type": "object",
+							"properties": {
+								"width": {
+									"type": "number",
+									"const": 1024
+								},
+								"height": {
+									"type": "number",
+									"const": 1024
+								},
+								"mediaType": {
+									"type": "string",
+									"const": "image/png"
+								},
+								"safeMarginPercent": {
+									"type": "number",
+									"const": 8
+								}
+							},
+							"required": [
+								"width",
+								"height",
+								"mediaType",
+								"safeMarginPercent"
+							],
+							"additionalProperties": false
+						},
+						"negativeConstraints": {
+							"minItems": 1,
+							"maxItems": 50,
+							"type": "array",
+							"items": {
+								"type": "string",
+								"pattern": "^[a-z][a-z0-9-]{1,119}$"
+							}
+						}
+					},
+					"required": [
+						"mode",
+						"subject",
+						"composition",
+						"canvas",
+						"negativeConstraints"
+					],
+					"additionalProperties": false
+				}
+			]
+		},
+		"acceptanceCriteria": {
+			"minItems": 1,
+			"maxItems": 40,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"criterionId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"category": {
+						"type": "string",
+						"enum": [
+							"canvas-and-framing",
+							"object-count",
+							"equipment-silhouette",
+							"structural-plausibility",
+							"material-dominance",
+							"material-cue-strength",
+							"bounded-rank-behaviour",
+							"style-cohesion",
+							"negative-constraint-safety",
+							"source-continuity"
+						]
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					},
+					"required": {
+						"type": "boolean",
+						"const": true
+					}
+				},
+				"required": [
+					"criterionId",
+					"category",
+					"description",
+					"required"
+				],
+				"additionalProperties": false
+			}
+		},
+		"output": {
+			"type": "object",
+			"properties": {
+				"candidatePath": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 500
+				},
+				"resultPath": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 500
+				}
+			},
+			"required": [
+				"candidatePath",
+				"resultPath"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"targetId",
+		"productionId",
+		"profileId",
+		"manifestCanonicalSha256",
+		"allocationCanonicalSha256",
+		"profileCanonicalSha256",
+		"profileAcceptanceCanonicalSha256",
+		"material",
+		"equipment",
+		"consistencySource",
+		"references",
+		"presentation",
+		"acceptanceCriteria",
+		"output"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/target.schema.json"
+}
