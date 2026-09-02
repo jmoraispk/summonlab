@@ -25,6 +25,11 @@ import {
 	activateEquipmentRun,
 	reportEquipmentRunReadiness
 } from './equipment-image-run-readiness.js';
+import {
+	reconcileEquipmentRun,
+	reportEquipmentRun,
+	simulateEquipmentRun
+} from './equipment-image-run-reconcile.js';
 import { claimNextEquipmentJobs, recordEquipmentRunEvent } from './equipment-image-run-recorder.js';
 import { materializeDependentArmourPackets } from './equipment-armour-review.js';
 
@@ -264,6 +269,112 @@ export async function runEquipmentImageProductionCli(input: {
 			activatedBy: requireOption(options, '--activated-by')
 		});
 		return { command, ...result };
+	}
+
+	if (command === 'simulate') {
+		const options = parseOptions(commandArgs, ['--available-worker-slots']);
+		return {
+			command,
+			...simulateEquipmentRun({
+				availableWorkerSlots: requireNonnegativeIntegerOption(options, '--available-worker-slots')
+			})
+		};
+	}
+
+	if (command === 'report') {
+		const options = parseOptions(commandArgs, ['--run-id', '--created-at', '--generated-at']);
+		const generatedAt = options.get('--generated-at') ?? new Date().toISOString();
+		return {
+			command,
+			...(await reportEquipmentRun({
+				workspaceRoot: input.workspaceRoot,
+				runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+				createdAt: options.get('--created-at') ?? generatedAt,
+				generatedAt
+			}))
+		};
+	}
+
+	if (command === 'reconcile') {
+		const options = parseOptions(commandArgs, [
+			'--run-id',
+			'--target-id',
+			'--worker-id',
+			'--observed-at',
+			'--event-id',
+			'--actor',
+			'--requested-at',
+			'--recorded-at',
+			'--acknowledge-terminal',
+			'--operator-confirmed-failure-reason',
+			'--acknowledge-operator-confirmed-failure'
+		]);
+		const targetId = requireOption(options, '--target-id');
+		const workerId = requireOption(options, '--worker-id');
+		const observedAt = requireOption(options, '--observed-at');
+		const operatorFailureReason = options.get('--operator-confirmed-failure-reason');
+		const terminalAcknowledgement = options.get('--acknowledge-terminal');
+		if (operatorFailureReason !== undefined && terminalAcknowledgement !== undefined) {
+			throw new Error(
+				'Reconcile accepts either terminal or operator-failure authorization, not both'
+			);
+		}
+		if (
+			operatorFailureReason === undefined &&
+			options.has('--acknowledge-operator-confirmed-failure')
+		) {
+			throw new Error('Operator-failure acknowledgement requires an exact failure reason');
+		}
+		const actor = options.get('--actor');
+		const eventId = options.get('--event-id');
+		const requestedAt = options.get('--requested-at');
+		const recordedAt = options.get('--recorded-at');
+		const hasAppendFields = [actor, eventId, requestedAt, recordedAt].some(
+			(value) => value !== undefined
+		);
+		if (
+			hasAppendFields &&
+			[actor, eventId, requestedAt, recordedAt].some((value) => value === undefined)
+		) {
+			throw new Error(
+				'Authorized reconciliation requires event ID, actor, requested-at, and recorded-at together'
+			);
+		}
+		return {
+			command,
+			...(await reconcileEquipmentRun({
+				workspaceRoot: input.workspaceRoot,
+				runId: options.get('--run-id') ?? DEFAULT_EQUIPMENT_RUN_ID,
+				targetId,
+				workerId,
+				observedAt,
+				...(terminalAcknowledgement === undefined
+					? {}
+					: {
+							terminalAuthorization: {
+								acknowledged: terminalAcknowledgement === 'yes',
+								eventId: eventId!,
+								actor: actor!,
+								requestedAt: requestedAt!,
+								recordedAt: recordedAt!
+							}
+						}),
+				...(operatorFailureReason === undefined
+					? {}
+					: {
+							operatorConfirmedFailure: {
+								targetId,
+								workerId,
+								reason: operatorFailureReason,
+								acknowledged: options.get('--acknowledge-operator-confirmed-failure') === 'yes',
+								eventId: eventId!,
+								operator: actor!,
+								confirmedAt: requestedAt!,
+								recordedAt: recordedAt!
+							}
+						})
+			}))
+		};
 	}
 
 	if (command === 'claim-next') {

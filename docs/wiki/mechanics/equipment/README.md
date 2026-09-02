@@ -179,6 +179,146 @@ journal, and verified provider capacity. The adjacent
 [production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) define
 the execution boundary and deterministic validation command.
 
+### Activation-ready operator sequence
+
+The profile hash
+`f773bdaab246314d53a596c11404a9e242826838926ecb8121948b375c267d5a` has exact owner acceptance,
+and all 77 root targets plus 77 assignments exist. Zero-write readiness therefore reports **ready
+for activation**. The live run remains intentionally absent: there are no live plan, activation,
+journal events, review receipts, children, candidates, results, or generated images.
+
+```text
+profile candidate → exact owner acceptance → 77 root packets
+zero-write readiness → immutable activation → claim up to 16
+worker generation → result verification → terminal journal event
+human full-set receipt → four child packets → continued claims
+candidate review remains separate from approval and runtime promotion
+```
+
+Run the readiness checks from the repository root. These commands create no run or image state:
+
+```bash
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/export-equipment-image-profile.ts --check
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts check-root-packets
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts report-readiness
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts simulate --available-worker-slots 16
+```
+
+The profile candidate’s deterministic write command is
+`corepack pnpm tsx tools/export-equipment-image-profile.ts`; its one-time exact owner-acceptance
+command is recorded in the
+[Equipment-local production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md)
+and must not overwrite the existing exclusive acceptance.
+
+Activation is deliberate and immutable; it is not part of readiness validation:
+
+```bash
+EQUIPMENT_RUN_ID=material-equipment-v1-run-001
+EQUIPMENT_RUN_CREATED_AT=2026-09-02T01:00:00.000Z
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts activate-run \
+    --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \
+    --activated-at 2026-09-02T01:00:01.000Z --activated-by owner
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts claim-next \
+    --run-id "$EQUIPMENT_RUN_ID" --available-worker-slots 16 \
+    --epoch-id equipment-epoch-001 --actor root-orchestrator \
+    --requested-at 2026-09-02T01:01:00.000Z --recorded-at 2026-09-02T01:01:01.000Z
+```
+
+For each exact returned claim, validate the packet, render its byte-exact prompt, record start,
+persist only the exact generated source, persist and verify the result, then record terminal:
+
+```bash
+EQUIPMENT_TARGET_PATH='replace-with-claim-target-path'
+EQUIPMENT_ASSIGNMENT_PATH='replace-with-claim-assignment-path'
+EQUIPMENT_TARGET_ID='replace-with-claim-target-id'
+EQUIPMENT_WORKER_ID='replace-with-claim-worker-id'
+EQUIPMENT_CLAIM_ID='replace-with-claim-id'
+EQUIPMENT_CANDIDATE_PATH='replace-with-assignment-candidate-path'
+EQUIPMENT_RESULT_PATH='replace-with-assignment-result-path'
+EQUIPMENT_RESULT_CANONICAL_SHA256='replace-with-verified-result-canonical-sha256'
+EQUIPMENT_SOURCE_IMAGE=/absolute/path/to/exact-imagegen-output.png
+EQUIPMENT_RESULT_JSON=/absolute/path/to/worker-result.json
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts validate-packet \
+    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH"
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts render-prompt \
+    --target "$EQUIPMENT_TARGET_PATH"
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts record-start \
+    --run-id "$EQUIPMENT_RUN_ID" --event-id start-001 --actor root-orchestrator \
+    --requested-at 2026-09-02T01:02:00.000Z --recorded-at 2026-09-02T01:02:01.000Z \
+    --claim-id "$EQUIPMENT_CLAIM_ID" --target-id "$EQUIPMENT_TARGET_ID" \
+    --worker-id "$EQUIPMENT_WORKER_ID"
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/persist-equipment-image-production-output.ts \
+    --workspace-root "$PWD" --source "$EQUIPMENT_SOURCE_IMAGE" \
+    --destination "$EQUIPMENT_CANDIDATE_PATH" --width 1024 --height 1024 \
+    --media-type image/png
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts persist-result \
+    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH" \
+    < "$EQUIPMENT_RESULT_JSON"
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts verify-result \
+    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH" \
+    --result "$EQUIPMENT_RESULT_PATH"
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts record-terminal \
+    --run-id "$EQUIPMENT_RUN_ID" --event-id terminal-001 --actor root-orchestrator \
+    --requested-at 2026-09-02T01:10:00.000Z --recorded-at 2026-09-02T01:10:01.000Z \
+    --target-id "$EQUIPMENT_TARGET_ID" --worker-id "$EQUIPMENT_WORKER_ID" \
+    --status candidate --result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
+```
+
+A human-accepted full-set receipt creates exactly four child packet pairs and unlocks continued
+claims. This accepts consistency-source evidence only; it does not approve the candidate or promote
+anything to runtime:
+
+```bash
+EQUIPMENT_GATE_ID='replace-with-gate-id'
+EQUIPMENT_CANDIDATE_SHA256='replace-with-human-inspected-candidate-sha256'
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts review-armour-source \
+    --run-id "$EQUIPMENT_RUN_ID" --gate-id "$EQUIPMENT_GATE_ID" --reviewer owner \
+    --reviewed-at 2026-09-02T01:20:00.000Z \
+    --accept-candidate-sha256 "$EQUIPMENT_CANDIDATE_SHA256"
+```
+
+Crash reconciliation is read-only until explicitly acknowledged. It blocks partial output, never
+time-reaps a started worker, verifies a complete immutable pair before a terminal append, and
+requires exact target, worker, reason, acknowledgement, and append identity for operator-confirmed
+failure. Report remains zero-write:
+
+```bash
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts reconcile \
+    --run-id "$EQUIPMENT_RUN_ID" --target-id "$EQUIPMENT_TARGET_ID" \
+    --worker-id "$EQUIPMENT_WORKER_ID" \
+    --observed-at 2026-09-02T01:30:00.000Z
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts reconcile \
+    --run-id "$EQUIPMENT_RUN_ID" --target-id "$EQUIPMENT_TARGET_ID" \
+    --worker-id "$EQUIPMENT_WORKER_ID" \
+    --observed-at 2026-09-02T01:30:00.000Z --event-id reconcile-terminal-001 \
+    --actor root-orchestrator --requested-at 2026-09-02T01:30:00.000Z \
+    --recorded-at 2026-09-02T01:30:01.000Z --acknowledge-terminal yes
+PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
+  corepack pnpm tsx tools/equipment-image-production.ts report \
+    --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \
+    --generated-at 2026-09-02T01:31:00.000Z
+```
+
+The Equipment-local production notes contain the exact candidate persistence, result persistence,
+rejection, pause/resume, and operator-confirmed failure variants. Candidate review, source approval,
+and runtime promotion remain distinct later decisions.
+
 ## Source authority and remaining decisions
 
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
