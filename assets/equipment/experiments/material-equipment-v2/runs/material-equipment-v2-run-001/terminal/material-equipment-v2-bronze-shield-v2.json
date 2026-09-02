@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-bronze-shield-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-bronze-shield-v2",
+	"recordedAt": "2026-09-02T22:20:39.135Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "failed",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/f/bronze/shield-v2.json",
+		"canonicalSha256": "9fe1051bddc06e5f7ebb437614b0df1716241b1e20482ac5262e181296b585a9"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/f/bronze/shield-v2.json",
+		"canonicalSha256": "10bb03d9019fe688d3167182f3c9b7abc82e54ccc655c3700d8906d3dbc5cf10"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/f/bronze/shield-v2.json",
+		"canonicalSha256": "0a26df696f8374af03b42d7430bf26f12070882435bea3a7000022ae5b8b9f00",
+		"candidateSha256": null
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-steel-shield-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-steel-shield-v2",
+	"recordedAt": "2026-09-02T22:27:15.944Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/d/steel/shield-v2.json",
+		"canonicalSha256": "9e35c80b10d39f37cf4b7fecfc04228e14f1031178ed3e4dd8af8077b144f1e6"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/d/steel/shield-v2.json",
+		"canonicalSha256": "a7f675214306e0541ec618ed4bf1da6a8bf4542bc10a939ef13c28649fc01c22"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/d/steel/shield-v2.json",
+		"canonicalSha256": "610984e097a2a32bc16900de4a4b4942e3b8dd3f56aa88a1e1db2543dfef36ca",
+		"candidateSha256": "789834e97ab7d4e9c7f1adc67acb03dbe38217066266b36352cfcc45848ea222"
+	}
+}

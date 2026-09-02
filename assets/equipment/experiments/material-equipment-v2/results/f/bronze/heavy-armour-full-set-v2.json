@@ -1,0 +1,105 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-bronze-heavy-armour-full-set-v2",
+	"targetId": "material-equipment-v2-bronze-heavy-armour-full-set-v2",
+	"assignmentId": "assignment-material-equipment-v2-bronze-heavy-armour-full-set-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "46333c9fff6dd2e82401727e2a405cb85695e14fa98b5c05e5417735cd6cd1ed",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "coarse-hide-armour-camera",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+			"contentHash": "b3b973ffa5eec4fb7f0125202b16b845cd271feec5c5d1351ebd55bfb7fef247"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-bronze-heavy-armour-full-set-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06433-d26a-7460-9dc4-49fbe88404ab/exec-3c19e4c3-453c-4db9-bdf7-3d370cd4415d.png",
+			"requestStartedAt": "2026-09-02T22:19:23.497Z",
+			"generationCompletedAt": "2026-09-02T22:20:04.216Z",
+			"inspectionCompletedAt": "2026-09-02T22:20:33.202Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "empty-full-set",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/heavy-armour-full-set-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 1958632,
+		"sha256": "02126c74be28d097aa69fe4cc305434448dc268b70613db256e2dd0a8b123fa5"
+	},
+	"candidateSha256": "02126c74be28d097aa69fe4cc305434448dc268b70613db256e2dd0a8b123fa5",
+	"startedAt": "2026-09-02T22:19:23.497Z",
+	"completedAt": "2026-09-02T22:20:33.202Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/heavy-armour-full-set-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/f/bronze/heavy-armour-full-set-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
