@@ -2,6 +2,14 @@
 
 Read the section matching the target species. Preserve these cues across every affinity.
 
+## Family profile (v3)
+
+The current `family-affinity-target-v1` plus its hash-bound `family-packet-v1` are the authoritative
+species and form grammar. Preserve its family/form identity invariants, tier, anatomy, battlefield
+duty, telegraph, counterplay, construction dimensions, and forbidden treatments exactly. Do not
+substitute a similarly named legacy species section below. The sections below remain guidance only
+for legacy v1/v2 targets.
+
 ## Death Knight
 
 - Tall, disciplined armored corpse and formation commander.

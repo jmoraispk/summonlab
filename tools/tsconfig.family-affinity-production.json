@@ -10,6 +10,8 @@
 	"include": [
 		"family-affinity-production-lib.ts",
 		"family-affinity-production-lib.spec.ts",
+		"family-affinity-production-compatibility.spec.ts",
+		"check-family-affinity-production-compatibility.ts",
 		"export-family-affinity-production.ts",
 		"family-affinity-review-lib.ts",
 		"family-affinity-review-lib.spec.ts",

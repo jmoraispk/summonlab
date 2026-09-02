@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "summonlab-image-production-contract-v3",
+	"skillVersion": "summonlab-image-production-v3",
+	"profiles": {
+		"image-production-family-target-v1": {
+			"repositoryTargetSchema": "family-affinity-target-v1",
+			"assignmentSchema": "family-affinity-assignment-v1",
+			"resultSchema": "family-affinity-result-v1",
+			"promptMaterialSchema": "family-affinity-prompt-material-v1",
+			"experimentId": "family-affinity-v1",
+			"affinities": ["normal", "fire", "earth", "wind", "water"],
+			"namespaces": ["canonical", "bridge"],
+			"pathTemplates": {
+				"canonicalTarget": "assets/enemies/experiments/family-affinity-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
+				"canonicalAssignment": "assets/enemies/experiments/family-affinity-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
+				"canonicalCandidate": "assets/enemies/experiments/family-affinity-v1/candidates/{familyId}/{formId}/{affinity}-v{version}.png",
+				"canonicalResult": "assets/enemies/experiments/family-affinity-v1/results/{familyId}/{formId}/{affinity}-v{version}.json",
+				"bridgeTarget": "assets/enemies/experiments/family-affinity-v1/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json",
+				"bridgeAssignment": "assets/enemies/experiments/family-affinity-v1/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json",
+				"bridgeCandidate": "assets/enemies/experiments/family-affinity-v1/bridge/candidates/{currentClassId}/{affinity}-v{version}.png",
+				"bridgeResult": "assets/enemies/experiments/family-affinity-v1/bridge/results/{currentClassId}/{affinity}-v{version}.json"
+			},
+			"producerRoleAllowlist": ["image-producer"],
+			"retryCeiling": [0, 1],
+			"ownership": {
+				"exclusiveCandidateCreate": true,
+				"immutableSingleCreateResult": true,
+				"overwriteForbidden": true
+			},
+			"requiredBindings": [
+				"target-assignment-cross-hash",
+				"family-packet-canonical-json-hash",
+				"candidate-raw-bytes-hash",
+				"prompt-material-raw-bytes-hash",
+				"source-path",
+				"result-path"
+			],
+			"forbiddenWriteClasses": [
+				"review",
+				"catalog",
+				"contact-sheet",
+				"wiki",
+				"runtime",
+				"manifest"
+			],
+			"promotionCeiling": "candidate-only"
+		},
+		"legacy-affinity-v1-v2": {
+			"targetSchemas": ["image-production-target-v1", "image-production-target-v2"],
+			"assignmentSchema": "image-production-assignment-v1",
+			"resultSchema": "image-production-result-v1",
+			"affinities": ["normal", "wood", "fire", "metal", "water", "wind"],
+			"experimentRoots": ["affinity-workflow-v1", "affinity-expansion-v1"]
+		}
+	}
+}

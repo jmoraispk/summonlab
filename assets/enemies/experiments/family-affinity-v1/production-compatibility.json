@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "family-affinity-production-compatibility-v1",
+  "skillVersion": "summonlab-image-production-v3",
+  "profile": "image-production-family-target-v1",
+  "targetSchema": "family-affinity-target-v1",
+  "assignmentSchema": "family-affinity-assignment-v1",
+  "resultSchema": "family-affinity-result-v1",
+  "promptMaterialSchema": "family-affinity-prompt-material-v1",
+  "experimentId": "family-affinity-v1",
+  "affinities": [
+    "normal",
+    "fire",
+    "earth",
+    "wind",
+    "water"
+  ],
+  "namespaces": [
+    "canonical",
+    "bridge"
+  ],
+  "pathTemplates": {
+    "canonicalTarget": "assets/enemies/experiments/family-affinity-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
+    "canonicalAssignment": "assets/enemies/experiments/family-affinity-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
+    "canonicalCandidate": "assets/enemies/experiments/family-affinity-v1/candidates/{familyId}/{formId}/{affinity}-v{version}.png",
+    "canonicalResult": "assets/enemies/experiments/family-affinity-v1/results/{familyId}/{formId}/{affinity}-v{version}.json",
+    "bridgeTarget": "assets/enemies/experiments/family-affinity-v1/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json",
+    "bridgeAssignment": "assets/enemies/experiments/family-affinity-v1/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json",
+    "bridgeCandidate": "assets/enemies/experiments/family-affinity-v1/bridge/candidates/{currentClassId}/{affinity}-v{version}.png",
+    "bridgeResult": "assets/enemies/experiments/family-affinity-v1/bridge/results/{currentClassId}/{affinity}-v{version}.json"
+  },
+  "ownership": {
+    "producerRoleAllowlist": [
+      "image-producer"
+    ],
+    "retryCeiling": [
+      0,
+      1
+    ],
+    "exclusiveCandidateCreate": true,
+    "immutableSingleCreateResult": true,
+    "overwriteForbidden": true,
+    "targetAssignmentCrossHashRequired": true,
+    "familyPacketHashRequired": true,
+    "candidateRawHashRequired": true,
+    "promptMaterialHashRequired": true,
+    "runtimeMutationForbidden": true
+  },
+  "forbiddenWriteClasses": [
+    "review",
+    "catalog",
+    "contact-sheet",
+    "wiki",
+    "runtime",
+    "manifest"
+  ],
+  "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
+  "skillContractSha256": "80264409523e26a12f3427a969767340393a298a434031f5f7022c5e006deffe",
+  "reviewedAt": "2026-09-02T15:01:44.000Z",
+  "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"
+}

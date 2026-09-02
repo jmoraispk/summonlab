@@ -1,5 +1,21 @@
 # Result contract
 
+## Family profile (v3)
+
+Write exactly one `family-affinity-result-v1` at the target-owned result path, using
+`scripts/write_family_result.py` for a single O_EXCL create. Its strict fields bind the target ID and
+canonical hash, coordinate, candidate version, nonempty producer ID, raw candidate hash, owned
+candidate/result paths, current canonical family-packet path/hash, and exact prompt-material hash.
+`state` is always `candidate-only`; `runtimeCatalogMutationForbidden` is always true. No extra field
+is permitted.
+
+This compact repository receipt intentionally has no legacy attempt, timing, finding, provider, or
+inspection fields. Return those details in the image job handoff. A provider failure or any failure
+before a valid candidate exists produces no result receipt. Do not fabricate failure receipts and do
+not repair or rewrite a family result after creation.
+
+## Legacy profile
+
 Write one JSON result at the assignment's owned result path. Use
 `schemaVersion: image-production-result-v1`.
 

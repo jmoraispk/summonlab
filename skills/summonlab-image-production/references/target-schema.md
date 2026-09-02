@@ -2,6 +2,35 @@
 
 Read this reference before every production job.
 
+## Family profile (v3)
+
+The skill-side profile ID is `image-production-family-target-v1`; it natively accepts the
+repository literal `family-affinity-target-v1` paired with `family-affinity-assignment-v1`. Do not
+rename, translate, or regenerate those repository schemas.
+
+This profile supports only `normal`, `fire`, `earth`, `wind`, and `water`, in canonical and bridge
+namespaces beneath `assets/enemies/experiments/family-affinity-v1`. Target, assignment, candidate,
+and result paths must match the exact versioned templates in [contract-v3.json](contract-v3.json).
+The assignment's `targetSha256` is SHA-256 of the target's recursively key-sorted compact JSON, not
+the pretty-printed file bytes. It must cross-bind target ID, coordinate, namespace, version, status,
+and both output paths.
+
+The declared family packet must exist at the current source path and its canonical compact-JSON hash
+must equal `sources.familyPacketSha256`. The producer role allowlist is exactly `image-producer`, and
+the retry ceiling is `0 | 1`.
+
+- Normal dispatch requires `planned` plus `normal-self`.
+- A canonical elemental target with `blocked-on-anchor` is a preflight rejection. A `planned`
+  elemental target needs complete, current Normal target/candidate/result/approved-review evidence.
+- Bridge Earth may use `earth-bridge-provisional` with a hash-bound existing Normal candidate. Its
+  production ceiling remains candidate-only.
+
+Candidate and result outputs are exclusive-create. A collision or symlink escape is a no-mutation
+handoff. The producer may not write reviews, catalogs, contact sheets, wiki pages, runtime catalogs,
+or the manifest.
+
+## Legacy profiles (v1/v2)
+
 ## Target
 
 The target is immutable input with `schemaVersion: image-production-target-v1` for the original
@@ -68,7 +97,7 @@ root:
 assets/enemies/experiments/<experiment-id>/
 ```
 
-The current supported roots are `affinity-workflow-v1` and `affinity-expansion-v1`. A target and
+The legacy supported roots are `affinity-workflow-v1` and `affinity-expansion-v1`. A target and
 assignment may own paths in exactly one root and must never write into the other experiment.
 
 The affinity experiment's first-run candidate paths use:

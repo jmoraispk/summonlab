@@ -11,8 +11,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from render_prompt import render as render_canonical_prompt
-from validate_target import absolute_project_path, load_json, validate
+from render_prompt import render as render_canonical_prompt, render_family_prompt
+from validate_target import (
+    absolute_project_path,
+    canonical_sha256,
+    family_paths,
+    load_json,
+    require_exact_keys,
+    require_sha,
+    validate,
+)
 
 RESULT_VERSION = "image-production-result-v1"
 FAILURE_KINDS = {
@@ -23,6 +31,8 @@ FAILURE_KINDS = {
     "persistence",
     "other",
 }
+
+FAMILY_RESULT_VERSION = "family-affinity-result-v1"
 
 
 def fail(message: str) -> None:
@@ -314,6 +324,87 @@ def verify(
     }
 
 
+def verify_family_result(
+    target: dict[str, Any],
+    assignment: dict[str, Any],
+    result: dict[str, Any],
+    result_path: Path,
+    workspace: Path,
+    *,
+    require_result_file: bool = True,
+) -> dict[str, Any]:
+    """Verify the repository-owned compact family result contract."""
+    target_report = validate(
+        target,
+        assignment,
+        workspace,
+        allow_existing_outputs=True,
+    )
+    require_exact_keys(
+        result,
+        {
+            "schemaVersion", "targetId", "targetSha256", "coordinateId", "candidateVersion",
+            "producerId", "candidatePath", "candidateSha256", "resultPath", "sourcePath",
+            "sourceSha256", "promptSha256", "state", "runtimeCatalogMutationForbidden",
+        },
+        "family result",
+    )
+    if result.get("schemaVersion") != FAMILY_RESULT_VERSION:
+        fail("unsupported family result schemaVersion")
+    expected_result_path = absolute_project_path(workspace, target["ownedPaths"]["result"])
+    if result_path.resolve() != expected_result_path:
+        fail("RESULT argument does not match target owned result path")
+    if require_result_file and not result_path.is_file():
+        fail("family result receipt is missing")
+    expected_target_hash = canonical_sha256(target)
+    if (
+        result.get("targetId") != target["targetId"]
+        or result.get("targetSha256") != expected_target_hash
+        or result.get("targetSha256") != assignment["targetSha256"]
+        or result.get("coordinateId") != target["coordinateId"]
+        or result.get("candidateVersion") != target["version"]
+    ):
+        fail("family result target identity or hash is stale, forged, or cross-bound")
+    producer_id = result.get("producerId")
+    if not isinstance(producer_id, str) or not producer_id.strip():
+        fail("family result producerId is missing")
+    if result.get("candidatePath") != target["ownedPaths"]["candidate"]:
+        fail("family result candidate path is not owned by the target")
+    candidate_absolute = absolute_project_path(workspace, result["candidatePath"])
+    if not candidate_absolute.is_file():
+        fail("family retained candidate is missing")
+    candidate_hash = hashlib.sha256(candidate_absolute.read_bytes()).hexdigest()
+    if require_sha(result.get("candidateSha256"), "candidateSha256") != candidate_hash:
+        fail("family result candidate raw hash changed")
+    if result.get("resultPath") != target["ownedPaths"]["result"]:
+        fail("family result resultPath is not owned by the target")
+    if result.get("sourcePath") != target["sources"]["familyPacketPath"]:
+        fail("family result sourcePath does not match the canonical packet")
+    source_absolute = absolute_project_path(workspace, result["sourcePath"])
+    source_hash = canonical_sha256(load_json(source_absolute))
+    if (
+        require_sha(result.get("sourceSha256"), "sourceSha256") != source_hash
+        or source_hash != target["sources"]["familyPacketSha256"]
+    ):
+        fail("family result source hash changed")
+    prompt = render_family_prompt(target, assignment)
+    prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    if require_sha(result.get("promptSha256"), "promptSha256") != prompt_hash:
+        fail("family result prompt-material hash changed")
+    if result.get("state") != "candidate-only":
+        fail("family producer result state must remain candidate-only")
+    if result.get("runtimeCatalogMutationForbidden") is not True:
+        fail("family producer result must forbid runtime catalog mutation")
+    return {
+        **target_report,
+        "resultSchema": FAMILY_RESULT_VERSION,
+        "candidateSha256": candidate_hash,
+        "sourceSha256": source_hash,
+        "promptSha256": prompt_hash,
+        "verification": "pass",
+    }
+
+
 def main() -> None:
     if len(sys.argv) != 5:
         raise SystemExit("usage: verify_result.py TARGET ASSIGNMENT RESULT WORKSPACE_ROOT")
@@ -322,13 +413,13 @@ def main() -> None:
     result_path = Path(sys.argv[3]).resolve()
     workspace = Path(sys.argv[4]).resolve()
     try:
-        report = verify(
-            load_json(target_path),
-            load_json(assignment_path),
-            load_json(result_path),
-            result_path,
-            workspace,
-        )
+        target = load_json(target_path)
+        assignment = load_json(assignment_path)
+        result = load_json(result_path)
+        if target.get("schemaVersion") == "family-affinity-target-v1":
+            report = verify_family_result(target, assignment, result, result_path, workspace)
+        else:
+            report = verify(target, assignment, result, result_path, workspace)
     except (OSError, json.JSONDecodeError, ValueError) as error:
         raise SystemExit(f"result verification failed: {error}") from error
     print(json.dumps(report, indent=2, sort_keys=True))

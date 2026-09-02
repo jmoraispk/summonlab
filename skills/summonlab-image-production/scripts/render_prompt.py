@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from validate_target import canonical_json
+
 
 def bullet_block(label: str, values: list[str]) -> list[str]:
     return [f"{label}:", *(f"- {value}" for value in values), ""]
@@ -108,10 +110,29 @@ def render(target: dict[str, Any]) -> str:
     )
 
 
+def render_family_prompt(target: dict[str, Any], assignment: dict[str, Any]) -> str:
+    """Render the exact repository-owned family prompt-material bytes."""
+    return canonical_json(
+        {
+            "schemaVersion": "family-affinity-prompt-material-v1",
+            "target": target,
+            "assignment": assignment,
+        }
+    )
+
+
 def main() -> None:
-    if len(sys.argv) != 2:
-        raise SystemExit("usage: render_prompt.py TARGET")
+    if len(sys.argv) not in {2, 3}:
+        raise SystemExit("usage: render_prompt.py TARGET [ASSIGNMENT]")
     target = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    if target.get("schemaVersion") == "family-affinity-target-v1":
+        if len(sys.argv) != 3:
+            raise SystemExit("family prompt rendering requires TARGET and ASSIGNMENT")
+        assignment = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+        sys.stdout.write(render_family_prompt(target, assignment))
+        return
+    if len(sys.argv) != 2:
+        raise SystemExit("legacy prompt rendering accepts TARGET only")
     sys.stdout.write(render(target))
 
 

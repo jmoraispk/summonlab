@@ -1,0 +1,457 @@
+#!/usr/bin/env python3
+"""Contract tests for the v3 family-affinity production profile."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import tempfile
+import unittest
+from pathlib import Path
+
+from render_prompt import render, render_family_prompt
+from validate_target import validate
+from verify_result import verify_family_result
+from write_family_result import exclusive_create_family_result
+
+
+ROOT = "assets/enemies/experiments/family-affinity-v1"
+SHA = "0" * 64
+
+
+def canonical_json(value: object) -> str:
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+
+class FamilyProfileTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.workspace = Path(self.temporary.name)
+        self.packet_path = f"{ROOT}/families/01-goblins.json"
+        self.mapping_path = f"{ROOT}/current-class-mapping.json"
+        packet = {"schemaVersion": "family-packet-v1", "familyId": "goblins"}
+        self._write_json(self.packet_path, packet)
+        self._write_json(self.mapping_path, {"schemaVersion": "current-class-mapping-v1"})
+
+    def tearDown(self) -> None:
+        self.temporary.cleanup()
+
+    def _write_json(self, relative: str, value: object) -> Path:
+        path = self.workspace / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(canonical_json(value), encoding="utf-8")
+        return path
+
+    def _packet_hash(self) -> str:
+        packet = json.loads((self.workspace / self.packet_path).read_text(encoding="utf-8"))
+        return hashlib.sha256(canonical_json(packet).encode("utf-8")).hexdigest()
+
+    def _target(self, affinity: str = "normal", namespace: str = "canonical") -> dict:
+        family = "goblins"
+        form = "goblin-scout"
+        current = None if namespace == "canonical" else "goblin-skirmisher"
+        coordinate = (
+            f"{family}/{form}/{affinity}"
+            if namespace == "canonical"
+            else f"{current}/{family}/{form}/{affinity}"
+        )
+        target_id = f"{namespace}/{coordinate}/v1"
+        if namespace == "canonical":
+            prefix = ""
+            stem = f"{family}/{form}/{affinity}"
+        else:
+            prefix = "bridge/"
+            stem = f"{current}/{affinity}"
+        anchor: dict
+        status = "planned"
+        if affinity == "normal":
+            anchor = {"kind": "normal-self"}
+        elif namespace == "bridge" and affinity == "earth":
+            normal_path = f"{ROOT}/bridge/candidates/{current}/normal-v1.png"
+            normal_bytes = b"existing normal candidate"
+            normal_absolute = self.workspace / normal_path
+            normal_absolute.parent.mkdir(parents=True, exist_ok=True)
+            normal_absolute.write_bytes(normal_bytes)
+            anchor = {
+                "kind": "earth-bridge-provisional",
+                "normalCandidatePath": normal_path,
+                "normalCandidateSha256": hashlib.sha256(normal_bytes).hexdigest(),
+            }
+            status = "earth-bridge-provisional"
+        else:
+            normal_target_path = f"{ROOT}/targets/{family}/{form}/normal/target-v1.json"
+            anchor = {
+                "kind": "normal-approved-review",
+                "normalCoordinateId": f"{family}/{form}/normal",
+                "normalVersion": 1,
+                "normalTargetPath": normal_target_path,
+                "normalTargetSha256": SHA,
+                "reviewReceiptPath": f"{ROOT}/review/decisions/{family}/{form}/normal/candidate-v1-review-v1.json",
+                "reviewReceiptSha256": None,
+                "normalCandidatePath": None,
+                "normalCandidateSha256": None,
+                "normalResultPath": None,
+                "normalResultSha256": None,
+            }
+            status = "blocked-on-anchor"
+        return {
+            "schemaVersion": "family-affinity-target-v1",
+            "namespace": namespace,
+            "coordinateId": coordinate,
+            "targetId": target_id,
+            "familyId": family,
+            "formId": form,
+            "currentClassId": current,
+            "affinity": affinity,
+            "tier": "T1",
+            "primaryArchetype": "Scout",
+            "battlefieldDuty": "Probe the flank",
+            "identityInvariants": ["Green goblin", "Two arms and two legs"],
+            "anatomyInvariants": ["Two arms", "Two legs"],
+            "constructionDimensions": ["material", "motion"],
+            "telegraph": "Raises knife",
+            "counterplay": "Step aside",
+            "forbiddenTreatments": ["No hue-only treatment"],
+            "sources": {
+                "familyPacketPath": self.packet_path,
+                "familyPacketSha256": self._packet_hash(),
+                "sourcePage": "docs/wiki/creatures/monster-races/goblins.md",
+                "sourceReferences": ["Goblin Scout"],
+                "mappingPath": self.mapping_path,
+            },
+            "presentationContract": {
+                "framing": "full-body-readable",
+                "background": "cinematic-neutral-environment",
+                "featuredSubjects": 1,
+                "textAllowed": False,
+                "watermarkAllowed": False,
+            },
+            "acceptanceCriteria": [f"criterion {index}" for index in range(8)],
+            "ownedPaths": {
+                "candidate": f"{ROOT}/{prefix}candidates/{stem}-v1.png",
+                "result": f"{ROOT}/{prefix}results/{stem}-v1.json",
+                "decision": (
+                    f"{ROOT}/review/decisions/{stem}/candidate-v1-review-v1.json"
+                    if namespace == "canonical"
+                    else f"{ROOT}/review/bridge/decisions/{stem}/candidate-v1-review-v1.json"
+                ),
+                "blindReview": (
+                    f"{ROOT}/review/blind/{stem}/candidate-v1-blind-v1.json"
+                    if namespace == "canonical"
+                    else f"{ROOT}/review/bridge/blind/{stem}/candidate-v1-blind-v1.json"
+                ),
+            },
+            "anchor": anchor,
+            "precedingAttempt": None,
+            "version": 1,
+            "status": status,
+            "promotionCeiling": "approved-review",
+            "runtimeCatalogMutationForbidden": True,
+        }
+
+    def _paths(self, target: dict) -> tuple[str, str]:
+        if target["namespace"] == "canonical":
+            stem = f'{target["familyId"]}/{target["formId"]}/{target["affinity"]}'
+            return (
+                f"{ROOT}/targets/{stem}/target-v1.json",
+                f"{ROOT}/assignments/{stem}/assignment-v1.json",
+            )
+        stem = f'{target["currentClassId"]}/{target["affinity"]}'
+        return (
+            f"{ROOT}/bridge/targets/{stem}/target-v1.json",
+            f"{ROOT}/bridge/assignments/{stem}/assignment-v1.json",
+        )
+
+    def _assignment(self, target: dict) -> dict:
+        target_hash = hashlib.sha256(canonical_json(target).encode("utf-8")).hexdigest()
+        return {
+            "schemaVersion": "family-affinity-assignment-v1",
+            "assignmentId": f'{target["targetId"]}/assignment',
+            "targetId": target["targetId"],
+            "targetSha256": target_hash,
+            "coordinateId": target["coordinateId"],
+            "namespace": target["namespace"],
+            "version": target["version"],
+            "producerRole": "image-producer",
+            "allowedOutputs": {
+                "candidate": target["ownedPaths"]["candidate"],
+                "result": target["ownedPaths"]["result"],
+            },
+            "retryCeiling": 1,
+            "dispatchStatus": target["status"],
+            "selfPromotionForbidden": True,
+            "runtimeCatalogMutationForbidden": True,
+        }
+
+    def _persist_inputs(self, target: dict, assignment: dict) -> tuple[Path, Path]:
+        target_relative, assignment_relative = self._paths(target)
+        return self._write_json(target_relative, target), self._write_json(
+            assignment_relative, assignment
+        )
+
+    def test_family_normal_and_all_element_names_dispatch_explicitly(self) -> None:
+        normal = self._target()
+        assignment = self._assignment(normal)
+        self._persist_inputs(normal, assignment)
+        report = validate(normal, assignment, self.workspace)
+        self.assertEqual(report["profile"], "image-production-family-target-v1")
+
+        for affinity in ("fire", "earth", "water", "wind"):
+            blocked = self._target(affinity)
+            blocked_assignment = self._assignment(blocked)
+            self._persist_inputs(blocked, blocked_assignment)
+            with self.assertRaisesRegex(ValueError, "blocked-on-anchor"):
+                validate(blocked, blocked_assignment, self.workspace)
+
+    def test_provisional_bridge_earth_is_dispatchable_but_never_approved(self) -> None:
+        target = self._target("earth", "bridge")
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        report = validate(target, assignment, self.workspace)
+        self.assertEqual(report["status"], "earth-bridge-provisional")
+        self.assertEqual(report["promotionCeiling"], "candidate-only")
+
+    def test_planned_elemental_requires_same_form_normal_approval_evidence(self) -> None:
+        normal = self._target()
+        normal_assignment = self._assignment(normal)
+        self._persist_inputs(normal, normal_assignment)
+        candidate_bytes = b"approved normal"
+        candidate_path = self.workspace / normal["ownedPaths"]["candidate"]
+        candidate_path.parent.mkdir(parents=True, exist_ok=True)
+        candidate_path.write_bytes(candidate_bytes)
+        result_bytes = b'{"normal":"result"}'
+        result_path = self.workspace / normal["ownedPaths"]["result"]
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        result_path.write_bytes(result_bytes)
+        normal_hash = hashlib.sha256(canonical_json(normal).encode("utf-8")).hexdigest()
+        receipt = {
+            "decision": "approved-review",
+            "targetId": normal["targetId"],
+            "targetSha256": normal_hash,
+            "candidatePath": normal["ownedPaths"]["candidate"],
+            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "resultPath": normal["ownedPaths"]["result"],
+            "resultSha256": hashlib.sha256(result_bytes).hexdigest(),
+        }
+        receipt_path = self._write_json(normal["ownedPaths"]["decision"], receipt)
+
+        fire = self._target("fire")
+        fire["status"] = "planned"
+        fire["anchor"].update(
+            {
+                "normalTargetSha256": normal_hash,
+                "reviewReceiptSha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+                "normalCandidatePath": normal["ownedPaths"]["candidate"],
+                "normalCandidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+                "normalResultPath": normal["ownedPaths"]["result"],
+                "normalResultSha256": hashlib.sha256(result_bytes).hexdigest(),
+            }
+        )
+        assignment = self._assignment(fire)
+        self._persist_inputs(fire, assignment)
+        self.assertEqual(validate(fire, assignment, self.workspace)["status"], "planned")
+
+        foreign_path = f"{ROOT}/candidates/other-family/other-form/normal-v1.png"
+        foreign = self.workspace / foreign_path
+        foreign.parent.mkdir(parents=True, exist_ok=True)
+        foreign.write_bytes(candidate_bytes)
+        fire["anchor"]["normalCandidatePath"] = foreign_path
+        forged_assignment = self._assignment(fire)
+        with self.assertRaisesRegex(ValueError, "same family|exact Normal|mismatched"):
+            validate(fire, forged_assignment, self.workspace)
+
+    def test_prompt_is_exact_stable_json_bytes_with_no_newline(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        expected = canonical_json(
+            {
+                "schemaVersion": "family-affinity-prompt-material-v1",
+                "target": target,
+                "assignment": assignment,
+            }
+        )
+        rendered = render_family_prompt(target, assignment)
+        self.assertEqual(rendered, expected)
+        self.assertFalse(rendered.endswith("\n"))
+
+    def test_family_validation_rejects_wrong_contract_and_ownership(self) -> None:
+        valid = self._target()
+        mutations = [
+            ("schema", lambda t, a: t.__setitem__("schemaVersion", "image-production-family-target-v1")),
+            ("wood", lambda t, a: t.__setitem__("affinity", "wood")),
+            ("metal", lambda t, a: t.__setitem__("affinity", "metal")),
+            ("root", lambda t, a: t["ownedPaths"].__setitem__("candidate", "assets/elsewhere/a-v1.png")),
+            ("version", lambda t, a: t.__setitem__("version", 2)),
+            ("target hash", lambda t, a: a.__setitem__("targetSha256", SHA)),
+            ("retry", lambda t, a: a.__setitem__("retryCeiling", 2)),
+            ("producer", lambda t, a: a.__setitem__("producerRole", "reviewer")),
+            ("runtime", lambda t, a: a.__setitem__("runtimeCatalogMutationForbidden", False)),
+        ]
+        for label, mutate in mutations:
+            with self.subTest(label=label):
+                target = json.loads(canonical_json(valid))
+                assignment = self._assignment(target)
+                mutate(target, assignment)
+                with self.assertRaises(ValueError):
+                    validate(target, assignment, self.workspace)
+
+    def test_collision_and_symlink_escape_fail_closed(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(b"collision")
+        with self.assertRaisesRegex(ValueError, "collision"):
+            validate(target, assignment, self.workspace)
+
+        candidate.unlink()
+        outside = Path(self.temporary.name).parent / f"outside-{os.getpid()}"
+        outside.mkdir(exist_ok=True)
+        candidate.parent.rmdir()
+        try:
+            candidate.parent.symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                validate(target, assignment, self.workspace)
+        finally:
+            candidate.parent.unlink(missing_ok=True)
+            outside.rmdir()
+
+    def test_family_result_is_strict_and_binds_candidate_source_prompt_and_target(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        target_path, assignment_path = self._persist_inputs(target, assignment)
+        candidate_bytes = b"not-real-pixels-but-hash-bound"
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(candidate_bytes)
+        prompt = render_family_prompt(target, assignment)
+        result = {
+            "schemaVersion": "family-affinity-result-v1",
+            "targetId": target["targetId"],
+            "targetSha256": assignment["targetSha256"],
+            "coordinateId": target["coordinateId"],
+            "candidateVersion": 1,
+            "producerId": "image-producer-01",
+            "candidatePath": target["ownedPaths"]["candidate"],
+            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "resultPath": target["ownedPaths"]["result"],
+            "sourcePath": self.packet_path,
+            "sourceSha256": self._packet_hash(),
+            "promptSha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+            "state": "candidate-only",
+            "runtimeCatalogMutationForbidden": True,
+        }
+        result_path = self.workspace / target["ownedPaths"]["result"]
+        report = verify_family_result(
+            target, assignment, result, result_path, self.workspace, require_result_file=False
+        )
+        self.assertEqual(report["verification"], "pass")
+        for field in (
+            "candidateSha256",
+            "sourceSha256",
+            "promptSha256",
+            "targetSha256",
+        ):
+            with self.subTest(field=field):
+                forged = dict(result)
+                forged[field] = SHA
+                with self.assertRaises(ValueError):
+                    verify_family_result(
+                        target,
+                        assignment,
+                        forged,
+                        result_path,
+                        self.workspace,
+                        require_result_file=False,
+                    )
+        verbose = dict(result)
+        verbose["attempts"] = []
+        with self.assertRaisesRegex(ValueError, "unexpected"):
+            verify_family_result(
+                target,
+                assignment,
+                verbose,
+                result_path,
+                self.workspace,
+                require_result_file=False,
+            )
+
+    def test_family_result_is_exclusive_created_once_and_never_rewritten(self) -> None:
+        target = self._target()
+        assignment = self._assignment(target)
+        self._persist_inputs(target, assignment)
+        candidate_bytes = b"candidate"
+        candidate = self.workspace / target["ownedPaths"]["candidate"]
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(candidate_bytes)
+        result = {
+            "schemaVersion": "family-affinity-result-v1",
+            "targetId": target["targetId"],
+            "targetSha256": assignment["targetSha256"],
+            "coordinateId": target["coordinateId"],
+            "candidateVersion": 1,
+            "producerId": "image-producer-01",
+            "candidatePath": target["ownedPaths"]["candidate"],
+            "candidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "resultPath": target["ownedPaths"]["result"],
+            "sourcePath": self.packet_path,
+            "sourceSha256": self._packet_hash(),
+            "promptSha256": hashlib.sha256(
+                render_family_prompt(target, assignment).encode("utf-8")
+            ).hexdigest(),
+            "state": "candidate-only",
+            "runtimeCatalogMutationForbidden": True,
+        }
+        result_path = self.workspace / target["ownedPaths"]["result"]
+        report = exclusive_create_family_result(
+            target, assignment, result, result_path, self.workspace
+        )
+        original = result_path.read_bytes()
+        self.assertEqual(report["operation"], "exclusive-create")
+        self.assertEqual(original, canonical_json(result).encode("utf-8"))
+        with self.assertRaisesRegex(FileExistsError, "result collision"):
+            exclusive_create_family_result(target, assignment, result, result_path, self.workspace)
+        self.assertEqual(result_path.read_bytes(), original)
+
+
+class LegacyDispatchPreservationTests(unittest.TestCase):
+    def test_wood_and_metal_remain_legacy_only_in_v3_contract(self) -> None:
+        skill = Path(__file__).resolve().parents[1]
+        contract = json.loads(
+            (skill / "references/contract-v3.json").read_text(encoding="utf-8")
+        )
+        profiles = contract["profiles"]
+        family_affinities = profiles["image-production-family-target-v1"]["affinities"]
+        legacy_affinities = profiles["legacy-affinity-v1-v2"]["affinities"]
+        self.assertEqual(family_affinities, ["normal", "fire", "earth", "wind", "water"])
+        self.assertIn("wood", legacy_affinities)
+        self.assertIn("metal", legacy_affinities)
+        self.assertNotIn("wood", family_affinities)
+        self.assertNotIn("metal", family_affinities)
+
+    def test_existing_v2_target_still_uses_legacy_validator_and_renderer(self) -> None:
+        workspace = Path(__file__).resolve().parents[3]
+        target_path = (
+            workspace
+            / "assets/enemies/experiments/affinity-expansion-v1/targets/cave-troll/water.json"
+        )
+        assignment_path = (
+            workspace
+            / "assets/enemies/experiments/affinity-expansion-v1/assignments/cave-troll/water.json"
+        )
+        target = json.loads(target_path.read_text(encoding="utf-8"))
+        assignment = json.loads(assignment_path.read_text(encoding="utf-8"))
+        report = validate(
+            target, assignment, workspace, allow_existing_outputs=True
+        )
+        self.assertEqual(report["targetId"], target["targetId"])
+        self.assertNotIn("profile", report)
+        prompt = render(target)
+        self.assertTrue(prompt.startswith("Use case: stylized-concept."))
+        self.assertFalse(prompt.startswith("{"))
+
+
+if __name__ == "__main__":
+    unittest.main()

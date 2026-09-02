@@ -431,6 +431,288 @@ export const FamilyAffinityAssignmentSchema = z
 
 export type FamilyAffinityAssignment = z.infer<typeof FamilyAffinityAssignmentSchema>;
 
+export const FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION = 'summonlab-image-production-v3' as const;
+export const FAMILY_AFFINITY_PRODUCTION_PROFILE = 'image-production-family-target-v1' as const;
+export const FAMILY_AFFINITY_SKILL_CONTRACT_PATH =
+	'skills/summonlab-image-production/references/contract-v3.json' as const;
+
+const FamilyAffinityPathTemplatesSchema = z
+	.object({
+		canonicalTarget: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/targets/{familyId}/{formId}/{affinity}/target-v{version}.json`
+		),
+		canonicalAssignment: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json`
+		),
+		canonicalCandidate: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/candidates/{familyId}/{formId}/{affinity}-v{version}.png`
+		),
+		canonicalResult: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/results/{familyId}/{formId}/{affinity}-v{version}.json`
+		),
+		bridgeTarget: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json`
+		),
+		bridgeAssignment: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json`
+		),
+		bridgeCandidate: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/bridge/candidates/{currentClassId}/{affinity}-v{version}.png`
+		),
+		bridgeResult: z.literal(
+			`${FAMILY_AFFINITY_ROOT}/bridge/results/{currentClassId}/{affinity}-v{version}.json`
+		)
+	})
+	.strict();
+
+const FamilyAffinityCompatibilityOwnershipSchema = z
+	.object({
+		producerRoleAllowlist: z.tuple([z.literal('image-producer')]),
+		retryCeiling: z.tuple([z.literal(0), z.literal(1)]),
+		exclusiveCandidateCreate: z.literal(true),
+		immutableSingleCreateResult: z.literal(true),
+		overwriteForbidden: z.literal(true),
+		targetAssignmentCrossHashRequired: z.literal(true),
+		familyPacketHashRequired: z.literal(true),
+		candidateRawHashRequired: z.literal(true),
+		promptMaterialHashRequired: z.literal(true),
+		runtimeMutationForbidden: z.literal(true)
+	})
+	.strict();
+
+const FamilyAffinityForbiddenWriteClassesSchema = z.tuple([
+	z.literal('review'),
+	z.literal('catalog'),
+	z.literal('contact-sheet'),
+	z.literal('wiki'),
+	z.literal('runtime'),
+	z.literal('manifest')
+]);
+
+export const FamilyAffinityProductionCompatibilitySchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-production-compatibility-v1'),
+		skillVersion: z.literal(FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION),
+		profile: z.literal(FAMILY_AFFINITY_PRODUCTION_PROFILE),
+		targetSchema: z.literal('family-affinity-target-v1'),
+		assignmentSchema: z.literal('family-affinity-assignment-v1'),
+		resultSchema: z.literal('family-affinity-result-v1'),
+		promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+		experimentId: z.literal('family-affinity-v1'),
+		affinities: z.tuple([
+			z.literal('normal'),
+			z.literal('fire'),
+			z.literal('earth'),
+			z.literal('wind'),
+			z.literal('water')
+		]),
+		namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+		pathTemplates: FamilyAffinityPathTemplatesSchema,
+		ownership: FamilyAffinityCompatibilityOwnershipSchema,
+		forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
+		skillContractPath: z.literal(FAMILY_AFFINITY_SKILL_CONTRACT_PATH),
+		skillContractSha256: Sha256Schema,
+		reviewedAt: z
+			.string()
+			.regex(
+				/^2026-09-02T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u,
+				'Approval must be reviewed on 2026-09-02'
+			),
+		approvalReference: z.literal('user-confirmed-summonlab-image-production-v3-2026-09-02')
+	})
+	.strict();
+
+export type FamilyAffinityProductionCompatibility = z.infer<
+	typeof FamilyAffinityProductionCompatibilitySchema
+>;
+
+const FamilyAffinitySkillContractSchema = z
+	.object({
+		schemaVersion: z.literal('summonlab-image-production-contract-v3'),
+		skillVersion: z.literal(FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION),
+		profiles: z
+			.object({
+				'image-production-family-target-v1': z
+					.object({
+						repositoryTargetSchema: z.literal('family-affinity-target-v1'),
+						assignmentSchema: z.literal('family-affinity-assignment-v1'),
+						resultSchema: z.literal('family-affinity-result-v1'),
+						promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+						experimentId: z.literal('family-affinity-v1'),
+						affinities: z.tuple([
+							z.literal('normal'),
+							z.literal('fire'),
+							z.literal('earth'),
+							z.literal('wind'),
+							z.literal('water')
+						]),
+						namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+						pathTemplates: FamilyAffinityPathTemplatesSchema,
+						producerRoleAllowlist: z.tuple([z.literal('image-producer')]),
+						retryCeiling: z.tuple([z.literal(0), z.literal(1)]),
+						ownership: z
+							.object({
+								exclusiveCandidateCreate: z.literal(true),
+								immutableSingleCreateResult: z.literal(true),
+								overwriteForbidden: z.literal(true)
+							})
+							.strict(),
+						requiredBindings: z.tuple([
+							z.literal('target-assignment-cross-hash'),
+							z.literal('family-packet-canonical-json-hash'),
+							z.literal('candidate-raw-bytes-hash'),
+							z.literal('prompt-material-raw-bytes-hash'),
+							z.literal('source-path'),
+							z.literal('result-path')
+						]),
+						forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
+						promotionCeiling: z.literal('candidate-only')
+					})
+					.strict(),
+				'legacy-affinity-v1-v2': z
+					.object({
+						targetSchemas: z.tuple([
+							z.literal('image-production-target-v1'),
+							z.literal('image-production-target-v2')
+						]),
+						assignmentSchema: z.literal('image-production-assignment-v1'),
+						resultSchema: z.literal('image-production-result-v1'),
+						affinities: z.tuple([
+							z.literal('normal'),
+							z.literal('wood'),
+							z.literal('fire'),
+							z.literal('metal'),
+							z.literal('water'),
+							z.literal('wind')
+						]),
+						experimentRoots: z.tuple([
+							z.literal('affinity-workflow-v1'),
+							z.literal('affinity-expansion-v1')
+						])
+					})
+					.strict()
+			})
+			.strict()
+	})
+	.strict();
+
+export function validateFamilyAffinityProductionCompatibility(
+	input: unknown,
+	installedContractBytes: Uint8Array
+): FamilyAffinityProductionCompatibility {
+	if (input === undefined || input === null) {
+		throw new Error('Family affinity production compatibility receipt is absent');
+	}
+	const compatibility = FamilyAffinityProductionCompatibilitySchema.parse(input);
+	if (familyAffinityRawSha256(installedContractBytes) !== compatibility.skillContractSha256) {
+		throw new Error('Installed image-production skill contract hash drifted from approval');
+	}
+	let contractInput: unknown;
+	try {
+		contractInput = JSON.parse(Buffer.from(installedContractBytes).toString('utf8'));
+	} catch (error) {
+		throw new Error(`Installed image-production skill contract is not JSON: ${String(error)}`);
+	}
+	const contract = FamilyAffinitySkillContractSchema.parse(contractInput);
+	const profile = contract.profiles[FAMILY_AFFINITY_PRODUCTION_PROFILE];
+	if (
+		profile.repositoryTargetSchema !== compatibility.targetSchema ||
+		profile.assignmentSchema !== compatibility.assignmentSchema ||
+		profile.resultSchema !== compatibility.resultSchema ||
+		profile.promptMaterialSchema !== compatibility.promptMaterialSchema ||
+		profile.experimentId !== compatibility.experimentId ||
+		stableJson(profile.affinities) !== stableJson(compatibility.affinities) ||
+		stableJson(profile.namespaces) !== stableJson(compatibility.namespaces) ||
+		stableJson(profile.pathTemplates) !== stableJson(compatibility.pathTemplates) ||
+		stableJson(profile.producerRoleAllowlist) !==
+			stableJson(compatibility.ownership.producerRoleAllowlist) ||
+		stableJson(profile.retryCeiling) !== stableJson(compatibility.ownership.retryCeiling) ||
+		stableJson(profile.forbiddenWriteClasses) !== stableJson(compatibility.forbiddenWriteClasses) ||
+		profile.ownership.exclusiveCandidateCreate !==
+			compatibility.ownership.exclusiveCandidateCreate ||
+		profile.ownership.immutableSingleCreateResult !==
+			compatibility.ownership.immutableSingleCreateResult ||
+		profile.ownership.overwriteForbidden !== compatibility.ownership.overwriteForbidden ||
+		profile.promotionCeiling !== 'candidate-only'
+	) {
+		throw new Error('Installed image-production skill family profile drifted from approval');
+	}
+	return compatibility;
+}
+
+export function preflightFamilyAffinityProductionDispatch(input: {
+	compatibility: unknown;
+	installedContractBytes: Uint8Array;
+	target: unknown;
+	assignment: unknown;
+	targetPath: string;
+	assignmentPath: string;
+	familyPacketBytes: Uint8Array;
+	renderedPromptBytes: Uint8Array;
+}): {
+	dispatchable: true;
+	profile: typeof FAMILY_AFFINITY_PRODUCTION_PROFILE;
+	targetId: string;
+	affinity: (typeof PRODUCTION_AFFINITIES)[number];
+	status: z.infer<typeof AttemptStatusSchema>;
+	promotionCeiling: 'candidate-only';
+} {
+	validateFamilyAffinityProductionCompatibility(input.compatibility, input.installedContractBytes);
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
+	const paths =
+		target.namespace === 'canonical'
+			? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+			: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version);
+	if (input.targetPath !== paths.target || input.assignmentPath !== paths.assignment) {
+		throw new Error('Dispatch input paths do not match exact versioned ownership templates');
+	}
+	validateFamilyAffinityAttemptCrossBinding(
+		{
+			namespace: target.namespace,
+			coordinateId: target.coordinateId,
+			familyId: target.familyId,
+			formId: target.formId,
+			currentClassId: target.currentClassId,
+			affinity: target.affinity,
+			activeVersion: target.version,
+			targetPath: paths.target,
+			targetSha256: familyAffinitySha256(target),
+			assignmentPath: paths.assignment,
+			assignmentSha256: familyAffinitySha256(assignment),
+			status: target.status
+		},
+		target,
+		assignment
+	);
+	if (target.status === 'blocked-on-anchor') {
+		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
+	}
+	const packet = FamilyPacketSchema.parse(
+		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
+	);
+	if (
+		packet.familyId !== target.familyId ||
+		familyAffinitySha256(packet) !== target.sources.familyPacketSha256
+	) {
+		throw new Error('Family packet source drifted from the dispatch target');
+	}
+	if (
+		familyAffinityRawSha256(input.renderedPromptBytes) !==
+		familyAffinityPromptSha256(target, assignment)
+	) {
+		throw new Error('Rendered family prompt bytes drifted from the repository prompt material');
+	}
+	return {
+		dispatchable: true,
+		profile: FAMILY_AFFINITY_PRODUCTION_PROFILE,
+		targetId: target.targetId,
+		affinity: target.affinity,
+		status: target.status,
+		promotionCeiling: 'candidate-only'
+	};
+}
+
 const ManifestCoordinateSchema = z
 	.object({
 		namespace: NamespaceSchema,
