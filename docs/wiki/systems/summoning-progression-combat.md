@@ -99,6 +99,10 @@ The compact live view gives the newest message full emphasis and fades the prece
 progressively. Expanded history restores uniform readable contrast, and event order remains explicit
 without depending on opacity alone.
 
+Character-voice messages use a concise colored name prefix rather than a portrait thumbnail. This
+keeps the feed visually light, avoids repeating the initiative portraits, and leaves mechanical event
+lines easy to scan.
+
 The supplied damage expression currently defines shape, not accepted constants:
 
 ```text

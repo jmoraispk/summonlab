@@ -193,6 +193,9 @@ results.
 - In the compact live view, keep the newest message at full emphasis and fade the preceding two
   progressively. Expanded history restores uniform readable contrast; fading never removes content
   or becomes the only indication of event order.
+- Identify character-voice messages with a concise colored name prefix. Do not repeat portrait
+  thumbnails in the feed; the name supplies identity while preserving battlefield space and keeping
+  mechanical event lines easy to scan.
 
 ### Content and data visualization
 
