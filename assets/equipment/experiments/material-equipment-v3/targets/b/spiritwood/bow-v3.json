@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-spiritwood-bow-v3",
+	"productionOrder": 104,
+	"rank": "B",
+	"materialId": "spiritwood",
+	"materialName": "Spiritwood",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-spiritwood.json",
+	"classId": "bow",
+	"classDirectionId": "equipment-v3-bow-rank-progression",
+	"artifactId": "bow",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/b/spiritwood/bow-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/spiritwood/bow-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/spiritwood/bow-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/bow-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/b/spiritwood/bow-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/b/spiritwood/bow-v3.json"
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-bronze-mace-v3",
+	"productionOrder": 5,
+	"rank": "F",
+	"materialId": "bronze",
+	"materialName": "Bronze",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json",
+	"classId": "mace",
+	"classDirectionId": "equipment-v3-mace-rank-progression",
+	"artifactId": "mace",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/f/bronze/mace-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/bronze/mace-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/bronze/mace-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/mace-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/mace-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/f/bronze/mace-v3.json"
+	}
+}

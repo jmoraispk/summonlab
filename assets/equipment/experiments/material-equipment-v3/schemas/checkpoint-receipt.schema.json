@@ -1,0 +1,114 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-owner-checkpoint-receipt-v3"
+		},
+		"checkpointId": {
+			"type": "string",
+			"enum": [
+				"equipment-v3-checkpoint-1-directions",
+				"equipment-v3-checkpoint-2-roots",
+				"equipment-v3-checkpoint-3-armour-pieces"
+			]
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"decidedBy": {
+			"type": "string",
+			"minLength": 1
+		},
+		"manifestCanonicalSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"galleryPath": {
+			"type": "string",
+			"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+		},
+		"decisions": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"subjectId": {
+						"type": "string",
+						"minLength": 1
+					},
+					"imagePath": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"imageSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"decision": {
+						"type": "string",
+						"enum": [
+							"accept",
+							"revise",
+							"defer"
+						]
+					},
+					"notes": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"subjectId",
+					"imagePath",
+					"imageSha256",
+					"decision",
+					"notes"
+				],
+				"additionalProperties": false
+			}
+		},
+		"summary": {
+			"type": "object",
+			"properties": {
+				"accept": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"revise": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"defer": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				}
+			},
+			"required": [
+				"accept",
+				"revise",
+				"defer"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"checkpointId",
+		"createdAt",
+		"decidedBy",
+		"manifestCanonicalSha256",
+		"galleryPath",
+		"decisions",
+		"summary"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/checkpoint-receipt.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

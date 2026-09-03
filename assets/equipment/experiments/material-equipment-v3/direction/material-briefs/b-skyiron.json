@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "skyiron",
+	"displayName": "Skyiron",
+	"family": "metal",
+	"rank": "B",
+	"palette": "Pale blue-silver metal with cloud-gray shadows and restrained azure seams.",
+	"valueRange": "Light, high-clarity metal values without becoming white.",
+	"surfaceAndWear": "Unusually smooth light metal, wind-swept polish lines, crisp edges, sparse abrasion.",
+	"constructionVocabulary": "Long sweeping profiles, lightened apertures, winglike ribs, elegant thin reinforcement.",
+	"supernaturalBehavior": "A faint cool sheen gathers on upward edges as if catching open-sky light.",
+	"neutralSecondaryMaterials": "Slate leather, pale hardwood, silver fittings, and gray cloth.",
+	"neighborDifference": "Lighter, more open, and more graceful than Blacksteel; less cosmic and faceted than Starmetal.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-skyiron.json"
+}

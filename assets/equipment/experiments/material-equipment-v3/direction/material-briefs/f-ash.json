@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "ash",
+	"displayName": "Ash",
+	"family": "wood",
+	"rank": "F",
+	"palette": "Pale tan sapwood with quiet cream grain and gray-brown end grain.",
+	"valueRange": "Light middle values with modest contrast.",
+	"surfaceAndWear": "Open straight grain, hand-smoothed facets, small nicks, and dry rubbed edges.",
+	"constructionVocabulary": "Plain carved limbs and shafts, wrapped grips, simple pegs, minimal fittings.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Hemp cord, dark leather, dull bronze, and undyed cloth.",
+	"neighborDifference": "Paler, simpler, and less elastic-looking than Yew; unmistakably real common wood.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-ash.json"
+}

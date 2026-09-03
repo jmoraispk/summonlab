@@ -1,0 +1,23 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"equipment-repository-io.ts",
+		"equipment-rank-first-production-v3.ts",
+		"equipment-rank-first-contract-v3.ts",
+		"equipment-rank-first-production-v3.spec.ts",
+		"export-equipment-rank-first-production-v3.ts",
+		"persist-equipment-rank-first-output-v3.ts",
+		"persist-equipment-rank-first-output-v3.spec.ts",
+		"record-equipment-rank-first-checkpoint-v3.ts",
+		"materialize-equipment-rank-first-assignments-v3.ts",
+		"export-equipment-rank-first-review-v3.ts",
+		"serve-equipment-rank-first-review-v3.ts"
+	]
+}

@@ -1,0 +1,153 @@
+{
+	"schemaVersion": "equipment-class-direction-manifest-v3",
+	"productionId": "material-equipment-v3",
+	"directions": [
+		{
+			"classId": "sword",
+			"displayName": "Sword",
+			"family": "metal",
+			"stableIdentity": "Long cutting blade and usable one- or two-hand grip.",
+			"variationLevers": "Blade profile, fuller, guard, pommel, negative space, and increasing silhouette ambition.",
+			"pose": "Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+			"sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+			"acceptanceScope": "Rank escalation, silhouette variety, finish, and class recognition."
+		},
+		{
+			"classId": "dagger",
+			"displayName": "Dagger",
+			"family": "metal",
+			"stableIdentity": "Compact one-hand fighting weapon with a clear point and grip.",
+			"variationLevers": "Point, blade mass, guard, hooks, cutouts, negative space, and increasing silhouette ambition.",
+			"pose": "Single dagger upright on its pommel with a slight rightward diagonal; whole silhouette readable.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+			"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+			"acceptanceScope": "Primary rank-escalation rhythm and the target level of coolness."
+		},
+		{
+			"classId": "spear",
+			"displayName": "Spear",
+			"family": "metal",
+			"stableIdentity": "Metal-led head on a long practical shaft.",
+			"variationLevers": "Head profile, socket, wings or lugs, shaft fittings, and bounded cutouts.",
+			"pose": "Single full spear on a long slight rightward diagonal; metal head and shaft proportion readable.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/spear-metal-ranks-v1.png",
+			"sha256": "bdfa20d86ca6b2a4c6b9540e6b0924e018cfe749b1dc8981fdead06ded7101bd",
+			"acceptanceScope": "Rank escalation, proportions, silhouette variety, and finish."
+		},
+		{
+			"classId": "axe",
+			"displayName": "Axe",
+			"family": "metal",
+			"stableIdentity": "One dominant cutting bit on a practical haft.",
+			"variationLevers": "Beard, bit sweep, poll, socket, haft fittings, and bounded cutouts.",
+			"pose": "Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",
+			"sha256": "b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd",
+			"acceptanceScope": "Rank escalation, single-bit silhouette variety, finish, and class recognition."
+		},
+		{
+			"classId": "mace",
+			"displayName": "Mace",
+			"family": "metal",
+			"stableIdentity": "Weighted striking head on a practical haft, shorter than a sword but not stubby.",
+			"variationLevers": "Flange count, crown, head mass, haft length, fittings, and negative space.",
+			"pose": "Single mace upright on the haft end with a slight rightward diagonal; full practical length visible.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/mace-metal-ranks-v1.png",
+			"sha256": "b8e12d3b64ec7ac4515ef067b87dad09c5b51b02a1f5d6a1fb13f1c425389359",
+			"acceptanceScope": "Rank escalation, proportions, silhouette variety, and finish."
+		},
+		{
+			"classId": "shield",
+			"displayName": "Shield",
+			"family": "metal",
+			"stableIdentity": "One-hand defensive face with readable rim, boss or grip structure.",
+			"variationLevers": "Outline, boss, ribs, rim, apertures, and structural ornament; shape may vary by rank.",
+			"pose": "Single shield in consistent mild three-quarter view, standing vertically with face and thickness readable.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"acceptanceScope": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"classId": "bow",
+			"displayName": "Bow",
+			"family": "wood",
+			"stableIdentity": "Two wood-led limbs, central grip, and one clearly readable string.",
+			"variationLevers": "Recurve, limb profile, tips, inlay, negative space, and increasing construction ambition.",
+			"pose": "Single strung bow upright with a slight rightward diagonal; entire string and both tips visible.",
+			"source": "v3-generated",
+			"status": "generation-required",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+			"sha256": null,
+			"acceptanceScope": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+		},
+		{
+			"classId": "staff",
+			"displayName": "Staff",
+			"family": "wood",
+			"stableIdentity": "Full-length wood-led magical focus with a readable crown and grounded shaft.",
+			"variationLevers": "Crown gesture, growth, rings, fittings, inlay, negative space, and increasing supernatural character.",
+			"pose": "Single staff standing on its base with a gentle rightward lean; crown gestures away from vertical.",
+			"source": "v3-generated",
+			"status": "generation-required",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/staff-wood-ranks-v3.png",
+			"sha256": null,
+			"acceptanceScope": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+		},
+		{
+			"classId": "heavy-armour",
+			"displayName": "Heavy Armour",
+			"family": "metal",
+			"stableIdentity": "Broad articulated metal protection comprising exactly Head, Torso, Legs, and Boots.",
+			"variationLevers": "Plate cut, overlap, helmet, shoulders, fauld, greaves, and increasing silhouette authority.",
+			"pose": "Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer.",
+			"source": "accepted-experiment",
+			"status": "owner-accepted",
+			"imagePath": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armour-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"acceptanceScope": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"classId": "light-armour",
+			"displayName": "Light Armour",
+			"family": "hide-scale",
+			"stableIdentity": "Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots.",
+			"variationLevers": "Panels, scale direction, closures, layering, shoulder shape, and increasing material authority.",
+			"pose": "Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer.",
+			"source": "v3-generated",
+			"status": "generation-required",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"sha256": null,
+			"acceptanceScope": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"classId": "robes",
+			"displayName": "Robes",
+			"family": "cloth-fibre",
+			"stableIdentity": "Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots.",
+			"variationLevers": "Hem, sleeves, collar or hood, layers, weave behavior, closures, and increasing supernatural structure.",
+			"pose": "Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure.",
+			"source": "v3-generated",
+			"status": "generation-required",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": null,
+			"acceptanceScope": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		}
+	],
+	"secondaryFinishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887"
+	}
+}

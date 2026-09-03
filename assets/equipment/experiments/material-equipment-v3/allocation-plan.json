@@ -1,0 +1,2239 @@
+{
+	"schemaVersion": "equipment-rank-first-allocation-plan-v3",
+	"planId": "material-equipment-v3-rank-first-full-production",
+	"productionId": "material-equipment-v3",
+	"status": "checkpoint-gated",
+	"manifest": {
+		"path": "assets/equipment/experiments/material-equipment-v3/manifest.json",
+		"canonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a"
+	},
+	"scheduler": {
+		"maximumConcurrency": 16,
+		"rootLaneCount": 11,
+		"rootLaneConcurrency": 11,
+		"rootLaneOrder": "F-E-D-C-B-A-S",
+		"armourPieceConcurrency": 16,
+		"retryPolicy": "new-versioned-attempt-never-overwrite"
+	},
+	"ownership": {
+		"root": "assets/equipment/experiments/material-equipment-v3",
+		"exclusiveCreateRequired": true,
+		"workerOutputs": [
+			"candidate",
+			"provenance-result"
+		],
+		"orchestratorOutputs": [
+			"audits",
+			"review-receipts",
+			"checkpoint-receipts"
+		],
+		"forbiddenRoots": [
+			"assets/equipment/experiments/material-equipment-v1",
+			"assets/equipment/experiments/material-equipment-v2",
+			"assets/equipment/approved",
+			"assets/equipment/runtime",
+			"assets/enemies"
+		]
+	},
+	"checkpoints": [
+		{
+			"checkpointId": "equipment-v3-checkpoint-1-directions",
+			"unlocks": "77-root-jobs",
+			"requiredDecisionCount": 4
+		},
+		{
+			"checkpointId": "equipment-v3-checkpoint-2-roots",
+			"unlocks": "84-armour-piece-jobs-for-accepted-sets",
+			"requiredDecisionCount": 77
+		},
+		{
+			"checkpointId": "equipment-v3-checkpoint-3-armour-pieces",
+			"unlocks": "candidate-closeout",
+			"requiredDecisionCount": 84
+		}
+	],
+	"summary": {
+		"jobCount": 161,
+		"rootJobCount": 77,
+		"armourPieceJobCount": 84
+	},
+	"jobs": [
+		{
+			"jobId": "job-material-equipment-v3-bronze-sword-v3",
+			"targetId": "material-equipment-v3-bronze-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-dagger-v3",
+			"targetId": "material-equipment-v3-bronze-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-spear-v3",
+			"targetId": "material-equipment-v3-bronze-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-axe-v3",
+			"targetId": "material-equipment-v3-bronze-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-mace-v3",
+			"targetId": "material-equipment-v3-bronze-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-shield-v3",
+			"targetId": "material-equipment-v3-bronze-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ash-bow-v3",
+			"targetId": "material-equipment-v3-ash-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/ash/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/ash/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ash-staff-v3",
+			"targetId": "material-equipment-v3-ash-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/ash/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/ash/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"targetId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 1,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/hemp-weave/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-sword-v3",
+			"targetId": "material-equipment-v3-iron-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-dagger-v3",
+			"targetId": "material-equipment-v3-iron-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-spear-v3",
+			"targetId": "material-equipment-v3-iron-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-axe-v3",
+			"targetId": "material-equipment-v3-iron-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-mace-v3",
+			"targetId": "material-equipment-v3-iron-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-shield-v3",
+			"targetId": "material-equipment-v3-iron-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-yew-bow-v3",
+			"targetId": "material-equipment-v3-yew-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/yew/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-yew-staff-v3",
+			"targetId": "material-equipment-v3-yew-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/yew/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/hard-leather/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wool-robes-full-set-v3",
+			"targetId": "material-equipment-v3-wool-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 2,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/wool/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-sword-v3",
+			"targetId": "material-equipment-v3-steel-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-dagger-v3",
+			"targetId": "material-equipment-v3-steel-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-spear-v3",
+			"targetId": "material-equipment-v3-steel-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-axe-v3",
+			"targetId": "material-equipment-v3-steel-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-mace-v3",
+			"targetId": "material-equipment-v3-steel-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-shield-v3",
+			"targetId": "material-equipment-v3-steel-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ironwood-bow-v3",
+			"targetId": "material-equipment-v3-ironwood-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/ironwood/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/ironwood/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ironwood-staff-v3",
+			"targetId": "material-equipment-v3-ironwood-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/ironwood/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/ironwood/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-layered-silk-robes-full-set-v3",
+			"targetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 3,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-sword-v3",
+			"targetId": "material-equipment-v3-blacksteel-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-dagger-v3",
+			"targetId": "material-equipment-v3-blacksteel-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-spear-v3",
+			"targetId": "material-equipment-v3-blacksteel-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-axe-v3",
+			"targetId": "material-equipment-v3-blacksteel-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-mace-v3",
+			"targetId": "material-equipment-v3-blacksteel-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-shield-v3",
+			"targetId": "material-equipment-v3-blacksteel-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-heartwood-bow-v3",
+			"targetId": "material-equipment-v3-heartwood-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/heartwood/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-heartwood-staff-v3",
+			"targetId": "material-equipment-v3-heartwood-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/heartwood/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-chitin-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/chitin/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spellweave-robes-full-set-v3",
+			"targetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 4,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-sword-v3",
+			"targetId": "material-equipment-v3-skyiron-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-dagger-v3",
+			"targetId": "material-equipment-v3-skyiron-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-spear-v3",
+			"targetId": "material-equipment-v3-skyiron-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-axe-v3",
+			"targetId": "material-equipment-v3-skyiron-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-mace-v3",
+			"targetId": "material-equipment-v3-skyiron-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-shield-v3",
+			"targetId": "material-equipment-v3-skyiron-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spiritwood-bow-v3",
+			"targetId": "material-equipment-v3-spiritwood-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/spiritwood/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spiritwood-staff-v3",
+			"targetId": "material-equipment-v3-spiritwood-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/spiritwood/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/drakescale/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-moonweave-robes-full-set-v3",
+			"targetId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 5,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/moonweave/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-sword-v3",
+			"targetId": "material-equipment-v3-starmetal-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-dagger-v3",
+			"targetId": "material-equipment-v3-starmetal-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-spear-v3",
+			"targetId": "material-equipment-v3-starmetal-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-axe-v3",
+			"targetId": "material-equipment-v3-starmetal-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-mace-v3",
+			"targetId": "material-equipment-v3-starmetal-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-shield-v3",
+			"targetId": "material-equipment-v3-starmetal-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-living-branch-bow-v3",
+			"targetId": "material-equipment-v3-living-branch-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/living-branch/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-living-branch-staff-v3",
+			"targetId": "material-equipment-v3-living-branch-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/living-branch/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starcloth-robes-full-set-v3",
+			"targetId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 6,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starcloth/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-sword-v3",
+			"targetId": "material-equipment-v3-sunsteel-sword-v3",
+			"laneId": "class-sword",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/sword-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/sword-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-dagger-v3",
+			"targetId": "material-equipment-v3-sunsteel-dagger-v3",
+			"laneId": "class-dagger",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/dagger-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/dagger-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-spear-v3",
+			"targetId": "material-equipment-v3-sunsteel-spear-v3",
+			"laneId": "class-spear",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/spear-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/spear-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-axe-v3",
+			"targetId": "material-equipment-v3-sunsteel-axe-v3",
+			"laneId": "class-axe",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/axe-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/axe-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-mace-v3",
+			"targetId": "material-equipment-v3-sunsteel-mace-v3",
+			"laneId": "class-mace",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/mace-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/mace-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-shield-v3",
+			"targetId": "material-equipment-v3-sunsteel-shield-v3",
+			"laneId": "class-shield",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/shield-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/shield-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"laneId": "class-heavy-armour",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/heavy-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-worldtree-limb-bow-v3",
+			"targetId": "material-equipment-v3-worldtree-limb-bow-v3",
+			"laneId": "class-bow",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/bow-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/worldtree-limb/bow-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-worldtree-limb-staff-v3",
+			"targetId": "material-equipment-v3-worldtree-limb-staff-v3",
+			"laneId": "class-staff",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/staff-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/worldtree-limb/staff-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"laneId": "class-light-armour",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/ancient-dragon-scale/light-armour-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-fateweave-robes-full-set-v3",
+			"targetId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"laneId": "class-robes",
+			"laneOrder": 7,
+			"phase": "root",
+			"activation": "after-owner-checkpoint-1",
+			"assignmentMaterialization": "after-accepted-class-direction-hash",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-full-set-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/fateweave/robes-full-set-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-bronze-heavy-armour-head-v3",
+			"laneId": "set-bronze-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-bronze-heavy-armour-torso-v3",
+			"laneId": "set-bronze-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-bronze-heavy-armour-legs-v3",
+			"laneId": "set-bronze-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-bronze-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-bronze-heavy-armour-boots-v3",
+			"laneId": "set-bronze-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-coarse-hide-light-armour-head-v3",
+			"targetId": "material-equipment-v3-coarse-hide-light-armour-head-v3",
+			"laneId": "set-coarse-hide-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-coarse-hide-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-coarse-hide-light-armour-torso-v3",
+			"laneId": "set-coarse-hide-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-coarse-hide-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-coarse-hide-light-armour-legs-v3",
+			"laneId": "set-coarse-hide-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-coarse-hide-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-coarse-hide-light-armour-boots-v3",
+			"laneId": "set-coarse-hide-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hemp-weave-robes-head-v3",
+			"targetId": "material-equipment-v3-hemp-weave-robes-head-v3",
+			"laneId": "set-hemp-weave-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/hemp-weave/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hemp-weave-robes-torso-v3",
+			"targetId": "material-equipment-v3-hemp-weave-robes-torso-v3",
+			"laneId": "set-hemp-weave-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/hemp-weave/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hemp-weave-robes-legs-v3",
+			"targetId": "material-equipment-v3-hemp-weave-robes-legs-v3",
+			"laneId": "set-hemp-weave-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/hemp-weave/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hemp-weave-robes-boots-v3",
+			"targetId": "material-equipment-v3-hemp-weave-robes-boots-v3",
+			"laneId": "set-hemp-weave-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/hemp-weave/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-iron-heavy-armour-head-v3",
+			"laneId": "set-iron-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-iron-heavy-armour-torso-v3",
+			"laneId": "set-iron-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-iron-heavy-armour-legs-v3",
+			"laneId": "set-iron-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-iron-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-iron-heavy-armour-boots-v3",
+			"laneId": "set-iron-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hard-leather-light-armour-head-v3",
+			"targetId": "material-equipment-v3-hard-leather-light-armour-head-v3",
+			"laneId": "set-hard-leather-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/hard-leather/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hard-leather-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-hard-leather-light-armour-torso-v3",
+			"laneId": "set-hard-leather-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/hard-leather/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hard-leather-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-hard-leather-light-armour-legs-v3",
+			"laneId": "set-hard-leather-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/hard-leather/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-hard-leather-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-hard-leather-light-armour-boots-v3",
+			"laneId": "set-hard-leather-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/hard-leather/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wool-robes-head-v3",
+			"targetId": "material-equipment-v3-wool-robes-head-v3",
+			"laneId": "set-wool-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wool-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/wool/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wool-robes-torso-v3",
+			"targetId": "material-equipment-v3-wool-robes-torso-v3",
+			"laneId": "set-wool-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wool-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/wool/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wool-robes-legs-v3",
+			"targetId": "material-equipment-v3-wool-robes-legs-v3",
+			"laneId": "set-wool-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wool-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/wool/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wool-robes-boots-v3",
+			"targetId": "material-equipment-v3-wool-robes-boots-v3",
+			"laneId": "set-wool-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wool-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/wool/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-steel-heavy-armour-head-v3",
+			"laneId": "set-steel-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-steel-heavy-armour-torso-v3",
+			"laneId": "set-steel-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-steel-heavy-armour-legs-v3",
+			"laneId": "set-steel-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-steel-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-steel-heavy-armour-boots-v3",
+			"laneId": "set-steel-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-beast-scale-light-armour-head-v3",
+			"targetId": "material-equipment-v3-beast-scale-light-armour-head-v3",
+			"laneId": "set-beast-scale-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-beast-scale-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-beast-scale-light-armour-torso-v3",
+			"laneId": "set-beast-scale-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-beast-scale-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-beast-scale-light-armour-legs-v3",
+			"laneId": "set-beast-scale-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-beast-scale-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-beast-scale-light-armour-boots-v3",
+			"laneId": "set-beast-scale-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-layered-silk-robes-head-v3",
+			"targetId": "material-equipment-v3-layered-silk-robes-head-v3",
+			"laneId": "set-layered-silk-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-layered-silk-robes-torso-v3",
+			"targetId": "material-equipment-v3-layered-silk-robes-torso-v3",
+			"laneId": "set-layered-silk-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-layered-silk-robes-legs-v3",
+			"targetId": "material-equipment-v3-layered-silk-robes-legs-v3",
+			"laneId": "set-layered-silk-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-layered-silk-robes-boots-v3",
+			"targetId": "material-equipment-v3-layered-silk-robes-boots-v3",
+			"laneId": "set-layered-silk-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-head-v3",
+			"laneId": "set-blacksteel-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-torso-v3",
+			"laneId": "set-blacksteel-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-legs-v3",
+			"laneId": "set-blacksteel-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-blacksteel-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-boots-v3",
+			"laneId": "set-blacksteel-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/blacksteel/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-chitin-light-armour-head-v3",
+			"targetId": "material-equipment-v3-chitin-light-armour-head-v3",
+			"laneId": "set-chitin-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/chitin/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-chitin-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-chitin-light-armour-torso-v3",
+			"laneId": "set-chitin-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/chitin/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-chitin-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-chitin-light-armour-legs-v3",
+			"laneId": "set-chitin-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/chitin/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-chitin-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-chitin-light-armour-boots-v3",
+			"laneId": "set-chitin-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/chitin/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spellweave-robes-head-v3",
+			"targetId": "material-equipment-v3-spellweave-robes-head-v3",
+			"laneId": "set-spellweave-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spellweave-robes-torso-v3",
+			"targetId": "material-equipment-v3-spellweave-robes-torso-v3",
+			"laneId": "set-spellweave-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spellweave-robes-legs-v3",
+			"targetId": "material-equipment-v3-spellweave-robes-legs-v3",
+			"laneId": "set-spellweave-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-spellweave-robes-boots-v3",
+			"targetId": "material-equipment-v3-spellweave-robes-boots-v3",
+			"laneId": "set-spellweave-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-head-v3",
+			"laneId": "set-skyiron-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-torso-v3",
+			"laneId": "set-skyiron-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-legs-v3",
+			"laneId": "set-skyiron-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-skyiron-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-boots-v3",
+			"laneId": "set-skyiron-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-drakescale-light-armour-head-v3",
+			"targetId": "material-equipment-v3-drakescale-light-armour-head-v3",
+			"laneId": "set-drakescale-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/drakescale/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-drakescale-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-drakescale-light-armour-torso-v3",
+			"laneId": "set-drakescale-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/drakescale/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-drakescale-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-drakescale-light-armour-legs-v3",
+			"laneId": "set-drakescale-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/drakescale/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-drakescale-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-drakescale-light-armour-boots-v3",
+			"laneId": "set-drakescale-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/drakescale/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-moonweave-robes-head-v3",
+			"targetId": "material-equipment-v3-moonweave-robes-head-v3",
+			"laneId": "set-moonweave-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/moonweave/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-moonweave-robes-torso-v3",
+			"targetId": "material-equipment-v3-moonweave-robes-torso-v3",
+			"laneId": "set-moonweave-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/moonweave/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-moonweave-robes-legs-v3",
+			"targetId": "material-equipment-v3-moonweave-robes-legs-v3",
+			"laneId": "set-moonweave-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/moonweave/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-moonweave-robes-boots-v3",
+			"targetId": "material-equipment-v3-moonweave-robes-boots-v3",
+			"laneId": "set-moonweave-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/moonweave/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-head-v3",
+			"laneId": "set-starmetal-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-torso-v3",
+			"laneId": "set-starmetal-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-legs-v3",
+			"laneId": "set-starmetal-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starmetal-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-boots-v3",
+			"laneId": "set-starmetal-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starmetal/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wyrmscale-light-armour-head-v3",
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-head-v3",
+			"laneId": "set-wyrmscale-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wyrmscale-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-torso-v3",
+			"laneId": "set-wyrmscale-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wyrmscale-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-legs-v3",
+			"laneId": "set-wyrmscale-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-wyrmscale-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-boots-v3",
+			"laneId": "set-wyrmscale-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starcloth-robes-head-v3",
+			"targetId": "material-equipment-v3-starcloth-robes-head-v3",
+			"laneId": "set-starcloth-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starcloth/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starcloth-robes-torso-v3",
+			"targetId": "material-equipment-v3-starcloth-robes-torso-v3",
+			"laneId": "set-starcloth-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starcloth/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starcloth-robes-legs-v3",
+			"targetId": "material-equipment-v3-starcloth-robes-legs-v3",
+			"laneId": "set-starcloth-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starcloth/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-starcloth-robes-boots-v3",
+			"targetId": "material-equipment-v3-starcloth-robes-boots-v3",
+			"laneId": "set-starcloth-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/starcloth/robes-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-heavy-armour-head-v3",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-head-v3",
+			"laneId": "set-sunsteel-heavy-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/heavy-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-heavy-armour-torso-v3",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-torso-v3",
+			"laneId": "set-sunsteel-heavy-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/heavy-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-heavy-armour-legs-v3",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-legs-v3",
+			"laneId": "set-sunsteel-heavy-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/heavy-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-sunsteel-heavy-armour-boots-v3",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-boots-v3",
+			"laneId": "set-sunsteel-heavy-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/sunsteel/heavy-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ancient-dragon-scale-light-armour-head-v3",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-head-v3",
+			"laneId": "set-ancient-dragon-scale-light-armour",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/ancient-dragon-scale/light-armour-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
+			"laneId": "set-ancient-dragon-scale-light-armour",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/ancient-dragon-scale/light-armour-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3",
+			"laneId": "set-ancient-dragon-scale-light-armour",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/ancient-dragon-scale/light-armour-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-ancient-dragon-scale-light-armour-boots-v3",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-boots-v3",
+			"laneId": "set-ancient-dragon-scale-light-armour",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/ancient-dragon-scale/light-armour-boots-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-fateweave-robes-head-v3",
+			"targetId": "material-equipment-v3-fateweave-robes-head-v3",
+			"laneId": "set-fateweave-robes",
+			"laneOrder": 1,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-head-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/fateweave/robes-head-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-fateweave-robes-torso-v3",
+			"targetId": "material-equipment-v3-fateweave-robes-torso-v3",
+			"laneId": "set-fateweave-robes",
+			"laneOrder": 2,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-torso-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/fateweave/robes-torso-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-fateweave-robes-legs-v3",
+			"targetId": "material-equipment-v3-fateweave-robes-legs-v3",
+			"laneId": "set-fateweave-robes",
+			"laneOrder": 3,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-legs-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/fateweave/robes-legs-v3.json"
+			}
+		},
+		{
+			"jobId": "job-material-equipment-v3-fateweave-robes-boots-v3",
+			"targetId": "material-equipment-v3-fateweave-robes-boots-v3",
+			"laneId": "set-fateweave-robes",
+			"laneOrder": 4,
+			"phase": "armour-piece",
+			"activation": "after-owner-checkpoint-2-and-full-set-acceptance",
+			"assignmentMaterialization": "after-hash-bound-full-set-review-receipt",
+			"dependsOnTargetId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-boots-v3.png",
+				"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/fateweave/robes-boots-v3.json"
+			}
+		}
+	]
+}

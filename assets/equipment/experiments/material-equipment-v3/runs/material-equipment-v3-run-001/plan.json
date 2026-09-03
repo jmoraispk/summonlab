@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-rank-first-run-plan-v3",
+	"runId": "material-equipment-v3-run-001",
+	"productionId": "material-equipment-v3",
+	"manifest": {
+		"path": "assets/equipment/experiments/material-equipment-v3/manifest.json",
+		"canonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a"
+	},
+	"status": "awaiting-owner-checkpoint-1",
+	"maximumConcurrency": 16,
+	"classLaneCount": 11,
+	"rootAssignmentCountBeforeCheckpoint1": 0,
+	"armourPieceAssignmentCountBeforeSetUnlocks": 0,
+	"checkpointPaths": [
+		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json",
+		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json"
+	]
+}

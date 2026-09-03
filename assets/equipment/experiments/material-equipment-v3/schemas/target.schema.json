@@ -1,0 +1,192 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"targetId": {
+			"type": "string",
+			"pattern": "^material-equipment-v3-[a-z0-9-]+-v3$"
+		},
+		"productionOrder": {
+			"type": "integer",
+			"minimum": 1,
+			"maximum": 161
+		},
+		"rank": {
+			"type": "string",
+			"enum": [
+				"F",
+				"E",
+				"D",
+				"C",
+				"B",
+				"A",
+				"S"
+			]
+		},
+		"materialId": {
+			"type": "string",
+			"pattern": "^[a-z0-9-]+$"
+		},
+		"materialName": {
+			"type": "string",
+			"minLength": 1
+		},
+		"materialFamily": {
+			"type": "string",
+			"enum": [
+				"metal",
+				"wood",
+				"hide-scale",
+				"cloth-fibre"
+			]
+		},
+		"materialBriefPath": {
+			"type": "string",
+			"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+		},
+		"classId": {
+			"type": "string",
+			"enum": [
+				"sword",
+				"dagger",
+				"spear",
+				"axe",
+				"mace",
+				"shield",
+				"bow",
+				"staff",
+				"heavy-armour",
+				"light-armour",
+				"robes"
+			]
+		},
+		"classDirectionId": {
+			"type": "string",
+			"pattern": "^equipment-v3-[a-z-]+-rank-progression$"
+		},
+		"artifactId": {
+			"type": "string",
+			"pattern": "^[a-z-]+$"
+		},
+		"artifactRole": {
+			"type": "string",
+			"enum": [
+				"item",
+				"set-source",
+				"armour-piece"
+			]
+		},
+		"slot": {
+			"anyOf": [
+				{
+					"type": "string",
+					"enum": [
+						"head",
+						"torso",
+						"legs",
+						"boots"
+					]
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"setId": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"dependsOnTargetId": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"width": {
+			"type": "number",
+			"const": 1024
+		},
+		"height": {
+			"anyOf": [
+				{
+					"type": "number",
+					"const": 1024
+				},
+				{
+					"type": "number",
+					"const": 1536
+				}
+			]
+		},
+		"output": {
+			"type": "object",
+			"properties": {
+				"targetPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"assignmentPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"promptPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"candidatePath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"provenanceResultPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"reviewReceiptPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				}
+			},
+			"required": [
+				"targetPath",
+				"assignmentPath",
+				"promptPath",
+				"candidatePath",
+				"provenanceResultPath",
+				"reviewReceiptPath"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"targetId",
+		"productionOrder",
+		"rank",
+		"materialId",
+		"materialName",
+		"materialFamily",
+		"materialBriefPath",
+		"classId",
+		"classDirectionId",
+		"artifactId",
+		"artifactRole",
+		"slot",
+		"setId",
+		"dependsOnTargetId",
+		"width",
+		"height",
+		"output"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/target.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

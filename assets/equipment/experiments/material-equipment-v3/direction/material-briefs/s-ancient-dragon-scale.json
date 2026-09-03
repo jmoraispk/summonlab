@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "ancient-dragon-scale",
+	"displayName": "Ancient Dragon Scale",
+	"family": "hide-scale",
+	"rank": "S",
+	"palette": "Obsidian dragon scales, molten gold fissures, ancient crimson undertones, and ivory horn accents.",
+	"valueRange": "Apex dark mass with brilliant controlled scale rims and fissures.",
+	"surfaceAndWear": "Colossal time-worn scales, glass-hard ridges, legendary battle scars, perfectly fitted ancient overlaps.",
+	"constructionVocabulary": "Monumental draconic plating, crownlike crests, horn-bound contours, grand interlocking scale architecture.",
+	"supernaturalBehavior": "Ancient inner fire glows through a few deep fissures; no flames, smoke, or creature body.",
+	"neutralSecondaryMaterials": "Black leather, sunsteel fittings, charcoal lining, and ivory horn only.",
+	"neighborDifference": "Older, larger, more monumental, and more mythic than Wyrmscale; unmistakably true dragon material.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-ancient-dragon-scale.json"
+}

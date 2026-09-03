@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "wool",
+	"displayName": "Wool",
+	"family": "cloth-fibre",
+	"rank": "E",
+	"palette": "Deep moss, warm gray, muted burgundy, and natural cream accents.",
+	"valueRange": "Soft middle values with deep fold shadows.",
+	"surfaceAndWear": "Dense fuzzy weave, pill-soft edges, compressed folds, and careful darning.",
+	"constructionVocabulary": "Layered warm panels, fitted mantle or hood, broad hems, braided ties, practical drape.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Plain leather, linen lining, wood toggles, and dull iron clasps.",
+	"neighborDifference": "Denser, warmer, and more tailored than Hemp Weave; less sleek and layered than Silk.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-wool.json"
+}

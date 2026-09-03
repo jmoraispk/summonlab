@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-heartwood-staff-v3",
+	"productionOrder": 82,
+	"rank": "C",
+	"materialId": "heartwood",
+	"materialName": "Heartwood",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-heartwood.json",
+	"classId": "staff",
+	"classDirectionId": "equipment-v3-staff-rank-progression",
+	"artifactId": "staff",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/c/heartwood/staff-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/c/heartwood/staff-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/c/heartwood/staff-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/staff-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/c/heartwood/staff-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/c/heartwood/staff-v3.json"
+	}
+}

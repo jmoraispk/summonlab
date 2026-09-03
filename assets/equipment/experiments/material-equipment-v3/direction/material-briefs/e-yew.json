@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "yew",
+	"displayName": "Yew",
+	"family": "wood",
+	"rank": "E",
+	"palette": "Honey-gold sapwood with warm reddish heartwood bands.",
+	"valueRange": "Warm middle values with readable two-tone grain.",
+	"surfaceAndWear": "Dense smooth grain, flex-polished surfaces, shallow handling wear, and clean carved edges.",
+	"constructionVocabulary": "Graceful tensioned curves, laminated-looking natural color bands, neat bindings, slim fittings.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Dark leather, linen cord, dull iron, and small bronze caps.",
+	"neighborDifference": "Richer, springier, and more carefully shaped than Ash; less massive and dark than Ironwood.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-yew.json"
+}

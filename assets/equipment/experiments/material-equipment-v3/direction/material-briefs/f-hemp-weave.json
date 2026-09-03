@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "hemp-weave",
+	"displayName": "Hemp Weave",
+	"family": "cloth-fibre",
+	"rank": "F",
+	"palette": "Natural flax beige, oatmeal, and weathered gray-brown.",
+	"valueRange": "Light-middle matte values with low contrast.",
+	"surfaceAndWear": "Coarse visible weave, softened creases, frayed edges, repairs, and uneven dye.",
+	"constructionVocabulary": "Simple rectangular panels, practical hems, cord belts, broad sleeves, minimal layers.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Hemp cord, plain leather, wood toggles, and dull bronze.",
+	"neighborDifference": "Coarser, lighter, and less insulating than Wool; deliberately humble rather than ragged.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-hemp-weave.json"
+}

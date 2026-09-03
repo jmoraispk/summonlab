@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "sunsteel",
+	"displayName": "Sunsteel",
+	"family": "metal",
+	"rank": "S",
+	"palette": "White-gold metal, warm solar gold, small ember-orange cores, and deep charcoal contrast.",
+	"valueRange": "Legendary bright focal edges balanced by solid dark recesses.",
+	"surfaceAndWear": "Flawless radiant alloy, sunburst grain, immaculate edges, ceremonial micro-engraving, no rust.",
+	"constructionVocabulary": "Iconic heroic silhouette, solar arcs, crownlike guards, controlled asymmetric spectacle, masterful joined geometry.",
+	"supernaturalBehavior": "Contained sunlight glows through narrow channels and the strongest edges; no uncontrolled bloom.",
+	"neutralSecondaryMaterials": "Black leather, dark hardwood, charcoal cloth, and tiny white-silver fittings.",
+	"neighborDifference": "Warmer, more iconic, and unmistakably solar beyond Starmetal while remaining usable equipment.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-sunsteel.json"
+}
