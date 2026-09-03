@@ -2,7 +2,10 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { EquipmentCheckpointReceiptV3Schema } from './equipment-rank-first-contract-v3.js';
+import {
+	EquipmentCheckpointReceiptV3Schema,
+	EquipmentRootCandidateSelectionManifestV3Schema
+} from './equipment-rank-first-contract-v3.js';
 import {
 	EQUIPMENT_CLASS_DIRECTIONS_V3,
 	EQUIPMENT_V3_MANIFEST_PATH,
@@ -12,6 +15,7 @@ import {
 	fileSha256,
 	serializeJson
 } from './equipment-rank-first-production-v3.js';
+import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
 import {
 	exclusiveCreateEquipmentRepositoryFile,
 	readEquipmentRepositoryJson
@@ -51,6 +55,43 @@ const CHECKPOINTS = {
 	}
 } as const;
 
+const CHECKPOINT_GALLERIES = {
+	'1': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-1/index.html`,
+	'2': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-2-final/index.html`,
+	'3': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3/index.html`
+} as const;
+
+async function expectedImagePaths(
+	workspaceRoot: string,
+	checkpoint: keyof typeof CHECKPOINTS
+): Promise<Map<string, string>> {
+	if (checkpoint === '1') {
+		return new Map(
+			EQUIPMENT_CLASS_DIRECTIONS_V3.filter(({ status }) => status === 'generation-required').map(
+				(direction) => [`equipment-v3-${direction.classId}-rank-progression`, direction.imagePath]
+			)
+		);
+	}
+	const targets = buildEquipmentCandidateTargetsV3().filter((target) =>
+		checkpoint === '2'
+			? target.dependsOnTargetId === null
+			: target.artifactRole === 'armour-piece'
+	);
+	if (checkpoint === '3') {
+		return new Map(targets.map((target) => [target.targetId, target.output.candidatePath]));
+	}
+	const selections = EquipmentRootCandidateSelectionManifestV3Schema.parse(
+		await readEquipmentRepositoryJson(workspaceRoot, EQUIPMENT_V3_ROOT_SELECTION_PATH)
+	).selections;
+	return new Map(
+		targets.map((target) => [
+			target.targetId,
+			selections.find(({ targetId }) => targetId === target.targetId)?.candidatePath ??
+				target.output.candidatePath
+		])
+	);
+}
+
 export async function recordEquipmentCheckpointV3(input: {
 	readonly workspaceRoot: string;
 	readonly checkpoint: keyof typeof CHECKPOINTS;
@@ -68,6 +109,15 @@ export async function recordEquipmentCheckpointV3(input: {
 		throw new Error(
 			`Checkpoint ${input.checkpoint} requires exactly its ${expected.length} subjects`
 		);
+	}
+	if (input.galleryPath !== CHECKPOINT_GALLERIES[input.checkpoint]) {
+		throw new Error(`Checkpoint ${input.checkpoint} gallery path is not authoritative`);
+	}
+	const imagePaths = await expectedImagePaths(input.workspaceRoot, input.checkpoint);
+	for (const decision of input.decisions) {
+		if (imagePaths.get(decision.subjectId) !== decision.imagePath) {
+			throw new Error(`Checkpoint image path is stale or unselected: ${decision.subjectId}`);
+		}
 	}
 	const decisions = input.decisions.map((decision) => ({
 		...decision,

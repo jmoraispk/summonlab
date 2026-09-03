@@ -203,6 +203,14 @@ async function verifyCheckpoint(workspaceRoot: string, number: 1 | 2 | 3) {
 		)
 	);
 	const expected = [4, 77, 84][number - 1]!;
+	const expectedGallery = [
+		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-1/index.html`,
+		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-2-final/index.html`,
+		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3/index.html`
+	][number - 1]!;
+	if (receipt.galleryPath !== expectedGallery) {
+		throw new Error(`Checkpoint ${number} gallery path drift`);
+	}
 	if (receipt.decisions.length !== expected) {
 		throw new Error(`Checkpoint ${number} decision count drift`);
 	}
