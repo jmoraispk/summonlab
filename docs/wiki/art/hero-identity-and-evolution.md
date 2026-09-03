@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-identity-evolution`
 
-Design status: **accepted visual-generation direction; production experiment pending**.
+Design status: **accepted visual-generation direction; candidate waves in review**.
 
 This page governs hero identity generation beyond the fixed Living Village prototype roster. It
 connects physical variation, starting capability, aptitudes, personality, wardrobe, native stars,
@@ -49,14 +49,22 @@ procedural human generator.
 The chibi is the hero's combat representation, not a second independently invented character. It
 derives from the selected summon anchor and preserves the face, skin, age cues, dominant hairstyle
 silhouette, body-mass silhouette, wardrobe construction and palette, footwear, and the few
-accessories or tattoos that survive at combat scale. Chibi stylization may enlarge the head, hands,
-feet, hair mass, and identity anchors, but must not collapse broad, soft, muscular, slight, or
-unusually proportioned heroes into one generic mascot body.
+accessories or tattoos that survive at combat scale. Chibi stylization enlarges the head and
+simplifies shapes, but it must not use wider shoulders, thicker upper arms or forearms, a wider
+torso, shorter limbs, added fat, or added muscle as a generic shortcut to cuteness. Relative
+shoulder width, arm girth, wrist size, torso and hip width, leg length, body fat, and muscle
+distribution all derive from the summon anchor. Deliberately muscular heroes remain muscular;
+slight, lanky, gangly, soft, heavy, and otherwise unusually proportioned heroes remain themselves.
+
+Warm color cohesion is a useful strength of the chibi treatment. It may inform a summon-art
+correction when the result stays inside the hero's established palette, but it does not authorize
+recoloring the identity or introducing affinity cues.
 
 Candidate chibis are produced alongside 1★ summon candidates so identity transfer can influence
-selection. They do not become runtime assets at the same moment as the summon art: selected fighters
-still require clean alpha, consistent canvas and footprint normalization, small-scale recognition
-review, and explicit promotion.
+selection. The review unit is always the visible summon/chibi pair; reviewers should not need to
+switch modes to compare bodies. They do not become runtime assets at the same moment as the summon
+art: selected fighters still require clean alpha, consistent canvas and footprint normalization,
+small-scale recognition review, and explicit promotion.
 
 ## Generation order
 
@@ -231,10 +239,19 @@ Production ultimately preserves, per hero:
 
 Mass-generation review waves contain sixteen 1★ heroes with deliberately broad wardrobe, hair,
 body, accessory, and tattoo variation. A wave may carry forward explicitly requested favorites, but
-returning identities must be regenerated in the current rendering register and labeled separately
-from new or reinterpreted candidates. The strongest identities then receive 1★, 3★, 5★, and 7★
-evolution studies so the team can judge both initial variety and continuity before producing a
-large roster.
+preselection references must be regenerated in the current rendering register and labeled
+separately from new or reinterpreted candidates. Once a pair receives an explicit Keep, its accepted
+sides should be preserved rather than gratuitously regenerated. The strongest identities then
+receive 1★, 3★, 5★, and 7★ evolution studies so the team can judge both initial variety and
+continuity before producing a large roster.
+
+After a reviewed wave, explicit Keep decisions survive into the next pair review. Correct only the
+failed side of a surviving pair when possible: the wave-002 carry-forward retained Ochre Braid and
+Nera Voss unchanged, narrowed Oren Dae's chibi shoulders and arms to match his slight summon body,
+and added modest lean muscle and warmer paint cohesion to Zuri Pell's summon while preserving her
+narrow frame and accepted chibi. Rejected or undecided photographic identities do not constrain new
+people; replacements are generated as new text-authored humans using only the accepted rendering
+reference.
 
 ## Rendering decision record
 
@@ -244,6 +261,9 @@ large roster.
   review evidence. Their pixels and prompts must not be used as forward hero-style references.
 - The shortlist-first production workflow remains viable independently of the rejected rendering
   style: generate 1★ identity candidates, approve anchors, then invest in their evolution states.
+- On 2026-09-02, the owner kept Ochre Braid, Nera Voss, Oren Dae, and Zuri Pell from mass wave 001.
+  Wave 002 records that exported decision file as review evidence and presents those survivors
+  beside twelve completely new painted identities.
 
 ## Integration boundary
 
