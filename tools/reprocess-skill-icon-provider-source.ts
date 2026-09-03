@@ -84,6 +84,11 @@ function requiredOption(values: ReadonlyMap<string, string>, name: string): stri
 export function parseReprocessSkillIconProviderSourceCliRequest(
 	args: readonly string[]
 ): ReprocessSkillIconProviderSourceCliRequest {
+	const normalizedArgs = args[0] === '--' ? args.slice(1) : args;
+	if (normalizedArgs.includes('--'))
+		throw new Error(
+			'The -- argument separator is allowed only once and only as the first argument'
+		);
 	const allowed = new Set([
 		'--source',
 		'--source-hash',
@@ -98,9 +103,9 @@ export function parseReprocessSkillIconProviderSourceCliRequest(
 		'--recognition-observation'
 	]);
 	const values = new Map<string, string>();
-	for (let index = 0; index < args.length; index += 2) {
-		const flag = args[index];
-		const value = args[index + 1];
+	for (let index = 0; index < normalizedArgs.length; index += 2) {
+		const flag = normalizedArgs[index];
+		const value = normalizedArgs[index + 1];
 		if (!flag || !allowed.has(flag) || !value)
 			throw new Error(`Unknown or incomplete argument: ${flag ?? '<missing>'}`);
 		if (values.has(flag)) throw new Error(`Duplicate argument: ${flag}`);

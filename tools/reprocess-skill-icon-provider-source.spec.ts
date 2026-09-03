@@ -340,6 +340,15 @@ describe('skill-icon provider-source reprocess coordinator', () => {
 		expect(parseReprocessSkillIconProviderSourceCliRequest(args)).toMatchObject({
 			sourcePath: '/tmp/source.png'
 		});
+		expect(parseReprocessSkillIconProviderSourceCliRequest(['--', ...args])).toMatchObject({
+			sourcePath: '/tmp/source.png'
+		});
+		expect(() => parseReprocessSkillIconProviderSourceCliRequest(['--', '--', ...args])).toThrow(
+			/only once/iu
+		);
+		expect(() =>
+			parseReprocessSkillIconProviderSourceCliRequest([...args.slice(0, 2), '--', ...args.slice(2)])
+		).toThrow(/first argument/iu);
 		expect(() =>
 			parseReprocessSkillIconProviderSourceCliRequest([
 				...args,
@@ -347,6 +356,16 @@ describe('skill-icon provider-source reprocess coordinator', () => {
 				new Date().toISOString()
 			])
 		).toThrow(/unknown/iu);
+	});
+
+	it('accepts the documented package-script separator before validating CLI flags', async () => {
+		const failure = await execFileAsync(
+			'pnpm',
+			['reprocess:skill-icon-provider-source', '--', '--not-a-real-flag'],
+			{ cwd: path.resolve('.') }
+		).catch((error: unknown) => error as { stderr: string });
+		expect(failure.stderr).toContain('Unknown or incomplete argument: --not-a-real-flag');
+		expect(failure.stderr).not.toContain('Unknown or incomplete argument: --\n');
 	});
 
 	it('normalizes once and atomically publishes a pathless candidate result', async () => {
