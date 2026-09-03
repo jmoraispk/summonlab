@@ -6,7 +6,7 @@ Wiki ID: `monster.mummy-god-king`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ The four cartouches produce or command Husks, Tomb Guards, Sacred Servants, and 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/mummies/mummy-god-king/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/mummies/mummy-god-king/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/mummies/mummy-god-king/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/mummies/mummy-god-king/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/mummies/mummy-god-king/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/wind-v1.json` |
