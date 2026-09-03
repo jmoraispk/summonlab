@@ -2,11 +2,25 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C accepted as the canonical comparison authority; F revision 5 is a
-technical candidate awaiting owner review, while the other runtime reference exports require a new
-production route**.
+Design status: **Option C is the canonical comparison authority. Seven new individually generated
+1024×1024 RGBA frame candidates are ready for owner review; none has been promoted yet**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
+
+## Individual-frame review set
+
+![Seven individually generated rarity-frame candidates](../../../assets/wiki/skills/rarity-frame-v2/review/rarity-frames-v2-contact-sheet.png)
+
+The [review-set record](../../../assets/wiki/skills/rarity-frame-v2/README.md) contains one standalone
+frame for each rarity, all at the same 1024×1024 size with genuine alpha inside and outside the
+hexagon. The candidates follow Option C's material and ornament hierarchy and contain no skill
+emblem, standard backing, mastery, level, or display label beyond the rank letter. They remain review
+assets until the owner accepts them or requests rank-specific revisions.
+
+The image provider rendered a checkerboard into its RGB output even after one tightly scoped
+background-extraction edit per frame. The review assets preserve the generated frame artwork and use
+a deterministic connected-component matte removal to supply real transparency. The earlier initial,
+corrective, and F-only provider attempts are preserved beside this set for direct comparison.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;
