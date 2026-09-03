@@ -1,11 +1,22 @@
 # Rank-first Equipment calibration — 2026-09-02
 
-Status: **experiment-only**. These files are direction references, not manifest production
-candidates, approved sources, or runtime assets.
+Status: **owner-accepted direction references**. These files may bind the rank-first production plan,
+but they remain separate from manifest production candidates, approved sources, and runtime assets.
 
 This calibration tests whether the accepted seven-rank Dagger method transfers to other Equipment
 classes and whether a design from a progression sheet can be reconstructed as a dedicated individual
 render rather than cropped.
+
+## Owner acceptance — 2026-09-02
+
+The owner accepted all six progression sheets and both individual Dagger reconstructions without
+requested visual changes. The progression sheets may be used as class-direction references in the
+rank-first plan. The individual Daggers are method references rather than candidate substitutions;
+their dedicated v3 targets will still be rendered under the final manifest and canvas contract.
+
+The Heavy Armour sheet is accepted for progression, silhouette, and finish. Its mannequin-like
+presentation remains explicitly non-compliant for production full-set sources, which must be empty
+and self-supporting.
 
 ## Direction references
 
@@ -145,4 +156,3 @@ Lighting/mood: cold key light with restrained warm rim and controlled solar glow
 Constraints: one dagger only; dedicated new rendering; readable at phone-thumbnail size; no text, labels, borders, hands, characters, scenery, logos, trademarks, or watermark
 Avoid: copying any user-supplied copyrighted reference, adding a second weapon, turning it into a sword, excessive bloom, horizontal or floor-lying presentation.
 ```
-

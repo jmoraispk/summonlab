@@ -219,10 +219,10 @@ Armour full set, Iron Axe, Blacksteel Heavy Armour full set, Heartwood Staff, an
 These are immutable single-call outcomes, not approval decisions. No full Armour set has been human
 accepted, so all 84 piece images remain locked and absent.
 
-The earlier [material-first full-production draft](../../../superpowers/plans/2026-09-02-equipment-material-first-full-production.md)
-is paused and must not be activated. Rank-first calibration now precedes a corrected execution plan:
-class progression direction first, dedicated individual renders second, material-cohort review as a
-secondary check, and Armour pieces only after accepted full-set sources.
+The [rank-first full-production plan](../../../superpowers/plans/2026-09-02-equipment-rank-first-full-production.md)
+is implementation-ready but not activated. It uses class progression direction first, dedicated
+individual renders second, material-cohort review as a secondary check, and Armour pieces only after
+accepted full-set sources. The earlier material-first draft is superseded.
 
 ### Root-production review state
 

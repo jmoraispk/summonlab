@@ -6,8 +6,8 @@ authorized.
 
 ## Owner direction decision — 2026-09-02
 
-The owner accepted both sheets as potential **direction references** for the next plan while keeping
-them outside candidate and runtime paths:
+The owner accepted both sheets as **direction references** for the rank-first production plan while
+keeping them outside candidate and runtime paths:
 
 - the Dagger progression is the benchmark for rank readability and silhouette ambition;
 - the Steel cohort is the finish reference, with its Axe, Spear, Dagger, Shield, and Heavy Armour

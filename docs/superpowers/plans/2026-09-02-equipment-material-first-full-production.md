@@ -1,6 +1,6 @@
 # Equipment material-first full-production plan
 
-Status: **paused calibration draft; rank-first revision required before any v3 activation**
+Status: **superseded; do not activate**
 Owner: Equipment visual domain  
 Scope: the 28-material core ladder, six Weapons, Shield, Staff, and three four-piece Armour classes
 
@@ -23,8 +23,8 @@ rank escalation. It is not an approved source and its pictured designs are not p
 
 > **Calibration hold — 2026-09-02:** the owner has made cross-rank class progression the primary
 > design axis and material cohesion the secondary review axis. This earlier material-first ordering
-> must not be activated. The rank-first calibration outputs will be reviewed before this plan is
-> replaced with the final execution order and corrected generation budget.
+> must not be activated. It is superseded by the final
+> [rank-first full-production plan](2026-09-02-equipment-rank-first-full-production.md).
 
 ## Locked creative rules
 
