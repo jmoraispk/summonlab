@@ -179,6 +179,20 @@ describe('Equipment rank-first production v3', () => {
 		).toBe(true);
 	});
 
+	it('schedules all 84 Armour pieces as intact four-piece sets in six bounded waves', () => {
+		const waves = buildEquipmentV3AllocationPlan().armourPieceWaves;
+		expect(waves.map(({ targetIds }) => targetIds.length)).toEqual([16, 16, 16, 16, 16, 4]);
+		expect(new Set(waves.flatMap(({ targetIds }) => targetIds)).size).toBe(84);
+		expect(
+			waves.every(
+				({ setIds, targetIds, maximumConcurrency, referenceOrder }) =>
+					targetIds.length === setIds.length * 4 &&
+					maximumConcurrency === 16 &&
+					referenceOrder[0] === 'accepted-full-set-source'
+			)
+		).toBe(true);
+	});
+
 	it('validates every target contract and matches checked-in deterministic artifacts', () => {
 		for (const target of buildEquipmentCandidateTargetsV3())
 			EquipmentCandidateTargetV3Schema.parse(target);

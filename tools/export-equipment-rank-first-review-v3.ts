@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
 
-import { EquipmentRootCandidateSelectionManifestV3Schema } from './equipment-rank-first-contract-v3.js';
+import {
+	EquipmentArmourSetUnlockReceiptV3Schema,
+	EquipmentRootCandidateSelectionManifestV3Schema
+} from './equipment-rank-first-contract-v3.js';
 import {
 	EQUIPMENT_CLASSES,
 	EQUIPMENT_CLASS_DIRECTIONS_V3,
@@ -16,6 +19,7 @@ import {
 } from './equipment-rank-first-production-v3.js';
 import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
 import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
+import { equipmentArmourUnlockPath } from './record-equipment-armour-unlocks-v3.js';
 
 type Checkpoint = '1' | '2' | '3';
 type Edition = 'initial' | 'final';
@@ -238,7 +242,7 @@ async function checkpoint2Cards(workspaceRoot: string, edition: Edition): Promis
 async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
 	const targets = buildEquipmentCandidateTargetsV3();
 	const pieces = targets.filter(({ artifactRole }) => artifactRole === 'armour-piece');
-	const cards = await Promise.all(
+	const pieceCards = await Promise.all(
 		pieces.map((target) =>
 			card(workspaceRoot, '3', {
 				id: target.targetId,
@@ -250,23 +254,48 @@ async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
 			})
 		)
 	);
-	for (const source of targets.filter(({ artifactRole }) => artifactRole === 'set-source')) {
+	const sources = targets.filter(({ artifactRole }) => artifactRole === 'set-source');
+	const auditEntries = [];
+	for (const source of sources) {
+		const unlock = EquipmentArmourSetUnlockReceiptV3Schema.parse(
+			await readEquipmentRepositoryJson(
+				workspaceRoot,
+				equipmentArmourUnlockPath(source.rank, source.setId!)
+			)
+		);
+		if (unlock.sourceTargetId !== source.targetId) {
+			throw new Error(`Armour unlock/source mismatch: ${source.targetId}`);
+		}
 		const children = targets.filter(
 			({ dependsOnTargetId }) => dependsOnTargetId === source.targetId
 		);
+		const auditPath = `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits/${source.rank.toLowerCase()}-${source.setId}-v3.png`;
 		await auditSheet(
 			workspaceRoot,
-			`${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits/${source.rank.toLowerCase()}-${source.setId}-v3.png`,
+			auditPath,
 			[
-				{ label: 'Full Set', imagePath: source.output.candidatePath },
+				{ label: 'Full Set', imagePath: unlock.sourceCandidatePath },
 				...children.map((target) => ({
 					label: title(target.slot!),
 					imagePath: target.output.candidatePath
 				}))
 			]
 		);
+		auditEntries.push({ source, auditPath });
 	}
-	return cards;
+	const auditCards = await Promise.all(
+		auditEntries.map(({ source, auditPath }) =>
+			card(workspaceRoot, '3', {
+				id: `equipment-v3-armour-audit-${source.setId}`,
+				label: `${source.materialName} ${title(source.classId)} · set/pieces audit`,
+				rank: source.rank,
+				group: 'armour audits',
+				imagePath: auditPath,
+				reviewable: false
+			})
+		)
+	);
+	return [...auditCards, ...pieceCards];
 }
 
 function html(checkpoint: Checkpoint, cards: readonly Card[], edition: Edition): string {

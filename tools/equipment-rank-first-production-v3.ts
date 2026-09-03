@@ -1048,6 +1048,41 @@ export function buildEquipmentV3AllocationPlan() {
 				resultPath: target.output.provenanceResultPath
 			}
 		}));
+	const sourceTargets = manifest.targets.filter(({ artifactRole }) => artifactRole === 'set-source');
+	const armourPieceWaves = Array.from(
+		{ length: Math.ceil(sourceTargets.length / 4) },
+		(_, waveIndex) => {
+			const sources = sourceTargets.slice(waveIndex * 4, waveIndex * 4 + 4);
+			const targetIds = sources.flatMap((source) =>
+				manifest.targets
+					.filter(({ dependsOnTargetId }) => dependsOnTargetId === source.targetId)
+					.sort(
+						(a, b) =>
+							EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) -
+							EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
+					)
+					.map(({ targetId }) => targetId)
+			);
+			return {
+				waveId: `armour-piece-wave-${waveIndex + 1}`,
+				maximumConcurrency: 16,
+				setIds: sources.map(({ setId }) => setId!),
+				targetIds,
+				referenceOrder: [
+					'accepted-full-set-source',
+					'accepted-class-progression',
+					'accepted-finish-reference'
+				] as const
+			};
+		}
+	);
+	if (
+		armourPieceWaves.length !== 6 ||
+		armourPieceWaves.some(({ targetIds }) => targetIds.length > 16) ||
+		armourPieceWaves.flatMap(({ targetIds }) => targetIds).length !== 84
+	) {
+		throw new Error('Armour piece wave plan must be six waves, at most 16 jobs each, totaling 84');
+	}
 	return {
 		schemaVersion: 'equipment-rank-first-allocation-plan-v3' as const,
 		planId: 'material-equipment-v3-rank-first-full-production' as const,
@@ -1095,8 +1130,10 @@ export function buildEquipmentV3AllocationPlan() {
 		summary: {
 			jobCount: 161,
 			rootJobCount: rootJobs.length,
-			armourPieceJobCount: pieceJobs.length
+			armourPieceJobCount: pieceJobs.length,
+			armourPieceWaveCount: armourPieceWaves.length
 		},
+		armourPieceWaves,
 		jobs: [...rootJobs, ...pieceJobs]
 	};
 }

@@ -55,8 +55,194 @@
 	"summary": {
 		"jobCount": 161,
 		"rootJobCount": 77,
-		"armourPieceJobCount": 84
+		"armourPieceJobCount": 84,
+		"armourPieceWaveCount": 6
 	},
+	"armourPieceWaves": [
+		{
+			"waveId": "armour-piece-wave-1",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"bronze-heavy-armour",
+				"coarse-hide-light-armour",
+				"hemp-weave-robes",
+				"iron-heavy-armour"
+			],
+			"targetIds": [
+				"material-equipment-v3-bronze-heavy-armour-head-v3",
+				"material-equipment-v3-bronze-heavy-armour-torso-v3",
+				"material-equipment-v3-bronze-heavy-armour-legs-v3",
+				"material-equipment-v3-bronze-heavy-armour-boots-v3",
+				"material-equipment-v3-coarse-hide-light-armour-head-v3",
+				"material-equipment-v3-coarse-hide-light-armour-torso-v3",
+				"material-equipment-v3-coarse-hide-light-armour-legs-v3",
+				"material-equipment-v3-coarse-hide-light-armour-boots-v3",
+				"material-equipment-v3-hemp-weave-robes-head-v3",
+				"material-equipment-v3-hemp-weave-robes-torso-v3",
+				"material-equipment-v3-hemp-weave-robes-legs-v3",
+				"material-equipment-v3-hemp-weave-robes-boots-v3",
+				"material-equipment-v3-iron-heavy-armour-head-v3",
+				"material-equipment-v3-iron-heavy-armour-torso-v3",
+				"material-equipment-v3-iron-heavy-armour-legs-v3",
+				"material-equipment-v3-iron-heavy-armour-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		},
+		{
+			"waveId": "armour-piece-wave-2",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"hard-leather-light-armour",
+				"wool-robes",
+				"steel-heavy-armour",
+				"beast-scale-light-armour"
+			],
+			"targetIds": [
+				"material-equipment-v3-hard-leather-light-armour-head-v3",
+				"material-equipment-v3-hard-leather-light-armour-torso-v3",
+				"material-equipment-v3-hard-leather-light-armour-legs-v3",
+				"material-equipment-v3-hard-leather-light-armour-boots-v3",
+				"material-equipment-v3-wool-robes-head-v3",
+				"material-equipment-v3-wool-robes-torso-v3",
+				"material-equipment-v3-wool-robes-legs-v3",
+				"material-equipment-v3-wool-robes-boots-v3",
+				"material-equipment-v3-steel-heavy-armour-head-v3",
+				"material-equipment-v3-steel-heavy-armour-torso-v3",
+				"material-equipment-v3-steel-heavy-armour-legs-v3",
+				"material-equipment-v3-steel-heavy-armour-boots-v3",
+				"material-equipment-v3-beast-scale-light-armour-head-v3",
+				"material-equipment-v3-beast-scale-light-armour-torso-v3",
+				"material-equipment-v3-beast-scale-light-armour-legs-v3",
+				"material-equipment-v3-beast-scale-light-armour-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		},
+		{
+			"waveId": "armour-piece-wave-3",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"layered-silk-robes",
+				"blacksteel-heavy-armour",
+				"chitin-light-armour",
+				"spellweave-robes"
+			],
+			"targetIds": [
+				"material-equipment-v3-layered-silk-robes-head-v3",
+				"material-equipment-v3-layered-silk-robes-torso-v3",
+				"material-equipment-v3-layered-silk-robes-legs-v3",
+				"material-equipment-v3-layered-silk-robes-boots-v3",
+				"material-equipment-v3-blacksteel-heavy-armour-head-v3",
+				"material-equipment-v3-blacksteel-heavy-armour-torso-v3",
+				"material-equipment-v3-blacksteel-heavy-armour-legs-v3",
+				"material-equipment-v3-blacksteel-heavy-armour-boots-v3",
+				"material-equipment-v3-chitin-light-armour-head-v3",
+				"material-equipment-v3-chitin-light-armour-torso-v3",
+				"material-equipment-v3-chitin-light-armour-legs-v3",
+				"material-equipment-v3-chitin-light-armour-boots-v3",
+				"material-equipment-v3-spellweave-robes-head-v3",
+				"material-equipment-v3-spellweave-robes-torso-v3",
+				"material-equipment-v3-spellweave-robes-legs-v3",
+				"material-equipment-v3-spellweave-robes-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		},
+		{
+			"waveId": "armour-piece-wave-4",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"skyiron-heavy-armour",
+				"drakescale-light-armour",
+				"moonweave-robes",
+				"starmetal-heavy-armour"
+			],
+			"targetIds": [
+				"material-equipment-v3-skyiron-heavy-armour-head-v3",
+				"material-equipment-v3-skyiron-heavy-armour-torso-v3",
+				"material-equipment-v3-skyiron-heavy-armour-legs-v3",
+				"material-equipment-v3-skyiron-heavy-armour-boots-v3",
+				"material-equipment-v3-drakescale-light-armour-head-v3",
+				"material-equipment-v3-drakescale-light-armour-torso-v3",
+				"material-equipment-v3-drakescale-light-armour-legs-v3",
+				"material-equipment-v3-drakescale-light-armour-boots-v3",
+				"material-equipment-v3-moonweave-robes-head-v3",
+				"material-equipment-v3-moonweave-robes-torso-v3",
+				"material-equipment-v3-moonweave-robes-legs-v3",
+				"material-equipment-v3-moonweave-robes-boots-v3",
+				"material-equipment-v3-starmetal-heavy-armour-head-v3",
+				"material-equipment-v3-starmetal-heavy-armour-torso-v3",
+				"material-equipment-v3-starmetal-heavy-armour-legs-v3",
+				"material-equipment-v3-starmetal-heavy-armour-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		},
+		{
+			"waveId": "armour-piece-wave-5",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"wyrmscale-light-armour",
+				"starcloth-robes",
+				"sunsteel-heavy-armour",
+				"ancient-dragon-scale-light-armour"
+			],
+			"targetIds": [
+				"material-equipment-v3-wyrmscale-light-armour-head-v3",
+				"material-equipment-v3-wyrmscale-light-armour-torso-v3",
+				"material-equipment-v3-wyrmscale-light-armour-legs-v3",
+				"material-equipment-v3-wyrmscale-light-armour-boots-v3",
+				"material-equipment-v3-starcloth-robes-head-v3",
+				"material-equipment-v3-starcloth-robes-torso-v3",
+				"material-equipment-v3-starcloth-robes-legs-v3",
+				"material-equipment-v3-starcloth-robes-boots-v3",
+				"material-equipment-v3-sunsteel-heavy-armour-head-v3",
+				"material-equipment-v3-sunsteel-heavy-armour-torso-v3",
+				"material-equipment-v3-sunsteel-heavy-armour-legs-v3",
+				"material-equipment-v3-sunsteel-heavy-armour-boots-v3",
+				"material-equipment-v3-ancient-dragon-scale-light-armour-head-v3",
+				"material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
+				"material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3",
+				"material-equipment-v3-ancient-dragon-scale-light-armour-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		},
+		{
+			"waveId": "armour-piece-wave-6",
+			"maximumConcurrency": 16,
+			"setIds": [
+				"fateweave-robes"
+			],
+			"targetIds": [
+				"material-equipment-v3-fateweave-robes-head-v3",
+				"material-equipment-v3-fateweave-robes-torso-v3",
+				"material-equipment-v3-fateweave-robes-legs-v3",
+				"material-equipment-v3-fateweave-robes-boots-v3"
+			],
+			"referenceOrder": [
+				"accepted-full-set-source",
+				"accepted-class-progression",
+				"accepted-finish-reference"
+			]
+		}
+	],
 	"jobs": [
 		{
 			"jobId": "job-material-equipment-v3-bronze-sword-v3",
