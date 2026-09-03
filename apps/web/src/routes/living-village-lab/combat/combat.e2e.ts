@@ -5,10 +5,14 @@ const combatUrl = '/living-village-lab/combat';
 test('plays, skips, and replays the deterministic combat motion receipt', async ({ page }) => {
 	await page.goto(combatUrl);
 	await expect(page.getByTestId('combat-pixi-canvas')).toBeVisible();
+	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-board-contract', '7x9');
+	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-cell-width', '82');
+	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-cell-height', '82');
 	await expect(page.getByTestId('combat-beat')).toContainText('Choose an action');
 	await expect(page.getByTestId('initiative-rail')).toContainText('Mara');
 	await expect(page.getByLabel('Latest combat activity').first()).toContainText('I see an opening');
 
+	await expect(page.getByTestId('commit-combat-action')).toBeEnabled();
 	await page.getByTestId('commit-combat-action').click();
 	await expect(page.getByTestId('combat-beat')).not.toContainText('Choose an action');
 	await page.getByRole('button', { name: 'Skip' }).click();
@@ -35,6 +39,7 @@ test('keeps the 390px reduced-motion combat readable without horizontal overflow
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(combatUrl);
 	await expect(page.getByTestId('combat-pixi-canvas')).toBeVisible();
+	await expect(page.getByTestId('commit-combat-action')).toBeEnabled();
 	await page.getByTestId('commit-combat-action').click();
 	await expect(page.getByTestId('combat-beat')).toContainText('Resolution settled');
 	await expect(page.getByTestId('combat-stage').getByLabel('Latest combat activity')).toContainText(

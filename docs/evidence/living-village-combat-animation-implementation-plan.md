@@ -34,6 +34,11 @@ and binds one identity-derived hero plus the struck Sprout Goblin to authored ra
 The remaining six actors deliberately stay proxy silhouettes so the page does not imply that roster
 packs already exist.
 
+The v2 floor separates art texture from tactical geometry. The environment plate contains a
+continuous stone field with no baked gameplay seams; PixiJS projects the receipt's exact 7×9 grid as
+63 equal 82×82 logical-pixel cells. Actor feet, contact shadows, paths, and selection outlines all
+derive from the same cell-center function, so decorative masonry cannot contradict legal positions.
+
 The first runtime pack contains:
 
 1. one clean observatory environment without baked-in actors, timeline, feed, or controls, separated

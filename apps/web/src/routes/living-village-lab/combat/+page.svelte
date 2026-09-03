@@ -16,6 +16,7 @@
 	let paused = $state(true);
 	let speed = $state(1);
 	let reducedMotion = $state(false);
+	let hydrated = $state(false);
 	let snapshot = $state<CombatPlaybackSnapshot>(
 		projectCombatPlayback(PROXY_COMBAT_RECEIPT, 0, { started: false })
 	);
@@ -33,6 +34,7 @@
 	);
 
 	onMount(() => {
+		hydrated = true;
 		const media = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const sync = () => {
 			const playerPreference = document.documentElement.dataset.playerMotion ?? 'system';
@@ -91,7 +93,7 @@
 	<LabBackLink placement="top" />
 	<header class="combat-header">
 		<div>
-			<p>Living Village · observatory art pilot v1</p>
+			<p>Living Village · observatory art pilot v2</p>
 			<h1>The ruined observatory</h1>
 		</div>
 		<div class="receipt-binding">
@@ -169,6 +171,7 @@
 					class="commit"
 					type="button"
 					onclick={playAction}
+					disabled={!hydrated}
 					data-testid="commit-combat-action"
 				>
 					{snapshot.complete ? 'Replay' : started ? (paused ? 'Resume' : 'Restart') : 'Commit'}

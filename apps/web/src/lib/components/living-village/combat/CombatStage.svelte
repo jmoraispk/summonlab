@@ -42,8 +42,9 @@
 	let unloadArt: (() => void) | undefined;
 
 	const ART_ROOT = '/runtime/combat/observatory-art-pilot-v1';
+	const TACTICAL_CELL_SIZE = 82;
 	const ART_SOURCES = [
-		`${ART_ROOT}/observatory-empty-v1.png`,
+		`${ART_ROOT}/observatory-square-floor-v2.png`,
 		`${ART_ROOT}/dara-zev-chibi-screen-v1.png`,
 		`${ART_ROOT}/sprout-goblin-screen-v1.png`
 	] as const;
@@ -106,9 +107,11 @@
 			world.eventMode = 'none';
 			app.stage.addChild(world);
 
-			const board = { x: 62, y: 102, width: 575, height: 744 };
-			const cellWidth = board.width / receipt.board.columns;
-			const cellHeight = board.height / receipt.board.rows;
+			const board = { x: 63, y: 104, cellSize: TACTICAL_CELL_SIZE };
+			const cellWidth = board.cellSize;
+			const cellHeight = board.cellSize;
+			const boardWidth = receipt.board.columns * board.cellSize;
+			const boardHeight = receipt.board.rows * board.cellSize;
 			const cellCenter = (column: number, row: number) => ({
 				x: board.x + (column + 0.5) * cellWidth,
 				y: board.y + (row + 0.5) * cellHeight
@@ -164,6 +167,37 @@
 			moonVeil.rect(0, 0, logicalWidth, logicalHeight).fill({ color: 0x061522, alpha: 0.08 });
 			moonVeil.rect(0, 0, logicalWidth, 150).fill({ color: 0x020812, alpha: 0.28 });
 			world.addChild(moonVeil);
+
+			const tacticalGrid = new Graphics({ label: 'authoritative-square-grid' });
+			for (let row = 0; row < receipt.board.rows; row += 1) {
+				for (let column = 0; column < receipt.board.columns; column += 1) {
+					tacticalGrid
+						.rect(
+							board.x + column * board.cellSize,
+							board.y + row * board.cellSize,
+							board.cellSize,
+							board.cellSize
+						)
+						.fill({
+							color: (column + row) % 2 === 0 ? 0x08131b : 0xd9c58e,
+							alpha: (column + row) % 2 === 0 ? 0.025 : 0.012
+						});
+				}
+			}
+			for (let column = 0; column <= receipt.board.columns; column += 1) {
+				const x = board.x + column * board.cellSize;
+				tacticalGrid.moveTo(x, board.y).lineTo(x, board.y + boardHeight);
+			}
+			for (let row = 0; row <= receipt.board.rows; row += 1) {
+				const y = board.y + row * board.cellSize;
+				tacticalGrid.moveTo(board.x, y).lineTo(board.x + boardWidth, y);
+			}
+			tacticalGrid.stroke({ color: 0xb7a26d, alpha: 0.34, width: 1.5 });
+			tacticalGrid
+				.rect(board.x, board.y, boardWidth, boardHeight)
+				.stroke({ color: 0xd6bd78, alpha: 0.42, width: 2 });
+			tacticalGrid.zIndex = 1;
+			world.addChild(tacticalGrid);
 
 			const selection = new Graphics({ label: 'selected-cell' });
 			selection
@@ -422,7 +456,14 @@
 	});
 </script>
 
-<div class="canvas-host" bind:this={host}>
+<div
+	class="canvas-host"
+	bind:this={host}
+	data-testid="combat-pixi-host"
+	data-board-contract={`${receipt.board.columns}x${receipt.board.rows}`}
+	data-cell-width={TACTICAL_CELL_SIZE}
+	data-cell-height={TACTICAL_CELL_SIZE}
+>
 	<canvas bind:this={canvas} data-testid="combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>
 

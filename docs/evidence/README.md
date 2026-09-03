@@ -108,6 +108,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   preserving the top initiative rail, exact cell anchors, three-line feed, and command overlay.
 - `living-village-observatory-art-pilot-impact-v1.png` — phone action evidence for the unchanged
   Fleeting Step receipt and its raster-character movement, projected path, and destination claim.
+- `living-village-observatory-square-grid-phone-v2.png` — 390px proof of the revised tactical floor:
+  one continuous painted stone field under an authoritative 7×9 grid of equal square cells.
+- `living-village-observatory-square-grid-desktop-v2.png` — desktop proof that the same square-cell
+  geometry, actor feet anchors, selection outline, and scene framing survive the wider composition.
 - `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are
