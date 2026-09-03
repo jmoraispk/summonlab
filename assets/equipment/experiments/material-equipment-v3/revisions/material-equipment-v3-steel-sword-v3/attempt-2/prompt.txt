@@ -1,0 +1,20 @@
+Render one dedicated Steel Sword, rank D, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Long cutting blade and usable one- or two-hand grip. Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Steel:
+Palette: Neutral silver-gray steel with cool blue-gray shadows and darkened fittings.
+Value: Broad mid-to-bright metal range with disciplined highlights.
+Surface/wear: Even forged finish, fine grind lines, polished contact edges, and restrained battle wear.
+Construction: Refined tapers, fitted sockets, crisp fullers, articulated plates, clean rivet rhythm.
+Supernatural behavior: None.
+Neutral secondary materials: Blackened iron, dark leather, hardwood, and charcoal cloth.
+Neighbor distinction: Cleaner and structurally more refined than Iron; brighter and less ominous than Blacksteel.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+REVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Make the Steel sword a refined hand-and-a-half longsword with a longer blade, a clearly shaped fuller, and a more authored guard than the Iron sword. It must remain practical D-rank steel, not magical.
+
+Return one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.

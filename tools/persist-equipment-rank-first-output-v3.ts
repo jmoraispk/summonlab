@@ -7,6 +7,7 @@ import sharp from 'sharp';
 
 import {
 	EquipmentCandidateAssignmentV3Schema,
+	EquipmentCandidateRevisionAssignmentV3Schema,
 	EquipmentCandidateTargetV3Schema,
 	EquipmentDirectionAssignmentV3Schema,
 	EquipmentDirectionResultV3Schema,
@@ -174,14 +175,36 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 	}
 
 	const target = EquipmentCandidateTargetV3Schema.parse(targetValue);
-	const assignment = EquipmentCandidateAssignmentV3Schema.parse(assignmentValue);
+	const revision =
+		typeof assignmentValue === 'object' &&
+		assignmentValue !== null &&
+		(assignmentValue as { schemaVersion?: unknown }).schemaVersion ===
+			'equipment-rank-first-revision-assignment-v3'
+			? EquipmentCandidateRevisionAssignmentV3Schema.parse(assignmentValue)
+			: null;
+	const baseAssignment = revision
+		? null
+		: EquipmentCandidateAssignmentV3Schema.parse(assignmentValue);
+	const assignment = revision ?? baseAssignment!;
 	if (assignment.targetId !== target.targetId)
 		throw new Error('Candidate target/assignment mismatch');
-	if (
-		assignment.permittedOutputs.candidatePath !== target.output.candidatePath ||
-		assignment.permittedOutputs.resultPath !== target.output.provenanceResultPath
-	)
-		throw new Error('Candidate outputs are not assignment-owned');
+	if (revision) {
+		if (options.attempt !== revision.attempt)
+			throw new Error('Revision persistence attempt does not match assignment');
+		const baseAssignmentValue = await readEquipmentRepositoryJson(
+			options.workspaceRoot,
+			revision.baseAssignment.path
+		);
+		if (canonicalSha256(baseAssignmentValue) !== revision.baseAssignment.canonicalSha256)
+			throw new Error('Revision base assignment hash mismatch');
+	} else {
+		if (options.attempt !== 1) throw new Error('Base candidate assignment is attempt 1 only');
+		if (
+			assignment.permittedOutputs.candidatePath !== target.output.candidatePath ||
+			assignment.permittedOutputs.resultPath !== target.output.provenanceResultPath
+		)
+			throw new Error('Base candidate outputs are not target-owned');
+	}
 	if (sha256(Buffer.from(assignment.prompt)) !== assignment.promptSha256)
 		throw new Error('Candidate prompt hash mismatch');
 	if (
@@ -198,16 +221,17 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 	const { schemaVersion: _schemaVersion, ...briefPayload } = briefValue;
 	if (canonicalSha256(briefPayload) !== assignment.materialBrief.canonicalSha256)
 		throw new Error('Material brief hash mismatch');
-	const references = [
-		assignment.classDirection,
-		assignment.finishReference,
-		...(assignment.consistencySource ? [assignment.consistencySource] : [])
-	];
+	const references = revision
+		? revision.references
+		: [
+				baseAssignment!.classDirection,
+				baseAssignment!.finishReference,
+				...(baseAssignment!.consistencySource ? [baseAssignment!.consistencySource] : [])
+			];
 	assertReferenceHashes(options.workspaceRoot, references);
-	await assertAbsent(options.workspaceRoot, [
-		target.output.candidatePath,
-		target.output.provenanceResultPath
-	]);
+	const candidatePath = assignment.permittedOutputs.candidatePath;
+	const resultPath = assignment.permittedOutputs.resultPath;
+	await assertAbsent(options.workspaceRoot, [candidatePath, resultPath]);
 	const image = await normalizeImage(
 		options.sourcePath,
 		target.width,
@@ -237,7 +261,7 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 		},
 		persistenceOperation: image.operation,
 		output: {
-			path: target.output.candidatePath,
+			path: candidatePath,
 			sha256: sha256(image.retained),
 			bytes: image.retained.byteLength,
 			width: target.width,
@@ -248,12 +272,12 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 	});
 	await exclusiveCreateEquipmentRepositoryFile(
 		options.workspaceRoot,
-		target.output.candidatePath,
+		candidatePath,
 		image.retained
 	);
 	await exclusiveCreateEquipmentRepositoryFile(
 		options.workspaceRoot,
-		target.output.provenanceResultPath,
+		resultPath,
 		serializeJson(result)
 	);
 	return { kind: options.kind, operation: image.operation, result };

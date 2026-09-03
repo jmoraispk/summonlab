@@ -6,9 +6,11 @@ import sharp from 'sharp';
 
 import {
 	EquipmentCandidateAssignmentV3Schema,
+	EquipmentCandidateRevisionAssignmentV3Schema,
 	EquipmentCheckpointReceiptV3Schema,
 	EquipmentDirectionResultV3Schema,
-	EquipmentProvenanceResultV3Schema
+	EquipmentProvenanceResultV3Schema,
+	EquipmentRootCandidateSelectionManifestV3Schema
 } from './equipment-rank-first-contract-v3.js';
 import {
 	EQUIPMENT_CLASSES,
@@ -16,8 +18,10 @@ import {
 	EQUIPMENT_MATERIAL_BRIEFS_V3,
 	EQUIPMENT_V3_ROOT,
 	buildEquipmentCandidateTargetsV3,
+	canonicalSha256,
 	fileSha256
 } from './equipment-rank-first-production-v3.js';
+import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
 import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
 
 type Phase = 'directions' | 'roots' | 'pieces' | 'closeout';
@@ -90,54 +94,88 @@ async function verifyDirections(workspaceRoot: string) {
 
 async function verifyCandidateGroup(
 	workspaceRoot: string,
-	targets: ReturnType<typeof buildEquipmentCandidateTargetsV3>
+	targets: ReturnType<typeof buildEquipmentCandidateTargetsV3>,
+	useRootSelections = false
 ) {
+	const selectionManifest = useRootSelections
+		? EquipmentRootCandidateSelectionManifestV3Schema.parse(
+				await readEquipmentRepositoryJson(workspaceRoot, EQUIPMENT_V3_ROOT_SELECTION_PATH)
+			)
+		: null;
+	const selections = new Map(
+		(selectionManifest?.selections ?? []).map((selection) => [selection.targetId, selection])
+	);
+	if (selectionManifest) {
+		const planValue = await readEquipmentRepositoryJson(
+			workspaceRoot,
+			selectionManifest.revisionPlan.path
+		);
+		if (canonicalSha256(planValue) !== selectionManifest.revisionPlan.canonicalSha256) {
+			throw new Error('Root selection revision-plan hash mismatch');
+		}
+	}
 	let bytes = 0;
 	for (const target of targets) {
-		const assignment = EquipmentCandidateAssignmentV3Schema.parse(
-			await readEquipmentRepositoryJson(workspaceRoot, target.output.assignmentPath)
-		);
+		const selection = selections.get(target.targetId);
+		const assignmentPath = selection?.assignmentPath ?? target.output.assignmentPath;
+		const resultPath = selection?.resultPath ?? target.output.provenanceResultPath;
+		const assignmentValue = await readEquipmentRepositoryJson(workspaceRoot, assignmentPath);
+		const assignment = selection
+			? EquipmentCandidateRevisionAssignmentV3Schema.parse(assignmentValue)
+			: EquipmentCandidateAssignmentV3Schema.parse(assignmentValue);
 		const result = EquipmentProvenanceResultV3Schema.parse(
-			await readEquipmentRepositoryJson(workspaceRoot, target.output.provenanceResultPath)
+			await readEquipmentRepositoryJson(workspaceRoot, resultPath)
 		);
+		const candidatePath = selection?.candidatePath ?? target.output.candidatePath;
+		if (
+			selection &&
+			(fileSha256(path.join(workspaceRoot, ...selection.candidatePath.split('/'))) !==
+					selection.candidateSha256 ||
+				fileSha256(path.join(workspaceRoot, ...selection.assignmentPath.split('/'))) !==
+					selection.assignmentSha256 ||
+				fileSha256(path.join(workspaceRoot, ...selection.resultPath.split('/'))) !==
+					selection.resultSha256)
+		) {
+			throw new Error(`Root selection evidence hash mismatch: ${target.targetId}`);
+		}
 		if (
 			assignment.targetId !== target.targetId ||
 			result.targetId !== target.targetId ||
 			result.assignmentId !== assignment.assignmentId ||
 			result.status !== 'succeeded' ||
 			!result.output ||
-			result.output.path !== target.output.candidatePath ||
+			result.output.path !== candidatePath ||
 			result.promptSha256 !== assignment.promptSha256
 		) {
 			throw new Error(`Candidate packet/result mismatch: ${target.targetId}`);
 		}
 		const verified = await verifyPng({
 			workspaceRoot,
-			repositoryPath: target.output.candidatePath,
+			repositoryPath: candidatePath,
 			sha256: result.output.sha256,
 			width: target.width,
 			height: target.height
 		});
 		bytes += verified.bytes;
 	}
-	return { candidateCount: targets.length, bytes };
+	return { candidateCount: targets.length, bytes, revisionSelectionCount: selections.size };
 }
 
 async function verifyRoots(workspaceRoot: string) {
 	const roots = buildEquipmentCandidateTargetsV3().filter(
 		({ dependsOnTargetId }) => dependsOnTargetId === null
 	);
-	const candidates = await verifyCandidateGroup(workspaceRoot, roots);
+	const candidates = await verifyCandidateGroup(workspaceRoot, roots, true);
 	for (const classId of EQUIPMENT_CLASSES) {
 		await verifyPng({
 			workspaceRoot,
-			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/class-audits/${classId}-f-to-s-v3.png`
+			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/class-audits/final/${classId}-f-to-s-v3.png`
 		});
 	}
 	for (const brief of EQUIPMENT_MATERIAL_BRIEFS_V3) {
 		await verifyPng({
 			workspaceRoot,
-			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/material-audits/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`
+			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/material-audits/final/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`
 		});
 	}
 	return { ...candidates, classAuditCount: 11, materialAuditCount: 28 };

@@ -98,12 +98,90 @@ export const EquipmentCandidateAssignmentV3Schema = z
 	})
 	.strict();
 
+export const EquipmentCandidateRevisionPlanV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-rank-first-revision-plan-v3'),
+		revisionPlanId: z.string().regex(/^equipment-v3-root-audit-revisions-v[1-9][0-9]*$/u),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		classAuditBasis: z.array(RepositoryPathSchema).min(1),
+		materialAuditBasis: z.array(RepositoryPathSchema).min(1),
+		revisions: z
+			.array(
+				z
+					.object({
+						targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+						attempt: z.number().int().min(2),
+						classification: z.enum([
+							'class-rule-violation',
+							'rank-silhouette-collision',
+							'material-expression-drift'
+						]),
+						correction: NonEmptySchema
+					})
+					.strict()
+			)
+			.min(1)
+	})
+	.strict();
+
+export const EquipmentCandidateRevisionAssignmentV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-rank-first-revision-assignment-v3'),
+		assignmentId: z
+			.string()
+			.regex(
+				/^revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*$/u
+			),
+		targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+		attempt: z.number().int().min(2),
+		immutable: z.literal(true),
+		baseAssignment: z
+			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
+			.strict(),
+		materialBrief: z.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema }).strict(),
+		revisionSource: EquipmentAcceptedReferenceV3Schema,
+		references: z.array(EquipmentAcceptedReferenceV3Schema).min(3),
+		classification: z.enum([
+			'class-rule-violation',
+			'rank-silhouette-collision',
+			'material-expression-drift'
+		]),
+		correction: NonEmptySchema,
+		prompt: NonEmptySchema,
+		promptSha256: Sha256Schema,
+		permittedOutputs: z
+			.object({
+				candidatePath: RepositoryPathSchema,
+				resultPath: RepositoryPathSchema
+			})
+			.strict(),
+		forbiddenActions: z.array(NonEmptySchema).min(1)
+	})
+	.strict()
+	.superRefine((assignment, context) => {
+		if (!assignment.assignmentId.endsWith(`-attempt-${assignment.attempt}`)) {
+			context.addIssue({ code: 'custom', message: 'Revision assignment ID/attempt mismatch' });
+		}
+		const prefix = `${EQUIPMENT_V3_ROOT}/revisions/${assignment.targetId}/attempt-${assignment.attempt}/`;
+		if (
+			!assignment.permittedOutputs.candidatePath.startsWith(prefix) ||
+			!assignment.permittedOutputs.resultPath.startsWith(prefix)
+		) {
+			context.addIssue({ code: 'custom', message: 'Revision outputs are not attempt-scoped' });
+		}
+	});
+
 export const EquipmentProvenanceResultV3Schema = z
 	.object({
 		schemaVersion: z.literal('equipment-rank-first-provenance-result-v3'),
 		resultId: z.string().regex(/^result-material-equipment-v3-[a-z0-9-]+-v3-attempt-[1-9][0-9]*$/u),
 		targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
-		assignmentId: z.string().regex(/^assignment-material-equipment-v3-[a-z0-9-]+-v3$/u),
+		assignmentId: z
+			.string()
+			.regex(
+				/^(?:assignment-material-equipment-v3-[a-z0-9-]+-v3|revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*)$/u
+			),
 		attempt: z.number().int().min(1),
 		status: z.enum(['succeeded', 'failed']),
 		startedAt: z.string().datetime({ offset: true }),
@@ -162,6 +240,42 @@ export const EquipmentProvenanceResultV3Schema = z
 				code: 'custom',
 				message: 'Failed results require error and no retained source or output'
 			});
+		}
+	});
+
+export const EquipmentRootCandidateSelectionManifestV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-root-candidate-selection-manifest-v3'),
+		selectionManifestId: z.string().regex(/^equipment-v3-root-candidate-selections-v[1-9][0-9]*$/u),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		approvalStatus: z.literal('candidate-only'),
+		revisionPlan: z
+			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
+			.strict(),
+		selections: z
+			.array(
+				z
+					.object({
+						targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+						selectedAttempt: z.number().int().min(2),
+						candidatePath: RepositoryPathSchema,
+						candidateSha256: Sha256Schema,
+						assignmentPath: RepositoryPathSchema,
+						assignmentSha256: Sha256Schema,
+						resultPath: RepositoryPathSchema,
+						resultSha256: Sha256Schema,
+						reason: NonEmptySchema
+					})
+					.strict()
+			)
+			.min(1)
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const targetIds = manifest.selections.map(({ targetId }) => targetId);
+		if (new Set(targetIds).size !== targetIds.length) {
+			context.addIssue({ code: 'custom', message: 'Candidate selections must be target-unique' });
 		}
 	});
 
@@ -309,7 +423,10 @@ export const EquipmentDirectionResultV3Schema = z
 export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['target.schema.json', EquipmentCandidateTargetV3Schema],
 	['assignment.schema.json', EquipmentCandidateAssignmentV3Schema],
+	['revision-plan.schema.json', EquipmentCandidateRevisionPlanV3Schema],
+	['revision-assignment.schema.json', EquipmentCandidateRevisionAssignmentV3Schema],
 	['provenance-result.schema.json', EquipmentProvenanceResultV3Schema],
+	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
 	['checkpoint-receipt.schema.json', EquipmentCheckpointReceiptV3Schema],
 	['armour-set-unlock-receipt.schema.json', EquipmentArmourSetUnlockReceiptV3Schema],
 	['direction-target.schema.json', EquipmentDirectionTargetV3Schema],

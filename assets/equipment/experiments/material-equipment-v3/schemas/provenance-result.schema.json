@@ -16,7 +16,7 @@
 		},
 		"assignmentId": {
 			"type": "string",
-			"pattern": "^assignment-material-equipment-v3-[a-z0-9-]+-v3$"
+			"pattern": "^(?:assignment-material-equipment-v3-[a-z0-9-]+-v3|revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*)$"
 		},
 		"attempt": {
 			"type": "integer",

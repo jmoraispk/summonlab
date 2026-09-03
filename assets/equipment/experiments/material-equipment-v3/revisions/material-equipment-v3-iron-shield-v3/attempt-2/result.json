@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-iron-shield-v3-attempt-2",
+	"targetId": "material-equipment-v3-iron-shield-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-iron-shield-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T14:18:25.626Z",
+	"completedAt": "2026-09-03T14:19:14.072Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "c832fa3be08c547eb53f8e016e5bfe9e9ea477b5ce21aa8cf184dbb6c4a28d01",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"purpose": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/shield-v3.png",
+			"sha256": "9c0d86a4b819535cbf26edfda91b696ea3a781ec25b73f7f846e041fc4b6ce08",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-64534749-485e-426d-b9f6-ed0f5aea2bf9.png",
+		"sha256": "007de9ce85bc204d7d6f51efd8bdecae95469d9186520d279add116f212e142c",
+		"bytes": 2141837,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/candidate.png",
+		"sha256": "39de8f67c6e38d8474300cfbc4f8eb5b0eeea1a005c61b99aa31556d5b9f9401",
+		"bytes": 1572382,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

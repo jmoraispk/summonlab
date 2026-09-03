@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
 
+import { EquipmentRootCandidateSelectionManifestV3Schema } from './equipment-rank-first-contract-v3.js';
 import {
 	EQUIPMENT_CLASSES,
 	EQUIPMENT_CLASS_DIRECTIONS_V3,
@@ -13,8 +14,11 @@ import {
 	buildEquipmentCandidateTargetsV3,
 	fileSha256
 } from './equipment-rank-first-production-v3.js';
+import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
+import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
 
 type Checkpoint = '1' | '2' | '3';
+type Edition = 'initial' | 'final';
 
 function escapeHtml(value: string): string {
 	return value
@@ -54,7 +58,7 @@ async function persistDerived(
 async function thumbnail(
 	workspaceRoot: string,
 	sourcePath: string,
-	checkpoint: Checkpoint,
+	checkpoint: string,
 	width: 128 | 256
 ): Promise<string> {
 	const stem = sourcePath
@@ -121,7 +125,7 @@ interface Card {
 
 async function card(
 	workspaceRoot: string,
-	checkpoint: Checkpoint,
+	checkpoint: string,
 	input: Omit<Card, 'hash' | 'thumb128' | 'thumb256'>
 ): Promise<Card> {
 	await requireImage(workspaceRoot, input.imagePath);
@@ -153,46 +157,82 @@ async function checkpoint1Cards(workspaceRoot: string): Promise<Card[]> {
 	);
 }
 
-async function checkpoint2Cards(workspaceRoot: string): Promise<Card[]> {
+async function checkpoint2Cards(workspaceRoot: string, edition: Edition): Promise<Card[]> {
 	const roots = buildEquipmentCandidateTargetsV3().filter(
 		({ dependsOnTargetId }) => dependsOnTargetId === null
 	);
-	const cards = await Promise.all(
+	const selections =
+		edition === 'final'
+			? EquipmentRootCandidateSelectionManifestV3Schema.parse(
+					await readEquipmentRepositoryJson(workspaceRoot, EQUIPMENT_V3_ROOT_SELECTION_PATH)
+				).selections
+			: [];
+	const selectedImagePath = (target: (typeof roots)[number]) =>
+		selections.find(({ targetId }) => targetId === target.targetId)?.candidatePath ??
+		target.output.candidatePath;
+	const rootCards = await Promise.all(
 		roots.map((target) =>
-			card(workspaceRoot, '2', {
+			card(workspaceRoot, edition === 'final' ? '2-final' : '2', {
 				id: target.targetId,
 				label: `${target.materialName} ${title(target.classId)}${target.artifactRole === 'set-source' ? ' Set' : ''}`,
 				rank: target.rank,
 				group: target.classId,
-				imagePath: target.output.candidatePath,
+				imagePath: selectedImagePath(target),
 				reviewable: true
 			})
 		)
 	);
 	for (const classId of EQUIPMENT_CLASSES) {
+		const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/class-audits${edition === 'final' ? '/final' : ''}/${classId}-f-to-s-v3.png`;
 		const entries = roots
 			.filter((target) => target.classId === classId)
 			.map((target) => ({
 				label: `${target.rank} · ${target.materialName}`,
-				imagePath: target.output.candidatePath
+				imagePath: selectedImagePath(target)
 			}));
 		await auditSheet(
 			workspaceRoot,
-			`${EQUIPMENT_V3_ROOT}/reviews/class-audits/${classId}-f-to-s-v3.png`,
+			outputPath,
 			entries
 		);
 	}
 	for (const brief of EQUIPMENT_MATERIAL_BRIEFS_V3) {
+		const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/material-audits${edition === 'final' ? '/final' : ''}/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`;
 		const entries = roots
 			.filter(({ materialId }) => materialId === brief.materialId)
-			.map((target) => ({ label: title(target.classId), imagePath: target.output.candidatePath }));
+			.map((target) => ({ label: title(target.classId), imagePath: selectedImagePath(target) }));
 		await auditSheet(
 			workspaceRoot,
-			`${EQUIPMENT_V3_ROOT}/reviews/material-audits/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`,
+			outputPath,
 			entries
 		);
 	}
-	return cards;
+	const checkpointDirectory = edition === 'final' ? '2-final' : '2';
+	const classAuditCards = await Promise.all(
+		EQUIPMENT_CLASSES.map((classId) =>
+			card(workspaceRoot, checkpointDirectory, {
+				id: `equipment-v3-class-audit-${classId}`,
+				label: `${title(classId)} · F→S class audit`,
+				rank: 'all',
+				group: 'class audits',
+				imagePath: `${EQUIPMENT_V3_ROOT}/reviews/class-audits${edition === 'final' ? '/final' : ''}/${classId}-f-to-s-v3.png`,
+				reviewable: false
+			})
+		)
+	);
+	const materialAuditCards = await Promise.all(
+		EQUIPMENT_MATERIAL_BRIEFS_V3.map((brief) =>
+			card(workspaceRoot, checkpointDirectory, {
+				id: `equipment-v3-material-audit-${brief.rank.toLowerCase()}-${brief.materialId}`,
+				label: `${brief.displayName} · material audit`,
+				rank: brief.rank,
+				group: 'material audits',
+				imagePath: `${EQUIPMENT_V3_ROOT}/reviews/material-audits${edition === 'final' ? '/final' : ''}/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`,
+				reviewable: false
+			})
+		)
+	);
+	return [...classAuditCards, ...materialAuditCards, ...rootCards];
 }
 
 async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
@@ -229,15 +269,16 @@ async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
 	return cards;
 }
 
-function html(checkpoint: Checkpoint, cards: readonly Card[]): string {
+function html(checkpoint: Checkpoint, cards: readonly Card[], edition: Edition): string {
 	const reviewableCount = cards.filter(({ reviewable }) => reviewable).length;
+	const editionLabel = checkpoint === '2' ? ` · ${edition} audit` : '';
 	const cardMarkup = cards
 		.map(
 			(entry) =>
 				`<button class="card" type="button" data-rank="${entry.rank}" data-group="${escapeHtml(entry.group)}" data-reviewable="${entry.reviewable}" data-src="/${entry.imagePath}" data-id="${entry.id}" data-hash="${entry.hash}"><img src="/${entry.thumb256}" srcset="/${entry.thumb128} 128w, /${entry.thumb256} 256w" sizes="(max-width:600px) 44vw, 240px" alt="${escapeHtml(entry.label)}"><span><strong>${escapeHtml(entry.label)}</strong><small>${escapeHtml(entry.group)} · ${entry.hash.slice(0, 10)}</small></span></button>`
 		)
 		.join('\n');
-	return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Equipment v3 · checkpoint ${checkpoint}</title><style>
+	return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Equipment v3 · checkpoint ${checkpoint}${editionLabel}</title><style>
 :root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#070b12;color:#edf2f7}*{box-sizing:border-box}body{margin:0}header{position:sticky;top:0;z-index:2;padding:18px clamp(16px,4vw,48px);background:#0b111beF;border-bottom:1px solid #263244;backdrop-filter:blur(12px)}h1{font-size:clamp(20px,4vw,32px);margin:0 0 6px}p{margin:0;color:#9facbd}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{font:inherit;color:inherit}.filter{background:#111a27;border:1px solid #324157;border-radius:999px;padding:6px 12px}.filter[aria-pressed=true]{background:#315c83;border-color:#77b8ee}main{padding:20px clamp(12px,3vw,40px) 60px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,43vw),1fr));gap:12px}.card{padding:0;background:#0d141f;border:1px solid #273549;border-radius:12px;overflow:hidden;text-align:left;cursor:pointer}.card[data-reviewable=true]{border-color:#477aa5}.card[hidden]{display:none}.card img{width:100%;aspect-ratio:1;object-fit:contain;background:#05080d;display:block}.card span{display:grid;gap:4px;padding:10px}.card strong{font-size:13px}.card small{font-size:10px;color:#8997aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.viewer{position:fixed;inset:0;z-index:10;background:#000d;display:grid;place-items:center;padding:14px}.viewer[hidden]{display:none}.panel{max-width:96vw;max-height:96vh;overflow:auto;background:#0b111b;border:1px solid #3a4a60;border-radius:14px;padding:12px}.panel img{display:block;max-width:92vw;max-height:82vh;object-fit:contain;margin:auto}.panel footer{display:flex;justify-content:space-between;gap:12px;padding-top:10px}.close{background:#182334;border:1px solid #3a4a60;border-radius:8px;padding:7px 12px}@media(max-width:600px){header{padding:12px}.grid{gap:8px}.card span{padding:8px}.panel{padding:8px}}
 </style></head><body><header><h1>Equipment v3 · checkpoint ${checkpoint}</h1><p>${cards.length} images · ${reviewableCount} require an owner decision · tap any image for the full-resolution source.</p><div class="toolbar"><button class="filter" data-filter="all" aria-pressed="true">All</button>${EQUIPMENT_RANKS.map((rank) => `<button class="filter" data-filter="${rank}" aria-pressed="false">${rank}</button>`).join('')}<button class="filter" data-filter="review" aria-pressed="false">Needs review</button></div></header><main><div class="grid">${cardMarkup}</div></main><div class="viewer" hidden><div class="panel"><img alt=""><footer><span></span><button class="close">Close</button></footer></div></div><script>
 const cards=[...document.querySelectorAll('.card')],filters=[...document.querySelectorAll('.filter')],viewer=document.querySelector('.viewer');for(const f of filters)f.onclick=()=>{filters.forEach(x=>x.setAttribute('aria-pressed',String(x===f)));const v=f.dataset.filter;cards.forEach(c=>c.hidden=!(v==='all'||c.dataset.rank===v||(v==='review'&&c.dataset.reviewable==='true')))};for(const c of cards)c.onclick=()=>{viewer.querySelector('img').src=c.dataset.src;viewer.querySelector('img').alt=c.querySelector('strong').textContent;viewer.querySelector('footer span').textContent=c.dataset.id+' · '+c.dataset.hash;viewer.hidden=false};viewer.querySelector('.close').onclick=()=>viewer.hidden=true;viewer.onclick=e=>{if(e.target===viewer)viewer.hidden=true};document.onkeydown=e=>{if(e.key==='Escape')viewer.hidden=true};
@@ -247,15 +288,19 @@ const cards=[...document.querySelectorAll('.card')],filters=[...document.querySe
 export async function exportEquipmentRankFirstReviewV3(input: {
 	workspaceRoot: string;
 	checkpoint: Checkpoint;
+	edition?: Edition;
 }) {
+	const edition = input.edition ?? 'initial';
 	const cards =
 		input.checkpoint === '1'
 			? await checkpoint1Cards(input.workspaceRoot)
 			: input.checkpoint === '2'
-				? await checkpoint2Cards(input.workspaceRoot)
+				? await checkpoint2Cards(input.workspaceRoot, edition)
 				: await checkpoint3Cards(input.workspaceRoot);
-	const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-${input.checkpoint}/index.html`;
-	const contents = html(input.checkpoint, cards);
+	const checkpointDirectory =
+		input.checkpoint === '2' && edition === 'final' ? 'checkpoint-2-final' : `checkpoint-${input.checkpoint}`;
+	const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/${checkpointDirectory}/index.html`;
+	const contents = html(input.checkpoint, cards, edition);
 	await persistDerived(input.workspaceRoot, outputPath, Buffer.from(contents));
 	return {
 		checkpoint: input.checkpoint,
@@ -271,9 +316,22 @@ const isCli = process.argv[1]
 if (isCli) {
 	const index = process.argv.indexOf('--checkpoint');
 	const checkpoint = index >= 0 ? (process.argv[index + 1] as Checkpoint) : undefined;
+	const editionIndex = process.argv.indexOf('--edition');
+	const edition =
+		editionIndex >= 0 ? (process.argv[editionIndex + 1] as Edition | undefined) : 'initial';
 	if (!checkpoint || !['1', '2', '3'].includes(checkpoint))
 		throw new Error('Usage: ... --checkpoint (1|2|3)');
+	if (!edition || !['initial', 'final'].includes(edition))
+		throw new Error('Usage: ... [--edition (initial|final)]');
 	process.stdout.write(
-		`${JSON.stringify(await exportEquipmentRankFirstReviewV3({ workspaceRoot: process.cwd(), checkpoint }), null, 2)}\n`
+		`${JSON.stringify(
+			await exportEquipmentRankFirstReviewV3({
+				workspaceRoot: process.cwd(),
+				checkpoint,
+				edition
+			}),
+			null,
+			2
+		)}\n`
 	);
 }
