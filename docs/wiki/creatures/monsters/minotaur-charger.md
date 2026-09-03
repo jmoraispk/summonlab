@@ -6,7 +6,7 @@ Wiki ID: `monster.minotaur-charger`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Bull-kin maul lines can discourage the safe side, but interrupting the young car
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-charger/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/minotaurs/minotaur-charger/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/minotaurs/minotaur-charger/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-charger/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/minotaurs/minotaur-charger/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/minotaurs/minotaur-charger/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-charger/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/minotaurs/minotaur-charger/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/minotaurs/minotaur-charger/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-charger/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/minotaurs/minotaur-charger/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/minotaurs/minotaur-charger/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-charger/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/minotaurs/minotaur-charger/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/minotaurs/minotaur-charger/wind-v1.json` |
