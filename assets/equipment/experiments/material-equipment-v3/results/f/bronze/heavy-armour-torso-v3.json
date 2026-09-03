@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-bronze-heavy-armour-torso-v3-attempt-1",
+	"targetId": "material-equipment-v3-bronze-heavy-armour-torso-v3",
+	"assignmentId": "assignment-material-equipment-v3-bronze-heavy-armour-torso-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:27:41.393Z",
+	"completedAt": "2026-09-03T17:28:32.833Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "b897da4537e19f3aea787ad76659edd2d7eada08040e17517741b7ce8ebf4b0f",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armour-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-v3.png",
+			"sha256": "2427658c5f5aa71e236aa7e3425af0ae2234d8a4e0e518ca75b91625f3e48da5",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-11cb-72d3-88d1-6611f0c2c922/exec-2dd559b5-5857-4a90-93fe-36feeed8d92e.png",
+		"sha256": "7af2ad7ed3252e3b268d8ca76d96fbadc0fd9bedcfd9689c5d53905bd70cee09",
+		"bytes": 2029338,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-torso-v3.png",
+		"sha256": "c2d277f59893c4ba973a4f52dfeb4a2d4aefd22350e75330feba06dceae564b4",
+		"bytes": 1500440,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

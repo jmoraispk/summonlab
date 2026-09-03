@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-starmetal-heavy-armour-head-v3-attempt-1",
+	"targetId": "material-equipment-v3-starmetal-heavy-armour-head-v3",
+	"assignmentId": "assignment-material-equipment-v3-starmetal-heavy-armour-head-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:38:31.468Z",
+	"completedAt": "2026-09-03T17:39:16.949Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "fb4f58d5cd3121c4f0b2ad350d84ef14ef893b7b3477e0a2181bac8a7b05649f",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armour-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-full-set-v3.png",
+			"sha256": "6e12b9636d827113ffe1e32cd769d69bba8d5e54c9f681da9d2972879950134c",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-9c80-7460-8e9a-f2d8265ebd6d/exec-1823c1d4-d6ac-491a-a214-4ee2618d78f1.png",
+		"sha256": "a63a77faaa90e3c6c6dab6ccf1cd12c81945b9c2f43d1194bc7280f1d191b7ce",
+		"bytes": 1736866,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-head-v3.png",
+		"sha256": "af28f2afe14064ea0bd09900325995a154933ddcd89d1fa0eac63f89ba122231",
+		"bytes": 1288460,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

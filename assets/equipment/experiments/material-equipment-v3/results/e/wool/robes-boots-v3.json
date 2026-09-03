@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-wool-robes-boots-v3-attempt-1",
+	"targetId": "material-equipment-v3-wool-robes-boots-v3",
+	"assignmentId": "assignment-material-equipment-v3-wool-robes-boots-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:31:39.736Z",
+	"completedAt": "2026-09-03T17:32:24.572Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "3c170da316ad551e69048ababe732c568a25340f31464376a0d5cc503cf04271",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+			"sha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-e93d-7d61-a650-703eaa74259e/exec-6a1b4ab3-5bb2-4f9e-b5a8-ebe838541bbc.png",
+		"sha256": "cb5faafc9b5094751c80a1d86bac9109b6ae29503d8d7fe27a2e99b0ae7d2b89",
+		"bytes": 1836188,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-boots-v3.png",
+		"sha256": "ddb8fdcb46885ccd9f1073eeb9106a9ed0b1a4670dca57054aa8802195a188fd",
+		"bytes": 1370116,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

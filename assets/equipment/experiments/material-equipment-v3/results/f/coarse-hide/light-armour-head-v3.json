@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-coarse-hide-light-armour-head-v3-attempt-1",
+	"targetId": "material-equipment-v3-coarse-hide-light-armour-head-v3",
+	"assignmentId": "assignment-material-equipment-v3-coarse-hide-light-armour-head-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:28:01.886Z",
+	"completedAt": "2026-09-03T17:28:57.049Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "928074d3db89d95a7a84e0bdb3b1151d15c60b5013d565da0454561a8b68706d",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-full-set-v3.png",
+			"sha256": "b51335521e27af145621d249e597ea4e63842637b4d4469fe8eb201612f0a532",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-64a4-7b03-b972-37c15abd0c10/exec-81518a1a-903b-4b6a-ab2d-5c14ea6eaa65.png",
+		"sha256": "eb7053ea6daee51ef89dc0e87ab35b7578d8f47bbe3f4e79c1262cc46b83f38a",
+		"bytes": 2004457,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-head-v3.png",
+		"sha256": "e7144712943f0ee34493267ab7a335869aa167de2ab27b780a2a598bce5b5303",
+		"bytes": 1445922,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}
