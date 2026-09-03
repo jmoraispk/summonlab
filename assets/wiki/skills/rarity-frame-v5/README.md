@@ -1,6 +1,6 @@
 # Regular-hexagon rarity-frame calibration sheet
 
-Status: **visual candidate; owner review pending**.
+Status: **accepted visual baseline**.
 
 ![Seven regular-hexagon rarity frames in a four-over-three grid](calibration/seven-rarity-frames-4x3-v1.png)
 
@@ -15,10 +15,9 @@ angles, and an intended body height-to-width ratio of `2 / √3 ≈ 1.1547`. The
 protrude above the regular body without changing that geometry.
 
 The image provider depicted a checkerboard and returned an RGB PNG instead of the requested genuine
-alpha. Treat the checkerboard as a removable matte, not as transparency or part of the design. If
-the owner accepts the sheet, crop the seven frames from these exact pixels first, then remove the
-matte and validate each crop separately. Do not generate another visual interpretation during that
-process.
+alpha. Treat the checkerboard as a removable matte, not as transparency or part of the design. Crop
+the seven frames from these exact pixels first, then remove the matte and validate each crop
+separately. Do not generate another visual interpretation during that process.
 
 Source SHA-256:
 `4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266`.

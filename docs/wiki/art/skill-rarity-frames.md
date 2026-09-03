@@ -3,8 +3,8 @@
 Wiki ID: `art.skill-rarity-frames`
 
 Design status: **Option C is the canonical material authority. Both the stretched overlay and the
-over-tall horizontal strip were owner-rejected. A regular-hexagon four-over-three calibration sheet
-awaits owner review**.
+over-tall horizontal strip were owner-rejected. The regular-hexagon four-over-three v5 sheet is the
+accepted baseline; two tighter staggered variants await owner selection**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -51,11 +51,25 @@ regular hexagons. It remains historical evidence only.
 
 ![Seven regular-hexagon rarity frames](../../../assets/wiki/skills/rarity-frame-v5/calibration/seven-rarity-frames-4x3-v1.png)
 
-The [v5 source record](../../../assets/wiki/skills/rarity-frame-v5/README.md) uses a four-over-three
+The accepted [v5 source record](../../../assets/wiki/skills/rarity-frame-v5/README.md) uses a four-over-three
 layout to give each frame more pixels. It restores F–S crest letters and constrains every point-up
 frame body to six equal apparent sides, 120-degree interior angles, and the regular-hexagon
 height-to-width ratio. The provider returned a depicted checkerboard in RGB rather than real alpha;
 if the appearance is accepted, crop first and remove that matte deterministically afterward.
+
+### Tighter staggered review variants
+
+![Maximum-fill staggered rarity frames](../../../assets/wiki/skills/rarity-frame-v6/calibration/seven-rarity-frames-4x3-tight-v1.png)
+
+![Uniform-crop staggered rarity frames](../../../assets/wiki/skills/rarity-frame-v6/calibration/seven-rarity-frames-4x3-tight-v2.png)
+
+The [v6 source record](../../../assets/wiki/skills/rarity-frame-v6/README.md) preserves two additional
+built-in image-generation attempts. Both were prompted with exact staggered centers: B halfway
+between F/E, A halfway between E/D, and S halfway between D/C. Variant 1 maximizes canvas fill;
+Variant 2 preserves more uniform cutting gutters. Provider placement is visual rather than
+pixel-authoritative, so the selected frames will be measured and recentered deterministically after
+cropping. Both are review candidates only, so v5 remains the accepted crop baseline until the owner
+selects one.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;

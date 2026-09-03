@@ -27,11 +27,13 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
 ## Phase 0 — finish and lock the reusable layers
 
 **Progress:** The registered frame set and its replacement horizontal strip were visually rejected.
-A four-over-three calibration sheet now restores rank letters and corrects every frame body toward a
-regular point-up hexagon with six equal sides. It awaits owner approval before cropping and matte
-removal. No rejected frame may be promoted or used as a future generation reference.
+The regular-hexagon four-over-three v5 sheet is the accepted visual baseline. Two v6 candidates make
+the frames larger and closely follow the requested stagger for simpler cutting; owner selection
+between them is pending. Provider placement is not treated as pixel-exact, so deterministic crop
+normalization will measure and recenter the chosen frames. No rejected frame may be promoted or used
+as a future generation reference.
 
-If the regular-hexagon sheet is accepted, derive seven crop candidates from its exact pixels. Remove
+After the owner selects v5 or one v6 variant, derive seven crop candidates from its exact pixels. Remove
 only the depicted checkerboard matte, place each crop on an equal 1024×1024 RGBA canvas without
 stretching its proportions, and compare the body side lengths and angles before any runtime
 registration. Obtain owner approval on isolated and 96-pixel views before promoting the seven
