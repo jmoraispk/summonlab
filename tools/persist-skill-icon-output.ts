@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { lstat, mkdir, open, realpath, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, realpath, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -35,7 +35,7 @@ import {
 	type SkillIconProviderSourceEvidence
 } from './normalize-skill-icon-provider-source.js';
 
-export interface PersistSkillIconOutputOptions {
+interface PersistSkillIconOutputCommonOptions {
 	readonly sourcePath: string;
 	readonly candidatePath: string;
 	readonly expectedRole: SkillIconRole;
@@ -43,11 +43,18 @@ export interface PersistSkillIconOutputOptions {
 	readonly geometrySourceBytes?: Buffer;
 }
 
-export interface PersistSkillIconOutputDependencies {
-	readonly now?: () => Date;
+export interface PersistSkillIconOutputOptions extends PersistSkillIconOutputCommonOptions {
+	readonly expectedSourceHash: string;
 }
 
-export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutputOptions {
+export interface PersistSkillIconOutputDependencies {
+	readonly now?: () => Date;
+	readonly testHooks?: {
+		readonly afterAuthorityRead?: () => void | Promise<void>;
+	};
+}
+
+export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutputCommonOptions {
 	readonly root?: string;
 	readonly target: AnySkillIconTarget;
 	readonly assignment: AnySkillIconAssignment;
@@ -60,6 +67,7 @@ export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutp
 		readonly afterCandidateOpen?: () => void | Promise<void>;
 		readonly beforeResultWrite?: () => void | Promise<void>;
 		readonly afterResultOpen?: () => void | Promise<void>;
+		readonly afterResultInstall?: () => void | Promise<void>;
 	};
 }
 
@@ -122,25 +130,180 @@ interface OwnedPersistedFile {
 	readonly file: { readonly device: number; readonly inode: number };
 }
 
-async function persistenceParentFingerprint(
-	destination: string
-): Promise<OwnedPersistedFile['parent']> {
-	const parent = path.dirname(destination);
-	const [realPath, metadata] = await Promise.all([realpath(parent), lstat(parent)]);
-	if (metadata.isSymbolicLink() || !metadata.isDirectory())
-		throw new Error(`Persistence parent identity is unsafe: ${parent}`);
-	return { realPath, device: metadata.dev, inode: metadata.ino };
+interface HeldPersistenceParent {
+	readonly path: string;
+	readonly handle: Awaited<ReturnType<typeof open>>;
+	readonly fingerprint: OwnedPersistedFile['parent'];
 }
 
-async function removeOwnedPersistedFile(owned: OwnedPersistedFile): Promise<void> {
-	const currentParent = await persistenceParentFingerprint(owned.path);
+interface StagedPersistedFile {
+	readonly accessPath: string;
+	readonly file: OwnedPersistedFile['file'];
+}
+
+async function assertStagedPathOwned(staged: StagedPersistedFile): Promise<void> {
+	const metadata = await metadataOrNull(staged.accessPath);
+	if (!metadata) throw new Error(`Staged persistence path disappeared`);
 	if (
-		currentParent.realPath !== owned.parent.realPath ||
-		currentParent.device !== owned.parent.device ||
-		currentParent.inode !== owned.parent.inode
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== staged.file.device ||
+		metadata.ino !== staged.file.inode
 	)
-		throw new Error(`Persistence parent identity changed; cleanup required: ${owned.path}`);
-	const metadata = await metadataOrNull(owned.path);
+		throw new Error(`Staged persistence path identity changed; cleanup required`);
+}
+
+async function unlinkStagedIfOwned(staged: StagedPersistedFile): Promise<void> {
+	const metadata = await metadataOrNull(staged.accessPath);
+	if (!metadata) return;
+	await assertStagedPathOwned(staged);
+	await unlink(staged.accessPath);
+}
+
+function heldChildPath(parent: HeldPersistenceParent, name: string): string {
+	if (name !== path.basename(name) || name === '.' || name === '..')
+		throw new Error(`Unsafe persistence child name: ${name}`);
+	return `/proc/self/fd/${parent.handle.fd}/${name}`;
+}
+
+async function openHeldPersistenceParent(
+	root: string,
+	destination: string
+): Promise<HeldPersistenceParent> {
+	await ensureSafeParents(root, destination);
+	const parentPath = path.dirname(destination);
+	const expected = await persistenceParentFingerprint(destination);
+	const handle = await open(
+		parentPath,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
+	try {
+		const opened = await handle.stat();
+		const heldRealPath = await realpath(`/proc/self/fd/${handle.fd}`);
+		const realRoot = await realpath(root);
+		if (
+			!opened.isDirectory() ||
+			opened.dev !== expected.device ||
+			opened.ino !== expected.inode ||
+			heldRealPath !== expected.realPath ||
+			!inside(realRoot, heldRealPath)
+		)
+			throw new Error(`Persistence parent identity changed while opening: ${parentPath}`);
+		return { path: parentPath, handle, fingerprint: expected };
+	} catch (error) {
+		await handle.close();
+		throw error;
+	}
+}
+
+async function assertHeldParentStillNamed(parent: HeldPersistenceParent): Promise<void> {
+	const current = await persistenceParentFingerprint(path.join(parent.path, '.identity'));
+	if (
+		current.realPath !== parent.fingerprint.realPath ||
+		current.device !== parent.fingerprint.device ||
+		current.inode !== parent.fingerprint.inode
+	)
+		throw new Error(`Persistence parent identity changed: ${parent.path}`);
+}
+
+async function stageCompleteSibling(
+	parent: HeldPersistenceParent,
+	destinationName: string,
+	bytes: Buffer,
+	afterOpen?: () => void | Promise<void>
+): Promise<StagedPersistedFile> {
+	const temporaryName = `.${destinationName}.skill-icon-tmp-${process.pid}-${randomUUID()}`;
+	const accessPath = heldChildPath(parent, temporaryName);
+	const handle = await open(
+		accessPath,
+		constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+		0o600
+	);
+	let staged: StagedPersistedFile | undefined;
+	try {
+		const metadata = await handle.stat();
+		if (!metadata.isFile() || metadata.nlink !== 1)
+			throw new Error(`Unsafe staged persistence file: ${temporaryName}`);
+		staged = {
+			accessPath,
+			file: { device: metadata.dev, inode: metadata.ino }
+		};
+		await afterOpen?.();
+		await handle.writeFile(bytes);
+		await handle.chmod(0o644);
+		await handle.sync();
+		return staged;
+	} catch (error) {
+		if (staged) {
+			try {
+				await unlinkStagedIfOwned(staged);
+			} catch (cleanupError) {
+				throw new AggregateError(
+					[error, cleanupError],
+					'Staging failed and cleanup was refused because ownership changed',
+					{ cause: error }
+				);
+			}
+		}
+		throw error;
+	} finally {
+		await handle.close().catch(() => undefined);
+	}
+}
+
+async function installStagedNoReplace(
+	parent: HeldPersistenceParent,
+	destination: string,
+	staged: StagedPersistedFile
+): Promise<OwnedPersistedFile> {
+	const finalAccessPath = heldChildPath(parent, path.basename(destination));
+	try {
+		await assertHeldParentStillNamed(parent);
+		await assertStagedPathOwned(staged);
+		// A hard link is an atomic, no-replace publication on Linux. The final name is
+		// never observable until the complete, fsynced inode is ready.
+		await link(staged.accessPath, finalAccessPath);
+		const finalMetadata = await lstat(finalAccessPath);
+		if (
+			finalMetadata.isSymbolicLink() ||
+			!finalMetadata.isFile() ||
+			finalMetadata.dev !== staged.file.device ||
+			finalMetadata.ino !== staged.file.inode
+		)
+			throw new Error(`Installed persistence file identity mismatch: ${destination}`);
+		await unlinkStagedIfOwned(staged);
+		await parent.handle.sync();
+		await assertHeldParentStillNamed(parent);
+		return {
+			path: destination,
+			parent: parent.fingerprint,
+			file: staged.file
+		};
+	} catch (error) {
+		const installed = await metadataOrNull(finalAccessPath);
+		if (
+			installed?.isFile() &&
+			!installed.isSymbolicLink() &&
+			installed.dev === staged.file.device &&
+			installed.ino === staged.file.inode
+		)
+			await unlink(finalAccessPath).catch(() => undefined);
+		try {
+			await unlinkStagedIfOwned(staged);
+		} catch {
+			// Preserve an unowned replacement for explicit operator cleanup.
+		}
+		await parent.handle.sync().catch(() => undefined);
+		throw error;
+	}
+}
+
+async function removeOwnedPersistedFileHeld(
+	parent: HeldPersistenceParent,
+	owned: OwnedPersistedFile
+): Promise<void> {
+	const accessPath = heldChildPath(parent, path.basename(owned.path));
+	const metadata = await metadataOrNull(accessPath);
 	if (!metadata) return;
 	if (
 		metadata.isSymbolicLink() ||
@@ -149,36 +312,132 @@ async function removeOwnedPersistedFile(owned: OwnedPersistedFile): Promise<void
 		metadata.ino !== owned.file.inode
 	)
 		throw new Error(`Persistence file identity changed; cleanup required: ${owned.path}`);
-	const handle = await open(owned.path, constants.O_RDONLY | constants.O_NOFOLLOW);
-	try {
-		const opened = await handle.stat();
-		if (opened.dev !== owned.file.device || opened.ino !== owned.file.inode)
-			throw new Error(`Persistence file changed while opening; cleanup required: ${owned.path}`);
-	} finally {
-		await handle.close();
+	await unlink(accessPath);
+	await parent.handle.sync();
+}
+
+interface SafePacketSnapshot {
+	readonly bytes: Buffer;
+	readonly parent: {
+		readonly realPath: string;
+		readonly device: string;
+		readonly inode: string;
+	};
+	readonly file: {
+		readonly device: string;
+		readonly inode: string;
+		readonly size: string;
+		readonly mtimeNs: string;
+		readonly ctimeNs: string;
+	};
+}
+
+const MAX_SAFE_PACKET_BYTES = 64 * 1024 * 1024;
+
+async function readBoundedRegularFile(
+	handle: Awaited<ReturnType<typeof open>>,
+	expectedSize: bigint,
+	description: string
+): Promise<Buffer> {
+	if (expectedSize < 0n || expectedSize > BigInt(MAX_SAFE_PACKET_BYTES))
+		throw new Error(`${description} exceeds the ${MAX_SAFE_PACKET_BYTES}-byte safety limit`);
+	const bytes = Buffer.alloc(Number(expectedSize));
+	let offset = 0;
+	while (offset < bytes.length) {
+		const read = await handle.read(bytes, offset, bytes.length - offset, null);
+		if (read.bytesRead === 0) throw new Error(`${description} changed size while reading`);
+		offset += read.bytesRead;
 	}
-	const immediatelyBefore = await lstat(owned.path);
-	const parentImmediatelyBefore = await persistenceParentFingerprint(owned.path);
-	if (
-		immediatelyBefore.isSymbolicLink() ||
-		!immediatelyBefore.isFile() ||
-		immediatelyBefore.dev !== owned.file.device ||
-		immediatelyBefore.ino !== owned.file.inode ||
-		parentImmediatelyBefore.realPath !== owned.parent.realPath ||
-		parentImmediatelyBefore.device !== owned.parent.device ||
-		parentImmediatelyBefore.inode !== owned.parent.inode
-	)
-		throw new Error(`Persistence file changed before unlink; cleanup required: ${owned.path}`);
-	await unlink(owned.path);
-	const parentHandle = await open(
-		path.dirname(owned.path),
-		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	const trailing = await handle.read(Buffer.alloc(1), 0, 1, null);
+	if (trailing.bytesRead !== 0) throw new Error(`${description} grew while reading`);
+	return bytes;
+}
+
+interface BoundTargetReference {
+	readonly path: string;
+	readonly contentHash: string;
+	readonly description: string;
+	readonly snapshot: Omit<SafePacketSnapshot, 'bytes'>;
+}
+
+function bindSafePacket(
+	path: string,
+	description: string,
+	snapshot: SafePacketSnapshot
+): BoundTargetReference {
+	const { bytes, ...identity } = snapshot;
+	return {
+		path,
+		description,
+		contentHash: createHash('sha256').update(bytes).digest('hex'),
+		snapshot: identity
+	};
+}
+
+function sameSafePacketIdentity(
+	left: Omit<SafePacketSnapshot, 'bytes'>,
+	right: Omit<SafePacketSnapshot, 'bytes'>
+): boolean {
+	return (
+		left.parent.realPath === right.parent.realPath &&
+		left.parent.device === right.parent.device &&
+		left.parent.inode === right.parent.inode &&
+		left.file.device === right.file.device &&
+		left.file.inode === right.file.inode &&
+		left.file.size === right.file.size &&
+		left.file.mtimeNs === right.file.mtimeNs &&
+		left.file.ctimeNs === right.file.ctimeNs
 	);
-	try {
-		await parentHandle.sync();
-	} finally {
-		await parentHandle.close();
+}
+
+async function bindTargetReferences(
+	root: string,
+	target: AnySkillIconTarget
+): Promise<readonly BoundTargetReference[]> {
+	const bindings: BoundTargetReference[] = [];
+	for (const reference of target.references) {
+		const { bytes, ...snapshot } = await readSafePacketSnapshot(
+			root,
+			reference.path,
+			`Target reference ${reference.path}`
+		);
+		const contentHash = createHash('sha256').update(bytes).digest('hex');
+		if (contentHash !== reference.contentHash)
+			throw new Error(`Target reference hash changed before persistence: ${reference.path}`);
+		bindings.push({
+			path: reference.path,
+			description: `Target reference ${reference.path}`,
+			contentHash,
+			snapshot
+		});
 	}
+	return bindings;
+}
+
+async function assertTargetReferencesStillBound(
+	root: string,
+	bindings: readonly BoundTargetReference[]
+): Promise<void> {
+	for (const binding of bindings) {
+		const { bytes, ...snapshot } = await readSafePacketSnapshot(
+			root,
+			binding.path,
+			binding.description
+		);
+		const contentHash = createHash('sha256').update(bytes).digest('hex');
+		if (contentHash !== binding.contentHash || !sameSafePacketIdentity(binding.snapshot, snapshot))
+			throw new Error(`${binding.description} changed during persistence`);
+	}
+}
+
+async function persistenceParentFingerprint(
+	destination: string
+): Promise<OwnedPersistedFile['parent']> {
+	const parent = path.dirname(destination);
+	const [realPath, metadata] = await Promise.all([realpath(parent), lstat(parent)]);
+	if (metadata.isSymbolicLink() || !metadata.isDirectory())
+		throw new Error(`Persistence parent identity is unsafe: ${parent}`);
+	return { realPath, device: metadata.dev, inode: metadata.ino };
 }
 
 async function assertOwnedPersistedFile(
@@ -211,11 +470,11 @@ async function assertOwnedPersistedFile(
 	}
 }
 
-async function readSafePacket(
+async function readSafePacketSnapshot(
 	root: string,
 	relativePath: string,
 	description: string
-): Promise<Buffer> {
+): Promise<SafePacketSnapshot> {
 	const absolute = path.resolve(root, relativePath);
 	if (!inside(root, absolute) || absolute === root)
 		throw new Error(`${description} escaped workspace root`);
@@ -233,15 +492,76 @@ async function readSafePacket(
 		if (index < segments.length - 1 && !metadata.isDirectory())
 			throw new Error(`${description} ancestor is not a directory: ${cursor}`);
 	}
-	if (!inside(realRoot, await realpath(path.dirname(absolute))))
+	const parentPath = path.dirname(absolute);
+	const parentRealPath = await realpath(parentPath);
+	const parentBefore = await lstat(parentPath, { bigint: true });
+	if (
+		parentBefore.isSymbolicLink() ||
+		!parentBefore.isDirectory() ||
+		!inside(realRoot, parentRealPath)
+	)
 		throw new Error(`${description} parent escaped real workspace root`);
-	const handle = await open(absolute, constants.O_RDONLY | constants.O_NOFOLLOW);
+	const handle = await open(
+		absolute,
+		constants.O_RDONLY | constants.O_NONBLOCK | constants.O_NOFOLLOW
+	);
 	try {
-		if (!(await handle.stat()).isFile()) throw new Error(`${description} must be a regular file`);
-		return await handle.readFile();
+		const before = await handle.stat({ bigint: true });
+		if (!before.isFile()) throw new Error(`${description} must be a regular file`);
+		const bytes = await readBoundedRegularFile(handle, before.size, description);
+		const [after, named, parentAfter, parentRealPathAfter] = await Promise.all([
+			handle.stat({ bigint: true }),
+			lstat(absolute, { bigint: true }),
+			lstat(parentPath, { bigint: true }),
+			realpath(parentPath)
+		]);
+		if (
+			!after.isFile() ||
+			named.isSymbolicLink() ||
+			!named.isFile() ||
+			before.dev !== after.dev ||
+			before.ino !== after.ino ||
+			before.size !== after.size ||
+			before.mtimeNs !== after.mtimeNs ||
+			before.ctimeNs !== after.ctimeNs ||
+			after.dev !== named.dev ||
+			after.ino !== named.ino ||
+			after.size !== named.size ||
+			after.mtimeNs !== named.mtimeNs ||
+			after.ctimeNs !== named.ctimeNs ||
+			parentAfter.isSymbolicLink() ||
+			!parentAfter.isDirectory() ||
+			parentBefore.dev !== parentAfter.dev ||
+			parentBefore.ino !== parentAfter.ino ||
+			parentRealPathAfter !== parentRealPath
+		)
+			throw new Error(`${description} identity changed while reading`);
+		return {
+			bytes,
+			parent: {
+				realPath: parentRealPath,
+				device: parentAfter.dev.toString(),
+				inode: parentAfter.ino.toString()
+			},
+			file: {
+				device: after.dev.toString(),
+				inode: after.ino.toString(),
+				size: after.size.toString(),
+				mtimeNs: after.mtimeNs.toString(),
+				ctimeNs: after.ctimeNs.toString()
+			}
+		};
 	} finally {
 		await handle.close();
 	}
+}
+
+async function readSafePacket(
+	root: string,
+	relativePath: string,
+	description: string
+): Promise<Buffer> {
+	return (await readSafePacketSnapshot(root, relativePath, description)).bytes;
 }
 
 function assertPacketBinding(
@@ -280,8 +600,9 @@ function assertPacketBinding(
 		throw new Error('Assignment paths do not match target identity and role');
 }
 
-export async function persistSkillIconOutputBound(
-	options: PersistSkillIconOutputBoundOptions
+async function persistSkillIconOutputBoundWithAuthorities(
+	options: PersistSkillIconOutputBoundOptions,
+	authorityBindings: readonly BoundTargetReference[]
 ): Promise<SkillIconAssetReceipt> {
 	if (!path.isAbsolute(options.sourcePath)) throw new Error('Source path must be absolute');
 	const receivedAt = IsoDateTimeSchema.parse(options.receivedAt);
@@ -361,37 +682,27 @@ export async function persistSkillIconOutputBound(
 	if (await metadataOrNull(resultDestination))
 		throw new Error(`Result output already exists (collision): ${target.output.resultPath}`);
 	await options.testHooks?.beforeCandidateWrite?.();
-	await ensureSafeParents(root, destination);
-	let destinationHandle: Awaited<ReturnType<typeof open>> | undefined;
-	let resultHandle: Awaited<ReturnType<typeof open>> | undefined;
+	let candidateParent: HeldPersistenceParent | undefined;
+	let resultParent: HeldPersistenceParent | undefined;
 	let candidateOwnership: OwnedPersistedFile | undefined;
 	let resultOwnership: OwnedPersistedFile | undefined;
 	try {
-		const candidateParent = await persistenceParentFingerprint(destination);
-		destinationHandle = await open(
-			destination,
-			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
-			0o644
+		candidateParent = await openHeldPersistenceParent(root, destination);
+		resultParent = await openHeldPersistenceParent(root, resultDestination);
+		// This is deliberately the final read-only operation before any output bytes
+		// are staged. Every packet reference must still be a regular, hash-bound file.
+		const referenceBindings = await bindTargetReferences(root, target);
+		const stagedCandidate = await stageCompleteSibling(
+			candidateParent,
+			path.basename(destination),
+			candidateBytes,
+			options.testHooks?.afterCandidateOpen
 		);
-		const candidateFile = await destinationHandle.stat();
-		candidateOwnership = {
-			path: destination,
-			parent: candidateParent,
-			file: { device: candidateFile.dev, inode: candidateFile.ino }
-		};
-		await options.testHooks?.afterCandidateOpen?.();
-		await destinationHandle.writeFile(candidateBytes);
-		await destinationHandle.sync();
-		await destinationHandle.close();
-		destinationHandle = undefined;
-		await ensureSafeParents(root, destination);
-		const retainedParent = await persistenceParentFingerprint(destination);
-		if (
-			retainedParent.realPath !== candidateParent.realPath ||
-			retainedParent.device !== candidateParent.device ||
-			retainedParent.inode !== candidateParent.inode
-		)
-			throw new Error(`Candidate parent identity changed during persistence: ${candidatePath}`);
+		candidateOwnership = await installStagedNoReplace(
+			candidateParent,
+			destination,
+			stagedCandidate
+		);
 		const retainedHandle = await open(destination, constants.O_RDONLY | constants.O_NOFOLLOW);
 		let retainedBytes: Buffer;
 		try {
@@ -470,38 +781,21 @@ export async function persistSkillIconOutputBound(
 		const resultBytes = Buffer.from(`${JSON.stringify(result, null, '\t')}\n`);
 		await options.testHooks?.beforeResultWrite?.();
 		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
-		await ensureSafeParents(root, resultDestination);
-		const resultParent = await persistenceParentFingerprint(resultDestination);
-		resultHandle = await open(
-			resultDestination,
-			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
-			0o644
+		const stagedResult = await stageCompleteSibling(
+			resultParent,
+			path.basename(resultDestination),
+			resultBytes,
+			options.testHooks?.afterResultOpen
 		);
-		const resultFile = await resultHandle.stat();
-		resultOwnership = {
-			path: resultDestination,
-			parent: resultParent,
-			file: { device: resultFile.dev, inode: resultFile.ino }
-		};
-		await options.testHooks?.afterResultOpen?.();
-		await resultHandle.writeFile(resultBytes);
-		await resultHandle.sync();
-		await resultHandle.close();
-		resultHandle = undefined;
-		await ensureSafeParents(root, resultDestination);
-		const retainedResultParent = await persistenceParentFingerprint(resultDestination);
-		if (
-			retainedResultParent.realPath !== resultParent.realPath ||
-			retainedResultParent.device !== resultParent.device ||
-			retainedResultParent.inode !== resultParent.inode
-		)
-			throw new Error(
-				`Result parent identity changed during persistence: ${target.output.resultPath}`
-			);
+		resultOwnership = await installStagedNoReplace(resultParent, resultDestination, stagedResult);
+		await options.testHooks?.afterResultInstall?.();
 		const retainedResult = await readSafePacket(root, target.output.resultPath, 'Retained result');
 		if (!retainedResult.equals(resultBytes))
 			throw new Error('Result bytes changed during persistence');
 		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
+		await assertOwnedPersistedFile(resultOwnership, resultBytes, 'Result');
+		await assertTargetReferencesStillBound(root, referenceBindings);
+		await assertTargetReferencesStillBound(root, authorityBindings);
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
@@ -516,18 +810,13 @@ export async function persistSkillIconOutputBound(
 		};
 	} catch (error) {
 		const cleanupFailures: unknown[] = [];
-		for (const handle of [destinationHandle, resultHandle]) {
-			if (!handle) continue;
+		for (const [parent, owned] of [
+			[candidateParent, candidateOwnership],
+			[resultParent, resultOwnership]
+		] as const) {
+			if (!parent || !owned) continue;
 			try {
-				await handle.close();
-			} catch (cleanupError) {
-				cleanupFailures.push(cleanupError);
-			}
-		}
-		for (const owned of [candidateOwnership, resultOwnership]) {
-			if (!owned) continue;
-			try {
-				await removeOwnedPersistedFile(owned);
+				await removeOwnedPersistedFileHeld(parent, owned);
 			} catch (cleanupError) {
 				cleanupFailures.push(cleanupError);
 			}
@@ -539,7 +828,17 @@ export async function persistSkillIconOutputBound(
 				{ cause: error }
 			);
 		throw error;
+	} finally {
+		for (const parent of [candidateParent, resultParent]) {
+			if (parent) await parent.handle.close().catch(() => undefined);
+		}
 	}
+}
+
+export async function persistSkillIconOutputBound(
+	options: PersistSkillIconOutputBoundOptions
+): Promise<SkillIconAssetReceipt> {
+	return persistSkillIconOutputBoundWithAuthorities(options, []);
 }
 
 function packetPathsForCandidate(candidatePath: string): {
@@ -565,27 +864,37 @@ export async function persistSkillIconOutput(
 	const root = process.cwd();
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
 	const { targetPath, assignmentPath } = packetPathsForCandidate(candidatePath);
-	const [target, assignment] = await Promise.all([
-		readSafePacket(root, targetPath, 'Target').then((bytes) =>
-			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
-		),
-		readSafePacket(root, assignmentPath, 'Assignment').then((bytes) =>
-			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
-		)
+	const [targetSnapshot, assignmentSnapshot] = await Promise.all([
+		readSafePacketSnapshot(root, targetPath, 'Target'),
+		readSafePacketSnapshot(root, assignmentPath, 'Assignment')
 	]);
-	const geometrySourceBytes =
+	const target = AnySkillIconTargetSchema.parse(JSON.parse(targetSnapshot.bytes.toString('utf8')));
+	const assignment = AnySkillIconAssignmentSchema.parse(
+		JSON.parse(assignmentSnapshot.bytes.toString('utf8'))
+	);
+	const geometrySnapshot =
 		target.schemaVersion === 'skill-icon-target-v2'
-			? await readSafePacket(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
+			? await readSafePacketSnapshot(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
 			: undefined;
+	await dependencies.testHooks?.afterAuthorityRead?.();
 	const receivedAt = (dependencies.now?.() ?? new Date()).toISOString();
-	return persistSkillIconOutputBound({
-		...options,
-		root,
-		target,
-		assignment,
-		receivedAt,
-		...(geometrySourceBytes === undefined ? {} : { geometrySourceBytes })
-	});
+	return persistSkillIconOutputBoundWithAuthorities(
+		{
+			...options,
+			root,
+			target,
+			assignment,
+			receivedAt,
+			...(geometrySnapshot === undefined ? {} : { geometrySourceBytes: geometrySnapshot.bytes })
+		},
+		[
+			bindSafePacket(targetPath, 'Target packet', targetSnapshot),
+			bindSafePacket(assignmentPath, 'Assignment packet', assignmentSnapshot),
+			...(geometrySnapshot === undefined
+				? []
+				: [bindSafePacket(SKILL_ICON_GEOMETRY_PATH, 'Geometry authority', geometrySnapshot)])
+		]
+	);
 }
 
 function option(args: readonly string[], name: string): string {
@@ -643,34 +952,42 @@ async function runCli(args: readonly string[]): Promise<void> {
 	const root = process.cwd();
 	const request = parsePersistSkillIconCliRequest(args);
 	const { targetPath, assignmentPath } = request;
-	const [target, assignment, geometryBytes] = await Promise.all([
-		readSafePacket(root, targetPath, 'Target').then((bytes) =>
-			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
-		),
-		readSafePacket(root, assignmentPath, 'Assignment').then((bytes) =>
-			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
-		),
-		readSafePacket(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
+	const [targetSnapshot, assignmentSnapshot, geometrySnapshot] = await Promise.all([
+		readSafePacketSnapshot(root, targetPath, 'Target'),
+		readSafePacketSnapshot(root, assignmentPath, 'Assignment'),
+		readSafePacketSnapshot(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
 	]);
+	const target = AnySkillIconTargetSchema.parse(JSON.parse(targetSnapshot.bytes.toString('utf8')));
+	const assignment = AnySkillIconAssignmentSchema.parse(
+		JSON.parse(assignmentSnapshot.bytes.toString('utf8'))
+	);
+	const geometryBytes = geometrySnapshot.bytes;
 	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
 	if (assignment.targetPath !== targetPath || assignment.assignmentPath !== assignmentPath)
 		throw new Error('CLI target/assignment arguments do not match packet paths');
-	const receipt = await persistSkillIconOutputBound({
-		root,
-		sourcePath: request.sourcePath,
-		candidatePath: target.output.candidatePath,
-		expectedRole: target.role,
-		geometry,
-		target,
-		assignment,
-		receivedAt: request.receivedAt ?? new Date().toISOString(),
-		...(target.schemaVersion === 'skill-icon-target-v2'
-			? { geometrySourceBytes: geometryBytes }
-			: {}),
-		...(request.expectedSourceHash === undefined
-			? {}
-			: { expectedSourceHash: request.expectedSourceHash })
-	});
+	const receipt = await persistSkillIconOutputBoundWithAuthorities(
+		{
+			root,
+			sourcePath: request.sourcePath,
+			candidatePath: target.output.candidatePath,
+			expectedRole: target.role,
+			geometry,
+			target,
+			assignment,
+			receivedAt: request.receivedAt ?? new Date().toISOString(),
+			...(target.schemaVersion === 'skill-icon-target-v2'
+				? { geometrySourceBytes: geometryBytes }
+				: {}),
+			...(request.expectedSourceHash === undefined
+				? {}
+				: { expectedSourceHash: request.expectedSourceHash })
+		},
+		[
+			bindSafePacket(targetPath, 'Target packet', targetSnapshot),
+			bindSafePacket(assignmentPath, 'Assignment packet', assignmentSnapshot),
+			bindSafePacket(SKILL_ICON_GEOMETRY_PATH, 'Geometry authority', geometrySnapshot)
+		]
+	);
 	process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
 }
 

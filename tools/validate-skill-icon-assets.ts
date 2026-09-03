@@ -307,22 +307,71 @@ async function readSafeRepositoryFile(
 	}
 }
 
-async function targetFiles(directory: string): Promise<string[]> {
+interface InventoryFile {
+	readonly key: string;
+	readonly path: string;
+}
+
+async function inventoryFiles(
+	directory: string,
+	extension: '.json' | '.png',
+	description: string,
+	root = directory
+): Promise<InventoryFile[]> {
+	if (directory === root) {
+		const rootMetadata = await lstat(directory).catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return null;
+			throw error;
+		});
+		if (rootMetadata === null) return [];
+		if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory())
+			throw new Error(`${description} inventory root must be a real directory: ${directory}`);
+	}
 	const entries = await readdir(directory, { withFileTypes: true }).catch(
 		(error: NodeJS.ErrnoException) => {
 			if (error.code === 'ENOENT') return [];
 			throw error;
 		}
 	);
-	const files: string[] = [];
+	const files: InventoryFile[] = [];
 	for (const entry of entries) {
 		const child = path.join(directory, entry.name);
 		if (entry.isSymbolicLink())
-			throw new Error(`Target tree cannot contain a symbolic link: ${child}`);
-		if (entry.isDirectory()) files.push(...(await targetFiles(child)));
-		else if (entry.isFile() && entry.name.endsWith('.json')) files.push(child);
+			throw new Error(`${description} tree cannot contain a symbolic link: ${child}`);
+		if (entry.isDirectory())
+			files.push(...(await inventoryFiles(child, extension, description, root)));
+		else if (entry.isFile() && entry.name.endsWith(extension)) {
+			files.push({
+				key: path.relative(root, child).slice(0, -extension.length).split(path.sep).join('/'),
+				path: child
+			});
+		}
 	}
-	return files.sort();
+	return files.sort((left, right) => left.key.localeCompare(right.key));
+}
+
+function inventoryMap(files: readonly InventoryFile[], description: string): Map<string, string> {
+	const inventory = new Map<string, string>();
+	for (const file of files) {
+		if (inventory.has(file.key))
+			throw new Error(`Duplicate ${description} inventory key ${file.key}`);
+		inventory.set(file.key, file.path);
+	}
+	return inventory;
+}
+
+function compareInventory(
+	failures: string[],
+	authority: ReadonlyMap<string, string>,
+	dependent: ReadonlyMap<string, string>,
+	description: 'assignment' | 'result'
+): void {
+	for (const key of authority.keys()) {
+		if (!dependent.has(key)) failures.push(`${key}: missing ${description} inventory entry`);
+	}
+	for (const key of dependent.keys()) {
+		if (!authority.has(key)) failures.push(`${key}: orphan ${description} has no target`);
+	}
 }
 
 export async function validateSkillIconAssets(root = process.cwd()): Promise<void> {
@@ -334,14 +383,34 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 	const geometrySourceBytes = await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry');
 	const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
 	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
-	const targetsRoot = path.join(resolvedRoot, 'assets/wiki/skills/icon-production-v1/targets');
+	const productionRoot = path.join(resolvedRoot, 'assets/wiki/skills/icon-production-v1');
+	const targetsRoot = path.join(productionRoot, 'targets');
+	const assignmentsRoot = path.join(productionRoot, 'assignments');
+	const resultsRoot = path.join(productionRoot, 'results');
+	const candidatesRoot = path.join(productionRoot, 'candidates');
 	const failures: string[] = [];
+	const [targetInventory, assignmentInventory, resultInventory, candidateInventory] =
+		await Promise.all([
+			inventoryFiles(targetsRoot, '.json', 'Target').then((files) => inventoryMap(files, 'target')),
+			inventoryFiles(assignmentsRoot, '.json', 'Assignment').then((files) =>
+				inventoryMap(files, 'assignment')
+			),
+			inventoryFiles(resultsRoot, '.json', 'Result').then((files) => inventoryMap(files, 'result')),
+			inventoryFiles(candidatesRoot, '.png', 'Candidate').then((files) =>
+				inventoryMap(files, 'candidate')
+			)
+		]);
+	compareInventory(failures, targetInventory, assignmentInventory, 'assignment');
+	compareInventory(failures, targetInventory, resultInventory, 'result');
+	for (const key of candidateInventory.keys()) {
+		if (!targetInventory.has(key)) failures.push(`${key}: orphan candidate has no target`);
+	}
 	const allTargets: ReturnType<typeof AnySkillIconTargetSchema.parse>[] = [];
 	const executions: {
 		readonly target: ReturnType<typeof AnySkillIconTargetSchema.parse>;
 		readonly result: ReturnType<typeof AnySkillIconResultSchema.parse>;
 	}[] = [];
-	for (const targetPath of await targetFiles(targetsRoot)) {
+	for (const targetPath of targetInventory.values()) {
 		const target = AnySkillIconTargetSchema.parse(
 			JSON.parse(
 				(await readSafeRepositoryFile(resolvedRoot, targetPath, 'Target')).toString('utf8')

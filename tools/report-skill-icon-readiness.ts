@@ -6,10 +6,12 @@ import { pathToFileURL } from 'node:url';
 import {
 	AnySkillIconTargetSchema,
 	SkillIconCatalogSchema,
+	SkillIconRaritySchema,
 	type AnySkillIconTarget,
 	type SkillIconCatalog
 } from '../packages/contracts/src/index.js';
 
+import { loadApprovedSkillIconReferenceAuthority } from './compose-skill-icon-assets.js';
 import { exportSkillIconProduction } from './export-skill-icon-production.js';
 import { resolveLatestSkillIconTargets } from './skill-icon-revision-lib.js';
 
@@ -48,21 +50,93 @@ export type SkillIconReferenceRequirement = {
 	readonly id: string;
 	readonly role: 'rarity-frame' | 'backing';
 	readonly path: string;
+	readonly targetDeclared?: boolean;
 };
+
+const CANONICAL_REFERENCE_SLOTS = [
+	...(['f', 'e', 'd', 'c', 'b', 'a', 's'] as const).map((rarity) => ({
+		logicalKey: `rarity-frame:${rarity.toUpperCase()}`,
+		role: 'rarity-frame' as const,
+		path: `assets/wiki/skills/icon-production-v1/masters/frames/${rarity}.png`
+	})),
+	{
+		logicalKey: 'backing',
+		role: 'backing' as const,
+		path: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+	}
+] as const;
+
+function canonicalReferenceRequirements(
+	requirements: readonly SkillIconReferenceRequirement[]
+): readonly SkillIconReferenceRequirement[] {
+	return CANONICAL_REFERENCE_SLOTS.map((slot) => {
+		const matches = requirements.filter(
+			(requirement) => requirement.role === slot.role && requirement.path === slot.path
+		);
+		if (matches.length === 1) return matches[0]!;
+		return {
+			id: `missing-target:${slot.logicalKey}`,
+			role: slot.role,
+			path: slot.path,
+			targetDeclared: false
+		};
+	});
+}
 
 export function referenceRequirementsForTargets(
 	targets: readonly AnySkillIconTarget[]
 ): readonly SkillIconReferenceRequirement[] {
-	return resolveLatestSkillIconTargets(targets)
-		.filter(({ target }) => target.role === 'rarity-frame' || target.role === 'backing')
-		.map(({ target }) => ({
-			id: target.jobId,
-			role: target.role as 'rarity-frame' | 'backing',
-			path:
-				target.role === 'rarity-frame'
-					? `assets/wiki/skills/icon-production-v1/masters/frames/${target.rarity.toLowerCase()}.png`
-					: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
-		}));
+	const latestTargets = new Map(
+		resolveLatestSkillIconTargets(targets)
+			.filter(({ target }) => target.role === 'rarity-frame' || target.role === 'backing')
+			.map((revision) => [revision.logicalKey, revision.target] as const)
+	);
+	return CANONICAL_REFERENCE_SLOTS.map((slot) => {
+		const target = latestTargets.get(slot.logicalKey);
+		return target
+			? { id: target.jobId, role: slot.role, path: slot.path, targetDeclared: true }
+			: {
+					id: `missing-target:${slot.logicalKey}`,
+					role: slot.role,
+					path: slot.path,
+					targetDeclared: false
+				};
+	});
+}
+
+export async function loadAuthoritativeReferenceAssets(
+	root: string,
+	requirements: readonly SkillIconReferenceRequirement[]
+): Promise<readonly SkillIconReviewedArtifact[]> {
+	const settled = await Promise.allSettled(
+		requirements
+			.filter((requirement) => requirement.targetDeclared !== false)
+			.map(async (requirement) => {
+				const rarity =
+					requirement.role === 'rarity-frame'
+						? SkillIconRaritySchema.parse(path.basename(requirement.path, '.png').toUpperCase())
+						: null;
+				const authority = await loadApprovedSkillIconReferenceAuthority(
+					root,
+					requirement.path,
+					requirement.role,
+					rarity
+				);
+				if (authority.id !== requirement.id) {
+					throw new Error(
+						`Authoritative reference ${requirement.path} resolved ${authority.id}, expected ${requirement.id}`
+					);
+				}
+				return {
+					id: authority.id,
+					role: authority.role,
+					path: authority.path,
+					contentHash: authority.contentHash,
+					review: authority.review
+				} satisfies SkillIconReviewedArtifact;
+			})
+	);
+	return settled.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []));
 }
 
 const REQUIRED_PILOT_CALIBRATIONS = [
@@ -119,6 +193,13 @@ export interface SkillIconReadinessEvidence {
 	};
 }
 
+export function withAuthoritativeReferenceEvidence(
+	durableEvidence: SkillIconReadinessEvidence,
+	referenceAssets: readonly SkillIconReviewedArtifact[]
+): SkillIconReadinessEvidence {
+	return { ...durableEvidence, referenceAssets };
+}
+
 export interface SkillIconCatalogCurrency {
 	readonly catalogCurrent: boolean;
 }
@@ -151,17 +232,24 @@ function acceptedArtifact(artifact: SkillIconReviewedArtifact): boolean {
 }
 
 function acceptedRequiredArtifacts(
-	required: readonly { readonly id: string; readonly role: string; readonly path: string }[],
+	required: readonly {
+		readonly id: string;
+		readonly role: string;
+		readonly path: string;
+		readonly targetDeclared?: boolean;
+	}[],
 	provided: readonly SkillIconReviewedArtifact[]
 ): number {
-	return required.filter((requirement) =>
-		provided.some(
-			(artifact) =>
-				artifact.id === requirement.id &&
-				artifact.role === requirement.role &&
-				artifact.path === requirement.path &&
-				acceptedArtifact(artifact)
-		)
+	return required.filter(
+		(requirement) =>
+			requirement.targetDeclared !== false &&
+			provided.some(
+				(artifact) =>
+					artifact.id === requirement.id &&
+					artifact.role === requirement.role &&
+					artifact.path === requirement.path &&
+					acceptedArtifact(artifact)
+			)
 	).length;
 }
 
@@ -179,12 +267,18 @@ export function buildSkillIconReadinessReport(
 ): SkillIconReadinessReport {
 	const lifecycle = { mapped: 0, authored: 0, candidate: 0, approved: 0 };
 	for (const record of catalog.records) lifecycle[record.status] += 1;
+	const canonicalReferences = canonicalReferenceRequirements(requiredReferenceAssets);
+	const referenceTargetsDeclared = canonicalReferences.filter(
+		(requirement) => requirement.targetDeclared !== false
+	).length;
 	const referencesAccepted = acceptedRequiredArtifacts(
-		requiredReferenceAssets,
+		canonicalReferences,
 		evidence.referenceAssets ?? []
 	);
 	const foundationComplete =
-		currency.catalogCurrent && referencesAccepted === requiredReferenceAssets.length;
+		currency.catalogCurrent &&
+		referenceTargetsDeclared === CANONICAL_REFERENCE_SLOTS.length &&
+		referencesAccepted === CANONICAL_REFERENCE_SLOTS.length;
 	const calibrationsAccepted = acceptedRequiredArtifacts(
 		REQUIRED_PILOT_CALIBRATIONS,
 		evidence.calibrationPlates ?? []
@@ -215,9 +309,13 @@ export function buildSkillIconReadinessReport(
 	const blockers: string[] = [];
 	if (catalog.records.length !== 456) blockers.push(`expected 456 canonical records`);
 	if (!currency.catalogCurrent) blockers.push('catalog export is not current');
-	if (referencesAccepted !== requiredReferenceAssets.length)
+	if (referenceTargetsDeclared !== CANONICAL_REFERENCE_SLOTS.length)
 		blockers.push(
-			`accepted reference assets ${referencesAccepted}/${requiredReferenceAssets.length}`
+			`declared canonical reference targets ${referenceTargetsDeclared}/${CANONICAL_REFERENCE_SLOTS.length}`
+		);
+	if (referencesAccepted !== CANONICAL_REFERENCE_SLOTS.length)
+		blockers.push(
+			`accepted reference assets ${referencesAccepted}/${CANONICAL_REFERENCE_SLOTS.length}`
 		);
 	if (foundationComplete && calibrationsAccepted !== 3)
 		blockers.push(`accepted pilot calibration plates ${calibrationsAccepted}/3`);
@@ -277,12 +375,16 @@ async function main(args: readonly string[]): Promise<void> {
 		});
 	const requiredReferences = referenceRequirementsForTargets(referenceTargets);
 	const exportReport = await exportSkillIconProduction({ mode: 'check' });
-	const evidence = await readFile(evidencePath, 'utf8')
+	const durableEvidence = await readFile(evidencePath, 'utf8')
 		.then((source) => JSON.parse(source) as SkillIconReadinessEvidence)
 		.catch((error: NodeJS.ErrnoException) => {
 			if (error.code === 'ENOENT') return {};
 			throw error;
 		});
+	const evidence = withAuthoritativeReferenceEvidence(
+		durableEvidence,
+		await loadAuthoritativeReferenceAssets(process.cwd(), requiredReferences)
+	);
 	const report = buildSkillIconReadinessReport(
 		catalog,
 		evidence,

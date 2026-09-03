@@ -1,4 +1,5 @@
 import { createHash, createHmac, randomUUID } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import {
 	access,
 	cp,
@@ -6,12 +7,14 @@ import {
 	mkdir,
 	mkdtemp,
 	lstat,
+	open,
 	readFile,
 	readdir,
 	realpath,
 	rename,
 	rm,
 	symlink,
+	unlink,
 	writeFile
 } from 'node:fs/promises';
 import os from 'node:os';
@@ -809,6 +812,129 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toThrow(/geometry hash mismatch/iu);
 	});
 
+	it('replaces a verified prior canonical master while preserving immutable receipt history', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const oldBytes = await sharp(await backingPng())
+			.tint('#8a4f2d')
+			.png()
+			.toBuffer();
+		await installApprovedReferenceEvidence(item.root, 'backing', oldBytes, null);
+		const oldReceiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v1.json`;
+		const oldReceiptBytes = await readFile(path.join(item.root, oldReceiptPath));
+		const masterPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		);
+		let stopObserver = false;
+		let observerSawMissingMaster = false;
+		const observer = (async () => {
+			while (!stopObserver) {
+				try {
+					await access(masterPath);
+				} catch {
+					observerSawMissingMaster = true;
+				}
+				await new Promise<void>((resolve) => setImmediate(resolve));
+			}
+		})();
+		let record: Awaited<ReturnType<typeof promoteSkillIconOutput>>;
+		try {
+			record = await promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root
+			});
+		} finally {
+			stopObserver = true;
+			await observer;
+		}
+		expect(observerSawMissingMaster).toBe(false);
+		expect(await readFile(path.join(item.root, record.approvedMaster.path))).toEqual(
+			await readFile(path.join(item.root, item.candidatePath))
+		);
+		expect(await readFile(path.join(item.root, oldReceiptPath))).toEqual(oldReceiptBytes);
+		await expect(
+			access(
+				path.join(item.root, `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v2.json`)
+			)
+		).resolves.toBeUndefined();
+	});
+
+	it('rejects an existing canonical master without verified promotion evidence', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const masterPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		);
+		await mkdir(path.dirname(masterPath), { recursive: true });
+		await writeFile(masterPath, await backingPng());
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/lacks verified promotion history/iu);
+	});
+
+	it('rejects a raced prior master instead of overwriting unverified bytes', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const oldBytes = await sharp(await backingPng())
+			.tint('#8a4f2d')
+			.png()
+			.toBuffer();
+		await installApprovedReferenceEvidence(item.root, 'backing', oldBytes, null);
+		const masterPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		);
+		const racedBytes = await sharp(oldBytes).tint('#274e75').png().toBuffer();
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: { beforeMasterWrite: () => writeFile(masterPath, racedBytes) }
+			})
+		).rejects.toThrow(/changed|rollback was incomplete|durable recovery state/iu);
+		expect(await readFile(masterPath)).toEqual(racedBytes);
+	});
+
+	it('restores the prior canonical master when replacement transaction rolls back', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const oldBytes = await sharp(await backingPng())
+			.tint('#8a4f2d')
+			.png()
+			.toBuffer();
+		await installApprovedReferenceEvidence(item.root, 'backing', oldBytes, null);
+		const masterPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		);
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					afterMasterWrite: () => {
+						throw new Error('replace rollback');
+					}
+				}
+			})
+		).rejects.toThrow(/replace rollback/iu);
+		expect(await readFile(masterPath)).toEqual(oldBytes);
+		await expect(
+			access(
+				path.join(item.root, `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v2.json`)
+			)
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
 	it('promotes an accepted calibration plate without imposing alpha safe-zone rules', async () => {
 		const item = await fixture(
 			'blade-sweeping-cut-calibration-v1',
@@ -1483,6 +1609,142 @@ describe('promoteSkillIconOutput', () => {
 		}
 	});
 
+	it.each(['target', 'assignment'] as const)(
+		'rejects a late same-job valid %s packet mutation and rolls back the master',
+		async (authority) => {
+			const item = await fixture('charcoal-forged-stone-v1');
+			const packetPath = path.join(
+				item.root,
+				`assets/wiki/skills/icon-production-v1/${authority === 'target' ? 'targets' : 'assignments'}/references/charcoal-forged-stone-v1.json`
+			);
+			await expect(
+				promoteSkillIconOutput({
+					jobId: 'charcoal-forged-stone-v1',
+					reviewPath: item.reviewPath,
+					root: item.root,
+					testHooks: {
+						afterMasterWrite: async () => {
+							const packet = JSON.parse(await readFile(packetPath, 'utf8')) as Record<
+								string,
+								unknown
+							>;
+							if (authority === 'target') {
+								const references = packet.references as { purpose: string }[];
+								references[0]!.purpose = 'Changed but schema-valid geometry purpose.';
+							} else packet.assignedAt = '2026-09-02T08:00:01.000Z';
+							await writeFile(packetPath, JSON.stringify(packet));
+						}
+					}
+				})
+			).rejects.toThrow(new RegExp(`${authority} authority changed`, 'iu'));
+			await expect(
+				access(
+					path.join(
+						item.root,
+						'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+					)
+				)
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+	);
+
+	it('rejects a late parse-valid raw geometry mutation and rolls back the master', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const geometryPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/geometry.json'
+		);
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					afterMasterWrite: async () => {
+						await writeFile(
+							geometryPath,
+							Buffer.concat([await readFile(geometryPath), Buffer.from('\n')])
+						);
+					}
+				}
+			})
+		).rejects.toThrow(/geometry authority changed/iu);
+		await expect(
+			access(
+				path.join(
+					item.root,
+					'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+				)
+			)
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each(['target', 'assignment', 'geometry'] as const)(
+		'rejects a late same-byte %s inode replacement and rolls back the master',
+		async (authority) => {
+			const item = await fixture('charcoal-forged-stone-v1');
+			const relativePath =
+				authority === 'geometry'
+					? 'assets/wiki/skills/icon-production-v1/geometry.json'
+					: `assets/wiki/skills/icon-production-v1/${authority === 'target' ? 'targets' : 'assignments'}/references/charcoal-forged-stone-v1.json`;
+			const authorityPath = path.join(item.root, relativePath);
+			await expect(
+				promoteSkillIconOutput({
+					jobId: 'charcoal-forged-stone-v1',
+					reviewPath: item.reviewPath,
+					root: item.root,
+					testHooks: {
+						afterMasterWrite: async () => {
+							const replacementPath = `${authorityPath}.replacement`;
+							await writeFile(replacementPath, await readFile(authorityPath));
+							await rename(replacementPath, authorityPath);
+						}
+					}
+				})
+			).rejects.toThrow(new RegExp(`${authority} authority changed`, 'iu'));
+			await expect(
+				access(
+					path.join(
+						item.root,
+						'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+					)
+				)
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+	);
+
+	it('rejects a FIFO review without blocking', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const reviewPath = path.join(item.root, item.reviewPath);
+		await unlink(reviewPath);
+		execFileSync('/usr/bin/mkfifo', [reviewPath]);
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/review must be a regular file/iu);
+	}, 5_000);
+
+	it('rejects an oversized sparse authority before allocating its declared size', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		const reviewPath = path.join(item.root, item.reviewPath);
+		const handle = await open(reviewPath, 'r+');
+		try {
+			await handle.truncate(64 * 1024 * 1024 + 1);
+		} finally {
+			await handle.close();
+		}
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/review exceeds 67108864 bytes/iu);
+	});
+
 	it('rejects an ancestor swap before writing and never writes through the symlink', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-outside-'));
@@ -2048,7 +2310,7 @@ describe('promoteSkillIconOutput', () => {
 		await expect(readFile(sharedPath)).resolves.toEqual(before);
 	});
 
-	it('preflights the whole directory before writing the first master', async () => {
+	it('rejects duplicate logical revisions before writing the first master', async () => {
 		const first = await fixture('charcoal-forged-stone-v1');
 		const second = await fixture('obsidian-forged-stone-v1', 'rejected');
 		const reviewDirectory = path.join(
@@ -2076,7 +2338,7 @@ describe('promoteSkillIconOutput', () => {
 				reviewDirectory,
 				root: first.root
 			})
-		).rejects.toThrow(/accepted/u);
+		).rejects.toThrow(/immutable historical identities|duplicate skill-icon logical revision/iu);
 		await expect(
 			access(
 				path.join(
@@ -2087,41 +2349,48 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('rejects a batch containing an older semantic revision before writing any master', async () => {
-		const first = await fixture('charcoal-forged-stone-v1');
-		const second = await fixture('charcoal-forged-stone-v2');
-		const reviewDirectory = path.join(
-			first.root,
-			'assets/wiki/skills/icon-production-v1/review/decisions/references'
-		);
-		for (const relative of [
-			second.reviewPath,
-			second.candidatePath,
-			'assets/wiki/skills/icon-production-v1/targets/references/charcoal-forged-stone-v2.json',
-			'assets/wiki/skills/icon-production-v1/assignments/references/charcoal-forged-stone-v2.json',
-			second.resultPath
-		]) {
-			await mkdir(path.dirname(path.join(first.root, relative)), { recursive: true });
-			await writeFile(
-				path.join(first.root, relative),
-				await readFile(path.join(second.root, relative))
+	it.each(['accepted', 'rejected'] as const)(
+		'selects the latest batch review while preserving an older %s review as history',
+		async (olderDecision) => {
+			const first = await fixture('charcoal-forged-stone-v1', olderDecision);
+			const olderReviewBytes = await readFile(path.join(first.root, first.reviewPath));
+			const second = await fixture('charcoal-forged-stone-v2');
+			await installBackingV2Packet(second.root, 'candidate');
+			const reviewDirectory = path.join(
+				first.root,
+				'assets/wiki/skills/icon-production-v1/review/decisions/references'
 			);
-		}
-		await expect(
-			promoteReviewedSkillIconOutputs({
+			for (const relative of [
+				second.reviewPath,
+				second.candidatePath,
+				'assets/wiki/skills/icon-production-v1/targets/references/charcoal-forged-stone-v2.json',
+				'assets/wiki/skills/icon-production-v1/assignments/references/charcoal-forged-stone-v2.json',
+				second.resultPath,
+				'assets/wiki/skills/icon-production-v1/geometry.json'
+			]) {
+				await mkdir(path.dirname(path.join(first.root, relative)), { recursive: true });
+				await writeFile(
+					path.join(first.root, relative),
+					await readFile(path.join(second.root, relative))
+				);
+			}
+			const records = await promoteReviewedSkillIconOutputs({
 				reviewDirectory,
 				root: first.root
-			})
-		).rejects.toThrow(/not the unique latest target/iu);
-		await expect(
-			access(
-				path.join(
-					first.root,
-					'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+			});
+			expect(records).toHaveLength(1);
+			expect(records[0]?.jobId).toBe('charcoal-forged-stone-v2');
+			expect(await readFile(path.join(first.root, first.reviewPath))).toEqual(olderReviewBytes);
+			await expect(
+				access(
+					path.join(
+						first.root,
+						'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+					)
 				)
-			)
-		).rejects.toMatchObject({ code: 'ENOENT' });
-	});
+			).resolves.toBeUndefined();
+		}
+	);
 
 	it('rejects mixed CLI modes and preserves the documented command grammar', () => {
 		expect(() =>

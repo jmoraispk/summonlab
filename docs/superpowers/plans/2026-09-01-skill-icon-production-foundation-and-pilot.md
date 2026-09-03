@@ -673,12 +673,21 @@ target-v2/assignment-v2/result-v2 packets, `summonlab-skill-icon-production-v2`,
 namespace versions the asset system, not the execution protocol.
 
 The helper reads the exact provider source once, verifies its caller-bound hash and narrow
-1254×1254 RGB PNG/opaque `#00FF00` envelope, then applies the fixed role mask and 1024 RGBA output
-recipe within the existing exclusive candidate/result transaction. The result records pathless
-source and normalization provenance. No provider source is copied into the repository, and no
-producer performs normalization manually. Global validation verifies every historical tuple, but
-only the unique latest semantic revision may satisfy a slot; a latest failure/revise/incomplete
-tuple blocks without falling back.
+non-interlaced 8-bit 1254×1254 RGB PNG/explicit perceptual-sRGB/opaque `#00FF00` envelope, then
+applies the fixed role mask and 1024 RGBA output recipe within the existing exclusive
+candidate/result transaction. Conflicting color metadata, unsupported ancillary chunks,
+checkerboards, and bytes after `IEND` fail closed. Complete files are fsynced under private sibling
+names before atomic no-replace publication. The result records pathless source and normalization
+provenance. No provider source is copied into the repository, and no producer performs
+normalization manually. Global validation verifies every historical tuple, but only the unique
+latest semantic revision may satisfy a slot; a latest failure/revise/incomplete tuple blocks
+without falling back.
+
+Production commands cooperate through the repository coordinator and defend accidental or
+concurrent file replacement with stable reads, inode/hash rechecks, and atomic publication. A
+malicious same-UID process that bypasses that coordinator and races the final syscall remains an
+explicit operating-system trust boundary; the workflow does not claim hostile-writer filesystem
+compare-and-swap semantics.
 
 **Files:**
 

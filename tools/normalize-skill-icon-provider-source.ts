@@ -21,6 +21,17 @@ export const SKILL_ICON_NORMALIZER_SHARP_VERSION = '0.35.3';
 export const SKILL_ICON_NORMALIZER_VIPS_VERSION = '8.18.3';
 export const SKILL_ICON_PROVIDER_MAX_BYTES = 64 * 1024 * 1024;
 
+const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+const PNG_ALLOWED_CHUNKS = new Set(['IHDR', 'sRGB', 'pHYs', 'IDAT', 'IEND']);
+const PNG_SRGB_RENDERING_INTENT = 0;
+const FORBIDDEN_ALPHA_MASS_LIMIT = 0.001;
+const FORBIDDEN_OPAQUE_PIXEL_LIMIT = 0.00025;
+const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
+	let value = index;
+	for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ (value & 1 ? 0xedb88320 : 0);
+	return value >>> 0;
+});
+
 export interface SkillIconProviderSourceEvidence {
 	readonly mediaType: 'image/png';
 	readonly width: 1254;
@@ -75,6 +86,81 @@ function keyDistance(red: number, green: number, blue: number): number {
 	return Math.max(red, 255 - green, blue);
 }
 
+function crc32(bytes: Buffer): number {
+	let crc = 0xffffffff;
+	for (const byte of bytes) crc = (crc >>> 8) ^ (CRC32_TABLE[(crc ^ byte) & 0xff] ?? 0);
+	return (crc ^ 0xffffffff) >>> 0;
+}
+
+/**
+ * Accept only the profile's explicit, color-metadata-free sRGB PNG envelope. Parsing
+ * this before libvips prevents ancillary chunks or bytes after IEND from being
+ * silently ignored or interpreted differently by another decoder.
+ */
+function assertCanonicalProviderPngEnvelope(bytes: Buffer): void {
+	if (bytes.length < PNG_SIGNATURE.length || !bytes.subarray(0, 8).equals(PNG_SIGNATURE))
+		throw new Error('Provider source must be a PNG');
+	let offset = PNG_SIGNATURE.length;
+	let chunkIndex = 0;
+	let sawSrgb = false;
+	let sawPhys = false;
+	let sawIdat = false;
+	let finishedIdat = false;
+	let sawIend = false;
+	while (offset < bytes.length) {
+		if (offset + 12 > bytes.length) throw new Error('Provider PNG has a truncated chunk');
+		const length = bytes.readUInt32BE(offset);
+		const chunkEnd = offset + 12 + length;
+		if (chunkEnd > bytes.length) throw new Error('Provider PNG has a truncated chunk');
+		const typeBytes = bytes.subarray(offset + 4, offset + 8);
+		const type = typeBytes.toString('ascii');
+		if (!/^[A-Za-z]{4}$/u.test(type)) throw new Error('Provider PNG has an invalid chunk type');
+		const data = bytes.subarray(offset + 8, offset + 8 + length);
+		const storedCrc = bytes.readUInt32BE(offset + 8 + length);
+		if (crc32(bytes.subarray(offset + 4, offset + 8 + length)) !== storedCrc)
+			throw new Error(`Provider PNG ${type} chunk has an invalid CRC`);
+		if (!PNG_ALLOWED_CHUNKS.has(type))
+			throw new Error(`Provider PNG contains forbidden ${type} metadata`);
+		if (chunkIndex === 0 && type !== 'IHDR') throw new Error('Provider PNG must begin with IHDR');
+		if (chunkIndex > 0 && type === 'IHDR') throw new Error('Provider PNG contains duplicate IHDR');
+		if (type === 'IHDR') {
+			if (length !== 13) throw new Error('Provider PNG has an invalid IHDR');
+			if (
+				data.readUInt32BE(0) !== SKILL_ICON_PROVIDER_SIZE ||
+				data.readUInt32BE(4) !== SKILL_ICON_PROVIDER_SIZE
+			)
+				throw new Error(
+					`Provider source dimensions must be ${SKILL_ICON_PROVIDER_SIZE}×${SKILL_ICON_PROVIDER_SIZE}`
+				);
+			if (data[8] !== 8 || data[9] !== 2 || data[10] !== 0 || data[11] !== 0 || data[12] !== 0)
+				throw new Error('Provider PNG must be non-interlaced 8-bit RGB');
+		} else if (type === 'sRGB') {
+			if (sawSrgb || sawIdat || length !== 1 || data[0] !== PNG_SRGB_RENDERING_INTENT)
+				throw new Error('Provider PNG must contain one canonical perceptual sRGB declaration');
+			sawSrgb = true;
+		} else if (type === 'pHYs') {
+			if (sawPhys || sawIdat || length !== 9 || (data[8] !== 0 && data[8] !== 1))
+				throw new Error('Provider PNG has an invalid pHYs chunk');
+			sawPhys = true;
+		} else if (type === 'IDAT') {
+			if (!sawSrgb)
+				throw new Error('Provider PNG colorimetry is undeclared; an sRGB chunk is required');
+			if (finishedIdat) throw new Error('Provider PNG IDAT chunks must be consecutive');
+			sawIdat = true;
+		} else if (type === 'IEND') {
+			if (!sawIdat || length !== 0) throw new Error('Provider PNG has an invalid IEND');
+			sawIend = true;
+			if (chunkEnd !== bytes.length)
+				throw new Error('Provider PNG contains trailing data after IEND');
+		} else if (sawIdat) finishedIdat = true;
+		if (sawIdat && type !== 'IDAT' && type !== 'IEND') finishedIdat = true;
+		offset = chunkEnd;
+		chunkIndex += 1;
+		if (sawIend) break;
+	}
+	if (!sawIend) throw new Error('Provider PNG is missing IEND');
+}
+
 function assertNoBakedCheckerboard(data: Buffer): void {
 	const colors = new Map<number, number>();
 	let nonKeyPixels = 0;
@@ -84,24 +170,72 @@ function assertNoBakedCheckerboard(data: Buffer): void {
 		const blue = data[offset + 2] ?? 0;
 		if (keyDistance(red, green, blue) <= SKILL_ICON_PROVIDER_OPAQUE_DISTANCE) continue;
 		nonKeyPixels += 1;
-		if (Math.max(red, green, blue) - Math.min(red, green, blue) > 8) continue;
-		const key = (red << 16) | (green << 8) | blue;
+		const key = ((red >> 3) << 10) | ((green >> 3) << 5) | (blue >> 3);
 		colors.set(key, (colors.get(key) ?? 0) + 1);
 	}
 	const dominant = [...colors.entries()].sort((left, right) => right[1] - left[1]).slice(0, 2);
 	if (dominant.length !== 2 || nonKeyPixels === 0) return;
 	const [[firstColor, firstCount], [secondColor, secondCount]] = dominant;
-	const firstLuminance =
-		(((firstColor >>> 16) & 0xff) + ((firstColor >>> 8) & 0xff) + (firstColor & 0xff)) / 3;
-	const secondLuminance =
-		(((secondColor >>> 16) & 0xff) + ((secondColor >>> 8) & 0xff) + (secondColor & 0xff)) / 3;
+	const firstRed = ((firstColor >>> 10) & 0x1f) * 8 + 4;
+	const firstGreen = ((firstColor >>> 5) & 0x1f) * 8 + 4;
+	const firstBlue = (firstColor & 0x1f) * 8 + 4;
+	const secondRed = ((secondColor >>> 10) & 0x1f) * 8 + 4;
+	const secondGreen = ((secondColor >>> 5) & 0x1f) * 8 + 4;
+	const secondBlue = (secondColor & 0x1f) * 8 + 4;
+	const colorSeparation = Math.max(
+		Math.abs(firstRed - secondRed),
+		Math.abs(firstGreen - secondGreen),
+		Math.abs(firstBlue - secondBlue)
+	);
 	if (
-		firstCount / nonKeyPixels >= 0.05 &&
-		secondCount / nonKeyPixels >= 0.05 &&
-		(firstCount + secondCount) / nonKeyPixels >= 0.3 &&
-		Math.abs(firstLuminance - secondLuminance) >= 20
+		firstCount / nonKeyPixels < 0.05 ||
+		secondCount / nonKeyPixels < 0.05 ||
+		(firstCount + secondCount) / nonKeyPixels < 0.3 ||
+		colorSeparation < 16
 	)
-		throw new Error('Provider source appears to contain a baked checkerboard matte');
+		return;
+
+	const width = SKILL_ICON_PROVIDER_SIZE;
+	const height = data.length / 3 / width;
+	const classify = (pixelOffset: number): 0 | 1 | -1 => {
+		const key =
+			(((data[pixelOffset] ?? 0) >> 3) << 10) |
+			(((data[pixelOffset + 1] ?? 0) >> 3) << 5) |
+			((data[pixelOffset + 2] ?? 0) >> 3);
+		return key === firstColor ? 0 : key === secondColor ? 1 : -1;
+	};
+	let horizontalPairs = 0;
+	let horizontalTransitions = 0;
+	let verticalPairs = 0;
+	let verticalTransitions = 0;
+	for (let y = 0; y < height; y += 1) {
+		for (let x = 0; x < width; x += 1) {
+			const offset = (y * width + x) * 3;
+			const current = classify(offset);
+			if (current < 0) continue;
+			if (x + 1 < width) {
+				const right = classify(offset + 3);
+				if (right >= 0) {
+					horizontalPairs += 1;
+					if (right !== current) horizontalTransitions += 1;
+				}
+			}
+			if (y + 1 < height) {
+				const below = classify(offset + width * 3);
+				if (below >= 0) {
+					verticalPairs += 1;
+					if (below !== current) verticalTransitions += 1;
+				}
+			}
+		}
+	}
+	if (
+		horizontalTransitions / Math.max(1, horizontalPairs) >= 0.01 &&
+		verticalTransitions / Math.max(1, verticalPairs) >= 0.01
+	)
+		throw new Error(
+			'Provider source appears to contain a spatially alternating checkerboard matte'
+		);
 }
 
 function assertProviderMatte(
@@ -170,6 +304,124 @@ function assertProviderMatte(
 		);
 }
 
+function assertForbiddenRegionAlpha(
+	rgba: Buffer,
+	width: number,
+	height: number,
+	roleMask: Uint8Array
+): void {
+	let forbiddenPixels = 0;
+	let forbiddenAlphaMass = 0;
+	let forbiddenOpaquePixels = 0;
+	for (let y = 0; y < height; y += 1) {
+		for (let x = 0; x < width; x += 1) {
+			if (roleMask[y * width + x] === 1) continue;
+			let boundaryHalo = false;
+			for (let deltaY = -3; deltaY <= 3 && !boundaryHalo; deltaY += 1) {
+				for (let deltaX = -3; deltaX <= 3; deltaX += 1) {
+					const neighborX = x + deltaX;
+					const neighborY = y + deltaY;
+					if (
+						neighborX >= 0 &&
+						neighborX < width &&
+						neighborY >= 0 &&
+						neighborY < height &&
+						roleMask[neighborY * width + neighborX] === 1
+					) {
+						boundaryHalo = true;
+						break;
+					}
+				}
+			}
+			// Lanczos3 and provider rasterization can legitimately occupy this
+			// three-pixel profile-owned transition band. Only alpha beyond it is
+			// evidence of misplaced content.
+			if (boundaryHalo) continue;
+			forbiddenPixels += 1;
+			const alpha = rgba[(y * width + x) * 4 + 3] ?? 0;
+			forbiddenAlphaMass += alpha;
+			if (alpha >= 128) forbiddenOpaquePixels += 1;
+		}
+	}
+	const alphaMassFraction = forbiddenAlphaMass / Math.max(1, forbiddenPixels * 255);
+	const opaquePixelFraction = forbiddenOpaquePixels / Math.max(1, forbiddenPixels);
+	if (
+		alphaMassFraction > FORBIDDEN_ALPHA_MASS_LIMIT ||
+		opaquePixelFraction > FORBIDDEN_OPAQUE_PIXEL_LIMIT
+	)
+		throw new Error(
+			`Provider source has resulting alpha mass in a role-required transparent region (${alphaMassFraction.toFixed(6)} mass, ${opaquePixelFraction.toFixed(6)} opaque)`
+		);
+}
+
+function assertNoSpatialAlphaCheckerboard(
+	rgba: Buffer,
+	width: number,
+	height: number,
+	roleMask: Uint8Array
+): void {
+	const alphaBins = new Uint32Array(16);
+	let allowedPixels = 0;
+	for (let pixelIndex = 0; pixelIndex < width * height; pixelIndex += 1) {
+		if (roleMask[pixelIndex] !== 1) continue;
+		allowedPixels += 1;
+		const alpha = rgba[pixelIndex * 4 + 3] ?? 0;
+		alphaBins[Math.min(15, alpha >> 4)]! += 1;
+	}
+	const [firstBin, secondBin] = [...alphaBins.keys()].sort(
+		(left, right) => (alphaBins[right] ?? 0) - (alphaBins[left] ?? 0)
+	);
+	if (firstBin === undefined || secondBin === undefined) return;
+	const firstCount = alphaBins[firstBin] ?? 0;
+	const secondCount = alphaBins[secondBin] ?? 0;
+	if (
+		firstCount / Math.max(1, allowedPixels) < 0.05 ||
+		secondCount / Math.max(1, allowedPixels) < 0.05 ||
+		(firstCount + secondCount) / Math.max(1, allowedPixels) < 0.3 ||
+		Math.abs(firstBin - secondBin) < 3
+	)
+		return;
+	const classify = (pixelIndex: number): 0 | 1 | -1 => {
+		const alphaBin = Math.min(15, (rgba[pixelIndex * 4 + 3] ?? 0) >> 4);
+		return alphaBin === firstBin ? 0 : alphaBin === secondBin ? 1 : -1;
+	};
+	for (const lag of [1, 2, 4, 8, 16]) {
+		let horizontalPairs = 0;
+		let horizontalTransitions = 0;
+		let verticalPairs = 0;
+		let verticalTransitions = 0;
+		for (let y = 0; y < height; y += 1) {
+			for (let x = 0; x < width; x += 1) {
+				const pixelIndex = y * width + x;
+				if (roleMask[pixelIndex] !== 1) continue;
+				const current = classify(pixelIndex);
+				if (current < 0) continue;
+				if (x + lag < width && roleMask[pixelIndex + lag] === 1) {
+					const right = classify(pixelIndex + lag);
+					if (right >= 0) {
+						horizontalPairs += 1;
+						if (right !== current) horizontalTransitions += 1;
+					}
+				}
+				if (y + lag < height && roleMask[pixelIndex + lag * width] === 1) {
+					const below = classify(pixelIndex + lag * width);
+					if (below >= 0) {
+						verticalPairs += 1;
+						if (below !== current) verticalTransitions += 1;
+					}
+				}
+			}
+		}
+		if (
+			horizontalTransitions / Math.max(1, horizontalPairs) >= 0.05 &&
+			verticalTransitions / Math.max(1, verticalPairs) >= 0.05
+		)
+			throw new Error(
+				'Provider source contains a spatially alternating opacity checkerboard matte'
+			);
+	}
+}
+
 /** Profile-owned alpha curve, exported so threshold behavior remains directly testable. */
 export function skillIconGreenKeyAlpha(red: number, green: number, blue: number): number {
 	const distance = keyDistance(red, green, blue);
@@ -204,20 +456,43 @@ function buildRoleMask(role: SkillIconRole, geometry: SkillIconGeometry): Uint8A
 	return mask;
 }
 
+function scaleRoleMask(
+	roleMask: Uint8Array,
+	roleWidth: number,
+	roleHeight: number,
+	width: number,
+	height: number
+): Uint8Array {
+	const scaled = new Uint8Array(width * height);
+	for (let y = 0; y < height; y += 1) {
+		const roleY = Math.min(roleHeight - 1, Math.floor((y * roleHeight) / height));
+		for (let x = 0; x < width; x += 1) {
+			const roleX = Math.min(roleWidth - 1, Math.floor((x * roleWidth) / width));
+			scaled[y * width + x] = roleMask[roleY * roleWidth + roleX] ?? 0;
+		}
+	}
+	return scaled;
+}
+
 /** Pure, deterministic provider-byte normalization. It never reads or writes the filesystem. */
 export async function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer
 ): Promise<NormalizedSkillIconProviderSource> {
+	// Own both inputs before the first await. Callers cannot alter decoded pixels or
+	// provenance hashes by mutating a Buffer in a queued microtask.
 	if (sourceBytes.byteLength === 0 || sourceBytes.byteLength > SKILL_ICON_PROVIDER_MAX_BYTES)
 		throw new Error('Provider source byte size is outside the bounded envelope');
+	const sourceSnapshot = Buffer.from(sourceBytes);
+	const geometrySnapshot = Buffer.from(geometrySourceBytes);
+	assertCanonicalProviderPngEnvelope(sourceSnapshot);
 	const role = SkillIconRoleSchema.parse(roleInput);
 	if (role !== 'rarity-frame' && role !== 'backing')
 		throw new Error('Green-key normalization is authorized only for rarity-frame and backing jobs');
 	let rawGeometry: unknown;
 	try {
-		rawGeometry = JSON.parse(geometrySourceBytes.toString('utf8'));
+		rawGeometry = JSON.parse(geometrySnapshot.toString('utf8'));
 	} catch {
 		throw new Error('Geometry authority is not valid JSON');
 	}
@@ -230,7 +505,7 @@ export async function normalizeSkillIconProviderSource(
 		sharp.versions.vips !== SKILL_ICON_NORMALIZER_VIPS_VERSION
 	)
 		throw new Error('Green-key normalization requires the profile-pinned Sharp/libvips toolchain');
-	const image = sharp(sourceBytes, {
+	const image = sharp(sourceSnapshot, {
 		failOn: 'error',
 		limitInputPixels: SKILL_ICON_PROVIDER_SIZE * SKILL_ICON_PROVIDER_SIZE,
 		sequentialRead: true
@@ -283,7 +558,18 @@ export async function normalizeSkillIconProviderSource(
 		rgba[outputOffset + 2] = foregroundBlue;
 		rgba[outputOffset + 3] = alpha;
 	}
-
+	assertNoSpatialAlphaCheckerboard(
+		rgba,
+		decoded.info.width,
+		decoded.info.height,
+		scaleRoleMask(
+			roleMask,
+			geometry.canvas.width,
+			geometry.canvas.height,
+			decoded.info.width,
+			decoded.info.height
+		)
+	);
 	const resized = await sharp(rgba, {
 		raw: { width: decoded.info.width, height: decoded.info.height, channels: 4 }
 	})
@@ -294,6 +580,13 @@ export async function normalizeSkillIconProviderSource(
 		})
 		.raw()
 		.toBuffer();
+	assertNoSpatialAlphaCheckerboard(
+		resized,
+		geometry.canvas.width,
+		geometry.canvas.height,
+		roleMask
+	);
+	assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	let visiblePixels = 0;
 	for (let y = 0; y < geometry.canvas.height; y += 1) {
 		for (let x = 0; x < geometry.canvas.width; x += 1) {
@@ -318,20 +611,20 @@ export async function normalizeSkillIconProviderSource(
 			progressive: false
 		})
 		.toBuffer();
-	const sourceHash = sha256(sourceBytes);
+	const sourceHash = sha256(sourceSnapshot);
 	const outputHash = sha256(outputBytes);
 	return {
 		source: {
 			mediaType: 'image/png',
 			width: SKILL_ICON_PROVIDER_SIZE,
 			height: SKILL_ICON_PROVIDER_SIZE,
-			bytes: sourceBytes.byteLength,
+			bytes: sourceSnapshot.byteLength,
 			alphaMode: 'rgb',
 			contentHash: sourceHash
 		},
 		normalization: {
 			profile: SKILL_ICON_NORMALIZATION_PROFILE,
-			geometryHash: sha256(geometrySourceBytes),
+			geometryHash: sha256(geometrySnapshot),
 			sourceContentHash: sourceHash,
 			outputContentHash: outputHash
 		},
@@ -343,12 +636,13 @@ export async function readSkillIconProviderSourceOnce(
 	sourcePath: string,
 	testHook?: () => void | Promise<void>
 ): Promise<Buffer> {
-	const handle = await open(sourcePath, constants.O_RDONLY | constants.O_NOFOLLOW).catch(
-		(error: NodeJS.ErrnoException) => {
-			if (error.code === 'ELOOP') throw new Error('Provider source cannot be a symbolic link');
-			throw error;
-		}
-	);
+	const handle = await open(
+		sourcePath,
+		constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK
+	).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ELOOP') throw new Error('Provider source cannot be a symbolic link');
+		throw error;
+	});
 	try {
 		const before = await handle.stat({ bigint: true });
 		if (!before.isFile()) throw new Error('Provider source must be a regular file');

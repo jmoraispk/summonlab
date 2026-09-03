@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import os
@@ -11,8 +12,9 @@ import re
 import shutil
 import stat
 import subprocess
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, Callable
 
 PROTOCOLS = {
     (
@@ -64,8 +66,9 @@ async function main() {
       result: packet.result
     });
   } else if (packet.kind === 'inspection') {
+    const candidateBytes = Buffer.from(packet.candidateBase64, 'base64');
     const inspection = await inspectSkillIconAsset(
-      fs.readFileSync(packet.candidatePath),
+      candidateBytes,
       packet.role,
       packet.geometry
     );
@@ -88,15 +91,39 @@ def fail(message: str) -> None:
     raise ValueError(message)
 
 
-def load_json(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        fail(f"{path} must contain a JSON object")
-    return value
+@dataclass(frozen=True)
+class StableFileSnapshot:
+    data: bytes
+    content_hash: str
+    identity: tuple[int, int, int, int, int, int]
 
 
-def read_stable_regular_file(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -> bytes:
-    flags = os.O_RDONLY
+AuthoritySnapshot = tuple[Path, StableFileSnapshot, str]
+
+
+def _file_identity(value: os.stat_result) -> tuple[int, int, int, int, int, int]:
+    return (
+        value.st_dev,
+        value.st_ino,
+        value.st_size,
+        value.st_nlink,
+        value.st_mtime_ns,
+        value.st_ctime_ns,
+    )
+
+
+def read_stable_regular_file_snapshot(
+    path: Path,
+    *,
+    max_bytes: int = 64 * 1024 * 1024,
+    _after_open: Callable[[], None] | None = None,
+) -> StableFileSnapshot:
+    """Read one regular file once and bind bytes to its stable pathname identity."""
+
+    # O_NONBLOCK must be present at open time: an attacker can replace a checked
+    # regular pathname with a FIFO, and opening a reader-only FIFO would otherwise
+    # wait indefinitely before fstat can reject it.
+    flags = os.O_RDONLY | os.O_NONBLOCK
     if hasattr(os, "O_NOFOLLOW"):
         flags |= os.O_NOFOLLOW
     descriptor = os.open(path, flags)
@@ -106,6 +133,8 @@ def read_stable_regular_file(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -
             fail(f"path must be a regular file: {path}")
         if before.st_size < 0 or before.st_size > max_bytes:
             fail(f"file is outside the bounded byte envelope: {path}")
+        if _after_open is not None:
+            _after_open()
         chunks: list[bytes] = []
         remaining = before.st_size
         while remaining:
@@ -116,25 +145,48 @@ def read_stable_regular_file(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -
             remaining -= len(chunk)
         after = os.fstat(descriptor)
         current = path.lstat()
-        identity = lambda value: (
-            value.st_dev,
-            value.st_ino,
-            value.st_size,
-            value.st_nlink,
-            value.st_mtime_ns,
-            value.st_ctime_ns,
-        )
         data = b"".join(chunks)
         if (
-            identity(before) != identity(after)
-            or identity(before) != identity(current)
+            _file_identity(before) != _file_identity(after)
+            or _file_identity(before) != _file_identity(current)
             or stat.S_ISLNK(current.st_mode)
             or len(data) != before.st_size
         ):
             fail(f"file changed while it was being read: {path}")
-        return data
+        return StableFileSnapshot(
+            data=data,
+            content_hash=hashlib.sha256(data).hexdigest(),
+            identity=_file_identity(before),
+        )
     finally:
         os.close(descriptor)
+
+
+def reassert_stable_regular_file(
+    path: Path, expected: StableFileSnapshot, *, label: str
+) -> None:
+    current = read_stable_regular_file_snapshot(path)
+    if (
+        current.identity != expected.identity
+        or current.content_hash != expected.content_hash
+    ):
+        fail(f"{label} changed before verification completed: {path}")
+
+
+def load_json_snapshot(path: Path) -> tuple[dict[str, Any], StableFileSnapshot]:
+    snapshot = read_stable_regular_file_snapshot(path)
+    value = json.loads(snapshot.data.decode("utf-8"))
+    if not isinstance(value, dict):
+        fail(f"{path} must contain a JSON object")
+    return value, snapshot
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    return load_json_snapshot(path)[0]
+
+
+def read_stable_regular_file(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -> bytes:
+    return read_stable_regular_file_snapshot(path, max_bytes=max_bytes).data
 
 
 def project_path(raw: Any) -> PurePosixPath:
@@ -256,7 +308,7 @@ def run_contract_validation(
 
 
 def run_asset_inspection(
-    candidate_path: Path,
+    candidate_bytes: bytes,
     role: str,
     geometry: dict[str, Any],
     *,
@@ -265,7 +317,7 @@ def run_asset_inspection(
     result = _run_repository_bridge(
         {
             "kind": "inspection",
-            "candidatePath": str(candidate_path),
+            "candidateBase64": base64.b64encode(candidate_bytes).decode("ascii"),
             "role": role,
             "geometry": geometry,
         },
@@ -285,10 +337,14 @@ def _scope_for_role(role: Any) -> str:
 
 
 def _validate_input_path(
-    workspace: Path, path: Path | None, expected_relative: str, label: str
-) -> None:
+    workspace: Path,
+    path: Path | None,
+    expected_relative: str,
+    label: str,
+    expected_value: dict[str, Any],
+) -> tuple[Path, StableFileSnapshot] | None:
     if path is None:
-        return
+        return None
     root = _workspace_root(workspace)
     absolute = path if path.is_absolute() else root / path
     absolute = absolute.absolute()
@@ -299,6 +355,10 @@ def _validate_input_path(
     absolute_project_path(root, relative, must_exist=True, regular_file=True)
     if relative != expected_relative:
         fail(f"{label} input path does not match the assignment binding")
+    retained, snapshot = load_json_snapshot(absolute)
+    if retained != expected_value:
+        fail(f"{label} input bytes do not contain the packet being validated")
+    return absolute, snapshot
 
 
 def _required_reference(
@@ -397,12 +457,13 @@ def validate(
     assignment_path: Path | None = None,
     allow_existing_outputs: bool = False,
     contract_root: Path | None = None,
+    _authority_snapshots: list[AuthoritySnapshot] | None = None,
 ) -> dict[str, Any]:
     root = _workspace_root(workspace)
     catalog_absolute = absolute_project_path(
         root, CATALOG_PATH, must_exist=True, regular_file=True
     )
-    catalog = load_json(catalog_absolute)
+    catalog, catalog_snapshot = load_json_snapshot(catalog_absolute)
     run_contract_validation(
         "inputs",
         target,
@@ -416,6 +477,7 @@ def validate(
         assignment.get("skillVersion"),
     )
     execution_version = PROTOCOLS.get(protocol)
+    normalization_geometry_snapshot: tuple[Path, StableFileSnapshot] | None = None
     if execution_version is None:
         fail("target, assignment, and skill versions do not form an accepted protocol tuple")
     if execution_version == "skill-icon-execution-v2":
@@ -434,11 +496,10 @@ def validate(
         geometry_file = absolute_project_path(
             root, GEOMETRY_PATH, must_exist=True, regular_file=True
         )
-        geometry_bytes = read_stable_regular_file(geometry_file)
-        if hashlib.sha256(geometry_bytes).hexdigest() != geometry.get(
-            "contentHash"
-        ):
+        geometry_snapshot = read_stable_regular_file_snapshot(geometry_file)
+        if geometry_snapshot.content_hash != geometry.get("contentHash"):
             fail("v2 target geometry hash does not match the raw geometry authority bytes")
+        normalization_geometry_snapshot = (geometry_file, geometry_snapshot)
 
     job_id = target["jobId"]
     role = target["role"]
@@ -455,8 +516,12 @@ def validate(
         fail("assignment targetPath does not match the target identity")
     if assignment.get("assignmentPath") != expected_assignment_path:
         fail("assignment assignmentPath does not match the target identity")
-    _validate_input_path(root, target_path, expected_target_path, "target")
-    _validate_input_path(root, assignment_path, expected_assignment_path, "assignment")
+    target_snapshot = _validate_input_path(
+        root, target_path, expected_target_path, "target", target
+    )
+    assignment_snapshot = _validate_input_path(
+        root, assignment_path, expected_assignment_path, "assignment", assignment
+    )
 
     output = target["output"]
     if assignment.get("permittedOutputs") != output:
@@ -467,16 +532,62 @@ def validate(
             fail(f"pre-existing output collision: {raw}")
 
     references = target["references"]
+    reference_snapshots: list[AuthoritySnapshot] = []
     for reference in references:
         raw = reference["path"]
         expected_hash = reference["contentHash"]
         if not SHA256_PATTERN.fullmatch(expected_hash):
             fail(f"reference hash is invalid: {raw}")
         absolute = absolute_project_path(root, raw, must_exist=True, regular_file=True)
-        actual_hash = hashlib.sha256(absolute.read_bytes()).hexdigest()
-        if actual_hash != expected_hash:
+        snapshot = read_stable_regular_file_snapshot(absolute)
+        if snapshot.content_hash != expected_hash:
             fail(f"reference hash changed: {raw}")
+        reference_snapshots.append((absolute, snapshot, raw))
     _require_individual_authorities(target, catalog)
+
+    for absolute, snapshot, raw in reference_snapshots:
+        reassert_stable_regular_file(absolute, snapshot, label=f"reference {raw}")
+    reassert_stable_regular_file(
+        catalog_absolute, catalog_snapshot, label="canonical catalog"
+    )
+    if normalization_geometry_snapshot is not None:
+        reassert_stable_regular_file(
+            normalization_geometry_snapshot[0],
+            normalization_geometry_snapshot[1],
+            label="v2 normalization geometry authority",
+        )
+    if target_snapshot is not None:
+        reassert_stable_regular_file(
+            target_snapshot[0], target_snapshot[1], label="target"
+        )
+    if assignment_snapshot is not None:
+        reassert_stable_regular_file(
+            assignment_snapshot[0], assignment_snapshot[1], label="assignment"
+        )
+    if _authority_snapshots is not None:
+        _authority_snapshots.append(
+            (catalog_absolute, catalog_snapshot, "canonical catalog")
+        )
+        if normalization_geometry_snapshot is not None:
+            _authority_snapshots.append(
+                (
+                    normalization_geometry_snapshot[0],
+                    normalization_geometry_snapshot[1],
+                    "v2 normalization geometry authority",
+                )
+            )
+        _authority_snapshots.extend(
+            (absolute, snapshot, f"reference {raw}")
+            for absolute, snapshot, raw in reference_snapshots
+        )
+        if target_snapshot is not None:
+            _authority_snapshots.append(
+                (target_snapshot[0], target_snapshot[1], "target")
+            )
+        if assignment_snapshot is not None:
+            _authority_snapshots.append(
+                (assignment_snapshot[0], assignment_snapshot[1], "assignment")
+            )
 
     return {
         "jobId": job_id,

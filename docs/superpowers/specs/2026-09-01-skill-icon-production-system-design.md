@@ -138,9 +138,11 @@ catalog.
 
 Provider compatibility is explicit and versioned. Historical v1 jobs retain exact provider bytes.
 A v2 frame or backing job may authorize only `skill-icon-green-key-role-mask-v1`: persistence
-accepts one 1254×1254 RGB PNG with the declared opaque `#00FF00` matte and deterministically creates
-the role-masked canonical 1024×1024 RGBA candidate. Producers never crop, resize, color-key,
-extract, mask, or otherwise normalize provider output themselves. Any other source envelope fails.
+accepts one non-interlaced 8-bit 1254×1254 RGB PNG with an explicit perceptual-sRGB declaration and
+the declared opaque `#00FF00` matte, then deterministically creates the role-masked canonical
+1024×1024 RGBA candidate. Conflicting color metadata, unsupported ancillary chunks, checkerboard
+matting, and bytes after PNG `IEND` fail closed. Producers never crop, resize, color-key, extract,
+mask, or otherwise normalize provider output themselves. Any other source envelope fails.
 
 ### Phase 6 — deterministic assembly and review
 
@@ -163,8 +165,11 @@ observation of each path is pinned; a different repeated observation forces a re
 mixing revisions. A changed read set is replanned with bounded retries and is never reported
 current. Held lock descriptors and both hard links are identity-checked at publication boundaries;
 normal owner-release and dead-owner-recovery handoffs retry when the observed lock identity moves.
-Same-UID arbitrary unlink between those checks remains an operating-system trust boundary unless
-the filesystem supplies advisory locking.
+The supported concurrency model trusts repository tools that cooperate through these locks. It
+fences accidental and concurrent pathname, inode, byte, and membership changes, including
+same-UID processes using the production commands. A malicious same-UID process that deliberately
+bypasses the coordinator and mutates files between the final identity check and atomic syscall is
+an operating-system trust boundary, not an application-level compare-and-swap guarantee.
 
 ## Manifest model
 

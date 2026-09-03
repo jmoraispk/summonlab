@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -546,6 +546,69 @@ describe('validateSkillIconAssets revision authority', () => {
 
 		await expect(validateSkillIconAssets(root)).rejects.toThrow(
 			/current raw geometry authority hash does not match target/iu
+		);
+	});
+
+	it.each([
+		['assignment', 'assignments/references/orphan-v1.json', JSON.stringify({})],
+		['result', 'results/references/orphan-v1.json', JSON.stringify({})],
+		['candidate', 'candidates/references/orphan-v1.png', 'candidate bytes']
+	] as const)('rejects an orphan %s inventory entry', async (kind, relativePath, contents) => {
+		const root = await revisionTestRoot();
+		const artifactPath = path.join(root, 'assets/wiki/skills/icon-production-v1', relativePath);
+		await writeFile(artifactPath, contents);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			new RegExp(`orphan ${kind} has no target`, 'iu')
+		);
+	});
+
+	it('rejects missing and duplicate cross-scope inventory entries', async () => {
+		const root = await revisionTestRoot();
+		const target = targetV1();
+		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		await writeFile(
+			path.join(base, `targets/references/${target.jobId}.json`),
+			JSON.stringify(target)
+		);
+		await mkdir(path.join(base, 'assignments/icons'), { recursive: true });
+		await writeFile(
+			path.join(base, `assignments/icons/${target.jobId}.json`),
+			JSON.stringify(assignment(target))
+		);
+
+		let message = '';
+		try {
+			await validateSkillIconAssets(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+		expect(message).toMatch(/missing assignment inventory entry/iu);
+		expect(message).toMatch(/missing result inventory entry/iu);
+		expect(message).toMatch(/orphan assignment has no target/iu);
+	});
+
+	it('rejects a candidate retained for result-only failed evidence', async () => {
+		const root = await revisionTestRoot();
+		const target = targetV1();
+		const candidate = await validBacking();
+		await writeExecution(root, target, failedResult(target), candidate);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/failed result cannot retain a candidate/iu
+		);
+	});
+
+	it('rejects symbolic links anywhere in a dependent inventory tree', async () => {
+		const root = await revisionTestRoot();
+		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		await symlink(
+			path.join(base, 'geometry.json'),
+			path.join(base, 'assignments/references/linked.json')
+		);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/Assignment tree cannot contain a symbolic link/iu
 		);
 	});
 });

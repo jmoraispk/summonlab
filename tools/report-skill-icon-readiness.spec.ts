@@ -1,10 +1,17 @@
-import type { SkillIconCatalog, SkillIconRecord } from '../packages/contracts/src/index.js';
+import type {
+	AnySkillIconTarget,
+	SkillIconCatalog,
+	SkillIconRecord
+} from '../packages/contracts/src/index.js';
 import { describe, expect, it } from 'vitest';
 
 import {
 	buildSkillIconReadinessReport,
 	hashSkillIconCatalog,
+	referenceRequirementsForTargets,
+	REQUIRED_REFERENCE_ASSETS,
 	SKILL_ICON_PILOT_TARGET_IDS,
+	withAuthoritativeReferenceEvidence,
 	type SkillIconCatalogCurrency,
 	type SkillIconReadinessEvidence
 } from './report-skill-icon-readiness.js';
@@ -86,7 +93,45 @@ function acceptedEvidence(pilotCatalog: SkillIconCatalog): SkillIconReadinessEvi
 
 const CURRENT: SkillIconCatalogCurrency = { catalogCurrent: true };
 
+function referenceTarget(
+	id: string,
+	role: 'rarity-frame' | 'backing',
+	rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | null,
+	revision = 1
+): AnySkillIconTarget {
+	return {
+		schemaVersion: revision === 1 ? 'skill-icon-target-v1' : 'skill-icon-target-v2',
+		jobId: id,
+		role,
+		rarity,
+		...(revision === 1 ? {} : { revision })
+	} as unknown as AnySkillIconTarget;
+}
+
+function canonicalReferenceTargets(): AnySkillIconTarget[] {
+	return REQUIRED_REFERENCE_ASSETS.map((requirement) => {
+		const rarity =
+			requirement.role === 'rarity-frame'
+				? (requirement.id.match(/rarity-frame-([fedcbas])-v1/u)?.[1]?.toUpperCase() as
+						'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S')
+				: null;
+		return referenceTarget(requirement.id, requirement.role, rarity);
+	});
+}
+
 describe('skill icon readiness', () => {
+	it('replaces durable reference claims with filesystem-authoritative acceptance', () => {
+		const durable = acceptedEvidence(catalog(15));
+		const bound = withAuthoritativeReferenceEvidence(durable, []);
+		expect(bound.referenceAssets).toEqual([]);
+		expect(bound.calibrationPlates).toBe(durable.calibrationPlates);
+		expect(bound.pilot).toBe(durable.pilot);
+		expect(buildSkillIconReadinessReport(catalog(15), bound, CURRENT)).toMatchObject({
+			state: 'foundation-incomplete',
+			referencesAccepted: 0
+		});
+	});
+
 	it('keeps a mapped-only catalog at foundation-incomplete', () => {
 		expect(buildSkillIconReadinessReport(catalog(0), {}, CURRENT).state).toBe(
 			'foundation-incomplete'
@@ -269,6 +314,45 @@ describe('skill icon readiness', () => {
 		expect(
 			buildSkillIconReadinessReport(pilotCatalog, current, CURRENT, v2Requirements)
 		).toMatchObject({ referencesAccepted: 8 });
+	});
+
+	it('requires all eight canonical target slots even when the target directory is empty or shrunk', () => {
+		const pilotCatalog = catalog(15);
+		const evidence = acceptedEvidence(pilotCatalog);
+		const noTargets = referenceRequirementsForTargets([]);
+		expect(noTargets).toHaveLength(8);
+		expect(noTargets.every((requirement) => requirement.targetDeclared === false)).toBe(true);
+		expect(buildSkillIconReadinessReport(pilotCatalog, evidence, CURRENT, noTargets)).toMatchObject(
+			{
+				state: 'foundation-incomplete',
+				referencesAccepted: 0,
+				blockers: expect.arrayContaining(['declared canonical reference targets 0/8'])
+			}
+		);
+
+		const shrunkTargets = canonicalReferenceTargets().slice(0, 7);
+		const shrunkRequirements = referenceRequirementsForTargets(shrunkTargets);
+		expect(
+			shrunkRequirements.filter((requirement) => requirement.targetDeclared !== false)
+		).toHaveLength(7);
+		expect(
+			buildSkillIconReadinessReport(pilotCatalog, evidence, CURRENT, shrunkRequirements)
+		).toMatchObject({
+			state: 'foundation-incomplete',
+			referencesAccepted: 7,
+			blockers: expect.arrayContaining(['declared canonical reference targets 7/8'])
+		});
+	});
+
+	it('keeps latest-revision binding within each canonical reference slot', () => {
+		const targets = canonicalReferenceTargets();
+		targets.push(referenceTarget('rarity-frame-f-v2', 'rarity-frame', 'F', 2));
+		const requirements = referenceRequirementsForTargets(targets);
+		expect(requirements).toHaveLength(8);
+		expect(requirements.find((requirement) => requirement.path.endsWith('/f.png'))).toMatchObject({
+			id: 'rarity-frame-f-v2',
+			targetDeclared: true
+		});
 	});
 
 	it('requires explicit owner activation before bulk-active or complete', () => {

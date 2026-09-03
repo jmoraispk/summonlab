@@ -45,7 +45,11 @@ import {
 } from './skill-icon-production-lib.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 import { resolveDeterministicSkillIconDerivatives } from './compose-skill-icon-assets.js';
-import { resolveLatestSkillIconTargets, skillIconLogicalKey } from './skill-icon-revision-lib.js';
+import {
+	resolveLatestSkillIconTargets,
+	skillIconLogicalKey,
+	skillIconRevision
+} from './skill-icon-revision-lib.js';
 import {
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
@@ -79,6 +83,7 @@ export const SKILL_ICON_PROMOTION_TOKEN_PATH =
 	'assets/wiki/skills/icon-production-v1/.promotion-recovery-token.json' as const;
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
 const TransactionTokenSchema = z.string().uuid();
+const MAX_PROMOTION_INPUT_BYTES = 64 * 1024 * 1024;
 const JobIdSchema = z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u);
 const MasterPathSchema = z
 	.string()
@@ -192,6 +197,31 @@ export const SkillIconPromotionJournalSchema = z
 				})
 				.strict()
 		),
+		replacements: z
+			.array(
+				z
+					.object({
+						path: MasterPathSchema,
+						before: SnapshotSchema,
+						parent: ParentFingerprintSchema,
+						beforeFile: FileFingerprintSchema,
+						priorReceipt: z
+							.object({
+								path: z
+									.string()
+									.regex(
+										/^assets\/wiki\/skills\/icon-production-v1\/promotion-receipts\/[a-z0-9-]+\.json$/u
+									),
+								contentHash: Sha256Schema,
+								evidence: z
+									.array(z.object({ path: z.string().min(1), contentHash: Sha256Schema }).strict())
+									.min(3)
+							})
+							.strict()
+					})
+					.strict()
+			)
+			.optional(),
 		shared: z.array(
 			z
 				.object({
@@ -229,6 +259,7 @@ export const SkillIconPromotionJournalSchema = z
 			['master paths', journal.jobs.map((job) => job.masterPath)],
 			['planned paths', journal.planned.map((item) => item.path)],
 			['created paths', journal.created.map((item) => item.path)],
+			['replacement paths', (journal.replacements ?? []).map((item) => item.path)],
 			['shared paths', journal.shared.map((item) => item.path)],
 			['staging paths', journal.staging.files.map((item) => item.path)]
 		] as const) {
@@ -329,6 +360,11 @@ export interface PromotionOptions {
 
 interface PreparedPromotion {
 	readonly target: AnySkillIconTarget;
+	readonly authoritySnapshots: readonly {
+		readonly identity: AuthorityFileIdentity;
+		readonly label: 'target' | 'assignment' | 'geometry';
+	}[];
+	readonly replacement: NonNullable<PromotionJournal['replacements']>[number] | null;
 	readonly record: Omit<SkillIconAssetRecord, 'transactionId' | 'promotionReceipt'>;
 	readonly bytes: Buffer;
 	readonly destination: string;
@@ -384,15 +420,44 @@ function repositoryPath(
 }
 
 async function readRegular(filePath: string, description: string): Promise<Buffer> {
-	const handle = await open(filePath, constants.O_RDONLY | constants.O_NOFOLLOW).catch(
-		(error: NodeJS.ErrnoException) => {
-			if (error.code === 'ELOOP') throw new Error(`${description} cannot be a symbolic link`);
-			throw error;
-		}
-	);
+	const handle = await open(
+		filePath,
+		constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK
+	).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ELOOP') throw new Error(`${description} cannot be a symbolic link`);
+		throw error;
+	});
 	try {
-		if (!(await handle.stat()).isFile()) throw new Error(`${description} must be a regular file`);
-		return await handle.readFile();
+		const before = await handle.stat({ bigint: true });
+		if (!before.isFile()) throw new Error(`${description} must be a regular file`);
+		if (before.size > BigInt(MAX_PROMOTION_INPUT_BYTES))
+			throw new Error(`${description} exceeds ${MAX_PROMOTION_INPUT_BYTES} bytes`);
+		const expectedBytes = Number(before.size);
+		const bytes = Buffer.alloc(expectedBytes);
+		let offset = 0;
+		while (offset < expectedBytes) {
+			const { bytesRead } = await handle.read(bytes, offset, expectedBytes - offset, offset);
+			if (bytesRead === 0) throw new Error(`${description} changed while reading`);
+			offset += bytesRead;
+		}
+		const trailing = Buffer.alloc(1);
+		if ((await handle.read(trailing, 0, 1, expectedBytes)).bytesRead !== 0)
+			throw new Error(`${description} grew while reading`);
+		const after = await handle.stat({ bigint: true });
+		const pathState = await lstat(filePath, { bigint: true });
+		if (
+			before.dev !== after.dev ||
+			before.ino !== after.ino ||
+			before.size !== after.size ||
+			before.mtimeNs !== after.mtimeNs ||
+			before.ctimeNs !== after.ctimeNs ||
+			after.dev !== pathState.dev ||
+			after.ino !== pathState.ino ||
+			pathState.isSymbolicLink() ||
+			!pathState.isFile()
+		)
+			throw new Error(`${description} changed while reading`);
+		return bytes;
 	} finally {
 		await handle.close();
 	}
@@ -569,15 +634,25 @@ async function readAuthorityFileIdentity(
 ): Promise<{ readonly bytes: Buffer; readonly identity: AuthorityFileIdentity }> {
 	await ensureSafeParents(root, destination, false);
 	const parent = await parentFingerprint(destination);
-	const metadata = await lstat(destination);
+	const before = await lstat(destination);
 	const bytes = await readRepositoryRegular(root, destination, label);
+	const after = await lstat(destination);
+	const afterParent = await parentFingerprint(destination);
+	if (
+		before.isSymbolicLink() ||
+		!before.isFile() ||
+		before.dev !== after.dev ||
+		before.ino !== after.ino ||
+		!sameParentFingerprint(parent, afterParent)
+	)
+		throw new Error(`${label} identity changed while snapshotting`);
 	return {
 		bytes,
 		identity: {
 			path: destination,
 			contentHash: sha256(bytes),
 			parent,
-			file: { device: metadata.dev, inode: metadata.ino }
+			file: { device: after.dev, inode: after.ino }
 		}
 	};
 }
@@ -711,6 +786,177 @@ async function assertLatestSkillIconTarget(
 			`Candidate ${target.jobId} is not the unique latest target for ${logicalKey}; latest revision is ${latest ? `${latest.target.jobId} (v${latest.revision})` : 'missing'}`
 		);
 	}
+}
+
+type PromotionReplacement = NonNullable<PromotionJournal['replacements']>[number];
+
+async function assertPriorPromotionEvidenceCurrent(
+	root: string,
+	replacement: PromotionReplacement
+): Promise<void> {
+	const receiptBytes = await readRepositoryRegular(
+		root,
+		path.resolve(root, replacement.priorReceipt.path),
+		'Prior promotion receipt'
+	);
+	if (sha256(receiptBytes) !== replacement.priorReceipt.contentHash)
+		throw new Error(`Prior promotion receipt changed: ${replacement.priorReceipt.path}`);
+	for (const evidence of replacement.priorReceipt.evidence) {
+		const bytes = await readRepositoryRegular(
+			root,
+			path.resolve(root, evidence.path),
+			'Prior promotion evidence'
+		);
+		if (sha256(bytes) !== evidence.contentHash)
+			throw new Error(`Prior promotion evidence changed: ${evidence.path}`);
+	}
+}
+
+async function assertReplacementMasterCurrent(
+	root: string,
+	replacement: PromotionReplacement
+): Promise<void> {
+	await assertPriorPromotionEvidenceCurrent(root, replacement);
+	const destination = path.resolve(root, replacement.path);
+	if (!sameParentFingerprint(await parentFingerprint(destination), replacement.parent))
+		throw new Error(`Prior canonical master parent changed: ${replacement.path}`);
+	const metadata = await lstat(destination);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== replacement.beforeFile.device ||
+		metadata.ino !== replacement.beforeFile.inode
+	)
+		throw new Error(`Prior canonical master identity changed: ${replacement.path}`);
+	const bytes = await readRepositoryRegular(root, destination, 'Prior canonical master');
+	if (sha256(bytes) !== replacement.before.contentHash)
+		throw new Error(`Prior canonical master bytes changed: ${replacement.path}`);
+}
+
+async function loadPromotionReplacement(
+	root: string,
+	target: AnySkillIconTarget,
+	masterPath: string
+): Promise<PromotionReplacement | null> {
+	const destination = path.resolve(root, masterPath);
+	const existing = await metadataOrNull(destination);
+	if (!existing) return null;
+	if (existing.isSymbolicLink() || !existing.isFile())
+		throw new Error(`Canonical master collision is not a regular file: ${masterPath}`);
+	const targetTree = await loadSkillIconTargetTree(root);
+	const targetByJob = new Map(targetTree.map((candidate) => [candidate.jobId, candidate]));
+	const receiptRoot = path.resolve(root, SKILL_ICON_PROMOTION_RECEIPT_ROOT);
+	const entries = await readdir(receiptRoot, { withFileTypes: true }).catch(
+		(error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return [];
+			throw error;
+		}
+	);
+	const candidates: {
+		readonly target: AnySkillIconTarget;
+		readonly receipt: z.infer<typeof SkillIconPromotionReceiptSchema>;
+		readonly receiptPath: string;
+		readonly receiptBytes: Buffer;
+	}[] = [];
+	for (const entry of entries) {
+		const receiptPath = `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${entry.name}`;
+		if (entry.isSymbolicLink() || !entry.isFile() || !entry.name.endsWith('.json'))
+			throw new Error(`Promotion receipt tree contains an unsafe entry: ${receiptPath}`);
+		const receiptBytes = await readRepositoryRegular(
+			root,
+			path.resolve(root, receiptPath),
+			'Prior promotion receipt'
+		);
+		const receipt = SkillIconPromotionReceiptSchema.parse(
+			JSON.parse(receiptBytes.toString('utf8'))
+		);
+		if (receipt.master.path !== masterPath) continue;
+		const receiptTarget = targetByJob.get(receipt.jobId);
+		if (!receiptTarget || skillIconLogicalKey(receiptTarget) !== skillIconLogicalKey(target))
+			throw new Error(`Canonical master has unrelated promotion receipt: ${receiptPath}`);
+		candidates.push({ target: receiptTarget, receipt, receiptPath, receiptBytes });
+	}
+	if (candidates.length === 0)
+		throw new Error(`Canonical master collision lacks verified promotion history: ${masterPath}`);
+	const latest = resolveLatestSkillIconTargets(
+		candidates.map((candidate) => candidate.target)
+	).find((candidate) => candidate.logicalKey === skillIconLogicalKey(target));
+	const prior = candidates.find((candidate) => candidate.target.jobId === latest?.target.jobId);
+	if (!latest || !prior)
+		throw new Error(`Canonical master collision lacks a unique prior revision: ${masterPath}`);
+	if (skillIconRevision(target) <= latest.revision)
+		throw new Error(
+			`Canonical master collision already represents revision v${latest.revision}: ${masterPath}`
+		);
+
+	const scope = scopeForRole(prior.target.role);
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${prior.target.jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${prior.target.jobId}.json`;
+	const [targetBytes, assignmentBytes, resultBytes, reviewBytes, candidateBytes] =
+		await Promise.all([
+			readRepositoryRegular(root, path.resolve(root, targetPath), 'Prior target'),
+			readRepositoryRegular(root, path.resolve(root, assignmentPath), 'Prior assignment'),
+			readRepositoryRegular(root, path.resolve(root, prior.receipt.result.path), 'Prior result'),
+			readRepositoryRegular(root, path.resolve(root, prior.receipt.review.path), 'Prior review'),
+			readRepositoryRegular(
+				root,
+				path.resolve(root, prior.receipt.candidate.path),
+				'Prior candidate'
+			)
+		]);
+	const priorAssignment = AnySkillIconAssignmentSchema.parse(
+		JSON.parse(assignmentBytes.toString('utf8'))
+	);
+	const priorResult = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	AnySkillIconExecutionSchema.parse({
+		schemaVersion:
+			prior.target.schemaVersion === 'skill-icon-target-v2'
+				? 'skill-icon-execution-v2'
+				: 'skill-icon-execution-v1',
+		target: prior.target,
+		assignment: priorAssignment,
+		result: priorResult
+	});
+	const priorReview = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
+	const masterBytes = await readRepositoryRegular(root, destination, 'Prior canonical master');
+	for (const [actual, expected, label] of [
+		[sha256(resultBytes), prior.receipt.result.contentHash, 'result'],
+		[sha256(reviewBytes), prior.receipt.review.contentHash, 'review'],
+		[sha256(candidateBytes), prior.receipt.candidate.contentHash, 'candidate'],
+		[sha256(masterBytes), prior.receipt.master.contentHash, 'master']
+	] as const) {
+		if (actual !== expected) throw new Error(`Prior promoted ${label} evidence hash mismatch`);
+	}
+	if (
+		priorReview.decision !== 'accepted' ||
+		priorReview.jobId !== prior.target.jobId ||
+		priorResult.status !== 'candidate' ||
+		priorResult.output?.contentHash !== prior.receipt.candidate.contentHash
+	)
+		throw new Error('Prior promotion receipt does not bind accepted candidate evidence');
+	const afterRead = await lstat(destination);
+	if (afterRead.dev !== existing.dev || afterRead.ino !== existing.ino)
+		throw new Error(`Prior canonical master changed while reading: ${masterPath}`);
+	return {
+		path: MasterPathSchema.parse(masterPath),
+		before: { bytesBase64: masterBytes.toString('base64'), contentHash: sha256(masterBytes) },
+		parent: await parentFingerprint(destination),
+		beforeFile: { device: existing.dev, inode: existing.ino },
+		priorReceipt: {
+			path: prior.receiptPath,
+			contentHash: sha256(prior.receiptBytes),
+			evidence: [
+				[targetPath, targetBytes],
+				[assignmentPath, assignmentBytes],
+				[prior.receipt.result.path, resultBytes],
+				[prior.receipt.review.path, reviewBytes],
+				[prior.receipt.candidate.path, candidateBytes]
+			].map(([evidencePath, bytes]) => ({
+				path: evidencePath as string,
+				contentHash: sha256(bytes as Buffer)
+			}))
+		}
+	};
 }
 
 async function assertSkillCandidateProvenance(
@@ -892,15 +1138,17 @@ async function preparePromotion(
 	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${jobId}.json`;
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${jobId}.json`;
 	const resultPath = `assets/wiki/skills/icon-production-v1/results/${scope}/${jobId}.json`;
-	const [target, assignment, resultBytes] = await Promise.all([
-		readRepositoryRegular(root, path.resolve(root, targetPath), 'Target').then((bytes) =>
-			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
-		),
-		readRepositoryRegular(root, path.resolve(root, assignmentPath), 'Assignment').then((bytes) =>
-			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
-		),
+	const [targetAuthority, assignmentAuthority, resultBytes] = await Promise.all([
+		readAuthorityFileIdentity(root, path.resolve(root, targetPath), 'Target'),
+		readAuthorityFileIdentity(root, path.resolve(root, assignmentPath), 'Assignment'),
 		readRepositoryRegular(root, path.resolve(root, resultPath), 'Result')
 	]);
+	const targetBytes = targetAuthority.bytes;
+	const assignmentBytes = assignmentAuthority.bytes;
+	const target = AnySkillIconTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+	const assignment = AnySkillIconAssignmentSchema.parse(
+		JSON.parse(assignmentBytes.toString('utf8'))
+	);
 	const result = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
 	AnySkillIconExecutionSchema.parse({
 		schemaVersion:
@@ -928,11 +1176,12 @@ async function preparePromotion(
 		throw new Error(`Candidate hash mismatch for ${jobId}`);
 	if (candidateBytes.byteLength !== result.output.bytes)
 		throw new Error(`Candidate byte count mismatch for ${jobId}`);
-	const geometryBytes = await readRepositoryRegular(
+	const geometryAuthority = await readAuthorityFileIdentity(
 		root,
 		path.resolve(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
 		'Geometry'
 	);
+	const geometryBytes = geometryAuthority.bytes;
 	if (
 		target.schemaVersion === 'skill-icon-target-v2' &&
 		sha256(geometryBytes) !== target.normalization.geometry.contentHash
@@ -953,8 +1202,7 @@ async function preparePromotion(
 	if (!inside(path.resolve(root, 'assets/wiki/skills/icon-production-v1/masters'), destination))
 		throw new Error('Master destination escaped master authority root');
 	await ensureSafeParents(root, destination, false);
-	if (await metadataOrNull(destination))
-		throw new Error(`Master destination already exists (collision): ${masterPath}`);
+	const replacement = await loadPromotionReplacement(root, target, masterPath);
 	const candidate: SkillIconAsset = {
 		path: review.candidatePath,
 		mediaType: 'image/png',
@@ -1013,6 +1261,12 @@ async function preparePromotion(
 	}
 	return {
 		target,
+		authoritySnapshots: [
+			{ identity: targetAuthority.identity, label: 'target' },
+			{ identity: assignmentAuthority.identity, label: 'assignment' },
+			{ identity: geometryAuthority.identity, label: 'geometry' }
+		],
+		replacement,
 		record,
 		bytes: candidateBytes,
 		destination,
@@ -1315,7 +1569,8 @@ async function writeOwnedOutput(
 		planned: PromotionJournal['planned'][number],
 		staged: PromotionStaging['files'][number]
 	) => Promise<void>,
-	afterWrite?: (input: { readonly path: string }) => void | Promise<void>
+	afterWrite?: (input: { readonly path: string }) => void | Promise<void>,
+	replacement?: PromotionReplacement | null
 ): Promise<PromotionJournal['created'][number]> {
 	ManagedOutputPathSchema.parse(relativePath);
 	const destination = path.resolve(root, relativePath);
@@ -1356,8 +1611,14 @@ async function writeOwnedOutput(
 		throw new Error(`Staged output inode changed before link: ${relativePath}`);
 	if (!sameParentFingerprint(await parentFingerprint(destination), parent))
 		throw new Error(`Promotion output parent changed before link: ${relativePath}`);
-	await link(stageDestination, destination);
-	await syncDirectory(path.dirname(destination));
+	if (replacement) {
+		await assertReplacementMasterCurrent(root, replacement);
+		await rename(stageDestination, destination);
+		await syncDirectory(path.dirname(destination));
+	} else {
+		await link(stageDestination, destination);
+		await syncDirectory(path.dirname(destination));
+	}
 	const finalMetadata = await lstat(destination);
 	if (finalMetadata.dev !== file.device || finalMetadata.ino !== file.inode)
 		throw new Error(`Promotion output inode changed during link: ${relativePath}`);
@@ -1438,12 +1699,16 @@ async function rollbackJournal(
 	testHooks?: PromotionTestHooks
 ): Promise<void> {
 	const createdByPath = new Map(journal.created.map((item) => [item.path, item]));
-	const outputs: { planned: PromotionJournal['planned'][number]; exists: boolean }[] = [];
+	const replacements = new Map((journal.replacements ?? []).map((item) => [item.path, item]));
+	const outputs: {
+		planned: PromotionJournal['planned'][number];
+		state: 'missing' | 'before' | 'after';
+	}[] = [];
 	for (const planned of journal.planned) {
 		const destination = path.resolve(root, planned.path);
 		const metadata = await metadataOrNull(destination);
 		if (!metadata) {
-			outputs.push({ planned, exists: false });
+			outputs.push({ planned, state: 'missing' });
 			continue;
 		}
 		await ensureSafeParents(root, destination, false);
@@ -1451,6 +1716,17 @@ async function rollbackJournal(
 			throw new Error(`Planned output parent identity changed; cleanup required: ${planned.path}`);
 		if (metadata.isSymbolicLink() || !metadata.isFile())
 			throw new Error(`Planned output identity is unsafe: ${planned.path}`);
+		const bytes = await readRepositoryRegular(root, destination, `Recovery output ${planned.path}`);
+		const replacement = replacements.get(planned.path);
+		if (
+			replacement &&
+			metadata.dev === replacement.beforeFile.device &&
+			metadata.ino === replacement.beforeFile.inode &&
+			sha256(bytes) === replacement.before.contentHash
+		) {
+			outputs.push({ planned, state: 'before' });
+			continue;
+		}
 		if (
 			!planned.file ||
 			metadata.dev !== planned.file.device ||
@@ -1458,12 +1734,11 @@ async function rollbackJournal(
 		)
 			throw new Error(`Planned output inode changed; cleanup required: ${planned.path}`);
 		const created = createdByPath.get(planned.path);
-		const bytes = await readRepositoryRegular(root, destination, `Recovery output ${planned.path}`);
 		if (created && sha256(bytes) !== planned.contentHash)
 			throw new Error(`Completed output hash changed; cleanup required: ${planned.path}`);
 		if (created && (metadata.dev !== created.file.device || metadata.ino !== created.file.inode))
 			throw new Error(`Created output inode changed; cleanup required: ${planned.path}`);
-		outputs.push({ planned, exists: true });
+		outputs.push({ planned, state: 'after' });
 	}
 	const sharedStates = await Promise.all(
 		journal.shared.map(async (item) => ({ item, state: await assertSharedIdentity(root, item) }))
@@ -1482,7 +1757,7 @@ async function rollbackJournal(
 		await testHooks?.afterRecoverySharedRestore?.({ path: item.path });
 	}
 	for (const [index, output] of [...outputs].reverse().entries()) {
-		if (!output.exists) continue;
+		if (output.state !== 'after') continue;
 		const destination = path.resolve(root, output.planned.path);
 		const current = await metadataOrNull(destination);
 		if (!current) continue;
@@ -1516,6 +1791,36 @@ async function rollbackJournal(
 		await unlink(destination);
 		await syncDirectory(path.dirname(destination));
 		await testHooks?.afterRecoveryOutputDelete?.({ index, path: output.planned.path });
+	}
+	for (const replacement of replacements.values()) {
+		await assertPriorPromotionEvidenceCurrent(root, replacement);
+		const destination = path.resolve(root, replacement.path);
+		const current = await metadataOrNull(destination);
+		if (current) {
+			if (
+				current.isSymbolicLink() ||
+				!current.isFile() ||
+				current.dev !== replacement.beforeFile.device ||
+				current.ino !== replacement.beforeFile.inode
+			)
+				throw new Error(`Prior canonical master changed during rollback: ${replacement.path}`);
+			const bytes = await readRepositoryRegular(root, destination, 'Prior canonical master');
+			if (sha256(bytes) !== replacement.before.contentHash)
+				throw new Error(
+					`Prior canonical master bytes changed during rollback: ${replacement.path}`
+				);
+			continue;
+		}
+		if (!sameParentFingerprint(await parentFingerprint(destination), replacement.parent))
+			throw new Error(`Prior canonical master parent changed during rollback: ${replacement.path}`);
+		await atomicJsonReplace(
+			root,
+			destination,
+			Buffer.from(replacement.before.bytesBase64, 'base64')
+		);
+		const restored = await readRepositoryRegular(root, destination, 'Restored canonical master');
+		if (sha256(restored) !== replacement.before.contentHash)
+			throw new Error(`Prior canonical master restoration failed: ${replacement.path}`);
 	}
 	await cleanupPromotionStaging(root, journal.staging);
 }
@@ -1783,6 +2088,21 @@ async function assertPromotionEvidenceCurrent(
 	item: PreparedPromotion
 ): Promise<void> {
 	await assertLatestSkillIconTarget(root, item.target);
+	if (item.replacement) await assertPriorPromotionEvidenceCurrent(root, item.replacement);
+	for (const authority of item.authoritySnapshots) {
+		const current = await readAuthorityFileIdentity(
+			root,
+			authority.identity.path,
+			`Promotion ${authority.label} authority`
+		);
+		if (
+			current.identity.contentHash !== authority.identity.contentHash ||
+			current.identity.file.device !== authority.identity.file.device ||
+			current.identity.file.inode !== authority.identity.file.inode ||
+			!sameParentFingerprint(current.identity.parent, authority.identity.parent)
+		)
+			throw new Error(`Promotion ${authority.label} authority changed: ${authority.identity.path}`);
+	}
 	for (const [evidencePath, expectedHash, label] of [
 		[item.record.candidate.path, item.record.candidate.contentHash, 'candidate'],
 		[item.record.resultPath, item.record.resultContentHash, 'result'],
@@ -1819,7 +2139,8 @@ async function commitPromotions(
 		if (destinations.has(receiptDestination))
 			throw new Error(`Duplicate promotion receipt destination ${receiptPath}`);
 		destinations.add(receiptDestination);
-		if (await metadataOrNull(item.destination))
+		if (item.replacement) await assertReplacementMasterCurrent(root, item.replacement);
+		else if (await metadataOrNull(item.destination))
 			throw new Error(
 				`Master destination already exists (collision): ${item.record.approvedMaster.path}`
 			);
@@ -1935,6 +2256,7 @@ async function commitPromotions(
 		})),
 		planned,
 		created: [],
+		replacements: prepared.flatMap((item) => (item.replacement ? [item.replacement] : [])),
 		shared,
 		staging
 	};
@@ -1974,7 +2296,8 @@ async function commitPromotions(
 				staging,
 				stageIndex++,
 				recordReservation,
-				testHooks?.afterOutputWriteBeforeProgress
+				testHooks?.afterOutputWriteBeforeProgress,
+				item.replacement
 			);
 			journal = {
 				...journal,
@@ -2093,6 +2416,42 @@ export async function promoteSkillIconOutput(
 	});
 }
 
+async function selectLatestReviewNames(
+	root: string,
+	directory: string,
+	names: readonly string[]
+): Promise<readonly string[]> {
+	const reviewed = await Promise.all(
+		names.map(async (name) => {
+			const reviewBytes = await readRepositoryRegular(
+				root,
+				path.join(directory, name),
+				'Batch review'
+			);
+			const review = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
+			if (name !== `${review.jobId}.json`)
+				throw new Error(`Review filename does not match job ID: ${name}`);
+			const scope = scopeForRole(review.role);
+			const targetBytes = await readRepositoryRegular(
+				root,
+				path.resolve(
+					root,
+					`assets/wiki/skills/icon-production-v1/targets/${scope}/${review.jobId}.json`
+				),
+				'Batch review target'
+			);
+			const target = AnySkillIconTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+			return { name, target };
+		})
+	);
+	const latestJobs = new Set(
+		resolveLatestSkillIconTargets(reviewed.map((item) => item.target)).map(
+			(item) => item.target.jobId
+		)
+	);
+	return reviewed.filter((item) => latestJobs.has(item.target.jobId)).map((item) => item.name);
+}
+
 export async function promoteReviewedSkillIconOutputs(options: {
 	readonly reviewDirectory: string;
 	readonly root?: string;
@@ -2115,12 +2474,17 @@ export async function promoteReviewedSkillIconOutputs(options: {
 		if (entries.length === 0) throw new Error('Review directory contains no review records');
 		if (entries.some((entry) => !entry.isFile() || entry.isSymbolicLink()))
 			throw new Error('Review directory may contain only regular JSON review files');
+		const reviewNames = await selectLatestReviewNames(
+			root,
+			directory.absolute,
+			entries.map((entry) => entry.name)
+		);
 		const prepared = await Promise.all(
-			entries.map((entry) =>
+			reviewNames.map((name) =>
 				preparePromotion(
 					root,
-					entry.name.replace(/\.json$/u, ''),
-					path.join(directory.relative, entry.name),
+					name.replace(/\.json$/u, ''),
+					path.join(directory.relative, name),
 					options.testHooks
 				)
 			)

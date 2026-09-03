@@ -20,7 +20,10 @@ from validate_target import (
     absolute_project_path,
     fail,
     load_json,
+    load_json_snapshot,
     read_stable_regular_file,
+    read_stable_regular_file_snapshot,
+    reassert_stable_regular_file,
     run_asset_inspection,
     run_contract_validation,
     validate,
@@ -226,6 +229,7 @@ def verify(
     assignment_path: Path | None = None,
 ) -> dict[str, Any]:
     root = workspace.absolute()
+    authority_snapshots = []
     target_report = validate(
         target,
         assignment,
@@ -234,6 +238,7 @@ def verify(
         assignment_path=assignment_path,
         allow_existing_outputs=True,
         contract_root=contract_root or root,
+        _authority_snapshots=authority_snapshots,
     )
     run_contract_validation(
         "execution",
@@ -254,12 +259,15 @@ def verify(
     supplied_result = result_path.absolute()
     if supplied_result != expected_result:
         fail("RESULT argument does not match target.output.resultPath")
-    if load_json(expected_result) != result:
+    retained_result, result_snapshot = load_json_snapshot(expected_result)
+    if retained_result != result:
         fail("RESULT argument bytes do not contain the result being verified")
 
     candidate_path = target["output"]["candidatePath"]
     candidate = absolute_project_path(root, candidate_path)
     output = result["output"]
+    candidate_snapshot = None
+    geometry_snapshot = None
     if output is None:
         if candidate.exists() or candidate.is_symlink():
             fail("result claims no output but a candidate exists")
@@ -270,10 +278,11 @@ def verify(
         geometry_path = absolute_project_path(
             root, GEOMETRY_PATH, must_exist=True, regular_file=True
         )
-        geometry_bytes = read_stable_regular_file(geometry_path)
-        geometry = json.loads(geometry_bytes.decode("utf-8"))
+        geometry_snapshot = read_stable_regular_file_snapshot(geometry_path)
+        geometry = json.loads(geometry_snapshot.data.decode("utf-8"))
+        candidate_snapshot = read_stable_regular_file_snapshot(candidate)
         inspection = run_asset_inspection(
-            candidate,
+            candidate_snapshot.data,
             target["role"],
             geometry,
             contract_root=contract_root or root,
@@ -316,7 +325,7 @@ def verify(
                 fail("v2 provider source hash binding is invalid")
             if normalization.get("outputContentHash") != inspection["contentHash"]:
                 fail("v2 normalized output hash does not bind retained candidate")
-            geometry_hash = hashlib.sha256(geometry_bytes).hexdigest()
+            geometry_hash = geometry_snapshot.content_hash
             if normalization.get("geometryHash") != geometry_hash:
                 fail("v2 normalization geometry hash does not bind raw authority bytes")
         findings = result["findings"]
@@ -363,6 +372,27 @@ def verify(
             "unexpected changed repository paths during output ownership audit: "
             f"unexpected={unexpected}, missing={missing}"
         )
+
+    # These are intentionally the final filesystem reads before returning success.
+    # Re-reading through O_NOFOLLOW catches same-byte pathname replacement as well as
+    # content mutation after the bytes used for inspection were captured.
+    if candidate_snapshot is not None:
+        reassert_stable_regular_file(
+            candidate, candidate_snapshot, label="retained candidate"
+        )
+    elif os.path.lexists(candidate):
+        fail("result claims no output but a candidate appeared during verification")
+    if geometry_snapshot is not None:
+        reassert_stable_regular_file(
+            geometry_path, geometry_snapshot, label="geometry authority"
+        )
+    for authority_path, authority_snapshot, authority_label in authority_snapshots:
+        reassert_stable_regular_file(
+            authority_path, authority_snapshot, label=authority_label
+        )
+    reassert_stable_regular_file(
+        expected_result, result_snapshot, label="retained result"
+    )
 
     return {
         **target_report,

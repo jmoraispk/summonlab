@@ -17,7 +17,19 @@ export function skillIconRevision(target: AnySkillIconTarget): number {
 	if (target.schemaVersion === 'skill-icon-target-v2') return target.revision;
 	const match = /-v([1-9][0-9]*)$/u.exec(target.jobId);
 	if (!match) throw new Error(`Skill-icon job lacks a positive revision: ${target.jobId}`);
-	return Number(match[1]);
+	const revision = Number(match[1]);
+	const expectedHistoricalJobId =
+		target.role === 'rarity-frame'
+			? `rarity-frame-${target.rarity.toLowerCase()}-v1`
+			: target.role === 'backing'
+				? 'charcoal-forged-stone-v1'
+				: null;
+	if (expectedHistoricalJobId !== null && target.jobId !== expectedHistoricalJobId) {
+		throw new Error(
+			`V1 ${target.role} target ${target.jobId} is not the immutable historical identity ${expectedHistoricalJobId}; reference revisions after v1 require the V2 protocol`
+		);
+	}
+	return revision;
 }
 
 export function resolveLatestSkillIconTargets(

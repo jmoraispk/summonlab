@@ -258,13 +258,15 @@ async function installReferenceCandidatePacketV2(
 		readonly role: 'backing' | 'rarity-frame';
 		readonly bytes: Buffer;
 		readonly rarity?: Exclude<CandidatePacket['rarity'], null>;
+		readonly revision?: number;
 	}
 ): Promise<CandidatePacket> {
 	const logicalIdentity =
 		input.role === 'backing'
 			? 'charcoal-forged-stone'
 			: `rarity-frame-${input.rarity!.toLowerCase()}`;
-	const jobId = `${logicalIdentity}-v2`;
+	const revision = input.revision ?? 2;
+	const jobId = `${logicalIdentity}-v${revision}`;
 	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
 	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
 	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
@@ -284,7 +286,7 @@ async function installReferenceCandidatePacketV2(
 		schemaVersion: 'skill-icon-target-v2',
 		jobId,
 		logicalIdentity,
-		revision: 2,
+		revision,
 		role: input.role,
 		skillTargetId: null,
 		motifFamily: null,
@@ -319,7 +321,7 @@ async function installReferenceCandidatePacketV2(
 		assignmentId: `assignment-${jobId}`,
 		jobId,
 		logicalIdentity,
-		revision: 2,
+		revision,
 		targetPath,
 		assignmentPath,
 		skillVersion: 'summonlab-skill-icon-production-v2',
@@ -340,7 +342,7 @@ async function installReferenceCandidatePacketV2(
 		resultId: `result-${jobId}`,
 		jobId,
 		logicalIdentity,
-		revision: 2,
+		revision,
 		assignmentId: assignment.assignmentId,
 		status: 'candidate',
 		exactPrompt,
@@ -942,8 +944,7 @@ describe('scoped contact-sheet export', () => {
 			'assets/wiki/skills/icon-production-v1/review/decisions/references/charcoal-forged-stone-v1.json';
 		await mkdir(path.dirname(path.join(root, rejectedPath)), { recursive: true });
 		await writeFile(path.join(root, rejectedPath), 'rejected-v1-evidence');
-		await installCandidatePacket(root, {
-			jobId: 'charcoal-forged-stone-v2',
+		await installReferenceCandidatePacketV2(root, {
 			role: 'backing',
 			bytes: await validBacking([65, 68, 75])
 		});
@@ -955,8 +956,7 @@ describe('scoped contact-sheet export', () => {
 			firstBytes
 		);
 		expect(await readFile(path.join(root, rejectedPath), 'utf8')).toBe('rejected-v1-evidence');
-		await installCandidatePacket(root, {
-			jobId: 'rarity-frame-e-v2',
+		await installReferenceCandidatePacketV2(root, {
 			role: 'rarity-frame',
 			rarity: 'E',
 			bytes: await validFrame([120, 145, 245])
@@ -1002,11 +1002,10 @@ describe('scoped contact-sheet export', () => {
 		).rejects.toThrow(/malformed|colliding.*reference-assets/iu);
 	}, 30_000);
 
-	it('rejects incomplete and duplicate highest reference revisions without falling back', async () => {
+	it('rejects incomplete and protocol-downgraded reference revisions without falling back', async () => {
 		const root = await productionFixtureRoot();
 		await installReferencePackets(root, false);
-		const incomplete = await installCandidatePacket(root, {
-			jobId: 'rarity-frame-f-v2',
+		const incomplete = await installReferenceCandidatePacketV2(root, {
 			role: 'rarity-frame',
 			rarity: 'F',
 			bytes: await validFrame([80, 100, 220])
@@ -1027,8 +1026,7 @@ describe('scoped contact-sheet export', () => {
 		await expect(
 			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
 		).rejects.toThrow(/execution|assignment|job/iu);
-		await installCandidatePacket(root, {
-			jobId: 'rarity-frame-f-v2',
+		await installReferenceCandidatePacketV2(root, {
 			role: 'rarity-frame',
 			rarity: 'F',
 			bytes: incomplete.bytes
@@ -1041,7 +1039,9 @@ describe('scoped contact-sheet export', () => {
 		});
 		await expect(
 			exportSkillIconRuntime({ root, mode: 'check', scope: 'references' })
-		).rejects.toThrow(/duplicate.*rarity-frame:F.*v2/iu);
+		).rejects.toThrow(
+			/immutable historical revision v1|later reference revisions require the V2/iu
+		);
 	}, 30_000);
 
 	it('reports every missing reference role instead of treating an empty scope as current', async () => {
@@ -1222,8 +1222,7 @@ describe('scoped contact-sheet export', () => {
 				afterContactSheetFinalLink: async () => {
 					if (injected) return;
 					injected = true;
-					await installCandidatePacket(root, {
-						jobId: 'charcoal-forged-stone-v2',
+					await installReferenceCandidatePacketV2(root, {
 						role: 'backing',
 						bytes: await validBacking([85, 88, 95])
 					});
@@ -1249,9 +1248,9 @@ describe('scoped contact-sheet export', () => {
 				testHooks: {
 					beforeContactSheetPublish: async () => {
 						revision += 1;
-						await installCandidatePacket(root, {
-							jobId: `charcoal-forged-stone-v${revision}`,
+						await installReferenceCandidatePacketV2(root, {
 							role: 'backing',
+							revision,
 							bytes: await validBacking([45 + revision, 48, 55])
 						});
 					}
@@ -1265,8 +1264,7 @@ describe('scoped contact-sheet export', () => {
 		await installReferencePackets(root, false);
 		const alternate = await productionFixtureRoot();
 		await installReferencePackets(alternate, false);
-		await installCandidatePacket(alternate, {
-			jobId: 'charcoal-forged-stone-v2',
+		await installReferenceCandidatePacketV2(alternate, {
 			role: 'backing',
 			bytes: await validBacking([180, 40, 70])
 		});

@@ -100,6 +100,22 @@ export interface SkillIconRuntimeSourceRecord {
 	};
 }
 
+export interface ApprovedSkillIconReferenceAuthority {
+	readonly bytes: Buffer;
+	readonly id: string;
+	readonly role: 'rarity-frame' | 'backing';
+	readonly rarity: SkillIconRarity | null;
+	readonly path: string;
+	readonly contentHash: string;
+	readonly review: {
+		readonly decision: 'accepted';
+		readonly artifactId: string;
+		readonly role: 'rarity-frame' | 'backing';
+		readonly path: string;
+		readonly contentHash: string;
+	};
+}
+
 export interface SkillIconDerivedAssets {
 	readonly runtime512: SkillIconAsset;
 	readonly runtime256: SkillIconAsset;
@@ -740,12 +756,12 @@ async function loadGeometrySecure(
 	return SkillIconGeometrySchema.parse(JSON.parse(bytes.toString('utf8')) as unknown);
 }
 
-async function loadApprovedReference(
+export async function loadApprovedSkillIconReferenceAuthority(
 	root: string,
 	masterPath: string,
 	expectedRole: 'backing' | 'rarity-frame',
 	expectedRarity: SkillIconRarity | null
-): Promise<Buffer> {
+): Promise<ApprovedSkillIconReferenceAuthority> {
 	const targetDirectory = 'assets/wiki/skills/icon-production-v1/targets/references';
 	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory);
 	const targets = await Promise.all(
@@ -902,7 +918,32 @@ async function loadApprovedReference(
 			`Approved reference geometry is invalid for ${masterPath}: ${inspection.violations.join('; ')}`
 		);
 	}
-	return master;
+	return {
+		bytes: master,
+		id: target.jobId,
+		role: expectedRole,
+		rarity: expectedRole === 'rarity-frame' ? target.rarity : null,
+		path: masterPath,
+		contentHash: masterHash,
+		review: {
+			decision: 'accepted',
+			artifactId: target.jobId,
+			role: expectedRole,
+			path: masterPath,
+			contentHash: masterHash
+		}
+	};
+}
+
+async function loadApprovedReference(
+	root: string,
+	masterPath: string,
+	expectedRole: 'backing' | 'rarity-frame',
+	expectedRarity: SkillIconRarity | null
+): Promise<Buffer> {
+	return (
+		await loadApprovedSkillIconReferenceAuthority(root, masterPath, expectedRole, expectedRarity)
+	).bytes;
 }
 
 async function ensureSafeParent(root: string, relativePath: string): Promise<string> {

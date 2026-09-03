@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
+import { execFile } from 'node:child_process';
 import {
 	access,
 	mkdir,
 	mkdtemp,
+	open,
 	readFile,
 	readdir,
 	rename,
@@ -12,6 +14,7 @@ import {
 } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -33,10 +36,41 @@ import {
 } from './persist-skill-icon-output.js';
 
 const roots: string[] = [];
+const execFileAsync = promisify(execFile);
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
 const canonicalGeometrySourceBytes = await readFile(
 	'assets/wiki/skills/icon-production-v1/geometry.json'
 );
+const referenceBytes = Buffer.from('immutable geometry reference fixture');
+const referenceHash = createHash('sha256').update(referenceBytes).digest('hex');
+const referencePath = 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
+
+async function seedReference(root: string): Promise<void> {
+	const absolute = path.join(root, referencePath);
+	await mkdir(path.dirname(absolute), { recursive: true });
+	await writeFile(absolute, referenceBytes);
+}
+
+function crc32(bytes: Buffer): number {
+	let crc = 0xffffffff;
+	for (const byte of bytes) {
+		crc ^= byte;
+		for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+	}
+	return (crc ^ 0xffffffff) >>> 0;
+}
+
+function declareSrgb(png: Buffer): Buffer {
+	const type = Buffer.from('sRGB', 'ascii');
+	const data = Buffer.from([0]);
+	const chunk = Buffer.alloc(13);
+	chunk.writeUInt32BE(1, 0);
+	type.copy(chunk, 4);
+	data.copy(chunk, 8);
+	chunk.writeUInt32BE(crc32(Buffer.concat([type, data])), 9);
+	const ihdrEnd = 8 + 12 + png.readUInt32BE(8);
+	return Buffer.concat([png.subarray(0, ihdrEnd), chunk, png.subarray(ihdrEnd)]);
+}
 
 const geometry: SkillIconGeometry = {
 	schemaVersion: 'skill-icon-geometry-v1',
@@ -76,9 +110,9 @@ function packet() {
 		exactPrompt: 'Paint one centered horizontal sword slash.',
 		references: [
 			{
-				path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+				path: referencePath,
 				purpose: 'Geometry.',
-				contentHash: 'a'.repeat(64)
+				contentHash: referenceHash
 			}
 		],
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
@@ -128,9 +162,9 @@ function packetV2(geometrySourceBytes: Buffer) {
 		exactPrompt,
 		references: [
 			{
-				path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+				path: referencePath,
 				purpose: 'Geometry.',
-				contentHash: 'a'.repeat(64)
+				contentHash: referenceHash
 			}
 		],
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
@@ -181,22 +215,26 @@ function packetV2(geometrySourceBytes: Buffer) {
 }
 
 async function v2ProviderSource(): Promise<Buffer> {
-	return sharp({ create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' } })
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+	})
 		.composite([
 			{
 				input: Buffer.from(
-					'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/></svg>'
+					'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,118 1087,382 1087,872 627,1136 167,872 167,382" fill="#292c33"/></svg>'
 				)
 			}
 		])
 		.removeAlpha()
 		.png({ progressive: false, palette: false })
 		.toBuffer();
+	return declareSrgb(png);
 }
 
 async function workspace() {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-'));
 	roots.push(root);
+	await seedReference(root);
 	const sourcePath = path.join(root, 'provider.png');
 	await writeFile(
 		sourcePath,
@@ -211,11 +249,26 @@ async function workspace() {
 	return { root, sourcePath };
 }
 
+async function seedPackets(
+	root: string,
+	target: SkillIconTarget | SkillIconTargetV2,
+	assignment: SkillIconAssignment | SkillIconAssignmentV2
+): Promise<void> {
+	for (const [relativePath, value] of [
+		[assignment.targetPath, target],
+		[assignment.assignmentPath, assignment]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), JSON.stringify(value));
+	}
+}
+
 describe('persistSkillIconOutput', () => {
 	it('normalizes a hash-bound V2 provider source only inside the collision-safe transaction', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-v2-'));
 		roots.push(root);
 		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
 		const source = await v2ProviderSource();
 		await writeFile(sourcePath, source);
 		const geometrySourceBytes = canonicalGeometrySourceBytes;
@@ -257,6 +310,7 @@ describe('persistSkillIconOutput', () => {
 			const root = await mkdtemp(path.join(os.tmpdir(), `skill-icon-persist-v2-${failure}-`));
 			roots.push(root);
 			const sourcePath = path.join(root, 'provider.png');
+			await seedReference(root);
 			const source = await v2ProviderSource();
 			await writeFile(sourcePath, source);
 			const geometrySourceBytes = canonicalGeometrySourceBytes;
@@ -311,15 +365,156 @@ describe('persistSkillIconOutput', () => {
 						failure === 'candidate-mutation'
 							? { beforeResultWrite: () => writeFile(candidate, Buffer.from('mutated')) }
 							: failure === 'candidate-partial'
-								? { afterCandidateOpen: () => Promise.reject(new Error('candidate write stop')) }
-								: { afterResultOpen: () => Promise.reject(new Error('result write stop')) }
+								? {
+										afterCandidateOpen: async () => {
+											await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
+											const siblings = await readdir(path.dirname(candidate));
+											expect(siblings.some((name) => name.includes('.skill-icon-tmp-'))).toBe(true);
+											throw new Error('candidate write stop');
+										}
+									}
+								: {
+										afterResultOpen: async () => {
+											const result = path.join(root, target.output.resultPath);
+											await expect(access(result)).rejects.toMatchObject({ code: 'ENOENT' });
+											const siblings = await readdir(path.dirname(result));
+											expect(siblings.some((name) => name.includes('.skill-icon-tmp-'))).toBe(true);
+											throw new Error('result write stop');
+										}
+									}
 				})
 			).rejects.toThrow();
 			await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
 			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
 				code: 'ENOENT'
 			});
+			for (const parent of [
+				path.dirname(candidate),
+				path.dirname(path.join(root, target.output.resultPath))
+			])
+				expect((await readdir(parent)).filter((name) => name.includes('.skill-icon-tmp-'))).toEqual(
+					[]
+				);
 		}
+	});
+
+	it('revalidates every target reference immediately before staging output bytes', async () => {
+		for (const failure of ['missing', 'mutated'] as const) {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			const reference = path.join(root, referencePath);
+			await expect(
+				persistSkillIconOutputBound({
+					root,
+					sourcePath,
+					candidatePath,
+					expectedRole: 'skill-art',
+					geometry,
+					target,
+					assignment,
+					receivedAt: '2026-09-02T09:10:11.000Z',
+					testHooks: {
+						beforeCandidateWrite: () =>
+							failure === 'missing'
+								? rm(reference)
+								: writeFile(reference, Buffer.from('changed reference bytes'))
+					}
+				})
+			).rejects.toThrow(/reference|ENOENT|no such file/iu);
+			await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
+	it('never unlinks a foreign inode raced into a staged temporary pathname', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const candidateParent = path.dirname(path.join(root, candidatePath));
+		let foreignPath: string | undefined;
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				testHooks: {
+					afterCandidateOpen: async () => {
+						const temporaryName = (await readdir(candidateParent)).find((name) =>
+							name.includes('.skill-icon-tmp-')
+						);
+						if (!temporaryName) throw new Error('missing staged fixture');
+						foreignPath = path.join(candidateParent, temporaryName);
+						await rename(foreignPath, `${foreignPath}.original-inode`);
+						await writeFile(foreignPath, Buffer.from('foreign staged-name victim'));
+						throw new Error('stop after staged-name replacement');
+					}
+				}
+			})
+		).rejects.toThrow(/ownership changed|cleanup required/iu);
+		expect(foreignPath).toBeDefined();
+		await expect(readFile(foreignPath!, 'utf8')).resolves.toBe('foreign staged-name victim');
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('rolls back both outputs when a bound reference mutates after result installation', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const candidate = path.join(root, candidatePath);
+		const result = path.join(root, target.output.resultPath);
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				testHooks: {
+					afterResultInstall: () =>
+						writeFile(path.join(root, referencePath), Buffer.from('late reference mutation'))
+				}
+			})
+		).rejects.toThrow(/reference .*changed during persistence/iu);
+		await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(result)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('rejects a same-byte result inode replacement and does not delete the replacement', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const candidate = path.join(root, candidatePath);
+		const result = path.join(root, target.output.resultPath);
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				testHooks: {
+					afterResultInstall: async () => {
+						const replacement = `${result}.replacement`;
+						await writeFile(replacement, await readFile(result));
+						await rename(replacement, result);
+					}
+				}
+			})
+		).rejects.toThrow(/result identity|rollback was incomplete/iu);
+		await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(result)).resolves.toBeUndefined();
 	});
 	it('retains exact PNG bytes with caller-owned timestamp and collision safety', async () => {
 		const { root, sourcePath } = await workspace();
@@ -442,6 +637,7 @@ describe('persistSkillIconOutput', () => {
 		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-outside-'));
 		roots.push(outside);
 		await mkdir(path.join(root, 'assets/wiki/skills'), { recursive: true });
+		await rm(path.join(root, 'assets/wiki/skills/icon-production-v1'), { recursive: true });
 		await symlink(outside, path.join(root, 'assets/wiki/skills/icon-production-v1'));
 		await expect(persistSkillIconOutputBound(base)).rejects.toThrow(/symbolic link/u);
 		await expect(
@@ -462,12 +658,16 @@ describe('persistSkillIconOutput', () => {
 		const previous = process.cwd();
 		try {
 			process.chdir(root);
+			const expectedSourceHash = createHash('sha256')
+				.update(await readFile(sourcePath))
+				.digest('hex');
 			const receipt = await persistSkillIconOutput(
 				{
 					sourcePath,
 					candidatePath,
 					expectedRole: 'skill-art',
-					geometry
+					geometry,
+					expectedSourceHash
 				},
 				{ now: () => new Date('2026-09-02T12:34:56.000Z') }
 			);
@@ -481,6 +681,133 @@ describe('persistSkillIconOutput', () => {
 			process.chdir(previous);
 		}
 	});
+
+	it.each(['target', 'assignment'] as const)(
+		'rolls back when the public API %s packet changes after its authority read',
+		async (changedAuthority) => {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			await seedPackets(root, target, assignment);
+			const expectedSourceHash = createHash('sha256')
+				.update(await readFile(sourcePath))
+				.digest('hex');
+			const changedPath = path.join(
+				root,
+				changedAuthority === 'target' ? assignment.targetPath : assignment.assignmentPath
+			);
+			const previous = process.cwd();
+			try {
+				process.chdir(root);
+				await expect(
+					persistSkillIconOutput(
+						{
+							sourcePath,
+							candidatePath,
+							expectedRole: 'skill-art',
+							geometry,
+							expectedSourceHash
+						},
+						{
+							testHooks: {
+								afterAuthorityRead: () => writeFile(changedPath, Buffer.from('changed packet'))
+							}
+						}
+					)
+				).rejects.toThrow(new RegExp(`${changedAuthority} packet changed`, 'iu'));
+			} finally {
+				process.chdir(previous);
+			}
+			await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	);
+
+	it('rolls back when V2 geometry changes after the public authority read', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-public-v2-authority-'));
+		roots.push(root);
+		await seedReference(root);
+		const sourcePath = path.join(root, 'provider.png');
+		const source = await v2ProviderSource();
+		await writeFile(sourcePath, source);
+		const { target, assignment, candidatePath } = packetV2(canonicalGeometrySourceBytes);
+		await seedPackets(root, target, assignment);
+		const geometryPath = path.join(root, target.normalization.geometry.path);
+		await mkdir(path.dirname(geometryPath), { recursive: true });
+		await writeFile(geometryPath, canonicalGeometrySourceBytes);
+		const previous = process.cwd();
+		try {
+			process.chdir(root);
+			await expect(
+				persistSkillIconOutput(
+					{
+						sourcePath,
+						candidatePath,
+						expectedRole: 'backing',
+						geometry,
+						expectedSourceHash: createHash('sha256').update(source).digest('hex')
+					},
+					{
+						testHooks: {
+							afterAuthorityRead: () =>
+								writeFile(
+									geometryPath,
+									Buffer.concat([canonicalGeometrySourceBytes, Buffer.from(' ')])
+								)
+						}
+					}
+				)
+			).rejects.toThrow(/geometry authority changed/iu);
+		} finally {
+			process.chdir(previous);
+		}
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	}, 15_000);
+
+	it.each(['fifo', 'huge'] as const)(
+		'rejects a %s packet authority without blocking or unbounded allocation',
+		async (unsafeKind) => {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			await mkdir(path.dirname(path.join(root, assignment.targetPath)), { recursive: true });
+			await mkdir(path.dirname(path.join(root, assignment.assignmentPath)), { recursive: true });
+			await writeFile(path.join(root, assignment.assignmentPath), JSON.stringify(assignment));
+			const targetPath = path.join(root, assignment.targetPath);
+			if (unsafeKind === 'fifo') await execFileAsync('mkfifo', [targetPath]);
+			else {
+				const handle = await open(targetPath, 'w');
+				try {
+					await handle.truncate(65 * 1024 * 1024);
+				} finally {
+					await handle.close();
+				}
+			}
+			const previous = process.cwd();
+			try {
+				process.chdir(root);
+				await expect(
+					persistSkillIconOutput({
+						sourcePath,
+						candidatePath,
+						expectedRole: 'skill-art',
+						geometry,
+						expectedSourceHash: createHash('sha256')
+							.update(await readFile(sourcePath))
+							.digest('hex')
+					})
+				).rejects.toThrow(/regular file|safety limit/iu);
+			} finally {
+				process.chdir(previous);
+			}
+		},
+		3_000
+	);
 
 	it('keeps the documented no-timestamp CLI grammar and accepts an optional timestamp', () => {
 		expect(
@@ -536,9 +863,45 @@ describe('persistSkillIconOutput', () => {
 						}
 					}
 				})
-			).rejects.toThrow(/symbolic link|escaped/iu);
+			).rejects.toThrow(/symbolic link|escaped|unsafe/iu);
 			expect(await readdir(outside)).toEqual([]);
 		}
+	});
+
+	it('keeps staging bound to the held candidate directory during a post-open parent swap', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-held-parent-outside-'));
+		roots.push(outside);
+		const candidateParent = path.dirname(path.join(root, candidatePath));
+		const movedParent = `${candidateParent}-moved`;
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				testHooks: {
+					afterCandidateOpen: async () => {
+						await rename(candidateParent, movedParent);
+						await symlink(outside, candidateParent);
+					}
+				}
+			})
+		).rejects.toThrow(/parent identity changed|parent identity is unsafe/iu);
+		expect(await readdir(outside)).toEqual([]);
+		expect(
+			(await readdir(movedParent)).filter((name) => name.includes('.skill-icon-tmp-'))
+		).toEqual([]);
+		await expect(
+			access(path.join(movedParent, path.basename(candidatePath)))
+		).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
 	});
 
 	it('never deletes an outside same-name victim when rollback sees a swapped candidate parent', async () => {
@@ -568,10 +931,10 @@ describe('persistSkillIconOutput', () => {
 					}
 				}
 			})
-		).rejects.toThrow(/cleanup required|rollback was incomplete/iu);
+		).rejects.toThrow(/trigger safe rollback/iu);
 		await expect(readFile(outsideVictim, 'utf8')).resolves.toBe('outside-victim');
 		await expect(
 			access(path.join(movedParent, path.basename(candidatePath)))
-		).resolves.toBeUndefined();
+		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 });

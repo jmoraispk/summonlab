@@ -5,17 +5,25 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import struct
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 import zlib
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from validate_target import load_json, validate  # noqa: E402
+import verify_result as verify_result_module  # noqa: E402
+from validate_target import (  # noqa: E402
+    load_json,
+    read_stable_regular_file_snapshot,
+    validate,
+)
 from verify_result import GEOMETRY_PATH, persist_failed_result, verify  # noqa: E402
 
 
@@ -361,7 +369,9 @@ class Packet:
         )
         self.result_file = write_json(self.root, result_path, self.result)
 
-    def verify(self, *, attempt_count: int = 1) -> dict[str, object]:
+    def verify(
+        self, *, attempt_count: int = 1, bind_input_paths: bool = False
+    ) -> dict[str, object]:
         return verify(
             self.target,
             self.assignment,
@@ -370,6 +380,8 @@ class Packet:
             self.root,
             attempt_count=attempt_count,
             contract_root=REPOSITORY_ROOT,
+            target_path=self.target_file if bind_input_paths else None,
+            assignment_path=self.assignment_file if bind_input_paths else None,
         )
 
 
@@ -541,11 +553,223 @@ class SkillIconVerifierTests(unittest.TestCase):
         reference.symlink_to(real_reference)
         self.assert_invalid("symbolic link")
 
+    def test_stable_reader_rejects_same_byte_path_swap_during_read(self) -> None:
+        source = self.packet.root / "stable-reader-source.bin"
+        source.write_bytes(b"stable source bytes")
+        displaced = source.with_suffix(".old")
+
+        def swap_path() -> None:
+            source.rename(displaced)
+            source.write_bytes(b"stable source bytes")
+
+        with self.assertRaisesRegex(ValueError, "changed while it was being read"):
+            read_stable_regular_file_snapshot(source, _after_open=swap_path)
+
+    def test_stable_reader_rejects_fifo_replacement_without_blocking(self) -> None:
+        source = self.packet.root / "stable-reader-source.bin"
+        source.write_bytes(b"original regular file")
+        source.rename(source.with_suffix(".displaced"))
+        os.mkfifo(source)
+
+        started = time.monotonic()
+        with self.assertRaisesRegex(ValueError, "must be a regular file"):
+            read_stable_regular_file_snapshot(source)
+        self.assertLess(time.monotonic() - started, 1.0)
+
+    def test_rejects_assignment_file_symlink(self) -> None:
+        real_assignment = self.packet.assignment_file.with_suffix(".real.json")
+        self.packet.assignment_file.rename(real_assignment)
+        self.packet.assignment_file.symlink_to(real_assignment)
+        with self.assertRaisesRegex(ValueError, "symbolic link|Too many levels"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                target_path=self.packet.target_file,
+                assignment_path=self.packet.assignment_file,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
+
     def test_rejects_candidate_symlink(self) -> None:
         real_candidate = self.packet.candidate_file.with_suffix(".real.png")
         self.packet.candidate_file.rename(real_candidate)
         self.packet.candidate_file.symlink_to(real_candidate)
         self.assert_invalid("symbolic link")
+
+    def test_rejects_candidate_mutation_after_stable_inspection(self) -> None:
+        original_inspector = verify_result_module.run_asset_inspection
+
+        def mutate_after_capture(*args: object, **kwargs: object) -> dict[str, object]:
+            report = original_inspector(*args, **kwargs)
+            replacement = bytearray(self.packet.candidate_bytes)
+            replacement[-1] ^= 1
+            self.packet.candidate_file.write_bytes(replacement)
+            return report
+
+        with patch.object(
+            verify_result_module,
+            "run_asset_inspection",
+            side_effect=mutate_after_capture,
+        ):
+            self.assert_invalid("retained candidate changed before verification completed")
+
+    def test_rejects_same_byte_candidate_path_swap_after_capture(self) -> None:
+        original_inspector = verify_result_module.run_asset_inspection
+
+        def swap_after_capture(*args: object, **kwargs: object) -> dict[str, object]:
+            displaced = self.packet.candidate_file.with_suffix(".displaced.png")
+            self.packet.candidate_file.rename(displaced)
+            self.packet.candidate_file.write_bytes(self.packet.candidate_bytes)
+            displaced.unlink()
+            return original_inspector(*args, **kwargs)
+
+        with patch.object(
+            verify_result_module,
+            "run_asset_inspection",
+            side_effect=swap_after_capture,
+        ):
+            self.assert_invalid("retained candidate changed before verification completed")
+
+    def test_rejects_same_byte_target_path_swap_late_in_verification(self) -> None:
+        self._assert_late_authority_path_swap(
+            self.packet.target_file, "target", bind_input_paths=True
+        )
+
+    def test_rejects_same_byte_assignment_path_swap_late_in_verification(self) -> None:
+        self._assert_late_authority_path_swap(
+            self.packet.assignment_file, "assignment", bind_input_paths=True
+        )
+
+    def test_rejects_same_byte_reference_path_swap_late_in_verification(self) -> None:
+        self._assert_late_authority_path_swap(
+            self.packet.root / self.packet.reference_paths[0], "reference"
+        )
+
+    def test_rejects_same_byte_catalog_path_swap_late_in_verification(self) -> None:
+        self._assert_late_authority_path_swap(
+            self.packet.catalog_file, "canonical catalog"
+        )
+
+    def test_rejects_same_byte_v2_geometry_swap_for_result_only_failure(self) -> None:
+        self._prepare_v2_result_only_failure()
+        self._assert_late_authority_path_swap(
+            self.packet.root / GEOMETRY_PATH,
+            "v2 normalization geometry authority",
+            bind_input_paths=True,
+        )
+
+    def _assert_late_authority_path_swap(
+        self, path: Path, label: str, *, bind_input_paths: bool = False
+    ) -> None:
+        original_contract_validation = verify_result_module.run_contract_validation
+        swapped = False
+
+        def swap_after_execution(*args: object, **kwargs: object) -> None:
+            nonlocal swapped
+            original_contract_validation(*args, **kwargs)
+            if not swapped and args and args[0] == "execution":
+                retained = path.read_bytes()
+                displaced = path.with_name(path.name + ".displaced")
+                path.rename(displaced)
+                path.write_bytes(retained)
+                displaced.unlink()
+                swapped = True
+
+        with patch.object(
+            verify_result_module,
+            "run_contract_validation",
+            side_effect=swap_after_execution,
+        ):
+            with self.assertRaisesRegex(
+                ValueError, rf"{label}.*changed before verification completed"
+            ):
+                self.packet.verify(bind_input_paths=bind_input_paths)
+
+    def _prepare_v2_result_only_failure(self) -> None:
+        job_id = "charcoal-forged-stone-v2"
+        self.packet.rebind_role("backing", job_id)
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        self.packet.target_file.unlink()
+        self.packet.assignment_file.unlink()
+        exact_prompt = (
+            "Paint the backing over an opaque #00FF00 matte with no baked checkerboard."
+        )
+        geometry_hash = hashlib.sha256(
+            (self.packet.root / GEOMETRY_PATH).read_bytes()
+        ).hexdigest()
+        self.packet.target.update(
+            {
+                "schemaVersion": "skill-icon-target-v2",
+                "logicalIdentity": "charcoal-forged-stone",
+                "revision": 2,
+                "exactPrompt": exact_prompt,
+                "normalization": {
+                    "profile": "skill-icon-green-key-role-mask-v1",
+                    "sourceContract": {
+                        "mediaType": "image/png",
+                        "width": 1254,
+                        "height": 1254,
+                        "alphaMode": "rgb",
+                        "matteColor": "#00FF00",
+                    },
+                    "outputContract": {
+                        "mediaType": "image/png",
+                        "width": 1024,
+                        "height": 1024,
+                        "alphaMode": "rgba",
+                    },
+                    "geometry": {
+                        "path": GEOMETRY_PATH,
+                        "contentHash": geometry_hash,
+                    },
+                },
+            }
+        )
+        self.packet.assignment.update(
+            {
+                "schemaVersion": "skill-icon-assignment-v2",
+                "logicalIdentity": "charcoal-forged-stone",
+                "revision": 2,
+                "skillVersion": "summonlab-skill-icon-production-v2",
+                "normalization": {"profile": "skill-icon-green-key-role-mask-v1"},
+            }
+        )
+        target_path = self.packet.assignment["targetPath"]
+        assignment_path = self.packet.assignment["assignmentPath"]
+        assert isinstance(target_path, str)
+        assert isinstance(assignment_path, str)
+        self.packet.target_file = write_json(
+            self.packet.root, target_path, self.packet.target
+        )
+        self.packet.assignment_file = write_json(
+            self.packet.root, assignment_path, self.packet.assignment
+        )
+        subprocess.run(["git", "add", "-A"], cwd=self.packet.root, check=True)
+        subprocess.run(
+            ["git", "commit", "-qm", "v2 result-only fixture"],
+            cwd=self.packet.root,
+            check=True,
+        )
+        persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="provider-failure",
+            failure_message="The provider returned no image bytes.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            total_wall_time_ms=TOTAL_WALL_TIME_MS,
+            contract_root=REPOSITORY_ROOT,
+            target_path=self.packet.target_file,
+            assignment_path=self.packet.assignment_file,
+        )
+        self.packet.result_file = self.packet.root / self.packet.target["output"][
+            "resultPath"
+        ]
+        self.packet.result = load_json(self.packet.result_file)
 
     def test_rejects_target_file_symlink(self) -> None:
         real_target = self.packet.target_file.with_suffix(".real.json")
@@ -604,7 +828,7 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.assertEqual(self.packet.verify()["verification"], "pass")
 
     def test_rejects_backing_without_aperture_coverage(self) -> None:
-        self.packet.rebind_role("backing", "universal-backing-v1")
+        self.packet.rebind_role("backing", "charcoal-forged-stone-v1")
         self.assert_invalid("cover at least 85%")
 
     def test_rejects_frame_without_edge_registration(self) -> None:
@@ -1028,6 +1252,36 @@ class SkillIconVerifierTests(unittest.TestCase):
                 attempt_count=1,
                 contract_root=REPOSITORY_ROOT,
             )
+
+    def test_rejects_result_file_symlink(self) -> None:
+        real_result = self.packet.result_file.with_suffix(".real.json")
+        self.packet.result_file.rename(real_result)
+        self.packet.result_file.symlink_to(real_result)
+        with self.assertRaisesRegex(ValueError, "symbolic link|Too many levels"):
+            self.packet.verify()
+
+    def test_rejects_same_byte_result_path_swap_before_success(self) -> None:
+        original_changed_paths = verify_result_module._changed_repository_paths
+        swapped = False
+
+        def swap_after_dirty_audit(workspace: Path) -> set[str]:
+            nonlocal swapped
+            changed = original_changed_paths(workspace)
+            if not swapped:
+                result_bytes = self.packet.result_file.read_bytes()
+                displaced = self.packet.result_file.with_suffix(".displaced.json")
+                self.packet.result_file.rename(displaced)
+                self.packet.result_file.write_bytes(result_bytes)
+                displaced.unlink()
+                swapped = True
+            return changed
+
+        with patch.object(
+            verify_result_module,
+            "_changed_repository_paths",
+            side_effect=swap_after_dirty_audit,
+        ):
+            self.assert_invalid("retained result changed before verification completed")
 
 
 if __name__ == "__main__":

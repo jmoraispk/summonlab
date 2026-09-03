@@ -454,7 +454,7 @@ describe('skill-icon production contracts', () => {
 		);
 
 		for (const role of ['rarity-frame', 'backing'] as const) {
-			const roleJobId = `${role}-v1`;
+			const roleJobId = role === 'rarity-frame' ? 'rarity-frame-f-v1' : 'charcoal-forged-stone-v1';
 			const target = {
 				...skillTarget(),
 				jobId: roleJobId,
@@ -577,6 +577,12 @@ describe('skill-icon production contracts', () => {
 
 	it('keeps assignments and results bounded to one candidate and result path', () => {
 		expect(SkillIconAssignmentSchema.safeParse(assignment()).success).toBe(true);
+		expect(
+			SkillIconAssignmentSchema.safeParse({
+				...assignment(),
+				skillVersion: 'attacker-v1'
+			}).success
+		).toBe(false);
 		expect(SkillIconResultSchema.safeParse(result()).success).toBe(true);
 		expect(
 			SkillIconResultSchema.safeParse({
@@ -736,6 +742,12 @@ describe('skill-icon production contracts', () => {
 			result: result()
 		};
 		expect(SkillIconExecutionSchema.safeParse(execution).success).toBe(true);
+		expect(
+			SkillIconExecutionSchema.safeParse({
+				...execution,
+				assignment: { ...assignment(), skillVersion: 'attacker-v1' }
+			}).success
+		).toBe(false);
 		expect(
 			SkillIconExecutionSchema.safeParse({
 				...execution,
@@ -982,6 +994,55 @@ describe('skill-icon production contracts', () => {
 		expect(
 			SkillIconTargetV2Schema.safeParse({ ...target, exactPrompt: 'Paint a transparent frame.' })
 				.success
+		).toBe(false);
+	});
+
+	it('keeps V1 frame and backing targets frozen at their historical v1 revision', () => {
+		const backing = {
+			...skillTarget(),
+			jobId: 'charcoal-forged-stone-v1',
+			role: 'backing' as const,
+			skillTargetId: null,
+			rarity: null,
+			output: ownedPaths('references', 'charcoal-forged-stone-v1')
+		};
+		const frame = {
+			...backing,
+			jobId: 'rarity-frame-f-v1',
+			role: 'rarity-frame' as const,
+			rarity: 'F' as const,
+			output: ownedPaths('references', 'rarity-frame-f-v1')
+		};
+
+		expect(SkillIconTargetSchema.safeParse(backing).success).toBe(true);
+		expect(SkillIconTargetSchema.safeParse(frame).success).toBe(true);
+		expect(
+			SkillIconTargetSchema.safeParse({
+				...backing,
+				jobId: 'charcoal-forged-stone-v2',
+				output: ownedPaths('references', 'charcoal-forged-stone-v2')
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetSchema.safeParse({
+				...frame,
+				jobId: 'rarity-frame-f-v99',
+				output: ownedPaths('references', 'rarity-frame-f-v99')
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetSchema.safeParse({
+				...backing,
+				jobId: 'forged-impostor-v1',
+				output: ownedPaths('references', 'forged-impostor-v1')
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetSchema.safeParse({
+				...frame,
+				jobId: 'rarity-frame-e-v1',
+				output: ownedPaths('references', 'rarity-frame-e-v1')
+			}).success
 		).toBe(false);
 	});
 });

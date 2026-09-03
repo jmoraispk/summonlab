@@ -72,6 +72,30 @@ describe('skill-icon revision resolution', () => {
 		expect(() => resolveLatestSkillIconTargets([v2, { ...v2 }])).toThrow(/duplicate/iu);
 	});
 
+	it('rejects a V1 reference revision after v1 instead of allowing a protocol downgrade', () => {
+		const v1 = target('charcoal-forged-stone-v99') as AnySkillIconTarget;
+		const v2 = target('charcoal-forged-stone-v2', 2);
+		expect(() => resolveLatestSkillIconTargets([v2, v1])).toThrow(
+			/V1 backing target.*not the immutable historical identity.*V2 protocol/iu
+		);
+	});
+
+	it('rejects forged V1 reference identities even when they retain the v1 suffix', () => {
+		const forgedBacking = target('forged-impostor-v1') as AnySkillIconTarget;
+		const forgedFrame = {
+			...target('rarity-frame-e-v1'),
+			role: 'rarity-frame' as const,
+			rarity: 'F' as const
+		} as AnySkillIconTarget;
+
+		expect(() => resolveLatestSkillIconTargets([forgedBacking])).toThrow(
+			/immutable historical identity charcoal-forged-stone-v1/iu
+		);
+		expect(() => resolveLatestSkillIconTargets([forgedFrame])).toThrow(
+			/immutable historical identity rarity-frame-f-v1/iu
+		);
+	});
+
 	it('treats current historical failed v1 evidence as valid evidence, not a missing candidate', async () => {
 		let message = '';
 		try {

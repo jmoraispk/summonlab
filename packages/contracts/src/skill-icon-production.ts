@@ -796,7 +796,22 @@ function targetVariant(
 }
 
 export const SkillIconTargetV1Schema = targetVariant(SkillIconTargetV1CommonShape).superRefine(
-	refineSkillIconTarget
+	(target, context) => {
+		refineSkillIconTarget(target, context);
+		const expectedHistoricalJobId =
+			target.role === 'rarity-frame'
+				? `rarity-frame-${target.rarity.toLowerCase()}-v1`
+				: target.role === 'backing'
+					? 'charcoal-forged-stone-v1'
+					: null;
+		if (expectedHistoricalJobId !== null && target.jobId !== expectedHistoricalJobId) {
+			context.addIssue({
+				code: 'custom',
+				path: ['jobId'],
+				message: `V1 rarity-frame and backing targets are immutable historical identities; expected ${expectedHistoricalJobId}, and later reference revisions require the V2 protocol`
+			});
+		}
+	}
 );
 export const SkillIconTargetSchema = SkillIconTargetV1Schema;
 export const SkillIconTargetV2Schema = z
@@ -865,7 +880,7 @@ export const SkillIconAssignmentSchema = z
 		jobId: SlugSchema,
 		targetPath: SkillIconTargetPathSchema,
 		assignmentPath: SkillIconAssignmentPathSchema,
-		skillVersion: z.string().regex(/-v1$/u).min(4).max(120),
+		skillVersion: z.literal('summonlab-skill-icon-production-v1'),
 		assignedAt: IsoDateTimeSchema,
 		retryCeiling: z.number().int().min(0).max(1),
 		permittedOutputs: OwnedOutputPathsSchema,
