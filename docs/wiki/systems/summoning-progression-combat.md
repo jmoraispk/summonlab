@@ -129,6 +129,12 @@ This image is the accepted visual baseline for the first phone combat slice, inc
 battlefield density, tile alignment, timeline restraint, three-line name-only feed, and command-bar
 proportions.
 
+![Accepted combat motion storyboard](../../evidence/living-village-combat-motion-storyboard-v1.png)
+
+The accepted first action cadence is `focus -> move -> impact -> settle`. The moving actor visibly
+claims the destination tile before impact; the final board, health, timeline, and feed state settle
+before the next action begins.
+
 The [combat animation implementation plan](../../evidence/living-village-combat-animation-implementation-plan.md)
 defines the recommended board, playback, PixiJS, asset-pack, and identity-bound chibi sequence.
 

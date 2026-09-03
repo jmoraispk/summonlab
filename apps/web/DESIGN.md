@@ -164,6 +164,10 @@ Accepted phone reference: [combat direction v1](../../docs/evidence/living-villa
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
 command-bar proportions as the visual baseline for the first combat slice.
 
+Accepted motion reference: [combat motion storyboard v1](../../docs/evidence/living-village-combat-motion-storyboard-v1.png).
+Use its `focus -> move -> impact -> settle` sequence as the baseline action cadence. Establish the
+destination tile before impact and let the resolved state become readable before advancing.
+
 - Use a steep top-down 2.5D camera, with only enough pitch to preserve silhouettes, environmental
   depth, and elliptical contact shadows.
 - Make action order unmistakable. The primary initiative display is a portrait rail with a visible

@@ -106,6 +106,12 @@ This is the accepted visual baseline for the first phone combat slice. Preserve 
 three-line name-only activity feed, and low-profile autonomy and skill controls. New mockups may
 change characters and environments without silently resetting these interface decisions.
 
+![Accepted combat motion storyboard](evidence/living-village-combat-motion-storyboard-v1.png)
+
+The locked first action cadence is `focus -> move -> impact -> settle`. Motion can remain fluid, but
+the acting character must visibly claim the destination tile before the hit, and the final state must
+settle long enough for the battlefield, timeline, and feed to agree.
+
 ## Character presentation
 
 ### Clean-slate reveal

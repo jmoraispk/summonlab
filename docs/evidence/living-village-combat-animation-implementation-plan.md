@@ -5,6 +5,9 @@ Status: **recommended implementation sequence**
 Accepted visual reference:
 [phone combat direction v1](living-village-combat-phone-direction-v1.png)
 
+Accepted motion reference:
+[combat motion storyboard v1](living-village-combat-motion-storyboard-v1.png)
+
 Primary runtime surface: **/mission/:runId**
 
 ## Recommendation
@@ -32,6 +35,10 @@ placeholder faces in the mockup.
   spritesheet manifest.
 - The accepted phone composition, timeline, tile treatment, live feed, and command bar are preserved
   in **living-village-combat-phone-direction-v1.png**.
+- The accepted first action cadence is preserved in
+  **living-village-combat-motion-storyboard-v1.png**: focus, move, impact, then settle. Movement may
+  flow directly into the strike, but the destination cell must be visually established before impact
+  and the resolved board state must be readable before the next action begins.
 
 ## Boundary: simulation first, playback second
 
