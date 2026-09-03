@@ -200,6 +200,13 @@ Form tier and affinity remain separate axes. T5 Fire is a Fire expression of the
 a sixth form. Normal remains intentionally unaffiliated and receives the same rendering quality as
 elemental variants.
 
+For bodies made primarily from affinity substance, construction must be readable in the body edge,
+internal flow, motion, and environmental wake—not only in hue. Fire should visibly combust and shed
+embers; Wind should partially dissipate into directional pressure sheets and filaments; Water should
+show layered liquid currents, surface tension, refraction, and droplets; Earth should remain a
+coherent flowing spell-form surrounded by detached mineral fragments and dust rather than becoming
+a solid rock statue. Each coordinate is rendered and retained as its own full-resolution image.
+
 ## Image target model
 
 The canonical production matrix is:

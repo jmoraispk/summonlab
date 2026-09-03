@@ -558,6 +558,8 @@ function buildMappedPrimaryBridgeTarget(input: {
 			normalCandidatePath: normalReference.candidatePath,
 			normalCandidateSha256: normalReference.candidateSha256
 		},
+		precedingAttempt: null,
+		version: 1,
 		status: 'earth-bridge-provisional'
 	});
 }

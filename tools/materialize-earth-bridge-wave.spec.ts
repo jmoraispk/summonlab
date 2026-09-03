@@ -168,6 +168,11 @@ describe('Earth bridge wave controller', () => {
 		).toHaveLength(10);
 		expect(
 			build.bridgeTargets
+				.filter(({ canonicalCoordinateId }) => canonicalCoordinateId !== undefined)
+				.every(({ version, precedingAttempt }) => version === 1 && precedingAttempt === null)
+		).toBe(true);
+		expect(
+			build.bridgeTargets
 				.filter(({ canonicalCoordinateId }) => canonicalCoordinateId === undefined)
 				.every(({ tier }) => tier === 'bridge-only')
 		).toBe(true);
