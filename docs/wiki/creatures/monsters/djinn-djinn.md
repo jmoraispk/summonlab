@@ -6,7 +6,7 @@ Wiki ID: `monster.djinn-djinn`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Lesser Djinn pull targets across the first vector; breaking their cuff interrupt
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/djinn/djinn-djinn/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/djinn/djinn-djinn/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/djinn/djinn-djinn/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/djinn/djinn-djinn/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/djinn/djinn-djinn/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/djinn/djinn-djinn/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/djinn/djinn-djinn/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/djinn/djinn-djinn/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/djinn/djinn-djinn/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/djinn/djinn-djinn/wind-v1.json` |
