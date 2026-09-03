@@ -6,7 +6,7 @@ Wiki ID: `monster.dragon-emperor`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Whelps, Fledglings, Drakes, and an Elder Wyrm each operate one pylon's learned t
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-emperor/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-emperor/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-emperor/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-emperor/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-emperor/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-emperor/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-emperor/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-emperor/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-emperor/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-emperor/wind-v1.json` |

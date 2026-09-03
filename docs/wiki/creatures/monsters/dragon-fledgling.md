@@ -6,7 +6,7 @@ Wiki ID: `monster.dragon-fledgling`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Whelps guard the landing claim and may pounce at players leaving it; drawing the
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-fledgling/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-fledgling/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-fledgling/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-fledgling/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-fledgling/wind-v1.json` |
