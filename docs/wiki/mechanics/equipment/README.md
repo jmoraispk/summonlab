@@ -214,6 +214,11 @@ Armour full set, Iron Axe, Blacksteel Heavy Armour full set, Heartwood Staff, an
 These are immutable single-call outcomes, not approval decisions. No full Armour set has been human
 accepted, so all 84 piece images remain locked and absent.
 
+The proposed [material-first full-production plan](../../../superpowers/plans/2026-09-02-equipment-material-first-full-production.md)
+defines the additive successor: material-cohort direction first, dedicated individual renders second,
+cross-material class review third, and Armour pieces only after accepted full-set sources. It keeps
+the 161 candidate-image budget, adds 14 generated concept sheets, and does not activate a new run.
+
 ### Root-production review state
 
 Run `material-equipment-v1-run-001` is activated and its root phase is complete. All 77 root jobs
