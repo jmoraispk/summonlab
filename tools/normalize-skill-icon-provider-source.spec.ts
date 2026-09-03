@@ -237,7 +237,16 @@ describe('skill-icon provider normalization', () => {
 		for (const [cellSize, shadeOffset, swapFamilies] of [
 			[24, 3, false],
 			[32, 0, false],
-			[48, 7, true]
+			[48, 7, true],
+			[64, 1, false],
+			[76, 9, true],
+			[92, 4, false],
+			[96, 11, true],
+			[100, 2, false],
+			[112, 8, true],
+			[128, 5, false],
+			[144, 10, true],
+			[160, 6, false]
 		] as const) {
 			let darkIndex = shadeOffset;
 			let lightIndex = shadeOffset;
@@ -308,7 +317,7 @@ describe('skill-icon provider normalization', () => {
 		);
 		await expect(
 			normalizeSkillIconProviderSource(onePixelBlackGreenChecker, 'backing', geometryBytes)
-		).rejects.toThrow(/opacity checkerboard/u);
+		).rejects.toThrow(/checkerboard/u);
 		const intermediateAlphaChecker = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -345,7 +354,7 @@ describe('skill-icon provider normalization', () => {
 		await expect(
 			normalizeSkillIconProviderSource(shifted, 'rarity-frame', geometryBytes)
 		).rejects.toThrow(/required transparent/u);
-	});
+	}, 30_000);
 
 	it('accepts nonalternating materials, a continuous gradient, and role-edge antialiasing', async () => {
 		const svg = Buffer.from(

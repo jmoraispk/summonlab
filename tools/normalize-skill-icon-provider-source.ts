@@ -264,15 +264,22 @@ function assertNoPeriodicContrastCheckerboard(
 			firstDeltaBlue * secondDeltaBlue;
 		return dot < 0 && dot ** 2 >= firstEnergy * secondEnergy * 0.25;
 	};
-	for (const lag of [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64]) {
+	const minimumDimension = Math.min(width, height);
+	const minimumMacroLag = Math.max(8, Math.ceil(minimumDimension / 160));
+	// Requiring six cells across the source is the deterministic boundary
+	// between a repeated matte pattern and a few intentional large regions.
+	const maximumMacroLag = Math.floor(minimumDimension / 6);
+	const sampleStride = Math.max(2, Math.floor(minimumDimension / 180));
+	for (let lag = minimumMacroLag; lag <= maximumMacroLag; lag += 1) {
 		let horizontalTriplets = 0;
 		let horizontalAlternations = 0;
 		let verticalTriplets = 0;
 		let verticalAlternations = 0;
-		// Four-pixel sampling bounds work while retaining six samples across
-		// the smallest supported macro-checker cell.
-		for (let y = 0; y < height; y += 4) {
-			for (let x = 0; x < width; x += 4) {
+		// The image-derived stride caps the scan near 180 samples per axis while
+		// every integer lag is still evaluated, so arbitrary cell sizes cannot
+		// fall between a fixed list of favored scales.
+		for (let y = 0; y < height; y += sampleStride) {
+			for (let x = 0; x < width; x += sampleStride) {
 				const first = y * width + x;
 				if (roleMask[first] !== 1) continue;
 				if (x + lag * 2 < width) {
