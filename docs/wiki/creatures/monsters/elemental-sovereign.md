@@ -6,7 +6,7 @@ Wiki ID: `monster.elemental-sovereign`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: revision-required (1 prior attempt; active v2 not generated); Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Wisp, Elemental Spirit, Elemental Warden, and Elemental Colossus each govern one
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `revision-required (1 prior attempt; active v2 not generated)` | v2 | `assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/normal/target-v2.json` | `assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-sovereign/normal/assignment-v2.json` | `assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/normal-v2.png` | `assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/normal-v2.json` |
+| Normal | `planned` | `candidate-only` | v2 | `assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/normal/target-v2.json` | `assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-sovereign/normal/assignment-v2.json` | `assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/normal-v2.png` | `assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/normal-v2.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-sovereign/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-sovereign/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-sovereign/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/wind-v1.json` |
