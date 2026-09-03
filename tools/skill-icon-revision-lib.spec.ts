@@ -13,6 +13,7 @@ import {
 	assertSkillIconSupersedingRevision,
 	resolveLatestSkillIconTargets
 } from './skill-icon-revision-lib.js';
+import type { SkillIconReferenceTarget } from './skill-icon-reprocess-consumer-lib.js';
 import { validateSkillIconAssets } from './validate-skill-icon-assets.js';
 
 function target(jobId: string, revision?: number): AnySkillIconTarget {
@@ -93,6 +94,40 @@ function targetV3(revision = 4): AnySkillIconTarget {
 }
 
 describe('skill-icon revision resolution', () => {
+	it('selects one higher reprocess revision and rejects a second reprocess for the identity', () => {
+		const ordinary = {
+			...targetV3(4),
+			jobId: 'rarity-frame-f-v4',
+			logicalIdentity: 'rarity-frame-f',
+			role: 'rarity-frame',
+			rarity: 'F'
+		} as AnySkillIconTarget;
+		const reprocessed = {
+			schemaVersion: 'skill-icon-reprocess-target-v1',
+			jobId: 'rarity-frame-f-v5',
+			logicalIdentity: 'rarity-frame-f',
+			revision: 5,
+			role: 'rarity-frame',
+			rarity: 'F',
+			originAuthority: {
+				result: {
+					path: 'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
+				},
+				providerSourceHash: '9'.repeat(64)
+			}
+		} as unknown as SkillIconReferenceTarget;
+		expect(resolveLatestSkillIconTargets([ordinary, reprocessed])).toEqual([
+			{ target: reprocessed, logicalKey: 'rarity-frame:F', revision: 5 }
+		]);
+		const second = {
+			...reprocessed,
+			jobId: 'rarity-frame-f-v6',
+			revision: 6
+		} as SkillIconReferenceTarget;
+		expect(() => resolveLatestSkillIconTargets([ordinary, reprocessed, second])).toThrow(
+			/more than one reprocess target/iu
+		);
+	});
 	it('selects an explicit higher v2 revision without falling back to v1', () => {
 		const v1 = target('charcoal-forged-stone-v1');
 		const v2 = target('charcoal-forged-stone-v2', 2);
@@ -162,7 +197,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports the eight unattempted v4 references after closing eligible v3 packets', async () => {
+	it('reports seven unattempted v4 references and the terminal F-v4 result', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -177,8 +212,8 @@ describe('skill-icon revision resolution', () => {
 			'references/rarity-frame-c-v4: missing result inventory entry',
 			'references/rarity-frame-d-v4: missing result inventory entry',
 			'references/rarity-frame-e-v4: missing result inventory entry',
-			'references/rarity-frame-f-v4: missing result inventory entry',
-			'references/rarity-frame-s-v4: missing result inventory entry'
+			'references/rarity-frame-s-v4: missing result inventory entry',
+			'rarity-frame:F latest revision v4 is failed (validation: Corrected provider source remained ineligible: deterministic normalization rejected it because the #00FF00 edge matte was not sufficiently clean; retry ceiling exhausted.); create a higher revision'
 		]);
 		expect(diagnostics).toHaveLength(8);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);

@@ -25,7 +25,10 @@ import {
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
-	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+	SkillIconReprocessAssignmentSchema,
+	SkillIconReprocessResultSchema,
+	SkillIconReprocessTargetSchema
 } from '../packages/contracts/src/index.js';
 import {
 	composeSkillHex,
@@ -48,6 +51,7 @@ import {
 	exportSkillIconProduction
 } from './export-skill-icon-production.js';
 import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
+import { validateSkillIconAssets } from './validate-skill-icon-assets.js';
 
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
@@ -470,6 +474,204 @@ async function installReferenceCandidatePacketV2(
 	};
 }
 
+async function installReprocessedReference(
+	root: string,
+	input: {
+		readonly role: 'rarity-frame';
+		readonly rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S';
+		readonly bytes: Buffer;
+	}
+): Promise<CandidatePacket> {
+	const origin = await installReferenceCandidatePacketV2(root, {
+		...input,
+		revision: 3,
+		profile: 'v3'
+	});
+	await unlink(path.join(root, origin.candidatePath));
+	const originResult = JSON.parse(origin.resultBytes.toString('utf8')) as Record<
+		string,
+		unknown
+	> & {
+		normalization: Record<string, unknown>;
+	};
+	const failedOrigin = {
+		...originResult,
+		status: 'failed',
+		output: null,
+		normalization: {
+			...originResult.normalization,
+			outcome: 'failed',
+			decoderInputContentHash: null,
+			containerBox: null,
+			colorSpaceDisposition: null,
+			outputContentHash: null
+		},
+		findings: [
+			{
+				category: 'deterministic-normalization',
+				evaluator: 'automated',
+				outcome: 'fail',
+				observation: 'The ordinary attempt retained provider bytes but no candidate.'
+			}
+		],
+		failureReason: { kind: 'validation', message: 'Ordinary normalization failed.' },
+		writtenOutputPaths: [origin.resultPath]
+	};
+	const originResultBytes = Buffer.from(JSON.stringify(failedOrigin));
+	await writeFile(path.join(root, origin.resultPath), originResultBytes);
+
+	const logicalIdentity = `rarity-frame-${input.rarity.toLowerCase()}`;
+	const jobId = `${logicalIdentity}-v5`;
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
+	const originAuthority = {
+		target: {
+			path: origin.targetPath,
+			contentHash: hash(await readFile(path.join(root, origin.targetPath)))
+		},
+		assignment: {
+			path: origin.assignmentPath,
+			contentHash: hash(await readFile(path.join(root, origin.assignmentPath)))
+		},
+		result: { path: origin.resultPath, contentHash: hash(originResultBytes) },
+		providerSourceHash: 'd'.repeat(64)
+	};
+	const processingAuthority = {
+		profile: 'skill-icon-green-key-role-mask-v3' as const,
+		geometry: {
+			path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+			contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+		},
+		guide: {
+			path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+			contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+			purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE
+		}
+	};
+	const target = SkillIconReprocessTargetSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-target-v1',
+		jobId,
+		logicalIdentity,
+		revision: 5,
+		role: input.role,
+		rarity: input.rarity ?? null,
+		sourceMode: 'reuse-prior-provider-source',
+		originAuthority,
+		processingAuthority,
+		output: { candidatePath, resultPath }
+	});
+	const targetBytes = Buffer.from(JSON.stringify(target));
+	const assignment = SkillIconReprocessAssignmentSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-assignment-v1',
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		logicalIdentity,
+		revision: 5,
+		role: input.role,
+		rarity: input.rarity ?? null,
+		targetPath,
+		targetContentHash: hash(targetBytes),
+		assignmentPath,
+		toolVersion: 'summonlab-skill-icon-reprocess-v1',
+		sourceMode: 'reuse-prior-provider-source',
+		generationAttemptLimit: 0,
+		normalizationTransactionLimit: 1,
+		permittedOutputs: target.output,
+		completionContract: {
+			coordinatorOnly: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	});
+	const assignmentBytes = Buffer.from(JSON.stringify(assignment));
+	const contentHash = hash(input.bytes);
+	const result = SkillIconReprocessResultSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-result-v1',
+		resultId: `result-${jobId}`,
+		jobId,
+		logicalIdentity,
+		revision: 5,
+		role: input.role,
+		rarity: input.rarity ?? null,
+		assignmentId: assignment.assignmentId,
+		targetPath,
+		targetContentHash: hash(targetBytes),
+		assignmentPath,
+		assignmentContentHash: hash(assignmentBytes),
+		status: 'candidate',
+		sourceMode: 'reuse-prior-provider-source',
+		originAuthority,
+		processingAuthority,
+		generationAttemptCount: 0,
+		normalizationTransactionCount: 1,
+		normalization: {
+			profile: processingAuthority.profile,
+			outcome: 'completed',
+			geometryHash: processingAuthority.geometry.contentHash,
+			providerSource: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				bytes: 2_000_000,
+				alphaMode: 'rgb',
+				contentHash: originAuthority.providerSourceHash
+			},
+			sourceContentHash: originAuthority.providerSourceHash,
+			decoderInputContentHash: 'e'.repeat(64),
+			containerBox: { chunkType: 'caBX', bytes: 8, contentHash: 'f'.repeat(64) },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: contentHash
+		},
+		output: {
+			path: candidatePath,
+			mediaType: 'image/png',
+			width: 1024,
+			height: 1024,
+			bytes: input.bytes.byteLength,
+			alphaMode: 'rgba',
+			contentHash
+		},
+		resultPath,
+		inspections: [
+			{ inspection: 'full-size', outcome: 'pass', observation: 'Valid.' },
+			{ inspection: 'recognition-96', outcome: 'pass', observation: 'Legible.' }
+		],
+		startedAt: '2026-09-03T12:00:00.000Z',
+		completedAt: '2026-09-03T12:00:01.000Z',
+		totalWallTimeMs: 1000,
+		writtenOutputPaths: [candidatePath, resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	});
+	const resultBytes = Buffer.from(JSON.stringify(result));
+	for (const [relativePath, value] of [
+		[candidatePath, input.bytes],
+		[targetPath, targetBytes],
+		[assignmentPath, assignmentBytes],
+		[resultPath, resultBytes]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), value);
+	}
+	return {
+		jobId,
+		role: input.role,
+		rarity: input.rarity ?? null,
+		targetId: null,
+		candidatePath,
+		resultPath,
+		targetPath,
+		assignmentPath,
+		bytes: input.bytes,
+		contentHash,
+		resultBytes
+	};
+}
+
 async function installAcceptedReference(
 	root: string,
 	packet: CandidatePacket,
@@ -761,6 +963,82 @@ describe('exportSkillRuntimeSet', () => {
 		await writeFile(geometryPath, Buffer.concat([await readFile(geometryPath), Buffer.from('\n')]));
 		await expect(request()).rejects.toThrow(/geometry hash.*charcoal-forged-stone-v4/iu);
 	}, 30_000);
+
+	it('composes only from the latest reviewed reprocessed frame with live origin authority', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		const packet = await installReprocessedReference(root, {
+			role: 'rarity-frame',
+			rarity: 'F',
+			bytes: await validFrame([82, 88, 96])
+		});
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+		await installAcceptedReference(
+			root,
+			packet,
+			'assets/wiki/skills/icon-production-v1/masters/frames/f.png'
+		);
+		const artPath =
+			'assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-swordsmanship.png';
+		await mkdir(path.dirname(path.join(root, artPath)), { recursive: true });
+		await writeFile(path.join(root, artPath), await validArt('#22c55e'));
+		const request = () =>
+			exportSkillRuntimeSet(
+				{
+					targetId: 'martial:blade:swordsmanship',
+					rarity: 'F',
+					assets: { approvedMaster: { path: artPath } }
+				},
+				root
+			);
+		await expect(request()).rejects.toThrow(
+			/standalone derivative writes are disabled|coordinator transaction/iu
+		);
+		const reprocessTarget = JSON.parse(
+			await readFile(path.join(root, packet.targetPath), 'utf8')
+		) as { originAuthority: { result: { path: string } } };
+		await writeFile(
+			path.join(root, reprocessTarget.originAuthority.result.path),
+			Buffer.from('changed origin result')
+		);
+		await expect(request()).rejects.toThrow(/origin|authority|result|JSON/iu);
+	}, 30_000);
+
+	it('does not publish a reference sheet when the absent reprocess-origin candidate appears', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		const packet = await installReprocessedReference(root, {
+			role: 'rarity-frame',
+			rarity: 'F',
+			bytes: await validFrame([82, 88, 96])
+		});
+		await installAcceptedReference(
+			root,
+			packet,
+			'assets/wiki/skills/icon-production-v1/masters/frames/f.png'
+		);
+		const originCandidate =
+			'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v3.png';
+		let appeared = false;
+		await expect(
+			exportSkillIconRuntime({
+				root,
+				mode: 'write',
+				scope: 'references',
+				testHooks: {
+					afterContactSheetPlanner: async ({ attempt }) => {
+						if (appeared || attempt !== 0) return;
+						appeared = true;
+						await writeFile(path.join(root, originCandidate), await validFrame([90, 90, 90]));
+					}
+				}
+			})
+		).rejects.toThrow(/origin candidate must be absent/iu);
+		expect(appeared).toBe(true);
+		await expect(
+			access(path.join(root, SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	}, 60_000);
 
 	it('fails closed instead of opening a standalone derivative-write race', async () => {
 		const root = await productionFixtureRoot();

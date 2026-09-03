@@ -17,6 +17,7 @@ import {
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SkillIconGeometrySchema,
 	SkillIconGeometryV2Schema,
+	SkillIconReprocessResultSchema,
 	SkillIconRoleSchema,
 	type AnySkillIconGeometry,
 	type SkillIconRole
@@ -26,6 +27,12 @@ import {
 	resolveLatestSkillIconTargets,
 	skillIconScopeForRole
 } from './skill-icon-revision-lib.js';
+import {
+	assertSkillIconReprocessExecutionBytes,
+	isSkillIconReprocessTarget,
+	SkillIconReferenceTargetSchema,
+	type SkillIconReferenceTarget
+} from './skill-icon-reprocess-consumer-lib.js';
 
 export const SKILL_ICON_TRANSPARENT_ALPHA_MAX = 8;
 export const SKILL_ICON_SUBJECT_SAFE_MINIMUM = 0.9;
@@ -471,44 +478,48 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 	for (const key of candidateInventory.keys()) {
 		if (!targetInventory.has(key)) failures.push(`${key}: orphan candidate has no target`);
 	}
-	const allTargets: ReturnType<typeof AnySkillIconTargetSchema.parse>[] = [];
+	const allTargets: SkillIconReferenceTarget[] = [];
 	const executions: {
-		readonly target: ReturnType<typeof AnySkillIconTargetSchema.parse>;
-		readonly result: ReturnType<typeof AnySkillIconResultSchema.parse>;
+		readonly target: SkillIconReferenceTarget;
+		readonly result:
+			| ReturnType<typeof AnySkillIconResultSchema.parse>
+			| ReturnType<typeof SkillIconReprocessResultSchema.parse>;
 	}[] = [];
 	for (const [targetKey, targetPath] of targetInventory) {
-		const target = AnySkillIconTargetSchema.parse(
-			JSON.parse(
-				(await readSafeRepositoryFile(resolvedRoot, targetPath, 'Target')).toString('utf8')
-			)
-		);
+		const targetBytes = await readSafeRepositoryFile(resolvedRoot, targetPath, 'Target');
+		const target = SkillIconReferenceTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
 		allTargets.push(target);
 		let geometry: AnySkillIconGeometry = legacyGeometry;
-		if (target.schemaVersion === 'skill-icon-target-v2') {
+		if (target.schemaVersion === 'skill-icon-target-v2' || isSkillIconReprocessTarget(target)) {
 			try {
-				const geometryPath = path.resolve(resolvedRoot, target.normalization.geometry.path);
+				const normalizationAuthority = isSkillIconReprocessTarget(target)
+					? target.processingAuthority
+					: target.normalization;
+				const geometryPath = path.resolve(resolvedRoot, normalizationAuthority.geometry.path);
 				const geometrySourceBytes =
-					target.normalization.geometry.path ===
+					normalizationAuthority.geometry.path ===
 					'assets/wiki/skills/icon-production-v1/geometry.json'
 						? legacyGeometrySourceBytes
 						: await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry');
 				const geometryHash =
-					target.normalization.geometry.path ===
+					normalizationAuthority.geometry.path ===
 					'assets/wiki/skills/icon-production-v1/geometry.json'
 						? legacyGeometryHash
 						: createHash('sha256').update(geometrySourceBytes).digest('hex');
-				if (target.normalization.geometry.contentHash !== geometryHash)
+				if (normalizationAuthority.geometry.contentHash !== geometryHash)
 					throw new Error('current raw geometry authority hash does not match target');
 				geometry =
-					target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+					normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3'
 						? SkillIconGeometryV2Schema.parse(JSON.parse(geometrySourceBytes.toString('utf8')))
 						: SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
 				{
 					const expectedGuidePath =
-						target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+						normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3'
 							? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
 							: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
-					const guide = target.references.find((reference) => reference.path === expectedGuidePath);
+					const guide = isSkillIconReprocessTarget(target)
+						? target.processingAuthority.guide
+						: target.references.find((reference) => reference.path === expectedGuidePath);
 					if (!guide) throw new Error('target lacks its profile geometry-guide authority');
 					const guideBytes = await readSafeRepositoryFile(
 						resolvedRoot,
@@ -541,30 +552,70 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			resolvedRoot,
 			`assets/wiki/skills/icon-production-v1/results/${scope}/${target.jobId}.json`
 		);
-		let assignment: ReturnType<typeof AnySkillIconAssignmentSchema.parse>;
-		let result: ReturnType<typeof AnySkillIconResultSchema.parse>;
+		let result:
+			| ReturnType<typeof AnySkillIconResultSchema.parse>
+			| ReturnType<typeof SkillIconReprocessResultSchema.parse>;
 		try {
-			assignment = AnySkillIconAssignmentSchema.parse(
-				JSON.parse(
-					(await readSafeRepositoryFile(resolvedRoot, assignmentPath, 'Assignment')).toString(
-						'utf8'
-					)
-				)
+			const assignmentBytes = await readSafeRepositoryFile(
+				resolvedRoot,
+				assignmentPath,
+				'Assignment'
 			);
-			result = AnySkillIconResultSchema.parse(
-				JSON.parse(
-					(await readSafeRepositoryFile(resolvedRoot, resultPath, 'Result')).toString('utf8')
+			const resultBytes = await readSafeRepositoryFile(resolvedRoot, resultPath, 'Result');
+			if (isSkillIconReprocessTarget(target)) {
+				const originTargetBytes = await readSafeRepositoryFile(
+					resolvedRoot,
+					path.resolve(resolvedRoot, target.originAuthority.target.path),
+					'Reprocess origin target'
+				);
+				const originAssignmentBytes = await readSafeRepositoryFile(
+					resolvedRoot,
+					path.resolve(resolvedRoot, target.originAuthority.assignment.path),
+					'Reprocess origin assignment'
+				);
+				const originResultBytes = await readSafeRepositoryFile(
+					resolvedRoot,
+					path.resolve(resolvedRoot, target.originAuthority.result.path),
+					'Reprocess origin result'
+				);
+				const originTarget = AnySkillIconTargetSchema.parse(
+					JSON.parse(originTargetBytes.toString('utf8'))
+				);
+				const originCandidatePresent = await lstat(
+					path.resolve(resolvedRoot, originTarget.output.candidatePath)
 				)
-			);
-			AnySkillIconExecutionSchema.parse({
-				schemaVersion:
-					target.schemaVersion === 'skill-icon-target-v2'
-						? 'skill-icon-execution-v2'
-						: 'skill-icon-execution-v1',
-				target,
-				assignment,
-				result
-			});
+					.then(() => true)
+					.catch((error: NodeJS.ErrnoException) => {
+						if (error.code === 'ENOENT') return false;
+						throw error;
+					});
+				result = assertSkillIconReprocessExecutionBytes({
+					targetPath: path.relative(resolvedRoot, targetPath),
+					targetBytes,
+					assignmentPath: path.relative(resolvedRoot, assignmentPath),
+					assignmentBytes,
+					resultPath: path.relative(resolvedRoot, resultPath),
+					resultBytes,
+					originTargetBytes,
+					originAssignmentBytes,
+					originResultBytes,
+					originCandidatePresent
+				}).result;
+			} else {
+				const assignment = AnySkillIconAssignmentSchema.parse(
+					JSON.parse(assignmentBytes.toString('utf8'))
+				);
+				result = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+				AnySkillIconExecutionSchema.parse({
+					schemaVersion:
+						target.schemaVersion === 'skill-icon-target-v2'
+							? 'skill-icon-execution-v2'
+							: 'skill-icon-execution-v1',
+					target,
+					assignment,
+					result
+				});
+			}
 		} catch (error) {
 			failures.push(
 				`${target.jobId}: invalid assignment/result evidence: ${
@@ -579,6 +630,10 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			throw error;
 		});
 		if (result.status === 'superseded') {
+			if (isSkillIconReprocessTarget(target)) {
+				failures.push(`${target.jobId}: reprocess results cannot be superseded`);
+				continue;
+			}
 			if (metadata) failures.push(`${target.jobId}: superseded result cannot retain a candidate`);
 			try {
 				const authority = result.supersedingAuthority;
@@ -675,7 +730,9 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			)
 		)
 			failures.push(`${target.jobId}: result metadata does not bind the retained candidate bytes`);
-		if (inspection.width !== target.canvas.width || inspection.height !== target.canvas.height) {
+		const expectedWidth = isSkillIconReprocessTarget(target) ? 1024 : target.canvas.width;
+		const expectedHeight = isSkillIconReprocessTarget(target) ? 1024 : target.canvas.height;
+		if (inspection.width !== expectedWidth || inspection.height !== expectedHeight) {
 			failures.push(`${target.output.candidatePath}: dimensions do not match target canvas`);
 		}
 		for (const violation of inspection.violations)

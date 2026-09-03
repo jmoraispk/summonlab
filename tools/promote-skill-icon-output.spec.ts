@@ -28,7 +28,10 @@ import {
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
-	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+	SkillIconReprocessAssignmentSchema,
+	SkillIconReprocessResultSchema,
+	SkillIconReprocessTargetSchema
 } from '../packages/contracts/src/index.js';
 
 import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
@@ -134,6 +137,43 @@ async function framePng(): Promise<Buffer> {
 				})()
 					? 255
 					: 0;
+		}
+	}
+	return sharp(pixels, { raw: { width: 1024, height: 1024, channels: 4 } })
+		.png()
+		.toBuffer();
+}
+
+async function frameV2Png(): Promise<Buffer> {
+	const outer = [
+		[512, 48],
+		[908, 288],
+		[908, 736],
+		[512, 976],
+		[116, 736],
+		[116, 288]
+	] as const;
+	const inner = aperturePoints.map(
+		([x, y]) => [512 + (x - 512) * 0.78, 512 + (y - 512) * 0.78] as const
+	);
+	const inside = (x: number, y: number, points: readonly (readonly [number, number])[]) => {
+		let value = false;
+		for (let index = 0, previous = points.length - 1; index < points.length; previous = index++) {
+			const [xi, yi] = points[index]!;
+			const [xj, yj] = points[previous]!;
+			if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) value = !value;
+		}
+		return value;
+	};
+	const pixels = Buffer.alloc(1024 * 1024 * 4);
+	for (let y = 0; y < 1024; y += 1) {
+		for (let x = 0; x < 1024; x += 1) {
+			const offset = (y * 1024 + x) * 4;
+			pixels[offset] = 72;
+			pixels[offset + 1] = 78;
+			pixels[offset + 2] = 92;
+			pixels[offset + 3] =
+				inside(x + 0.5, y + 0.5, outer) && !inside(x + 0.5, y + 0.5, inner) ? 255 : 0;
 		}
 	}
 	return sharp(pixels, { raw: { width: 1024, height: 1024, channels: 4 } })
@@ -424,6 +464,302 @@ async function fixture(
 		await writeFile(path.join(root, relativePath), value);
 	}
 	return { root, reviewPath, candidatePath, resultPath, hash };
+}
+
+async function reprocessPromotionFixture() {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-reprocess-promote-'));
+	roots.push(root);
+	for (const relativePath of [
+		SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+		SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+		'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json',
+		'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json',
+		'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
+	]) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await copyFile(path.resolve(relativePath), path.join(root, relativePath));
+	}
+	const jobId = 'rarity-frame-f-v5';
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/references/${jobId}.json`;
+	const originPaths = {
+		target: 'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json',
+		assignment:
+			'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json',
+		result: 'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
+	};
+	const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
+	const [originTargetBytes, originAssignmentBytes, originResultBytes] = await Promise.all(
+		Object.values(originPaths).map((relativePath) => readFile(path.join(root, relativePath)))
+	);
+	const providerSourceHash = (
+		JSON.parse(originResultBytes.toString('utf8')) as {
+			normalization: { providerSource: { contentHash: string } };
+		}
+	).normalization.providerSource.contentHash;
+	const originAuthority = {
+		target: { path: originPaths.target, contentHash: hash(originTargetBytes) },
+		assignment: { path: originPaths.assignment, contentHash: hash(originAssignmentBytes) },
+		result: { path: originPaths.result, contentHash: hash(originResultBytes) },
+		providerSourceHash
+	};
+	const processingAuthority = {
+		profile: 'skill-icon-green-key-role-mask-v3' as const,
+		geometry: {
+			path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+			contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+		},
+		guide: {
+			path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+			contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+			purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE
+		}
+	};
+	const target = SkillIconReprocessTargetSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-target-v1',
+		jobId,
+		logicalIdentity: 'rarity-frame-f',
+		revision: 5,
+		role: 'rarity-frame',
+		rarity: 'F',
+		sourceMode: 'reuse-prior-provider-source',
+		originAuthority,
+		processingAuthority,
+		output: { candidatePath, resultPath }
+	});
+	const targetBytes = Buffer.from(JSON.stringify(target));
+	const assignment = SkillIconReprocessAssignmentSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-assignment-v1',
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		logicalIdentity: target.logicalIdentity,
+		revision: target.revision,
+		role: target.role,
+		rarity: target.rarity,
+		targetPath,
+		targetContentHash: hash(targetBytes),
+		assignmentPath,
+		toolVersion: 'summonlab-skill-icon-reprocess-v1',
+		sourceMode: target.sourceMode,
+		generationAttemptLimit: 0,
+		normalizationTransactionLimit: 1,
+		permittedOutputs: target.output,
+		completionContract: {
+			coordinatorOnly: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	});
+	const assignmentBytes = Buffer.from(JSON.stringify(assignment));
+	const candidate = await frameV2Png();
+	const candidateHash = hash(candidate);
+	const result = SkillIconReprocessResultSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-result-v1',
+		resultId: `result-${jobId}`,
+		jobId,
+		logicalIdentity: target.logicalIdentity,
+		revision: target.revision,
+		role: target.role,
+		rarity: target.rarity,
+		assignmentId: assignment.assignmentId,
+		targetPath,
+		targetContentHash: hash(targetBytes),
+		assignmentPath,
+		assignmentContentHash: hash(assignmentBytes),
+		status: 'candidate',
+		sourceMode: target.sourceMode,
+		originAuthority,
+		processingAuthority,
+		generationAttemptCount: 0,
+		normalizationTransactionCount: 1,
+		normalization: {
+			profile: processingAuthority.profile,
+			outcome: 'completed',
+			geometryHash: processingAuthority.geometry.contentHash,
+			providerSource: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				bytes: 1_452_253,
+				alphaMode: 'rgb',
+				contentHash: providerSourceHash
+			},
+			sourceContentHash: providerSourceHash,
+			decoderInputContentHash: 'a'.repeat(64),
+			containerBox: { chunkType: 'caBX', bytes: 8, contentHash: 'b'.repeat(64) },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: candidateHash
+		},
+		output: {
+			path: candidatePath,
+			mediaType: 'image/png',
+			width: 1024,
+			height: 1024,
+			bytes: candidate.byteLength,
+			alphaMode: 'rgba',
+			contentHash: candidateHash
+		},
+		resultPath,
+		inspections: [
+			{ inspection: 'full-size', outcome: 'pass', observation: 'Valid.' },
+			{ inspection: 'recognition-96', outcome: 'pass', observation: 'Legible.' }
+		],
+		startedAt: '2026-09-03T12:00:00.000Z',
+		completedAt: '2026-09-03T12:00:01.000Z',
+		totalWallTimeMs: 1000,
+		writtenOutputPaths: [candidatePath, resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	});
+	const review = {
+		schemaVersion: 'skill-icon-review-v1',
+		reviewId: `review-${jobId}`,
+		jobId,
+		role: 'rarity-frame',
+		skillTargetId: null,
+		candidatePath,
+		candidateHash,
+		reviewer: 'Skills visual owner',
+		reviewerRole: 'owner',
+		decision: 'accepted',
+		rationale: 'Accepted reprocessed frame.',
+		findings: [{ criterion: 'geometry', outcome: 'pass', observation: 'Valid.' }],
+		reviewedAt: '2026-09-03T12:01:00.000Z'
+	};
+	for (const [relativePath, bytes] of [
+		[targetPath, targetBytes],
+		[assignmentPath, assignmentBytes],
+		[resultPath, Buffer.from(JSON.stringify(result))],
+		[candidatePath, candidate],
+		[reviewPath, Buffer.from(JSON.stringify(review))]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), bytes);
+	}
+	return { root, jobId, reviewPath, originResultPath: originPaths.result, candidateHash };
+}
+
+async function installOrdinaryFrameV6(root: string) {
+	const jobId = 'rarity-frame-f-v6';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/references/${jobId}.json`;
+	const originalTarget = JSON.parse(
+		await readFile(
+			'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v4.json',
+			'utf8'
+		)
+	) as Record<string, unknown> & { output: Record<string, unknown> };
+	const target = {
+		...originalTarget,
+		jobId,
+		revision: 6,
+		output: { candidatePath, resultPath }
+	};
+	const originalAssignment = JSON.parse(
+		await readFile(
+			'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v4.json',
+			'utf8'
+		)
+	) as Record<string, unknown> & { permittedOutputs: Record<string, unknown> };
+	const assignment = {
+		...originalAssignment,
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		revision: 6,
+		targetPath,
+		assignmentPath,
+		permittedOutputs: { candidatePath, resultPath }
+	};
+	const candidate = await frameV2Png();
+	const candidateHash = createHash('sha256').update(candidate).digest('hex');
+	const originalResult = JSON.parse(
+		await readFile(
+			'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v4.json',
+			'utf8'
+		)
+	) as Record<string, unknown> & {
+		normalization: Record<string, unknown> & { providerSource: Record<string, unknown> };
+	};
+	const result = {
+		...originalResult,
+		resultId: `result-${jobId}`,
+		jobId,
+		revision: 6,
+		assignmentId: assignment.assignmentId,
+		status: 'candidate',
+		normalization: {
+			...originalResult.normalization,
+			outcome: 'completed',
+			decoderInputContentHash: 'c'.repeat(64),
+			containerBox: { chunkType: 'caBX', bytes: 8, contentHash: 'd'.repeat(64) },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: candidateHash
+		},
+		output: {
+			path: candidatePath,
+			mediaType: 'image/png',
+			width: 1024,
+			height: 1024,
+			bytes: candidate.byteLength,
+			alphaMode: 'rgba',
+			contentHash: candidateHash
+		},
+		resultPath,
+		findings: [
+			{ category: 'geometry', evaluator: 'automated', outcome: 'pass', observation: 'Valid.' },
+			{
+				category: 'deterministic-normalization',
+				evaluator: 'automated',
+				outcome: 'pass',
+				observation: 'Normalized.'
+			},
+			{
+				category: 'manifest-fidelity',
+				evaluator: 'producer',
+				outcome: 'pass',
+				observation: 'Matched.'
+			}
+		],
+		failureReason: undefined,
+		startedAt: '2026-09-03T13:00:00.000Z',
+		completedAt: '2026-09-03T13:00:01.000Z',
+		totalWallTimeMs: 1000,
+		writtenOutputPaths: [candidatePath, resultPath]
+	};
+	delete (result as { failureReason?: unknown }).failureReason;
+	const review = {
+		schemaVersion: 'skill-icon-review-v1',
+		reviewId: `review-${jobId}`,
+		jobId,
+		role: 'rarity-frame',
+		skillTargetId: null,
+		candidatePath,
+		candidateHash,
+		reviewer: 'Skills visual owner',
+		reviewerRole: 'owner',
+		decision: 'accepted',
+		rationale: 'Accepted later generated frame.',
+		findings: [{ criterion: 'geometry', outcome: 'pass', observation: 'Valid.' }],
+		reviewedAt: '2026-09-03T13:01:00.000Z'
+	};
+	for (const [relativePath, bytes] of [
+		[targetPath, Buffer.from(JSON.stringify(target))],
+		[assignmentPath, Buffer.from(JSON.stringify(assignment))],
+		[resultPath, Buffer.from(JSON.stringify(result))],
+		[candidatePath, candidate],
+		[reviewPath, Buffer.from(JSON.stringify(review))]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), bytes);
+	}
+	return { jobId, reviewPath };
 }
 
 async function installBackingV2Packet(
@@ -810,6 +1146,91 @@ describe('promoteSkillIconOutput', () => {
 				root: item.root
 			})
 		).rejects.toThrow(/exist|collision/iu);
+	});
+
+	it('promotes an owner-reviewed reprocessed frame only while its live origin remains exact', async () => {
+		const item = await reprocessPromotionFixture();
+		const record = await promoteSkillIconOutput({
+			jobId: item.jobId,
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			jobId: item.jobId,
+			role: 'rarity-frame',
+			candidate: { contentHash: item.candidateHash },
+			approvedMaster: {
+				path: 'assets/wiki/skills/icon-production-v1/masters/frames/f.png',
+				contentHash: item.candidateHash
+			}
+		});
+
+		const tampered = await reprocessPromotionFixture();
+		await writeFile(path.join(tampered.root, tampered.originResultPath), 'changed');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: tampered.jobId,
+				reviewPath: tampered.reviewPath,
+				root: tampered.root
+			})
+		).rejects.toThrow(/origin|authority|JSON/iu);
+	});
+
+	it('rolls back when a reprocess-origin candidate appears at the promotion write boundary', async () => {
+		const item = await reprocessPromotionFixture();
+		const originCandidate =
+			'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v3.png';
+		await expect(
+			promoteSkillIconOutput({
+				jobId: item.jobId,
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					beforeMasterWrite: async () => {
+						await mkdir(path.dirname(path.join(item.root, originCandidate)), { recursive: true });
+						await writeFile(path.join(item.root, originCandidate), await frameV2Png());
+					}
+				}
+			})
+		).rejects.toThrow(/origin candidate appeared/iu);
+		await expect(
+			access(path.join(item.root, 'assets/wiki/skills/icon-production-v1/masters/frames/f.png'))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			access(path.join(item.root, `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${item.jobId}.json`))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('protects a prior reprocessed master origin while replacing it with a later revision', async () => {
+		const item = await reprocessPromotionFixture();
+		await promoteSkillIconOutput({
+			jobId: item.jobId,
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		const later = await installOrdinaryFrameV6(item.root);
+		const masterPath = 'assets/wiki/skills/icon-production-v1/masters/frames/f.png';
+		const before = await readFile(path.join(item.root, masterPath));
+		const originCandidate =
+			'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v3.png';
+		await expect(
+			promoteSkillIconOutput({
+				jobId: later.jobId,
+				reviewPath: later.reviewPath,
+				root: item.root,
+				testHooks: {
+					beforeMasterWrite: async () => {
+						await writeFile(path.join(item.root, originCandidate), await frameV2Png());
+					}
+				}
+			})
+		).rejects.toThrow(
+			/prior reprocess origin candidate appeared|durable recovery state retained/iu
+		);
+		expect(await readFile(path.join(item.root, masterPath))).toEqual(before);
+		await expect(
+			access(path.join(item.root, `${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/${later.jobId}.json`))
+		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
 	it('promotes a latest target with a fully bound v2 target, assignment, and result', async () => {

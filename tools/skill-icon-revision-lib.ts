@@ -1,20 +1,26 @@
 import { type AnySkillIconTarget, type SkillIconRole } from '../packages/contracts/src/index.js';
 
+import type { SkillIconReferenceTarget } from './skill-icon-reprocess-consumer-lib.js';
+
 export interface SkillIconTargetRevision {
-	readonly target: AnySkillIconTarget;
+	readonly target: SkillIconReferenceTarget;
 	readonly logicalKey: string;
 	readonly revision: number;
 }
 
-export function skillIconLogicalKey(target: AnySkillIconTarget): string {
+export function skillIconLogicalKey(target: SkillIconReferenceTarget): string {
 	if (target.role === 'rarity-frame') return `rarity-frame:${target.rarity}`;
 	if (target.role === 'backing') return 'backing';
 	if (target.role === 'calibration-plate') return `calibration:${target.motifFamily}`;
 	return `skill-art:${target.skillTargetId}`;
 }
 
-export function skillIconRevision(target: AnySkillIconTarget): number {
-	if (target.schemaVersion === 'skill-icon-target-v2') return target.revision;
+export function skillIconRevision(target: SkillIconReferenceTarget): number {
+	if (
+		target.schemaVersion === 'skill-icon-target-v2' ||
+		target.schemaVersion === 'skill-icon-reprocess-target-v1'
+	)
+		return target.revision;
 	const match = /-v([1-9][0-9]*)$/u.exec(target.jobId);
 	if (!match) throw new Error(`Skill-icon job lacks a positive revision: ${target.jobId}`);
 	const revision = Number(match[1]);
@@ -53,12 +59,32 @@ export function assertSkillIconSupersedingRevision(
 }
 
 export function resolveLatestSkillIconTargets(
-	targets: readonly AnySkillIconTarget[]
+	targets: readonly SkillIconReferenceTarget[]
 ): readonly SkillIconTargetRevision[] {
 	const identities = new Set<string>();
+	const reprocessed = new Set<string>();
+	const reprocessedOrigins = new Set<string>();
+	const reprocessedSources = new Set<string>();
 	const latest = new Map<string, SkillIconTargetRevision>();
 	for (const target of targets) {
 		const logicalKey = skillIconLogicalKey(target);
+		if (target.schemaVersion === 'skill-icon-reprocess-target-v1') {
+			if (reprocessed.has(logicalKey))
+				throw new Error(
+					`Skill-icon logical identity ${logicalKey} has more than one reprocess target`
+				);
+			reprocessed.add(logicalKey);
+			if (reprocessedOrigins.has(target.originAuthority.result.path))
+				throw new Error(
+					`Skill-icon reprocess origin ${target.originAuthority.result.path} is consumed more than once`
+				);
+			if (reprocessedSources.has(target.originAuthority.providerSourceHash))
+				throw new Error(
+					`Skill-icon provider source ${target.originAuthority.providerSourceHash} is reprocessed more than once`
+				);
+			reprocessedOrigins.add(target.originAuthority.result.path);
+			reprocessedSources.add(target.originAuthority.providerSourceHash);
+		}
 		const revision = skillIconRevision(target);
 		const identity = `${logicalKey}\u0000${revision}`;
 		if (identities.has(identity))

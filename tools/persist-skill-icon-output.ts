@@ -1,6 +1,16 @@
 import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { constants } from 'node:fs';
-import { link, lstat, mkdir, open, readFile, readdir, realpath, unlink } from 'node:fs/promises';
+import {
+	link,
+	lstat,
+	mkdir,
+	open,
+	readFile,
+	readdir,
+	realpath,
+	rename,
+	unlink
+} from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -21,6 +31,10 @@ import {
 	SkillIconRoleSchema,
 	SkillIconResultSchema,
 	SkillIconResultV2Schema,
+	SkillIconReprocessAssignmentSchema,
+	SkillIconReprocessExecutionSchema,
+	SkillIconReprocessResultSchema,
+	SkillIconReprocessTargetSchema,
 	SkillIconTargetV2Schema,
 	SkillIconTargetPathSchema,
 	type AnySkillIconAssignment,
@@ -659,6 +673,113 @@ async function readSafePacket(
 	return (await readSafePacketSnapshot(root, relativePath, description)).bytes;
 }
 
+const REPROCESS_TARGET_INVENTORY_PATH =
+	'assets/wiki/skills/icon-production-v1/targets/references' as const;
+
+export async function readSkillIconReprocessTargetInventory(
+	rootInput = process.cwd()
+): Promise<SkillIconReprocessTargetInventory> {
+	const root = path.resolve(rootInput);
+	const directoryPath = path.resolve(root, REPROCESS_TARGET_INVENTORY_PATH);
+	const handle = await open(
+		directoryPath,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ELOOP') throw new Error('Reprocess target inventory cannot be a symlink');
+		throw error;
+	});
+	try {
+		const before = await handle.stat({ bigint: true });
+		const realDirectory = await realpath(`/proc/self/fd/${handle.fd}`);
+		const realRoot = await realpath(root);
+		if (!before.isDirectory() || !inside(realRoot, realDirectory))
+			throw new Error('Reprocess target inventory escaped repository authority');
+		const names = (await readdir(`/proc/self/fd/${handle.fd}`))
+			.filter((name) => /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$/u.test(name))
+			.sort();
+		const entries: Array<{ path: string; bytes: Buffer; contentHash: string }> = [];
+		for (const name of names) {
+			const relativePath = `${REPROCESS_TARGET_INVENTORY_PATH}/${name}`;
+			const snapshot = await readSafePacketSnapshot(
+				root,
+				relativePath,
+				'Reprocess target inventory'
+			);
+			entries.push({
+				path: relativePath,
+				bytes: snapshot.bytes,
+				contentHash: sha256(snapshot.bytes)
+			});
+		}
+		const after = await handle.stat({ bigint: true });
+		const named = await lstat(directoryPath, { bigint: true });
+		if (
+			before.dev !== after.dev ||
+			before.ino !== after.ino ||
+			before.mtimeNs !== after.mtimeNs ||
+			before.ctimeNs !== after.ctimeNs ||
+			named.isSymbolicLink() ||
+			!named.isDirectory() ||
+			named.dev !== before.dev ||
+			named.ino !== before.ino ||
+			named.mtimeNs !== after.mtimeNs ||
+			named.ctimeNs !== after.ctimeNs ||
+			(await realpath(directoryPath)) !== realDirectory
+		)
+			throw new Error('Reprocess target inventory changed while reading');
+		const contentHash = sha256(
+			Buffer.from(
+				JSON.stringify(entries.map(({ path: entryPath, contentHash: hash }) => [entryPath, hash]))
+			)
+		);
+		return ReprocessTargetInventorySnapshotSchema.extend({
+			entries: z.array(
+				z
+					.object({ path: z.string(), bytes: z.instanceof(Buffer), contentHash: Sha256Schema })
+					.strict()
+			)
+		})
+			.strict()
+			.parse({
+				path: REPROCESS_TARGET_INVENTORY_PATH,
+				contentHash,
+				directory: {
+					realPath: realDirectory,
+					device: after.dev.toString(),
+					inode: after.ino.toString(),
+					mtimeNs: after.mtimeNs.toString(),
+					ctimeNs: after.ctimeNs.toString()
+				},
+				entries
+			});
+	} finally {
+		await handle.close();
+	}
+}
+
+async function assertReprocessTargetInventoryStillBound(
+	root: string,
+	expected: SkillIconReprocessTargetInventorySnapshot
+): Promise<void> {
+	const current = await readSkillIconReprocessTargetInventory(root);
+	if (
+		current.contentHash !== expected.contentHash ||
+		JSON.stringify(current.directory) !== JSON.stringify(expected.directory)
+	)
+		throw new Error('Reprocess target inventory changed during persistence');
+}
+
+export async function readSkillIconReprocessAuthority(
+	rootInput: string,
+	relativePath: string,
+	description: string
+): Promise<{ readonly bytes: Buffer; readonly contentHash: string }> {
+	const pathCheck = PersistenceAuthoritySnapshotSchema.shape.path.safeParse(relativePath);
+	if (!pathCheck.success) throw new Error(`Invalid reprocess authority path: ${relativePath}`);
+	const snapshot = await readSafePacketSnapshot(path.resolve(rootInput), relativePath, description);
+	return { bytes: snapshot.bytes, contentHash: sha256(snapshot.bytes) };
+}
+
 export const SKILL_ICON_PERSISTENCE_TOKEN_PATH =
 	'assets/wiki/skills/icon-production-v1/.persistence-recovery-token.json' as const;
 export const SKILL_ICON_PERSISTENCE_LOCK_PATH =
@@ -748,7 +869,7 @@ const PersistenceSupersessionIntentPlanSchema = z
 	})
 	.strict();
 
-const PersistenceTokenSchema = z
+const PersistenceTokenV1Schema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-persistence-recovery-token-v1'),
 		transactionId: TransactionIdSchema,
@@ -801,6 +922,125 @@ const PersistenceTokenSchema = z
 		}
 	});
 
+const PersistenceAuthoritySnapshotSchema = z
+	.object({
+		path: z
+			.string()
+			.regex(
+				/^assets\/wiki\/skills\/icon-production-v1\/(?:targets|assignments|results)\/references\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$|^assets\/wiki\/skills\/icon-production-v1\/\.reprocess-attempts\/[a-f0-9]{64}\.json$|^assets\/wiki\/skills\/icon-production-v1\/(?:geometry-v2\.json|references\/geometry-guide-v2\.png)$/u
+			),
+		contentHash: Sha256Schema,
+		parent: z
+			.object({
+				realPath: z.string().min(1),
+				device: z.string().regex(/^\d+$/u),
+				inode: z.string().regex(/^\d+$/u)
+			})
+			.strict(),
+		file: z
+			.object({
+				device: z.string().regex(/^\d+$/u),
+				inode: z.string().regex(/^\d+$/u),
+				size: z.string().regex(/^\d+$/u),
+				mtimeNs: z.string().regex(/^\d+$/u),
+				ctimeNs: z.string().regex(/^\d+$/u)
+			})
+			.strict()
+	})
+	.strict();
+
+const ReprocessTargetInventorySnapshotSchema = z
+	.object({
+		path: z.literal('assets/wiki/skills/icon-production-v1/targets/references'),
+		contentHash: Sha256Schema,
+		directory: z
+			.object({
+				realPath: z.string().min(1),
+				device: z.string().regex(/^\d+$/u),
+				inode: z.string().regex(/^\d+$/u),
+				mtimeNs: z.string().regex(/^\d+$/u),
+				ctimeNs: z.string().regex(/^\d+$/u)
+			})
+			.strict()
+	})
+	.strict();
+
+const ReprocessRequiredAbsenceSchema = z
+	.object({
+		path: PersistenceCandidatePathSchema,
+		parent: PersistenceParentSchema
+	})
+	.strict();
+
+export type SkillIconReprocessAbsenceAuthority = z.infer<typeof ReprocessRequiredAbsenceSchema>;
+
+export async function readSkillIconReprocessAbsenceAuthority(
+	rootInput: string,
+	relativePath: string
+): Promise<SkillIconReprocessAbsenceAuthority> {
+	const root = path.resolve(rootInput);
+	const checkedPath = PersistenceCandidatePathSchema.parse(relativePath);
+	const destination = path.resolve(root, checkedPath);
+	const parent = await openHeldPersistenceParent(root, destination);
+	try {
+		await assertHeldParentStillNamed(parent);
+		const metadata = await metadataOrNull(heldChildPath(parent, path.basename(destination)));
+		if (metadata) throw new Error(`Required-absent path exists: ${checkedPath}`);
+		await assertHeldParentStillNamed(parent);
+		return ReprocessRequiredAbsenceSchema.parse({ path: checkedPath, parent: parent.fingerprint });
+	} finally {
+		await parent.handle.close();
+	}
+}
+
+async function assertSkillIconReprocessAbsenceAuthority(
+	root: string,
+	expected: SkillIconReprocessAbsenceAuthority
+): Promise<void> {
+	const current = await readSkillIconReprocessAbsenceAuthority(root, expected.path);
+	if (JSON.stringify(current) !== JSON.stringify(expected))
+		throw new Error(`Required-absent parent authority changed: ${expected.path}`);
+}
+
+const PersistenceReprocessTokenSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-persistence-recovery-token-v2'),
+		authorityKind: z.literal('coordinator-reprocess'),
+		transactionId: TransactionIdSchema,
+		recoveryToken: TransactionIdSchema,
+		pid: z.number().int().positive(),
+		processIdentity: ProcessIdentitySchema.nullable(),
+		createdAt: z.string().datetime({ offset: true }),
+		outputs: z.array(PersistencePlanSchema).min(1).max(2),
+		requiredAbsences: z.tuple([ReprocessRequiredAbsenceSchema]),
+		targetInventory: ReprocessTargetInventorySnapshotSchema,
+		authoritySnapshots: z.array(PersistenceAuthoritySnapshotSchema).min(6).max(32)
+	})
+	.strict()
+	.superRefine((token, context) => {
+		const kinds = token.outputs.map((output) => output.kind).join(',');
+		if (kinds !== 'result' && kinds !== 'candidate,result')
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess outputs must be exactly [result] or [candidate, result]'
+			});
+		if (
+			new Set(token.authoritySnapshots.map((binding) => binding.path)).size !==
+			token.authoritySnapshots.length
+		)
+			context.addIssue({ code: 'custom', message: 'Reprocess authority paths must be unique' });
+		for (const output of token.outputs) {
+			if (
+				path.dirname(output.path) !== path.dirname(output.stagedPath) ||
+				path.basename(output.stagedPath) !==
+					`.${path.basename(output.path)}.skill-icon-tmp-transaction-${token.transactionId}`
+			)
+				context.addIssue({ code: 'custom', message: 'Persistence token staging path mismatch' });
+		}
+	});
+
+const PersistenceTokenSchema = z.union([PersistenceTokenV1Schema, PersistenceReprocessTokenSchema]);
+
 const PersistenceLockSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-persistence-lock-v1'),
@@ -812,7 +1052,7 @@ const PersistenceLockSchema = z
 	})
 	.strict();
 
-export const SkillIconPersistenceJournalSchema = z
+const SkillIconPersistenceJournalV1Schema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-persistence-transaction-v1'),
 		transactionId: TransactionIdSchema,
@@ -843,10 +1083,63 @@ export const SkillIconPersistenceJournalSchema = z
 		}
 	});
 
+export const SkillIconReprocessPersistenceJournalSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-persistence-transaction-v2'),
+		authorityKind: z.literal('coordinator-reprocess'),
+		transactionId: TransactionIdSchema,
+		recoveryTokenHash: Sha256Schema,
+		authorizationTag: Sha256Schema,
+		jobId: z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u),
+		outputs: z.array(PersistenceOutputSchema).min(1).max(2),
+		requiredAbsences: z.tuple([ReprocessRequiredAbsenceSchema]),
+		targetInventory: ReprocessTargetInventorySnapshotSchema,
+		authoritySnapshots: z.array(PersistenceAuthoritySnapshotSchema).min(6).max(32)
+	})
+	.strict()
+	.superRefine((journal, context) => {
+		const kinds = journal.outputs.map((output) => output.kind).join(',');
+		if (kinds !== 'result' && kinds !== 'candidate,result')
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess outputs must be exactly [result] or [candidate, result]'
+			});
+		if (
+			new Set(journal.authoritySnapshots.map((binding) => binding.path)).size !==
+			journal.authoritySnapshots.length
+		)
+			context.addIssue({ code: 'custom', message: 'Reprocess authority paths must be unique' });
+		for (const output of journal.outputs) {
+			const expectedStagePrefix = `.${path.basename(output.path)}.skill-icon-tmp-`;
+			if (
+				path.dirname(output.stagedPath) !== path.dirname(output.path) ||
+				!path.basename(output.stagedPath).startsWith(expectedStagePrefix)
+			)
+				context.addIssue({ code: 'custom', message: `Invalid ${output.kind} staging path` });
+		}
+	});
+
+export const SkillIconPersistenceJournalSchema = z.union([
+	SkillIconPersistenceJournalV1Schema,
+	SkillIconReprocessPersistenceJournalSchema
+]);
+
 type PersistenceJournal = z.infer<typeof SkillIconPersistenceJournalSchema>;
 type PersistenceToken = z.infer<typeof PersistenceTokenSchema>;
 type PersistenceLock = z.infer<typeof PersistenceLockSchema>;
 type ProcessIdentity = z.infer<typeof ProcessIdentitySchema> | null;
+
+function isReprocessPersistenceToken(
+	token: PersistenceToken
+): token is z.infer<typeof PersistenceReprocessTokenSchema> {
+	return token.schemaVersion === 'skill-icon-persistence-recovery-token-v2';
+}
+
+function isReprocessPersistenceJournal(
+	journal: PersistenceJournal
+): journal is z.infer<typeof SkillIconReprocessPersistenceJournalSchema> {
+	return journal.schemaVersion === 'skill-icon-persistence-transaction-v2';
+}
 
 interface PersistenceAuthority {
 	readonly recoveryToken: string;
@@ -860,12 +1153,197 @@ interface PersistenceAuthority {
 	};
 }
 
+interface ReprocessPersistenceAuthority extends Omit<PersistenceAuthority, 'token'> {
+	readonly token: z.infer<typeof PersistenceReprocessTokenSchema>;
+}
+
 interface PersistenceAuthorityTestHooks {
 	readonly afterTokenStageOpen?: () => void | Promise<void>;
 	readonly afterTokenStageComplete?: () => void | Promise<void>;
 	readonly afterTokenInstall?: () => void | Promise<void>;
 	readonly afterLockInstall?: () => void | Promise<void>;
 	readonly afterIntentInstall?: () => void | Promise<void>;
+}
+
+export interface PersistSkillIconReprocessTransactionTestHooks extends PersistenceAuthorityTestHooks {
+	readonly afterAuthorityRead?: () => void | Promise<void>;
+	readonly afterSourceValidation?: () => void | Promise<void>;
+	readonly afterOutputStagesComplete?: () => void | Promise<void>;
+	readonly afterJournalInstall?: () => void | Promise<void>;
+	readonly afterCandidateInstall?: () => void | Promise<void>;
+	readonly afterResultInstall?: () => void | Promise<void>;
+	readonly afterJournalRemoval?: () => void | Promise<void>;
+}
+
+export interface SkillIconReprocessAuthorityInput {
+	readonly path: string;
+	readonly contentHash: string;
+	readonly description: string;
+}
+
+export interface PersistSkillIconReprocessTransactionOptions {
+	readonly root?: string;
+	readonly jobId: string;
+	readonly candidatePath: string;
+	readonly requiredAbsentCandidatePath: string;
+	readonly candidateBytes?: Buffer;
+	readonly resultPath: string;
+	readonly resultBytes: Buffer;
+	readonly authorityInputs: readonly SkillIconReprocessAuthorityInput[];
+	readonly targetInventory: SkillIconReprocessTargetInventorySnapshot;
+	readonly testHooks?: PersistSkillIconReprocessTransactionTestHooks;
+}
+
+export interface SkillIconReprocessTargetInventorySnapshot {
+	readonly path: 'assets/wiki/skills/icon-production-v1/targets/references';
+	readonly contentHash: string;
+	readonly directory: {
+		readonly realPath: string;
+		readonly device: string;
+		readonly inode: string;
+		readonly mtimeNs: string;
+		readonly ctimeNs: string;
+	};
+}
+
+export interface SkillIconReprocessTargetInventory extends SkillIconReprocessTargetInventorySnapshot {
+	readonly entries: readonly {
+		readonly path: string;
+		readonly bytes: Buffer;
+		readonly contentHash: string;
+	}[];
+}
+
+export interface HeldSkillIconReprocessAttemptIntent {
+	readonly path: string;
+	readonly bytes: Buffer;
+	readonly parent: OwnedPersistedFile['parent'];
+	readonly file: OwnedPersistedFile['file'];
+}
+
+export async function acquireSkillIconReprocessAttemptIntent(
+	rootInput: string,
+	providerSourceHash: string,
+	record: object
+): Promise<HeldSkillIconReprocessAttemptIntent> {
+	const root = path.resolve(rootInput);
+	const relativePath = `assets/wiki/skills/icon-production-v1/.reprocess-attempts/${Sha256Schema.parse(providerSourceHash)}.json`;
+	const destination = path.resolve(root, relativePath);
+	const bytes = transactionBytes(record);
+	await ensureSafeParents(root, destination);
+	const parent = await openHeldPersistenceParent(root, destination);
+	let staged: StagedPersistedFile | undefined;
+	try {
+		staged = await stageCompleteSibling(
+			parent,
+			path.basename(destination),
+			bytes,
+			undefined,
+			0o600,
+			`reprocess-attempt-${process.pid}-${randomUUID()}`
+		);
+		const installed = await installStagedNoReplace(parent, destination, staged).catch(
+			(error: NodeJS.ErrnoException) => {
+				if (error.code === 'EEXIST')
+					throw new Error('A reprocess attempt is already reserved for this result');
+				throw error;
+			}
+		);
+		return { path: relativePath, bytes, parent: installed.parent, file: installed.file };
+	} finally {
+		if (staged) await unlinkStagedIfOwned(staged).catch(() => undefined);
+		await parent.handle.close();
+	}
+}
+
+export async function removeSkillIconReprocessAttemptIntent(
+	rootInput: string,
+	intent: HeldSkillIconReprocessAttemptIntent
+): Promise<void> {
+	const root = path.resolve(rootInput);
+	const destination = path.resolve(root, intent.path);
+	const parent = await openHeldPersistenceParent(root, destination);
+	try {
+		await removeOwnedPersistedFileHeld(
+			parent,
+			{ path: destination, parent: intent.parent, file: intent.file },
+			intent.bytes
+		);
+		await parent.handle.sync();
+	} finally {
+		await parent.handle.close();
+	}
+}
+
+export async function replaceSkillIconReprocessAttemptIntent(
+	rootInput: string,
+	intent: HeldSkillIconReprocessAttemptIntent,
+	record: object
+): Promise<HeldSkillIconReprocessAttemptIntent> {
+	const root = path.resolve(rootInput);
+	const destination = path.resolve(root, intent.path);
+	const bytes = transactionBytes(record);
+	const parent = await openHeldPersistenceParent(root, destination);
+	let staged: StagedPersistedFile | undefined;
+	try {
+		if (
+			parent.fingerprint.realPath !== intent.parent.realPath ||
+			parent.fingerprint.device !== intent.parent.device ||
+			parent.fingerprint.inode !== intent.parent.inode
+		)
+			throw new Error('Reprocess attempt parent changed before terminal-plan binding');
+		const currentPath = heldChildPath(parent, path.basename(destination));
+		const current = await lstat(currentPath);
+		if (
+			current.isSymbolicLink() ||
+			!current.isFile() ||
+			current.dev !== intent.file.device ||
+			current.ino !== intent.file.inode
+		)
+			throw new Error('Reprocess attempt reservation changed before terminal-plan binding');
+		const currentBytes = await readFile(currentPath);
+		if (!currentBytes.equals(intent.bytes))
+			throw new Error('Reprocess attempt reservation bytes changed before terminal-plan binding');
+		staged = await stageCompleteSibling(
+			parent,
+			path.basename(destination),
+			bytes,
+			undefined,
+			0o600,
+			`reprocess-terminal-${process.pid}-${randomUUID()}`
+		);
+		await assertHeldParentStillNamed(parent);
+		await rename(staged.accessPath, currentPath);
+		await parent.handle.sync();
+		await assertHeldParentStillNamed(parent);
+		const installed = await lstat(currentPath);
+		if (
+			installed.isSymbolicLink() ||
+			!installed.isFile() ||
+			installed.dev !== staged.file.device ||
+			installed.ino !== staged.file.inode
+		)
+			throw new Error('Terminal reprocess attempt plan installation changed identity');
+		return { path: intent.path, bytes, parent: parent.fingerprint, file: staged.file };
+	} finally {
+		if (staged) await unlinkStagedIfOwned(staged).catch(() => undefined);
+		await parent.handle.close();
+	}
+}
+
+export async function removeExistingSkillIconReprocessAttemptIntent(
+	rootInput: string,
+	relativePath: string,
+	expectedHash: string
+): Promise<void> {
+	const root = path.resolve(rootInput);
+	const pathCheck = PersistenceAuthoritySnapshotSchema.shape.path.safeParse(relativePath);
+	if (!pathCheck.success || !relativePath.includes('/.reprocess-attempts/'))
+		throw new Error(`Invalid reprocess attempt reservation path: ${relativePath}`);
+	const binding = await readAuthorityBinding(root, relativePath, 'Reprocess attempt reservation');
+	if (binding.contentHash !== Sha256Schema.parse(expectedHash))
+		throw new Error('Reprocess attempt reservation changed before cleanup');
+	await removeAuthorityBinding(root, binding);
 }
 
 function sha256(bytes: Buffer): string {
@@ -1082,7 +1560,7 @@ async function acquirePersistenceAuthority(
 			`intent-${transactionId}`
 		);
 	}
-	const token = PersistenceTokenSchema.parse({
+	const token = PersistenceTokenV1Schema.parse({
 		schemaVersion: 'skill-icon-persistence-recovery-token-v1',
 		transactionId,
 		recoveryToken,
@@ -1198,6 +1676,122 @@ async function acquirePersistenceAuthority(
 	}
 }
 
+function persistedAuthoritySnapshot(binding: BoundTargetReference) {
+	return {
+		path: binding.path,
+		contentHash: binding.contentHash,
+		parent: binding.snapshot.parent,
+		file: binding.snapshot.file
+	};
+}
+
+async function acquireReprocessPersistenceAuthority(
+	root: string,
+	plannedOutputs:
+		| readonly [
+				{ readonly kind: 'candidate'; readonly path: string; readonly contentHash: string },
+				{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }
+		  ]
+		| readonly [{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }],
+	authorityBindings: readonly BoundTargetReference[],
+	requiredAbsentCandidatePath: string,
+	targetInventory: SkillIconReprocessTargetInventorySnapshot,
+	testHooks?: PersistenceAuthorityTestHooks
+): Promise<ReprocessPersistenceAuthority> {
+	// Snapshot every caller-owned value before the first await. The public wrapper
+	// already owns its inputs, but this lower-level boundary must be safe on its own.
+	const outputSnapshots = plannedOutputs.map((output) => ({ ...output }));
+	const bindingSnapshots = authorityBindings.map((binding) => ({
+		path: binding.path,
+		contentHash: binding.contentHash,
+		description: binding.description,
+		snapshot: {
+			parent: { ...binding.snapshot.parent },
+			file: { ...binding.snapshot.file }
+		}
+	}));
+	const hookSnapshots = testHooks ? { ...testHooks } : undefined;
+	const inventorySnapshot = ReprocessTargetInventorySnapshotSchema.parse(targetInventory);
+	const transactionId = randomUUID();
+	const recoveryToken = randomUUID();
+	const recoveryTokenHash = sha256(Buffer.from(recoveryToken));
+	const processIdentity = await readProcessIdentity(process.pid);
+	const createdAt = new Date().toISOString();
+	const outputs = outputSnapshots.map((output) => ({
+		...output,
+		stagedPath: `${path.dirname(output.path)}/.${path.basename(output.path)}.skill-icon-tmp-transaction-${transactionId}`
+	}));
+	const authoritySnapshots = bindingSnapshots.map(persistedAuthoritySnapshot);
+	const requiredAbsences = [
+		await readSkillIconReprocessAbsenceAuthority(root, requiredAbsentCandidatePath)
+	] as const;
+	const token = PersistenceReprocessTokenSchema.parse({
+		schemaVersion: 'skill-icon-persistence-recovery-token-v2',
+		authorityKind: 'coordinator-reprocess',
+		transactionId,
+		recoveryToken,
+		pid: process.pid,
+		processIdentity,
+		createdAt,
+		outputs,
+		requiredAbsences,
+		targetInventory: inventorySnapshot,
+		authoritySnapshots
+	});
+	let tokenBinding: BoundTargetReference | undefined;
+	let lockBinding: BoundTargetReference | undefined;
+	try {
+		tokenBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+			transactionBytes(token),
+			0o600,
+			'Persistence recovery token',
+			transactionId,
+			process.pid,
+			hookSnapshots?.afterTokenStageOpen,
+			hookSnapshots?.afterTokenStageComplete
+		);
+		await hookSnapshots?.afterTokenInstall?.();
+		const lock = PersistenceLockSchema.parse({
+			schemaVersion: 'skill-icon-persistence-lock-v1',
+			transactionId,
+			recoveryTokenHash,
+			pid: process.pid,
+			processIdentity,
+			acquiredAt: createdAt
+		});
+		lockBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_LOCK_PATH,
+			transactionBytes(lock),
+			0o600,
+			'Persistence coordinator lock',
+			transactionId,
+			process.pid
+		);
+		await hookSnapshots?.afterLockInstall?.();
+		return { recoveryToken, token, tokenBinding, lock, lockBinding };
+	} catch (error) {
+		const cleanupFailures: unknown[] = [];
+		for (const binding of [lockBinding, tokenBinding]) {
+			if (!binding) continue;
+			try {
+				await removeAuthorityBinding(root, binding);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				'Reprocess persistence authority acquisition failed and cleanup was incomplete',
+				{ cause: error }
+			);
+		throw error;
+	}
+}
+
 async function removeOwnedJournalPath(
 	root: string,
 	output: PersistenceJournal['outputs'][number],
@@ -1267,6 +1861,59 @@ async function rollbackPersistenceJournal(
 	}
 }
 
+async function reprocessJournalHasExactCommittedFinals(
+	root: string,
+	journal: z.infer<typeof SkillIconReprocessPersistenceJournalSchema>
+): Promise<boolean> {
+	for (const output of journal.outputs) {
+		const absolute = path.resolve(root, output.path);
+		const metadata = await metadataOrNull(absolute);
+		if (!metadata) return false;
+		const parent = await persistenceParentFingerprint(absolute);
+		if (
+			parent.realPath !== output.parent.realPath ||
+			parent.device !== output.parent.device ||
+			parent.inode !== output.parent.inode ||
+			metadata.isSymbolicLink() ||
+			!metadata.isFile() ||
+			metadata.dev !== output.file.device ||
+			metadata.ino !== output.file.inode
+		)
+			throw new Error(`Foreign ${output.kind} final path blocks persistence completion`);
+		const bytes = await readSafePacket(root, output.path, `Committed ${output.kind}`);
+		if (sha256(bytes) !== output.contentHash)
+			throw new Error(`Changed ${output.kind} final bytes block persistence completion`);
+	}
+	return true;
+}
+
+async function assertReprocessRecoveryAuthoritiesStillBound(
+	root: string,
+	journal: z.infer<typeof SkillIconReprocessPersistenceJournalSchema>
+): Promise<void> {
+	for (const expected of journal.authoritySnapshots) {
+		const { bytes, ...snapshot } = await readSafePacketSnapshot(
+			root,
+			expected.path,
+			'Reprocess recovery authority'
+		);
+		if (
+			sha256(bytes) !== expected.contentHash ||
+			!sameSafePacketIdentity({ parent: expected.parent, file: expected.file }, snapshot)
+		)
+			throw new Error(`Reprocess recovery authority changed: ${expected.path}`);
+	}
+	await assertReprocessTargetInventoryStillBound(root, journal.targetInventory);
+	await assertSkillIconReprocessAbsenceAuthority(root, journal.requiredAbsences[0]);
+}
+
+async function completeCommittedReprocessJournal(
+	root: string,
+	journal: z.infer<typeof SkillIconReprocessPersistenceJournalSchema>
+): Promise<void> {
+	for (const output of journal.outputs) await removeOwnedJournalPath(root, output, 'staged');
+}
+
 async function tokenIntentExtantPaths(
 	root: string,
 	plan: z.infer<typeof PersistenceSupersessionIntentPlanSchema>
@@ -1299,7 +1946,7 @@ async function tokenIntentExtantPaths(
 }
 
 async function assertTokenIntentBinding(root: string, token: PersistenceToken): Promise<void> {
-	const plan = token.supersessionIntent;
+	const plan = isReprocessPersistenceToken(token) ? undefined : token.supersessionIntent;
 	if (!plan) return;
 	const paths = await tokenIntentExtantPaths(root, plan);
 	const bytes = await readSafePacket(root, paths[0]!, 'Recovery supersession intent');
@@ -1319,7 +1966,7 @@ async function assertTokenIntentBinding(root: string, token: PersistenceToken): 
 }
 
 async function tokenIntentHasAnyName(root: string, token: PersistenceToken): Promise<boolean> {
-	const plan = token.supersessionIntent;
+	const plan = isReprocessPersistenceToken(token) ? undefined : token.supersessionIntent;
 	if (!plan) return false;
 	return Boolean(
 		(await metadataOrNull(path.resolve(root, plan.path))) ||
@@ -1345,7 +1992,7 @@ async function tokenHasExactCommittedResult(
 }
 
 async function removeTokenIntentBinding(root: string, token: PersistenceToken): Promise<void> {
-	const plan = token.supersessionIntent;
+	const plan = isReprocessPersistenceToken(token) ? undefined : token.supersessionIntent;
 	if (!plan) return;
 	const paths = await tokenIntentExtantPaths(root, plan);
 	const parent = await openHeldPersistenceParent(root, path.resolve(root, plan.path));
@@ -1439,7 +2086,7 @@ async function recoverStalePersistence(root: string): Promise<void> {
 		'persistence recovery token'
 	);
 	let committedWithoutIntent = false;
-	if (token.supersessionIntent) {
+	if (!isReprocessPersistenceToken(token) && token.supersessionIntent) {
 		if (await tokenIntentHasAnyName(root, token)) await assertTokenIntentBinding(root, token);
 		else if (!journalMetadata && (await tokenHasExactCommittedResult(root, token)))
 			committedWithoutIntent = true;
@@ -1500,12 +2147,17 @@ async function recoverStalePersistence(root: string): Promise<void> {
 		await readSafePacket(root, journalBinding.path, journalBinding.description),
 		'persistence journal'
 	);
+	if (isReprocessPersistenceToken(token) !== isReprocessPersistenceJournal(journal))
+		throw new Error('Persistence token and journal protocol versions do not match');
 	if (
 		token.transactionId !== journal.transactionId ||
 		journal.recoveryTokenHash !== lock.recoveryTokenHash ||
 		journal.recoveryTokenHash !== sha256(Buffer.from(token.recoveryToken))
 	)
 		throw new Error('Persistence recovery authorities do not describe one transaction');
+	assertJournalAuthorization(journal, token.recoveryToken);
+	if (token.outputs.length !== journal.outputs.length)
+		throw new Error('Persistence token and journal output counts do not match');
 	for (const planned of token.outputs) {
 		const recorded = journal.outputs.find((output) => output.kind === planned.kind);
 		if (
@@ -1516,14 +2168,41 @@ async function recoverStalePersistence(root: string): Promise<void> {
 		)
 			throw new Error('Persistence token and journal output plans do not match');
 	}
-	assertJournalAuthorization(journal, token.recoveryToken);
+	if (isReprocessPersistenceToken(token) && isReprocessPersistenceJournal(journal)) {
+		if (
+			token.authorityKind !== journal.authorityKind ||
+			JSON.stringify(token.requiredAbsences) !== JSON.stringify(journal.requiredAbsences) ||
+			JSON.stringify(token.targetInventory) !== JSON.stringify(journal.targetInventory) ||
+			JSON.stringify(token.authoritySnapshots) !== JSON.stringify(journal.authoritySnapshots)
+		)
+			throw new Error('Reprocess persistence authorities do not match');
+	}
 	if (await coordinatorIsLive(lock))
 		throw new Error('Another live coordinator owns skill-icon persistence');
+	if (isReprocessPersistenceToken(token) && isReprocessPersistenceJournal(journal)) {
+		let authoritiesStillBound = true;
+		try {
+			await assertReprocessRecoveryAuthoritiesStillBound(root, journal);
+		} catch {
+			authoritiesStillBound = false;
+		}
+		if (authoritiesStillBound && (await reprocessJournalHasExactCommittedFinals(root, journal))) {
+			await completeCommittedReprocessJournal(root, journal);
+			await removeAuthorityBinding(root, journalBinding);
+			await removeAuthorityBinding(root, lockBinding);
+			await removeAuthorityBinding(root, tokenBinding);
+			return;
+		}
+	}
 	await rollbackPersistenceJournal(root, journal);
 	await removeTokenIntentBinding(root, token);
 	await removeAuthorityBinding(root, journalBinding);
 	await removeAuthorityBinding(root, lockBinding);
 	await removeAuthorityBinding(root, tokenBinding);
+}
+
+export async function recoverSkillIconPersistence(rootInput = process.cwd()): Promise<void> {
+	await recoverStalePersistence(path.resolve(rootInput));
 }
 
 function assertPacketBinding(
@@ -1966,6 +2645,445 @@ export async function persistSkillIconOutputBound(
 	options: PersistSkillIconOutputBoundOptions
 ): Promise<SkillIconAssetReceipt> {
 	return persistSkillIconOutputBoundWithAuthorities(options, []);
+}
+
+/**
+ * Coordinator-only atomic publication for a provider-source reprocessing packet.
+ * The caller supplies already finalized candidate/result bytes plus every immutable
+ * authority hash. This function snapshots those authorities itself and records the
+ * snapshots in the additive v2 recovery token and journal.
+ */
+export async function persistSkillIconReprocessTransaction(
+	options: PersistSkillIconReprocessTransactionOptions
+): Promise<{ readonly result: { readonly path: string; readonly contentHash: string } }> {
+	const root = path.resolve(options.root ?? process.cwd());
+	const jobId = z
+		.string()
+		.regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u)
+		.parse(options.jobId);
+	const candidatePath = PersistenceCandidatePathSchema.parse(options.candidatePath);
+	const requiredAbsentCandidatePath = PersistenceCandidatePathSchema.parse(
+		options.requiredAbsentCandidatePath
+	);
+	const resultPath = PersistenceResultPathSchema.parse(options.resultPath);
+	const candidateBytes =
+		options.candidateBytes === undefined ? undefined : Buffer.from(options.candidateBytes);
+	const resultBytes = Buffer.from(options.resultBytes);
+	const reprocessResult = SkillIconReprocessResultSchema.parse(
+		JSON.parse(resultBytes.toString('utf8')) as unknown
+	);
+	const testHooks = options.testHooks ? { ...options.testHooks } : undefined;
+	const targetInventory = ReprocessTargetInventorySnapshotSchema.parse({
+		path: options.targetInventory.path,
+		contentHash: options.targetInventory.contentHash,
+		directory: options.targetInventory.directory
+	});
+	const authorityInputs = options.authorityInputs.map((input) => ({
+		path: input.path,
+		contentHash: StateHashSchema.parse(input.contentHash),
+		description: z.string().min(1).max(200).parse(input.description)
+	}));
+	if (
+		reprocessResult.jobId !== jobId ||
+		reprocessResult.resultPath !== resultPath ||
+		reprocessResult.targetPath !==
+			authorityInputs.find(
+				({ path: authorityPath }) => authorityPath === reprocessResult.targetPath
+			)?.path
+	)
+		throw new Error('Reprocess result identity/path does not match persistence authority');
+	const expectedAuthorityHashes = new Map([
+		[reprocessResult.targetPath, reprocessResult.targetContentHash],
+		[reprocessResult.assignmentPath, reprocessResult.assignmentContentHash],
+		[
+			reprocessResult.originAuthority.target.path,
+			reprocessResult.originAuthority.target.contentHash
+		],
+		[
+			reprocessResult.originAuthority.assignment.path,
+			reprocessResult.originAuthority.assignment.contentHash
+		],
+		[
+			reprocessResult.originAuthority.result.path,
+			reprocessResult.originAuthority.result.contentHash
+		],
+		[
+			reprocessResult.processingAuthority.geometry.path,
+			reprocessResult.processingAuthority.geometry.contentHash
+		],
+		[
+			reprocessResult.processingAuthority.guide.path,
+			reprocessResult.processingAuthority.guide.contentHash
+		]
+	]);
+	for (const [authorityPath, contentHash] of expectedAuthorityHashes) {
+		if (
+			authorityInputs.find(({ path: inputPath }) => inputPath === authorityPath)?.contentHash !==
+			contentHash
+		)
+			throw new Error(`Reprocess result authority is not bound for persistence: ${authorityPath}`);
+	}
+	if (reprocessResult.status === 'candidate') {
+		if (
+			!candidateBytes ||
+			reprocessResult.output.path !== candidatePath ||
+			reprocessResult.output.contentHash !== sha256(candidateBytes) ||
+			reprocessResult.output.bytes !== candidateBytes.byteLength ||
+			JSON.stringify(reprocessResult.writtenOutputPaths) !==
+				JSON.stringify([candidatePath, resultPath])
+		)
+			throw new Error('Reprocess candidate bytes do not match result evidence');
+	} else if (
+		candidateBytes ||
+		JSON.stringify(reprocessResult.writtenOutputPaths) !== JSON.stringify([resultPath])
+	)
+		throw new Error('Failed reprocess persistence must publish result only');
+	const authorityClasses = authorityInputs.map(({ path: authorityPath }) =>
+		authorityPath === 'assets/wiki/skills/icon-production-v1/geometry-v2.json'
+			? 'geometry'
+			: authorityPath === 'assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png'
+				? 'guide'
+				: authorityPath.includes('/targets/references/')
+					? 'target'
+					: authorityPath.includes('/assignments/references/')
+						? 'assignment'
+						: authorityPath.includes('/.reprocess-attempts/')
+							? 'attempt'
+							: authorityPath.includes('/results/references/')
+								? 'origin-result'
+								: 'invalid'
+	);
+	const expectedClasses = [
+		'assignment',
+		'assignment',
+		'attempt',
+		'geometry',
+		'guide',
+		'origin-result',
+		'target',
+		'target'
+	];
+	if (JSON.stringify([...authorityClasses].sort()) !== JSON.stringify(expectedClasses))
+		throw new Error('Reprocess persistence requires the exact coordinator authority set');
+	if (new Set(authorityInputs.map((input) => input.path)).size !== authorityInputs.length)
+		throw new Error('Reprocess persistence authority paths must be unique');
+	const candidateDestination = path.resolve(root, candidatePath);
+	const resultDestination = path.resolve(root, resultPath);
+	if (requiredAbsentCandidatePath === candidatePath)
+		throw new Error('Origin and reprocess candidate paths must differ');
+	if (
+		!inside(
+			path.resolve(root, 'assets/wiki/skills/icon-production-v1/candidates'),
+			candidateDestination
+		) ||
+		!inside(path.resolve(root, 'assets/wiki/skills/icon-production-v1/results'), resultDestination)
+	)
+		throw new Error('Reprocess output escaped skill-icon persistence authority');
+
+	await ensureSafeParents(root, candidateDestination);
+	await ensureSafeParents(root, resultDestination);
+	await recoverStalePersistence(root);
+	const authorityBindings: BoundTargetReference[] = [];
+	const authorityBytes = new Map<string, Buffer>();
+	for (const input of authorityInputs) {
+		const pathCheck = PersistenceAuthoritySnapshotSchema.shape.path.safeParse(input.path);
+		if (!pathCheck.success) throw new Error(`Invalid reprocess authority path: ${input.path}`);
+		const snapshot = await readSafePacketSnapshot(root, input.path, input.description);
+		const binding = bindSafePacket(input.path, input.description, snapshot);
+		if (binding.contentHash !== input.contentHash)
+			throw new Error(`${input.description} hash does not match the reprocess grant`);
+		authorityBindings.push(binding);
+		authorityBytes.set(input.path, Buffer.from(snapshot.bytes));
+	}
+	const bytesAt = (authorityPath: string): Buffer => {
+		const bytes = authorityBytes.get(authorityPath);
+		if (!bytes) throw new Error(`Missing reprocess execution bytes: ${authorityPath}`);
+		return bytes;
+	};
+	const currentTarget = SkillIconReprocessTargetSchema.parse(
+		JSON.parse(bytesAt(reprocessResult.targetPath).toString('utf8')) as unknown
+	);
+	const currentAssignment = SkillIconReprocessAssignmentSchema.parse(
+		JSON.parse(bytesAt(reprocessResult.assignmentPath).toString('utf8')) as unknown
+	);
+	const originTarget = SkillIconTargetV2Schema.parse(
+		JSON.parse(bytesAt(reprocessResult.originAuthority.target.path).toString('utf8')) as unknown
+	);
+	const originAssignment = SkillIconAssignmentV2Schema.parse(
+		JSON.parse(bytesAt(reprocessResult.originAuthority.assignment.path).toString('utf8')) as unknown
+	);
+	const originResult = SkillIconResultV2Schema.parse(
+		JSON.parse(bytesAt(reprocessResult.originAuthority.result.path).toString('utf8')) as unknown
+	);
+	SkillIconReprocessExecutionSchema.parse({
+		schemaVersion: 'skill-icon-reprocess-execution-v1',
+		target: currentTarget,
+		assignment: currentAssignment,
+		result: reprocessResult,
+		origin: { target: originTarget, assignment: originAssignment, result: originResult }
+	});
+	const canonicalCurrentTargetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const canonicalCurrentAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	if (
+		reprocessResult.targetPath !== canonicalCurrentTargetPath ||
+		reprocessResult.assignmentPath !== canonicalCurrentAssignmentPath ||
+		currentTarget.output.candidatePath !== candidatePath ||
+		currentTarget.output.resultPath !== resultPath ||
+		requiredAbsentCandidatePath !== originTarget.output.candidatePath
+	)
+		throw new Error('Reprocess persistence paths do not match the bound execution');
+	const attemptBinding = authorityBindings.find(({ path: authorityPath }) =>
+		authorityPath.includes('/.reprocess-attempts/')
+	);
+	if (!attemptBinding)
+		throw new Error('Reprocess persistence is missing its source-keyed attempt reservation');
+	const expectedAttemptPath = `assets/wiki/skills/icon-production-v1/.reprocess-attempts/${reprocessResult.originAuthority.providerSourceHash}.json`;
+	if (attemptBinding.path !== expectedAttemptPath)
+		throw new Error('Reprocess attempt reservation is not keyed by provider-source hash');
+	const attempt = z
+		.object({
+			schemaVersion: z.literal('skill-icon-reprocess-attempt-v1'),
+			jobId: z.string(),
+			targetPath: SkillIconTargetPathSchema,
+			targetContentHash: StateHashSchema,
+			assignmentPath: SkillIconAssignmentPathSchema,
+			assignmentContentHash: StateHashSchema,
+			originAuthority: SkillIconReprocessTargetSchema.shape.originAuthority,
+			processingAuthority: SkillIconReprocessTargetSchema.shape.processingAuthority,
+			providerSourceHash: StateHashSchema,
+			targetInventoryHash: StateHashSchema,
+			terminalPlan: z
+				.object({
+					status: z.enum(['candidate', 'failed']),
+					resultContentHash: StateHashSchema,
+					candidateContentHash: StateHashSchema.nullable()
+				})
+				.strict(),
+			startedAt: z.string().datetime({ offset: true })
+		})
+		.strict()
+		.parse(JSON.parse(bytesAt(attemptBinding.path).toString('utf8')) as unknown);
+	if (
+		attempt.jobId !== jobId ||
+		attempt.targetPath !== reprocessResult.targetPath ||
+		attempt.targetContentHash !== reprocessResult.targetContentHash ||
+		attempt.assignmentPath !== reprocessResult.assignmentPath ||
+		attempt.assignmentContentHash !== reprocessResult.assignmentContentHash ||
+		attempt.providerSourceHash !== reprocessResult.originAuthority.providerSourceHash ||
+		attempt.targetInventoryHash !== targetInventory.contentHash ||
+		attempt.terminalPlan.status !== reprocessResult.status ||
+		attempt.terminalPlan.resultContentHash !== sha256(resultBytes) ||
+		attempt.terminalPlan.candidateContentHash !==
+			(candidateBytes ? sha256(candidateBytes) : null) ||
+		JSON.stringify(attempt.originAuthority) !== JSON.stringify(reprocessResult.originAuthority) ||
+		JSON.stringify(attempt.processingAuthority) !==
+			JSON.stringify(reprocessResult.processingAuthority)
+	)
+		throw new Error('Reprocess attempt reservation does not bind the persisted execution');
+	if (candidateBytes) {
+		const geometry = SkillIconGeometryV2Schema.parse(
+			JSON.parse(
+				bytesAt(reprocessResult.processingAuthority.geometry.path).toString('utf8')
+			) as unknown
+		);
+		const inspection = await inspectSkillIconAsset(candidateBytes, currentTarget.role, geometry);
+		if (inspection.violations.length > 0)
+			throw new Error(
+				`Reprocess candidate failed persistence validation: ${inspection.violations.join('; ')}`
+			);
+	}
+	await testHooks?.afterAuthorityRead?.();
+
+	const plannedOutputs = candidateBytes
+		? ([
+				{ kind: 'candidate' as const, path: candidatePath, contentHash: sha256(candidateBytes) },
+				{ kind: 'result' as const, path: resultPath, contentHash: sha256(resultBytes) }
+			] as const)
+		: ([{ kind: 'result' as const, path: resultPath, contentHash: sha256(resultBytes) }] as const);
+	const authority = await acquireReprocessPersistenceAuthority(
+		root,
+		plannedOutputs,
+		authorityBindings,
+		requiredAbsentCandidatePath,
+		targetInventory,
+		testHooks
+	);
+	const assertRequiredAbsence = async () =>
+		assertSkillIconReprocessAbsenceAuthority(root, authority.token.requiredAbsences[0]);
+	let candidateParent: HeldPersistenceParent | undefined;
+	let resultParent: HeldPersistenceParent | undefined;
+	let stagedCandidate: StagedPersistedFile | undefined;
+	let stagedResult: StagedPersistedFile | undefined;
+	let candidateOwnership: OwnedPersistedFile | undefined;
+	let resultOwnership: OwnedPersistedFile | undefined;
+	let journal: PersistenceJournal | undefined;
+	let journalBinding: BoundTargetReference | undefined;
+	try {
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertReprocessTargetInventoryStillBound(root, targetInventory);
+		await assertRequiredAbsence();
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate output already exists (collision): ${candidatePath}`);
+		if (await metadataOrNull(resultDestination))
+			throw new Error(`Result output already exists (collision): ${resultPath}`);
+		candidateParent = candidateBytes
+			? await openHeldPersistenceParent(root, candidateDestination)
+			: undefined;
+		resultParent = await openHeldPersistenceParent(root, resultDestination);
+		if (candidateBytes && candidateParent)
+			stagedCandidate = await stageCompleteSibling(
+				candidateParent,
+				path.basename(candidateDestination),
+				candidateBytes,
+				undefined,
+				0o644,
+				`transaction-${authority.lock.transactionId}`
+			);
+		stagedResult = await stageCompleteSibling(
+			resultParent,
+			path.basename(resultDestination),
+			resultBytes,
+			undefined,
+			0o644,
+			`transaction-${authority.lock.transactionId}`
+		);
+		await testHooks?.afterOutputStagesComplete?.();
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertReprocessTargetInventoryStillBound(root, targetInventory);
+		await assertRequiredAbsence();
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared during reprocess persistence: ${candidatePath}`);
+		if (await metadataOrNull(resultDestination))
+			throw new Error(`Result appeared during reprocess persistence: ${resultPath}`);
+		const outputs = [
+			...(candidateBytes && candidateParent && stagedCandidate
+				? [
+						{
+							kind: 'candidate' as const,
+							path: candidatePath,
+							stagedPath: path.relative(root, stagedCandidate.path).split(path.sep).join('/'),
+							contentHash: sha256(candidateBytes),
+							parent: candidateParent.fingerprint,
+							file: stagedCandidate.file
+						}
+					]
+				: []),
+			{
+				kind: 'result' as const,
+				path: resultPath,
+				stagedPath: path.relative(root, stagedResult.path).split(path.sep).join('/'),
+				contentHash: sha256(resultBytes),
+				parent: resultParent.fingerprint,
+				file: stagedResult.file
+			}
+		];
+		const unsignedJournal = SkillIconReprocessPersistenceJournalSchema.parse({
+			schemaVersion: 'skill-icon-persistence-transaction-v2',
+			authorityKind: 'coordinator-reprocess',
+			transactionId: authority.lock.transactionId,
+			recoveryTokenHash: authority.lock.recoveryTokenHash,
+			authorizationTag: '0'.repeat(64),
+			jobId,
+			outputs,
+			requiredAbsences: authority.token.requiredAbsences,
+			targetInventory,
+			authoritySnapshots: authorityBindings.map(persistedAuthoritySnapshot)
+		});
+		journal = SkillIconPersistenceJournalSchema.parse(
+			authorizeJournal(unsignedJournal, authority.recoveryToken)
+		);
+		journalBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+			transactionBytes(journal),
+			0o600,
+			'Persistence journal',
+			authority.lock.transactionId,
+			authority.lock.pid
+		);
+		await testHooks?.afterJournalInstall?.();
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertReprocessTargetInventoryStillBound(root, targetInventory);
+		await assertRequiredAbsence();
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared during reprocess persistence: ${candidatePath}`);
+		if (await metadataOrNull(resultDestination))
+			throw new Error(`Result appeared during reprocess persistence: ${resultPath}`);
+		if (candidateBytes && candidateParent && stagedCandidate) {
+			candidateOwnership = await publishStagedNoReplace(
+				candidateParent,
+				candidateDestination,
+				stagedCandidate
+			);
+			await testHooks?.afterCandidateInstall?.();
+			await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Reprocessed candidate');
+		} else if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared during failed reprocess: ${candidatePath}`);
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertReprocessTargetInventoryStillBound(root, targetInventory);
+		await assertRequiredAbsence();
+		resultOwnership = await publishStagedNoReplace(resultParent, resultDestination, stagedResult);
+		await testHooks?.afterResultInstall?.();
+		if (candidateBytes && candidateOwnership)
+			await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Reprocessed candidate');
+		else if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared during failed reprocess: ${candidatePath}`);
+		await assertOwnedPersistedFile(resultOwnership, resultBytes, 'Reprocess result');
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertReprocessTargetInventoryStillBound(root, targetInventory);
+		await assertRequiredAbsence();
+		if (stagedCandidate && candidateParent) {
+			await unlinkStagedIfOwned(stagedCandidate);
+			await candidateParent.handle.sync();
+		}
+		await unlinkStagedIfOwned(stagedResult);
+		await resultParent.handle.sync();
+		await removeAuthorityBinding(root, journalBinding);
+		journalBinding = undefined;
+		await testHooks?.afterJournalRemoval?.();
+		await removeAuthorityBinding(root, authority.lockBinding);
+		await removeAuthorityBinding(root, authority.tokenBinding);
+		return { result: { path: resultPath, contentHash: sha256(resultBytes) } };
+	} catch (error) {
+		const cleanupFailures: unknown[] = [];
+		if (journal && journalBinding) {
+			try {
+				await rollbackPersistenceJournal(root, journal);
+				await removeAuthorityBinding(root, journalBinding);
+				journalBinding = undefined;
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		} else {
+			for (const staged of [stagedCandidate, stagedResult]) {
+				if (!staged) continue;
+				try {
+					await unlinkStagedIfOwned(staged);
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
+			}
+		}
+		if (!journalBinding) {
+			for (const binding of [authority.lockBinding, authority.tokenBinding]) {
+				try {
+					await removeAuthorityBinding(root, binding);
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				'Reprocess persistence failed and rollback was incomplete',
+				{ cause: error }
+			);
+		throw error;
+	} finally {
+		for (const parent of [candidateParent, resultParent])
+			await parent?.handle.close().catch(() => undefined);
+	}
 }
 
 function failedResultTransactionPaths(resultPath: string): readonly [string, string] {

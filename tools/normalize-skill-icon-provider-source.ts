@@ -1016,6 +1016,25 @@ export async function normalizeSkillIconProviderSource(
 	};
 }
 
+/**
+ * Synchronous structural preflight used by the coordinator before it reserves the
+ * sole reprocessing transaction. Pixel decoding remains the normalizer's one pass.
+ */
+export function preflightSkillIconProviderSourceV3(
+	sourceBytes: Buffer
+): SkillIconProviderSourceEvidence {
+	const sourceSnapshot = Buffer.from(sourceBytes);
+	assertCanonicalProviderPngEnvelope(sourceSnapshot, SKILL_ICON_NORMALIZATION_PROFILE_V3);
+	return {
+		mediaType: 'image/png',
+		width: SKILL_ICON_PROVIDER_SIZE,
+		height: SKILL_ICON_PROVIDER_SIZE,
+		bytes: sourceSnapshot.byteLength,
+		alphaMode: 'rgb',
+		contentHash: createHash('sha256').update(sourceSnapshot).digest('hex')
+	};
+}
+
 export async function readSkillIconProviderSourceOnce(
 	sourcePath: string,
 	testHook?: () => void | Promise<void>

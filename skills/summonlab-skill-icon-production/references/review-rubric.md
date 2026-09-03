@@ -15,6 +15,12 @@ required view. A candidate explicitly passes both views and has no concern or fa
 role-inapplicable criteria may remain `not-applicable`. This is informed producer inspection, not
 owner acceptance or blind recognition.
 
+Do not use this producer rubric to execute a coordinator reprocess packet. Reprocess success may
+later enter the same owner visual review as any other retained candidate, but its deterministic
+normalization and provenance checks belong to the coordinator route. Owner rejection is terminal
+for that reprocess route and sends the asset to vector/native or alpha-capable production; it does
+not authorize another reprocess attempt.
+
 ## Shared checks
 
 - **Manifest fidelity:** the immutable prompt's subject, cue, palette, composition, and exclusions

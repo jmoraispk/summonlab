@@ -15,6 +15,19 @@ The accepted tuples are exact:
 Every mixed tuple is invalid. The `icon-production-v1/` path namespace names the asset system and
 does not imply packet-schema v1.
 
+Coordinator-only `skill-icon-reprocess-target-v1` and
+`skill-icon-reprocess-assignment-v1` packets are a separate protocol, not another accepted tuple for
+this production skill. Reject either schema before inspecting references or calling imagegen. The
+target fields are exactly `schemaVersion`, `jobId`, `logicalIdentity`, `revision`, `role`, `rarity`,
+`sourceMode`, `originAuthority`, `processingAuthority`, and `output`; there is no generation prompt
+or generation-reference list. `sourceMode` is `reuse-prior-provider-source`. `originAuthority`
+binds the canonical path and raw SHA-256 of one live ordinary target-v2, assignment-v2, and failed
+result-v2 plus its observed `providerSourceHash`. `processingAuthority` separately binds profile v3,
+geometry v2, and the exact guide-v2 path, purpose, and hash. Reprocess v1 is rarity-frame-only;
+backing and every other role are invalid. The dedicated producer must not reuse the source,
+translate the packet into target-v2/assignment-v2, or claim the historical source was generated
+from a later prompt.
+
 ## Target
 
 Both target versions contain:
@@ -95,6 +108,43 @@ continues to bind `summonlab-skill-icon-production-v1` and authorizes exact-sour
 
 Authorization stops at the two permitted outputs. It never includes catalogs, visual specs,
 reviews, applications, masters, reference authorities, or repository history.
+
+The coordinator assignment uses tool version `summonlab-skill-icon-reprocess-v1`, binds its own
+target path and raw hash, sets `generationAttemptLimit: 0` and
+`normalizationTransactionLimit: 1`, and grants only the new candidate/result paths. It may use only
+an ordinary producer-authored failed result with null output that records the same observed provider
+hash; a superseded or prior reprocess result is not a source authority. If that one transaction
+fails, or if its retained candidate is later rejected by the owner, stop reprocessing and move the
+asset to a deterministic vector/native-frame or alpha-capable production route. Never issue a
+reprocess chain or a second reprocess attempt.
+
+The coordinator—not this skill—runs:
+
+```bash
+pnpm reprocess:skill-icon-provider-source -- \
+  --source /absolute/provider.png \
+  --source-hash EXPECTED_SHA256 \
+  --origin-target ORIGIN_TARGET \
+  --origin-assignment ORIGIN_ASSIGNMENT \
+  --origin-result ORIGIN_RESULT \
+  --target REPROCESS_TARGET \
+  --assignment REPROCESS_ASSIGNMENT \
+  --full-size-outcome pass \
+  --full-size-observation "INFORMED FULL-SIZE OBSERVATION" \
+  --recognition-outcome pass \
+  --recognition-observation "INFORMED 96-PIXEL OBSERVATION"
+```
+
+The four inspection arguments are required coordinator evidence about the deterministic exact-source
+output; they are not producer findings. `pass|fail` values may reject an otherwise technically valid
+output, but they cannot override the repository's automated full-size role validation or the
+technical requirement that the recognition derivative be a decodable 96×96 RGBA PNG. The command
+rejects `--completed-at`; transaction timing is measured internally.
+
+Before normalization, the coordinator durably reserves the assignment's sole transaction. A crash
+or stale reservation never authorizes another normalization call: safe exact recovery terminalizes
+the reservation, and unsafe, malformed, changed, or foreign state blocks with the reservation
+retained for coordinator inspection. This producer must not attempt recovery or cleanup.
 
 ## Preflight behavior
 

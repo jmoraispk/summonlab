@@ -30,6 +30,7 @@ from validate_target import (
     load_json,
     load_json_snapshot,
     read_stable_regular_file_snapshot,
+    reject_reprocess_packet_schemas,
     reassert_stable_regular_file,
     run_asset_inspection,
     run_contract_validation,
@@ -480,6 +481,7 @@ def verify(
     assignment_path: Path | None = None,
     _ignored_changed_paths: set[str] | None = None,
 ) -> dict[str, Any]:
+    reject_reprocess_packet_schemas(target, assignment, result)
     root = workspace.absolute()
     authority_snapshots = []
     target_report = validate(
@@ -1523,6 +1525,7 @@ def main() -> None:
         assignment_path = _path_argument(workspace, args.assignment, "assignment")
         target = load_json(target_path)
         assignment = load_json(assignment_path)
+        reject_reprocess_packet_schemas(target, assignment)
         declared_result_path = absolute_project_path(
             workspace, target["output"]["resultPath"]
         )

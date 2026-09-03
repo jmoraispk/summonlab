@@ -552,6 +552,40 @@ class SkillIconVerifierTests(unittest.TestCase):
                 contract_root=REPOSITORY_ROOT,
             )
 
+    def test_producer_preflight_rejects_every_reprocess_packet_schema(self) -> None:
+        for packet_name, schema_version in (
+            ("target", "skill-icon-reprocess-target-v1"),
+            ("assignment", "skill-icon-reprocess-assignment-v1"),
+        ):
+            with self.subTest(packet=packet_name):
+                retained = getattr(self.packet, packet_name)["schemaVersion"]
+                getattr(self.packet, packet_name)["schemaVersion"] = schema_version
+                with self.assertRaisesRegex(ValueError, "coordinator-only reprocess"):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        allow_existing_outputs=True,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+                getattr(self.packet, packet_name)["schemaVersion"] = retained
+
+    def test_producer_verifier_rejects_reprocess_result_schema(self) -> None:
+        self.packet.result["schemaVersion"] = "skill-icon-reprocess-result-v1"
+        with self.assertRaisesRegex(ValueError, "coordinator-only reprocess"):
+            self.packet.verify()
+
+    def test_producer_rejects_reprocess_execution_namespace(self) -> None:
+        self.packet.target["schemaVersion"] = "skill-icon-reprocess-execution-v1"
+        with self.assertRaisesRegex(ValueError, "coordinator-only reprocess"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
+
     def test_profile_v2_rejects_profile_v1_producer_skill_version(self) -> None:
         self._prepare_v2_result_only_failure()
         target_normalization = self.packet.target["normalization"]

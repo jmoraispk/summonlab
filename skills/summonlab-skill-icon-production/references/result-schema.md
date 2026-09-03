@@ -49,6 +49,32 @@ whose profile and producer skill version form a valid pair. This production skil
 evidence but must never create it; use
 the coordinator's supersession command.
 
+A coordinator reprocess result uses `skill-icon-reprocess-result-v1` and is never a producer result.
+It is rarity-frame-only; backing results are invalid. It repeats its own target and assignment paths
+plus raw hashes, the complete `originAuthority`, and the distinct `processingAuthority`. Both
+`candidate` and `failed` record
+`generationAttemptCount: 0` and `normalizationTransactionCount: 1`; neither contains a prompt or
+generation references. `candidate` carries completed profile-v3 normalization evidence, output
+metadata bound to the retained bytes, and the ordered passing `full-size` and `recognition-96`
+inspections. `failed` carries null output, a result-only write set, a failure reason, and honest
+normalization/inspection evidence. The historical prompt remains bound only through the ordinary
+origin execution. This producer and this verifier reject the reprocess target, assignment, and
+result schemas; only `pnpm reprocess:skill-icon-provider-source` owns their persistence and
+verification.
+
+Those two inspection records come from the coordinator's required informed inspection arguments for
+the deterministic output. They may turn a technically valid output into a failed result, but cannot
+turn one into a candidate when the automated full-size role inspector fails or the generated
+recognition derivative is not a valid 96×96 RGBA PNG. The 96-pixel record is informed recognition
+evidence, not an attempt to run the 1024-pixel role geometry inspector against a resized asset.
+
+The one normalization transaction is reserved before it starts and is never rerun after a crash.
+If normalization and both inspections pass but no-replace candidate publication fails, a truthful
+terminal result may be `failed` with `failureReason.kind: "persistence"`, completed normalization,
+and both inspections still `pass`; do not invent a failed visual inspection. If that result cannot
+be published safely, the coordinator retains the reservation and blocks rather than opening another
+transaction.
+
 Candidate output metadata must equal the retained bytes: versioned path, target media type and
 dimensions, alpha mode, byte count, and lowercase SHA-256. Verification invokes the repository's
 `inspectSkillIconAsset`: individual artwork must satisfy visible-area, safe-zone, exclusion, and

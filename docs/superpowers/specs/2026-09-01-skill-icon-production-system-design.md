@@ -203,10 +203,69 @@ reference. Profiles v1–v3 share the existing pre-clip allowance for a resize/r
 transition no farther than three output pixels from the role-mask boundary. Every profile then
 hard-clips to its exact role mask; in the retained output alpha through 8 is transparent and any
 alpha above 8 outside the mask is invalid. No other spill is permitted. Profile v3 pairs only with
-`summonlab-skill-icon-production-v4`. No target, assignment, result, candidate, or generated image
-using skill v4 exists yet; adding the schemas and authorities does not authorize production.
+`summonlab-skill-icon-production-v4`. Revision-4 frame/backing packets now bind that tuple. The F
+revision-4 canary exhausted its two authorized generation calls and remains an immutable terminal
+failure; no F candidate was retained. The other revision-4 reference slots remain unattempted.
 The guide reference is mandatory authority, not illustrative context, and uses the canonical purpose
 `Provider-space role-mask guide for rarity-frame and backing registration.`.
+
+### Coordinator-only provider-source reprocessing
+
+A failed ordinary rarity-frame producer result may have observed exact provider bytes that fail its
+historical processing authority but pass a later authority without another image-generation call.
+Reusing those bytes is neither a producer retry nor evidence that a later prompt generated them. It
+therefore uses the distinct `skill-icon-reprocess-target-v1`,
+`skill-icon-reprocess-assignment-v1`, and `skill-icon-reprocess-result-v1` schemas and coordinator
+tool version `summonlab-skill-icon-reprocess-v1`. Reprocess v1 is restricted to
+`role: 'rarity-frame'`; backing and every other role are ineligible. The dedicated production skill
+rejects all three schemas.
+
+The reprocess target has no prompt or generation references. With
+`sourceMode: 'reuse-prior-provider-source'`, its `originAuthority` binds the canonical paths and raw
+SHA-256 hashes of one live ordinary target-v2, assignment-v2, and failed result-v2, plus the exact
+observed provider-source hash. The origin must be the same logical identity, role, and rarity; its
+ordinary rarity-frame execution must be valid, `status: 'failed'`, `output: null`, and its pathless
+normalization evidence must record that same source hash. A backing origin, superseded result,
+successful result, earlier reprocess result, or semantic-equivalent rewrite is not valid origin
+authority. The source stays transient and machine-local: it is stable-read through a no-follow
+descriptor and must match the bound hash, but its path and bytes are never copied into repository
+evidence.
+
+`processingAuthority` independently binds profile v3, raw geometry-v2 bytes, and the exact guide-v2
+path, hash, and canonical purpose. The assignment binds its own target path and raw hash, names
+`summonlab-skill-icon-reprocess-v1`, sets `generationAttemptLimit: 0` and
+`normalizationTransactionLimit: 1`, and grants only the new versioned candidate and result paths.
+The result repeats both authorities, records `generationAttemptCount: 0` and
+`normalizationTransactionCount: 1`, and never contains prompt or generation-reference claims. A
+candidate result carries completed profile-v3 normalization provenance, exact output metadata, and
+passing full-size plus 96-pixel inspections. A failed result carries no output and honest
+normalization/failure evidence. Publication uses the coordinator's dedicated reprocess command and
+the repository's crash-safe, no-replace transaction; the generation producer, producer failure
+writer, and producer verifier cannot perform or launder this route.
+
+The command requires informed coordinator `pass|fail` outcomes and observations for the full-size
+output and its 96-pixel recognition view. These records may reject an otherwise technically valid
+output, but cannot override the automated full-size role inspector or the technical validation that
+the recognition derivative is a decodable 96×96 RGBA PNG. The 96-pixel evidence is a recognition
+review, not the strict 1024-pixel role inspector applied to resized geometry.
+
+The coordinator durably and exclusively reserves the sole normalization transaction before calling
+the normalizer. Once reserved, a crash is not permission to normalize again. Exact safe recovery
+terminalizes the reserved attempt; stale, malformed, changed, or foreign reservation state blocks
+for coordinator inspection without a rerun. If normalization and both visual inspections pass but
+candidate/result publication fails, the terminal result may truthfully remain `status: 'failed'`
+with `failureReason.kind: 'persistence'`, completed normalization evidence, and two passing
+inspections—no visual failure is invented. If even that result cannot be published safely, retain
+the reservation fail-closed so the one-transaction limit cannot be bypassed.
+
+Exactly one zero-call reprocess transaction is permitted for an origin source. If deterministic
+normalization fails, stop. If it succeeds, the candidate goes directly to ordinary owner review; an
+owner rejection also stops the route. Neither outcome authorizes a changed tolerance, a new
+reprocess packet sourced from the reprocess result, or another green-key generation loop. Continue
+instead with a deterministic vector/native-frame pipeline or an alpha-capable production route.
+The only immediate route contemplated by reprocess v1 is an F revision-5 packet using the passing F
+revision-3 provider source. It remains future work: this protocol foundation creates no F-v5 packet,
+result, candidate, or provider call.
 
 ### Phase 6 — deterministic assembly and review
 
@@ -282,6 +341,9 @@ The production manifest has one record for each canonical `targetId` and contain
   source hash, normalized output hash, and profile-specific container/color-space disposition;
 - for coordinator-authored superseded results, the exact reason and raw-hash-bound target/assignment
   authority;
+- for coordinator-authored reprocess jobs, distinct raw-hash-bound origin and processing
+  authorities, zero generation attempts, exactly one normalization transaction, and no prompt or
+  generation-reference claim;
 - review state and recognition results.
 
 Canonical skill metadata is imported from the authored Markdown tables rather than duplicated by
@@ -307,6 +369,10 @@ Automated validation rejects:
 - producer-authored or weakly bound superseded evidence, attempted evidence mislabeled as
   superseded, a superseded packet without a valid higher revision, or use of superseded evidence as
   the latest result or fallback;
+- a reprocess packet routed through the dedicated producer, an origin other than an ordinary failed
+  output-free result with matching observed-source evidence, source or repository-authority drift,
+  nonzero generation calls, more or fewer than one normalization transaction, a reprocess chain, or
+  prompt/reference provenance invented for reused bytes;
 
 Human approval requires:
 
@@ -347,9 +413,11 @@ unattempted packet with exact authority-bound superseded evidence; it may not re
 attempted packet. The unique latest revision must complete, while older failures, revisions, and
 superseded closures remain audit history and never provide fallback. Profile v1 and all existing
 revision-2 packets/results remain unchanged. Profile v2, assignment skill v3, revision-3 packets,
-and their results also remain immutable. A future frame/backing revision may use profile v3 only
-with geometry v2, guide v2, and assignment skill v4 after the coordinator explicitly issues that
-complete authority tuple; no such packet or generated asset exists yet.
+and their results also remain immutable. Revision-4 packets now use profile v3 with geometry v2,
+guide v2, and assignment skill v4, and the F revision-4 terminal failure remains immutable. When an
+ordinary failed result preserves a matching observed-source hash, the coordinator may instead issue
+one distinct zero-call reprocess packet; the producer may not execute it, and failure or owner
+rejection permanently routes that asset away from another green-key attempt.
 
 Changing a skill's rarity swaps the frame during composition; it does not regenerate the artwork.
 Changing a skill's mechanics does not invalidate its image unless the dominant visual meaning has

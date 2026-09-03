@@ -15,6 +15,7 @@ import {
 	type SkillIconCatalogCurrency,
 	type SkillIconReadinessEvidence
 } from './report-skill-icon-readiness.js';
+import type { SkillIconReferenceTarget } from './skill-icon-reprocess-consumer-lib.js';
 
 const HASH = 'a'.repeat(64);
 
@@ -355,6 +356,30 @@ describe('skill icon readiness', () => {
 			id: 'rarity-frame-f-v4',
 			targetDeclared: true
 		});
+	});
+
+	it('treats the one allowed reprocess target as the latest canonical frame requirement', () => {
+		const targets: SkillIconReferenceTarget[] = canonicalReferenceTargets();
+		targets.push(referenceTarget('rarity-frame-f-v4', 'rarity-frame', 'F', 4));
+		targets.push({
+			schemaVersion: 'skill-icon-reprocess-target-v1',
+			jobId: 'rarity-frame-f-v5',
+			logicalIdentity: 'rarity-frame-f',
+			revision: 5,
+			role: 'rarity-frame',
+			rarity: 'F',
+			originAuthority: {
+				result: {
+					path: 'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
+				},
+				providerSourceHash: 'b'.repeat(64)
+			}
+		} as unknown as SkillIconReferenceTarget);
+		expect(
+			referenceRequirementsForTargets(targets).find((requirement) =>
+				requirement.path.endsWith('/f.png')
+			)
+		).toMatchObject({ id: 'rarity-frame-f-v5', targetDeclared: true });
 	});
 
 	it('requires explicit owner activation before bulk-active or complete', () => {

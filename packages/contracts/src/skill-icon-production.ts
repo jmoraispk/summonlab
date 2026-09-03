@@ -1432,7 +1432,7 @@ const SkillIconNormalizationEvidenceV2Schema = z.union([
 		.strict()
 ]);
 
-const SkillIconNormalizationEvidenceV3Schema = z.union([
+export const SkillIconNormalizationEvidenceV3Schema = z.union([
 	z
 		.object({
 			profile: SkillIconProviderNormalizationProfileV3Schema,
@@ -1719,6 +1719,372 @@ export const SkillIconResultV2Schema = z.union([
 ]);
 export const AnySkillIconResultSchema = z.union([SkillIconResultSchema, SkillIconResultV2Schema]);
 
+export const SKILL_ICON_REPROCESS_TOOL_VERSION = 'summonlab-skill-icon-reprocess-v1' as const;
+export const SKILL_ICON_REPROCESS_SOURCE_MODE = 'reuse-prior-provider-source' as const;
+
+const SkillIconReprocessBoundFileSchema = <PathSchema extends z.ZodTypeAny>(
+	pathSchema: PathSchema
+) =>
+	z
+		.object({
+			path: pathSchema,
+			contentHash: StateHashSchema
+		})
+		.strict();
+
+export const SkillIconReprocessOriginAuthoritySchema = z
+	.object({
+		target: SkillIconReprocessBoundFileSchema(SkillIconTargetPathSchema),
+		assignment: SkillIconReprocessBoundFileSchema(SkillIconAssignmentPathSchema),
+		result: SkillIconReprocessBoundFileSchema(SkillIconResultPathSchema),
+		providerSourceHash: StateHashSchema
+	})
+	.strict();
+
+export const SkillIconReprocessProcessingAuthoritySchema = z
+	.object({
+		profile: SkillIconProviderNormalizationProfileV3Schema,
+		geometry: z
+			.object({
+				path: z.literal(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH),
+				contentHash: z.literal(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH)
+			})
+			.strict(),
+		guide: z
+			.object({
+				path: z.literal(SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH),
+				contentHash: z.literal(SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH),
+				purpose: z.literal(SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE)
+			})
+			.strict()
+	})
+	.strict();
+
+function refineSkillIconReprocessOriginPaths(
+	value: {
+		readonly logicalIdentity: string;
+		readonly revision: number;
+		readonly originAuthority: z.infer<typeof SkillIconReprocessOriginAuthoritySchema>;
+	},
+	context: z.RefinementCtx
+): void {
+	const originJobIds = [
+		value.originAuthority.target.path,
+		value.originAuthority.assignment.path,
+		value.originAuthority.result.path
+	].map(pathBasenameWithoutExtension);
+	const revisionMatch = new RegExp(`^${value.logicalIdentity}-v([0-9]+)$`, 'u').exec(
+		originJobIds[0] ?? ''
+	);
+	if (
+		new Set(originJobIds).size !== 1 ||
+		revisionMatch === null ||
+		Number(revisionMatch[1]) >= value.revision ||
+		!value.originAuthority.target.path.includes('/targets/references/') ||
+		!value.originAuthority.assignment.path.includes('/assignments/references/') ||
+		!value.originAuthority.result.path.includes('/results/references/')
+	) {
+		context.addIssue({
+			code: 'custom',
+			path: ['originAuthority'],
+			message: 'Reprocess origin paths must bind one strictly older ordinary reference-job identity'
+		});
+	}
+}
+
+const SkillIconReprocessTargetCommonShape = {
+	schemaVersion: z.literal('skill-icon-reprocess-target-v1'),
+	jobId: SlugSchema,
+	logicalIdentity: SlugSchema,
+	revision: z.number().int().min(2),
+	sourceMode: z.literal(SKILL_ICON_REPROCESS_SOURCE_MODE),
+	originAuthority: SkillIconReprocessOriginAuthoritySchema,
+	processingAuthority: SkillIconReprocessProcessingAuthoritySchema,
+	output: OwnedOutputPathsSchema
+};
+
+export const SkillIconReprocessTargetSchema = z
+	.object({
+		...SkillIconReprocessTargetCommonShape,
+		role: z.literal('rarity-frame'),
+		rarity: SkillIconRaritySchema
+	})
+	.strict()
+	.superRefine((target, context) => {
+		refineSkillIconReprocessOriginPaths(target, context);
+		const expectedIdentity = `rarity-frame-${target.rarity.toLowerCase()}`;
+		if (
+			target.logicalIdentity !== expectedIdentity ||
+			target.jobId !== `${target.logicalIdentity}-v${target.revision}` ||
+			pathBasenameWithoutExtension(target.output.candidatePath) !== target.jobId ||
+			pathBasenameWithoutExtension(target.output.resultPath) !== target.jobId ||
+			!target.output.candidatePath.includes('/candidates/references/') ||
+			!target.output.resultPath.includes('/results/references/')
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess target identity, revision, and reference output paths must bind one job'
+			});
+		}
+	});
+
+export const SkillIconReprocessAssignmentSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-reprocess-assignment-v1'),
+		assignmentId: SlugSchema,
+		jobId: SlugSchema,
+		logicalIdentity: SlugSchema,
+		revision: z.number().int().min(2),
+		role: z.literal('rarity-frame'),
+		rarity: SkillIconRaritySchema,
+		targetPath: SkillIconTargetPathSchema,
+		targetContentHash: StateHashSchema,
+		assignmentPath: SkillIconAssignmentPathSchema,
+		toolVersion: z.literal(SKILL_ICON_REPROCESS_TOOL_VERSION),
+		sourceMode: z.literal(SKILL_ICON_REPROCESS_SOURCE_MODE),
+		generationAttemptLimit: z.literal(0),
+		normalizationTransactionLimit: z.literal(1),
+		permittedOutputs: OwnedOutputPathsSchema,
+		completionContract: z
+			.object({
+				coordinatorOnly: z.literal(true),
+				structuredResultRequired: z.literal(true),
+				sharedFilesMustRemainUntouched: z.literal(true),
+				selfPromotionForbidden: z.literal(true)
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((assignment, context) => {
+		const expectedJobId = `${assignment.logicalIdentity}-v${assignment.revision}`;
+		const expectedIdentity = `rarity-frame-${assignment.rarity.toLowerCase()}`;
+		const expectedTargetPath = `assets/wiki/skills/icon-production-v1/targets/references/${expectedJobId}.json`;
+		const expectedAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${expectedJobId}.json`;
+		if (
+			assignment.logicalIdentity !== expectedIdentity ||
+			assignment.jobId !== expectedJobId ||
+			assignment.assignmentId !== `assignment-${assignment.jobId}` ||
+			assignment.targetPath !== expectedTargetPath ||
+			assignment.assignmentPath !== expectedAssignmentPath ||
+			assignment.permittedOutputs.candidatePath !==
+				`assets/wiki/skills/icon-production-v1/candidates/references/${expectedJobId}.png` ||
+			assignment.permittedOutputs.resultPath !==
+				`assets/wiki/skills/icon-production-v1/results/references/${expectedJobId}.json`
+		) {
+			context.addIssue({
+				code: 'custom',
+				message:
+					'Reprocess assignment must canonically bind one reference job, role, and output grant'
+			});
+		}
+	});
+
+export const SkillIconReprocessInspectionSchema = z
+	.object({
+		inspection: z.enum(['full-size', 'recognition-96']),
+		outcome: z.enum(['pass', 'fail', 'not-run']),
+		observation: NonEmptyTextSchema.max(1_000)
+	})
+	.strict();
+
+const SkillIconReprocessResultCommonShape = {
+	schemaVersion: z.literal('skill-icon-reprocess-result-v1'),
+	resultId: SlugSchema,
+	jobId: SlugSchema,
+	logicalIdentity: SlugSchema,
+	revision: z.number().int().min(2),
+	role: z.literal('rarity-frame'),
+	rarity: SkillIconRaritySchema,
+	assignmentId: SlugSchema,
+	targetPath: SkillIconTargetPathSchema,
+	targetContentHash: StateHashSchema,
+	assignmentPath: SkillIconAssignmentPathSchema,
+	assignmentContentHash: StateHashSchema,
+	sourceMode: z.literal(SKILL_ICON_REPROCESS_SOURCE_MODE),
+	originAuthority: SkillIconReprocessOriginAuthoritySchema,
+	processingAuthority: SkillIconReprocessProcessingAuthoritySchema,
+	generationAttemptCount: z.literal(0),
+	normalizationTransactionCount: z.literal(1),
+	normalization: SkillIconNormalizationEvidenceV3Schema,
+	resultPath: SkillIconResultPathSchema,
+	inspections: z.tuple([
+		SkillIconReprocessInspectionSchema.refine(
+			(inspection) => inspection.inspection === 'full-size',
+			'First inspection must be full-size'
+		),
+		SkillIconReprocessInspectionSchema.refine(
+			(inspection) => inspection.inspection === 'recognition-96',
+			'Second inspection must be recognition-96'
+		)
+	]),
+	startedAt: IsoDateTimeSchema,
+	completedAt: IsoDateTimeSchema,
+	totalWallTimeMs: z.number().int().nonnegative(),
+	noSharedFilesEdited: z.literal(true),
+	selfPromoted: z.literal(false)
+};
+
+const SkillIconReprocessCandidateResultSchema = z
+	.object({
+		...SkillIconReprocessResultCommonShape,
+		status: z.literal('candidate'),
+		output: SkillIconCandidateAssetSchema,
+		failureReason: z.undefined().optional(),
+		writtenOutputPaths: z.tuple([SkillIconCandidatePathSchema, SkillIconResultPathSchema])
+	})
+	.strict();
+
+const SkillIconReprocessFailedResultSchema = z
+	.object({
+		...SkillIconReprocessResultCommonShape,
+		status: z.literal('failed'),
+		output: z.null(),
+		failureReason: SkillIconFailureReasonSchema,
+		writtenOutputPaths: z.tuple([SkillIconResultPathSchema])
+	})
+	.strict();
+
+export const SkillIconReprocessResultSchema = z
+	.discriminatedUnion('status', [
+		SkillIconReprocessCandidateResultSchema,
+		SkillIconReprocessFailedResultSchema
+	])
+	.superRefine((result, context) => {
+		refineSkillIconReprocessOriginPaths(result, context);
+		const expectedJobId = `${result.logicalIdentity}-v${result.revision}`;
+		const expectedIdentity = `rarity-frame-${result.rarity.toLowerCase()}`;
+		const expectedResultPath = `assets/wiki/skills/icon-production-v1/results/references/${expectedJobId}.json`;
+		const expectedTargetPath = `assets/wiki/skills/icon-production-v1/targets/references/${expectedJobId}.json`;
+		const expectedAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${expectedJobId}.json`;
+		if (
+			result.logicalIdentity !== expectedIdentity ||
+			result.jobId !== expectedJobId ||
+			result.resultId !== `result-${result.jobId}` ||
+			result.assignmentId !== `assignment-${result.jobId}` ||
+			result.targetPath !== expectedTargetPath ||
+			result.assignmentPath !== expectedAssignmentPath ||
+			result.resultPath !== expectedResultPath ||
+			result.writtenOutputPaths.at(-1) !== expectedResultPath ||
+			Date.parse(result.completedAt) - Date.parse(result.startedAt) !== result.totalWallTimeMs
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess result identity, role, timestamps, and result path must agree'
+			});
+		}
+		if (result.status === 'failed' && result.normalization.outcome === 'not-run') {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization'],
+				message:
+					'Preflight rejection produces no result; a failed reprocess transaction requires failed or completed normalization evidence'
+			});
+		}
+		if (
+			result.status === 'failed' &&
+			result.normalization.providerSource !== null &&
+			!SkillIconProviderSourceEvidenceV2Schema.safeParse(result.normalization.providerSource)
+				.success
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization', 'providerSource'],
+				message: 'A reprocess transaction can begin only after exact source preflight succeeds'
+			});
+		}
+		if (
+			result.normalization.geometryHash !== SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH ||
+			(result.normalization.providerSource !== null &&
+				result.normalization.providerSource.contentHash !==
+					result.originAuthority.providerSourceHash) ||
+			(result.normalization.sourceContentHash !== null &&
+				result.normalization.sourceContentHash !== result.originAuthority.providerSourceHash)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization'],
+				message: 'Reprocess normalization must bind the source and processing authorities'
+			});
+		}
+		if (result.status === 'candidate') {
+			if (
+				result.normalization.outcome !== 'completed' ||
+				result.normalization.outputContentHash !== result.output.contentHash ||
+				result.output.path !==
+					`assets/wiki/skills/icon-production-v1/candidates/references/${expectedJobId}.png` ||
+				result.output.width !== 1024 ||
+				result.output.height !== 1024 ||
+				result.output.mediaType !== 'image/png' ||
+				result.output.alphaMode !== 'rgba' ||
+				result.inspections.some((inspection) => inspection.outcome !== 'pass') ||
+				result.writtenOutputPaths[0] !== result.output.path
+			) {
+				context.addIssue({
+					code: 'custom',
+					message:
+						'Candidate reprocess results require completed normalization and both inspections passing'
+				});
+			}
+		} else {
+			const [fullSize, recognition] = result.inspections;
+			const validationInspectionFailure =
+				result.failureReason.kind === 'validation' &&
+				((fullSize.outcome === 'fail' && recognition.outcome === 'not-run') ||
+					(fullSize.outcome === 'pass' && recognition.outcome === 'fail'));
+			const persistenceAfterInspection =
+				result.failureReason.kind === 'persistence' &&
+				fullSize.outcome === 'pass' &&
+				recognition.outcome === 'pass';
+			if (
+				(result.normalization.outcome === 'failed' &&
+					(result.failureReason.kind !== 'validation' ||
+						fullSize.outcome !== 'not-run' ||
+						recognition.outcome !== 'not-run')) ||
+				(result.normalization.outcome === 'completed' &&
+					!validationInspectionFailure &&
+					!persistenceAfterInspection)
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['failureReason'],
+					message:
+						'Reprocess failure kind and inspections must identify validation or post-inspection persistence exactly'
+				});
+			}
+		}
+	});
+
+export const SkillIconReprocessOriginExecutionSchema = z
+	.object({
+		target: SkillIconTargetV2Schema,
+		assignment: SkillIconAssignmentV2Schema,
+		result: SkillIconAttemptResultV2Schema
+	})
+	.strict()
+	.superRefine((origin, context) => {
+		const ordinary = SkillIconExecutionV2Schema.safeParse({
+			schemaVersion: 'skill-icon-execution-v2',
+			...origin
+		});
+		if (!ordinary.success || origin.result.status !== 'failed' || origin.result.output !== null) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess origin must be one failed, output-free ordinary V2 execution'
+			});
+		}
+		if (
+			origin.result.normalization.providerSource === null ||
+			origin.result.normalization.sourceContentHash !==
+				origin.result.normalization.providerSource.contentHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'normalization'],
+				message: 'Reprocess origin must bind observed provider-source bytes'
+			});
+		}
+	});
+
 export const SkillIconExecutionSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-execution-v1'),
@@ -1903,6 +2269,89 @@ export const SkillIconExecutionV2Schema = z
 			});
 		}
 	});
+
+export const SkillIconReprocessExecutionSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-reprocess-execution-v1'),
+		target: SkillIconReprocessTargetSchema,
+		assignment: SkillIconReprocessAssignmentSchema,
+		result: SkillIconReprocessResultSchema,
+		origin: SkillIconReprocessOriginExecutionSchema
+	})
+	.strict()
+	.superRefine((execution, context) => {
+		const { target, assignment, result, origin } = execution;
+		const expectedTargetPath = `assets/wiki/skills/icon-production-v1/targets/references/${target.jobId}.json`;
+		const expectedAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`;
+		const originScope = productionScopeForRole(origin.target.role);
+		const expectedOriginTargetPath = `assets/wiki/skills/icon-production-v1/targets/${originScope}/${origin.target.jobId}.json`;
+		const expectedOriginAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${originScope}/${origin.target.jobId}.json`;
+		const expectedOriginResultPath = `assets/wiki/skills/icon-production-v1/results/${originScope}/${origin.target.jobId}.json`;
+		if (
+			target.jobId !== assignment.jobId ||
+			target.jobId !== result.jobId ||
+			target.logicalIdentity !== assignment.logicalIdentity ||
+			target.logicalIdentity !== result.logicalIdentity ||
+			target.revision !== assignment.revision ||
+			target.revision !== result.revision ||
+			target.role !== assignment.role ||
+			target.role !== result.role ||
+			target.rarity !== assignment.rarity ||
+			target.rarity !== result.rarity ||
+			assignment.assignmentId !== result.assignmentId ||
+			assignment.targetPath !== expectedTargetPath ||
+			assignment.assignmentPath !== expectedAssignmentPath ||
+			result.targetPath !== expectedTargetPath ||
+			result.assignmentPath !== expectedAssignmentPath ||
+			result.targetContentHash !== assignment.targetContentHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess target, assignment, and result authorities must bind one job'
+			});
+		}
+		if (
+			JSON.stringify(target.originAuthority) !== JSON.stringify(result.originAuthority) ||
+			JSON.stringify(target.processingAuthority) !== JSON.stringify(result.processingAuthority)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Reprocess result must repeat the exact origin and processing authorities'
+			});
+		}
+		if (
+			target.output.candidatePath !== assignment.permittedOutputs.candidatePath ||
+			target.output.resultPath !== assignment.permittedOutputs.resultPath ||
+			target.output.resultPath !== result.resultPath ||
+			(result.output !== null && target.output.candidatePath !== result.output.path)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'writtenOutputPaths'],
+				message: 'Reprocess execution may write only its granted candidate and result paths'
+			});
+		}
+		if (
+			origin.target.logicalIdentity !== target.logicalIdentity ||
+			origin.target.role !== target.role ||
+			origin.target.rarity !== target.rarity ||
+			origin.target.revision >= target.revision ||
+			target.originAuthority.target.path !== expectedOriginTargetPath ||
+			target.originAuthority.assignment.path !== expectedOriginAssignmentPath ||
+			target.originAuthority.result.path !== expectedOriginResultPath ||
+			target.originAuthority.providerSourceHash !==
+				origin.result.normalization.providerSource?.contentHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['target', 'originAuthority'],
+				message:
+					'Reprocess origin must be a strictly older failed ordinary job with the same identity, role, rarity, and provider bytes'
+			});
+		}
+	});
+
+export const AnySkillIconReprocessExecutionSchema = SkillIconReprocessExecutionSchema;
 export const AnySkillIconExecutionSchema = z.union([
 	SkillIconExecutionSchema,
 	SkillIconExecutionV2Schema
@@ -1977,11 +2426,29 @@ export type SkillIconProviderSourceEvidenceV2 = z.infer<
 	typeof SkillIconProviderSourceEvidenceV2Schema
 >;
 export type SkillIconNormalizationEvidence = z.infer<typeof SkillIconNormalizationEvidenceSchema>;
+export type SkillIconNormalizationEvidenceV3 = z.infer<
+	typeof SkillIconNormalizationEvidenceV3Schema
+>;
 export type SkillIconAttemptResultV2 = z.infer<typeof SkillIconAttemptResultV2Schema>;
 export type SkillIconSupersedingAuthority = z.infer<typeof SkillIconSupersedingAuthoritySchema>;
 export type SkillIconSupersededResultV2 = z.infer<typeof SkillIconSupersededResultV2Schema>;
 export type SkillIconResultV2 = z.infer<typeof SkillIconResultV2Schema>;
 export type AnySkillIconResult = z.infer<typeof AnySkillIconResultSchema>;
+export type SkillIconReprocessOriginAuthority = z.infer<
+	typeof SkillIconReprocessOriginAuthoritySchema
+>;
+export type SkillIconReprocessProcessingAuthority = z.infer<
+	typeof SkillIconReprocessProcessingAuthoritySchema
+>;
+export type SkillIconReprocessTarget = z.infer<typeof SkillIconReprocessTargetSchema>;
+export type SkillIconReprocessAssignment = z.infer<typeof SkillIconReprocessAssignmentSchema>;
+export type SkillIconReprocessInspection = z.infer<typeof SkillIconReprocessInspectionSchema>;
+export type SkillIconReprocessResult = z.infer<typeof SkillIconReprocessResultSchema>;
+export type SkillIconReprocessOriginExecution = z.infer<
+	typeof SkillIconReprocessOriginExecutionSchema
+>;
 export type SkillIconExecution = z.infer<typeof SkillIconExecutionSchema>;
 export type SkillIconExecutionV2 = z.infer<typeof SkillIconExecutionV2Schema>;
+export type SkillIconReprocessExecution = z.infer<typeof SkillIconReprocessExecutionSchema>;
+export type AnySkillIconReprocessExecution = z.infer<typeof AnySkillIconReprocessExecutionSchema>;
 export type AnySkillIconExecution = z.infer<typeof AnySkillIconExecutionSchema>;

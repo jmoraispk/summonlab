@@ -46,6 +46,14 @@ NORMALIZATION_SKILL_VERSIONS = {
 PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
 PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
 PROFILE_V3 = "skill-icon-green-key-role-mask-v3"
+REPROCESS_PACKET_SCHEMA_VERSIONS = frozenset(
+    {
+        "skill-icon-reprocess-target-v1",
+        "skill-icon-reprocess-assignment-v1",
+        "skill-icon-reprocess-result-v1",
+        "skill-icon-reprocess-execution-v1",
+    }
+)
 GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
 GEOMETRY_V2_PATH = "assets/wiki/skills/icon-production-v1/geometry-v2.json"
 GEOMETRY_HASH = "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7"
@@ -123,6 +131,23 @@ main().catch((error) => {
 
 def fail(message: str) -> None:
     raise ValueError(message)
+
+
+def reject_reprocess_packet_schemas(*packets: object) -> None:
+    """Keep coordinator-only source reuse out of the dedicated producer."""
+
+    for packet in packets:
+        if not isinstance(packet, dict):
+            continue
+        schema_version = packet.get("schemaVersion")
+        if schema_version in REPROCESS_PACKET_SCHEMA_VERSIONS or (
+            isinstance(schema_version, str)
+            and schema_version.startswith("skill-icon-reprocess-")
+        ):
+            fail(
+                "coordinator-only reprocess packets are not accepted by the "
+                "skill-icon production skill"
+            )
 
 
 @dataclass(frozen=True)
@@ -514,6 +539,7 @@ def validate(
     contract_root: Path | None = None,
     _authority_snapshots: list[AuthoritySnapshot] | None = None,
 ) -> dict[str, Any]:
+    reject_reprocess_packet_schemas(target, assignment)
     root = _workspace_root(workspace)
     catalog_absolute = absolute_project_path(
         root, CATALOG_PATH, must_exist=True, regular_file=True

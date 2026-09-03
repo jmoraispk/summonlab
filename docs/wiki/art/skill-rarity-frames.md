@@ -119,7 +119,7 @@ The deterministic `assets/wiki/skills/icon-production-v1/references/geometry-gui
 `1254×1254` provider-space authority showing the allowed annulus, medallion, outer boundary, and
 inner boundary without text. It is never cropped or composited into an asset.
 
-Future profile `skill-icon-green-key-role-mask-v3` retains profile v2's PNG and `caBX` envelope,
+Profile `skill-icon-green-key-role-mask-v3` retains profile v2's PNG and `caBX` envelope,
 pathless evidence, assigned-sRGB decoder input, distance-24 matte rule, resize, and validation
 thresholds. Checker rejection remains active through a v3-only semantic detector for periodic A–B–A
 alpha repetition in role-relevant content. That refinement avoids treating the corrected real frame
@@ -129,18 +129,18 @@ only with `summonlab-skill-icon-production-v4`. Profiles v1–v3 share the exist
 the resize/rasterization antialias transition may extend at most three output pixels from the
 role-mask boundary. Normalization for every profile then hard-clips to the exact mask. In the
 retained image alpha through 8 is transparent, every alpha value above 8 outside the mask is invalid,
-and no other spill is accepted. No v4 target, assignment, result, candidate, or generated image
-exists yet. The new
-contract foundation does not itself authorize a generation run.
+and no other spill is accepted. Revision-4 frame/backing packets now bind this tuple. The F
+revision-4 canary used its two allowed generation calls and ended as a verified failure with no
+candidate; the other revision-4 slots remain unattempted.
 The mandatory guide reference has the canonical purpose
 `Provider-space role-mask guide for rarity-frame and backing registration.` and is production
 authority, not optional illustration.
 
 Result provenance records pathless provider media properties and hashes, the raw geometry-file
 hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
-v1 Task 7 failures, F revision-2 caBX rejection, and F revision-3 geometry rejection remain immutable
-evidence. Each retry receives a new explicit revision, and the unique latest revision must complete
-rather than falling back to an older candidate.
+v1 Task 7 failures, F revision-2 caBX rejection, F revision-3 geometry rejection, and F revision-4
+matte/registration rejection remain immutable evidence. Each retry receives a new explicit revision,
+and the unique latest revision must complete rather than falling back to an older candidate.
 
 For every new frame or backing revision, the coordinator authors the visual target, binds the raw
 geometry authority, exact normalization profile, and matching assignment skill version, and
@@ -178,6 +178,53 @@ coordinator-owned superseded evidence; dispatch one isolated generation per new 
 provider source directly to persistence; validate normalization and role-specific geometry; obtain
 hash-bound owner review; then promote and derive runtime assets. Never edit old evidence, normalize
 manually, retain the provider path, or use a superseded/older result as fallback.
+
+### One-shot coordinator reprocessing
+
+Reusing an exact provider source already observed by an ordinary failed result is not a new
+generation. It uses separate `skill-icon-reprocess-target-v1`,
+`skill-icon-reprocess-assignment-v1`, and `skill-icon-reprocess-result-v1` packets under coordinator
+tool `summonlab-skill-icon-reprocess-v1`; the dedicated generation skill and its Python preflight and
+verifier reject all three schemas. Reprocess v1 accepts only `role: 'rarity-frame'`; the charcoal
+backing and every other role are not eligible.
+
+The reprocess target has no prompt and no generation-reference list. Its
+`sourceMode: 'reuse-prior-provider-source'` authority binds the raw hashes and canonical paths of one
+live rarity-frame target-v2, assignment-v2, and ordinary failed output-free result-v2, plus the exact
+observed provider-source hash. Processing authority separately binds profile v3, geometry v2, and
+the exact guide-v2 path, purpose, and hash. This preserves the truth: the historical prompt produced
+the source, while the new packet authorizes only deterministic processing. A backing, superseded
+result, successful result, or prior reprocess result cannot become the source of another reprocess.
+
+The assignment permits zero generation attempts and exactly one normalization transaction. The
+coordinator stable-reads the machine-local source, verifies its bound hash, and never commits its
+path or raw bytes. A result repeats both authority blocks, records
+`generationAttemptCount: 0` and `normalizationTransactionCount: 1`, and contains no invented prompt
+or generation references. Success requires completed profile-v3 provenance, exact candidate bytes,
+and passing full-size and 96-pixel inspections. Failure retains no candidate and reports honest
+normalization evidence.
+
+The coordinator supplies required `pass|fail` outcomes and observations for the deterministic
+full-size output and its 96-pixel recognition view. They may reject a technically valid image, but
+cannot override automated full-size role validation or the technical requirement that the
+recognition derivative be a decodable 96×96 RGBA PNG. The 96-pixel record evaluates recognition; it
+does not apply the strict 1024-pixel role geometry inspector to resized boundaries.
+
+The coordinator reserves that sole transaction durably before normalization begins. A crash after
+reservation never permits a rerun: safe exact recovery terminalizes it, while stale, malformed,
+changed, or foreign reservation state remains blocked for coordinator inspection. If normalization
+and both inspections pass but publication fails, a failed result may honestly record
+`failureReason.kind: 'persistence'` with completed normalization and both inspections still passing;
+it does not fabricate a visual defect. When even the failure result cannot be published safely, the
+reservation remains fail-closed.
+
+This route has one stopping rule: attempt the exact source once, without an image call. A passing
+candidate goes directly to owner review. Normalization failure or owner rejection permanently ends
+reprocessing for that source; do not loosen the profile, create a reprocess chain, or begin another
+green-key prompt cycle. Move instead to a deterministic vector/native-frame or alpha-capable
+production route. The only immediate route contemplated by reprocess v1 is a possible F revision-5
+packet using the F revision-3 observed source. It remains future work; this protocol change creates
+no F-v5 packet, result, candidate, or image call.
 
 For a newly authored skill, taxonomy first exposes the missing icon. The visual owner then maps its
 motif family or marks it standalone, chooses at most one primary visual parent, authors the visual

@@ -4,16 +4,18 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
-	AnySkillIconTargetSchema,
 	SkillIconCatalogSchema,
 	SkillIconRaritySchema,
-	type AnySkillIconTarget,
 	type SkillIconCatalog
 } from '../packages/contracts/src/index.js';
 
 import { loadApprovedSkillIconReferenceAuthority } from './compose-skill-icon-assets.js';
 import { exportSkillIconProduction } from './export-skill-icon-production.js';
 import { resolveLatestSkillIconTargets } from './skill-icon-revision-lib.js';
+import {
+	SkillIconReferenceTargetSchema,
+	type SkillIconReferenceTarget
+} from './skill-icon-reprocess-consumer-lib.js';
 
 export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'martial:blade:horizontal-slash',
@@ -84,7 +86,7 @@ function canonicalReferenceRequirements(
 }
 
 export function referenceRequirementsForTargets(
-	targets: readonly AnySkillIconTarget[]
+	targets: readonly SkillIconReferenceTarget[]
 ): readonly SkillIconReferenceRequirement[] {
 	const latestTargets = new Map(
 		resolveLatestSkillIconTargets(targets)
@@ -364,7 +366,7 @@ async function main(args: readonly string[]): Promise<void> {
 					.filter((name) => name.endsWith('.json'))
 					.map((name) =>
 						readFile(path.join(targetDirectory, name), 'utf8').then((source) =>
-							AnySkillIconTargetSchema.parse(JSON.parse(source))
+							SkillIconReferenceTargetSchema.parse(JSON.parse(source))
 						)
 					)
 			)

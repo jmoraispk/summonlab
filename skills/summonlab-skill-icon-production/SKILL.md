@@ -1,6 +1,6 @@
 ---
 name: summonlab-skill-icon-production
-description: Produce one manifest-bound Summonlab skill-icon raster with exact prompt, role-scoped versioned persistence, bounded correction, and no promotion. Use for an assigned SkillIconTarget and SkillIconAssignment, not catalog coordination, calibration-sheet cropping, or general image ideation.
+description: Produce one manifest-bound Summonlab skill-icon raster with exact prompt, role-scoped versioned persistence, bounded correction, and no promotion. Use for an assigned generative SkillIconTarget and SkillIconAssignment, not coordinator-only reprocessing, catalog coordination, calibration-sheet cropping, or general image ideation.
 ---
 
 # Summonlab skill-icon production
@@ -13,6 +13,13 @@ profile v1 require `summonlab-skill-icon-production-v2`; profile v2 targets requ
 `summonlab-skill-icon-production-v4`. `skill-art` and `calibration-plate` jobs remain on
 `summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
 Exact-source packets retain exact provider bytes.
+
+This skill is generation-only. Reject every coordinator reprocess target, assignment, or result
+schema before preflight and make no imagegen, normalization, persistence, or verification call for
+it. A reprocess packet authorizes the repository coordinator to apply a new deterministic processing
+authority to an exact source from an ordinary failed producer result; it does not authorize this
+producer to reuse that source or claim it came from a new prompt. Return the packet to the
+coordinator route described in [target-schema.md](references/target-schema.md).
 
 ## Inputs and preflight
 
@@ -80,6 +87,9 @@ must be absent at preflight.
   job path.
 - Never invoke `promote:skill-icon-output`, create a master, update runtime assets, or claim owner
   acceptance. Promotion is a later coordinator action.
+- Never accept, verify, persist, or execute a reprocess packet, reuse a prior provider source, or
+  perform the coordinator's deterministic reprocess transaction. Reprocessing has no prompt and no
+  generation call; treating it as a producer job would create false generation provenance.
 - Never author or persist `superseded` evidence. Only the coordinator may terminalize an
   unattempted older packet by binding it to exact, live, higher-revision target and assignment
   bytes; this production skill cannot self-supersede.

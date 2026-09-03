@@ -54,6 +54,12 @@ import {
 	skillIconRevision
 } from './skill-icon-revision-lib.js';
 import {
+	assertSkillIconReprocessExecutionBytes,
+	isSkillIconReprocessTarget,
+	SkillIconReferenceTargetSchema,
+	type SkillIconReferenceTarget
+} from './skill-icon-reprocess-consumer-lib.js';
+import {
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
 	SkillIconPromotionReceiptSchema
@@ -88,10 +94,16 @@ const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
 const TransactionTokenSchema = z.string().uuid();
 const MAX_PROMOTION_INPUT_BYTES = 64 * 1024 * 1024;
 const JobIdSchema = z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u);
+const SKILL_ICON_CANDIDATE_ROOT = 'assets/wiki/skills/icon-production-v1/candidates';
 const MasterPathSchema = z
 	.string()
 	.regex(
 		/^assets\/wiki\/skills\/icon-production-v1\/masters\/(?:frames|backing|calibration|icons)\/[a-z0-9-]+\.png$/u
+	);
+const CandidatePathSchema = z
+	.string()
+	.regex(
+		/^assets\/wiki\/skills\/icon-production-v1\/candidates\/(?:references|calibration|icons)\/[a-z0-9-]+\.png$/u
 	);
 const ManagedOutputPathSchema = z.string().superRefine((value, context) => {
 	if (
@@ -117,6 +129,9 @@ const StagingFilePathSchema = z
 	);
 const ParentFingerprintSchema = z
 	.object({ realPath: z.string().min(1), device: z.number().int(), inode: z.number().int() })
+	.strict();
+const AbsenceAuthoritySchema = z
+	.object({ path: CandidatePathSchema, parent: ParentFingerprintSchema })
 	.strict();
 const FileFingerprintSchema = z
 	.object({ device: z.number().int(), inode: z.number().int() })
@@ -218,7 +233,9 @@ export const SkillIconPromotionJournalSchema = z
 								contentHash: Sha256Schema,
 								evidence: z
 									.array(z.object({ path: z.string().min(1), contentHash: Sha256Schema }).strict())
-									.min(3)
+									.min(3),
+								requiredAbsentPaths: z.array(CandidatePathSchema).max(1).optional(),
+								requiredAbsentAuthorities: z.array(AbsenceAuthoritySchema).max(1).optional()
 							})
 							.strict()
 					})
@@ -362,11 +379,19 @@ export interface PromotionOptions {
 }
 
 interface PreparedPromotion {
-	readonly target: AnySkillIconTarget;
+	readonly target: SkillIconReferenceTarget;
 	readonly authoritySnapshots: readonly {
 		readonly identity: AuthorityFileIdentity;
-		readonly label: 'target' | 'assignment' | 'geometry' | 'guide';
+		readonly label:
+			| 'target'
+			| 'assignment'
+			| 'geometry'
+			| 'guide'
+			| 'origin-target'
+			| 'origin-assignment'
+			| 'origin-result';
 	}[];
+	readonly authorityAbsences: readonly AbsenceAuthority[];
 	readonly replacement: NonNullable<PromotionJournal['replacements']>[number] | null;
 	readonly record: Omit<SkillIconAssetRecord, 'transactionId' | 'promotionReceipt'>;
 	readonly bytes: Buffer;
@@ -393,6 +418,11 @@ interface AuthorityFileIdentity {
 	readonly contentHash: string;
 	readonly parent: z.infer<typeof ParentFingerprintSchema>;
 	readonly file: z.infer<typeof FileFingerprintSchema>;
+}
+
+interface AbsenceAuthority {
+	readonly path: string;
+	readonly parent: z.infer<typeof ParentFingerprintSchema>;
 }
 
 function inside(parent: string, child: string): boolean {
@@ -621,6 +651,39 @@ function sameParentFingerprint(
 	);
 }
 
+async function snapshotAbsenceAuthority(
+	root: string,
+	inputPath: string,
+	label: string
+): Promise<AbsenceAuthority> {
+	const location = repositoryPath(root, inputPath, SKILL_ICON_CANDIDATE_ROOT);
+	await ensureSafeParents(root, location.absolute, false);
+	const before = await parentFingerprint(location.absolute);
+	if ((await metadataOrNull(location.absolute)) !== null)
+		throw new Error(`${label} appeared: ${location.relative}`);
+	const after = await parentFingerprint(location.absolute);
+	if (!sameParentFingerprint(before, after))
+		throw new Error(`${label} parent changed while proving absence: ${location.relative}`);
+	return { path: location.relative, parent: before };
+}
+
+async function assertAbsenceAuthorityCurrent(
+	root: string,
+	authority: AbsenceAuthority,
+	label: string
+): Promise<void> {
+	const location = repositoryPath(root, authority.path, SKILL_ICON_CANDIDATE_ROOT);
+	await ensureSafeParents(root, location.absolute, false);
+	const before = await parentFingerprint(location.absolute);
+	if (!sameParentFingerprint(before, authority.parent))
+		throw new Error(`${label} parent changed: ${location.relative}`);
+	if ((await metadataOrNull(location.absolute)) !== null)
+		throw new Error(`${label} appeared: ${location.relative}`);
+	const after = await parentFingerprint(location.absolute);
+	if (!sameParentFingerprint(after, authority.parent))
+		throw new Error(`${label} parent changed while rechecking absence: ${location.relative}`);
+}
+
 async function fileFingerprint(
 	destination: string
 ): Promise<z.infer<typeof FileFingerprintSchema>> {
@@ -739,7 +802,7 @@ function scopeForRole(role: SkillIconRole): 'references' | 'calibration' | 'icon
 			: 'references';
 }
 
-function masterPathFor(target: ReturnType<typeof AnySkillIconTargetSchema.parse>): string {
+function masterPathFor(target: SkillIconReferenceTarget): string {
 	if (target.role === 'rarity-frame')
 		return `assets/wiki/skills/icon-production-v1/masters/frames/${target.rarity.toLowerCase()}.png`;
 	if (target.role === 'backing')
@@ -749,7 +812,7 @@ function masterPathFor(target: ReturnType<typeof AnySkillIconTargetSchema.parse>
 	return `assets/wiki/skills/icon-production-v1/masters/icons/${target.skillTargetId.replaceAll(':', '-')}.png`;
 }
 
-async function loadSkillIconTargetTree(root: string): Promise<readonly AnySkillIconTarget[]> {
+async function loadSkillIconTargetTree(root: string): Promise<readonly SkillIconReferenceTarget[]> {
 	const targetRoot = path.resolve(root, 'assets/wiki/skills/icon-production-v1/targets');
 	await assertSafeExistingPath(root, targetRoot, 'Target tree');
 	const files: string[] = [];
@@ -769,7 +832,7 @@ async function loadSkillIconTargetTree(root: string): Promise<readonly AnySkillI
 		files
 			.sort()
 			.map(async (targetPath) =>
-				AnySkillIconTargetSchema.parse(
+				SkillIconReferenceTargetSchema.parse(
 					JSON.parse((await readRepositoryRegular(root, targetPath, 'Target')).toString('utf8'))
 				)
 			)
@@ -778,7 +841,7 @@ async function loadSkillIconTargetTree(root: string): Promise<readonly AnySkillI
 
 async function assertLatestSkillIconTarget(
 	root: string,
-	target: AnySkillIconTarget
+	target: SkillIconReferenceTarget
 ): Promise<void> {
 	const logicalKey = skillIconLogicalKey(target);
 	const latest = resolveLatestSkillIconTargets(await loadSkillIconTargetTree(root)).find(
@@ -813,6 +876,12 @@ async function assertPriorPromotionEvidenceCurrent(
 		if (sha256(bytes) !== evidence.contentHash)
 			throw new Error(`Prior promotion evidence changed: ${evidence.path}`);
 	}
+	for (const absentPath of replacement.priorReceipt.requiredAbsentPaths ?? []) {
+		await snapshotAbsenceAuthority(root, absentPath, 'Prior reprocess origin candidate');
+	}
+	for (const authority of replacement.priorReceipt.requiredAbsentAuthorities ?? []) {
+		await assertAbsenceAuthorityCurrent(root, authority, 'Prior reprocess origin candidate');
+	}
 }
 
 async function assertReplacementMasterCurrent(
@@ -838,7 +907,7 @@ async function assertReplacementMasterCurrent(
 
 async function loadPromotionReplacement(
 	root: string,
-	target: AnySkillIconTarget,
+	target: SkillIconReferenceTarget,
 	masterPath: string
 ): Promise<PromotionReplacement | null> {
 	const destination = path.resolve(root, masterPath);
@@ -856,7 +925,7 @@ async function loadPromotionReplacement(
 		}
 	);
 	const candidates: {
-		readonly target: AnySkillIconTarget;
+		readonly target: SkillIconReferenceTarget;
 		readonly receipt: z.infer<typeof SkillIconPromotionReceiptSchema>;
 		readonly receiptPath: string;
 		readonly receiptBytes: Buffer;
@@ -919,22 +988,102 @@ async function loadPromotionReplacement(
 				'Prior candidate'
 			)
 		]);
-	const priorAssignment = AnySkillIconAssignmentSchema.parse(
-		JSON.parse(assignmentBytes.toString('utf8'))
-	);
-	const currentPriorTarget = AnySkillIconTargetSchema.parse(
+	const currentPriorTarget = SkillIconReferenceTargetSchema.parse(
 		JSON.parse(targetBytes.toString('utf8'))
 	);
-	const priorResult = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-	AnySkillIconExecutionSchema.parse({
-		schemaVersion:
-			currentPriorTarget.schemaVersion === 'skill-icon-target-v2'
-				? 'skill-icon-execution-v2'
-				: 'skill-icon-execution-v1',
-		target: currentPriorTarget,
-		assignment: priorAssignment,
-		result: priorResult
-	});
+	let priorOriginEvidence: readonly (readonly [string, Buffer])[] = [];
+	let priorRequiredAbsentAuthorities: AbsenceAuthority[] = [];
+	const priorResult = isSkillIconReprocessTarget(currentPriorTarget)
+		? await (async () => {
+				const [
+					originTargetAuthority,
+					originAssignmentAuthority,
+					originResultAuthority,
+					processingGeometryAuthority,
+					processingGuideAuthority
+				] = await Promise.all([
+					readAuthorityFileIdentity(
+						root,
+						path.resolve(root, currentPriorTarget.originAuthority.target.path),
+						'Prior reprocess origin target'
+					),
+					readAuthorityFileIdentity(
+						root,
+						path.resolve(root, currentPriorTarget.originAuthority.assignment.path),
+						'Prior reprocess origin assignment'
+					),
+					readAuthorityFileIdentity(
+						root,
+						path.resolve(root, currentPriorTarget.originAuthority.result.path),
+						'Prior reprocess origin result'
+					),
+					readAuthorityFileIdentity(
+						root,
+						path.resolve(root, currentPriorTarget.processingAuthority.geometry.path),
+						'Prior reprocess geometry'
+					),
+					readAuthorityFileIdentity(
+						root,
+						path.resolve(root, currentPriorTarget.processingAuthority.guide.path),
+						'Prior reprocess guide'
+					)
+				]);
+				if (
+					sha256(processingGeometryAuthority.bytes) !==
+						currentPriorTarget.processingAuthority.geometry.contentHash ||
+					sha256(processingGuideAuthority.bytes) !==
+						currentPriorTarget.processingAuthority.guide.contentHash
+				) {
+					throw new Error('Prior reprocess processing authority hash mismatch');
+				}
+				const originTarget = AnySkillIconTargetSchema.parse(
+					JSON.parse(originTargetAuthority.bytes.toString('utf8'))
+				);
+				const originCandidateAbsence = await snapshotAbsenceAuthority(
+					root,
+					originTarget.output.candidatePath,
+					'Prior reprocess origin candidate'
+				);
+				const execution = assertSkillIconReprocessExecutionBytes({
+					targetPath,
+					targetBytes,
+					assignmentPath,
+					assignmentBytes,
+					resultPath,
+					resultBytes,
+					originTargetBytes: originTargetAuthority.bytes,
+					originAssignmentBytes: originAssignmentAuthority.bytes,
+					originResultBytes: originResultAuthority.bytes,
+					originCandidatePresent: false
+				});
+				priorOriginEvidence = [
+					[currentPriorTarget.originAuthority.target.path, originTargetAuthority.bytes],
+					[currentPriorTarget.originAuthority.assignment.path, originAssignmentAuthority.bytes],
+					[currentPriorTarget.originAuthority.result.path, originResultAuthority.bytes],
+					[currentPriorTarget.processingAuthority.geometry.path, processingGeometryAuthority.bytes],
+					[currentPriorTarget.processingAuthority.guide.path, processingGuideAuthority.bytes]
+				];
+				priorRequiredAbsentAuthorities = [originCandidateAbsence];
+				return execution.result;
+			})()
+		: (() => {
+				const priorAssignment = AnySkillIconAssignmentSchema.parse(
+					JSON.parse(assignmentBytes.toString('utf8'))
+				);
+				const ordinaryResult = AnySkillIconResultSchema.parse(
+					JSON.parse(resultBytes.toString('utf8'))
+				);
+				AnySkillIconExecutionSchema.parse({
+					schemaVersion:
+						currentPriorTarget.schemaVersion === 'skill-icon-target-v2'
+							? 'skill-icon-execution-v2'
+							: 'skill-icon-execution-v1',
+					target: currentPriorTarget,
+					assignment: priorAssignment,
+					result: ordinaryResult
+				});
+				return ordinaryResult;
+			})();
 	const priorReview = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
 	const masterBytes = await readRepositoryRegular(root, destination, 'Prior canonical master');
 	for (const [actual, expected, label] of [
@@ -956,7 +1105,8 @@ async function loadPromotionReplacement(
 		priorReview.reviewer !== prior.receipt.ownerReviewer ||
 		priorReview.jobId !== prior.target.jobId ||
 		priorReview.role !== prior.target.role ||
-		priorReview.skillTargetId !== prior.target.skillTargetId ||
+		priorReview.skillTargetId !==
+			(isSkillIconReprocessTarget(prior.target) ? null : prior.target.skillTargetId) ||
 		priorReview.candidatePath !== prior.receipt.candidate.path ||
 		priorReview.candidateHash !== prior.receipt.candidate.contentHash ||
 		priorResult.status !== 'candidate' ||
@@ -975,12 +1125,16 @@ async function loadPromotionReplacement(
 		priorReceipt: {
 			path: prior.receiptPath,
 			contentHash: sha256(prior.receiptBytes),
+			...(priorRequiredAbsentAuthorities.length > 0
+				? { requiredAbsentAuthorities: priorRequiredAbsentAuthorities }
+				: {}),
 			evidence: [
 				[targetPath, targetBytes],
 				[assignmentPath, assignmentBytes],
 				[prior.receipt.result.path, resultBytes],
 				[prior.receipt.review.path, reviewBytes],
-				[prior.receipt.candidate.path, candidateBytes]
+				[prior.receipt.candidate.path, candidateBytes],
+				...priorOriginEvidence
 			].map(([evidencePath, bytes]) => ({
 				path: evidencePath as string,
 				contentHash: sha256(bytes as Buffer)
@@ -1175,22 +1329,80 @@ async function preparePromotion(
 	]);
 	const targetBytes = targetAuthority.bytes;
 	const assignmentBytes = assignmentAuthority.bytes;
-	const target = AnySkillIconTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
-	const assignment = AnySkillIconAssignmentSchema.parse(
-		JSON.parse(assignmentBytes.toString('utf8'))
-	);
-	const result = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-	AnySkillIconExecutionSchema.parse({
-		schemaVersion:
-			target.schemaVersion === 'skill-icon-target-v2'
-				? 'skill-icon-execution-v2'
-				: 'skill-icon-execution-v1',
-		target,
-		assignment,
-		result
-	});
+	const target = SkillIconReferenceTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+	const extraAuthoritySnapshots: PreparedPromotion['authoritySnapshots'][number][] = [];
+	const authorityAbsences: AbsenceAuthority[] = [];
+	const result = isSkillIconReprocessTarget(target)
+		? await (async () => {
+				const [originTargetAuthority, originAssignmentAuthority, originResultAuthority] =
+					await Promise.all([
+						readAuthorityFileIdentity(
+							root,
+							path.resolve(root, target.originAuthority.target.path),
+							'Reprocess origin target'
+						),
+						readAuthorityFileIdentity(
+							root,
+							path.resolve(root, target.originAuthority.assignment.path),
+							'Reprocess origin assignment'
+						),
+						readAuthorityFileIdentity(
+							root,
+							path.resolve(root, target.originAuthority.result.path),
+							'Reprocess origin result'
+						)
+					]);
+				const originTarget = AnySkillIconTargetSchema.parse(
+					JSON.parse(originTargetAuthority.bytes.toString('utf8'))
+				);
+				const originCandidateAbsence = await snapshotAbsenceAuthority(
+					root,
+					originTarget.output.candidatePath,
+					'Promotion reprocess origin candidate'
+				);
+				const execution = assertSkillIconReprocessExecutionBytes({
+					targetPath,
+					targetBytes,
+					assignmentPath,
+					assignmentBytes,
+					resultPath,
+					resultBytes,
+					originTargetBytes: originTargetAuthority.bytes,
+					originAssignmentBytes: originAssignmentAuthority.bytes,
+					originResultBytes: originResultAuthority.bytes,
+					originCandidatePresent: false
+				});
+				authorityAbsences.push(originCandidateAbsence);
+				extraAuthoritySnapshots.push(
+					{ identity: originTargetAuthority.identity, label: 'origin-target' },
+					{ identity: originAssignmentAuthority.identity, label: 'origin-assignment' },
+					{ identity: originResultAuthority.identity, label: 'origin-result' }
+				);
+				return execution.result;
+			})()
+		: (() => {
+				const assignment = AnySkillIconAssignmentSchema.parse(
+					JSON.parse(assignmentBytes.toString('utf8'))
+				);
+				const ordinaryResult = AnySkillIconResultSchema.parse(
+					JSON.parse(resultBytes.toString('utf8'))
+				);
+				AnySkillIconExecutionSchema.parse({
+					schemaVersion:
+						target.schemaVersion === 'skill-icon-target-v2'
+							? 'skill-icon-execution-v2'
+							: 'skill-icon-execution-v1',
+					target,
+					assignment,
+					result: ordinaryResult
+				});
+				return ordinaryResult;
+			})();
 	await assertLatestSkillIconTarget(root, target);
-	if (target.role !== review.role || target.skillTargetId !== review.skillTargetId)
+	if (
+		target.role !== review.role ||
+		(isSkillIconReprocessTarget(target) ? null : target.skillTargetId) !== review.skillTargetId
+	)
 		throw new Error('Review role/skill identity does not match target');
 	if (result.status !== 'candidate' || !result.output)
 		throw new Error(`Result for ${jobId} is not a promotable candidate`);
@@ -1206,8 +1418,9 @@ async function preparePromotion(
 		throw new Error(`Candidate hash mismatch for ${jobId}`);
 	if (candidateBytes.byteLength !== result.output.bytes)
 		throw new Error(`Candidate byte count mismatch for ${jobId}`);
-	const geometryPath =
-		target.schemaVersion === 'skill-icon-target-v2'
+	const geometryPath = isSkillIconReprocessTarget(target)
+		? target.processingAuthority.geometry.path
+		: target.schemaVersion === 'skill-icon-target-v2'
 			? target.normalization.geometry.path
 			: 'assets/wiki/skills/icon-production-v1/geometry.json';
 	const geometryAuthority = await readAuthorityFileIdentity(
@@ -1217,17 +1430,28 @@ async function preparePromotion(
 	);
 	const geometryBytes = geometryAuthority.bytes;
 	if (
-		target.schemaVersion === 'skill-icon-target-v2' &&
-		sha256(geometryBytes) !== target.normalization.geometry.contentHash
+		(isSkillIconReprocessTarget(target) &&
+			sha256(geometryBytes) !== target.processingAuthority.geometry.contentHash) ||
+		(target.schemaVersion === 'skill-icon-target-v2' &&
+			sha256(geometryBytes) !== target.normalization.geometry.contentHash)
 	)
 		throw new Error(`Geometry hash mismatch for ${jobId}`);
 	let guideAuthority: Awaited<ReturnType<typeof readAuthorityFileIdentity>> | undefined;
 	const geometry =
-		target.schemaVersion === 'skill-icon-target-v2' &&
-		target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+		isSkillIconReprocessTarget(target) ||
+		(target.schemaVersion === 'skill-icon-target-v2' &&
+			target.normalization.profile === 'skill-icon-green-key-role-mask-v3')
 			? SkillIconGeometryV2Schema.parse(JSON.parse(geometryBytes.toString('utf8')))
 			: SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
-	if (target.schemaVersion === 'skill-icon-target-v2') {
+	if (isSkillIconReprocessTarget(target)) {
+		guideAuthority = await readAuthorityFileIdentity(
+			root,
+			path.resolve(root, target.processingAuthority.guide.path),
+			'Geometry guide'
+		);
+		if (sha256(guideAuthority.bytes) !== target.processingAuthority.guide.contentHash)
+			throw new Error(`Geometry guide hash mismatch for ${jobId}`);
+	} else if (target.schemaVersion === 'skill-icon-target-v2') {
 		const expectedGuidePath =
 			target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
 				? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
@@ -1243,11 +1467,7 @@ async function preparePromotion(
 			throw new Error(`Geometry guide hash mismatch for ${jobId}`);
 	}
 	const inspection = await inspectSkillIconAsset(candidateBytes, target.role, geometry);
-	if (
-		inspection.width !== target.canvas.width ||
-		inspection.height !== target.canvas.height ||
-		inspection.violations.length > 0
-	)
+	if (inspection.width !== 1024 || inspection.height !== 1024 || inspection.violations.length > 0)
 		throw new Error(
 			`Candidate validation failed for ${jobId}: ${inspection.violations.join('; ')}`
 		);
@@ -1270,7 +1490,7 @@ async function preparePromotion(
 	const record: PreparedPromotion['record'] = {
 		jobId,
 		role: target.role,
-		skillTargetId: target.skillTargetId,
+		skillTargetId: isSkillIconReprocessTarget(target) ? null : target.skillTargetId,
 		candidate,
 		approvedMaster,
 		resultPath,
@@ -1319,8 +1539,10 @@ async function preparePromotion(
 			{ identity: targetAuthority.identity, label: 'target' },
 			{ identity: assignmentAuthority.identity, label: 'assignment' },
 			{ identity: geometryAuthority.identity, label: 'geometry' },
-			...(guideAuthority ? [{ identity: guideAuthority.identity, label: 'guide' as const }] : [])
+			...(guideAuthority ? [{ identity: guideAuthority.identity, label: 'guide' as const }] : []),
+			...extraAuthoritySnapshots
 		],
+		authorityAbsences,
 		replacement,
 		record,
 		bytes: candidateBytes,
@@ -2158,6 +2380,9 @@ async function assertPromotionEvidenceCurrent(
 		)
 			throw new Error(`Promotion ${authority.label} authority changed: ${authority.identity.path}`);
 	}
+	for (const authority of item.authorityAbsences) {
+		await assertAbsenceAuthorityCurrent(root, authority, 'Promotion reprocess origin candidate');
+	}
 	for (const [evidencePath, expectedHash, label] of [
 		[item.record.candidate.path, item.record.candidate.contentHash, 'candidate'],
 		[item.record.resultPath, item.record.resultContentHash, 'result'],
@@ -2495,7 +2720,7 @@ async function selectLatestReviewNames(
 				),
 				'Batch review target'
 			);
-			const target = AnySkillIconTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+			const target = SkillIconReferenceTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
 			return { name, target };
 		})
 	);
