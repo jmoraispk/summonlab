@@ -6,7 +6,7 @@ Wiki ID: `monster.golem-rune-warrior`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Stone Servants brace the programmed lane; breaking their band removes the guard 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-rune-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-rune-warrior/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-rune-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-rune-warrior/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-rune-warrior/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-rune-warrior/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-rune-warrior/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-rune-warrior/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/golems/golem-rune-warrior/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/golems/golem-rune-warrior/wind-v1.json` |
