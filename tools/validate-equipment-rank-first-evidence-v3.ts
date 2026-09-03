@@ -24,6 +24,7 @@ import {
 import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
 import { resolveEquipmentArmourPieceCandidatesV3 } from './materialize-equipment-armour-piece-selections-v3.js';
 import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
+import { validateEquipmentRankFirstTerminalEvidenceV3 } from './validate-equipment-rank-first-terminal-evidence-v3.js';
 
 type Phase = 'directions' | 'roots' | 'pieces' | 'closeout';
 
@@ -276,6 +277,7 @@ export async function validateEquipmentRankFirstEvidenceV3(input: {
 		checkpoint1: await verifyCheckpoint(input.workspaceRoot, 1),
 		checkpoint2: await verifyCheckpoint(input.workspaceRoot, 2),
 		checkpoint3: await verifyCheckpoint(input.workspaceRoot, 3),
+		terminalEvidence: await validateEquipmentRankFirstTerminalEvidenceV3(input.workspaceRoot),
 		reconciled: {
 			generatedDirectionCount: 4,
 			acceptedExperimentalDirectionCount: 7,

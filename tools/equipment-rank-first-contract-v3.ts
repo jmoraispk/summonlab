@@ -275,6 +275,42 @@ export const EquipmentProvenanceResultV3Schema = z
 		}
 	});
 
+export const EquipmentWithheldCallAuditV1Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-armour-piece-withheld-call-audit-v1'),
+		auditId: z.literal('equipment-v3-armour-piece-withheld-calls-v1'),
+		auditedAt: z.string().datetime({ offset: true }),
+		provider: NonEmptySchema,
+		model: NonEmptySchema,
+		callCount: z.number().int().positive(),
+		policy: NonEmptySchema,
+		calls: z
+			.array(
+				z
+					.object({
+						targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+						attempt: z.number().int().min(1),
+						sourcePath: z.string().startsWith('/'),
+						sourceSha256: Sha256Schema,
+						rejection: NonEmptySchema
+					})
+					.strict()
+			)
+			.min(1)
+	})
+	.strict()
+	.superRefine((audit, context) => {
+		if (audit.callCount !== audit.calls.length) {
+			context.addIssue({ code: 'custom', message: 'Withheld call count mismatch' });
+		}
+		const callKeys = audit.calls.map(
+			(call) => `${call.targetId}:${call.attempt}:${call.sourceSha256}`
+		);
+		if (new Set(callKeys).size !== callKeys.length) {
+			context.addIssue({ code: 'custom', message: 'Withheld calls must be unique' });
+		}
+	});
+
 export const EquipmentRootCandidateSelectionManifestV3Schema = z
 	.object({
 		schemaVersion: z.literal('equipment-root-candidate-selection-manifest-v3'),
@@ -537,6 +573,7 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['armour-piece-revision-plan.schema.json', EquipmentArmourPieceRevisionPlanV3Schema],
 	['revision-assignment.schema.json', EquipmentCandidateRevisionAssignmentV3Schema],
 	['provenance-result.schema.json', EquipmentProvenanceResultV3Schema],
+	['withheld-call-audit.schema.json', EquipmentWithheldCallAuditV1Schema],
 	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
 	[
 		'armour-piece-candidate-selection-manifest.schema.json',
