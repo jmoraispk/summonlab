@@ -93,7 +93,7 @@
 	<LabBackLink placement="top" />
 	<header class="combat-header">
 		<div>
-			<p>Living Village · observatory art pilot v2</p>
+			<p>Living Village · observatory art pilot v3</p>
 			<h1>The ruined observatory</h1>
 		</div>
 		<div class="receipt-binding">

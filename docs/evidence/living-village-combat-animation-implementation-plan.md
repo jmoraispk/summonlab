@@ -38,6 +38,9 @@ The v2 floor separates art texture from tactical geometry. The environment plate
 continuous stone field with no baked gameplay seams; PixiJS projects the receipt's exact 7×9 grid as
 63 equal 82×82 logical-pixel cells. Actor feet, contact shadows, paths, and selection outlines all
 derive from the same cell-center function, so decorative masonry cannot contradict legal positions.
+The initial faint v2 overlay was rejected because the squares disappeared at gameplay scale. The v3
+treatment makes each cell persistent with dark grout, a restrained inner tint, and a stone-edge
+bevel that stays readable on phone and desktop.
 
 The first runtime pack contains:
 

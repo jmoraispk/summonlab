@@ -171,19 +171,19 @@
 			const tacticalGrid = new Graphics({ label: 'authoritative-square-grid' });
 			for (let row = 0; row < receipt.board.rows; row += 1) {
 				for (let column = 0; column < receipt.board.columns; column += 1) {
+					const x = board.x + column * board.cellSize;
+					const y = board.y + row * board.cellSize;
 					tacticalGrid
-						.rect(
-							board.x + column * board.cellSize,
-							board.y + row * board.cellSize,
-							board.cellSize,
-							board.cellSize
-						)
+						.rect(x + 2.5, y + 2.5, board.cellSize - 5, board.cellSize - 5)
 						.fill({
-							color: (column + row) % 2 === 0 ? 0x08131b : 0xd9c58e,
-							alpha: (column + row) % 2 === 0 ? 0.025 : 0.012
-						});
+							color: (column + row) % 2 === 0 ? 0x07131b : 0xb6a77f,
+							alpha: (column + row) % 2 === 0 ? 0.13 : 0.065
+						})
+						.rect(x + 4, y + 4, board.cellSize - 8, board.cellSize - 8)
+						.stroke({ color: 0xcac0a5, alpha: 0.13, width: 1, alignment: 1 });
 				}
 			}
+
 			for (let column = 0; column <= receipt.board.columns; column += 1) {
 				const x = board.x + column * board.cellSize;
 				tacticalGrid.moveTo(x, board.y).lineTo(x, board.y + boardHeight);
@@ -192,10 +192,23 @@
 				const y = board.y + row * board.cellSize;
 				tacticalGrid.moveTo(board.x, y).lineTo(board.x + boardWidth, y);
 			}
-			tacticalGrid.stroke({ color: 0xb7a26d, alpha: 0.34, width: 1.5 });
+			tacticalGrid.stroke({ color: 0x050b0e, alpha: 0.88, width: 5 });
+
+			const bevelOffset = 1.75;
+			for (let column = 0; column <= receipt.board.columns; column += 1) {
+				const x = board.x + column * board.cellSize + bevelOffset;
+				tacticalGrid.moveTo(x, board.y).lineTo(x, board.y + boardHeight);
+			}
+			for (let row = 0; row <= receipt.board.rows; row += 1) {
+				const y = board.y + row * board.cellSize + bevelOffset;
+				tacticalGrid.moveTo(board.x, y).lineTo(board.x + boardWidth, y);
+			}
+			tacticalGrid.stroke({ color: 0xc5b998, alpha: 0.5, width: 1.4, pixelLine: true });
 			tacticalGrid
 				.rect(board.x, board.y, boardWidth, boardHeight)
-				.stroke({ color: 0xd6bd78, alpha: 0.42, width: 2 });
+				.stroke({ color: 0x050b0e, alpha: 0.95, width: 6 })
+				.rect(board.x + 2, board.y + 2, boardWidth - 4, boardHeight - 4)
+				.stroke({ color: 0xd6c58f, alpha: 0.62, width: 2, alignment: 1 });
 			tacticalGrid.zIndex = 1;
 			world.addChild(tacticalGrid);
 

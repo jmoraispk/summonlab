@@ -191,7 +191,9 @@ destination tile before impact and let the resolved state become readable before
   trace that tile's exact projected edges; they must not float inside it, exceed it, or straddle seams.
 - Build the tactical floor from the authoritative board dimensions as one uniform square-cell grid.
   Painted environment plates may provide stone texture beneath it, but must not bake in competing
-  slab seams, medallions, partial cells, or perspective markings inside the playable rectangle.
+  slab seams, medallions, partial cells, or perspective markings inside the playable rectangle. Each
+  cell boundary must remain immediately readable at phone gameplay scale through persistent grout
+  and restrained stone-edge bevels; the grid must never depend on a faint overlay alone.
 - Present combat activity as a live, chat-like feed. Engine-authored outcome lines stay terse and
   causal. For example:
   `hero_04 used Fleeting Step → flanked goblin_02 → Opening → critical → goblin_02 died`.
