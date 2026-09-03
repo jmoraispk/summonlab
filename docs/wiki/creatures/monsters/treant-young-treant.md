@@ -6,7 +6,7 @@ Wiki ID: `monster.treant-young-treant`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Sapling-walkers lash from its shaded side; breaking the brace exposes both roots
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-young-treant/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-young-treant/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-young-treant/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-young-treant/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-young-treant/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-young-treant/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-young-treant/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-young-treant/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-young-treant/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-young-treant/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-young-treant/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-young-treant/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-young-treant/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-young-treant/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-young-treant/wind-v1.json` |

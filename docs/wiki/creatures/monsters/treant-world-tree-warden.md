@@ -6,7 +6,7 @@ Wiki ID: `monster.treant-world-tree-warden`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Sapling-walker, Young Treant, Oakheart, and Elder Warden each govern one grove; 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-world-tree-warden/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-world-tree-warden/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-world-tree-warden/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-world-tree-warden/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-world-tree-warden/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-world-tree-warden/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-world-tree-warden/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-world-tree-warden/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/treants/treant-world-tree-warden/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/treants/treant-world-tree-warden/wind-v1.json` |
