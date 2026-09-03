@@ -4,8 +4,10 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	SkillIconGeometryV2Schema,
 	SkillIconGeometrySchema,
-	type SkillIconGeometry
+	type SkillIconGeometry,
+	type SkillIconGeometryV2
 } from '../packages/contracts/src/index.js';
 import sharp from 'sharp';
 
@@ -15,6 +17,11 @@ export const SKILL_ICON_GEOMETRY_SVG_PATH =
 	'assets/wiki/skills/icon-production-v1/references/geometry-guide.svg' as const;
 export const SKILL_ICON_GEOMETRY_PNG_PATH =
 	'assets/wiki/skills/icon-production-v1/references/geometry-guide.png' as const;
+export const SKILL_ICON_GEOMETRY_V2_PATH =
+	'assets/wiki/skills/icon-production-v1/geometry-v2.json' as const;
+export const SKILL_ICON_GEOMETRY_V2_PNG_PATH =
+	'assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png' as const;
+export const SKILL_ICON_GEOMETRY_V2_PROVIDER_SIZE = 1254 as const;
 
 export type SkillIconGeometryExportMode = 'check' | 'write';
 
@@ -22,7 +29,8 @@ export interface SkillIconGeometryExportReport {
 	readonly mode: SkillIconGeometryExportMode;
 	readonly guides: readonly [
 		{ readonly path: typeof SKILL_ICON_GEOMETRY_SVG_PATH; readonly current: boolean },
-		{ readonly path: typeof SKILL_ICON_GEOMETRY_PNG_PATH; readonly current: boolean }
+		{ readonly path: typeof SKILL_ICON_GEOMETRY_PNG_PATH; readonly current: boolean },
+		{ readonly path: typeof SKILL_ICON_GEOMETRY_V2_PNG_PATH; readonly current: boolean }
 	];
 	readonly inSync: boolean;
 	readonly written: boolean;
@@ -31,6 +39,11 @@ export interface SkillIconGeometryExportReport {
 export async function loadSkillIconGeometry(root = process.cwd()): Promise<SkillIconGeometry> {
 	const source = await readFile(path.resolve(root, SKILL_ICON_GEOMETRY_PATH), 'utf8');
 	return SkillIconGeometrySchema.parse(JSON.parse(source) as unknown);
+}
+
+export async function loadSkillIconGeometryV2(root = process.cwd()): Promise<SkillIconGeometryV2> {
+	const source = await readFile(path.resolve(root, SKILL_ICON_GEOMETRY_V2_PATH), 'utf8');
+	return SkillIconGeometryV2Schema.parse(JSON.parse(source) as unknown);
 }
 
 function coordinate(value: number): string {
@@ -80,6 +93,69 @@ export function renderSkillIconGeometryGuideSvg(input: SkillIconGeometry): Buffe
 
 export async function renderSkillIconGeometryGuide(geometry: SkillIconGeometry): Promise<Buffer> {
 	return sharp(renderSkillIconGeometryGuideSvg(geometry))
+		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
+		.toBuffer();
+}
+
+function insetNormalizedPoints(
+	points: SkillIconGeometryV2['aperturePoints'],
+	geometry: SkillIconGeometryV2
+): SkillIconGeometryV2['aperturePoints'] {
+	const centerX = geometry.center.x / geometry.canvas.width;
+	const centerY = geometry.center.y / geometry.canvas.height;
+	return points.map(
+		([x, y]) =>
+			[
+				centerX + (x - centerX) * geometry.innerApertureScale,
+				centerY + (y - centerY) * geometry.innerApertureScale
+			] as const
+	);
+}
+
+function scaledNormalizedPoints(
+	points: SkillIconGeometryV2['aperturePoints'],
+	size: number
+): string {
+	return points.map(([x, y]) => `${coordinate(x * size)},${coordinate(y * size)}`).join(' ');
+}
+
+/**
+ * Builds the deterministic, text-free provider-space v2 guide source. The SVG is an
+ * in-memory rendering primitive only; v2 intentionally commits just its PNG raster.
+ */
+export function renderSkillIconGeometryGuideV2Svg(input: SkillIconGeometryV2): Buffer {
+	const geometry = SkillIconGeometryV2Schema.parse(input);
+	const size = SKILL_ICON_GEOMETRY_V2_PROVIDER_SIZE;
+	const strokeWidth = Math.max(1, size / 256);
+	const outerEnvelope = scaledNormalizedPoints(geometry.outerEnvelopePoints, size);
+	const backingAperture = scaledNormalizedPoints(geometry.aperturePoints, size);
+	const innerAperture = scaledNormalizedPoints(
+		insetNormalizedPoints(geometry.aperturePoints, geometry),
+		size
+	);
+	const exclusion = scaledNormalizedPoints(geometry.rarityMedallionExclusion, size);
+
+	return Buffer.from(
+		[
+			'<svg xmlns="http://www.w3.org/2000/svg"',
+			` width="${size}" height="${size}"`,
+			` viewBox="0 0 ${size} ${size}"`,
+			' fill="none">',
+			`<rect data-guide="canvas" width="${size}" height="${size}" fill="#111827" fill-opacity="0.08"/>`,
+			`<polygon data-guide="outer-envelope" points="${outerEnvelope}" fill="#2563eb" fill-opacity="0.18" stroke="#f8fafc" stroke-width="${coordinate(strokeWidth)}" stroke-linejoin="round"/>`,
+			`<polygon data-guide="inner-aperture" points="${innerAperture}" fill="#020617" fill-opacity="0.38" stroke="#22d3ee" stroke-width="${coordinate(strokeWidth)}" stroke-linejoin="round"/>`,
+			`<polygon data-guide="backing-aperture" points="${backingAperture}" stroke="#4ade80" stroke-width="${coordinate(strokeWidth)}" stroke-dasharray="${coordinate(strokeWidth * 3)} ${coordinate(strokeWidth * 2)}" stroke-linejoin="round"/>`,
+			`<polygon data-guide="rarity-medallion" points="${exclusion}" fill="#2563eb" fill-opacity="0.3" stroke="#f8fafc" stroke-width="${coordinate(strokeWidth)}" stroke-linejoin="round"/>`,
+			'</svg>',
+			''
+		].join('')
+	);
+}
+
+export async function renderSkillIconGeometryGuideV2(
+	geometry: SkillIconGeometryV2
+): Promise<Buffer> {
+	return sharp(renderSkillIconGeometryGuideV2Svg(geometry))
 		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
 		.toBuffer();
 }
@@ -142,27 +218,35 @@ export async function exportSkillIconGeometry(options: {
 }): Promise<SkillIconGeometryExportReport> {
 	const root = path.resolve(options.root ?? process.cwd());
 	const geometry = await loadSkillIconGeometry(root);
+	const geometryV2 = await loadSkillIconGeometryV2(root);
 	const svg = renderSkillIconGeometryGuideSvg(geometry);
 	const png = await renderSkillIconGeometryGuide(geometry);
+	const pngV2 = await renderSkillIconGeometryGuideV2(geometryV2);
 	const svgDestination = path.resolve(root, SKILL_ICON_GEOMETRY_SVG_PATH);
 	const pngDestination = path.resolve(root, SKILL_ICON_GEOMETRY_PNG_PATH);
+	const pngV2Destination = path.resolve(root, SKILL_ICON_GEOMETRY_V2_PNG_PATH);
 	let svgCurrent = await currentBytes(svgDestination, svg);
 	let pngCurrent = await currentBytes(pngDestination, png);
+	let pngV2Current = await currentBytes(pngV2Destination, pngV2);
 	let written = false;
 
-	if (options.mode === 'write' && (!svgCurrent || !pngCurrent)) {
+	if (options.mode === 'write' && (!svgCurrent || !pngCurrent || !pngV2Current)) {
 		await mkdir(path.dirname(svgDestination), { recursive: true });
 		await Promise.all([
 			assertSafeDestination(root, svgDestination),
-			assertSafeDestination(root, pngDestination)
+			assertSafeDestination(root, pngDestination),
+			assertSafeDestination(root, pngV2Destination)
 		]);
 		const staged: string[] = [];
 		try {
 			staged.push(await stageGuide(svgDestination, svg));
 			staged.push(await stageGuide(pngDestination, png));
+			staged.push(await stageGuide(pngV2Destination, pngV2));
 			await rename(staged[0]!, svgDestination);
 			staged.shift();
 			await rename(staged[0]!, pngDestination);
+			staged.shift();
+			await rename(staged[0]!, pngV2Destination);
 			staged.shift();
 		} finally {
 			await Promise.all(staged.map((temporary) => unlink(temporary).catch(() => undefined)));
@@ -170,15 +254,17 @@ export async function exportSkillIconGeometry(options: {
 		written = true;
 		svgCurrent = true;
 		pngCurrent = true;
+		pngV2Current = true;
 	}
 
 	return {
 		mode: options.mode,
 		guides: [
 			{ path: SKILL_ICON_GEOMETRY_SVG_PATH, current: svgCurrent },
-			{ path: SKILL_ICON_GEOMETRY_PNG_PATH, current: pngCurrent }
+			{ path: SKILL_ICON_GEOMETRY_PNG_PATH, current: pngCurrent },
+			{ path: SKILL_ICON_GEOMETRY_V2_PNG_PATH, current: pngV2Current }
 		],
-		inSync: svgCurrent && pngCurrent,
+		inSync: svgCurrent && pngCurrent && pngV2Current,
 		written
 	};
 }

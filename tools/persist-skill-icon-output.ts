@@ -9,6 +9,7 @@ import { z } from 'zod';
 import {
 	AnySkillIconAssignmentSchema,
 	AnySkillIconExecutionSchema,
+	AnySkillIconGeometrySchema,
 	AnySkillIconResultSchema,
 	AnySkillIconTargetSchema,
 	SKILL_ICON_SUPERSESSION_REASON,
@@ -16,6 +17,7 @@ import {
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconRoleSchema,
 	SkillIconResultSchema,
 	SkillIconResultV2Schema,
@@ -23,7 +25,7 @@ import {
 	SkillIconTargetPathSchema,
 	type AnySkillIconAssignment,
 	type AnySkillIconTarget,
-	type SkillIconGeometry,
+	type AnySkillIconGeometry,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
 import { IsoDateTimeSchema, StateHashSchema } from '../packages/contracts/src/shared.js';
@@ -37,6 +39,7 @@ import {
 	readSkillIconProviderSourceOnce,
 	SKILL_ICON_NORMALIZATION_PROFILE_V1,
 	SKILL_ICON_NORMALIZATION_PROFILE_V2,
+	SKILL_ICON_NORMALIZATION_PROFILE_V3,
 	type SkillIconProviderSourceEvidence
 } from './normalize-skill-icon-provider-source.js';
 import {
@@ -48,7 +51,7 @@ interface PersistSkillIconOutputCommonOptions {
 	readonly sourcePath: string;
 	readonly candidatePath: string;
 	readonly expectedRole: SkillIconRole;
-	readonly geometry: SkillIconGeometry;
+	readonly geometry: AnySkillIconGeometry;
 	readonly geometrySourceBytes?: Buffer;
 }
 
@@ -1559,6 +1562,23 @@ function assertPacketBinding(
 		throw new Error('Assignment paths do not match target identity and role');
 }
 
+function geometryPathForTarget(target: AnySkillIconTarget): string {
+	return target.schemaVersion === 'skill-icon-target-v2'
+		? target.normalization.geometry.path
+		: SKILL_ICON_GEOMETRY_PATH;
+}
+
+function parseGeometryForTarget(
+	target: AnySkillIconTarget,
+	geometrySourceBytes: Buffer
+): AnySkillIconGeometry {
+	const source = JSON.parse(geometrySourceBytes.toString('utf8')) as unknown;
+	return target.schemaVersion === 'skill-icon-target-v2' &&
+		target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+		? SkillIconGeometryV2Schema.parse(source)
+		: SkillIconGeometrySchema.parse(source);
+}
+
 async function persistSkillIconOutputBoundWithAuthorities(
 	options: PersistSkillIconOutputBoundOptions,
 	authorityBindings: readonly BoundTargetReference[]
@@ -1571,7 +1591,7 @@ async function persistSkillIconOutputBoundWithAuthorities(
 	const geometrySourceBytes = suppliedGeometrySourceBytes
 		? Buffer.from(suppliedGeometrySourceBytes)
 		: undefined;
-	const geometry = SkillIconGeometrySchema.parse(options.geometry);
+	const geometry = AnySkillIconGeometrySchema.parse(options.geometry);
 	const expectedRole = SkillIconRoleSchema.parse(options.expectedRole);
 	const receivedAt = IsoDateTimeSchema.parse(options.receivedAt);
 	const suppliedExpectedSourceHash = options.expectedSourceHash;
@@ -1606,17 +1626,16 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
 		if (geometryHash !== target.normalization.geometry.contentHash)
 			throw new Error('Raw geometry authority hash does not match the V2 target');
-		const parsedGeometry = SkillIconGeometrySchema.parse(
-			JSON.parse(geometrySourceBytes.toString('utf8'))
-		);
+		const parsedGeometry = parseGeometryForTarget(target, geometrySourceBytes);
 		if (JSON.stringify(parsedGeometry) !== JSON.stringify(geometry))
 			throw new Error('Parsed geometry and raw geometry authority bytes disagree');
 		if (target.normalization.profile !== assignmentV2.normalization.profile)
 			throw new Error('V2 target and assignment normalization profiles do not match');
-		const expectedSkillVersion =
-			target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V1
-				? 'summonlab-skill-icon-production-v2'
-				: 'summonlab-skill-icon-production-v3';
+		const expectedSkillVersion = {
+			[SKILL_ICON_NORMALIZATION_PROFILE_V1]: 'summonlab-skill-icon-production-v2',
+			[SKILL_ICON_NORMALIZATION_PROFILE_V2]: 'summonlab-skill-icon-production-v3',
+			[SKILL_ICON_NORMALIZATION_PROFILE_V3]: 'summonlab-skill-icon-production-v4'
+		}[target.normalization.profile];
 		if (assignmentV2.skillVersion !== expectedSkillVersion)
 			throw new Error(
 				`Normalization profile ${target.normalization.profile} requires ${expectedSkillVersion}`
@@ -1642,9 +1661,7 @@ async function persistSkillIconOutputBoundWithAuthorities(
 				sourceBytes,
 				expectedRole,
 				geometrySourceBytes!,
-				target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
-					? SKILL_ICON_NORMALIZATION_PROFILE_V2
-					: SKILL_ICON_NORMALIZATION_PROFILE_V1
+				target.normalization.profile
 			)
 		: null;
 	await testHooks?.afterNormalization?.();
@@ -2389,7 +2406,7 @@ export async function persistSkillIconOutput(
 	if (!path.isAbsolute(sourcePath)) throw new Error('Source path must be absolute');
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
 	const expectedRole = SkillIconRoleSchema.parse(options.expectedRole);
-	const geometry = SkillIconGeometrySchema.parse(options.geometry);
+	const geometry = AnySkillIconGeometrySchema.parse(options.geometry);
 	const expectedSourceHash = StateHashSchema.parse(options.expectedSourceHash);
 	const afterAuthorityRead = dependencies.testHooks?.afterAuthorityRead;
 	const now = dependencies.now;
@@ -2402,9 +2419,10 @@ export async function persistSkillIconOutput(
 	const assignment = AnySkillIconAssignmentSchema.parse(
 		JSON.parse(assignmentSnapshot.bytes.toString('utf8'))
 	);
+	const geometryPath = geometryPathForTarget(target);
 	const geometrySnapshot =
 		target.schemaVersion === 'skill-icon-target-v2'
-			? await readSafePacketSnapshot(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
+			? await readSafePacketSnapshot(root, geometryPath, 'Geometry')
 			: undefined;
 	await afterAuthorityRead?.();
 	const receivedAt = (now?.() ?? new Date()).toISOString();
@@ -2426,7 +2444,7 @@ export async function persistSkillIconOutput(
 			bindSafePacket(assignmentPath, 'Assignment packet', assignmentSnapshot),
 			...(geometrySnapshot === undefined
 				? []
-				: [bindSafePacket(SKILL_ICON_GEOMETRY_PATH, 'Geometry authority', geometrySnapshot)])
+				: [bindSafePacket(geometryPath, 'Geometry authority', geometrySnapshot)])
 		]
 	);
 }
@@ -2486,17 +2504,18 @@ async function runCli(args: readonly string[]): Promise<void> {
 	const root = process.cwd();
 	const request = parsePersistSkillIconCliRequest(args);
 	const { targetPath, assignmentPath } = request;
-	const [targetSnapshot, assignmentSnapshot, geometrySnapshot] = await Promise.all([
+	const [targetSnapshot, assignmentSnapshot] = await Promise.all([
 		readSafePacketSnapshot(root, targetPath, 'Target'),
-		readSafePacketSnapshot(root, assignmentPath, 'Assignment'),
-		readSafePacketSnapshot(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
+		readSafePacketSnapshot(root, assignmentPath, 'Assignment')
 	]);
 	const target = AnySkillIconTargetSchema.parse(JSON.parse(targetSnapshot.bytes.toString('utf8')));
 	const assignment = AnySkillIconAssignmentSchema.parse(
 		JSON.parse(assignmentSnapshot.bytes.toString('utf8'))
 	);
+	const geometryPath = geometryPathForTarget(target);
+	const geometrySnapshot = await readSafePacketSnapshot(root, geometryPath, 'Geometry');
 	const geometryBytes = geometrySnapshot.bytes;
-	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
+	const geometry = parseGeometryForTarget(target, geometryBytes);
 	if (assignment.targetPath !== targetPath || assignment.assignmentPath !== assignmentPath)
 		throw new Error('CLI target/assignment arguments do not match packet paths');
 	const receipt = await persistSkillIconOutputBoundWithAuthorities(
@@ -2519,7 +2538,7 @@ async function runCli(args: readonly string[]): Promise<void> {
 		[
 			bindSafePacket(targetPath, 'Target packet', targetSnapshot),
 			bindSafePacket(assignmentPath, 'Assignment packet', assignmentSnapshot),
-			bindSafePacket(SKILL_ICON_GEOMETRY_PATH, 'Geometry authority', geometrySnapshot)
+			bindSafePacket(geometryPath, 'Geometry authority', geometrySnapshot)
 		]
 	);
 	process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);

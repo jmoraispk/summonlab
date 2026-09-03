@@ -25,8 +25,8 @@
 - Individual skill masters are generated independently at the same size.
 - Frame/backing provider output is normalized only inside persistence under the exact profile named
   by its packet; agents never transform, crop, key, resize, or mask it manually. Skill-art and
-  calibration jobs remain v1 exact-source work. Historical v1 evidence and existing revision-2
-  profile-v1 packets/results stay immutable.
+  calibration jobs remain exact-source work under their applicable contract. Historical geometry,
+  guides, profiles, packets, and results stay immutable; a new authority is always additive.
 - Generated jobs may write only their declared candidate and result paths; only the coordinator may update shared catalogs, approvals, or runtime exports.
 - The 456-of-456 completion gate remains disabled until the fifteen-skill pilot receives owner approval.
 
@@ -42,12 +42,14 @@ This plan deliberately ends at the accepted three-domain pilot and a machine-gen
 | `tools/skill-icon-production-lib.ts` | Canonical row loading, motif parsing, catalog joining, graph validation, path construction, and readiness summaries |
 | `tools/export-skill-icon-production.ts` | Deterministic `--write`/`--check` exporter for geometry guides, machine motif map, catalog, targets, and JSON schemas |
 | `tools/validate-skill-icon-assets.ts` | Sharp-based dimensions, alpha, safe-zone, registration, hash, and derivative validation |
-| `tools/persist-skill-icon-output.ts` | Collision-safe v1 exact-source/v2 normalized persistence and structured receipt generation for one image job |
-| `tools/normalize-skill-icon-provider-source.ts` | Pure profile-pinned 1254 RGB green-key to 1024 RGBA role normalization, including v2 `caBX` isolation and canonical sRGB decoder input |
+| `tools/persist-skill-icon-output.ts` | Collision-safe exact-source/profile-pinned normalized persistence and structured receipt generation for one image job |
+| `tools/normalize-skill-icon-provider-source.ts` | Pure profile-pinned 1254 RGB green-key to 1024 RGBA role normalization, including opaque `caBX` isolation, canonical sRGB decoder input, and versioned role geometry |
 | `tools/compose-skill-icon-assets.ts` | Backing/art/frame composition, runtime derivatives, recognition thumbnails, and contact sheets |
 | `tools/report-skill-icon-readiness.ts` | Exact coverage and lifecycle gate report for all 456 skills |
 | `tools/tsconfig.skill-icon-production.json` | Focused type-check boundary for the pipeline |
-| `assets/wiki/skills/icon-production-v1/geometry.json` | One shared 1024-pixel registration contract |
+| `assets/wiki/skills/icon-production-v1/geometry.json` | Immutable v1 1024-pixel registration contract for existing packets |
+| `assets/wiki/skills/icon-production-v1/geometry-v2.json` | Additive frame-envelope geometry authority for future profile-v3 packets |
+| `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png` | Deterministic 1254-pixel provider-space v2 guide; authority only, never asset content |
 | `assets/wiki/skills/icon-production-v1/motif-map.json` | Generated 456-skill visual lineage projection |
 | `assets/wiki/skills/icon-production-v1/visual-specs.json` | Icon-owned subject, cue, palette, composition, exclusions, and lifecycle state |
 | `assets/wiki/skills/icon-production-v1/catalog.json` | Generated canonical join used by validation, Forge, and runtime export |
@@ -700,7 +702,8 @@ F canary correctly failed because its otherwise usable provider raster contained
 profile v1 forbids. Do not rewrite that result or relabel those packets. The next frame/backing
 revision may instead bind `skill-icon-green-key-role-mask-v2` and
 `summonlab-skill-icon-production-v3`. This is an additive compatibility route, not a reinterpretation
-of profile v1. No revision-3 target, assignment, result, candidate, or image has been issued yet.
+of profile v1. Revision-3 packets were subsequently issued under that exact tuple and now remain
+immutable history.
 
 Profile v2 admits only a file of at most 64 MiB and at most 1,024 total chunks with this exact order:
 `IHDR`, exactly one `caBX`, one or more consecutive `IDAT`, `IEND`. The `caBX` must immediately follow
@@ -725,6 +728,62 @@ perimeter, every role-required-transparent source region, and the fully transpar
 pre-resize chroma alpha. The resize, output role mask, and 1024 RGBA forbidden-region/geometry gates
 are unchanged. A synthesized exact-envelope canary whose artwork casts a shadow into required matte
 space must fail, proving provider compatibility does not relax the transparent-area contract.
+
+#### Additive geometry-v2/profile-v3 amendment
+
+Geometry v1, `references/geometry-guide.png`, profiles v1 and v2, and every packet/result that binds
+them are immutable. Revision-3 packets bind profile v2, geometry v1, guide v1, and
+`summonlab-skill-icon-production-v3`; the F revision-3 rejection is retained as valid evidence rather
+than rewritten around a different mask.
+
+Add `assets/wiki/skills/icon-production-v1/geometry-v2.json` with schema version
+`skill-icon-geometry-v2`. Preserve v1's canvas, center, `aperturePoints`, 64% subject safe zone, 72%
+effect safe zone, rarity-medallion exclusion, runtime sizes, and recognition size exactly. Add only:
+
+```json
+{
+	"outerEnvelopePoints": [
+		[0.5, 0.046875],
+		[0.88671875, 0.28125],
+		[0.88671875, 0.71875],
+		[0.5, 0.953125],
+		[0.11328125, 0.71875],
+		[0.11328125, 0.28125]
+	],
+	"innerApertureScale": 0.78
+}
+```
+
+Generate `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png`
+deterministically at `1254×1254` in provider space. It shows the permitted frame annulus,
+medallion, outer boundary, and inner boundary with no text. It is a registration authority and must
+never be cropped, composited, or treated as generated artwork.
+
+Geometry v2 is role-aware. For `rarity-frame`, the retained mask is
+`(outer envelope − aperture scaled by innerApertureScale about the shared center) ∪ medallion`.
+For `backing`, the retained mask remains the original `aperturePoints` polygon; the backing does not
+inherit the expanded frame envelope or scaled inner opening.
+
+The 3% minimum frame-coverage threshold and 4% minimum in each of six edge bands do not change.
+Their geometry-relative denominator follows the bound authority: v1 uses `aperturePoints`, while v2
+uses `outerEnvelopePoints`; edge bands derive from that same applicable envelope.
+
+Add `skill-icon-green-key-role-mask-v3` only as a future frame/backing normalization profile. It
+preserves profile v2's PNG/`caBX` envelope, evidence, canonical-sRGB decoder input, distance-24 matte
+rule, resize behavior, and all validation thresholds. It retains checker protection through a
+v3-only semantic periodic opacity detector for A–B–A alpha repetition in role-relevant content; this
+avoids the corrected-frame false positive without changing the v1/v2 detector paths or any
+matte/evidence threshold. Its new authorization is the raw-byte hash of `geometry-v2.json` plus the
+hash-bound guide-v2 reference. Preserve the common v1–v3 pre-clip allowance for the existing
+resize/rasterization antialias transition halo within three output pixels of the exact role-mask
+boundary, then hard-clip every profile's normalized output to its mask. The retained asset still
+treats alpha through 8 as transparent and rejects every alpha value above 8 outside the mask; no
+other spill is allowed. Profile v3 pairs only with
+`summonlab-skill-icon-production-v4`. Do not issue a v4 target or assignment and do not generate,
+persist, supersede, review, or promote any v4 candidate or image in this foundation change.
+The mandatory guide reference uses the exact canonical purpose
+`Provider-space role-mask guide for rarity-frame and backing registration.`; it is authority, not
+optional illustration.
 
 Only the coordinator may close an unattempted older packet as superseded. It writes the closure to
 the old packet's canonical result path through the established crash-safe result-only transaction,
@@ -777,6 +836,10 @@ errors. Historical v1 result-only failures remain valid evidence and must not be
 missing candidates. Do not issue revision-3 packets or images as part of the profile-v2 protocol
 implementation.
 
+After revision 3 is issued, its packets remain bound to profile v2, geometry v1, guide v1, and skill
+v3. The F revision-3 canary rejection remains terminal history. The geometry-v2/profile-v3
+foundation must create no v4 packet, result, candidate, or generated image.
+
 - [ ] **Step 3: Supersede only unattempted packets, then dispatch an authorized revision**
 
 When production resumes, the coordinator first issues one higher-revision target/assignment pair
@@ -786,6 +849,12 @@ target. The seven frames may run independently; the backing is independent of al
 producer passes only the exact provider path/hash to the helper; the helper normalizes
 transactionally. Each attempted job returns only its versioned candidate PNG and result JSON. A
 superseded result is coordinator evidence, never producer output and never fallback.
+
+For the future v4 dispatch, every target must bind the raw bytes of geometry v2 and reference the
+exact guide-v2 hash; every assignment must name skill v4; and every target must name profile v3.
+The guide reference purpose must be exactly
+`Provider-space role-mask guide for rarity-frame and backing registration.`.
+Reject any mixed geometry/profile/guide/skill tuple before provider generation.
 
 - [ ] **Step 4: Validate candidates and create the comparison sheet**
 
@@ -1180,13 +1249,20 @@ images.
 - the exact new-skill lifecycle is map → author → calibrate if needed → generate → validate → owner review → promote → export;
 - green-key rarity-frame/backing retries use an exact version-matched target/assignment/skill tuple
   and packet-authorized provider normalization; existing revision-2 profile-v1 packets/results and
-  historical v1 exact-source evidence stay immutable, while future compatible frame/backing retries
-  may use profile v2 with assignment skill v3;
+  historical v1 exact-source evidence stay immutable; revision-3 profile-v2/geometry-v1/guide-v1
+  packets and results are also immutable;
 - the producing agent never normalizes manually, copies a provider source into the repository, or
   persists its absolute path; retries use a new explicit revision and latest-revision validation;
 - profile-v2 evidence records full-provider, opaque-`caBX`, canonical-sRGB decoder-input, geometry,
   and normalized-output hashes without preserving a provider path; its distance-24 clean-matte gate
   must still reject shadow spill;
+- geometry v2 preserves all v1 registration fields, adds the exact frame outer envelope and `.78`
+  inner-aperture scale, and leaves backing constrained to the original aperture polygon;
+- future profile-v3 frame/backing packets bind raw geometry-v2 bytes, the exact provider-space
+  guide-v2 hash, and assignment skill v4 while retaining profile v2's envelope and thresholds; no
+  v4 packet or generated asset exists as part of the foundation;
+- new skill art remains an isolated exact-source workflow under its applicable contract; normalized
+  profiles v1–v3 do not authorize skill-art jobs;
 - only the coordinator may write exact authority-bound
   `unattempted-packet-superseded-by-higher-revision` evidence, and that evidence never satisfies the
   latest slot or fallback;

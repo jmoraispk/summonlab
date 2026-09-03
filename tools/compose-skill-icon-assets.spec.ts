@@ -19,7 +19,14 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SKILL_ICON_NORMALIZATION_GEOMETRY_HASH } from '../packages/contracts/src/index.js';
+import {
+	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE
+} from '../packages/contracts/src/index.js';
 import {
 	composeSkillHex,
 	exportSkillIconRuntime,
@@ -259,6 +266,7 @@ async function installReferenceCandidatePacketV2(
 		readonly bytes: Buffer;
 		readonly rarity?: Exclude<CandidatePacket['rarity'], null>;
 		readonly revision?: number;
+		readonly profile?: 'v1' | 'v3';
 	}
 ): Promise<CandidatePacket> {
 	const logicalIdentity =
@@ -273,14 +281,24 @@ async function installReferenceCandidatePacketV2(
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
 	const contentHash = createHash('sha256').update(input.bytes).digest('hex');
 	const sourceHash = 'd'.repeat(64);
+	const profile = input.profile ?? 'v1';
 	const exactPrompt = `Paint ${logicalIdentity} over an opaque #00FF00 matte with no baked checkerboard.`;
-	const references = [
-		{
-			path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
-			purpose: 'Geometry.',
-			contentHash: 'a'.repeat(64)
-		}
-	];
+	const references =
+		profile === 'v3'
+			? [
+					{
+						path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+						purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+						contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+					}
+				]
+			: [
+					{
+						path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+						purpose: 'Geometry guide for registration and safe zones.',
+						contentHash: '8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4'
+					}
+				];
 	const output = { candidatePath, resultPath };
 	const target = {
 		schemaVersion: 'skill-icon-target-v2',
@@ -296,7 +314,10 @@ async function installReferenceCandidatePacketV2(
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output,
 		normalization: {
-			profile: 'skill-icon-green-key-role-mask-v1',
+			profile:
+				profile === 'v3'
+					? 'skill-icon-green-key-role-mask-v3'
+					: 'skill-icon-green-key-role-mask-v1',
 			sourceContract: {
 				mediaType: 'image/png',
 				width: 1254,
@@ -311,8 +332,14 @@ async function installReferenceCandidatePacketV2(
 				alphaMode: 'rgba'
 			},
 			geometry: {
-				path: 'assets/wiki/skills/icon-production-v1/geometry.json',
-				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+				path:
+					profile === 'v3'
+						? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH
+						: 'assets/wiki/skills/icon-production-v1/geometry.json',
+				contentHash:
+					profile === 'v3'
+						? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+						: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
 			}
 		}
 	};
@@ -324,8 +351,14 @@ async function installReferenceCandidatePacketV2(
 		revision,
 		targetPath,
 		assignmentPath,
-		skillVersion: 'summonlab-skill-icon-production-v2',
-		normalization: { profile: 'skill-icon-green-key-role-mask-v1' },
+		skillVersion:
+			profile === 'v3'
+				? 'summonlab-skill-icon-production-v4'
+				: 'summonlab-skill-icon-production-v2',
+		normalization: {
+			profile:
+				profile === 'v3' ? 'skill-icon-green-key-role-mask-v3' : 'skill-icon-green-key-role-mask-v1'
+		},
 		assignedAt: '2026-09-02T08:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: output,
@@ -349,9 +382,15 @@ async function installReferenceCandidatePacketV2(
 		promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
 		referenceInputs: references.map(({ path, contentHash }) => ({ path, contentHash })),
 		normalization: {
-			profile: 'skill-icon-green-key-role-mask-v1',
+			profile:
+				profile === 'v3'
+					? 'skill-icon-green-key-role-mask-v3'
+					: 'skill-icon-green-key-role-mask-v1',
 			outcome: 'completed',
-			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+			geometryHash:
+				profile === 'v3'
+					? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+					: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
 			providerSource: {
 				mediaType: 'image/png',
 				width: 1254,
@@ -361,6 +400,17 @@ async function installReferenceCandidatePacketV2(
 				contentHash: sourceHash
 			},
 			sourceContentHash: sourceHash,
+			...(profile === 'v3'
+				? {
+						decoderInputContentHash: 'e'.repeat(64),
+						containerBox: {
+							chunkType: 'caBX',
+							bytes: 8,
+							contentHash: 'f'.repeat(64)
+						},
+						colorSpaceDisposition: 'assigned-srgb'
+					}
+				: {}),
 			outputContentHash: contentHash
 		},
 		output: {
@@ -479,6 +529,9 @@ async function productionFixtureRoot(): Promise<string> {
 		SKILL_ICON_MOTIF_MAP_PATH,
 		SKILL_ICON_VISUAL_SPECS_PATH,
 		'assets/wiki/skills/icon-production-v1/geometry.json',
+		'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+		SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+		SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 		'assets/wiki/skills/icon-production-v1/catalog.json'
 	]) {
 		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
@@ -670,6 +723,43 @@ describe('exportSkillRuntimeSet', () => {
 				root
 			)
 		).rejects.toThrow(/geometry hash.*charcoal-forged-stone-v2/iu);
+	}, 30_000);
+
+	it('composes a profile-v3 reference only through raw geometry-v2 and guide-v2 authorities', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		const latest = await installReferenceCandidatePacketV2(root, {
+			role: 'backing',
+			bytes: await validBacking([65, 68, 75]),
+			revision: 4,
+			profile: 'v3'
+		});
+		await installAcceptedReference(root, latest, SKILL_ICON_BACKING_MASTER_PATH);
+		const artPath =
+			'assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-swordsmanship.png';
+		await mkdir(path.dirname(path.join(root, artPath)), { recursive: true });
+		await writeFile(path.join(root, artPath), await validArt('#22c55e'));
+		const request = () =>
+			exportSkillRuntimeSet(
+				{
+					targetId: 'martial:blade:swordsmanship',
+					rarity: 'F',
+					assets: { approvedMaster: { path: artPath } }
+				},
+				root
+			);
+
+		await expect(request()).rejects.toThrow(
+			/standalone derivative writes are disabled|coordinator transaction/iu
+		);
+		const guidePath = path.join(root, SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH);
+		const guideBytes = await readFile(guidePath);
+		await writeFile(guidePath, Buffer.concat([guideBytes, Buffer.from('changed')]));
+		await expect(request()).rejects.toThrow(/geometry guide hash.*charcoal-forged-stone-v4/iu);
+		await writeFile(guidePath, guideBytes);
+		const geometryPath = path.join(root, SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH);
+		await writeFile(geometryPath, Buffer.concat([await readFile(geometryPath), Buffer.from('\n')]));
+		await expect(request()).rejects.toThrow(/geometry hash.*charcoal-forged-stone-v4/iu);
 	}, 30_000);
 
 	it('fails closed instead of opening a standalone derivative-write race', async () => {

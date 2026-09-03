@@ -1,10 +1,20 @@
 import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
 import {
 	AnySkillIconExecutionSchema,
+	AnySkillIconGeometrySchema,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_PURPOSE,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
 	SKILL_ICON_SUPERSESSION_REASON,
 	SkillIconAssignmentSchema,
 	SkillIconAssignmentV2Schema,
@@ -16,6 +26,7 @@ import {
 	SkillIconExecutionSchema,
 	SkillIconExecutionV2Schema,
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconMasterPathSchema,
 	SkillIconMasterySchema,
 	SkillIconNormalizationEvidenceSchema,
@@ -47,6 +58,14 @@ function ownedPaths(scope: 'references' | 'calibration' | 'icons', ownedJobId: s
 	return {
 		candidatePath: `assets/wiki/skills/icon-production-v1/candidates/${scope}/${ownedJobId}.png`,
 		resultPath: `assets/wiki/skills/icon-production-v1/results/${scope}/${ownedJobId}.json`
+	};
+}
+
+function canonicalLegacyGuideReference() {
+	return {
+		path: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH,
+		purpose: SKILL_ICON_NORMALIZATION_GUIDE_V1_PURPOSE,
+		contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V1_HASH
 	};
 }
 
@@ -545,31 +564,57 @@ describe('skill-icon production contracts', () => {
 	});
 
 	it('validates all versioned top-level contracts', () => {
+		const canonicalGeometryV1Bytes = readFileSync(
+			new URL('../../../assets/wiki/skills/icon-production-v1/geometry.json', import.meta.url)
+		);
+		expect(createHash('sha256').update(canonicalGeometryV1Bytes).digest('hex')).toBe(
+			SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+		);
+		const geometryV1 = {
+			schemaVersion: 'skill-icon-geometry-v1',
+			canvas: { width: 1024, height: 1024 },
+			center: { x: 512, y: 512 },
+			aperturePoints: [
+				[0.5, 0.078125],
+				[0.8828125, 0.296875],
+				[0.8828125, 0.703125],
+				[0.5, 0.921875],
+				[0.1171875, 0.703125],
+				[0.1171875, 0.296875]
+			],
+			subjectSafePercent: 64,
+			effectSafePercent: 72,
+			rarityMedallionExclusion: [
+				[0.41015625, 0],
+				[0.58984375, 0],
+				[0.58984375, 0.21484375],
+				[0.41015625, 0.21484375]
+			],
+			runtimeSizes: [512, 256, 128],
+			recognitionSize: 96
+		};
+		expect(SkillIconGeometrySchema.safeParse(geometryV1).success).toBe(true);
+		const geometryV2 = {
+			...geometryV1,
+			schemaVersion: 'skill-icon-geometry-v2',
+			outerEnvelopePoints: [
+				[0.5, 0.046875],
+				[0.88671875, 0.28125],
+				[0.88671875, 0.71875],
+				[0.5, 0.953125],
+				[0.11328125, 0.71875],
+				[0.11328125, 0.28125]
+			],
+			innerApertureScale: 0.78
+		};
+		expect(SkillIconGeometryV2Schema.safeParse(geometryV2).success).toBe(true);
+		expect(AnySkillIconGeometrySchema.safeParse(geometryV1).success).toBe(true);
+		expect(AnySkillIconGeometrySchema.safeParse(geometryV2).success).toBe(true);
+		expect(SkillIconGeometrySchema.safeParse(geometryV2).success).toBe(false);
+		expect(SkillIconGeometryV2Schema.safeParse(geometryV1).success).toBe(false);
 		expect(
-			SkillIconGeometrySchema.safeParse({
-				schemaVersion: 'skill-icon-geometry-v1',
-				canvas: { width: 1024, height: 1024 },
-				center: { x: 512, y: 512 },
-				aperturePoints: [
-					[0.5, 0.078125],
-					[0.8828125, 0.296875],
-					[0.8828125, 0.703125],
-					[0.5, 0.921875],
-					[0.1171875, 0.703125],
-					[0.1171875, 0.296875]
-				],
-				subjectSafePercent: 64,
-				effectSafePercent: 72,
-				rarityMedallionExclusion: [
-					[0.41015625, 0],
-					[0.58984375, 0],
-					[0.58984375, 0.21484375],
-					[0.41015625, 0.21484375]
-				],
-				runtimeSizes: [512, 256, 128],
-				recognitionSize: 96
-			}).success
-		).toBe(true);
+			SkillIconGeometryV2Schema.safeParse({ ...geometryV2, innerApertureScale: 0.79 }).success
+		).toBe(false);
 		expect(SkillIconVisualSpecSchema.safeParse(visualSpec).success).toBe(true);
 		expect(
 			SkillIconCatalogSchema.safeParse({
@@ -857,7 +902,7 @@ describe('skill-icon production contracts', () => {
 			motifFamily: null,
 			rarity: 'F' as const,
 			exactPrompt,
-			references: skillTarget().references,
+			references: [canonicalLegacyGuideReference()],
 			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
 			output: v2Paths,
 			normalization: {
@@ -939,6 +984,35 @@ describe('skill-icon production contracts', () => {
 			selfPromoted: false as const
 		};
 		expect(SkillIconTargetV2Schema.safeParse(target).success).toBe(true);
+		for (const profile of [
+			'skill-icon-green-key-role-mask-v1',
+			'skill-icon-green-key-role-mask-v2'
+		] as const) {
+			const normalizedTarget = {
+				...target,
+				normalization: { ...target.normalization, profile }
+			};
+			expect(SkillIconTargetV2Schema.safeParse(normalizedTarget).success).toBe(true);
+			for (const references of [
+				[],
+				[
+					{
+						...canonicalLegacyGuideReference(),
+						contentHash: '0'.repeat(64)
+					}
+				],
+				[
+					{
+						...canonicalLegacyGuideReference(),
+						purpose: 'An untrusted historical guide.'
+					}
+				]
+			]) {
+				expect(SkillIconTargetV2Schema.safeParse({ ...normalizedTarget, references }).success).toBe(
+					false
+				);
+			}
+		}
 		expect(SkillIconAssignmentV2Schema.safeParse(assigned).success).toBe(true);
 		expect(SkillIconResultV2Schema.safeParse(produced).success).toBe(true);
 		expect(
@@ -1014,6 +1088,10 @@ describe('skill-icon production contracts', () => {
 		expect(
 			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-green-key-role-mask-v3')
 				.success
+		).toBe(true);
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-green-key-role-mask-v4')
+				.success
 		).toBe(false);
 
 		const v2JobId = 'rarity-frame-f-v3';
@@ -1038,6 +1116,12 @@ describe('skill-icon production contracts', () => {
 				skillVersion: 'summonlab-skill-icon-production-v3'
 			}).success
 		).toBe(false);
+		expect(
+			SkillIconAssignmentV2Schema.safeParse({
+				...v1Assignment,
+				skillVersion: 'summonlab-skill-icon-production-v4'
+			}).success
+		).toBe(false);
 
 		const v2Assignment = {
 			...v1Assignment,
@@ -1051,6 +1135,35 @@ describe('skill-icon production contracts', () => {
 				skillVersion: 'summonlab-skill-icon-production-v2'
 			}).success
 		).toBe(false);
+		expect(
+			SkillIconAssignmentV2Schema.safeParse({
+				...v2Assignment,
+				skillVersion: 'summonlab-skill-icon-production-v4'
+			}).success
+		).toBe(false);
+
+		const v3Assignment = {
+			...v1Assignment,
+			skillVersion: 'summonlab-skill-icon-production-v4' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v3' as const }
+		};
+		expect(SkillIconAssignmentV2Schema.safeParse(v3Assignment).success).toBe(true);
+		for (const skillVersion of [
+			'summonlab-skill-icon-production-v2',
+			'summonlab-skill-icon-production-v3'
+		] as const) {
+			expect(SkillIconAssignmentV2Schema.safeParse({ ...v3Assignment, skillVersion }).success).toBe(
+				false
+			);
+		}
+		for (const normalization of [
+			{ profile: 'skill-icon-green-key-role-mask-v1' as const },
+			{ profile: 'skill-icon-green-key-role-mask-v2' as const }
+		]) {
+			expect(
+				SkillIconAssignmentV2Schema.safeParse({ ...v3Assignment, normalization }).success
+			).toBe(false);
+		}
 	});
 
 	it('requires decoder-input and caBX provenance for completed profile-v2 normalization', () => {
@@ -1068,7 +1181,7 @@ describe('skill-icon production contracts', () => {
 			motifFamily: null,
 			rarity: 'F' as const,
 			exactPrompt,
-			references: skillTarget().references,
+			references: [canonicalLegacyGuideReference()],
 			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
 			output: paths,
 			normalization: {
@@ -1227,7 +1340,7 @@ describe('skill-icon production contracts', () => {
 		).toBe(false);
 	});
 
-	it('models failed profile-v2 derived provenance as all-or-none', () => {
+	it('models failed profile-v2 and profile-v3 derived provenance as all-or-none', () => {
 		const providerSource = {
 			mediaType: 'image/png' as const,
 			width: 1254,
@@ -1270,6 +1383,243 @@ describe('skill-icon production contracts', () => {
 		]) {
 			expect(SkillIconNormalizationEvidenceSchema.safeParse(partial).success).toBe(false);
 		}
+
+		const profileV3BeforeEnvelope = {
+			...failedBeforeEnvelope,
+			profile: 'skill-icon-green-key-role-mask-v3' as const,
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+		};
+		const profileV3AfterEnvelope = {
+			...failedAfterEnvelope,
+			profile: 'skill-icon-green-key-role-mask-v3' as const,
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+		};
+		expect(SkillIconNormalizationEvidenceSchema.safeParse(profileV3BeforeEnvelope).success).toBe(
+			true
+		);
+		expect(SkillIconNormalizationEvidenceSchema.safeParse(profileV3AfterEnvelope).success).toBe(
+			true
+		);
+		expect(
+			SkillIconNormalizationEvidenceSchema.safeParse({
+				...profileV3BeforeEnvelope,
+				decoderInputContentHash: 'c'.repeat(64)
+			}).success
+		).toBe(false);
+	});
+
+	it('cross-binds profile-v3 to geometry-v2 and the raw provider guide authority', () => {
+		const geometryBytes = readFileSync(
+			new URL(`../../../${SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH}`, import.meta.url)
+		);
+		const guideBytes = readFileSync(
+			new URL(`../../../${SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH}`, import.meta.url)
+		);
+		expect(createHash('sha256').update(geometryBytes).digest('hex')).toBe(
+			SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+		);
+		expect(createHash('sha256').update(guideBytes).digest('hex')).toBe(
+			SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+		);
+		expect(
+			SkillIconGeometryV2Schema.safeParse(JSON.parse(geometryBytes.toString('utf8'))).success
+		).toBe(true);
+
+		const jobId = 'rarity-frame-f-v4';
+		const paths = ownedPaths('references', jobId);
+		const exactPrompt =
+			'Paint the F rarity frame over an opaque #00FF00 matte with no baked checkerboard.';
+		const guideReference = {
+			path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+			purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+			contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+		};
+		const target = {
+			schemaVersion: 'skill-icon-target-v2' as const,
+			jobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 4,
+			role: 'rarity-frame' as const,
+			skillTargetId: null,
+			motifFamily: null,
+			rarity: 'F' as const,
+			exactPrompt,
+			references: [...skillTarget().references, guideReference],
+			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
+			output: paths,
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v3' as const,
+				sourceContract: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					alphaMode: 'rgb' as const,
+					matteColor: '#00FF00' as const
+				},
+				outputContract: {
+					mediaType: 'image/png' as const,
+					width: 1024 as const,
+					height: 1024 as const,
+					alphaMode: 'rgba' as const
+				},
+				geometry: {
+					path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+					contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+				}
+			}
+		};
+		const assigned = {
+			schemaVersion: 'skill-icon-assignment-v2' as const,
+			assignmentId: `assignment-${jobId}`,
+			jobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 4,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v4' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v3' as const },
+			assignedAt: '2026-09-02T08:00:00.000Z',
+			retryCeiling: 1,
+			permittedOutputs: paths,
+			forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+			completionContract: assignment().completionContract
+		};
+		const outputHash = 'f'.repeat(64);
+		const sourceHash = 'e'.repeat(64);
+		const produced = {
+			schemaVersion: 'skill-icon-result-v2' as const,
+			resultId: `result-${jobId}`,
+			jobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 4,
+			assignmentId: assigned.assignmentId,
+			status: 'candidate' as const,
+			exactPrompt,
+			promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+			referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v3' as const,
+				outcome: 'completed' as const,
+				geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+				providerSource: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					bytes: 2_000_000,
+					alphaMode: 'rgb' as const,
+					contentHash: sourceHash
+				},
+				sourceContentHash: sourceHash,
+				decoderInputContentHash: 'c'.repeat(64),
+				containerBox: {
+					chunkType: 'caBX' as const,
+					bytes: 72,
+					contentHash: 'd'.repeat(64)
+				},
+				colorSpaceDisposition: 'assigned-srgb' as const,
+				outputContentHash: outputHash
+			},
+			output: { ...candidateAsset, path: paths.candidatePath, contentHash: outputHash },
+			resultPath: paths.resultPath,
+			findings: producerFindings,
+			startedAt: '2026-09-02T08:00:00.000Z',
+			completedAt: '2026-09-02T08:00:00.000Z',
+			totalWallTimeMs: 0,
+			writtenOutputPaths: [paths.candidatePath, paths.resultPath] as const,
+			noSharedFilesEdited: true as const,
+			selfPromoted: false as const
+		};
+		const execution = {
+			schemaVersion: 'skill-icon-execution-v2' as const,
+			target,
+			assignment: assigned,
+			result: produced
+		};
+
+		expect(SkillIconTargetV2Schema.safeParse(target).success).toBe(true);
+		expect(SkillIconAssignmentV2Schema.safeParse(assigned).success).toBe(true);
+		expect(SkillIconResultV2Schema.safeParse(produced).success).toBe(true);
+		expect(SkillIconExecutionV2Schema.safeParse(execution).success).toBe(true);
+
+		for (const normalization of [
+			{
+				...target.normalization,
+				geometry: {
+					path: 'assets/wiki/skills/icon-production-v1/geometry.json',
+					contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+				}
+			},
+			{
+				...target.normalization,
+				geometry: { ...target.normalization.geometry, contentHash: '0'.repeat(64) }
+			},
+			{ ...target.normalization, profile: 'skill-icon-green-key-role-mask-v2' }
+		]) {
+			expect(SkillIconTargetV2Schema.safeParse({ ...target, normalization }).success).toBe(false);
+		}
+
+		for (const references of [
+			target.references.filter((reference) => reference.path !== guideReference.path),
+			target.references.map((reference) =>
+				reference.path === guideReference.path
+					? { ...reference, contentHash: '0'.repeat(64) }
+					: reference
+			),
+			target.references.map((reference) =>
+				reference.path === guideReference.path
+					? { ...reference, purpose: 'An untrusted substitute guide.' }
+					: reference
+			)
+		]) {
+			expect(SkillIconTargetV2Schema.safeParse({ ...target, references }).success).toBe(false);
+		}
+
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...execution,
+				result: {
+					...produced,
+					normalization: {
+						...produced.normalization,
+						geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+					}
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...execution,
+				result: {
+					...produced,
+					referenceInputs: produced.referenceInputs.map((reference) =>
+						reference.path === guideReference.path
+							? { ...reference, contentHash: '0'.repeat(64) }
+							: reference
+					)
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('continues parsing every committed structural-v2 target against its raw guide bytes', () => {
+		const targetDirectory = new URL(
+			'../../../assets/wiki/skills/icon-production-v1/targets/references/',
+			import.meta.url
+		);
+		let structuralV2Count = 0;
+		for (const filename of readdirSync(targetDirectory).filter((entry) =>
+			entry.endsWith('.json')
+		)) {
+			const target = JSON.parse(readFileSync(new URL(filename, targetDirectory), 'utf8')) as {
+				schemaVersion?: unknown;
+			};
+			if (target.schemaVersion !== 'skill-icon-target-v2') continue;
+			structuralV2Count += 1;
+			const parsed = SkillIconTargetV2Schema.safeParse(target);
+			const parsingError = parsed.success ? '' : parsed.error.message;
+			expect(parsed.success, `${filename}: ${parsingError}`).toBe(true);
+		}
+		expect(structuralV2Count).toBe(16);
 	});
 
 	it('records an unattempted superseded packet only against stronger raw authority', () => {
@@ -1309,7 +1659,7 @@ describe('skill-icon production contracts', () => {
 			},
 			exactPrompt,
 			promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
-			referenceInputs: skillTarget().references.map(({ path, contentHash }) => ({
+			referenceInputs: [canonicalLegacyGuideReference()].map(({ path, contentHash }) => ({
 				path,
 				contentHash
 			})),
@@ -1336,7 +1686,7 @@ describe('skill-icon production contracts', () => {
 			motifFamily: null,
 			rarity: 'F' as const,
 			exactPrompt,
-			references: skillTarget().references,
+			references: [canonicalLegacyGuideReference()],
 			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
 			output: retiredPaths,
 			normalization: {

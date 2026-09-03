@@ -28,14 +28,17 @@ metadata and no output hash; `not-run` has no source or output evidence. A retai
 finished before a later validation or persistence failure. No normalization evidence has a provider
 path field.
 
-Profile-v2 `completed` evidence additionally binds `decoderInputContentHash` to the exact canonical
+Profile-v2 and profile-v3 `completed` evidence additionally bind `decoderInputContentHash` to the exact canonical
 PNG submitted to the pinned decoder, `containerBox` to the removed pathless
 `{chunkType: "caBX", bytes, contentHash}` payload descriptor, and
 `colorSpaceDisposition: "assigned-srgb"`. `providerSource.contentHash` and `sourceContentHash`
 always hash the complete original provider PNG, including the container. `containerBox` never
 contains a path or payload. A `failed` outcome records derived provenance only after the complete
 canonical envelope exists: decoder hash, container evidence, and color disposition are either all
-present and valid or all null. A `not-run` outcome always leaves all three null.
+present and valid or all null. A `not-run` outcome always leaves all three null. Profile-v3 result
+provenance has exactly this profile-v2 shape; only its profile literal and geometry-v2 hash differ,
+while the guide-v2 authority remains bound through the immutable ordered target references and
+matching `referenceInputs`.
 
 The only `superseded` result is coordinator-authored evidence for an unattempted obsolete packet.
 It has zero provider attempts, no output or failure reason, a `not-run` normalization outcome, the

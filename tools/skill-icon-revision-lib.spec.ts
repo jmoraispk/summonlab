@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
 	type AnySkillIconTarget
 } from '../packages/contracts/src/index.js';
 import {
@@ -61,6 +66,32 @@ function target(jobId: string, revision?: number): AnySkillIconTarget {
 	};
 }
 
+function targetV3(revision = 4): AnySkillIconTarget {
+	const jobId = `charcoal-forged-stone-v${revision}`;
+	const base = target(jobId, revision) as Extract<
+		AnySkillIconTarget,
+		{ schemaVersion: 'skill-icon-target-v2' }
+	>;
+	return {
+		...base,
+		references: [
+			{
+				path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+				purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+				contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+			}
+		],
+		normalization: {
+			...base.normalization,
+			profile: 'skill-icon-green-key-role-mask-v3',
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+			}
+		}
+	};
+}
+
 describe('skill-icon revision resolution', () => {
 	it('selects an explicit higher v2 revision without falling back to v1', () => {
 		const v1 = target('charcoal-forged-stone-v1');
@@ -68,6 +99,15 @@ describe('skill-icon revision resolution', () => {
 		expect(resolveLatestSkillIconTargets([v1, v2])).toEqual([
 			{ target: v2, logicalKey: 'backing', revision: 2 }
 		]);
+	});
+
+	it('selects a higher profile-v3 revision without confusing profile and logical revision', () => {
+		const prior = target('charcoal-forged-stone-v3', 3);
+		const current = targetV3(4);
+		expect(resolveLatestSkillIconTargets([prior, current])).toEqual([
+			{ target: current, logicalKey: 'backing', revision: 4 }
+		]);
+		expect(() => assertSkillIconSupersedingRevision(prior, current)).not.toThrow();
 	});
 
 	it('rejects duplicate logical identity and revision even under different filenames', () => {
@@ -122,7 +162,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports exactly the eight unattempted latest v3 references', async () => {
+	it('reports the seven unattempted v3 references and terminal F-v3 evidence', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -137,8 +177,8 @@ describe('skill-icon revision resolution', () => {
 			'references/rarity-frame-c-v3: missing result inventory entry',
 			'references/rarity-frame-d-v3: missing result inventory entry',
 			'references/rarity-frame-e-v3: missing result inventory entry',
-			'references/rarity-frame-f-v3: missing result inventory entry',
-			'references/rarity-frame-s-v3: missing result inventory entry'
+			'references/rarity-frame-s-v3: missing result inventory entry',
+			expect.stringMatching(/^rarity-frame:F latest revision v3 is failed/iu)
 		]);
 		expect(diagnostics).toHaveLength(8);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);

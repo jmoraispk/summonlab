@@ -24,8 +24,11 @@ import {
 	AnySkillIconExecutionSchema,
 	AnySkillIconResultSchema,
 	AnySkillIconTargetSchema,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SkillIconCatalogSchema,
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconMasterPathSchema,
 	SkillIconMasterySchema,
 	SkillIconRaritySchema,
@@ -744,14 +747,38 @@ async function loadGeometrySecure(
 	root: string,
 	target?: ReturnType<typeof AnySkillIconTargetSchema.parse>
 ) {
-	const geometryPath = 'assets/wiki/skills/icon-production-v1/geometry.json';
+	const geometryPath =
+		target?.schemaVersion === 'skill-icon-target-v2'
+			? target.normalization.geometry.path
+			: 'assets/wiki/skills/icon-production-v1/geometry.json';
 	const location = await assertRepositoryPath(root, geometryPath, 'Skill icon geometry', false);
 	const bytes = await readDirectRegularFile(location, 'Skill icon geometry');
 	if (
 		target?.schemaVersion === 'skill-icon-target-v2' &&
 		sha256(bytes) !== target.normalization.geometry.contentHash
 	) {
-		throw new Error(`Skill icon geometry hash does not match latest V2 target ${target.jobId}`);
+		throw new Error(`Skill icon geometry hash does not match latest target ${target.jobId}`);
+	}
+	if (target?.schemaVersion === 'skill-icon-target-v2') {
+		const expectedGuidePath =
+			target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+				? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
+				: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
+		const guide = target.references.find((reference) => reference.path === expectedGuidePath);
+		if (!guide) throw new Error(`Target ${target.jobId} lacks its profile geometry guide`);
+		const guideLocation = await assertRepositoryPath(
+			root,
+			guide.path,
+			'Skill icon geometry guide',
+			false
+		);
+		const guideBytes = await readDirectRegularFile(guideLocation, 'Skill icon geometry guide');
+		if (sha256(guideBytes) !== guide.contentHash)
+			throw new Error(
+				`Skill icon geometry guide hash does not match latest target ${target.jobId}`
+			);
+		if (target.normalization.profile === 'skill-icon-green-key-role-mask-v3')
+			return SkillIconGeometryV2Schema.parse(JSON.parse(bytes.toString('utf8')) as unknown);
 	}
 	return SkillIconGeometrySchema.parse(JSON.parse(bytes.toString('utf8')) as unknown);
 }

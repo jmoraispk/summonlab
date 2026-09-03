@@ -9,6 +9,8 @@ The accepted tuples are exact:
   `summonlab-skill-icon-production-v2` (historical green-key normalization mode);
 - target-v2 + assignment-v2 + profile `skill-icon-green-key-role-mask-v2` +
   `summonlab-skill-icon-production-v3` (bounded provider-container and assigned-sRGB mode).
+- target-v2 + assignment-v2 + profile `skill-icon-green-key-role-mask-v3` +
+  `summonlab-skill-icon-production-v4` (geometry-v2 frame-envelope mode).
 
 Every mixed tuple is invalid. The `icon-production-v1/` path namespace names the asset system and
 does not imply packet-schema v1.
@@ -31,15 +33,21 @@ revised `skill-art` and `calibration-plate` jobs remain v1 exact-source packets 
 contract revision explicitly adds those roles. V2 adds explicit `logicalIdentity`, integer
 `revision`, and strict `normalization` authority. Profile v1 accepts one non-interlaced 1254×1254
 8-bit perceptual-sRGB PNG, RGB without alpha, over an opaque `#00FF00` matte with no baked
-checkerboard. Profile v2 accepts the same raster envelope without source color declarations and
-requires exactly one bounded, structurally valid `caBX` provider container immediately after
-`IHDR`; it rejects color metadata and all other undeclared chunks. It removes the container,
-assigns canonical perceptual sRGB, and
-decodes only the reconstructed canonical envelope. Both profiles produce a 1024×1024 RGBA PNG.
-The target binds the raw-byte SHA-256 of
+checkerboard. Profiles v2 and v3 accept the same raster envelope without source color declarations
+and require exactly one bounded, structurally valid `caBX` provider container immediately after
+`IHDR`; they reject color metadata and all other undeclared chunks. They remove the container,
+assign canonical perceptual sRGB, and decode only the reconstructed canonical envelope. All profiles
+produce a 1024×1024 RGBA PNG. Profiles v1 and v2 bind the raw-byte SHA-256 of
 `assets/wiki/skills/icon-production-v1/geometry.json`, currently
 `4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7`; semantic JSON
-reserialization is not the same authority. The profile pins Sharp 0.35.3/libvips 8.18.3, two fixed
+reserialization is not the same authority. Profile v3 instead binds the exact raw bytes of
+`assets/wiki/skills/icon-production-v1/geometry-v2.json`, currently
+`6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab`, and requires the
+hash-bound `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png` reference with
+hash `8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e` and purpose
+`Provider-space role-mask guide for rarity-frame and backing registration.` Semantic-equivalent
+rewrites or a v1/v2 geometry or guide substitution are invalid. The profile pins Sharp
+0.35.3/libvips 8.18.3, two fixed
 chroma thresholds, unmatte/despill, full-frame resize, role mask, transparent-RGB canonicalization,
 and fixed PNG encoding. No free-form or producer-selected profile is valid.
 
@@ -81,7 +89,8 @@ completion contract:
 
 Assignment-v2 additionally binds the same explicit logical identity, revision, and normalization
 profile as target-v2. Profile v1 requires `summonlab-skill-icon-production-v2`; profile v2 requires
-`summonlab-skill-icon-production-v3`. It grants no raw-provider repository path. Assignment-v1
+`summonlab-skill-icon-production-v3`; profile v3 requires
+`summonlab-skill-icon-production-v4`. It grants no raw-provider repository path. Assignment-v1
 continues to bind `summonlab-skill-icon-production-v1` and authorizes exact-source persistence only.
 
 Authorization stops at the two permitted outputs. It never includes catalogs, visual specs,

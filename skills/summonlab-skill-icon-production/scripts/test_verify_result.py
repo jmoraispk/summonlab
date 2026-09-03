@@ -21,6 +21,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import verify_result as verify_result_module  # noqa: E402
 from validate_target import (  # noqa: E402
+    GEOMETRY_GUIDE_V2_HASH,
+    GEOMETRY_GUIDE_V2_PATH,
+    GEOMETRY_GUIDE_V2_PURPOSE,
+    GEOMETRY_V2_HASH,
+    GEOMETRY_V2_PATH,
     load_json,
     read_stable_regular_file_snapshot,
     validate,
@@ -128,7 +133,11 @@ class Packet:
         ]
         references: list[dict[str, str]] = []
         for index, reference_path in enumerate(self.reference_paths):
-            data = f"reference-{index}".encode()
+            data = (
+                (REPOSITORY_ROOT / GEOMETRY_REFERENCE_PATH).read_bytes()
+                if reference_path == GEOMETRY_REFERENCE_PATH
+                else f"reference-{index}".encode()
+            )
             path = self.root / reference_path
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
@@ -191,6 +200,12 @@ class Packet:
         geometry_path = self.root / "assets/wiki/skills/icon-production-v1/geometry.json"
         geometry_path.parent.mkdir(parents=True, exist_ok=True)
         geometry_path.write_bytes(geometry_source)
+        geometry_v2_source = (REPOSITORY_ROOT / GEOMETRY_V2_PATH).read_bytes()
+        geometry_v2_path = self.root / GEOMETRY_V2_PATH
+        geometry_v2_path.write_bytes(geometry_v2_source)
+        guide_v2_source = (REPOSITORY_ROOT / GEOMETRY_GUIDE_V2_PATH).read_bytes()
+        guide_v2_path = self.root / GEOMETRY_GUIDE_V2_PATH
+        guide_v2_path.write_bytes(guide_v2_source)
         self.catalog: dict[str, object] = {
             "schemaVersion": "skill-icon-catalog-v1",
             "records": [
@@ -556,6 +571,114 @@ class SkillIconVerifierTests(unittest.TestCase):
                 contract_root=REPOSITORY_ROOT,
             )
 
+    def test_profile_v3_accepts_skill_v4_geometry_v2_and_exact_guide(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v4",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        normalization = self.packet.result["normalization"]
+        assert isinstance(normalization, dict)
+        self.assertEqual(normalization["profile"], "skill-icon-green-key-role-mask-v3")
+        self.assertEqual(normalization["geometryHash"], GEOMETRY_V2_HASH)
+        self.assertIsNone(normalization["decoderInputContentHash"])
+        self.assertIsNone(normalization["containerBox"])
+        self.assertIsNone(normalization["colorSpaceDisposition"])
+
+    def test_profile_v3_rejects_profile_v2_producer_skill_version(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v3",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+            persist_result=False,
+        )
+        with self.assertRaisesRegex(ValueError, "contract validation failed|skill version"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_profile_v2_rejects_profile_v3_producer_skill_version(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v2",
+            skill_version="summonlab-skill-icon-production-v4",
+            persist_result=False,
+        )
+        with self.assertRaisesRegex(ValueError, "contract validation failed|skill version"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_profile_v3_rejects_legacy_geometry_authority(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v4",
+            include_v2_guide=True,
+            persist_result=False,
+        )
+        with self.assertRaisesRegex(ValueError, "contract validation failed|geometry authority"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_profile_v2_rejects_geometry_v2_authority(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v2",
+            skill_version="summonlab-skill-icon-production-v3",
+            geometry_path=GEOMETRY_V2_PATH,
+            persist_result=False,
+        )
+        with self.assertRaisesRegex(ValueError, "contract validation failed|geometry authority"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_profile_v3_rejects_missing_or_mispurposed_guide(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v4",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+            persist_result=False,
+        )
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        guide = next(
+            item for item in references if item.get("path") == GEOMETRY_GUIDE_V2_PATH
+        )
+        for mutation in ("missing", "mispurposed", "wrong-hash"):
+            with self.subTest(mutation=mutation):
+                retained = list(references)
+                if mutation == "missing":
+                    references.remove(guide)
+                elif mutation == "mispurposed":
+                    guide["purpose"] = "Geometry guide for registration and safe zones."
+                else:
+                    guide["contentHash"] = HASH
+                with self.assertRaisesRegex(ValueError, "contract validation failed|geometry guide"):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+                references[:] = retained
+                guide["purpose"] = GEOMETRY_GUIDE_V2_PURPOSE
+                guide["contentHash"] = GEOMETRY_GUIDE_V2_HASH
+
     def test_rejects_extra_written_paths(self) -> None:
         written = self.packet.result["writtenOutputPaths"]
         assert isinstance(written, list)
@@ -710,6 +833,32 @@ class SkillIconVerifierTests(unittest.TestCase):
             bind_input_paths=True,
         )
 
+    def test_rejects_same_byte_profile_v3_geometry_swap(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v4",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        self._assert_late_authority_path_swap(
+            self.packet.root / GEOMETRY_V2_PATH,
+            "v2 normalization geometry authority",
+            bind_input_paths=True,
+        )
+
+    def test_rejects_same_byte_profile_v3_guide_swap(self) -> None:
+        self._prepare_v2_result_only_failure(
+            profile="skill-icon-green-key-role-mask-v3",
+            skill_version="summonlab-skill-icon-production-v4",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        self._assert_late_authority_path_swap(
+            self.packet.root / GEOMETRY_GUIDE_V2_PATH,
+            "reference",
+            bind_input_paths=True,
+        )
+
     def _assert_late_authority_path_swap(
         self, path: Path, label: str, *, bind_input_paths: bool = False
     ) -> None:
@@ -737,7 +886,15 @@ class SkillIconVerifierTests(unittest.TestCase):
             ):
                 self.packet.verify(bind_input_paths=bind_input_paths)
 
-    def _prepare_v2_result_only_failure(self) -> None:
+    def _prepare_v2_result_only_failure(
+        self,
+        *,
+        profile: str = "skill-icon-green-key-role-mask-v1",
+        skill_version: str = "summonlab-skill-icon-production-v2",
+        geometry_path: str = GEOMETRY_PATH,
+        include_v2_guide: bool = False,
+        persist_result: bool = True,
+    ) -> None:
         job_id = "charcoal-forged-stone-v2"
         self.packet.rebind_role("backing", job_id)
         self.packet.candidate_file.unlink()
@@ -748,8 +905,18 @@ class SkillIconVerifierTests(unittest.TestCase):
             "Paint the backing over an opaque #00FF00 matte with no baked checkerboard."
         )
         geometry_hash = hashlib.sha256(
-            (self.packet.root / GEOMETRY_PATH).read_bytes()
+            (self.packet.root / geometry_path).read_bytes()
         ).hexdigest()
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        if include_v2_guide:
+            references.append(
+                {
+                    "path": GEOMETRY_GUIDE_V2_PATH,
+                    "purpose": GEOMETRY_GUIDE_V2_PURPOSE,
+                    "contentHash": GEOMETRY_GUIDE_V2_HASH,
+                }
+            )
         self.packet.target.update(
             {
                 "schemaVersion": "skill-icon-target-v2",
@@ -757,7 +924,7 @@ class SkillIconVerifierTests(unittest.TestCase):
                 "revision": 2,
                 "exactPrompt": exact_prompt,
                 "normalization": {
-                    "profile": "skill-icon-green-key-role-mask-v1",
+                    "profile": profile,
                     "sourceContract": {
                         "mediaType": "image/png",
                         "width": 1254,
@@ -772,7 +939,7 @@ class SkillIconVerifierTests(unittest.TestCase):
                         "alphaMode": "rgba",
                     },
                     "geometry": {
-                        "path": GEOMETRY_PATH,
+                        "path": geometry_path,
                         "contentHash": geometry_hash,
                     },
                 },
@@ -783,8 +950,8 @@ class SkillIconVerifierTests(unittest.TestCase):
                 "schemaVersion": "skill-icon-assignment-v2",
                 "logicalIdentity": "charcoal-forged-stone",
                 "revision": 2,
-                "skillVersion": "summonlab-skill-icon-production-v2",
-                "normalization": {"profile": "skill-icon-green-key-role-mask-v1"},
+                "skillVersion": skill_version,
+                "normalization": {"profile": profile},
             }
         )
         target_path = self.packet.assignment["targetPath"]
@@ -803,24 +970,25 @@ class SkillIconVerifierTests(unittest.TestCase):
             cwd=self.packet.root,
             check=True,
         )
-        persist_failed_result(
-            self.packet.target,
-            self.packet.assignment,
-            self.packet.root,
-            attempt_count=1,
-            failure_kind="provider-failure",
-            failure_message="The provider returned no image bytes.",
-            started_at=STARTED_AT,
-            completed_at=COMPLETED_AT,
-            total_wall_time_ms=TOTAL_WALL_TIME_MS,
-            contract_root=REPOSITORY_ROOT,
-            target_path=self.packet.target_file,
-            assignment_path=self.packet.assignment_file,
-        )
-        self.packet.result_file = self.packet.root / self.packet.target["output"][
-            "resultPath"
-        ]
-        self.packet.result = load_json(self.packet.result_file)
+        if persist_result:
+            persist_failed_result(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                attempt_count=1,
+                failure_kind="provider-failure",
+                failure_message="The provider returned no image bytes.",
+                started_at=STARTED_AT,
+                completed_at=COMPLETED_AT,
+                total_wall_time_ms=TOTAL_WALL_TIME_MS,
+                contract_root=REPOSITORY_ROOT,
+                target_path=self.packet.target_file,
+                assignment_path=self.packet.assignment_file,
+            )
+            self.packet.result_file = self.packet.root / self.packet.target["output"][
+                "resultPath"
+            ]
+            self.packet.result = load_json(self.packet.result_file)
 
     def _prepare_superseded_packet(
         self,
@@ -843,6 +1011,15 @@ class SkillIconVerifierTests(unittest.TestCase):
             (self.packet.root / GEOMETRY_PATH).read_bytes()
         ).hexdigest()
         references = self.packet.target["references"]
+        assert isinstance(references, list)
+        if higher_profile == "skill-icon-green-key-role-mask-v3":
+            references.append(
+                {
+                    "path": GEOMETRY_GUIDE_V2_PATH,
+                    "purpose": GEOMETRY_GUIDE_V2_PURPOSE,
+                    "contentHash": GEOMETRY_GUIDE_V2_HASH,
+                }
+            )
         exact_prompt = (
             "Paint one charcoal forged-stone backing over an opaque #00FF00 matte "
             "with no baked checkerboard."
@@ -858,6 +1035,14 @@ class SkillIconVerifierTests(unittest.TestCase):
             }
 
         def normalization(profile: str) -> dict[str, object]:
+            profile_geometry_path = (
+                GEOMETRY_V2_PATH
+                if profile == "skill-icon-green-key-role-mask-v3"
+                else GEOMETRY_PATH
+            )
+            profile_geometry_hash = hashlib.sha256(
+                (self.packet.root / profile_geometry_path).read_bytes()
+            ).hexdigest()
             return {
                 "profile": profile,
                 "sourceContract": {
@@ -873,7 +1058,10 @@ class SkillIconVerifierTests(unittest.TestCase):
                     "height": 1024,
                     "alphaMode": "rgba",
                 },
-                "geometry": {"path": GEOMETRY_PATH, "contentHash": geometry_hash},
+                "geometry": {
+                    "path": profile_geometry_path,
+                    "contentHash": profile_geometry_hash,
+                },
             }
 
         def target(job_id: str, revision: int, profile: str) -> dict[str, object]:
@@ -1044,6 +1232,16 @@ class SkillIconVerifierTests(unittest.TestCase):
         self._prepare_superseded_packet(
             higher_profile="skill-icon-green-key-role-mask-v1",
             higher_skill_version="summonlab-skill-icon-production-v2",
+        )
+        self.assertEqual(
+            self.packet.verify(attempt_count=0, bind_input_paths=True)["status"],
+            "superseded",
+        )
+
+    def test_accepts_profile_v3_higher_superseding_authority(self) -> None:
+        self._prepare_superseded_packet(
+            higher_profile="skill-icon-green-key-role-mask-v3",
+            higher_skill_version="summonlab-skill-icon-production-v4",
         )
         self.assertEqual(
             self.packet.verify(attempt_count=0, bind_input_paths=True)["status"],
@@ -1952,6 +2150,51 @@ class SkillIconVerifierTests(unittest.TestCase):
         verify_result_module._validate_profile_normalization_evidence(
             target, {"normalization": all_present}, None
         )
+
+    def test_profile_v3_uses_profile_v2_completed_and_failed_provenance(self) -> None:
+        content_hash = hashlib.sha256(b"profile-v3 evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-green-key-role-mask-v3"}}
+        completed = {
+            "profile": "skill-icon-green-key-role-mask-v3",
+            "outcome": "completed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+            "outputContentHash": content_hash,
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": completed}, content_hash
+        )
+
+        failed = {**completed, "outcome": "failed", "outputContentHash": None}
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": failed}, None
+        )
+        for field in (
+            "decoderInputContentHash",
+            "containerBox",
+            "colorSpaceDisposition",
+        ):
+            with self.subTest(field=field):
+                partial = dict(failed)
+                partial[field] = None
+                with self.assertRaisesRegex(ValueError, "all null or all present"):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, {"normalization": partial}, None
+                    )
+
+        leaked = dict(completed)
+        leaked["containerBox"] = {**completed["containerBox"], "payload": "forbidden"}
+        with self.assertRaisesRegex(ValueError, "pathless and exact|pathless caBX"):
+            verify_result_module._validate_profile_normalization_evidence(
+                target, {"normalization": leaked}, content_hash
+            )
 
     def test_result_only_failure_refuses_collision(self) -> None:
         self.packet.candidate_file.unlink()

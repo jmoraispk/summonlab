@@ -19,6 +19,10 @@ from typing import Any, Callable
 
 from validate_target import (
     AuthoritySnapshot,
+    GEOMETRY_PATH,
+    PROFILE_V1,
+    PROFILE_V2,
+    PROFILE_V3,
     StableFileSnapshot,
     _path_argument,
     absolute_project_path,
@@ -32,7 +36,6 @@ from validate_target import (
     validate,
 )
 
-GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
 FAILURE_KINDS = {
     "provider-failure",
     "provider-throttle",
@@ -47,8 +50,6 @@ ISO_TIMESTAMP_PATTERN = re.compile(
     r"(?:\.(?P<fraction>\d+))?(?P<zone>Z|[+-]\d{2}:\d{2})$"
 )
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
-PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
-PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
 SUPERSESSION_REASON = "unattempted-packet-superseded-by-higher-revision"
 
 
@@ -106,7 +107,7 @@ def _validate_profile_normalization_evidence(
         )
         if output_hash is not None and recorded_output_hash != output_hash:
             fail("normalized output hash does not bind retained candidate")
-        if profile == PROFILE_V2:
+        if profile in {PROFILE_V2, PROFILE_V3}:
             _require_sha256(
                 evidence.get("decoderInputContentHash"),
                 "canonical decoder input content hash",
@@ -134,7 +135,7 @@ def _validate_profile_normalization_evidence(
                 fail("profile-v2 evidence must record assigned-srgb")
         elif profile != PROFILE_V1:
             fail("normalization evidence uses an unsupported profile")
-    elif profile == PROFILE_V2:
+    elif profile in {PROFILE_V2, PROFILE_V3}:
         decoder_hash = evidence.get("decoderInputContentHash")
         container_box = evidence.get("containerBox")
         color_disposition = evidence.get("colorSpaceDisposition")
@@ -536,8 +537,14 @@ def verify(
         candidate = absolute_project_path(
             root, candidate_path, must_exist=True, regular_file=True
         )
+        target_normalization = target.get("normalization")
+        geometry_authority_path = (
+            target_normalization["geometry"]["path"]
+            if isinstance(target_normalization, dict)
+            else GEOMETRY_PATH
+        )
         geometry_path = absolute_project_path(
-            root, GEOMETRY_PATH, must_exist=True, regular_file=True
+            root, geometry_authority_path, must_exist=True, regular_file=True
         )
         geometry_snapshot = read_stable_regular_file_snapshot(geometry_path)
         geometry = json.loads(geometry_snapshot.data.decode("utf-8"))
@@ -1199,7 +1206,7 @@ def persist_failed_result(
                 },
             }
         )
-        if normalization["profile"] == PROFILE_V2:
+        if normalization["profile"] in {PROFILE_V2, PROFILE_V3}:
             result["normalization"].update(
                 {
                     "decoderInputContentHash": None,

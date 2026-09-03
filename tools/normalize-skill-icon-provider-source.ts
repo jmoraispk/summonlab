@@ -6,18 +6,23 @@ import sharp from 'sharp';
 
 import {
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconRoleSchema,
 	type SkillIconGeometry,
+	type SkillIconGeometryV2,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
 import { SKILL_ICON_FRAME_INNER_APERTURE_SCALE } from './validate-skill-icon-assets.js';
 
 export const SKILL_ICON_NORMALIZATION_PROFILE_V1 = 'skill-icon-green-key-role-mask-v1' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V2 = 'skill-icon-green-key-role-mask-v2' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V3 = 'skill-icon-green-key-role-mask-v3' as const;
 /** Compatibility alias for the original, default profile. */
 export const SKILL_ICON_NORMALIZATION_PROFILE = SKILL_ICON_NORMALIZATION_PROFILE_V1;
 export type SkillIconNormalizationProfile =
-	typeof SKILL_ICON_NORMALIZATION_PROFILE_V1 | typeof SKILL_ICON_NORMALIZATION_PROFILE_V2;
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V1
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3;
 export const SKILL_ICON_PROVIDER_SIZE = 1254;
 export const SKILL_ICON_PROVIDER_MATTE = '#00FF00' as const;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE = 12;
@@ -73,8 +78,17 @@ export interface SkillIconNormalizationEvidenceV2 extends SkillIconNormalization
 	readonly colorSpaceDisposition: 'assigned-srgb';
 }
 
+export interface SkillIconNormalizationEvidenceV3 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V3;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: SkillIconNormalizationEvidenceV2['containerBox'];
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
 export type SkillIconNormalizationEvidence =
-	SkillIconNormalizationEvidenceV1 | SkillIconNormalizationEvidenceV2;
+	| SkillIconNormalizationEvidenceV1
+	| SkillIconNormalizationEvidenceV2
+	| SkillIconNormalizationEvidenceV3;
 
 export interface NormalizedSkillIconProviderSource<
 	Normalization extends SkillIconNormalizationEvidence = SkillIconNormalizationEvidence
@@ -137,6 +151,16 @@ interface ProviderPngEnvelope {
 	readonly containerBox?: SkillIconNormalizationEvidenceV2['containerBox'];
 }
 
+function isProviderCompatibleProfile(
+	profile: SkillIconNormalizationProfile
+): profile is
+	typeof SKILL_ICON_NORMALIZATION_PROFILE_V2 | typeof SKILL_ICON_NORMALIZATION_PROFILE_V3 {
+	return (
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+	);
+}
+
 /**
  * Accept only the profile's explicit, color-metadata-free sRGB PNG envelope. Parsing
  * this before libvips prevents ancillary chunks or bytes after IEND from being
@@ -160,7 +184,7 @@ function assertCanonicalProviderPngEnvelope(
 	let cabxData: Buffer | undefined;
 	const idatChunks: Buffer[] = [];
 	while (offset < bytes.length) {
-		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && chunkIndex >= PNG_V2_MAX_CHUNKS)
+		if (isProviderCompatibleProfile(profile) && chunkIndex >= PNG_V2_MAX_CHUNKS)
 			throw new Error(`Provider PNG exceeds the ${PNG_V2_MAX_CHUNKS}-chunk limit`);
 		if (offset + 12 > bytes.length) throw new Error('Provider PNG has a truncated chunk');
 		const length = bytes.readUInt32BE(offset);
@@ -180,7 +204,7 @@ function assertCanonicalProviderPngEnvelope(
 			throw new Error(`Provider PNG ${type} chunk has an invalid CRC`);
 		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1 && !PNG_V1_ALLOWED_CHUNKS.has(type))
 			throw new Error(`Provider PNG contains forbidden ${type} metadata`);
-		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !PNG_V2_ALLOWED_CHUNKS.has(type))
+		if (isProviderCompatibleProfile(profile) && !PNG_V2_ALLOWED_CHUNKS.has(type))
 			throw new Error(`Provider PNG v2 contains forbidden ${type} chunk`);
 		if (chunkIndex === 0 && type !== 'IHDR') throw new Error('Provider PNG must begin with IHDR');
 		if (chunkIndex > 0 && type === 'IHDR') throw new Error('Provider PNG contains duplicate IHDR');
@@ -197,7 +221,7 @@ function assertCanonicalProviderPngEnvelope(
 				throw new Error('Provider PNG must be non-interlaced 8-bit RGB');
 			ihdrChunk = bytes.subarray(offset, chunkEnd);
 		} else if (type === 'caBX') {
-			if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2)
+			if (!isProviderCompatibleProfile(profile))
 				throw new Error('Provider PNG contains forbidden caBX metadata');
 			if (sawCabx) throw new Error('Provider PNG v2 contains duplicate caBX chunks');
 			if (chunkIndex !== 1)
@@ -213,13 +237,13 @@ function assertCanonicalProviderPngEnvelope(
 			sawCabx = true;
 			cabxData = Buffer.from(data);
 		} else if (type === 'sRGB') {
-			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2)
+			if (isProviderCompatibleProfile(profile))
 				throw new Error('Provider PNG v2 contains forbidden sRGB chunk');
 			if (sawSrgb || sawIdat || length !== 1 || data[0] !== PNG_SRGB_RENDERING_INTENT)
 				throw new Error('Provider PNG must contain one canonical perceptual sRGB declaration');
 			sawSrgb = true;
 		} else if (type === 'pHYs') {
-			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2)
+			if (isProviderCompatibleProfile(profile))
 				throw new Error('Provider PNG v2 contains forbidden pHYs chunk');
 			if (sawPhys || sawIdat || length !== 9 || (data[8] !== 0 && data[8] !== 1))
 				throw new Error('Provider PNG has an invalid pHYs chunk');
@@ -227,7 +251,7 @@ function assertCanonicalProviderPngEnvelope(
 		} else if (type === 'IDAT') {
 			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1 && !sawSrgb)
 				throw new Error('Provider PNG colorimetry is undeclared; an sRGB chunk is required');
-			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !sawCabx)
+			if (isProviderCompatibleProfile(profile) && !sawCabx)
 				throw new Error('Provider PNG v2 must contain caBX immediately after IHDR');
 			if (finishedIdat) throw new Error('Provider PNG IDAT chunks must be consecutive');
 			sawIdat = true;
@@ -244,7 +268,7 @@ function assertCanonicalProviderPngEnvelope(
 		if (sawIend) break;
 	}
 	if (!sawIend) throw new Error('Provider PNG is missing IEND');
-	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !sawCabx)
+	if (isProviderCompatibleProfile(profile) && !sawCabx)
 		throw new Error('Provider PNG v2 must contain exactly one caBX chunk');
 	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1) return { decoderInput: bytes };
 	if (!ihdrChunk || !cabxData) throw new Error('Provider PNG v2 envelope is incomplete');
@@ -415,7 +439,7 @@ function assertProviderMatte(
 	data: Buffer,
 	width: number,
 	height: number,
-	geometry: SkillIconGeometry,
+	geometry: SkillIconGeometryAuthority,
 	allowsPixel: (x: number, y: number) => boolean,
 	transparentDistance: number
 ): void {
@@ -561,7 +585,8 @@ function assertNoSpatialAlphaCheckerboard(
 	rgba: Buffer,
 	width: number,
 	height: number,
-	roleMask: Uint8Array
+	roleMask: Uint8Array,
+	profile: SkillIconNormalizationProfile
 ): void {
 	const alphaBins = new Uint32Array(16);
 	let allowedPixels = 0;
@@ -588,6 +613,60 @@ function assertNoSpatialAlphaCheckerboard(
 		const alphaBin = Math.min(15, (rgba[pixelIndex * 4 + 3] ?? 0) >> 4);
 		return alphaBin === firstBin ? 0 : alphaBin === secondBin ? 1 : -1;
 	};
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V3) {
+		// A transition-only heuristic mistakes textured, partially transparent forged
+		// material for a checker. V3 requires periodic A-B-A recurrence on both axes
+		// while scanning every supported macro lag; v1/v2 retain their historical gate.
+		const minimumDimension = Math.min(width, height);
+		const maximumMacroLag = Math.floor(minimumDimension / 6);
+		const sampleStride = Math.max(2, Math.floor(minimumDimension / 180));
+		for (let lag = 1; lag <= maximumMacroLag; lag += 1) {
+			let horizontalTriplets = 0;
+			let horizontalAlternations = 0;
+			let verticalTriplets = 0;
+			let verticalAlternations = 0;
+			for (let y = 0; y < height; y += sampleStride) {
+				for (let x = 0; x < width; x += sampleStride) {
+					const pixelIndex = y * width + x;
+					if (roleMask[pixelIndex] !== 1) continue;
+					const first = classify(pixelIndex);
+					if (first < 0) continue;
+					if (x + lag * 2 < width) {
+						const secondIndex = pixelIndex + lag;
+						const thirdIndex = secondIndex + lag;
+						if (roleMask[secondIndex] === 1 && roleMask[thirdIndex] === 1) {
+							const second = classify(secondIndex);
+							const third = classify(thirdIndex);
+							if (second >= 0 && third >= 0) {
+								horizontalTriplets += 1;
+								if (first === third && first !== second) horizontalAlternations += 1;
+							}
+						}
+					}
+					if (y + lag * 2 < height) {
+						const secondIndex = pixelIndex + lag * width;
+						const thirdIndex = secondIndex + lag * width;
+						if (roleMask[secondIndex] === 1 && roleMask[thirdIndex] === 1) {
+							const second = classify(secondIndex);
+							const third = classify(thirdIndex);
+							if (second >= 0 && third >= 0) {
+								verticalTriplets += 1;
+								if (first === third && first !== second) verticalAlternations += 1;
+							}
+						}
+					}
+				}
+			}
+			if (
+				horizontalAlternations / Math.max(1, horizontalTriplets) >= 0.2 &&
+				verticalAlternations / Math.max(1, verticalTriplets) >= 0.2
+			)
+				throw new Error(
+					'Provider source contains a spatially alternating opacity checkerboard matte'
+				);
+		}
+		return;
+	}
 	for (const lag of [1, 2, 4, 8, 16]) {
 		let horizontalPairs = 0;
 		let horizontalTransitions = 0;
@@ -630,7 +709,7 @@ export function skillIconGreenKeyAlpha(red: number, green: number, blue: number)
 	return skillIconGreenKeyAlphaForProfile(red, green, blue, SKILL_ICON_NORMALIZATION_PROFILE_V1);
 }
 
-/** Profile-dispatched alpha curve. V2 widens only the fully transparent key distance. */
+/** Profile-dispatched alpha curve. Provider-compatible profiles widen only key transparency. */
 export function skillIconGreenKeyAlphaForProfile(
 	red: number,
 	green: number,
@@ -638,10 +717,9 @@ export function skillIconGreenKeyAlphaForProfile(
 	profile: SkillIconNormalizationProfile
 ): number {
 	const distance = keyDistance(red, green, blue);
-	const transparentDistance =
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
-			? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
-			: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
+	const transparentDistance = isProviderCompatibleProfile(profile)
+		? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
+		: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
 	if (distance <= transparentDistance) return 0;
 	if (distance >= SKILL_ICON_PROVIDER_OPAQUE_DISTANCE) return 255;
 	return Math.round(
@@ -650,22 +728,41 @@ export function skillIconGreenKeyAlphaForProfile(
 	);
 }
 
-function buildRoleMask(role: SkillIconRole, geometry: SkillIconGeometry): Uint8Array {
+type SkillIconGeometryAuthority = SkillIconGeometry | SkillIconGeometryV2;
+
+function buildRoleMask(
+	role: SkillIconRole,
+	geometry: SkillIconGeometryAuthority,
+	profile: SkillIconNormalizationProfile
+): Uint8Array {
 	const width = geometry.canvas.width;
 	const height = geometry.canvas.height;
 	const aperture = scaledPolygon(geometry.aperturePoints, width, height);
 	const medallion = scaledPolygon(geometry.rarityMedallionExclusion, width, height);
 	const center: Point = [geometry.center.x, geometry.center.y];
-	const inner = insetPolygon(aperture, center, SKILL_ICON_FRAME_INNER_APERTURE_SCALE);
+	const geometryV2 = geometry.schemaVersion === 'skill-icon-geometry-v2';
+	const outerEnvelope = geometryV2
+		? scaledPolygon(geometry.outerEnvelopePoints, width, height)
+		: aperture;
+	const inner = insetPolygon(
+		aperture,
+		center,
+		geometryV2 ? geometry.innerApertureScale : SKILL_ICON_FRAME_INNER_APERTURE_SCALE
+	);
 	const mask = new Uint8Array(width * height);
 	for (let y = 0; y < height; y += 1) {
 		for (let x = 0; x < width; x += 1) {
 			const pixelX = x + 0.5;
 			const pixelY = y + 0.5;
+			const insideInnerAperture = pointInPolygon(pixelX, pixelY, inner);
 			const allowed =
 				role === 'rarity-frame'
-					? (pointInPolygon(pixelX, pixelY, aperture) && !pointInPolygon(pixelX, pixelY, inner)) ||
-						pointInPolygon(pixelX, pixelY, medallion)
+					? profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+						? // The medallion is a union authority, not part of the inset aperture ring.
+							(pointInPolygon(pixelX, pixelY, outerEnvelope) && !insideInnerAperture) ||
+							pointInPolygon(pixelX, pixelY, medallion)
+						: (pointInPolygon(pixelX, pixelY, aperture) && !insideInnerAperture) ||
+							pointInPolygon(pixelX, pixelY, medallion)
 					: pointInPolygon(pixelX, pixelY, aperture);
 			if (allowed) mask[y * width + x] = 1;
 		}
@@ -713,6 +810,12 @@ export function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV3>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
 	profile: SkillIconNormalizationProfile
 ): Promise<NormalizedSkillIconProviderSource>;
 export async function normalizeSkillIconProviderSource(
@@ -729,7 +832,8 @@ export async function normalizeSkillIconProviderSource(
 	const geometrySnapshot = Buffer.from(geometrySourceBytes);
 	if (
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V1 &&
-		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 &&
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V3
 	)
 		throw new Error('Unsupported skill-icon normalization profile');
 	const envelope = assertCanonicalProviderPngEnvelope(sourceSnapshot, profile);
@@ -742,14 +846,16 @@ export async function normalizeSkillIconProviderSource(
 	} catch {
 		throw new Error('Geometry authority is not valid JSON');
 	}
-	const geometry = SkillIconGeometrySchema.parse(rawGeometry);
-	const roleMask = buildRoleMask(role, geometry);
+	const geometry: SkillIconGeometryAuthority =
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+			? SkillIconGeometryV2Schema.parse(rawGeometry)
+			: SkillIconGeometrySchema.parse(rawGeometry);
+	const roleMask = buildRoleMask(role, geometry, profile);
 	const allowsPixel = (x: number, y: number): boolean =>
 		roleMask[y * geometry.canvas.width + x] === 1;
-	const transparentDistance =
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
-			? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
-			: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
+	const transparentDistance = isProviderCompatibleProfile(profile)
+		? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
+		: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
 	if (
 		sharp.versions.sharp !== SKILL_ICON_NORMALIZER_SHARP_VERSION ||
 		sharp.versions.vips !== SKILL_ICON_NORMALIZER_VIPS_VERSION
@@ -828,7 +934,13 @@ export async function normalizeSkillIconProviderSource(
 		rgba[outputOffset + 2] = foregroundBlue;
 		rgba[outputOffset + 3] = alpha;
 	}
-	assertNoSpatialAlphaCheckerboard(rgba, decoded.info.width, decoded.info.height, providerRoleMask);
+	assertNoSpatialAlphaCheckerboard(
+		rgba,
+		decoded.info.width,
+		decoded.info.height,
+		providerRoleMask,
+		profile
+	);
 	const resized = await sharp(rgba, {
 		raw: { width: decoded.info.width, height: decoded.info.height, channels: 4 }
 	})
@@ -843,7 +955,8 @@ export async function normalizeSkillIconProviderSource(
 		resized,
 		geometry.canvas.width,
 		geometry.canvas.height,
-		roleMask
+		roleMask,
+		profile
 	);
 	assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	let visiblePixels = 0;
@@ -877,19 +990,18 @@ export async function normalizeSkillIconProviderSource(
 		sourceContentHash: sourceHash,
 		outputContentHash: outputHash
 	};
-	const normalization: SkillIconNormalizationEvidence =
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
-			? {
-					...normalizationBase,
-					profile,
-					decoderInputContentHash: sha256(envelope.decoderInput),
-					containerBox: envelope.containerBox!,
-					colorSpaceDisposition: 'assigned-srgb'
-				}
-			: {
-					...normalizationBase,
-					profile
-				};
+	const normalization: SkillIconNormalizationEvidence = isProviderCompatibleProfile(profile)
+		? {
+				...normalizationBase,
+				profile,
+				decoderInputContentHash: sha256(envelope.decoderInput),
+				containerBox: envelope.containerBox!,
+				colorSpaceDisposition: 'assigned-srgb'
+			}
+		: {
+				...normalizationBase,
+				profile
+			};
 	return {
 		source: {
 			mediaType: 'image/png',

@@ -8,11 +8,16 @@ import { promisify } from 'node:util';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SkillIconGeometrySchema } from '../packages/contracts/src/index.js';
+import {
+	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema
+} from '../packages/contracts/src/index.js';
 import {
 	normalizeSkillIconProviderSource,
 	readSkillIconProviderSourceOnce,
+	SKILL_ICON_NORMALIZATION_PROFILE_V1,
 	SKILL_ICON_NORMALIZATION_PROFILE_V2,
+	SKILL_ICON_NORMALIZATION_PROFILE_V3,
 	SKILL_ICON_PROVIDER_MAX_BYTES,
 	skillIconGreenKeyAlpha,
 	skillIconGreenKeyAlphaForProfile
@@ -26,6 +31,8 @@ afterEach(async () =>
 
 const geometryBytes = await readFile('assets/wiki/skills/icon-production-v1/geometry.json');
 const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
+const geometryV2Bytes = await readFile('assets/wiki/skills/icon-production-v1/geometry-v2.json');
+const geometryV2 = SkillIconGeometryV2Schema.parse(JSON.parse(geometryV2Bytes.toString('utf8')));
 const execFileAsync = promisify(execFile);
 
 function crc32(bytes: Buffer): number {
@@ -133,6 +140,57 @@ async function providerSource(role: 'rarity-frame' | 'backing'): Promise<Buffer>
 	return declareSrgb(png);
 }
 
+async function legacyFrameSource(extraSvg = ''): Promise<Buffer> {
+	const svg = Buffer.from(
+		`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><path d="M627 98 L1107 372 L1107 882 L627 1156 L147 882 L147 372 Z M627 214 L1001 428 L1001 826 L627 1040 L253 826 L253 428 Z" fill="#3a3a42" fill-rule="evenodd"/><rect x="520" y="0" width="214" height="250" rx="35" fill="#3a3a42"/>${extraSvg}</svg>`
+	);
+	return declareSrgb(
+		await sharp({
+			create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+		})
+			.composite([{ input: svg }])
+			.removeAlpha()
+			.png({ progressive: false, palette: false })
+			.toBuffer()
+	);
+}
+
+function scaledPoints(
+	points: readonly (readonly [number, number])[],
+	size = 1254
+): readonly (readonly [number, number])[] {
+	return points.map(([x, y]) => [x * size, y * size]);
+}
+
+function pointsAttribute(points: readonly (readonly [number, number])[]): string {
+	return points.map(([x, y]) => `${x},${y}`).join(' ');
+}
+
+async function profileV3FrameSource(extraSvg = ''): Promise<Buffer> {
+	const center = [627, 627] as const;
+	const outer = scaledPoints(geometryV2.outerEnvelopePoints);
+	const aperture = scaledPoints(geometryV2.aperturePoints);
+	const inner = aperture.map(
+		([x, y]) =>
+			[
+				center[0] + (x - center[0]) * geometryV2.innerApertureScale,
+				center[1] + (y - center[1]) * geometryV2.innerApertureScale
+			] as const
+	);
+	const framePath = `${outer.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x} ${y}`).join(' ')} Z ${inner.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x} ${y}`).join(' ')} Z`;
+	const svg = Buffer.from(
+		`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><path d="${framePath}" fill="#3a3a42" fill-rule="evenodd"/><rect x="520" y="0" width="214" height="250" rx="35" fill="#3a3a42"/>${extraSvg}</svg>`
+	);
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+	})
+		.composite([{ input: svg }])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+	return declareCabx(png);
+}
+
 describe('skill-icon provider normalization', () => {
 	it('keeps the fixed green-key thresholds bright enough to preserve dark green material', () => {
 		expect(skillIconGreenKeyAlpha(0, 255, 0)).toBe(0);
@@ -160,6 +218,12 @@ describe('skill-icon provider normalization', () => {
 		).toBeGreaterThan(0);
 		expect(skillIconGreenKeyAlphaForProfile(0, 159, 0, SKILL_ICON_NORMALIZATION_PROFILE_V2)).toBe(
 			255
+		);
+		expect(skillIconGreenKeyAlphaForProfile(0, 235, 0, SKILL_ICON_NORMALIZATION_PROFILE_V3)).toBe(
+			0
+		);
+		expect(skillIconGreenKeyAlphaForProfile(0, 230, 0, SKILL_ICON_NORMALIZATION_PROFILE_V3)).toBe(
+			skillIconGreenKeyAlphaForProfile(0, 230, 0, SKILL_ICON_NORMALIZATION_PROFILE_V2)
 		);
 	});
 
@@ -278,6 +342,259 @@ describe('skill-icon provider normalization', () => {
 		expect(first.bytes).toEqual(second.bytes);
 		expect(pngChunks(first.bytes).map(({ type }) => type)).not.toContain('caBX');
 	});
+
+	it('preserves the v2 output goldens byte-for-byte', async () => {
+		for (const [role, goldenHash] of [
+			['rarity-frame', '974fe110fbbdd8d9a2e53702cfb9f18734ad253bcec48ac836e8b1611307b9a0'],
+			['backing', '76d57aa23eed7455d427b77e83479b427513b5902f50184d976bf24bea639916']
+		] as const) {
+			const normalized = await normalizeSkillIconProviderSource(
+				declareCabx(await providerSource(role)),
+				role,
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			);
+			expect(normalized.normalization.outputContentHash).toBe(goldenHash);
+		}
+	}, 20_000);
+
+	it('accepts corrected frame overscan only with the profile-v3 outer envelope', async () => {
+		const source = await profileV3FrameSource();
+		await expect(
+			normalizeSkillIconProviderSource(
+				source,
+				'rarity-frame',
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			)
+		).rejects.toThrow(/required transparent/u);
+
+		const normalized = await normalizeSkillIconProviderSource(
+			source,
+			'rarity-frame',
+			geometryV2Bytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V3
+		);
+		expect(normalized.normalization).toMatchObject({
+			profile: SKILL_ICON_NORMALIZATION_PROFILE_V3,
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: {
+				chunkType: 'caBX',
+				bytes: expect.any(Number),
+				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+			},
+			colorSpaceDisposition: 'assigned-srgb'
+		});
+		expect(
+			(await inspectSkillIconAsset(normalized.bytes, 'rarity-frame', geometryV2)).violations
+		).toEqual([]);
+		const pixels = await sharp(normalized.bytes).ensureAlpha().raw().toBuffer();
+		expect(pixels[(60 * 1024 + 512) * 4 + 3]).toBeGreaterThan(8);
+		expect(pngChunks(normalized.bytes).map(({ type }) => type)).not.toContain('caBX');
+	}, 20_000);
+
+	it('keeps profile-v3 backing pixels identical to v2 while binding geometry-v2', async () => {
+		const source = declareCabx(await providerSource('backing'));
+		const v2 = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		const v3 = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V3
+		);
+		expect(v3.bytes).toEqual(v2.bytes);
+		expect(v3.normalization.outputContentHash).toBe(v2.normalization.outputContentHash);
+		expect(v3.normalization.geometryHash).not.toBe(v2.normalization.geometryHash);
+	});
+
+	it('applies the complete bounded profile-v2 PNG envelope to profile v3', async () => {
+		const base = await providerSource('backing');
+		const parsed = pngChunks(declareCabx(base));
+		const ihdr = parsed[0]!.bytes;
+		const idats = parsed.filter(({ type }) => type === 'IDAT').map(({ bytes }) => bytes);
+		const iend = parsed.at(-1)!.bytes;
+		const normalizeV3 = (source: Buffer) =>
+			normalizeSkillIconProviderSource(
+				source,
+				'backing',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			);
+		const minimumCabx = Buffer.alloc(8);
+		minimumCabx.writeUInt32BE(8, 0);
+		minimumCabx.write('jumb', 4, 'ascii');
+		await expect(
+			normalizeV3(encodePngChunks([ihdr, pngChunk('caBX', minimumCabx), ...idats, iend]))
+		).resolves.toMatchObject({
+			normalization: {
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V3,
+				containerBox: { bytes: 8 },
+				colorSpaceDisposition: 'assigned-srgb'
+			}
+		});
+		const maximumCabx = Buffer.alloc(32_768);
+		maximumCabx.writeUInt32BE(maximumCabx.length, 0);
+		maximumCabx.write('jumb', 4, 'ascii');
+		await expect(
+			normalizeV3(encodePngChunks([ihdr, pngChunk('caBX', maximumCabx), ...idats, iend]))
+		).resolves.toMatchObject({ normalization: { containerBox: { bytes: 32_768 } } });
+
+		const cabx = pngChunk('caBX', cabxData());
+		await expect(normalizeV3(encodePngChunks([ihdr, cabx, cabx, ...idats, iend]))).rejects.toThrow(
+			/duplicate caBX/u
+		);
+		await expect(normalizeV3(encodePngChunks([ihdr, ...idats, iend]))).rejects.toThrow(/caBX/u);
+		await expect(
+			normalizeV3(encodePngChunks([ihdr, cabx, pngChunk('sRGB', Buffer.from([0])), ...idats, iend]))
+		).rejects.toThrow(/forbidden sRGB/u);
+		const compressedIdat = Buffer.concat(
+			parsed.filter(({ type }) => type === 'IDAT').map(({ data }) => data)
+		);
+		const excessiveIdats = Array.from({ length: 1022 }, (_, index) => {
+			const start = Math.floor((compressedIdat.length * index) / 1022);
+			const end = Math.floor((compressedIdat.length * (index + 1)) / 1022);
+			return pngChunk('IDAT', compressedIdat.subarray(start, end));
+		});
+		await expect(
+			normalizeV3(encodePngChunks([ihdr, cabx, ...excessiveIdats, iend]))
+		).rejects.toThrow(/1024-chunk limit/u);
+		await expect(
+			normalizeV3(Buffer.concat([encodePngChunks([ihdr, cabx, ...idats, iend]), Buffer.from([0])]))
+		).rejects.toThrow(/trailing data/u);
+	}, 20_000);
+
+	it('rejects cross-profile geometry authorities', async () => {
+		const source = declareCabx(await providerSource('backing'));
+		await expect(
+			normalizeSkillIconProviderSource(
+				source,
+				'backing',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			)
+		).rejects.toThrow();
+		await expect(
+			normalizeSkillIconProviderSource(
+				source,
+				'backing',
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow();
+	});
+
+	it('rejects profile-v3 medallion spill and disconnected objects outside the outer envelope', async () => {
+		const medallionSpill = await profileV3FrameSource(
+			'<rect x="600" y="270" width="54" height="80" fill="#3a3a42"/>'
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				medallionSpill,
+				'rarity-frame',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow(/required transparent|alpha component/u);
+
+		const disconnectedObject = await profileV3FrameSource(
+			'<rect x="30" y="500" width="20" height="20" fill="#3a3a42"/>'
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				disconnectedObject,
+				'rarity-frame',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow(/required transparent|alpha component/u);
+	}, 20_000);
+
+	it('preserves the same three-output-pixel pre-clip halo across v1, v2, and v3', async () => {
+		for (const testCase of [
+			{
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V1,
+				geometry: geometryBytes,
+				threePixelSvg: '<rect x="490" y="172" width="20" height="5" fill="#3a3a42"/>',
+				beyondSvg: '<rect x="490" y="150" width="20" height="27" fill="#3a3a42"/>',
+				source: legacyFrameSource
+			},
+			{
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V2,
+				geometry: geometryBytes,
+				threePixelSvg: '<rect x="490" y="172" width="20" height="5" fill="#3a3a42"/>',
+				beyondSvg: '<rect x="490" y="150" width="20" height="27" fill="#3a3a42"/>',
+				source: async (extraSvg: string): Promise<Buffer> =>
+					declareCabx(await legacyFrameSource(extraSvg))
+			},
+			{
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V3,
+				geometry: geometryV2Bytes,
+				threePixelSvg: '<rect x="490" y="137" width="20" height="5" fill="#3a3a42"/>',
+				beyondSvg: '<rect x="490" y="116" width="20" height="21" fill="#3a3a42"/>',
+				source: profileV3FrameSource
+			}
+		] as const) {
+			await expect(
+				normalizeSkillIconProviderSource(
+					await testCase.source(testCase.threePixelSvg),
+					'rarity-frame',
+					testCase.geometry,
+					testCase.profile
+				)
+			).resolves.toMatchObject({ normalization: { profile: testCase.profile } });
+			await expect(
+				normalizeSkillIconProviderSource(
+					await testCase.source(testCase.beyondSvg),
+					'rarity-frame',
+					testCase.geometry,
+					testCase.profile
+				)
+			).rejects.toThrow(/alpha component|alpha mass|required transparent/u);
+		}
+	}, 20_000);
+
+	it('retains checkerboard rejection under profile v3', async () => {
+		const aperture = pointsAttribute(scaledPoints(geometryV2.aperturePoints));
+		const checkerSource = async (dark: string, light: string, cellSize = 32): Promise<Buffer> =>
+			sharp({
+				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+			})
+				.composite([
+					{
+						input: Buffer.from(
+							`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="c" width="${cellSize * 2}" height="${cellSize * 2}" patternUnits="userSpaceOnUse"><rect width="${cellSize * 2}" height="${cellSize * 2}" fill="${light}"/><rect width="${cellSize}" height="${cellSize}" fill="${dark}"/><rect x="${cellSize}" y="${cellSize}" width="${cellSize}" height="${cellSize}" fill="${dark}"/></pattern></defs><polygon points="${aperture}" fill="url(#c)"/></svg>`
+						)
+					}
+				])
+				.removeAlpha()
+				.png({ progressive: false, palette: false })
+				.toBuffer();
+		await expect(
+			normalizeSkillIconProviderSource(
+				declareCabx(await checkerSource('#202020', '#00ff00')),
+				'backing',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow(/checkerboard/u);
+
+		// These two near-green colors differ too little for the RGB contrast gate and
+		// therefore exercise the v3 opacity A-B-A detector across arbitrary macro scales.
+		for (const cellSize of [24, 48, 76, 92, 100, 112, 144, 160])
+			await expect(
+				normalizeSkillIconProviderSource(
+					declareCabx(await checkerSource('#27ff00', '#19ff00', cellSize)),
+					'backing',
+					geometryV2Bytes,
+					SKILL_ICON_NORMALIZATION_PROFILE_V3
+				)
+			).rejects.toThrow(/opacity checkerboard/u);
+	}, 60_000);
 
 	it('makes v2 decoder and output hashes pixel-sensitive independently of caBX', async () => {
 		const original = await providerSource('backing');
@@ -573,6 +890,14 @@ describe('skill-icon provider normalization', () => {
 			await expect(
 				normalizeSkillIconProviderSource(multishadeChecker, 'backing', geometryBytes)
 			).rejects.toThrow(/periodic contrast checkerboard/u);
+			await expect(
+				normalizeSkillIconProviderSource(
+					declareCabx(multishadeChecker),
+					'backing',
+					geometryV2Bytes,
+					SKILL_ICON_NORMALIZATION_PROFILE_V3
+				)
+			).rejects.toThrow(/periodic contrast checkerboard/u);
 		}
 		const blackGreenChecker = declareSrgb(
 			await sharp({
@@ -628,6 +953,14 @@ describe('skill-icon provider normalization', () => {
 		await expect(
 			normalizeSkillIconProviderSource(intermediateAlphaChecker, 'backing', geometryBytes)
 		).rejects.toThrow(/checkerboard/u);
+		await expect(
+			normalizeSkillIconProviderSource(
+				declareCabx(intermediateAlphaChecker),
+				'backing',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow(/checkerboard/u);
 		const shifted = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -646,7 +979,7 @@ describe('skill-icon provider normalization', () => {
 		await expect(
 			normalizeSkillIconProviderSource(shifted, 'rarity-frame', geometryBytes)
 		).rejects.toThrow(/required transparent/u);
-	}, 30_000);
+	}, 60_000);
 
 	it('accepts nonalternating materials, a continuous gradient, and role-edge antialiasing', async () => {
 		const svg = Buffer.from(

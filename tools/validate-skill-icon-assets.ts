@@ -10,11 +10,15 @@ import type { OutputInfo } from 'sharp';
 import {
 	AnySkillIconAssignmentSchema,
 	AnySkillIconExecutionSchema,
+	AnySkillIconGeometrySchema,
 	AnySkillIconResultSchema,
 	AnySkillIconTargetSchema,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconRoleSchema,
-	type SkillIconGeometry,
+	type AnySkillIconGeometry,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
 import {
@@ -31,8 +35,9 @@ export const SKILL_ICON_FRAME_EDGE_BAND_PERCENT = 4;
 // One percent of the subject-safe disk rejects dust/single-pixel artifacts while leaving
 // deliberately narrow weapon and tool silhouettes viable.
 export const SKILL_ICON_ART_MIN_VISIBLE_FRACTION_OF_SUBJECT_SAFE_AREA = 0.01;
-// Three percent of the aperture and four percent of each geometry-scaled edge band require a
-// continuous frame presence rather than six isolated registration pixels.
+// Three percent of the profile-applicable frame envelope and four percent of each
+// geometry-scaled edge band require a continuous frame presence rather than six isolated
+// registration pixels. The legacy export name remains stable for existing consumers.
 export const SKILL_ICON_FRAME_MIN_VISIBLE_FRACTION_OF_APERTURE_AREA = 0.03;
 export const SKILL_ICON_FRAME_EDGE_BAND_MINIMUM_COVERAGE = 0.04;
 
@@ -96,10 +101,10 @@ function insetPolygon(points: readonly Point[], center: Point, scale: number): P
 export async function inspectSkillIconAsset(
 	buffer: Buffer,
 	role: SkillIconRole,
-	geometry: SkillIconGeometry
+	geometry: AnySkillIconGeometry
 ): Promise<SkillIconAssetInspection> {
 	role = SkillIconRoleSchema.parse(role);
-	geometry = SkillIconGeometrySchema.parse(geometry);
+	geometry = AnySkillIconGeometrySchema.parse(geometry);
 	const violations: string[] = [];
 	const png = isPng(buffer);
 	if (!png) violations.push(`${role} must be a PNG`);
@@ -140,6 +145,13 @@ export async function inspectSkillIconAsset(
 	}
 
 	const aperture = scaledPolygon(geometry.aperturePoints, width, height);
+	const frameEnvelope = scaledPolygon(
+		geometry.schemaVersion === 'skill-icon-geometry-v2'
+			? geometry.outerEnvelopePoints
+			: geometry.aperturePoints,
+		width,
+		height
+	);
 	const exclusion = scaledPolygon(geometry.rarityMedallionExclusion, width, height);
 	const center: Point = [
 		(geometry.center.x / geometry.canvas.width) * width,
@@ -148,16 +160,23 @@ export async function inspectSkillIconAsset(
 	const minimumDimension = Math.min(width, height);
 	const effectRadius = (minimumDimension * geometry.effectSafePercent) / 200;
 	const subjectRadius = (minimumDimension * geometry.subjectSafePercent) / 200;
-	const innerAperture = insetPolygon(aperture, center, SKILL_ICON_FRAME_INNER_APERTURE_SCALE);
+	const innerAperture = insetPolygon(
+		aperture,
+		center,
+		geometry.schemaVersion === 'skill-icon-geometry-v2'
+			? geometry.innerApertureScale
+			: SKILL_ICON_FRAME_INNER_APERTURE_SCALE
+	);
 	const edgeBandWidth = (minimumDimension * SKILL_ICON_FRAME_EDGE_BAND_PERCENT) / 100;
-	const edgeHits = Array.from({ length: aperture.length }, () => false);
-	const edgeBandPixels = Array.from({ length: aperture.length }, () => 0);
-	const visibleEdgeBandPixels = Array.from({ length: aperture.length }, () => 0);
+	const edgeHits = Array.from({ length: frameEnvelope.length }, () => false);
+	const edgeBandPixels = Array.from({ length: frameEnvelope.length }, () => 0);
+	const visibleEdgeBandPixels = Array.from({ length: frameEnvelope.length }, () => 0);
 	let visiblePixels = 0;
 	let subjectPixels = 0;
 	let subjectSafeAreaPixels = 0;
 	let aperturePixels = 0;
 	let apertureVisiblePixels = 0;
+	let frameEnvelopePixels = 0;
 	let outsideEffect = false;
 	let outsideAperture = false;
 	let outsideFrameEnvelope = false;
@@ -169,6 +188,7 @@ export async function inspectSkillIconAsset(
 			const pixelX = x + 0.5;
 			const pixelY = y + 0.5;
 			const inAperture = pointInPolygon(pixelX, pixelY, aperture);
+			const inFrameEnvelope = pointInPolygon(pixelX, pixelY, frameEnvelope);
 			const alpha = decoded.data[(y * width + x) * 4 + 3] ?? 0;
 			const visible = alpha > SKILL_ICON_TRANSPARENT_ALPHA_MAX;
 			const distance = Math.hypot(pixelX - center[0], pixelY - center[1]);
@@ -177,14 +197,15 @@ export async function inspectSkillIconAsset(
 				aperturePixels += 1;
 				if (visible) apertureVisiblePixels += 1;
 			}
-			for (let edge = 0; edge < aperture.length; edge += 1) {
+			if (inFrameEnvelope) frameEnvelopePixels += 1;
+			for (let edge = 0; edge < frameEnvelope.length; edge += 1) {
 				if (
-					inAperture &&
+					inFrameEnvelope &&
 					distanceToSegment(
 						pixelX,
 						pixelY,
-						aperture[edge]!,
-						aperture[(edge + 1) % aperture.length]!
+						frameEnvelope[edge]!,
+						frameEnvelope[(edge + 1) % frameEnvelope.length]!
 					) <= edgeBandWidth
 				) {
 					edgeBandPixels[edge]! += 1;
@@ -197,17 +218,17 @@ export async function inspectSkillIconAsset(
 			if (distance > effectRadius) outsideEffect = true;
 			const inExclusion = pointInPolygon(pixelX, pixelY, exclusion);
 			if (!inAperture) outsideAperture = true;
-			if (!inAperture && !inExclusion) outsideFrameEnvelope = true;
+			if (!inFrameEnvelope && !inExclusion) outsideFrameEnvelope = true;
 			if (inExclusion) insideExclusion = true;
 			if (pointInPolygon(pixelX, pixelY, innerAperture) && !inExclusion) insideFrameAperture = true;
-			for (let edge = 0; edge < aperture.length; edge += 1) {
+			for (let edge = 0; edge < frameEnvelope.length; edge += 1) {
 				if (edgeHits[edge]) continue;
 				if (
 					distanceToSegment(
 						pixelX,
 						pixelY,
-						aperture[edge]!,
-						aperture[(edge + 1) % aperture.length]!
+						frameEnvelope[edge]!,
+						frameEnvelope[(edge + 1) % frameEnvelope.length]!
 					) <= edgeBandWidth
 				)
 					edgeHits[edge] = true;
@@ -238,7 +259,7 @@ export async function inspectSkillIconAsset(
 		if (edgeHits.some((hit) => !hit))
 			violations.push('rarity-frame material must intersect all six edge bands');
 		if (
-			visiblePixels / Math.max(1, aperturePixels) <
+			visiblePixels / Math.max(1, frameEnvelopePixels) <
 			SKILL_ICON_FRAME_MIN_VISIBLE_FRACTION_OF_APERTURE_AREA
 		)
 			violations.push('rarity-frame visible area is below the minimum frame coverage');
@@ -409,13 +430,19 @@ function compareInventory(
 
 export async function validateSkillIconAssets(root = process.cwd()): Promise<void> {
 	const resolvedRoot = path.resolve(root);
-	const geometryPath = path.join(
+	const legacyGeometryPath = path.join(
 		resolvedRoot,
 		'assets/wiki/skills/icon-production-v1/geometry.json'
 	);
-	const geometrySourceBytes = await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry');
-	const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
-	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
+	const legacyGeometrySourceBytes = await readSafeRepositoryFile(
+		resolvedRoot,
+		legacyGeometryPath,
+		'Geometry'
+	);
+	const legacyGeometryHash = createHash('sha256').update(legacyGeometrySourceBytes).digest('hex');
+	const legacyGeometry = SkillIconGeometrySchema.parse(
+		JSON.parse(legacyGeometrySourceBytes.toString('utf8'))
+	);
 	const productionRoot = path.join(resolvedRoot, 'assets/wiki/skills/icon-production-v1');
 	const targetsRoot = path.join(productionRoot, 'targets');
 	const assignmentsRoot = path.join(productionRoot, 'assignments');
@@ -456,12 +483,45 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			)
 		);
 		allTargets.push(target);
-		if (
-			target.schemaVersion === 'skill-icon-target-v2' &&
-			target.normalization.geometry.contentHash !== geometryHash
-		) {
-			failures.push(`${target.jobId}: current raw geometry authority hash does not match target`);
-			continue;
+		let geometry: AnySkillIconGeometry = legacyGeometry;
+		if (target.schemaVersion === 'skill-icon-target-v2') {
+			try {
+				const geometryPath = path.resolve(resolvedRoot, target.normalization.geometry.path);
+				const geometrySourceBytes =
+					target.normalization.geometry.path ===
+					'assets/wiki/skills/icon-production-v1/geometry.json'
+						? legacyGeometrySourceBytes
+						: await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry');
+				const geometryHash =
+					target.normalization.geometry.path ===
+					'assets/wiki/skills/icon-production-v1/geometry.json'
+						? legacyGeometryHash
+						: createHash('sha256').update(geometrySourceBytes).digest('hex');
+				if (target.normalization.geometry.contentHash !== geometryHash)
+					throw new Error('current raw geometry authority hash does not match target');
+				geometry =
+					target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+						? SkillIconGeometryV2Schema.parse(JSON.parse(geometrySourceBytes.toString('utf8')))
+						: SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
+				{
+					const expectedGuidePath =
+						target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+							? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
+							: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
+					const guide = target.references.find((reference) => reference.path === expectedGuidePath);
+					if (!guide) throw new Error('target lacks its profile geometry-guide authority');
+					const guideBytes = await readSafeRepositoryFile(
+						resolvedRoot,
+						path.resolve(resolvedRoot, guide.path),
+						'Geometry guide'
+					);
+					if (createHash('sha256').update(guideBytes).digest('hex') !== guide.contentHash)
+						throw new Error('current raw geometry-guide authority hash does not match target');
+				}
+			} catch (error) {
+				failures.push(`${target.jobId}: ${error instanceof Error ? error.message : String(error)}`);
+				continue;
+			}
 		}
 		const scope = skillIconScopeForRole(target.role);
 		const canonicalTargetPath = path.join(

@@ -85,17 +85,62 @@ pre-resize chroma alpha. The existing resize, role mask, and normalized 1024 RGB
 not change. A synthesized compatible canary with a shadow spilling into required matte space still
 fails.
 
-Both normalized profiles are scoped to `rarity-frame` and `backing` retries. They do not apply to
-individual `skill-art` or `calibration-plate` production, which remains on the v1 exact-source
-contract unless a future contract revision explicitly adds those roles. A future higher revision
-may pair profile v2 with `summonlab-skill-icon-production-v3`; no revision-3 packet, candidate, or
-image has been issued yet.
+Profiles v1 and v2 are scoped to `rarity-frame` and `backing` retries. They do not apply to
+individual `skill-art` or `calibration-plate` production, which remains exact-source work under its
+applicable contract unless a future contract revision explicitly adds those roles. Revision-3
+frame/backing packets pair profile v2 with `summonlab-skill-icon-production-v3` and remain bound to
+the original geometry and guide. Those packets and results are immutable, including the F
+revision-3 canary rejection.
+
+### Additive geometry-v2 authority
+
+The original `assets/wiki/skills/icon-production-v1/geometry.json`, its
+`references/geometry-guide.png`, profiles v1 and v2, and every packet/result that binds them are
+immutable. Geometry v2 is a new authority, not a correction applied to historical evidence.
+
+`assets/wiki/skills/icon-production-v1/geometry-v2.json` uses schema version
+`skill-icon-geometry-v2`. It preserves the v1 canvas, center, aperture points, 64% subject-safe zone,
+72% effect-safe zone, medallion exclusion, runtime sizes, and recognition size exactly. It adds the
+frame outer envelope
+`[[.5,.046875],[.88671875,.28125],[.88671875,.71875],[.5,.953125],[.11328125,.71875],[.11328125,.28125]]`
+and an inner-aperture scale of `.78`.
+
+The roles remain geometrically distinct. A rarity frame may occupy
+`(outer envelope − aperture scaled by .78 about the common center) ∪ medallion`. This is the permitted
+frame annulus, not a backing boundary. The charcoal backing still occupies the original
+`aperturePoints` polygon and must remain transparent outside it. Expanding the frame authority does
+not expand the backing.
+
+Frame coverage remains at least 3% of the applicable frame-envelope area and at least 4% in each of
+its six derived edge bands. Geometry v1 derives those measures from `aperturePoints`; geometry v2
+derives them from `outerEnvelopePoints`. The percentages do not change.
+
+The deterministic `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png` is a
+`1254×1254` provider-space authority showing the allowed annulus, medallion, outer boundary, and
+inner boundary without text. It is never cropped or composited into an asset.
+
+Future profile `skill-icon-green-key-role-mask-v3` retains profile v2's PNG and `caBX` envelope,
+pathless evidence, assigned-sRGB decoder input, distance-24 matte rule, resize, and validation
+thresholds. Checker rejection remains active through a v3-only semantic detector for periodic A–B–A
+alpha repetition in role-relevant content. That refinement avoids treating the corrected real frame
+as a checker while leaving v1/v2 behavior and all matte/evidence thresholds untouched. Profile v3
+additionally binds the raw SHA-256 of geometry v2 and the exact guide-v2 reference hash and pairs
+only with `summonlab-skill-icon-production-v4`. Profiles v1–v3 share the existing pre-clip allowance:
+the resize/rasterization antialias transition may extend at most three output pixels from the
+role-mask boundary. Normalization for every profile then hard-clips to the exact mask. In the
+retained image alpha through 8 is transparent, every alpha value above 8 outside the mask is invalid,
+and no other spill is accepted. No v4 target, assignment, result, candidate, or generated image
+exists yet. The new
+contract foundation does not itself authorize a generation run.
+The mandatory guide reference has the canonical purpose
+`Provider-space role-mask guide for rarity-frame and backing registration.` and is production
+authority, not optional illustration.
 
 Result provenance records pathless provider media properties and hashes, the raw geometry-file
 hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
-v1 Task 7 failures and the F revision-2 caBX rejection remain immutable evidence. Each retry receives
-a new explicit revision, and the unique latest revision must complete rather than falling back to an
-older candidate.
+v1 Task 7 failures, F revision-2 caBX rejection, and F revision-3 geometry rejection remain immutable
+evidence. Each retry receives a new explicit revision, and the unique latest revision must complete
+rather than falling back to an older candidate.
 
 For every new frame or backing revision, the coordinator authors the visual target, binds the raw
 geometry authority, exact normalization profile, and matching assignment skill version, and
@@ -126,9 +171,19 @@ assignment, catalog, geometry, references, and observed provider source before c
 should rerun the assigned command after an interruption and must never clean hidden transaction
 files by hand.
 
-The ongoing procedure is therefore: preserve every existing packet and result; have the coordinator
-issue a higher revision with an exact profile and assignment skill version; close only proven
-unattempted lower packets with coordinator-owned superseded evidence; dispatch one isolated
-generation per new target; pass the provider source directly to persistence; validate normalization
-and geometry; obtain hash-bound owner review; then promote and derive runtime assets. Never edit old
-evidence, normalize manually, retain the provider path, or use a superseded/older result as fallback.
+The ongoing reference-asset procedure is therefore: preserve every existing geometry, guide,
+profile, packet, and result; have the coordinator issue a higher revision with exact
+profile/geometry/guide/skill authority; close only proven unattempted lower packets with
+coordinator-owned superseded evidence; dispatch one isolated generation per new target; pass the
+provider source directly to persistence; validate normalization and role-specific geometry; obtain
+hash-bound owner review; then promote and derive runtime assets. Never edit old evidence, normalize
+manually, retain the provider path, or use a superseded/older result as fallback.
+
+For a newly authored skill, taxonomy first exposes the missing icon. The visual owner then maps its
+motif family or marks it standalone, chooses at most one primary visual parent, authors the visual
+specification, and approves a family calibration plate when needed. The coordinator issues one
+isolated exact-source skill-art job under its applicable contract; profiles v1–v3 do not authorize
+skill art. The producer retains exact source bytes, validation applies the target's hash-bound
+geometry and guide authorities, and the full-size, composite, and 96-pixel views receive owner
+review before atomic promotion and deterministic export. Changing rarity later recomposes this
+frame layer without regenerating the skill artwork.

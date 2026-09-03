@@ -32,12 +32,29 @@ PROTOCOLS = {
         "skill-icon-assignment-v2",
         "summonlab-skill-icon-production-v3",
     ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v4",
+    ): "skill-icon-execution-v2",
 }
 NORMALIZATION_SKILL_VERSIONS = {
     "skill-icon-green-key-role-mask-v1": "summonlab-skill-icon-production-v2",
     "skill-icon-green-key-role-mask-v2": "summonlab-skill-icon-production-v3",
+    "skill-icon-green-key-role-mask-v3": "summonlab-skill-icon-production-v4",
 }
+PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
+PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
+PROFILE_V3 = "skill-icon-green-key-role-mask-v3"
 GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
+GEOMETRY_V2_PATH = "assets/wiki/skills/icon-production-v1/geometry-v2.json"
+GEOMETRY_HASH = "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7"
+GEOMETRY_V2_HASH = "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+NORMALIZATION_GEOMETRY_AUTHORITIES = {
+    PROFILE_V1: (GEOMETRY_PATH, GEOMETRY_HASH),
+    PROFILE_V2: (GEOMETRY_PATH, GEOMETRY_HASH),
+    PROFILE_V3: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+}
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
 STYLE_AUTHORITY_PATH = (
@@ -46,8 +63,17 @@ STYLE_AUTHORITY_PATH = (
 GEOMETRY_GUIDE_PATH = (
     "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
 )
+GEOMETRY_GUIDE_V2_PATH = (
+    "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png"
+)
+GEOMETRY_GUIDE_V2_HASH = (
+    "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+)
 STYLE_AUTHORITY_PURPOSE = "Global Painted Emblem style authority."
 GEOMETRY_GUIDE_PURPOSE = "Geometry guide for registration and safe zones."
+GEOMETRY_GUIDE_V2_PURPOSE = (
+    "Provider-space role-mask guide for rarity-frame and backing registration."
+)
 CALIBRATION_PURPOSE = "Approved motif-family calibration plate."
 PRIMARY_PARENT_PURPOSE = "Approved primary-parent master."
 
@@ -456,6 +482,27 @@ def _require_individual_authorities(
             fail("primary-parent reference hash does not match the canonical approved master")
 
 
+def _require_profile_v3_guide_authority(target: dict[str, Any]) -> None:
+    normalization = target.get("normalization")
+    if (
+        not isinstance(normalization, dict)
+        or normalization.get("profile") != PROFILE_V3
+    ):
+        return
+    matches = [
+        reference
+        for reference in target["references"]
+        if reference.get("path") == GEOMETRY_GUIDE_V2_PATH
+    ]
+    if len(matches) != 1:
+        fail("profile-v3 target requires exactly one canonical geometry-v2 guide")
+    guide = matches[0]
+    if guide.get("purpose") != GEOMETRY_GUIDE_V2_PURPOSE:
+        fail("profile-v3 geometry guide must use its exact canonical purpose")
+    if guide.get("contentHash") != GEOMETRY_GUIDE_V2_HASH:
+        fail("profile-v3 geometry guide hash does not match its canonical authority")
+
+
 def validate(
     target: dict[str, Any],
     assignment: dict[str, Any],
@@ -505,14 +552,22 @@ def validate(
             fail("v2 target and assignment must bind the same supported normalization profile")
         if assignment.get("skillVersion") != NORMALIZATION_SKILL_VERSIONS[profile]:
             fail("normalization profile and producer skill version do not match")
+        geometry_path, geometry_hash = NORMALIZATION_GEOMETRY_AUTHORITIES[profile]
         geometry = target_normalization.get("geometry")
-        if not isinstance(geometry, dict) or geometry.get("path") != GEOMETRY_PATH:
-            fail("v2 target must bind the canonical raw geometry authority")
+        if (
+            not isinstance(geometry, dict)
+            or geometry.get("path") != geometry_path
+            or geometry.get("contentHash") != geometry_hash
+        ):
+            fail(
+                "v2 target must bind the exact raw geometry authority for its "
+                "normalization profile"
+            )
         geometry_file = absolute_project_path(
-            root, GEOMETRY_PATH, must_exist=True, regular_file=True
+            root, geometry_path, must_exist=True, regular_file=True
         )
         geometry_snapshot = read_stable_regular_file_snapshot(geometry_file)
-        if geometry_snapshot.content_hash != geometry.get("contentHash"):
+        if geometry_snapshot.content_hash != geometry_hash:
             fail("v2 target geometry hash does not match the raw geometry authority bytes")
         normalization_geometry_snapshot = (geometry_file, geometry_snapshot)
 
@@ -559,6 +614,7 @@ def validate(
             fail(f"reference hash changed: {raw}")
         reference_snapshots.append((absolute, snapshot, raw))
     _require_individual_authorities(target, catalog)
+    _require_profile_v3_guide_authority(target)
 
     for absolute, snapshot, raw in reference_snapshots:
         reassert_stable_regular_file(absolute, snapshot, label=f"reference {raw}")

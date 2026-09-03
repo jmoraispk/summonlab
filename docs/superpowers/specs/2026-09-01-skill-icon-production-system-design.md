@@ -53,17 +53,36 @@ The first text row is the skill name. The second is bearer-specific mastery and 
 
 All canonical retained image layers use a `1024×1024` RGBA working canvas with the same center and
 registration. A provider's transient raster may differ only when a versioned target explicitly
-authorizes the deterministic normalization profile below. The
-outer frame, inner aperture, backing mask, and icon safe zone are fixed by one geometry manifest.
-The painted subject stays within the central 64% safe zone; restrained supporting effects may
-extend to 72% but never enter the frame or rarity medallion exclusion zones.
+authorizes the deterministic normalization profile below. Geometry is immutable, versioned
+authority: a target binds one geometry file by canonical path and raw-byte SHA-256 rather than
+silently adopting the newest file. The painted subject stays within the central 64% safe zone;
+restrained supporting effects may extend to 72% but never enter the frame or rarity medallion
+exclusion zones.
 
-Automated alpha geometry treats alpha values through 8 as transparent and rejects every pixel
+The original `geometry.json` (`skill-icon-geometry-v1`) and its generated `geometry-guide.png`
+remain the exact authority for every existing packet and result. They are never edited or
+reinterpreted. The additive `geometry-v2.json` (`skill-icon-geometry-v2`) preserves v1's canvas,
+center, aperture points, safe zones, medallion exclusion, runtime sizes, and recognition size. It
+adds an explicit frame-only outer envelope
+`[[.5,.046875],[.88671875,.28125],[.88671875,.71875],[.5,.953125],[.11328125,.71875],[.11328125,.28125]]`
+and `innerApertureScale: .78`. Its deterministic `references/geometry-guide-v2.png` is a
+`1254×1254` provider-space guide with no text; it depicts the allowed annulus, medallion, outer
+boundary, and inner boundary without becoming image content.
+
+The two normalized roles deliberately use different v2 geometry. A `rarity-frame` may retain only
+`(outer envelope − aperture scaled about the shared center by .78) ∪ medallion`; this provides a
+continuous rim while reserving its center. A `backing` continues to use the
+original `aperturePoints` polygon and remains transparent outside it. Geometry v2 therefore fixes
+the frame envelope without shrinking or expanding the backing.
+
+Final retained alpha geometry treats alpha values through 8 as transparent and rejects every pixel
 above 8 outside the applicable aperture or envelope. Geometry-relative minimums reject degenerate
 registration specks without prescribing an art style: skill artwork must cover at least 1% of the
-64% subject-safe disk, and a rarity frame must cover at least 3% of the aperture area plus 4% of
-each of its six geometry-scaled edge bands. These thresholds represent a minimally readable emblem
-and continuous frame material at the 1024-pixel working scale; they are not absolute pixel counts.
+64% subject-safe disk, and a rarity frame must cover at least 3% of its applicable frame-envelope
+area plus 4% of each of the six edge bands derived from that envelope. Geometry v1 uses
+`aperturePoints` as the frame envelope; geometry v2 uses `outerEnvelopePoints`. These thresholds
+represent a minimally readable emblem and continuous frame material at the 1024-pixel working
+scale; they are not absolute pixel counts.
 
 Approved masters retain their original lossless PNG. Runtime exports derive deterministically at
 `512×512`, `256×256`, and `128×128` without replacing the master.
@@ -168,9 +187,26 @@ remain deterministic and otherwise unchanged. A synthesized exact-envelope canar
 outside the permitted asset region must still fail the clean-matte gate.
 
 Producers never crop, resize, color-key, extract, mask, rewrite, or otherwise normalize provider
-output themselves. Any source outside the packet-declared profile fails. The v2 profile is available
-only to a future higher-revision frame/backing packet using
-`summonlab-skill-icon-production-v3`; no revision-3 packets or images exist yet.
+output themselves. Any source outside the packet-declared profile fails. Revision-3 frame/backing
+packets bind profile v2, skill `summonlab-skill-icon-production-v3`, the immutable v1 geometry, and
+the v1 guide. Those packets and results remain immutable history, including the F revision-3 canary
+rejection.
+
+The additive `skill-icon-green-key-role-mask-v3` profile advances geometry authority while retaining
+profile v2's exact `caBX` envelope, pathless evidence, canonical-sRGB decoder input, matte threshold,
+resize, and validation thresholds. It preserves checker protection with a v3-only semantic periodic
+opacity detector that recognizes A–B–A alpha repetition in role-relevant content without classifying
+the corrected real frame as a checker; the v1/v2 detector paths remain unchanged. This detector is
+an implementation refinement, not a change to the matte, evidence, or geometry thresholds. Profile
+v3 requires the raw-byte hash of `geometry-v2.json` and the hash-bound `geometry-guide-v2.png`
+reference. Profiles v1–v3 share the existing pre-clip allowance for a resize/rasterization antialias
+transition no farther than three output pixels from the role-mask boundary. Every profile then
+hard-clips to its exact role mask; in the retained output alpha through 8 is transparent and any
+alpha above 8 outside the mask is invalid. No other spill is permitted. Profile v3 pairs only with
+`summonlab-skill-icon-production-v4`. No target, assignment, result, candidate, or generated image
+using skill v4 exists yet; adding the schemas and authorities does not authorize production.
+The guide reference is mandatory authority, not illustrative context, and uses the canonical purpose
+`Provider-space role-mask guide for rarity-frame and backing registration.`.
 
 ### Phase 6 — deterministic assembly and review
 
@@ -294,11 +330,12 @@ When a new skill is authored:
 3. the owner chooses at most one primary visual parent and authors its subject, cue, palette, and
    exclusions;
 4. a new motif family receives and approves a calibration plate before individual generation;
-5. the skill receives one isolated v1 exact-source job and a fresh versioned job ID; normalized
-   profiles remain restricted to green-key frame/backing retries unless a future contract revision
-   adds skill art;
+5. the skill receives one isolated exact-source job under its applicable production contract and a
+   fresh versioned job ID; normalized profiles v1–v3 remain restricted to green-key frame/backing
+   retries and do not authorize skill-art packets;
 6. the producer passes the exact provider output directly to the repository helper, which retains
-   v1 source bytes exactly; automated geometry, alpha, provenance, and coverage checks then run;
+   exact-source bytes unchanged; automated geometry, alpha, provenance, and coverage checks then
+   run against the target's hash-bound geometry and guide authorities;
 7. the full-size, composite, and `96×96` views receive human review;
 8. approval promotes the master and deterministic derivatives together.
 
@@ -309,8 +346,10 @@ and the matching assignment skill version. The coordinator may close an older, d
 unattempted packet with exact authority-bound superseded evidence; it may not reinterpret any
 attempted packet. The unique latest revision must complete, while older failures, revisions, and
 superseded closures remain audit history and never provide fallback. Profile v1 and all existing
-revision-2 packets/results remain unchanged; profile v2 and assignment skill v3 govern the next
-frame/backing revision only after the coordinator explicitly issues it.
+revision-2 packets/results remain unchanged. Profile v2, assignment skill v3, revision-3 packets,
+and their results also remain immutable. A future frame/backing revision may use profile v3 only
+with geometry v2, guide v2, and assignment skill v4 after the coordinator explicitly issues that
+complete authority tuple; no such packet or generated asset exists yet.
 
 Changing a skill's rarity swaps the frame during composition; it does not regenerate the artwork.
 Changing a skill's mechanics does not invalidate its image unless the dominant visual meaning has

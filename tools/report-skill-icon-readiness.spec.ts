@@ -348,10 +348,11 @@ describe('skill icon readiness', () => {
 		const targets = canonicalReferenceTargets();
 		targets.push(referenceTarget('rarity-frame-f-v2', 'rarity-frame', 'F', 2));
 		targets.push(referenceTarget('rarity-frame-f-v3', 'rarity-frame', 'F', 3));
+		targets.push(referenceTarget('rarity-frame-f-v4', 'rarity-frame', 'F', 4));
 		const requirements = referenceRequirementsForTargets(targets);
 		expect(requirements).toHaveLength(8);
 		expect(requirements.find((requirement) => requirement.path.endsWith('/f.png'))).toMatchObject({
-			id: 'rarity-frame-f-v3',
+			id: 'rarity-frame-f-v4',
 			targetDeclared: true
 		});
 	});

@@ -23,7 +23,10 @@ import {
 	AnySkillIconExecutionSchema,
 	AnySkillIconResultSchema,
 	AnySkillIconTargetSchema,
+	SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema,
 	SkillIconRecordSchema,
 	SkillIconReviewSchema,
 	type AnySkillIconTarget,
@@ -362,7 +365,7 @@ interface PreparedPromotion {
 	readonly target: AnySkillIconTarget;
 	readonly authoritySnapshots: readonly {
 		readonly identity: AuthorityFileIdentity;
-		readonly label: 'target' | 'assignment' | 'geometry';
+		readonly label: 'target' | 'assignment' | 'geometry' | 'guide';
 	}[];
 	readonly replacement: NonNullable<PromotionJournal['replacements']>[number] | null;
 	readonly record: Omit<SkillIconAssetRecord, 'transactionId' | 'promotionReceipt'>;
@@ -1203,9 +1206,13 @@ async function preparePromotion(
 		throw new Error(`Candidate hash mismatch for ${jobId}`);
 	if (candidateBytes.byteLength !== result.output.bytes)
 		throw new Error(`Candidate byte count mismatch for ${jobId}`);
+	const geometryPath =
+		target.schemaVersion === 'skill-icon-target-v2'
+			? target.normalization.geometry.path
+			: 'assets/wiki/skills/icon-production-v1/geometry.json';
 	const geometryAuthority = await readAuthorityFileIdentity(
 		root,
-		path.resolve(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
+		path.resolve(root, geometryPath),
 		'Geometry'
 	);
 	const geometryBytes = geometryAuthority.bytes;
@@ -1214,7 +1221,27 @@ async function preparePromotion(
 		sha256(geometryBytes) !== target.normalization.geometry.contentHash
 	)
 		throw new Error(`Geometry hash mismatch for ${jobId}`);
-	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
+	let guideAuthority: Awaited<ReturnType<typeof readAuthorityFileIdentity>> | undefined;
+	const geometry =
+		target.schemaVersion === 'skill-icon-target-v2' &&
+		target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+			? SkillIconGeometryV2Schema.parse(JSON.parse(geometryBytes.toString('utf8')))
+			: SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
+	if (target.schemaVersion === 'skill-icon-target-v2') {
+		const expectedGuidePath =
+			target.normalization.profile === 'skill-icon-green-key-role-mask-v3'
+				? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
+				: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
+		const guide = target.references.find((reference) => reference.path === expectedGuidePath);
+		if (!guide) throw new Error(`Target ${jobId} lacks its profile geometry guide`);
+		guideAuthority = await readAuthorityFileIdentity(
+			root,
+			path.resolve(root, guide.path),
+			'Geometry guide'
+		);
+		if (sha256(guideAuthority.bytes) !== guide.contentHash)
+			throw new Error(`Geometry guide hash mismatch for ${jobId}`);
+	}
 	const inspection = await inspectSkillIconAsset(candidateBytes, target.role, geometry);
 	if (
 		inspection.width !== target.canvas.width ||
@@ -1291,7 +1318,8 @@ async function preparePromotion(
 		authoritySnapshots: [
 			{ identity: targetAuthority.identity, label: 'target' },
 			{ identity: assignmentAuthority.identity, label: 'assignment' },
-			{ identity: geometryAuthority.identity, label: 'geometry' }
+			{ identity: geometryAuthority.identity, label: 'geometry' },
+			...(guideAuthority ? [{ identity: guideAuthority.identity, label: 'guide' as const }] : [])
 		],
 		replacement,
 		record,

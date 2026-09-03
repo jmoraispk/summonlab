@@ -8,7 +8,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	AnySkillIconAssignmentSchema,
-	SkillIconGeometrySchema
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+	SkillIconGeometrySchema,
+	SkillIconGeometryV2Schema
 } from '../packages/contracts/src/index.js';
 import {
 	SKILL_ICON_ART_MIN_VISIBLE_FRACTION_OF_SUBJECT_SAFE_AREA,
@@ -23,6 +29,16 @@ const geometrySourcePath = path.resolve('assets/wiki/skills/icon-production-v1/g
 const geometrySourceBytes = await readFile(geometrySourcePath);
 const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
 const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
+const geometryV2SourceBytes = await readFile(
+	'assets/wiki/skills/icon-production-v1/geometry-v2.json'
+);
+const geometryV2 = SkillIconGeometryV2Schema.parse(
+	JSON.parse(geometryV2SourceBytes.toString('utf8'))
+);
+const legacyGuidePath = 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
+const legacyGuideBytes = await readFile(legacyGuidePath);
+const legacyGuideHash = createHash('sha256').update(legacyGuideBytes).digest('hex');
+const guideV2Bytes = await readFile(SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH);
 
 async function svgPng(svg: string): Promise<Buffer> {
 	return sharp(Buffer.from(svg)).png().toBuffer();
@@ -68,6 +84,17 @@ async function revisionTestRoot(seedHistorical = true): Promise<string> {
 		path.join(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
 		geometrySourceBytes
 	);
+	await writeFile(
+		path.join(root, SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH),
+		geometryV2SourceBytes
+	);
+	for (const [guidePath, guideBytes] of [
+		[legacyGuidePath, legacyGuideBytes],
+		[SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH, guideV2Bytes]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, guidePath)), { recursive: true });
+		await writeFile(path.join(root, guidePath), guideBytes);
+	}
 	for (const area of ['targets', 'assignments', 'results', 'candidates']) {
 		await mkdir(path.join(root, `assets/wiki/skills/icon-production-v1/${area}/references`), {
 			recursive: true
@@ -83,9 +110,9 @@ const exactPromptV2 =
 	'Create one canonical backing on an opaque #00FF00 matte with no baked checkerboard.';
 const referenceInputs = [
 	{
-		path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
-		purpose: 'Canonical geometry authority.',
-		contentHash: 'a'.repeat(64)
+		path: legacyGuidePath,
+		purpose: 'Geometry guide for registration and safe zones.',
+		contentHash: legacyGuideHash
 	}
 ];
 
@@ -162,6 +189,32 @@ function targetV2(revision = 2, rawGeometryHash = geometryHash) {
 	};
 }
 
+function targetV3(revision = 4, rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH) {
+	const logicalIdentity = 'charcoal-forged-stone';
+	const jobId = `${logicalIdentity}-v${revision}`;
+	return {
+		...targetV2(revision),
+		jobId,
+		revision,
+		references: [
+			{
+				path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+				purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+				contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+			}
+		],
+		output: outputPaths(jobId),
+		normalization: {
+			...targetV2(revision).normalization,
+			profile: 'skill-icon-green-key-role-mask-v3' as const,
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: rawGeometryHash
+			}
+		}
+	};
+}
+
 function rarityFrameTargetV2(rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S') {
 	const logicalIdentity = `rarity-frame-${rarity.toLowerCase()}`;
 	const jobId = `${logicalIdentity}-v2`;
@@ -179,10 +232,12 @@ type TestTarget =
 	| ReturnType<typeof targetV1>
 	| ReturnType<typeof rarityFrameTargetV1>
 	| ReturnType<typeof targetV2>
+	| ReturnType<typeof targetV3>
 	| ReturnType<typeof rarityFrameTargetV2>;
 
 function assignment(target: TestTarget) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	const profile = v2 ? target.normalization.profile : null;
 	return {
 		schemaVersion: v2 ? 'skill-icon-assignment-v2' : 'skill-icon-assignment-v1',
 		assignmentId: `assignment-${target.jobId}`,
@@ -191,12 +246,17 @@ function assignment(target: TestTarget) {
 			? {
 					logicalIdentity: target.logicalIdentity,
 					revision: target.revision,
-					normalization: { profile: 'skill-icon-green-key-role-mask-v1' }
+					normalization: { profile }
 				}
 			: {}),
 		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${target.jobId}.json`,
 		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`,
-		skillVersion: v2 ? 'summonlab-skill-icon-production-v2' : 'summonlab-skill-icon-production-v1',
+		skillVersion:
+			profile === 'skill-icon-green-key-role-mask-v3'
+				? 'summonlab-skill-icon-production-v4'
+				: v2
+					? 'summonlab-skill-icon-production-v2'
+					: 'summonlab-skill-icon-production-v1',
 		assignedAt: '2026-09-02T00:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: target.output,
@@ -224,6 +284,7 @@ function candidateOutput(jobId: string, bytes: Buffer) {
 
 function candidateResult(target: TestTarget, bytes: Buffer) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	const profile = v2 ? target.normalization.profile : null;
 	const output = candidateOutput(target.jobId, bytes);
 	return {
 		schemaVersion: v2 ? 'skill-icon-result-v2' : 'skill-icon-result-v1',
@@ -234,9 +295,9 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 					logicalIdentity: target.logicalIdentity,
 					revision: target.revision,
 					normalization: {
-						profile: 'skill-icon-green-key-role-mask-v1',
+						profile,
 						outcome: 'completed',
-						geometryHash,
+						geometryHash: target.normalization.geometry.contentHash,
 						providerSource: {
 							mediaType: 'image/png',
 							width: 1254,
@@ -246,6 +307,17 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 							contentHash: 'b'.repeat(64)
 						},
 						sourceContentHash: 'b'.repeat(64),
+						...(profile === 'skill-icon-green-key-role-mask-v3'
+							? {
+									decoderInputContentHash: 'c'.repeat(64),
+									containerBox: {
+										chunkType: 'caBX',
+										bytes: 8,
+										contentHash: 'd'.repeat(64)
+									},
+									colorSpaceDisposition: 'assigned-srgb'
+								}
+							: {}),
 						outputContentHash: output.contentHash
 					}
 				}
@@ -254,7 +326,7 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 		status: 'candidate',
 		exactPrompt: target.exactPrompt,
 		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
-		referenceInputs: referenceInputs.map(({ path, contentHash }) => ({ path, contentHash })),
+		referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
 		output,
 		resultPath: target.output.resultPath,
 		findings: [
@@ -282,6 +354,7 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 
 function failedResult(target: TestTarget) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	const profile = v2 ? target.normalization.profile : null;
 	return {
 		schemaVersion: v2 ? 'skill-icon-result-v2' : 'skill-icon-result-v1',
 		resultId: `result-${target.jobId}`,
@@ -291,11 +364,18 @@ function failedResult(target: TestTarget) {
 					logicalIdentity: target.logicalIdentity,
 					revision: target.revision,
 					normalization: {
-						profile: 'skill-icon-green-key-role-mask-v1',
+						profile,
 						outcome: 'not-run',
-						geometryHash,
+						geometryHash: target.normalization.geometry.contentHash,
 						providerSource: null,
 						sourceContentHash: null,
+						...(profile === 'skill-icon-green-key-role-mask-v3'
+							? {
+									decoderInputContentHash: null,
+									containerBox: null,
+									colorSpaceDisposition: null
+								}
+							: {}),
 						outputContentHash: null
 					}
 				}
@@ -304,7 +384,7 @@ function failedResult(target: TestTarget) {
 		status: 'failed',
 		exactPrompt: target.exactPrompt,
 		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
-		referenceInputs: referenceInputs.map(({ path, contentHash }) => ({ path, contentHash })),
+		referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
 		output: null,
 		resultPath: target.output.resultPath,
 		findings: [
@@ -573,6 +653,117 @@ describe('inspectSkillIconAsset', () => {
 		);
 	});
 
+	it('uses the geometry-v2 outer envelope for frame containment and all six edge bands', async () => {
+		const outer = geometryV2.outerEnvelopePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const aperture = geometryV2.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const inner = aperture.map(
+			([x, y]) =>
+				[
+					512 + (x - 512) * geometryV2.innerApertureScale,
+					512 + (y - 512) * geometryV2.innerApertureScale
+				] as const
+		);
+		const medallion = geometryV2.rarityMedallionExclusion.map(
+			([x, y]) => [x * 1024, y * 1024] as const
+		);
+		const completeFrame = await rgbaPng((x, y) =>
+			(inPolygon(x, y, outer) && !inPolygon(x, y, inner)) || inPolygon(x, y, medallion) ? 255 : 0
+		);
+		expect(
+			(await inspectSkillIconAsset(completeFrame, 'rarity-frame', geometryV2)).violations
+		).toEqual([]);
+
+		const [first, second] = outer;
+		const transparentOuterEdge = await svgPng(
+			`<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg"><line x1="${first![0]}" y1="${first![1]}" x2="${second![0]}" y2="${second![1]}" stroke="blue" stroke-width="20"/></svg>`
+		);
+		expect(
+			(await inspectSkillIconAsset(transparentOuterEdge, 'rarity-frame', geometryV2)).violations
+		).toContain('rarity-frame material must intersect all six edge bands');
+	});
+
+	it('applies the strict alpha threshold to all geometry-v2 frame edges without dilation', async () => {
+		const outer = geometryV2.outerEnvelopePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const aperture = geometryV2.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const inner = aperture.map(
+			([x, y]) =>
+				[
+					512 + (x - 512) * geometryV2.innerApertureScale,
+					512 + (y - 512) * geometryV2.innerApertureScale
+				] as const
+		);
+		const alphaNine = await rgbaPng((x, y) =>
+			inPolygon(x, y, outer) && !inPolygon(x, y, inner) ? 9 : 0
+		);
+		expect((await inspectSkillIconAsset(alphaNine, 'rarity-frame', geometryV2)).violations).toEqual(
+			[]
+		);
+
+		const alphaEight = await rgbaPng((x, y) =>
+			inPolygon(x, y, outer) && !inPolygon(x, y, inner) ? 8 : 0
+		);
+		const alphaEightViolations = (
+			await inspectSkillIconAsset(alphaEight, 'rarity-frame', geometryV2)
+		).violations;
+		expect(alphaEightViolations).toContain(
+			'rarity-frame material must intersect all six edge bands'
+		);
+		expect(alphaEightViolations).toContain(
+			'rarity-frame visible area is below the minimum frame coverage'
+		);
+
+		for (const [label, outsidePixel] of [
+			['outer envelope', [399, 110]],
+			['inner aperture', [511, 221]]
+		] as const) {
+			const withBoundaryAlpha = async (boundaryAlpha: number): Promise<Buffer> =>
+				rgbaPng((x, y) => {
+					if (Math.floor(x) === outsidePixel[0] && Math.floor(y) === outsidePixel[1])
+						return boundaryAlpha;
+					return inPolygon(x, y, outer) && !inPolygon(x, y, inner) ? 255 : 0;
+				});
+			const alphaNineBoundary = await inspectSkillIconAsset(
+				await withBoundaryAlpha(9),
+				'rarity-frame',
+				geometryV2
+			);
+			expect(alphaNineBoundary.violations, label).toContain(
+				label === 'outer envelope'
+					? 'rarity-frame pixels must remain inside the outer hex or medallion envelope'
+					: 'rarity-frame aperture must remain transparent'
+			);
+			expect(
+				(await inspectSkillIconAsset(await withBoundaryAlpha(8), 'rarity-frame', geometryV2))
+					.violations,
+				label
+			).toEqual([]);
+		}
+	}, 20_000);
+
+	it('allows medallion pixels but rejects medallion spill into the geometry-v2 aperture', async () => {
+		const medallion = geometryV2.rarityMedallionExclusion.map(
+			([x, y]) => [x * 1024, y * 1024] as const
+		);
+		const outer = geometryV2.outerEnvelopePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const aperture = geometryV2.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const inner = aperture.map(
+			([x, y]) =>
+				[
+					512 + (x - 512) * geometryV2.innerApertureScale,
+					512 + (y - 512) * geometryV2.innerApertureScale
+				] as const
+		);
+		const spill = await rgbaPng((x, y) => {
+			if (x >= 490 && x < 534 && y >= 220 && y < 270) return 255;
+			return (inPolygon(x, y, outer) && !inPolygon(x, y, inner)) || inPolygon(x, y, medallion)
+				? 255
+				: 0;
+		});
+		expect((await inspectSkillIconAsset(spill, 'rarity-frame', geometryV2)).violations).toContain(
+			'rarity-frame aperture must remain transparent'
+		);
+	});
+
 	it('checks backing aperture coverage but leaves calibration dimensions to its target', async () => {
 		const aperture = geometry.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
 		const backing = await rgbaPng((x, y) => (inPolygon(x, y, aperture) ? 255 : 0));
@@ -697,7 +888,7 @@ describe('validateSkillIconAssets revision authority', () => {
 		await writeExecution(root, v3, candidateResult(v3, candidate), candidate);
 
 		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
-	});
+	}, 20_000);
 
 	it('never falls back through superseded history when the highest revision fails', async () => {
 		const root = await revisionTestRoot();
@@ -786,6 +977,56 @@ describe('validateSkillIconAssets revision authority', () => {
 
 		await expect(validateSkillIconAssets(root)).rejects.toThrow(
 			/current raw geometry authority hash does not match target/iu
+		);
+	});
+
+	it('validates a profile-v3 candidate through skill-v4 and geometry-v2 authorities', async () => {
+		const root = await revisionTestRoot();
+		const v3 = targetV3();
+		const candidate = await validBacking();
+		await writeExecution(root, v3, candidateResult(v3, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+	});
+
+	it('rejects changed profile-v3 geometry and guide authority bytes', async () => {
+		const geometryRoot = await revisionTestRoot();
+		const v3 = targetV3();
+		await writeExecution(geometryRoot, v3, failedResult(v3));
+		await writeFile(
+			path.join(geometryRoot, SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH),
+			Buffer.concat([geometryV2SourceBytes, Buffer.from('\n')])
+		);
+		await expect(validateSkillIconAssets(geometryRoot)).rejects.toThrow(
+			/current raw geometry authority hash does not match target/iu
+		);
+
+		const guideRoot = await revisionTestRoot();
+		await writeExecution(guideRoot, v3, failedResult(v3));
+		await writeFile(
+			path.join(guideRoot, SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH),
+			Buffer.concat([guideV2Bytes, Buffer.from('changed')])
+		);
+		await expect(validateSkillIconAssets(guideRoot)).rejects.toThrow(
+			/current raw geometry-guide authority hash does not match target/iu
+		);
+	}, 15_000);
+
+	it('rejects a profile-v3 target mixed with a profile-v2 skill assignment', async () => {
+		const root = await revisionTestRoot();
+		const v3 = targetV3();
+		await writeExecution(root, v3, failedResult(v3));
+		const assignmentPath = path.join(
+			root,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${v3.jobId}.json`
+		);
+		const mixed = { ...assignment(v3) } as Record<string, unknown>;
+		mixed.skillVersion = 'summonlab-skill-icon-production-v3';
+		mixed.normalization = { profile: 'skill-icon-green-key-role-mask-v2' };
+		await writeFile(assignmentPath, JSON.stringify(mixed));
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/invalid assignment\/result evidence|normalization|profile/iu
 		);
 	});
 
