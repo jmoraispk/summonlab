@@ -23,6 +23,25 @@ Their older `Tower` and `Gate` navigation labels are not current behavior; the a
 
 ![Primary phone mission-packing reference](./mockups/mission-packing-phone.png)
 
+## Opening story storyboard
+
+The proposed opening stays simple: the Master connects, summons three adults, answers their first
+questions, assigns the sword, spear, and bow, survives the gate attack, and receives the first Tower
+objective. The threat clock begins only after the player's first reply. The Master remains nonphysical
+and makes the final equipment decisions even when heroes state preferences.
+
+The four mockups and their interaction notes are collected in the
+[opening story and onboarding storyboard](./opening-storyboard.md). The Tower holding a failing breach is
+an exploratory story premise for review, not a runtime or shared-catalog change.
+
+![Master connection](./mockups/opening-master-connection-desktop.png)
+
+![Three summoned arrivals](./mockups/opening-three-arrivals-desktop.png)
+
+![First weapon assignment](./mockups/opening-weapon-assignment-desktop.png)
+
+![First Tower objective](./mockups/opening-first-tower-objective-desktop.png)
+
 ## Decision status
 
 ### Freeze now
@@ -40,6 +59,7 @@ Their older `Tower` and `Gate` navigation labels are not current behavior; the a
 
 ### Continue designing
 
+- the proposed Tower-and-breach opening premise and its exact canonical wording;
 - the exact gameplay thresholds behind the visual Village stages;
 - final Village Inventory states and exact equipment-assignment feedback;
 - the detailed suggested-packing and return-reconciliation sequence;
