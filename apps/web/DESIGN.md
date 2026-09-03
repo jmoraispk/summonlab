@@ -160,6 +160,15 @@ for readable controls, initiative information, public intent, responsive layout,
 Both layers consume the same authoritative combat projection; neither invents timing, legality, or
 results.
 
+The realtime combat study at `/living-village-lab/realtime-combat` is the accepted matched-comparison
+surface for deciding between flat 2D and near-3D 2.5D. Its two modes must share one simulation,
+initial state, timing, damage, targets, and outcome. The 2.5D lens may add perspective scaling,
+foot-anchored Y sorting, shadow deformation, atmospheric depth, local light, and restrained camera
+parallax; the 2D lens removes those cues and uses fixed actor scale and layer priority. Switching
+lenses never restarts the encounter. The owned saffron-braid lead is the identity and quality gate;
+supporting heroes and enemies match her compact adult proportions without copying her identity or
+costume.
+
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
 command-bar proportions as the visual baseline for the first combat slice.

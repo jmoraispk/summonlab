@@ -44,6 +44,16 @@
 			href: '/living-village-lab/combat' as const,
 			image: combatArtwork,
 			alt: 'Four-frame combat motion storyboard in the ruined observatory'
+		},
+		{
+			eyebrow: 'Realtime visual study',
+			title: 'The Ruined Threshold',
+			description:
+				'Watch three autonomous heroes intercept a plague-rat pack, then switch between flat 2D and near-3D 2.5D without changing the fight.',
+			action: 'Compare Combat Depth',
+			href: '/living-village-lab/realtime-combat' as const,
+			image: '/runtime/combat/realtime-study-v1/ruined-threshold-environment-v1.png',
+			alt: 'A plague-touched ruined village threshold at dusk'
 		}
 	] as const;
 </script>
@@ -52,7 +62,7 @@
 	<title>Living Village laboratory · Summonlab</title>
 	<meta
 		name="description"
-		content="A single comparison surface for the Living Village, Summoning Portal, and Tower expedition prototypes."
+		content="A single comparison surface for Living Village gameplay, summoning, missions, and combat prototypes."
 	/>
 </svelte:head>
 

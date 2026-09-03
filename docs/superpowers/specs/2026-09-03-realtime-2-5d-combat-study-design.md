@@ -1,6 +1,7 @@
-# Real-Time 2.5D Combat Study Design
+# Near-3D Real-Time 2.5D Combat Study Design
 
-**Status:** Owner-approved direction on 2026-09-03; design awaiting owner review before implementation planning.
+**Status:** Owner-approved for implementation planning on 2026-09-03, with the supplied hero confirmed
+as owner-created and fully available for derivative prototype assets.
 
 ## Purpose
 
@@ -10,18 +11,27 @@ clips without copying that game's assets, characters, interface, names, or data.
 
 The study is not a replacement for the accepted turn-based combat direction. It is a sibling lab
 used to compare how autonomous real-time combat feels and looks before any production combat decision
-is made.
+is made. The primary target is 2.5D pushed as close to a 3D read as practical. A matched flat-2D
+presentation mode provides evidence for the later 2D-versus-2.5D choice; it is not the aspirational
+art target.
 
 ## Approved product decisions
 
 - Use a 2.5D PixiJS presentation rather than introducing a full 3D renderer.
+- Push dimensionality through perspective, multi-plane parallax, depth scaling, Y sorting, foreground
+  occlusion, responsive contact shadows, local light, and camera movement.
+- Provide a matched `2D` comparison mode and `2.5D` target mode over the same encounter, actors,
+  timing, and effects so reviewers judge dimensional treatment rather than different content.
 - Prioritize character, environment, animation, impact, and camera quality over manual control depth.
 - Make the first encounter fully autonomous. One skill may fire automatically when its tactical
   conditions and cooldown permit.
 - Keep available actions and the actor's current public intent inspectable in a quiet developer
   sidecar. The battlefield itself stays clean and cinematic.
-- Use the owner-supplied saffron-clad, long-braided woman as the identity anchor for the hero art
-  pipeline.
+- Use the owner-created saffron-clad, long-braided woman as a fully authorized production source for
+  the lead hero, including crops, cutouts, adaptations, chibi derivatives, animation frames, and
+  runtime presentation.
+- Create two additional original prototype heroes in the same illustration quality and combat style,
+  with distinct identities and silhouettes rather than variations or copies of the lead hero.
 - Keep all supplied gameplay videos outside Git. They are private behavioral and visual references,
   not runtime assets.
 - Develop on branch `codex/realtime-combat-study` in the sibling worktree
@@ -51,10 +61,13 @@ layered lighting provide most of the perceived polish.
 Create a new focused route at `/living-village-lab/realtime-combat` with:
 
 - one vertical 9:16 battlefield that also presents cleanly in a desktop shell;
-- one identity-bound lead hero based on the supplied character;
+- one identity-bound lead hero derived from the supplied owner-created character;
+- two original supporting heroes in the same authored visual family;
 - one original rat-brute enemy and a small number of original lesser rats;
 - autonomous approach, target acquisition, melee or close-range skill use, hit reaction, defeat,
   victory, pause, and replay;
+- a `2D` versus `2.5D` presentation switch that restarts the same deterministic encounter in the
+  selected mode;
 - health bars, cooldown state, damage numbers, contact shadows, particles, hit-stop, restrained
   camera shake, and sound-ready presentation cues;
 - a collapsed-by-default developer sidecar showing current public intent, available actions,
@@ -62,9 +75,9 @@ Create a new focused route at `/living-village-lab/realtime-combat` with:
 - deterministic local fixtures and no database, model call, production mission mutation, or server
   dependency.
 
-The first complete encounter may remain one hero against a small pack. Additional polished heroes
-are explicitly downstream of the lead-hero art gate; low-quality companions must not be added merely
-to make the party count resemble the reference.
+The first art review checkpoint remains one hero against one enemy. The complete prototype encounter
+uses the three-hero party, but the two supporting heroes are explicitly downstream of the lead-hero
+art gate; low-quality companions must not be added merely to complete the party count.
 
 ## Non-goals
 
@@ -101,12 +114,19 @@ The default screen emphasizes the battlefield. A small pause control, encounter 
 autonomy indicator remain visible. Replay appears after victory or defeat. The developer sidecar is
 available for evaluating agent behavior but is not part of the intended player composition.
 
-## Visual direction
+## Visual direction and comparison
 
 Use a steep three-quarter camera, an authored painted environment, bottom-center feet anchors,
 Y-sorted actors, soft elliptical contact shadows, foreground occlusion, and separate atmosphere and
 effect layers. The intended result should feel dimensional at phone scale without pretending to be
 free-camera 3D.
+
+The `2.5D` target mode uses the full perspective projection, depth-dependent actor scale, multi-plane
+camera parallax, Y sorting, occluders, shadow deformation, local light response, atmospheric depth,
+and restrained camera dolly or impulse. The `2D` comparison mode uses the same source art, simulation,
+camera framing, UI, timing, and effect vocabulary while flattening depth scaling, parallax, occlusion,
+and directional shadow response. It must remain competent and readable; it may not be deliberately
+degraded to manufacture a preference.
 
 The arena uses a restrained dark-fantasy palette: cool blue-gray distance and fog, warm saffron and
 fire accents around the lead hero, muted earth underfoot, and a darker enemy mass. Characters must
@@ -125,8 +145,9 @@ Visual polish comes from coordinated layers:
 
 ## Lead-hero identity contract
 
-The supplied 1024-by-1536 reference is an identity source, not a frame that may simply be scaled down.
-The combat adaptation must preserve:
+The supplied 1024-by-1536 character is owner-created and may be used in full or adapted freely for
+the prototype. Persist the original source with provenance before derivative production. The combat
+adaptation must preserve:
 
 - an adult Black woman with a confident, grounded presence;
 - the asymmetrical hairstyle, shaved right temple, and geometric temple marking;
@@ -176,9 +197,11 @@ or rejected variants do not silently enter runtime catalogs.
 
 ### Gate C — opponent and encounter
 
-After the lead hero passes motion review, produce one original rat-brute pack and a lower-cost lesser
-rat variant, then assemble the full encounter. Supporting heroes are deferred until this encounter
-demonstrates that the art pipeline can preserve quality in motion.
+After the lead hero passes motion review, produce two original supporting hero identities in the same
+quality and visual family, one original rat-brute pack, and a lower-cost lesser-rat variant. Supporting
+hero animation may use a smaller clip vocabulary than the lead, but their gameplay-scale identity,
+silhouette, anchoring, lighting, and rendering quality must pass the same review standard before the
+three-hero encounter is assembled.
 
 ## Runtime architecture
 
@@ -314,8 +337,10 @@ The study succeeds when:
    visual system;
 5. the same seed replays the same mechanical encounter and final outcome;
 6. the route remains isolated from production mission state and the accepted turn-based lab;
-7. owner playtest feedback can decide whether to continue with more heroes, test full 3D, or retain
-   the existing turn-based direction.
+7. the matched presentation switch provides credible evidence for choosing flat 2D, near-3D 2.5D,
+   or a later full-3D experiment;
+8. owner playtest feedback can decide whether to expand the near-3D 2.5D direction or retain the
+   existing turn-based direction.
 
 ## Primary risks
 
@@ -325,8 +350,8 @@ The study succeeds when:
   canonical neutral anchor, and reject packs with unstable costume, anatomy, light, or feet anchors.
 - **Flat or puppet-like motion:** combine authored key poses with restrained runtime interpolation,
   secondary motion, hit-stop, recoil, particles, and stable recovery rather than excessive tweening.
-- **Art scope overwhelms engineering:** do not add companion heroes before one hero, one enemy, and
-  one environment pass review.
+- **Art scope overwhelms engineering:** do not produce the supporting heroes before the lead hero,
+  one enemy, and one environment pass the staged review gates.
 - **The experiment conflicts with canonical turn-based combat:** isolate the route, fixtures, and
   simulation modules and require a separate adoption decision.
 - **Visual resemblance becomes copying:** reproduce presentation principles only; keep characters,
