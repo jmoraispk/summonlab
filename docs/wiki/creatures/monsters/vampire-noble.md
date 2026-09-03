@@ -6,7 +6,7 @@ Wiki ID: `monster.vampire-noble`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Thralls and Bloodkin are held outside the courtesy lane but chase anyone who lea
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-noble/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-noble/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-noble/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-noble/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-noble/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/wind-v1.json` |
