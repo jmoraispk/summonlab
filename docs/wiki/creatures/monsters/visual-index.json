@@ -8632,7 +8632,7 @@
         {
           "affinity": "fire",
           "status": "planned",
-          "presentationStatus": "candidate-only",
+          "presentationStatus": "approved-review",
           "targetId": "canonical/elementals/elemental-wisp/fire/v2",
           "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-wisp/fire/target-v2.json",
           "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-wisp/fire/assignment-v2.json",
@@ -8646,7 +8646,7 @@
         {
           "affinity": "earth",
           "status": "planned",
-          "presentationStatus": "candidate-only",
+          "presentationStatus": "approved-review",
           "targetId": "canonical/elementals/elemental-wisp/earth/v2",
           "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-wisp/earth/target-v2.json",
           "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-wisp/earth/assignment-v2.json",
@@ -8660,7 +8660,7 @@
         {
           "affinity": "wind",
           "status": "planned",
-          "presentationStatus": "candidate-only",
+          "presentationStatus": "approved-review",
           "targetId": "canonical/elementals/elemental-wisp/wind/v2",
           "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-wisp/wind/target-v2.json",
           "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-wisp/wind/assignment-v2.json",
@@ -8674,7 +8674,7 @@
         {
           "affinity": "water",
           "status": "planned",
-          "presentationStatus": "candidate-only",
+          "presentationStatus": "approved-review",
           "targetId": "canonical/elementals/elemental-wisp/water/v2",
           "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-wisp/water/target-v2.json",
           "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-wisp/water/assignment-v2.json",

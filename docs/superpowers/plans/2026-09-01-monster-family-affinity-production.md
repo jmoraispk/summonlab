@@ -32,8 +32,8 @@
   sets the production bar: Fire uses active flame tongues and ember shedding; Wind partially
   dissipates into directional pressure filaments; Water exposes layered currents, refraction, and
   droplets; Earth remains flowing spell-matter with detached orbiting mineral fragments rather than
-  becoming a solid rock body. Propagate this material-and-motion distinction only after owner review
-  of the four Wisp v2 candidates.
+  becoming a solid rock body. The owner accepted all four Wisp v2 candidates on 2026-09-02; use
+  this material-and-motion distinction as the calibration for later Elemental forms.
 - Do not modify `packages/contracts`, engine code, skills, unrelated visual domains, or shared runtime catalogs. Any later runtime promotion is a separate integration request to the root orchestrator.
 - Family authors own only one numbered family packet. Producers own only one target's candidate and result receipt. The controller alone writes aggregate manifests, indexes, contact sheets, and wiki output.
 - Each implementation task ends with focused tests, a concise Conventional Commit, and a push of the current branch.
