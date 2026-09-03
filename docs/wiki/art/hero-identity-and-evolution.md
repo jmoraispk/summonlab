@@ -212,6 +212,11 @@ color and ornament taste, two cultural fragments, one noncanonical life echo, an
 posture or gesture cue. The image prompt receives only concrete visual consequences. It does not use
 personality to redesign facial anatomy, body type, gender, phenotype, beauty, or intelligence.
 
+The kernel must have a high-salience dominant trait, a counter-trait, a social edge, and a distinct
+visual consequence. Generic agreeable clusters are production failures. Strong personality still
+uses restrained facial acting: posture, grooming, maintenance, silhouette, asymmetry, pattern,
+color, and personal objects carry character without compulsory smiles, grins, or theatrical anger.
+
 Do not spend a complete authored biography on every unreviewed candidate. The clean-slate summon has
 cultural, gestural, and taste fragments but no autobiographical memory, so a pre-art “life echo” is
 visual vocabulary rather than a remembered hometown, family, profession, or deed. After a pair is

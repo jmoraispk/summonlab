@@ -80,7 +80,7 @@ The project canon gives new summons a starting temperament plus fragments of lan
 gesture, taste, and cultural intuition, but no autobiographical memory of where those fragments came
 from. The pre-art kernel therefore contains:
 
-- two or three independent temperament descriptors, including one useful tension or contradiction;
+- one high-salience temperament trait, one counter-trait, and one useful tension or contradiction;
 - social presentation such as guarded, open, formal, blunt, playful, attentive, restless, or calm;
 - grooming and maintenance attitude;
 - color confidence and ornament tolerance;
@@ -94,6 +94,12 @@ The kernel is randomized independently from physiology, phenotype, aptitude, rar
 combat role. A huge bodybuilder may be quiet and bookish; a slight person may be confrontational; a
 carefully dressed scholar may be disorganized; a visibly repaired outfit may belong to someone vain
 about craft. These contradictions are intentional, not errors.
+
+Every kernel must pass a personality-strength gate: after hiding the name and body description, its
+dominant trait, counter-trait, social edge, and visual consequence must still differ meaningfully
+from the preceding candidates. “Nice, brave, calm” or another generic agreeable cluster is a retry.
+Strong personality does not mean exaggerated facial acting; the owner has already rejected smiles,
+grins, and theatrical expressions as a substitute for character.
 
 Only drawable consequences enter the image prompt: posture, gaze, grooming, maintenance, garment
 order or repair, pattern density, color confidence, ornament restraint, and one personal object.
@@ -124,27 +130,26 @@ length, or accessory is reserved for one gender.
 
 ### Body construction
 
-The distribution is balanced across 100 men and 100 women. The odd three-person bodybuilder quota
-places one additional woman there and one additional man in the ordinary band; the overall gender
-split remains exact.
+The distribution is exactly symmetric across 100 men and 100 women.
 
 | Primary body language | Men | Women | Total |
 | --- | ---: | ---: | ---: |
-| Slight or lanky, but healthy rather than extremely frail | 12 | 12 | 24 |
-| Ordinary lean or average | 29 | 28 | 57 |
-| Soft or round | 18 | 18 | 36 |
-| Sturdy or stocky | 17 | 17 | 34 |
+| Slight or lanky, but healthy rather than extremely frail | 10 | 10 | 20 |
+| Ordinary lean or average | 10 | 10 | 20 |
+| Soft or round | 15 | 15 | 30 |
+| Sturdy or stocky | 15 | 15 | 30 |
 | Plus-size or heavy | 10 | 10 | 20 |
-| Athletic or conditioned, not ripped | 10 | 10 | 20 |
-| Clearly muscular | 3 | 3 | 6 |
-| Extreme bodybuilder | 1 | 2 | 3 |
+| Athletic or conditioned, not ripped | 20 | 20 | 40 |
+| Clearly muscular | 17 | 17 | 34 |
+| Extreme bodybuilder | 3 | 3 | 6 |
 | **Total** | **100** | **100** | **200** |
 
-Only nine of 200 are deliberately muscular or bodybuilder-level, including three extreme
-bodybuilders. The run contains no explicit “extremely frail” quota, and the slight/lanky band falls
-from 36 to 24. Visible abdominal definition remains rare. Softness, mass, height, frame breadth, and
-muscle are separate fields: a heavy hero is not automatically muscular, an athletic hero is not
-automatically lean, and a slight hero is not automatically tall or incapable.
+Forty of 200 are clearly muscular or bodybuilder-level, including three extreme bodybuilders among
+the men and three among the women. Another 40 are visibly conditioned without being ripped. Only 20
+use the ordinary lean/average band, and there is no explicit “extremely frail” quota. Visible
+abdominal definition remains uncommon outside the clearly muscular groups. Softness, mass, height,
+frame breadth, and muscle are separate fields: a heavy hero is not automatically muscular, an
+athletic hero is not automatically lean, and a slight hero is not automatically tall or incapable.
 
 ### Height
 
@@ -164,15 +169,15 @@ worth, intelligence, morality, or aptitude.
 
 | Dominant hair color | Total |
 | --- | ---: |
-| Black | 44 |
-| Dark brown | 40 |
-| Brown or chestnut | 32 |
+| Black | 36 |
+| Dark brown | 30 |
+| Brown or chestnut | 24 |
 | Blonde or gold | 24 |
 | Red, copper, or auburn | 20 |
-| Gray, white, or silver | 16 |
-| Blue or teal | 10 |
-| Violet, plum, or pink | 8 |
-| Multicolor, split-dye, or strong streak | 6 |
+| Gray, white, or silver | 14 |
+| Blue or teal | 18 |
+| Violet, plum, or pink | 16 |
+| Multicolor, split-dye, or strong streak | 18 |
 
 Fantasy colors read as dye, pigment, or natural personal variation without magical light. Gray and
 white hair may be premature, dyed, or naturally present within the accepted age band.
@@ -183,19 +188,24 @@ Each hero receives exactly one primary silhouette even when secondary techniques
 
 | Silhouette family | Total |
 | --- | ---: |
-| Shaved or close-cropped | 20 |
-| Short textured crop | 26 |
-| Bob or pageboy | 18 |
-| Medium loose | 26 |
-| Long loose | 24 |
-| Braids, twists, or locs | 34 |
-| Curls, coils, or halo | 24 |
+| Shaved or close-cropped | 24 |
+| Short textured crop | 28 |
+| Bob or pageboy | 16 |
+| Medium loose | 18 |
+| Long loose | 18 |
+| Braids, twists, or locs | 30 |
+| Curls, coils, or halo | 22 |
 | Bun, topknot, or wrapped construction | 20 |
-| Deliberately asymmetric or extreme silhouette | 8 |
+| Deliberately asymmetric or extreme silhouette | 24 |
 
 Hair has a chibi-readability note in every manifest: front silhouette, side silhouette, parting,
 shaved areas, gathered mass, and any gender-expression cue that must survive simplification. This is
 the direct safeguard against Daro Miri's chibi hair drift.
+
+At least 100 heroes also receive a deliberate haircut accent independent of color: an undercut,
+shaved geometry, offset braid, sculptural fringe, high gathered mass, contrasting side length,
+wrapped section, beads, rings, clips, or another readable construction. The accent must survive both
+the summon and chibi without becoming a magical effect.
 
 ### Skin and facial variety
 
