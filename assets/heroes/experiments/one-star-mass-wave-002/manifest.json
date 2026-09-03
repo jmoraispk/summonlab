@@ -7,6 +7,10 @@
   "candidateBoundary": "Nothing in this experiment is approved or runtime-ready. A Keep decision means worth developing, not catalog promotion.",
   "supersedesForReview": "one-star-mass-wave-001",
   "inputReviewEvidence": "review-evidence/one-star-mass-wave-001-decisions.json",
+  "postReviewEvidence": {
+    "decisions": "review-evidence/one-star-mass-wave-002-decisions.json",
+    "ownerNotes": "review-evidence/owner-notes-2026-09-02.md"
+  },
   "batchRules": {
     "count": 16,
     "nativeStars": 1,

@@ -56,6 +56,11 @@ shoulder width, arm girth, wrist size, torso and hip width, leg length, body fat
 distribution all derive from the summon anchor. Deliberately muscular heroes remain muscular;
 slight, lanky, gangly, soft, heavy, and otherwise unusually proportioned heroes remain themselves.
 
+The standard review chibi is approximately 2.75–3.1 heads tall. Tallness and gangliness survive
+through narrowness, posture, hairstyle, and relative limb language, but not by shrinking the head
+until the result reads as a tall miniature. Hands may be simplified and emphasized for readability,
+but they should not become disproportionately huge unless large hands are a deliberate source trait.
+
 Warm color cohesion is a useful strength of the chibi treatment. It may inform a summon-art
 correction when the result stays inside the hero's established palette, but it does not authorize
 recoloring the identity or introducing affinity cues.
@@ -111,6 +116,10 @@ head wraps, and grooming while avoiding the same fashionable silhouette on every
 bracelets, necklaces, earrings, piercings, tattoos, and other durable personal marks may be used
 freely at 1★ when they clarify identity. They are personal design language, not automatic evidence
 of rank, affinity, aptitude, wealth, morality, or culture.
+
+They are also optional. A mass-generation wave should include many heroes with no tattoos and no
+visible jewelry. Body construction, hair, garment silhouette, repairs, pattern, closures, keepsakes,
+or asymmetry can supply the memorable “cool” anchor instead.
 
 ### Physical presentation
 
@@ -264,6 +273,11 @@ reference.
 - On 2026-09-02, the owner kept Ochre Braid, Nera Voss, Oren Dae, and Zuri Pell from mass wave 001.
   Wave 002 records that exported decision file as review evidence and presents those survivors
   beside twelve completely new painted identities.
+- Wave-002 review reinforced the pair-first rule, requested a more standard head ratio for Tor
+  Venn's chibi, identified oversized hands or arms as recurring translation risks, and rejected a
+  hairstyle that changed gender expression at chibi scale. The next mass run therefore binds hair
+  silhouette and gender-expression cues explicitly and makes ripped bodies rare rather than the
+  default.
 
 ## Integration boundary
 

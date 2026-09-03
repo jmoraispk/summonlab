@@ -32,6 +32,12 @@ review_evidence = json.loads((ROOT / MANIFEST["inputReviewEvidence"]).read_text(
 assert review_evidence["experimentId"] == "one-star-mass-wave-001"
 assert sum(decision == "keep" for decision in review_evidence["decisions"].values()) == 4
 
+post_review = json.loads((ROOT / MANIFEST["postReviewEvidence"]["decisions"]).read_text())
+assert post_review["experimentId"] == "one-star-mass-wave-002"
+assert len(post_review["decisions"]) == 16
+owner_notes = (ROOT / MANIFEST["postReviewEvidence"]["ownerNotes"]).read_text()
+assert "Daro Miri" in owner_notes and "Tor Venn" in owner_notes
+
 review = (ROOT / MANIFEST["reviewPage"]).read_text()
 provenance = json.loads((ROOT / MANIFEST["provenance"]).read_text())
 assert provenance["newSummonPrompt"] and provenance["combatChibiPrompt"]
