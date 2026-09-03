@@ -6,7 +6,7 @@ Wiki ID: `monster.demon-imp`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -64,10 +64,10 @@ Not applicable for this form.
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/demons/demon-imp/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/demons/demon-imp/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-imp/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/demons/demon-imp/water-v1.json` |
 
 ### Status semantics
 
