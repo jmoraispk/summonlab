@@ -34,13 +34,13 @@ and binds one identity-derived hero plus the struck Sprout Goblin to authored ra
 The remaining six actors deliberately stay proxy silhouettes so the page does not imply that roster
 packs already exist.
 
-The v2 floor separates art texture from tactical geometry. The environment plate contains a
-continuous stone field with no baked gameplay seams; PixiJS projects the receipt's exact 7×9 grid as
-63 equal 82×82 logical-pixel cells. Actor feet, contact shadows, paths, and selection outlines all
-derive from the same cell-center function, so decorative masonry cannot contradict legal positions.
-The initial faint v2 overlay was rejected because the squares disappeared at gameplay scale. The v3
-treatment makes each cell persistent with dark grout, a restrained inner tint, and a stone-edge
-bevel that stays readable on phone and desktop.
+The v2 and v3 floor experiments were rejected. A faint orthographic overlay disappeared at gameplay
+scale; strengthening it produced a readable but flat checkerboard that destroyed the accepted 2.5D
+camera. The lab therefore restores the original authored observatory plate. Its 7×9 engine board
+remains authoritative, but the current rectangular anchor function is only an interim placement
+model. C0 must replace it with a scene-owned mapping from each cell ID to four projected corners plus
+a bottom-center feet anchor. Selection, paths, shadows, and actors then share that projection without
+drawing an orthographic grid over the art.
 
 The first runtime pack contains:
 
@@ -65,6 +65,19 @@ Exit: the existing frozen receipt plays unchanged with the authored environment 
 combatants while remaining aligned to the same cells, timing, final state, controls, feed, and replay
 proof. Owner review decides whether this visual jump is strong enough to proceed to true transparent
 animation atlases.
+
+## Storyboard convergence checklist
+
+| Lane              | What the accepted storyboard requires                                                                                  | Next implementation proof                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Graphics          | Painted perspective, projected tile claims, layered occlusion and light, identity-bound chibis, and separate skill VFX | Perspective cell-corner map plus true RGBA Dara and Sprout atlases                        |
+| On-screen action  | Focus → public intent → move → wind-up → impact → reaction/down → settle, all driven by one receipt                    | Cue-track playback with anticipation, hit-stop, vitality change, and terrain affordances  |
+| Turns and control | A clear `Now` rail, engine-enumerated legal actions, and Manual/Assist/Auto ownership                                  | Sequential V1 initiative with a quiet decision-pending state and replay-safe controls     |
+| Chat              | At most three compact live lines: character intent followed by factual engine outcomes                                 | Cue-timed append, expandable history, and receipt-linked replay without private reasoning |
+
+Implementation order: restore the painted perspective; complete C0 projected cell geometry; freeze
+the animation-pack contract and prove Dara/Sprout motion; connect the production receipt/cue stream;
+then finish ownership controls and expandable chat before expanding the roster.
 
 ## Recommendation
 

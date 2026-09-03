@@ -108,11 +108,11 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   preserving the top initiative rail, exact cell anchors, three-line feed, and command overlay.
 - `living-village-observatory-art-pilot-impact-v1.png` — phone action evidence for the unchanged
   Fleeting Step receipt and its raster-character movement, projected path, and destination claim.
-- `living-village-observatory-square-grid-phone-v2.png` / `-desktop-v2.png` — rejected comparison:
-  the geometry was exact, but its faint line treatment disappeared against the painted stone.
-- `living-village-observatory-readable-squares-phone-v3.png` /
-  `living-village-observatory-readable-squares-desktop-v3.png` — corrected phone and desktop proof:
-  all 63 cells retain visible grout and stone-edge bevels while sharing the exact 7×9 geometry.
+- Rejected v2/v3 floor experiments are retained in Git history only: the faint grid disappeared at
+  gameplay scale, while persistent grout flattened the accepted painted perspective.
+- `living-village-observatory-restored-perspective-phone-v4.png` /
+  `living-village-observatory-restored-perspective-desktop-v4.png` — restored phone and desktop proof:
+  the original painted 2.5D observatory is visible while the 7×9 board remains an engine contract.
 - `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are

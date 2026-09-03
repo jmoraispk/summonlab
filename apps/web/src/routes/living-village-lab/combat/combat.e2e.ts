@@ -6,8 +6,10 @@ test('plays, skips, and replays the deterministic combat motion receipt', async 
 	await page.goto(combatUrl);
 	await expect(page.getByTestId('combat-pixi-canvas')).toBeVisible();
 	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-board-contract', '7x9');
-	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-cell-width', '82');
-	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-cell-height', '82');
+	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute(
+		'data-board-projection',
+		'painted-perspective'
+	);
 	await expect(page.getByTestId('combat-beat')).toContainText('Choose an action');
 	await expect(page.getByTestId('initiative-rail')).toContainText('Mara');
 	await expect(page.getByLabel('Latest combat activity').first()).toContainText('I see an opening');

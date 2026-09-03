@@ -189,11 +189,11 @@ destination tile before impact and let the resolved state become readable before
   from authored layers, overlap, lighting, and motion rather than requiring full 3D models.
 - Center each combatant's feet anchor and contact shadow on one tactical tile. Selection outlines
   trace that tile's exact projected edges; they must not float inside it, exceed it, or straddle seams.
-- Build the tactical floor from the authoritative board dimensions as one uniform square-cell grid.
-  Painted environment plates may provide stone texture beneath it, but must not bake in competing
-  slab seams, medallions, partial cells, or perspective markings inside the playable rectangle. Each
-  cell boundary must remain immediately readable at phone gameplay scale through persistent grout
-  and restrained stone-edge bevels; the grid must never depend on a faint overlay alone.
+- Keep tactical cells logically square and authoritative in engine space, then project them through
+  the scene's steep top-down camera. Screen-space cells may be foreshortened or trapezoidal; never
+  flatten the painted battlefield into an equal-pixel checkerboard. Environment plates may author
+  square paving in perspective, while interaction uses a scene-owned mapping from each cell ID to
+  projected corners and a feet anchor. Selection outlines trace those projected corners exactly.
 - Present combat activity as a live, chat-like feed. Engine-authored outcome lines stay terse and
   causal. For example:
   `hero_04 used Fleeting Step → flanked goblin_02 → Opening → critical → goblin_02 died`.
