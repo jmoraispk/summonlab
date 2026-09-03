@@ -3,8 +3,8 @@
 Wiki ID: `art.skill-rarity-frames`
 
 Design status: **Option C is the canonical comparison authority. The seven individually generated
-frame appearances are owner-accepted and their 1024×1024 RGBA canvases pass, but exact shared
-registration remains a promotion gate**.
+frame appearances are owner-accepted. Deterministically registered geometry-v2 candidates now pass
+the role-aware asset inspector and await owner visual review before promotion**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -23,6 +23,16 @@ The image provider rendered a checkerboard into its RGB output even after one ti
 background-extraction edit per frame. The review assets preserve the generated frame artwork and use
 a deterministic connected-component matte removal to supply real transparency. The earlier initial,
 corrective, and F-only provider attempts are preserved beside this set for direct comparison.
+
+### Registered production candidates
+
+![Geometry-v2 registered rarity-frame candidates](../../../assets/wiki/skills/rarity-frame-v3/review/contact-sheet.png)
+
+The [registration record](../../../assets/wiki/skills/rarity-frame-v3/README.md) binds the accepted
+source bytes and immutable geometry-v2 bytes to seven new candidate outputs. All candidates preserve
+the source artwork, share the same inset aperture and center, remain inside the outer hexagon or
+medallion envelope, intersect all six edge bands, and remain distinct at the 96-pixel review size.
+They are review candidates, not promoted masters.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;

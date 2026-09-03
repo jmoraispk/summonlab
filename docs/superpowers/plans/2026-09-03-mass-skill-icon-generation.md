@@ -26,6 +26,9 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
 
 ## Phase 0 — finish and lock the reusable layers
 
+**Progress:** Seven registered frame candidates were produced on 2026-09-03 and pass the repository's
+role-aware geometry-v2 inspector. Owner visual approval and promotion remain pending.
+
 The seven accepted frame candidates have correct 1024×1024 RGBA canvases, but their current visible
 bounds differ. Register all seven to the exact geometry-v2 center, outer envelope, aperture, and
 medallion exclusion without changing the accepted material or ornament. Produce an alpha-overlay
