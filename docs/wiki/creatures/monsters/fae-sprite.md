@@ -6,7 +6,7 @@ Wiki ID: `monster.fae-sprite`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,10 +63,10 @@ Pixies leave dust on the fan edge; breaking the petal seam disperses the feint.
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/fae/fae-sprite/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/fae/fae-sprite/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-sprite/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/fae/fae-sprite/water-v1.json` |
 
 ### Status semantics
 
