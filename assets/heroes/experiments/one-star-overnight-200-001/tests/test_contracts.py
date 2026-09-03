@@ -10,6 +10,7 @@ import tempfile
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parent
@@ -34,6 +35,7 @@ from contracts import (  # noqa: E402
 from persist_candidate import persist_candidate  # noqa: E402
 from validate_experiment import validate_experiment  # noqa: E402
 from validate_preflight import validate_preflight  # noqa: E402
+import validate_wave as wave_validation  # noqa: E402
 from validate_wave import validate_wave  # noqa: E402
 from write_result import write_result  # noqa: E402
 
@@ -476,6 +478,30 @@ class ContractTests(unittest.TestCase):
         self.fixture.complete_candidate(chibi)
         report = validate_wave(self.fixture.root, "wave-01", expected_pairs=1)
         self.assertEqual(report["completePairCount"], 1)
+
+    def test_wave_validation_excludes_complete_pairs_retired_by_effective_selection(self) -> None:
+        for hero_id in ("ari-test", "retired-test"):
+            summon = self.fixture.target(hero_id=hero_id)
+            _assignment, _receipt, summon_result = self.fixture.complete_candidate(summon)
+            source = {
+                "targetId": summon["targetId"],
+                "resultPath": summon["output"]["resultPath"],
+                "candidatePath": summon["output"]["candidatePath"],
+                "sha256": summon_result["candidate"]["sha256"],
+            }
+            chibi = self.fixture.target(
+                hero_id=hero_id, kind="combat-chibi", source_summon=source
+            )
+            self.fixture.complete_candidate(chibi)
+        with patch.object(
+            wave_validation, "_effective_wave_hero_ids", return_value={"ari-test"}
+        ):
+            report = wave_validation.validate_wave(
+                self.fixture.root, "wave-01", expected_pairs=1
+            )
+        self.assertEqual(
+            [entry["heroId"] for entry in report["completed"]], ["ari-test"]
+        )
 
     def test_chibi_preflight_rejects_stale_summon_hash(self) -> None:
         summon = self.fixture.target()

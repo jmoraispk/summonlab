@@ -92,6 +92,7 @@ def materialize_correction(
     assigned_at: str,
     defect: str,
     mode: str,
+    checkpoint_inspection_path: Path | None = None,
 ) -> dict[str, Any]:
     if mode not in {"edit", "regeneration"}:
         raise ContractError("correction mode must be edit or regeneration")
@@ -117,8 +118,56 @@ def materialize_correction(
         raise ContractError("this coordinator operation accepts exactly a v1 source target")
     if result_relative != source_target["output"]["resultPath"]:
         raise ContractError("source result path does not match the source target")
-    if source_result["status"] != "revise" or source_result["candidate"] is None:
-        raise ContractError("correction requires a revise result with a retained candidate")
+    checkpoint_inspection_relative: str | None = None
+    checkpoint_inspection: dict[str, Any] | None = None
+    checkpoint_finding: dict[str, Any] | None = None
+    if checkpoint_inspection_path is not None:
+        checkpoint_inspection_relative = workspace_relative(
+            workspace, checkpoint_inspection_path
+        )
+        expected_root = (
+            "assets/heroes/experiments/one-star-overnight-200-001/review-evidence/"
+        )
+        if not checkpoint_inspection_relative.startswith(expected_root):
+            raise ContractError("checkpoint inspection evidence must remain under review-evidence")
+        checkpoint_inspection = _load_anchored_json(
+            workspace, checkpoint_inspection_relative
+        )
+        checkpoint_finding = next(
+            (
+                item
+                for item in checkpoint_inspection.get("findings", [])
+                if isinstance(item, dict) and item.get("heroId") == source_target["heroId"]
+            ),
+            None,
+        )
+        if (
+            checkpoint_inspection.get("schemaVersion")
+            != "hero-one-star-checkpoint-arbitration-v1"
+            or checkpoint_inspection.get("experimentId") != source_target["experimentId"]
+            or checkpoint_inspection.get("waveId") != source_target["waveId"]
+            or checkpoint_inspection.get("candidateBoundary")
+            != "candidate-only; objective authoring review, not human approval"
+            or checkpoint_finding is None
+            or checkpoint_finding.get("verdict") != "fail"
+            or len(checkpoint_finding.get("blockingCriteria", [])) != 1
+            or checkpoint_finding.get("selectedResultPath") != result_relative
+            or checkpoint_finding.get("selectedResultSha256") != sha256_json(source_result)
+        ):
+            raise ContractError("checkpoint inspection does not authorize one correction defect")
+    ordinary_revise = (
+        source_result["status"] == "revise"
+        and source_result["candidate"] is not None
+    )
+    checkpoint_candidate = (
+        source_result["status"] == "candidate"
+        and source_result["candidate"] is not None
+        and checkpoint_finding is not None
+    )
+    if not (ordinary_revise or checkpoint_candidate):
+        raise ContractError(
+            "correction requires a revise result or a checkpoint-authorized candidate, with a retained candidate"
+        )
 
     candidate_record = source_result["candidate"]
     candidate_path = candidate_record["path"]
@@ -178,6 +227,14 @@ def materialize_correction(
         source_path=candidate_path,
         source_sha256=candidate_record["sha256"],
     )
+    if checkpoint_inspection is not None:
+        assert checkpoint_inspection_relative is not None
+        prompt_text += (
+            "\n\nCHECKPOINT CORRECTION AUTHORITY: independent candidate-only inspection at "
+            f"{checkpoint_inspection_relative} (canonical SHA-256 "
+            f"{sha256_json(checkpoint_inspection)}) authorizes exactly the single blocking defect "
+            "stated above. This evidence is provenance only and must not appear in the image."
+        )
     target_v2["canonicalPrompt"] = {
         "text": prompt_text,
         "sha256": sha256_bytes(prompt_text.encode("utf-8")),
@@ -245,6 +302,7 @@ def main() -> None:
     parser.add_argument("--assigned-at", required=True)
     parser.add_argument("--defect", required=True)
     parser.add_argument("--mode", choices=("edit", "regeneration"), required=True)
+    parser.add_argument("--checkpoint-inspection-path", type=Path)
     args = parser.parse_args()
     report = materialize_correction(
         args.source_target,
@@ -255,10 +313,10 @@ def main() -> None:
         assigned_at=args.assigned_at,
         defect=args.defect,
         mode=args.mode,
+        checkpoint_inspection_path=args.checkpoint_inspection_path,
     )
     print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":
     main()
-

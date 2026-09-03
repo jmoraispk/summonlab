@@ -19,6 +19,7 @@ sys.path.insert(0, str(SCRIPTS))
 sys.path.insert(0, str(HERE))
 
 import activate_reserve as activation  # noqa: E402
+import materialize_correction as correction  # noqa: E402
 import materialize_supplemental_reserve as supplemental  # noqa: E402
 from build_review import discover_review_state, load_effective_roster  # noqa: E402
 from contracts import ContractError, canonical_json, sha256_json  # noqa: E402
@@ -146,12 +147,24 @@ class ActivationFixture(WorkspaceFixture):
             self.root,
         )
 
-    def materialize_malformed_provider_failure(self, hero_id: str) -> str:
+    def materialize_malformed_provider_failure(
+        self,
+        hero_id: str,
+        *,
+        target_path: str | None = None,
+        assignment_path: str | None = None,
+    ) -> str:
         packet = self.packet(hero_id)
-        target = deepcopy(packet["summonTarget"])
-        assignment = deepcopy(packet["summonAssignment"])
-        self.write_json(packet["summonTargetPath"], target)
-        self.write_json(packet["summonAssignmentPath"], assignment)
+        target_path = target_path or packet["summonTargetPath"]
+        assignment_path = assignment_path or packet["summonAssignmentPath"]
+        if (self.root / target_path).exists():
+            target = json.loads((self.root / target_path).read_text())
+            assignment = json.loads((self.root / assignment_path).read_text())
+        else:
+            target = deepcopy(packet["summonTarget"])
+            assignment = deepcopy(packet["summonAssignment"])
+            self.write_json(target_path, target)
+            self.write_json(assignment_path, assignment)
         failed_criterion = "manifest-fidelity"
         findings = [
             {
@@ -216,12 +229,12 @@ class ActivationFixture(WorkspaceFixture):
             },
         }
         write_result(
-            self.root / packet["summonTargetPath"],
-            self.root / packet["summonAssignmentPath"],
+            self.root / target_path,
+            self.root / assignment_path,
             result,
             self.root,
         )
-        return packet["summonTarget"]["output"]["resultPath"]
+        return target["output"]["resultPath"]
 
     def activate(self, failed: str, reserve: str) -> dict:
         return activation.activate_reserve(
@@ -364,6 +377,88 @@ class ActivateReserveTests(unittest.TestCase):
         record = json.loads((self.fixture.root / receipt["activationPath"]).read_text())
         self.assertEqual(record["decisionEvidence"]["failureStatus"], "failed")
         self.assertIn("provider-output integrity", record["decisionEvidence"]["authorization"])
+        self.assertEqual(record["activeSelectedCount"], 200)
+
+    def test_terminal_malformed_correction_output_can_activate_a_reserve(self) -> None:
+        self.fixture.materialize_failed_candidate("kaar-jorar", status="revise")
+        packet = self.fixture.packet("kaar-jorar")
+        materialized = correction.materialize_correction(
+            self.fixture.root / packet["summonTargetPath"],
+            self.fixture.root / packet["summonAssignmentPath"],
+            self.fixture.root / packet["summonTarget"]["output"]["resultPath"],
+            self.fixture.root,
+            producer_id="image-producer-correction",
+            assigned_at="2026-09-03T00:58:00Z",
+            defect="Correct the single documented manifest-fidelity blocker.",
+            mode="regeneration",
+        )
+        result_path = self.fixture.materialize_malformed_provider_failure(
+            "kaar-jorar",
+            target_path=materialized["targetPath"],
+            assignment_path=materialized["assignmentPath"],
+        )
+        receipt = activation.activate_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            failed_active_hero_id="kaar-jorar",
+            reserve_hero_id="zelen-soror",
+            destination_wave="wave-01",
+            producer_id="image-producer-reserve",
+            assigned_at="2026-09-03T01:00:00Z",
+            created_at="2026-09-03T00:59:00Z",
+            reason="Terminal malformed correction canvas; activate a frozen reserve.",
+            failure_result_path=self.fixture.root / result_path,
+        )
+        record = json.loads((self.fixture.root / receipt["activationPath"]).read_text())
+        self.assertEqual(record["decisionEvidence"]["failureStatus"], "failed")
+        self.assertIn("provider-output integrity", record["decisionEvidence"]["authorization"])
+        self.assertEqual(record["activeSelectedCount"], 200)
+
+    def test_checkpoint_arbitration_can_replace_a_previously_accepted_candidate(self) -> None:
+        self.fixture.materialize_failed_candidate("kaar-jorar", status="candidate")
+        packet = self.fixture.packet("kaar-jorar")
+        result_path = packet["summonTarget"]["output"]["resultPath"]
+        result = json.loads((self.fixture.root / result_path).read_text())
+        evidence_path = (
+            "assets/heroes/experiments/one-star-overnight-200-001/"
+            "review-evidence/wave-01-arbitration.json"
+        )
+        evidence = {
+            "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+            "experimentId": "one-star-overnight-200-001",
+            "waveId": "wave-01",
+            "inspectedAt": "2026-09-03T00:58:30Z",
+            "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+            "findings": [
+                {
+                    "heroId": "kaar-jorar",
+                    "selectedResultPath": result_path,
+                    "selectedResultSha256": sha256_json(result),
+                    "verdict": "fail",
+                    "blockingCriteria": ["manifest-fidelity"],
+                    "evidence": "Independent full-resolution inspection found an objective blocker.",
+                }
+            ],
+        }
+        self.fixture.write_json(evidence_path, evidence)
+        receipt = activation.activate_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            failed_active_hero_id="kaar-jorar",
+            reserve_hero_id="zelen-soror",
+            destination_wave="wave-01",
+            producer_id="image-producer-reserve",
+            assigned_at="2026-09-03T01:00:00Z",
+            created_at="2026-09-03T00:59:00Z",
+            reason="Checkpoint arbitration found a blocking manifest mismatch.",
+            failure_result_path=self.fixture.root / result_path,
+            checkpoint_inspection_path=self.fixture.root / evidence_path,
+        )
+        record = json.loads((self.fixture.root / receipt["activationPath"]).read_text())
+        self.assertIn("checkpoint arbitration", record["decisionEvidence"]["authorization"])
+        self.assertEqual(
+            record["decisionEvidence"]["checkpointInspectionSha256"], sha256_json(evidence)
+        )
         self.assertEqual(record["activeSelectedCount"], 200)
 
     def test_partial_publication_rolls_back_exact_created_inodes(self) -> None:

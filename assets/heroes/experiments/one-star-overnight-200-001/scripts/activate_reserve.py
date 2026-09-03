@@ -301,6 +301,7 @@ def activate_reserve(
     reason: str,
     failure_result_path: str | None = None,
     supplemental_reserve_path: Path | None = None,
+    checkpoint_inspection_path: Path | None = None,
 ) -> dict[str, Any]:
     workspace = workspace.resolve(strict=True)
     roster_relative = workspace_relative(workspace, roster_plan_path)
@@ -400,6 +401,10 @@ def activate_reserve(
         supplemental_record is None
         and APPROVED_REPLACEMENTS.get(failed_active_hero_id) == reserve_hero_id
     )
+    checkpoint_inspection_authorization = False
+    checkpoint_evidence: dict[str, Any] | None = None
+    checkpoint_inspection_relative: str | None = None
+    checkpoint_inspection: dict[str, Any] | None = None
     if reserve_hero_id in used_reserves or reserve_hero_id in selection_by_slot.values():
         raise ContractError("reserve identity has already been activated")
 
@@ -491,6 +496,44 @@ def activate_reserve(
         failure_result = validate_result(
             _read_json(workspace, failure_result_relative), failure_target, failure_assignment
         )
+        if checkpoint_inspection_path is not None:
+            checkpoint_inspection_relative = workspace_relative(
+                workspace, checkpoint_inspection_path
+            )
+            expected_root = f"{EXPERIMENT_ROOT}/review-evidence/"
+            if not checkpoint_inspection_relative.startswith(expected_root):
+                raise ContractError("checkpoint inspection evidence must remain under review-evidence")
+            checkpoint_inspection = _read_json(workspace, checkpoint_inspection_relative)
+            if (
+                checkpoint_inspection.get("schemaVersion")
+                != "hero-one-star-checkpoint-arbitration-v1"
+                or checkpoint_inspection.get("experimentId") != EXPERIMENT_ID
+                or checkpoint_inspection.get("waveId") != destination_wave
+                or checkpoint_inspection.get("candidateBoundary")
+                != "candidate-only; objective authoring review, not human approval"
+            ):
+                raise ContractError("checkpoint inspection evidence has invalid scope metadata")
+            checkpoint_evidence = next(
+                (
+                    item
+                    for item in checkpoint_inspection.get("findings", [])
+                    if isinstance(item, dict)
+                    and item.get("heroId") == failed_selected_hero_id
+                ),
+                None,
+            )
+            if (
+                checkpoint_evidence is None
+                or checkpoint_evidence.get("verdict") != "fail"
+                or not checkpoint_evidence.get("blockingCriteria")
+                or checkpoint_evidence.get("selectedResultPath") != failure_result_relative
+                or checkpoint_evidence.get("selectedResultSha256") != sha256_json(failure_result)
+            ):
+                raise ContractError("checkpoint inspection does not authorize this selected result")
+            checkpoint_inspection_authorization = (
+                failure_result["status"] in {"candidate", "revise"}
+                and failure_result["candidate"] is not None
+            )
         exhausted_correction = (
             failure_version == 2 and failure_target["correctionSource"] is not None
         )
@@ -499,7 +542,6 @@ def activate_reserve(
         )
         terminal_provider_integrity_failure = (
             failure_version in {1, 2}
-            and failure_target["correctionSource"] is None
             and failure_result["status"] == "failed"
             and failure_result["candidate"] is None
             and bool(failure_result["failedCriteria"])
@@ -517,7 +559,11 @@ def activate_reserve(
             and failure_result["candidate"] is not None
             and bool(failure_result["failedCriteria"])
         )
-        if not (eligible_revise or terminal_provider_integrity_failure):
+        if not (
+            eligible_revise
+            or terminal_provider_integrity_failure
+            or checkpoint_inspection_authorization
+        ):
             raise ContractError(
                 "post-calibration activation requires multiple initial blockers, a retained "
                 "revise result after one versioned correction, or a terminal provider-output "
@@ -531,7 +577,9 @@ def activate_reserve(
             "failureStatus": failure_result["status"],
             "failedCriteria": deepcopy(failure_result["failedCriteria"]),
             "authorization": (
-                "terminal provider-output integrity failure; no contract-valid candidate was persistable"
+                "independent checkpoint arbitration found objective blocking criteria"
+                if checkpoint_inspection_authorization
+                else "terminal provider-output integrity failure; no contract-valid candidate was persistable"
                 if terminal_provider_integrity_failure
                 else (
                     "objective authoring failure after the single allowed versioned correction"
@@ -540,6 +588,17 @@ def activate_reserve(
                 )
             ),
         }
+        if checkpoint_inspection_authorization:
+            assert checkpoint_inspection_relative is not None
+            assert checkpoint_inspection is not None
+            assert checkpoint_evidence is not None
+            decision_evidence.update(
+                {
+                    "checkpointInspectionPath": checkpoint_inspection_relative,
+                    "checkpointInspectionSha256": sha256_json(checkpoint_inspection),
+                    "checkpointFinding": deepcopy(checkpoint_evidence),
+                }
+            )
         if supplemental_record is not None:
             assert supplemental_relative is not None
             decision_evidence.update(
@@ -766,6 +825,7 @@ def main() -> None:
     parser.add_argument("--reason", required=True)
     parser.add_argument("--failure-result-path")
     parser.add_argument("--supplemental-reserve-path", type=Path)
+    parser.add_argument("--checkpoint-inspection-path", type=Path)
     args = parser.parse_args()
     receipt = activate_reserve(
         args.roster_plan,
@@ -779,6 +839,7 @@ def main() -> None:
         reason=args.reason,
         failure_result_path=args.failure_result_path,
         supplemental_reserve_path=args.supplemental_reserve_path,
+        checkpoint_inspection_path=args.checkpoint_inspection_path,
     )
     print(json.dumps(receipt, indent=2))
 

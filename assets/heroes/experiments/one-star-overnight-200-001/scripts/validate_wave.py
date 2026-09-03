@@ -63,6 +63,26 @@ def verify_execution(workspace: Path, target_relative: str) -> dict[str, Any]:
     return {"target": target, "assignment": assignment, "result": result}
 
 
+def _effective_wave_hero_ids(workspace: Path, wave_id: str) -> set[str] | None:
+    """Resolve the append-only selected roster when the frozen production roster exists."""
+
+    roster_path = workspace / EXPERIMENT_ROOT / "roster-plan.json"
+    if not roster_path.is_file() or roster_path.is_symlink():
+        return None
+    from activate_reserve import _current_selection
+
+    roster = json.loads(_regular_bytes(workspace, f"{EXPERIMENT_ROOT}/roster-plan.json"))
+    selection, _used, _slots, _previous, _count = _current_selection(workspace, roster)
+    selected_by_slot = {
+        entry["slotHeroId"]: entry["selectedHeroId"] for entry in selection
+    }
+    return {
+        selected_by_slot[packet["heroId"]]
+        for packet in roster["active"]
+        if packet["waveId"] == wave_id
+    }
+
+
 def validate_wave(workspace: Path, wave_id: str, *, expected_pairs: int = 20) -> dict[str, Any]:
     workspace = workspace.resolve(strict=True)
     targets_root = workspace / EXPERIMENT_ROOT / "waves" / wave_id / "targets"
@@ -86,7 +106,11 @@ def validate_wave(workspace: Path, wave_id: str, *, expected_pairs: int = 20) ->
     for key, candidates in by_hero_kind.items():
         selected[key] = max(candidates, key=lambda entry: entry["target"]["targetVersion"])
 
-    hero_ids = sorted({hero_id for hero_id, _kind in selected})
+    hero_ids = {hero_id for hero_id, _kind in selected}
+    effective_ids = _effective_wave_hero_ids(workspace, wave_id)
+    if effective_ids is not None:
+        hero_ids &= effective_ids
+    hero_ids = sorted(hero_ids)
     complete: list[dict[str, Any]] = []
     for hero_id in hero_ids:
         summon = selected.get((hero_id, "summon"))

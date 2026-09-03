@@ -130,6 +130,50 @@ class MaterializeCorrectionTests(unittest.TestCase):
         self.assertIn("complete regeneration", prompt)
         self.assertIn("identity and continuity authority", prompt)
 
+    def test_checkpoint_authorizes_one_defect_correction_of_candidate(self) -> None:
+        target = self.fixture.target()
+        assignment, _receipt, result = self.fixture.complete_candidate(target)
+        target_path = self.fixture.root / assignment["targetPath"]
+        assignment_path = self.fixture.root / assignment_path_for(
+            target["waveId"], target["heroId"], target["imageKind"], 1
+        )
+        result_path = self.fixture.root / target["output"]["resultPath"]
+        evidence_path = (
+            "assets/heroes/experiments/one-star-overnight-200-001/"
+            "review-evidence/wave-01-arbitration.json"
+        )
+        evidence = {
+            "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+            "experimentId": target["experimentId"],
+            "waveId": target["waveId"],
+            "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+            "findings": [
+                {
+                    "heroId": target["heroId"],
+                    "selectedResultPath": target["output"]["resultPath"],
+                    "selectedResultSha256": sha256_json(result),
+                    "verdict": "fail",
+                    "blockingCriteria": ["complete-image"],
+                    "evidence": "Independent inspection found one objective blocker.",
+                }
+            ],
+        }
+        self.fixture.write_json(evidence_path, evidence)
+        report = correction.materialize_correction(
+            target_path,
+            assignment_path,
+            result_path,
+            self.fixture.root,
+            producer_id="producer-correction",
+            assigned_at="2026-09-02T14:00:00Z",
+            defect="Restore the missing source-bound object.",
+            mode="edit",
+            checkpoint_inspection_path=self.fixture.root / evidence_path,
+        )
+        target_v2 = json.loads((self.fixture.root / report["targetPath"]).read_text())
+        self.assertIn("CHECKPOINT CORRECTION AUTHORITY", target_v2["canonicalPrompt"]["text"])
+        self.assertIn(sha256_json(evidence), target_v2["canonicalPrompt"]["text"])
+
     def test_rejects_candidate_status_and_stale_candidate_bytes(self) -> None:
         target = self.fixture.target()
         assignment, _receipt, _result = self.fixture.complete_candidate(target)
