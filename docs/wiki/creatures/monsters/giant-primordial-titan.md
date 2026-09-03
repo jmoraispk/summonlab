@@ -6,7 +6,7 @@ Wiki ID: `monster.giant-primordial-titan`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Each lower Giant operates the anchor that enlarges its learned mechanic, and the
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-primordial-titan/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-primordial-titan/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-primordial-titan/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-primordial-titan/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-primordial-titan/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-primordial-titan/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-primordial-titan/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-primordial-titan/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-primordial-titan/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-primordial-titan/wind-v1.json` |
