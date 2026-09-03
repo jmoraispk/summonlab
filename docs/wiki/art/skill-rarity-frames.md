@@ -2,8 +2,9 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C is the canonical comparison authority. The stretched geometry-v2 overlay
-was owner-rejected. A new seven-frame horizontal crop-authority candidate awaits owner review**.
+Design status: **Option C is the canonical material authority. Both the stretched overlay and the
+over-tall horizontal strip were owner-rejected. A regular-hexagon four-over-three calibration sheet
+awaits owner review**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -42,6 +43,19 @@ The [v4 source record](../../../assets/wiki/skills/rarity-frame-v4/README.md) pr
 style drift and keeps the shared geometry native to one generation. If accepted, the next step is
 to derive and review seven crops from these exact pixels before background extraction or runtime
 registration. The crop strip contains no rank letters, skill artwork, labels, or mastery text.
+
+The owner subsequently rejected that horizontal strip because its frame bodies were too tall to be
+regular hexagons. It remains historical evidence only.
+
+### Regular-hexagon calibration candidate
+
+![Seven regular-hexagon rarity frames](../../../assets/wiki/skills/rarity-frame-v5/calibration/seven-rarity-frames-4x3-v1.png)
+
+The [v5 source record](../../../assets/wiki/skills/rarity-frame-v5/README.md) uses a four-over-three
+layout to give each frame more pixels. It restores F–S crest letters and constrains every point-up
+frame body to six equal apparent sides, 120-degree interior angles, and the regular-hexagon
+height-to-width ratio. The provider returned a depicted checkerboard in RGB rather than real alpha;
+if the appearance is accepted, crop first and remove that matte deterministically afterward.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;

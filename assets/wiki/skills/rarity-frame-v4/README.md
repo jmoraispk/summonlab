@@ -1,6 +1,6 @@
 # Seven-rarity horizontal frame strip
 
-Status: **new crop-authority candidate; owner review pending**.
+Status: **owner-rejected geometry; retained as historical evidence**.
 
 ![Seven empty rarity frames in one row](calibration/seven-rarity-frames-row-v1.png)
 
@@ -37,6 +37,6 @@ Text: none.
 Constraints: no letters, no numbers, no rank labels, no words, no icons, no skill emblems, no flames, no shields, no armor, no scratches-as-symbols, no UI panels, no captions, no watermark. Do not crop any frame. Preserve clear material differences and the ornament progression of the reference.
 ```
 
-Do not crop or normalize this source until the owner accepts it. After acceptance, derive seven
-individual frame candidates from these exact pixels and review the crop boxes before any alpha
-extraction or runtime registration.
+The owner rejected this source because the frame bodies were too tall to be regular hexagons. Do
+not crop, normalize, promote, or reuse it as a visual reference. The replacement uses a four-over-
+three layout and explicitly requires six equal sides and 120-degree interior angles.

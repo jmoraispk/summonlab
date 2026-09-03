@@ -26,15 +26,16 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
 
 ## Phase 0 — finish and lock the reusable layers
 
-**Progress:** The first registered frame set passed automated geometry but was visually rejected by
-the owner. A replacement seven-frame horizontal strip was generated from the accepted Option C
-reference and awaits owner approval before cropping. No rejected registered frame may be promoted or
-used as a future generation reference.
+**Progress:** The registered frame set and its replacement horizontal strip were visually rejected.
+A four-over-three calibration sheet now restores rank letters and corrects every frame body toward a
+regular point-up hexagon with six equal sides. It awaits owner approval before cropping and matte
+removal. No rejected frame may be promoted or used as a future generation reference.
 
-The seven accepted frame candidates have correct 1024×1024 RGBA canvases, but their current visible
-bounds differ. Register all seven to the exact geometry-v2 center, outer envelope, aperture, and
-medallion exclusion without changing the accepted material or ornament. Produce an alpha-overlay
-proof and 96-pixel contact sheet, obtain owner approval, then promote the seven masters.
+If the regular-hexagon sheet is accepted, derive seven crop candidates from its exact pixels. Remove
+only the depicted checkerboard matte, place each crop on an equal 1024×1024 RGBA canvas without
+stretching its proportions, and compare the body side lengths and angles before any runtime
+registration. Obtain owner approval on isolated and 96-pixel views before promoting the seven
+masters.
 
 Locate or restore the already accepted charcoal forged-stone backing, register it to the canonical
 aperture, and promote it through the same review gate. Do not start bulk skill generation while any
