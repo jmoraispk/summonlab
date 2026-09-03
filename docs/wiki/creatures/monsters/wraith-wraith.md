@@ -6,7 +6,7 @@ Wiki ID: `monster.wraith-wraith`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Haunts can route their Funeral Drag along the claimed boundary and Shades conden
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/wraiths/wraith-wraith/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/wraiths/wraith-wraith/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/wraiths/wraith-wraith/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/wraiths/wraith-wraith/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/wraiths/wraith-wraith/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/wind-v1.json` |
