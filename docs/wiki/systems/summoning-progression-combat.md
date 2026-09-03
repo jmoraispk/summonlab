@@ -135,6 +135,10 @@ The accepted first action cadence is `focus -> move -> impact -> settle`. The mo
 claims the destination tile before impact; the final board, health, timeline, and feed state settle
 before the next action begins.
 
+The runnable **/living-village-lab/combat** pilot exercises that cadence with proxy silhouettes and
+an explicitly non-canonical `combat-motion-proxy-v1` receipt. It is the review surface for camera,
+anchors, timing, controls, and responsive composition; production mission state remains engine-owned.
+
 The [combat animation implementation plan](../../evidence/living-village-combat-animation-implementation-plan.md)
 defines the recommended board, playback, PixiJS, asset-pack, and identity-bound chibi sequence.
 

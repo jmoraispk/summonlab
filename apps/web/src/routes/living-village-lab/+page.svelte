@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import summonArtwork from '../../../../../assets/agent-summoning-concept.png';
 	import towerArtwork from '../../../../../assets/tower-prototype.png';
+	import combatArtwork from '../../../../../docs/evidence/living-village-combat-motion-storyboard-v1.png';
 
 	const screens = [
 		{
@@ -33,6 +34,16 @@
 			href: '/living-village-lab/tower' as const,
 			image: towerArtwork,
 			alt: 'The Tower rising above the settlement'
+		},
+		{
+			eyebrow: 'Combat surface',
+			title: 'The Ruined Observatory',
+			description:
+				'Commit Fleeting Step, then inspect the accepted focus, move, impact, and settle cadence on a tile-true Pixi stage.',
+			action: 'Test Combat Motion',
+			href: '/living-village-lab/combat' as const,
+			image: combatArtwork,
+			alt: 'Four-frame combat motion storyboard in the ruined observatory'
 		}
 	] as const;
 </script>
@@ -194,7 +205,7 @@
 
 	.screen-grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: clamp(0.8rem, 1.6vw, 1.5rem);
 		margin-top: 1.5rem;
 	}

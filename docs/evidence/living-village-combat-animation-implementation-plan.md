@@ -10,6 +10,18 @@ Accepted motion reference:
 
 Primary runtime surface: **/mission/:runId**
 
+## Implemented proxy checkpoint
+
+The reviewable motion pilot is available at **/living-village-lab/combat**. It includes a pure
+receipt-to-frame projection, a responsive PixiJS vector stage, exact cell-centered proxy actors,
+the accepted initiative rail and three-line feed, plus play, pause, speed, skip, replay, and reduced
+motion behavior. Its `combat-motion-proxy-v1` receipt is an explicit presentation fixture; it does
+not replace the authoritative mission engine or claim final combat math.
+
+Production C0 integration remains separate: **/mission/:runId** must receive engine-owned combat
+cells and real resolved receipts before it adopts this renderer. No proxy outcome or position may be
+copied into production state.
+
 ## Recommendation
 
 Do not generate combat chibis for the complete hero roster yet. First prove the runtime with one
