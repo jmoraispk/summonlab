@@ -32,6 +32,7 @@
 		"promote-skill-icon-output.spec.ts",
 		"compose-skill-icon-assets.ts",
 		"compose-skill-icon-assets.spec.ts",
+		"compose-empty-rarity-frame-v6.ts",
 		"extract-rarity-frame-v6.ts",
 		"report-skill-icon-readiness.ts",
 		"report-skill-icon-readiness.spec.ts"

@@ -3,8 +3,8 @@
 Wiki ID: `art.skill-rarity-frames`
 
 Design status: **Option C is the canonical material authority. Variant 2 of the tight staggered v6
-sheet is the canonical crop source. Seven transparent frame crops and the first Measured Cut
-composition pilot await visual review**.
+sheet is the canonical crop source. Seven empty transparent frame layers, one universal backing,
+and the safe-layered Measured Cut pilot await visual review**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -79,6 +79,24 @@ artwork, so it was rejected. The repository extractor instead removes the connec
 from the selected source, preserves the dark interiors, and normalizes all seven candidates to
 1024×1024 RGBA. It then places one independently generated and normalized Measured Cut emblem into
 each frame. These are review candidates rather than promoted runtime assets.
+
+That first extraction retained each dark interior and therefore coupled the frame to its backing.
+The preferred architecture separates all three reusable concerns:
+
+1. universal charcoal backing;
+2. independently generated, safe-clipped skill art;
+3. empty rarity frame, composited last.
+
+![Seven empty transparent rarity frames](../../../assets/wiki/skills/rarity-frame-v6/review/empty-individual-frames.png)
+
+![Safe-layered Measured Cut across all rarities](../../../assets/wiki/skills/rarity-frame-v6/review/layered-measured-cut-all-rarities.png)
+
+Every production candidate uses the same 1024×1024 RGBA canvas. The empty frame has transparent
+center and exterior; the universal backing overlaps only beneath the rim; and the complete pilot
+emblem is clipped to the intersection of the inner aperture and 64% subject-safe circle. Future
+separately identifiable supporting effects may extend to the 72% effect-safe circle. This makes
+frame collisions impossible by construction while leaving the original generated emblem
+replaceable.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;

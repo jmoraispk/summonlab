@@ -21,25 +21,27 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
   cue may extend to the 72% effect-safe zone and never touches the frame or medallion exclusion.
 - The final tile is assembled deterministically as backing → skill artwork → fixed rarity frame.
   The UI renders skill name and `MASTERY · LV N` below it. No image generator performs composition.
-- Calibration plates establish consistency only. No plate cell is ever cropped into a master.
+- Motif-family calibration plates establish consistency only and are never cropped into masters.
+  The owner-designated v6 rarity sheet is the sole exception and explicit crop authority for the
+  seven reusable frame layers.
 - Every individual skill master has the same 1024×1024 size, including standalone skills.
 
 ## Phase 0 — finish and lock the reusable layers
 
 **Progress:** The registered frame set and its replacement horizontal strip were visually rejected.
-The owner selected v6 Variant 2 as the canonical crop source. Its seven frames are now extracted onto
-shared 1024×1024 RGBA canvases, and one independently generated Measured Cut emblem is composited
-across all rarities. The frame crops and composition pilot await owner review. No rejected frame may
-be promoted or used as a future generation reference.
+The owner selected v6 Variant 2 as the canonical crop source. Its seven frames are now extracted as
+empty center-and-exterior-transparent layers on shared 1024×1024 RGBA canvases. A separate universal
+charcoal backing and safe-clipped Measured Cut emblem prove the required backing → skill art → frame
+order across all rarities. These layers and composites await owner review. No rejected frame may be
+promoted or used as a future generation reference.
 
 The selected source's checkerboard has been removed deterministically after a provider
-background-extraction attempt failed. The crops retain their proportions and share one scale and
-canvas center. Obtain owner approval on isolated, composite, and 96-pixel views before promoting the
-seven masters.
-
-Locate or restore the already accepted charcoal forged-stone backing, register it to the canonical
-aperture, and promote it through the same review gate. Do not start bulk skill generation while any
-reusable layer is missing or geometrically inconsistent.
+background-extraction attempt failed. The crops retain their proportions and share one scale,
+canvas center, and transparent inner-aperture mask. The backing slightly overlaps beneath that rim,
+while this complete pilot emblem is clipped to the inner aperture and 64% subject-safe circle.
+Future separately identifiable supporting effects may use the 72% effect-safe circle. Obtain owner
+approval on the empty frames, backing, layered composites, and 96-pixel views before promotion. Do
+not start bulk skill generation while any reusable layer is missing or geometrically inconsistent.
 
 ## Phase 1 — freeze and enrich the generation inventory
 

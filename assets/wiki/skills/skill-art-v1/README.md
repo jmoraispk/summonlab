@@ -16,6 +16,11 @@ extractor removes the connected checker matte, preserves the sword, slash, and v
 fits the result to the shared 1024×1024 RGBA canvas. The candidate hash and every composite hash are
 bound in the v6 extraction manifest.
 
+For production-layer testing, `candidates/measured-cut-safe-v2.png` is a non-generative derivative
+of this candidate. It is reduced to fit the shared safe zone and hard-clipped to the intersection of
+the 64% subject circle and the rarity frame's inner aperture. The original candidate remains intact;
+the safe derivative is the layer used by the empty-frame composition pilot.
+
 ## Exact generation prompt
 
 The built-in image-generation call used the approved three-icon Painted Emblem comparison as its

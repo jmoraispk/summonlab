@@ -41,11 +41,11 @@ another RGB checkerboard. That attempt was rejected and is not retained as an as
 connected-background removal is therefore the accepted extraction route because it preserves the
 selected source pixels.
 
-## Individual RGBA crops and composition pilot
+## Superseded filled-frame extraction pilot
 
 ![Seven extracted rarity frames](review/individual-frames.png)
 
-The deterministic extractor creates seven genuine 1024×1024 RGBA candidates under
+The first deterministic extractor created seven genuine 1024×1024 RGBA candidates under
 `candidates/individuals/`. They preserve Variant 2's relative visual scale, share one normalization
 factor and canvas center, keep their dark interiors opaque, and have transparent exteriors.
 
@@ -57,6 +57,40 @@ extraction, shared icon placement, and rarity-only visual variation. The individ
 composites are review candidates, not promoted runtime masters. The companion
 `review/measured-cut-recognition-96.png` verifies the same seven composites at their 96-pixel
 recognition size.
+
+This pilot proved the crop, but its opaque interiors coupled the frame and backing together. It is
+retained as review history and is not the production layering model.
+
+## Empty-frame layer architecture
+
+The production model is now **backing → skill art → empty rarity frame**. Every layer is a genuine
+1024×1024 RGBA PNG sharing the geometry-v2 center and aperture.
+
+![Seven empty rarity-frame layers](review/empty-individual-frames.png)
+
+The seven preferred frame layers live under `candidates/empty-individuals/`. Both the central
+aperture and canvas exterior are transparent. The rank medallion, rim, and ornaments remain opaque.
+All ranks use the same deterministic inner-aperture mask.
+
+The universal `candidates/charcoal-forged-stone-backing.png` supplies the quiet dark interior as an
+independent layer. It slightly overlaps beneath the rim so no seam can appear, but it cannot extend
+outside the frame silhouette.
+
+![Measured Cut assembled from three independent layers](review/layered-measured-cut-all-rarities.png)
+
+Measured Cut is reduced to the shared safe scale and clipped to the intersection of the 64% subject
+circle and inner aperture before composition. The frame is always composited last, so no skill art
+can cover the rim or rank crest. Future separately identifiable secondary effects may use the wider
+72% effect circle. The 96-pixel review is
+`review/layered-measured-cut-recognition-96.png`.
+
+The exact geometry hash, inputs, outputs, and hashes are recorded in
+`candidates/empty-layer-manifest.json`. Rebuild and validate with:
+
+```bash
+pnpm exec tsx tools/compose-empty-rarity-frame-v6.ts --write
+pnpm exec tsx tools/compose-empty-rarity-frame-v6.ts --check
+```
 
 The exact source regions, normalization scale, paths, and SHA-256 hashes are recorded in
 `candidates/manifest.json`. Rebuild with:
