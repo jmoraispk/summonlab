@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "family-affinity-generation-failure-v1",
+  "experimentId": "family-affinity-v1",
+  "namespace": "canonical",
+  "coordinateId": "vampires/vampire-progenitor/normal",
+  "targetId": "canonical/vampires/vampire-progenitor/normal/v2",
+  "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-progenitor/normal/target-v2.json",
+  "targetSha256": "f422c4319edc6b65ed813cd4e63fb5bfe3e1840faced837109099fb9cc334e13",
+  "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-progenitor/normal/assignment-v2.json",
+  "assignmentSha256": "ecc0af13c890ec15c4635b9b14ce3c0ddaf914519ec40040cc18870d0af37449",
+  "candidateVersion": 2,
+  "failureKind": "exhausted-nonretained-generation",
+  "producerRuns": [
+    {
+      "runOrdinal": 1,
+      "producerId": "codex:/root/rev_vampire_progenitor",
+      "canonicalPromptSha256": "9bdcc79046a06060b468ee95a5b989a85650317eac75e3d7bba013e5706b6fc7",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "9bdcc79046a06060b468ee95a5b989a85650317eac75e3d7bba013e5706b6fc7",
+          "providerRunId": null,
+          "sourcePath": null,
+          "sourceSha256": null,
+          "outcomeCode": "provider-output-unavailable",
+          "reasons": [
+            "The provider returned no inspectable or bindable source handle."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": "b3315b72d4587c338b4f23397cf1d19d781b6afc45a89019aa0f0cb1283d610b",
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a06877-98e8-74e0-95e4-771a7ca99359/exec-d076455c-48f0-40a3-a375-28716f91179e.png",
+          "sourceSha256": "77c4e49fef97d80e2a02b44cb7ad1e47aa86737f6c877a4ddb51dceee8a50055",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "The render contained prohibited labels or callout text.",
+            "The required three segmented shadow wings were unclear."
+          ]
+        }
+      ]
+    },
+    {
+      "runOrdinal": 2,
+      "producerId": "codex:/root/rev_vampire_progenitor_retry",
+      "canonicalPromptSha256": "9bdcc79046a06060b468ee95a5b989a85650317eac75e3d7bba013e5706b6fc7",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "9bdcc79046a06060b468ee95a5b989a85650317eac75e3d7bba013e5706b6fc7",
+          "providerRunId": null,
+          "sourcePath": null,
+          "sourceSha256": "a838c18386e5a7766d52334de0f7353c5a9ad65db2c09c350b0c5b35268c227e",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Multiple background vampires violated the single featured-subject contract."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": null,
+          "providerRunId": null,
+          "sourcePath": null,
+          "sourceSha256": "68b8ed72b227771526be94927869c71f742b9cdb3eac7dd1abb9e06294ef6285",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Only two broad wings were visible instead of three segmented shadow wings.",
+            "The lateral wings violated the framing safe margin.",
+            "Glass-vein and crown-root counterplay cues were insufficient."
+          ]
+        }
+      ]
+    }
+  ],
+  "retainedCandidateCreated": false,
+  "resultReceiptCreated": false,
+  "reviewReceiptsCreated": false,
+  "supersessionTargetVersion": 3,
+  "supersessionAuthorizedBy": "root-orchestrator-enemy-domain-authorization-2026-09-03",
+  "runtimeCatalogMutationForbidden": true
+}
