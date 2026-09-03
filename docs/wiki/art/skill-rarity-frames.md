@@ -2,9 +2,9 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C is the canonical material authority. Variant 2 of the tight staggered v6
-sheet is the canonical crop source. Seven empty transparent frame layers, one universal backing,
-and the safe-layered Measured Cut pilot await visual review**.
+Design status: **Option C remains the canonical material authority. The owner reset frame-shape
+authority to a later seven-empty-frame reference; it awaits immutable repository import and
+deterministic reconstruction. Existing v6 crops and composites remain historical review evidence**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -67,8 +67,9 @@ The [v6 source record](../../../assets/wiki/skills/rarity-frame-v6/README.md) pr
 built-in image-generation attempts. Both were prompted with exact staggered centers: B halfway
 between F/E, A halfway between E/D, and S halfway between D/C. Variant 1 maximizes canvas fill;
 Variant 2 preserves more uniform cutting gutters. Provider placement is visual rather than
-pixel-authoritative, so the selected frames will be measured and recentered deterministically after
-cropping. The owner selected Variant 2 as the canonical crop source.
+pixel-authoritative, so the selected frames were measured and recentered deterministically after
+cropping. The owner selected Variant 2 at that stage, then superseded it during the 2026-09-03 frame
+reset. It is no longer production authority.
 
 ![Seven extracted transparent frame candidates](../../../assets/wiki/skills/rarity-frame-v6/review/individual-frames.png)
 
@@ -98,7 +99,18 @@ separately identifiable supporting effects may extend to the 72% effect-safe cir
 frame collisions impossible by construction while leaving the original generated emblem
 replaceable.
 
-The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
+### Reset frame-shape authority
+
+The current owner-selected reference is the seven-empty-frame image originally generated at
+`/home/joao/.codex/generated_images/01a058d5-4568-76e1-bae0-81d6988ab046/exec-aba43e6f-7d3d-4fec-a87d-cd3c1b1aecc3.png`.
+It is a 1484×1060 RGB image with SHA-256
+`4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266`. Its depicted checkerboard
+is not alpha. Execution must first import the exact bytes into a versioned repository source record,
+then reconstruct F–S on one regular point-up chassis with a shared aperture and integrated crest
+letter. The reference supplies shape, material, ornament, and proportion; its individual crops are
+not upscaled into runtime masters.
+
+The accepted frame system fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;
 the frame identifies its fixed rarity.
 
@@ -135,6 +147,20 @@ Every displayed skill uses two text rows beneath its hexagon:
 
 The mastery and level shown in the comparison plate are layout examples, not canonical state for
 Measured Cut, Ember, Parry, Stone Skin, Fireball, Thousand Cuts, or Worldfire.
+
+## Skill-art readability
+
+The normal skill presentation targets approximately 300–400 pixels, with 384×384 as the canonical
+review derivative and 1024×1024 retained as the master. A 96-pixel reduction may be useful as
+optional diagnostic evidence, but it is not an art target and cannot reject an otherwise successful
+new skill-art master. Historical packets that already bind a 96-pixel view remain immutable.
+
+Skill artwork is concrete-first. For Blade cuts from F through A, a visible blade performs the cut;
+an isolated slash or abstract fracture cannot replace it. Other motif families retain their own
+operative subject—the weapon, projectile, body action, element, magical operation, tool, material,
+ingredient, creature, document, or crafted result. S-rank skills may become abstract when the named
+pinnacle outcome is more legible that way, provided the image retains recognizable ancestry from its
+motif family. The frame's crest and rank letter are permanent parts of the frame.
 
 ## Runtime boundary
 

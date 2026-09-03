@@ -31,8 +31,17 @@ Every skill icon uses:
 - lightly dimensional painted materials rather than flat pictograms;
 - restrained semantic color based on the skill itself;
 - controlled highlights and glow;
-- enough simplification to remain recognizable at small size;
+- enough simplification to remain recognizable in the intended 300–400-pixel interface range;
 - no text, rarity cue, type badge, frame, or narrative scenery inside the artwork layer.
+
+Concrete readability is the default. An action icon shows what performs the action rather than only
+the residue it leaves behind. Blade cut motifs from F through A therefore retain a visible blade
+making the cut; free-floating slashes, split planes, and abstract wounds are supporting effects, not
+substitutes for the blade. The same rule applies by analogy to other motifs: retain the relevant
+weapon, projectile, body action, element, magical operation, craft tool, ingredient, material,
+creature, document, or result. An S skill may use an abstract endpoint when that is clearer than a
+literal object, but the exception is explicit, owner-approved, and visibly inherits its family's
+gesture or construction. Abstraction is not a generic rarity filter.
 
 Rarity is communicated only by the canonical F–S frame. Active, Passive, Stance, and Craft type
 remain external metadata. Domain and family do not force a palette onto the icon.
@@ -43,7 +52,7 @@ Every rendered skill tile is assembled from four independent layers:
 
 1. a universal charcoal backing;
 2. one skill-specific painted-emblem artwork layer;
-3. the skill's fixed rarity frame;
+3. the skill's fixed rarity frame, including its permanent integrated crest and F–S letter;
 4. interface-rendered text beneath the hexagon.
 
 The first text row is the skill name. The second is bearer-specific mastery and level in the form
@@ -85,7 +94,9 @@ represent a minimally readable emblem and continuous frame material at the 1024-
 scale; they are not absolute pixel counts.
 
 Approved masters retain their original lossless PNG. Runtime exports derive deterministically at
-`512×512`, `256×256`, and `128×128` without replacing the master.
+`512×512`, `384×384`, and `256×256` without replacing the master. Full-size and 384-pixel composites
+are the required visual evidence. Historical 96-pixel evidence remains immutable but does not govern
+new skill-art approval.
 
 ## Production phases
 
@@ -142,13 +153,24 @@ skills skip this phase and use the global Painted Emblem reference directly.
 
 ### Phase 5 — individual skill masters
 
-Generate each skill independently at `1024×1024` with genuine transparency. A multi-skill family
-member receives these references:
+Generate each skill independently at the provider's full supported square resolution and normalize
+it to the canonical `1024×1024` RGBA canvas. Genuine source alpha is accepted when actually returned;
+an additive provider profile may instead accept an exact uniform near-black source field and blend
+it into the universal charcoal backing through deterministic aperture masking. Painted
+checkerboards and manual background repair are never accepted. A multi-skill family member receives
+these references:
 
 1. the global Painted Emblem style authority;
 2. its approved motif-family calibration plate;
 3. its approved primary-parent master, when one exists;
 4. the universal geometry and safe-zone guide.
+5. its concrete-anchor rule and any owner-approved S-only abstraction exception.
+
+The provider pilot chooses one retained contract for the complete rollout. Reliable source alpha
+preserves separate backing and artwork masters. If source alpha is not reliable, an additive schema
+may instead retain one aperture-clipped `skill-interior` master containing the standard charcoal
+field and artwork, with the fixed rarity frame still composited last. The rollout cannot mix these
+contracts between skills.
 
 A standalone skill receives the global style authority and geometry guide. Every prompt repeats
 the skill's dominant subject, optional supporting cue, semantic palette, exclusions, and exact
@@ -274,7 +296,7 @@ text without generative editing. Every candidate is inspected in three views:
 
 1. full-resolution isolated artwork;
 2. the canonical composite at normal interface size;
-3. a `96×96` recognition thumbnail without text.
+3. a `384×384` normal-interface composite without external text.
 
 The compositor also produces revision-aware contact sheets for review, but those sheets remain
 derived evidence. It selects the highest complete target packet for every required slot and fails
@@ -361,7 +383,8 @@ Automated validation rejects:
 - a parent outside the same motif family unless explicitly reviewed as a cross-family bridge;
 - a parent cycle;
 - a missing or invalid rarity frame;
-- non-`1024×1024` masters, absent alpha, unsafe visible pixels, or incorrect registration;
+- non-`1024×1024` retained masters, absent retained alpha, unsafe visible pixels, or incorrect
+  registration;
 - missing provenance, hashes, recognition review, or required runtime derivations.
 - mixed packet tuples, normalization-profile drift, a provider source outside the exact declared
   envelope, manual/out-of-transaction normalization, provider-path leakage, or a
@@ -376,9 +399,10 @@ Automated validation rejects:
 
 Human approval requires:
 
-- immediate recognition of the dominant subject at `96×96`;
+- immediate recognition of the dominant subject and action at `384×384`;
 - meaningful distinction from adjacent members of the same motif family;
 - visible lineage with its primary parent where one exists;
+- a concrete acting subject for F–A, with any S abstraction recorded as an explicit exception;
 - no frame, text, type, rarity, or domain information baked into the artwork;
 - no confusing collision between semantic color and the rarity frame;
 - no cropped subject, illegible micro-detail, or uncontrolled particles.
@@ -402,7 +426,7 @@ When a new skill is authored:
 6. the producer passes the exact provider output directly to the repository helper, which retains
    exact-source bytes unchanged; automated geometry, alpha, provenance, and coverage checks then
    run against the target's hash-bound geometry and guide authorities;
-7. the full-size, composite, and `96×96` views receive human review;
+7. the full-size and `384×384` normal-interface composites receive human review;
 8. approval promotes the master and deterministic derivatives together.
 
 Historical packets and results remain immutable. Producers never normalize manually. Normalized
