@@ -249,10 +249,10 @@ class ActivateReserveTests(unittest.TestCase):
         )
 
     def test_wrong_pair_and_reuse_are_rejected(self) -> None:
-        with self.assertRaisesRegex(ContractError, "documented calibration"):
+        with self.assertRaisesRegex(ContractError, "failure-result-path"):
             self.fixture.activate("fenel-esho", "rao-esheth")
         self.fixture.activate("fenel-esho", "wenyn-amarun")
-        with self.assertRaisesRegex(ContractError, "already been replaced"):
+        with self.assertRaisesRegex(ContractError, "already been activated"):
             self.fixture.activate("fenel-esho", "wenyn-amarun")
 
     def test_collision_is_no_mutation(self) -> None:

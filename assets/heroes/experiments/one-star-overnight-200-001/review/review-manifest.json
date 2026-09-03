@@ -1,0 +1,1253 @@
+{
+  "schemaVersion": "hero-one-star-review-manifest-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "candidateBoundary": "candidate-only; review derivatives do not imply approval or runtime promotion",
+  "settings": {
+    "pageSize": 20,
+    "canvasWidth": 512,
+    "canvasHeight": 768,
+    "format": "webp",
+    "quality": 82
+  },
+  "counts": {
+    "effectiveRoster": 200,
+    "startedHeroes": 20,
+    "pendingHeroes": 180,
+    "completePairs": 20,
+    "quarantineRecords": 15,
+    "referencePairs": 12,
+    "derivatives": 87,
+    "pages": 3
+  },
+  "reserveActivations": {
+    "paths": [
+      {
+        "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0001-fenel-esho--wenyn-amarun.json",
+        "sha256": "a95117954dd0a0a749d660754c8d43b2e275d4bdccfd38a850e9f1fed3f358b7"
+      },
+      {
+        "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0002-yasu-coro--rao-esheth.json",
+        "sha256": "01800379bea5b57c24c177b18181c1e8c031e68d3b244dd3c2fa331e1afbfe5d"
+      },
+      {
+        "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0003-kaar-jorar--zelen-soror.json",
+        "sha256": "7da26387e4778536bd7d0c20ff2b13a8534a9841f255330117376fa4154466e7"
+      },
+      {
+        "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0004-lanor-beleth--oris-quorar.json",
+        "sha256": "cb581e20ee3afc1b9417542e24f59c38dd6a5bb18ec76f773476935e4690e39a"
+      },
+      {
+        "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0005-kaar-jorar--aear-soro.json",
+        "sha256": "aeb9fc85126da44faccee7502fdf683fc7efe51f54424b4da5b10aa05dde30e2"
+      }
+    ],
+    "chainHeadSha256": "6744459de43fa744e04623ebf7bb7ecf9944b842919308c7552b2bca28668c04",
+    "count": 5,
+    "replacements": [
+      {
+        "reserveHeroId": "aear-soro",
+        "replacesHeroId": "kaar-jorar"
+      },
+      {
+        "reserveHeroId": "wenyn-amarun",
+        "replacesHeroId": "fenel-esho"
+      },
+      {
+        "reserveHeroId": "rao-esheth",
+        "replacesHeroId": "yasu-coro"
+      },
+      {
+        "reserveHeroId": "oris-quorar",
+        "replacesHeroId": "lanor-beleth"
+      }
+    ]
+  },
+  "selectedPairs": [
+    {
+      "heroId": "aear-soro",
+      "displayName": "Aear Soro",
+      "designOrdinal": 1,
+      "waveId": "wave-01",
+      "summonTargetId": "aear-soro-summon-v2",
+      "chibiTargetId": "aear-soro-combat-chibi-v1",
+      "summonSourceSha256": "b3d4dda24fc189ec7bbf2585127c3f886c7de41f76ca9266d6f2ea86abb059cd",
+      "chibiSourceSha256": "e668682f79fec0aa21fbf8515609983f7b5b42b68fb64f5e5a25c2b1665b6172"
+    },
+    {
+      "heroId": "kelu-grelun",
+      "displayName": "Kelu Grelun",
+      "designOrdinal": 2,
+      "waveId": "wave-01",
+      "summonTargetId": "kelu-grelun-summon-v1",
+      "chibiTargetId": "kelu-grelun-combat-chibi-v2",
+      "summonSourceSha256": "46fb64dbe4166b15f8700fed2964bfa9c667ed19ee7fdedd43eece8884f6496e",
+      "chibiSourceSha256": "7e78ffdeb1db7359203f6116c45e79a98d2ef75dd29ca4dfc23201d4c9c623b8"
+    },
+    {
+      "heroId": "wenyn-amarun",
+      "displayName": "Wenyn Amarun",
+      "designOrdinal": 3,
+      "waveId": "wave-01",
+      "summonTargetId": "wenyn-amarun-summon-v1",
+      "chibiTargetId": "wenyn-amarun-combat-chibi-v2",
+      "summonSourceSha256": "b0db1bb3c6968b0bc511d2e6ec55d173b6c8ff3c27a7dbbb81cb1ca9cdf34752",
+      "chibiSourceSha256": "705144d1e69e313176f714d09b36d0e16c37084a1741b50675ccdbb6a0a6750d"
+    },
+    {
+      "heroId": "oran-keshi",
+      "displayName": "Oran Keshi",
+      "designOrdinal": 4,
+      "waveId": "wave-01",
+      "summonTargetId": "oran-keshi-summon-v1",
+      "chibiTargetId": "oran-keshi-combat-chibi-v2",
+      "summonSourceSha256": "4e295c12b325acc609b6b6c348226b982d23cead434421b6059ff593eacde293",
+      "chibiSourceSha256": "85f8cd150ea2e283ebd018c12edc420168360ee05869703da81386e79119197e"
+    },
+    {
+      "heroId": "rao-esheth",
+      "displayName": "Rao Esheth",
+      "designOrdinal": 5,
+      "waveId": "wave-01",
+      "summonTargetId": "rao-esheth-summon-v2",
+      "chibiTargetId": "rao-esheth-combat-chibi-v1",
+      "summonSourceSha256": "7ab71c7ef7900a5da9ee0659f083064c7794b618015266a84e21f562e60cb642",
+      "chibiSourceSha256": "23443e57134c43ed4a89ae0eac04c9d0222478982207e0d0f7938de674b0a00e"
+    },
+    {
+      "heroId": "zelin-orel",
+      "displayName": "Zelin Orel",
+      "designOrdinal": 6,
+      "waveId": "wave-01",
+      "summonTargetId": "zelin-orel-summon-v1",
+      "chibiTargetId": "zelin-orel-combat-chibi-v1",
+      "summonSourceSha256": "76de8e9787b2280bf4a81ed2fa0f1367a579681c1382da8cad2294357cdbe64c",
+      "chibiSourceSha256": "e2f6f1a381e7581f5da1ffe167a72169d31dbeb8219e9a915f73c8360d285971"
+    },
+    {
+      "heroId": "brinen-lori",
+      "displayName": "Brinen Lori",
+      "designOrdinal": 7,
+      "waveId": "wave-01",
+      "summonTargetId": "brinen-lori-summon-v1",
+      "chibiTargetId": "brinen-lori-combat-chibi-v2",
+      "summonSourceSha256": "585fa6195570cf730f21db788a62bbee15f33cd5ec1236bce1e8aaa5e4c50e3c",
+      "chibiSourceSha256": "2e2c4114ec10f77ec90f4cfa279672ad92b12404ebe2999a19528485b1c273bc"
+    },
+    {
+      "heroId": "rao-falin",
+      "displayName": "Rao Falin",
+      "designOrdinal": 8,
+      "waveId": "wave-01",
+      "summonTargetId": "rao-falin-summon-v1",
+      "chibiTargetId": "rao-falin-combat-chibi-v2",
+      "summonSourceSha256": "7f333abb704478e73503ba8a28012a0366800175ac8b549d36291a3133300e2a",
+      "chibiSourceSha256": "f3416abeb75ebd3bd7641c1e326b96e58fc31fa5cc210f3f26f296c0a7e49693"
+    },
+    {
+      "heroId": "delu-iverel",
+      "displayName": "Delu Iverel",
+      "designOrdinal": 9,
+      "waveId": "wave-01",
+      "summonTargetId": "delu-iverel-summon-v1",
+      "chibiTargetId": "delu-iverel-combat-chibi-v1",
+      "summonSourceSha256": "e27bd0dcb07908a8e3debfb76ad63faf5add89f263cbcd712bae6cd7410d7d99",
+      "chibiSourceSha256": "db0dccb512e1f4f4e1587a41d5c4f833f7052f87b90e91cf797c693bea73b560"
+    },
+    {
+      "heroId": "oris-quorar",
+      "displayName": "Oris Quorar",
+      "designOrdinal": 10,
+      "waveId": "wave-01",
+      "summonTargetId": "oris-quorar-summon-v1",
+      "chibiTargetId": "oris-quorar-combat-chibi-v2",
+      "summonSourceSha256": "1ea36b1cbf8d80383ffab7bd5ac6edc512127c6a88ff033e73e3401cebae369d",
+      "chibiSourceSha256": "625ec487efe884ccf2c95c237b85c596716c2094eecabaf84305219db8e92604"
+    },
+    {
+      "heroId": "rain-ulenen",
+      "displayName": "Rain Ulenen",
+      "designOrdinal": 11,
+      "waveId": "wave-01",
+      "summonTargetId": "rain-ulenen-summon-v1",
+      "chibiTargetId": "rain-ulenen-combat-chibi-v2",
+      "summonSourceSha256": "8e9057e06d75dae5256e47ed02ad833c0886284fb6215e6439b2169731f91d38",
+      "chibiSourceSha256": "a57a723bbd57fb6ba5118f7249c9eedb153cc19867bcdc6b131aaae04cfd24c3"
+    },
+    {
+      "heroId": "belyn-reshor",
+      "displayName": "Belyn Reshor",
+      "designOrdinal": 12,
+      "waveId": "wave-01",
+      "summonTargetId": "belyn-reshor-summon-v1",
+      "chibiTargetId": "belyn-reshor-combat-chibi-v2",
+      "summonSourceSha256": "a1a3216cd75f91c0a61638d80b3c12f78c5912d1ba5f8c6143ca2a5fff42af68",
+      "chibiSourceSha256": "9a8e050d9fb94e3d476bec0093879dafcc148b7190dbcc40f93aba51cadc8336"
+    },
+    {
+      "heroId": "talar-morai",
+      "displayName": "Talar Morai",
+      "designOrdinal": 13,
+      "waveId": "wave-01",
+      "summonTargetId": "talar-morai-summon-v1",
+      "chibiTargetId": "talar-morai-combat-chibi-v1",
+      "summonSourceSha256": "b93ae944d7da8d399a6c366b2dd2bb13693f6cb02f20b7c79208c813baa908bf",
+      "chibiSourceSha256": "309efbcc7ab41c43d6b34145f1d3ac12dbe115d57e8bc1ad2aea42fa83f2a4c3"
+    },
+    {
+      "heroId": "senor-falar",
+      "displayName": "Senor Falar",
+      "designOrdinal": 14,
+      "waveId": "wave-01",
+      "summonTargetId": "senor-falar-summon-v1",
+      "chibiTargetId": "senor-falar-combat-chibi-v1",
+      "summonSourceSha256": "9e43a411bf087d4dc60ed2e615ea902856d8d6cb3a444f74a6ddd8d212cec2fa",
+      "chibiSourceSha256": "36b10b0a70a713b2ca4dd67040ccf714a994af7e59a1bad2de11afe310123162"
+    },
+    {
+      "heroId": "kayn-quoro",
+      "displayName": "Kayn Quoro",
+      "designOrdinal": 15,
+      "waveId": "wave-01",
+      "summonTargetId": "kayn-quoro-summon-v1",
+      "chibiTargetId": "kayn-quoro-combat-chibi-v1",
+      "summonSourceSha256": "19d3128c8a7fe24affb65a1a5aa11166a3107c2b3d8ac8b5f1bf8d08059e67a8",
+      "chibiSourceSha256": "31d5be0023acbe8aceedddba137640a349dd1ef4b5a0d819b744067cdcadbfe1"
+    },
+    {
+      "heroId": "elin-orin",
+      "displayName": "Elin Orin",
+      "designOrdinal": 16,
+      "waveId": "wave-01",
+      "summonTargetId": "elin-orin-summon-v1",
+      "chibiTargetId": "elin-orin-combat-chibi-v1",
+      "summonSourceSha256": "0bdbe33618e39c3d7bee9a4c239840a0f3d9aad183c514d052363ad668cbdcb7",
+      "chibiSourceSha256": "2e911b99e07846e2832efcfd09a89e40af12aeb54e668863e023f167eaac6e36"
+    },
+    {
+      "heroId": "lania-eshan",
+      "displayName": "Lania Eshan",
+      "designOrdinal": 17,
+      "waveId": "wave-01",
+      "summonTargetId": "lania-eshan-summon-v1",
+      "chibiTargetId": "lania-eshan-combat-chibi-v2",
+      "summonSourceSha256": "7f47e8c33dbee51174ca50d887b226e190fd3e836b48631319cfc55d9b0fd170",
+      "chibiSourceSha256": "aa53aa448b23a6ea6c7b0132ea3c1fc0eafd17e0c141f398dc21590be58603d9"
+    },
+    {
+      "heroId": "meiia-falel",
+      "displayName": "Meiia Falel",
+      "designOrdinal": 18,
+      "waveId": "wave-01",
+      "summonTargetId": "meiia-falel-summon-v1",
+      "chibiTargetId": "meiia-falel-combat-chibi-v1",
+      "summonSourceSha256": "7a0175a3e9b50a88b206f3d807ecc1f65f7f1cff0cb9e9127899b81f6cb16f2c",
+      "chibiSourceSha256": "56a0d46844a2fdf2e185b2e9aff6af982f0ed4c49783159ffe9a370f5c629543"
+    },
+    {
+      "heroId": "delon-ulenan",
+      "displayName": "Delon Ulenan",
+      "designOrdinal": 19,
+      "waveId": "wave-01",
+      "summonTargetId": "delon-ulenan-summon-v1",
+      "chibiTargetId": "delon-ulenan-combat-chibi-v1",
+      "summonSourceSha256": "490a7293fbaf313c8cbafd2e5f59e7086154d2adc3e917f4ddc940335f4d0b15",
+      "chibiSourceSha256": "d7fff003701eb325a9a18d577e0c6ddc6d5e6e7d47f55d1d1e1270b779bdb0cc"
+    },
+    {
+      "heroId": "meiis-eshel",
+      "displayName": "Meiis Eshel",
+      "designOrdinal": 20,
+      "waveId": "wave-01",
+      "summonTargetId": "meiis-eshel-summon-v1",
+      "chibiTargetId": "meiis-eshel-combat-chibi-v1",
+      "summonSourceSha256": "373eadb5bee33d0d50499b99376e6eaa3dc03e15c47e144790b727a373635ec3",
+      "chibiSourceSha256": "d369eb950d25b444e9362fb8fd3cb7e833b9ea26820f77a65f97c5e7fd37927a"
+    }
+  ],
+  "quarantine": [
+    {
+      "heroId": "aear-soro",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "kaar-jorar",
+      "reasons": [
+        "Deactivated active quota slot; replaced by reserve aear-soro",
+        "Retained only as failed-slot review evidence; not eligible for the current 200"
+      ]
+    },
+    {
+      "heroId": "kelu-grelun",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "fenel-esho",
+      "reasons": [
+        "Deactivated active quota slot; replaced by reserve wenyn-amarun",
+        "Retained only as failed-slot review evidence; not eligible for the current 200"
+      ]
+    },
+    {
+      "heroId": "wenyn-amarun",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "oran-keshi",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "rao-esheth",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "yasu-coro",
+      "reasons": [
+        "Deactivated active quota slot; replaced by reserve rao-esheth",
+        "Retained only as failed-slot review evidence; not eligible for the current 200"
+      ]
+    },
+    {
+      "heroId": "brinen-lori",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "rao-falin",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "lanor-beleth",
+      "reasons": [
+        "Deactivated active quota slot; replaced by reserve oris-quorar",
+        "Retained only as failed-slot review evidence; not eligible for the current 200"
+      ]
+    },
+    {
+      "heroId": "oris-quorar",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "rain-ulenen",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "belyn-reshor",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    },
+    {
+      "heroId": "lania-eshan",
+      "reasons": [
+        "Superseded revise/failed attempt retained for provenance"
+      ]
+    }
+  ],
+  "derivatives": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/bea-nahl/combat-chibi.webp",
+      "sha256": "c78a107f6c7e9445a1f9a6e0f2fdd872901ff73c7767877090f61e8af8614df7",
+      "bytes": 46870,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/bea-nahl.png",
+      "sourceSha256": "785232c703c7cd628d3b6ceeb99fbaf08bd9fe7c9f97ba876ba9e60ab3a86bfa"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/bea-nahl/summon.webp",
+      "sha256": "648d4fc494ef3278305e7382deb79fb9275b1f244c835ec2fb568419a689fbfa",
+      "bytes": 31666,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/bea-nahl.png",
+      "sourceSha256": "dc546fe6cf9919072079cbf7ff16229525fc74b885a6387d64262d117b6ed8fb"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/hana-vey/combat-chibi.webp",
+      "sha256": "8b0d0354a3b2cb4668fb78c50d9039ca05321f2c102de5676f6bba56f2c31ea7",
+      "bytes": 35362,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/hana-vey.png",
+      "sourceSha256": "e4112d91d0757511702b8a09d930965e9a987235479f59131c907e0879b6beec"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/hana-vey/summon.webp",
+      "sha256": "928b5e8aa886acdeaafd10efd7b215d7eb0c55a3dbcf931d39ff5ba618e0af7e",
+      "bytes": 21138,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/hana-vey.png",
+      "sourceSha256": "42029e77f9c0405b3da61e34c1faa8136d87bbfb2aa5eb26f9d786703a947ed3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/ilya-sorel/combat-chibi.webp",
+      "sha256": "d81b0466f0aa482cbf0cab1e3d38501660efa4f717176837de34d78528ec2d64",
+      "bytes": 40488,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/ilya-sorel.png",
+      "sourceSha256": "3c10103a97736f04d45f51f56c70ea52551d4f8dd9e3c99a9e6682d0efab13bb"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/ilya-sorel/summon.webp",
+      "sha256": "11d08fa2e1840f286d125fef76a01155df3a0b18b740e76a750de0e3a07b3ded",
+      "bytes": 30120,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/ilya-sorel.png",
+      "sourceSha256": "376660b9fd932bac7bdac4ad4434b54c66d11293f62e1e8e02407176cfba7286"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/kes-aro/combat-chibi.webp",
+      "sha256": "9a4ee0972faaa760d4e448f6f2390c3c09ba837d1ec49e6d79e7d6463da32a91",
+      "bytes": 37094,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/kes-aro.png",
+      "sourceSha256": "32b1042e06f3733b0c812a53533428531f337484dbd122abb4bdd5e5af83ad52"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/kes-aro/summon.webp",
+      "sha256": "5da3c10c05c11087cf591103d1cb1bb5f5bc4830d4e892cf04a28ef6d64680e1",
+      "bytes": 23260,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/kes-aro.png",
+      "sourceSha256": "1bfcf22bab776dc4b65b1f6a7a5496e3204a9a89f2544e7d67092565fe31fdc2"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/mira-kest/combat-chibi.webp",
+      "sha256": "076cfd77c92cf4b751b90fb1d2f8517a622e3184e5ed6d86806e52e35f197dc9",
+      "bytes": 39556,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/mira-kest.png",
+      "sourceSha256": "c14366db2c605a7680fe691729f534c102d00c717f9ddb61cec7783d991873d8"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/mira-kest/summon.webp",
+      "sha256": "4fe1b0393e798aa4c0c73a2ea46c18a08f4a92c75c48db1be4b4a495707d9371",
+      "bytes": 27176,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/mira-kest.png",
+      "sourceSha256": "e7052c43b8b9596732b79db766ce2e983a6cc79ca36e4b580384a87ebe7c0f85"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/nera-voss/combat-chibi.webp",
+      "sha256": "cb7aa6ebf6c06061f5d2100533123592d56a628571207a0239d92aa30554ba25",
+      "bytes": 31248,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/nera-voss.png",
+      "sourceSha256": "77909608aeecbefe45ef96d09cc2b581bcb2dde4136257467ade85cb71cad188"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/nera-voss/summon.webp",
+      "sha256": "35370449814f49a27f5f5136cbead96b41965f06ce85152a5ff77bd51ebe78fd",
+      "bytes": 38290,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/nera-voss.png",
+      "sourceSha256": "33b0911580a49427daae5a82c2eea724c54574cf7f87b1e304a9509c24a866b1"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/niko-resh/combat-chibi.webp",
+      "sha256": "491785edcce7058927ef721846cc1124c4f319a2796d71549c619296a73d88e7",
+      "bytes": 40880,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/niko-resh.png",
+      "sourceSha256": "f8c3df9ebd0a068ef8a9c2637a93a4ed77475a355f5106e6d58d7352313acac8"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/niko-resh/summon.webp",
+      "sha256": "08c08fa0c03475055badaf16d345dfb6aadbbd89e51d9278b22d643bcbed6210",
+      "bytes": 28082,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/niko-resh.png",
+      "sourceSha256": "c5f4dbc826c68425dc84364145c07da6006bf2600897093d80dd19166d707ba4"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/ochre-braid/combat-chibi.webp",
+      "sha256": "c8840ebc39192b8a3a44b8b7cb4d6264a40a1ebafbd92cafe29727804664effc",
+      "bytes": 26006,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/ochre-braid.png",
+      "sourceSha256": "95ec84b875f90579613aa73bf641413d35572cad8439e9cb1b00a3552b5a2949"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/ochre-braid/summon.webp",
+      "sha256": "1e22a32f77cacb31e1fa8be42e65ff766acb588b8b9c74ee176581fd0ac42c87",
+      "bytes": 32136,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/ochre-braid.png",
+      "sourceSha256": "42b39d1d6932403bdb24b7ad10977ee5421f28460ccbddc25b2d491fa680cf78"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/oren-dae/combat-chibi.webp",
+      "sha256": "1a48609da66e7a93891e3be0707deb19915bd55ffebdea0de1d7bf3fc1ae4125",
+      "bytes": 19788,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/oren-dae.png",
+      "sourceSha256": "14ab76996ab838a2b7edfe88c54a01bba38ab07ee933ec0c66dff1b875121e0c"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/oren-dae/summon.webp",
+      "sha256": "f85344244cb3efc0c7c10a6d8a6e86f7250f23b2bbbe290f53093935dc30d576",
+      "bytes": 23670,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/oren-dae.png",
+      "sourceSha256": "d4263a2af1cb2f0d91908ec55b8a9a0ad19cbb104af24d236da7b5dbf38e0f37"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/rem-orin/combat-chibi.webp",
+      "sha256": "2b4f25a33d139ec22c28a76fa6b1bdec9d3cbc0e403795d12fe97d92e3c7befa",
+      "bytes": 45372,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/rem-orin.png",
+      "sourceSha256": "f0e3a557ac64ef2b5daaea7e1aaf7517a71aa1af39d4672742e9e1f4b7d277af"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/rem-orin/summon.webp",
+      "sha256": "a15301deef36a24efbfef3b9faa08960fa5c079b7d89ce3810171831426a4ad1",
+      "bytes": 29804,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/rem-orin.png",
+      "sourceSha256": "baae55a19873dd471931cdf7846667c6ef02063b6d03eca411b328fde00b5b3d"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/sal-terek/combat-chibi.webp",
+      "sha256": "d2d7033f630ddc011ed5e9ca5d6a9905a2389ce984416cf353f8402bbdb80c8d",
+      "bytes": 27176,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/sal-terek.png",
+      "sourceSha256": "bd5430529b2484bcb3142bba8e7da20c5a191fa3f1457a6f831c5fec7ea5975b"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/sal-terek/summon.webp",
+      "sha256": "71ce0252fc135d31ca7babf53a00addf782c10f66b01535a17d5d8459269a6fd",
+      "bytes": 18628,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/sal-terek.png",
+      "sourceSha256": "fc4ae33efebc2e1ef0e372885a509b0808dee6feb7c6bd7fc8b6e81a50715b23"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/zuri-pell/combat-chibi.webp",
+      "sha256": "1a37cdb08fda6f64c81e686b0ac875e186624c011ec49710a1b3b50c0e4701d3",
+      "bytes": 26306,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/combat-chibi/zuri-pell.png",
+      "sourceSha256": "63c8792d87cebf60505d920e2c4a89717f6a74f75f6d30b164720aea1a2e0700"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/reference-shelf/zuri-pell/summon.webp",
+      "sha256": "045bf6d5cb149b2ca8aec087b7d1d313f9755237abfbc63d6fb6842d5b45c3e7",
+      "bytes": 34602,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-mass-wave-002/summon/zuri-pell.png",
+      "sourceSha256": "736d3ddc21cc238e5db320783f4ff8544cfe20d242a177c698cdd01fe420a63e"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/aear-soro/combat-chibi-v1.webp",
+      "sha256": "28d932a8f462882c9fa46260e28db1f4f4e797a876fad103f868e026c309d3f5",
+      "bytes": 37898,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/combat-chibi-v1.png",
+      "sourceSha256": "e668682f79fec0aa21fbf8515609983f7b5b42b68fb64f5e5a25c2b1665b6172"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/aear-soro/summon-v1.webp",
+      "sha256": "b644a618e28903daa28070284106ff29a4fdd98484c3a8ccb0f7cc95233a2bca",
+      "bytes": 27280,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/summon-v1.png",
+      "sourceSha256": "edf84a1330f00708a7cbf8d5acc03e54373e8adeb0567061b3eaa05c3baadce3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/aear-soro/summon-v2.webp",
+      "sha256": "d77c07844d33fcaa9a806202456d4ca437832397ee3bb888d13a12a4bcbf7091",
+      "bytes": 28362,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/summon-v2.png",
+      "sourceSha256": "b3d4dda24fc189ec7bbf2585127c3f886c7de41f76ca9266d6f2ea86abb059cd"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/belyn-reshor/combat-chibi-v1.webp",
+      "sha256": "449ed76800a126d9c8d6ec711674b6a4bcd64fa0bdad20402dbae7d5750bb074",
+      "bytes": 37794,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/belyn-reshor/combat-chibi-v1.png",
+      "sourceSha256": "2e4692b2be3c0316ce9dd3f9613ec6b8dcc828c15f82624db86c28d8c56d97bd"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/belyn-reshor/combat-chibi-v2.webp",
+      "sha256": "ee66e5797269f54b22acf26608e8f906c1a3ec47cdf7f1b7743273680841f936",
+      "bytes": 34802,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/belyn-reshor/combat-chibi-v2.png",
+      "sourceSha256": "9a8e050d9fb94e3d476bec0093879dafcc148b7190dbcc40f93aba51cadc8336"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/belyn-reshor/summon-v1.webp",
+      "sha256": "adc23bbdf21eeb178dac017f77dae0f36381c67bc9854f749e9c7c87795f8f6d",
+      "bytes": 32334,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/belyn-reshor/summon-v1.png",
+      "sourceSha256": "a1a3216cd75f91c0a61638d80b3c12f78c5912d1ba5f8c6143ca2a5fff42af68"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/brinen-lori/combat-chibi-v1.webp",
+      "sha256": "181d0dab4efd35165f1ab167eab51c80801c0a3255000bb197bb6de8dbc94e3a",
+      "bytes": 29738,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/brinen-lori/combat-chibi-v1.png",
+      "sourceSha256": "5008d54e01b38632d888712a947df832510e32f1f361ce564b4ea52b99eeb3c7"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/brinen-lori/combat-chibi-v2.webp",
+      "sha256": "2a8c5ece49ff25e5855077be83f0b2eb3061febcd862e172ed05ccdc91f96254",
+      "bytes": 25504,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/brinen-lori/combat-chibi-v2.png",
+      "sourceSha256": "2e2c4114ec10f77ec90f4cfa279672ad92b12404ebe2999a19528485b1c273bc"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/brinen-lori/summon-v1.webp",
+      "sha256": "856eaca708e824a8d11070beac2d225e8dc9cb75e2bee57e8452431256254b9a",
+      "bytes": 25382,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/brinen-lori/summon-v1.png",
+      "sourceSha256": "585fa6195570cf730f21db788a62bbee15f33cd5ec1236bce1e8aaa5e4c50e3c"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/delon-ulenan/combat-chibi-v1.webp",
+      "sha256": "cefa6de7fc8481dcc8812cb70bf6217ed314978ba65a0f48839b9182c7353014",
+      "bytes": 47120,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/delon-ulenan/combat-chibi-v1.png",
+      "sourceSha256": "d7fff003701eb325a9a18d577e0c6ddc6d5e6e7d47f55d1d1e1270b779bdb0cc"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/delon-ulenan/summon-v1.webp",
+      "sha256": "9263af6b7fefdf5b81520b9efdc9d745589c32d978d9b656ef1ba72f6272659b",
+      "bytes": 33826,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/delon-ulenan/summon-v1.png",
+      "sourceSha256": "490a7293fbaf313c8cbafd2e5f59e7086154d2adc3e917f4ddc940335f4d0b15"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/delu-iverel/combat-chibi-v1.webp",
+      "sha256": "572fcf0ebebdf2f8f5ad5d90d173dcef6e39e8fcd75699d7a285d3674b838f8b",
+      "bytes": 28408,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/delu-iverel/combat-chibi-v1.png",
+      "sourceSha256": "db0dccb512e1f4f4e1587a41d5c4f833f7052f87b90e91cf797c693bea73b560"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/delu-iverel/summon-v1.webp",
+      "sha256": "44469fa06249b61012e381e2c5a9254bb0b6fb45befb63e5876b86ef920e9685",
+      "bytes": 29924,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/delu-iverel/summon-v1.png",
+      "sourceSha256": "e27bd0dcb07908a8e3debfb76ad63faf5add89f263cbcd712bae6cd7410d7d99"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/elin-orin/combat-chibi-v1.webp",
+      "sha256": "38ceac15588aa9c223fe1b5779496b7e77cc7cc25c8b0852a32966a0b0fe8ca8",
+      "bytes": 36348,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/elin-orin/combat-chibi-v1.png",
+      "sourceSha256": "2e911b99e07846e2832efcfd09a89e40af12aeb54e668863e023f167eaac6e36"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/elin-orin/summon-v1.webp",
+      "sha256": "caa28ed0968f0f5a3772b42b5d659682eccf0ebd513a146e0a20736801f64611",
+      "bytes": 30990,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/elin-orin/summon-v1.png",
+      "sourceSha256": "0bdbe33618e39c3d7bee9a4c239840a0f3d9aad183c514d052363ad668cbdcb7"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/fenel-esho/combat-chibi-v1.webp",
+      "sha256": "72066b3faae112a1d5936825b467240fefc39fbfc25dc482a94b3e9588d463c7",
+      "bytes": 32066,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/fenel-esho/combat-chibi-v1.png",
+      "sourceSha256": "7af308ffc36a61336a29768d9144bc7c686a792088a916b951aaa428b51d3fa3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/fenel-esho/combat-chibi-v2.webp",
+      "sha256": "eb02d17691da996e2cd2b9545851b71fc3d8fb8f7f6a64423be8b4567beaf5da",
+      "bytes": 33226,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/fenel-esho/combat-chibi-v2.png",
+      "sourceSha256": "ad1b51690505831bbb81655052672425f185d83f63f04e7fd8b1e6e436620646"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/fenel-esho/summon-v1.webp",
+      "sha256": "eae9c0e96ea110ce15558a576285d1a7049d4cd807268b3c3e65e512eaa03167",
+      "bytes": 29536,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/fenel-esho/summon-v1.png",
+      "sourceSha256": "27e25628756847a216ebece9229e4e3678a5ae78f1a18db11d8caa793f3cf992"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kaar-jorar/summon-v1.webp",
+      "sha256": "c81b0e8d87a46ad991a9adfb9f0e81151786f6b1c0c3f7d7245c85e6262966db",
+      "bytes": 36134,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kaar-jorar/summon-v1.png",
+      "sourceSha256": "82a5197f725131767a178d2529f2bd700fa02c51823e01e66f41202143ef5e43"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kaar-jorar/summon-v2.webp",
+      "sha256": "eed4685632e3156335e87ee9a7afa71876aff519bc32cf990f10b1d783dd31f2",
+      "bytes": 36988,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kaar-jorar/summon-v2.png",
+      "sourceSha256": "0ae459e542b9286b4029a41f9648047767558ed41b20734104ba73834114a163"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kayn-quoro/combat-chibi-v1.webp",
+      "sha256": "7a1dc4db687176d9af86632a8b8d823862e9d0fce1b8b8cd4b37bbdd3aa09ab1",
+      "bytes": 39386,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kayn-quoro/combat-chibi-v1.png",
+      "sourceSha256": "31d5be0023acbe8aceedddba137640a349dd1ef4b5a0d819b744067cdcadbfe1"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kayn-quoro/summon-v1.webp",
+      "sha256": "1e4d117c30587b0e904ba083515c1205b616aeb36fa0176b3dff8fa9143bae20",
+      "bytes": 35270,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kayn-quoro/summon-v1.png",
+      "sourceSha256": "19d3128c8a7fe24affb65a1a5aa11166a3107c2b3d8ac8b5f1bf8d08059e67a8"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kelu-grelun/combat-chibi-v1.webp",
+      "sha256": "416d5c7fe49d829ca5cb96d55d4b8fe7316b5f93df1f0b5fba1db01a00732b36",
+      "bytes": 29336,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kelu-grelun/combat-chibi-v1.png",
+      "sourceSha256": "c85b2354fcd9aed1d2a89d9eeac23a2beeee3c209b397a130c2f38377567a794"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kelu-grelun/combat-chibi-v2.webp",
+      "sha256": "e71ce4faccf85fb42da48e366416ccec4358a91b0b5b4b3174be4ac30aff2e01",
+      "bytes": 32166,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kelu-grelun/combat-chibi-v2.png",
+      "sourceSha256": "7e78ffdeb1db7359203f6116c45e79a98d2ef75dd29ca4dfc23201d4c9c623b8"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/kelu-grelun/summon-v1.webp",
+      "sha256": "45ceda7f5ea6ad32ae9650f625851af4b58235865022ea05a91da1bf7b80d91c",
+      "bytes": 26298,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/kelu-grelun/summon-v1.png",
+      "sourceSha256": "46fb64dbe4166b15f8700fed2964bfa9c667ed19ee7fdedd43eece8884f6496e"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lania-eshan/combat-chibi-v1.webp",
+      "sha256": "1fa9f3a80a8adcf3b10d21a70bd5a47bdf4788f1acbb15986869f1fb4da132c3",
+      "bytes": 40770,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lania-eshan/combat-chibi-v1.png",
+      "sourceSha256": "dfb2a761ec6577bd678b6b1982e85289787ecf1d3688a2f7463bc11d9971cf19"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lania-eshan/combat-chibi-v2.webp",
+      "sha256": "699a756c154790a47d7e45e4d589aef4d64b3c54c39622cf4e51d9c4b930df40",
+      "bytes": 40196,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lania-eshan/combat-chibi-v2.png",
+      "sourceSha256": "aa53aa448b23a6ea6c7b0132ea3c1fc0eafd17e0c141f398dc21590be58603d9"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lania-eshan/summon-v1.webp",
+      "sha256": "2b271aac6790c49905f83362f549b5e87dc4dd8405bea7c427fe3477d85d3557",
+      "bytes": 30156,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lania-eshan/summon-v1.png",
+      "sourceSha256": "7f47e8c33dbee51174ca50d887b226e190fd3e836b48631319cfc55d9b0fd170"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lanor-beleth/combat-chibi-v1.webp",
+      "sha256": "cb5f96ccb7378d08766c32090770a91c9c275c4dcca6cacd4a3fb9ff11aad71f",
+      "bytes": 30920,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lanor-beleth/combat-chibi-v1.png",
+      "sourceSha256": "52ba355524f6a31b1783d84323e9802f48d048a75811038a4abc29f8b62e76fd"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lanor-beleth/combat-chibi-v2.webp",
+      "sha256": "958acb5df18ba0bc7d74d70aa625c1a437ebd40fc67c74fbfa88ee3b3d746077",
+      "bytes": 29056,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lanor-beleth/combat-chibi-v2.png",
+      "sourceSha256": "aad10ed20ac0d698182a4a17eef4cb17818c5121d563720a1c182026ac7cb355"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/lanor-beleth/summon-v1.webp",
+      "sha256": "8ee68ec325354a2a0e561cddae63fc4a617ecc911eeac02953c006e6cc16499c",
+      "bytes": 26612,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lanor-beleth/summon-v1.png",
+      "sourceSha256": "0da0db81dfbd880e824b09205b1319b1171666eddaa4a1a088d81a82da51f26b"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/meiia-falel/combat-chibi-v1.webp",
+      "sha256": "2a4e3435707f853917cd23d325446a42372cd56f12ec0bf88a9d30d27153c11a",
+      "bytes": 42112,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/meiia-falel/combat-chibi-v1.png",
+      "sourceSha256": "56a0d46844a2fdf2e185b2e9aff6af982f0ed4c49783159ffe9a370f5c629543"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/meiia-falel/summon-v1.webp",
+      "sha256": "f78dabd5b8c447c629438a8aa3f697f0d27266e55e7751c16c3fc24ce6734879",
+      "bytes": 35888,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/meiia-falel/summon-v1.png",
+      "sourceSha256": "7a0175a3e9b50a88b206f3d807ecc1f65f7f1cff0cb9e9127899b81f6cb16f2c"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/meiis-eshel/combat-chibi-v1.webp",
+      "sha256": "25b3d13aa2a4ca62bd117b4dda21e9bec1a77a8a550aaddc097c9dd05231ca79",
+      "bytes": 31808,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/meiis-eshel/combat-chibi-v1.png",
+      "sourceSha256": "d369eb950d25b444e9362fb8fd3cb7e833b9ea26820f77a65f97c5e7fd37927a"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/meiis-eshel/summon-v1.webp",
+      "sha256": "806a8b7f9ebeadcd28bcd42e5a9e15c1bd9ff54bc05ebfd4178c547b53ceba33",
+      "bytes": 29308,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/meiis-eshel/summon-v1.png",
+      "sourceSha256": "373eadb5bee33d0d50499b99376e6eaa3dc03e15c47e144790b727a373635ec3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oran-keshi/combat-chibi-v1.webp",
+      "sha256": "888de63df95a34173fff27edeef876e167be8a9d89e00017806a0e5a314cc921",
+      "bytes": 32514,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oran-keshi/combat-chibi-v1.png",
+      "sourceSha256": "817c7d69c86c88b19461007ea45850a3bbf5a18a3c9bf0038b45f0940a3d2064"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oran-keshi/combat-chibi-v2.webp",
+      "sha256": "61952c856556197be168a5fb17bdb5240d33f19ee931cd8fe3f0dbfe0b2ffc39",
+      "bytes": 35138,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oran-keshi/combat-chibi-v2.png",
+      "sourceSha256": "85f8cd150ea2e283ebd018c12edc420168360ee05869703da81386e79119197e"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oran-keshi/summon-v1.webp",
+      "sha256": "10453b3c5a68049e5a59ddd44f508268b7b540de113048c78da575ed9fd50606",
+      "bytes": 35914,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oran-keshi/summon-v1.png",
+      "sourceSha256": "4e295c12b325acc609b6b6c348226b982d23cead434421b6059ff593eacde293"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oris-quorar/combat-chibi-v1.webp",
+      "sha256": "a2bdafb4241b7beb8e5f017e7236c38b43eb036d3b7285f1c122cd60b4714924",
+      "bytes": 31832,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oris-quorar/combat-chibi-v1.png",
+      "sourceSha256": "857b8b888c0b8a27c5cff76195e898b566685551a374c8a616d1e7ef17ebed05"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oris-quorar/combat-chibi-v2.webp",
+      "sha256": "34fa0d9be6b3c2f91657ba84da589e945a0c0dae649d70ea046614e55c5b606d",
+      "bytes": 28330,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oris-quorar/combat-chibi-v2.png",
+      "sourceSha256": "625ec487efe884ccf2c95c237b85c596716c2094eecabaf84305219db8e92604"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/oris-quorar/summon-v1.webp",
+      "sha256": "389682af81feade172a77d9693bd0676e2f7fbfcb8dee76a7cec7e693cd1a3a7",
+      "bytes": 27086,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/oris-quorar/summon-v1.png",
+      "sourceSha256": "1ea36b1cbf8d80383ffab7bd5ac6edc512127c6a88ff033e73e3401cebae369d"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rain-ulenen/combat-chibi-v1.webp",
+      "sha256": "5f15408639755fd041f5abf9b0d44ca3be12e5c2ca5bcdff481f97b5f09a3fa3",
+      "bytes": 32716,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rain-ulenen/combat-chibi-v1.png",
+      "sourceSha256": "6264c060141c1efed770029a7816a8730e0cf52822260b8bcd97251c4e91dd21"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rain-ulenen/combat-chibi-v2.webp",
+      "sha256": "c3ce7e41c66a65b6a4acc16db7ed11efe5e96dd8f9d427646c529120eca20070",
+      "bytes": 31640,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rain-ulenen/combat-chibi-v2.png",
+      "sourceSha256": "a57a723bbd57fb6ba5118f7249c9eedb153cc19867bcdc6b131aaae04cfd24c3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rain-ulenen/summon-v1.webp",
+      "sha256": "6738cef0bc20a410b3773a74bbcfc985f773839230ca7470ef66481f28785b21",
+      "bytes": 28534,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rain-ulenen/summon-v1.png",
+      "sourceSha256": "8e9057e06d75dae5256e47ed02ad833c0886284fb6215e6439b2169731f91d38"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-esheth/combat-chibi-v1.webp",
+      "sha256": "41fc792ff93b4d1b991d595607022ec7a991dc7c51e440c881d213221b5d837e",
+      "bytes": 36890,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-esheth/combat-chibi-v1.png",
+      "sourceSha256": "23443e57134c43ed4a89ae0eac04c9d0222478982207e0d0f7938de674b0a00e"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-esheth/summon-v1.webp",
+      "sha256": "7955859f3f1ae270361a7007e1520904c5ca6a90e0d5dfcee9d7720ae85b8286",
+      "bytes": 26458,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-esheth/summon-v1.png",
+      "sourceSha256": "96cb0b64fbd6ba065382376034d8f297f246353302ec363b61597f93b6b3f969"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-esheth/summon-v2.webp",
+      "sha256": "c0d7342008656cfd2fb15fc460e04add079d91ba807625311bd6caffa5641cdc",
+      "bytes": 26796,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-esheth/summon-v2.png",
+      "sourceSha256": "7ab71c7ef7900a5da9ee0659f083064c7794b618015266a84e21f562e60cb642"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-falin/combat-chibi-v1.webp",
+      "sha256": "3b980cd752f6fc36d542afef3d5ac5d5b5035d00b624386a4dd16e391fafe954",
+      "bytes": 33708,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-falin/combat-chibi-v1.png",
+      "sourceSha256": "1ebcb2659167979ba8dffd1ee5b1a49a72c2c03b8d5a6684965f4610e3c396cb"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-falin/combat-chibi-v2.webp",
+      "sha256": "b3423aca488f542316df7cb821e9c23c0122c178682310b09c75a245fd044dab",
+      "bytes": 34200,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-falin/combat-chibi-v2.png",
+      "sourceSha256": "f3416abeb75ebd3bd7641c1e326b96e58fc31fa5cc210f3f26f296c0a7e49693"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/rao-falin/summon-v1.webp",
+      "sha256": "5072f90dfb411a1d7be81bf12335c9e5209be7c45887d418bf3a139b08db0b10",
+      "bytes": 29650,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/rao-falin/summon-v1.png",
+      "sourceSha256": "7f333abb704478e73503ba8a28012a0366800175ac8b549d36291a3133300e2a"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/senor-falar/combat-chibi-v1.webp",
+      "sha256": "5b1db21d201f289f2f95180634722fc1e33b2df6dfdc7ca7a85397aaee8629a2",
+      "bytes": 28204,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/senor-falar/combat-chibi-v1.png",
+      "sourceSha256": "36b10b0a70a713b2ca4dd67040ccf714a994af7e59a1bad2de11afe310123162"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/senor-falar/summon-v1.webp",
+      "sha256": "201bba74de2582b923e8262253adf89f1d64f6d149a944dccf4b4d01199577a3",
+      "bytes": 27448,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/senor-falar/summon-v1.png",
+      "sourceSha256": "9e43a411bf087d4dc60ed2e615ea902856d8d6cb3a444f74a6ddd8d212cec2fa"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/talar-morai/combat-chibi-v1.webp",
+      "sha256": "a026d2c8ebb6cb23feb6c206ad5bad4dae640252308566ed98381d6f2f0f1f9f",
+      "bytes": 43860,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/talar-morai/combat-chibi-v1.png",
+      "sourceSha256": "309efbcc7ab41c43d6b34145f1d3ac12dbe115d57e8bc1ad2aea42fa83f2a4c3"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/talar-morai/summon-v1.webp",
+      "sha256": "058fa80f86486f19b172a63e3b0518008bfa77d8fa383093499e279e728790b0",
+      "bytes": 32430,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/talar-morai/summon-v1.png",
+      "sourceSha256": "b93ae944d7da8d399a6c366b2dd2bb13693f6cb02f20b7c79208c813baa908bf"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/wenyn-amarun/combat-chibi-v1.webp",
+      "sha256": "d31c47c2c7529f19e9df6f5f8a8acc9bd4d6de8175ebbf5b268ff96706543b96",
+      "bytes": 29704,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/wenyn-amarun/combat-chibi-v1.png",
+      "sourceSha256": "7b6b825a36eef6a7a80a61efa217b6162eedab4a983d35bd63ed868ed3840a95"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/wenyn-amarun/combat-chibi-v2.webp",
+      "sha256": "f02a8d15655def9b7af22ce9120110e89734033fb69d3c66005563d75a296986",
+      "bytes": 32308,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/wenyn-amarun/combat-chibi-v2.png",
+      "sourceSha256": "705144d1e69e313176f714d09b36d0e16c37084a1741b50675ccdbb6a0a6750d"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/wenyn-amarun/summon-v1.webp",
+      "sha256": "31331236aa8b8d7a35b289a6bb394f80a0e88360ff11b12fdb8d5685b01363aa",
+      "bytes": 33340,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/wenyn-amarun/summon-v1.png",
+      "sourceSha256": "b0db1bb3c6968b0bc511d2e6ec55d173b6c8ff3c27a7dbbb81cb1ca9cdf34752"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/yasu-coro/combat-chibi-v1.webp",
+      "sha256": "e04a59997e31cd4015cf4e763f5f74f627938a15bd06b7d172dc28e58dcd5ada",
+      "bytes": 38890,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/yasu-coro/combat-chibi-v1.png",
+      "sourceSha256": "999af50665cb0d8ee571ca8e63eccadb7600943e112aef139556bf8c3c85c508"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/yasu-coro/combat-chibi-v2.webp",
+      "sha256": "ec6a4d1dba66d9e4493a38f16bac2af6cb5b89a914b704a5908b034939de72a3",
+      "bytes": 35590,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/yasu-coro/combat-chibi-v2.png",
+      "sourceSha256": "65f4fb07de1854806bd62fd937f418b715d564ac49ed9f596d0cafd5331e9c81"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/yasu-coro/summon-v1.webp",
+      "sha256": "6e002fe478bc9b1ec5aee54029342a058d31d7bb410f7660e0af178c3aa1ab92",
+      "bytes": 32500,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/yasu-coro/summon-v1.png",
+      "sourceSha256": "87d05ae517559a720d8bc280f0caf6824c652aa5cea6d455effaaca70ba2f251"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/yasu-coro/summon-v2.webp",
+      "sha256": "0d4e5a868e49e6ee9b7da8bb81acc2f05c52c0f2987a69dd51d5bf577dfdc229",
+      "bytes": 32950,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/yasu-coro/summon-v2.png",
+      "sourceSha256": "89a324ad0f1bf8f9a75f766f0a06f7c49b940fadd69be1ce57529b6d8fa022fb"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/zelin-orel/combat-chibi-v1.webp",
+      "sha256": "f65376299f6e7efff826e6221847fbfc2e5619979c85a2ab19b71cfa7c1c27d9",
+      "bytes": 37774,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/zelin-orel/combat-chibi-v1.png",
+      "sourceSha256": "e2f6f1a381e7581f5da1ffe167a72169d31dbeb8219e9a915f73c8360d285971"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/derivatives/wave-01/zelin-orel/summon-v1.webp",
+      "sha256": "b0e6c9ac5ac1ca9afc51163811364569caf969124f97f68c254caa70f2bb6871",
+      "bytes": 28178,
+      "width": 512,
+      "height": 768,
+      "mediaType": "image/webp",
+      "sourcePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/zelin-orel/summon-v1.png",
+      "sourceSha256": "76de8e9787b2280bf4a81ed2fa0f1367a579681c1382da8cad2294357cdbe64c"
+    }
+  ],
+  "pages": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/index.html",
+      "sha256": "0eeeb6948091f00c14d6d3e6cf9c9ab68ef6c0b79d83f32cc8f410cba8aaa42b",
+      "bytes": 36764
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/quarantine.html",
+      "sha256": "ce3cad912fe141f873874e2fd05b101f54c13536f2c910c3ea479478e972cf97",
+      "bytes": 28640
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/review/reference-shelf.html",
+      "sha256": "3ca5fcec178137e512c2f9c306fcc561cd587fbefccac908db5641b2e46eece6",
+      "bytes": 16360
+    }
+  ]
+}

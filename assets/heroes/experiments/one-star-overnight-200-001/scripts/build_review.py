@@ -393,7 +393,11 @@ def materialize_derivative(
 ) -> dict[str, Any]:
     if artifact.source_path is None or artifact.source_sha256 is None or artifact.source_bytes is None:
         raise ContractError("cannot create a derivative for an artifact without candidate bytes")
-    source = anchored_read(workspace, artifact.source_path)
+    source = (
+        anchored_read(workspace, artifact.source_path, prefix="assets")
+        if shelf_id
+        else anchored_read(workspace, artifact.source_path)
+    )
     if len(source) != artifact.source_bytes or sha256_bytes(source) != artifact.source_sha256:
         raise ContractError(f"candidate bytes drifted before review conversion: {artifact.source_path}")
     before = artifact.source_sha256
@@ -401,7 +405,12 @@ def materialize_derivative(
     relative = _derivative_path(artifact, shelf_id=shelf_id)
     absolute = ensure_no_symlink_path(workspace, relative, allow_missing_leaf=True)
     _write_derivative_exclusive(absolute, payload)
-    if sha256_bytes(anchored_read(workspace, artifact.source_path)) != before:
+    current_source = (
+        anchored_read(workspace, artifact.source_path, prefix="assets")
+        if shelf_id
+        else anchored_read(workspace, artifact.source_path)
+    )
+    if sha256_bytes(current_source) != before:
         raise ContractError(f"candidate bytes changed during review conversion: {artifact.source_path}")
     return {
         "path": relative,

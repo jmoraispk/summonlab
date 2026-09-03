@@ -1,27 +1,28 @@
 {
   "schemaVersion": "hero-one-star-production-report-v1",
   "experimentId": "one-star-overnight-200-001",
-  "state": "wave-01-active",
+  "state": "wave-01-complete",
   "candidateBoundary": "candidate-only; no human approval or runtime promotion implied",
   "counts": {
     "activeHeroes": 200,
     "reserveIdentityPackets": 20,
-    "summonTargetsMaterialized": 224,
-    "summonCandidates": 8,
-    "chibiTargetsMaterialized": 18,
-    "chibiCandidates": 8,
-    "completePairs": 8,
-    "quarantinedImages": 2,
-    "activatedReserves": 2
+    "summonTargetsMaterialized": 230,
+    "summonCandidates": 20,
+    "chibiTargetsMaterialized": 36,
+    "chibiCandidates": 20,
+    "completePairs": 20,
+    "quarantinedImages": 5,
+    "quarantineRecords": 15,
+    "activatedReserves": 5
   },
   "budget": {
     "baseImageCallsLimit": 400,
     "correctionCallsLimit": 60,
-    "baseImageCallsUsed": 22,
-    "correctionCallsUsed": 11
+    "baseImageCallsUsed": 52,
+    "correctionCallsUsed": 18
   },
   "waves": [
-    { "waveId": "wave-01", "state": "active", "completePairs": 8 },
+    { "waveId": "wave-01", "state": "complete", "completePairs": 20 },
     { "waveId": "wave-02", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-03", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-04", "state": "planned", "completePairs": 0 },
@@ -46,18 +47,43 @@
       "finalVersion": 2,
       "reason": "Chibi ratio remained outside 2.75-3.1 heads after the one allowed correction.",
       "resolution": "Replaced through activation-0002-yasu-coro--rao-esheth."
+    },
+    {
+      "heroId": "kaar-jorar",
+      "imageKind": "summon",
+      "finalVersion": 2,
+      "reason": "Skin value remained lighter than band-6 deepest after the one allowed correction.",
+      "resolution": "Replaced through activation-0003-kaar-jorar--zelen-soror."
+    },
+    {
+      "heroId": "lanor-beleth",
+      "imageKind": "combat-chibi",
+      "finalVersion": 2,
+      "reason": "The hand correction moved the figure outside the locked chibi ratio.",
+      "resolution": "Replaced through activation-0004-lanor-beleth--oris-quorar."
+    },
+    {
+      "heroId": "zelen-soror",
+      "imageKind": "combat-chibi",
+      "finalVersion": 1,
+      "reason": "The initial chibi had three independent blockers: skin-value continuity, seed-case continuity, and chibi ratio.",
+      "resolution": "Skipped multi-defect correction under the one-defect rule and replaced through activation-0005-kaar-jorar--aear-soro."
     }
   ],
   "corrections": [
     "Eight original calibration images used one valid v2 correction call.",
     "Rao Esheth summon-v2 added the missing reinforced cuffs.",
     "Wenyn Amarun combat-chibi-v2 restored the wooden comb at the sash.",
-    "One noncanonical same-target Rao Esheth chibi edit was quarantined as unregistered evidence and counted against the correction budget."
+    "One noncanonical same-target Rao Esheth chibi edit was quarantined as unregistered evidence and counted against the correction budget.",
+    "Wave 01 used seven valid v2 corrections after calibration: Kaar summon, Brinen chibi, Lanor chibi, Belyn chibi, Zelen summon, Oris chibi, and Aear summon."
   ],
   "quarantine": [
     "fenel-esho/combat-chibi-v2",
     "yasu-coro/combat-chibi-v2",
-    "review-evidence/unregistered-attempts/rao-esheth/combat-chibi-v1-noncanonical-correction.png"
+    "review-evidence/unregistered-attempts/rao-esheth/combat-chibi-v1-noncanonical-correction.png",
+    "kaar-jorar/summon-v2",
+    "lanor-beleth/combat-chibi-v2",
+    "zelen-soror/combat-chibi-v1"
   ],
-  "providerWallTimeMs": 1641271
+  "providerWallTimeMs": 3469335
 }

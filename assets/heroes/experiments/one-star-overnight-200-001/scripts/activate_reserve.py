@@ -168,8 +168,15 @@ def _current_selection(
         )
         failed_id = record["failedActiveHeroId"]
         reserve_id = record["reserveHeroId"]
-        if failed_id not in selection or selection[failed_id] != failed_id:
-            raise ContractError("existing activation reuses or does not own its active slot")
+        if failed_id not in selection:
+            raise ContractError("existing activation does not own an active quota slot")
+        replaced_selected_id = selection[failed_id]
+        failed_evidence = record.get("failedSlotEvidence")
+        if (
+            not isinstance(failed_evidence, dict)
+            or failed_evidence.get("heroId") != replaced_selected_id
+        ):
+            raise ContractError("existing activation failure evidence does not match the selected slot occupant")
         if reserve_id in used_reserves or reserve_id in selection.values():
             raise ContractError("existing activation reuses a reserve identity")
         selection[failed_id] = reserve_id
@@ -271,6 +278,7 @@ def activate_reserve(
     assigned_at: str,
     created_at: str,
     reason: str,
+    failure_result_path: str | None = None,
 ) -> dict[str, Any]:
     workspace = workspace.resolve(strict=True)
     roster_relative = workspace_relative(workspace, roster_plan_path)
@@ -299,8 +307,7 @@ def activate_reserve(
     reserve_packet = reserves.get(reserve_hero_id)
     if failed_packet is None or reserve_packet is None:
         raise ContractError("failed hero must be active and replacement hero must be reserve")
-    if APPROVED_REPLACEMENTS.get(failed_active_hero_id) != reserve_hero_id:
-        raise ContractError("reserve activation pair is not one of the documented calibration replacements")
+    calibration_replacement = APPROVED_REPLACEMENTS.get(failed_active_hero_id) == reserve_hero_id
     if failed_packet["waveId"] != destination_wave:
         raise ContractError("destination wave must equal the failed active quota slot wave")
     if not reason.strip() or len(reason) > 1000:
@@ -310,57 +317,128 @@ def activate_reserve(
         workspace, roster
     )
     selection_by_slot = {entry["slotHeroId"]: entry["selectedHeroId"] for entry in selection}
-    if failed_active_hero_id in used_slots or selection_by_slot[failed_active_hero_id] != failed_active_hero_id:
-        raise ContractError("failed active quota slot has already been replaced")
+    if failed_active_hero_id not in selection_by_slot:
+        raise ContractError("failed active quota slot is not selected")
+    failed_selected_hero_id = selection_by_slot[failed_active_hero_id]
     if reserve_hero_id in used_reserves or reserve_hero_id in selection_by_slot.values():
         raise ContractError("reserve identity has already been activated")
 
-    reserve_analysis = _read_json(workspace, RESERVE_ANALYSIS)
-    inspection = _read_json(workspace, CALIBRATION_INSPECTION)
-    if (
-        reserve_analysis.get("schemaVersion") != "hero-one-star-reserve-analysis-v1"
-        or reserve_analysis.get("experimentId") != EXPERIMENT_ID
-        or inspection.get("schemaVersion") != "hero-one-star-calibration-inspection-v1"
-        or inspection.get("experimentId") != EXPERIMENT_ID
-    ):
-        raise ContractError("calibration decision evidence is invalid")
-    decisions = {
-        item.get("failedActiveHeroId"): item.get("reserveIdentityHeroId")
-        for item in reserve_analysis.get("quotaSlotActivationDecision", [])
-        if isinstance(item, dict)
-    }
-    if decisions.get(failed_active_hero_id) != reserve_hero_id:
-        raise ContractError("reserve pair is not authorized by calibration decision evidence")
-    inspection_pair = next(
-        (
-            item for item in inspection.get("pairs", [])
-            if isinstance(item, dict) and item.get("heroId") == failed_active_hero_id
-        ),
-        None,
+    template_target_relative = failed_packet["summonTargetPath"]
+    template_assignment_relative = failed_packet["summonAssignmentPath"]
+    template_target = validate_target(
+        _read_json(workspace, template_target_relative), expected_path=template_target_relative
     )
-    if (
-        inspection_pair is None
-        or inspection_pair.get("status") != "quarantine-pending-replacement"
-        or not inspection_pair.get("blockingDefect")
-    ):
-        raise ContractError("failed hero is not a documented calibration quarantine")
-
-    source_target_relative = failed_packet["summonTargetPath"]
-    source_assignment_relative = failed_packet["summonAssignmentPath"]
-    source_target = validate_target(
-        _read_json(workspace, source_target_relative), expected_path=source_target_relative
+    template_assignment = validate_assignment(
+        _read_json(workspace, template_assignment_relative),
+        template_target,
+        expected_path=template_assignment_relative,
     )
-    source_assignment = validate_assignment(
-        _read_json(workspace, source_assignment_relative),
-        source_target,
-        expected_path=source_assignment_relative,
-    )
-    source_result_relative = source_target["output"]["resultPath"]
-    source_result = validate_result(
-        _read_json(workspace, source_result_relative), source_target, source_assignment
-    )
-    if source_result["status"] not in {"candidate", "revise"} or source_result["candidate"] is None:
-        raise ContractError("failed calibration slot requires a retained summon candidate")
+    if calibration_replacement:
+        reserve_analysis = _read_json(workspace, RESERVE_ANALYSIS)
+        inspection = _read_json(workspace, CALIBRATION_INSPECTION)
+        if (
+            reserve_analysis.get("schemaVersion") != "hero-one-star-reserve-analysis-v1"
+            or reserve_analysis.get("experimentId") != EXPERIMENT_ID
+            or inspection.get("schemaVersion") != "hero-one-star-calibration-inspection-v1"
+            or inspection.get("experimentId") != EXPERIMENT_ID
+        ):
+            raise ContractError("calibration decision evidence is invalid")
+        decisions = {
+            item.get("failedActiveHeroId"): item.get("reserveIdentityHeroId")
+            for item in reserve_analysis.get("quotaSlotActivationDecision", [])
+            if isinstance(item, dict)
+        }
+        if decisions.get(failed_active_hero_id) != reserve_hero_id:
+            raise ContractError("reserve pair is not authorized by calibration decision evidence")
+        inspection_pair = next(
+            (
+                item for item in inspection.get("pairs", [])
+                if isinstance(item, dict) and item.get("heroId") == failed_active_hero_id
+            ),
+            None,
+        )
+        if (
+            inspection_pair is None
+            or inspection_pair.get("status") != "quarantine-pending-replacement"
+            or not inspection_pair.get("blockingDefect")
+        ):
+            raise ContractError("failed hero is not a documented calibration quarantine")
+        failure_target_relative = template_target_relative
+        failure_assignment_relative = template_assignment_relative
+        failure_target = template_target
+        failure_assignment = template_assignment
+        failure_result_relative = failure_target["output"]["resultPath"]
+        failure_result = validate_result(
+            _read_json(workspace, failure_result_relative), failure_target, failure_assignment
+        )
+        if failure_result["status"] not in {"candidate", "revise"} or failure_result["candidate"] is None:
+            raise ContractError("failed calibration slot requires a retained summon candidate")
+        decision_evidence = {
+            "reserveAnalysisPath": RESERVE_ANALYSIS,
+            "reserveAnalysisSha256": sha256_json(reserve_analysis),
+            "calibrationInspectionPath": CALIBRATION_INSPECTION,
+            "calibrationInspectionSha256": sha256_json(inspection),
+            "calibrationStatus": inspection_pair["status"],
+            "blockingDefect": inspection_pair["blockingDefect"],
+        }
+    else:
+        if failure_result_path is None:
+            raise ContractError("post-calibration activation requires --failure-result-path")
+        failure_result_relative = workspace_relative(workspace, workspace / failure_result_path)
+        expected_prefix = f"{EXPERIMENT_ROOT}/waves/{destination_wave}/results/{failed_selected_hero_id}/"
+        result_name = Path(failure_result_relative).name
+        if not failure_result_relative.startswith(expected_prefix) or not (
+            result_name.endswith("-v1.json") or result_name.endswith("-v2.json")
+        ):
+            raise ContractError("post-calibration failure result must be the selected hero's v1 or v2 result in its destination wave")
+        failure_version = int(result_name[-6])
+        image_kind = result_name[:-8]
+        if image_kind not in {"summon", "combat-chibi"}:
+            raise ContractError("post-calibration failure result has an invalid image kind")
+        failure_target_relative = target_path_for(
+            destination_wave, failed_selected_hero_id, image_kind, failure_version
+        )
+        failure_assignment_relative = assignment_path_for(
+            destination_wave, failed_selected_hero_id, image_kind, failure_version
+        )
+        failure_target = validate_target(
+            _read_json(workspace, failure_target_relative), expected_path=failure_target_relative
+        )
+        failure_assignment = validate_assignment(
+            _read_json(workspace, failure_assignment_relative), failure_target,
+            expected_path=failure_assignment_relative,
+        )
+        failure_result = validate_result(
+            _read_json(workspace, failure_result_relative), failure_target, failure_assignment
+        )
+        exhausted_correction = (
+            failure_version == 2 and failure_target["correctionSource"] is not None
+        )
+        multiple_initial_blockers = (
+            failure_version == 1 and len(failure_result["failedCriteria"]) > 1
+        )
+        if (
+            not (exhausted_correction or multiple_initial_blockers)
+            or failure_result["status"] != "revise"
+            or failure_result["candidate"] is None
+            or not failure_result["failedCriteria"]
+        ):
+            raise ContractError(
+                "post-calibration activation requires either multiple initial blockers or a retained revise result after one versioned correction"
+            )
+        if reserve_packet["physicalManifest"]["genderPresentation"] != failed_packet["physicalManifest"]["genderPresentation"]:
+            raise ContractError("post-calibration reserve identity must preserve gender presentation")
+        decision_evidence = {
+            "failureResultPath": failure_result_relative,
+            "failureResultSha256": sha256_json(failure_result),
+            "failureStatus": failure_result["status"],
+            "failedCriteria": deepcopy(failure_result["failedCriteria"]),
+            "authorization": (
+                "objective authoring failure after the single allowed versioned correction"
+                if exhausted_correction
+                else "multiple objective blockers on the initial render; correction skipped under the one-defect correction rule"
+            ),
+        }
     physical_manifest = _activation_manifest(failed_packet, reserve_packet)
     quota_coordinates = deepcopy(failed_packet["quotaCoordinates"])
     reserve_kernel = deepcopy(reserve_packet["characterKernel"])
@@ -402,7 +480,7 @@ def activate_reserve(
         if absolute.exists() or absolute.is_symlink():
             raise ContractError(f"reserve activation collision: {path}")
 
-    target = deepcopy(source_target)
+    target = deepcopy(template_target)
     target["targetId"] = f"{reserve_hero_id}-summon-v1"
     target["targetVersion"] = version
     target["waveId"] = destination_wave
@@ -485,23 +563,16 @@ def activate_reserve(
         "rosterPlanPath": roster_relative,
         "rosterPlanSha256": sha256_json(roster),
         "previousActivationSha256": previous_hash,
-        "decisionEvidence": {
-            "reserveAnalysisPath": RESERVE_ANALYSIS,
-            "reserveAnalysisSha256": sha256_json(reserve_analysis),
-            "calibrationInspectionPath": CALIBRATION_INSPECTION,
-            "calibrationInspectionSha256": sha256_json(inspection),
-            "calibrationStatus": inspection_pair["status"],
-            "blockingDefect": inspection_pair["blockingDefect"],
-        },
+        "decisionEvidence": decision_evidence,
         "failedSlotEvidence": {
-            "heroId": failed_active_hero_id,
-            "targetPath": source_target_relative,
-            "targetSha256": sha256_json(source_target),
-            "assignmentPath": source_assignment_relative,
-            "assignmentSha256": sha256_json(source_assignment),
-            "resultPath": source_result_relative,
-            "resultSha256": sha256_json(source_result),
-            "resultStatus": source_result["status"],
+            "heroId": failed_selected_hero_id,
+            "targetPath": failure_target_relative,
+            "targetSha256": sha256_json(failure_target),
+            "assignmentPath": failure_assignment_relative,
+            "assignmentSha256": sha256_json(failure_assignment),
+            "resultPath": failure_result_relative,
+            "resultSha256": sha256_json(failure_result),
+            "resultStatus": failure_result["status"],
         },
         "preservedReserveIdentity": {
             "heroId": reserve_hero_id,
@@ -583,6 +654,7 @@ def main() -> None:
     parser.add_argument("--assigned-at", required=True)
     parser.add_argument("--created-at", required=True)
     parser.add_argument("--reason", required=True)
+    parser.add_argument("--failure-result-path")
     args = parser.parse_args()
     receipt = activate_reserve(
         args.roster_plan,
@@ -594,6 +666,7 @@ def main() -> None:
         assigned_at=args.assigned_at,
         created_at=args.created_at,
         reason=args.reason,
+        failure_result_path=args.failure_result_path,
     )
     print(json.dumps(receipt, indent=2))
 
