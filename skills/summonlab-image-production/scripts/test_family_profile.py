@@ -478,6 +478,48 @@ class FamilyProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "same family|exact Normal|mismatched"):
             validate(fire, forged_assignment, self.workspace)
 
+    def test_provisional_elemental_requires_exact_verified_normal_chain(self) -> None:
+        normal = self._target()
+        normal_assignment = self._assignment(normal)
+        self._persist_inputs(normal, normal_assignment)
+        candidate_bytes = b"verified normal candidate"
+        candidate_path = self.workspace / normal["ownedPaths"]["candidate"]
+        candidate_path.parent.mkdir(parents=True, exist_ok=True)
+        candidate_path.write_bytes(candidate_bytes)
+        result_bytes = b'{"verified":"normal-result"}'
+        result_path = self.workspace / normal["ownedPaths"]["result"]
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        result_path.write_bytes(result_bytes)
+        normal_hash = hashlib.sha256(canonical_json(normal).encode("utf-8")).hexdigest()
+
+        fire = self._target("fire")
+        fire["status"] = "planned-provisional-anchor"
+        fire["anchor"] = {
+            "kind": "normal-verified-candidate",
+            "normalCoordinateId": normal["coordinateId"],
+            "normalVersion": 1,
+            "normalTargetPath": f"{ROOT}/targets/goblins/goblin-scout/normal/target-v1.json",
+            "normalTargetSha256": normal_hash,
+            "normalCandidatePath": normal["ownedPaths"]["candidate"],
+            "normalCandidateSha256": hashlib.sha256(candidate_bytes).hexdigest(),
+            "normalResultPath": normal["ownedPaths"]["result"],
+            "normalResultSha256": hashlib.sha256(result_bytes).hexdigest(),
+            "sourcePacketPath": self.packet_path,
+            "sourcePacketSha256": self._packet_hash(),
+            "humanReviewPending": True,
+            "runtimeCatalogMutationForbidden": True,
+        }
+        assignment = self._assignment(fire)
+        self._persist_inputs(fire, assignment)
+        self.assertEqual(
+            validate(fire, assignment, self.workspace)["status"],
+            "planned-provisional-anchor",
+        )
+
+        fire["anchor"]["normalCandidateSha256"] = "1" * 64
+        with self.assertRaisesRegex(ValueError, "candidate hash"):
+            validate(fire, self._assignment(fire), self.workspace)
+
     def test_prompt_is_exact_stable_json_bytes_with_no_newline(self) -> None:
         target = self._target()
         assignment = self._assignment(target)

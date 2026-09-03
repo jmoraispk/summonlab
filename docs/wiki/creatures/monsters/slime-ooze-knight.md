@@ -6,7 +6,7 @@ Wiki ID: `monster.slime-ooze-knight`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,14 +63,15 @@ Blob debris can reinforce the chosen brace; clearing the Blob keeps the exposed 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `candidate-only` | v2 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/normal/target-v2.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/normal/assignment-v2.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/normal-v2.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/normal-v2.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/water-v1.json` |
+| Fire | `planned-provisional-anchor` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/fire-v1.json` |
+| Earth | `planned-provisional-anchor` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/earth-v1.json` |
+| Wind | `planned-provisional-anchor` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/wind-v1.json` |
+| Water | `planned-provisional-anchor` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-ooze-knight/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-ooze-knight/water-v1.json` |
 
 ### Status semantics
 
 - `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `planned-provisional-anchor` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
 - `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.

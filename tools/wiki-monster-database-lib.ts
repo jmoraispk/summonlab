@@ -77,7 +77,7 @@ export type MonsterWikiPresentationStatus =
 
 export type CanonicalProductionCoordinate = {
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	status: 'planned' | 'blocked-on-anchor';
+	status: 'planned' | 'planned-provisional-anchor' | 'blocked-on-anchor';
 	presentationStatus: MonsterWikiPresentationStatus;
 	coordinateId: string;
 	targetId: string;
@@ -262,8 +262,14 @@ export function buildCanonicalMonsterWikiDatabase(
 		} else {
 			validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
 		}
-		if (coordinate.status !== 'planned' && coordinate.status !== 'blocked-on-anchor') {
-			fail(`${coordinate.coordinateId} must use planned or blocked-on-anchor status`);
+		if (
+			coordinate.status !== 'planned' &&
+			coordinate.status !== 'planned-provisional-anchor' &&
+			coordinate.status !== 'blocked-on-anchor'
+		) {
+			fail(
+				`${coordinate.coordinateId} must use planned, planned-provisional-anchor, or blocked-on-anchor status`
+			);
 		}
 		const reviewEvidence = reviewEvidenceByCoordinate.get(coordinate.coordinateId);
 		if (!reviewEvidence) fail(`missing review evidence for ${coordinate.coordinateId}`);
@@ -611,6 +617,7 @@ ${coordinates}
 ### Status semantics
 
 - \`planned\` means the active attempt is owned and may be produced; it does not mean an image exists.
+- \`planned-provisional-anchor\` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - \`blocked-on-anchor\` means the active attempt must wait for accepted Normal anchor evidence before production.
 - \`candidate-only\` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - \`approved-review\` means the immutable review evidence accepted the candidate; it is not runtime art.

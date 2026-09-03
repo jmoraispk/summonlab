@@ -680,23 +680,34 @@ async function loadAndValidateExistingCorpus(
 					if (
 						expectedTarget.affinity === 'normal' ||
 						expectedTarget.status !== 'blocked-on-anchor' ||
-						target.status !== 'planned' ||
-						target.anchor.kind !== 'normal-approved-review'
+						!(['planned', 'planned-provisional-anchor'] as const).includes(
+							target.status as 'planned' | 'planned-provisional-anchor'
+						) ||
+						(target.anchor.kind !== 'normal-approved-review' &&
+							target.anchor.kind !== 'normal-verified-candidate')
 					) {
 						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
 					}
-					const normalizedTarget = FamilyAffinityTargetSchema.parse({
-						...target,
-						status: 'blocked-on-anchor',
-						anchor: {
-							...target.anchor,
-							reviewReceiptSha256: null,
-							normalCandidatePath: null,
-							normalCandidateSha256: null,
-							normalResultPath: null,
-							normalResultSha256: null
-						}
-					});
+					const normalizedTarget = FamilyAffinityTargetSchema.parse(
+						target.anchor.kind === 'normal-approved-review'
+							? {
+									...target,
+									status: 'blocked-on-anchor',
+									anchor: {
+										...target.anchor,
+										reviewReceiptSha256: null,
+										normalCandidatePath: null,
+										normalCandidateSha256: null,
+										normalResultPath: null,
+										normalResultSha256: null
+									}
+								}
+							: {
+									...target,
+									status: 'blocked-on-anchor',
+									anchor: expectedTarget.anchor
+								}
+					);
 					if (stableFamilyAffinityJson(normalizedTarget) !== expectedTargetBytes) {
 						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
 					}
@@ -708,7 +719,7 @@ async function loadAndValidateExistingCorpus(
 						targetSha256: familyAffinitySha256(expectedTarget)
 					});
 					if (
-						assignment.dispatchStatus !== 'planned' ||
+						assignment.dispatchStatus !== target.status ||
 						assignment.targetSha256 !== familyAffinitySha256(target) ||
 						stableFamilyAffinityJson(normalizedAssignment) !== expectedAssignmentBytes
 					) {
@@ -815,6 +826,19 @@ async function loadAndValidateExistingCorpus(
 	);
 	const reviewReceipts: Record<string, { receipt: unknown; bytes: Uint8Array }> = {};
 	for (const target of canonicalTargets) {
+		if (
+			target.affinity !== 'normal' &&
+			target.status === 'planned-provisional-anchor' &&
+			target.anchor.kind === 'normal-verified-candidate'
+		) {
+			await validateFamilyAffinityNormalAnchorEvidence({
+				repositoryRoot,
+				manifestPath,
+				targetPath: manifest.canonicalMatrix.activeCoordinates.find(
+					({ coordinateId }) => coordinateId === target.coordinateId
+				)!.targetPath
+			});
+		}
 		if (
 			target.affinity !== 'normal' &&
 			target.status === 'planned' &&

@@ -22,6 +22,27 @@
     "canonical",
     "bridge"
   ],
+  "dispatchStatuses": [
+    "planned",
+    "planned-provisional-anchor",
+    "earth-bridge-provisional"
+  ],
+  "anchorKinds": [
+    "normal-self",
+    "normal-approved-review",
+    "normal-verified-candidate",
+    "earth-bridge-provisional"
+  ],
+  "requiredBindings": [
+    "target-assignment-cross-hash",
+    "namespace-source-packet-canonical-json-hash",
+    "bridge-normal-reference-raw-bytes-hash",
+    "canonical-normal-target-candidate-result-source-hash",
+    "candidate-raw-bytes-hash",
+    "prompt-material-raw-bytes-hash",
+    "source-path",
+    "result-path"
+  ],
   "pathTemplates": {
     "canonicalTarget": "assets/enemies/experiments/family-affinity-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
     "canonicalAssignment": "assets/enemies/experiments/family-affinity-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
@@ -58,18 +79,18 @@
     "manifest"
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
-	"skillContractSha256": "0e1065fdee6720617813aaf80a4bbc81cace7408cd6b4cffcac0a336fa56b364",
+	"skillContractSha256": "54da4551c31ed10284c30016a7f7a4cfc166c8e6b46a67d3356cd0e30be888bb",
   "approvedSkillRoot": "/home/joao/.codex/worktrees/547e/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
       {
         "path": "references/contract-v3.json",
-				"sha256": "0e1065fdee6720617813aaf80a4bbc81cace7408cd6b4cffcac0a336fa56b364"
+				"sha256": "54da4551c31ed10284c30016a7f7a4cfc166c8e6b46a67d3356cd0e30be888bb"
       },
       {
         "path": "SKILL.md",
-				"sha256": "b852e6ca55eb62c70304edbeb2d43aba39d2ef22fff8e288fecf131838ea9f13"
+				"sha256": "c400acd681b4a9e1eef38344ef51ea7e3f362432c36f9fb82b8f11b1aa291ee0"
       },
       {
         "path": "references/affinity-grammar.md",
@@ -89,7 +110,7 @@
       },
       {
         "path": "references/target-schema.md",
-				"sha256": "5a4c4e0936eadcae97358914d232329827f07848dc932a749abbaa539b26068e"
+				"sha256": "8eac2cb7d83e8ff6835e95b93d11ed8a44ed55ac9e29b3208b6323833b18654e"
       },
       {
         "path": "scripts/anchored_io.py",
@@ -97,7 +118,7 @@
       },
       {
         "path": "scripts/family_dispatch_gate.mjs",
-				"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
+				"sha256": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70"
       },
       {
         "path": "scripts/persist_family_candidate.py",
@@ -109,7 +130,7 @@
       },
       {
         "path": "scripts/validate_target.py",
-				"sha256": "aa3fd2f7f31896e84ef675ac5ae6bb11f60a61f337c2295ff40902e23e42baee"
+				"sha256": "a7c31a1d300d7ed5faf3cc56192ac49fc179dcf310ec688ae34e77c8663ff284"
       },
       {
         "path": "scripts/verify_result.py",
@@ -120,11 +141,11 @@
         "sha256": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
       }
     ],
-		"bundleSha256": "32d97cbce8169c613cd8b73fd59ba393ab866b02082e6c0df599218d0347e8d2"
+		"bundleSha256": "e137f8b426035963ac0d20cfc65b7ee10b3e78879e5cae2606a296283cf37b61"
   },
   "repositoryDispatch": {
     "path": "tools/check-family-affinity-production-dispatch.ts",
-		"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+		"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
   },
   "sealedLauncher": {
     "node": {
@@ -133,20 +154,20 @@
     },
     "bundle": {
       "path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
+			"sha256": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70"
     },
     "sources": [
       {
         "path": "tools/check-family-affinity-production-dispatch.ts",
-				"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+				"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
       },
       {
         "path": "tools/family-affinity-production-lib.ts",
-				"sha256": "eb11667fc639d094ebe9ce855471878de1a7ea7fe3b6a0acddef064eb14fdc4d"
+				"sha256": "033f719516a4653ea36c04f1681759508b4965746d7b0a540793473700b63484"
       },
       {
         "path": "package.json",
-				"sha256": "62f682772cdd0e42278e46166d46ac623fd07bb26c25d30b558ab19f4623ba8c"
+				"sha256": "1da7a9849b7741d20a3ad84e3b8f1de05fff19a54357965fa423c004ed215efc"
       },
       {
         "path": "pnpm-lock.yaml",
@@ -164,6 +185,15 @@
     "wavePath": "assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json",
     "reviewedAt": "2026-09-02T18:30:00.000Z",
     "approvalReference": "root-approved-task10-bridge-production-extension-2026-09-02"
+  },
+  "provisionalAnchorExtension": {
+    "schemaVersion": "normal-verified-candidate-extension-v1",
+    "planPath": "docs/superpowers/plans/2026-09-03-monster-image-single-checkpoint-goal-harness.md",
+    "reviewedAt": "2026-09-03T21:00:00.000Z",
+    "approvalReference": "user-confirmed-single-checkpoint-monster-generation-2026-09-03",
+    "candidateOnly": true,
+    "humanReviewPending": true,
+    "runtimeCatalogMutationForbidden": true
   },
   "reviewedAt": "2026-09-02T15:01:44.000Z",
   "approvalReference": "user-confirmed-summonlab-image-production-v3-2026-09-02"

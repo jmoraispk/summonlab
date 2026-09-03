@@ -25,6 +25,10 @@ allowlist is exactly `image-producer`, and the retry ceiling is `0 | 1`.
 - Normal dispatch requires `planned` plus `normal-self`.
 - A canonical elemental target with `blocked-on-anchor` is a preflight rejection. A `planned`
   elemental target needs complete, current Normal target/candidate/result/approved-review evidence.
+- A canonical elemental target with `planned-provisional-anchor` must use a strict
+  `normal-verified-candidate` anchor binding the exact same-form Normal target, candidate, result,
+  prompt-verified receipt, and source packet. Its literal `humanReviewPending: true` authorizes only
+  candidate generation; it does not imply approval or runtime promotion.
 - Bridge Earth may use `earth-bridge-provisional` with a hash-bound existing Normal candidate. Its
   production ceiling remains candidate-only. A mapped-primary bridge target may carry
   `canonicalCoordinateId` as a future provenance-copy destination but owns only its bridge paths.

@@ -244,7 +244,12 @@ const LegacyNormalCandidatePathSchema = z
 		/^assets\/enemies\/experiments\/(?:affinity-workflow-v1|affinity-expansion-v1)\/candidates\/[a-z][a-z0-9-]*\/normal-v[1-9][0-9]*\.png$/u,
 		'Expected an exact retained legacy Normal candidate path'
 	);
-const AttemptStatusSchema = z.enum(['planned', 'blocked-on-anchor', 'earth-bridge-provisional']);
+const AttemptStatusSchema = z.enum([
+	'planned',
+	'planned-provisional-anchor',
+	'blocked-on-anchor',
+	'earth-bridge-provisional'
+]);
 const NamespaceSchema = z.enum(['canonical', 'bridge']);
 
 const FamilyAffinityRevisionSemanticOverridesShape = {
@@ -501,6 +506,23 @@ export const FamilyAffinityTargetSchema = z
 			z.object({ kind: z.literal('normal-self') }).strict(),
 			z
 				.object({
+					kind: z.literal('normal-verified-candidate'),
+					normalCoordinateId: RequiredTextSchema,
+					normalVersion: z.number().int().positive(),
+					normalTargetPath: OwnedPathSchema,
+					normalTargetSha256: Sha256Schema,
+					normalCandidatePath: OwnedPathSchema,
+					normalCandidateSha256: Sha256Schema,
+					normalResultPath: OwnedPathSchema,
+					normalResultSha256: Sha256Schema,
+					sourcePacketPath: OwnedPathSchema,
+					sourcePacketSha256: Sha256Schema,
+					humanReviewPending: z.literal(true),
+					runtimeCatalogMutationForbidden: z.literal(true)
+				})
+				.strict(),
+			z
+				.object({
 					kind: z.literal('normal-approved-review'),
 					normalCoordinateId: RequiredTextSchema,
 					normalVersion: z.number().int().positive(),
@@ -708,10 +730,32 @@ export const FamilyAffinityTargetSchema = z
 					message: 'Blocked elemental targets cannot carry approval evidence'
 				});
 			}
-			if (target.status === 'earth-bridge-provisional') {
+			if (
+				target.status === 'earth-bridge-provisional' ||
+				target.status === 'planned-provisional-anchor'
+			) {
 				context.addIssue({
 					code: 'custom',
-					message: 'Ordinary Normal anchors cannot use provisional status'
+					message: 'Approved Normal anchors cannot use provisional status'
+				});
+			}
+		}
+		if (target.anchor.kind === 'normal-verified-candidate') {
+			if (
+				target.namespace !== 'canonical' ||
+				target.affinity === 'normal' ||
+				target.anchor.normalCoordinateId !== `${target.familyId}/${target.formId}/normal`
+			) {
+				context.addIssue({
+					code: 'custom',
+					message:
+						'Verified-candidate anchors require a canonical affinity target and same-form Normal coordinate'
+				});
+			}
+			if (target.status !== 'planned-provisional-anchor') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Verified-candidate anchors require planned-provisional-anchor status'
 				});
 			}
 		}
@@ -947,6 +991,27 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 			z.literal('water')
 		]),
 		namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+		dispatchStatuses: z.tuple([
+			z.literal('planned'),
+			z.literal('planned-provisional-anchor'),
+			z.literal('earth-bridge-provisional')
+		]),
+		anchorKinds: z.tuple([
+			z.literal('normal-self'),
+			z.literal('normal-approved-review'),
+			z.literal('normal-verified-candidate'),
+			z.literal('earth-bridge-provisional')
+		]),
+		requiredBindings: z.tuple([
+			z.literal('target-assignment-cross-hash'),
+			z.literal('namespace-source-packet-canonical-json-hash'),
+			z.literal('bridge-normal-reference-raw-bytes-hash'),
+			z.literal('canonical-normal-target-candidate-result-source-hash'),
+			z.literal('candidate-raw-bytes-hash'),
+			z.literal('prompt-material-raw-bytes-hash'),
+			z.literal('source-path'),
+			z.literal('result-path')
+		]),
 		pathTemplates: FamilyAffinityPathTemplatesSchema,
 		ownership: FamilyAffinityCompatibilityOwnershipSchema,
 		forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
@@ -975,6 +1040,21 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 				wavePath: z.literal(`${FAMILY_AFFINITY_ROOT}/waves/earth-bridge-v1.json`),
 				reviewedAt: z.string().regex(/^2026-09-02T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u),
 				approvalReference: z.literal('root-approved-task10-bridge-production-extension-2026-09-02')
+			})
+			.strict(),
+		provisionalAnchorExtension: z
+			.object({
+				schemaVersion: z.literal('normal-verified-candidate-extension-v1'),
+				planPath: z.literal(
+					'docs/superpowers/plans/2026-09-03-monster-image-single-checkpoint-goal-harness.md'
+				),
+				reviewedAt: z.string().regex(/^2026-09-03T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u),
+				approvalReference: z.literal(
+					'user-confirmed-single-checkpoint-monster-generation-2026-09-03'
+				),
+				candidateOnly: z.literal(true),
+				humanReviewPending: z.literal(true),
+				runtimeCatalogMutationForbidden: z.literal(true)
 			})
 			.strict(),
 		reviewedAt: z
@@ -1045,6 +1125,17 @@ const FamilyAffinitySkillContractSchema = z
 							z.literal('water')
 						]),
 						namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+						dispatchStatuses: z.tuple([
+							z.literal('planned'),
+							z.literal('planned-provisional-anchor'),
+							z.literal('earth-bridge-provisional')
+						]),
+						anchorKinds: z.tuple([
+							z.literal('normal-self'),
+							z.literal('normal-approved-review'),
+							z.literal('normal-verified-candidate'),
+							z.literal('earth-bridge-provisional')
+						]),
 						pathTemplates: FamilyAffinityPathTemplatesSchema,
 						producerRoleAllowlist: z.tuple([z.literal('image-producer')]),
 						retryCeiling: z.tuple([z.literal(0), z.literal(1)]),
@@ -1059,6 +1150,7 @@ const FamilyAffinitySkillContractSchema = z
 							z.literal('target-assignment-cross-hash'),
 							z.literal('namespace-source-packet-canonical-json-hash'),
 							z.literal('bridge-normal-reference-raw-bytes-hash'),
+							z.literal('canonical-normal-target-candidate-result-source-hash'),
 							z.literal('candidate-raw-bytes-hash'),
 							z.literal('prompt-material-raw-bytes-hash'),
 							z.literal('source-path'),
@@ -1125,6 +1217,9 @@ export function validateFamilyAffinityProductionCompatibility(
 		profile.experimentId !== compatibility.experimentId ||
 		stableJson(profile.affinities) !== stableJson(compatibility.affinities) ||
 		stableJson(profile.namespaces) !== stableJson(compatibility.namespaces) ||
+		stableJson(profile.dispatchStatuses) !== stableJson(compatibility.dispatchStatuses) ||
+		stableJson(profile.anchorKinds) !== stableJson(compatibility.anchorKinds) ||
+		stableJson(profile.requiredBindings) !== stableJson(compatibility.requiredBindings) ||
 		stableJson(profile.pathTemplates) !== stableJson(compatibility.pathTemplates) ||
 		stableJson(profile.producerRoleAllowlist) !==
 			stableJson(compatibility.ownership.producerRoleAllowlist) ||
@@ -1187,8 +1282,12 @@ export function preflightFamilyAffinityProductionDispatch(input: {
 		target,
 		assignment
 	);
-	if (target.status === 'blocked-on-anchor') {
-		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	) {
+		throw new Error(`Target status is not dispatchable: ${target.status} (${target.targetId})`);
 	}
 	validateFamilyAffinitySourcePacket(target, input.familyPacketBytes);
 	if (
@@ -1524,9 +1623,15 @@ export function validateFamilyAffinityReviewPromotion(
 	) {
 		throw new Error('Review receipt target or hash is stale or mismatched');
 	}
-	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+	if (
+		(target.anchor.kind === 'earth-bridge-provisional' ||
+			target.anchor.kind === 'normal-verified-candidate') &&
+		receipt.decision === 'approved-review'
+	) {
 		throw new Error(
-			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+			target.anchor.kind === 'earth-bridge-provisional'
+				? 'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+				: 'Provisional target cannot reach approved-review before its Normal anchor is approved'
 		);
 	}
 }
@@ -1710,9 +1815,15 @@ export function validateFamilyAffinityReceiptEvidence(input: {
 	) {
 		throw new Error('Review receipt evidence is stale, forged, or cross-bound');
 	}
-	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+	if (
+		(target.anchor.kind === 'earth-bridge-provisional' ||
+			target.anchor.kind === 'normal-verified-candidate') &&
+		receipt.decision === 'approved-review'
+	) {
 		throw new Error(
-			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+			target.anchor.kind === 'earth-bridge-provisional'
+				? 'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+				: 'Provisional target cannot reach approved-review before its Normal anchor is approved'
 		);
 	}
 	return receipt;
@@ -2459,7 +2570,10 @@ export function validateFamilyAffinityProductionBundle(
 			if (target.status !== 'planned') throw new Error('Normal targets must begin planned');
 			continue;
 		}
-		if (target.anchor.kind !== 'normal-approved-review') {
+		if (
+			target.anchor.kind !== 'normal-approved-review' &&
+			target.anchor.kind !== 'normal-verified-candidate'
+		) {
 			throw new Error(
 				`Canonical elemental target requires an exact Normal anchor: ${target.targetId}`
 			);
@@ -2471,7 +2585,7 @@ export function validateFamilyAffinityProductionBundle(
 		const normalManifestCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
 			(candidate) => candidate.coordinateId === anchor.normalCoordinateId
 		);
-		if (target.status === 'planned') {
+		if (target.status === 'planned' || target.status === 'planned-provisional-anchor') {
 			if (
 				!normalTarget ||
 				!normalManifestCoordinate ||
@@ -2487,6 +2601,21 @@ export function validateFamilyAffinityProductionBundle(
 				throw new Error(
 					`Elemental target has a stale, foreign, or manifest-unbound Normal anchor: ${target.targetId}`
 				);
+			}
+			if (anchor.kind === 'normal-verified-candidate') {
+				const source = familyAffinitySourcePacketBinding(normalTarget);
+				if (
+					target.status !== 'planned-provisional-anchor' ||
+					anchor.normalCandidatePath !== normalTarget.ownedPaths.candidate ||
+					anchor.normalResultPath !== normalTarget.ownedPaths.result ||
+					anchor.sourcePacketPath !== source.path ||
+					anchor.sourcePacketSha256 !== source.sha256
+				) {
+					throw new Error(
+						`Stale or mismatched Normal verified-candidate anchor: ${target.targetId}`
+					);
+				}
+				continue;
 			}
 			if (anchor.reviewReceiptSha256 === null) {
 				throw new Error(
@@ -2539,10 +2668,11 @@ export function validateFamilyAffinityProductionBundle(
 		const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptEvidence.receipt);
 		const target = targetsById.get(receipt.targetId);
 		if (
-			target?.anchor.kind === 'earth-bridge-provisional' &&
+			(target?.anchor.kind === 'earth-bridge-provisional' ||
+				target?.anchor.kind === 'normal-verified-candidate') &&
 			receipt.decision === 'approved-review'
 		) {
-			throw new Error(`Provisional Earth target cannot reach approved-review: ${path}`);
+			throw new Error(`Provisional target cannot reach approved-review: ${path}`);
 		}
 	}
 	return {
@@ -2705,11 +2835,17 @@ async function validateAllocationAnchor(
 	manifestPath: string,
 	_manifestSha256: string
 ): Promise<void> {
-	if (target.affinity === 'normal' || target.status !== 'planned') {
+	if (
+		target.affinity === 'normal' ||
+		(target.status !== 'planned' && target.status !== 'planned-provisional-anchor')
+	) {
 		return;
 	}
-	if (target.anchor.kind !== 'normal-approved-review') {
-		throw new Error('Planned elemental allocation requires an exact Normal approved-review anchor');
+	if (
+		target.anchor.kind !== 'normal-approved-review' &&
+		target.anchor.kind !== 'normal-verified-candidate'
+	) {
+		throw new Error('Planned elemental allocation requires an exact Normal evidence anchor');
 	}
 	const anchor = target.anchor;
 	const normalCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
@@ -2740,16 +2876,13 @@ async function validateAllocationAnchor(
 		)
 	);
 	validateFamilyAffinityAttemptCrossBinding(normalCoordinate, normalTarget, normalAssignment);
-	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
-	const receipt = FamilyAffinityReviewReceiptSchema.parse(
-		JSON.parse(receiptBytes.toString('utf8'))
-	);
-	const candidateBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.candidatePath);
-	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.resultPath);
-	const familyPacketBytes = await readOwnedFileNoSymlinks(
+	const source = familyAffinitySourcePacketBinding(normalTarget);
+	const candidateBytes = await readOwnedFileNoSymlinks(
 		repositoryRoot,
-		familyAffinitySourcePacketBinding(normalTarget).path
+		normalTarget.ownedPaths.candidate
 	);
+	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, normalTarget.ownedPaths.result);
+	const familyPacketBytes = await readOwnedFileNoSymlinks(repositoryRoot, source.path);
 	const evidence = validateFamilyAffinityCandidateEvidence({
 		target: normalTarget,
 		assignment: normalAssignment,
@@ -2757,6 +2890,42 @@ async function validateAllocationAnchor(
 		candidateBytes,
 		resultBytes
 	});
+	if (anchor.kind === 'normal-verified-candidate') {
+		if (
+			target.status !== 'planned-provisional-anchor' ||
+			normalTarget.coordinateId !== anchor.normalCoordinateId ||
+			normalTarget.familyId !== target.familyId ||
+			normalTarget.formId !== target.formId ||
+			normalTarget.affinity !== 'normal' ||
+			familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256 ||
+			anchor.normalCandidatePath !== normalTarget.ownedPaths.candidate ||
+			anchor.normalCandidateSha256 !== evidence.result.candidateSha256 ||
+			anchor.normalResultPath !== normalTarget.ownedPaths.result ||
+			anchor.normalResultSha256 !== evidence.resultSha256 ||
+			anchor.sourcePacketPath !== source.path ||
+			anchor.sourcePacketSha256 !== source.sha256 ||
+			familyAffinityRawSha256(candidateBytes) !== anchor.normalCandidateSha256 ||
+			familyAffinityRawSha256(resultBytes) !== anchor.normalResultSha256
+		) {
+			throw new Error(
+				'Provisional elemental allocation Normal evidence is stale, foreign, or mismatched'
+			);
+		}
+		return;
+	}
+	if (target.status !== 'planned') {
+		throw new Error('Approved Normal anchors require planned status');
+	}
+	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(
+		JSON.parse(receiptBytes.toString('utf8'))
+	);
+	if (
+		receipt.candidatePath !== normalTarget.ownedPaths.candidate ||
+		receipt.resultPath !== normalTarget.ownedPaths.result
+	) {
+		throw new Error('Normal approval receipt points outside the active Normal attempt');
+	}
 	validateFamilyAffinityReceiptEvidence({
 		target: normalTarget,
 		result: evidence.result,

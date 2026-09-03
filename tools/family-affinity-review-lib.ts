@@ -281,7 +281,11 @@ export function evaluateFamilyAffinityReviewAttempt(input: {
 	}
 	if (!input.resultBytes) throw new Error('Candidate requires an immutable result receipt');
 	if (!input.candidateBytes) throw new Error('Result receipt requires candidate bytes');
-	if (target.status !== 'planned' && target.status !== 'earth-bridge-provisional')
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	)
 		throw new Error('Only a planned production target may enter candidate state');
 	validateReviewTransition('planned', 'candidate');
 
@@ -939,6 +943,9 @@ type ReviewCell = {
 	coordinateId: string;
 	activeVersion: number;
 	state: ReviewState;
+	dispatchStatus: FamilyAffinityTarget['status'];
+	anchorKind: FamilyAffinityTarget['anchor']['kind'];
+	humanReviewPending: boolean;
 	label: string;
 	candidatePath: string | null;
 	candidateSha256: string | null;
@@ -1296,7 +1303,7 @@ async function renderFamilyContactSheet(
 			const row = Math.floor(index / 5);
 			const x = rowLabelWidth + column * cellWidth;
 			const y = headerHeight + row * cellHeight;
-			return `<g><rect x="${x + 3}" y="${y + 3}" width="${cellWidth - 6}" height="${cellHeight - 6}" rx="8" fill="${cell.label === 'NOT GENERATED' ? '#121821' : 'none'}" stroke="#4f5e70" stroke-width="2"/><text x="${x + cellWidth / 2}" y="${y + cellHeight / 2}" text-anchor="middle" fill="#e7edf4" font-size="20" font-weight="700" font-family="sans-serif">${xml(cell.label)}</text><text x="${x + 12}" y="${y + cellHeight - 15}" fill="#9cabb9" font-size="13" font-family="sans-serif">${xml(cell.formId)}</text></g>`;
+			return `<g><rect x="${x + 3}" y="${y + 3}" width="${cellWidth - 6}" height="${cellHeight - 6}" rx="8" fill="${cell.label === 'NOT GENERATED' ? '#121821' : 'none'}" stroke="#4f5e70" stroke-width="2"/><text x="${x + cellWidth / 2}" y="${y + cellHeight / 2}" text-anchor="middle" fill="#e7edf4" font-size="20" font-weight="700" font-family="sans-serif">${xml(cell.label)}</text>${cell.humanReviewPending ? `<text x="${x + cellWidth / 2}" y="${y + cellHeight / 2 + 24}" text-anchor="middle" fill="#d8a85b" font-size="11" font-weight="700" font-family="sans-serif">PROVISIONAL NORMAL · REVIEW PENDING</text>` : ''}<text x="${x + 12}" y="${y + cellHeight - 15}" fill="#9cabb9" font-size="13" font-family="sans-serif">${xml(cell.formId)}</text></g>`;
 		})
 		.join('');
 	const columnLabels = PRODUCTION_AFFINITIES.map(
@@ -1549,6 +1556,9 @@ export async function buildFamilyAffinityReviewArtifacts(
 			coordinateId: target.coordinateId,
 			activeVersion: target.version,
 			state: evaluated.state,
+			dispatchStatus: target.status,
+			anchorKind: target.anchor.kind,
+			humanReviewPending: target.anchor.kind === 'normal-verified-candidate',
 			label:
 				evaluated.state === 'planned'
 					? 'NOT GENERATED'

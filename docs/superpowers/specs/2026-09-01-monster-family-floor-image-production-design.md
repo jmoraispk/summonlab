@@ -4,6 +4,12 @@ Status: **approved for implementation planning**
 
 Date: 2026-09-01
 
+> Supersession note (2026-09-03): the intermediate approved-Normal dependency in this historical
+> design is superseded for candidate generation by the hash-bound `normal-verified-candidate`
+> protocol in
+> [the single-checkpoint goal harness](../plans/2026-09-03-monster-image-single-checkpoint-goal-harness.md).
+> Human review and runtime promotion remain pending and separate.
+
 ## Purpose
 
 Consolidate the supplied thirty-family bestiary and the existing forty-class visual database into

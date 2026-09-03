@@ -20,24 +20,24 @@
 			"scripts/write_family_result.py"
 		],
 		"expectedNonContractSha256": {
-			"SKILL.md": "b852e6ca55eb62c70304edbeb2d43aba39d2ef22fff8e288fecf131838ea9f13",
+			"SKILL.md": "c400acd681b4a9e1eef38344ef51ea7e3f362432c36f9fb82b8f11b1aa291ee0",
 			"references/affinity-grammar.md": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda",
 			"references/result-schema.md": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce",
 			"references/review-rubric.md": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3",
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
-			"references/target-schema.md": "5a4c4e0936eadcae97358914d232329827f07848dc932a749abbaa539b26068e",
+			"references/target-schema.md": "8eac2cb7d83e8ff6835e95b93d11ed8a44ed55ac9e29b3208b6323833b18654e",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490",
+			"scripts/family_dispatch_gate.mjs": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70",
 			"scripts/persist_family_candidate.py": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
-			"scripts/validate_target.py": "aa3fd2f7f31896e84ef675ac5ae6bb11f60a61f337c2295ff40902e23e42baee",
+			"scripts/validate_target.py": "a7c31a1d300d7ed5faf3cc56192ac49fc179dcf310ec688ae34e77c8663ff284",
 			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
 			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
 		}
 	},
 	"repositoryDispatch": {
 		"path": "tools/check-family-affinity-production-dispatch.ts",
-		"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+		"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
 	},
 	"sealedLauncher": {
 		"node": {
@@ -46,20 +46,20 @@
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
+			"sha256": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70"
 		},
 		"sources": [
 			{
 				"path": "tools/check-family-affinity-production-dispatch.ts",
-				"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+				"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "eb11667fc639d094ebe9ce855471878de1a7ea7fe3b6a0acddef064eb14fdc4d"
+				"sha256": "033f719516a4653ea36c04f1681759508b4965746d7b0a540793473700b63484"
 			},
 			{
 				"path": "package.json",
-				"sha256": "62f682772cdd0e42278e46166d46ac623fd07bb26c25d30b558ab19f4623ba8c"
+				"sha256": "1da7a9849b7741d20a3ad84e3b8f1de05fff19a54357965fa423c004ed215efc"
 			},
 			{
 				"path": "pnpm-lock.yaml",
@@ -82,6 +82,13 @@
 			"experimentId": "family-affinity-v1",
 			"affinities": ["normal", "fire", "earth", "wind", "water"],
 			"namespaces": ["canonical", "bridge"],
+			"dispatchStatuses": ["planned", "planned-provisional-anchor", "earth-bridge-provisional"],
+			"anchorKinds": [
+				"normal-self",
+				"normal-approved-review",
+				"normal-verified-candidate",
+				"earth-bridge-provisional"
+			],
 			"pathTemplates": {
 				"canonicalTarget": "assets/enemies/experiments/family-affinity-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
 				"canonicalAssignment": "assets/enemies/experiments/family-affinity-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
@@ -103,6 +110,7 @@
 				"target-assignment-cross-hash",
 				"namespace-source-packet-canonical-json-hash",
 				"bridge-normal-reference-raw-bytes-hash",
+				"canonical-normal-target-candidate-result-source-hash",
 				"candidate-raw-bytes-hash",
 				"prompt-material-raw-bytes-hash",
 				"source-path",

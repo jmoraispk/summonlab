@@ -39,9 +39,11 @@ positions have now been consolidated into explicit Initiate, Soldier, Specialist
 Sovereign forms without rewriting the source volumes in place.
 
 The five production coordinates are ownership plans, not finished images. Normal begins as
-`planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor` until the form's Normal identity
-anchor passes review. Candidate, approved-review, and runtime are separate states. This wiki export
-does not promote assets.
+`planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor`. The current single-checkpoint
+production run may open a blocked coordinate as `planned-provisional-anchor` when the exact Normal
+target, candidate, result, prompt, and source chain verifies. That status authorizes candidate
+generation while human review remains pending; it is neither approval nor runtime promotion.
+Candidate, approved-review, and runtime remain separate states.
 
 ## Earlier forty-class reconciliation
 

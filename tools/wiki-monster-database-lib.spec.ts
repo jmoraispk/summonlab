@@ -174,7 +174,10 @@ describe('canonical monster wiki database', () => {
 			]);
 			expect(
 				form.coordinates.every(
-					({ status }) => status === 'planned' || status === 'blocked-on-anchor'
+					({ status }) =>
+						status === 'planned' ||
+						status === 'planned-provisional-anchor' ||
+						status === 'blocked-on-anchor'
 				)
 			).toBe(true);
 		}
@@ -220,17 +223,17 @@ describe('canonical monster wiki database', () => {
 		)!;
 		expect(sovereign.coordinates.map(({ status }) => status)).toEqual([
 			'planned',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor'
+			'planned-provisional-anchor',
+			'planned-provisional-anchor',
+			'planned-provisional-anchor',
+			'planned-provisional-anchor'
 		]);
 		expect(sovereign.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
 			'candidate-only',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor'
+			'planned',
+			'planned',
+			'planned',
+			'planned'
 		]);
 		expect(sovereign.coordinates[0]).toMatchObject({
 			version: 3,
@@ -240,6 +243,7 @@ describe('canonical monster wiki database', () => {
 		});
 		const page = buildMonsterWikiPage(sovereign);
 		expect(page).toContain('Normal: candidate-only');
+		expect(page).toContain('`planned-provisional-anchor` means candidate generation is authorized');
 		expect(page).toContain(
 			'Candidate and review evidence only; no coordinate on this page is runtime art.'
 		);
