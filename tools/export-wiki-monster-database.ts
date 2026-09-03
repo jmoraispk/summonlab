@@ -5,12 +5,18 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
 	loadFamilyAffinityActiveSources,
 	type FamilyAffinityManifest
 } from './family-affinity-production-lib.js';
-import { buildFamilyAffinityReviewArtifacts } from './family-affinity-review-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	buildFamilyAffinityReviewArtifacts,
+	familyAffinityGenerationFailurePath,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 import {
 	assertGeneratedMonsterWikiFreshness,
 	assertManagedMonsterCatalogEntries,
@@ -57,6 +63,12 @@ async function readJson<T>(path: string): Promise<T> {
 	return JSON.parse(await readFile(path, 'utf8')) as T;
 }
 
+function pathAtVersion(path: string, activeVersion: number, version: number): string {
+	const suffix = `v${activeVersion}.json`;
+	if (!path.endsWith(suffix)) throw new Error(`Versioned attempt path is malformed: ${path}`);
+	return `${path.slice(0, -suffix.length)}v${version}.json`;
+}
+
 function versionFrom(entry: LegacyCatalogEntry): number {
 	return Number(
 		entry.selectedVersion?.match(/v(\d+)/u)?.[1] ??
@@ -76,6 +88,39 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 			FamilyAffinityTargetSchema.parse(await readJson(resolve(repositoryRoot, targetPath)))
 		)
 	);
+	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		if (coordinate.activeVersion <= 1) continue;
+		const previousVersion = coordinate.activeVersion - 1;
+		const previousTargetPath = pathAtVersion(
+			coordinate.targetPath,
+			coordinate.activeVersion,
+			previousVersion
+		);
+		const previousAssignmentPath = pathAtVersion(
+			coordinate.assignmentPath,
+			coordinate.activeVersion,
+			previousVersion
+		);
+		const previousTarget = FamilyAffinityTargetSchema.parse(
+			await readJson(resolve(repositoryRoot, previousTargetPath))
+		);
+		const failurePath = familyAffinityGenerationFailurePath(previousTarget);
+		if (!existsSync(resolve(repositoryRoot, failurePath))) continue;
+		const generationFailure = FamilyAffinityGenerationFailureSchema.parse(
+			await readJson(resolve(repositoryRoot, failurePath))
+		);
+		if (!generationFailure.supersessionOverrides) continue;
+		generationFailureSourceBindings.push({
+			previousTargetPath,
+			previousAssignmentPath,
+			previousTarget,
+			previousAssignment: FamilyAffinityAssignmentSchema.parse(
+				await readJson(resolve(repositoryRoot, previousAssignmentPath))
+			),
+			generationFailure
+		});
+	}
 	const candidateReferences: LegacyCandidateReference[] = [];
 	for (const catalogPath of legacyCatalogPaths) {
 		const catalog = await readJson<{ entries: LegacyCatalogEntry[] }>(catalogPath);
@@ -94,7 +139,15 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 		}
 	}
 	const reviewEvidence = reviewArtifacts.families.flatMap(({ summary }) => summary.cells);
-	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
+	return {
+		families,
+		mapping,
+		manifest,
+		targets,
+		reviewEvidence,
+		candidateReferences,
+		generationFailureSourceBindings
+	};
 }
 
 function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDatabase): WikiCatalog {

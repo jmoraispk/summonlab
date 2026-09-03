@@ -6,7 +6,7 @@ Wiki ID: `monster.giant-brute`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,11 +63,11 @@ Not applicable for this form.
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/water-v1.json` |
+| Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/normal-v1.json` |
+| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/fire-v1.json` |
+| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/earth-v1.json` |
+| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/wind-v1.json` |
+| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/giants/giant-brute/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/giants/giant-brute/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/giants/giant-brute/water-v1.json` |
 
 ### Status semantics
 

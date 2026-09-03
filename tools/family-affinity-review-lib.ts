@@ -40,13 +40,16 @@ import {
 	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityReceiptEvidence,
 	validateFamilyAffinityReviewAssignmentEvidence,
+	validateCanonicalTargetSourceBinding,
 	type FamilyAffinityAssignment,
 	type FamilyAffinityBlindReviewReceipt,
 	type FamilyAffinityManifest,
 	type FamilyAffinityResult,
 	type FamilyAffinityReviewAssignment,
 	type FamilyAffinityReviewReceipt,
-	type FamilyAffinityTarget
+	type FamilyAffinityTarget,
+	type FamilyForm,
+	type FamilyPacket
 } from './family-affinity-production-lib.js';
 
 export {
@@ -122,6 +125,14 @@ export const FamilyAffinityGenerationFailureSchema = z
 	.strict();
 export type FamilyAffinityGenerationFailure = z.infer<typeof FamilyAffinityGenerationFailureSchema>;
 
+export type CanonicalGenerationFailureSupersessionSourceBinding = {
+	previousTargetPath: string;
+	previousAssignmentPath: string;
+	previousTarget: unknown;
+	previousAssignment: unknown;
+	generationFailure: unknown;
+};
+
 export function familyAffinityGenerationFailurePath(target: FamilyAffinityTarget): string {
 	return target.namespace === 'canonical'
 		? `${FAMILY_AFFINITY_ROOT}/generation-failures/${target.familyId}/${target.formId}/${target.affinity}/attempt-v${target.version}.json`
@@ -159,6 +170,65 @@ export function validateFamilyAffinityGenerationFailureEvidence(input: {
 		throw new Error('Generation-failure evidence is stale, incomplete, or cross-bound');
 	}
 	return evidence;
+}
+
+/**
+ * Preserves strict packet binding for a canonical target whose immediately preceding
+ * generation-failure receipt explicitly authorized a small, schema-allowlisted source override.
+ * The ordinary packet validator remains unchanged and cannot be bypassed without authenticated
+ * predecessor evidence.
+ */
+export function validateCanonicalGenerationFailureSupersessionSourceBinding(input: {
+	family: FamilyPacket;
+	form: FamilyForm;
+	supersedingTarget: unknown;
+	binding: CanonicalGenerationFailureSupersessionSourceBinding;
+}): void {
+	const previousTarget = FamilyAffinityTargetSchema.parse(input.binding.previousTarget);
+	const previousAssignment = FamilyAffinityAssignmentSchema.parse(input.binding.previousAssignment);
+	const supersedingTarget = FamilyAffinityTargetSchema.parse(input.supersedingTarget);
+	validateCanonicalTargetSourceBinding(previousTarget, input.family, input.form);
+	const failure = validateFamilyAffinityGenerationFailureEvidence({
+		target: previousTarget,
+		targetPath: input.binding.previousTargetPath,
+		assignment: previousAssignment,
+		assignmentPath: input.binding.previousAssignmentPath,
+		evidence: input.binding.generationFailure
+	});
+	const overrides = failure.supersessionOverrides;
+	if (!overrides) {
+		throw new Error('Generation-failure source binding requires explicit supersession overrides');
+	}
+	if (
+		supersedingTarget.namespace !== 'canonical' ||
+		previousTarget.coordinateId !== supersedingTarget.coordinateId ||
+		previousTarget.version + 1 !== supersedingTarget.version ||
+		failure.supersessionTargetVersion !== supersedingTarget.version
+	) {
+		throw new Error('Generation-failure source binding is not an immediate canonical supersession');
+	}
+	for (const field of ['anatomyInvariants', 'telegraph', 'acceptanceCriteria'] as const) {
+		const override = overrides[field];
+		if (
+			override !== undefined &&
+			stableFamilyAffinityJson(supersedingTarget[field]) !== stableFamilyAffinityJson(override)
+		) {
+			throw new Error(
+				`Generation-failure source override does not match superseding target: ${field}`
+			);
+		}
+	}
+	const normalizedTarget = FamilyAffinityTargetSchema.parse({
+		...supersedingTarget,
+		...(overrides.anatomyInvariants === undefined
+			? {}
+			: { anatomyInvariants: previousTarget.anatomyInvariants }),
+		...(overrides.telegraph === undefined ? {} : { telegraph: previousTarget.telegraph }),
+		...(overrides.acceptanceCriteria === undefined
+			? {}
+			: { acceptanceCriteria: previousTarget.acceptanceCriteria })
+	});
+	validateCanonicalTargetSourceBinding(normalizedTarget, input.family, input.form);
 }
 
 export type FamilyAffinityCandidateResult = FamilyAffinityResult;

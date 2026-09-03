@@ -15,6 +15,11 @@ import {
 	type FamilyForm,
 	type FamilyPacket
 } from './family-affinity-production-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	validateCanonicalGenerationFailureSupersessionSourceBinding,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 
 export const MONSTER_AFFINITIES = PRODUCTION_AFFINITIES;
 export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'canonical-production-plan' as const;
@@ -53,6 +58,7 @@ export type MonsterWikiBuildInput = {
 	targets: readonly FamilyAffinityTarget[];
 	reviewEvidence: readonly MonsterWikiReviewEvidence[];
 	candidateReferences: readonly LegacyCandidateReference[];
+	generationFailureSourceBindings: readonly CanonicalGenerationFailureSupersessionSourceBinding[];
 };
 
 export type MonsterWikiReviewEvidence = {
@@ -67,11 +73,7 @@ export type MonsterWikiReviewEvidence = {
 };
 
 export type MonsterWikiPresentationStatus =
-	| 'planned'
-	| 'blocked-on-anchor'
-	| 'candidate-only'
-	| 'approved-review'
-	| 'revision-required';
+	'planned' | 'blocked-on-anchor' | 'candidate-only' | 'approved-review' | 'revision-required';
 
 export type CanonicalProductionCoordinate = {
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
@@ -155,6 +157,21 @@ export function buildCanonicalMonsterWikiDatabase(
 	const mapping = CurrentClassMappingFileSchema.parse(input.mapping);
 	const manifest = FamilyAffinityManifestSchema.parse(input.manifest);
 	const targets = input.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const generationFailureSourceBindings = input.generationFailureSourceBindings.map((binding) => ({
+		...binding,
+		generationFailure: FamilyAffinityGenerationFailureSchema.parse(binding.generationFailure)
+	}));
+	assertUnique(
+		generationFailureSourceBindings.map(({ generationFailure }) => generationFailure.coordinateId),
+		'generation-failure source binding coordinate'
+	);
+	const generationFailureSourceBindingByCoordinate = new Map(
+		generationFailureSourceBindings.map((binding) => [
+			binding.generationFailure.coordinateId,
+			binding
+		])
+	);
+	const usedGenerationFailureSourceBindings = new Set<string>();
 	const reviewEvidenceByCoordinate = new Map(
 		input.reviewEvidence.map((evidence) => [evidence.coordinateId, evidence])
 	);
@@ -231,7 +248,20 @@ export function buildCanonicalMonsterWikiDatabase(
 				family.familyId === coordinate.familyId && form.formId === coordinate.formId
 		);
 		if (!sourceForm) fail(`coordinate ${coordinate.coordinateId} has no canonical form`);
-		validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
+		const generationFailureSourceBinding = generationFailureSourceBindingByCoordinate.get(
+			coordinate.coordinateId
+		);
+		if (generationFailureSourceBinding) {
+			validateCanonicalGenerationFailureSupersessionSourceBinding({
+				family: sourceForm.family,
+				form: sourceForm.form,
+				supersedingTarget: target,
+				binding: generationFailureSourceBinding
+			});
+			usedGenerationFailureSourceBindings.add(coordinate.coordinateId);
+		} else {
+			validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
+		}
 		if (coordinate.status !== 'planned' && coordinate.status !== 'blocked-on-anchor') {
 			fail(`${coordinate.coordinateId} must use planned or blocked-on-anchor status`);
 		}
@@ -270,7 +300,9 @@ export function buildCanonicalMonsterWikiDatabase(
 			fail(`review state requires candidate evidence for ${coordinate.coordinateId}`);
 		}
 		if (reviewEvidence.state === 'planned' && hasCandidate) {
-			fail(`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`);
+			fail(
+				`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`
+			);
 		}
 		if (
 			reviewEvidence.revisionRequired !==
@@ -312,6 +344,9 @@ export function buildCanonicalMonsterWikiDatabase(
 		const formCoordinates = coordinatesByForm.get(coordinate.formId) ?? [];
 		formCoordinates.push(production);
 		coordinatesByForm.set(coordinate.formId, formCoordinates);
+	}
+	if (usedGenerationFailureSourceBindings.size !== generationFailureSourceBindings.length) {
+		fail('orphan generation-failure source binding evidence');
 	}
 	if (targetsByCoordinate.size !== manifest.canonicalMatrix.activeCoordinates.length) {
 		fail('target records contain coordinates outside the active manifest');

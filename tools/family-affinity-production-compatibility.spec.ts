@@ -288,12 +288,29 @@ describe('family affinity production compatibility gate', () => {
 			await readFile(join(repositoryRoot, earthAssignmentPath), 'utf8')
 		);
 		const familyPacketBytes = await readFile(join(repositoryRoot, earth.sources.familyPacketPath));
+		const blockedEarth = FamilyAffinityTargetSchema.parse({
+			...earth,
+			status: 'blocked-on-anchor',
+			anchor: {
+				...earth.anchor,
+				reviewReceiptSha256: null,
+				normalCandidatePath: null,
+				normalCandidateSha256: null,
+				normalResultPath: null,
+				normalResultSha256: null
+			}
+		});
+		const blockedEarthAssignment = FamilyAffinityAssignmentSchema.parse({
+			...earthAssignment,
+			targetSha256: familyAffinitySha256(blockedEarth),
+			dispatchStatus: 'blocked-on-anchor'
+		});
 		expect(() =>
 			preflightFamilyAffinityProductionDispatch({
 				compatibility: receipt,
 				installedContractBytes: bytes,
-				target: earth,
-				assignment: earthAssignment,
+				target: blockedEarth,
+				assignment: blockedEarthAssignment,
 				targetPath: earthPath,
 				assignmentPath: earthAssignmentPath,
 				familyPacketBytes,
