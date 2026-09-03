@@ -148,6 +148,11 @@ remain Shields; visually different Bows remain Bows. Armour has the stronger con
 every full set and its four separated pieces must match each other, while sets made from different
 materials should be visibly distinct rather than reusing one cut.
 
+Cross-rank readability is the primary visual review axis. Each class is first designed and judged as
+an ordered seven-rank progression so silhouette ambition rises clearly from F through S. Material
+coherence remains important but secondary: the same material should share its palette, finish, and
+construction vocabulary across classes without forcing identical shapes.
+
 The owner-provided [weapon inspiration references](../../../../assets/equipment/references/2026-09-02-owner-weapon-inspiration/README.md)
 are reference-only and must not be copied or promoted. They illustrate the desired range of
 silhouette ambition. The v2 root run remains review evidence rather than an approved direction.
@@ -214,10 +219,10 @@ Armour full set, Iron Axe, Blacksteel Heavy Armour full set, Heartwood Staff, an
 These are immutable single-call outcomes, not approval decisions. No full Armour set has been human
 accepted, so all 84 piece images remain locked and absent.
 
-The proposed [material-first full-production plan](../../../superpowers/plans/2026-09-02-equipment-material-first-full-production.md)
-defines the additive successor: material-cohort direction first, dedicated individual renders second,
-cross-material class review third, and Armour pieces only after accepted full-set sources. It keeps
-the 161 candidate-image budget, adds 14 generated concept sheets, and does not activate a new run.
+The earlier [material-first full-production draft](../../../superpowers/plans/2026-09-02-equipment-material-first-full-production.md)
+is paused and must not be activated. Rank-first calibration now precedes a corrected execution plan:
+class progression direction first, dedicated individual renders second, material-cohort review as a
+secondary check, and Armour pieces only after accepted full-set sources.
 
 ### Root-production review state
 

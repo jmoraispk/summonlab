@@ -4,6 +4,17 @@ Status: **experiment-only**. These images are not manifest production candidates
 or runtime assets. They compare two concept-development approaches before another Equipment run is
 authorized.
 
+## Owner direction decision — 2026-09-02
+
+The owner accepted both sheets as potential **direction references** for the next plan while keeping
+them outside candidate and runtime paths:
+
+- the Dagger progression is the benchmark for rank readability and silhouette ambition;
+- the Steel cohort is the finish reference, with its Axe, Spear, Dagger, Shield, and Heavy Armour
+  called out positively;
+- rank progression is the primary design axis;
+- shared material palette, finish, and construction language are secondary coherence checks.
+
 ## Outputs
 
 | Approach | File | Dimensions | SHA-256 |
@@ -23,8 +34,8 @@ The prompts explicitly prohibit copying recognizable designs.
   classes.
 - Approach B asks one generation to distinguish seven metal ranks while holding the Dagger class,
   presentation, and scale constant.
-- The useful production workflow may use both axes: generate by material, then review every class as
-  a cross-material progression before accepting individual assets.
+- The production workflow should use both axes, prioritizing class progression before checking each
+  material cohort for palette, finish, and construction coherence.
 
 ## Immediate observations
 

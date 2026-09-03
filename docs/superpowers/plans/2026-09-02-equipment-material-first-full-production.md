@@ -1,6 +1,6 @@
 # Equipment material-first full-production plan
 
-Status: **proposed implementation plan; no v3 run is activated**  
+Status: **paused calibration draft; rank-first revision required before any v3 activation**
 Owner: Equipment visual domain  
 Scope: the 28-material core ladder, six Weapons, Shield, Staff, and three four-piece Armour classes
 
@@ -20,6 +20,11 @@ and, for Armour, one full-set source plus four dedicated piece renderings.
 
 The accepted Dagger calibration sheet is a creative-direction benchmark for silhouette ambition and
 rank escalation. It is not an approved source and its pictured designs are not production assets.
+
+> **Calibration hold — 2026-09-02:** the owner has made cross-rank class progression the primary
+> design axis and material cohesion the secondary review axis. This earlier material-first ordering
+> must not be activated. The rank-first calibration outputs will be reviewed before this plan is
+> replaced with the final execution order and corrected generation budget.
 
 ## Locked creative rules
 
