@@ -2,16 +2,15 @@
 	import { onMount } from 'svelte';
 
 	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
-	import RealtimeCombatStage, {
-		type CombatPresentationMode
-	} from '$lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte';
+	import RealtimeCombatStage from '$lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte';
+	import type { CombatPresentationMode } from '$lib/components/living-village/realtime-combat/depth-projection';
 	import {
 		createRealtimeCombat,
 		type RealtimeCombatState
 	} from '$lib/components/living-village/realtime-combat/realtime-combat';
 	import { PLAYER_SETTINGS_EVENT } from '$lib/player-settings';
 
-	let mode = $state<CombatPresentationMode>('2.5d');
+	let mode = $state<CombatPresentationMode>('2.5d-v2');
 	let paused = $state(false);
 	let restartKey = $state(0);
 	let reducedMotion = $state(false);
@@ -56,14 +55,14 @@
 	<title>Near-3D combat study · Summonlab</title>
 	<meta
 		name="description"
-		content="Compare flat 2D and near-3D 2.5D presentation over one deterministic autonomous rat battle."
+		content="Compare flat 2D, classic depth staging, and trapezoidal 2.5D projection over one deterministic autonomous rat battle."
 	/>
 </svelte:head>
 
 <main>
 	<div class="topline">
 		<LabBackLink placement="top" />
-		<span>Visual prototype · same combat, two cameras</span>
+		<span>Visual prototype · same combat, three lenses</span>
 	</div>
 
 	<header>
@@ -141,16 +140,32 @@
 					>
 						<span>2.5D</span><small>Depth staged</small>
 					</button>
+					<button
+						type="button"
+						class:active={mode === '2.5d-v2'}
+						aria-pressed={mode === '2.5d-v2'}
+						onclick={() => (mode = '2.5d-v2')}
+					>
+						<span>2.5D V2</span><small>Trapezoid on</small>
+					</button>
 				</div>
 			</div>
 
 			<div class="evidence" data-testid="presentation-evidence">
 				<span>What changes</span>
-				<strong>{mode === '2.5d' ? 'A camera with depth cues' : 'A flat composited field'}</strong>
+				<strong
+					>{mode === '2.5d-v2'
+						? 'A converging combat lane'
+						: mode === '2.5d'
+							? 'A camera with depth cues'
+							: 'A flat composited field'}</strong
+				>
 				<p>
-					{mode === '2.5d'
-						? 'Perspective scaling, foot-anchored Y sorting, deformed contact shadows, parallax drift, fog, and local light.'
-						: 'Every actor keeps one scale and layer priority. Atmosphere and camera drift are removed.'}
+					{mode === '2.5d-v2'
+						? 'Trapezoidal lane convergence is on. Far actors move toward the center and shrink nonlinearly; cyan guides expose the projection.'
+						: mode === '2.5d'
+							? 'Rectangular coordinates remain intact while depth scaling, Y sorting, shadows, fog, and parallax are applied.'
+							: 'Every actor keeps one scale and layer priority. Atmosphere and camera drift are removed.'}
 				</p>
 			</div>
 
@@ -181,8 +196,8 @@
 			<footer>
 				<b>Prototype boundary</b>
 				<span
-					>Static pose art animated by transforms and effects. No skeletal rig or authored attack
-					frames yet.</span
+					>Asha and one lesser rat use authored pose animation. The remaining cast stays static
+					until the motion canary is accepted.</span
 				>
 			</footer>
 		</aside>
@@ -466,7 +481,7 @@
 
 	.mode-control [role='group'] {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.4rem;
 	}
 
@@ -502,7 +517,7 @@
 		display: grid;
 		gap: 0.16rem;
 		min-height: 4.3rem;
-		padding: 0.7rem;
+		padding: 0.65rem;
 		text-align: left;
 	}
 
@@ -514,7 +529,7 @@
 
 	.mode-control button span {
 		font:
-			400 1.35rem Georgia,
+			400 1.12rem Georgia,
 			serif;
 	}
 

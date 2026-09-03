@@ -34,3 +34,45 @@ All generated images below were produced with the built-in Codex image generatio
 ## Runtime processing
 
 The generator returned the isolated actors against a baked light checkerboard. `tools/key-checkerboard-background.mjs` converts connected neutral-light pixels to alpha, trims the subject, and places it on a transparent 768×768 runtime canvas. The generation originals remain unmodified outside the repository.
+
+## Animation canary v1
+
+The animation canary was produced with the built-in Codex image generation tool on 2026-09-03.
+The selected generation sheets are stored as project-bound source inputs so the runtime atlases are
+reproducible and do not depend on Codex-managed temporary storage.
+
+### Asha motion sheet
+
+- Generation original: `exec-482f4b0d-d3dd-4d01-b07c-763db73f8a70.png`
+- Project source: `animation-canary-v1/asha/asha-motion-sheet-source-v1.png`
+- Source SHA-256: `dda1bd35bd4561c946c871b9455f56ba9b9dea4a4de3d8fccda03ea1c493834e`
+- Runtime atlas SHA-256: `05e50e161d71bd3017230550b4710654b9fabd3fbb76137546a078f79e3cf162`
+- References: the owned canonical hero and the accepted Asha combat cutout.
+- Final prompt: create the exact same owned adult Black woman as a precise 5-column by 4-row motion
+  sheet: five idle poses, five advance/run poses, five unarmed saffron-force-strike poses, then two
+  hit reactions and three down poses. Preserve her right shaved temple and marking, long braid on her
+  left, face, saffron-and-cream costume, steep top-down combat camera, fixed feet baseline, adult
+  proportions, and lighting. Use a uniform white matte with no scenery, text, shadow, mirroring, or
+  identity/costume drift.
+
+### Lesser-rat motion sheet
+
+- Generation original: `exec-eb475ff9-8e1b-47ec-a92f-49b75fe6c4ac.png`
+- Project source:
+  `../../../../enemies/experiments/realtime-combat-study-v1/animation-canary-v1/lesser-rat/lesser-rat-motion-sheet-source-v1.png`
+- Source SHA-256: `a9ee3d007b9453f9be57727d918232d236011d57fd3a2b15e88a45db66eaadf1`
+- Runtime atlas SHA-256: `de89da518d06b8b9dd7370d0ed1847c99e5c6aba39f6aa0f8c3540a1f08d6079`
+- Reference: the original lesser-rat combat cutout created for this study.
+- Final prompt: create the exact same rat as a precise 5-column by 4-row motion sheet: five idle
+  poses, five scurry poses, five bite/claw attack poses, then two hit reactions and three down poses.
+  Preserve soot-brown fur, ragged ears, pale eyes, tail, red spine infection, steep top-down combat
+  camera, fixed feet baseline, mass, and lighting. Use a uniform white matte with no scenery, text,
+  shadow, mirroring, or design drift.
+
+`tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
+isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
+256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion
+manifest. `tools/validate-realtime-combat-motion-pack.mjs` validates clip presence, unique frame
+ownership, atlas dimensions, alpha, and anchor data. The well foreground is a lossless masked copy of
+the existing original environment plate produced by `tools/extract-realtime-combat-occluders.mjs`;
+it contains no new third-party content.

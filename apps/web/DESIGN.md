@@ -161,13 +161,15 @@ Both layers consume the same authoritative combat projection; neither invents ti
 results.
 
 The realtime combat study at `/living-village-lab/realtime-combat` is the accepted matched-comparison
-surface for deciding between flat 2D and near-3D 2.5D. Its two modes must share one simulation,
-initial state, timing, damage, targets, and outcome. The 2.5D lens may add perspective scaling,
-foot-anchored Y sorting, shadow deformation, atmospheric depth, local light, and restrained camera
-parallax; the 2D lens removes those cues and uses fixed actor scale and layer priority. Switching
-lenses never restarts the encounter. The owned saffron-braid lead is the identity and quality gate;
-supporting heroes and enemies match her compact adult proportions without copying her identity or
-costume.
+surface for deciding between flat 2D and near-3D 2.5D. Its three lenses must share one simulation,
+initial state, timing, damage, targets, and outcome. `2D` uses rectangular placement, fixed actor scale,
+and fixed team-layer priority. Classic `2.5D` preserves rectangular placement while adding depth
+scale, foot-anchored Y sorting, shadow deformation, atmospheric depth, local light, and restrained
+parallax. `2.5D V2` is the only lens allowed to apply trapezoidal lane convergence, nonlinear depth
+scale, foreground occlusion, and visible projection guides. Switching lenses never restarts the
+encounter. The owned saffron-braid lead is the identity and quality gate; supporting heroes and
+enemies match her compact adult proportions without copying her identity or costume. Motion expansion
+is gated on an authored Asha-and-one-rat canary rather than applying low-quality animation to the cast.
 
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and

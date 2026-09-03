@@ -21,6 +21,13 @@ export type RealtimeActor = {
 	attackPulse: number;
 	hitPulse: number;
 	attacksLanded: number;
+	actionRevision: number;
+	hitRevision: number;
+	defeatRevision: number;
+	velocityX: number;
+	velocityY: number;
+	facingX: number;
+	facingY: number;
 };
 
 export type RealtimeCombatState = {
@@ -34,7 +41,19 @@ export type RealtimeCombatState = {
 const actor = (
 	input: Omit<
 		RealtimeActor,
-		'maximumHealth' | 'attackTimer' | 'intent' | 'attackPulse' | 'hitPulse' | 'attacksLanded'
+		| 'maximumHealth'
+		| 'attackTimer'
+		| 'intent'
+		| 'attackPulse'
+		| 'hitPulse'
+		| 'attacksLanded'
+		| 'actionRevision'
+		| 'hitRevision'
+		| 'defeatRevision'
+		| 'velocityX'
+		| 'velocityY'
+		| 'facingX'
+		| 'facingY'
 	>
 ): RealtimeActor => ({
 	...input,
@@ -43,7 +62,14 @@ const actor = (
 	intent: 'advance',
 	attackPulse: 0,
 	hitPulse: 0,
-	attacksLanded: 0
+	attacksLanded: 0,
+	actionRevision: 0,
+	hitRevision: 0,
+	defeatRevision: 0,
+	velocityX: 0,
+	velocityY: 0,
+	facingX: 0,
+	facingY: input.team === 'heroes' ? -1 : 1
 });
 
 export function createRealtimeCombat(): RealtimeCombatState {
@@ -150,19 +176,26 @@ function damageTarget(
 	source: RealtimeActor,
 	target: RealtimeActor
 ): void {
+	const wasAlive = target.health > 0;
 	target.health = Math.max(0, target.health - source.damage);
 	target.hitPulse = 1;
+	target.hitRevision += 1;
 	source.attackPulse = 1;
 	source.attacksLanded += 1;
+	source.actionRevision += 1;
 	source.attackTimer = source.attackInterval;
 	state.lastEvent = `${source.label} strikes ${target.label}.`;
+	if (wasAlive && target.health <= 0) target.defeatRevision += 1;
 
 	if (source.id === 'saffron-braid' && source.attacksLanded % 3 === 0) {
 		for (const enemy of state.actors) {
 			if (enemy.team === source.team || enemy.health <= 0 || distance(source, enemy) > 0.2)
 				continue;
+			const wasEnemyAlive = enemy.health > 0;
 			enemy.health = Math.max(0, enemy.health - 11);
 			enemy.hitPulse = 1;
+			enemy.hitRevision += 1;
+			if (wasEnemyAlive && enemy.health <= 0) enemy.defeatRevision += 1;
 		}
 		state.lastEvent = 'Asha releases Saffron Arc through the clustered pack.';
 	}
@@ -180,6 +213,8 @@ export function stepRealtimeCombat(
 	};
 
 	for (const entry of state.actors) {
+		entry.velocityX = 0;
+		entry.velocityY = 0;
 		entry.attackPulse = Math.max(0, entry.attackPulse - deltaSeconds * 4.8);
 		entry.hitPulse = Math.max(0, entry.hitPulse - deltaSeconds * 5.8);
 		entry.attackTimer -= deltaSeconds;
@@ -191,6 +226,9 @@ export function stepRealtimeCombat(
 		const target = chooseTarget(entry, state.actors);
 		entry.targetId = target?.id;
 		if (!target) continue;
+		const facingLength = Math.hypot(target.x - entry.x, target.y - entry.y) || 1;
+		entry.facingX = (target.x - entry.x) / facingLength;
+		entry.facingY = (target.y - entry.y) / facingLength;
 		const gap = distance(entry, target);
 		if (gap > entry.range) {
 			entry.intent = 'advance';
@@ -198,6 +236,8 @@ export function stepRealtimeCombat(
 			const dx = target.x - entry.x;
 			const dy = target.y - entry.y;
 			const length = Math.hypot(dx, dy) || 1;
+			entry.velocityX = (dx / length) * entry.speed;
+			entry.velocityY = (dy / length) * entry.speed;
 			entry.x = Math.min(0.93, Math.max(0.07, entry.x + (dx / length) * amount));
 			entry.y = Math.min(0.93, Math.max(0.07, entry.y + (dy / length) * amount));
 		} else {

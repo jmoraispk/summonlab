@@ -23,6 +23,8 @@ art target.
   occlusion, responsive contact shadows, local light, and camera movement.
 - Provide a matched `2D` comparison mode and `2.5D` target mode over the same encounter, actors,
   timing, and effects so reviewers judge dimensional treatment rather than different content.
+- Preserve classic `2.5D` as the rectangular depth-staged control and add `2.5D V2` as a separately
+  labeled experimental lens. Only V2 applies trapezoidal lane convergence and its visible guides.
 - Prioritize character, environment, animation, impact, and camera quality over manual control depth.
 - Make the first encounter fully autonomous. One skill may fire automatically when its tactical
   conditions and cooldown permit.
@@ -49,16 +51,19 @@ approved second pass will:
   presentation layer consuming stable animation cues rather than making combat decisions;
 - replace role-level in-world health offsets with screen-space bars anchored above each asset's
   authored visible bounds;
-- strengthen the 2.5D mode with a trapezoidal ground projection, nonlinear depth scale, separated
+- add a separate `2.5D V2` mode with a trapezoidal ground projection, nonlinear depth scale, separated
   occluders, clearer environment overlap, restrained engagement framing, and directional contact
   shadows;
+- preserve classic `2.5D` without trapezoidal coordinate warping so the projection change is directly
+  observable against both the flat and depth-staged controls;
 - keep the 2D mode honest and mechanically identical, while removing the depth-specific projection,
   occlusion, parallax, and shadow response;
 - keep Asha's left/right identity asymmetry authored. Runtime horizontal mirroring remains forbidden.
 
 The canary is accepted only when approach, attack, hit, recovery, and defeat read at phone gameplay
 scale; animation does not restart on every simulation update; health bars clear faces and silhouettes;
-and the 2D/2.5D distinction is immediately observable without changing the encounter.
+and the distinction among 2D, classic 2.5D, and trapezoidal 2.5D V2 is immediately observable without
+changing the encounter.
 
 ## Reference findings
 

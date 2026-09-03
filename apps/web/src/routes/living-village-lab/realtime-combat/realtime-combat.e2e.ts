@@ -7,15 +7,39 @@ test('switches presentation without restarting the autonomous fight', async ({ p
 	await expect(page.getByTestId('realtime-combat-pixi-canvas')).toBeVisible();
 	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
 		'data-presentation-mode',
-		'2.5d'
+		'2.5d-v2'
 	);
-	await expect(page.getByTestId('presentation-evidence')).toContainText('Perspective scaling');
+	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+		'data-applied-presentation-mode',
+		'2.5d-v2'
+	);
+	await expect(page.getByTestId('presentation-evidence')).toContainText(
+		'Trapezoidal lane convergence is on'
+	);
 
 	await page.getByRole('button', { name: 'Pause agents' }).click();
 	const pausedTime = await page.getByTestId('combat-phase').locator('small').textContent();
+	await page.getByRole('button', { name: '2.5D Depth staged' }).click();
+	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+		'data-presentation-mode',
+		'2.5d'
+	);
+	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+		'data-applied-presentation-mode',
+		'2.5d'
+	);
+	await expect(page.getByTestId('presentation-evidence')).toContainText(
+		'Rectangular coordinates remain intact'
+	);
+	await expect(page.getByTestId('combat-phase').locator('small')).toHaveText(pausedTime!);
+
 	await page.getByRole('button', { name: '2D Fixed scale' }).click();
 	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
 		'data-presentation-mode',
+		'2d'
+	);
+	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+		'data-applied-presentation-mode',
 		'2d'
 	);
 	await expect(page.getByTestId('presentation-evidence')).toContainText(
@@ -32,7 +56,7 @@ test('keeps the mobile battlefield and controls readable', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(combatUrl);
 	await expect(page.getByRole('heading', { name: 'Hold the village gate.' })).toBeVisible();
-	await expect(page.getByRole('button', { name: '2.5D Depth staged' })).toHaveAttribute(
+	await expect(page.getByRole('button', { name: '2.5D V2 Trapezoid on' })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);

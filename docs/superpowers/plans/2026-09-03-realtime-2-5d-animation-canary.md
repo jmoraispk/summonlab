@@ -2,7 +2,13 @@
 
 Design: [2026-09-03-realtime-2-5d-combat-study-design.md](../specs/2026-09-03-realtime-2-5d-combat-study-design.md)
 
-**Status:** Owner-approved design; ready for implementation.
+**Status:** Core owner-review slice implemented on 2026-09-03. Full-cast animation and secondary
+occluder polish remain gated on review.
+
+Implementation checkpoint: the review build uses one 5×4 authored sheet per canary actor and the
+well as the first exact foreground occluder. Left/right awning and palisade overlays, an active-clip
+debug readout, and any higher frame-count expansion remain follow-up work only if this visual canary
+is accepted.
 
 ## Outcome
 
@@ -21,8 +27,9 @@ the canary passes a phone-scale visual review.
 - Idle, advance, attack, hit, and down clips with stable feet anchors.
 - Agent decision and resolved-event cues that drive clips without moving combat authority into Pixi.
 - Screen-space, asset-authored health-bar placement.
-- Trapezoidal 2.5D world projection, nonlinear depth scale, separated occluders, camera framing,
-  directional shadows, and reduced-motion behavior.
+- Separately labeled `2.5D V2` trapezoidal world projection, nonlinear depth scale, a foreground
+  occluder, camera framing, directional shadows, and reduced-motion behavior.
+- The original rectangular `2.5D` lens remains available as a depth-staged control.
 - The current flat 2D lens as a matched control over the same simulation state.
 - Asset, unit, browser, performance, and visual validation for the canary.
 
@@ -132,7 +139,8 @@ Define and test:
 - one-time consumption of attack, hit, and down cue revisions;
 - precedence `down > hit > attack > advance > idle` and completion behavior for non-looping clips;
 - no clip restart when the actor remains in the same simulation intent;
-- rectangular 2D projection versus trapezoidal 2.5D projection over identical world coordinates;
+- rectangular 2D and classic 2.5D projections versus trapezoidal 2.5D V2 over identical world
+  coordinates;
 - nonlinear depth scale, far-lane convergence, stable projected feet, and deterministic z-order;
 - health-bar placement above authored visible bounds at constant logical size.
 
@@ -258,7 +266,7 @@ palisade from the existing original environment plate. Keep the base environment
 overlays can reproduce its pixels without seams. Give each overlay an authored ground-footprint and
 z-threshold; insert it into the same projected sort domain as actor feet.
 
-In 2.5D mode:
+In `2.5D V2` mode:
 
 - converge horizontal positions toward the far lane;
 - use nonlinear depth scale and Y sort;
@@ -314,8 +322,8 @@ clip restarts, health clearance, and particle cleanup.
 Known repository-wide baseline lint/build failures must be rechecked and reported separately from
 feature-specific failures; do not fold unrelated monster-index repairs into this slice.
 
-Do not animate the remaining cast yet. Present the Asha-versus-rat canary and matched 2D/2.5D captures
-for owner review. Expansion requires explicit acceptance of:
+Do not animate the remaining cast yet. Present the Asha-versus-rat canary and matched 2D, classic
+2.5D, and 2.5D V2 captures for owner review. Expansion requires explicit acceptance of:
 
 1. identity stability across all Asha frames;
 2. motion quality at phone scale;
