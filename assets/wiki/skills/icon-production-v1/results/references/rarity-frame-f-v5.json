@@ -1,0 +1,98 @@
+{
+	"schemaVersion": "skill-icon-reprocess-result-v1",
+	"resultId": "result-rarity-frame-f-v5",
+	"jobId": "rarity-frame-f-v5",
+	"logicalIdentity": "rarity-frame-f",
+	"revision": 5,
+	"role": "rarity-frame",
+	"rarity": "F",
+	"assignmentId": "assignment-rarity-frame-f-v5",
+	"targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v5.json",
+	"targetContentHash": "376eba4c55fbcd7e9f07098f09ce56a5b4d580bd76f3a8de38cef2185cf2a162",
+	"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v5.json",
+	"assignmentContentHash": "4da95aa5d67deac99a2564dec3be0e1e26bbb56ff81c358d091281b78d85e5b2",
+	"sourceMode": "reuse-prior-provider-source",
+	"originAuthority": {
+		"target": {
+			"path": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json",
+			"contentHash": "11d9b06d8167fe7280c9e309dce3f00d105ab9fd595775a8802ba1b93073e546"
+		},
+		"assignment": {
+			"path": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json",
+			"contentHash": "44afadb82cc3098aaa7e6092391b3ef95a2576ade12e8e7cecd24454fe3919ec"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json",
+			"contentHash": "045ddfe30888f26fd3fab90fa683b367ac9dfc15ae41745d6b6011590a920bce"
+		},
+		"providerSourceHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073"
+	},
+	"processingAuthority": {
+		"profile": "skill-icon-green-key-role-mask-v3",
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"guide": {
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e",
+			"purpose": "Provider-space role-mask guide for rarity-frame and backing registration."
+		}
+	},
+	"generationAttemptCount": 0,
+	"normalizationTransactionCount": 1,
+	"normalization": {
+		"profile": "skill-icon-green-key-role-mask-v3",
+		"outcome": "completed",
+		"geometryHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab",
+		"providerSource": {
+			"mediaType": "image/png",
+			"width": 1254,
+			"height": 1254,
+			"bytes": 1452253,
+			"alphaMode": "rgb",
+			"contentHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073"
+		},
+		"sourceContentHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073",
+		"decoderInputContentHash": "76905ab8db47d377f2a5109df2c01519b1aa4509c97b2b6e797fe7e4123d09e1",
+		"containerBox": {
+			"chunkType": "caBX",
+			"bytes": 21783,
+			"contentHash": "9ac3b8f1ed87497c612f981dde8adde776323953216ed855f8d9b9190f502734"
+		},
+		"colorSpaceDisposition": "assigned-srgb",
+		"outputContentHash": "c901e1d9270748a9691826dec8f727c78017b7825d6872a10ed78e03bd430bb9"
+	},
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v5.json",
+	"inspections": [
+		{
+			"inspection": "full-size",
+			"outcome": "pass",
+			"observation": "Weathered iron F-rank frame is centered, fully visible, and cleanly isolated; the layered hexagonal rails, restrained rivets, and F medallion remain coherent with no competing decoration."
+		},
+		{
+			"inspection": "recognition-96",
+			"outcome": "pass",
+			"observation": "At 96 pixels the F medallion, six-sided silhouette, layered iron rails, and restrained riveted construction remain legible as the lowest-rarity frame."
+		}
+	],
+	"startedAt": "2026-09-03T08:40:22.957Z",
+	"completedAt": "2026-09-03T08:40:24.693Z",
+	"totalWallTimeMs": 1736,
+	"noSharedFilesEdited": true,
+	"selfPromoted": false,
+	"status": "candidate",
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 572562,
+		"contentHash": "c901e1d9270748a9691826dec8f727c78017b7825d6872a10ed78e03bd430bb9"
+	},
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png",
+		"assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v5.json"
+	]
+}
