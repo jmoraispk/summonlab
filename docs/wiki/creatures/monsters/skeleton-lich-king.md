@@ -6,7 +6,7 @@ Wiki ID: `monster.skeleton-lich-king`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Independent Rattle, Mail, Helm, and Crown paths produce or promote Rattlers, Bon
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-lich-king/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-lich-king/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-lich-king/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-lich-king/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-lich-king/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-lich-king/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-lich-king/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-lich-king/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/skeletons/skeleton-lich-king/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-lich-king/wind-v1.json` |
