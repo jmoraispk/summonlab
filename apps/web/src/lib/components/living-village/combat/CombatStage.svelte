@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { Application, Container, Graphics } from 'pixi.js';
+	import type { Application, Container, Graphics, Sprite } from 'pixi.js';
 	import {
 		COMBAT_PLAYBACK_DURATION_MS,
 		projectCombatPlayback,
@@ -39,6 +39,14 @@
 	let activeCommandSequence = -1;
 	let completeReported = false;
 	let renderSnapshot: ((snapshot: CombatPlaybackSnapshot) => void) | undefined;
+	let unloadArt: (() => void) | undefined;
+
+	const ART_ROOT = '/runtime/combat/observatory-art-pilot-v1';
+	const ART_SOURCES = [
+		`${ART_ROOT}/observatory-empty-v1.png`,
+		`${ART_ROOT}/dara-zev-chibi-screen-v1.png`,
+		`${ART_ROOT}/sprout-goblin-screen-v1.png`
+	] as const;
 
 	function publish(): void {
 		const snapshot = projectCombatPlayback(receipt, elapsedMs, { started, reducedMotion });
@@ -65,8 +73,16 @@
 		let resizeObserver: ResizeObserver | undefined;
 
 		void (async () => {
-			const { Application, Container, Graphics } = await import('pixi.js');
+			const { Application, Assets, Container, Filter, Graphics, Sprite } = await import('pixi.js');
 			if (disposed) return;
+			const [environmentTexture, heroTexture, sproutTexture] = await Promise.all(
+				ART_SOURCES.map((src) => Assets.load(src))
+			);
+			unloadArt = () => void Assets.unload([...ART_SOURCES]);
+			if (disposed) {
+				unloadArt();
+				return;
+			}
 
 			app = new Application();
 			await app.init({
@@ -90,65 +106,64 @@
 			world.eventMode = 'none';
 			app.stage.addChild(world);
 
-			const board = { x: 56, y: 88, width: 588, height: 756 };
+			const board = { x: 62, y: 102, width: 575, height: 744 };
 			const cellWidth = board.width / receipt.board.columns;
 			const cellHeight = board.height / receipt.board.rows;
 			const cellCenter = (column: number, row: number) => ({
 				x: board.x + (column + 0.5) * cellWidth,
 				y: board.y + (row + 0.5) * cellHeight
 			});
+			const makeBlackFieldFilter = () =>
+				Filter.from({
+					gl: {
+						vertex: `
+							in vec2 aPosition;
+							out vec2 vTextureCoord;
+							uniform vec4 uInputSize;
+							uniform vec4 uOutputFrame;
+							uniform vec4 uOutputTexture;
 
-			const backdrop = new Graphics({ label: 'observatory-stone' });
-			backdrop.rect(0, 0, logicalWidth, logicalHeight).fill(0x071018);
-			backdrop.circle(350, 210, 330).fill({ color: 0x10252a, alpha: 0.72 });
-			backdrop.circle(85, 120, 185).stroke({ color: 0xb38b45, alpha: 0.28, width: 18 });
-			backdrop.circle(85, 120, 132).stroke({ color: 0xd7b362, alpha: 0.14, width: 3 });
-			backdrop.circle(620, 135, 92).stroke({ color: 0x8c7448, alpha: 0.22, width: 12 });
-			backdrop.rect(0, 0, 700, 170).fill({ color: 0x061019, alpha: 0.28 });
+							vec4 filterVertexPosition(void) {
+								vec2 position = aPosition * uOutputFrame.zw + uOutputFrame.xy;
+								position.x = position.x * (2.0 / uOutputTexture.x) - 1.0;
+								position.y = position.y * (2.0 * uOutputTexture.z / uOutputTexture.y) - uOutputTexture.z;
+								return vec4(position, 0.0, 1.0);
+							}
+
+							vec2 filterTextureCoord(void) {
+								return aPosition * (uOutputFrame.zw * uInputSize.zw);
+							}
+
+							void main(void) {
+								gl_Position = filterVertexPosition();
+								vTextureCoord = filterTextureCoord();
+							}
+						`,
+						fragment: `
+							in vec2 vTextureCoord;
+							out vec4 finalColor;
+							uniform sampler2D uTexture;
+
+							void main(void) {
+								vec4 color = texture(uTexture, vTextureCoord);
+								float brightest = max(color.r, max(color.g, color.b));
+								float keyedAlpha = smoothstep(0.005, 0.025, brightest);
+								finalColor = vec4(color.rgb * keyedAlpha, keyedAlpha);
+							}
+						`
+					}
+				});
+
+			const backdrop = new Sprite({ texture: environmentTexture, label: 'observatory-painted' });
+			backdrop.position.set(0, -100);
+			backdrop.width = logicalWidth;
+			backdrop.height = 1244;
 			world.addChild(backdrop);
 
-			const floor = new Graphics({ label: 'tactical-floor' });
-			floor
-				.roundRect(board.x - 24, board.y - 26, board.width + 48, board.height + 55, 22)
-				.fill({ color: 0x162321, alpha: 0.98 })
-				.stroke({ color: 0x6e684f, alpha: 0.35, width: 2 });
-			for (let row = 0; row < receipt.board.rows; row += 1) {
-				for (let column = 0; column < receipt.board.columns; column += 1) {
-					const variation = (row * 7 + column * 11) % 4;
-					floor
-						.rect(board.x + column * cellWidth, board.y + row * cellHeight, cellWidth, cellHeight)
-						.fill({ color: [0x27352f, 0x24322d, 0x2b3831, 0x202e2a][variation]!, alpha: 0.94 })
-						.stroke({ color: 0x77806d, alpha: 0.18, width: 1.5 });
-				}
-			}
-			floor.circle(350, 466, 55).stroke({ color: 0xb59b5a, alpha: 0.2, width: 2 });
-			floor.circle(350, 466, 24).stroke({ color: 0xb59b5a, alpha: 0.16, width: 1 });
-			floor.moveTo(295, 466).lineTo(405, 466).stroke({ color: 0xb59b5a, alpha: 0.13, width: 1 });
-			floor.moveTo(350, 411).lineTo(350, 521).stroke({ color: 0xb59b5a, alpha: 0.13, width: 1 });
-			world.addChild(floor);
-
-			const moss = new Graphics({ label: 'moss-and-ruins' });
-			for (const [x, y, radius] of [
-				[32, 260, 72],
-				[668, 330, 82],
-				[25, 710, 96],
-				[665, 760, 105]
-			] as const) {
-				moss.circle(x, y, radius).fill({ color: 0x1b2b1d, alpha: 0.92 });
-				moss.circle(x + 18, y - 22, radius * 0.55).fill({ color: 0x334326, alpha: 0.55 });
-			}
-			for (const [x, y] of [
-				[34, 375],
-				[660, 500],
-				[50, 840],
-				[625, 875]
-			] as const) {
-				moss
-					.roundRect(x - 34, y - 22, 68, 44, 8)
-					.fill(0x303832)
-					.stroke({ color: 0x74725f, alpha: 0.22, width: 2 });
-			}
-			world.addChild(moss);
+			const moonVeil = new Graphics({ label: 'moonlit-atmosphere' });
+			moonVeil.rect(0, 0, logicalWidth, logicalHeight).fill({ color: 0x061522, alpha: 0.08 });
+			moonVeil.rect(0, 0, logicalWidth, 150).fill({ color: 0x020812, alpha: 0.28 });
+			world.addChild(moonVeil);
 
 			const selection = new Graphics({ label: 'selected-cell' });
 			selection
@@ -171,6 +186,16 @@
 					destination.x,
 					destination.y
 				)
+				.stroke({ color: 0x6bd9ff, alpha: 0.15, width: 12, cap: 'round' })
+				.moveTo(origin.x, origin.y - 8)
+				.bezierCurveTo(
+					origin.x + 36,
+					origin.y - 165,
+					destination.x - 50,
+					destination.y + 105,
+					destination.x,
+					destination.y
+				)
 				.stroke({ color: 0xffd272, alpha: 0.85, width: 4, cap: 'round' });
 			motionPath.alpha = 0;
 			motionPath.zIndex = 4;
@@ -184,10 +209,13 @@
 				container: Container;
 				glow: Graphics;
 				healthFill: Graphics;
+				body: Graphics | Sprite;
+				authored: boolean;
+				bodyScale: number;
 			};
 			const actorViews: Record<string, ActorView> = {};
 
-			function makeActor(role: CombatActorRole, kind: 'hero' | 'monster'): ActorView {
+			function makeActor(id: string, role: CombatActorRole, kind: 'hero' | 'monster'): ActorView {
 				const container = new Container({ sortableChildren: true });
 				const hostile = kind === 'monster';
 				const glow = new Graphics().ellipse(0, 2, 38, 18).fill({
@@ -196,77 +224,102 @@
 				});
 				glow.alpha = 0;
 				const shadow = new Graphics().ellipse(0, 14, 29, 10).fill({ color: 0x020405, alpha: 0.6 });
-				const figure = new Graphics();
+				const proxyFigure = new Graphics();
+				let figure: Graphics | Sprite = proxyFigure;
+				let authored = false;
+				let bodyScale = 1;
 
-				if (role === 'blade' || role === 'archer' || role === 'mage') {
+				if (id === receipt.actingActorId) {
+					const sprite = new Sprite({ texture: heroTexture, label: 'dara-zev-art-pilot' });
+					sprite.anchor.set(0.5, 0.865);
+					sprite.width = 148;
+					sprite.height = 148;
+					sprite.filters = [makeBlackFieldFilter()];
+					figure = sprite;
+					authored = true;
+					bodyScale = sprite.scale.x;
+				} else if (id === receipt.targetActorId) {
+					const sprite = new Sprite({ texture: sproutTexture, label: 'sprout-goblin-art-pilot' });
+					sprite.anchor.set(0.5, 0.835);
+					sprite.width = 126;
+					sprite.height = 126;
+					sprite.filters = [makeBlackFieldFilter()];
+					figure = sprite;
+					authored = true;
+					bodyScale = sprite.scale.x;
+				} else {
+					proxyFigure.alpha = 0.72;
+				}
+
+				if (!authored && (role === 'blade' || role === 'archer' || role === 'mage')) {
 					const cloak = role === 'archer' ? 0x3f5c43 : role === 'mage' ? 0x5d7187 : 0x33547a;
-					figure
+					proxyFigure
 						.poly([-18, 9, -13, -29, 0, -43, 15, -28, 21, 11], true)
 						.fill(cloak)
 						.stroke({ color: 0xc8b986, alpha: 0.62, width: 2 });
-					figure.circle(0, -52, 17).fill(0xe7cdb3).stroke({ color: 0x201d1c, width: 2 });
-					figure.arc(0, -55, 18, Math.PI, Math.PI * 2).stroke({
+					proxyFigure.circle(0, -52, 17).fill(0xe7cdb3).stroke({ color: 0x201d1c, width: 2 });
+					proxyFigure.arc(0, -55, 18, Math.PI, Math.PI * 2).stroke({
 						color: role === 'mage' ? 0x9db5c8 : role === 'archer' ? 0xd8c3a2 : 0x4b3127,
 						width: 11
 					});
 					if (role === 'blade') {
-						figure
+						proxyFigure
 							.moveTo(12, -23)
 							.lineTo(37, 10)
 							.stroke({ color: 0xdfe5e5, width: 5, cap: 'round' });
-						figure.moveTo(35, 8).lineTo(43, 17).stroke({ color: 0xc49b52, width: 3 });
+						proxyFigure.moveTo(35, 8).lineTo(43, 17).stroke({ color: 0xc49b52, width: 3 });
 					} else if (role === 'archer') {
-						figure.arc(-16, -20, 23, -1.2, 1.2).stroke({ color: 0xc6995b, width: 3 });
+						proxyFigure.arc(-16, -20, 23, -1.2, 1.2).stroke({ color: 0xc6995b, width: 3 });
 					} else {
-						figure.moveTo(17, -29).lineTo(28, 10).stroke({ color: 0xb88954, width: 4 });
-						figure.circle(16, -34, 7).fill(0x70bfe2).stroke({ color: 0xd8f5ff, width: 2 });
+						proxyFigure.moveTo(17, -29).lineTo(28, 10).stroke({ color: 0xb88954, width: 4 });
+						proxyFigure.circle(16, -34, 7).fill(0x70bfe2).stroke({ color: 0xd8f5ff, width: 2 });
 					}
-				} else if (role === 'sprout') {
-					figure.circle(0, -24, 24).fill(0xb6b96c).stroke({ color: 0x3b3d25, width: 3 });
-					figure.ellipse(-9, -55, 9, 18).fill(0x6d8c4c).stroke({ color: 0x344425, width: 2 });
-					figure.ellipse(11, -54, 9, 18).fill(0x789a54).stroke({ color: 0x344425, width: 2 });
-					figure.circle(-8, -26, 3).fill(0x171b15).circle(8, -26, 3).fill(0x171b15);
-				} else if (role === 'bat') {
-					figure.poly([-7, -27, -35, -43, -29, -17, -8, -10], true).fill(0x6b5278);
-					figure.poly([7, -27, 35, -43, 29, -17, 8, -10], true).fill(0x6b5278);
-					figure.circle(0, -27, 18).fill(0x73587f).stroke({ color: 0x241d2a, width: 3 });
-					figure.circle(-6, -29, 3).fill(0xf2ca66).circle(6, -29, 3).fill(0xf2ca66);
-				} else if (role === 'mummy') {
-					figure
+				} else if (!authored && role === 'sprout') {
+					proxyFigure.circle(0, -24, 24).fill(0xb6b96c).stroke({ color: 0x3b3d25, width: 3 });
+					proxyFigure.ellipse(-9, -55, 9, 18).fill(0x6d8c4c).stroke({ color: 0x344425, width: 2 });
+					proxyFigure.ellipse(11, -54, 9, 18).fill(0x789a54).stroke({ color: 0x344425, width: 2 });
+					proxyFigure.circle(-8, -26, 3).fill(0x171b15).circle(8, -26, 3).fill(0x171b15);
+				} else if (!authored && role === 'bat') {
+					proxyFigure.poly([-7, -27, -35, -43, -29, -17, -8, -10], true).fill(0x6b5278);
+					proxyFigure.poly([7, -27, 35, -43, 29, -17, 8, -10], true).fill(0x6b5278);
+					proxyFigure.circle(0, -27, 18).fill(0x73587f).stroke({ color: 0x241d2a, width: 3 });
+					proxyFigure.circle(-6, -29, 3).fill(0xf2ca66).circle(6, -29, 3).fill(0xf2ca66);
+				} else if (!authored && role === 'mummy') {
+					proxyFigure
 						.roundRect(-18, -61, 36, 67, 12)
 						.fill(0xc4b99a)
 						.stroke({ color: 0x4b4639, width: 3 });
 					for (let y = -53; y < 0; y += 12)
-						figure
+						proxyFigure
 							.moveTo(-16, y)
 							.lineTo(16, y + 6)
 							.stroke({ color: 0x716956, alpha: 0.7, width: 3 });
-					figure
+					proxyFigure
 						.rect(-9, -44, 18, 8)
 						.fill(0x24251f)
 						.circle(-4, -40, 2)
 						.fill(0xd8c36b)
 						.circle(4, -40, 2)
 						.fill(0xd8c36b);
-				} else if (role === 'skeleton') {
-					figure.circle(0, -43, 20).fill(0xd9d2b8).stroke({ color: 0x37362f, width: 3 });
-					figure.circle(-7, -46, 5).fill(0x171a18).circle(7, -46, 5).fill(0x171a18);
-					figure
+				} else if (!authored && role === 'skeleton') {
+					proxyFigure.circle(0, -43, 20).fill(0xd9d2b8).stroke({ color: 0x37362f, width: 3 });
+					proxyFigure.circle(-7, -46, 5).fill(0x171a18).circle(7, -46, 5).fill(0x171a18);
+					proxyFigure
 						.poly([-16, -18, 0, -30, 16, -18, 12, 8, -12, 8], true)
 						.fill(0x4d5960)
 						.stroke({ color: 0x272d31, width: 2 });
-					figure.arc(19, -10, 14, -1.5, 1.5).stroke({ color: 0xb8a16e, width: 5 });
-				} else {
-					figure
+					proxyFigure.arc(19, -10, 14, -1.5, 1.5).stroke({ color: 0xb8a16e, width: 5 });
+				} else if (!authored) {
+					proxyFigure
 						.poly([-22, 4, -18, -38, 0, -57, 19, -38, 23, 4], true)
 						.fill(0x3c3541)
 						.stroke({ color: 0xa08b69, width: 2 });
-					figure.circle(0, -48, 16).fill(0x211f22);
-					figure
+					proxyFigure.circle(0, -48, 16).fill(0x211f22);
+					proxyFigure
 						.poly([-19, -64, 0, -89, 20, -64], true)
 						.fill(0x343038)
 						.stroke({ color: 0xa88b56, width: 2 });
-					figure.circle(-6, -48, 3).fill(0xf1bb55).circle(6, -48, 3).fill(0xf1bb55);
+					proxyFigure.circle(-6, -48, 3).fill(0xf1bb55).circle(6, -48, 3).fill(0xf1bb55);
 				}
 
 				const healthTrack = new Graphics().roundRect(-28, 21, 56, 6, 3).fill(0x120d0c);
@@ -274,19 +327,26 @@
 					.roundRect(-28, 21, 56, 6, 3)
 					.fill(hostile ? 0xdc5d4c : 0x78b9d9);
 				container.addChild(glow, shadow, figure, healthTrack, healthFill);
-				return { container, glow, healthFill };
+				return { container, glow, healthFill, body: figure, authored, bodyScale };
 			}
 
 			for (const actor of receipt.actorsBefore) {
-				const view = makeActor(actor.role, actor.kind);
+				const view = makeActor(actor.id, actor.role, actor.kind);
 				view.container.label = actor.id;
 				actorViews[actor.id] = view;
 				actorsLayer.addChild(view.container);
 			}
 
 			const impact = new Graphics({ label: 'impact-crescent' });
-			impact.arc(0, 0, 42, -1.65, 1.15).stroke({ color: 0xfff2bb, width: 9, cap: 'round' });
-			impact.moveTo(-20, 20).lineTo(29, -27).stroke({ color: 0xffd26a, width: 4, cap: 'round' });
+			impact.circle(0, 0, 34).stroke({ color: 0x79d9ff, alpha: 0.75, width: 3 });
+			impact.arc(0, 0, 48, -1.75, 1.05).stroke({ color: 0xfff4c5, width: 10, cap: 'round' });
+			impact.moveTo(-28, 24).lineTo(34, -34).stroke({ color: 0xffcf5c, width: 5, cap: 'round' });
+			for (const angle of [-1.2, -0.7, -0.15, 0.45, 0.95]) {
+				impact
+					.moveTo(Math.cos(angle) * 44, Math.sin(angle) * 44)
+					.lineTo(Math.cos(angle) * 68, Math.sin(angle) * 68)
+					.stroke({ color: 0xffefb2, alpha: 0.82, width: 3, cap: 'round' });
+			}
 			impact.alpha = 0;
 			impact.zIndex = 1000;
 			actorsLayer.addChild(impact);
@@ -312,6 +372,13 @@
 						actor.id === receipt.actingActorId && snapshot.beat === 'focus'
 							? 0.35 + Math.sin(snapshot.beatProgress * Math.PI) * 0.55
 							: 0;
+					if (view.authored) {
+						const pulse =
+							snapshot.beat === 'focus' && actor.id === receipt.actingActorId
+								? 1 + Math.sin(snapshot.beatProgress * Math.PI) * 0.055
+								: 1;
+						view.body.scale.set(view.bodyScale * pulse);
+					}
 				}
 
 				const target = snapshot.actors.find((actor) => actor.id === receipt.targetActorId)!;
@@ -349,6 +416,8 @@
 			resizeObserver?.disconnect();
 			renderSnapshot = undefined;
 			app?.destroy({ removeView: false, releaseGlobalResources: true }, { children: true });
+			unloadArt?.();
+			unloadArt = undefined;
 		};
 	});
 </script>

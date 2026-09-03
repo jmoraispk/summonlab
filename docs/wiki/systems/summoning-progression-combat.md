@@ -50,6 +50,46 @@ The governing boundary is: **an intent provider is a player, never the referee**
 item from the legal-action list. It cannot construct an unvalidated effect, inspect hidden rolls,
 compute an outcome, or write state. Resolution alone emits the event trace and proposed claims.
 
+### Power integrity and human realism
+
+Design status: **accepted boundary; constants remain under review**
+
+Level, attributes, equipment, skill mastery, and affinity establish an actor's underlying capability.
+Stress, fear, pain, surprise, trust, imperfect information, and bad decisions affect how effectively
+that capability is expressed; they do not silently erase it. A level-10 hero remains far more
+capable than a level-3 goblin even while frightened, injured, or reluctant.
+
+~~~text
+underlying capability        current condition
+level + attributes           injury + fatigue + stress
+equipment + mastery          position + information + trust
+          \                         /
+           \                       /
+            v                     v
+          legal options -> chosen intent -> seeded resolution
+                                  |
+                                  v
+                     authoritative, explained outcome
+~~~
+
+The expected outcome range must preserve meaningful power gaps. Human factors may cost tempo,
+accuracy, Mana, positioning, confidence, or an opportunity; they should not turn every encounter
+into flat randomness. An upset across a large power gap requires explicit, traceable stacked causes,
+such as severe prior injury, an ambush, immobilization, environmental danger, incompatible equipment,
+or several failed coordination decisions. Even then, the receipt must show why the stronger actor's
+capability could not be brought to bear.
+
+Fairness requirements follow from this boundary:
+
+- personality never applies an invisible arbitrary penalty after an action is chosen;
+- consequential fear or impairment is visible in projected state and changes legal or evaluated
+  choices before resolution;
+- the effect of condition is bounded relative to the established capability gap;
+- safer recovery choices remain available when fiction and rules permit them;
+- identical state, seed, and recorded choices reproduce the same outcome and explanation.
+
+Human realism changes **how power is expressed**, not whether power exists.
+
 The target production shape is a pure simulation:
 
 ```text
@@ -202,16 +242,45 @@ should carry a sword, spear, or bow based on training, temperament, injury, and 
 actual transfer and equip operations remain validated engine commands. This makes disagreement,
 trust, compromise, rescue, and later growth available as story-producing mechanics.
 
-A promising onboarding direction is a curated initial trio with complementary capabilities,
-recognizable backstories, and intentional relationship tensions. Small mutable details can preserve
-variation. Later summons may use broader procedural generation within approved content rules. This
-is a candidate direction to test, not a locked roster rule.
+A normal new game should summon three random heroes rather than force a canonical opening party.
+A curated trio remains useful for demos, trailers, visual validation, and deterministic tests, where
+known identities make comparison and presentation reliable. Random opening heroes still need a
+validated combination of usable starter roles and equipment; randomness must not create an
+unplayable first encounter.
 
 Useful realism gaps in conventional progression combat include incomplete information, fear and
 tunnel vision, misunderstood signals, unfamiliar or ill-fitting equipment, fatigue and pain,
 unstable footing, overlapping actions, enemies that flee or protect one another, morale cascades,
 and emotional consequences after victory. These should create comprehensible decision pressure and
 memorable recoveries rather than a dense layer of undirected randomness.
+
+### Opening handoff and first danger
+
+Design status: **story and onboarding direction; timing and copy remain under review**
+
+The game has two experiential phases. The opening briefly hand-holds a new player through the
+premise and first relationship; ongoing play then expands into bounded hero autonomy.
+
+The proposed opening sequence is:
+
+1. give the player one very short explanation of the village and their role;
+2. summon three random heroes with no autobiographical memories and no understanding of where they
+   are;
+3. open a shared conversation in which the player may type or use another supported input to explain
+   the situation; all three heroes can hear and answer one another;
+4. present three serviceable starter weapons—initially a sword, spear, and bow—and let the group
+   discuss or decide their allocation through validated inventory actions;
+5. reveal nearby monsters after a short preparation window and transition into the first combat.
+
+The conversation is the tutorial rather than optional flavor. Each hero may eventually have an
+authored default first-contact line, but the player can answer briefly or remain longer. The opening
+must not require a fixed real-time minute, force lengthy exposition, or claim the heroes remember a
+past they do not have. Their generated traits and immediate emotional state can shape fear,
+curiosity, skepticism, and weapon preference without changing the shared facts of arrival.
+
+Randomness applies to normal play. A demo build may deliberately select known heroes whose art,
+roles, and behavior already produce a reliable introduction. Both paths use the same conversation,
+equipment, and encounter contracts.
 
 ## Living Village Tower exploration presentation
 

@@ -55,11 +55,19 @@
 	function playAction(): void {
 		command = { sequence: command.sequence + 1, kind: 'replay' };
 		paused = false;
+		snapshot = projectCombatPlayback(PROXY_COMBAT_RECEIPT, 0, {
+			started: true,
+			reducedMotion
+		});
 	}
 
 	function skipAction(): void {
 		command = { sequence: command.sequence + 1, kind: 'skip' };
 		paused = true;
+		snapshot = projectCombatPlayback(PROXY_COMBAT_RECEIPT, Number.POSITIVE_INFINITY, {
+			started: true,
+			reducedMotion
+		});
 	}
 
 	function togglePlayback(): void {
@@ -72,10 +80,10 @@
 </script>
 
 <svelte:head>
-	<title>Combat motion laboratory · Summonlab</title>
+	<title>Combat art and motion laboratory · Summonlab</title>
 	<meta
 		name="description"
-		content="Play the accepted focus, movement, impact, and settle cadence with a deterministic proxy combat receipt."
+		content="Review the painted observatory art pilot and accepted focus, movement, impact, and settle cadence."
 	/>
 </svelte:head>
 
@@ -83,7 +91,7 @@
 	<LabBackLink placement="top" />
 	<header class="combat-header">
 		<div>
-			<p>Living Village · combat motion v1</p>
+			<p>Living Village · observatory art pilot v1</p>
 			<h1>The ruined observatory</h1>
 		</div>
 		<div class="receipt-binding">
@@ -93,7 +101,7 @@
 	</header>
 
 	<section class="combat-shell" aria-labelledby="combat-heading">
-		<h2 id="combat-heading" class="sr-only">Proxy combat playback</h2>
+		<h2 id="combat-heading" class="sr-only">Observatory combat art and motion playback</h2>
 		<div class="battlefield" data-testid="combat-stage">
 			<CombatStage
 				receipt={PROXY_COMBAT_RECEIPT}
@@ -233,8 +241,8 @@
 			</dl>
 
 			<p class="fixture-note">
-				Proxy silhouettes only. The camera, anchors, tile claims, timing, feed, and controls are the
-				review target.
+				Authored environment with Dara and Sprout Goblin pilot sprites. The remaining silhouettes
+				stay explicit proxies until their combat packs exist.
 			</p>
 		</aside>
 	</section>

@@ -101,6 +101,13 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-player-journal.png` / `.json` — database-backed company ledger and deterministic report
   proving exact reward/XP/level and party-progress deltas, action/control provenance, direction and
   story records, semantic filters, replay cursors, state hashes, and strict replay.
+- `living-village-observatory-art-pilot-desktop-v1.png` — desktop review evidence for the first
+  PixiJS authored-art replacement: empty painted observatory, identity-derived Dara Zev, authored
+  Sprout Goblin, and six visibly secondary proxy combatants.
+- `living-village-observatory-art-pilot-phone-v1.png` — 390px phone composition at the ready state,
+  preserving the top initiative rail, exact cell anchors, three-line feed, and command overlay.
+- `living-village-observatory-art-pilot-impact-v1.png` — phone action evidence for the unchanged
+  Fleeting Step receipt and its raster-character movement, projected path, and destination claim.
 - `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are
