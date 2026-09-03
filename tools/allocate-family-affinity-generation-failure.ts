@@ -95,6 +95,7 @@ export async function allocateGenerationFailureSupersession(input: {
 		);
 		const nextTarget = FamilyAffinityTargetSchema.parse({
 			...target,
+			...(evidence.supersessionOverrides ?? {}),
 			targetId: `canonical/${target.coordinateId}/v${nextVersion}`,
 			version: nextVersion,
 			ownedPaths: {

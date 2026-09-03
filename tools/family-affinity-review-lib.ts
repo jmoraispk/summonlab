@@ -87,6 +87,16 @@ const GenerationFailureRunSchema = z
 		calls: z.array(GenerationFailureCallSchema).min(1).max(2)
 	})
 	.strict();
+const GenerationFailureSupersessionOverridesSchema = z
+	.object({
+		anatomyInvariants: z.array(z.string().min(1)).min(1).optional(),
+		telegraph: z.string().min(1).optional(),
+		acceptanceCriteria: z.array(z.string().min(1)).min(8).optional()
+	})
+	.strict()
+	.refine((value) => Object.keys(value).length > 0, {
+		message: 'Generation-failure supersession overrides cannot be empty'
+	});
 export const FamilyAffinityGenerationFailureSchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-generation-failure-v1'),
@@ -105,6 +115,7 @@ export const FamilyAffinityGenerationFailureSchema = z
 		resultReceiptCreated: z.literal(false),
 		reviewReceiptsCreated: z.literal(false),
 		supersessionTargetVersion: z.number().int().positive(),
+		supersessionOverrides: GenerationFailureSupersessionOverridesSchema.optional(),
 		supersessionAuthorizedBy: z.string().min(1),
 		runtimeCatalogMutationForbidden: z.literal(true)
 	})
