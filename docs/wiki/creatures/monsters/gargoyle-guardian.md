@@ -6,7 +6,7 @@ Wiki ID: `monster.gargoyle-guardian`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Sentinels occupy the first lit landing; breaking their wall-hop anchor erases th
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/gargoyles/gargoyle-guardian/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/gargoyles/gargoyle-guardian/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/gargoyles/gargoyle-guardian/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/gargoyles/gargoyle-guardian/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/gargoyles/gargoyle-guardian/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/gargoyles/gargoyle-guardian/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/gargoyles/gargoyle-guardian/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/gargoyles/gargoyle-guardian/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/gargoyles/gargoyle-guardian/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/gargoyles/gargoyle-guardian/wind-v1.json` |
