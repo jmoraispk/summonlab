@@ -55,9 +55,12 @@ async function productionInput(): Promise<MonsterWikiBuildInput> {
 		)
 	);
 	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
-	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
-		if (coordinate.activeVersion <= 1) continue;
-		const previousVersion = coordinate.activeVersion - 1;
+	async function loadGenerationFailureSourceBinding(
+		coordinate: (typeof manifest.canonicalMatrix.activeCoordinates)[number],
+		version: number
+	): Promise<CanonicalGenerationFailureSupersessionSourceBinding | undefined> {
+		if (version <= 1) return undefined;
+		const previousVersion = version - 1;
 		const targetSuffix = `v${coordinate.activeVersion}.json`;
 		const previousTargetPath = `${coordinate.targetPath.slice(0, -targetSuffix.length)}v${previousVersion}.json`;
 		const assignmentSuffix = `v${coordinate.activeVersion}.json`;
@@ -66,20 +69,24 @@ async function productionInput(): Promise<MonsterWikiBuildInput> {
 			await json(new URL(`../${previousTargetPath}`, import.meta.url))
 		);
 		const failurePath = familyAffinityGenerationFailurePath(previousTarget);
-		if (!existsSync(new URL(`../${failurePath}`, import.meta.url))) continue;
+		if (!existsSync(new URL(`../${failurePath}`, import.meta.url))) return undefined;
 		const generationFailure = FamilyAffinityGenerationFailureSchema.parse(
 			await json(new URL(`../${failurePath}`, import.meta.url))
 		);
-		if (!generationFailure.supersessionOverrides) continue;
-		generationFailureSourceBindings.push({
+		return {
 			previousTargetPath,
 			previousAssignmentPath,
 			previousTarget,
 			previousAssignment: FamilyAffinityAssignmentSchema.parse(
 				await json(new URL(`../${previousAssignmentPath}`, import.meta.url))
 			),
-			generationFailure
-		});
+			generationFailure,
+			previousBinding: await loadGenerationFailureSourceBinding(coordinate, previousVersion)
+		};
+	}
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const binding = await loadGenerationFailureSourceBinding(coordinate, coordinate.activeVersion);
+		if (binding) generationFailureSourceBindings.push(binding);
 	}
 	const catalogPaths = [
 		new URL(
@@ -593,6 +600,19 @@ describe('canonical monster wiki database', () => {
 	it('requires authenticated supersession evidence for active source overrides', async () => {
 		const input = cloneInput(await productionInput());
 		input.generationFailureSourceBindings = [];
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('requires the complete authenticated chain for repeated source overrides', async () => {
+		const input = cloneInput(await productionInput());
+		const waterBinding = input.generationFailureSourceBindings.find(
+			({ generationFailure }) =>
+				(generationFailure as { coordinateId?: string }).coordinateId ===
+				'doppelgangers/doppelganger-blank/water'
+		)!;
+		waterBinding.previousBinding = undefined;
 		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
 			/packet.*target|source.*drift/iu
 		);

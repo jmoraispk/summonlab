@@ -88,10 +88,12 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 			FamilyAffinityTargetSchema.parse(await readJson(resolve(repositoryRoot, targetPath)))
 		)
 	);
-	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
-	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
-		if (coordinate.activeVersion <= 1) continue;
-		const previousVersion = coordinate.activeVersion - 1;
+	async function loadGenerationFailureSourceBinding(
+		coordinate: (typeof manifest.canonicalMatrix.activeCoordinates)[number],
+		version: number
+	): Promise<CanonicalGenerationFailureSupersessionSourceBinding | undefined> {
+		if (version <= 1) return undefined;
+		const previousVersion = version - 1;
 		const previousTargetPath = pathAtVersion(
 			coordinate.targetPath,
 			coordinate.activeVersion,
@@ -106,20 +108,26 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 			await readJson(resolve(repositoryRoot, previousTargetPath))
 		);
 		const failurePath = familyAffinityGenerationFailurePath(previousTarget);
-		if (!existsSync(resolve(repositoryRoot, failurePath))) continue;
+		if (!existsSync(resolve(repositoryRoot, failurePath))) return undefined;
 		const generationFailure = FamilyAffinityGenerationFailureSchema.parse(
 			await readJson(resolve(repositoryRoot, failurePath))
 		);
-		if (!generationFailure.supersessionOverrides) continue;
-		generationFailureSourceBindings.push({
+		return {
 			previousTargetPath,
 			previousAssignmentPath,
 			previousTarget,
 			previousAssignment: FamilyAffinityAssignmentSchema.parse(
 				await readJson(resolve(repositoryRoot, previousAssignmentPath))
 			),
-			generationFailure
-		});
+			generationFailure,
+			previousBinding: await loadGenerationFailureSourceBinding(coordinate, previousVersion)
+		};
+	}
+
+	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const binding = await loadGenerationFailureSourceBinding(coordinate, coordinate.activeVersion);
+		if (binding) generationFailureSourceBindings.push(binding);
 	}
 	const candidateReferences: LegacyCandidateReference[] = [];
 	for (const catalogPath of legacyCatalogPaths) {

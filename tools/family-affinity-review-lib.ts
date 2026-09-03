@@ -52,6 +52,27 @@ import {
 	type FamilyPacket
 } from './family-affinity-production-lib.js';
 
+const CANONICAL_TARGET_SOURCE_FIELDS = [
+	'familyId',
+	'formId',
+	'currentClassId',
+	'affinity',
+	'tier',
+	'primaryArchetype',
+	'battlefieldDuty',
+	'identityInvariants',
+	'anatomyInvariants',
+	'constructionDimensions',
+	'telegraph',
+	'counterplay',
+	'forbiddenTreatments',
+	'sources',
+	'presentationContract',
+	'acceptanceCriteria',
+	'promotionCeiling',
+	'runtimeCatalogMutationForbidden'
+] as const;
+
 export {
 	FamilyAffinityBlindReviewReceiptSchema as BlindReviewReceiptSchema,
 	FamilyAffinityResultSchema as FamilyAffinityCandidateResultSchema,
@@ -131,6 +152,7 @@ export type CanonicalGenerationFailureSupersessionSourceBinding = {
 	previousTarget: unknown;
 	previousAssignment: unknown;
 	generationFailure: unknown;
+	previousBinding?: CanonicalGenerationFailureSupersessionSourceBinding;
 };
 
 export function familyAffinityGenerationFailurePath(target: FamilyAffinityTarget): string {
@@ -187,7 +209,16 @@ export function validateCanonicalGenerationFailureSupersessionSourceBinding(inpu
 	const previousTarget = FamilyAffinityTargetSchema.parse(input.binding.previousTarget);
 	const previousAssignment = FamilyAffinityAssignmentSchema.parse(input.binding.previousAssignment);
 	const supersedingTarget = FamilyAffinityTargetSchema.parse(input.supersedingTarget);
-	validateCanonicalTargetSourceBinding(previousTarget, input.family, input.form);
+	if (input.binding.previousBinding) {
+		validateCanonicalGenerationFailureSupersessionSourceBinding({
+			family: input.family,
+			form: input.form,
+			supersedingTarget: previousTarget,
+			binding: input.binding.previousBinding
+		});
+	} else {
+		validateCanonicalTargetSourceBinding(previousTarget, input.family, input.form);
+	}
 	const failure = validateFamilyAffinityGenerationFailureEvidence({
 		target: previousTarget,
 		targetPath: input.binding.previousTargetPath,
@@ -195,10 +226,7 @@ export function validateCanonicalGenerationFailureSupersessionSourceBinding(inpu
 		assignmentPath: input.binding.previousAssignmentPath,
 		evidence: input.binding.generationFailure
 	});
-	const overrides = failure.supersessionOverrides;
-	if (!overrides) {
-		throw new Error('Generation-failure source binding requires explicit supersession overrides');
-	}
+	const overrides = failure.supersessionOverrides ?? {};
 	if (
 		supersedingTarget.namespace !== 'canonical' ||
 		previousTarget.coordinateId !== supersedingTarget.coordinateId ||
@@ -218,17 +246,18 @@ export function validateCanonicalGenerationFailureSupersessionSourceBinding(inpu
 			);
 		}
 	}
-	const normalizedTarget = FamilyAffinityTargetSchema.parse({
-		...supersedingTarget,
-		...(overrides.anatomyInvariants === undefined
-			? {}
-			: { anatomyInvariants: previousTarget.anatomyInvariants }),
-		...(overrides.telegraph === undefined ? {} : { telegraph: previousTarget.telegraph }),
-		...(overrides.acceptanceCriteria === undefined
-			? {}
-			: { acceptanceCriteria: previousTarget.acceptanceCriteria })
-	});
-	validateCanonicalTargetSourceBinding(normalizedTarget, input.family, input.form);
+	for (const field of CANONICAL_TARGET_SOURCE_FIELDS) {
+		const override =
+			field === 'anatomyInvariants' || field === 'telegraph' || field === 'acceptanceCriteria'
+				? overrides[field]
+				: undefined;
+		const expected = override === undefined ? previousTarget[field] : override;
+		if (stableFamilyAffinityJson(supersedingTarget[field]) !== stableFamilyAffinityJson(expected)) {
+			throw new Error(
+				`Generation-failure source drift changed an unauthenticated target field: ${field}`
+			);
+		}
+	}
 }
 
 export type FamilyAffinityCandidateResult = FamilyAffinityResult;

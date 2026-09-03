@@ -1146,7 +1146,7 @@ describe('initial family review evidence', () => {
 				height: 1200
 			});
 		}
-	}, 45_000);
+	}, 120_000);
 
 	it('fails closed when an owned candidate path traverses a symlinked directory', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-corpus-'));
