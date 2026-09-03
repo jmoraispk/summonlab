@@ -6,7 +6,7 @@ Wiki ID: `monster.troll-elder-troll`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ The Elder produces Scrags, Bog Trolls, and Mutant Troll structures from specific
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/trolls/troll-elder-troll/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/trolls/troll-elder-troll/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/trolls/troll-elder-troll/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/trolls/troll-elder-troll/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/trolls/troll-elder-troll/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/trolls/troll-elder-troll/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/trolls/troll-elder-troll/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/trolls/troll-elder-troll/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/trolls/troll-elder-troll/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/trolls/troll-elder-troll/wind-v1.json` |
