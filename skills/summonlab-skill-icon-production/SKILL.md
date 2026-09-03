@@ -1,12 +1,16 @@
 ---
 name: summonlab-skill-icon-production
-description: Produce one manifest-bound Summonlab skill-icon raster with exact prompt and reference provenance, collision-safe persistence, bounded correction, and no promotion. Use for an assigned SkillIconTarget and SkillIconAssignment, not catalog coordination, calibration-sheet cropping, or general image ideation.
+description: Produce one manifest-bound Summonlab skill-icon raster with exact prompt, role-scoped versioned persistence, bounded correction, and no promotion. Use for an assigned SkillIconTarget and SkillIconAssignment, not catalog coordination, calibration-sheet cropping, or general image ideation.
 ---
 
 # Summonlab skill-icon production
 
 Produce exactly one assigned candidate and one result. The immutable target defines the art; the
 assignment defines ownership. Require the built-in `imagegen` skill/tool for raster generation.
+Dispatch is role-scoped: green-key `rarity-frame` and `backing` retries use
+`summonlab-skill-icon-production-v2`, while `skill-art` and `calibration-plate` jobs remain on
+`summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
+V1 packets retain exact provider bytes.
 
 ## Inputs and preflight
 
@@ -34,13 +38,20 @@ must be absent at preflight.
 4. If a correctable defect remains, make at most one imagegen edit and only when `retryCeiling` is
    `1`. Use the first output as the edit reference, preserve passing traits, and target only the
    observed defect. Otherwise stop at one call.
-5. Inspect the selected image both full-size and at 96 pixels using
+5. Inspect the provider image for fidelity, then pass its exact returned path directly to
+   `pnpm persist:skill-icon-output`; a v2 packet also requires the provider hash. Do not crop,
+   resize, key, mask, recolor, copy, or otherwise normalize it. For v2 `rarity-frame` and `backing`,
+   the helper alone checks the declared opaque `#00FF00` matte, performs the profile-pinned role
+   mask and resize inside its exclusive transaction, and writes the canonical candidate. For v1
+   `skill-art`, `calibration-plate`, and compatibility frame/backing packets, the helper retains
+   exact selected provider bytes.
+6. Inspect the retained candidate both full-size and at 96 pixels using
    [review-rubric.md](references/review-rubric.md). Record both findings for every retained image,
    including `revise`. A candidate permits no concern or failure.
-6. Persist the exact selected provider path only through `pnpm persist:skill-icon-output`; never
-   discover a newest file, copy bytes directly, or overwrite a destination. The helper creates the
-   candidate and result exclusively. If the provider fails or returns no role-valid image, create
-   no candidate and use the result-only failure command in [result-schema.md](references/result-schema.md).
+   If the provider fails or returns no eligible image, create no candidate and use the result-only
+   failure command in [result-schema.md](references/result-schema.md). For a v2 source rejected by
+   normalization, supply its exact provider path with `--normalization-source`; omit that flag when
+   no provider bytes were received.
 7. Complete one result according to [result-schema.md](references/result-schema.md). If honest
    inspection changes the helper-created status or findings, amend only that result newly created
    by this job before verification; never replace a file that existed at preflight. Run:
@@ -61,9 +72,12 @@ must be absent at preflight.
 - Never invoke `promote:skill-icon-output`, create a master, update runtime assets, or claim owner
   acceptance. Promotion is a later coordinator action.
 - Never create a composite, contact sheet, calibration crop, alternate, batch, or extra raster.
+- Never normalize provider output manually or copy a provider source into the repository. Never
+  persist its machine-local absolute path in result JSON; the v2 result records pathless source
+  media, dimensions, alpha mode, byte count, and content hash.
 - Never exceed one initial generation plus the assignment's zero-or-one corrective edit.
 - Treat the repository role-aware inspector and target canvas—not a generic 1024/RGBA header
   check—as the retained-image gate. Calibration plates may use their declared dimensions and RGB;
   standalone art, frame, and backing geometry remain strict.
-- Preserve exact prompt bytes, ordered reference paths and hashes, exact retained PNG bytes and
-  SHA-256, `noSharedFilesEdited: true`, and `selfPromoted: false`.
+- Preserve exact prompt bytes, ordered reference paths and hashes, the source and retained hashes
+  required by the packet version, `noSharedFilesEdited: true`, and `selfPromoted: false`.

@@ -16,7 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from validate_target import load_json, validate  # noqa: E402
-from verify_result import persist_failed_result, verify  # noqa: E402
+from verify_result import GEOMETRY_PATH, persist_failed_result, verify  # noqa: E402
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
@@ -176,16 +176,12 @@ class Packet:
         }
         self.target_file = write_json(self.root, TARGET_PATH, self.target)
         self.assignment_file = write_json(self.root, ASSIGNMENT_PATH, self.assignment)
-        geometry = json.loads(
-            (REPOSITORY_ROOT / "assets/wiki/skills/icon-production-v1/geometry.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        write_json(
-            self.root,
-            "assets/wiki/skills/icon-production-v1/geometry.json",
-            geometry,
-        )
+        geometry_source = (
+            REPOSITORY_ROOT / "assets/wiki/skills/icon-production-v1/geometry.json"
+        ).read_bytes()
+        geometry_path = self.root / "assets/wiki/skills/icon-production-v1/geometry.json"
+        geometry_path.parent.mkdir(parents=True, exist_ok=True)
+        geometry_path.write_bytes(geometry_source)
         self.catalog: dict[str, object] = {
             "schemaVersion": "skill-icon-catalog-v1",
             "records": [
@@ -480,6 +476,23 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.packet.assignment["jobId"] = "martial-blade-other-v1"
         self.assert_invalid("contract validation failed|identity")
 
+    def test_rejects_mixed_v1_v2_protocol_tuple(self) -> None:
+        self.packet.assignment["schemaVersion"] = "skill-icon-assignment-v2"
+        self.packet.assignment["skillVersion"] = "summonlab-skill-icon-production-v2"
+        self.packet.assignment["logicalIdentity"] = "martial-blade-horizontal-slash"
+        self.packet.assignment["revision"] = 2
+        self.packet.assignment["normalization"] = {
+            "profile": "skill-icon-green-key-role-mask-v1"
+        }
+        with self.assertRaisesRegex(ValueError, "contract validation failed|protocol tuple"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
+
     def test_rejects_extra_written_paths(self) -> None:
         written = self.packet.result["writtenOutputPaths"]
         assert isinstance(written, list)
@@ -733,6 +746,120 @@ class SkillIconVerifierTests(unittest.TestCase):
         second = load_json(self.packet.root / RESULT_PATH)
         self.assertEqual(second_report["verification"], "pass")
         self.assertEqual(second["failureReason"]["kind"], "malformed-output")
+
+    def test_v2_failure_records_pathless_observed_normalization_source(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        self.packet.target_file.unlink()
+        self.packet.assignment_file.unlink()
+        job_id = "charcoal-forged-stone-v2"
+        candidate_path = (
+            "assets/wiki/skills/icon-production-v1/candidates/references/"
+            f"{job_id}.png"
+        )
+        result_path = (
+            "assets/wiki/skills/icon-production-v1/results/references/"
+            f"{job_id}.json"
+        )
+        target_path = (
+            "assets/wiki/skills/icon-production-v1/targets/references/"
+            f"{job_id}.json"
+        )
+        assignment_path = (
+            "assets/wiki/skills/icon-production-v1/assignments/references/"
+            f"{job_id}.json"
+        )
+        geometry_hash = hashlib.sha256(
+            (self.packet.root / GEOMETRY_PATH).read_bytes()
+        ).hexdigest()
+        exact_prompt = (
+            "Paint the backing over an opaque #00FF00 matte with no baked checkerboard."
+        )
+        target = {
+            "schemaVersion": "skill-icon-target-v2",
+            "jobId": job_id,
+            "logicalIdentity": "charcoal-forged-stone",
+            "revision": 2,
+            "role": "backing",
+            "skillTargetId": None,
+            "motifFamily": None,
+            "rarity": None,
+            "exactPrompt": exact_prompt,
+            "references": self.packet.target["references"],
+            "canvas": {"width": 1024, "height": 1024, "mediaType": "image/png"},
+            "output": {"candidatePath": candidate_path, "resultPath": result_path},
+            "normalization": {
+                "profile": "skill-icon-green-key-role-mask-v1",
+                "sourceContract": {
+                    "mediaType": "image/png",
+                    "width": 1254,
+                    "height": 1254,
+                    "alphaMode": "rgb",
+                    "matteColor": "#00FF00",
+                },
+                "outputContract": {
+                    "mediaType": "image/png",
+                    "width": 1024,
+                    "height": 1024,
+                    "alphaMode": "rgba",
+                },
+                "geometry": {"path": GEOMETRY_PATH, "contentHash": geometry_hash},
+            },
+        }
+        assignment = {
+            **self.packet.assignment,
+            "schemaVersion": "skill-icon-assignment-v2",
+            "assignmentId": f"assignment-{job_id}",
+            "jobId": job_id,
+            "logicalIdentity": "charcoal-forged-stone",
+            "revision": 2,
+            "targetPath": target_path,
+            "assignmentPath": assignment_path,
+            "skillVersion": "summonlab-skill-icon-production-v2",
+            "normalization": {"profile": "skill-icon-green-key-role-mask-v1"},
+            "permittedOutputs": {
+                "candidatePath": candidate_path,
+                "resultPath": result_path,
+            },
+        }
+        target_file = write_json(self.packet.root, target_path, target)
+        assignment_file = write_json(self.packet.root, assignment_path, assignment)
+        provider_source = self.packet.root / "provider-source.png"
+        provider_bytes = png(1254, 1254, color_type=2, pattern="full")
+        provider_source.write_bytes(provider_bytes)
+        subprocess.run(["git", "add", "-A"], cwd=self.packet.root, check=True)
+        subprocess.run(
+            ["git", "commit", "-qm", "v2 fixture"], cwd=self.packet.root, check=True
+        )
+        report = persist_failed_result(
+            target,
+            assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="validation",
+            failure_message="The provider image failed the green-matte gate.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            total_wall_time_ms=TOTAL_WALL_TIME_MS,
+            contract_root=REPOSITORY_ROOT,
+            target_path=target_file,
+            assignment_path=assignment_file,
+            normalization_source=provider_source,
+        )
+        retained = load_json(self.packet.root / result_path)
+        self.assertEqual(report["verification"], "pass")
+        self.assertEqual(retained["normalization"]["outcome"], "failed")
+        evidence = retained["normalization"]["providerSource"]
+        self.assertNotIn("path", evidence)
+        self.assertEqual(evidence["mediaType"], "image/png")
+        self.assertEqual(evidence["width"], 1254)
+        self.assertEqual(evidence["height"], 1254)
+        self.assertEqual(evidence["alphaMode"], "rgb")
+        self.assertEqual(evidence["bytes"], len(provider_bytes))
+        self.assertEqual(evidence["contentHash"], hashlib.sha256(provider_bytes).hexdigest())
+        self.assertEqual(
+            retained["normalization"]["sourceContentHash"], evidence["contentHash"]
+        )
 
     def test_result_only_failure_refuses_collision(self) -> None:
         self.packet.candidate_file.unlink()

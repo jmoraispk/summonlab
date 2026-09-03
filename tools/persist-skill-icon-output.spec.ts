@@ -17,9 +17,13 @@ import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+	SkillIconResultV2Schema,
 	SkillIconResultSchema,
+	type SkillIconAssignmentV2,
 	type SkillIconAssignment,
 	type SkillIconGeometry,
+	type SkillIconTargetV2,
 	type SkillIconTarget
 } from '../packages/contracts/src/index.js';
 import {
@@ -30,6 +34,9 @@ import {
 
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true }))));
+const canonicalGeometrySourceBytes = await readFile(
+	'assets/wiki/skills/icon-production-v1/geometry.json'
+);
 
 const geometry: SkillIconGeometry = {
 	schemaVersion: 'skill-icon-geometry-v1',
@@ -98,6 +105,95 @@ function packet() {
 	return { target, assignment, candidatePath };
 }
 
+function packetV2(geometrySourceBytes: Buffer) {
+	const jobId = 'charcoal-forged-stone-v2';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	if (
+		createHash('sha256').update(geometrySourceBytes).digest('hex') !==
+		SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+	)
+		throw new Error('V2 fixture must use canonical raw geometry bytes');
+	const exactPrompt =
+		'Paint charcoal forged stone over an opaque #00FF00 matte with no baked checkerboard.';
+	const target: SkillIconTargetV2 = {
+		schemaVersion: 'skill-icon-target-v2',
+		jobId,
+		logicalIdentity: 'charcoal-forged-stone',
+		revision: 2,
+		role: 'backing',
+		skillTargetId: null,
+		motifFamily: null,
+		rarity: null,
+		exactPrompt,
+		references: [
+			{
+				path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+				purpose: 'Geometry.',
+				contentHash: 'a'.repeat(64)
+			}
+		],
+		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: { candidatePath, resultPath },
+		normalization: {
+			profile: 'skill-icon-green-key-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: {
+				mediaType: 'image/png',
+				width: 1024,
+				height: 1024,
+				alphaMode: 'rgba'
+			},
+			geometry: {
+				path: 'assets/wiki/skills/icon-production-v1/geometry.json',
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+			}
+		}
+	};
+	const assignment: SkillIconAssignmentV2 = {
+		schemaVersion: 'skill-icon-assignment-v2',
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		logicalIdentity: 'charcoal-forged-stone',
+		revision: 2,
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+		skillVersion: 'summonlab-skill-icon-production-v2',
+		normalization: { profile: 'skill-icon-green-key-role-mask-v1' },
+		assignedAt: '2026-09-02T08:00:00.000Z',
+		retryCeiling: 1,
+		permittedOutputs: { candidatePath, resultPath },
+		forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+		completionContract: {
+			oneTargetOneImage: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	};
+	return { target, assignment, candidatePath };
+}
+
+async function v2ProviderSource(): Promise<Buffer> {
+	return sharp({ create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' } })
+		.composite([
+			{
+				input: Buffer.from(
+					'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/></svg>'
+				)
+			}
+		])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+}
+
 async function workspace() {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-'));
 	roots.push(root);
@@ -116,6 +212,115 @@ async function workspace() {
 }
 
 describe('persistSkillIconOutput', () => {
+	it('normalizes a hash-bound V2 provider source only inside the collision-safe transaction', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-v2-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		const source = await v2ProviderSource();
+		await writeFile(sourcePath, source);
+		const geometrySourceBytes = canonicalGeometrySourceBytes;
+		const { target, assignment, candidatePath } = packetV2(geometrySourceBytes);
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'backing',
+			geometry,
+			geometrySourceBytes,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+		const retained = await readFile(path.join(root, candidatePath));
+		expect(retained).not.toEqual(source);
+		expect(receipt.source).toMatchObject({
+			path: sourcePath,
+			width: 1254,
+			height: 1254,
+			alphaMode: 'rgb',
+			contentHash: sourceHash
+		});
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toMatchObject({
+			outcome: 'completed',
+			sourceContentHash: sourceHash,
+			outputContentHash: createHash('sha256').update(retained).digest('hex')
+		});
+	}, 15_000);
+
+	it('rejects V2 source/geometry tampering and rolls back normalized candidates', async () => {
+		for (const failure of ['source-hash', 'geometry-hash', 'result-write'] as const) {
+			const root = await mkdtemp(path.join(os.tmpdir(), `skill-icon-persist-v2-${failure}-`));
+			roots.push(root);
+			const sourcePath = path.join(root, 'provider.png');
+			const source = await v2ProviderSource();
+			await writeFile(sourcePath, source);
+			const geometrySourceBytes = canonicalGeometrySourceBytes;
+			const { target, assignment, candidatePath } = packetV2(geometrySourceBytes);
+			const options = {
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'backing' as const,
+				geometry,
+				geometrySourceBytes:
+					failure === 'geometry-hash'
+						? Buffer.concat([geometrySourceBytes, Buffer.from(' ')])
+						: geometrySourceBytes,
+				target: target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				expectedSourceHash:
+					failure === 'source-hash'
+						? '1'.repeat(64)
+						: createHash('sha256').update(source).digest('hex'),
+				...(failure === 'result-write'
+					? { testHooks: { beforeResultWrite: () => Promise.reject(new Error('result stop')) } }
+					: {})
+			};
+			await expect(persistSkillIconOutputBound(options)).rejects.toThrow();
+			await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	}, 20_000);
+
+	it('revalidates candidate bytes after the result hook and rolls back owned partial files', async () => {
+		for (const failure of ['candidate-mutation', 'candidate-partial', 'result-partial'] as const) {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			const candidate = path.join(root, candidatePath);
+			await expect(
+				persistSkillIconOutputBound({
+					root,
+					sourcePath,
+					candidatePath,
+					expectedRole: 'skill-art',
+					geometry,
+					target,
+					assignment,
+					receivedAt: '2026-09-02T09:10:11.000Z',
+					testHooks:
+						failure === 'candidate-mutation'
+							? { beforeResultWrite: () => writeFile(candidate, Buffer.from('mutated')) }
+							: failure === 'candidate-partial'
+								? { afterCandidateOpen: () => Promise.reject(new Error('candidate write stop')) }
+								: { afterResultOpen: () => Promise.reject(new Error('result write stop')) }
+				})
+			).rejects.toThrow();
+			await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
 	it('retains exact PNG bytes with caller-owned timestamp and collision safety', async () => {
 		const { root, sourcePath } = await workspace();
 		const { target, assignment, candidatePath } = packet();

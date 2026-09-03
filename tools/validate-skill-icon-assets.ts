@@ -8,12 +8,16 @@ import sharp from 'sharp';
 import type { OutputInfo } from 'sharp';
 
 import {
+	AnySkillIconAssignmentSchema,
+	AnySkillIconExecutionSchema,
+	AnySkillIconResultSchema,
+	AnySkillIconTargetSchema,
 	SkillIconGeometrySchema,
 	SkillIconRoleSchema,
-	SkillIconTargetSchema,
 	type SkillIconGeometry,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
+import { resolveLatestSkillIconTargets, skillIconScopeForRole } from './skill-icon-revision-lib.js';
 
 export const SKILL_ICON_TRANSPARENT_ALPHA_MAX = 8;
 export const SKILL_ICON_SUBJECT_SAFE_MINIMUM = 0.9;
@@ -152,6 +156,7 @@ export async function inspectSkillIconAsset(
 	let apertureVisiblePixels = 0;
 	let outsideEffect = false;
 	let outsideAperture = false;
+	let outsideFrameEnvelope = false;
 	let insideExclusion = false;
 	let insideFrameAperture = false;
 
@@ -186,9 +191,11 @@ export async function inspectSkillIconAsset(
 			visiblePixels += 1;
 			if (distance <= subjectRadius) subjectPixels += 1;
 			if (distance > effectRadius) outsideEffect = true;
+			const inExclusion = pointInPolygon(pixelX, pixelY, exclusion);
 			if (!inAperture) outsideAperture = true;
-			if (pointInPolygon(pixelX, pixelY, exclusion)) insideExclusion = true;
-			if (pointInPolygon(pixelX, pixelY, innerAperture)) insideFrameAperture = true;
+			if (!inAperture && !inExclusion) outsideFrameEnvelope = true;
+			if (inExclusion) insideExclusion = true;
+			if (pointInPolygon(pixelX, pixelY, innerAperture) && !inExclusion) insideFrameAperture = true;
 			for (let edge = 0; edge < aperture.length; edge += 1) {
 				if (edgeHits[edge]) continue;
 				if (
@@ -221,8 +228,8 @@ export async function inspectSkillIconAsset(
 		if (insideExclusion) violations.push('visible pixels enter the rarity-medallion exclusion');
 	}
 	if (role === 'rarity-frame') {
-		if (outsideAperture)
-			violations.push('rarity-frame pixels must remain inside the aperture envelope');
+		if (outsideFrameEnvelope)
+			violations.push('rarity-frame pixels must remain inside the outer hex or medallion envelope');
 		if (insideFrameAperture) violations.push('rarity-frame aperture must remain transparent');
 		if (edgeHits.some((hit) => !hit))
 			violations.push('rarity-frame material must intersect all six edge bands');
@@ -324,24 +331,89 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 		resolvedRoot,
 		'assets/wiki/skills/icon-production-v1/geometry.json'
 	);
-	const geometry = SkillIconGeometrySchema.parse(
-		JSON.parse(
-			(await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry')).toString('utf8')
-		)
-	);
+	const geometrySourceBytes = await readSafeRepositoryFile(resolvedRoot, geometryPath, 'Geometry');
+	const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
+	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
 	const targetsRoot = path.join(resolvedRoot, 'assets/wiki/skills/icon-production-v1/targets');
 	const failures: string[] = [];
+	const allTargets: ReturnType<typeof AnySkillIconTargetSchema.parse>[] = [];
+	const executions: {
+		readonly target: ReturnType<typeof AnySkillIconTargetSchema.parse>;
+		readonly result: ReturnType<typeof AnySkillIconResultSchema.parse>;
+	}[] = [];
 	for (const targetPath of await targetFiles(targetsRoot)) {
-		const target = SkillIconTargetSchema.parse(
+		const target = AnySkillIconTargetSchema.parse(
 			JSON.parse(
 				(await readSafeRepositoryFile(resolvedRoot, targetPath, 'Target')).toString('utf8')
 			)
 		);
+		allTargets.push(target);
+		if (
+			target.schemaVersion === 'skill-icon-target-v2' &&
+			target.normalization.geometry.contentHash !== geometryHash
+		) {
+			failures.push(`${target.jobId}: current raw geometry authority hash does not match target`);
+			continue;
+		}
+		const scope = skillIconScopeForRole(target.role);
+		const canonicalTargetPath = path.join(
+			resolvedRoot,
+			`assets/wiki/skills/icon-production-v1/targets/${scope}/${target.jobId}.json`
+		);
+		if (targetPath !== canonicalTargetPath) {
+			failures.push(`target path does not match packet identity ${target.jobId}`);
+			continue;
+		}
+		const assignmentPath = path.join(
+			resolvedRoot,
+			`assets/wiki/skills/icon-production-v1/assignments/${scope}/${target.jobId}.json`
+		);
+		const resultPath = path.join(
+			resolvedRoot,
+			`assets/wiki/skills/icon-production-v1/results/${scope}/${target.jobId}.json`
+		);
+		let assignment: ReturnType<typeof AnySkillIconAssignmentSchema.parse>;
+		let result: ReturnType<typeof AnySkillIconResultSchema.parse>;
+		try {
+			assignment = AnySkillIconAssignmentSchema.parse(
+				JSON.parse(
+					(await readSafeRepositoryFile(resolvedRoot, assignmentPath, 'Assignment')).toString(
+						'utf8'
+					)
+				)
+			);
+			result = AnySkillIconResultSchema.parse(
+				JSON.parse(
+					(await readSafeRepositoryFile(resolvedRoot, resultPath, 'Result')).toString('utf8')
+				)
+			);
+			AnySkillIconExecutionSchema.parse({
+				schemaVersion:
+					target.schemaVersion === 'skill-icon-target-v2'
+						? 'skill-icon-execution-v2'
+						: 'skill-icon-execution-v1',
+				target,
+				assignment,
+				result
+			});
+		} catch (error) {
+			failures.push(
+				`${target.jobId}: invalid assignment/result evidence: ${
+					error instanceof Error ? error.message : String(error)
+				}`
+			);
+			continue;
+		}
 		const candidate = path.resolve(resolvedRoot, target.output.candidatePath);
 		const metadata = await lstat(candidate).catch((error: NodeJS.ErrnoException) => {
 			if (error.code === 'ENOENT') return null;
 			throw error;
 		});
+		if (result.status === 'failed') {
+			if (metadata) failures.push(`${target.jobId}: failed result cannot retain a candidate`);
+			executions.push({ target, result });
+			continue;
+		}
 		if (!metadata) {
 			failures.push(`missing candidate ${target.output.candidatePath}`);
 			continue;
@@ -355,11 +427,50 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			target.role,
 			geometry
 		);
+		if (result.output === null) {
+			failures.push(`${target.jobId}: non-failed result lacks candidate metadata`);
+			continue;
+		}
+		const expectedOutput = {
+			path: target.output.candidatePath,
+			mediaType: inspection.mediaType,
+			width: inspection.width,
+			height: inspection.height,
+			alphaMode: inspection.alphaMode,
+			bytes: inspection.bytes,
+			contentHash: inspection.contentHash
+		};
+		if (
+			Object.entries(expectedOutput).some(
+				([field, value]) => result.output?.[field as keyof typeof expectedOutput] !== value
+			)
+		)
+			failures.push(`${target.jobId}: result metadata does not bind the retained candidate bytes`);
 		if (inspection.width !== target.canvas.width || inspection.height !== target.canvas.height) {
 			failures.push(`${target.output.candidatePath}: dimensions do not match target canvas`);
 		}
 		for (const violation of inspection.violations)
 			failures.push(`${target.output.candidatePath}: ${violation}`);
+		executions.push({ target, result });
+	}
+	try {
+		const latest = resolveLatestSkillIconTargets(allTargets);
+		const resultByJob = new Map(executions.map(({ target, result }) => [target.jobId, result]));
+		for (const current of latest) {
+			const result = resultByJob.get(current.target.jobId);
+			if (!result) continue;
+			if (result.status !== 'candidate') {
+				const reason =
+					result.status === 'failed'
+						? `${result.failureReason?.kind ?? 'failed'}: ${result.failureReason?.message ?? 'terminal failure'}`
+						: 'revision requested';
+				failures.push(
+					`${current.logicalKey} latest revision v${current.revision} is ${result.status} (${reason}); create a higher revision`
+				);
+			}
+		}
+	} catch (error) {
+		failures.push(error instanceof Error ? error.message : String(error));
 	}
 	if (failures.length > 0) throw new Error(failures.join('\n'));
 }

@@ -20,16 +20,16 @@ import sharp from 'sharp';
 import { z } from 'zod';
 
 import {
+	AnySkillIconAssignmentSchema,
+	AnySkillIconExecutionSchema,
+	AnySkillIconResultSchema,
+	AnySkillIconTargetSchema,
 	SkillIconCatalogSchema,
-	SkillIconAssignmentSchema,
-	SkillIconExecutionSchema,
 	SkillIconGeometrySchema,
 	SkillIconMasterPathSchema,
 	SkillIconMasterySchema,
 	SkillIconRaritySchema,
-	SkillIconResultSchema,
 	SkillIconReviewSchema,
-	SkillIconTargetSchema,
 	type SkillIconAsset,
 	type SkillIconMastery,
 	type SkillIconRarity
@@ -42,6 +42,7 @@ import {
 	exportSkillIconProduction
 } from './export-skill-icon-production.js';
 import { CANONICAL_SKILL_SOURCE_PATHS } from './skill-icon-production-lib.js';
+import { resolveLatestSkillIconTargets, skillIconLogicalKey } from './skill-icon-revision-lib.js';
 import {
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
@@ -713,7 +714,7 @@ async function readRepositoryJson(
 	return JSON.parse((await readDirectRegularFile(location, label)).toString('utf8')) as unknown;
 }
 
-function referenceMasterPathFor(target: ReturnType<typeof SkillIconTargetSchema.parse>): string {
+function referenceMasterPathFor(target: ReturnType<typeof AnySkillIconTargetSchema.parse>): string {
 	if (target.role === 'rarity-frame') {
 		return `assets/wiki/skills/icon-production-v1/masters/frames/${target.rarity.toLowerCase()}.png`;
 	}
@@ -723,14 +724,20 @@ function referenceMasterPathFor(target: ReturnType<typeof SkillIconTargetSchema.
 	throw new Error(`Expected a backing or rarity-frame target, received ${target.role}`);
 }
 
-async function loadGeometrySecure(root: string) {
-	return SkillIconGeometrySchema.parse(
-		await readRepositoryJson(
-			root,
-			'assets/wiki/skills/icon-production-v1/geometry.json',
-			'Skill icon geometry'
-		)
-	);
+async function loadGeometrySecure(
+	root: string,
+	target?: ReturnType<typeof AnySkillIconTargetSchema.parse>
+) {
+	const geometryPath = 'assets/wiki/skills/icon-production-v1/geometry.json';
+	const location = await assertRepositoryPath(root, geometryPath, 'Skill icon geometry', false);
+	const bytes = await readDirectRegularFile(location, 'Skill icon geometry');
+	if (
+		target?.schemaVersion === 'skill-icon-target-v2' &&
+		sha256(bytes) !== target.normalization.geometry.contentHash
+	) {
+		throw new Error(`Skill icon geometry hash does not match latest V2 target ${target.jobId}`);
+	}
+	return SkillIconGeometrySchema.parse(JSON.parse(bytes.toString('utf8')) as unknown);
 }
 
 async function loadApprovedReference(
@@ -739,17 +746,53 @@ async function loadApprovedReference(
 	expectedRole: 'backing' | 'rarity-frame',
 	expectedRarity: SkillIconRarity | null
 ): Promise<Buffer> {
+	const targetDirectory = 'assets/wiki/skills/icon-production-v1/targets/references';
+	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory);
+	const targets = await Promise.all(
+		targetPaths.map(async (targetPath) => {
+			const target = AnySkillIconTargetSchema.parse(
+				await readRepositoryJson(root, targetPath, `Approved reference target ${targetPath}`)
+			);
+			if (targetPath !== `${targetDirectory}/${target.jobId}.json`) {
+				throw new Error(`Reference target path does not match ${target.jobId}: ${targetPath}`);
+			}
+			if (target.role !== 'rarity-frame' && target.role !== 'backing') {
+				throw new Error(`Unexpected reference target role ${target.role}: ${target.jobId}`);
+			}
+			return target;
+		})
+	);
+	const expectedLogicalKey =
+		expectedRole === 'rarity-frame' ? `rarity-frame:${expectedRarity}` : 'backing';
+	const latestTarget = resolveLatestSkillIconTargets(targets).find(
+		(item) => item.logicalKey === expectedLogicalKey
+	)?.target;
+	if (!latestTarget) {
+		throw new Error(`Approved reference ${masterPath} has no target for ${expectedLogicalKey}`);
+	}
+	if (
+		latestTarget.role !== expectedRole ||
+		(expectedRole === 'rarity-frame' && latestTarget.rarity !== expectedRarity) ||
+		skillIconLogicalKey(latestTarget) !== expectedLogicalKey ||
+		referenceMasterPathFor(latestTarget) !== masterPath
+	) {
+		throw new Error(
+			`Latest reference target ${latestTarget.jobId} does not authorize ${masterPath}`
+		);
+	}
 	const receiptPaths = await listRepositoryJsonFiles(root, SKILL_ICON_PROMOTION_RECEIPT_ROOT);
 	const matches = [];
 	for (const receiptPath of receiptPaths) {
 		const receipt = SkillIconPromotionReceiptSchema.parse(
 			await readRepositoryJson(root, receiptPath, `Promotion receipt ${receiptPath}`)
 		);
-		if (receipt.master.path === masterPath) matches.push({ receiptPath, receipt });
+		if (receipt.master.path === masterPath && receipt.jobId === latestTarget.jobId) {
+			matches.push({ receiptPath, receipt });
+		}
 	}
 	if (matches.length !== 1) {
 		throw new Error(
-			`Approved reference ${masterPath} requires exactly one accepted promotion receipt; found ${matches.length}`
+			`Approved reference ${masterPath} requires exactly one accepted promotion receipt for latest target ${latestTarget.jobId}; found ${matches.length}`
 		);
 	}
 	const { receiptPath, receipt } = matches[0]!;
@@ -798,17 +841,21 @@ async function loadApprovedReference(
 			'Approved reference review'
 		)
 	]);
-	const target = SkillIconTargetSchema.parse(targetValue);
-	const assignment = SkillIconAssignmentSchema.parse(assignmentValue);
-	const result = SkillIconResultSchema.parse(resultValue);
+	const target = AnySkillIconTargetSchema.parse(targetValue);
+	const assignment = AnySkillIconAssignmentSchema.parse(assignmentValue);
+	const result = AnySkillIconResultSchema.parse(resultValue);
 	const review = SkillIconReviewSchema.parse(reviewValue);
-	SkillIconExecutionSchema.parse({
-		schemaVersion: 'skill-icon-execution-v1',
+	AnySkillIconExecutionSchema.parse({
+		schemaVersion:
+			target.schemaVersion === 'skill-icon-target-v2'
+				? 'skill-icon-execution-v2'
+				: 'skill-icon-execution-v1',
 		target,
 		assignment,
 		result
 	});
 	if (
+		target.jobId !== latestTarget.jobId ||
 		target.jobId !== receipt.jobId ||
 		target.role !== expectedRole ||
 		referenceMasterPathFor(target) !== masterPath ||
@@ -848,7 +895,7 @@ async function loadApprovedReference(
 	const inspection = await inspectSkillIconAsset(
 		master,
 		expectedRole,
-		await loadGeometrySecure(root)
+		await loadGeometrySecure(root, target)
 	);
 	if (inspection.violations.length > 0) {
 		throw new Error(
@@ -1194,34 +1241,39 @@ async function renderReferenceGrid(cells: readonly Buffer[]): Promise<Buffer> {
 
 async function loadBoundCandidate(
 	root: string,
-	target: ReturnType<typeof SkillIconTargetSchema.parse>
+	target: ReturnType<typeof AnySkillIconTargetSchema.parse>
 ): Promise<Buffer> {
 	const candidatePath = target.output.candidatePath;
 	const resultPath = target.output.resultPath;
 	const scope = target.role === 'skill-art' ? 'icons' : 'references';
 	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${target.jobId}.json`;
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${target.jobId}.json`;
-	const candidate = await readRepositoryLayer(root, candidatePath, `Candidate ${target.jobId}`);
 	const [assignmentValue, resultBytes] = await Promise.all([
 		readRepositoryJson(root, assignmentPath, `Assignment ${target.jobId}`),
 		assertRepositoryPath(root, resultPath, `Result ${target.jobId}`, false).then((location) =>
 			readDirectRegularFile(location, `Result ${target.jobId}`)
 		)
 	]);
-	const assignment = SkillIconAssignmentSchema.parse(assignmentValue);
-	const result = SkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-	SkillIconExecutionSchema.parse({
-		schemaVersion: 'skill-icon-execution-v1',
+	const assignment = AnySkillIconAssignmentSchema.parse(assignmentValue);
+	const result = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	AnySkillIconExecutionSchema.parse({
+		schemaVersion:
+			target.schemaVersion === 'skill-icon-target-v2'
+				? 'skill-icon-execution-v2'
+				: 'skill-icon-execution-v1',
 		target,
 		assignment,
 		result
 	});
+	if (result.status !== 'candidate' || !result.output)
+		throw new Error(
+			`Latest result ${target.jobId} is ${result.status}; no candidate fallback allowed`
+		);
+	const candidate = await readRepositoryLayer(root, candidatePath, `Candidate ${target.jobId}`);
 	if (
 		assignment.targetPath !== targetPath ||
 		assignment.assignmentPath !== assignmentPath ||
 		result.jobId !== target.jobId ||
-		result.status !== 'candidate' ||
-		!result.output ||
 		result.resultPath !== resultPath ||
 		result.output.path !== candidatePath ||
 		result.output.contentHash !== sha256(candidate) ||
@@ -1231,7 +1283,7 @@ async function loadBoundCandidate(
 	) {
 		throw new Error(`Candidate/result binding mismatch for ${target.jobId}`);
 	}
-	const geometry = await loadGeometrySecure(root);
+	const geometry = await loadGeometrySecure(root, target);
 	const inspection = await inspectSkillIconAsset(candidate, target.role, geometry);
 	if (
 		inspection.width !== target.canvas.width ||
@@ -1250,7 +1302,7 @@ async function planReferenceContactSheet(root: string): Promise<DesiredContactSh
 	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory).catch(() => []);
 	const targets = await Promise.all(
 		targetPaths.map(async (targetPath) => {
-			const target = SkillIconTargetSchema.parse(
+			const target = AnySkillIconTargetSchema.parse(
 				await readRepositoryJson(root, targetPath, `Target ${targetPath}`)
 			);
 			if (targetPath !== `${targetDirectory}/${target.jobId}.json`) {
@@ -1360,7 +1412,7 @@ async function planPilotContactSheet(root: string): Promise<DesiredContactSheet>
 	const targetPaths = await listRepositoryJsonFiles(root, targetDirectory).catch(() => []);
 	const targets = await Promise.all(
 		targetPaths.map(async (targetPath) => {
-			const target = SkillIconTargetSchema.parse(
+			const target = AnySkillIconTargetSchema.parse(
 				await readRepositoryJson(root, targetPath, `Pilot target ${targetPath}`)
 			);
 			if (targetPath !== `${targetDirectory}/${target.jobId}.json`) {

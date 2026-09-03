@@ -14,7 +14,20 @@ import subprocess
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-SKILL_VERSION = "summonlab-skill-icon-production-v1"
+PROTOCOLS = {
+    (
+        "skill-icon-target-v1",
+        "skill-icon-assignment-v1",
+        "summonlab-skill-icon-production-v1",
+    ): "skill-icon-execution-v1",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v2",
+    ): "skill-icon-execution-v2",
+}
+NORMALIZATION_PROFILE = "skill-icon-green-key-role-mask-v1"
+GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
 STYLE_AUTHORITY_PATH = (
@@ -31,21 +44,21 @@ PRIMARY_PARENT_PURPOSE = "Approved primary-parent master."
 _CONTRACT_PROGRAM = r"""
 import fs from 'node:fs';
 import {
-  SkillIconAssignmentSchema,
+  AnySkillIconAssignmentSchema,
   SkillIconCatalogSchema,
-  SkillIconExecutionSchema,
-  SkillIconTargetSchema
+  AnySkillIconExecutionSchema,
+  AnySkillIconTargetSchema
 } from './packages/contracts/src/index.ts';
 import { inspectSkillIconAsset } from './tools/validate-skill-icon-assets.ts';
 async function main() {
   const packet = JSON.parse(fs.readFileSync(0, 'utf8'));
   if (packet.kind === 'inputs') {
-    SkillIconTargetSchema.parse(packet.target);
-    SkillIconAssignmentSchema.parse(packet.assignment);
+    AnySkillIconTargetSchema.parse(packet.target);
+    AnySkillIconAssignmentSchema.parse(packet.assignment);
     SkillIconCatalogSchema.parse(packet.catalog);
   } else if (packet.kind === 'execution') {
-    SkillIconExecutionSchema.parse({
-      schemaVersion: 'skill-icon-execution-v1',
+    AnySkillIconExecutionSchema.parse({
+      schemaVersion: packet.executionSchemaVersion,
       target: packet.target,
       assignment: packet.assignment,
       result: packet.result
@@ -80,6 +93,48 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         fail(f"{path} must contain a JSON object")
     return value
+
+
+def read_stable_regular_file(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -> bytes:
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = os.open(path, flags)
+    try:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            fail(f"path must be a regular file: {path}")
+        if before.st_size < 0 or before.st_size > max_bytes:
+            fail(f"file is outside the bounded byte envelope: {path}")
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(remaining, 1024 * 1024))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        after = os.fstat(descriptor)
+        current = path.lstat()
+        identity = lambda value: (
+            value.st_dev,
+            value.st_ino,
+            value.st_size,
+            value.st_nlink,
+            value.st_mtime_ns,
+            value.st_ctime_ns,
+        )
+        data = b"".join(chunks)
+        if (
+            identity(before) != identity(after)
+            or identity(before) != identity(current)
+            or stat.S_ISLNK(current.st_mode)
+            or len(data) != before.st_size
+        ):
+            fail(f"file changed while it was being read: {path}")
+        return data
+    finally:
+        os.close(descriptor)
 
 
 def project_path(raw: Any) -> PurePosixPath:
@@ -190,6 +245,13 @@ def run_contract_validation(
         packet["catalog"] = catalog
     if result is not None:
         packet["result"] = result
+    if kind == "execution":
+        protocol = (
+            target.get("schemaVersion"),
+            assignment.get("schemaVersion"),
+            assignment.get("skillVersion"),
+        )
+        packet["executionSchemaVersion"] = PROTOCOLS.get(protocol)
     _run_repository_bridge(packet, contract_root)
 
 
@@ -348,8 +410,35 @@ def validate(
         catalog=catalog,
         contract_root=contract_root or root,
     )
-    if assignment.get("skillVersion") != SKILL_VERSION:
-        fail(f"assignment skillVersion must be {SKILL_VERSION}")
+    protocol = (
+        target.get("schemaVersion"),
+        assignment.get("schemaVersion"),
+        assignment.get("skillVersion"),
+    )
+    execution_version = PROTOCOLS.get(protocol)
+    if execution_version is None:
+        fail("target, assignment, and skill versions do not form an accepted protocol tuple")
+    if execution_version == "skill-icon-execution-v2":
+        target_normalization = target.get("normalization")
+        assignment_normalization = assignment.get("normalization")
+        if (
+            not isinstance(target_normalization, dict)
+            or not isinstance(assignment_normalization, dict)
+            or target_normalization.get("profile") != NORMALIZATION_PROFILE
+            or assignment_normalization.get("profile") != NORMALIZATION_PROFILE
+        ):
+            fail("v2 target and assignment must bind the exact normalization profile")
+        geometry = target_normalization.get("geometry")
+        if not isinstance(geometry, dict) or geometry.get("path") != GEOMETRY_PATH:
+            fail("v2 target must bind the canonical raw geometry authority")
+        geometry_file = absolute_project_path(
+            root, GEOMETRY_PATH, must_exist=True, regular_file=True
+        )
+        geometry_bytes = read_stable_regular_file(geometry_file)
+        if hashlib.sha256(geometry_bytes).hexdigest() != geometry.get(
+            "contentHash"
+        ):
+            fail("v2 target geometry hash does not match the raw geometry authority bytes")
 
     job_id = target["jobId"]
     role = target["role"]
@@ -398,6 +487,7 @@ def validate(
         "references": len(references),
         "retryCeiling": assignment["retryCeiling"],
         "status": "valid",
+        "executionSchemaVersion": execution_version,
     }
 
 

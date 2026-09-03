@@ -48,10 +48,35 @@ Measured Cut, Ember, Parry, Stone Skin, Fireball, Thousand Cuts, or Worldfire.
 ## Runtime boundary
 
 The canonical asset root is `assets/wiki/skills/rarity-frame-v1/`. Its provenance catalog binds the
-retained reference, selected source PNG, and bundled WebP. The WebP is the approved comparison
+retained reference, selected Option C source PNG, and bundled WebP. The WebP is the approved comparison
 plate rendered by this wiki page.
 
 The plate is not a sprite sheet and must not be cropped into seven runtime frames. A later asset
 production pass must create individually framed, transparent, text-safe exports that preserve this
 material and ornament grammar. That pass may adjust registration and small-size legibility, but it
 must not silently change tier materials, letters, or the S treatment.
+
+## Production normalization boundary
+
+The Option C plate remains the visual authority and is never cropped. Current v2 frame production
+accepts only the packet-declared `skill-icon-green-key-role-mask-v1` provider envelope: one
+1254×1254 RGB PNG over opaque `#00FF00`, without a baked checkerboard. The collision-safe repository
+helper alone converts it to the canonical 1024-pixel RGBA frame, using the outer-hex-plus-medallion
+envelope and a clear inner 78% aperture except where the medallion overlaps it. The producing agent
+may not resize, crop, key, mask, or rewrite the provider raster.
+
+This v2 envelope is scoped to `rarity-frame` and `backing` retries. It does not apply to individual
+`skill-art` or `calibration-plate` production, which remains on the v1 exact-source contract unless
+a future contract revision explicitly adds those roles.
+
+Result provenance records pathless provider media properties and hashes, the raw geometry-file
+hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
+v1 Task 7 failures remain immutable evidence. Each retry receives a new explicit revision, and the
+unique latest revision must complete rather than falling back to an older candidate.
+
+For every new frame or backing revision, the coordinator authors the visual target, binds the raw
+geometry authority and exact v2 assignment, and dispatches one isolated generation. The producer
+passes the returned provider path/hash directly to the helper. Automated normalization and
+geometry validation run before owner review; only an accepted review may promote the master and
+derive runtime assets. A failed or revised attempt remains in history and is superseded only by a
+higher explicit revision.

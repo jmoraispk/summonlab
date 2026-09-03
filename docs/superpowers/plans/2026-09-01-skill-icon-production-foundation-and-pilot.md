@@ -23,6 +23,9 @@
 - The approved F–S ladder remains weathered iron, aged bronze, tempered blue steel, moonlit silver, blackened amethyst, champagne electrum, and ceremonial antique gold.
 - Calibration plates are reference evidence only and are never cropped into production assets.
 - Individual skill masters are generated independently at the same size.
+- Frame/backing provider output is normalized only inside persistence under an exact v2 packet
+  profile; agents never transform, crop, key, resize, or mask it manually. Skill-art and
+  calibration jobs remain v1 exact-source work, and historical v1 evidence stays valid.
 - Generated jobs may write only their declared candidate and result paths; only the coordinator may update shared catalogs, approvals, or runtime exports.
 - The 456-of-456 completion gate remains disabled until the fifteen-skill pilot receives owner approval.
 
@@ -38,7 +41,8 @@ This plan deliberately ends at the accepted three-domain pilot and a machine-gen
 | `tools/skill-icon-production-lib.ts` | Canonical row loading, motif parsing, catalog joining, graph validation, path construction, and readiness summaries |
 | `tools/export-skill-icon-production.ts` | Deterministic `--write`/`--check` exporter for geometry guides, machine motif map, catalog, targets, and JSON schemas |
 | `tools/validate-skill-icon-assets.ts` | Sharp-based dimensions, alpha, safe-zone, registration, hash, and derivative validation |
-| `tools/persist-skill-icon-output.ts` | Collision-safe persistence and structured receipt generation for one image job |
+| `tools/persist-skill-icon-output.ts` | Collision-safe v1 exact-source/v2 normalized persistence and structured receipt generation for one image job |
+| `tools/normalize-skill-icon-provider-source.ts` | Pure profile-pinned 1254 RGB green-key to 1024 RGBA role normalization |
 | `tools/compose-skill-icon-assets.ts` | Backing/art/frame composition, runtime derivatives, recognition thumbnails, and contact sheets |
 | `tools/report-skill-icon-readiness.ts` | Exact coverage and lifecycle gate report for all 456 skills |
 | `tools/tsconfig.skill-icon-production.json` | Focused type-check boundary for the pipeline |
@@ -659,6 +663,23 @@ git commit -m "feat(skills): add icon production skill"
 
 ### Task 7: Produce the seven frame masters and universal backing
 
+#### V2 provider-normalization amendment
+
+The eight `*-v1` Task 7 attempts are immutable terminal failure evidence: they correctly rejected
+provider rasters outside the original exact-source contract. Current retries use explicit
+target-v2/assignment-v2/result-v2 packets, `summonlab-skill-icon-production-v2`, job basenames
+`rarity-frame-{f,e,d,c,b,a,s}-v2` and `charcoal-forged-stone-v2`, and the literal
+`skill-icon-green-key-role-mask-v1` profile. Asset roots remain `icon-production-v1/` because that
+namespace versions the asset system, not the execution protocol.
+
+The helper reads the exact provider source once, verifies its caller-bound hash and narrow
+1254×1254 RGB PNG/opaque `#00FF00` envelope, then applies the fixed role mask and 1024 RGBA output
+recipe within the existing exclusive candidate/result transaction. The result records pathless
+source and normalization provenance. No provider source is copied into the repository, and no
+producer performs normalization manually. Global validation verifies every historical tuple, but
+only the unique latest semantic revision may satisfy a slot; a latest failure/revise/incomplete
+tuple blocks without falling back.
+
 **Files:**
 
 - Create: `assets/wiki/skills/icon-production-v1/targets/references/*.json`
@@ -686,11 +707,16 @@ Create one target per rarity and one backing target. Every frame prompt must sta
 pnpm validate:skill-icons
 ```
 
-Expected: FAIL with exactly eight missing candidate outputs and no catalog-structure errors.
+Expected for fresh v2 packets: FAIL with exactly eight missing latest-v2 outputs and no
+catalog-structure errors. Historical v1 result-only failures remain valid evidence and must not be
+misreported as missing candidates.
 
 - [ ] **Step 3: Dispatch eight isolated generation jobs**
 
-Use `summonlab-skill-icon-production` once per target. The seven frames may run independently; the backing is independent of all frames. Each job returns only its versioned candidate PNG and result JSON.
+Use `summonlab-skill-icon-production` once per target. The seven frames may run independently; the
+backing is independent of all frames. The producer passes only the exact provider path/hash to the
+helper; the helper normalizes transactionally. Each job returns only its versioned candidate PNG
+and result JSON.
 
 - [ ] **Step 4: Validate candidates and create the comparison sheet**
 
@@ -1083,6 +1109,12 @@ images.
 - calibration plates establish consistency but never become asset crops;
 - individual masters are 1024-pixel transparent PNGs;
 - the exact new-skill lifecycle is map → author → calibrate if needed → generate → validate → owner review → promote → export;
+- green-key rarity-frame/backing retries use an exact v2 target/assignment/skill tuple and
+  packet-authorized provider normalization; skill-art and calibration jobs remain v1 exact-source
+  work unless a future contract revision adds those roles, and historical v1 evidence stays
+  immutable;
+- the producing agent never normalizes manually, copies a provider source into the repository, or
+  persists its absolute path; retries use a new explicit revision and latest-revision validation;
 - changing rarity recomposes the frame and does not regenerate artwork;
 - the current pilot count and link to evidence.
 

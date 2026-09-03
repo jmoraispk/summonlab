@@ -5,17 +5,22 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	AnySkillIconAssignmentSchema,
+	AnySkillIconTargetSchema,
 	SkillIconAssignmentSchema,
+	SkillIconAssignmentV2Schema,
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconGeometrySchema,
 	SkillIconResultSchema,
+	SkillIconResultV2Schema,
 	SkillIconTargetSchema,
+	SkillIconTargetV2Schema,
 	SkillIconTargetPathSchema,
-	type SkillIconAssignment,
+	type AnySkillIconAssignment,
+	type AnySkillIconTarget,
 	type SkillIconGeometry,
-	type SkillIconRole,
-	type SkillIconTarget
+	type SkillIconRole
 } from '../packages/contracts/src/index.js';
 import { IsoDateTimeSchema, StateHashSchema } from '../packages/contracts/src/shared.js';
 import { SKILL_ICON_GEOMETRY_PATH } from './export-skill-icon-geometry.js';
@@ -23,12 +28,19 @@ import {
 	inspectSkillIconAsset,
 	type SkillIconAssetInspection
 } from './validate-skill-icon-assets.js';
+import {
+	normalizeSkillIconProviderSource,
+	readSkillIconProviderSourceOnce,
+	SKILL_ICON_NORMALIZATION_PROFILE,
+	type SkillIconProviderSourceEvidence
+} from './normalize-skill-icon-provider-source.js';
 
 export interface PersistSkillIconOutputOptions {
 	readonly sourcePath: string;
 	readonly candidatePath: string;
 	readonly expectedRole: SkillIconRole;
 	readonly geometry: SkillIconGeometry;
+	readonly geometrySourceBytes?: Buffer;
 }
 
 export interface PersistSkillIconOutputDependencies {
@@ -37,13 +49,17 @@ export interface PersistSkillIconOutputDependencies {
 
 export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutputOptions {
 	readonly root?: string;
-	readonly target: SkillIconTarget;
-	readonly assignment: SkillIconAssignment;
+	readonly target: AnySkillIconTarget;
+	readonly assignment: AnySkillIconAssignment;
 	readonly receivedAt: string;
 	readonly expectedSourceHash?: string;
 	readonly testHooks?: {
+		readonly afterSourceRead?: () => void | Promise<void>;
+		readonly afterNormalization?: () => void | Promise<void>;
 		readonly beforeCandidateWrite?: () => void | Promise<void>;
+		readonly afterCandidateOpen?: () => void | Promise<void>;
 		readonly beforeResultWrite?: () => void | Promise<void>;
+		readonly afterResultOpen?: () => void | Promise<void>;
 	};
 }
 
@@ -52,7 +68,9 @@ export interface SkillIconAssetReceipt {
 	readonly jobId: string;
 	readonly role: SkillIconRole;
 	readonly receivedAt: string;
-	readonly source: SkillIconAssetInspection & { readonly path: string };
+	readonly source: (SkillIconAssetInspection | SkillIconProviderSourceEvidence) & {
+		readonly path: string;
+	};
 	readonly retained: SkillIconAssetInspection & { readonly path: string };
 	readonly result: { readonly path: string; readonly contentHash: string };
 }
@@ -100,7 +118,6 @@ async function ensureSafeParents(root: string, destination: string): Promise<voi
 
 interface OwnedPersistedFile {
 	readonly path: string;
-	readonly contentHash: string;
 	readonly parent: { readonly realPath: string; readonly device: number; readonly inode: number };
 	readonly file: { readonly device: number; readonly inode: number };
 }
@@ -133,17 +150,13 @@ async function removeOwnedPersistedFile(owned: OwnedPersistedFile): Promise<void
 	)
 		throw new Error(`Persistence file identity changed; cleanup required: ${owned.path}`);
 	const handle = await open(owned.path, constants.O_RDONLY | constants.O_NOFOLLOW);
-	let bytes: Buffer;
 	try {
 		const opened = await handle.stat();
 		if (opened.dev !== owned.file.device || opened.ino !== owned.file.inode)
 			throw new Error(`Persistence file changed while opening; cleanup required: ${owned.path}`);
-		bytes = await handle.readFile();
 	} finally {
 		await handle.close();
 	}
-	if (createHash('sha256').update(bytes).digest('hex') !== owned.contentHash)
-		throw new Error(`Persistence file hash changed; cleanup required: ${owned.path}`);
 	const immediatelyBefore = await lstat(owned.path);
 	const parentImmediatelyBefore = await persistenceParentFingerprint(owned.path);
 	if (
@@ -165,6 +178,36 @@ async function removeOwnedPersistedFile(owned: OwnedPersistedFile): Promise<void
 		await parentHandle.sync();
 	} finally {
 		await parentHandle.close();
+	}
+}
+
+async function assertOwnedPersistedFile(
+	owned: OwnedPersistedFile,
+	expectedBytes: Buffer,
+	description: string
+): Promise<void> {
+	const parent = await persistenceParentFingerprint(owned.path);
+	const metadata = await lstat(owned.path);
+	if (
+		parent.realPath !== owned.parent.realPath ||
+		parent.device !== owned.parent.device ||
+		parent.inode !== owned.parent.inode ||
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== owned.file.device ||
+		metadata.ino !== owned.file.inode
+	)
+		throw new Error(`${description} identity changed during persistence`);
+	const handle = await open(owned.path, constants.O_RDONLY | constants.O_NOFOLLOW);
+	try {
+		const opened = await handle.stat();
+		if (opened.dev !== owned.file.device || opened.ino !== owned.file.inode)
+			throw new Error(`${description} identity changed while opening`);
+		const bytes = await handle.readFile();
+		if (!bytes.equals(expectedBytes))
+			throw new Error(`${description} bytes changed during persistence`);
+	} finally {
+		await handle.close();
 	}
 }
 
@@ -202,11 +245,16 @@ async function readSafePacket(
 }
 
 function assertPacketBinding(
-	target: SkillIconTarget,
-	assignment: SkillIconAssignment,
+	target: AnySkillIconTarget,
+	assignment: AnySkillIconAssignment,
 	candidatePath: string,
 	expectedRole: SkillIconRole
 ): void {
+	if (
+		(target.schemaVersion === 'skill-icon-target-v1') !==
+		(assignment.schemaVersion === 'skill-icon-assignment-v1')
+	)
+		throw new Error('Target and assignment protocol versions do not match');
 	if (target.role !== expectedRole)
 		throw new Error(`Target role ${target.role} does not match expected role ${expectedRole}`);
 	if (target.jobId !== assignment.jobId || assignment.assignmentId !== `assignment-${target.jobId}`)
@@ -240,9 +288,31 @@ export async function persistSkillIconOutputBound(
 	if (options.expectedSourceHash) StateHashSchema.parse(options.expectedSourceHash);
 	const root = path.resolve(options.root ?? process.cwd());
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
-	const target = SkillIconTargetSchema.parse(options.target);
-	const assignment = SkillIconAssignmentSchema.parse(options.assignment);
+	const target = AnySkillIconTargetSchema.parse(options.target);
+	const assignment = AnySkillIconAssignmentSchema.parse(options.assignment);
 	assertPacketBinding(target, assignment, candidatePath, options.expectedRole);
+	const isV2 = target.schemaVersion === 'skill-icon-target-v2';
+	if (isV2) {
+		SkillIconTargetV2Schema.parse(target);
+		const assignmentV2 = SkillIconAssignmentV2Schema.parse(assignment);
+		if (!options.expectedSourceHash)
+			throw new Error('V2 persistence requires the expected provider source hash');
+		if (!options.geometrySourceBytes)
+			throw new Error('V2 persistence requires the raw geometry authority bytes');
+		const geometryHash = createHash('sha256').update(options.geometrySourceBytes).digest('hex');
+		if (geometryHash !== target.normalization.geometry.contentHash)
+			throw new Error('Raw geometry authority hash does not match the V2 target');
+		const parsedGeometry = SkillIconGeometrySchema.parse(
+			JSON.parse(options.geometrySourceBytes.toString('utf8'))
+		);
+		if (JSON.stringify(parsedGeometry) !== JSON.stringify(options.geometry))
+			throw new Error('Parsed geometry and raw geometry authority bytes disagree');
+		if (
+			target.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE ||
+			assignmentV2.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE
+		)
+			throw new Error('V2 target and assignment do not authorize the normalization profile');
+	}
 	const destination = path.resolve(root, candidatePath);
 	const resultDestination = path.resolve(root, target.output.resultPath);
 	if (!inside(path.resolve(root, 'assets/wiki/skills/icon-production-v1/candidates'), destination))
@@ -254,28 +324,27 @@ export async function persistSkillIconOutputBound(
 	if (path.resolve(options.sourcePath) === destination)
 		throw new Error('Source and candidate paths must differ');
 
-	const sourceHandle = await open(
+	const sourceBytes = await readSkillIconProviderSourceOnce(
 		options.sourcePath,
-		constants.O_RDONLY | constants.O_NOFOLLOW
-	).catch((error: NodeJS.ErrnoException) => {
-		if (error.code === 'ELOOP') throw new Error('Source path cannot be a symbolic link');
-		throw error;
-	});
-	let sourceBytes: Buffer;
-	try {
-		if (!(await sourceHandle.stat()).isFile())
-			throw new Error('Source path must be a regular file');
-		sourceBytes = await sourceHandle.readFile();
-	} finally {
-		await sourceHandle.close();
-	}
+		options.testHooks?.afterSourceRead
+	);
+	const sourceContentHash = createHash('sha256').update(sourceBytes).digest('hex');
+	if (options.expectedSourceHash && options.expectedSourceHash !== sourceContentHash)
+		throw new Error('Source/candidate hash mismatch against expected source hash');
+	const normalized = isV2
+		? await normalizeSkillIconProviderSource(
+				sourceBytes,
+				options.expectedRole,
+				options.geometrySourceBytes!
+			)
+		: null;
+	await options.testHooks?.afterNormalization?.();
+	const candidateBytes = normalized?.bytes ?? sourceBytes;
 	const inspection = await inspectSkillIconAsset(
-		sourceBytes,
+		candidateBytes,
 		options.expectedRole,
 		options.geometry
 	);
-	if (options.expectedSourceHash && options.expectedSourceHash !== inspection.contentHash)
-		throw new Error('Source/candidate hash mismatch against expected source hash');
 	if (inspection.width !== target.canvas.width || inspection.height !== target.canvas.height)
 		throw new Error(
 			`Source dimensions ${inspection.width}×${inspection.height} do not match target ${target.canvas.width}×${target.canvas.height}`
@@ -297,8 +366,6 @@ export async function persistSkillIconOutputBound(
 	let resultHandle: Awaited<ReturnType<typeof open>> | undefined;
 	let candidateOwnership: OwnedPersistedFile | undefined;
 	let resultOwnership: OwnedPersistedFile | undefined;
-	let unverifiedCandidate = false;
-	let unverifiedResult = false;
 	try {
 		const candidateParent = await persistenceParentFingerprint(destination);
 		destinationHandle = await open(
@@ -306,19 +373,17 @@ export async function persistSkillIconOutputBound(
 			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 			0o644
 		);
-		unverifiedCandidate = true;
-		await destinationHandle.writeFile(sourceBytes);
-		await destinationHandle.sync();
 		const candidateFile = await destinationHandle.stat();
-		await destinationHandle.close();
-		destinationHandle = undefined;
 		candidateOwnership = {
 			path: destination,
-			contentHash: inspection.contentHash,
 			parent: candidateParent,
 			file: { device: candidateFile.dev, inode: candidateFile.ino }
 		};
-		unverifiedCandidate = false;
+		await options.testHooks?.afterCandidateOpen?.();
+		await destinationHandle.writeFile(candidateBytes);
+		await destinationHandle.sync();
+		await destinationHandle.close();
+		destinationHandle = undefined;
 		await ensureSafeParents(root, destination);
 		const retainedParent = await persistenceParentFingerprint(destination);
 		if (
@@ -339,7 +404,7 @@ export async function persistSkillIconOutputBound(
 			options.expectedRole,
 			options.geometry
 		);
-		if (retained.contentHash !== inspection.contentHash || !retainedBytes.equals(sourceBytes))
+		if (retained.contentHash !== inspection.contentHash || !retainedBytes.equals(candidateBytes))
 			throw new Error('Source/candidate hash mismatch after persistence');
 		const output = {
 			path: candidatePath,
@@ -350,8 +415,7 @@ export async function persistSkillIconOutputBound(
 			alphaMode: retained.alphaMode,
 			contentHash: retained.contentHash
 		};
-		const result = SkillIconResultSchema.parse({
-			schemaVersion: 'skill-icon-result-v1',
+		const resultCommon = {
 			resultId: `result-${target.jobId}`,
 			jobId: target.jobId,
 			assignmentId: assignment.assignmentId,
@@ -369,10 +433,12 @@ export async function persistSkillIconOutputBound(
 					observation: `${options.expectedRole} dimensions, media type, alpha, and geometry checks passed.`
 				},
 				{
-					category: 'exact-source-persistence',
+					category: isV2 ? 'deterministic-normalization' : 'exact-source-persistence',
 					evaluator: 'producer',
 					outcome: 'pass',
-					observation: 'The declared provider bytes were retained without transformation.'
+					observation: isV2
+						? 'The exact provider bytes were normalized by the packet-authorized deterministic profile.'
+						: 'The declared provider bytes were retained without transformation.'
 				}
 			],
 			startedAt: receivedAt,
@@ -381,9 +447,29 @@ export async function persistSkillIconOutputBound(
 			writtenOutputPaths: [candidatePath, target.output.resultPath],
 			noSharedFilesEdited: true,
 			selfPromoted: false
-		});
+		} as const;
+		const result = isV2
+			? SkillIconResultV2Schema.parse({
+					schemaVersion: 'skill-icon-result-v2',
+					logicalIdentity: target.logicalIdentity,
+					revision: target.revision,
+					normalization: {
+						profile: normalized!.normalization.profile,
+						outcome: 'completed',
+						geometryHash: normalized!.normalization.geometryHash,
+						providerSource: normalized!.source,
+						sourceContentHash: normalized!.normalization.sourceContentHash,
+						outputContentHash: normalized!.normalization.outputContentHash
+					},
+					...resultCommon
+				})
+			: SkillIconResultSchema.parse({
+					schemaVersion: 'skill-icon-result-v1',
+					...resultCommon
+				});
 		const resultBytes = Buffer.from(`${JSON.stringify(result, null, '\t')}\n`);
 		await options.testHooks?.beforeResultWrite?.();
+		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
 		await ensureSafeParents(root, resultDestination);
 		const resultParent = await persistenceParentFingerprint(resultDestination);
 		resultHandle = await open(
@@ -391,19 +477,17 @@ export async function persistSkillIconOutputBound(
 			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
 			0o644
 		);
-		unverifiedResult = true;
-		await resultHandle.writeFile(resultBytes);
-		await resultHandle.sync();
 		const resultFile = await resultHandle.stat();
-		await resultHandle.close();
-		resultHandle = undefined;
 		resultOwnership = {
 			path: resultDestination,
-			contentHash: createHash('sha256').update(resultBytes).digest('hex'),
 			parent: resultParent,
 			file: { device: resultFile.dev, inode: resultFile.ino }
 		};
-		unverifiedResult = false;
+		await options.testHooks?.afterResultOpen?.();
+		await resultHandle.writeFile(resultBytes);
+		await resultHandle.sync();
+		await resultHandle.close();
+		resultHandle = undefined;
 		await ensureSafeParents(root, resultDestination);
 		const retainedResultParent = await persistenceParentFingerprint(resultDestination);
 		if (
@@ -417,12 +501,13 @@ export async function persistSkillIconOutputBound(
 		const retainedResult = await readSafePacket(root, target.output.resultPath, 'Retained result');
 		if (!retainedResult.equals(resultBytes))
 			throw new Error('Result bytes changed during persistence');
+		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
 			role: options.expectedRole,
 			receivedAt,
-			source: { path: options.sourcePath, ...inspection },
+			source: { path: options.sourcePath, ...(normalized?.source ?? inspection) },
 			retained: { path: candidatePath, ...retained },
 			result: {
 				path: target.output.resultPath,
@@ -447,14 +532,6 @@ export async function persistSkillIconOutputBound(
 				cleanupFailures.push(cleanupError);
 			}
 		}
-		if (unverifiedCandidate)
-			cleanupFailures.push(
-				new Error(`Unverified candidate partial requires cleanup: ${destination}`)
-			);
-		if (unverifiedResult)
-			cleanupFailures.push(
-				new Error(`Unverified result partial requires cleanup: ${resultDestination}`)
-			);
 		if (cleanupFailures.length > 0)
 			throw new AggregateError(
 				[error, ...cleanupFailures],
@@ -490,19 +567,24 @@ export async function persistSkillIconOutput(
 	const { targetPath, assignmentPath } = packetPathsForCandidate(candidatePath);
 	const [target, assignment] = await Promise.all([
 		readSafePacket(root, targetPath, 'Target').then((bytes) =>
-			SkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
 		),
 		readSafePacket(root, assignmentPath, 'Assignment').then((bytes) =>
-			SkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
 		)
 	]);
+	const geometrySourceBytes =
+		target.schemaVersion === 'skill-icon-target-v2'
+			? await readSafePacket(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
+			: undefined;
 	const receivedAt = (dependencies.now?.() ?? new Date()).toISOString();
 	return persistSkillIconOutputBound({
 		...options,
 		root,
 		target,
 		assignment,
-		receivedAt
+		receivedAt,
+		...(geometrySourceBytes === undefined ? {} : { geometrySourceBytes })
 	});
 }
 
@@ -561,17 +643,16 @@ async function runCli(args: readonly string[]): Promise<void> {
 	const root = process.cwd();
 	const request = parsePersistSkillIconCliRequest(args);
 	const { targetPath, assignmentPath } = request;
-	const [target, assignment, geometry] = await Promise.all([
+	const [target, assignment, geometryBytes] = await Promise.all([
 		readSafePacket(root, targetPath, 'Target').then((bytes) =>
-			SkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
 		),
 		readSafePacket(root, assignmentPath, 'Assignment').then((bytes) =>
-			SkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
 		),
-		readSafePacket(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry').then((bytes) =>
-			SkillIconGeometrySchema.parse(JSON.parse(bytes.toString('utf8')))
-		)
+		readSafePacket(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
 	]);
+	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
 	if (assignment.targetPath !== targetPath || assignment.assignmentPath !== assignmentPath)
 		throw new Error('CLI target/assignment arguments do not match packet paths');
 	const receipt = await persistSkillIconOutputBound({
@@ -583,6 +664,9 @@ async function runCli(args: readonly string[]): Promise<void> {
 		target,
 		assignment,
 		receivedAt: request.receivedAt ?? new Date().toISOString(),
+		...(target.schemaVersion === 'skill-icon-target-v2'
+			? { geometrySourceBytes: geometryBytes }
+			: {}),
 		...(request.expectedSourceHash === undefined
 			? {}
 			: { expectedSourceHash: request.expectedSourceHash })

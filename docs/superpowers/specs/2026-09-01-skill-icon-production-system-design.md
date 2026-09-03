@@ -51,7 +51,9 @@ The first text row is the skill name. The second is bearer-specific mastery and 
 
 ### Shared geometry
 
-All image layers use a `1024×1024` RGBA working canvas with the same center and registration. The
+All canonical retained image layers use a `1024×1024` RGBA working canvas with the same center and
+registration. A provider's transient raster may differ only when a versioned target explicitly
+authorizes the deterministic normalization profile below. The
 outer frame, inner aperture, backing mask, and icon safe zone are fixed by one geometry manifest.
 The painted subject stays within the central 64% safe zone; restrained supporting effects may
 extend to 72% but never enter the frame or rarity medallion exclusion zones.
@@ -134,8 +136,11 @@ the skill's dominant subject, optional supporting cue, semantic palette, exclusi
 safe-zone requirements. Generations own one collision-safe candidate path and never edit a shared
 catalog.
 
-If a provider does not return clean alpha, use a dedicated background-extraction revision against
-the same candidate. Do not disguise a black square as transparency.
+Provider compatibility is explicit and versioned. Historical v1 jobs retain exact provider bytes.
+A v2 frame or backing job may authorize only `skill-icon-green-key-role-mask-v1`: persistence
+accepts one 1254×1254 RGB PNG with the declared opaque `#00FF00` matte and deterministically creates
+the role-masked canonical 1024×1024 RGBA candidate. Producers never crop, resize, color-key,
+extract, mask, or otherwise normalize provider output themselves. Any other source envelope fails.
 
 ### Phase 6 — deterministic assembly and review
 
@@ -175,7 +180,9 @@ The production manifest has one record for each canonical `targetId` and contain
 - composition direction and exclusions;
 - calibration-plate reference, when applicable;
 - candidate, approved-master, and derived-export paths;
-- generation prompt, input references, dimensions, alpha mode, and SHA-256;
+- protocol version, generation prompt, input references, dimensions, alpha mode, and SHA-256;
+- for v2, the literal normalization profile, pathless provider-source media/dimensions/alpha/bytes
+  and hash, raw geometry-file hash, source hash, and normalized output hash;
 - review state and recognition results.
 
 Canonical skill metadata is imported from the authored Markdown tables rather than duplicated by
@@ -195,6 +202,9 @@ Automated validation rejects:
 - a missing or invalid rarity frame;
 - non-`1024×1024` masters, absent alpha, unsafe visible pixels, or incorrect registration;
 - missing provenance, hashes, recognition review, or required runtime derivations.
+- mixed v1/v2 packet tuples, normalization-profile drift, a provider source outside the exact
+  declared envelope, manual/out-of-transaction normalization, provider-path leakage, or a
+  geometry/source/output hash mismatch;
 
 Human approval requires:
 
@@ -218,10 +228,17 @@ When a new skill is authored:
 3. the owner chooses at most one primary visual parent and authors its subject, cue, palette, and
    exclusions;
 4. a new motif family receives and approves a calibration plate before individual generation;
-5. the skill receives one isolated high-resolution generation job;
-6. automated geometry, alpha, provenance, and coverage checks run;
+5. the skill receives one isolated v1 exact-source job and a fresh versioned job ID; v2 remains
+   restricted to green-key frame/backing retries unless a future contract revision adds skill art;
+6. the producer passes the exact provider output directly to the repository helper, which retains
+   v1 source bytes exactly; automated geometry, alpha, provenance, and coverage checks then run;
 7. the full-size, composite, and `96×96` views receive human review;
 8. approval promotes the master and deterministic derivatives together.
+
+Historical packets and results remain immutable. Producers never normalize manually. V2
+frame/backing provenance never retains a machine-local provider pathname. A v2 frame/backing retry
+receives a higher explicit revision and new candidate/result paths; its unique latest revision must
+be complete while older terminal failures remain valid evidence only when superseded.
 
 Changing a skill's rarity swaps the frame during composition; it does not regenerate the artwork.
 Changing a skill's mechanics does not invalidate its image unless the dominant visual meaning has

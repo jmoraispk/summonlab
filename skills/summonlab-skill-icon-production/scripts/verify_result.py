@@ -9,6 +9,7 @@ import json
 import os
 import re
 import stat
+import struct
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -19,6 +20,7 @@ from validate_target import (
     absolute_project_path,
     fail,
     load_json,
+    read_stable_regular_file,
     run_asset_inspection,
     run_contract_validation,
     validate,
@@ -45,6 +47,38 @@ def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> N
         fail("attempt count must be an integer")
     if not 1 <= attempt_count <= 1 + assignment["retryCeiling"]:
         fail("attempt count violates the assignment retry ceiling")
+
+
+def _observed_provider_source(source_path: Path) -> dict[str, Any]:
+    absolute = source_path.absolute()
+    data = read_stable_regular_file(absolute)
+    media_type = "application/octet-stream"
+    width: int | None = None
+    height: int | None = None
+    alpha_mode: str | None = None
+    if (
+        len(data) >= 26
+        and data.startswith(b"\x89PNG\r\n\x1a\n")
+        and data[12:16] == b"IHDR"
+    ):
+        media_type = "image/png"
+        width, height = struct.unpack(">II", data[16:24])
+        color_type = data[25]
+        if color_type == 2:
+            alpha_mode = "rgb"
+        elif color_type == 6:
+            alpha_mode = "rgba"
+    elif len(data) >= 12 and data.startswith(b"RIFF") and data[8:12] == b"WEBP":
+        media_type = "image/webp"
+    content_hash = hashlib.sha256(data).hexdigest()
+    return {
+        "mediaType": media_type,
+        "width": width,
+        "height": height,
+        "bytes": len(data),
+        "alphaMode": alpha_mode,
+        "contentHash": content_hash,
+    }
 
 
 def _parse_timestamp(raw: Any, label: str) -> tuple[datetime, str, str]:
@@ -236,10 +270,12 @@ def verify(
         geometry_path = absolute_project_path(
             root, GEOMETRY_PATH, must_exist=True, regular_file=True
         )
+        geometry_bytes = read_stable_regular_file(geometry_path)
+        geometry = json.loads(geometry_bytes.decode("utf-8"))
         inspection = run_asset_inspection(
             candidate,
             target["role"],
-            load_json(geometry_path),
+            geometry,
             contract_root=contract_root or root,
         )
         if (
@@ -264,6 +300,25 @@ def verify(
         }
         if output != expected_output:
             fail("result candidate metadata does not match the exact retained bytes")
+        if target.get("schemaVersion") == "skill-icon-target-v2":
+            normalization = result.get("normalization")
+            if (
+                not isinstance(normalization, dict)
+                or normalization.get("outcome") != "completed"
+            ):
+                fail("retained v2 candidate requires completed normalization evidence")
+            provider_source = normalization.get("providerSource")
+            if not isinstance(provider_source, dict) or "path" in provider_source:
+                fail("v2 provider source evidence must be pathless")
+            if normalization.get("sourceContentHash") != provider_source.get(
+                "contentHash"
+            ):
+                fail("v2 provider source hash binding is invalid")
+            if normalization.get("outputContentHash") != inspection["contentHash"]:
+                fail("v2 normalized output hash does not bind retained candidate")
+            geometry_hash = hashlib.sha256(geometry_bytes).hexdigest()
+            if normalization.get("geometryHash") != geometry_hash:
+                fail("v2 normalization geometry hash does not bind raw authority bytes")
         findings = result["findings"]
         full_size_findings = [
             finding
@@ -349,6 +404,7 @@ def persist_failed_result(
     contract_root: Path | None = None,
     target_path: Path | None = None,
     assignment_path: Path | None = None,
+    normalization_source: Path | None = None,
 ) -> dict[str, Any]:
     root = workspace.absolute()
     validate(
@@ -372,8 +428,13 @@ def persist_failed_result(
     if dirty:
         fail(f"cannot persist failure result in a dirty workspace: {sorted(dirty)}")
     exact_prompt = target["exactPrompt"]
+    is_v2 = target.get("schemaVersion") == "skill-icon-target-v2"
+    if normalization_source is not None and not is_v2:
+        fail("--normalization-source is valid only for v2 normalization failures")
     result = {
-        "schemaVersion": "skill-icon-result-v1",
+        "schemaVersion": (
+            "skill-icon-result-v2" if is_v2 else "skill-icon-result-v1"
+        ),
         "resultId": f"result-{target['jobId']}",
         "jobId": target["jobId"],
         "assignmentId": assignment["assignmentId"],
@@ -405,6 +466,31 @@ def persist_failed_result(
         "noSharedFilesEdited": True,
         "selfPromoted": False,
     }
+    if is_v2:
+        normalization = target["normalization"]
+        provider_source = (
+            _observed_provider_source(normalization_source)
+            if normalization_source is not None
+            else None
+        )
+        result.update(
+            {
+                "logicalIdentity": target["logicalIdentity"],
+                "revision": target["revision"],
+                "normalization": {
+                    "profile": normalization["profile"],
+                    "outcome": "failed" if provider_source is not None else "not-run",
+                    "geometryHash": normalization["geometry"]["contentHash"],
+                    "providerSource": provider_source,
+                    "sourceContentHash": (
+                        provider_source["contentHash"]
+                        if provider_source is not None
+                        else None
+                    ),
+                    "outputContentHash": None,
+                },
+            }
+        )
     run_contract_validation(
         "execution",
         target,
@@ -521,6 +607,10 @@ def main() -> None:
     parser.add_argument("--failure-kind", choices=sorted(FAILURE_KINDS))
     parser.add_argument("--failure-message")
     parser.add_argument(
+        "--normalization-source",
+        help="v2 provider source rejected by deterministic normalization; evidence is pathless",
+    )
+    parser.add_argument(
         "--started-at",
         help="actual ISO-8601 time when the first provider attempt started",
     )
@@ -571,6 +661,15 @@ def main() -> None:
                 total_wall_time_ms=args.total_wall_time_ms,
                 target_path=target_path,
                 assignment_path=assignment_path,
+                normalization_source=(
+                    (
+                        Path(args.normalization_source)
+                        if Path(args.normalization_source).is_absolute()
+                        else workspace / args.normalization_source
+                    )
+                    if args.normalization_source is not None
+                    else None
+                ),
             )
         else:
             if any(
@@ -581,6 +680,7 @@ def main() -> None:
                     args.started_at,
                     args.completed_at,
                     args.total_wall_time_ms,
+                    args.normalization_source,
                 )
             ):
                 fail("failure options require --write-failure")

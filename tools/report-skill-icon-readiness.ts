@@ -1,11 +1,17 @@
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { SkillIconCatalogSchema, type SkillIconCatalog } from '../packages/contracts/src/index.js';
+import {
+	AnySkillIconTargetSchema,
+	SkillIconCatalogSchema,
+	type AnySkillIconTarget,
+	type SkillIconCatalog
+} from '../packages/contracts/src/index.js';
 
 import { exportSkillIconProduction } from './export-skill-icon-production.js';
+import { resolveLatestSkillIconTargets } from './skill-icon-revision-lib.js';
 
 export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'martial:blade:horizontal-slash',
@@ -25,7 +31,7 @@ export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'craft:forging:godsmithing'
 ] as const;
 
-const REQUIRED_REFERENCE_ASSETS = [
+export const REQUIRED_REFERENCE_ASSETS = [
 	...(['f', 'e', 'd', 'c', 'b', 'a', 's'] as const).map((rarity) => ({
 		id: `rarity-frame-${rarity}-v1`,
 		role: 'rarity-frame' as const,
@@ -37,6 +43,27 @@ const REQUIRED_REFERENCE_ASSETS = [
 		path: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
 	}
 ] as const;
+
+export type SkillIconReferenceRequirement = {
+	readonly id: string;
+	readonly role: 'rarity-frame' | 'backing';
+	readonly path: string;
+};
+
+export function referenceRequirementsForTargets(
+	targets: readonly AnySkillIconTarget[]
+): readonly SkillIconReferenceRequirement[] {
+	return resolveLatestSkillIconTargets(targets)
+		.filter(({ target }) => target.role === 'rarity-frame' || target.role === 'backing')
+		.map(({ target }) => ({
+			id: target.jobId,
+			role: target.role as 'rarity-frame' | 'backing',
+			path:
+				target.role === 'rarity-frame'
+					? `assets/wiki/skills/icon-production-v1/masters/frames/${target.rarity.toLowerCase()}.png`
+					: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		}));
+}
 
 const REQUIRED_PILOT_CALIBRATIONS = [
 	{
@@ -147,16 +174,17 @@ export function hashSkillIconCatalog(catalog: SkillIconCatalog): string {
 export function buildSkillIconReadinessReport(
 	catalog: SkillIconCatalog,
 	evidence: SkillIconReadinessEvidence,
-	currency: SkillIconCatalogCurrency
+	currency: SkillIconCatalogCurrency,
+	requiredReferenceAssets: readonly SkillIconReferenceRequirement[] = REQUIRED_REFERENCE_ASSETS
 ): SkillIconReadinessReport {
 	const lifecycle = { mapped: 0, authored: 0, candidate: 0, approved: 0 };
 	for (const record of catalog.records) lifecycle[record.status] += 1;
 	const referencesAccepted = acceptedRequiredArtifacts(
-		REQUIRED_REFERENCE_ASSETS,
+		requiredReferenceAssets,
 		evidence.referenceAssets ?? []
 	);
 	const foundationComplete =
-		currency.catalogCurrent && referencesAccepted === REQUIRED_REFERENCE_ASSETS.length;
+		currency.catalogCurrent && referencesAccepted === requiredReferenceAssets.length;
 	const calibrationsAccepted = acceptedRequiredArtifacts(
 		REQUIRED_PILOT_CALIBRATIONS,
 		evidence.calibrationPlates ?? []
@@ -187,8 +215,10 @@ export function buildSkillIconReadinessReport(
 	const blockers: string[] = [];
 	if (catalog.records.length !== 456) blockers.push(`expected 456 canonical records`);
 	if (!currency.catalogCurrent) blockers.push('catalog export is not current');
-	if (referencesAccepted !== REQUIRED_REFERENCE_ASSETS.length)
-		blockers.push(`accepted reference assets ${referencesAccepted}/8`);
+	if (referencesAccepted !== requiredReferenceAssets.length)
+		blockers.push(
+			`accepted reference assets ${referencesAccepted}/${requiredReferenceAssets.length}`
+		);
 	if (foundationComplete && calibrationsAccepted !== 3)
 		blockers.push(`accepted pilot calibration plates ${calibrationsAccepted}/3`);
 	if (foundationComplete && !pilotAccepted)
@@ -228,6 +258,24 @@ async function main(args: readonly string[]): Promise<void> {
 		'assets/wiki/skills/icon-production-v1/review/readiness-evidence.json'
 	);
 	const catalog = SkillIconCatalogSchema.parse(JSON.parse(await readFile(catalogPath, 'utf8')));
+	const targetDirectory = path.resolve('assets/wiki/skills/icon-production-v1/targets/references');
+	const referenceTargets = await readdir(targetDirectory)
+		.then((names) =>
+			Promise.all(
+				names
+					.filter((name) => name.endsWith('.json'))
+					.map((name) =>
+						readFile(path.join(targetDirectory, name), 'utf8').then((source) =>
+							AnySkillIconTargetSchema.parse(JSON.parse(source))
+						)
+					)
+			)
+		)
+		.catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return [];
+			throw error;
+		});
+	const requiredReferences = referenceRequirementsForTargets(referenceTargets);
 	const exportReport = await exportSkillIconProduction({ mode: 'check' });
 	const evidence = await readFile(evidencePath, 'utf8')
 		.then((source) => JSON.parse(source) as SkillIconReadinessEvidence)
@@ -235,9 +283,12 @@ async function main(args: readonly string[]): Promise<void> {
 			if (error.code === 'ENOENT') return {};
 			throw error;
 		});
-	const report = buildSkillIconReadinessReport(catalog, evidence, {
-		catalogCurrent: exportReport.inSync
-	});
+	const report = buildSkillIconReadinessReport(
+		catalog,
+		evidence,
+		{ catalogCurrent: exportReport.inSync },
+		requiredReferences
+	);
 	process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 	if (
 		args[0] === '--require-pilot' &&

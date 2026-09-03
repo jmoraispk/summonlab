@@ -415,6 +415,194 @@ async function fixture(
 	return { root, reviewPath, candidatePath, resultPath, hash };
 }
 
+async function installBackingV2Packet(
+	root: string,
+	mode: 'target-only' | 'candidate' | 'failed'
+): Promise<{
+	readonly jobId: string;
+	readonly candidatePath: string;
+	readonly resultPath: string;
+}> {
+	const jobId = 'charcoal-forged-stone-v2';
+	const logicalIdentity = 'charcoal-forged-stone';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const exactPrompt =
+		'Paint charcoal forged stone over an opaque #00FF00 matte with no baked checkerboard.';
+	const geometryPath = path.join(root, 'assets/wiki/skills/icon-production-v1/geometry.json');
+	const geometryBytes = await readFile(
+		path.resolve('assets/wiki/skills/icon-production-v1/geometry.json')
+	);
+	await writeFile(geometryPath, geometryBytes);
+	const geometryHash = createHash('sha256').update(geometryBytes).digest('hex');
+	const target = {
+		schemaVersion: 'skill-icon-target-v2',
+		jobId,
+		logicalIdentity,
+		revision: 2,
+		role: 'backing',
+		skillTargetId: null,
+		motifFamily: null,
+		rarity: null,
+		exactPrompt,
+		references: [
+			{
+				path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+				purpose: 'Geometry.',
+				contentHash: 'a'.repeat(64)
+			}
+		],
+		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: { candidatePath, resultPath },
+		normalization: {
+			profile: 'skill-icon-green-key-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: {
+				mediaType: 'image/png',
+				width: 1024,
+				height: 1024,
+				alphaMode: 'rgba'
+			},
+			geometry: {
+				path: 'assets/wiki/skills/icon-production-v1/geometry.json',
+				contentHash: geometryHash
+			}
+		}
+	};
+	const assignment = {
+		schemaVersion: 'skill-icon-assignment-v2',
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		logicalIdentity,
+		revision: 2,
+		targetPath,
+		assignmentPath,
+		skillVersion: 'summonlab-skill-icon-production-v2',
+		normalization: { profile: 'skill-icon-green-key-role-mask-v1' },
+		assignedAt: '2026-09-02T08:00:00.000Z',
+		retryCeiling: 1,
+		permittedOutputs: { candidatePath, resultPath },
+		forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+		completionContract: {
+			oneTargetOneImage: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	};
+	await mkdir(path.dirname(path.join(root, targetPath)), { recursive: true });
+	await writeFile(path.join(root, targetPath), JSON.stringify(target));
+	if (mode === 'target-only') return { jobId, candidatePath, resultPath };
+	const sourceHash = 'b'.repeat(64);
+	const candidateBytes =
+		mode === 'candidate' ? await readFile(path.join(root, candidatePath)) : null;
+	const outputHash = candidateBytes
+		? createHash('sha256').update(candidateBytes).digest('hex')
+		: null;
+	const result = {
+		schemaVersion: 'skill-icon-result-v2',
+		resultId: `result-${jobId}`,
+		jobId,
+		logicalIdentity,
+		revision: 2,
+		assignmentId: assignment.assignmentId,
+		status: mode,
+		exactPrompt,
+		promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+		referenceInputs: target.references.map(({ path: referencePath, contentHash }) => ({
+			path: referencePath,
+			contentHash
+		})),
+		normalization:
+			mode === 'candidate'
+				? {
+						profile: 'skill-icon-green-key-role-mask-v1',
+						outcome: 'completed',
+						geometryHash,
+						providerSource: {
+							mediaType: 'image/png',
+							width: 1254,
+							height: 1254,
+							bytes: 2_000_000,
+							alphaMode: 'rgb',
+							contentHash: sourceHash
+						},
+						sourceContentHash: sourceHash,
+						outputContentHash: outputHash
+					}
+				: {
+						profile: 'skill-icon-green-key-role-mask-v1',
+						outcome: 'not-run',
+						geometryHash,
+						providerSource: null,
+						sourceContentHash: null,
+						outputContentHash: null
+					},
+		output:
+			mode === 'candidate'
+				? {
+						path: candidatePath,
+						mediaType: 'image/png',
+						width: 1024,
+						height: 1024,
+						bytes: candidateBytes!.byteLength,
+						alphaMode: 'rgba',
+						contentHash: outputHash
+					}
+				: null,
+		resultPath,
+		findings:
+			mode === 'candidate'
+				? [
+						{
+							category: 'geometry',
+							evaluator: 'automated',
+							outcome: 'pass',
+							observation: 'Geometry passes.'
+						},
+						{
+							category: 'manifest-fidelity',
+							evaluator: 'producer',
+							outcome: 'pass',
+							observation: 'Prompt matched.'
+						}
+					]
+				: [
+						{
+							category: 'provider-output',
+							evaluator: 'producer',
+							outcome: 'fail',
+							observation: 'Provider did not return a source.'
+						}
+					],
+		...(mode === 'failed'
+			? { failureReason: { kind: 'provider-failure', message: 'Provider failed.' } }
+			: {}),
+		startedAt: '2026-09-02T08:01:00.000Z',
+		completedAt: '2026-09-02T08:02:00.000Z',
+		totalWallTimeMs: 60000,
+		writtenOutputPaths: mode === 'candidate' ? [candidatePath, resultPath] : [resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	};
+	for (const [relativePath, value] of [
+		[assignmentPath, JSON.stringify(assignment)],
+		[resultPath, JSON.stringify(result)]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), value);
+	}
+	return { jobId, candidatePath, resultPath };
+}
+
 async function recoveryState(item: Awaited<ReturnType<typeof fixture>>) {
 	const transactionId = randomUUID();
 	const transactionToken = randomUUID();
@@ -554,6 +742,71 @@ describe('promoteSkillIconOutput', () => {
 				root: item.root
 			})
 		).rejects.toThrow(/exist|collision/iu);
+	});
+
+	it('promotes a latest target with a fully bound v2 target, assignment, and result', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const record = await promoteSkillIconOutput({
+			jobId: 'charcoal-forged-stone-v2',
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			jobId: 'charcoal-forged-stone-v2',
+			role: 'backing',
+			candidate: { path: item.candidatePath, contentHash: item.hash },
+			approvedMaster: {
+				path: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png',
+				contentHash: item.hash
+			}
+		});
+	});
+
+	it('blocks an older candidate whenever a newer target is incomplete or terminally failed', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		await installBackingV2Packet(item.root, 'target-only');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/not the unique latest target.*charcoal-forged-stone-v2/iu);
+
+		await installBackingV2Packet(item.root, 'failed');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/not the unique latest target.*charcoal-forged-stone-v2/iu);
+		await expect(
+			access(
+				path.join(
+					item.root,
+					'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+				)
+			)
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('binds v2 promotion to the single-read raw geometry hash', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const geometryPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/geometry.json'
+		);
+		await writeFile(geometryPath, Buffer.concat([await readFile(geometryPath), Buffer.from('\n')]));
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/geometry hash mismatch/iu);
 	});
 
 	it('promotes an accepted calibration plate without imposing alpha safe-zone rules', async () => {
@@ -1182,6 +1435,54 @@ describe('promoteSkillIconOutput', () => {
 		}
 	});
 
+	it('rechecks latest revision after the write-boundary hook and never promotes a stale candidate', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					beforeMasterWrite: async () => {
+						await installBackingV2Packet(item.root, 'target-only');
+					}
+				}
+			})
+		).rejects.toThrow(/not the unique latest target.*charcoal-forged-stone-v2/iu);
+		for (const relativePath of [
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png',
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v1.json`
+		]) {
+			await expect(access(path.join(item.root, relativePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
+	it('rechecks latest revision in final evidence validation and rolls back completed writes', async () => {
+		const item = await fixture('charcoal-forged-stone-v1');
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v1',
+				reviewPath: item.reviewPath,
+				root: item.root,
+				testHooks: {
+					afterMasterWrite: async () => {
+						await installBackingV2Packet(item.root, 'target-only');
+					}
+				}
+			})
+		).rejects.toThrow(/not the unique latest target.*charcoal-forged-stone-v2/iu);
+		for (const relativePath of [
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png',
+			`${SKILL_ICON_PROMOTION_RECEIPT_ROOT}/charcoal-forged-stone-v1.json`
+		]) {
+			await expect(access(path.join(item.root, relativePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
 	it('rejects an ancestor swap before writing and never writes through the symlink', async () => {
 		const item = await fixture('charcoal-forged-stone-v1');
 		const outside = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-outside-'));
@@ -1786,7 +2087,7 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toMatchObject({ code: 'ENOENT' });
 	});
 
-	it('rejects duplicate batch destinations before writing any master', async () => {
+	it('rejects a batch containing an older semantic revision before writing any master', async () => {
 		const first = await fixture('charcoal-forged-stone-v1');
 		const second = await fixture('charcoal-forged-stone-v2');
 		const reviewDirectory = path.join(
@@ -1811,7 +2112,7 @@ describe('promoteSkillIconOutput', () => {
 				reviewDirectory,
 				root: first.root
 			})
-		).rejects.toThrow(/duplicate master destination/iu);
+		).rejects.toThrow(/not the unique latest target/iu);
 		await expect(
 			access(
 				path.join(

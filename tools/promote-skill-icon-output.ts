@@ -19,16 +19,17 @@ import sharp from 'sharp';
 import { z } from 'zod';
 
 import {
-	SkillIconAssignmentSchema,
-	SkillIconExecutionSchema,
+	AnySkillIconAssignmentSchema,
+	AnySkillIconExecutionSchema,
+	AnySkillIconResultSchema,
+	AnySkillIconTargetSchema,
+	SkillIconGeometrySchema,
 	SkillIconRecordSchema,
-	SkillIconResultSchema,
 	SkillIconReviewSchema,
-	SkillIconTargetSchema,
+	type AnySkillIconTarget,
 	type SkillIconAsset,
 	type SkillIconReview,
-	type SkillIconRole,
-	type SkillIconTarget
+	type SkillIconRole
 } from '../packages/contracts/src/index.js';
 import {
 	SKILL_ICON_CATALOG_PATH,
@@ -36,7 +37,6 @@ import {
 	SKILL_ICON_VISUAL_SPECS_PATH,
 	exportSkillIconProduction
 } from './export-skill-icon-production.js';
-import { loadSkillIconGeometry } from './export-skill-icon-geometry.js';
 import {
 	buildSkillIconCatalog,
 	loadCanonicalSkillRows,
@@ -45,6 +45,7 @@ import {
 } from './skill-icon-production-lib.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 import { resolveDeterministicSkillIconDerivatives } from './compose-skill-icon-assets.js';
+import { resolveLatestSkillIconTargets, skillIconLogicalKey } from './skill-icon-revision-lib.js';
 import {
 	SKILL_ICON_PROMOTION_LOCK_PATH,
 	SKILL_ICON_PROMOTION_RECEIPT_ROOT,
@@ -306,7 +307,7 @@ export interface SkillIconDerivativeBuffers {
 
 export interface SkillIconDerivativeResolverInput {
 	readonly root: string;
-	readonly target: Extract<SkillIconTarget, { role: 'skill-art' }>;
+	readonly target: Extract<AnySkillIconTarget, { role: 'skill-art' }>;
 	readonly candidate: { readonly bytes: Buffer; readonly contentHash: string };
 	readonly references: readonly {
 		readonly path: string;
@@ -327,6 +328,7 @@ export interface PromotionOptions {
 }
 
 interface PreparedPromotion {
+	readonly target: AnySkillIconTarget;
 	readonly record: Omit<SkillIconAssetRecord, 'transactionId' | 'promotionReceipt'>;
 	readonly bytes: Buffer;
 	readonly destination: string;
@@ -659,7 +661,7 @@ function scopeForRole(role: SkillIconRole): 'references' | 'calibration' | 'icon
 			: 'references';
 }
 
-function masterPathFor(target: ReturnType<typeof SkillIconTargetSchema.parse>): string {
+function masterPathFor(target: ReturnType<typeof AnySkillIconTargetSchema.parse>): string {
 	if (target.role === 'rarity-frame')
 		return `assets/wiki/skills/icon-production-v1/masters/frames/${target.rarity.toLowerCase()}.png`;
 	if (target.role === 'backing')
@@ -669,9 +671,51 @@ function masterPathFor(target: ReturnType<typeof SkillIconTargetSchema.parse>): 
 	return `assets/wiki/skills/icon-production-v1/masters/icons/${target.skillTargetId.replaceAll(':', '-')}.png`;
 }
 
+async function loadSkillIconTargetTree(root: string): Promise<readonly AnySkillIconTarget[]> {
+	const targetRoot = path.resolve(root, 'assets/wiki/skills/icon-production-v1/targets');
+	await assertSafeExistingPath(root, targetRoot, 'Target tree');
+	const files: string[] = [];
+	const visit = async (directory: string): Promise<void> => {
+		for (const entry of await readdir(directory, { withFileTypes: true })) {
+			const child = path.join(directory, entry.name);
+			const metadata = await lstat(child);
+			if (entry.isSymbolicLink() || metadata.isSymbolicLink())
+				throw new Error(`Target tree cannot contain a symbolic link: ${child}`);
+			if (entry.isDirectory() && metadata.isDirectory()) await visit(child);
+			else if (entry.isFile() && metadata.isFile() && entry.name.endsWith('.json'))
+				files.push(child);
+		}
+	};
+	await visit(targetRoot);
+	return Promise.all(
+		files
+			.sort()
+			.map(async (targetPath) =>
+				AnySkillIconTargetSchema.parse(
+					JSON.parse((await readRepositoryRegular(root, targetPath, 'Target')).toString('utf8'))
+				)
+			)
+	);
+}
+
+async function assertLatestSkillIconTarget(
+	root: string,
+	target: AnySkillIconTarget
+): Promise<void> {
+	const logicalKey = skillIconLogicalKey(target);
+	const latest = resolveLatestSkillIconTargets(await loadSkillIconTargetTree(root)).find(
+		(candidate) => candidate.logicalKey === logicalKey
+	);
+	if (!latest || latest.target.jobId !== target.jobId) {
+		throw new Error(
+			`Candidate ${target.jobId} is not the unique latest target for ${logicalKey}; latest revision is ${latest ? `${latest.target.jobId} (v${latest.revision})` : 'missing'}`
+		);
+	}
+}
+
 async function assertSkillCandidateProvenance(
 	root: string,
-	target: ReturnType<typeof SkillIconTargetSchema.parse>,
+	target: ReturnType<typeof AnySkillIconTargetSchema.parse>,
 	resultHash: string,
 	record: PreparedPromotion['record']
 ): Promise<Record<string, unknown>> {
@@ -735,7 +779,7 @@ async function derivativeAsset(
 
 async function resolveSkillDerivatives(
 	root: string,
-	target: Extract<SkillIconTarget, { role: 'skill-art' }>,
+	target: Extract<AnySkillIconTarget, { role: 'skill-art' }>,
 	candidateBytes: Buffer,
 	testResolver?: SkillIconDerivativeResolver
 ): Promise<{
@@ -850,20 +894,24 @@ async function preparePromotion(
 	const resultPath = `assets/wiki/skills/icon-production-v1/results/${scope}/${jobId}.json`;
 	const [target, assignment, resultBytes] = await Promise.all([
 		readRepositoryRegular(root, path.resolve(root, targetPath), 'Target').then((bytes) =>
-			SkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
 		),
 		readRepositoryRegular(root, path.resolve(root, assignmentPath), 'Assignment').then((bytes) =>
-			SkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
+			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
 		),
 		readRepositoryRegular(root, path.resolve(root, resultPath), 'Result')
 	]);
-	const result = SkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-	SkillIconExecutionSchema.parse({
-		schemaVersion: 'skill-icon-execution-v1',
+	const result = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
+	AnySkillIconExecutionSchema.parse({
+		schemaVersion:
+			target.schemaVersion === 'skill-icon-target-v2'
+				? 'skill-icon-execution-v2'
+				: 'skill-icon-execution-v1',
 		target,
 		assignment,
 		result
 	});
+	await assertLatestSkillIconTarget(root, target);
 	if (target.role !== review.role || target.skillTargetId !== review.skillTargetId)
 		throw new Error('Review role/skill identity does not match target');
 	if (result.status !== 'candidate' || !result.output)
@@ -880,12 +928,17 @@ async function preparePromotion(
 		throw new Error(`Candidate hash mismatch for ${jobId}`);
 	if (candidateBytes.byteLength !== result.output.bytes)
 		throw new Error(`Candidate byte count mismatch for ${jobId}`);
-	await assertSafeExistingPath(
+	const geometryBytes = await readRepositoryRegular(
 		root,
 		path.resolve(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
 		'Geometry'
 	);
-	const geometry = await loadSkillIconGeometry(root);
+	if (
+		target.schemaVersion === 'skill-icon-target-v2' &&
+		sha256(geometryBytes) !== target.normalization.geometry.contentHash
+	)
+		throw new Error(`Geometry hash mismatch for ${jobId}`);
+	const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString('utf8')));
 	const inspection = await inspectSkillIconAsset(candidateBytes, target.role, geometry);
 	if (
 		inspection.width !== target.canvas.width ||
@@ -935,7 +988,7 @@ async function preparePromotion(
 		);
 		const derivatives = await resolveSkillDerivatives(
 			root,
-			target as Extract<SkillIconTarget, { role: 'skill-art' }>,
+			target as Extract<AnySkillIconTarget, { role: 'skill-art' }>,
 			candidateBytes,
 			testHooks?.derivativeResolver
 		);
@@ -959,6 +1012,7 @@ async function preparePromotion(
 		additionalOutputs = derivatives.outputs;
 	}
 	return {
+		target,
 		record,
 		bytes: candidateBytes,
 		destination,
@@ -1728,6 +1782,7 @@ async function assertPromotionEvidenceCurrent(
 	root: string,
 	item: PreparedPromotion
 ): Promise<void> {
+	await assertLatestSkillIconTarget(root, item.target);
 	for (const [evidencePath, expectedHash, label] of [
 		[item.record.candidate.path, item.record.candidate.contentHash, 'candidate'],
 		[item.record.resultPath, item.record.resultContentHash, 'result'],
@@ -1910,6 +1965,7 @@ async function commitPromotions(
 		for (const [index, item] of prepared.entries()) {
 			await ensureSafeParents(root, item.destination, true);
 			await testHooks?.beforeMasterWrite?.({ index, destination: item.destination });
+			await assertPromotionEvidenceCurrent(root, item);
 			await ensureSafeParents(root, item.destination, false);
 			const master = await writeOwnedOutput(
 				root,

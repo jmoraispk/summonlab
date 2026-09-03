@@ -131,6 +131,11 @@ export const SkillIconRoleSchema = z.enum([
 	'calibration-plate',
 	'skill-art'
 ]);
+export const SkillIconProviderNormalizationProfileSchema = z.literal(
+	'skill-icon-green-key-role-mask-v1'
+);
+export const SKILL_ICON_NORMALIZATION_GEOMETRY_HASH =
+	'4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7' as const;
 
 const ExactPromptSchema = z
 	.string()
@@ -315,6 +320,27 @@ export const SkillIconResultFindingSchema = z
 			'manifest-fidelity',
 			'prompt-provenance',
 			'exact-source-persistence',
+			'output-ownership',
+			'other'
+		]),
+		evaluator: z.enum(['producer', 'automated']),
+		outcome: z.enum(['pass', 'concern', 'fail', 'not-applicable']),
+		observation: NonEmptyTextSchema.max(1_000)
+	})
+	.strict();
+
+export const SkillIconResultFindingV2Schema = z
+	.object({
+		category: z.enum([
+			'geometry',
+			'alpha',
+			'safe-zone',
+			'registration',
+			'recognition',
+			'manifest-fidelity',
+			'prompt-provenance',
+			'exact-source-persistence',
+			'deterministic-normalization',
 			'output-ownership',
 			'other'
 		]),
@@ -624,7 +650,6 @@ export const SkillIconReferenceSchema = z
 	.strict();
 
 const SkillIconTargetCommonShape = {
-	schemaVersion: z.literal('skill-icon-target-v1'),
 	jobId: SlugSchema,
 	exactPrompt: ExactPromptSchema,
 	references: z.array(SkillIconReferenceSchema).min(1).max(20),
@@ -632,6 +657,46 @@ const SkillIconTargetCommonShape = {
 		.object({
 			candidatePath: SkillIconCandidatePathSchema,
 			resultPath: SkillIconResultPathSchema
+		})
+		.strict()
+};
+
+const SkillIconTargetV1CommonShape = {
+	...SkillIconTargetCommonShape,
+	schemaVersion: z.literal('skill-icon-target-v1')
+};
+
+const SkillIconTargetV2CommonShape = {
+	...SkillIconTargetCommonShape,
+	schemaVersion: z.literal('skill-icon-target-v2'),
+	logicalIdentity: SlugSchema,
+	revision: z.number().int().min(2),
+	normalization: z
+		.object({
+			profile: SkillIconProviderNormalizationProfileSchema,
+			sourceContract: z
+				.object({
+					mediaType: z.literal('image/png'),
+					width: z.literal(1254),
+					height: z.literal(1254),
+					alphaMode: z.literal('rgb'),
+					matteColor: z.literal('#00FF00')
+				})
+				.strict(),
+			outputContract: z
+				.object({
+					mediaType: z.literal('image/png'),
+					width: z.literal(1024),
+					height: z.literal(1024),
+					alphaMode: z.literal('rgba')
+				})
+				.strict(),
+			geometry: z
+				.object({
+					path: z.literal('assets/wiki/skills/icon-production-v1/geometry.json'),
+					contentHash: z.literal(SKILL_ICON_NORMALIZATION_GEOMETRY_HASH)
+				})
+				.strict()
 		})
 		.strict()
 };
@@ -652,11 +717,44 @@ export const SkillIconCalibrationCanvasSchema = z
 	})
 	.strict();
 
-export const SkillIconTargetSchema = z
-	.discriminatedUnion('role', [
+function refineSkillIconTarget(
+	target: {
+		readonly role: z.infer<typeof SkillIconRoleSchema>;
+		readonly jobId: string;
+		readonly references: readonly { readonly path: string }[];
+		readonly output: { readonly candidatePath: string; readonly resultPath: string };
+	},
+	context: z.RefinementCtx
+): void {
+	const referencePaths = target.references.map((reference) => reference.path);
+	if (new Set(referencePaths).size !== referencePaths.length) {
+		context.addIssue({
+			code: 'custom',
+			path: ['references'],
+			message: 'Target reference paths must be unique'
+		});
+	}
+	const expectedScope = productionScopeForRole(target.role);
+	const ownedPaths = [target.output.candidatePath, target.output.resultPath];
+	if (
+		ownedPaths.some((path) => pathBasenameWithoutExtension(path) !== target.jobId) ||
+		ownedPaths.some((path) => !path.includes(`/${expectedScope}/`))
+	) {
+		context.addIssue({
+			code: 'custom',
+			path: ['output'],
+			message: 'Target output basenames and namespaces must match its role and job ID'
+		});
+	}
+}
+
+function targetVariant(
+	common: typeof SkillIconTargetV1CommonShape | typeof SkillIconTargetV2CommonShape
+) {
+	return z.discriminatedUnion('role', [
 		z
 			.object({
-				...SkillIconTargetCommonShape,
+				...common,
 				role: z.literal('rarity-frame'),
 				skillTargetId: z.null(),
 				motifFamily: z.null(),
@@ -666,7 +764,7 @@ export const SkillIconTargetSchema = z
 			.strict(),
 		z
 			.object({
-				...SkillIconTargetCommonShape,
+				...common,
 				role: z.literal('backing'),
 				skillTargetId: z.null(),
 				motifFamily: z.null(),
@@ -676,7 +774,7 @@ export const SkillIconTargetSchema = z
 			.strict(),
 		z
 			.object({
-				...SkillIconTargetCommonShape,
+				...common,
 				role: z.literal('calibration-plate'),
 				skillTargetId: z.null(),
 				motifFamily: MotifFamilySchema,
@@ -686,7 +784,7 @@ export const SkillIconTargetSchema = z
 			.strict(),
 		z
 			.object({
-				...SkillIconTargetCommonShape,
+				...common,
 				role: z.literal('skill-art'),
 				skillTargetId: SkillTargetIdSchema,
 				motifFamily: z.null(),
@@ -694,29 +792,64 @@ export const SkillIconTargetSchema = z
 				canvas: SkillIconStandaloneCanvasSchema
 			})
 			.strict()
+	]);
+}
+
+export const SkillIconTargetV1Schema = targetVariant(SkillIconTargetV1CommonShape).superRefine(
+	refineSkillIconTarget
+);
+export const SkillIconTargetSchema = SkillIconTargetV1Schema;
+export const SkillIconTargetV2Schema = z
+	.discriminatedUnion('role', [
+		z
+			.object({
+				...SkillIconTargetV2CommonShape,
+				role: z.literal('rarity-frame'),
+				skillTargetId: z.null(),
+				motifFamily: z.null(),
+				rarity: SkillIconRaritySchema,
+				canvas: SkillIconStandaloneCanvasSchema
+			})
+			.strict(),
+		z
+			.object({
+				...SkillIconTargetV2CommonShape,
+				role: z.literal('backing'),
+				skillTargetId: z.null(),
+				motifFamily: z.null(),
+				rarity: z.null(),
+				canvas: SkillIconStandaloneCanvasSchema
+			})
+			.strict()
 	])
 	.superRefine((target, context) => {
-		const referencePaths = target.references.map((reference) => reference.path);
-		if (new Set(referencePaths).size !== referencePaths.length) {
-			context.addIssue({
-				code: 'custom',
-				path: ['references'],
-				message: 'Target reference paths must be unique'
-			});
-		}
-		const expectedScope = productionScopeForRole(target.role);
-		const ownedPaths = [target.output.candidatePath, target.output.resultPath];
+		refineSkillIconTarget(target, context);
+		const expectedLogicalIdentity =
+			target.role === 'rarity-frame'
+				? `rarity-frame-${target.rarity.toLowerCase()}`
+				: 'charcoal-forged-stone';
 		if (
-			ownedPaths.some((path) => pathBasenameWithoutExtension(path) !== target.jobId) ||
-			ownedPaths.some((path) => !path.includes(`/${expectedScope}/`))
+			target.logicalIdentity !== expectedLogicalIdentity ||
+			target.jobId !== `${target.logicalIdentity}-v${target.revision}`
 		) {
 			context.addIssue({
 				code: 'custom',
-				path: ['output'],
-				message: 'Target output basenames and namespaces must match its role and job ID'
+				path: ['logicalIdentity'],
+				message: 'V2 job ID must be the explicit logical identity plus revision'
+			});
+		}
+		if (
+			!/opaque\s+#00ff00\s+matte/iu.test(target.exactPrompt) ||
+			!/no\s+(?:baked\s+)?checkerboard/iu.test(target.exactPrompt)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['exactPrompt'],
+				message: 'V2 prompts must require an opaque #00FF00 matte and no baked checkerboard'
 			});
 		}
 	});
+export const AnySkillIconTargetSchema = z.union([SkillIconTargetSchema, SkillIconTargetV2Schema]);
 
 const OwnedOutputPathsSchema = z
 	.object({
@@ -776,6 +909,66 @@ export const SkillIconAssignmentSchema = z
 			}
 		}
 	});
+
+export const SkillIconAssignmentV2Schema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-assignment-v2'),
+		assignmentId: SlugSchema,
+		jobId: SlugSchema,
+		logicalIdentity: SlugSchema,
+		revision: z.number().int().min(2),
+		targetPath: SkillIconTargetPathSchema,
+		assignmentPath: SkillIconAssignmentPathSchema,
+		skillVersion: z.literal('summonlab-skill-icon-production-v2'),
+		normalization: z.object({ profile: SkillIconProviderNormalizationProfileSchema }).strict(),
+		assignedAt: IsoDateTimeSchema,
+		retryCeiling: z.number().int().min(0).max(1),
+		permittedOutputs: OwnedOutputPathsSchema,
+		forbiddenSharedPaths: z.array(SkillIconRepositoryPathSchema).min(1).max(100),
+		completionContract: z
+			.object({
+				oneTargetOneImage: z.literal(true),
+				structuredResultRequired: z.literal(true),
+				sharedFilesMustRemainUntouched: z.literal(true),
+				selfPromotionForbidden: z.literal(true)
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((assignment, context) => {
+		const boundPaths = [
+			assignment.targetPath,
+			assignment.assignmentPath,
+			assignment.permittedOutputs.candidatePath,
+			assignment.permittedOutputs.resultPath
+		];
+		const scopes = boundPaths.map((path) => /\/(references|calibration|icons)\//u.exec(path)?.[1]);
+		if (
+			assignment.jobId !== `${assignment.logicalIdentity}-v${assignment.revision}` ||
+			assignment.assignmentId !== `assignment-${assignment.jobId}` ||
+			boundPaths.some((path) => pathBasenameWithoutExtension(path) !== assignment.jobId) ||
+			new Set(scopes).size !== 1
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'V2 assignment identity, revision, and paths must bind one production namespace'
+			});
+		}
+		const owned = new Set(Object.values(assignment.permittedOutputs));
+		for (const forbiddenPath of assignment.forbiddenSharedPaths) {
+			if (owned.has(forbiddenPath)) {
+				context.addIssue({
+					code: 'custom',
+					path: ['forbiddenSharedPaths'],
+					message: `Owned output cannot also be forbidden: ${forbiddenPath}`
+				});
+			}
+		}
+	});
+export const AnySkillIconAssignmentSchema = z.union([
+	SkillIconAssignmentSchema,
+	SkillIconAssignmentV2Schema
+]);
 
 export const SkillIconFailureReasonSchema = z
 	.object({
@@ -935,6 +1128,164 @@ export const SkillIconResultSchema = z
 		}
 	});
 
+export const SkillIconProviderSourceEvidenceSchema = z
+	.object({
+		mediaType: z.literal('image/png'),
+		width: z.literal(1254),
+		height: z.literal(1254),
+		bytes: z.number().int().positive(),
+		alphaMode: z.literal('rgb'),
+		contentHash: StateHashSchema
+	})
+	.strict();
+
+export const SkillIconObservedProviderSourceEvidenceSchema = z
+	.object({
+		mediaType: z.enum(['image/png', 'image/webp', 'application/octet-stream']),
+		width: z.number().int().nonnegative().max(8_192).nullable(),
+		height: z.number().int().nonnegative().max(8_192).nullable(),
+		bytes: z.number().int().nonnegative(),
+		alphaMode: z.enum(['rgb', 'rgba']).nullable(),
+		contentHash: StateHashSchema
+	})
+	.strict();
+
+export const SkillIconNormalizationEvidenceSchema = z.discriminatedUnion('outcome', [
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileSchema,
+			outcome: z.literal('not-run'),
+			geometryHash: StateHashSchema,
+			providerSource: z.null(),
+			sourceContentHash: z.null(),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileSchema,
+			outcome: z.literal('failed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileSchema,
+			outcome: z.literal('completed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			outputContentHash: StateHashSchema
+		})
+		.strict()
+]);
+
+export const SkillIconResultV2Schema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-result-v2'),
+		resultId: SlugSchema,
+		jobId: SlugSchema,
+		logicalIdentity: SlugSchema,
+		revision: z.number().int().min(2),
+		assignmentId: SlugSchema,
+		status: z.enum(['candidate', 'revise', 'failed']),
+		exactPrompt: ExactPromptSchema,
+		promptHash: StateHashSchema,
+		referenceInputs: z
+			.array(
+				z
+					.object({
+						path: SkillIconReferencePathSchema,
+						contentHash: StateHashSchema
+					})
+					.strict()
+			)
+			.min(1)
+			.max(20),
+		normalization: SkillIconNormalizationEvidenceSchema,
+		output: SkillIconCandidateAssetSchema.nullable(),
+		resultPath: SkillIconResultPathSchema,
+		findings: z.array(SkillIconResultFindingV2Schema).min(1).max(100),
+		failureReason: SkillIconFailureReasonSchema.optional(),
+		startedAt: IsoDateTimeSchema,
+		completedAt: IsoDateTimeSchema,
+		totalWallTimeMs: z.number().int().nonnegative(),
+		writtenOutputPaths: z.union([
+			z.tuple([SkillIconCandidatePathSchema, SkillIconResultPathSchema]),
+			z.tuple([SkillIconResultPathSchema])
+		]),
+		noSharedFilesEdited: z.literal(true),
+		selfPromoted: z.literal(false)
+	})
+	.strict()
+	.superRefine((result, context) => {
+		const v1Equivalent = {
+			...result,
+			schemaVersion: 'skill-icon-result-v1' as const,
+			findings: result.findings.map((finding) => ({
+				...finding,
+				category:
+					finding.category === 'deterministic-normalization'
+						? ('exact-source-persistence' as const)
+						: finding.category
+			}))
+		};
+		delete (v1Equivalent as Partial<typeof v1Equivalent>).logicalIdentity;
+		delete (v1Equivalent as Partial<typeof v1Equivalent>).revision;
+		delete (v1Equivalent as Partial<typeof v1Equivalent>).normalization;
+		const v1 = SkillIconResultSchema.safeParse(v1Equivalent);
+		if (!v1.success) {
+			context.addIssue({
+				code: 'custom',
+				message: `V2 result violates shared result invariants: ${v1.error.issues
+					.map((issue) => issue.message)
+					.join('; ')}`
+			});
+		}
+		if (result.jobId !== `${result.logicalIdentity}-v${result.revision}`) {
+			context.addIssue({
+				code: 'custom',
+				path: ['logicalIdentity'],
+				message: 'V2 result job ID must bind its explicit logical identity and revision'
+			});
+		}
+		if (
+			result.status !== 'failed' &&
+			(result.normalization.outcome !== 'completed' || result.output === null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization'],
+				message: 'Retained V2 outputs require provider-source and normalization evidence'
+			});
+		}
+		if (
+			result.normalization.providerSource !== null &&
+			result.normalization.sourceContentHash !== result.normalization.providerSource.contentHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization', 'sourceContentHash'],
+				message: 'Normalization source hash must bind the observed provider bytes'
+			});
+		}
+		if (
+			result.normalization.outcome === 'completed' &&
+			result.output !== null &&
+			result.normalization.outputContentHash !== result.output.contentHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization'],
+				message: 'Normalization hashes must bind the provider source and retained output'
+			});
+		}
+	});
+export const AnySkillIconResultSchema = z.union([SkillIconResultSchema, SkillIconResultV2Schema]);
+
 export const SkillIconExecutionSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-execution-v1'),
@@ -1026,11 +1377,111 @@ export const SkillIconExecutionSchema = z
 		}
 	});
 
+export const SkillIconExecutionV2Schema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-execution-v2'),
+		target: SkillIconTargetV2Schema,
+		assignment: SkillIconAssignmentV2Schema,
+		result: SkillIconResultV2Schema
+	})
+	.strict()
+	.superRefine((execution, context) => {
+		const { target, assignment, result } = execution;
+		const expectedScope = productionScopeForRole(target.role);
+		const expectedTargetPath = `assets/wiki/skills/icon-production-v1/targets/${expectedScope}/${target.jobId}.json`;
+		const expectedAssignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${expectedScope}/${target.jobId}.json`;
+		if (
+			target.jobId !== assignment.jobId ||
+			target.jobId !== result.jobId ||
+			target.logicalIdentity !== assignment.logicalIdentity ||
+			target.logicalIdentity !== result.logicalIdentity ||
+			target.revision !== assignment.revision ||
+			target.revision !== result.revision ||
+			assignment.assignmentId !== result.assignmentId ||
+			assignment.targetPath !== expectedTargetPath ||
+			assignment.assignmentPath !== expectedAssignmentPath
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'V2 target, assignment, and result must share identity, revision, and namespace'
+			});
+		}
+		if (
+			target.output.candidatePath !== assignment.permittedOutputs.candidatePath ||
+			target.output.resultPath !== assignment.permittedOutputs.resultPath ||
+			target.output.resultPath !== result.resultPath ||
+			(result.output !== null &&
+				(target.output.candidatePath !== result.output.path ||
+					result.writtenOutputPaths.length !== 2 ||
+					target.output.candidatePath !== result.writtenOutputPaths[0] ||
+					target.output.resultPath !== result.writtenOutputPaths[1])) ||
+			(result.output === null &&
+				(result.writtenOutputPaths.length !== 1 ||
+					target.output.resultPath !== result.writtenOutputPaths[0]))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'writtenOutputPaths'],
+				message: 'V2 execution outputs must exactly match the assignment grant'
+			});
+		}
+		if (target.exactPrompt !== result.exactPrompt) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'exactPrompt'],
+				message: 'Result exact prompt must match the immutable target prompt'
+			});
+		}
+		const targetReferences = target.references.map(({ path, contentHash }) => ({
+			path,
+			contentHash
+		}));
+		if (JSON.stringify(targetReferences) !== JSON.stringify(result.referenceInputs)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'referenceInputs'],
+				message: 'Result references must exactly match the target bindings'
+			});
+		}
+		if (
+			target.normalization.profile !== assignment.normalization.profile ||
+			(result.normalization !== null &&
+				(result.normalization.profile !== target.normalization.profile ||
+					result.normalization.geometryHash !== target.normalization.geometry.contentHash))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'normalization'],
+				message: 'V2 normalization profile and geometry hash must match target authority'
+			});
+		}
+		if (
+			result.output !== null &&
+			(result.output.width !== target.normalization.outputContract.width ||
+				result.output.height !== target.normalization.outputContract.height ||
+				result.output.mediaType !== target.normalization.outputContract.mediaType ||
+				result.output.alphaMode !== target.normalization.outputContract.alphaMode)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'output'],
+				message: 'V2 result output must match the canonical normalization output contract'
+			});
+		}
+	});
+export const AnySkillIconExecutionSchema = z.union([
+	SkillIconExecutionSchema,
+	SkillIconExecutionV2Schema
+]);
+
 export type SkillIconLifecycle = z.infer<typeof SkillIconLifecycleSchema>;
 export type SkillIconRarity = z.infer<typeof SkillIconRaritySchema>;
 export type SkillMastery = z.infer<typeof SkillMasterySchema>;
 export type SkillIconMastery = SkillMastery;
 export type SkillIconRole = z.infer<typeof SkillIconRoleSchema>;
+export type SkillIconProviderNormalizationProfile = z.infer<
+	typeof SkillIconProviderNormalizationProfileSchema
+>;
 export type SkillIconRepositoryPath = z.infer<typeof SkillIconRepositoryPathSchema>;
 export type SkillIconCandidatePath = z.infer<typeof SkillIconCandidatePathSchema>;
 export type SkillIconMasterPath = z.infer<typeof SkillIconMasterPathSchema>;
@@ -1065,8 +1516,16 @@ export type SkillIconReference = z.infer<typeof SkillIconReferenceSchema>;
 export type SkillIconStandaloneCanvas = z.infer<typeof SkillIconStandaloneCanvasSchema>;
 export type SkillIconCalibrationCanvas = z.infer<typeof SkillIconCalibrationCanvasSchema>;
 export type SkillIconTarget = z.infer<typeof SkillIconTargetSchema>;
+export type SkillIconTargetV2 = z.infer<typeof SkillIconTargetV2Schema>;
+export type AnySkillIconTarget = z.infer<typeof AnySkillIconTargetSchema>;
 export type SkillIconAssignment = z.infer<typeof SkillIconAssignmentSchema>;
+export type SkillIconAssignmentV2 = z.infer<typeof SkillIconAssignmentV2Schema>;
+export type AnySkillIconAssignment = z.infer<typeof AnySkillIconAssignmentSchema>;
 export type SkillIconFailureReason = z.infer<typeof SkillIconFailureReasonSchema>;
 export type SkillIconResultFinding = z.infer<typeof SkillIconResultFindingSchema>;
 export type SkillIconResult = z.infer<typeof SkillIconResultSchema>;
+export type SkillIconResultV2 = z.infer<typeof SkillIconResultV2Schema>;
+export type AnySkillIconResult = z.infer<typeof AnySkillIconResultSchema>;
 export type SkillIconExecution = z.infer<typeof SkillIconExecutionSchema>;
+export type SkillIconExecutionV2 = z.infer<typeof SkillIconExecutionV2Schema>;
+export type AnySkillIconExecution = z.infer<typeof AnySkillIconExecutionSchema>;

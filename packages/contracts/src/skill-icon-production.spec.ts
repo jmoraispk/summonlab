@@ -3,12 +3,16 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
 import {
+	AnySkillIconExecutionSchema,
+	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
 	SkillIconAssignmentSchema,
+	SkillIconAssignmentV2Schema,
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconCalibrationMasterAssetSchema,
 	SkillIconCatalogSchema,
 	SkillIconExecutionSchema,
+	SkillIconExecutionV2Schema,
 	SkillIconGeometrySchema,
 	SkillIconMasterPathSchema,
 	SkillIconMasterySchema,
@@ -18,10 +22,12 @@ import {
 	SkillIconReferencePathSchema,
 	SkillIconRepositoryPathSchema,
 	SkillIconResultSchema,
+	SkillIconResultV2Schema,
 	SkillIconResultPathSchema,
 	SkillIconReviewSchema,
 	SkillIconRuntimePathSchema,
 	SkillIconTargetSchema,
+	SkillIconTargetV2Schema,
 	SkillIconTargetPathSchema,
 	SkillIconVisualSpecSchema
 } from './index.js';
@@ -814,5 +820,168 @@ describe('skill-icon production contracts', () => {
 				result: produced
 			}).success
 		).toBe(true);
+	});
+
+	it('adds a strict, cross-bound v2 provider-normalization protocol without widening v1', () => {
+		const v2JobId = 'rarity-frame-f-v2';
+		const v2Paths = ownedPaths('references', v2JobId);
+		const exactPrompt =
+			'Paint the F rarity frame over an opaque #00FF00 matte with no baked checkerboard.';
+		const geometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_HASH;
+		const sourceHash = 'e'.repeat(64);
+		const outputHash = 'f'.repeat(64);
+		const target = {
+			schemaVersion: 'skill-icon-target-v2' as const,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			role: 'rarity-frame' as const,
+			skillTargetId: null,
+			motifFamily: null,
+			rarity: 'F' as const,
+			exactPrompt,
+			references: skillTarget().references,
+			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
+			output: v2Paths,
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v1' as const,
+				sourceContract: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					alphaMode: 'rgb' as const,
+					matteColor: '#00FF00' as const
+				},
+				outputContract: {
+					mediaType: 'image/png' as const,
+					width: 1024 as const,
+					height: 1024 as const,
+					alphaMode: 'rgba' as const
+				},
+				geometry: {
+					path: 'assets/wiki/skills/icon-production-v1/geometry.json' as const,
+					contentHash: geometryHash
+				}
+			}
+		};
+		const assigned = {
+			schemaVersion: 'skill-icon-assignment-v2' as const,
+			assignmentId: `assignment-${v2JobId}`,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${v2JobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${v2JobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v2' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v1' as const },
+			assignedAt: '2026-09-02T08:00:00.000Z',
+			retryCeiling: 1,
+			permittedOutputs: v2Paths,
+			forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+			completionContract: assignment().completionContract
+		};
+		const output = {
+			...candidateAsset,
+			path: v2Paths.candidatePath,
+			contentHash: outputHash
+		};
+		const produced = {
+			schemaVersion: 'skill-icon-result-v2' as const,
+			resultId: `result-${v2JobId}`,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			assignmentId: assigned.assignmentId,
+			status: 'candidate' as const,
+			exactPrompt,
+			promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+			referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v1' as const,
+				outcome: 'completed' as const,
+				geometryHash,
+				providerSource: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					bytes: 2_000_000,
+					alphaMode: 'rgb' as const,
+					contentHash: sourceHash
+				},
+				sourceContentHash: sourceHash,
+				outputContentHash: outputHash
+			},
+			output,
+			resultPath: v2Paths.resultPath,
+			findings: producerFindings,
+			startedAt: '2026-09-02T08:00:00.000Z',
+			completedAt: '2026-09-02T08:00:00.000Z',
+			totalWallTimeMs: 0,
+			writtenOutputPaths: [v2Paths.candidatePath, v2Paths.resultPath] as const,
+			noSharedFilesEdited: true as const,
+			selfPromoted: false as const
+		};
+		expect(SkillIconTargetV2Schema.safeParse(target).success).toBe(true);
+		expect(SkillIconAssignmentV2Schema.safeParse(assigned).success).toBe(true);
+		expect(SkillIconResultV2Schema.safeParse(produced).success).toBe(true);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				schemaVersion: 'skill-icon-execution-v2',
+				target,
+				assignment: assigned,
+				result: produced
+			}).success
+		).toBe(true);
+		expect(SkillIconTargetSchema.safeParse(target).success).toBe(false);
+		expect(SkillIconAssignmentSchema.safeParse(assigned).success).toBe(false);
+		expect(SkillIconResultSchema.safeParse(produced).success).toBe(false);
+		expect(
+			SkillIconResultSchema.safeParse({
+				...result(),
+				findings: [
+					{
+						category: 'deterministic-normalization',
+						evaluator: 'automated',
+						outcome: 'pass',
+						observation: 'V2-only normalization evidence.'
+					}
+				]
+			}).success
+		).toBe(false);
+		expect(
+			AnySkillIconExecutionSchema.safeParse({
+				schemaVersion: 'skill-icon-execution-v2',
+				target,
+				assignment: assignment(),
+				result: produced
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				schemaVersion: 'skill-icon-execution-v2',
+				target,
+				assignment: assigned,
+				result: {
+					...produced,
+					normalization: { ...produced.normalization, geometryHash: '0'.repeat(64) }
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconResultV2Schema.safeParse({
+				...produced,
+				normalization: {
+					...produced.normalization,
+					sourceContentHash: '0'.repeat(64)
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetV2Schema.safeParse({ ...target, logicalIdentity: 'rarity-frame-e' }).success
+		).toBe(false);
+		expect(
+			SkillIconTargetV2Schema.safeParse({ ...target, exactPrompt: 'Paint a transparent frame.' })
+				.success
+		).toBe(false);
 	});
 });

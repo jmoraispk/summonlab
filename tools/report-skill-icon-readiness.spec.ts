@@ -237,6 +237,40 @@ describe('skill icon readiness', () => {
 		).not.toBe('complete');
 	});
 
+	it('binds foundation evidence to the coordinator-selected latest reference revisions', () => {
+		const pilotCatalog = catalog(15);
+		const stale = acceptedEvidence(pilotCatalog);
+		const v2Requirements = [
+			...['f', 'e', 'd', 'c', 'b', 'a', 's'].map((rarity) => ({
+				id: `rarity-frame-${rarity}-v2`,
+				role: 'rarity-frame' as const,
+				path: `assets/wiki/skills/icon-production-v1/masters/frames/${rarity}.png`
+			})),
+			{
+				id: 'charcoal-forged-stone-v2',
+				role: 'backing' as const,
+				path: 'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+			}
+		];
+		expect(
+			buildSkillIconReadinessReport(pilotCatalog, stale, CURRENT, v2Requirements)
+		).toMatchObject({ state: 'foundation-incomplete', referencesAccepted: 0 });
+		const current = {
+			...stale,
+			referenceAssets: stale.referenceAssets!.map((artifact) => ({
+				...artifact,
+				id: artifact.id.replace(/-v1$/u, '-v2'),
+				review: {
+					...artifact.review,
+					artifactId: artifact.review.artifactId.replace(/-v1$/u, '-v2')
+				}
+			}))
+		};
+		expect(
+			buildSkillIconReadinessReport(pilotCatalog, current, CURRENT, v2Requirements)
+		).toMatchObject({ referencesAccepted: 8 });
+	});
+
 	it('requires explicit owner activation before bulk-active or complete', () => {
 		const partialCatalog = catalog(455);
 		const evidence: SkillIconReadinessEvidence = {

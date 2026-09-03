@@ -1,8 +1,10 @@
-import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 
 import sharp from 'sharp';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { SkillIconGeometrySchema } from '../packages/contracts/src/index.js';
 import {
@@ -10,14 +12,14 @@ import {
 	SKILL_ICON_FRAME_EDGE_BAND_MINIMUM_COVERAGE,
 	SKILL_ICON_FRAME_INNER_APERTURE_SCALE,
 	SKILL_ICON_FRAME_MIN_VISIBLE_FRACTION_OF_APERTURE_AREA,
-	inspectSkillIconAsset
+	inspectSkillIconAsset,
+	validateSkillIconAssets
 } from './validate-skill-icon-assets.js';
 
-const geometry = SkillIconGeometrySchema.parse(
-	JSON.parse(
-		await readFile(path.resolve('assets/wiki/skills/icon-production-v1/geometry.json'), 'utf8')
-	)
-);
+const geometrySourcePath = path.resolve('assets/wiki/skills/icon-production-v1/geometry.json');
+const geometrySourceBytes = await readFile(geometrySourcePath);
+const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
+const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
 
 async function svgPng(svg: string): Promise<Buffer> {
 	return sharp(Buffer.from(svg)).png().toBuffer();
@@ -47,6 +49,273 @@ function inPolygon(x: number, y: number, points: readonly (readonly [number, num
 		if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
 	}
 	return inside;
+}
+
+const testRoots: string[] = [];
+
+afterEach(async () => {
+	await Promise.all(testRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
+});
+
+async function revisionTestRoot(): Promise<string> {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-validator-'));
+	testRoots.push(root);
+	await mkdir(path.join(root, 'assets/wiki/skills/icon-production-v1'), { recursive: true });
+	await writeFile(
+		path.join(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
+		geometrySourceBytes
+	);
+	for (const area of ['targets', 'assignments', 'results', 'candidates']) {
+		await mkdir(path.join(root, `assets/wiki/skills/icon-production-v1/${area}/references`), {
+			recursive: true
+		});
+	}
+	return root;
+}
+
+const exactPromptV1 =
+	'Create one canonical charcoal forged stone backing inside the shared transparent aperture.';
+const exactPromptV2 =
+	'Create one canonical backing on an opaque #00FF00 matte with no baked checkerboard.';
+const referenceInputs = [
+	{
+		path: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png',
+		purpose: 'Canonical geometry authority.',
+		contentHash: 'a'.repeat(64)
+	}
+];
+
+function outputPaths(jobId: string) {
+	return {
+		candidatePath: `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
+		resultPath: `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
+	};
+}
+
+function targetV1() {
+	const jobId = 'charcoal-forged-stone-v1';
+	return {
+		schemaVersion: 'skill-icon-target-v1' as const,
+		jobId,
+		role: 'backing',
+		skillTargetId: null,
+		motifFamily: null,
+		rarity: null,
+		exactPrompt: exactPromptV1,
+		references: referenceInputs,
+		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: outputPaths(jobId)
+	};
+}
+
+function targetV2(revision = 2, rawGeometryHash = geometryHash) {
+	const logicalIdentity = 'charcoal-forged-stone';
+	const jobId = `${logicalIdentity}-v${revision}`;
+	return {
+		schemaVersion: 'skill-icon-target-v2' as const,
+		jobId,
+		logicalIdentity,
+		revision,
+		role: 'backing',
+		skillTargetId: null,
+		motifFamily: null,
+		rarity: null,
+		exactPrompt: exactPromptV2,
+		references: referenceInputs,
+		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: outputPaths(jobId),
+		normalization: {
+			profile: 'skill-icon-green-key-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: {
+				mediaType: 'image/png',
+				width: 1024,
+				height: 1024,
+				alphaMode: 'rgba'
+			},
+			geometry: {
+				path: 'assets/wiki/skills/icon-production-v1/geometry.json',
+				contentHash: rawGeometryHash
+			}
+		}
+	};
+}
+
+function assignment(target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>) {
+	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	return {
+		schemaVersion: v2 ? 'skill-icon-assignment-v2' : 'skill-icon-assignment-v1',
+		assignmentId: `assignment-${target.jobId}`,
+		jobId: target.jobId,
+		...(v2
+			? {
+					logicalIdentity: target.logicalIdentity,
+					revision: target.revision,
+					normalization: { profile: 'skill-icon-green-key-role-mask-v1' }
+				}
+			: {}),
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${target.jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`,
+		skillVersion: v2 ? 'summonlab-skill-icon-production-v2' : 'summonlab-skill-icon-production-v1',
+		assignedAt: '2026-09-02T00:00:00.000Z',
+		retryCeiling: 1,
+		permittedOutputs: target.output,
+		forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+		completionContract: {
+			oneTargetOneImage: true,
+			structuredResultRequired: true,
+			sharedFilesMustRemainUntouched: true,
+			selfPromotionForbidden: true
+		}
+	};
+}
+
+function candidateOutput(jobId: string, bytes: Buffer) {
+	return {
+		path: outputPaths(jobId).candidatePath,
+		mediaType: 'image/png',
+		width: 1024,
+		height: 1024,
+		bytes: bytes.byteLength,
+		alphaMode: 'rgba',
+		contentHash: createHash('sha256').update(bytes).digest('hex')
+	};
+}
+
+function candidateResult(
+	target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>,
+	bytes: Buffer
+) {
+	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	const output = candidateOutput(target.jobId, bytes);
+	return {
+		schemaVersion: v2 ? 'skill-icon-result-v2' : 'skill-icon-result-v1',
+		resultId: `result-${target.jobId}`,
+		jobId: target.jobId,
+		...(v2
+			? {
+					logicalIdentity: target.logicalIdentity,
+					revision: target.revision,
+					normalization: {
+						profile: 'skill-icon-green-key-role-mask-v1',
+						outcome: 'completed',
+						geometryHash,
+						providerSource: {
+							mediaType: 'image/png',
+							width: 1254,
+							height: 1254,
+							bytes: 1024,
+							alphaMode: 'rgb',
+							contentHash: 'b'.repeat(64)
+						},
+						sourceContentHash: 'b'.repeat(64),
+						outputContentHash: output.contentHash
+					}
+				}
+			: {}),
+		assignmentId: `assignment-${target.jobId}`,
+		status: 'candidate',
+		exactPrompt: target.exactPrompt,
+		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
+		referenceInputs: referenceInputs.map(({ path, contentHash }) => ({ path, contentHash })),
+		output,
+		resultPath: target.output.resultPath,
+		findings: [
+			{
+				evaluator: 'automated',
+				category: v2 ? 'deterministic-normalization' : 'exact-source-persistence',
+				outcome: 'pass',
+				observation: 'Candidate bytes satisfy the automated production contract.'
+			},
+			{
+				evaluator: 'producer',
+				category: 'geometry',
+				outcome: 'pass',
+				observation: 'Candidate composition satisfies the backing role.'
+			}
+		],
+		startedAt: '2026-09-02T00:00:00.000Z',
+		completedAt: '2026-09-02T00:00:01.000Z',
+		totalWallTimeMs: 1000,
+		writtenOutputPaths: [target.output.candidatePath, target.output.resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	};
+}
+
+function failedResult(target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>) {
+	const v2 = target.schemaVersion === 'skill-icon-target-v2';
+	return {
+		schemaVersion: v2 ? 'skill-icon-result-v2' : 'skill-icon-result-v1',
+		resultId: `result-${target.jobId}`,
+		jobId: target.jobId,
+		...(v2
+			? {
+					logicalIdentity: target.logicalIdentity,
+					revision: target.revision,
+					normalization: {
+						profile: 'skill-icon-green-key-role-mask-v1',
+						outcome: 'not-run',
+						geometryHash,
+						providerSource: null,
+						sourceContentHash: null,
+						outputContentHash: null
+					}
+				}
+			: {}),
+		assignmentId: `assignment-${target.jobId}`,
+		status: 'failed',
+		exactPrompt: target.exactPrompt,
+		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
+		referenceInputs: referenceInputs.map(({ path, contentHash }) => ({ path, contentHash })),
+		output: null,
+		resultPath: target.output.resultPath,
+		findings: [
+			{
+				evaluator: 'producer',
+				category: 'other',
+				outcome: 'fail',
+				observation: 'Provider production failed before a candidate was retained.'
+			}
+		],
+		failureReason: { kind: 'provider-failure', message: 'Provider did not return an image.' },
+		startedAt: '2026-09-02T00:00:00.000Z',
+		completedAt: '2026-09-02T00:00:01.000Z',
+		totalWallTimeMs: 1000,
+		writtenOutputPaths: [target.output.resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	};
+}
+
+async function writeExecution(
+	root: string,
+	target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>,
+	result: ReturnType<typeof candidateResult> | ReturnType<typeof failedResult>,
+	candidate?: Buffer
+) {
+	const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+	await writeFile(
+		path.join(base, `targets/references/${target.jobId}.json`),
+		JSON.stringify(target)
+	);
+	await writeFile(
+		path.join(base, `assignments/references/${target.jobId}.json`),
+		JSON.stringify(assignment(target))
+	);
+	await writeFile(
+		path.join(base, `results/references/${target.jobId}.json`),
+		JSON.stringify(result)
+	);
+	if (candidate) {
+		await writeFile(path.join(base, `candidates/references/${target.jobId}.png`), candidate);
+	}
 }
 
 describe('inspectSkillIconAsset', () => {
@@ -150,6 +419,35 @@ describe('inspectSkillIconAsset', () => {
 		).toEqual([]);
 	});
 
+	it('allows the medallion union while rejecting frame pixels outside both authorities', async () => {
+		const outer = geometry.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		const inner = outer.map(
+			([x, y]) =>
+				[
+					512 + (x - 512) * SKILL_ICON_FRAME_INNER_APERTURE_SCALE,
+					512 + (y - 512) * SKILL_ICON_FRAME_INNER_APERTURE_SCALE
+				] as const
+		);
+		const medallion = geometry.rarityMedallionExclusion.map(
+			([x, y]) => [x * 1024, y * 1024] as const
+		);
+		const accepted = await rgbaPng((x, y) =>
+			(inPolygon(x, y, outer) && !inPolygon(x, y, inner)) || inPolygon(x, y, medallion) ? 255 : 0
+		);
+		expect((await inspectSkillIconAsset(accepted, 'rarity-frame', geometry)).violations).toEqual(
+			[]
+		);
+		const outside = await rgbaPng((x, y) => {
+			if (x < 10 && y < 10) return 255;
+			return (inPolygon(x, y, outer) && !inPolygon(x, y, inner)) || inPolygon(x, y, medallion)
+				? 255
+				: 0;
+		});
+		expect((await inspectSkillIconAsset(outside, 'rarity-frame', geometry)).violations).toContain(
+			'rarity-frame pixels must remain inside the outer hex or medallion envelope'
+		);
+	});
+
 	it('checks backing aperture coverage but leaves calibration dimensions to its target', async () => {
 		const aperture = geometry.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
 		const backing = await rgbaPng((x, y) => (inPolygon(x, y, aperture) ? 255 : 0));
@@ -163,5 +461,91 @@ describe('inspectSkillIconAsset', () => {
 		expect(
 			(await inspectSkillIconAsset(calibration, 'calibration-plate', geometry)).violations
 		).toEqual([]);
+	});
+});
+
+describe('validateSkillIconAssets revision authority', () => {
+	async function validBacking(): Promise<Buffer> {
+		const aperture = geometry.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		return rgbaPng((x, y) => (inPolygon(x, y, aperture) ? 255 : 0));
+	}
+
+	it('accepts a complete v2 candidate that supersedes terminal failed v1 evidence', async () => {
+		const root = await revisionTestRoot();
+		const v1 = targetV1();
+		const v2 = targetV2();
+		const candidate = await validBacking();
+		await writeExecution(root, v1, failedResult(v1));
+		await writeExecution(root, v2, candidateResult(v2, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+	});
+
+	it('does not fall back to v1 when the highest v2 revision is failed', async () => {
+		const root = await revisionTestRoot();
+		const v1 = targetV1();
+		const v2 = targetV2();
+		const candidate = await validBacking();
+		await writeExecution(root, v1, candidateResult(v1, candidate), candidate);
+		await writeExecution(root, v2, failedResult(v2));
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/backing latest revision v2 is failed/iu
+		);
+	});
+
+	it('does not fall back to v1 when the highest v2 revision lacks result evidence', async () => {
+		const root = await revisionTestRoot();
+		const v1 = targetV1();
+		const v2 = targetV2();
+		const candidate = await validBacking();
+		await writeExecution(root, v1, candidateResult(v1, candidate), candidate);
+		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		await writeFile(path.join(base, `targets/references/${v2.jobId}.json`), JSON.stringify(v2));
+		await writeFile(
+			path.join(base, `assignments/references/${v2.jobId}.json`),
+			JSON.stringify(assignment(v2))
+		);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/newer revision is incomplete|invalid assignment\/result evidence/iu
+		);
+	});
+
+	it('rejects duplicate logical identity and revision in the global target tree', async () => {
+		const root = await revisionTestRoot();
+		const v2 = targetV2();
+		await writeExecution(root, v2, failedResult(v2));
+		await writeFile(
+			path.join(root, 'assets/wiki/skills/icon-production-v1/targets/references/duplicate-v2.json'),
+			JSON.stringify(v2)
+		);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/Duplicate skill-icon logical revision backing v2/u
+		);
+	});
+
+	it('preserves v1-only valid candidate compatibility', async () => {
+		const root = await revisionTestRoot();
+		const v1 = targetV1();
+		const candidate = await validBacking();
+		await writeExecution(root, v1, candidateResult(v1, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+	});
+
+	it('binds v2 targets to the current raw geometry source hash', async () => {
+		const root = await revisionTestRoot();
+		await writeFile(
+			path.join(root, 'assets/wiki/skills/icon-production-v1/geometry.json'),
+			Buffer.concat([geometrySourceBytes, Buffer.from('\n')])
+		);
+		const v2 = targetV2();
+		await writeExecution(root, v2, failedResult(v2));
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/current raw geometry authority hash does not match target/iu
+		);
 	});
 });

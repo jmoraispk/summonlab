@@ -1,10 +1,14 @@
 # Producer review rubric
 
-Inspect the exact selected raster at its full declared target resolution and as a 96×96 view before persistence.
-Record concise `pass`, `concern`, or `fail` findings for both views of every retained image,
-including `revise`; `not-applicable` does not satisfy either required view. A candidate explicitly
-passes both views and has no concern or failure; unrelated role-inapplicable criteria may remain
-`not-applicable`. This is informed producer inspection, not owner acceptance or blind recognition.
+For a v2 `rarity-frame` or `backing` retry, first inspect the provider raster only for visible
+fidelity and eligibility: it must be the declared 1254×1254 RGB PNG over an opaque `#00FF00` matte,
+never a depicted checkerboard. Then let the helper normalize it. V1 `skill-art` and
+`calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
+at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
+for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either
+required view. A candidate explicitly passes both views and has no concern or failure; unrelated
+role-inapplicable criteria may remain `not-applicable`. This is informed producer inspection, not
+owner acceptance or blind recognition.
 
 ## Shared checks
 
@@ -15,6 +19,9 @@ passes both views and has no concern or failure; unrelated role-inapplicable cri
 - **Alpha:** standalone `skill-art`, `rarity-frame`, and `backing` outputs are genuine RGBA PNGs
   and satisfy their role-specific transparency or coverage rules. A `calibration-plate` may be RGB
   or RGBA when its declared canvas and the role-aware inspector permit it.
+- **Normalization:** v2 frame/backing candidates contain no green matte or fringe, obey the exact
+  role mask, and carry source/geometry/output hash evidence. Provider eligibility is not candidate
+  acceptance; never repair an ineligible provider source by hand.
 - **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
   uncluttered, and different from adjacent family stages.
 - **Reference discipline:** each reference influenced only its declared purpose. No calibration
