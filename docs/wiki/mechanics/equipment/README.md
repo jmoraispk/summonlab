@@ -182,9 +182,8 @@ monster-derived equipment. A reduced prototype Weapon selection subtracts one im
 Weapon at every included material rank; it does not reduce the five-image requirement for an
 included Armour set.
 
-All 161 entries are planned **candidate production targets**, not approved or runtime assets.
-Promotion still requires source persistence, review evidence, approval, and a separate runtime
-export.
+All 161 entries have been produced and owner-accepted as **review candidates**, not approved or
+runtime assets. Promotion still requires a separate approved-source decision and runtime export.
 
 The historical v1
 [material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
@@ -195,7 +194,22 @@ four at a time behind 21 full-set reviews. The adjacent
 [production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) preserve
 that run's execution and provenance boundary.
 
-### V2 planning state
+### V3 candidate-production completion
+
+The [rank-first v3 production](../../../../assets/equipment/experiments/material-equipment-v3/README.md)
+completed owner-reviewed candidate closeout on 2026-09-03. It produced and accepted 77 roots and 84
+individual Armour pieces across all 28 materials. The 21 full Armour sets remain consistency
+evidence; the resulting equipment library therefore contains 140 isolated item images and 21
+complete-set evidence images.
+
+The [final Armour gallery](../../../../assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html),
+[candidate closeout](../../../../assets/equipment/experiments/material-equipment-v3/runs/material-equipment-v3-run-001/candidate-closeout-v1.json),
+and [proposal-only promotion list](../../../../assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json)
+preserve the exact selected paths, hashes, attempts, and owner decisions. This completes visual
+candidate production only. Approved-source promotion, runtime derivatives, and shared catalog
+integration remain separately authorized work.
+
+### Historical V2 planning state
 
 The owner-locked [v2 planning package](../../../../assets/equipment/experiments/material-equipment-v2/README.md)
 retains the same 161-target and full-set-first structure under a collision-safe new namespace. Its
@@ -220,11 +234,11 @@ These are immutable single-call outcomes, not approval decisions. No full Armour
 accepted, so all 84 piece images remain locked and absent.
 
 The [rank-first full-production plan](../../../superpowers/plans/2026-09-02-equipment-rank-first-full-production.md)
-is implementation-ready but not activated. It uses class progression direction first, dedicated
-individual renders second, material-cohort review as a secondary check, and Armour pieces only after
-accepted full-set sources. The earlier material-first draft is superseded.
+is complete through owner-reviewed candidate closeout. It used class progression direction first,
+dedicated individual renders second, material-cohort review as a secondary check, and Armour pieces
+only after accepted full-set sources. The earlier material-first draft is superseded.
 
-### Root-production review state
+### Historical v1 root-production review state
 
 Run `material-equipment-v1-run-001` is activated and its root phase is complete. All 77 root jobs
 have verified provenance results and terminal journal evidence: 16 are machine-checklist
@@ -412,6 +426,9 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-03 — v3 candidate closeout — Accepted all 77 roots and 84 Armour pieces, reconciled 11
+  directions and 60 audit sheets, and created a 161-entry proposal-only promotion list without
+  modifying approved or runtime assets.
 - 2026-09-02 — v2 root activation — Materialized 77 root packet pairs and activated one immutable,
   root-only, 16-worker Equipment run; all 84 Armour pieces remain review-gated.
 - 2026-09-02 — v2 profile acceptance — Recorded the owner's profile-only acceptance and added the

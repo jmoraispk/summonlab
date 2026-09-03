@@ -1,8 +1,27 @@
 # Equipment rank-first full-production plan
 
-Status: **implementation-ready; generation is not activated**
+Status: **complete through owner-reviewed candidate closeout**
 Owner: Equipment visual domain
 Scope: all 28 canonical materials across the current Weapon, Shield, Staff, and Armour forms
+
+## Completion record
+
+Completed on 2026-09-03. All three owner checkpoints are hash-bound and accepted: four generated
+class directions, 77 root candidates, and 84 Armour-piece candidates. The final evidence reconciles
+11 direction sheets, 161 dedicated candidates, 11 class audits, 28 material audits, and 21 Armour
+set-and-piece audits.
+
+- [Checkpoint 1 directions](../../../assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json)
+- [Checkpoint 2 roots](../../../assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json)
+- [Checkpoint 3 Armour pieces](../../../assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json)
+- [Candidate closeout](../../../assets/equipment/experiments/material-equipment-v3/runs/material-equipment-v3-run-001/candidate-closeout-v1.json)
+- [Proposal-only promotion list](../../../assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json)
+
+The recorded run contains 161 base assignments and 49 revision assignments. All 210 attempts have
+terminal evidence: 193 succeeded and 17 failed, with 36 intentionally withheld generation calls
+also preserved. Final owner decisions total 165 accept, zero revise, zero defer, and zero no-image.
+The production remains candidate-only: no approved-source or runtime asset was created, and no
+shared runtime catalog was changed.
 
 ## Goal
 
@@ -52,7 +71,10 @@ This means, explicitly:
 The complete-set image is production evidence rather than a fifth equippable item. Head, Torso,
 Legs, and Boots are the four equippable Armour images.
 
-### Direction and review evidence
+### Original direction and review estimate
+
+The following table preserves the pre-activation estimate. Current results are recorded in the
+completion record above and the immutable closeout report.
 
 | Evidence | Total | Already accepted | Still to create | Generation calls |
 | --- | ---: | ---: | ---: | ---: |
@@ -383,4 +405,3 @@ The plan is complete when all 161 dedicated candidates are reviewable, every one
 accepted class progression and material brief, ranking reads clearly from F through S, every Armour
 piece matches its accepted full set, the three review checkpoints are recorded, and no asset has been
 silently promoted into approved or runtime state.
-
