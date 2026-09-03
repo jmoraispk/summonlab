@@ -4,6 +4,9 @@ Plan ID: `heroes.one-star-overnight-200-v1`
 
 Status: **implementation-ready plan; generation not started**
 
+Operational companion:
+[`one-star-overnight-200-execution-plan.md`](one-star-overnight-200-execution-plan.md)
+
 Date: 2026-09-02
 
 ## Outcome
