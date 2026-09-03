@@ -42,7 +42,14 @@ function option(name: string): string {
 	return value;
 }
 
-async function validateSelectionEvidence(workspaceRoot: string, selection: ArmourPieceSelection) {
+async function validateSelectionEvidence(
+	workspaceRoot: string,
+	selection: ArmourPieceSelection,
+	expectedRevision?: {
+		readonly classification: string;
+		readonly correction: string;
+	}
+) {
 	const paths = equipmentRevisionPaths(selection.targetId, selection.selectedAttempt);
 	if (
 		selection.candidatePath !== paths.candidatePath ||
@@ -81,6 +88,13 @@ async function validateSelectionEvidence(workspaceRoot: string, selection: Armou
 		result.promptSha256 !== assignment.promptSha256
 	) {
 		throw new Error(`Armour-piece revision result cannot be selected: ${selection.targetId}`);
+	}
+	if (
+		expectedRevision &&
+		(assignment.classification !== expectedRevision.classification ||
+			assignment.correction !== expectedRevision.correction)
+	) {
+		throw new Error(`Armour-piece selection revision-plan drift: ${selection.targetId}`);
 	}
 	return { assignment, result };
 }
@@ -128,7 +142,7 @@ export async function resolveEquipmentArmourPieceCandidatesV3(workspaceRoot: str
 		if (!pieceIds.has(selection.targetId)) {
 			throw new Error(`Armour-piece selection target is not a piece: ${selection.targetId}`);
 		}
-		await validateSelectionEvidence(workspaceRoot, selection);
+		await validateSelectionEvidence(workspaceRoot, selection, revisions.get(selection.targetId));
 	}
 	const selections = new Map(
 		manifest.selections.map((selection) => [selection.targetId, selection])
@@ -178,7 +192,7 @@ export async function materializeEquipmentArmourPieceSelectionsV3(input: {
 			resultSha256: fileSha256(path.join(input.workspaceRoot, ...paths.resultPath.split('/'))),
 			reason: `${revision.classification}: ${revision.correction}`
 		};
-		await validateSelectionEvidence(input.workspaceRoot, selection);
+		await validateSelectionEvidence(input.workspaceRoot, selection, revision);
 		selections.push(selection);
 	}
 	const manifest = EquipmentArmourPieceCandidateSelectionManifestV3Schema.parse({

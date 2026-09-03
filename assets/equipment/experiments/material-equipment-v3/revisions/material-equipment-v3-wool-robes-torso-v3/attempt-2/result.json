@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-wool-robes-torso-v3-attempt-2",
+	"targetId": "material-equipment-v3-wool-robes-torso-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-wool-robes-torso-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:18:20.084Z",
+	"completedAt": "2026-09-03T18:19:14.038Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "380edba0f62d6468862ae984f49823a5cfeb8c8ac5138a1ce41b5df640f2da6e",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+			"sha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-torso-v3.png",
+			"sha256": "63838b523d2c51d7dd19915d7b1444e26027688dd268519420f085c550118c95",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a06850-3030-7000-9011-da48bdde35dd/exec-26245a7e-6254-4814-b98a-140fafc39905.png",
+		"sha256": "b7d5ca2c78e7d7750d8a8e06beedf6a60601109559f950be4c94c86ee2b46940",
+		"bytes": 2035771,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/candidate.png",
+		"sha256": "42c342e9a44ef2bc19b46a0b9852a21cc7dddf711d6f9f2940f5f39c1bba201e",
+		"bytes": 1502219,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

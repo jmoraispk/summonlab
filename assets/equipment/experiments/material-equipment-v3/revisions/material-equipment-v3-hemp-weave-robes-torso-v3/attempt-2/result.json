@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-hemp-weave-robes-torso-v3-attempt-2",
+	"targetId": "material-equipment-v3-hemp-weave-robes-torso-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-hemp-weave-robes-torso-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:16:11.249Z",
+	"completedAt": "2026-09-03T18:17:23.862Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "8f7a814554ba6e68100f2d04580c50565d806a90125c8d970b271fa1f9c64ded",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-full-set-v3.png",
+			"sha256": "4bb55ccf9929a2061ae7b5bb5f3633bdaa29cd996079f793a9be6124828bf6a8",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-torso-v3.png",
+			"sha256": "2cd08292cc3ed6899eaaa8ceea43ec61dc2ba48c529eb9836064633401765771",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-9c80-7460-8e9a-f2d8265ebd6d/exec-97d9177b-c1e3-47df-9ef7-ddc91498ce51.png",
+		"sha256": "e697cfd01f78a85d6175da2a446729c6adb66838fae17e204c854652a6e30039",
+		"bytes": 2166830,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hemp-weave-robes-torso-v3/attempt-2/candidate.png",
+		"sha256": "969cb9586abb7870bb18b3308076d4d4149094c84929589efa8b8a5ff1ebb6c6",
+		"bytes": 1635302,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}
