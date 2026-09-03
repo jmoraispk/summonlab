@@ -22,6 +22,60 @@
 			"type": "string",
 			"pattern": "^[a-f0-9]{64}$"
 		},
+		"checkpoint2Receipt": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"sha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"sha256"
+			],
+			"additionalProperties": false
+		},
+		"classAudit": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"sha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"sha256"
+			],
+			"additionalProperties": false
+		},
+		"materialAudit": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"sha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"sha256"
+			],
+			"additionalProperties": false
+		},
 		"classAuditDecision": {
 			"type": "string",
 			"const": "accept"
@@ -37,6 +91,10 @@
 		"fourComponentCheck": {
 			"type": "string",
 			"const": "pass"
+		},
+		"reviewNotes": {
+			"type": "string",
+			"minLength": 1
 		},
 		"acceptedAt": {
 			"type": "string",
@@ -62,10 +120,14 @@
 		"sourceTargetId",
 		"sourceCandidatePath",
 		"sourceCandidateSha256",
+		"checkpoint2Receipt",
+		"classAudit",
+		"materialAudit",
 		"classAuditDecision",
 		"materialAuditDecision",
 		"emptySetCheck",
 		"fourComponentCheck",
+		"reviewNotes",
 		"acceptedAt",
 		"acceptedBy",
 		"unlocksTargetIds"

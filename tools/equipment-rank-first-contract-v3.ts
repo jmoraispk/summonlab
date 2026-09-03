@@ -335,15 +335,54 @@ export const EquipmentArmourSetUnlockReceiptV3Schema = z
 		sourceTargetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
 		sourceCandidatePath: RepositoryPathSchema,
 		sourceCandidateSha256: Sha256Schema,
+		checkpoint2Receipt: z
+			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
+			.strict(),
+		classAudit: z
+			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
+			.strict(),
+		materialAudit: z
+			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
+			.strict(),
 		classAuditDecision: z.literal('accept'),
 		materialAuditDecision: z.literal('accept'),
 		emptySetCheck: z.literal('pass'),
 		fourComponentCheck: z.literal('pass'),
+		reviewNotes: NonEmptySchema,
 		acceptedAt: z.string().datetime({ offset: true }),
 		acceptedBy: NonEmptySchema,
 		unlocksTargetIds: z.array(z.string()).length(4)
 	})
 	.strict();
+
+export const EquipmentArmourSourceChecksV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-armour-source-checks-v3'),
+		checksId: z.string().regex(/^equipment-v3-armour-source-checks-v[1-9][0-9]*$/u),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		checks: z
+			.array(
+				z
+					.object({
+						sourceTargetId: z
+							.string()
+							.regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
+						emptySetCheck: z.literal('pass'),
+						fourComponentCheck: z.literal('pass'),
+						notes: NonEmptySchema
+					})
+					.strict()
+			)
+			.length(21)
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const ids = manifest.checks.map(({ sourceTargetId }) => sourceTargetId);
+		if (new Set(ids).size !== ids.length) {
+			context.addIssue({ code: 'custom', message: 'Armour source checks must be target-unique' });
+		}
+	});
 
 export const EquipmentDirectionTargetV3Schema = z
 	.object({
@@ -429,6 +468,7 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
 	['checkpoint-receipt.schema.json', EquipmentCheckpointReceiptV3Schema],
 	['armour-set-unlock-receipt.schema.json', EquipmentArmourSetUnlockReceiptV3Schema],
+	['armour-source-checks.schema.json', EquipmentArmourSourceChecksV3Schema],
 	['direction-target.schema.json', EquipmentDirectionTargetV3Schema],
 	['direction-assignment.schema.json', EquipmentDirectionAssignmentV3Schema],
 	['direction-result.schema.json', EquipmentDirectionResultV3Schema]

@@ -16,6 +16,7 @@
 		"persist-equipment-rank-first-output-v3.ts",
 		"persist-equipment-rank-first-output-v3.spec.ts",
 		"record-equipment-rank-first-checkpoint-v3.ts",
+		"record-equipment-armour-unlocks-v3.ts",
 		"materialize-equipment-rank-first-assignments-v3.ts",
 		"materialize-equipment-rank-first-revisions-v3.ts",
 		"materialize-equipment-root-selections-v3.ts",

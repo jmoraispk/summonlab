@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	EquipmentCandidateAssignmentV3Schema,
 	EquipmentCandidateTargetV3Schema,
+	EquipmentArmourSourceChecksV3Schema,
 	EquipmentDirectionAssignmentV3Schema,
 	EquipmentDirectionTargetV3Schema
 } from './equipment-rank-first-contract-v3.js';
@@ -155,6 +156,27 @@ describe('Equipment rank-first production v3', () => {
 			}
 		});
 		expect(EquipmentCandidateAssignmentV3Schema.parse(pieceAssignment)).toEqual(pieceAssignment);
+	});
+
+	it('records producer checks for the exact 21 empty four-slot Armour sources', () => {
+		const checks = EquipmentArmourSourceChecksV3Schema.parse(
+			JSON.parse(
+				readFileSync(
+					`${EQUIPMENT_V3_ROOT}/reviews/armour-source-checks-v1.json`,
+					'utf8'
+				)
+			)
+		);
+		const sourceIds = buildEquipmentCandidateTargetsV3()
+			.filter(({ artifactRole }) => artifactRole === 'set-source')
+			.map(({ targetId }) => targetId);
+		expect(checks.checks.map(({ sourceTargetId }) => sourceTargetId)).toEqual(sourceIds);
+		expect(
+			checks.checks.every(
+				({ emptySetCheck, fourComponentCheck }) =>
+					emptySetCheck === 'pass' && fourComponentCheck === 'pass'
+			)
+		).toBe(true);
 	});
 
 	it('validates every target contract and matches checked-in deterministic artifacts', () => {

@@ -20,6 +20,7 @@ import {
 	exclusiveCreateEquipmentRepositoryFile,
 	readEquipmentRepositoryJson
 } from './equipment-repository-io.js';
+import { equipmentArmourUnlockPath } from './record-equipment-armour-unlocks-v3.js';
 
 const CHECKPOINT_1_PATH = `${EQUIPMENT_V3_ROOT}/checkpoints/checkpoint-1-directions.json`;
 
@@ -111,11 +112,21 @@ export async function materializeEquipmentArmourPieceAssignmentsV3(input: {
 	if (!source || source.artifactRole !== 'set-source' || source.setId !== unlock.setId)
 		throw new Error('Unlock receipt does not identify a v3 full-set source');
 	if (
-		source.output.candidatePath !== unlock.sourceCandidatePath ||
 		fileSha256(path.join(input.workspaceRoot, ...unlock.sourceCandidatePath.split('/'))) !==
-			unlock.sourceCandidateSha256
+		unlock.sourceCandidateSha256
 	)
 		throw new Error('Unlock source path/hash mismatch');
+	for (const evidence of [
+		unlock.checkpoint2Receipt,
+		unlock.classAudit,
+		unlock.materialAudit
+	]) {
+		if (
+			fileSha256(path.join(input.workspaceRoot, ...evidence.path.split('/'))) !== evidence.sha256
+		) {
+			throw new Error(`Unlock evidence hash mismatch: ${evidence.path}`);
+		}
+	}
 	const children = targets.filter(({ dependsOnTargetId }) => dependsOnTargetId === source.targetId);
 	if (children.map(({ targetId }) => targetId).some((id) => !unlock.unlocksTargetIds.includes(id)))
 		throw new Error('Unlock receipt does not cover the exact four children');
@@ -133,6 +144,26 @@ export async function materializeEquipmentArmourPieceAssignmentsV3(input: {
 			buildEquipmentCandidateAssignmentV3({ target, classDirection, consistencySource })
 		);
 	return { setId: source.setId, assignmentCount: children.length, promptCount: children.length };
+}
+
+export async function materializeAllEquipmentArmourPieceAssignmentsV3(workspaceRoot: string) {
+	const sources = buildEquipmentCandidateTargetsV3().filter(
+		({ artifactRole }) => artifactRole === 'set-source'
+	);
+	const outcomes = [];
+	for (const source of sources) {
+		outcomes.push(
+			await materializeEquipmentArmourPieceAssignmentsV3({
+				workspaceRoot,
+				unlockReceiptPath: equipmentArmourUnlockPath(source.rank, source.setId!)
+			})
+		);
+	}
+	return {
+		setCount: outcomes.length,
+		assignmentCount: outcomes.reduce((count, outcome) => count + outcome.assignmentCount, 0),
+		promptCount: outcomes.reduce((count, outcome) => count + outcome.promptCount, 0)
+	};
 }
 
 function option(name: string): string {
@@ -155,8 +186,12 @@ if (isCli) {
 						workspaceRoot: process.cwd(),
 						unlockReceiptPath: option('--unlock-receipt')
 					})
+				: command === 'armour-all'
+					? await materializeAllEquipmentArmourPieceAssignmentsV3(process.cwd())
 				: (() => {
-						throw new Error('Usage: ... (roots|armour-set --unlock-receipt PATH)');
+							throw new Error(
+								'Usage: ... (roots|armour-set --unlock-receipt PATH|armour-all)'
+							);
 					})();
 	process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
 }
