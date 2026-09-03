@@ -113,7 +113,7 @@ function option(name: string): string {
 const isCli = process.argv[1]
 	? fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
 	: false;
-if (isCli) {
+async function runCli(): Promise<void> {
 	const decisions = JSON.parse(await readFile(option('--decisions'), 'utf8')) as DecisionInput[];
 	const output = await recordEquipmentCheckpointV3({
 		workspaceRoot: process.cwd(),
@@ -125,3 +125,5 @@ if (isCli) {
 	});
 	process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
 }
+
+if (isCli) void runCli();

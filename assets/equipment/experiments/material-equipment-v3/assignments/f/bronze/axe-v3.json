@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-bronze-axe-v3",
+	"targetId": "material-equipment-v3-bronze-axe-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",
+		"sha256": "b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd",
+		"purpose": "Rank escalation, single-bit silhouette variety, finish, and class recognition."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json",
+		"canonicalSha256": "3273ff91a587a59528daf0485b6a882cd2f741de50425216388dedb883110363"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Bronze Axe, rank F, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One dominant cutting bit on a practical haft. Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Bronze:\nPalette: Warm ochre-brown metal with muted gold edges and dark umber recesses.\nValue: Middle-dark overall; restrained highlights, no mirror polish.\nSurface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.\nConstruction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.\nSupernatural behavior: None.\nNeutral secondary materials: Dark brown wood, plain leather, charcoal cloth, and dull iron only.\nNeighbor distinction: Warmer, rougher, and more plainly cast than Iron; never reads as polished gold.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "abc1d9b6f5b3b95f0a2172e91851e848014300b0f5cc50a365e3d719aaea5cb9",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/axe-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/axe-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

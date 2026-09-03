@@ -1,0 +1,16 @@
+Render one dedicated Starmetal Spear, rank A, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Metal-led head on a long practical shaft. Single full spear on a long slight rightward diagonal; metal head and shaft proportion readable. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Starmetal:
+Palette: Deep blue-silver, near-black cosmic facets, and sparse white-gold star points.
+Value: Strong dark-to-bright contrast controlled along facets and edges.
+Surface/wear: Flawless faceted alloy, meteor-like grain, razor-clean edges, almost no mundane corrosion.
+Construction: Extraordinary tapered geometry, orbit-like negative spaces, fine celestial inlay, precise floating impression while connected.
+Supernatural behavior: Sparse star-point glints and a faint depth within dark facets; never a full aura.
+Neutral secondary materials: Black leather, dark hardwood, silver, and charcoal textile.
+Neighbor distinction: More cosmic, faceted, and extraordinary than Skyiron; colder and less solar than Sunsteel.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

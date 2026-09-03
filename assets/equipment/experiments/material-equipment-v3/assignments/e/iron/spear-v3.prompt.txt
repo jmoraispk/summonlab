@@ -1,0 +1,16 @@
+Render one dedicated Iron Spear, rank E, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Metal-led head on a long practical shaft. Single full spear on a long slight rightward diagonal; metal head and shaft proportion readable. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Iron:
+Palette: Cool charcoal-gray metal with pale gray edges and near-black recesses.
+Value: Dark middle values with stronger edge highlights than Bronze.
+Surface/wear: Forged texture, hammer marks, fine scratches, and sparse red-brown oxidation at joints.
+Construction: Straightforward forged profiles, visible peening, reinforced rims, straps, and practical rivets.
+Supernatural behavior: None.
+Neutral secondary materials: Dark wood, brown leather, charcoal cloth, and tiny bronze fasteners.
+Neighbor distinction: Cooler, harder-edged, and more deliberately forged than Bronze; less refined than Steel.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

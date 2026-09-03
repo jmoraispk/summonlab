@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-yew-bow-v3",
+	"targetId": "material-equipment-v3-yew-bow-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+		"sha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-yew.json",
+		"canonicalSha256": "20dfd0f3eefbb82c488dbc59498173492dd35177adea8907cbd35bcae61e5cf7"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Yew Bow, rank E, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Yew:\nPalette: Honey-gold sapwood with warm reddish heartwood bands.\nValue: Warm middle values with readable two-tone grain.\nSurface/wear: Dense smooth grain, flex-polished surfaces, shallow handling wear, and clean carved edges.\nConstruction: Graceful tensioned curves, laminated-looking natural color bands, neat bindings, slim fittings.\nSupernatural behavior: None.\nNeutral secondary materials: Dark leather, linen cord, dull iron, and small bronze caps.\nNeighbor distinction: Richer, springier, and more carefully shaped than Ash; less massive and dark than Ironwood.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "917182c13c148e2ee02ccc255bfdf6108b2a66626e2344caedfb9d9a0984f495",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/bow-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/yew/bow-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

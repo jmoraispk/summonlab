@@ -1,0 +1,16 @@
+Render one dedicated Layered Silk Robes complete set, rank D, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Layered Silk:
+Palette: Ink blue, muted teal, smoke gray, and restrained pearl highlights.
+Value: Deep folds with clean silky edge sheen.
+Surface/wear: Fine tight weave, layered translucency only at edges, smooth folds, minimal fraying.
+Construction: Multiple offset layers, wrapped closures, precise pleats, slim hems, flowing panels.
+Supernatural behavior: None; apparent lightness comes from textile behavior only.
+Neutral secondary materials: Dark leather, black cord, small steel clasps, and matte linen lining.
+Neighbor distinction: Finer, lighter, and more layered than Wool; less arcane and self-structured than Spellweave.
+
+Exactly four readable components: Head, Torso, Legs, Boots. Empty and self-supporting with natural cavity shadows only; absolutely no wearer, mannequin, body impression, face, hands, pose dummy, or black void figure.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1536 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

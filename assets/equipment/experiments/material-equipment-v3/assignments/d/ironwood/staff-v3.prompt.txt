@@ -1,0 +1,16 @@
+Render one dedicated Ironwood Staff, rank D, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Full-length wood-led magical focus with a readable crown and grounded shaft. Single staff standing on its base with a gentle rightward lean; crown gestures away from vertical. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Ironwood:
+Palette: Deep brown-black heartwood with narrow copper-brown grain lines.
+Value: Dark, weighty values with small satin highlights.
+Surface/wear: Exceptionally dense closed grain, hard polished ridges, minor impact whitening, few dents.
+Construction: Thick load-bearing limbs and shafts, precise carved facets, robust collars, inset grips.
+Supernatural behavior: Only an uncanny sense of weight and hardness; no glow.
+Neutral secondary materials: Steel, dark leather, black cord, and muted bronze.
+Neighbor distinction: Darker, denser, and more architectural than Yew; less alive and expressive than Heartwood.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

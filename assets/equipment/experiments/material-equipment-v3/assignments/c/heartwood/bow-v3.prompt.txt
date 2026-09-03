@@ -1,0 +1,16 @@
+Render one dedicated Heartwood Bow, rank C, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the C column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Heartwood:
+Palette: Rich crimson-brown core, dark bark-brown ridges, and warm amber grain.
+Value: Deep warm values with a brighter living center.
+Surface/wear: Old dense grain, naturally interlocked fibers, polished growth ridges, healed knots.
+Construction: Organic curves grown around the load path, branch-like braces, carved rings, integrated knots.
+Supernatural behavior: A faint warm pulse visible only in a few grain channels.
+Neutral secondary materials: Dark leather, black cord, steel caps, and muted bronze.
+Neighbor distinction: More organic and visibly vital than Ironwood; less spectral and weightless than Spiritwood.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

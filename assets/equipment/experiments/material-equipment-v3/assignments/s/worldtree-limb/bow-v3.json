@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-worldtree-limb-bow-v3",
+	"targetId": "material-equipment-v3-worldtree-limb-bow-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+		"sha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-worldtree-limb.json",
+		"canonicalSha256": "01a395f407009db25fa2204d66e9351f8236a9714b1b26b757dbac8163307858"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Worldtree Limb Bow, rank S, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the S column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Worldtree Limb:\nPalette: Ancient dark bark, luminous gold-green heartwood, emerald leaves, and pale root-white accents.\nValue: Deep primordial mass with brilliant but contained living channels.\nSurface/wear: Age-ring complexity, monumental grain, self-healed scars, living moss traces, flawless load-bearing fibers.\nConstruction: Mythic branching silhouette, root and crown motifs, vast growth compressed into a usable form, nested natural arches.\nSupernatural behavior: Contained seasons appear in selected leaves and sap-light channels; no detached particles or aura.\nNeutral secondary materials: Sunsteel or gold-bronze accents, dark leather, natural cord, and deep green cloth.\nNeighbor distinction: More ancient, monumental, and cosmically alive than Living Branch; the apex of wood without becoming a tree scene.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "05f01e4c1a29d9998ff3bf10dba76957a84140bdeabd61cb22b7e4fa73641029",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/bow-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/s/worldtree-limb/bow-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

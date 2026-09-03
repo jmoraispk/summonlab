@@ -1,0 +1,16 @@
+Render one dedicated Skyiron Heavy Armour complete set, rank B, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Broad articulated metal protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the B column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Skyiron:
+Palette: Pale blue-silver metal with cloud-gray shadows and restrained azure seams.
+Value: Light, high-clarity metal values without becoming white.
+Surface/wear: Unusually smooth light metal, wind-swept polish lines, crisp edges, sparse abrasion.
+Construction: Long sweeping profiles, lightened apertures, winglike ribs, elegant thin reinforcement.
+Supernatural behavior: A faint cool sheen gathers on upward edges as if catching open-sky light.
+Neutral secondary materials: Slate leather, pale hardwood, silver fittings, and gray cloth.
+Neighbor distinction: Lighter, more open, and more graceful than Blacksteel; less cosmic and faceted than Starmetal.
+
+Exactly four readable components: Head, Torso, Legs, Boots. Empty and self-supporting with natural cavity shadows only; absolutely no wearer, mannequin, body impression, face, hands, pose dummy, or black void figure.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1536 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

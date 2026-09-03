@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-heartwood-bow-v3",
+	"targetId": "material-equipment-v3-heartwood-bow-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+		"sha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-heartwood.json",
+		"canonicalSha256": "fa7b04b406a738432c3dd349814c046f64a77463147d42c0dcb8ca3a1b75fed8"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Heartwood Bow, rank C, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the C column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Heartwood:\nPalette: Rich crimson-brown core, dark bark-brown ridges, and warm amber grain.\nValue: Deep warm values with a brighter living center.\nSurface/wear: Old dense grain, naturally interlocked fibers, polished growth ridges, healed knots.\nConstruction: Organic curves grown around the load path, branch-like braces, carved rings, integrated knots.\nSupernatural behavior: A faint warm pulse visible only in a few grain channels.\nNeutral secondary materials: Dark leather, black cord, steel caps, and muted bronze.\nNeighbor distinction: More organic and visibly vital than Ironwood; less spectral and weightless than Spiritwood.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "a72eb63f8bad8f24a83defab3b9f8366c7658148113c04d8ea2b82eba3af0d5b",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/bow-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/c/heartwood/bow-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}
