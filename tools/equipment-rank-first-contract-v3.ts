@@ -311,6 +311,113 @@ export const EquipmentWithheldCallAuditV1Schema = z
 		}
 	});
 
+const EquipmentDecisionSummaryV3Schema = z
+	.object({
+		accept: z.number().int().nonnegative(),
+		revise: z.number().int().nonnegative(),
+		defer: z.number().int().nonnegative()
+	})
+	.strict();
+
+export const EquipmentCandidatePromotionProposalV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-candidate-promotion-proposal-v3'),
+		proposalId: z.literal('material-equipment-v3-candidate-promotion-v1'),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		status: z.literal('proposal-only'),
+		checkpoint3: z
+			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
+			.strict(),
+		entries: z.array(
+			z
+				.object({
+					targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+					candidatePath: RepositoryPathSchema,
+					candidateSha256: Sha256Schema,
+					ownerDecision: z.literal('accept')
+				})
+				.strict()
+		),
+		excluded: EquipmentDecisionSummaryV3Schema,
+		forbiddenActions: z.array(NonEmptySchema).min(1),
+		noRuntimeMutation: z.literal(true)
+	})
+	.strict()
+	.superRefine((proposal, context) => {
+		const ids = proposal.entries.map(({ targetId }) => targetId);
+		if (new Set(ids).size !== ids.length) {
+			context.addIssue({ code: 'custom', message: 'Promotion proposal targets must be unique' });
+		}
+	});
+
+export const EquipmentCandidateCloseoutV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-candidate-closeout-v3'),
+		reportId: z.literal('material-equipment-v3-candidate-closeout-v1'),
+		runId: z.literal('material-equipment-v3-run-001'),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		status: z.literal('candidate-closeout'),
+		manifest: z.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema }).strict(),
+		repository: z
+			.object({
+				branch: NonEmptySchema,
+				basisCommit: z.string().regex(/^[a-f0-9]{40}$/u),
+				commits: z
+					.array(
+						z
+							.object({ hash: z.string().regex(/^[a-f0-9]{40}$/u), subject: NonEmptySchema })
+							.strict()
+					)
+					.min(1)
+			})
+			.strict(),
+		checkpoints: z
+			.array(
+				z
+					.object({
+						path: RepositoryPathSchema,
+						canonicalSha256: Sha256Schema,
+						summary: EquipmentDecisionSummaryV3Schema
+					})
+					.strict()
+			)
+			.length(3),
+		decisionTotals: z
+			.object({
+				accept: z.number().int().nonnegative(),
+				revise: z.number().int().nonnegative(),
+				defer: z.number().int().nonnegative(),
+				noImage: z.literal(0)
+			})
+			.strict(),
+		evidence: z
+			.object({
+				directionSheetCount: z.literal(11),
+				rootCandidateCount: z.literal(77),
+				armourPieceCandidateCount: z.literal(84),
+				classAuditCount: z.literal(11),
+				materialAuditCount: z.literal(28),
+				armourAuditCount: z.literal(21),
+				baseAssignmentCount: z.literal(161),
+				revisionAssignmentCount: z.number().int().nonnegative(),
+				terminalResultCount: z.number().int().positive(),
+				succeededResultCount: z.number().int().positive(),
+				failedResultCount: z.number().int().nonnegative(),
+				withheldCallCount: z.number().int().nonnegative()
+			})
+			.strict(),
+		promotionProposal: z
+			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
+			.strict(),
+		validationCommands: z.array(NonEmptySchema).min(1),
+		unresolvedIntegrationRequests: z.array(NonEmptySchema),
+		candidateOnly: z.literal(true),
+		noRuntimeMutation: z.literal(true)
+	})
+	.strict();
+
 export const EquipmentRootCandidateSelectionManifestV3Schema = z
 	.object({
 		schemaVersion: z.literal('equipment-root-candidate-selection-manifest-v3'),
@@ -574,6 +681,8 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['revision-assignment.schema.json', EquipmentCandidateRevisionAssignmentV3Schema],
 	['provenance-result.schema.json', EquipmentProvenanceResultV3Schema],
 	['withheld-call-audit.schema.json', EquipmentWithheldCallAuditV1Schema],
+	['candidate-promotion-proposal.schema.json', EquipmentCandidatePromotionProposalV3Schema],
+	['candidate-closeout.schema.json', EquipmentCandidateCloseoutV3Schema],
 	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
 	[
 		'armour-piece-candidate-selection-manifest.schema.json',
