@@ -112,6 +112,18 @@ export const EquipmentProvenanceResultV3Schema = z
 		model: NonEmptySchema,
 		promptSha256: Sha256Schema,
 		references: z.array(EquipmentAcceptedReferenceV3Schema).min(2),
+		source: z
+			.object({
+				path: NonEmptySchema,
+				sha256: Sha256Schema,
+				bytes: z.number().int().positive(),
+				width: z.number().int().positive(),
+				height: z.number().int().positive(),
+				mediaType: z.enum(['image/png', 'image/webp', 'image/jpeg'])
+			})
+			.strict()
+			.nullable(),
+		persistenceOperation: z.enum(['exclusive-copy', 'exclusive-normalize']).nullable(),
 		output: z
 			.object({
 				path: RepositoryPathSchema,
@@ -127,14 +139,29 @@ export const EquipmentProvenanceResultV3Schema = z
 	})
 	.strict()
 	.superRefine((result, context) => {
-		if ((result.status === 'succeeded') !== (result.output !== null && result.error === null)) {
+		if (
+			(result.status === 'succeeded') !==
+			(result.source !== null &&
+				result.persistenceOperation !== null &&
+				result.output !== null &&
+				result.error === null)
+		) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Succeeded results require output and no error'
+				message: 'Succeeded results require source, persistence operation, output, and no error'
 			});
 		}
-		if ((result.status === 'failed') !== (result.output === null && result.error !== null)) {
-			context.addIssue({ code: 'custom', message: 'Failed results require error and no output' });
+		if (
+			(result.status === 'failed') !==
+			(result.source === null &&
+				result.persistenceOperation === null &&
+				result.output === null &&
+				result.error !== null)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Failed results require error and no retained source or output'
+			});
 		}
 	});
 

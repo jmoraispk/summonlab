@@ -42,11 +42,18 @@ function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
 
+function mediaTypeFor(format: string): 'image/png' | 'image/webp' | 'image/jpeg' {
+	if (format === 'png') return 'image/png';
+	if (format === 'webp') return 'image/webp';
+	if (format === 'jpeg') return 'image/jpeg';
+	throw new Error(`Unsupported generated format: ${format}`);
+}
+
 async function normalizeImage(
 	sourcePath: string,
 	width: number,
 	height: number,
-	allowDirectionLetterbox = false
+	allowLetterbox = false
 ) {
 	const source = await readFile(sourcePath);
 	const metadata = await sharp(source).metadata();
@@ -56,7 +63,7 @@ async function normalizeImage(
 		throw new Error(`Unsupported generated format: ${metadata.format}`);
 	const aspectError =
 		Math.abs(metadata.width * height - width * metadata.height) / (width * metadata.height);
-	if (aspectError > (allowDirectionLetterbox ? 0.2 : 0.01))
+	if (aspectError > (allowLetterbox ? 0.51 : 0.01))
 		throw new Error(
 			`Generated source ${metadata.width}x${metadata.height} does not match required aspect ${width}x${height}`
 		);
@@ -65,7 +72,7 @@ async function normalizeImage(
 		? source
 		: await sharp(source)
 				.resize(width, height, {
-					fit: allowDirectionLetterbox ? 'contain' : 'fill',
+					fit: allowLetterbox ? 'contain' : 'fill',
 					background: '#070b12',
 					kernel: sharp.kernel.lanczos3
 				})
@@ -201,7 +208,12 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 		target.output.candidatePath,
 		target.output.provenanceResultPath
 	]);
-	const image = await normalizeImage(options.sourcePath, target.width, target.height);
+	const image = await normalizeImage(
+		options.sourcePath,
+		target.width,
+		target.height,
+		target.artifactRole === 'set-source'
+	);
 	const result = EquipmentProvenanceResultV3Schema.parse({
 		schemaVersion: 'equipment-rank-first-provenance-result-v3',
 		resultId: `result-${target.targetId}-attempt-${options.attempt}`,
@@ -215,6 +227,15 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 		model: options.model,
 		promptSha256: assignment.promptSha256,
 		references,
+		source: {
+			path: path.resolve(options.sourcePath),
+			sha256: sha256(image.source),
+			bytes: image.source.byteLength,
+			width: image.metadata.width,
+			height: image.metadata.height,
+			mediaType: mediaTypeFor(image.metadata.format)
+		},
+		persistenceOperation: image.operation,
 		output: {
 			path: target.output.candidatePath,
 			sha256: sha256(image.retained),
