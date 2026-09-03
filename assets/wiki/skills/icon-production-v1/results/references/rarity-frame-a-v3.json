@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "skill-icon-result-v2",
+	"resultId": "result-rarity-frame-a-v3",
+	"jobId": "rarity-frame-a-v3",
+	"logicalIdentity": "rarity-frame-a",
+	"revision": 3,
+	"role": "rarity-frame",
+	"assignmentId": "assignment-rarity-frame-a-v3",
+	"status": "superseded",
+	"attemptCount": 0,
+	"supersessionReason": "unattempted-packet-superseded-by-higher-revision",
+	"supersedingAuthority": {
+		"targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-a-v4.json",
+		"targetContentHash": "63e2c48fa0af33715ebe6eb3ec98dbb4710d6d26c1cb6de7cdaeb8b0b830b264",
+		"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-a-v4.json",
+		"assignmentContentHash": "37152146abd486b6ccdd83808de57f91d39f0311d5dbf63df70c78ae967da9cc",
+		"jobId": "rarity-frame-a-v4",
+		"logicalIdentity": "rarity-frame-a",
+		"revision": 4,
+		"role": "rarity-frame"
+	},
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the tier A (Fabled) rarity-frame layer. Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration after the pipeline's full-canvas resize to 1024×1024. Build a champagne-electrum frame with a gentle pearl-metal highlight, doubled inner rim, six spear-leaf accents, and a refined crest; keep the shine controlled rather than pale or blown out. Include one small integrated top-center medallion bearing only the uppercase letter A. Keep the intended central aperture and the entire area outside the hard frame boundary as the perfectly uniform chroma field; the frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels after normalization. Render the asset on a perfectly uniform opaque #00FF00 matte with no baked checkerboard. The matte field must contain no simulated transparency, shadows, texture, gradient, color variation, or other marks. Use no green-colored material, green reflections, green oxidation, or green patina anywhere in the frame. Do not add a cast shadow, ambient-occlusion halo, or dark fringe in the central aperture or outside the hard frame boundary; the chroma field must meet every asset edge cleanly. The pipeline will remove the source matte, resize the raster, and apply the fixed rarity-frame role mask. No skill icon, emblem, backing, scenery, bloom, or any other symbol, number, word, label, or text. Output only this isolated provider-source raster.",
+	"promptHash": "b9f897fdf889dc3c8ce3a2455ca7e38a4e90a60552f8309febf30392a6bacf6e",
+	"referenceInputs": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png",
+			"contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4"
+		}
+	],
+	"normalization": {
+		"profile": "skill-icon-green-key-role-mask-v2",
+		"outcome": "not-run",
+		"geometryHash": "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7",
+		"providerSource": null,
+		"sourceContentHash": null,
+		"decoderInputContentHash": null,
+		"containerBox": null,
+		"colorSpaceDisposition": null,
+		"outputContentHash": null
+	},
+	"output": null,
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-a-v3.json",
+	"findings": [],
+	"startedAt": "2026-09-04T00:05:00.000Z",
+	"completedAt": "2026-09-04T00:05:00.000Z",
+	"totalWallTimeMs": 0,
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/results/references/rarity-frame-a-v3.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
