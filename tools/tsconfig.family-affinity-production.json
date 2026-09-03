@@ -19,6 +19,7 @@
 		"family-affinity-review-lib.ts",
 		"family-affinity-review-lib.spec.ts",
 		"export-family-affinity-review.ts",
+		"export-family-affinity-normal-review-handoff.ts",
 		"allocate-family-affinity-revision.ts",
 		"activate-family-affinity-normal-anchors.ts",
 		"activate-family-affinity-normal-anchors.spec.ts",

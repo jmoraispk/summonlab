@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a6",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A6-01",
+      "coordinateId": "gargoyles/gargoyle-stone-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-stone-sovereign/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-stone-sovereign/normal-v1.png",
+      "candidateSha256": "a8e82b33888ec27fd58fe49bab28fe75c223bddbf2889a5584fbf15d745edd28"
+    },
+    {
+      "token": "A6-02",
+      "coordinateId": "void-horrors/void-horror-outer-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/void-horrors/void-horror-outer-sovereign/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/void-horrors/void-horror-outer-sovereign/normal-v1.png",
+      "candidateSha256": "9d67434dfc51173e5646e044d41e4225faf3632ddc84da49dc38446daaef33a8"
+    },
+    {
+      "token": "A6-03",
+      "coordinateId": "gargoyles/gargoyle-guardian/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/gargoyles/gargoyle-guardian/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/gargoyles/gargoyle-guardian/normal-v1.png",
+      "candidateSha256": "6380340dde4c0f539dbed962c18a64c05b2cf667739579bd12623a9090701ce1"
+    },
+    {
+      "token": "A6-04",
+      "coordinateId": "djinn/djinn-djinn/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-djinn/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-djinn/normal-v1.png",
+      "candidateSha256": "660e7b4613f3d10dd3653af968f4cf4342c95af6f40dd9174f6c8b9f10026a70"
+    },
+    {
+      "token": "A6-05",
+      "coordinateId": "fae/fae-fae-knight/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fae/fae-fae-knight/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-fae-knight/normal-v1.png",
+      "candidateSha256": "c537289d4b231b81d1fa35eb70ced45c34660831bca888db73cfb60bf384f939"
+    },
+    {
+      "token": "A6-06",
+      "coordinateId": "fae/fae-fae-monarch/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fae/fae-fae-monarch/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fae/fae-fae-monarch/normal-v1.png",
+      "candidateSha256": "6b153c52273f70f431a326b284d16bd39632273b18e227d04608dc205ab7b7ad"
+    },
+    {
+      "token": "A6-07",
+      "coordinateId": "doppelgangers/doppelganger-faceless-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-faceless-sovereign/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-faceless-sovereign/normal-v1.png",
+      "candidateSha256": "3b5ed88ac0975786f71b1071bec271818ccfcbfb4b3535415fd678c2a58a44a8"
+    },
+    {
+      "token": "A6-08",
+      "coordinateId": "doppelgangers/doppelganger-mimic/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/normal-v1.png",
+      "candidateSha256": "5ebb27e8149748e3bed45c0bb62ba3cc2f9d487b69328b706bc987a3ce6aa029"
+    },
+    {
+      "token": "A6-09",
+      "coordinateId": "djinn/djinn-wish-sultan/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/djinn/djinn-wish-sultan/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/djinn/djinn-wish-sultan/normal-v1.png",
+      "candidateSha256": "5e7e22ec0dfd2f6772853e1194eaf540d63ab437978dda9e75423e46f415fc5c"
+    },
+    {
+      "token": "A6-10",
+      "coordinateId": "void-horrors/void-horror-fracture/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/void-horrors/void-horror-fracture/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/void-horrors/void-horror-fracture/normal-v1.png",
+      "candidateSha256": "0e103873931a217678f2ffef906d8109462fdba66e41bab02647e4e182a22626"
+    }
+  ]
+}

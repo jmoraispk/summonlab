@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a4",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A4-01",
+      "coordinateId": "insectoids/insectoid-elite-drone/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/normal-v1.png",
+      "candidateSha256": "ea158b6f2e7ac501ee76b038476f39450865bf385f3d0f5b5c30a9106356605c"
+    },
+    {
+      "token": "A4-02",
+      "coordinateId": "lizardfolk/lizardfolk-saurian-tyrant/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-saurian-tyrant/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-saurian-tyrant/normal-v1.png",
+      "candidateSha256": "f2f1350a77aba4f0ae2a7e5dfc6ab8d9f91be21b03f048be04450e7b70ae05dd"
+    },
+    {
+      "token": "A4-03",
+      "coordinateId": "arachnids/arachnid-weaver/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver/normal-v1.png",
+      "candidateSha256": "97051f78e6c064cc6ac4c103bd1a61ceeb52571996b383c1ed1bc271d8b57ef9"
+    },
+    {
+      "token": "A4-04",
+      "coordinateId": "golems/golem-rune-warrior/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/golems/golem-rune-warrior/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v1.png",
+      "candidateSha256": "e7dac95fed55d3c4cdb2aabd6b7441894749c61ec1e68b41fb5b114e74f1336c"
+    },
+    {
+      "token": "A4-05",
+      "coordinateId": "slimes/slime-primordial-ooze/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-primordial-ooze/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-primordial-ooze/normal-v1.png",
+      "candidateSha256": "1e7ede9b4c3608b3184c098128bcda4b63fece71a2781eb4342cba4bd396fdf9"
+    },
+    {
+      "token": "A4-06",
+      "coordinateId": "arachnids/arachnid-weaver-queen/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/normal-v1.png",
+      "candidateSha256": "881545363c2e54a41f9c3b23f7c58d60661634c8bfb223897fcc058d15d61d26"
+    },
+    {
+      "token": "A4-07",
+      "coordinateId": "golems/golem-master-golem/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/golems/golem-master-golem/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v1.png",
+      "candidateSha256": "b2a5b05af2959f63ea11f0491c0f55a8274d5b3c7516ca124661e5085180c15b"
+    },
+    {
+      "token": "A4-08",
+      "coordinateId": "slimes/slime-ooze-knight/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-ooze-knight/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/normal-v1.png",
+      "candidateSha256": "4287997e87bcf778f8015de464cfe49290b56743517cc51cf6b6fb32e71163a9"
+    },
+    {
+      "token": "A4-09",
+      "coordinateId": "lizardfolk/lizardfolk-spineback/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/normal-v1.png",
+      "candidateSha256": "48d0065f1eb915ce682b44903252e1d9d2422f57adc6fa1c052a0eb9144fc997"
+    },
+    {
+      "token": "A4-10",
+      "coordinateId": "insectoids/insectoid-hive-queen/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-hive-queen/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-hive-queen/normal-v1.png",
+      "candidateSha256": "e21e84b34564bbb0411c30e1d3f26a3288ec4082cde6c2bc512a5993f1b93687"
+    }
+  ]
+}

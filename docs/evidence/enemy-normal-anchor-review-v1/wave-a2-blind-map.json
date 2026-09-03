@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a2",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A2-01",
+      "coordinateId": "skeletons/skeleton-bone-knight/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-knight/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-knight/normal-v1.png",
+      "candidateSha256": "f8c8f6766af6e09c3e0e092a02e1c0472564e756385cd316c18b2981de14fc00"
+    },
+    {
+      "token": "A2-02",
+      "coordinateId": "wraiths/wraith-wraith/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/normal-v1.png",
+      "candidateSha256": "97ae02aaf93cc988d2fdf9f801217adb07c448718afd079d3d2aa2e83526eae7"
+    },
+    {
+      "token": "A2-03",
+      "coordinateId": "mummies/mummy-sacred-servant/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-sacred-servant/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-sacred-servant/normal-v1.png",
+      "candidateSha256": "746520f29e5c71394c0f254c4d8e25641dff88d9616c2d7d2f88f9d441bc8a47"
+    },
+    {
+      "token": "A2-04",
+      "coordinateId": "mummies/mummy-god-king/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/normal-v1.png",
+      "candidateSha256": "e95b2201e5dd4bc2f1a21076a71e81a37ea349abbcb0602701bffdd8824550d8"
+    },
+    {
+      "token": "A2-05",
+      "coordinateId": "wraiths/wraith-death-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-death-sovereign/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-death-sovereign/normal-v1.png",
+      "candidateSha256": "e97a2f9fef84ac233b902d095ed6f0ba6839d49644c270380f1e34bc19a89cd7"
+    },
+    {
+      "token": "A2-06",
+      "coordinateId": "vampires/vampire-progenitor/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-progenitor/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-progenitor/normal-v1.png",
+      "candidateSha256": "83c3bb94d98f9d5b3a15fb79d9e9be1263534b782e75e73e07345f7353d877e2"
+    },
+    {
+      "token": "A2-07",
+      "coordinateId": "rotwalkers/rotwalker-rot-brute/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-rot-brute/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-rot-brute/normal-v1.png",
+      "candidateSha256": "4d66ec309108234e2bd2d59bf561ccbd50a6ef6715e41c0372573442350627be"
+    },
+    {
+      "token": "A2-08",
+      "coordinateId": "rotwalkers/rotwalker-plague-lord/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/normal-v1.png",
+      "candidateSha256": "13257fb811bed27c8e406dffbe92ecbf151b75a68c4e8b70713fb0ba9d5efe46"
+    },
+    {
+      "token": "A2-09",
+      "coordinateId": "skeletons/skeleton-lich-king/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-lich-king/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-lich-king/normal-v1.png",
+      "candidateSha256": "4e24438e9d868498615038989a1d48e181b6b913e9a26d0ffa27cd2e9eaf4a9f"
+    },
+    {
+      "token": "A2-10",
+      "coordinateId": "vampires/vampire-noble/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/normal-v1.png",
+      "candidateSha256": "239b7995fab6fbdc23d679542f314bf9e1abe784666bd456bad2c060935d9b63"
+    }
+  ]
+}

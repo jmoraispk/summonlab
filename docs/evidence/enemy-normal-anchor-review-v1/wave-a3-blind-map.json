@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a3",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A3-01",
+      "coordinateId": "demons/demon-hellknight/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/demons/demon-hellknight/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-hellknight/normal-v1.png",
+      "candidateSha256": "14a4e6f23174465bf217ea6353ea11498bac17968eac4139bf6370aacf2e9ed4"
+    },
+    {
+      "token": "A3-02",
+      "coordinateId": "celestials/celestial-warden/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/celestials/celestial-warden/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/celestials/celestial-warden/normal-v1.png",
+      "candidateSha256": "385fe03a39fcd0c547b40286b542f3a369ad19345a212db670285af73846e280"
+    },
+    {
+      "token": "A3-03",
+      "coordinateId": "minotaurs/minotaur-labyrinth-warrior/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-labyrinth-warrior/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-labyrinth-warrior/normal-v1.png",
+      "candidateSha256": "e0d30246a15cf2baa4a64a888c73b36ebcc89e2ff7780fb69e8caf887f2a5602"
+    },
+    {
+      "token": "A3-04",
+      "coordinateId": "harpies/harpy-sky-queen/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-sky-queen/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-sky-queen/normal-v1.png",
+      "candidateSha256": "c1a60e053397a20644d7ee8fbfb60872bcb5ea0301e4aec206ab630600c89d42"
+    },
+    {
+      "token": "A3-05",
+      "coordinateId": "nagas/naga-hooded-adept/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-hooded-adept/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-hooded-adept/normal-v1.png",
+      "candidateSha256": "6b4513905d4260527a8a558701017c18ef577d50a6c16814eead2681a72c4c1b"
+    },
+    {
+      "token": "A3-06",
+      "coordinateId": "nagas/naga-serpent-empress/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/normal-v1.png",
+      "candidateSha256": "8526b7777d3844e4e25ce34e7cd86390c1a72ab3997cc52659473b2a3f599780"
+    },
+    {
+      "token": "A3-07",
+      "coordinateId": "celestials/celestial-seraph/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/celestials/celestial-seraph/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/celestials/celestial-seraph/normal-v1.png",
+      "candidateSha256": "b5b5273fab3eacac1bcbfba8ae2753119eb69495b8bc7adaa88875becb233ef5"
+    },
+    {
+      "token": "A3-08",
+      "coordinateId": "minotaurs/minotaur-bull-emperor/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/minotaurs/minotaur-bull-emperor/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-emperor/normal-v1.png",
+      "candidateSha256": "8bce5168db30f4e825cee9d6f086a60b00a5bf05f346ac50c1428da6f2595752"
+    },
+    {
+      "token": "A3-09",
+      "coordinateId": "harpies/harpy-skyrender/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-skyrender/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-skyrender/normal-v1.png",
+      "candidateSha256": "b2919f8270857a7d9ec164fd95283e3d5ad7154ad93972f7689550979d146d82"
+    },
+    {
+      "token": "A3-10",
+      "coordinateId": "demons/demon-prince/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/demons/demon-prince/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/demons/demon-prince/normal-v1.png",
+      "candidateSha256": "15884c2985d060b558db835855b5d0ade6f4695035b77ae44770a129d1da2fef"
+    }
+  ]
+}
