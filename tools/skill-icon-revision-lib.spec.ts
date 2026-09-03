@@ -197,7 +197,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports seven unattempted v4 references and the terminal F-v4 result', async () => {
+	it('reports seven unattempted v4 references and the unattempted F-v5 reprocess', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -212,10 +212,11 @@ describe('skill-icon revision resolution', () => {
 			'references/rarity-frame-c-v4: missing result inventory entry',
 			'references/rarity-frame-d-v4: missing result inventory entry',
 			'references/rarity-frame-e-v4: missing result inventory entry',
-			'references/rarity-frame-s-v4: missing result inventory entry',
-			'rarity-frame:F latest revision v4 is failed (validation: Corrected provider source remained ineligible: deterministic normalization rejected it because the #00FF00 edge matte was not sufficiently clean; retry ceiling exhausted.); create a higher revision'
+			'references/rarity-frame-f-v5: missing result inventory entry',
+			'references/rarity-frame-s-v4: missing result inventory entry'
 		]);
 		expect(diagnostics).toHaveLength(8);
+		expect(message).not.toMatch(/latest revision v4 is failed/iu);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);
 		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);

@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-reprocess-target-v1",
+	"jobId": "rarity-frame-f-v5",
+	"logicalIdentity": "rarity-frame-f",
+	"revision": 5,
+	"role": "rarity-frame",
+	"rarity": "F",
+	"sourceMode": "reuse-prior-provider-source",
+	"originAuthority": {
+		"target": {
+			"path": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json",
+			"contentHash": "11d9b06d8167fe7280c9e309dce3f00d105ab9fd595775a8802ba1b93073e546"
+		},
+		"assignment": {
+			"path": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json",
+			"contentHash": "44afadb82cc3098aaa7e6092391b3ef95a2576ade12e8e7cecd24454fe3919ec"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json",
+			"contentHash": "045ddfe30888f26fd3fab90fa683b367ac9dfc15ae41745d6b6011590a920bce"
+		},
+		"providerSourceHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073"
+	},
+	"processingAuthority": {
+		"profile": "skill-icon-green-key-role-mask-v3",
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"guide": {
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e",
+			"purpose": "Provider-space role-mask guide for rarity-frame and backing registration."
+		}
+	},
+	"output": {
+		"candidatePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v5.json"
+	}
+}
