@@ -71,7 +71,11 @@ const GenerationFailureCallSchema = z
 		providerRunId: z.string().min(1).nullable(),
 		sourcePath: z.string().min(1).nullable(),
 		sourceSha256: FailureHashSchema.nullable(),
-		outcomeCode: z.enum(['provider-output-unavailable', 'visual-contract-rejected']),
+		outcomeCode: z.enum([
+			'provider-output-unavailable',
+			'provider-moderation-blocked',
+			'visual-contract-rejected'
+		]),
 		reasons: z.array(z.string().min(1)).min(1)
 	})
 	.strict();
