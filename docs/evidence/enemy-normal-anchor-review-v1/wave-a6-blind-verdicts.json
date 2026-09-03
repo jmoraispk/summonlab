@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A6",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A6-01",
+      "perceivedFamilyOrCreature": "gargoyle cathedral guardian",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "fortress tank",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Central creature merges ambiguously with the shrine and surrounding statues."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "Architecture competes with the unit silhouette."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Detailed, cohesive stone treatment."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Physical stone construction reads as material rather than dominant elemental energy."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "Crowded monument composition obscures the active body and likely attack vector."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Reads more as an environment or monument than a discrete combatant."
+    },
+    {
+      "token": "A6-02",
+      "perceivedFamilyOrCreature": "void eye portal aberration",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "controller or summoner",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Portal, eye ring, tendrils, and small lower body do not resolve into one anatomy."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Dominant circular silhouette is centered and legible."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Strong value control and coherent void palette."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Void energy and portal construction dominate the identity."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The large central eye or aperture reads as an obvious focal threat and possible weak point."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Identity depends on dominant unexplained void construction rather than a readable Normal creature."
+    },
+    {
+      "token": "A6-03",
+      "perceivedFamilyOrCreature": "armored gargoyle demon",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "bruiser tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Humanoid mass, wings, limbs, and stance are immediately readable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Strong centered full-body presentation."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Armor, stone, and restrained glowing seams are well integrated."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The body remains predominantly physical; glowing seams are restrained accents."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Heavy mass, claws, and grounded stance clearly signal slow, close-range pressure."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear combat-ready creature whose minor glow does not overpower its physical construction."
+    },
+    {
+      "token": "A6-04",
+      "perceivedFamilyOrCreature": "arcane djinn mage",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "ranged caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "revise",
+        "note": "Energy arm and vaporous lower body make the underlying form inconsistent."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Readable gesture and clear focal hand."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Polished color and costume detail."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Lightning projection and elemental lower body dominate the design."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Extended casting arm strongly telegraphs a ranged magical attack."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Dominant lightning and elemental-body construction conflict with a Normal anchor."
+    },
+    {
+      "token": "A6-05",
+      "perceivedFamilyOrCreature": "woodland moth fairy",
+      "perceivedTier": "T2",
+      "perceivedCombatRole": "support skirmisher",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "pass",
+        "note": "Slender humanoid and paired wings read despite organic camouflage."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full silhouette fits comfortably with useful negative space."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Muted woodland materials remain cohesive."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Organic wood-and-wing construction reads as physical with restrained magical suggestion."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "No clear weapon, casting gesture, or attack-facing feature indicates how it fights."
+      },
+      "overallVerdict": "revise",
+      "rationale": "A recognizable physical creature with restrained magical suggestion."
+    },
+    {
+      "token": "A6-06",
+      "perceivedFamilyOrCreature": "prismatic crystal moth spirit",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "burst caster",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Body, wings, crystal planes, and light streaks collapse into visual noise."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "Oversized diagonal effects obscure the combat silhouette."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Competing rainbow highlights lack a stable material hierarchy."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Prismatic energy and crystal-light effects are the dominant construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "Visual noise prevents a reliable read of attack origin, reach, or vulnerable body."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Predominantly prismatic elemental construction prevents a clear Normal identity."
+    },
+    {
+      "token": "A6-07",
+      "perceivedFamilyOrCreature": "many-faced bone queen",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "necromantic summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Main humanoid anatomy is clear; added faces read as deliberate trophies or growths."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Staff and cape produce a balanced sovereign silhouette."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Bone, cloth, and metal surfaces are richly but coherently resolved."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Identity is built from physical bone, cloth, and armor without dominant elemental effects."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised staff and ceremonial stance clearly identify a ranged summoner or commander."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Distinctive physical sovereign with no dominant elemental-body dependency."
+    },
+    {
+      "token": "A6-08",
+      "perceivedFamilyOrCreature": "human duelist or assassin",
+      "perceivedTier": "T2",
+      "perceivedCombatRole": "melee skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Natural human proportions and pose are cleanly readable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Unobstructed full-body framing supports instant recognition."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Restrained monochrome finish suits the grounded design."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Entirely grounded physical presentation with no elemental dependency."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The poised stance suggests agility, but no visible weapon or explicit attack cue clarifies engagement range."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Clear Normal-aligned combatant, though visually modest for a higher tier."
+    },
+    {
+      "token": "A6-09",
+      "perceivedFamilyOrCreature": "astral djinn sovereign",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "controller summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "revise",
+        "note": "Spectral arms, orbiting heads, and smoke torso obscure the core body plan."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Symmetrical composition clearly signals a major encounter."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Highly polished with strong purple-gold cohesion."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Astral energy, spectral projections, and a smoke body overwhelm any neutral physical base."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Multiple raised hands and orbiting apparitions clearly telegraph area control and summoning."
+      },
+      "overallVerdict": "revise",
+      "rationale": "The identity is overwhelmingly built from unexplained astral energy."
+    },
+    {
+      "token": "A6-10",
+      "perceivedFamilyOrCreature": "shattered void humanoid",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "assassin bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Long limbs, claws, torso, and head remain readable through fragmentation."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Strong full-body silhouette with controlled surrounding debris."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Consistent shard language and disciplined monochrome contrast."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "The creature is constructed primarily from floating void shards and energy."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Long claws, forward lean, and predatory proportions clearly signal fast melee threat."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Visually coherent, but its body is dominantly unexplained void material rather than Normal construction."
+    }
+  ]
+}
