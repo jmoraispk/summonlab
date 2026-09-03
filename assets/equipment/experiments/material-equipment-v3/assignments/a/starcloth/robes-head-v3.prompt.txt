@@ -1,0 +1,18 @@
+Render only the head item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Starcloth:
+Palette: Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points.
+Value: Very dark cloth carrying crisp luminous accents.
+Surface/wear: Impossibly fine weave, deep clean folds, constellation embroidery, pristine resilient edges.
+Construction: Celestial arcs, layered mantle, long star-trail hems, elegant open sleeves, precise luminous borders.
+Supernatural behavior: Tiny constellation points and faint thread paths glow within the cloth, never around it.
+Neutral secondary materials: Silver clasps, black leather, dark lining, and minimal gold thread.
+Neighbor distinction: More radiant, cosmic, and sharply detailed than Moonweave; less reality-bending than Fateweave.
+
+One isolated head only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.

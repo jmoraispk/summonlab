@@ -1,0 +1,18 @@
+Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Hemp Weave:
+Palette: Natural flax beige, oatmeal, and weathered gray-brown.
+Value: Light-middle matte values with low contrast.
+Surface/wear: Coarse visible weave, softened creases, frayed edges, repairs, and uneven dye.
+Construction: Simple rectangular panels, practical hems, cord belts, broad sleeves, minimal layers.
+Supernatural behavior: None.
+Neutral secondary materials: Hemp cord, plain leather, wood toggles, and dull bronze.
+Neighbor distinction: Coarser, lighter, and less insulating than Wool; deliberately humble rather than ragged.
+
+One isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.

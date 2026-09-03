@@ -1,0 +1,18 @@
+Render only the head item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Broad articulated metal protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Steel:
+Palette: Neutral silver-gray steel with cool blue-gray shadows and darkened fittings.
+Value: Broad mid-to-bright metal range with disciplined highlights.
+Surface/wear: Even forged finish, fine grind lines, polished contact edges, and restrained battle wear.
+Construction: Refined tapers, fitted sockets, crisp fullers, articulated plates, clean rivet rhythm.
+Supernatural behavior: None.
+Neutral secondary materials: Blackened iron, dark leather, hardwood, and charcoal cloth.
+Neighbor distinction: Cleaner and structurally more refined than Iron; brighter and less ominous than Blacksteel.
+
+One isolated head only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.

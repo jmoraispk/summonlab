@@ -1,0 +1,39 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-wyrmscale-light-armour-legs-v3",
+	"targetId": "material-equipment-v3-wyrmscale-light-armour-legs-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+		"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-wyrmscale.json",
+		"canonicalSha256": "1b98429b7d353ec341049d49b14f63f168a4391f3af0282336a3c440dcdc9de7"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-full-set-v3.png",
+		"sha256": "20032eb42dc16ce8a65ce2a39cc2d00d762723fa89fcb22fd463b5165e2b1927",
+		"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+	},
+	"prompt": "Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Wyrmscale:\nPalette: Royal cobalt or deep crimson scales, black recesses, and luminous gold edge accents.\nValue: Rich saturated darks with brilliant armored ridges.\nSurface/wear: Large ancient scales, layered enamel-like sheen, scarred high ridges, nearly impenetrable overlaps.\nConstruction: Regal scale fields, pronounced crests, sweeping draconic panels, gold-bound joints, powerful silhouette.\nSupernatural behavior: A restrained elemental gleam travels through a few scale edges; no breath effect.\nNeutral secondary materials: Black leather, dark steel, gold fittings, and charcoal lining.\nNeighbor distinction: Larger, more regal, and more magically potent than Drakescale; less colossal and primeval than Ancient Dragon Scale.\n\nOne isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.",
+	"promptSha256": "70bbc05e9246890fb6647a7c0bc905241fe089ef398abdc5493fb3c157a07edf",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-legs-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/wyrmscale/light-armour-legs-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}
