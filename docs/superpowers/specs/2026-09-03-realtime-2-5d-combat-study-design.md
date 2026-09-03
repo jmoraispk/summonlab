@@ -1,7 +1,8 @@
 # Near-3D Real-Time 2.5D Combat Study Design
 
-**Status:** Owner-approved for implementation planning on 2026-09-03, with the supplied hero confirmed
-as owner-created and fully available for derivative prototype assets.
+**Status:** Initial slice implemented. Owner approved the animation-and-depth canary follow-up on
+2026-09-03, with the supplied hero confirmed as owner-created and fully available for derivative
+prototype assets.
 
 ## Purpose
 
@@ -37,6 +38,28 @@ art target.
 - Develop on branch `codex/realtime-combat-study` in the sibling worktree
   `/home/joao/Documents/summonlab-realtime-combat-study`.
 
+## Approved follow-up: animation-and-depth canary
+
+The first runnable slice validated the overall visual direction and exposed three concrete gaps. The
+approved second pass will:
+
+- prove true character animation on Asha and one lesser rat before producing motion packs for the
+  full cast;
+- preserve the autonomous simulation as the source of target choice and resolved actions, with the
+  presentation layer consuming stable animation cues rather than making combat decisions;
+- replace role-level in-world health offsets with screen-space bars anchored above each asset's
+  authored visible bounds;
+- strengthen the 2.5D mode with a trapezoidal ground projection, nonlinear depth scale, separated
+  occluders, clearer environment overlap, restrained engagement framing, and directional contact
+  shadows;
+- keep the 2D mode honest and mechanically identical, while removing the depth-specific projection,
+  occlusion, parallax, and shadow response;
+- keep Asha's left/right identity asymmetry authored. Runtime horizontal mirroring remains forbidden.
+
+The canary is accepted only when approach, attack, hit, recovery, and defeat read at phone gameplay
+scale; animation does not restart on every simulation update; health bars clear faces and silhouettes;
+and the 2D/2.5D distinction is immediately observable without changing the encounter.
+
 ## Reference findings
 
 The supplied footage shows three control sources operating on a common-looking world and actor
@@ -66,8 +89,8 @@ Create a new focused route at `/living-village-lab/realtime-combat` with:
 - one original rat-brute enemy and a small number of original lesser rats;
 - autonomous approach, target acquisition, melee or close-range skill use, hit reaction, defeat,
   victory, pause, and replay;
-- a `2D` versus `2.5D` presentation switch that restarts the same deterministic encounter in the
-  selected mode;
+- a `2D` versus `2.5D` presentation switch that preserves the current deterministic encounter state
+  while changing only its presentation;
 - health bars, cooldown state, damage numbers, contact shadows, particles, hit-stop, restrained
   camera shake, and sound-ready presentation cues;
 - a collapsed-by-default developer sidecar showing current public intent, available actions,

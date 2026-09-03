@@ -20,8 +20,8 @@ an honest flat `2D` presentation and an aspirational near-3D `2.5D` presentation
   existing monospace stack for inspectable agent state.
 - **Layout:** a dominant 9:16 battlefield with controls inside its safe edges; desktop adds the agent
   sidecar to the right, while phone collapses it below a disclosure.
-- **Signature:** one `2D / 2.5D` switch restarts the exact same seeded encounter while visibly
-  engaging perspective scale, parallax, occlusion, shadow deformation, and atmospheric depth.
+- **Signature:** one `2D / 2.5D` switch preserves the current encounter while visibly engaging
+  perspective scale, parallax, occlusion, shadow deformation, and atmospheric depth.
 - **Restraint:** the battlefield, character motion, and impacts carry the experience. Outside the
   comparison switch and agent disclosure, interface chrome stays quiet.
 
@@ -83,7 +83,8 @@ decoration.
 - Keep simulation, seed, actors, timing, framing, and effect vocabulary identical.
 - In `2D`, flatten depth scale, parallax, occlusion, directional shadows, and atmospheric separation.
 - In `2.5D`, enable the full dimensional treatment.
-- Restart from the same seed when the mode changes and label the current mode accessibly.
+- Preserve the current simulation snapshot when the mode changes and label the current mode
+  accessibly.
 
 ### 6. Add the route shell and agent sidecar
 
