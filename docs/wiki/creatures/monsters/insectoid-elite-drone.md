@@ -6,7 +6,7 @@ Wiki ID: `monster.insectoid-elite-drone`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Worker pellets become pull or push nodes and Soldiers brace on the selected side
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/insectoids/insectoid-elite-drone/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/insectoids/insectoid-elite-drone/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/insectoids/insectoid-elite-drone/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/insectoids/insectoid-elite-drone/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/insectoids/insectoid-elite-drone/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/insectoids/insectoid-elite-drone/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/insectoids/insectoid-elite-drone/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/insectoids/insectoid-elite-drone/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/insectoids/insectoid-elite-drone/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/insectoids/insectoid-elite-drone/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/insectoids/insectoid-elite-drone/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/insectoids/insectoid-elite-drone/wind-v1.json` |
