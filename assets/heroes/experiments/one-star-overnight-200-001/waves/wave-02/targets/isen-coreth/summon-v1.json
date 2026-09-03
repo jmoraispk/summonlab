@@ -1,0 +1,129 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "c5f20e91aff5da783f630853506255f274b59821fafb04fbc2a2ac9d3534c013",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Isen Coreth: 40-year-old woman, 185 cm (tall), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-4-medium. Face: square compact face; full cheeks and sharply defined brows; long straight nose, narrow upper lip; faint freckles. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: dark-brown, short-textured-crop, deliberate accent: none. Wardrobe: tunic-tabard, specifically a long tunic and split tabard over loose trousers with wrapped ankles; rolled sleeves and one architectural lapel; bounded palette ochre-cream. Visible personal details: a wrapped keepsake cord; two plain rings. Make repair, patina, customization, or a keepsake the primary recognition device. Maintenance cue: deliberately tousled but clean. Color treatment: lets faded and repaired areas vary the palette. Pose cue: weight settles into one heel, shoulders square, hands relaxed and completely visible. Include a string-bound recipe leaf only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "isen-coreth",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a wrapped keepsake cord",
+        "two plain rings"
+      ],
+      "coolnessAnchor": "repairs-patina-keepsake",
+      "density": 2,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": null,
+      "chibiReadability": "Preserve the front and side silhouette of short-textured-crop, the parting, gathered mass, shaved areas, and none; color remains dark-brown.",
+      "colorFamily": "dark-brown",
+      "silhouetteFamily": "short-textured-crop"
+    },
+    "identity": {
+      "age": 40,
+      "displayName": "Isen Coreth",
+      "faceDescription": "square compact face; full cheeks and sharply defined brows; long straight nose, narrow upper lip; faint freckles",
+      "gender": "woman",
+      "identitySignature": "fd5401babbb4199ad1b1abc1c1d386defad86ce18a94dffdc9ced7ea315f9910",
+      "skinValueBand": 4
+    },
+    "kernel": {
+      "colorOrnamentTaste": "lets faded and repaired areas vary the palette; avoids ornament unless it serves a fastening purpose.",
+      "counterTrait": "is careless only with personal comfort",
+      "culturalFragments": [
+        "likes burnished clay beads and matte surfaces",
+        "offers the warmest drink to the quietest guest"
+      ],
+      "dominantTrait": "protectively vigilant",
+      "groomingAttitude": "deliberately tousled but clean",
+      "lifeEcho": "book repair",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "weight settles into one heel, shoulders square, hands relaxed and completely visible",
+      "socialPresentation": "restless and magnetic",
+      "tension": "Appears restless and magnetic, yet is careless only with personal comfort."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "185 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "tall"
+    },
+    "wardrobe": {
+      "condition": "deliberately tousled but clean",
+      "description": "a long tunic and split tabard over loose trousers with wrapped ankles; rolled sleeves and one architectural lapel.",
+      "family": "tunic-tabard",
+      "paletteFamily": "ochre-cream"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/isen-coreth/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/results/isen-coreth/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "isen-coreth-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-02"
+}

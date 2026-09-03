@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "76456fa00c518883bb2649b42053272d4e1330d90e6ad9440dfe3d517db65b4e",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Vali Pellan: 32-year-old woman, 169 cm (medium), conditioned athletic construction with functional tone but no ripped definition, skin value band-3-light-medium. Face: angular diamond face; high cheekbones and softly lidded eyes; prominent bridge, compact mouth; faint freckles. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: red-copper-auburn, shaved-close-cropped, deliberate accent: sculpted edge pattern. Wardrobe: mantle-short-cape, specifically a small mantle or short cape over an unarmored tunic and divided lower layers; offset closures and narrow reinforced cuffs; bounded palette rust-charcoal. Visible personal details: a shallow cheek scar. Make body construction and habitual posture the primary recognition device. Maintenance cue: immaculate clothes over weathered hands. Color treatment: uses high-contrast lining visible only in motion. Pose cue: stance is broad and still, with one palm turned slightly upward. Include a travel tally cord only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "vali-pellan",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a shallow cheek scar"
+      ],
+      "coolnessAnchor": "body-or-posture",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "sculpted edge pattern",
+      "chibiReadability": "Preserve the front and side silhouette of shaved-close-cropped, the parting, gathered mass, shaved areas, and sculpted edge pattern; color remains red-copper-auburn.",
+      "colorFamily": "red-copper-auburn",
+      "silhouetteFamily": "shaved-close-cropped"
+    },
+    "identity": {
+      "age": 32,
+      "displayName": "Vali Pellan",
+      "faceDescription": "angular diamond face; high cheekbones and softly lidded eyes; prominent bridge, compact mouth; faint freckles",
+      "gender": "woman",
+      "identitySignature": "b7e6d4d9eb332c15c333bbce9507b72dad771fdcba3148f01e5b3bb9ca5e4e04",
+      "skinValueBand": 3
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses high-contrast lining visible only in motion; wears several deliberate anchors without looking elite.",
+      "counterTrait": "conceals a strong competitive streak",
+      "culturalFragments": [
+        "uses folded cloth as a formal greeting token",
+        "touches two fingers to the collar before greeting"
+      ],
+      "dominantTrait": "wryly theatrical",
+      "groomingAttitude": "immaculate clothes over weathered hands",
+      "lifeEcho": "textile work",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "stance is broad and still, with one palm turned slightly upward",
+      "socialPresentation": "playful but watchful",
+      "tension": "Appears playful but watchful, yet conceals a strong competitive streak."
+    },
+    "physique": {
+      "bodyType": "athletic-conditioned",
+      "description": "169 cm; conditioned athletic construction with functional tone but no ripped definition.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "immaculate clothes over weathered hands",
+      "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; offset closures and narrow reinforced cuffs.",
+      "family": "mantle-short-cape",
+      "paletteFamily": "rust-charcoal"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/vali-pellan/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/results/vali-pellan/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "vali-pellan-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-07"
+}

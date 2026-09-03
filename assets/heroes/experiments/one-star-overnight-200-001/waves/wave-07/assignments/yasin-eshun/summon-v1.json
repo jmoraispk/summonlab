@@ -1,0 +1,30 @@
+{
+  "assignedAt": "2026-09-02T00:00:00Z",
+  "assignmentId": "yasin-eshun-summon-v1-assignment",
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  },
+  "dryRun": false,
+  "experimentId": "one-star-overnight-200-001",
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001/roster-plan.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/production-report.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/provenance/production-journal.jsonl",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/index.html",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/quarantine.html"
+  ],
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/yasin-eshun/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/results/yasin-eshun/summon-v1.json"
+  },
+  "producerId": "image-producer-lane-06",
+  "retryCeiling": 1,
+  "schemaVersion": "hero-one-star-image-assignment-v1",
+  "targetId": "yasin-eshun-summon-v1",
+  "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/yasin-eshun/summon-v1.json",
+  "targetSha256": "559195125ec3a8505f84ef0c5e2a54dc50305f4d81061ac57d08be3298c5716f"
+}

@@ -1,0 +1,126 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "b676f35a855201f0b754e6c3ae22ee9cf29c1189281956aba8c8bf24fea7e669",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Zelia Oran: 25-year-old man, 164 cm (medium), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-3-light-medium. Face: soft rectangular face; asymmetric brows and broad cheek planes; short rounded nose, wide mouth; one cheek mole. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: dark-brown, bob-pageboy, deliberate accent: one longer face-framing section. Wardrobe: layered-wrap, specifically overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; a divided hem and broad folded collar; bounded palette ochre-cream. Visible personal details: no accessory and no tattoo. Make stitching, quilting, embroidery, or woven pattern the primary recognition device. Maintenance cue: low-maintenance grooming with highly polished footwear. Color treatment: uses high-contrast lining visible only in motion. Pose cue: one thumb hooks lightly beneath the waist wrap while the other hand rests open. Include a small empty medicine pouch only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "zelia-oran",
+  "heroSpec": {
+    "details": {
+      "anchors": [],
+      "coolnessAnchor": "textile-detail",
+      "density": 0,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "one longer face-framing section",
+      "chibiReadability": "Preserve the front and side silhouette of bob-pageboy, the parting, gathered mass, shaved areas, and one longer face-framing section; color remains dark-brown.",
+      "colorFamily": "dark-brown",
+      "silhouetteFamily": "bob-pageboy"
+    },
+    "identity": {
+      "age": 25,
+      "displayName": "Zelia Oran",
+      "faceDescription": "soft rectangular face; asymmetric brows and broad cheek planes; short rounded nose, wide mouth; one cheek mole",
+      "gender": "man",
+      "identitySignature": "60c1408be1b020e864c579be0a6a7f9d723111decd5a07055ff37c788a7775ee",
+      "skinValueBand": 3
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses high-contrast lining visible only in motion; wears several deliberate anchors without looking elite.",
+      "counterTrait": "privately doubts first impressions",
+      "culturalFragments": [
+        "treats patched quilting as honorable craft",
+        "wears travel dust until the first shared meal"
+      ],
+      "dominantTrait": "warmly argumentative",
+      "groomingAttitude": "low-maintenance grooming with highly polished footwear",
+      "lifeEcho": "book repair",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one thumb hooks lightly beneath the waist wrap while the other hand rests open",
+      "socialPresentation": "reserved with dry humor",
+      "tension": "Appears reserved with dry humor, yet privately doubts first impressions."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "164 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "low-maintenance grooming with highly polished footwear",
+      "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; a divided hem and broad folded collar.",
+      "family": "layered-wrap",
+      "paletteFamily": "ochre-cream"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-11/candidates/zelia-oran/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-11/results/zelia-oran/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "zelia-oran-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-11"
+}

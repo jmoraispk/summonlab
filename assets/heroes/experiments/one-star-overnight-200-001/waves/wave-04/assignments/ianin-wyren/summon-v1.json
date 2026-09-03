@@ -1,0 +1,30 @@
+{
+  "assignedAt": "2026-09-02T00:00:00Z",
+  "assignmentId": "ianin-wyren-summon-v1-assignment",
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  },
+  "dryRun": false,
+  "experimentId": "one-star-overnight-200-001",
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001/roster-plan.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/production-report.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/provenance/production-journal.jsonl",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/index.html",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/quarantine.html"
+  ],
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/ianin-wyren/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/results/ianin-wyren/summon-v1.json"
+  },
+  "producerId": "image-producer-lane-10",
+  "retryCeiling": 1,
+  "schemaVersion": "hero-one-star-image-assignment-v1",
+  "targetId": "ianin-wyren-summon-v1",
+  "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/ianin-wyren/summon-v1.json",
+  "targetSha256": "20023441653dbb560961e52e2ff6a28ded8a5ab35b721fe0bd01d65419a2ad37"
+}

@@ -2,7 +2,7 @@
 
 Execution plan ID: `heroes.one-star-overnight-200-execution-v1`
 
-Status: **ready for goal-harness activation; no image jobs dispatched**
+Status: **active production; roster frozen and calibration pending**
 
 Creative authority:
 [`one-star-overnight-200-plan.md`](one-star-overnight-200-plan.md)
@@ -275,4 +275,3 @@ commits is suitable for an overnight goal loop. Provider latency and throttling 
 variables, so the process optimizes for durable complete waves rather than an unverified all-or-none
 deadline. If the provider cannot sustain the target, the morning result still contains every
 completed, validated pair and an exact resumable shortfall report.
-

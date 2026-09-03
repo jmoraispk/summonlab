@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "hero-one-star-production-report-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "state": "roster-frozen",
+  "candidateBoundary": "candidate-only; no human approval or runtime promotion implied",
+  "counts": {
+    "activeHeroes": 200,
+    "reserveIdentityPackets": 20,
+    "summonTargetsMaterialized": 220,
+    "summonCandidates": 0,
+    "chibiTargetsMaterialized": 0,
+    "chibiCandidates": 0,
+    "completePairs": 0,
+    "quarantinedImages": 0,
+    "activatedReserves": 0
+  },
+  "budget": {
+    "baseImageCallsLimit": 400,
+    "correctionCallsLimit": 60,
+    "baseImageCallsUsed": 0,
+    "correctionCallsUsed": 0
+  },
+  "waves": [
+    { "waveId": "wave-01", "state": "calibration-pending", "completePairs": 0 },
+    { "waveId": "wave-02", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-03", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-04", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-05", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-06", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-07", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-08", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-09", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-10", "state": "planned", "completePairs": 0 }
+  ],
+  "failures": [],
+  "corrections": [],
+  "quarantine": [],
+  "providerWallTimeMs": 0
+}

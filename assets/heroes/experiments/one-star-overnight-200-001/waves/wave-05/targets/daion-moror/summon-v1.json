@@ -1,0 +1,129 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "0a955eb02eb884a25d56c02f7e56024e03ab3dde5998c1b31151c3550cb76956",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Daion Moror: 35-year-old man, 175 cm (medium), sturdy stocky construction with a broad frame and compact proportions, skin value band-3-light-medium. Face: long narrow face; deep-set eyes and a heavy level brow; prominent bridge, compact mouth; one cheek mole. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: black, bun-topknot-wrapped, deliberate accent: architectural high knot. Wardrobe: mantle-short-cape, specifically a small mantle or short cape over an unarmored tunic and divided lower layers; offset closures and narrow reinforced cuffs; bounded palette plum-gray. Visible personal details: a wrapped keepsake cord; a carved belt buckle. Make repair, patina, customization, or a keepsake the primary recognition device. Maintenance cue: severe grooming softened by one unruly feature. Color treatment: uses high-contrast lining visible only in motion. Pose cue: torso angles three-quarter while both arms hang in deliberate asymmetric ease. Include a worn spool of colored thread only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "daion-moror",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a wrapped keepsake cord",
+        "a carved belt buckle"
+      ],
+      "coolnessAnchor": "repairs-patina-keepsake",
+      "density": 2,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "architectural high knot",
+      "chibiReadability": "Preserve the front and side silhouette of bun-topknot-wrapped, the parting, gathered mass, shaved areas, and architectural high knot; color remains black.",
+      "colorFamily": "black",
+      "silhouetteFamily": "bun-topknot-wrapped"
+    },
+    "identity": {
+      "age": 35,
+      "displayName": "Daion Moror",
+      "faceDescription": "long narrow face; deep-set eyes and a heavy level brow; prominent bridge, compact mouth; one cheek mole",
+      "gender": "man",
+      "identitySignature": "1ca372452f5f27779ae06a06ab17db3f2fb8a97173c2a58a7fd5d2242cbf89a7",
+      "skinValueBand": 3
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses high-contrast lining visible only in motion; wears several deliberate anchors without looking elite.",
+      "counterTrait": "collects tiny impractical luxuries",
+      "culturalFragments": [
+        "values carved wood closures over metal",
+        "leaves one closure deliberately unmatched for luck"
+      ],
+      "dominantTrait": "mischievously competitive",
+      "groomingAttitude": "severe grooming softened by one unruly feature",
+      "lifeEcho": "book repair",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "torso angles three-quarter while both arms hang in deliberate asymmetric ease",
+      "socialPresentation": "blunt and economical",
+      "tension": "Appears blunt and economical, yet collects tiny impractical luxuries."
+    },
+    "physique": {
+      "bodyType": "sturdy-stocky",
+      "description": "175 cm; sturdy stocky construction with a broad frame and compact proportions.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "severe grooming softened by one unruly feature",
+      "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; offset closures and narrow reinforced cuffs.",
+      "family": "mantle-short-cape",
+      "paletteFamily": "plum-gray"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/daion-moror/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/daion-moror/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "daion-moror-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-05"
+}

@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "525ec1ba5d9101ff505b725f011c273a6610024d1a7c2e09055c22fbaae5c34d",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Nelyn Pellek: 39-year-old woman, 162 cm (short), plus-size heavy construction with substantial natural mass, skin value band-1-lightest. Face: heart-shaped face; asymmetric brows and broad cheek planes; prominent bridge, compact mouth; one brow notch. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: red-copper-auburn, bob-pageboy, deliberate accent: one longer face-framing section. Wardrobe: layered-wrap, specifically overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; rolled sleeves and one architectural lapel; bounded palette lilac-smoke. Visible personal details: a tiny nose stud. Make body construction and habitual posture the primary recognition device. Maintenance cue: visible mending treated as prideful craft. Color treatment: uses small rhythmic repeats of the palette. Pose cue: posture is upright but not military, with wrists loose and hands readable. Include a folded handkerchief only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "nelyn-pellek",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a tiny nose stud"
+      ],
+      "coolnessAnchor": "body-or-posture",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "one longer face-framing section",
+      "chibiReadability": "Preserve the front and side silhouette of bob-pageboy, the parting, gathered mass, shaved areas, and one longer face-framing section; color remains red-copper-auburn.",
+      "colorFamily": "red-copper-auburn",
+      "silhouetteFamily": "bob-pageboy"
+    },
+    "identity": {
+      "age": 39,
+      "displayName": "Nelyn Pellek",
+      "faceDescription": "heart-shaped face; asymmetric brows and broad cheek planes; prominent bridge, compact mouth; one brow notch",
+      "gender": "woman",
+      "identitySignature": "c03ec31fb3b80b1a786ac420e91f55b605c840dd2dc1f5af56e06070d17c8200",
+      "skinValueBand": 1
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses small rhythmic repeats of the palette; accepts one cherished personal detail.",
+      "counterTrait": "conceals a strong competitive streak",
+      "culturalFragments": [
+        "values carved wood closures over metal",
+        "touches two fingers to the collar before greeting"
+      ],
+      "dominantTrait": "deliberately enigmatic",
+      "groomingAttitude": "visible mending treated as prideful craft",
+      "lifeEcho": "trade",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "posture is upright but not military, with wrists loose and hands readable",
+      "socialPresentation": "warm but imposing",
+      "tension": "Appears warm but imposing, yet conceals a strong competitive streak."
+    },
+    "physique": {
+      "bodyType": "plus-size-heavy",
+      "description": "162 cm; plus-size heavy construction with substantial natural mass.",
+      "heightBand": "short"
+    },
+    "wardrobe": {
+      "condition": "visible mending treated as prideful craft",
+      "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; rolled sleeves and one architectural lapel.",
+      "family": "layered-wrap",
+      "paletteFamily": "lilac-smoke"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/nelyn-pellek/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/results/nelyn-pellek/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "nelyn-pellek-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-10"
+}

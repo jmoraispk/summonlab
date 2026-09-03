@@ -1,0 +1,129 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "0e9e86481a9dd1854df545c4ef8a401cb5e090c2d88ea861407a627e6db3d4f2",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Senia Lorel: 24-year-old man, 154 cm (very-short), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-5-medium-deep. Face: heart-shaped face; close-set eyes and a high arched brow; short rounded nose, wide mouth; no added facial mark. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: black, asymmetric-extreme, deliberate accent: segmented wrapped crest. Wardrobe: draped-robe, specifically a draped robe whose belting and openings keep the body construction legible; a high soft collar and uneven layered hems; bounded palette indigo-sand. Visible personal details: a patterned collar insert; contrasting boot laces. Make body construction and habitual posture the primary recognition device. Maintenance cue: visible mending treated as prideful craft. Color treatment: lets faded and repaired areas vary the palette. Pose cue: one thumb hooks lightly beneath the waist wrap while the other hand rests open. Include a tiny cloth-wrapped notebook only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "senia-lorel",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a patterned collar insert",
+        "contrasting boot laces"
+      ],
+      "coolnessAnchor": "body-or-posture",
+      "density": 2,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "segmented wrapped crest",
+      "chibiReadability": "Preserve the front and side silhouette of asymmetric-extreme, the parting, gathered mass, shaved areas, and segmented wrapped crest; color remains black.",
+      "colorFamily": "black",
+      "silhouetteFamily": "asymmetric-extreme"
+    },
+    "identity": {
+      "age": 24,
+      "displayName": "Senia Lorel",
+      "faceDescription": "heart-shaped face; close-set eyes and a high arched brow; short rounded nose, wide mouth; no added facial mark",
+      "gender": "man",
+      "identitySignature": "085e12fefe32ba798d767db6eae331d1315bae45ae93d5405014b900edb89c70",
+      "skinValueBand": 5
+    },
+    "kernel": {
+      "colorOrnamentTaste": "lets faded and repaired areas vary the palette; wears several deliberate anchors without looking elite.",
+      "counterTrait": "collects tiny impractical luxuries",
+      "culturalFragments": [
+        "likes burnished clay beads and matte surfaces",
+        "taps a cup once before serious conversation"
+      ],
+      "dominantTrait": "solemnly humorous",
+      "groomingAttitude": "visible mending treated as prideful craft",
+      "lifeEcho": "textile work",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one thumb hooks lightly beneath the waist wrap while the other hand rests open",
+      "socialPresentation": "relaxed but exacting",
+      "tension": "Appears relaxed but exacting, yet collects tiny impractical luxuries."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "154 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "very-short"
+    },
+    "wardrobe": {
+      "condition": "visible mending treated as prideful craft",
+      "description": "a draped robe whose belting and openings keep the body construction legible; a high soft collar and uneven layered hems.",
+      "family": "draped-robe",
+      "paletteFamily": "indigo-sand"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/senia-lorel/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/results/senia-lorel/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "senia-lorel-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-02"
+}

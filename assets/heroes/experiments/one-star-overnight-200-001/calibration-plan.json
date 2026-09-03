@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "hero-one-star-calibration-plan-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-01",
+  "state": "dispatch-ready",
+  "pairCount": 8,
+  "selectionPurpose": "Four men and four women spanning the required body-language extremes and both natural and dyed hair before bulk production.",
+  "heroIds": [
+    "fenel-esho",
+    "rain-ulenen",
+    "lania-eshan",
+    "oran-keshi",
+    "kelu-grelun",
+    "yasu-coro",
+    "talar-morai",
+    "rao-falin"
+  ],
+  "coverage": {
+    "gender": { "man": 4, "woman": 4 },
+    "bodyTypes": [
+      "healthy-slight-lanky",
+      "ordinary-average",
+      "soft-round",
+      "plus-size-heavy",
+      "athletic-conditioned",
+      "clearly-muscular",
+      "extreme-bodybuilder"
+    ],
+    "hairTreatment": ["natural", "dyed"]
+  },
+  "requiredPairChecks": [
+    "painted rather than photographic rendering",
+    "distinct faces, bodies, clothing, hair, and character kernels",
+    "2.75 to 3.1 head combat-chibi construction",
+    "body, arm, hand, age, hair, wardrobe, accessory, and marking continuity",
+    "restrained facial affect with personality carried by posture and design",
+    "no weapon, affinity cue, magic, frame, star, UI, logo, watermark, or text"
+  ]
+}
