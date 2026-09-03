@@ -26,8 +26,10 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
 
 ## Phase 0 — finish and lock the reusable layers
 
-**Progress:** Seven registered frame candidates were produced on 2026-09-03 and pass the repository's
-role-aware geometry-v2 inspector. Owner visual approval and promotion remain pending.
+**Progress:** The first registered frame set passed automated geometry but was visually rejected by
+the owner. A replacement seven-frame horizontal strip was generated from the accepted Option C
+reference and awaits owner approval before cropping. No rejected registered frame may be promoted or
+used as a future generation reference.
 
 The seven accepted frame candidates have correct 1024×1024 RGBA canvases, but their current visible
 bounds differ. Register all seven to the exact geometry-v2 center, outer envelope, aperture, and

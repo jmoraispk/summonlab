@@ -1,6 +1,6 @@
 # Registered rarity frames — geometry-v2 review set
 
-Status: **candidate; automated geometry passes; owner visual review pending**.
+Status: **owner-rejected visual approach; retained only as historical evidence**.
 
 This set preserves the owner-accepted materials and ornament from the individually generated v2
 frames while registering every rank to the immutable `skill-icon-geometry-v2` authority. It does
@@ -22,8 +22,10 @@ The deterministic registration:
 - `review/recognition-96.png` — all seven frames at the 96-pixel recognition size
 - `manifest.json` — source, geometry, output paths, and SHA-256 provenance
 
-The individual candidates are under `candidates/individuals/`. They are not canonical masters and
-must not be used for runtime composition before owner approval.
+The owner rejected the combined overlay and outward rail-extension result on 2026-09-03. The
+individual candidates under `candidates/individuals/` are not canonical masters and must not be
+used for runtime composition or as references for later generation. The replacement direction is a
+single high-resolution seven-frame horizontal strip, followed by owner-reviewed crops.
 
 ## Reproduce and validate
 

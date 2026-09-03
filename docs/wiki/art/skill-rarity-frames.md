@@ -2,9 +2,8 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C is the canonical comparison authority. The seven individually generated
-frame appearances are owner-accepted. Deterministically registered geometry-v2 candidates now pass
-the role-aware asset inspector and await owner visual review before promotion**.
+Design status: **Option C is the canonical comparison authority. The stretched geometry-v2 overlay
+was owner-rejected. A new seven-frame horizontal crop-authority candidate awaits owner review**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -32,7 +31,17 @@ The [registration record](../../../assets/wiki/skills/rarity-frame-v3/README.md)
 source bytes and immutable geometry-v2 bytes to seven new candidate outputs. All candidates preserve
 the source artwork, share the same inset aperture and center, remain inside the outer hexagon or
 medallion envelope, intersect all six edge bands, and remain distinct at the 96-pixel review size.
-They are review candidates, not promoted masters.
+They are rejected review evidence, not promoted masters or future visual references.
+
+### Horizontal crop-authority candidate
+
+![Seven empty rarity frames in one row](../../../assets/wiki/skills/rarity-frame-v4/calibration/seven-rarity-frames-row-v1.png)
+
+The [v4 source record](../../../assets/wiki/skills/rarity-frame-v4/README.md) preserves one exact
+2076×757 provider image containing all seven empty frames in a single row. This avoids cross-call
+style drift and keeps the shared geometry native to one generation. If accepted, the next step is
+to derive and review seven crops from these exact pixels before background extraction or runtime
+registration. The crop strip contains no rank letters, skill artwork, labels, or mastery text.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;
