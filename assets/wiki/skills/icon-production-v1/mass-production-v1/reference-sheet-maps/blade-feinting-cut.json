@@ -1,0 +1,16 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.feinting-cut",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:feinting-cut",
+			"name": "Feinting Cut",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		}
+	]
+}

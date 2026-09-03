@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "forging.metallurgy",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "craft:forging:fuel-craft",
+			"name": "Fuel Craft",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "craft:forging:alloying",
+			"name": "Alloying",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "craft:forging:tempering",
+			"name": "Tempering",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "craft:forging:living-metal",
+			"name": "Living Metal",
+			"rarity": "B",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

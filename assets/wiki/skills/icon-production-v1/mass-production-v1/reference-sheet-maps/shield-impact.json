@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "shield.impact",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:shield:shield-bash",
+			"name": "Shield Bash",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:shield:shield-push",
+			"name": "Shield Push",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:shield:shield-charge",
+			"name": "Shield Charge",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

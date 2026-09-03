@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "alchemy.refinement",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "craft:alchemy:preservation",
+			"name": "Preservation",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "craft:alchemy:extraction",
+			"name": "Extraction",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "craft:alchemy:concentration",
+			"name": "Concentration",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "craft:alchemy:transmutation",
+			"name": "Transmutation",
+			"rarity": "D",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "craft:alchemy:philosopher-s-work",
+			"name": "Philosopher's Work",
+			"rarity": "C",
+			"row": 2,
+			"column": 1
+		}
+	]
+}

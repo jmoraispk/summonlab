@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "body.combat-foundation",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:body:footing",
+			"name": "Footing",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:body:grip",
+			"name": "Grip",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:body:basic-block",
+			"name": "Basic Block",
+			"rarity": "F",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:body:recovery",
+			"name": "Recovery",
+			"rarity": "F",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:body:unbroken-guard",
+			"name": "Unbroken Guard",
+			"rarity": "C",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:body:martial-form",
+			"name": "Martial Form",
+			"rarity": "F",
+			"row": 2,
+			"column": 2
+		}
+	]
+}

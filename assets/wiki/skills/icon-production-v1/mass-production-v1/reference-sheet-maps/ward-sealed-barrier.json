@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "ward.sealed-barrier",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:ward:warding",
+			"name": "Warding",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:ward:shield-sigil",
+			"name": "Shield Sigil",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:ward:barrier",
+			"name": "Barrier",
+			"rarity": "E",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "magical:ward:layered-ward",
+			"name": "Layered Ward",
+			"rarity": "D",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "magical:ward:the-unbroken-circle",
+			"name": "The Unbroken Circle",
+			"rarity": "B",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "magical:ward:nothing-reaches",
+			"name": "Nothing Reaches",
+			"rarity": "A",
+			"row": 2,
+			"column": 2
+		}
+	]
+}

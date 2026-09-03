@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "polearm.sweep-hook",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:polearm:sweep-low",
+			"name": "Sweep Low",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:polearm:hook-and-pull",
+			"name": "Hook and Pull",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:polearm:dragon-tail",
+			"name": "Dragon Tail",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:polearm:coiling-dragon",
+			"name": "Coiling Dragon",
+			"rarity": "B",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

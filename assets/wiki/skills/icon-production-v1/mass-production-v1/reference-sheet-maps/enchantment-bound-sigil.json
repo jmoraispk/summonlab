@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "enchantment.bound-sigil",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:enchantment:component-craft",
+			"name": "Component Craft",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:enchantment:sigil-binding",
+			"name": "Sigil Binding",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:enchantment:greater-sigil",
+			"name": "Greater Sigil",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "magical:enchantment:soul-sigil",
+			"name": "Soul Sigil",
+			"rarity": "B",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "magical:enchantment:the-written-world",
+			"name": "The Written World",
+			"rarity": "A",
+			"row": 2,
+			"column": 1
+		}
+	]
+}

@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "elemental.earth-fracture",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:elemental:spike-field",
+			"name": "Spike Field",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:elemental:fissure",
+			"name": "Fissure",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:elemental:avalanche",
+			"name": "Avalanche",
+			"rarity": "B",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "magical:elemental:bury-the-world",
+			"name": "Bury the World",
+			"rarity": "S",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

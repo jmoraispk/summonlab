@@ -1,0 +1,80 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.dagger-strike",
+	"columns": 4,
+	"rows": 3,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:knifework",
+			"name": "Knifework",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:blade:quick-stab",
+			"name": "Quick Stab",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:blade:slash-across",
+			"name": "Slash Across",
+			"rarity": "F",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:blade:opening",
+			"name": "Opening",
+			"rarity": "E",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:blade:hamstring",
+			"name": "Hamstring",
+			"rarity": "E",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:blade:vital-nick",
+			"name": "Vital Nick",
+			"rarity": "E",
+			"row": 2,
+			"column": 2
+		},
+		{
+			"index": 7,
+			"targetId": "martial:blade:bleeding-edge",
+			"name": "Bleeding Edge",
+			"rarity": "D",
+			"row": 2,
+			"column": 3
+		},
+		{
+			"index": 8,
+			"targetId": "martial:blade:arterial-strike",
+			"name": "Arterial Strike",
+			"rarity": "C",
+			"row": 2,
+			"column": 4
+		},
+		{
+			"index": 9,
+			"targetId": "martial:blade:severed-thread",
+			"name": "Severed Thread",
+			"rarity": "A",
+			"row": 3,
+			"column": 1
+		}
+	]
+}

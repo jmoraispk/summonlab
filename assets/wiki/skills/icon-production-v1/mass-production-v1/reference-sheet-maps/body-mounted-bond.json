@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "body.mounted-bond",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:body:riding",
+			"name": "Riding",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:body:pack-bond",
+			"name": "Pack Bond",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:body:mounted-combat",
+			"name": "Mounted Combat",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:body:bonded-mount",
+			"name": "Bonded Mount",
+			"rarity": "C",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

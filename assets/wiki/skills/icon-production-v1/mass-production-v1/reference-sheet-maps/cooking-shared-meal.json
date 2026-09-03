@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "cooking.shared-meal",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "craft:cooking:cooking",
+			"name": "Cooking",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "craft:cooking:hearth-meal",
+			"name": "Hearth Meal",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "craft:cooking:feast",
+			"name": "Feast",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "craft:cooking:the-long-table",
+			"name": "The Long Table",
+			"rarity": "B",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

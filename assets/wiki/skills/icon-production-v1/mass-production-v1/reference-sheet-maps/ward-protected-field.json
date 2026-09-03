@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "ward.protected-field",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:ward:aegis-field",
+			"name": "Aegis Field",
+			"rarity": "D",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:ward:null-zone",
+			"name": "Null Zone",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:ward:sanctuary",
+			"name": "Sanctuary",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

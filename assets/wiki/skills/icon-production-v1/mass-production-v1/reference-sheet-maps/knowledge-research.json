@@ -1,0 +1,24 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "knowledge.research",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "craft:knowledge:research",
+			"name": "Research",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "craft:knowledge:the-archive",
+			"name": "The Archive",
+			"rarity": "C",
+			"row": 1,
+			"column": 2
+		}
+	]
+}

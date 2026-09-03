@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.assassin-angle",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:low-guard",
+			"name": "Low Guard",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:blade:blind-spot",
+			"name": "Blind Spot",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:blade:assassin-s-certainty",
+			"name": "Assassin's Certainty",
+			"rarity": "A",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

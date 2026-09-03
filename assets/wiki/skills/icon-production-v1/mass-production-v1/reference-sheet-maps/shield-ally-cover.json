@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "shield.ally-cover",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:shield:cover",
+			"name": "Cover",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:shield:interpose",
+			"name": "Interpose",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:shield:aegis",
+			"name": "Aegis",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:shield:phalanx",
+			"name": "Phalanx",
+			"rarity": "C",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:shield:guardian-s-oath",
+			"name": "Guardian's Oath",
+			"rarity": "B",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:shield:aegis-eternal",
+			"name": "Aegis Eternal",
+			"rarity": "A",
+			"row": 2,
+			"column": 2
+		}
+	]
+}

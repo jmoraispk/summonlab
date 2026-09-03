@@ -1,0 +1,16 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.grit-throw",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:grit-throw",
+			"name": "Grit Throw",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		}
+	]
+}

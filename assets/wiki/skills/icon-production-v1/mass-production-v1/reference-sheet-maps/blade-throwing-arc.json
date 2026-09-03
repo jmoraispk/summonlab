@@ -1,0 +1,64 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.throwing-arc",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:blade-throw",
+			"name": "Blade Throw",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:blade:hundred-needles",
+			"name": "Hundred Needles",
+			"rarity": "C",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:blade:ricochet",
+			"name": "Ricochet",
+			"rarity": "E",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:blade:fan-throw",
+			"name": "Fan Throw",
+			"rarity": "D",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:blade:boomerang-arc",
+			"name": "Boomerang Arc",
+			"rarity": "D",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:blade:storm-of-steel",
+			"name": "Storm of Steel",
+			"rarity": "C",
+			"row": 2,
+			"column": 2
+		},
+		{
+			"index": 7,
+			"targetId": "martial:blade:perfect-arc",
+			"name": "Perfect Arc",
+			"rarity": "C",
+			"row": 2,
+			"column": 3
+		}
+	]
+}
