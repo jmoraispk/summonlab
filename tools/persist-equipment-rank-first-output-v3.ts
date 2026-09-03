@@ -42,7 +42,12 @@ function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
 
-async function normalizeImage(sourcePath: string, width: number, height: number) {
+async function normalizeImage(
+	sourcePath: string,
+	width: number,
+	height: number,
+	allowDirectionLetterbox = false
+) {
 	const source = await readFile(sourcePath);
 	const metadata = await sharp(source).metadata();
 	if (!metadata.width || !metadata.height || !metadata.format)
@@ -51,7 +56,7 @@ async function normalizeImage(sourcePath: string, width: number, height: number)
 		throw new Error(`Unsupported generated format: ${metadata.format}`);
 	const aspectError =
 		Math.abs(metadata.width * height - width * metadata.height) / (width * metadata.height);
-	if (aspectError > 0.01)
+	if (aspectError > (allowDirectionLetterbox ? 0.2 : 0.01))
 		throw new Error(
 			`Generated source ${metadata.width}x${metadata.height} does not match required aspect ${width}x${height}`
 		);
@@ -59,7 +64,11 @@ async function normalizeImage(sourcePath: string, width: number, height: number)
 	const retained = exact
 		? source
 		: await sharp(source)
-				.resize(width, height, { fit: 'fill', kernel: sharp.kernel.lanczos3 })
+				.resize(width, height, {
+					fit: allowDirectionLetterbox ? 'contain' : 'fill',
+					background: '#070b12',
+					kernel: sharp.kernel.lanczos3
+				})
 				.png({ compressionLevel: 9 })
 				.toBuffer();
 	const retainedMetadata = await sharp(retained).metadata();
@@ -120,7 +129,7 @@ export async function persistEquipmentRankFirstOutputV3(options: PersistOptions)
 			throw new Error('Direction prompt hash mismatch');
 		assertReferenceHashes(options.workspaceRoot, assignment.references);
 		await assertAbsent(options.workspaceRoot, [target.candidatePath, target.resultPath]);
-		const image = await normalizeImage(options.sourcePath, target.width, target.height);
+		const image = await normalizeImage(options.sourcePath, target.width, target.height, true);
 		const result = EquipmentDirectionResultV3Schema.parse({
 			schemaVersion: 'equipment-class-direction-result-v3',
 			resultId: `result-${target.directionId}-attempt-${options.attempt}`,

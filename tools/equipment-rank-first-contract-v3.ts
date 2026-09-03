@@ -231,12 +231,14 @@ export const EquipmentDirectionTargetV3Schema = z
 export const EquipmentDirectionAssignmentV3Schema = z
 	.object({
 		schemaVersion: z.literal('equipment-class-direction-assignment-v3'),
-		assignmentId: z.string().regex(/^assignment-equipment-v3-[a-z-]+-rank-progression$/u),
+		assignmentId: z
+			.string()
+			.regex(/^assignment-equipment-v3-[a-z-]+-rank-progression(?:-attempt-[1-9][0-9]*)?$/u),
 		directionId: z.string().regex(/^equipment-v3-[a-z-]+-rank-progression$/u),
 		immutable: z.literal(true),
 		prompt: NonEmptySchema,
 		promptSha256: Sha256Schema,
-		references: z.array(EquipmentAcceptedReferenceV3Schema).length(2),
+		references: z.array(EquipmentAcceptedReferenceV3Schema).min(2),
 		permittedOutputs: z
 			.object({ candidatePath: RepositoryPathSchema, resultPath: RepositoryPathSchema })
 			.strict(),
@@ -251,7 +253,9 @@ export const EquipmentDirectionResultV3Schema = z
 			.string()
 			.regex(/^result-equipment-v3-[a-z-]+-rank-progression-attempt-[1-9][0-9]*$/u),
 		directionId: z.string().regex(/^equipment-v3-[a-z-]+-rank-progression$/u),
-		assignmentId: z.string().regex(/^assignment-equipment-v3-[a-z-]+-rank-progression$/u),
+		assignmentId: z
+			.string()
+			.regex(/^assignment-equipment-v3-[a-z-]+-rank-progression(?:-attempt-[1-9][0-9]*)?$/u),
 		attempt: z.number().int().min(1),
 		status: z.enum(['succeeded', 'failed']),
 		startedAt: z.string().datetime({ offset: true }),
@@ -259,7 +263,7 @@ export const EquipmentDirectionResultV3Schema = z
 		provider: NonEmptySchema,
 		model: NonEmptySchema,
 		promptSha256: Sha256Schema,
-		references: z.array(EquipmentAcceptedReferenceV3Schema).length(2),
+		references: z.array(EquipmentAcceptedReferenceV3Schema).min(2),
 		output: z
 			.object({
 				path: RepositoryPathSchema,

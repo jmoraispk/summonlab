@@ -8,7 +8,7 @@
 		},
 		"assignmentId": {
 			"type": "string",
-			"pattern": "^assignment-equipment-v3-[a-z-]+-rank-progression$"
+			"pattern": "^assignment-equipment-v3-[a-z-]+-rank-progression(?:-attempt-[1-9][0-9]*)?$"
 		},
 		"directionId": {
 			"type": "string",
@@ -28,7 +28,6 @@
 		},
 		"references": {
 			"minItems": 2,
-			"maxItems": 2,
 			"type": "array",
 			"items": {
 				"type": "object",
