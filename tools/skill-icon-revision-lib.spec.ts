@@ -122,7 +122,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports the seven unattempted and one terminal failed latest v2 references', async () => {
+	it('reports exactly the eight unattempted latest v3 references', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -130,19 +130,18 @@ describe('skill-icon revision resolution', () => {
 			message = error instanceof Error ? error.message : String(error);
 		}
 		const diagnostics = message.split('\n');
-		expect(diagnostics.slice(0, 7)).toEqual([
-			'references/charcoal-forged-stone-v2: missing result inventory entry',
-			'references/rarity-frame-a-v2: missing result inventory entry',
-			'references/rarity-frame-b-v2: missing result inventory entry',
-			'references/rarity-frame-c-v2: missing result inventory entry',
-			'references/rarity-frame-d-v2: missing result inventory entry',
-			'references/rarity-frame-e-v2: missing result inventory entry',
-			'references/rarity-frame-s-v2: missing result inventory entry'
+		expect(diagnostics).toEqual([
+			'references/charcoal-forged-stone-v3: missing result inventory entry',
+			'references/rarity-frame-a-v3: missing result inventory entry',
+			'references/rarity-frame-b-v3: missing result inventory entry',
+			'references/rarity-frame-c-v3: missing result inventory entry',
+			'references/rarity-frame-d-v3: missing result inventory entry',
+			'references/rarity-frame-e-v3: missing result inventory entry',
+			'references/rarity-frame-f-v3: missing result inventory entry',
+			'references/rarity-frame-s-v3: missing result inventory entry'
 		]);
 		expect(diagnostics).toHaveLength(8);
-		expect(diagnostics[7]).toMatch(
-			/rarity-frame:F latest revision v2 is failed \(validation: .*caBX metadata.*\); create a higher revision/iu
-		);
+		expect(message).not.toMatch(/latest revision v2 is failed/iu);
 		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);
 	});
