@@ -206,6 +206,18 @@ This independence allows useful combinations: a huge gentle scholar, a slight co
 laborer, a meticulous extrovert in visibly repaired clothes, or a reserved hero whose elaborate
 outfit reflects cultural practice rather than temperament.
 
+Mass visual production generates a compact character kernel before the portrait: two or three
+temperament descriptors with a tension, social presentation, grooming and maintenance attitude,
+color and ornament taste, two cultural fragments, one noncanonical life echo, and one drawable
+posture or gesture cue. The image prompt receives only concrete visual consequences. It does not use
+personality to redesign facial anatomy, body type, gender, phenotype, beauty, or intelligence.
+
+Do not spend a complete authored biography on every unreviewed candidate. The clean-slate summon has
+cultural, gestural, and taste fragments but no autobiographical memory, so a pre-art “life echo” is
+visual vocabulary rather than a remembered hometown, family, profession, or deed. After a pair is
+kept, expand its kernel into voice, values, drives, fears, and other authored material; the hero's
+actual biography, relationships, habits, and remembered history grow through play.
+
 ## Native stars and current stars are different visual axes
 
 A hero has both a native-star origin and a current-star evolution state. A native 1★ can eventually

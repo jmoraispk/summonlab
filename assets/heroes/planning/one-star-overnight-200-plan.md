@@ -71,6 +71,41 @@ Every target uses the same production grammar:
 Dyed blue, teal, violet, pink, or multicolor hair is personal fashion at 1★ and does not imply an
 affinity. No affinity-colored glow or gem is permitted.
 
+## Character kernel timing
+
+Generate a compact personality-and-background kernel **before** the portrait, but do not write a
+finished biography for all 200 candidates.
+
+The project canon gives new summons a starting temperament plus fragments of language, custom,
+gesture, taste, and cultural intuition, but no autobiographical memory of where those fragments came
+from. The pre-art kernel therefore contains:
+
+- two or three independent temperament descriptors, including one useful tension or contradiction;
+- social presentation such as guarded, open, formal, blunt, playful, attentive, restless, or calm;
+- grooming and maintenance attitude;
+- color confidence and ornament tolerance;
+- two cultural fragments expressed through material, pattern, custom, gesture, food, or taste;
+- one noncanonical “life echo” such as textile work, field labor, study, medicine, trade, travel,
+  performance, administration, ritual practice, construction, or domestic care;
+- one short art-facing posture or gesture cue;
+- one sentence describing what must **not** be inferred from the body, face, gender, or phenotype.
+
+The kernel is randomized independently from physiology, phenotype, aptitude, rarity, morality, and
+combat role. A huge bodybuilder may be quiet and bookish; a slight person may be confrontational; a
+carefully dressed scholar may be disorganized; a visibly repaired outfit may belong to someone vain
+about craft. These contradictions are intentional, not errors.
+
+Only drawable consequences enter the image prompt: posture, gaze, grooming, maintenance, garment
+order or repair, pattern density, color confidence, ornament restraint, and one personal object.
+Abstract adjectives do not directly instruct facial anatomy, intelligence, ethnicity, beauty, or
+muscle.
+
+After a pair receives Keep, expand the kernel into voice, values, drives, fears, preferences, and
+other authored character material. Bind the accepted five-category aptitude packet separately and
+only through the progression authority; do not revive the legacy four-score aptitude model. The
+hero's actual biography, relationships, habits, and remembered history then grow through play after
+summoning.
+
 ## Exact diversity quotas
 
 Quotas are assigned to manifests before any image call. No worker may substitute its own preferred
@@ -89,24 +124,27 @@ length, or accessory is reserved for one gender.
 
 ### Body construction
 
-The same distribution is used for 100 men and 100 women.
+The distribution is balanced across 100 men and 100 women. The odd three-person bodybuilder quota
+places one additional woman there and one additional man in the ordinary band; the overall gender
+split remains exact.
 
-| Primary body language | Per gender | Total |
-| --- | ---: | ---: |
-| Slight or lanky | 18 | 36 |
-| Ordinary lean or average | 25 | 50 |
-| Soft or round | 18 | 36 |
-| Sturdy or stocky | 15 | 30 |
-| Plus-size or heavy | 10 | 20 |
-| Athletic or conditioned, not ripped | 10 | 20 |
-| Clearly muscular | 3 | 6 |
-| Extreme bodybuilder | 1 | 2 |
-| **Total** | **100** | **200** |
+| Primary body language | Men | Women | Total |
+| --- | ---: | ---: | ---: |
+| Slight or lanky, but healthy rather than extremely frail | 12 | 12 | 24 |
+| Ordinary lean or average | 29 | 28 | 57 |
+| Soft or round | 18 | 18 | 36 |
+| Sturdy or stocky | 17 | 17 | 34 |
+| Plus-size or heavy | 10 | 10 | 20 |
+| Athletic or conditioned, not ripped | 10 | 10 | 20 |
+| Clearly muscular | 3 | 3 | 6 |
+| Extreme bodybuilder | 1 | 2 | 3 |
+| **Total** | **100** | **100** | **200** |
 
-Only eight of 200 are deliberately muscular or bodybuilder-level. Visible abdominal definition is
-rare. Softness, mass, height, frame breadth, and muscle are separate fields: a heavy hero is not
-automatically muscular, an athletic hero is not automatically lean, and a slight hero is not
-automatically tall.
+Only nine of 200 are deliberately muscular or bodybuilder-level, including three extreme
+bodybuilders. The run contains no explicit “extremely frail” quota, and the slight/lanky band falls
+from 36 to 24. Visible abdominal definition remains rare. Softness, mass, height, frame breadth, and
+muscle are separate fields: a heavy hero is not automatically muscular, an athletic hero is not
+automatically lean, and a slight hero is not automatically tall or incapable.
 
 ### Height
 
@@ -243,7 +281,8 @@ assets/heroes/experiments/one-star-overnight-200-001/
 shuffles the exact quota allocations, but it does not claim deterministic pixels. Every target owns
 a unique hero ID, two unique candidate paths, two unique preview paths, and one result path. Existing
 paths, symlinked destinations, duplicate IDs, quota drift, or cross-worker ownership are hard
-preflight failures.
+preflight failures. Each target also owns its compact character kernel; later narrative expansion is
+kept out of the image-production critical path.
 
 ## Overnight orchestration
 
@@ -326,13 +365,15 @@ The page always shows summon and chibi beside one another. There is no isolated-
 Before handoff:
 
 1. verify 100 men, 100 women, all diversity quotas, 200 unique IDs, and no reviewed identity reused;
-2. verify candidate and preview hashes, dimensions, formats, prompt/reference provenance, and every
+2. verify every target has a personality/background kernel and that kernel fields were assigned
+   independently from physiology and phenotype;
+3. verify candidate and preview hashes, dimensions, formats, prompt/reference provenance, and every
    decision-page URL;
-3. browser-test all pages, decision controls, persistence, export, pagination, lazy loading, and
+4. browser-test all pages, decision controls, persistence, export, pagination, lazy loading, and
    zero broken images;
-4. run Heroes bundle validation and repository wiki validation;
-5. commit and push each 20-pair wave, then commit and push the final aggregate page and report;
-6. report branch, commit sequence, completed-pair count, quarantine count, validation results,
+5. run Heroes bundle validation and repository wiki validation;
+6. commit and push each 20-pair wave, then commit and push the final aggregate page and report;
+7. report branch, commit sequence, completed-pair count, quarantine count, validation results,
    persistent preview URL, working-tree state, and any integration request.
 
 No engine contract, summon table, shared runtime catalog, affinity system, or non-Hero visual domain
