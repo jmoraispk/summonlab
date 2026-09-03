@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A4",
+  "reviewerId": "codex:/root/normal_revision_blind_a4",
+  "reviews": [
+    {
+      "token": "R2-A4-01",
+      "perceivedFamilyOrCreature": "rune-etched stone golem",
+      "perceivedTier": "normal",
+      "perceivedCombatRole": "slow frontline bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Blocky humanoid construction is coherent, weighty, and immediately readable."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Full body and both fists remain clear inside a centered portrait."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Stone, metal joints, and engraved panels receive consistent polished detail."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Muted masonry dominates; amber runes read as activation rather than an element."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Huge fists and heavy proportions clearly forecast slow, close-range impacts."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-02",
+      "perceivedFamilyOrCreature": "ancient arcane guardian construct",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "durable sentinel with a vulnerable power core",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Humanoid construct anatomy and articulated stone armor are structurally convincing."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Complete silhouette is centered with adequate breathing room around the halo."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Ornament, surface wear, and luminous accents feel cohesive and resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Warm arcane light accents a primarily neutral stone-and-metal palette."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The exposed glowing chest core provides an immediate focal weak-point cue."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-03",
+      "perceivedFamilyOrCreature": "mud elemental fused with stone",
+      "perceivedTier": "normal",
+      "perceivedCombatRole": "asymmetric melee bruiser",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The fluid body and oversized rocky arm form an intentional readable asymmetry."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full creature and its dominant striking arm fit comfortably in frame."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Wet translucent flesh and crusted rock have distinct, consistently rendered materials."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Earthy mud and rubble dominate despite the small violet core accent."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The massive stone arm telegraphs the primary attack side and likely slow swing."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-04",
+      "perceivedFamilyOrCreature": "armored insectoid blade fighter",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "fast melee duelist",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "revise",
+        "note": "Overlapping dark limbs and armor make the appendage count and weapon grip difficult to parse."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The crouched full-body stance fits the portrait and preserves the action arc."
+      },
+      "finish": {
+        "verdict": "revise",
+        "note": "Dense red-black microdetail merges across the torso and limbs, reducing silhouette clarity."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "The gold motion trail reads as weapon movement rather than elemental alignment."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The bright sweeping blade trail clearly signals a fast lateral melee strike."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A4-05",
+      "perceivedFamilyOrCreature": "humanoid spider matriarch",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "web-control summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The humanoid torso and arachnid abdomen join cleanly into a coherent creature."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Symmetric frontal framing exposes the full leg span without meaningful cropping."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Carapace, webbing, and red eye accents are crisp and consistently integrated."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Black, gray, and muted red establish a non-elemental predatory identity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Radiating web strands clearly warn of binding or area-control behavior."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-06",
+      "perceivedFamilyOrCreature": "reptilian tribal standard-bearer",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "frontline commander and disruptor",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Reptilian head, armored torso, limbs, and tail remain coherent beneath the regalia."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The broad standard and long tail are contained while the figure stays legible."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Woven armor, spikes, bone ornaments, and weathering share a consistent material treatment."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Earthy hide, bone, and leather avoid a dominant elemental color or effect."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The oversized standard and hooked weapon signal command utility plus close-range threat."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-07",
+      "perceivedFamilyOrCreature": "spined swamp reptile",
+      "perceivedTier": "normal",
+      "perceivedCombatRole": "armored melee skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Low reptilian posture, tail, dorsal spines, and paired foreclaws read coherently."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The entire profile, including the long spine fan, is visible with useful margin."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Scales, mud, armor-like spines, and blade surfaces are consistently resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Natural swamp coloration carries no strong magical or elemental coding."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Prominent foreclaws and defensive spines advertise frontal slashes and contact danger."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A4-08",
+      "perceivedFamilyOrCreature": "toxic many-eyed slime",
+      "perceivedTier": "normal",
+      "perceivedCombatRole": "hazardous area-denial ooze",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The amorphous body, pooled lobes, tendrils, and embedded eyes form a clear slime anatomy."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The broad base and complete upper dome fit centrally with a clean silhouette."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Translucency, bubbles, drips, and embedded forms are polished and materially consistent."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Saturated luminous green and pervasive bubbling strongly code poison or acid affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Bubbling surface and spreading base visibly warn against close contact and standing nearby."
+      },
+      "overallVerdict": "revise"
+    }
+  ]
+}
