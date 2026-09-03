@@ -23,6 +23,13 @@ artifacts/local-provider-runs/
 artifacts/private-playtest/
 .superpowers/
 
+# Crash residue from atomically staged skill-icon persistence transactions.
+/assets/wiki/skills/icon-production-v1/.persistence*.skill-icon-tmp-authority-*
+/assets/wiki/skills/icon-production-v1/candidates/**/.*.skill-icon-tmp-transaction-*
+/assets/wiki/skills/icon-production-v1/results/**/.*.skill-icon-tmp-transaction-*
+/assets/wiki/skills/icon-production-v1/results/**/.*.failed-result-stage
+/assets/wiki/skills/icon-production-v1/results/**/.*.failed-result-owner.json
+
 # Private inspiration sources: checksums and derived audits may be committed, source media may not.
 references/private/
 

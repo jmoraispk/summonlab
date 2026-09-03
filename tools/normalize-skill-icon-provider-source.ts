@@ -26,6 +26,7 @@ const PNG_ALLOWED_CHUNKS = new Set(['IHDR', 'sRGB', 'pHYs', 'IDAT', 'IEND']);
 const PNG_SRGB_RENDERING_INTENT = 0;
 const FORBIDDEN_ALPHA_MASS_LIMIT = 0.001;
 const FORBIDDEN_OPAQUE_PIXEL_LIMIT = 0.00025;
+const FORBIDDEN_COMPONENT_ALPHA_MASS_LIMIT = 64 * 255;
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
 	let value = index;
 	for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ (value & 1 ? 0xedb88320 : 0);
@@ -238,6 +239,69 @@ function assertNoBakedCheckerboard(data: Buffer): void {
 		);
 }
 
+function assertNoPeriodicContrastCheckerboard(
+	data: Buffer,
+	width: number,
+	height: number,
+	roleMask: Uint8Array
+): void {
+	const luminance = new Uint8Array(width * height);
+	for (let pixelIndex = 0; pixelIndex < luminance.length; pixelIndex += 1) {
+		const offset = pixelIndex * 3;
+		luminance[pixelIndex] = Math.round(
+			((data[offset] ?? 0) * 54 + (data[offset + 1] ?? 0) * 183 + (data[offset + 2] ?? 0) * 19) /
+				256
+		);
+	}
+	for (const lag of [8, 16, 32, 64]) {
+		let horizontalTriplets = 0;
+		let horizontalAlternations = 0;
+		let verticalTriplets = 0;
+		let verticalAlternations = 0;
+		for (let y = 0; y < height; y += 1) {
+			for (let x = 0; x < width; x += 1) {
+				const first = y * width + x;
+				if (roleMask[first] !== 1) continue;
+				if (x + lag * 2 < width) {
+					const second = first + lag;
+					const third = second + lag;
+					if (roleMask[second] === 1 && roleMask[third] === 1) {
+						horizontalTriplets += 1;
+						const firstDelta = (luminance[second] ?? 0) - (luminance[first] ?? 0);
+						const secondDelta = (luminance[third] ?? 0) - (luminance[second] ?? 0);
+						if (
+							Math.abs(firstDelta) >= 28 &&
+							Math.abs(secondDelta) >= 28 &&
+							firstDelta * secondDelta < 0
+						)
+							horizontalAlternations += 1;
+					}
+				}
+				if (y + lag * 2 < height) {
+					const second = first + lag * width;
+					const third = second + lag * width;
+					if (roleMask[second] === 1 && roleMask[third] === 1) {
+						verticalTriplets += 1;
+						const firstDelta = (luminance[second] ?? 0) - (luminance[first] ?? 0);
+						const secondDelta = (luminance[third] ?? 0) - (luminance[second] ?? 0);
+						if (
+							Math.abs(firstDelta) >= 28 &&
+							Math.abs(secondDelta) >= 28 &&
+							firstDelta * secondDelta < 0
+						)
+							verticalAlternations += 1;
+					}
+				}
+			}
+		}
+		if (
+			horizontalAlternations / Math.max(1, horizontalTriplets) >= 0.45 &&
+			verticalAlternations / Math.max(1, verticalTriplets) >= 0.45
+		)
+			throw new Error('Provider source contains a spatially periodic contrast checkerboard matte');
+	}
+}
+
 function assertProviderMatte(
 	data: Buffer,
 	width: number,
@@ -313,6 +377,7 @@ function assertForbiddenRegionAlpha(
 	let forbiddenPixels = 0;
 	let forbiddenAlphaMass = 0;
 	let forbiddenOpaquePixels = 0;
+	const significantForbiddenAlpha = new Uint8Array(width * height);
 	for (let y = 0; y < height; y += 1) {
 		for (let x = 0; x < width; x += 1) {
 			if (roleMask[y * width + x] === 1) continue;
@@ -341,7 +406,35 @@ function assertForbiddenRegionAlpha(
 			const alpha = rgba[(y * width + x) * 4 + 3] ?? 0;
 			forbiddenAlphaMass += alpha;
 			if (alpha >= 128) forbiddenOpaquePixels += 1;
+			if (alpha >= 64) significantForbiddenAlpha[y * width + x] = 1;
 		}
+	}
+	const stack: number[] = [];
+	for (let start = 0; start < significantForbiddenAlpha.length; start += 1) {
+		if (significantForbiddenAlpha[start] !== 1) continue;
+		let componentAlphaMass = 0;
+		stack.push(start);
+		significantForbiddenAlpha[start] = 2;
+		while (stack.length > 0) {
+			const pixelIndex = stack.pop()!;
+			componentAlphaMass += rgba[pixelIndex * 4 + 3] ?? 0;
+			const x = pixelIndex % width;
+			for (const neighbor of [
+				x > 0 ? pixelIndex - 1 : -1,
+				x + 1 < width ? pixelIndex + 1 : -1,
+				pixelIndex >= width ? pixelIndex - width : -1,
+				pixelIndex + width < significantForbiddenAlpha.length ? pixelIndex + width : -1
+			]) {
+				if (neighbor >= 0 && significantForbiddenAlpha[neighbor] === 1) {
+					significantForbiddenAlpha[neighbor] = 2;
+					stack.push(neighbor);
+				}
+			}
+		}
+		if (componentAlphaMass >= FORBIDDEN_COMPONENT_ALPHA_MASS_LIMIT)
+			throw new Error(
+				'Provider source has a meaningful alpha component in a role-required transparent region'
+			);
 	}
 	const alphaMassFraction = forbiddenAlphaMass / Math.max(1, forbiddenPixels * 255);
 	const opaquePixelFraction = forbiddenOpaquePixels / Math.max(1, forbiddenPixels);
@@ -537,6 +630,19 @@ export async function normalizeSkillIconProviderSource(
 		.toBuffer({ resolveWithObject: true });
 	assertNoBakedCheckerboard(decoded.data);
 	assertProviderMatte(decoded.data, decoded.info.width, decoded.info.height, geometry, allowsPixel);
+	const providerRoleMask = scaleRoleMask(
+		roleMask,
+		geometry.canvas.width,
+		geometry.canvas.height,
+		decoded.info.width,
+		decoded.info.height
+	);
+	assertNoPeriodicContrastCheckerboard(
+		decoded.data,
+		decoded.info.width,
+		decoded.info.height,
+		providerRoleMask
+	);
 
 	const rgba = Buffer.alloc(decoded.info.width * decoded.info.height * 4);
 	for (let index = 0; index < decoded.info.width * decoded.info.height; index += 1) {
@@ -558,18 +664,7 @@ export async function normalizeSkillIconProviderSource(
 		rgba[outputOffset + 2] = foregroundBlue;
 		rgba[outputOffset + 3] = alpha;
 	}
-	assertNoSpatialAlphaCheckerboard(
-		rgba,
-		decoded.info.width,
-		decoded.info.height,
-		scaleRoleMask(
-			roleMask,
-			geometry.canvas.width,
-			geometry.canvas.height,
-			decoded.info.width,
-			decoded.info.height
-		)
-	);
+	assertNoSpatialAlphaCheckerboard(rgba, decoded.info.width, decoded.info.height, providerRoleMask);
 	const resized = await sharp(rgba, {
 		raw: { width: decoded.info.width, height: decoded.info.height, channels: 4 }
 	})

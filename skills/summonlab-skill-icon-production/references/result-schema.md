@@ -41,10 +41,19 @@ failure. `failed` retains no image and supplies a failed finding or structured `
 
 Run `pnpm persist:skill-icon-output` with the explicit provider source, target, and assignment paths;
 v2 also requires the expected provider hash. The helper validates and exclusively creates the exact
-candidate and initial result. V1 retains source bytes exactly. V2 reads the provider file once
-through a no-follow descriptor and applies only its target-authorized deterministic profile inside
-the same collision-safe transaction. Never copy, rename, convert, key, resize, mask, or overwrite
-candidate bytes yourself.
+candidate and initial result as one crash-recoverable transaction. It durably stages both complete
+files, records their hashes and inode ownership in an authenticated journal under the cooperative
+lock, then publishes both without replacement. On the next invocation, a dead coordinator's
+authenticated transaction is rolled back only when every remaining pathname still has the recorded
+hash and inode; changed or foreign state fails closed. V1 retains source bytes exactly. V2 reads the
+provider file once through a no-follow descriptor and applies only its target-authorized
+deterministic profile inside that transaction. Never copy, rename, convert, key, resize, mask, or
+overwrite candidate bytes yourself.
+
+Only the published journal authorizes cleanup. A crash before that boundary can leave an ignored,
+transaction-unique private stage; because it has no durable inode authority, later runs preserve it
+and use a new transaction ID instead of adopting or deleting it. Such residue is for coordinator
+inspection, never producer cleanup.
 
 The result schema intentionally has no attempt array. Supply the actual number of imagegen calls to
 the verifier separately with `--attempt-count`; it must be `1..retryCeiling+1`. The verifier invokes
@@ -54,7 +63,14 @@ Git change set to equal the result's one or two written paths.
 
 When provider failure, throttle, timeout, malformed output, persistence, or validation leaves no
 role-valid image, do not call the image persistence helper and do not fabricate a candidate. From a
-clean preflight state, exclusive-create and immediately verify the result-only failure. For a v2
+clean preflight state, durably stage, no-replace publish, and immediately verify the result-only
+failure with the verifier's `--write-failure` path. Its Linux worker transaction keeps partial bytes
+in an unnamed `O_TMPFILE`, then atomically publishes and exclusively locks a process-epoch owner
+record that binds the complete result inode before exposing its recovery hard link. A concurrent
+writer or recovery attempt rejects the held owner lock; a later invocation may recover only a dead
+owner's exact inode and hash. Foreign or
+changed names are retained and fail closed, and authority revalidation or post-write verification
+may remove only the transaction-bound inode. For a v2
 failure after provider bytes were received but deterministic normalization rejected them, add
 `--normalization-source PROVIDER_PATH`; the helper stable-reads and hashes that source, records
 pathless observed metadata with `normalization.outcome: "failed"`, and does not create a candidate.
@@ -81,5 +97,6 @@ inconsistent timing instead of synthesizing a zero-duration attempt. Derived com
 sub-millisecond start precision, and final verification independently cross-checks elapsed time
 against both timestamps for every result status.
 
-If verification fails after this job newly created outputs, report the failure for coordinator
-handling. Do not delete, replace, promote, or move evidence and do not touch shared files.
+If verification fails, report the failure for coordinator handling. The helpers roll back only
+their own transaction-bound artifacts; producers must not delete, replace, promote, move, or repair
+evidence by hand and must not touch shared files.

@@ -1,20 +1,20 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { constants } from 'node:fs';
-import { link, lstat, mkdir, open, realpath, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, readFile, readdir, realpath, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+
+import { z } from 'zod';
 
 import {
 	AnySkillIconAssignmentSchema,
 	AnySkillIconTargetSchema,
-	SkillIconAssignmentSchema,
 	SkillIconAssignmentV2Schema,
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconGeometrySchema,
 	SkillIconResultSchema,
 	SkillIconResultV2Schema,
-	SkillIconTargetSchema,
 	SkillIconTargetV2Schema,
 	SkillIconTargetPathSchema,
 	type AnySkillIconAssignment,
@@ -61,13 +61,20 @@ export interface PersistSkillIconOutputBoundOptions extends PersistSkillIconOutp
 	readonly receivedAt: string;
 	readonly expectedSourceHash?: string;
 	readonly testHooks?: {
+		readonly afterTokenStageOpen?: () => void | Promise<void>;
+		readonly afterTokenStageComplete?: () => void | Promise<void>;
+		readonly afterTokenInstall?: () => void | Promise<void>;
+		readonly afterLockInstall?: () => void | Promise<void>;
 		readonly afterSourceRead?: () => void | Promise<void>;
 		readonly afterNormalization?: () => void | Promise<void>;
 		readonly beforeCandidateWrite?: () => void | Promise<void>;
 		readonly afterCandidateOpen?: () => void | Promise<void>;
+		readonly afterCandidateInstall?: () => void | Promise<void>;
+		readonly afterOutputStagesComplete?: () => void | Promise<void>;
 		readonly beforeResultWrite?: () => void | Promise<void>;
 		readonly afterResultOpen?: () => void | Promise<void>;
 		readonly afterResultInstall?: () => void | Promise<void>;
+		readonly afterJournalRemoval?: () => void | Promise<void>;
 	};
 }
 
@@ -137,8 +144,13 @@ interface HeldPersistenceParent {
 }
 
 interface StagedPersistedFile {
+	readonly path: string;
 	readonly accessPath: string;
 	readonly file: OwnedPersistedFile['file'];
+}
+
+function stagedSiblingName(destinationName: string, suffix: string): string {
+	return `${destinationName.startsWith('.') ? '' : '.'}${destinationName}.skill-icon-tmp-${suffix}`;
 }
 
 async function assertStagedPathOwned(staged: StagedPersistedFile): Promise<void> {
@@ -210,9 +222,11 @@ async function stageCompleteSibling(
 	parent: HeldPersistenceParent,
 	destinationName: string,
 	bytes: Buffer,
-	afterOpen?: () => void | Promise<void>
+	afterOpen?: () => void | Promise<void>,
+	finalMode = 0o644,
+	temporarySuffix = `${process.pid}-${randomUUID()}`
 ): Promise<StagedPersistedFile> {
-	const temporaryName = `.${destinationName}.skill-icon-tmp-${process.pid}-${randomUUID()}`;
+	const temporaryName = stagedSiblingName(destinationName, temporarySuffix);
 	const accessPath = heldChildPath(parent, temporaryName);
 	const handle = await open(
 		accessPath,
@@ -225,13 +239,15 @@ async function stageCompleteSibling(
 		if (!metadata.isFile() || metadata.nlink !== 1)
 			throw new Error(`Unsafe staged persistence file: ${temporaryName}`);
 		staged = {
+			path: path.join(parent.path, temporaryName),
 			accessPath,
 			file: { device: metadata.dev, inode: metadata.ino }
 		};
 		await afterOpen?.();
 		await handle.writeFile(bytes);
-		await handle.chmod(0o644);
+		await handle.chmod(finalMode);
 		await handle.sync();
+		await parent.handle.sync();
 		return staged;
 	} catch (error) {
 		if (staged) {
@@ -241,7 +257,7 @@ async function stageCompleteSibling(
 				throw new AggregateError(
 					[error, cleanupError],
 					'Staging failed and cleanup was refused because ownership changed',
-					{ cause: error }
+					{ cause: cleanupError }
 				);
 			}
 		}
@@ -249,6 +265,28 @@ async function stageCompleteSibling(
 	} finally {
 		await handle.close().catch(() => undefined);
 	}
+}
+
+async function publishStagedNoReplace(
+	parent: HeldPersistenceParent,
+	destination: string,
+	staged: StagedPersistedFile
+): Promise<OwnedPersistedFile> {
+	const finalAccessPath = heldChildPath(parent, path.basename(destination));
+	await assertHeldParentStillNamed(parent);
+	await assertStagedPathOwned(staged);
+	await link(staged.accessPath, finalAccessPath);
+	await parent.handle.sync();
+	const finalMetadata = await lstat(finalAccessPath);
+	if (
+		finalMetadata.isSymbolicLink() ||
+		!finalMetadata.isFile() ||
+		finalMetadata.dev !== staged.file.device ||
+		finalMetadata.ino !== staged.file.inode
+	)
+		throw new Error(`Installed persistence file identity mismatch: ${destination}`);
+	await assertHeldParentStillNamed(parent);
+	return { path: destination, parent: parent.fingerprint, file: staged.file };
 }
 
 async function installStagedNoReplace(
@@ -300,7 +338,8 @@ async function installStagedNoReplace(
 
 async function removeOwnedPersistedFileHeld(
 	parent: HeldPersistenceParent,
-	owned: OwnedPersistedFile
+	owned: OwnedPersistedFile,
+	expectedBytes?: Buffer
 ): Promise<void> {
 	const accessPath = heldChildPath(parent, path.basename(owned.path));
 	const metadata = await metadataOrNull(accessPath);
@@ -312,6 +351,26 @@ async function removeOwnedPersistedFileHeld(
 		metadata.ino !== owned.file.inode
 	)
 		throw new Error(`Persistence file identity changed; cleanup required: ${owned.path}`);
+	if (expectedBytes) {
+		const handle = await open(
+			accessPath,
+			constants.O_RDONLY | constants.O_NONBLOCK | constants.O_NOFOLLOW
+		);
+		try {
+			const opened = await handle.stat({ bigint: true });
+			if (
+				!opened.isFile() ||
+				opened.dev !== BigInt(owned.file.device) ||
+				opened.ino !== BigInt(owned.file.inode)
+			)
+				throw new Error(`Persistence file identity changed while opening: ${owned.path}`);
+			const bytes = await readBoundedRegularFile(handle, opened.size, 'Owned persistence file');
+			if (!bytes.equals(expectedBytes))
+				throw new Error(`Persistence file bytes changed; cleanup required: ${owned.path}`);
+		} finally {
+			await handle.close();
+		}
+	}
 	await unlink(accessPath);
 	await parent.handle.sync();
 }
@@ -564,6 +623,574 @@ async function readSafePacket(
 	return (await readSafePacketSnapshot(root, relativePath, description)).bytes;
 }
 
+export const SKILL_ICON_PERSISTENCE_TOKEN_PATH =
+	'assets/wiki/skills/icon-production-v1/.persistence-recovery-token.json' as const;
+export const SKILL_ICON_PERSISTENCE_LOCK_PATH =
+	'assets/wiki/skills/icon-production-v1/.persistence.lock' as const;
+export const SKILL_ICON_PERSISTENCE_JOURNAL_PATH =
+	'assets/wiki/skills/icon-production-v1/.persistence-transaction.json' as const;
+
+const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
+const TransactionIdSchema = z.string().uuid();
+const ProcessIdentitySchema = z
+	.object({ bootId: z.string().min(1), startTicks: z.string().regex(/^\d+$/u) })
+	.strict();
+const PersistenceParentSchema = z
+	.object({ realPath: z.string().min(1), device: z.number().int(), inode: z.number().int() })
+	.strict();
+const PersistenceFileSchema = z
+	.object({ device: z.number().int(), inode: z.number().int() })
+	.strict();
+const PersistenceCandidatePathSchema = z
+	.string()
+	.regex(
+		/^assets\/wiki\/skills\/icon-production-v1\/candidates\/(?:references|calibration|icons)\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.png$/u
+	);
+const PersistenceResultPathSchema = z
+	.string()
+	.regex(
+		/^assets\/wiki\/skills\/icon-production-v1\/results\/(?:references|calibration|icons)\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$/u
+	);
+const PersistencePlanSchema = z
+	.object({
+		kind: z.enum(['candidate', 'result']),
+		path: z.string().min(1),
+		stagedPath: z.string().min(1),
+		contentHash: Sha256Schema
+	})
+	.strict()
+	.superRefine((output, context) => {
+		const schema =
+			output.kind === 'candidate' ? PersistenceCandidatePathSchema : PersistenceResultPathSchema;
+		if (!schema.safeParse(output.path).success)
+			context.addIssue({ code: 'custom', message: `Invalid ${output.kind} output path` });
+	});
+const PersistenceOutputSchema = z
+	.object({
+		kind: z.enum(['candidate', 'result']),
+		path: z.string().min(1),
+		stagedPath: z.string().min(1),
+		contentHash: Sha256Schema,
+		parent: PersistenceParentSchema,
+		file: PersistenceFileSchema
+	})
+	.strict()
+	.superRefine((output, context) => {
+		const schema =
+			output.kind === 'candidate' ? PersistenceCandidatePathSchema : PersistenceResultPathSchema;
+		if (!schema.safeParse(output.path).success)
+			context.addIssue({ code: 'custom', message: `Invalid ${output.kind} output path` });
+	});
+
+const PersistenceTokenSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-persistence-recovery-token-v1'),
+		transactionId: TransactionIdSchema,
+		recoveryToken: TransactionIdSchema,
+		pid: z.number().int().positive(),
+		processIdentity: ProcessIdentitySchema.nullable(),
+		createdAt: z.string().datetime({ offset: true }),
+		outputs: z.array(PersistencePlanSchema).length(2)
+	})
+	.strict()
+	.superRefine((token, context) => {
+		if (new Set(token.outputs.map((output) => output.kind)).size !== 2)
+			context.addIssue({ code: 'custom', message: 'Persistence token requires both outputs' });
+		for (const output of token.outputs) {
+			if (
+				path.dirname(output.path) !== path.dirname(output.stagedPath) ||
+				path.basename(output.stagedPath) !==
+					`.${path.basename(output.path)}.skill-icon-tmp-transaction-${token.transactionId}`
+			)
+				context.addIssue({ code: 'custom', message: 'Persistence token staging path mismatch' });
+		}
+	});
+
+const PersistenceLockSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-persistence-lock-v1'),
+		transactionId: TransactionIdSchema,
+		recoveryTokenHash: Sha256Schema,
+		pid: z.number().int().positive(),
+		processIdentity: ProcessIdentitySchema.nullable(),
+		acquiredAt: z.string().datetime({ offset: true })
+	})
+	.strict();
+
+export const SkillIconPersistenceJournalSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-persistence-transaction-v1'),
+		transactionId: TransactionIdSchema,
+		recoveryTokenHash: Sha256Schema,
+		authorizationTag: Sha256Schema,
+		jobId: z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u),
+		outputs: z.array(PersistenceOutputSchema).length(2)
+	})
+	.strict()
+	.superRefine((journal, context) => {
+		if (new Set(journal.outputs.map((output) => output.kind)).size !== 2)
+			context.addIssue({ code: 'custom', message: 'Persistence journal requires both outputs' });
+		for (const output of journal.outputs) {
+			const expectedStagePrefix = `.${path.basename(output.path)}.skill-icon-tmp-`;
+			if (
+				path.dirname(output.stagedPath) !== path.dirname(output.path) ||
+				!path.basename(output.stagedPath).startsWith(expectedStagePrefix)
+			)
+				context.addIssue({ code: 'custom', message: `Invalid ${output.kind} staging path` });
+		}
+	});
+
+type PersistenceJournal = z.infer<typeof SkillIconPersistenceJournalSchema>;
+type PersistenceToken = z.infer<typeof PersistenceTokenSchema>;
+type PersistenceLock = z.infer<typeof PersistenceLockSchema>;
+type ProcessIdentity = z.infer<typeof ProcessIdentitySchema> | null;
+
+interface PersistenceAuthority {
+	readonly recoveryToken: string;
+	readonly token: PersistenceToken;
+	readonly tokenBinding: BoundTargetReference;
+	readonly lock: PersistenceLock;
+	readonly lockBinding: BoundTargetReference;
+}
+
+function sha256(bytes: Buffer): string {
+	return createHash('sha256').update(bytes).digest('hex');
+}
+
+function transactionBytes(value: unknown): Buffer {
+	return Buffer.from(`${JSON.stringify(value, null, '\t')}\n`);
+}
+
+async function syncDirectory(directory: string): Promise<void> {
+	const handle = await open(
+		directory,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
+	try {
+		await handle.sync();
+	} finally {
+		await handle.close();
+	}
+}
+
+async function readProcessIdentity(pid: number): Promise<ProcessIdentity> {
+	try {
+		const [bootId, stat] = await Promise.all([
+			readFile('/proc/sys/kernel/random/boot_id', 'utf8'),
+			readFile(`/proc/${pid}/stat`, 'utf8')
+		]);
+		const closingParenthesis = stat.lastIndexOf(')');
+		const fields = stat
+			.slice(closingParenthesis + 2)
+			.trim()
+			.split(/\s+/u);
+		const startTicks = fields[19];
+		return startTicks && /^\d+$/u.test(startTicks) ? { bootId: bootId.trim(), startTicks } : null;
+	} catch {
+		return null;
+	}
+}
+
+function sameProcessIdentity(left: ProcessIdentity, right: ProcessIdentity): boolean {
+	return (
+		left === right ||
+		Boolean(left && right && left.bootId === right.bootId && left.startTicks === right.startTicks)
+	);
+}
+
+async function coordinatorIsLive(
+	lock: Pick<PersistenceLock, 'pid' | 'processIdentity'>
+): Promise<boolean> {
+	try {
+		process.kill(lock.pid, 0);
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ESRCH') return false;
+		return true;
+	}
+	if (!lock.processIdentity) return true;
+	const current = await readProcessIdentity(lock.pid);
+	return current === null || sameProcessIdentity(current, lock.processIdentity);
+}
+
+function parseTransactionJson<T>(schema: z.ZodType<T>, bytes: Buffer, label: string): T {
+	try {
+		return schema.parse(JSON.parse(bytes.toString('utf8')));
+	} catch (error) {
+		throw new Error(`Invalid ${label}; persistence state is fail-closed`, { cause: error });
+	}
+}
+
+function journalAuthorizationPayload(journal: PersistenceJournal): Buffer {
+	return Buffer.from(
+		JSON.stringify(
+			Object.fromEntries(Object.entries(journal).filter(([key]) => key !== 'authorizationTag'))
+		)
+	);
+}
+
+function authorizeJournal(journal: PersistenceJournal, recoveryToken: string): PersistenceJournal {
+	return {
+		...journal,
+		authorizationTag: createHmac('sha256', recoveryToken)
+			.update(journalAuthorizationPayload(journal))
+			.digest('hex')
+	};
+}
+
+function assertJournalAuthorization(journal: PersistenceJournal, recoveryToken: string): void {
+	const expected = authorizeJournal(journal, recoveryToken).authorizationTag;
+	if (!timingSafeEqual(Buffer.from(journal.authorizationTag, 'hex'), Buffer.from(expected, 'hex')))
+		throw new Error('Persistence journal authorization tag does not match its recovery token');
+}
+
+async function readAuthorityBinding(
+	root: string,
+	relativePath: string,
+	description: string
+): Promise<BoundTargetReference> {
+	return bindSafePacket(
+		relativePath,
+		description,
+		await readSafePacketSnapshot(root, relativePath, description)
+	);
+}
+
+async function writeAuthorityExclusive(
+	root: string,
+	relativePath: string,
+	bytes: Buffer,
+	mode: number,
+	description: string,
+	transactionId: string,
+	pid: number,
+	afterStageOpen?: () => void | Promise<void>,
+	afterStageComplete?: () => void | Promise<void>
+): Promise<BoundTargetReference> {
+	const destination = path.resolve(root, relativePath);
+	await ensureSafeParents(root, destination);
+	const parent = await openHeldPersistenceParent(root, destination);
+	try {
+		const staged = await stageCompleteSibling(
+			parent,
+			path.basename(destination),
+			bytes,
+			afterStageOpen,
+			mode,
+			`authority-${transactionId}-${pid}`
+		);
+		await afterStageComplete?.();
+		const created = await installStagedNoReplace(parent, destination, staged);
+		const permissions = (await lstat(destination)).mode & 0o777;
+		if (permissions !== mode) {
+			await removeOwnedPersistedFileHeld(parent, created, bytes);
+			throw new Error(`${description} permissions changed during creation`);
+		}
+		const binding = await readAuthorityBinding(root, relativePath, description);
+		if (binding.contentHash !== sha256(bytes))
+			throw new Error(`${description} changed during creation`);
+		return binding;
+	} finally {
+		await parent.handle.close();
+	}
+}
+
+async function removeAuthorityBinding(root: string, binding: BoundTargetReference): Promise<void> {
+	const current = await readAuthorityBinding(root, binding.path, binding.description);
+	if (
+		current.contentHash !== binding.contentHash ||
+		!sameSafePacketIdentity(current.snapshot, binding.snapshot)
+	)
+		throw new Error(`${binding.description} identity changed; cleanup required`);
+	const absolute = path.resolve(root, binding.path);
+	const stagePrefix = stagedSiblingName(path.basename(absolute), '');
+	for (const name of await readdir(path.dirname(absolute))) {
+		if (!name.startsWith(stagePrefix)) continue;
+		const stagedPath = path.join(path.dirname(absolute), name);
+		const staged = await lstat(stagedPath);
+		if (
+			!staged.isSymbolicLink() &&
+			staged.isFile() &&
+			staged.dev.toString() === binding.snapshot.file.device &&
+			staged.ino.toString() === binding.snapshot.file.inode
+		)
+			await unlink(stagedPath);
+	}
+	await unlink(absolute);
+	await syncDirectory(path.dirname(absolute));
+}
+
+async function acquirePersistenceAuthority(
+	root: string,
+	plannedOutputs: readonly [
+		{ readonly kind: 'candidate'; readonly path: string; readonly contentHash: string },
+		{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }
+	],
+	testHooks?: PersistSkillIconOutputBoundOptions['testHooks']
+): Promise<PersistenceAuthority> {
+	const transactionId = randomUUID();
+	const recoveryToken = randomUUID();
+	const processIdentity = await readProcessIdentity(process.pid);
+	const createdAt = new Date().toISOString();
+	const outputs = plannedOutputs.map((output) => ({
+		...output,
+		stagedPath: `${path.dirname(output.path)}/.${path.basename(output.path)}.skill-icon-tmp-transaction-${transactionId}`
+	}));
+	const token = PersistenceTokenSchema.parse({
+		schemaVersion: 'skill-icon-persistence-recovery-token-v1',
+		transactionId,
+		recoveryToken,
+		pid: process.pid,
+		processIdentity,
+		createdAt,
+		outputs
+	});
+	const tokenBinding = await writeAuthorityExclusive(
+		root,
+		SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+		transactionBytes(token),
+		0o600,
+		'Persistence recovery token',
+		transactionId,
+		process.pid,
+		testHooks?.afterTokenStageOpen,
+		testHooks?.afterTokenStageComplete
+	);
+	await testHooks?.afterTokenInstall?.();
+	try {
+		const lock = PersistenceLockSchema.parse({
+			schemaVersion: 'skill-icon-persistence-lock-v1',
+			transactionId,
+			recoveryTokenHash: sha256(Buffer.from(recoveryToken)),
+			pid: process.pid,
+			processIdentity,
+			acquiredAt: createdAt
+		});
+		const lockBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_LOCK_PATH,
+			transactionBytes(lock),
+			0o600,
+			'Persistence coordinator lock',
+			transactionId,
+			process.pid
+		);
+		await testHooks?.afterLockInstall?.();
+		return { recoveryToken, token, tokenBinding, lock, lockBinding };
+	} catch (error) {
+		await removeAuthorityBinding(root, tokenBinding).catch(() => undefined);
+		throw error;
+	}
+}
+
+async function removeOwnedJournalPath(
+	root: string,
+	output: PersistenceJournal['outputs'][number],
+	kind: 'final' | 'staged'
+): Promise<void> {
+	const relativePath = kind === 'final' ? output.path : output.stagedPath;
+	const absolute = path.resolve(root, relativePath);
+	const metadata = await metadataOrNull(absolute);
+	if (!metadata) return;
+	const parent = await persistenceParentFingerprint(absolute);
+	if (
+		parent.realPath !== output.parent.realPath ||
+		parent.device !== output.parent.device ||
+		parent.inode !== output.parent.inode ||
+		metadata.isSymbolicLink() ||
+		!metadata.isFile() ||
+		metadata.dev !== output.file.device ||
+		metadata.ino !== output.file.inode
+	)
+		throw new Error(`Foreign ${output.kind} ${kind} path blocks persistence recovery`);
+	const bytes = await readSafePacket(root, relativePath, `Recovery ${output.kind} ${kind}`);
+	if (sha256(bytes) !== output.contentHash)
+		throw new Error(`Changed ${output.kind} ${kind} bytes block persistence recovery`);
+	const heldParent = await openHeldPersistenceParent(root, absolute);
+	try {
+		await removeOwnedPersistedFileHeld(heldParent, {
+			path: absolute,
+			parent: output.parent,
+			file: output.file
+		});
+	} finally {
+		await heldParent.handle.close();
+	}
+}
+
+async function rollbackPersistenceJournal(
+	root: string,
+	journal: PersistenceJournal
+): Promise<void> {
+	// Preflight every extant name before mutating any. Recovery must never partially
+	// roll back owned output because a later pathname was replaced by a foreign inode.
+	for (const output of journal.outputs) {
+		for (const kind of ['final', 'staged'] as const) {
+			const relativePath = kind === 'final' ? output.path : output.stagedPath;
+			const absolute = path.resolve(root, relativePath);
+			const metadata = await metadataOrNull(absolute);
+			if (!metadata) continue;
+			const parent = await persistenceParentFingerprint(absolute);
+			if (
+				parent.realPath !== output.parent.realPath ||
+				parent.device !== output.parent.device ||
+				parent.inode !== output.parent.inode ||
+				metadata.isSymbolicLink() ||
+				!metadata.isFile() ||
+				metadata.dev !== output.file.device ||
+				metadata.ino !== output.file.inode
+			)
+				throw new Error(`Foreign ${output.kind} ${kind} path blocks persistence recovery`);
+			const bytes = await readSafePacket(root, relativePath, `Recovery ${output.kind} ${kind}`);
+			if (sha256(bytes) !== output.contentHash)
+				throw new Error(`Changed ${output.kind} ${kind} bytes block persistence recovery`);
+		}
+	}
+	for (const output of [...journal.outputs].reverse()) {
+		await removeOwnedJournalPath(root, output, 'final');
+		await removeOwnedJournalPath(root, output, 'staged');
+	}
+}
+
+async function cleanupDeadOrphanedTokenStages(root: string): Promise<void> {
+	const tokenDestination = path.resolve(root, SKILL_ICON_PERSISTENCE_TOKEN_PATH);
+	if (await metadataOrNull(tokenDestination)) return;
+	const escaped = path.basename(tokenDestination).replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+	const pattern = new RegExp(`^${escaped}\\.skill-icon-tmp-authority-([a-f0-9-]{36})-(\\d+)$`, 'u');
+	for (const name of await readdir(path.dirname(tokenDestination))) {
+		const match = pattern.exec(name);
+		if (!match?.[1] || !match[2]) continue;
+		if (!TransactionIdSchema.safeParse(match[1]).success) continue;
+		const pid = Number(match[2]);
+		if (!Number.isSafeInteger(pid) || pid <= 0) continue;
+		const stagePath = path.join(path.dirname(tokenDestination), name);
+		const metadata = await lstat(stagePath);
+		if (metadata.isSymbolicLink() || !metadata.isFile() || (metadata.mode & 0o777) !== 0o600)
+			continue;
+		let snapshot: SafePacketSnapshot;
+		try {
+			snapshot = await readSafePacketSnapshot(
+				root,
+				path.relative(root, stagePath).split(path.sep).join('/'),
+				'Orphaned persistence token stage'
+			);
+		} catch {
+			continue;
+		}
+		let parsed: ReturnType<typeof PersistenceTokenSchema.safeParse>;
+		try {
+			parsed = PersistenceTokenSchema.safeParse(JSON.parse(snapshot.bytes.toString('utf8')));
+		} catch {
+			continue;
+		}
+		if (!parsed.success || parsed.data.transactionId !== match[1] || parsed.data.pid !== pid)
+			continue;
+		if (await coordinatorIsLive(parsed.data))
+			throw new Error('A live coordinator owns an unpublished persistence token stage');
+		const relativeStage = path.relative(root, stagePath).split(path.sep).join('/');
+		await removeAuthorityBinding(
+			root,
+			bindSafePacket(relativeStage, 'Orphaned persistence token stage', snapshot)
+		);
+	}
+}
+
+async function recoverStalePersistence(root: string): Promise<void> {
+	await cleanupDeadOrphanedTokenStages(root);
+	const [tokenMetadata, lockMetadata, journalMetadata] = await Promise.all([
+		metadataOrNull(path.resolve(root, SKILL_ICON_PERSISTENCE_TOKEN_PATH)),
+		metadataOrNull(path.resolve(root, SKILL_ICON_PERSISTENCE_LOCK_PATH)),
+		metadataOrNull(path.resolve(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+	]);
+	if (!tokenMetadata && !lockMetadata && !journalMetadata) return;
+	if (!tokenMetadata)
+		throw new Error('Persistence lock or journal exists without its recovery token');
+	const tokenBinding = await readAuthorityBinding(
+		root,
+		SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+		'Persistence recovery token'
+	);
+	if ((tokenMetadata.mode & 0o777) !== 0o600)
+		throw new Error('Persistence recovery token permissions are unsafe; cleanup required');
+	const token = parseTransactionJson(
+		PersistenceTokenSchema,
+		await readSafePacket(root, tokenBinding.path, tokenBinding.description),
+		'persistence recovery token'
+	);
+	if (!lockMetadata) {
+		if (journalMetadata) throw new Error('Persistence journal exists without its coordinator lock');
+		if (await coordinatorIsLive(token))
+			throw new Error('A live coordinator owns the persistence recovery token');
+		await removeAuthorityBinding(root, tokenBinding);
+		return;
+	}
+	const lockBinding = await readAuthorityBinding(
+		root,
+		SKILL_ICON_PERSISTENCE_LOCK_PATH,
+		'Persistence coordinator lock'
+	);
+	if ((lockMetadata.mode & 0o777) !== 0o600)
+		throw new Error('Persistence coordinator lock permissions are unsafe; cleanup required');
+	const lock = parseTransactionJson(
+		PersistenceLockSchema,
+		await readSafePacket(root, lockBinding.path, lockBinding.description),
+		'persistence lock'
+	);
+	if (
+		token.transactionId !== lock.transactionId ||
+		lock.recoveryTokenHash !== sha256(Buffer.from(token.recoveryToken)) ||
+		token.pid !== lock.pid ||
+		!sameProcessIdentity(token.processIdentity, lock.processIdentity)
+	)
+		throw new Error('Persistence recovery token and lock do not describe one transaction');
+	if (!journalMetadata) {
+		// No final output is ever published before the signed journal. This state is
+		// either pre-journal setup or post-commit authority residue. Pre-journal stages
+		// have no durable inode binding, so even identical bytes cannot authorize their
+		// deletion. UUID-scoped stages are ignored and deliberately preserved; the retry
+		// uses a new UUID and remains nonblocking.
+		if (await coordinatorIsLive(lock))
+			throw new Error('Another live coordinator owns skill-icon persistence');
+		await removeAuthorityBinding(root, lockBinding);
+		await removeAuthorityBinding(root, tokenBinding);
+		return;
+	}
+	const journalBinding = await readAuthorityBinding(
+		root,
+		SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+		'Persistence journal'
+	);
+	if ((journalMetadata.mode & 0o777) !== 0o600)
+		throw new Error('Persistence journal permissions are unsafe; cleanup required');
+	const journal = parseTransactionJson(
+		SkillIconPersistenceJournalSchema,
+		await readSafePacket(root, journalBinding.path, journalBinding.description),
+		'persistence journal'
+	);
+	if (
+		token.transactionId !== journal.transactionId ||
+		journal.recoveryTokenHash !== lock.recoveryTokenHash ||
+		journal.recoveryTokenHash !== sha256(Buffer.from(token.recoveryToken))
+	)
+		throw new Error('Persistence recovery authorities do not describe one transaction');
+	for (const planned of token.outputs) {
+		const recorded = journal.outputs.find((output) => output.kind === planned.kind);
+		if (
+			!recorded ||
+			recorded.path !== planned.path ||
+			recorded.stagedPath !== planned.stagedPath ||
+			recorded.contentHash !== planned.contentHash
+		)
+			throw new Error('Persistence token and journal output plans do not match');
+	}
+	assertJournalAuthorization(journal, token.recoveryToken);
+	if (await coordinatorIsLive(lock))
+		throw new Error('Another live coordinator owns skill-icon persistence');
+	await rollbackPersistenceJournal(root, journal);
+	await removeAuthorityBinding(root, journalBinding);
+	await removeAuthorityBinding(root, lockBinding);
+	await removeAuthorityBinding(root, tokenBinding);
+}
+
 function assertPacketBinding(
 	target: AnySkillIconTarget,
 	assignment: AnySkillIconAssignment,
@@ -605,6 +1232,11 @@ async function persistSkillIconOutputBoundWithAuthorities(
 	authorityBindings: readonly BoundTargetReference[]
 ): Promise<SkillIconAssetReceipt> {
 	if (!path.isAbsolute(options.sourcePath)) throw new Error('Source path must be absolute');
+	// Caller-owned buffers remain mutable across await boundaries. Capture the exact
+	// geometry authority once and use only this immutable snapshot for the whole run.
+	const geometrySourceBytes = options.geometrySourceBytes
+		? Buffer.from(options.geometrySourceBytes)
+		: undefined;
 	const receivedAt = IsoDateTimeSchema.parse(options.receivedAt);
 	if (options.expectedSourceHash) StateHashSchema.parse(options.expectedSourceHash);
 	const root = path.resolve(options.root ?? process.cwd());
@@ -618,13 +1250,13 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		const assignmentV2 = SkillIconAssignmentV2Schema.parse(assignment);
 		if (!options.expectedSourceHash)
 			throw new Error('V2 persistence requires the expected provider source hash');
-		if (!options.geometrySourceBytes)
+		if (!geometrySourceBytes)
 			throw new Error('V2 persistence requires the raw geometry authority bytes');
-		const geometryHash = createHash('sha256').update(options.geometrySourceBytes).digest('hex');
+		const geometryHash = createHash('sha256').update(geometrySourceBytes).digest('hex');
 		if (geometryHash !== target.normalization.geometry.contentHash)
 			throw new Error('Raw geometry authority hash does not match the V2 target');
 		const parsedGeometry = SkillIconGeometrySchema.parse(
-			JSON.parse(options.geometrySourceBytes.toString('utf8'))
+			JSON.parse(geometrySourceBytes.toString('utf8'))
 		);
 		if (JSON.stringify(parsedGeometry) !== JSON.stringify(options.geometry))
 			throw new Error('Parsed geometry and raw geometry authority bytes disagree');
@@ -656,7 +1288,7 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		? await normalizeSkillIconProviderSource(
 				sourceBytes,
 				options.expectedRole,
-				options.geometrySourceBytes!
+				geometrySourceBytes!
 			)
 		: null;
 	await options.testHooks?.afterNormalization?.();
@@ -675,119 +1307,162 @@ async function persistSkillIconOutputBoundWithAuthorities(
 	if (inspection.violations.length > 0)
 		throw new Error(`Skill icon asset validation failed: ${inspection.violations.join('; ')}`);
 
+	const output = {
+		path: candidatePath,
+		mediaType: 'image/png' as const,
+		width: inspection.width,
+		height: inspection.height,
+		bytes: inspection.bytes,
+		alphaMode: inspection.alphaMode,
+		contentHash: inspection.contentHash
+	};
+	const resultCommon = {
+		resultId: `result-${target.jobId}`,
+		jobId: target.jobId,
+		assignmentId: assignment.assignmentId,
+		status: 'candidate',
+		exactPrompt: target.exactPrompt,
+		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
+		referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+		output,
+		resultPath: target.output.resultPath,
+		findings: [
+			{
+				category: 'geometry',
+				evaluator: 'automated',
+				outcome: 'pass',
+				observation: `${options.expectedRole} dimensions, media type, alpha, and geometry checks passed.`
+			},
+			{
+				category: isV2 ? 'deterministic-normalization' : 'exact-source-persistence',
+				evaluator: 'producer',
+				outcome: 'pass',
+				observation: isV2
+					? 'The exact provider bytes were normalized by the packet-authorized deterministic profile.'
+					: 'The declared provider bytes were retained without transformation.'
+			}
+		],
+		startedAt: receivedAt,
+		completedAt: receivedAt,
+		totalWallTimeMs: 0,
+		writtenOutputPaths: [candidatePath, target.output.resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	} as const;
+	const result = isV2
+		? SkillIconResultV2Schema.parse({
+				schemaVersion: 'skill-icon-result-v2',
+				logicalIdentity: target.logicalIdentity,
+				revision: target.revision,
+				normalization: {
+					profile: normalized!.normalization.profile,
+					outcome: 'completed',
+					geometryHash: normalized!.normalization.geometryHash,
+					providerSource: normalized!.source,
+					sourceContentHash: normalized!.normalization.sourceContentHash,
+					outputContentHash: normalized!.normalization.outputContentHash
+				},
+				...resultCommon
+			})
+		: SkillIconResultSchema.parse({
+				schemaVersion: 'skill-icon-result-v1',
+				...resultCommon
+			});
+	const resultBytes = transactionBytes(result);
+
 	await ensureSafeParents(root, destination);
 	await ensureSafeParents(root, resultDestination);
-	if (await metadataOrNull(destination))
-		throw new Error(`Candidate output already exists (collision): ${candidatePath}`);
-	if (await metadataOrNull(resultDestination))
-		throw new Error(`Result output already exists (collision): ${target.output.resultPath}`);
+	await recoverStalePersistence(root);
 	await options.testHooks?.beforeCandidateWrite?.();
+	const authority = await acquirePersistenceAuthority(
+		root,
+		[
+			{ kind: 'candidate', path: candidatePath, contentHash: sha256(candidateBytes) },
+			{ kind: 'result', path: target.output.resultPath, contentHash: sha256(resultBytes) }
+		],
+		options.testHooks
+	);
 	let candidateParent: HeldPersistenceParent | undefined;
 	let resultParent: HeldPersistenceParent | undefined;
+	let stagedCandidate: StagedPersistedFile | undefined;
+	let stagedResult: StagedPersistedFile | undefined;
 	let candidateOwnership: OwnedPersistedFile | undefined;
 	let resultOwnership: OwnedPersistedFile | undefined;
+	let journal: PersistenceJournal | undefined;
+	let journalBinding: BoundTargetReference | undefined;
 	try {
+		if (await metadataOrNull(destination))
+			throw new Error(`Candidate output already exists (collision): ${candidatePath}`);
+		if (await metadataOrNull(resultDestination))
+			throw new Error(`Result output already exists (collision): ${target.output.resultPath}`);
 		candidateParent = await openHeldPersistenceParent(root, destination);
 		resultParent = await openHeldPersistenceParent(root, resultDestination);
 		// This is deliberately the final read-only operation before any output bytes
 		// are staged. Every packet reference must still be a regular, hash-bound file.
 		const referenceBindings = await bindTargetReferences(root, target);
-		const stagedCandidate = await stageCompleteSibling(
+		stagedCandidate = await stageCompleteSibling(
 			candidateParent,
 			path.basename(destination),
 			candidateBytes,
-			options.testHooks?.afterCandidateOpen
+			options.testHooks?.afterCandidateOpen,
+			0o644,
+			`transaction-${authority.lock.transactionId}`
 		);
-		candidateOwnership = await installStagedNoReplace(
+		stagedResult = await stageCompleteSibling(
+			resultParent,
+			path.basename(resultDestination),
+			resultBytes,
+			options.testHooks?.afterResultOpen,
+			0o644,
+			`transaction-${authority.lock.transactionId}`
+		);
+		await options.testHooks?.afterOutputStagesComplete?.();
+		const unsignedJournal = SkillIconPersistenceJournalSchema.parse({
+			schemaVersion: 'skill-icon-persistence-transaction-v1',
+			transactionId: authority.lock.transactionId,
+			recoveryTokenHash: authority.lock.recoveryTokenHash,
+			authorizationTag: '0'.repeat(64),
+			jobId: target.jobId,
+			outputs: [
+				{
+					kind: 'candidate',
+					path: candidatePath,
+					stagedPath: path.relative(root, stagedCandidate.path).split(path.sep).join('/'),
+					contentHash: sha256(candidateBytes),
+					parent: candidateParent.fingerprint,
+					file: stagedCandidate.file
+				},
+				{
+					kind: 'result',
+					path: target.output.resultPath,
+					stagedPath: path.relative(root, stagedResult.path).split(path.sep).join('/'),
+					contentHash: sha256(resultBytes),
+					parent: resultParent.fingerprint,
+					file: stagedResult.file
+				}
+			]
+		});
+		journal = SkillIconPersistenceJournalSchema.parse(
+			authorizeJournal(unsignedJournal, authority.recoveryToken)
+		);
+		journalBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+			transactionBytes(journal),
+			0o600,
+			'Persistence journal',
+			authority.lock.transactionId,
+			authority.lock.pid
+		);
+		candidateOwnership = await publishStagedNoReplace(
 			candidateParent,
 			destination,
 			stagedCandidate
 		);
-		const retainedHandle = await open(destination, constants.O_RDONLY | constants.O_NOFOLLOW);
-		let retainedBytes: Buffer;
-		try {
-			retainedBytes = await retainedHandle.readFile();
-		} finally {
-			await retainedHandle.close();
-		}
-		const retained = await inspectSkillIconAsset(
-			retainedBytes,
-			options.expectedRole,
-			options.geometry
-		);
-		if (retained.contentHash !== inspection.contentHash || !retainedBytes.equals(candidateBytes))
-			throw new Error('Source/candidate hash mismatch after persistence');
-		const output = {
-			path: candidatePath,
-			mediaType: 'image/png' as const,
-			width: retained.width,
-			height: retained.height,
-			bytes: retained.bytes,
-			alphaMode: retained.alphaMode,
-			contentHash: retained.contentHash
-		};
-		const resultCommon = {
-			resultId: `result-${target.jobId}`,
-			jobId: target.jobId,
-			assignmentId: assignment.assignmentId,
-			status: 'candidate',
-			exactPrompt: target.exactPrompt,
-			promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
-			referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
-			output,
-			resultPath: target.output.resultPath,
-			findings: [
-				{
-					category: 'geometry',
-					evaluator: 'automated',
-					outcome: 'pass',
-					observation: `${options.expectedRole} dimensions, media type, alpha, and geometry checks passed.`
-				},
-				{
-					category: isV2 ? 'deterministic-normalization' : 'exact-source-persistence',
-					evaluator: 'producer',
-					outcome: 'pass',
-					observation: isV2
-						? 'The exact provider bytes were normalized by the packet-authorized deterministic profile.'
-						: 'The declared provider bytes were retained without transformation.'
-				}
-			],
-			startedAt: receivedAt,
-			completedAt: receivedAt,
-			totalWallTimeMs: 0,
-			writtenOutputPaths: [candidatePath, target.output.resultPath],
-			noSharedFilesEdited: true,
-			selfPromoted: false
-		} as const;
-		const result = isV2
-			? SkillIconResultV2Schema.parse({
-					schemaVersion: 'skill-icon-result-v2',
-					logicalIdentity: target.logicalIdentity,
-					revision: target.revision,
-					normalization: {
-						profile: normalized!.normalization.profile,
-						outcome: 'completed',
-						geometryHash: normalized!.normalization.geometryHash,
-						providerSource: normalized!.source,
-						sourceContentHash: normalized!.normalization.sourceContentHash,
-						outputContentHash: normalized!.normalization.outputContentHash
-					},
-					...resultCommon
-				})
-			: SkillIconResultSchema.parse({
-					schemaVersion: 'skill-icon-result-v1',
-					...resultCommon
-				});
-		const resultBytes = Buffer.from(`${JSON.stringify(result, null, '\t')}\n`);
+		await options.testHooks?.afterCandidateInstall?.();
 		await options.testHooks?.beforeResultWrite?.();
 		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
-		const stagedResult = await stageCompleteSibling(
-			resultParent,
-			path.basename(resultDestination),
-			resultBytes,
-			options.testHooks?.afterResultOpen
-		);
-		resultOwnership = await installStagedNoReplace(resultParent, resultDestination, stagedResult);
+		resultOwnership = await publishStagedNoReplace(resultParent, resultDestination, stagedResult);
 		await options.testHooks?.afterResultInstall?.();
 		const retainedResult = await readSafePacket(root, target.output.resultPath, 'Retained result');
 		if (!retainedResult.equals(resultBytes))
@@ -796,13 +1471,22 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		await assertOwnedPersistedFile(resultOwnership, resultBytes, 'Result');
 		await assertTargetReferencesStillBound(root, referenceBindings);
 		await assertTargetReferencesStillBound(root, authorityBindings);
+		await unlinkStagedIfOwned(stagedCandidate);
+		await candidateParent.handle.sync();
+		await unlinkStagedIfOwned(stagedResult);
+		await resultParent.handle.sync();
+		await removeAuthorityBinding(root, journalBinding);
+		journalBinding = undefined;
+		await options.testHooks?.afterJournalRemoval?.();
+		await removeAuthorityBinding(root, authority.lockBinding);
+		await removeAuthorityBinding(root, authority.tokenBinding);
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
 			role: options.expectedRole,
 			receivedAt,
 			source: { path: options.sourcePath, ...(normalized?.source ?? inspection) },
-			retained: { path: candidatePath, ...retained },
+			retained: { path: candidatePath, ...inspection },
 			result: {
 				path: target.output.resultPath,
 				contentHash: createHash('sha256').update(resultBytes).digest('hex')
@@ -810,15 +1494,92 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		};
 	} catch (error) {
 		const cleanupFailures: unknown[] = [];
-		for (const [parent, owned] of [
-			[candidateParent, candidateOwnership],
-			[resultParent, resultOwnership]
-		] as const) {
-			if (!parent || !owned) continue;
+		if (journal && journalBinding) {
 			try {
-				await removeOwnedPersistedFileHeld(parent, owned);
+				await rollbackPersistenceJournal(root, journal);
+				for (const [parent, owned, bytes] of [
+					[candidateParent, candidateOwnership, candidateBytes],
+					[resultParent, resultOwnership, resultBytes],
+					[
+						candidateParent,
+						stagedCandidate && candidateParent
+							? {
+									path: stagedCandidate.path,
+									parent: candidateParent.fingerprint,
+									file: stagedCandidate.file
+								}
+							: undefined,
+						candidateBytes
+					],
+					[
+						resultParent,
+						stagedResult && resultParent
+							? {
+									path: stagedResult.path,
+									parent: resultParent.fingerprint,
+									file: stagedResult.file
+								}
+							: undefined,
+						resultBytes
+					]
+				] as const) {
+					if (parent && owned) await removeOwnedPersistedFileHeld(parent, owned, bytes);
+				}
+				await removeAuthorityBinding(root, journalBinding);
+				journalBinding = undefined;
 			} catch (cleanupError) {
-				cleanupFailures.push(cleanupError);
+				// In-process parent handles remain authoritative even if a pathname ancestor
+				// was swapped. Use them to clean exact hash+inode-owned names, but retain the
+				// journal if any foreign or mutated name prevents a complete rollback.
+				const heldCleanupFailures: unknown[] = [];
+				for (const [parent, owned, bytes] of [
+					[candidateParent, candidateOwnership, candidateBytes],
+					[resultParent, resultOwnership, resultBytes]
+				] as const) {
+					if (!parent || !owned) continue;
+					try {
+						await removeOwnedPersistedFileHeld(parent, owned, bytes);
+					} catch (heldCleanupError) {
+						heldCleanupFailures.push(heldCleanupError);
+					}
+				}
+				for (const [parent, staged, bytes] of [
+					[candidateParent, stagedCandidate, candidateBytes],
+					[resultParent, stagedResult, resultBytes]
+				] as const) {
+					if (!parent || !staged) continue;
+					try {
+						await removeOwnedPersistedFileHeld(
+							parent,
+							{ path: staged.path, parent: parent.fingerprint, file: staged.file },
+							bytes
+						);
+					} catch (heldCleanupError) {
+						heldCleanupFailures.push(heldCleanupError);
+					}
+				}
+				if (heldCleanupFailures.length === 0) {
+					await removeAuthorityBinding(root, journalBinding!);
+					journalBinding = undefined;
+				} else cleanupFailures.push(cleanupError, ...heldCleanupFailures);
+			}
+		} else {
+			for (const staged of [stagedCandidate, stagedResult]) {
+				if (!staged) continue;
+				try {
+					await unlinkStagedIfOwned(staged);
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
+			}
+		}
+		if (!journalBinding) {
+			for (const binding of [authority.lockBinding, authority.tokenBinding]) {
+				try {
+					await removeAuthorityBinding(root, binding);
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
 			}
 		}
 		if (cleanupFailures.length > 0)

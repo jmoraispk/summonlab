@@ -677,7 +677,16 @@ non-interlaced 8-bit 1254×1254 RGB PNG/explicit perceptual-sRGB/opaque `#00FF00
 applies the fixed role mask and 1024 RGBA output recipe within the existing exclusive
 candidate/result transaction. Conflicting color metadata, unsupported ancillary chunks,
 checkerboards, and bytes after `IEND` fail closed. Complete files are fsynced under private sibling
-names before atomic no-replace publication. The result records pathless source and normalization
+names before atomic no-replace publication. Candidate and result publication is one authenticated,
+crash-recoverable transaction: the cooperative token/lock and signed journal bind both staged
+hashes, parent directories, and inodes, and the next invocation rolls back a dead coordinator only
+when every retained name is still owned exactly. Unjournaled private stages remain ignored and
+preserved rather than being adopted or deleted without inode evidence. Terminal result-only failures
+use an unnamed Linux `O_TMPFILE` until complete, atomically publish a process-epoch owner record that
+binds its exact inode before the recovery hard link, hold its exclusive inode lock through commit,
+and perform post-write authority revalidation; concurrent writers or recoverers reject and only a
+dead owner's exact inode may be recovered or rolled back.
+The result records pathless source and normalization
 provenance. No provider source is copied into the repository, and no producer performs
 normalization manually. Global validation verifies every historical tuple, but only the unique
 latest semantic revision may satisfy a slot; a latest failure/revise/incomplete tuple blocks

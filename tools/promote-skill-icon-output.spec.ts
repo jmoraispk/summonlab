@@ -879,6 +879,73 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toThrow(/lacks verified promotion history/iu);
 	});
 
+	it.each([
+		'renamed-receipt',
+		'receipt-owner',
+		'receipt-role',
+		'receipt-path',
+		'receipt-hash',
+		'review-role',
+		'review-path',
+		'review-hash'
+	] as const)('rejects tampered prior promotion authority: %s', async (tamper) => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const oldBytes = await sharp(await backingPng())
+			.tint('#8a4f2d')
+			.png()
+			.toBuffer();
+		await installApprovedReferenceEvidence(item.root, 'backing', oldBytes, null);
+		const receiptPath = path.join(
+			item.root,
+			SKILL_ICON_PROMOTION_RECEIPT_ROOT,
+			'charcoal-forged-stone-v1.json'
+		);
+		const reviewPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/review/decisions/references/charcoal-forged-stone-v1.json'
+		);
+		const receipt = JSON.parse(await readFile(receiptPath, 'utf8')) as {
+			ownerReviewer: string;
+			role: string;
+			candidate: { path: string; contentHash: string };
+			review: { contentHash: string };
+		};
+		if (tamper === 'renamed-receipt') {
+			await rename(receiptPath, path.join(path.dirname(receiptPath), 'renamed-receipt-v1.json'));
+		} else if (tamper.startsWith('review-')) {
+			const review = JSON.parse(await readFile(reviewPath, 'utf8')) as {
+				role: string;
+				candidatePath: string;
+				candidateHash: string;
+			};
+			if (tamper === 'review-role') review.role = 'rarity-frame';
+			if (tamper === 'review-path')
+				review.candidatePath =
+					'assets/wiki/skills/icon-production-v1/candidates/references/other-v1.png';
+			if (tamper === 'review-hash') review.candidateHash = 'c'.repeat(64);
+			const reviewBytes = Buffer.from(JSON.stringify(review));
+			await writeFile(reviewPath, reviewBytes);
+			receipt.review.contentHash = createHash('sha256').update(reviewBytes).digest('hex');
+			await writeFile(receiptPath, JSON.stringify(receipt));
+		} else {
+			if (tamper === 'receipt-owner') receipt.ownerReviewer = 'Impostor owner';
+			if (tamper === 'receipt-role') receipt.role = 'rarity-frame';
+			if (tamper === 'receipt-path')
+				receipt.candidate.path =
+					'assets/wiki/skills/icon-production-v1/candidates/references/other-v1.png';
+			if (tamper === 'receipt-hash') receipt.candidate.contentHash = 'c'.repeat(64);
+			await writeFile(receiptPath, JSON.stringify(receipt));
+		}
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/filename|canonical|bind|hash|role|candidate/iu);
+	});
+
 	it('rejects a raced prior master instead of overwriting unverified bytes', async () => {
 		const item = await fixture('charcoal-forged-stone-v2');
 		await installBackingV2Packet(item.root, 'candidate');

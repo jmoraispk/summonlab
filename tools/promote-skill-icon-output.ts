@@ -870,6 +870,8 @@ async function loadPromotionReplacement(
 		const receipt = SkillIconPromotionReceiptSchema.parse(
 			JSON.parse(receiptBytes.toString('utf8'))
 		);
+		if (entry.name !== `${receipt.jobId}.json`)
+			throw new Error(`Prior promotion receipt filename does not match job: ${receiptPath}`);
 		if (receipt.master.path !== masterPath) continue;
 		const receiptTarget = targetByJob.get(receipt.jobId);
 		if (!receiptTarget || skillIconLogicalKey(receiptTarget) !== skillIconLogicalKey(target))
@@ -892,6 +894,16 @@ async function loadPromotionReplacement(
 	const scope = scopeForRole(prior.target.role);
 	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${prior.target.jobId}.json`;
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${prior.target.jobId}.json`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/${scope}/${prior.target.jobId}.json`;
+	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/${scope}/${prior.target.jobId}.json`;
+	if (
+		prior.receipt.role !== prior.target.role ||
+		prior.receipt.master.path !== masterPathFor(prior.target) ||
+		prior.receipt.candidate.path !== prior.target.output.candidatePath ||
+		prior.receipt.result.path !== resultPath ||
+		prior.receipt.review.path !== reviewPath
+	)
+		throw new Error('Prior promotion receipt paths or role are not canonical for its target');
 	const [targetBytes, assignmentBytes, resultBytes, reviewBytes, candidateBytes] =
 		await Promise.all([
 			readRepositoryRegular(root, path.resolve(root, targetPath), 'Prior target'),
@@ -907,13 +919,16 @@ async function loadPromotionReplacement(
 	const priorAssignment = AnySkillIconAssignmentSchema.parse(
 		JSON.parse(assignmentBytes.toString('utf8'))
 	);
+	const currentPriorTarget = AnySkillIconTargetSchema.parse(
+		JSON.parse(targetBytes.toString('utf8'))
+	);
 	const priorResult = AnySkillIconResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
 	AnySkillIconExecutionSchema.parse({
 		schemaVersion:
-			prior.target.schemaVersion === 'skill-icon-target-v2'
+			currentPriorTarget.schemaVersion === 'skill-icon-target-v2'
 				? 'skill-icon-execution-v2'
 				: 'skill-icon-execution-v1',
-		target: prior.target,
+		target: currentPriorTarget,
 		assignment: priorAssignment,
 		result: priorResult
 	});
@@ -929,8 +944,15 @@ async function loadPromotionReplacement(
 	}
 	if (
 		priorReview.decision !== 'accepted' ||
+		priorReview.reviewerRole !== 'owner' ||
+		priorReview.reviewer !== prior.receipt.ownerReviewer ||
 		priorReview.jobId !== prior.target.jobId ||
+		priorReview.role !== prior.target.role ||
+		priorReview.skillTargetId !== prior.target.skillTargetId ||
+		priorReview.candidatePath !== prior.receipt.candidate.path ||
+		priorReview.candidateHash !== prior.receipt.candidate.contentHash ||
 		priorResult.status !== 'candidate' ||
+		priorResult.output?.path !== prior.receipt.candidate.path ||
 		priorResult.output?.contentHash !== prior.receipt.candidate.contentHash
 	)
 		throw new Error('Prior promotion receipt does not bind accepted candidate evidence');

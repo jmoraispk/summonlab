@@ -1,7 +1,8 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import {
 	access,
+	lstat,
 	mkdir,
 	mkdtemp,
 	open,
@@ -32,7 +33,10 @@ import {
 import {
 	parsePersistSkillIconCliRequest,
 	persistSkillIconOutput,
-	persistSkillIconOutputBound
+	persistSkillIconOutputBound,
+	SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+	SKILL_ICON_PERSISTENCE_LOCK_PATH,
+	SKILL_ICON_PERSISTENCE_TOKEN_PATH
 } from './persist-skill-icon-output.js';
 
 const roots: string[] = [];
@@ -263,6 +267,52 @@ async function seedPackets(
 	}
 }
 
+type PersistenceCrashBoundary =
+	| 'afterTokenStageOpen'
+	| 'afterTokenStageComplete'
+	| 'afterTokenInstall'
+	| 'afterLockInstall'
+	| 'afterOutputStagesComplete'
+	| 'afterCandidateInstall'
+	| 'afterJournalRemoval';
+
+async function crashPersistenceAt(
+	input: {
+		readonly root: string;
+		readonly sourcePath: string;
+		readonly target: SkillIconTarget;
+		readonly assignment: SkillIconAssignment;
+		readonly candidatePath: string;
+	},
+	boundary: PersistenceCrashBoundary
+): Promise<void> {
+	const payloadPath = path.join(input.root, 'crash-payload.json');
+	await writeFile(
+		payloadPath,
+		JSON.stringify({
+			...input,
+			geometry,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		})
+	);
+	const moduleUrl = new URL('./persist-skill-icon-output.ts', import.meta.url).href;
+	const program = `
+		import { readFile } from 'node:fs/promises';
+		const { persistSkillIconOutputBound } = await import(${JSON.stringify(moduleUrl)});
+		const payload = JSON.parse(await readFile(${JSON.stringify(payloadPath)}, 'utf8'));
+		await persistSkillIconOutputBound({
+			...payload,
+			expectedRole: 'skill-art',
+			testHooks: { [${JSON.stringify(boundary)}]: () => process.kill(process.pid, 'SIGKILL') }
+		});
+	`;
+	await expect(
+		execFileAsync(process.execPath, ['--import', 'tsx', '--input-type=module', '--eval', program], {
+			cwd: process.cwd()
+		})
+	).rejects.toMatchObject({ signal: 'SIGKILL' });
+}
+
 describe('persistSkillIconOutput', () => {
 	it('normalizes a hash-bound V2 provider source only inside the collision-safe transaction', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-v2-'));
@@ -303,6 +353,39 @@ describe('persistSkillIconOutput', () => {
 			sourceContentHash: sourceHash,
 			outputContentHash: createHash('sha256').update(retained).digest('hex')
 		});
+	}, 15_000);
+
+	it('uses one immutable V2 geometry snapshot when the caller mutates its buffer during source read', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-v2-geometry-race-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
+		const source = await v2ProviderSource();
+		await writeFile(sourcePath, source);
+		const mutableGeometryBytes = Buffer.from(canonicalGeometrySourceBytes);
+		const { target, assignment, candidatePath } = packetV2(mutableGeometryBytes);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'backing',
+			geometry,
+			geometrySourceBytes: mutableGeometryBytes,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: createHash('sha256').update(source).digest('hex'),
+			testHooks: {
+				afterSourceRead: () => {
+					mutableGeometryBytes.fill(0);
+				}
+			}
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization.geometryHash).toBe(SKILL_ICON_NORMALIZATION_GEOMETRY_HASH);
 	}, 15_000);
 
 	it('rejects V2 source/geometry tampering and rolls back normalized candidates', async () => {
@@ -384,18 +467,356 @@ describe('persistSkillIconOutput', () => {
 									}
 				})
 			).rejects.toThrow();
-			await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
+			if (failure === 'candidate-mutation') {
+				await expect(readFile(candidate, 'utf8')).resolves.toBe('mutated');
+				await expect(
+					access(path.join(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+				).resolves.toBeUndefined();
+			} else await expect(access(candidate)).rejects.toMatchObject({ code: 'ENOENT' });
 			await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
 				code: 'ENOENT'
 			});
-			for (const parent of [
-				path.dirname(candidate),
-				path.dirname(path.join(root, target.output.resultPath))
-			])
-				expect((await readdir(parent)).filter((name) => name.includes('.skill-icon-tmp-'))).toEqual(
-					[]
-				);
+			if (failure !== 'candidate-mutation') {
+				for (const parent of [
+					path.dirname(candidate),
+					path.dirname(path.join(root, target.output.resultPath))
+				])
+					expect(
+						(await readdir(parent)).filter((name) => name.includes('.skill-icon-tmp-'))
+					).toEqual([]);
+			}
 		}
+	});
+
+	it('recovers a real SIGKILL after candidate publication and completes a clean retry', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterCandidateInstall'
+		);
+		await expect(access(path.join(root, candidatePath))).resolves.toBeUndefined();
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+		await expect(
+			access(path.join(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+		).resolves.toBeUndefined();
+
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		for (const relativePath of [
+			SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+			SKILL_ICON_PERSISTENCE_LOCK_PATH,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH
+		])
+			await expect(access(path.join(root, relativePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		for (const parent of [
+			path.dirname(path.join(root, candidatePath)),
+			path.dirname(path.join(root, target.output.resultPath))
+		])
+			expect((await readdir(parent)).filter((name) => name.includes('.skill-icon-tmp-'))).toEqual(
+				[]
+			);
+	});
+
+	it.each(['afterTokenInstall', 'afterLockInstall'] as const)(
+		'recovers stale %s setup authority and completes the retry',
+		async (boundary) => {
+			const { root, sourcePath } = await workspace();
+			const { target, assignment, candidatePath } = packet();
+			await crashPersistenceAt({ root, sourcePath, target, assignment, candidatePath }, boundary);
+			await expect(
+				access(path.join(root, SKILL_ICON_PERSISTENCE_TOKEN_PATH))
+			).resolves.toBeUndefined();
+			await expect(
+				access(path.join(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+			).rejects.toMatchObject({ code: 'ENOENT' });
+			const receipt = await persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z'
+			});
+			expect(receipt.jobId).toBe(target.jobId);
+		},
+		15_000
+	);
+
+	it('preserves but ignores a partial token stage whose ownership cannot be authenticated', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterTokenStageOpen'
+		);
+		const authorityRoot = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		expect(
+			(await readdir(authorityRoot)).some((name) =>
+				name.startsWith('.persistence-recovery-token.json.skill-icon-tmp-authority-')
+			)
+		).toBe(true);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		expect(
+			(await readdir(authorityRoot)).some((name) =>
+				name.startsWith('.persistence-recovery-token.json.skill-icon-tmp-authority-')
+			)
+		).toBe(true);
+	}, 15_000);
+
+	it('cleans a complete authenticated token stage left before atomic publication', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterTokenStageComplete'
+		);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		const authorityRoot = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		expect(
+			(await readdir(authorityRoot)).filter((name) => name.includes('.skill-icon-tmp-authority-'))
+		).toEqual([]);
+	}, 15_000);
+
+	it('never adopts identical-byte replacement stages without signed inode authority', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterOutputStagesComplete'
+		);
+		const stageIn = async (parent: string): Promise<string> => {
+			const name = (await readdir(parent)).find((entry) => entry.includes('skill-icon-tmp-'));
+			if (!name) throw new Error('Expected a pre-journal stage');
+			return path.join(parent, name);
+		};
+		const [candidateStage, resultStage] = await Promise.all([
+			stageIn(path.dirname(path.join(root, candidatePath))),
+			stageIn(path.dirname(path.join(root, target.output.resultPath)))
+		]);
+		const replacementBytes = await readFile(candidateStage);
+		const originalInode = (await lstat(candidateStage)).ino;
+		const replacementPath = `${candidateStage}.replacement`;
+		await writeFile(replacementPath, replacementBytes, { mode: 0o644 });
+		await rename(replacementPath, candidateStage);
+		const replacementInode = (await lstat(candidateStage)).ino;
+		expect(replacementInode).not.toBe(originalInode);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		await expect(readFile(candidateStage)).resolves.toEqual(replacementBytes);
+		expect((await lstat(candidateStage)).ino).toBe(replacementInode);
+		await expect(access(resultStage)).resolves.toBeUndefined();
+	}, 15_000);
+
+	it('leaves a malformed foreign orphan stage untouched while allowing persistence', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const authorityRoot = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const foreignStages = [
+			path.join(
+				authorityRoot,
+				`.persistence-recovery-token.json.skill-icon-tmp-authority-${randomUUID()}-${process.pid}`
+			),
+			path.join(
+				authorityRoot,
+				`.persistence-recovery-token.json.skill-icon-tmp-authority-${'0'.repeat(36)}-${process.pid}`
+			),
+			path.join(
+				authorityRoot,
+				`.persistence-recovery-token.json.skill-icon-tmp-authority-${randomUUID()}-${'9'.repeat(30)}`
+			)
+		];
+		await Promise.all(
+			foreignStages.map((foreign) => writeFile(foreign, 'foreign malformed stage', { mode: 0o600 }))
+		);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		for (const foreign of foreignStages)
+			await expect(readFile(foreign, 'utf8')).resolves.toBe('foreign malformed stage');
+	}, 15_000);
+
+	it('uses process epoch rather than a reused live PID for orphan-token recovery', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const transactionId = randomUUID();
+		const tokenStage = path.join(
+			root,
+			'assets/wiki/skills/icon-production-v1',
+			`.persistence-recovery-token.json.skill-icon-tmp-authority-${transactionId}-${process.pid}`
+		);
+		const outputs = [
+			{ kind: 'candidate', path: candidatePath, contentHash: '1'.repeat(64) },
+			{ kind: 'result', path: target.output.resultPath, contentHash: '2'.repeat(64) }
+		].map((output) => ({
+			...output,
+			stagedPath: `${path.dirname(output.path)}/.${path.basename(output.path)}.skill-icon-tmp-transaction-${transactionId}`
+		}));
+		await writeFile(
+			tokenStage,
+			`${JSON.stringify({
+				schemaVersion: 'skill-icon-persistence-recovery-token-v1',
+				transactionId,
+				recoveryToken: randomUUID(),
+				pid: process.pid,
+				processIdentity: {
+					bootId: (await readFile('/proc/sys/kernel/random/boot_id', 'utf8')).trim(),
+					startTicks: '0'
+				},
+				createdAt: '2026-09-02T09:10:11.000Z',
+				outputs
+			})}\n`,
+			{ mode: 0o600 }
+		);
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z'
+		});
+		expect(receipt.jobId).toBe(target.jobId);
+		await expect(access(tokenStage)).rejects.toMatchObject({ code: 'ENOENT' });
+	}, 15_000);
+
+	it('preserves committed outputs while recovering stale post-commit authority residue', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterJournalRemoval'
+		);
+		const candidateBefore = await readFile(path.join(root, candidatePath));
+		const resultBefore = await readFile(path.join(root, target.output.resultPath));
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z'
+			})
+		).rejects.toThrow(/already exists|collision/iu);
+		expect(await readFile(path.join(root, candidatePath))).toEqual(candidateBefore);
+		expect(await readFile(path.join(root, target.output.resultPath))).toEqual(resultBefore);
+		for (const relativePath of [
+			SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+			SKILL_ICON_PERSISTENCE_LOCK_PATH,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH
+		])
+			await expect(access(path.join(root, relativePath))).rejects.toMatchObject({ code: 'ENOENT' });
+	}, 15_000);
+
+	it('fails closed without deleting a foreign candidate raced into stale recovery', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterCandidateInstall'
+		);
+		const candidate = path.join(root, candidatePath);
+		await rename(candidate, `${candidate}.owned-before-crash`);
+		await writeFile(candidate, 'foreign recovery victim');
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z'
+			})
+		).rejects.toThrow(/foreign candidate final path blocks persistence recovery/iu);
+		await expect(readFile(candidate, 'utf8')).resolves.toBe('foreign recovery victim');
+		await expect(
+			access(path.join(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+		).resolves.toBeUndefined();
+	});
+
+	it('rejects a structurally valid but unauthenticated stale journal without mutation', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await crashPersistenceAt(
+			{ root, sourcePath, target, assignment, candidatePath },
+			'afterCandidateInstall'
+		);
+		const journalPath = path.join(root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH);
+		const journal = JSON.parse(await readFile(journalPath, 'utf8')) as { jobId: string };
+		journal.jobId = 'tampered-job-v1';
+		await writeFile(journalPath, `${JSON.stringify(journal, null, '\t')}\n`);
+		const candidateBefore = await readFile(path.join(root, candidatePath));
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'skill-art',
+				geometry,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z'
+			})
+		).rejects.toThrow(/authorization tag/iu);
+		expect(await readFile(path.join(root, candidatePath))).toEqual(candidateBefore);
+		await expect(access(journalPath)).resolves.toBeUndefined();
 	});
 
 	it('revalidates every target reference immediately before staging output bytes', async () => {
@@ -774,7 +1195,7 @@ describe('persistSkillIconOutput', () => {
 		'rejects a %s packet authority without blocking or unbounded allocation',
 		async (unsafeKind) => {
 			const { root, sourcePath } = await workspace();
-			const { target, assignment, candidatePath } = packet();
+			const { assignment, candidatePath } = packet();
 			await mkdir(path.dirname(path.join(root, assignment.targetPath)), { recursive: true });
 			await mkdir(path.dirname(path.join(root, assignment.assignmentPath)), { recursive: true });
 			await writeFile(path.join(root, assignment.assignmentPath), JSON.stringify(assignment));

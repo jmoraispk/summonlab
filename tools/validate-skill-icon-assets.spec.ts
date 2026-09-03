@@ -6,7 +6,10 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SkillIconGeometrySchema } from '../packages/contracts/src/index.js';
+import {
+	AnySkillIconAssignmentSchema,
+	SkillIconGeometrySchema
+} from '../packages/contracts/src/index.js';
 import {
 	SKILL_ICON_ART_MIN_VISIBLE_FRACTION_OF_SUBJECT_SAFE_AREA,
 	SKILL_ICON_FRAME_EDGE_BAND_MINIMUM_COVERAGE,
@@ -57,7 +60,7 @@ afterEach(async () => {
 	await Promise.all(testRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 
-async function revisionTestRoot(): Promise<string> {
+async function revisionTestRoot(seedHistorical = true): Promise<string> {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-validator-'));
 	testRoots.push(root);
 	await mkdir(path.join(root, 'assets/wiki/skills/icon-production-v1'), { recursive: true });
@@ -70,6 +73,7 @@ async function revisionTestRoot(): Promise<string> {
 			recursive: true
 		});
 	}
+	if (seedHistorical) await seedHistoricalReferenceInventory(root);
 	return root;
 }
 
@@ -104,6 +108,17 @@ function targetV1() {
 		exactPrompt: exactPromptV1,
 		references: referenceInputs,
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		output: outputPaths(jobId)
+	};
+}
+
+function rarityFrameTargetV1(rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S') {
+	const jobId = `rarity-frame-${rarity.toLowerCase()}-v1`;
+	return {
+		...targetV1(),
+		jobId,
+		role: 'rarity-frame' as const,
+		rarity,
 		output: outputPaths(jobId)
 	};
 }
@@ -147,7 +162,26 @@ function targetV2(revision = 2, rawGeometryHash = geometryHash) {
 	};
 }
 
-function assignment(target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>) {
+function rarityFrameTargetV2(rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S') {
+	const logicalIdentity = `rarity-frame-${rarity.toLowerCase()}`;
+	const jobId = `${logicalIdentity}-v2`;
+	return {
+		...targetV2(),
+		jobId,
+		logicalIdentity,
+		role: 'rarity-frame' as const,
+		rarity,
+		output: outputPaths(jobId)
+	};
+}
+
+type TestTarget =
+	| ReturnType<typeof targetV1>
+	| ReturnType<typeof rarityFrameTargetV1>
+	| ReturnType<typeof targetV2>
+	| ReturnType<typeof rarityFrameTargetV2>;
+
+function assignment(target: TestTarget) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
 	return {
 		schemaVersion: v2 ? 'skill-icon-assignment-v2' : 'skill-icon-assignment-v1',
@@ -188,10 +222,7 @@ function candidateOutput(jobId: string, bytes: Buffer) {
 	};
 }
 
-function candidateResult(
-	target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>,
-	bytes: Buffer
-) {
+function candidateResult(target: TestTarget, bytes: Buffer) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
 	const output = candidateOutput(target.jobId, bytes);
 	return {
@@ -249,7 +280,7 @@ function candidateResult(
 	};
 }
 
-function failedResult(target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>) {
+function failedResult(target: TestTarget) {
 	const v2 = target.schemaVersion === 'skill-icon-target-v2';
 	return {
 		schemaVersion: v2 ? 'skill-icon-result-v2' : 'skill-icon-result-v1',
@@ -296,7 +327,7 @@ function failedResult(target: ReturnType<typeof targetV1> | ReturnType<typeof ta
 
 async function writeExecution(
 	root: string,
-	target: ReturnType<typeof targetV1> | ReturnType<typeof targetV2>,
+	target: TestTarget,
 	result: ReturnType<typeof candidateResult> | ReturnType<typeof failedResult>,
 	candidate?: Buffer
 ) {
@@ -315,7 +346,45 @@ async function writeExecution(
 	);
 	if (candidate) {
 		await writeFile(path.join(base, `candidates/references/${target.jobId}.png`), candidate);
+	} else if (result.status === 'failed') {
+		await rm(path.join(base, `candidates/references/${target.jobId}.png`), { force: true });
 	}
+}
+
+let validBackingFixturePromise: Promise<Buffer> | undefined;
+function validBackingFixture(): Promise<Buffer> {
+	const aperture = geometry.aperturePoints.map(([px, py]) => [px * 1024, py * 1024] as const);
+	validBackingFixturePromise ??= rgbaPng((x, y) => (inPolygon(x, y, aperture) ? 255 : 0));
+	return validBackingFixturePromise;
+}
+
+let validFrameFixturePromise: Promise<Buffer> | undefined;
+function validFrameFixture(): Promise<Buffer> {
+	const outer = geometry.aperturePoints.map(([px, py]) => [px * 1024, py * 1024] as const);
+	const inner = outer.map(
+		([px, py]) =>
+			[
+				512 + (px - 512) * SKILL_ICON_FRAME_INNER_APERTURE_SCALE,
+				512 + (py - 512) * SKILL_ICON_FRAME_INNER_APERTURE_SCALE
+			] as const
+	);
+	validFrameFixturePromise ??= rgbaPng((x, y) => {
+		return inPolygon(x, y, outer) && !inPolygon(x, y, inner) ? 255 : 0;
+	});
+	return validFrameFixturePromise;
+}
+
+async function seedHistoricalReferenceInventory(root: string): Promise<void> {
+	const rarities = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
+	const [backing, frame] = await Promise.all([validBackingFixture(), validFrameFixture()]);
+	const backingTarget = targetV1();
+	await Promise.all([
+		writeExecution(root, backingTarget, candidateResult(backingTarget, backing), backing),
+		...rarities.map((rarity) => {
+			const target = rarityFrameTargetV1(rarity);
+			return writeExecution(root, target, candidateResult(target, frame), frame);
+		})
+	]);
 }
 
 describe('inspectSkillIconAsset', () => {
@@ -466,9 +535,59 @@ describe('inspectSkillIconAsset', () => {
 
 describe('validateSkillIconAssets revision authority', () => {
 	async function validBacking(): Promise<Buffer> {
-		const aperture = geometry.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
-		return rgbaPng((x, y) => (inPolygon(x, y, aperture) ? 255 : 0));
+		return validBackingFixture();
 	}
+
+	it('rejects an empty production inventory that omits the immutable historical tuples', async () => {
+		const root = await revisionTestRoot(false);
+		const jobIds = [
+			'charcoal-forged-stone-v1',
+			'rarity-frame-f-v1',
+			'rarity-frame-e-v1',
+			'rarity-frame-d-v1',
+			'rarity-frame-c-v1',
+			'rarity-frame-b-v1',
+			'rarity-frame-a-v1',
+			'rarity-frame-s-v1'
+		];
+		let message = '';
+		try {
+			await validateSkillIconAssets(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+		expect(message.split('\n')).toEqual(
+			jobIds.flatMap((jobId) => [
+				`references/${jobId}: missing required historical target inventory entry`,
+				`references/${jobId}: missing assignment inventory entry`,
+				`references/${jobId}: missing result inventory entry`
+			])
+		);
+	});
+
+	it('rejects deletion of one complete immutable historical tuple', async () => {
+		const root = await revisionTestRoot();
+		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const jobId = 'rarity-frame-s-v1';
+		await Promise.all([
+			rm(path.join(base, `targets/references/${jobId}.json`)),
+			rm(path.join(base, `assignments/references/${jobId}.json`)),
+			rm(path.join(base, `results/references/${jobId}.json`)),
+			rm(path.join(base, `candidates/references/${jobId}.png`))
+		]);
+
+		let message = '';
+		try {
+			await validateSkillIconAssets(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+		expect(message.split('\n')).toEqual([
+			`references/${jobId}: missing required historical target inventory entry`,
+			`references/${jobId}: missing assignment inventory entry`,
+			`references/${jobId}: missing result inventory entry`
+		]);
+	});
 
 	it('accepts a complete v2 candidate that supersedes terminal failed v1 evidence', async () => {
 		const root = await revisionTestRoot();
@@ -508,7 +627,7 @@ describe('validateSkillIconAssets revision authority', () => {
 		);
 
 		await expect(validateSkillIconAssets(root)).rejects.toThrow(
-			/newer revision is incomplete|invalid assignment\/result evidence/iu
+			/references\/charcoal-forged-stone-v2: missing result inventory entry/iu
 		);
 	});
 
@@ -567,6 +686,11 @@ describe('validateSkillIconAssets revision authority', () => {
 		const root = await revisionTestRoot();
 		const target = targetV1();
 		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		await Promise.all([
+			rm(path.join(base, `assignments/references/${target.jobId}.json`)),
+			rm(path.join(base, `results/references/${target.jobId}.json`)),
+			rm(path.join(base, `candidates/references/${target.jobId}.png`))
+		]);
 		await writeFile(
 			path.join(base, `targets/references/${target.jobId}.json`),
 			JSON.stringify(target)
@@ -586,6 +710,35 @@ describe('validateSkillIconAssets revision authority', () => {
 		expect(message).toMatch(/missing assignment inventory entry/iu);
 		expect(message).toMatch(/missing result inventory entry/iu);
 		expect(message).toMatch(/orphan assignment has no target/iu);
+	});
+
+	it('reports each missing result inventory entry exactly once', async () => {
+		const root = await revisionTestRoot();
+		const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+		const rarities = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
+		const targets = [targetV2(), ...rarities.map(rarityFrameTargetV2)];
+		for (const target of targets) {
+			await writeFile(
+				path.join(base, `targets/references/${target.jobId}.json`),
+				JSON.stringify(target)
+			);
+			await writeFile(
+				path.join(base, `assignments/references/${target.jobId}.json`),
+				JSON.stringify(AnySkillIconAssignmentSchema.parse(assignment(target)))
+			);
+		}
+
+		let message = '';
+		try {
+			await validateSkillIconAssets(root);
+		} catch (error) {
+			message = error instanceof Error ? error.message : String(error);
+		}
+		expect(message.split('\n')).toEqual(
+			targets
+				.map((target) => `references/${target.jobId}: missing result inventory entry`)
+				.sort((left, right) => left.localeCompare(right))
+		);
 	});
 
 	it('rejects a candidate retained for result-only failed evidence', async () => {

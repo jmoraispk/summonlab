@@ -206,6 +206,66 @@ describe('skill-icon provider normalization', () => {
 		await expect(
 			normalizeSkillIconProviderSource(greenBorderCheckerPng, 'backing', geometryBytes)
 		).rejects.toThrow(/checkerboard/u);
+		const darkTints = [
+			'#302840',
+			'#3a3048',
+			'#283848',
+			'#403038',
+			'#2c3440',
+			'#44303c',
+			'#30384c',
+			'#3c2c44',
+			'#263c42',
+			'#42342c',
+			'#343044',
+			'#2a3642'
+		];
+		const lightTints = [
+			'#c8bfd8',
+			'#d0c8b8',
+			'#b8ccd8',
+			'#d8c0c8',
+			'#c4d0bc',
+			'#d4c8dc',
+			'#bcc8d4',
+			'#d8ccb8',
+			'#c0d4cc',
+			'#d0c0d8',
+			'#c8d4c0',
+			'#d4c4c8'
+		];
+		let darkIndex = 0;
+		let lightIndex = 0;
+		const multishadeCells: string[] = [];
+		for (let cellY = 0; cellY < 12; cellY += 1) {
+			for (let cellX = 0; cellX < 12; cellX += 1) {
+				const dark = (cellX + cellY) % 2 === 0;
+				const color = dark
+					? darkTints[darkIndex++ % darkTints.length]
+					: lightTints[lightIndex++ % lightTints.length];
+				multishadeCells.push(
+					`<rect x="${cellX * 32}" y="${cellY * 32}" width="32" height="32" fill="${color}"/>`
+				);
+			}
+		}
+		const multishadeChecker = declareSrgb(
+			await sharp({
+				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+			})
+				.composite([
+					{
+						input: Buffer.from(
+							`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="checker" width="384" height="384" patternUnits="userSpaceOnUse">${multishadeCells.join('')}</pattern></defs><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="url(#checker)"/></svg>`
+						)
+					}
+				])
+				.removeAlpha()
+				.png()
+				.toBuffer()
+		);
+		await expect(
+			normalizeSkillIconProviderSource(multishadeChecker, 'backing', geometryBytes)
+		).rejects.toThrow(/periodic contrast checkerboard/u);
 		const blackGreenChecker = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -223,7 +283,7 @@ describe('skill-icon provider normalization', () => {
 		);
 		await expect(
 			normalizeSkillIconProviderSource(blackGreenChecker, 'backing', geometryBytes)
-		).rejects.toThrow(/opacity checkerboard/u);
+		).rejects.toThrow(/checkerboard/u);
 		const onePixelBlackGreenChecker = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -280,7 +340,7 @@ describe('skill-icon provider normalization', () => {
 		).rejects.toThrow(/required transparent/u);
 	});
 
-	it('accepts nonalternating neighboring materials and an ordinary continuous gradient', async () => {
+	it('accepts nonalternating materials, a continuous gradient, and role-edge antialiasing', async () => {
 		const svg = Buffer.from(
 			'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="h"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372"/></clipPath></defs><g clip-path="url(#h)"><rect width="627" height="1254" fill="#505050"/><rect x="627" width="627" height="1254" fill="#686868"/></g></svg>'
 		);
@@ -314,6 +374,24 @@ describe('skill-icon provider normalization', () => {
 		await expect(
 			normalizeSkillIconProviderSource(gradientSource, 'backing', geometryBytes)
 		).resolves.toMatchObject({ source: { mediaType: 'image/png' } });
+		const antialiasedEdge = declareSrgb(
+			await sharp({
+				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+			})
+				.composite([
+					{
+						input: Buffer.from(
+							'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627.4,97.6 1107.3,372.2 1107.2,881.8 627.4,1156.3 146.8,881.8 146.7,372.2" fill="#292c33"/></svg>'
+						)
+					}
+				])
+				.removeAlpha()
+				.png()
+				.toBuffer()
+		);
+		await expect(
+			normalizeSkillIconProviderSource(antialiasedEdge, 'backing', geometryBytes)
+		).resolves.toMatchObject({ source: { mediaType: 'image/png' } });
 	});
 
 	it('rejects alpha mass in forbidden regions even when pixels sit at distance 96', async () => {
@@ -324,7 +402,7 @@ describe('skill-icon provider normalization', () => {
 				.composite([
 					{
 						input: Buffer.from(
-							'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/><rect x="80" y="100" width="24" height="24" fill="#60ff00"/></svg>'
+							'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/><rect x="80" y="100" width="14" height="14" fill="#60ff00"/></svg>'
 						)
 					}
 				])

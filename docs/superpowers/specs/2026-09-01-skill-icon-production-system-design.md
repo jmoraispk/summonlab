@@ -171,6 +171,19 @@ same-UID processes using the production commands. A malicious same-UID process t
 bypasses the coordinator and mutates files between the final identity check and atomic syscall is
 an operating-system trust boundary, not an application-level compare-and-swap guarantee.
 
+Candidate persistence treats the candidate PNG and its initial result JSON as one recoverable
+publication unit. Both complete files are fsynced under private names before an authenticated
+transaction journal is published. Their no-replace final hard links are committed only after both
+files and every bound authority revalidate; a dead coordinator's journal authorizes rollback solely
+of the recorded hash-and-inode-owned names. An unjournaled private stage is ignored and preserved,
+then bypassed by a new transaction ID, because no durable inode authority exists to delete it.
+Result-only terminal failures use the same ownership principle with a Linux `O_TMPFILE` result and
+owner record published before the stage link. The owner record binds the result inode, hash,
+authorities, and process epoch; its held exclusive inode lock serializes both new writers and
+dead-owner recovery. Neither a partial JSON file nor a foreign pathname can be mistaken for
+recoverable output.
+Producers never remove recovery state manually.
+
 ## Manifest model
 
 The production manifest has one record for each canonical `targetId` and contains:

@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import signal
 import struct
 import subprocess
 import sys
@@ -395,6 +396,32 @@ class SkillIconVerifierTests(unittest.TestCase):
     def assert_invalid(self, pattern: str) -> None:
         with self.assertRaisesRegex(ValueError, pattern):
             self.packet.verify()
+
+    def persist_failure(self) -> dict[str, object]:
+        return persist_failed_result(
+            self.packet.target,
+            self.packet.assignment,
+            self.packet.root,
+            attempt_count=1,
+            failure_kind="provider-failure",
+            failure_message="The provider returned no image bytes.",
+            started_at=STARTED_AT,
+            completed_at=COMPLETED_AT,
+            total_wall_time_ms=TOTAL_WALL_TIME_MS,
+            contract_root=REPOSITORY_ROOT,
+            target_path=self.packet.target_file,
+            assignment_path=self.packet.assignment_file,
+        )
+
+    def failed_result_stage(self) -> Path:
+        return self.packet.result_file.with_name(
+            f".{self.packet.result_file.name}.failed-result-stage"
+        )
+
+    def failed_result_owner(self) -> Path:
+        return self.packet.result_file.with_name(
+            f".{self.packet.result_file.name}.failed-result-owner.json"
+        )
 
     def test_accepts_exactly_one_owned_candidate_and_result(self) -> None:
         report = self.packet.verify()
@@ -970,6 +997,383 @@ class SkillIconVerifierTests(unittest.TestCase):
         second = load_json(self.packet.root / RESULT_PATH)
         self.assertEqual(second_report["verification"], "pass")
         self.assertEqual(second["failureReason"]["kind"], "malformed-output")
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_sigkill_mid_stage_write_leaves_no_path_and_retry_succeeds(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_during_unnamed_write(phase: str) -> None:
+                if phase == "stage-write-in-progress":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_during_unnamed_write,
+            ):
+                self.persist_failure()
+            os._exit(94)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertFalse(self.packet.result_file.exists())
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_sigkill_after_owner_publish_recovers_owner_only_transaction(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_after_owner_publish(phase: str) -> None:
+                if phase == "owner-published":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_after_owner_publish,
+            ):
+                self.persist_failure()
+            os._exit(95)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        self.assertTrue(self.failed_result_owner().is_file())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertFalse(self.packet.result_file.exists())
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+        self.assertFalse(self.failed_result_owner().exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_sigkill_after_stage_publish_recovers_before_final_install(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_after_stage_publish(phase: str) -> None:
+                if phase == "staged":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_after_stage_publish,
+            ):
+                self.persist_failure()
+            os._exit(96)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        self.assertTrue(self.failed_result_owner().is_file())
+        self.assertTrue(self.failed_result_stage().is_file())
+        self.assertFalse(self.packet.result_file.exists())
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_dead_owner_rejects_same_byte_foreign_stage_inode(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_after_stage_publish(phase: str) -> None:
+                if phase == "staged":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_after_stage_publish,
+            ):
+                self.persist_failure()
+            os._exit(97)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        stage = self.failed_result_stage()
+        retained = stage.read_bytes()
+        displaced = stage.with_name(stage.name + ".dead-owner-inode")
+        stage.rename(displaced)
+        stage.write_bytes(retained)
+        displaced.unlink()
+        foreign_identity = (stage.stat().st_dev, stage.stat().st_ino)
+        with self.assertRaisesRegex(ValueError, "inode does not match"):
+            self.persist_failure()
+        self.assertEqual((stage.stat().st_dev, stage.stat().st_ino), foreign_identity)
+        self.assertEqual(stage.read_bytes(), retained)
+        self.assertTrue(self.failed_result_owner().is_file())
+        self.assertFalse(self.packet.result_file.exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork")
+    def test_live_owner_serializes_identical_concurrent_writers(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        ready_read, ready_write = os.pipe()
+        release_read, release_write = os.pipe()
+        child = os.fork()
+        if child == 0:
+            os.close(ready_read)
+            os.close(release_write)
+
+            def pause_after_owner_publish(phase: str) -> None:
+                if phase == "owner-published":
+                    os.write(ready_write, b"1")
+                    os.read(release_read, 1)
+
+            try:
+                with patch.object(
+                    verify_result_module,
+                    "_failed_result_transaction_checkpoint",
+                    side_effect=pause_after_owner_publish,
+                ):
+                    self.persist_failure()
+            except Exception:
+                os._exit(98)
+            os._exit(0)
+
+        os.close(ready_write)
+        os.close(release_read)
+        try:
+            self.assertEqual(os.read(ready_read, 1), b"1")
+            with self.assertRaisesRegex(ValueError, "locked by another writer|live owner"):
+                self.persist_failure()
+            os.write(release_write, b"1")
+        finally:
+            os.close(ready_read)
+            os.close(release_write)
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFEXITED(wait_status))
+        self.assertEqual(os.WEXITSTATUS(wait_status), 0)
+        self.assertEqual(load_json(self.packet.result_file)["status"], "failed")
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork")
+    def test_dead_owner_takeover_serializes_concurrent_recovery(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        crashed = os.fork()
+        if crashed == 0:
+            def kill_after_stage_publish(phase: str) -> None:
+                if phase == "staged":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_after_stage_publish,
+            ):
+                self.persist_failure()
+            os._exit(100)
+
+        _, crashed_status = os.waitpid(crashed, 0)
+        self.assertTrue(os.WIFSIGNALED(crashed_status))
+        self.assertTrue(self.failed_result_owner().is_file())
+        self.assertTrue(self.failed_result_stage().is_file())
+
+        ready_read, ready_write = os.pipe()
+        release_read, release_write = os.pipe()
+        recovering = os.fork()
+        if recovering == 0:
+            os.close(ready_read)
+            os.close(release_write)
+
+            def pause_after_install(phase: str) -> None:
+                if phase == "installed":
+                    os.write(ready_write, b"1")
+                    os.read(release_read, 1)
+
+            try:
+                with patch.object(
+                    verify_result_module,
+                    "_failed_result_transaction_checkpoint",
+                    side_effect=pause_after_install,
+                ):
+                    self.persist_failure()
+            except Exception:
+                os._exit(101)
+            os._exit(0)
+
+        os.close(ready_write)
+        os.close(release_read)
+        try:
+            self.assertEqual(os.read(ready_read, 1), b"1")
+            with self.assertRaisesRegex(ValueError, "locked by another writer"):
+                self.persist_failure()
+            os.write(release_write, b"1")
+        finally:
+            os.close(ready_read)
+            os.close(release_write)
+        _, recovery_status = os.waitpid(recovering, 0)
+        self.assertTrue(os.WIFEXITED(recovery_status))
+        self.assertEqual(os.WEXITSTATUS(recovery_status), 0)
+        self.assertEqual(load_json(self.packet.result_file)["status"], "failed")
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_sigkill_after_atomic_install_recovers_complete_result(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_at_durable_install(phase: str) -> None:
+                if phase == "installed":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_at_durable_install,
+            ):
+                self.persist_failure()
+            os._exit(93)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        stage = self.failed_result_stage()
+        owner = self.failed_result_owner()
+        self.assertTrue(owner.is_file())
+        self.assertTrue(stage.is_file())
+        self.assertTrue(self.packet.result_file.is_file())
+        self.assertEqual(
+            self.packet.result_file.stat().st_ino,
+            stage.stat().st_ino,
+        )
+        # Publication cannot expose a prefix: the installed name is a hard link
+        # to the already-fsynced, complete JSON payload.
+        retained = load_json(self.packet.result_file)
+        self.assertEqual(retained["status"], "failed")
+        report = self.persist_failure()
+        self.assertEqual(report["verification"], "pass")
+        self.assertFalse(owner.exists())
+        self.assertFalse(stage.exists())
+
+    @unittest.skipUnless(hasattr(os, "fork"), "requires POSIX fork and SIGKILL")
+    def test_sigkill_after_owner_removal_preserves_committed_final(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        child = os.fork()
+        if child == 0:
+            def kill_after_commit(phase: str) -> None:
+                if phase == "committed":
+                    os.kill(os.getpid(), signal.SIGKILL)
+
+            with patch.object(
+                verify_result_module,
+                "_failed_result_transaction_checkpoint",
+                side_effect=kill_after_commit,
+            ):
+                self.persist_failure()
+            os._exit(99)
+
+        _, wait_status = os.waitpid(child, 0)
+        self.assertTrue(os.WIFSIGNALED(wait_status))
+        self.assertEqual(os.WTERMSIG(wait_status), signal.SIGKILL)
+        stage = self.failed_result_stage()
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertTrue(stage.is_file())
+        self.assertTrue(self.packet.result_file.is_file())
+        committed_bytes = self.packet.result_file.read_bytes()
+        stage_identity = (stage.stat().st_dev, stage.stat().st_ino)
+        with self.assertRaisesRegex(ValueError, "pre-existing output collision"):
+            self.persist_failure()
+        self.assertEqual(self.packet.result_file.read_bytes(), committed_bytes)
+        self.assertEqual((stage.stat().st_dev, stage.stat().st_ino), stage_identity)
+
+    def test_late_preflight_authority_swap_rolls_back_owned_result(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        authority = self.packet.root / self.packet.reference_paths[0]
+        swapped = False
+
+        def swap_after_install(phase: str) -> None:
+            nonlocal swapped
+            if phase == "installed" and not swapped:
+                retained = authority.read_bytes()
+                displaced = authority.with_name(authority.name + ".displaced")
+                authority.rename(displaced)
+                authority.write_bytes(retained)
+                displaced.unlink()
+                swapped = True
+
+        with patch.object(
+            verify_result_module,
+            "_failed_result_transaction_checkpoint",
+            side_effect=swap_after_install,
+        ):
+            with self.assertRaisesRegex(
+                ValueError, "reference.*changed before verification completed"
+            ):
+                self.persist_failure()
+        self.assertFalse(self.packet.result_file.exists())
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+
+    def test_postverify_failure_rolls_back_owned_result_for_retry(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        with patch.object(
+            verify_result_module,
+            "verify",
+            side_effect=ValueError("injected post-write verification failure"),
+        ):
+            with self.assertRaisesRegex(ValueError, "injected post-write"):
+                self.persist_failure()
+        self.assertFalse(self.packet.result_file.exists())
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+
+    def test_postverify_foreign_replacement_is_never_deleted(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        foreign_bytes = b'{"foreign":true}\n'
+
+        def replace_final_then_fail(
+            *_args: object, **_kwargs: object
+        ) -> dict[str, object]:
+            displaced = self.packet.result_file.with_name(
+                self.packet.result_file.name + ".owned-displaced"
+            )
+            self.packet.result_file.rename(displaced)
+            self.packet.result_file.write_bytes(foreign_bytes)
+            displaced.unlink()
+            raise ValueError("injected post-write foreign replacement")
+
+        with patch.object(
+            verify_result_module,
+            "verify",
+            side_effect=replace_final_then_fail,
+        ):
+            with self.assertRaisesRegex(ValueError, "foreign replacement"):
+                self.persist_failure()
+        self.assertEqual(self.packet.result_file.read_bytes(), foreign_bytes)
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+
+    def test_foreign_transaction_stage_is_never_deleted(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        stage = self.failed_result_stage()
+        foreign_bytes = b"foreign transaction evidence"
+        stage.write_bytes(foreign_bytes)
+        with self.assertRaisesRegex(ValueError, "has no owner record"):
+            self.persist_failure()
+        self.assertEqual(stage.read_bytes(), foreign_bytes)
+        self.assertFalse(self.packet.result_file.exists())
 
     def test_v2_failure_records_pathless_observed_normalization_source(self) -> None:
         self.packet.candidate_file.unlink()

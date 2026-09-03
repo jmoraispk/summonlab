@@ -80,3 +80,15 @@ passes the returned provider path/hash directly to the helper. Automated normali
 geometry validation run before owner review; only an accepted review may promote the master and
 derive runtime assets. A failed or revised attempt remains in history and is superseded only by a
 higher explicit revision.
+
+The helper publishes the candidate and result as one crash-recoverable unit. If the worker stops
+between their no-replace publications, the next production invocation validates the signed journal
+and removes only the exact staged/final hashes and inodes owned by that dead transaction before
+retrying. A private stage created before the journal is preserved and ignored because it has no
+durable inode authorization; a new transaction ID prevents collision. A foreign or changed path
+blocks authoritative recovery for coordinator inspection. For a provider or normalization failure,
+the result-only verifier publishes an exclusive process-epoch owner record before its complete
+fsynced JSON stage, holds the owner inode lock across recovery and commit, and reasserts the target,
+assignment, catalog, geometry, references, and observed provider source before committing. Producers
+should rerun the assigned command after an interruption and must never clean hidden transaction
+files by hand.

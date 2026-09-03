@@ -4,24 +4,27 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
 import re
+import secrets
 import stat
 import struct
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from validate_target import (
+    AuthoritySnapshot,
+    StableFileSnapshot,
     _path_argument,
     absolute_project_path,
     fail,
     load_json,
     load_json_snapshot,
-    read_stable_regular_file,
     read_stable_regular_file_snapshot,
     reassert_stable_regular_file,
     run_asset_inspection,
@@ -52,9 +55,12 @@ def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> N
         fail("attempt count violates the assignment retry ceiling")
 
 
-def _observed_provider_source(source_path: Path) -> dict[str, Any]:
+def _observed_provider_source(
+    source_path: Path,
+) -> tuple[dict[str, Any], StableFileSnapshot]:
     absolute = source_path.absolute()
-    data = read_stable_regular_file(absolute)
+    snapshot = read_stable_regular_file_snapshot(absolute)
+    data = snapshot.data
     media_type = "application/octet-stream"
     width: int | None = None
     height: int | None = None
@@ -74,14 +80,17 @@ def _observed_provider_source(source_path: Path) -> dict[str, Any]:
     elif len(data) >= 12 and data.startswith(b"RIFF") and data[8:12] == b"WEBP":
         media_type = "image/webp"
     content_hash = hashlib.sha256(data).hexdigest()
-    return {
-        "mediaType": media_type,
-        "width": width,
-        "height": height,
-        "bytes": len(data),
-        "alphaMode": alpha_mode,
-        "contentHash": content_hash,
-    }
+    return (
+        {
+            "mediaType": media_type,
+            "width": width,
+            "height": height,
+            "bytes": len(data),
+            "alphaMode": alpha_mode,
+            "contentHash": content_hash,
+        },
+        snapshot,
+    )
 
 
 def _parse_timestamp(raw: Any, label: str) -> tuple[datetime, str, str]:
@@ -227,6 +236,7 @@ def verify(
     contract_root: Path | None = None,
     target_path: Path | None = None,
     assignment_path: Path | None = None,
+    _ignored_changed_paths: set[str] | None = None,
 ) -> dict[str, Any]:
     root = workspace.absolute()
     authority_snapshots = []
@@ -365,6 +375,8 @@ def verify(
     if written != expected_written:
         fail("written paths are not exactly the owned candidate and result")
     changed = _changed_repository_paths(root)
+    if _ignored_changed_paths:
+        changed -= _ignored_changed_paths
     if changed != set(expected_written):
         unexpected = sorted(changed - set(expected_written))
         missing = sorted(set(expected_written) - changed)
@@ -420,6 +432,401 @@ def _ensure_safe_parent(workspace: Path, destination: Path) -> None:
             fail(f"result parent is not a safe directory: {cursor}")
 
 
+def _failed_result_transaction_checkpoint(_phase: str) -> None:
+    """Test seam for simulating process death at durable transaction boundaries."""
+
+
+def _metadata_identity(metadata: os.stat_result) -> tuple[int, int]:
+    return metadata.st_dev, metadata.st_ino
+
+
+def _stat_at(parent_descriptor: int, name: str) -> os.stat_result | None:
+    try:
+        return os.stat(name, dir_fd=parent_descriptor, follow_symlinks=False)
+    except FileNotFoundError:
+        return None
+
+
+def _read_regular_at(
+    parent_descriptor: int, name: str, *, max_bytes: int = 1024 * 1024
+) -> tuple[bytes, os.stat_result]:
+    flags = os.O_RDONLY | os.O_NONBLOCK
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = os.open(name, flags, dir_fd=parent_descriptor)
+    try:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            fail(f"failed-result transaction member must be a regular file: {name}")
+        if before.st_size < 0 or before.st_size > max_bytes:
+            fail(f"failed-result transaction member is outside the byte envelope: {name}")
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(remaining, 64 * 1024))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        after = os.fstat(descriptor)
+        retained = _stat_at(parent_descriptor, name)
+        data = b"".join(chunks)
+        if (
+            retained is None
+            or _metadata_identity(before) != _metadata_identity(after)
+            or _metadata_identity(before) != _metadata_identity(retained)
+            or len(data) != before.st_size
+        ):
+            fail(f"failed-result transaction member changed while being read: {name}")
+        return data, before
+    finally:
+        os.close(descriptor)
+
+
+def _open_locked_owner_at(
+    parent_descriptor: int, name: str, *, max_bytes: int = 1024 * 1024
+) -> tuple[int, bytes, os.stat_result]:
+    flags = os.O_RDONLY | os.O_NONBLOCK
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = os.open(name, flags, dir_fd=parent_descriptor)
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            fail("failed-result transaction owner is locked by another writer")
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            fail("failed-result transaction owner must be a regular file")
+        if before.st_size < 0 or before.st_size > max_bytes:
+            fail("failed-result transaction owner is outside the byte envelope")
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(remaining, 64 * 1024))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        after = os.fstat(descriptor)
+        retained = _stat_at(parent_descriptor, name)
+        data = b"".join(chunks)
+        if (
+            retained is None
+            or _metadata_identity(before) != _metadata_identity(after)
+            or _metadata_identity(before) != _metadata_identity(retained)
+            or len(data) != before.st_size
+        ):
+            fail("failed-result transaction owner changed while being locked")
+        return descriptor, data, before
+    except Exception:
+        os.close(descriptor)
+        raise
+
+
+def _unlink_owned_at(
+    parent_descriptor: int,
+    name: str,
+    owned_identity: tuple[int, int],
+) -> bool:
+    retained = _stat_at(parent_descriptor, name)
+    if retained is None or _metadata_identity(retained) != owned_identity:
+        return False
+    os.unlink(name, dir_fd=parent_descriptor)
+    return True
+
+
+def _reassert_authorities(authorities: list[AuthoritySnapshot]) -> None:
+    for authority_path, authority_snapshot, authority_label in authorities:
+        reassert_stable_regular_file(
+            authority_path, authority_snapshot, label=authority_label
+        )
+
+
+def _reassert_provider_source(
+    source_path: Path | None, source_snapshot: StableFileSnapshot | None
+) -> None:
+    if source_path is not None and source_snapshot is not None:
+        reassert_stable_regular_file(
+            source_path.absolute(), source_snapshot, label="normalization provider source"
+        )
+
+
+def _write_all(descriptor: int, data: memoryview) -> None:
+    remaining = data
+    while remaining:
+        written = os.write(descriptor, remaining)
+        if written <= 0:
+            fail("failed-result stage write made no progress")
+        remaining = remaining[written:]
+
+
+def _open_fsynced_unnamed_file(
+    parent_descriptor: int,
+    content: bytes,
+    *,
+    in_progress_checkpoint: str | None = None,
+) -> tuple[int, int]:
+    """Return an open, complete, fsynced inode that has never had a pathname."""
+
+    temporary_flag = getattr(os, "O_TMPFILE", None)
+    if temporary_flag is None:
+        fail("atomic failed-result staging requires O_TMPFILE support")
+    try:
+        descriptor = os.open(
+            ".", os.O_WRONLY | temporary_flag, 0o644, dir_fd=parent_descriptor
+        )
+    except OSError as error:
+        fail(f"cannot create unnamed failed-result stage: {error}")
+    try:
+        if in_progress_checkpoint is None:
+            _write_all(descriptor, memoryview(content))
+        else:
+            midpoint = max(1, len(content) // 2)
+            _write_all(descriptor, memoryview(content)[:midpoint])
+            _failed_result_transaction_checkpoint(in_progress_checkpoint)
+            _write_all(descriptor, memoryview(content)[midpoint:])
+        os.fsync(descriptor)
+        staged_metadata = os.fstat(descriptor)
+        return descriptor, _metadata_identity(staged_metadata)
+    except Exception:
+        os.close(descriptor)
+        raise
+
+
+def _link_unnamed_file(
+    descriptor: int,
+    parent_descriptor: int,
+    name: str,
+    expected_identity: tuple[int, int],
+    *,
+    label: str,
+) -> None:
+    try:
+        # O_TMPFILE has no pathname. /proc/self/fd supplies the kernel-owned
+        # descriptor link needed to atomically publish it without replacement.
+        os.link(
+            f"/proc/self/fd/{descriptor}",
+            name,
+            dst_dir_fd=parent_descriptor,
+            follow_symlinks=True,
+        )
+    except FileExistsError:
+        fail(f"pre-existing failed-result transaction {label} collision")
+    except OSError as error:
+        fail(f"cannot publish failed-result transaction {label}: {error}")
+    retained = _stat_at(parent_descriptor, name)
+    if retained is None or _metadata_identity(retained) != expected_identity:
+        fail(f"failed-result transaction {label} identity changed during persistence")
+    os.fsync(parent_descriptor)
+
+
+def _authority_hashes(
+    authorities: list[AuthoritySnapshot],
+    provider_source_snapshot: StableFileSnapshot | None,
+) -> list[dict[str, str]]:
+    retained = [
+        {"label": label, "contentHash": snapshot.content_hash}
+        for _, snapshot, label in authorities
+    ]
+    if provider_source_snapshot is not None:
+        retained.append(
+            {
+                "label": "normalization provider source",
+                "contentHash": provider_source_snapshot.content_hash,
+            }
+        )
+    return retained
+
+
+def _failed_result_owner_record(
+    target: dict[str, Any],
+    assignment: dict[str, Any],
+    result_path: str,
+    stage_name: str,
+    result_bytes: bytes,
+    result_identity: tuple[int, int],
+    authority_hashes: list[dict[str, str]],
+    transaction_token: str,
+    owner_pid: int,
+    owner_process_epoch: dict[str, str],
+) -> dict[str, Any]:
+    return {
+        "schemaVersion": "skill-icon-failed-result-owner-v1",
+        "jobId": target["jobId"],
+        "assignmentId": assignment["assignmentId"],
+        "resultPath": result_path,
+        "stageName": stage_name,
+        "resultBytes": len(result_bytes),
+        "resultContentHash": hashlib.sha256(result_bytes).hexdigest(),
+        "resultIdentity": {
+            "device": result_identity[0],
+            "inode": result_identity[1],
+        },
+        "authorityHashes": authority_hashes,
+        "transactionToken": transaction_token,
+        "ownerPid": owner_pid,
+        "ownerProcessEpoch": owner_process_epoch,
+    }
+
+
+def _canonical_json_bytes(value: dict[str, Any]) -> bytes:
+    return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _create_failed_result_transaction(
+    parent_descriptor: int,
+    owner_name: str,
+    stage_name: str,
+    result_bytes: bytes,
+    owner_record_factory: Callable[[tuple[int, int]], dict[str, Any]],
+) -> tuple[tuple[int, int], tuple[int, int], int]:
+    result_descriptor, result_identity = _open_fsynced_unnamed_file(
+        parent_descriptor,
+        result_bytes,
+        in_progress_checkpoint="stage-write-in-progress",
+    )
+    owner_identity: tuple[int, int] | None = None
+    owner_descriptor: int | None = None
+    try:
+        owner_record = owner_record_factory(result_identity)
+        owner_bytes = _canonical_json_bytes(owner_record)
+        owner_descriptor, owner_identity = _open_fsynced_unnamed_file(
+            parent_descriptor, owner_bytes
+        )
+        fcntl.flock(owner_descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        _link_unnamed_file(
+            owner_descriptor,
+            parent_descriptor,
+            owner_name,
+            owner_identity,
+            label="owner record",
+        )
+        retained_owner_descriptor = owner_descriptor
+        owner_descriptor = None
+        _failed_result_transaction_checkpoint("owner-published")
+        _link_unnamed_file(
+            result_descriptor,
+            parent_descriptor,
+            stage_name,
+            result_identity,
+            label="stage",
+        )
+        _failed_result_transaction_checkpoint("staged")
+        return result_identity, owner_identity, retained_owner_descriptor
+    except Exception:
+        removed = _unlink_owned_at(parent_descriptor, stage_name, result_identity)
+        if owner_identity is not None:
+            removed = (
+                _unlink_owned_at(parent_descriptor, owner_name, owner_identity)
+                or removed
+            )
+        if removed:
+            os.fsync(parent_descriptor)
+        raise
+    finally:
+        if owner_descriptor is not None:
+            os.close(owner_descriptor)
+        os.close(result_descriptor)
+
+
+def _process_start_time_ticks(pid: int) -> str | None:
+    try:
+        raw = Path(f"/proc/{pid}/stat").read_text(encoding="ascii")
+    except (FileNotFoundError, ProcessLookupError):
+        return None
+    except OSError as error:
+        fail(f"cannot inspect failed-result transaction owner process: {error}")
+    closing_parenthesis = raw.rfind(")")
+    fields = raw[closing_parenthesis + 2 :].split() if closing_parenthesis >= 0 else []
+    if len(fields) <= 19 or not fields[19].isdigit():
+        fail("failed-result transaction owner process has malformed identity data")
+    return fields[19]
+
+
+def _current_process_epoch() -> dict[str, str]:
+    try:
+        boot_id = Path("/proc/sys/kernel/random/boot_id").read_text(
+            encoding="ascii"
+        ).strip()
+    except OSError as error:
+        fail(f"cannot inspect host boot identity for failed-result transaction: {error}")
+    start_time = _process_start_time_ticks(os.getpid())
+    if not boot_id or start_time is None:
+        fail("cannot establish failed-result transaction process epoch")
+    return {"bootId": boot_id, "startTimeTicks": start_time}
+
+
+def _owner_process_is_live(owner_record: dict[str, Any]) -> bool:
+    pid = owner_record.get("ownerPid")
+    epoch = owner_record.get("ownerProcessEpoch")
+    if (
+        isinstance(pid, bool)
+        or not isinstance(pid, int)
+        or pid <= 0
+        or not isinstance(epoch, dict)
+        or set(epoch) != {"bootId", "startTimeTicks"}
+        or not all(isinstance(value, str) and value for value in epoch.values())
+    ):
+        fail("failed-result transaction owner record has invalid process identity")
+    current_epoch = _current_process_epoch()
+    if epoch["bootId"] != current_epoch["bootId"]:
+        return False
+    observed_start_time = _process_start_time_ticks(pid)
+    return observed_start_time == epoch["startTimeTicks"]
+
+
+def _validated_owner_record(
+    owner_bytes: bytes,
+    target: dict[str, Any],
+    assignment: dict[str, Any],
+    result_path: str,
+    stage_name: str,
+    result_bytes: bytes,
+    authority_hashes: list[dict[str, str]],
+) -> tuple[dict[str, Any], tuple[int, int]]:
+    try:
+        owner_record = json.loads(owner_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        fail("failed-result transaction owner record is malformed")
+    if not isinstance(owner_record, dict):
+        fail("failed-result transaction owner record must be an object")
+    transaction_token = owner_record.get("transactionToken")
+    owner_pid = owner_record.get("ownerPid")
+    owner_epoch = owner_record.get("ownerProcessEpoch")
+    identity = owner_record.get("resultIdentity")
+    if (
+        not isinstance(transaction_token, str)
+        or re.fullmatch(r"[a-f0-9]{64}", transaction_token) is None
+        or isinstance(owner_pid, bool)
+        or not isinstance(owner_pid, int)
+        or not isinstance(owner_epoch, dict)
+        or not isinstance(identity, dict)
+        or set(identity) != {"device", "inode"}
+        or any(
+            isinstance(value, bool) or not isinstance(value, int) or value < 0
+            for value in identity.values()
+        )
+    ):
+        fail("failed-result transaction owner record is invalid")
+    result_identity = identity["device"], identity["inode"]
+    expected_record = _failed_result_owner_record(
+        target,
+        assignment,
+        result_path,
+        stage_name,
+        result_bytes,
+        result_identity,
+        authority_hashes,
+        transaction_token,
+        owner_pid,
+        owner_epoch,
+    )
+    if owner_bytes != _canonical_json_bytes(expected_record):
+        fail("failed-result transaction owner record is foreign or incompatible")
+    return owner_record, result_identity
+
+
 def persist_failed_result(
     target: dict[str, Any],
     assignment: dict[str, Any],
@@ -436,15 +843,34 @@ def persist_failed_result(
     assignment_path: Path | None = None,
     normalization_source: Path | None = None,
 ) -> dict[str, Any]:
+    """Persist and verify one failed execution using a recoverable hard-link transaction.
+
+    The hidden owner record and stage are evidence only while a transaction is incomplete.
+    Durable owner removal commits the final before best-effort stage cleanup; a crash can leave a
+    harmless no-owner stage beside the committed final, and later calls treat the final as an
+    already-complete or foreign collision rather than recovering or deleting either path.
+    """
+
     root = workspace.absolute()
+    bound_target_path = target_path or absolute_project_path(
+        root, assignment["targetPath"], must_exist=True, regular_file=True
+    )
+    bound_assignment_path = assignment_path or absolute_project_path(
+        root, assignment["assignmentPath"], must_exist=True, regular_file=True
+    )
+    authority_snapshots: list[AuthoritySnapshot] = []
     validate(
         target,
         assignment,
         root,
-        target_path=target_path,
-        assignment_path=assignment_path,
-        allow_existing_outputs=False,
+        target_path=bound_target_path,
+        assignment_path=bound_assignment_path,
+        # An interrupted transaction can legitimately leave its result and hidden
+        # hard-link stage present. They are admitted here only so the exact owned
+        # transaction can be recovered below; every other collision still fails.
+        allow_existing_outputs=True,
         contract_root=contract_root or root,
+        _authority_snapshots=authority_snapshots,
     )
     _validate_attempt_count(assignment, attempt_count)
     if failure_kind not in FAILURE_KINDS:
@@ -454,9 +880,6 @@ def persist_failed_result(
     started_at, completed_at, total_wall_time_ms = _resolve_failure_timing(
         started_at, completed_at, total_wall_time_ms
     )
-    dirty = _changed_repository_paths(root)
-    if dirty:
-        fail(f"cannot persist failure result in a dirty workspace: {sorted(dirty)}")
     exact_prompt = target["exactPrompt"]
     is_v2 = target.get("schemaVersion") == "skill-icon-target-v2"
     if normalization_source is not None and not is_v2:
@@ -496,13 +919,14 @@ def persist_failed_result(
         "noSharedFilesEdited": True,
         "selfPromoted": False,
     }
+    provider_source_snapshot: StableFileSnapshot | None = None
     if is_v2:
         normalization = target["normalization"]
-        provider_source = (
-            _observed_provider_source(normalization_source)
-            if normalization_source is not None
-            else None
-        )
+        provider_source = None
+        if normalization_source is not None:
+            provider_source, provider_source_snapshot = _observed_provider_source(
+                normalization_source
+            )
         result.update(
             {
                 "logicalIdentity": target["logicalIdentity"],
@@ -529,8 +953,25 @@ def persist_failed_result(
         contract_root=contract_root or root,
     )
     result_path = absolute_project_path(root, target["output"]["resultPath"])
+    candidate_path = absolute_project_path(root, target["output"]["candidatePath"])
+    if os.path.lexists(candidate_path):
+        fail(f"pre-existing output collision: {target['output']['candidatePath']}")
     _ensure_safe_parent(root, result_path)
     result_bytes = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    stage_name = f".{result_path.name}.failed-result-stage"
+    owner_name = f".{result_path.name}.failed-result-owner.json"
+    stage_path = result_path.parent / stage_name
+    owner_path = result_path.parent / owner_name
+    result_relative = result_path.relative_to(root).as_posix()
+    stage_relative = stage_path.relative_to(root).as_posix()
+    owner_relative = owner_path.relative_to(root).as_posix()
+    dirty = _changed_repository_paths(root) - {
+        result_relative,
+        stage_relative,
+        owner_relative,
+    }
+    if dirty:
+        fail(f"cannot persist failure result in a dirty workspace: {sorted(dirty)}")
     parent_metadata = result_path.parent.lstat()
     parent_real_path = result_path.parent.resolve()
     if root != parent_real_path and root not in parent_real_path.parents:
@@ -546,71 +987,206 @@ def persist_failed_result(
     ):
         os.close(parent_descriptor)
         fail("result parent identity changed before exclusive create")
-    file_flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
-    if hasattr(os, "O_NOFOLLOW"):
-        file_flags |= os.O_NOFOLLOW
-    descriptor: int | None = None
-    created = False
-    created_metadata: os.stat_result | None = None
+    result_identity: tuple[int, int] | None = None
+    owner_identity: tuple[int, int] | None = None
+    owner_lock_descriptor: int | None = None
+    owns_transaction = False
+    transaction_authority_hashes = _authority_hashes(
+        authority_snapshots, provider_source_snapshot
+    )
     try:
-        descriptor = os.open(
-            result_path.name,
-            file_flags,
-            0o644,
-            dir_fd=parent_descriptor,
-        )
-        created = True
-        created_metadata = os.fstat(descriptor)
-        with os.fdopen(descriptor, "wb", closefd=False) as stream:
-            stream.write(result_bytes)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.close(descriptor)
-        descriptor = None
-        retained_metadata = os.stat(
-            result_path.name, dir_fd=parent_descriptor, follow_symlinks=False
-        )
+        owner_metadata = _stat_at(parent_descriptor, owner_name)
+        stage_metadata = _stat_at(parent_descriptor, stage_name)
+        final_metadata = _stat_at(parent_descriptor, result_path.name)
+        if owner_metadata is None:
+            if final_metadata is not None:
+                fail(f"pre-existing output collision: {target['output']['resultPath']}")
+            if stage_metadata is not None:
+                fail("failed-result transaction stage has no owner record")
+        else:
+            (
+                owner_lock_descriptor,
+                owner_bytes,
+                stable_owner_metadata,
+            ) = _open_locked_owner_at(
+                parent_descriptor, owner_name
+            )
+            owner_record, recorded_result_identity = _validated_owner_record(
+                owner_bytes,
+                target,
+                assignment,
+                target["output"]["resultPath"],
+                stage_name,
+                result_bytes,
+                transaction_authority_hashes,
+            )
+            owner_identity = _metadata_identity(stable_owner_metadata)
+            if _owner_process_is_live(owner_record):
+                fail("failed-result transaction already has a live owner")
+            if stage_metadata is None:
+                if final_metadata is not None:
+                    fail("dead failed-result owner has a final result but no stage")
+                if not _unlink_owned_at(
+                    parent_descriptor, owner_name, owner_identity
+                ):
+                    fail("dead failed-result owner record was replaced during recovery")
+                os.fsync(parent_descriptor)
+                os.close(owner_lock_descriptor)
+                owner_lock_descriptor = None
+                owner_identity = None
+            else:
+                if _metadata_identity(stage_metadata) != recorded_result_identity:
+                    fail("failed-result stage inode does not match its owner record")
+                if (
+                    final_metadata is not None
+                    and _metadata_identity(final_metadata) != recorded_result_identity
+                ):
+                    fail("failed-result final inode does not match its owner record")
+                result_identity = recorded_result_identity
+                owns_transaction = True
+
+        if result_identity is not None:
+            staged_bytes, stable_stage_metadata = _read_regular_at(
+                parent_descriptor, stage_name
+            )
+            if staged_bytes != result_bytes:
+                fail("pre-existing failed-result transaction is foreign or incompatible")
+            if _metadata_identity(stable_stage_metadata) != result_identity:
+                fail("failed-result stage changed during dead-owner recovery")
+        else:
+            transaction_token = secrets.token_hex(32)
+            owner_pid = os.getpid()
+            owner_process_epoch = _current_process_epoch()
+            (
+                result_identity,
+                owner_identity,
+                owner_lock_descriptor,
+            ) = _create_failed_result_transaction(
+                parent_descriptor,
+                owner_name,
+                stage_name,
+                result_bytes,
+                lambda identity: _failed_result_owner_record(
+                    target,
+                    assignment,
+                    target["output"]["resultPath"],
+                    stage_name,
+                    result_bytes,
+                    identity,
+                    transaction_authority_hashes,
+                    transaction_token,
+                    owner_pid,
+                    owner_process_epoch,
+                ),
+            )
+            owns_transaction = True
+
+        assert result_identity is not None
+        assert owner_identity is not None
         current_parent = result_path.parent.lstat()
         if (
-            not stat.S_ISREG(retained_metadata.st_mode)
-            or (retained_metadata.st_dev, retained_metadata.st_ino)
-            != (created_metadata.st_dev, created_metadata.st_ino)
-            or (current_parent.st_dev, current_parent.st_ino)
-            != (parent_metadata.st_dev, parent_metadata.st_ino)
+            _metadata_identity(current_parent) != _metadata_identity(parent_metadata)
             or result_path.parent.resolve() != parent_real_path
         ):
-            fail("result or parent identity changed during exclusive persistence")
-        os.fsync(parent_descriptor)
-    except Exception:
-        if descriptor is not None:
-            os.close(descriptor)
-        if created:
+            fail("result parent identity changed during failed-result persistence")
+        _reassert_authorities(authority_snapshots)
+        _reassert_provider_source(normalization_source, provider_source_snapshot)
+
+        final_metadata = _stat_at(parent_descriptor, result_path.name)
+        if final_metadata is None:
             try:
-                retained_metadata = os.stat(
-                    result_path.name, dir_fd=parent_descriptor, follow_symlinks=False
+                os.link(
+                    stage_name,
+                    result_path.name,
+                    src_dir_fd=parent_descriptor,
+                    dst_dir_fd=parent_descriptor,
+                    follow_symlinks=False,
                 )
-                if created_metadata is not None and (
-                    retained_metadata.st_dev,
-                    retained_metadata.st_ino,
-                ) == (created_metadata.st_dev, created_metadata.st_ino):
-                    os.unlink(result_path.name, dir_fd=parent_descriptor)
-                    os.fsync(parent_descriptor)
-            except FileNotFoundError:
-                pass
+            except FileExistsError:
+                fail(
+                    f"pre-existing output collision: {target['output']['resultPath']}"
+                )
+            installed = _stat_at(parent_descriptor, result_path.name)
+            if (
+                installed is None
+                or _metadata_identity(installed) != result_identity
+            ):
+                fail("atomic failed-result install did not retain the staged inode")
+            os.fsync(parent_descriptor)
+            _failed_result_transaction_checkpoint("installed")
+
+        report = verify(
+            target,
+            assignment,
+            result,
+            result_path,
+            root,
+            attempt_count=attempt_count,
+            contract_root=contract_root or root,
+            target_path=bound_target_path,
+            assignment_path=bound_assignment_path,
+            _ignored_changed_paths={stage_relative, owner_relative},
+        )
+        _reassert_authorities(authority_snapshots)
+        _reassert_provider_source(normalization_source, provider_source_snapshot)
+        current_parent = result_path.parent.lstat()
+        if (
+            _metadata_identity(current_parent) != _metadata_identity(parent_metadata)
+            or result_path.parent.resolve() != parent_real_path
+        ):
+            fail("result parent identity changed before transaction completion")
+        retained_final = _stat_at(parent_descriptor, result_path.name)
+        retained_stage = _stat_at(parent_descriptor, stage_name)
+        retained_owner = _stat_at(parent_descriptor, owner_name)
+        if (
+            retained_final is None
+            or _metadata_identity(retained_final) != result_identity
+        ):
+            fail("persisted failed result was replaced before transaction completion")
+        if (
+            retained_stage is None
+            or _metadata_identity(retained_stage) != result_identity
+        ):
+            fail("failed-result transaction ownership stage was replaced")
+        if (
+            retained_owner is None
+            or _metadata_identity(retained_owner) != owner_identity
+        ):
+            fail("failed-result transaction owner record was replaced")
+        if not _unlink_owned_at(parent_descriptor, owner_name, owner_identity):
+            fail("failed-result transaction owner record was replaced")
+        os.fsync(parent_descriptor)
+        # Durable owner removal is the commit point. From here on the final is a
+        # completed result, so cleanup may never throw into transaction rollback.
+        owns_transaction = False
+        _failed_result_transaction_checkpoint("committed")
+        try:
+            if _unlink_owned_at(parent_descriptor, stage_name, result_identity):
+                os.fsync(parent_descriptor)
+        except OSError:
+            pass
+        return report
+    except Exception:
+        if owns_transaction and result_identity is not None:
+            removed = _unlink_owned_at(
+                parent_descriptor, result_path.name, result_identity
+            )
+            removed = (
+                _unlink_owned_at(parent_descriptor, stage_name, result_identity)
+                or removed
+            )
+            if owner_identity is not None:
+                removed = (
+                    _unlink_owned_at(parent_descriptor, owner_name, owner_identity)
+                    or removed
+                )
+            if removed:
+                os.fsync(parent_descriptor)
         raise
     finally:
+        if owner_lock_descriptor is not None:
+            os.close(owner_lock_descriptor)
         os.close(parent_descriptor)
-    return verify(
-        target,
-        assignment,
-        result,
-        result_path,
-        root,
-        attempt_count=attempt_count,
-        contract_root=contract_root or root,
-        target_path=target_path,
-        assignment_path=assignment_path,
-    )
 
 
 def main() -> None:

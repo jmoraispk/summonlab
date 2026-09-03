@@ -360,6 +360,35 @@ function inventoryMap(files: readonly InventoryFile[], description: string): Map
 	return inventory;
 }
 
+const REQUIRED_HISTORICAL_REFERENCE_KEYS = [
+	'charcoal-forged-stone-v1',
+	'rarity-frame-f-v1',
+	'rarity-frame-e-v1',
+	'rarity-frame-d-v1',
+	'rarity-frame-c-v1',
+	'rarity-frame-b-v1',
+	'rarity-frame-a-v1',
+	'rarity-frame-s-v1'
+].map((jobId) => `references/${jobId}`);
+
+function addFailure(failures: string[], message: string): void {
+	if (!failures.includes(message)) failures.push(message);
+}
+
+function requireHistoricalReferenceInventory(
+	failures: string[],
+	targets: ReadonlyMap<string, string>,
+	assignments: ReadonlyMap<string, string>,
+	results: ReadonlyMap<string, string>
+): void {
+	for (const key of REQUIRED_HISTORICAL_REFERENCE_KEYS) {
+		if (!targets.has(key))
+			addFailure(failures, `${key}: missing required historical target inventory entry`);
+		if (!assignments.has(key)) addFailure(failures, `${key}: missing assignment inventory entry`);
+		if (!results.has(key)) addFailure(failures, `${key}: missing result inventory entry`);
+	}
+}
+
 function compareInventory(
 	failures: string[],
 	authority: ReadonlyMap<string, string>,
@@ -367,10 +396,10 @@ function compareInventory(
 	description: 'assignment' | 'result'
 ): void {
 	for (const key of authority.keys()) {
-		if (!dependent.has(key)) failures.push(`${key}: missing ${description} inventory entry`);
+		if (!dependent.has(key)) addFailure(failures, `${key}: missing ${description} inventory entry`);
 	}
 	for (const key of dependent.keys()) {
-		if (!authority.has(key)) failures.push(`${key}: orphan ${description} has no target`);
+		if (!authority.has(key)) addFailure(failures, `${key}: orphan ${description} has no target`);
 	}
 }
 
@@ -402,6 +431,12 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 		]);
 	compareInventory(failures, targetInventory, assignmentInventory, 'assignment');
 	compareInventory(failures, targetInventory, resultInventory, 'result');
+	requireHistoricalReferenceInventory(
+		failures,
+		targetInventory,
+		assignmentInventory,
+		resultInventory
+	);
 	for (const key of candidateInventory.keys()) {
 		if (!targetInventory.has(key)) failures.push(`${key}: orphan candidate has no target`);
 	}
@@ -410,7 +445,7 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 		readonly target: ReturnType<typeof AnySkillIconTargetSchema.parse>;
 		readonly result: ReturnType<typeof AnySkillIconResultSchema.parse>;
 	}[] = [];
-	for (const targetPath of targetInventory.values()) {
+	for (const [targetKey, targetPath] of targetInventory) {
 		const target = AnySkillIconTargetSchema.parse(
 			JSON.parse(
 				(await readSafeRepositoryFile(resolvedRoot, targetPath, 'Target')).toString('utf8')
@@ -433,6 +468,7 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			failures.push(`target path does not match packet identity ${target.jobId}`);
 			continue;
 		}
+		if (!resultInventory.has(targetKey)) continue;
 		const assignmentPath = path.join(
 			resolvedRoot,
 			`assets/wiki/skills/icon-production-v1/assignments/${scope}/${target.jobId}.json`
