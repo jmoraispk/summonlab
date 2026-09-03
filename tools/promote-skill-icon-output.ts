@@ -943,6 +943,11 @@ async function loadPromotionReplacement(
 		if (actual !== expected) throw new Error(`Prior promoted ${label} evidence hash mismatch`);
 	}
 	if (
+		prior.receipt.master.contentHash !== prior.receipt.candidate.contentHash ||
+		!masterBytes.equals(candidateBytes)
+	)
+		throw new Error('Prior canonical master does not equal the exact accepted candidate');
+	if (
 		priorReview.decision !== 'accepted' ||
 		priorReview.reviewerRole !== 'owner' ||
 		priorReview.reviewer !== prior.receipt.ownerReviewer ||

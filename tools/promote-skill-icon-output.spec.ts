@@ -946,6 +946,40 @@ describe('promoteSkillIconOutput', () => {
 		).rejects.toThrow(/filename|canonical|bind|hash|role|candidate/iu);
 	});
 
+	it('rejects a self-consistent forged master and receipt that diverge from the accepted candidate', async () => {
+		const item = await fixture('charcoal-forged-stone-v2');
+		await installBackingV2Packet(item.root, 'candidate');
+		const oldBytes = await sharp(await backingPng())
+			.tint('#8a4f2d')
+			.png()
+			.toBuffer();
+		await installApprovedReferenceEvidence(item.root, 'backing', oldBytes, null);
+		const masterPath = path.join(
+			item.root,
+			'assets/wiki/skills/icon-production-v1/masters/backing/charcoal-forged-stone.png'
+		);
+		const forgedMaster = await sharp(oldBytes).tint('#274e75').png().toBuffer();
+		await writeFile(masterPath, forgedMaster);
+		const receiptPath = path.join(
+			item.root,
+			SKILL_ICON_PROMOTION_RECEIPT_ROOT,
+			'charcoal-forged-stone-v1.json'
+		);
+		const receipt = JSON.parse(await readFile(receiptPath, 'utf8')) as {
+			master: { contentHash: string };
+		};
+		receipt.master.contentHash = createHash('sha256').update(forgedMaster).digest('hex');
+		await writeFile(receiptPath, JSON.stringify(receipt));
+
+		await expect(
+			promoteSkillIconOutput({
+				jobId: 'charcoal-forged-stone-v2',
+				reviewPath: item.reviewPath,
+				root: item.root
+			})
+		).rejects.toThrow(/master does not equal the exact accepted candidate/iu);
+	});
+
 	it('rejects a raced prior master instead of overwriting unverified bytes', async () => {
 		const item = await fixture('charcoal-forged-stone-v2');
 		await installBackingV2Packet(item.root, 'candidate');

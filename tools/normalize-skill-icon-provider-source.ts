@@ -245,21 +245,34 @@ function assertNoPeriodicContrastCheckerboard(
 	height: number,
 	roleMask: Uint8Array
 ): void {
-	const luminance = new Uint8Array(width * height);
-	for (let pixelIndex = 0; pixelIndex < luminance.length; pixelIndex += 1) {
-		const offset = pixelIndex * 3;
-		luminance[pixelIndex] = Math.round(
-			((data[offset] ?? 0) * 54 + (data[offset + 1] ?? 0) * 183 + (data[offset + 2] ?? 0) * 19) /
-				256
-		);
-	}
-	for (const lag of [8, 16, 32, 64]) {
+	const hasOpposingContrast = (first: number, second: number, third: number): boolean => {
+		const firstOffset = first * 3;
+		const secondOffset = second * 3;
+		const thirdOffset = third * 3;
+		const firstDeltaRed = (data[secondOffset] ?? 0) - (data[firstOffset] ?? 0);
+		const firstDeltaGreen = (data[secondOffset + 1] ?? 0) - (data[firstOffset + 1] ?? 0);
+		const firstDeltaBlue = (data[secondOffset + 2] ?? 0) - (data[firstOffset + 2] ?? 0);
+		const secondDeltaRed = (data[thirdOffset] ?? 0) - (data[secondOffset] ?? 0);
+		const secondDeltaGreen = (data[thirdOffset + 1] ?? 0) - (data[secondOffset + 1] ?? 0);
+		const secondDeltaBlue = (data[thirdOffset + 2] ?? 0) - (data[secondOffset + 2] ?? 0);
+		const firstEnergy = firstDeltaRed ** 2 + firstDeltaGreen ** 2 + firstDeltaBlue ** 2;
+		const secondEnergy = secondDeltaRed ** 2 + secondDeltaGreen ** 2 + secondDeltaBlue ** 2;
+		if (firstEnergy < 28 ** 2 || secondEnergy < 28 ** 2) return false;
+		const dot =
+			firstDeltaRed * secondDeltaRed +
+			firstDeltaGreen * secondDeltaGreen +
+			firstDeltaBlue * secondDeltaBlue;
+		return dot < 0 && dot ** 2 >= firstEnergy * secondEnergy * 0.25;
+	};
+	for (const lag of [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64]) {
 		let horizontalTriplets = 0;
 		let horizontalAlternations = 0;
 		let verticalTriplets = 0;
 		let verticalAlternations = 0;
-		for (let y = 0; y < height; y += 1) {
-			for (let x = 0; x < width; x += 1) {
+		// Four-pixel sampling bounds work while retaining six samples across
+		// the smallest supported macro-checker cell.
+		for (let y = 0; y < height; y += 4) {
+			for (let x = 0; x < width; x += 4) {
 				const first = y * width + x;
 				if (roleMask[first] !== 1) continue;
 				if (x + lag * 2 < width) {
@@ -267,14 +280,7 @@ function assertNoPeriodicContrastCheckerboard(
 					const third = second + lag;
 					if (roleMask[second] === 1 && roleMask[third] === 1) {
 						horizontalTriplets += 1;
-						const firstDelta = (luminance[second] ?? 0) - (luminance[first] ?? 0);
-						const secondDelta = (luminance[third] ?? 0) - (luminance[second] ?? 0);
-						if (
-							Math.abs(firstDelta) >= 28 &&
-							Math.abs(secondDelta) >= 28 &&
-							firstDelta * secondDelta < 0
-						)
-							horizontalAlternations += 1;
+						if (hasOpposingContrast(first, second, third)) horizontalAlternations += 1;
 					}
 				}
 				if (y + lag * 2 < height) {
@@ -282,21 +288,14 @@ function assertNoPeriodicContrastCheckerboard(
 					const third = second + lag * width;
 					if (roleMask[second] === 1 && roleMask[third] === 1) {
 						verticalTriplets += 1;
-						const firstDelta = (luminance[second] ?? 0) - (luminance[first] ?? 0);
-						const secondDelta = (luminance[third] ?? 0) - (luminance[second] ?? 0);
-						if (
-							Math.abs(firstDelta) >= 28 &&
-							Math.abs(secondDelta) >= 28 &&
-							firstDelta * secondDelta < 0
-						)
-							verticalAlternations += 1;
+						if (hasOpposingContrast(first, second, third)) verticalAlternations += 1;
 					}
 				}
 			}
 		}
 		if (
-			horizontalAlternations / Math.max(1, horizontalTriplets) >= 0.45 &&
-			verticalAlternations / Math.max(1, verticalTriplets) >= 0.45
+			horizontalAlternations / Math.max(1, horizontalTriplets) >= 0.35 &&
+			verticalAlternations / Math.max(1, verticalTriplets) >= 0.35
 		)
 			throw new Error('Provider source contains a spatially periodic contrast checkerboard matte');
 	}

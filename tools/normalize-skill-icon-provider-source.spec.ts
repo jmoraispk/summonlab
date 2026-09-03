@@ -234,38 +234,45 @@ describe('skill-icon provider normalization', () => {
 			'#c8d4c0',
 			'#d4c4c8'
 		];
-		let darkIndex = 0;
-		let lightIndex = 0;
-		const multishadeCells: string[] = [];
-		for (let cellY = 0; cellY < 12; cellY += 1) {
-			for (let cellX = 0; cellX < 12; cellX += 1) {
-				const dark = (cellX + cellY) % 2 === 0;
-				const color = dark
-					? darkTints[darkIndex++ % darkTints.length]
-					: lightTints[lightIndex++ % lightTints.length];
-				multishadeCells.push(
-					`<rect x="${cellX * 32}" y="${cellY * 32}" width="32" height="32" fill="${color}"/>`
-				);
+		for (const [cellSize, shadeOffset, swapFamilies] of [
+			[24, 3, false],
+			[32, 0, false],
+			[48, 7, true]
+		] as const) {
+			let darkIndex = shadeOffset;
+			let lightIndex = shadeOffset;
+			const multishadeCells: string[] = [];
+			for (let cellY = 0; cellY < 12; cellY += 1) {
+				for (let cellX = 0; cellX < 12; cellX += 1) {
+					const dark = ((cellX + cellY) % 2 === 0) !== swapFamilies;
+					const color = dark
+						? darkTints[darkIndex++ % darkTints.length]
+						: lightTints[lightIndex++ % lightTints.length];
+					multishadeCells.push(
+						`<rect x="${cellX * cellSize}" y="${cellY * cellSize}" width="${cellSize}" height="${cellSize}" fill="${color}"/>`
+					);
+				}
 			}
+			const patternSize = cellSize * 12;
+			const multishadeChecker = declareSrgb(
+				await sharp({
+					create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+				})
+					.composite([
+						{
+							input: Buffer.from(
+								`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="checker" width="${patternSize}" height="${patternSize}" patternUnits="userSpaceOnUse">${multishadeCells.join('')}</pattern></defs><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="url(#checker)"/></svg>`
+							)
+						}
+					])
+					.removeAlpha()
+					.png()
+					.toBuffer()
+			);
+			await expect(
+				normalizeSkillIconProviderSource(multishadeChecker, 'backing', geometryBytes)
+			).rejects.toThrow(/periodic contrast checkerboard/u);
 		}
-		const multishadeChecker = declareSrgb(
-			await sharp({
-				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
-			})
-				.composite([
-					{
-						input: Buffer.from(
-							`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="checker" width="384" height="384" patternUnits="userSpaceOnUse">${multishadeCells.join('')}</pattern></defs><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="url(#checker)"/></svg>`
-						)
-					}
-				])
-				.removeAlpha()
-				.png()
-				.toBuffer()
-		);
-		await expect(
-			normalizeSkillIconProviderSource(multishadeChecker, 'backing', geometryBytes)
-		).rejects.toThrow(/periodic contrast checkerboard/u);
 		const blackGreenChecker = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -319,7 +326,7 @@ describe('skill-icon provider normalization', () => {
 		);
 		await expect(
 			normalizeSkillIconProviderSource(intermediateAlphaChecker, 'backing', geometryBytes)
-		).rejects.toThrow(/opacity checkerboard/u);
+		).rejects.toThrow(/checkerboard/u);
 		const shifted = declareSrgb(
 			await sharp({
 				create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
