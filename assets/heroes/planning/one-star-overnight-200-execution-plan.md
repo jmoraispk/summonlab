@@ -2,7 +2,7 @@
 
 Execution plan ID: `heroes.one-star-overnight-200-execution-v1`
 
-Status: **active production; roster frozen and calibration pending**
+Status: **active production; roster frozen, calibration passed, wave 01 active**
 
 Creative authority:
 [`one-star-overnight-200-plan.md`](one-star-overnight-200-plan.md)
@@ -164,6 +164,16 @@ muscular, and extreme-bodybuilder construction, with both natural and dyed hair.
 7. Commit and push the calibration checkpoint.
 
 Calibration is an authoring gate, not human approval. Passing images remain candidates.
+
+Calibration closed with eight effective candidate pairs. Two original slots exhausted their single
+correction and remain quarantined: Fenel Esho for an incorrect ring count and Yasu Coro for a chibi
+ratio outside the locked range. An exact search proved that substituting untouched frozen reserve
+packets would require replacing at least fifteen otherwise-valid active packets. The coordinator
+therefore used two append-only quota-slot activations: Wenyn Amarun inherited Fenel's complete quota
+coordinate vector, and Rao Esheth inherited Yasu's. The reserve identities and kernels remain their
+own, the failed candidates remain immutable evidence, and the effective 200-hero roster retains the
+frozen quota summary byte-for-byte. This documented fallback is the precedent for any later reserve
+activation that cannot preserve quotas through a small untouched-packet swap.
 
 ## Phase 3 — ten production waves
 

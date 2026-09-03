@@ -1,27 +1,27 @@
 {
   "schemaVersion": "hero-one-star-production-report-v1",
   "experimentId": "one-star-overnight-200-001",
-  "state": "roster-frozen",
+  "state": "wave-01-active",
   "candidateBoundary": "candidate-only; no human approval or runtime promotion implied",
   "counts": {
     "activeHeroes": 200,
     "reserveIdentityPackets": 20,
-    "summonTargetsMaterialized": 220,
-    "summonCandidates": 0,
-    "chibiTargetsMaterialized": 0,
-    "chibiCandidates": 0,
-    "completePairs": 0,
-    "quarantinedImages": 0,
-    "activatedReserves": 0
+    "summonTargetsMaterialized": 224,
+    "summonCandidates": 8,
+    "chibiTargetsMaterialized": 18,
+    "chibiCandidates": 8,
+    "completePairs": 8,
+    "quarantinedImages": 2,
+    "activatedReserves": 2
   },
   "budget": {
     "baseImageCallsLimit": 400,
     "correctionCallsLimit": 60,
-    "baseImageCallsUsed": 0,
-    "correctionCallsUsed": 0
+    "baseImageCallsUsed": 22,
+    "correctionCallsUsed": 11
   },
   "waves": [
-    { "waveId": "wave-01", "state": "calibration-pending", "completePairs": 0 },
+    { "waveId": "wave-01", "state": "active", "completePairs": 8 },
     { "waveId": "wave-02", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-03", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-04", "state": "planned", "completePairs": 0 },
@@ -32,8 +32,32 @@
     { "waveId": "wave-09", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-10", "state": "planned", "completePairs": 0 }
   ],
-  "failures": [],
-  "corrections": [],
-  "quarantine": [],
-  "providerWallTimeMs": 0
+  "failures": [
+    {
+      "heroId": "fenel-esho",
+      "imageKind": "combat-chibi",
+      "finalVersion": 2,
+      "reason": "Incorrect ring count remained after the one allowed correction.",
+      "resolution": "Replaced through activation-0001-fenel-esho--wenyn-amarun."
+    },
+    {
+      "heroId": "yasu-coro",
+      "imageKind": "combat-chibi",
+      "finalVersion": 2,
+      "reason": "Chibi ratio remained outside 2.75-3.1 heads after the one allowed correction.",
+      "resolution": "Replaced through activation-0002-yasu-coro--rao-esheth."
+    }
+  ],
+  "corrections": [
+    "Eight original calibration images used one valid v2 correction call.",
+    "Rao Esheth summon-v2 added the missing reinforced cuffs.",
+    "Wenyn Amarun combat-chibi-v2 restored the wooden comb at the sash.",
+    "One noncanonical same-target Rao Esheth chibi edit was quarantined as unregistered evidence and counted against the correction budget."
+  ],
+  "quarantine": [
+    "fenel-esho/combat-chibi-v2",
+    "yasu-coro/combat-chibi-v2",
+    "review-evidence/unregistered-attempts/rao-esheth/combat-chibi-v1-noncanonical-correction.png"
+  ],
+  "providerWallTimeMs": 1641271
 }
