@@ -863,13 +863,18 @@ result may use `status: 'failed'`, `failureReason.kind: 'persistence'`, complete
 two passing inspections rather than inventing a visual failure. If the failure result itself cannot
 be published safely, preserve the fail-closed reservation.
 
-Permit exactly one zero-image-call reprocess transaction for an origin source. A successful
-candidate goes directly to owner review. Deterministic normalization failure or owner rejection is
-the terminal stopping condition: do not revise the profile, issue another reprocess, or restart a
+Permit exactly one zero-image-call reprocess transaction for an origin source. F revision 5 used that
+route to bind the passing source observed by the immutable F revision-3 failure; its technically
+valid candidate awaits owner review. Deterministic normalization failure or owner rejection is the
+terminal stopping condition: do not revise the profile, issue another reprocess, or restart a
 green-key generation loop. Route the asset to deterministic vector/native-frame construction or an
-alpha-capable provider instead. The only immediate route contemplated by reprocess v1 is a future
-F-v5 packet binding the passing source observed by the immutable F-v3 failure; this implementation
-creates no F-v5 packet, candidate, result, provider artifact, or image call.
+alpha-capable provider instead.
+
+The completed revision-four wave exhausted both authorized image calls for A, B, C, D, E, S, and
+the backing, and all seven jobs ended in terminal failure. Together their failures form a systemic
+boundary, matte, and coverage pattern rather than an isolated packet defect. The green-key route is
+stopped; the next implementation route is deterministic vector/native construction or a provider
+that returns genuine alpha.
 
 **Files:**
 
@@ -1328,8 +1333,9 @@ images.
 - geometry v2 preserves all v1 registration fields, adds the exact frame outer envelope and `.78`
   inner-aperture scale, and leaves backing constrained to the original aperture polygon;
 - profile-v3 frame/backing packets bind raw geometry-v2 bytes, the exact provider-space guide-v2
-  hash, and assignment skill v4 while retaining profile v2's envelope and thresholds; revision-4
-  packets now exist and the F revision-4 terminal failure retains no candidate;
+  hash, and assignment skill v4 while retaining profile v2's envelope and thresholds; all eight
+  revision-4 jobs exhausted their two image calls and terminally failed, while the distinct F
+  revision-5 zero-generation reprocess produced a technical candidate awaiting owner review;
 - new skill art remains an isolated exact-source workflow under its applicable contract; normalized
   profiles v1–v3 do not authorize skill-art jobs;
 - reprocessing a prior observed rarity-frame source uses only the distinct coordinator

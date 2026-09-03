@@ -197,7 +197,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports seven unattempted v4 references while accepting the latest F-v5 candidate', async () => {
+	it('reports seven terminal v4 failures while accepting the latest F-v5 candidate', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -206,17 +206,18 @@ describe('skill-icon revision resolution', () => {
 		}
 		const diagnostics = message.split('\n');
 		expect(diagnostics).toEqual([
-			'references/charcoal-forged-stone-v4: missing result inventory entry',
-			'references/rarity-frame-a-v4: missing result inventory entry',
-			'references/rarity-frame-b-v4: missing result inventory entry',
-			'references/rarity-frame-c-v4: missing result inventory entry',
-			'references/rarity-frame-d-v4: missing result inventory entry',
-			'references/rarity-frame-e-v4: missing result inventory entry',
-			'references/rarity-frame-s-v4: missing result inventory entry'
+			'backing latest revision v4 is failed (validation: Initial provider source crossed a role-required transparent region; the sole corrected source inset the backing but covered less than 85% of the aperture after profile-v3 normalization.); create a higher revision',
+			'rarity-frame:A latest revision v4 is failed (validation: The corrected provider source remained ineligible because meaningful frame foreground entered a role-required transparent region under normalization profile v3.); create a higher revision',
+			'rarity-frame:B latest revision v4 is failed (validation: The corrected provider source exhausted the one permitted edit and deterministic profile-v3 normalization rejected it because the #00FF00 edge matte was not sufficiently clean; no candidate was retained.); create a higher revision',
+			'rarity-frame:C latest revision v4 is failed (validation: Corrected provider source exhausted the two-call imagegen ceiling and deterministic profile-v3 normalization still rejected a meaningful alpha component in a role-required transparent region.); create a higher revision',
+			'rarity-frame:D latest revision v4 is failed (validation: Both authorized provider attempts were rejected by profile-v3 normalization because meaningful foreground remained in a role-required transparent region; no eligible candidate was produced.); create a higher revision',
+			'rarity-frame:E latest revision v4 is failed (validation: Corrected provider source failed profile-v3 role-mask normalization: meaningful alpha component in a role-required transparent region.); create a higher revision',
+			'rarity-frame:S latest revision v4 is failed (validation: Initial provider source failed the required transparent-region gate. The one authorized correction preserved the S-frame design but the corrected provider source failed the clean #00FF00 edge-matte gate; no role-valid candidate was retained.); create a higher revision'
 		]);
 		expect(diagnostics).toHaveLength(7);
+		expect(message).not.toMatch(/missing result inventory entry/iu);
+		expect(message).not.toMatch(/rarity-frame:F latest revision v4 is failed/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
-		expect(message).not.toMatch(/latest revision v4 is failed/iu);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);
 		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);

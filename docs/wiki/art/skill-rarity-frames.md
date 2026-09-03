@@ -2,8 +2,9 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C accepted as the canonical comparison authority; individual runtime
-exports pending**.
+Design status: **Option C accepted as the canonical comparison authority; F revision 5 is a
+technical candidate awaiting owner review, while the other runtime reference exports require a new
+production route**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -129,9 +130,11 @@ only with `summonlab-skill-icon-production-v4`. Profiles v1–v3 share the exist
 the resize/rasterization antialias transition may extend at most three output pixels from the
 role-mask boundary. Normalization for every profile then hard-clips to the exact mask. In the
 retained image alpha through 8 is transparent, every alpha value above 8 outside the mask is invalid,
-and no other spill is accepted. Revision-4 frame/backing packets now bind this tuple. The F
-revision-4 canary used its two allowed generation calls and ended as a verified failure with no
-candidate; the other revision-4 slots remain unattempted.
+and no other spill is accepted. Revision-4 frame/backing packets now bind this tuple. Every
+revision-four job used its two allowed generation calls. A, B, C, D, E, S, and the backing ended as
+verified terminal failures with no candidate; F revision 4 also remains immutable failed evidence,
+while its distinct zero-generation revision-5 reprocess produced a technically valid candidate
+awaiting owner review.
 The mandatory guide reference has the canonical purpose
 `Provider-space role-mask guide for rarity-frame and backing registration.` and is production
 authority, not optional illustration.
@@ -218,13 +221,15 @@ and both inspections pass but publication fails, a failed result may honestly re
 it does not fabricate a visual defect. When even the failure result cannot be published safely, the
 reservation remains fail-closed.
 
-This route has one stopping rule: attempt the exact source once, without an image call. A passing
-candidate goes directly to owner review. Normalization failure or owner rejection permanently ends
-reprocessing for that source; do not loosen the profile, create a reprocess chain, or begin another
-green-key prompt cycle. Move instead to a deterministic vector/native-frame or alpha-capable
-production route. The only immediate route contemplated by reprocess v1 is a possible F revision-5
-packet using the F revision-3 observed source. It remains future work; this protocol change creates
-no F-v5 packet, result, candidate, or image call.
+This route has one stopping rule: attempt the exact source once, without an image call. F revision 5
+used that route and its technically valid candidate now goes directly to owner review. Normalization
+failure or owner rejection permanently ends reprocessing for that source; do not loosen the profile,
+create a reprocess chain, or begin another green-key prompt cycle.
+
+The completed revision-four wave exposed a systemic boundary, matte, and coverage mismatch across
+the seven remaining jobs despite their bounded corrections. The green-key generation route is
+therefore stopped for reference frames and backing. Continue those assets only through deterministic
+vector/native construction or a provider that can return genuine alpha.
 
 For a newly authored skill, taxonomy first exposes the missing icon. The visual owner then maps its
 motif family or marks it standalone, chooses at most one primary visual parent, authors the visual
