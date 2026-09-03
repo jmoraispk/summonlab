@@ -6,7 +6,7 @@ Wiki ID: `monster.doppelganger-mimic`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Halfling Copies repeat the offered motion imperfectly; interrupting their finish
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-mimic/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-mimic/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-mimic/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-mimic/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-mimic/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-mimic/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-mimic/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-mimic/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-mimic/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-mimic/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-mimic/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-mimic/wind-v1.json` |

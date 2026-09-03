@@ -6,7 +6,7 @@ Wiki ID: `monster.doppelganger-facewearer`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -62,7 +62,7 @@ Blank, Halfling Copy, and Mimic each supply one face rule; disabling that lower 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-facewearer/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-facewearer/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-facewearer/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-facewearer/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-facewearer/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-facewearer/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-facewearer/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-facewearer/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-facewearer/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-facewearer/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-facewearer/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-facewearer/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-facewearer/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-facewearer/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-facewearer/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-facewearer/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/doppelgangers/doppelganger-facewearer/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/doppelgangers/doppelganger-facewearer/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/doppelgangers/doppelganger-facewearer/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/doppelgangers/doppelganger-facewearer/wind-v1.json` |
