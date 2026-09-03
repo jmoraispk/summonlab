@@ -1,7 +1,7 @@
 # Tight staggered rarity-frame calibration sheets
 
-Status: **two review candidates; owner selection pending**. The accepted v5 sheet remains the
-baseline until one of these tighter variants is selected.
+Status: **Variant 2 selected as the canonical crop source**. Variant 1 remains noncanonical review
+history.
 
 ## Variant 1 — maximum fill
 
@@ -20,6 +20,7 @@ baseline until one of these tighter variants is selected.
 - Provider canvas: 1536×1024 RGB
 - SHA-256: `837d89a2a8f45fe7144af85e36030ed4f0833a266c39638cc192365ec87bffce`
 - Intent: retain large frames while favoring consistent crop gutters and shared baselines.
+- Owner decision: accepted on 2026-09-03.
 
 Both sheets were prompted with the same staggered center rule:
 
@@ -34,9 +35,36 @@ selection, deterministic crop normalization must measure each frame and place it
 shared center; it must not assume the provider honored the percentages numerically.
 
 The provider again painted a checkerboard and returned RGB rather than genuine RGBA transparency.
-The checkerboard is a removable matte, not part of the design. Owner selection must occur before
-cropping or matte removal. The selected source pixels must be preserved exactly during those
-deterministic operations.
+The checkerboard is a removable matte, not part of the design. A tightly scoped built-in
+background-extraction edit was attempted after selection, but it redrew the frames and returned
+another RGB checkerboard. That attempt was rejected and is not retained as an asset. Deterministic
+connected-background removal is therefore the accepted extraction route because it preserves the
+selected source pixels.
+
+## Individual RGBA crops and composition pilot
+
+![Seven extracted rarity frames](review/individual-frames.png)
+
+The deterministic extractor creates seven genuine 1024×1024 RGBA candidates under
+`candidates/individuals/`. They preserve Variant 2's relative visual scale, share one normalization
+factor and canvas center, keep their dark interiors opaque, and have transparent exteriors.
+
+![Measured Cut in every rarity frame](review/measured-cut-all-rarities.png)
+
+The same standalone Measured Cut emblem is layered into all seven crops under
+`candidates/measured-cut/`. This contact sheet is the first composition pilot: it tests frame
+extraction, shared icon placement, and rarity-only visual variation. The individual frames and
+composites are review candidates, not promoted runtime masters. The companion
+`review/measured-cut-recognition-96.png` verifies the same seven composites at their 96-pixel
+recognition size.
+
+The exact source regions, normalization scale, paths, and SHA-256 hashes are recorded in
+`candidates/manifest.json`. Rebuild with:
+
+```bash
+pnpm exec tsx tools/extract-rarity-frame-v6.ts --write
+pnpm exec tsx tools/extract-rarity-frame-v6.ts --check
+```
 
 ## Exact generation prompts
 
@@ -74,4 +102,16 @@ Variant 2 suffix:
 
 ```text
 VARIANT 2 — UNIFORM CROP CELLS. Optimize the composition for deterministic cutting into seven equal-sized crop boxes. Keep the exact stated centers. Make each frame occupy approximately 92% of its implied cell width and make both rows share exactly the same frame scale and vertical spacing. Leave only a narrow, uniform safety gutter around every frame; maximize frame size within that constraint. The silhouette, top crest height, baseline, and ornament extents must align identically across all ranks.
+```
+
+Rejected background-extraction prompt:
+
+```text
+Use case: background-extraction
+Asset type: transparent production source sheet for deterministic cropping
+Input image: the sole edit target and exact pixel-level visual authority.
+Primary request: remove only the pale checkerboard outside the seven rarity frames and replace it with genuine alpha transparency.
+Invariants: preserve all seven frames exactly—their 4-over-3 placement, scale, geometry, rank letters F E D C B A S, materials, colors, lighting, ornaments, dark interiors, and every edge detail. Do not redraw, restyle, move, resize, crop, simplify, or add anything. Keep the canvas dimensions unchanged.
+Output: genuine RGBA PNG. Outside each frame must be transparent. Keep each dark hexagonal interior opaque.
+Constraints: no painted checkerboard, no white background, no colored matte, no labels, no new elements, no watermark.
 ```

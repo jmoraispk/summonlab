@@ -1,0 +1,166 @@
+{
+	"schemaVersion": "rarity-frame-v6-extraction-v1",
+	"status": "review-candidate",
+	"sourceSheet": "assets/wiki/skills/rarity-frame-v6/calibration/seven-rarity-frames-4x3-tight-v2.png",
+	"sourceSheetContentHash": "837d89a2a8f45fe7144af85e36030ed4f0833a266c39638cc192365ec87bffce",
+	"iconSource": "assets/wiki/skills/skill-art-v1/sources/measured-cut-provider-v1.png",
+	"iconSourceContentHash": "d9478e5966e22040d92b4b643dde48927bd6f0f31b46c006511dc1a05de3f689",
+	"icon": "assets/wiki/skills/skill-art-v1/candidates/measured-cut.png",
+	"iconContentHash": "a96fe0cc999f1afe69ea6369429994e951c0aec4c0ced6d74dc4fab0d138cfe2",
+	"canvas": {
+		"width": 1024,
+		"height": 1024,
+		"format": "png",
+		"channels": 4
+	},
+	"sharedFrameScale": 2.121212121212121,
+	"review": {
+		"individualFrames": {
+			"path": "assets/wiki/skills/rarity-frame-v6/review/individual-frames.png",
+			"contentHash": "a096d163bd69febd1abd7abca205e6069a6a2c5fccfdf08c737bb31075784932"
+		},
+		"measuredCutAllRarities": {
+			"path": "assets/wiki/skills/rarity-frame-v6/review/measured-cut-all-rarities.png",
+			"contentHash": "2265b67f14ab98c3cad5518829c4eba3aff126edc3d89451f7e5ec67c3356610"
+		},
+		"measuredCutRecognition96": {
+			"path": "assets/wiki/skills/rarity-frame-v6/review/measured-cut-recognition-96.png",
+			"contentHash": "6a4342b80e7b0275be95c0f1c033e0208103c8568d91a96ece7f1a3614c2456e"
+		}
+	},
+	"records": [
+		{
+			"rank": "F",
+			"sourceRegion": {
+				"left": 40,
+				"top": 65,
+				"width": 385,
+				"height": 465
+			},
+			"extractedBoundsWithinRegion": [
+				42,
+				35,
+				361,
+				445
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/f.png",
+			"frameContentHash": "5ce0baac1a4bbb6f3ddaf56d2d795752251f4870ad81a5fb1b5b1e53963d815d",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/f.png",
+			"compositeContentHash": "835237dc680da0c413364bcf37300c84c4cba630054edb0705eafb8de3b818a3"
+		},
+		{
+			"rank": "E",
+			"sourceRegion": {
+				"left": 400,
+				"top": 65,
+				"width": 380,
+				"height": 465
+			},
+			"extractedBoundsWithinRegion": [
+				30,
+				34,
+				350,
+				445
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/e.png",
+			"frameContentHash": "25132fc9ce2078d50fdd58d0bbfc5537078b110623e51725bfeb08bf03c7eeda",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/e.png",
+			"compositeContentHash": "c603f1f7a6d6f5b515a2ac65b1ab3a40fd9b520c89f3e9160d1196ca133bf92c"
+		},
+		{
+			"rank": "D",
+			"sourceRegion": {
+				"left": 760,
+				"top": 65,
+				"width": 380,
+				"height": 465
+			},
+			"extractedBoundsWithinRegion": [
+				23,
+				34,
+				342,
+				445
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/d.png",
+			"frameContentHash": "7b76fdfb86030d8069c90342277dca6ca687497eeedc92c9c8cec135b6477d80",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/d.png",
+			"compositeContentHash": "c229a98759719219d0d4ae1a3de2b0d6066ee160b290efa4d47523effc4f1b6e"
+		},
+		{
+			"rank": "C",
+			"sourceRegion": {
+				"left": 1115,
+				"top": 65,
+				"width": 390,
+				"height": 465
+			},
+			"extractedBoundsWithinRegion": [
+				22,
+				34,
+				341,
+				445
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/c.png",
+			"frameContentHash": "95770cdc16639baac8093581aa71e8c1a3efc673c41dca3d1cabd9ad4906654d",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/c.png",
+			"compositeContentHash": "39c5fd32127451d8741d795b87379ec5b251d1fd1be231df4398acc4bfcc4c6f"
+		},
+		{
+			"rank": "B",
+			"sourceRegion": {
+				"left": 180,
+				"top": 495,
+				"width": 410,
+				"height": 480
+			},
+			"extractedBoundsWithinRegion": [
+				44,
+				30,
+				368,
+				448
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/b.png",
+			"frameContentHash": "43a6b1441c2ce55ad9f39b8879e5d31c82e19d6309e75934e815bedffe839c46",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/b.png",
+			"compositeContentHash": "514e47cb69d88ff4192ab2221e447946b3a94147b805d514f755eda44b89ae15"
+		},
+		{
+			"rank": "A",
+			"sourceRegion": {
+				"left": 560,
+				"top": 495,
+				"width": 415,
+				"height": 480
+			},
+			"extractedBoundsWithinRegion": [
+				33,
+				29,
+				386,
+				457
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/a.png",
+			"frameContentHash": "c0d5fd501ca2bc064ed5d3276128a20f16fca7103e429823ba9f98aa18ed7225",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/a.png",
+			"compositeContentHash": "abff2418ca18858469eb65152faea0ac0e183e6f96967407a2ec2116529d5326"
+		},
+		{
+			"rank": "S",
+			"sourceRegion": {
+				"left": 950,
+				"top": 490,
+				"width": 430,
+				"height": 485
+			},
+			"extractedBoundsWithinRegion": [
+				39,
+				31,
+				375,
+				460
+			],
+			"frame": "assets/wiki/skills/rarity-frame-v6/candidates/individuals/s.png",
+			"frameContentHash": "2c4058c3eb6b349a1833ae43a93682eb451fb113bebfdaf2a0882471361692fd",
+			"composite": "assets/wiki/skills/rarity-frame-v6/candidates/measured-cut/s.png",
+			"compositeContentHash": "733000310cf68f7106769d790c531c729fb7543a82e0e90c4c33932cf187b563"
+		}
+	]
+}

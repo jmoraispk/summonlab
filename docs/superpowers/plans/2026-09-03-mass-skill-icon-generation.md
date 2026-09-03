@@ -27,17 +27,15 @@ but all 456 visual specifications, masters, and owner reviews are currently miss
 ## Phase 0 — finish and lock the reusable layers
 
 **Progress:** The registered frame set and its replacement horizontal strip were visually rejected.
-The regular-hexagon four-over-three v5 sheet is the accepted visual baseline. Two v6 candidates make
-the frames larger and closely follow the requested stagger for simpler cutting; owner selection
-between them is pending. Provider placement is not treated as pixel-exact, so deterministic crop
-normalization will measure and recenter the chosen frames. No rejected frame may be promoted or used
-as a future generation reference.
+The owner selected v6 Variant 2 as the canonical crop source. Its seven frames are now extracted onto
+shared 1024×1024 RGBA canvases, and one independently generated Measured Cut emblem is composited
+across all rarities. The frame crops and composition pilot await owner review. No rejected frame may
+be promoted or used as a future generation reference.
 
-After the owner selects v5 or one v6 variant, derive seven crop candidates from its exact pixels. Remove
-only the depicted checkerboard matte, place each crop on an equal 1024×1024 RGBA canvas without
-stretching its proportions, and compare the body side lengths and angles before any runtime
-registration. Obtain owner approval on isolated and 96-pixel views before promoting the seven
-masters.
+The selected source's checkerboard has been removed deterministically after a provider
+background-extraction attempt failed. The crops retain their proportions and share one scale and
+canvas center. Obtain owner approval on isolated, composite, and 96-pixel views before promoting the
+seven masters.
 
 Locate or restore the already accepted charcoal forged-stone backing, register it to the canonical
 aperture, and promote it through the same review gate. Do not start bulk skill generation while any

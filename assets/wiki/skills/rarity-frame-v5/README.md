@@ -1,6 +1,6 @@
 # Regular-hexagon rarity-frame calibration sheet
 
-Status: **accepted visual baseline**.
+Status: **superseded visual baseline**. The owner selected v6 Variant 2 as the canonical crop source.
 
 ![Seven regular-hexagon rarity frames in a four-over-three grid](calibration/seven-rarity-frames-4x3-v1.png)
 

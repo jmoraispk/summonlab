@@ -2,9 +2,9 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C is the canonical material authority. Both the stretched overlay and the
-over-tall horizontal strip were owner-rejected. The regular-hexagon four-over-three v5 sheet is the
-accepted baseline; two tighter staggered variants await owner selection**.
+Design status: **Option C is the canonical material authority. Variant 2 of the tight staggered v6
+sheet is the canonical crop source. Seven transparent frame crops and the first Measured Cut
+composition pilot await visual review**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -51,7 +51,7 @@ regular hexagons. It remains historical evidence only.
 
 ![Seven regular-hexagon rarity frames](../../../assets/wiki/skills/rarity-frame-v5/calibration/seven-rarity-frames-4x3-v1.png)
 
-The accepted [v5 source record](../../../assets/wiki/skills/rarity-frame-v5/README.md) uses a four-over-three
+The superseded [v5 source record](../../../assets/wiki/skills/rarity-frame-v5/README.md) uses a four-over-three
 layout to give each frame more pixels. It restores F–S crest letters and constrains every point-up
 frame body to six equal apparent sides, 120-degree interior angles, and the regular-hexagon
 height-to-width ratio. The provider returned a depicted checkerboard in RGB rather than real alpha;
@@ -68,8 +68,17 @@ built-in image-generation attempts. Both were prompted with exact staggered cent
 between F/E, A halfway between E/D, and S halfway between D/C. Variant 1 maximizes canvas fill;
 Variant 2 preserves more uniform cutting gutters. Provider placement is visual rather than
 pixel-authoritative, so the selected frames will be measured and recentered deterministically after
-cropping. Both are review candidates only, so v5 remains the accepted crop baseline until the owner
-selects one.
+cropping. The owner selected Variant 2 as the canonical crop source.
+
+![Seven extracted transparent frame candidates](../../../assets/wiki/skills/rarity-frame-v6/review/individual-frames.png)
+
+![Measured Cut composition pilot across all rarities](../../../assets/wiki/skills/rarity-frame-v6/review/measured-cut-all-rarities.png)
+
+The provider's background-extraction edit again returned a painted RGB checkerboard and changed the
+artwork, so it was rejected. The repository extractor instead removes the connected checker matte
+from the selected source, preserves the dark interiors, and normalizes all seven candidates to
+1024×1024 RGBA. It then places one independently generated and normalized Measured Cut emblem into
+each frame. These are review candidates rather than promoted runtime assets.
 
 The selected plate fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;
