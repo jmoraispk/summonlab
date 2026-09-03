@@ -298,7 +298,10 @@ Inventory with the relevant hero as the assignment target. `Mission Inventory` i
 outside preparation or an active mission it shows an empty state and routes the player to `Missions`.
 There is no persistent personal backpack or hero-owned stockpile.
 
-Mockup: [desktop hero inspection](../../design-proposals/living-village-ui/mockups/hero-inspection-desktop.png).
+Primary visual reference:
+[desktop hero inspection](../../design-proposals/living-village-ui/mockups/hero-inspection-desktop.png).
+Its scene composition, inspection hierarchy, portrait treatment, and material finish are promoted; its
+older `Tower`, `Gate`, and `Prepare at Tower` labels are superseded by the approved `Missions` mode.
 
 ## Inventory custody model
 
@@ -351,7 +354,10 @@ whole set when satisfied.
 - The return screen should reconcile `Consumed`, `Lost`, `Still equipped`, and `Returned to Village`
   before closing the mission.
 
-Mockup: [phone mission packing](../../design-proposals/living-village-ui/mockups/mission-packing-phone.png).
+Primary visual reference:
+[phone mission packing](../../design-proposals/living-village-ui/mockups/mission-packing-phone.png).
+Its packing hierarchy, portrait treatment, controls, and phone finish are promoted; its older five-mode
+bottom navigation is superseded by the approved four-mode shell.
 
 ## Responsive navigation
 

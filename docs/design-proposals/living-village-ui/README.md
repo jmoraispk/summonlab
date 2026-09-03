@@ -8,6 +8,21 @@ This packet turns the current client audit and the approved concept discussion i
 design proposal. It contains mockups and interaction guidance only. It does not modify runtime code,
 gameplay contracts, or shared content catalogs.
 
+## Primary gameplay visual references
+
+These two promoted images set the dominant quality bar for the inhabited Village, hero inspection,
+mission preparation, responsive composition, portrait treatment, and engraved interaction language.
+Their older `Tower` and `Gate` navigation labels are not current behavior; the approved global shell is
+`Village`, `Residents`, `Inventory`, and `Missions`.
+
+### Mature Village and hero inspection
+
+![Primary mature Village and hero inspection reference](./mockups/hero-inspection-desktop.png)
+
+### Mission packing on phone
+
+![Primary phone mission-packing reference](./mockups/mission-packing-phone.png)
+
 ## Decision status
 
 ### Freeze now
@@ -42,7 +57,7 @@ this composition rather than turn the gateway into a conventional login form.
 2. [Visual and interaction design](../../superpowers/specs/2026-09-02-living-village-client-visual-direction-design.md)
 3. Mockups below
 
-## Selected mockups
+## Supporting mockups
 
 ### Title gateway
 
@@ -116,11 +131,12 @@ five-mode shell and combined `Assign or Pack` action are superseded.
 
 ### Suggested mission packing
 
-![Phone mission packing](./mockups/mission-packing-phone.png)
+See the [promoted phone mission-packing reference](./mockups/mission-packing-phone.png) above.
 
 ### Hero inspection
 
-![Desktop hero inspection](./mockups/hero-inspection-desktop.png)
+See the [promoted mature Village and hero-inspection reference](./mockups/hero-inspection-desktop.png)
+above.
 
 ## Mockup boundary
 
