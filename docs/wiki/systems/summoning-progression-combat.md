@@ -164,6 +164,55 @@ an enemy by surprise. Environment, perception, approach, and resulting legal mod
 authoritative engine facts. PixiJS visualizes projected terrain and affordances; it does not decide
 whether surprise or another modifier applies.
 
+### Future authenticity: courage, coordination, and imperfect action
+
+Design status: **flexibility note, not a Living Village rule**
+
+Heroes should eventually feel like people rather than perfectly obedient combat pieces. Backstory,
+bonds, witnessed events, injury, stress, trust, and role preference may influence which
+engine-enumerated legal action an intent provider chooses. Plausible choices include advancing,
+holding, taking a guarded approach, asking for support, falling back, refusing a dangerous order,
+or protecting another hero. A character-voice line may make that public intent legible without
+exposing private model reasoning.
+
+~~~text
+backstory + bonds + witnessed events
+                 |
+                 v
+       stress + trust + role preference
+                 |
+                 v
+      engine-enumerated legal options
+                 |
+                 v
+       agent choice + public dialogue
+                 |
+                 v
+ authoritative outcome -> new shared memories
+~~~
+
+The engine remains the referee. Fear, hesitation, bad footing, interruption, dropped equipment, and
+other consequential complications must be represented in authoritative state or seeded resolution,
+not invented by animation or narration after the fact. Risks should be observable enough to learn
+from, bounded in frequency, and paired with recovery possibilities; personality must not become an
+opaque punishment roll.
+
+Party members may also coordinate equipment and roles. They can propose, contest, and accept who
+should carry a sword, spear, or bow based on training, temperament, injury, and history, while the
+actual transfer and equip operations remain validated engine commands. This makes disagreement,
+trust, compromise, rescue, and later growth available as story-producing mechanics.
+
+A promising onboarding direction is a curated initial trio with complementary capabilities,
+recognizable backstories, and intentional relationship tensions. Small mutable details can preserve
+variation. Later summons may use broader procedural generation within approved content rules. This
+is a candidate direction to test, not a locked roster rule.
+
+Useful realism gaps in conventional progression combat include incomplete information, fear and
+tunnel vision, misunderstood signals, unfamiliar or ill-fitting equipment, fatigue and pain,
+unstable footing, overlapping actions, enemies that flee or protect one another, morale cascades,
+and emotional consequences after victory. These should create comprehensible decision pressure and
+memorable recoveries rather than a dense layer of undirected randomness.
+
 ## Living Village Tower exploration presentation
 
 Implementation status: **isolated presentation prototype**
