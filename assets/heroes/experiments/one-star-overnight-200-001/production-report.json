@@ -1,29 +1,30 @@
 {
   "schemaVersion": "hero-one-star-production-report-v1",
   "experimentId": "one-star-overnight-200-001",
-  "state": "wave-01-complete",
+  "state": "wave-02-complete",
   "candidateBoundary": "candidate-only; no human approval or runtime promotion implied",
   "counts": {
     "activeHeroes": 200,
     "reserveIdentityPackets": 20,
-    "summonTargetsMaterialized": 230,
-    "summonCandidates": 20,
-    "chibiTargetsMaterialized": 36,
-    "chibiCandidates": 20,
-    "completePairs": 20,
-    "quarantinedImages": 5,
-    "quarantineRecords": 15,
-    "activatedReserves": 5
+    "supplementalReserveIdentityPackets": 2,
+    "summonTargetsMaterialized": 245,
+    "summonCandidates": 61,
+    "chibiTargetsMaterialized": 70,
+    "chibiCandidates": 70,
+    "completePairs": 40,
+    "quarantinedImages": 11,
+    "quarantineRecords": 33,
+    "activatedReserves": 14
   },
   "budget": {
     "baseImageCallsLimit": 400,
     "correctionCallsLimit": 60,
-    "baseImageCallsUsed": 52,
-    "correctionCallsUsed": 18
+    "baseImageCallsUsed": 107,
+    "correctionCallsUsed": 32
   },
   "waves": [
     { "waveId": "wave-01", "state": "complete", "completePairs": 20 },
-    { "waveId": "wave-02", "state": "planned", "completePairs": 0 },
+    { "waveId": "wave-02", "state": "complete", "completePairs": 20 },
     { "waveId": "wave-03", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-04", "state": "planned", "completePairs": 0 },
     { "waveId": "wave-05", "state": "planned", "completePairs": 0 },
@@ -68,6 +69,51 @@
       "finalVersion": 1,
       "reason": "The initial chibi had three independent blockers: skin-value continuity, seed-case continuity, and chibi ratio.",
       "resolution": "Skipped multi-defect correction under the one-defect rule and replaced through activation-0005-kaar-jorar--aear-soro."
+    },
+    {
+      "heroId": "delo-greleth", "imageKind": "combat-chibi", "finalVersion": 1,
+      "reason": "The chibi had independent ratio and inflated-hand blockers.",
+      "resolution": "Replaced through activation-0006-delo-greleth--daiis-zhara."
+    },
+    {
+      "heroId": "kai-wyri", "imageKind": "summon", "finalVersion": 1,
+      "reason": "The provider returned malformed dimensions and no candidate was persisted.",
+      "resolution": "Replaced through activation-0007-kai-wyri--isen-kesheth, then activation-0013-kai-wyri--talon-corin after the first replacement also failed."
+    },
+    {
+      "heroId": "ulo-eshor", "imageKind": "combat-chibi", "finalVersion": 1,
+      "reason": "The chibi had independent ratio and hair-continuity blockers.",
+      "resolution": "Replaced through activation-0008-ulo-eshor--galu-wyreth."
+    },
+    {
+      "heroId": "meia-grelek", "imageKind": "combat-chibi", "finalVersion": 2,
+      "reason": "The chibi remained outside the locked ratio after its one correction.",
+      "resolution": "Replaced through activation-0009-meia-grelek--keli-orel."
+    },
+    {
+      "heroId": "quinu-amarel", "imageKind": "combat-chibi", "finalVersion": 1,
+      "reason": "The chibi had independent ratio, body-continuity, and arm/hand-continuity blockers.",
+      "resolution": "Replaced through activation-0010-quinu-amarel--yasan-belek."
+    },
+    {
+      "heroId": "isen-coreth", "imageKind": "summon", "finalVersion": 2,
+      "reason": "The summon still lacked the required second ring after its one correction.",
+      "resolution": "Replaced through activation-0011-isen-coreth--fenen-iverun."
+    },
+    {
+      "heroId": "fenen-iverun", "imageKind": "summon", "finalVersion": 1,
+      "reason": "The replacement returned malformed dimensions and no candidate was persisted.",
+      "resolution": "Replaced through activation-0012-isen-coreth--rau-drenun."
+    },
+    {
+      "heroId": "isen-kesheth", "imageKind": "summon", "finalVersion": 2,
+      "reason": "The first call returned no bindable output and its permitted provider retry returned malformed dimensions.",
+      "resolution": "Replaced through activation-0013-kai-wyri--talon-corin."
+    },
+    {
+      "heroId": "rau-drenun", "imageKind": "combat-chibi", "finalVersion": 2,
+      "reason": "The chibi retained three rings instead of exactly two after its one correction.",
+      "resolution": "All frozen woman reserves were consumed; replaced through activation-0014-isen-coreth--meio-ivereth using an append-only supplemental identity."
     }
   ],
   "corrections": [
@@ -75,7 +121,9 @@
     "Rao Esheth summon-v2 added the missing reinforced cuffs.",
     "Wenyn Amarun combat-chibi-v2 restored the wooden comb at the sash.",
     "One noncanonical same-target Rao Esheth chibi edit was quarantined as unregistered evidence and counted against the correction budget.",
-    "Wave 01 used seven valid v2 corrections after calibration: Kaar summon, Brinen chibi, Lanor chibi, Belyn chibi, Zelen summon, Oris chibi, and Aear summon."
+    "Wave 01 used seven valid v2 corrections after calibration: Kaar summon, Brinen chibi, Lanor chibi, Belyn chibi, Zelen summon, Oris chibi, and Aear summon.",
+    "Wave 02 used fourteen source-bound correction calls; every accepted correction preserved its exact preceding candidate binding.",
+    "One source-free v2 provider retry was used for Isen Kesheth after a true no-bindable-output result; the retry also failed with malformed dimensions and remained quarantined."
   ],
   "quarantine": [
     "fenel-esho/combat-chibi-v2",
@@ -83,7 +131,13 @@
     "review-evidence/unregistered-attempts/rao-esheth/combat-chibi-v1-noncanonical-correction.png",
     "kaar-jorar/summon-v2",
     "lanor-beleth/combat-chibi-v2",
-    "zelen-soror/combat-chibi-v1"
+    "zelen-soror/combat-chibi-v1",
+    "delo-greleth/combat-chibi-v1",
+    "ulo-eshor/combat-chibi-v1",
+    "meia-grelek/combat-chibi-v2",
+    "quinu-amarel/combat-chibi-v1",
+    "isen-coreth/summon-v2",
+    "rau-drenun/combat-chibi-v2"
   ],
-  "providerWallTimeMs": 3469335
+  "providerWallTimeMs": 6733545
 }

@@ -10,7 +10,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Iterable
 
-from build_roster_plan import quota_summary, render_summon_prompt
+from build_roster_plan import normalize_name, quota_summary, render_summon_prompt
 from contracts import (
     ContractError,
     CreatedFile,
@@ -34,6 +34,7 @@ from contracts import (
     workspace_relative,
 )
 from validate_preflight import validate_preflight
+from materialize_supplemental_reserve import load_supplemental_reserves
 
 
 ACTIVATION_SCHEMA = "hero-one-star-reserve-activation-v1"
@@ -152,6 +153,11 @@ def _current_selection(
     roster: dict[str, Any],
 ) -> tuple[list[dict[str, str]], set[str], set[str], str | None, int]:
     active_ids = [packet["heroId"] for packet in roster["active"]]
+    frozen_reserve_ids = {packet["heroId"] for packet in roster["reserves"]}
+    supplemental_by_id = {
+        record["reservePacket"]["heroId"]: (relative, record)
+        for relative, record in load_supplemental_reserves(workspace, roster)
+    }
     selection = {hero_id: hero_id for hero_id in active_ids}
     used_reserves: set[str] = set()
     used_slots: set[str] = set()
@@ -168,6 +174,21 @@ def _current_selection(
         )
         failed_id = record["failedActiveHeroId"]
         reserve_id = record["reserveHeroId"]
+        supplemental = supplemental_by_id.get(reserve_id)
+        if supplemental is None:
+            if reserve_id not in frozen_reserve_ids:
+                raise ContractError("existing activation reserve is neither frozen nor supplemental")
+        else:
+            supplemental_relative, supplemental_record = supplemental
+            evidence = record.get("decisionEvidence")
+            if (
+                not isinstance(evidence, dict)
+                or evidence.get("supplementalReservePath") != supplemental_relative
+                or evidence.get("supplementalReserveSha256") != sha256_json(supplemental_record)
+                or evidence.get("supplementalReservePacketSha256")
+                != sha256_json(supplemental_record["reservePacket"])
+            ):
+                raise ContractError("existing activation does not bind its supplemental reserve")
         if failed_id not in selection:
             raise ContractError("existing activation does not own an active quota slot")
         replaced_selected_id = selection[failed_id]
@@ -279,6 +300,7 @@ def activate_reserve(
     created_at: str,
     reason: str,
     failure_result_path: str | None = None,
+    supplemental_reserve_path: Path | None = None,
 ) -> dict[str, Any]:
     workspace = workspace.resolve(strict=True)
     roster_relative = workspace_relative(workspace, roster_plan_path)
@@ -304,10 +326,8 @@ def activate_reserve(
     active = _packet_map(roster["active"], "active roster")
     reserves = _packet_map(roster["reserves"], "reserve roster")
     failed_packet = active.get(failed_active_hero_id)
-    reserve_packet = reserves.get(reserve_hero_id)
-    if failed_packet is None or reserve_packet is None:
-        raise ContractError("failed hero must be active and replacement hero must be reserve")
-    calibration_replacement = APPROVED_REPLACEMENTS.get(failed_active_hero_id) == reserve_hero_id
+    if failed_packet is None:
+        raise ContractError("failed hero must own a frozen active quota slot")
     if failed_packet["waveId"] != destination_wave:
         raise ContractError("destination wave must equal the failed active quota slot wave")
     if not reason.strip() or len(reason) > 1000:
@@ -320,6 +340,66 @@ def activate_reserve(
     if failed_active_hero_id not in selection_by_slot:
         raise ContractError("failed active quota slot is not selected")
     failed_selected_hero_id = selection_by_slot[failed_active_hero_id]
+    supplemental_relative: str | None = None
+    supplemental_record: dict[str, Any] | None = None
+    if supplemental_reserve_path is None:
+        reserve_packet = reserves.get(reserve_hero_id)
+        if reserve_packet is None:
+            raise ContractError(
+                "replacement must be a frozen reserve unless --supplemental-reserve-path is supplied"
+            )
+    else:
+        supplemental_relative = workspace_relative(workspace, supplemental_reserve_path)
+        supplemental_records = load_supplemental_reserves(workspace, roster)
+        supplemental_by_path = dict(supplemental_records)
+        supplemental_record = supplemental_by_path.get(supplemental_relative)
+        if supplemental_record is None:
+            raise ContractError("supplemental reserve path is not in the validated append-only ledger")
+        reserve_packet = supplemental_record["reservePacket"]
+        if reserve_packet["heroId"] != reserve_hero_id:
+            raise ContractError("supplemental reserve path and reserveHeroId disagree")
+        if reserve_hero_id in reserves:
+            raise ContractError("frozen reserves must not be activated through the supplemental path")
+        slot_gender = failed_packet["physicalManifest"]["genderPresentation"]
+        unused_same_gender = sorted(
+            packet["heroId"]
+            for packet in reserves.values()
+            if packet["physicalManifest"]["genderPresentation"] == slot_gender
+            and packet["heroId"] not in used_reserves
+            and packet["heroId"] not in selection_by_slot.values()
+        )
+        if unused_same_gender:
+            raise ContractError(
+                "supplemental reserve is forbidden while unused frozen same-gender reserves remain: "
+                + ", ".join(unused_same_gender)
+            )
+        frozen_packets = list(active.values()) + list(reserves.values())
+        frozen_ids = {packet["heroId"].casefold() for packet in frozen_packets}
+        frozen_names = {normalize_name(packet["displayName"]) for packet in frozen_packets}
+        frozen_signatures = {packet["identitySignature"] for packet in frozen_packets}
+        if (
+            reserve_packet["heroId"].casefold() in frozen_ids
+            or normalize_name(reserve_packet["displayName"]) in frozen_names
+            or reserve_packet["identitySignature"] in frozen_signatures
+        ):
+            raise ContractError("supplemental reserve duplicates a frozen identity")
+        for relative in _activation_files(workspace):
+            prior = _read_json(workspace, relative)
+            identity = prior["preservedReserveIdentity"]
+            if (
+                prior["reserveHeroId"].casefold() == reserve_packet["heroId"].casefold()
+                or normalize_name(identity["displayName"]) == normalize_name(reserve_packet["displayName"])
+                or reserve_packet["identitySignature"]
+                in {
+                    identity["frozenIdentitySignature"],
+                    identity["activatedIdentitySignature"],
+                }
+            ):
+                raise ContractError("supplemental reserve duplicates or reuses an activated identity")
+    calibration_replacement = (
+        supplemental_record is None
+        and APPROVED_REPLACEMENTS.get(failed_active_hero_id) == reserve_hero_id
+    )
     if reserve_hero_id in used_reserves or reserve_hero_id in selection_by_slot.values():
         raise ContractError("reserve identity has already been activated")
 
@@ -417,14 +497,31 @@ def activate_reserve(
         multiple_initial_blockers = (
             failure_version == 1 and len(failure_result["failedCriteria"]) > 1
         )
-        if (
-            not (exhausted_correction or multiple_initial_blockers)
-            or failure_result["status"] != "revise"
-            or failure_result["candidate"] is None
-            or not failure_result["failedCriteria"]
-        ):
+        terminal_provider_integrity_failure = (
+            failure_version in {1, 2}
+            and failure_target["correctionSource"] is None
+            and failure_result["status"] == "failed"
+            and failure_result["candidate"] is None
+            and bool(failure_result["failedCriteria"])
+            and any(
+                attempt.get("conclusion") == "provider-failure"
+                and attempt.get("failureKind") in {"malformed-output", "persistence"}
+                and attempt.get("sourceOutput") is None
+                and attempt.get("persistence") is None
+                for attempt in failure_result["attempts"]
+            )
+        )
+        eligible_revise = (
+            (exhausted_correction or multiple_initial_blockers)
+            and failure_result["status"] == "revise"
+            and failure_result["candidate"] is not None
+            and bool(failure_result["failedCriteria"])
+        )
+        if not (eligible_revise or terminal_provider_integrity_failure):
             raise ContractError(
-                "post-calibration activation requires either multiple initial blockers or a retained revise result after one versioned correction"
+                "post-calibration activation requires multiple initial blockers, a retained "
+                "revise result after one versioned correction, or a terminal provider-output "
+                "integrity failure"
             )
         if reserve_packet["physicalManifest"]["genderPresentation"] != failed_packet["physicalManifest"]["genderPresentation"]:
             raise ContractError("post-calibration reserve identity must preserve gender presentation")
@@ -434,11 +531,24 @@ def activate_reserve(
             "failureStatus": failure_result["status"],
             "failedCriteria": deepcopy(failure_result["failedCriteria"]),
             "authorization": (
-                "objective authoring failure after the single allowed versioned correction"
-                if exhausted_correction
-                else "multiple objective blockers on the initial render; correction skipped under the one-defect correction rule"
+                "terminal provider-output integrity failure; no contract-valid candidate was persistable"
+                if terminal_provider_integrity_failure
+                else (
+                    "objective authoring failure after the single allowed versioned correction"
+                    if exhausted_correction
+                    else "multiple objective blockers on the initial render; correction skipped under the one-defect correction rule"
+                )
             ),
         }
+        if supplemental_record is not None:
+            assert supplemental_relative is not None
+            decision_evidence.update(
+                {
+                    "supplementalReservePath": supplemental_relative,
+                    "supplementalReserveSha256": sha256_json(supplemental_record),
+                    "supplementalReservePacketSha256": sha256_json(reserve_packet),
+                }
+            )
     physical_manifest = _activation_manifest(failed_packet, reserve_packet)
     quota_coordinates = deepcopy(failed_packet["quotaCoordinates"])
     reserve_kernel = deepcopy(reserve_packet["characterKernel"])
@@ -655,6 +765,7 @@ def main() -> None:
     parser.add_argument("--created-at", required=True)
     parser.add_argument("--reason", required=True)
     parser.add_argument("--failure-result-path")
+    parser.add_argument("--supplemental-reserve-path", type=Path)
     args = parser.parse_args()
     receipt = activate_reserve(
         args.roster_plan,
@@ -667,6 +778,7 @@ def main() -> None:
         created_at=args.created_at,
         reason=args.reason,
         failure_result_path=args.failure_result_path,
+        supplemental_reserve_path=args.supplemental_reserve_path,
     )
     print(json.dumps(receipt, indent=2))
 

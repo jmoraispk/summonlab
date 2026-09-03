@@ -33,6 +33,7 @@ from contracts import (
 )
 from validate_wave import verify_execution
 from activate_reserve import _activation_files, _current_selection
+from materialize_supplemental_reserve import load_supplemental_reserves
 
 
 REVIEW_ROOT = f"{EXPERIMENT_ROOT}/review"
@@ -154,13 +155,24 @@ def load_effective_roster(workspace: Path) -> tuple[list[dict[str, Any]], dict[s
         "chainHeadSha256": None,
         "count": 0,
         "replacements": [],
+        "transitions": [],
+        "supplementalReserves": [],
     }
     activation_files = _activation_files(workspace)
     if activation_files:
         selection, _used_reserves, _used_slots, chain_head, count = _current_selection(workspace, roster)
         active_by_id = {entry["heroId"]: entry for entry in active}
         reserve_by_id = {entry["heroId"]: entry for entry in reserves}
-        record_by_slot: dict[str, tuple[str, dict[str, Any]]] = {}
+        supplemental_records = load_supplemental_reserves(workspace, roster)
+        supplemental_paths: list[dict[str, str]] = []
+        for relative, record in supplemental_records:
+            packet = _validate_roster_entry(record["reservePacket"], "reserve")
+            if packet["heroId"] in reserve_by_id:
+                raise ContractError("supplemental reserve duplicates a frozen reserve")
+            reserve_by_id[packet["heroId"]] = packet
+            supplemental_paths.append({"path": relative, "sha256": sha256_json(record)})
+        slot_packets = {hero_id: deepcopy(packet) for hero_id, packet in active_by_id.items()}
+        transitions: list[dict[str, Any]] = []
         activation_paths: list[dict[str, str]] = []
         for relative in activation_files:
             payload = anchored_read(workspace, relative)
@@ -168,35 +180,60 @@ def load_effective_roster(workspace: Path) -> tuple[list[dict[str, Any]], dict[s
                 record = json.loads(payload)
             except json.JSONDecodeError as error:
                 raise ContractError(f"cannot parse activation record {relative}: {error}") from error
-            record_by_slot[record["failedActiveHeroId"]] = (relative, record)
-            activation_paths.append({"path": relative, "sha256": sha256_bytes(payload)})
-        effective: list[dict[str, Any]] = []
-        replacements: list[dict[str, str]] = []
-        for selection_entry in selection:
-            slot_id = selection_entry["slotHeroId"]
-            selected_id = selection_entry["selectedHeroId"]
-            if selected_id == slot_id:
-                effective.append(active_by_id[slot_id])
-                continue
-            if selected_id not in reserve_by_id or slot_id not in record_by_slot:
-                raise ContractError("activation selection does not resolve to a frozen reserve and record")
-            _relative, record = record_by_slot[slot_id]
-            if record["reserveHeroId"] != selected_id:
-                raise ContractError("activation record and active selection disagree")
-            packet = deepcopy(reserve_by_id[selected_id])
+            slot_id = record["failedActiveHeroId"]
+            reserve_id = record["reserveHeroId"]
+            if slot_id not in slot_packets or reserve_id not in reserve_by_id:
+                raise ContractError("activation transition does not resolve to a known slot and reserve")
+            previous = slot_packets[slot_id]
+            failed_evidence = record.get("failedSlotEvidence")
+            if not isinstance(failed_evidence, dict) or failed_evidence.get("heroId") != previous["heroId"]:
+                raise ContractError("activation transition failure evidence disagrees with prior occupant")
+            packet = deepcopy(reserve_by_id[reserve_id])
             packet["rosterStatus"] = "active"
             packet["waveId"] = record["destinationWave"]
             packet["physicalManifest"] = deepcopy(record["physicalManifest"])
             packet["quotaCoordinates"] = deepcopy(record["slotQuotaCoordinates"])
             packet["displayName"] = record["preservedReserveIdentity"]["displayName"]
-            effective.append(packet)
-            replacements.append({"reserveHeroId": selected_id, "replacesHeroId": slot_id})
+            packet["identitySignature"] = record["preservedReserveIdentity"][
+                "activatedIdentitySignature"
+            ]
+            slot_packets[slot_id] = packet
+            transitions.append(
+                {
+                    "slotHeroId": slot_id,
+                    "deactivatedHeroId": previous["heroId"],
+                    "replacementHeroId": reserve_id,
+                    "activationPath": relative,
+                    "roster": previous,
+                }
+            )
+            activation_paths.append({"path": relative, "sha256": sha256_bytes(payload)})
+        effective = [slot_packets[entry["heroId"]] for entry in active]
+        if len(effective) != 200 or len({entry["heroId"] for entry in effective}) != 200:
+            raise ContractError("activation history did not resolve to 200 unique effective heroes")
+        selected_by_slot = {
+            item["slotHeroId"]: item["selectedHeroId"] for item in selection
+        }
+        for entry in active:
+            if slot_packets[entry["heroId"]]["heroId"] != selected_by_slot[entry["heroId"]]:
+                raise ContractError("event-resolved activation history disagrees with chain selection")
+        replacements: list[dict[str, str]] = []
+        for selection_entry in selection:
+            if selection_entry["selectedHeroId"] != selection_entry["slotHeroId"]:
+                replacements.append(
+                    {
+                        "reserveHeroId": selection_entry["selectedHeroId"],
+                        "replacesHeroId": selection_entry["slotHeroId"],
+                    }
+                )
         active = effective
         activation_summary = {
             "paths": activation_paths,
             "chainHeadSha256": chain_head,
             "count": count,
             "replacements": replacements,
+            "transitions": transitions,
+            "supplementalReserves": supplemental_paths,
         }
     active.sort(key=lambda entry: (entry["physicalManifest"]["designOrdinal"], entry["heroId"]))
     return active, activation_summary
@@ -323,19 +360,20 @@ def discover_review_state(
 ]:
     """Resolve effective selection while retaining replaced-slot evidence off the main pages."""
     roster, activations = load_effective_roster(workspace)
-    frozen = _load_json_bytes(workspace, f"{EXPERIMENT_ROOT}/roster-plan.json")
-    frozen_active = {entry["heroId"]: entry for entry in frozen["active"]}
-    retired: list[tuple[dict[str, Any], str]] = []
-    for replacement in activations["replacements"]:
-        failed_id = replacement["replacesHeroId"]
-        if failed_id not in frozen_active:
-            raise ContractError(f"activation references unknown frozen active slot: {failed_id}")
-        retired.append((frozen_active[failed_id], replacement["reserveHeroId"]))
+    retired: list[tuple[dict[str, Any], str, str]] = []
+    for transition in activations.get("transitions", []):
+        retired.append(
+            (
+                transition["roster"],
+                transition["replacementHeroId"],
+                transition["slotHeroId"],
+            )
+        )
     artifacts_by_hero = collect_executions(
-        workspace, roster + [entry for entry, _replacement_id in retired]
+        workspace, roster + [entry for entry, _replacement_id, _slot_id in retired]
     )
     pairs, quarantine = select_pairs(roster, artifacts_by_hero)
-    for entry, replacement_id in retired:
+    for entry, replacement_id, slot_id in retired:
         visible = tuple(
             sorted(
                 (
@@ -350,7 +388,7 @@ def discover_review_state(
             QuarantineEntry(
                 entry,
                 (
-                    f"Deactivated active quota slot; replaced by reserve {replacement_id}",
+                    f"Deactivated from quota slot {slot_id}; replaced by reserve {replacement_id}",
                     "Retained only as failed-slot review evidence; not eligible for the current 200",
                 ),
                 visible,
@@ -494,17 +532,146 @@ def _metadata(entry: dict[str, Any]) -> dict[str, str]:
     }
 
 
+DECISIONS = (
+    ("keep", "Keep"),
+    ("revise-summon", "Revise summon"),
+    ("revise-chibi", "Revise chibi"),
+    ("revise-both", "Revise both"),
+    ("pass", "Pass"),
+)
+
+
+def _json_script_payload(value: Any) -> str:
+    """Serialize JSON for a raw-text script element without allowing tag termination."""
+    return (
+        json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+        .replace("<", "\\u003c")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
+
+
+def review_roster_entries(
+    roster: list[dict[str, Any]],
+    pairs: list[Pair],
+    artifacts_by_hero: dict[str, list[Artifact]],
+) -> list[dict[str, Any]]:
+    """Describe all effective active slots for a complete, stable decision export."""
+    pairs_by_id = {pair.roster["heroId"]: pair for pair in pairs}
+    entries: list[dict[str, Any]] = []
+    for item in sorted(
+        roster,
+        key=lambda entry: (entry["physicalManifest"]["designOrdinal"], entry["heroId"]),
+    ):
+        hero_id = item["heroId"]
+        pair = pairs_by_id.get(hero_id)
+        started = bool(artifacts_by_hero.get(hero_id))
+        entry: dict[str, Any] = {
+            "heroId": hero_id,
+            "displayName": item["displayName"],
+            "designOrdinal": item["physicalManifest"]["designOrdinal"],
+            "waveId": item["waveId"],
+            "pairState": "complete-pair" if pair else ("started-incomplete" if started else "unproduced"),
+        }
+        if pair:
+            entry["selectedCandidates"] = {
+                "summonTargetId": pair.summon.target["targetId"],
+                "summonSha256": pair.summon.source_sha256,
+                "chibiTargetId": pair.chibi.target["targetId"],
+                "chibiSha256": pair.chibi.source_sha256,
+            }
+        entries.append(entry)
+    return entries
+
+
 CSS = r"""
-:root{color-scheme:dark;--ink:#f4ead8;--muted:#b8ab97;--black:#11191b;--panel:#182225;--panel2:#202c2f;--line:#455356;--amber:#e7b75f;--paper:#e8dfcf;--danger:#e08b78;--focus:#77d5e6;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#11191b;color:#f4ead8}*{box-sizing:border-box}html{scrollbar-color:#637174 #11191b;scrollbar-gutter:stable}body{margin:0;background:linear-gradient(120deg,#11191b,#182225 60%,#11191b);min-height:100vh}a{color:inherit}a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.mast{padding:clamp(2rem,5vw,5rem);border-bottom:1px solid var(--line);background:radial-gradient(circle at 70% 0,#2e3d3d 0,transparent 42rem)}.kicker{margin:0 0 .65rem;color:var(--amber);font:800 .72rem/1.2 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.mast h1{max-width:14ch;margin:0;font:500 clamp(2.8rem,7vw,6.5rem)/.9 Georgia,serif;letter-spacing:-.045em}.mast-copy{max-width:53rem;margin:1.3rem 0 0;color:var(--muted);font-size:1.02rem;line-height:1.65}.counts{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.5rem}.count{padding:.55rem .7rem;border:1px solid var(--line);background:#11191baa;font:700 .76rem/1 ui-monospace,monospace}.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.65rem;align-items:end;padding:.85rem clamp(.75rem,3vw,3rem);border-bottom:1px solid var(--line);background:#11191bf2;backdrop-filter:blur(12px)}.filter{display:grid;gap:.3rem}.filter label{color:var(--muted);font:700 .64rem/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em}.filter select,.filter input{min-height:2.4rem;border:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--ink);padding:.45rem .6rem;font:650 .8rem/1 system-ui}.filter input{width:12rem}.nav{display:flex;flex-wrap:wrap;gap:.45rem;margin-left:auto}.nav a{display:inline-flex;align-items:center;min-height:2.4rem;padding:.45rem .65rem;border:1px solid var(--line);text-decoration:none;font:700 .75rem/1 ui-monospace,monospace}.nav a:hover{border-color:var(--amber);background:var(--panel2)}main{padding:clamp(1rem,3vw,3rem);max-width:118rem;margin:auto}.page-note{display:flex;justify-content:space-between;gap:1rem;margin:0 0 1rem;color:var(--muted);font:.78rem/1.4 ui-monospace,monospace}.grid{display:grid;gap:1.15rem}.card{border:1px solid var(--line);background:var(--panel);box-shadow:0 1.3rem 3rem #0004;overflow-x:auto}.pair{display:grid;grid-template-columns:1fr 1fr;min-width:44rem;min-height:36rem;background:#0e1517}.art{position:relative;display:block;min-width:0;background:#151d1f}.art+ .art{border-left:1px solid var(--line)}.art img{display:block;width:100%;height:min(62vw,48rem);object-fit:contain}.view{position:absolute;left:.75rem;top:.75rem;padding:.38rem .5rem;background:#11191be8;border:1px solid #738184;color:var(--ink);font:800 .66rem/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}.card-foot{display:grid;grid-template-columns:minmax(12rem,.6fr) 1fr;gap:1rem;padding:1rem 1.15rem;border-top:1px solid var(--line)}.name h2{margin:0;font:500 1.55rem/1.05 Georgia,serif}.name p{margin:.35rem 0 0;color:var(--muted);font:.72rem/1.4 ui-monospace,monospace}.tags{display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:start;gap:.38rem}.tag{padding:.34rem .45rem;border:1px solid #526165;background:var(--panel2);font:700 .66rem/1 ui-monospace,monospace;color:#d9d0c1}.empty{padding:4rem 1rem;text-align:center;color:var(--muted);border:1px dashed var(--line)}.quarantine .card{border-color:#735047}.reasons{margin:.4rem 0 0;color:var(--danger);font:.8rem/1.5 system-ui}.artifact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));background:#0e1517}.artifact-grid .art img{height:32rem}.shelf-note{padding:1rem 1.15rem;color:var(--muted);line-height:1.55}.hidden{display:none!important}@media(max-width:760px){.card-foot{grid-template-columns:1fr;min-width:44rem}.tags{justify-content:flex-start}.bar{position:static}.filter{flex:1 1 8rem}.filter input{width:100%}.nav{width:100%;margin-left:0}.page-note{display:block}}@media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s ease,transform .15s ease}.card:hover{border-color:#728083;transform:translateY(-1px)}}@media(forced-colors:active){*{forced-color-adjust:auto}}
+:root{color-scheme:dark;--ink:#f4ead8;--muted:#b8ab97;--black:#11191b;--panel:#182225;--panel2:#202c2f;--line:#455356;--amber:#e7b75f;--paper:#e8dfcf;--danger:#e08b78;--focus:#77d5e6;--keep:#8bc89d;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#11191b;color:#f4ead8}*{box-sizing:border-box}html{scrollbar-color:#637174 #11191b;scrollbar-gutter:stable}body{margin:0;background:linear-gradient(120deg,#11191b,#182225 60%,#11191b);min-height:100vh}a{color:inherit}a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.mast{padding:clamp(2rem,5vw,5rem);border-bottom:1px solid var(--line);background:radial-gradient(circle at 70% 0,#2e3d3d 0,transparent 42rem)}.kicker{margin:0 0 .65rem;color:var(--amber);font:800 .72rem/1.2 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.mast h1{max-width:14ch;margin:0;font:500 clamp(2.8rem,7vw,6.5rem)/.9 Georgia,serif;letter-spacing:-.045em}.mast-copy{max-width:53rem;margin:1.3rem 0 0;color:var(--muted);font-size:1.02rem;line-height:1.65}.counts{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.5rem}.count{padding:.55rem .7rem;border:1px solid var(--line);background:#11191baa;font:700 .76rem/1 ui-monospace,monospace}.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.65rem;align-items:end;padding:.85rem clamp(.75rem,3vw,3rem);border-bottom:1px solid var(--line);background:#11191bf2;backdrop-filter:blur(12px)}.filter{display:grid;gap:.3rem}.filter label{color:var(--muted);font:700 .64rem/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em}.filter select,.filter input{min-height:2.4rem;border:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--ink);padding:.45rem .6rem;font:650 .8rem/1 system-ui}.filter input{width:12rem}.action{min-height:2.4rem;border:1px solid var(--amber);border-radius:0;background:#2c271c;color:var(--ink);padding:.55rem .75rem;font:800 .72rem/1 ui-monospace,monospace;cursor:pointer}.action:hover{background:#403722}.nav{display:flex;flex-wrap:wrap;gap:.45rem;margin-left:auto}.nav a{display:inline-flex;align-items:center;min-height:2.4rem;padding:.45rem .65rem;border:1px solid var(--line);text-decoration:none;font:700 .75rem/1 ui-monospace,monospace}.nav a:hover{border-color:var(--amber);background:var(--panel2)}main{padding:clamp(1rem,3vw,3rem);max-width:118rem;margin:auto}.page-note{display:flex;justify-content:space-between;gap:1rem;margin:0 0 1rem;color:var(--muted);font:.78rem/1.4 ui-monospace,monospace}.grid{display:grid;gap:1.15rem}.card{border:1px solid var(--line);background:var(--panel);box-shadow:0 1.3rem 3rem #0004;overflow-x:auto}.card[data-decision="keep"]{border-color:var(--keep)}.card[data-decision="pass"],.card[data-decision^="revise"]{border-color:var(--danger)}.pair{display:grid;grid-template-columns:1fr 1fr;min-width:44rem;min-height:36rem;background:#0e1517}.art{position:relative;display:block;min-width:0;background:#151d1f}.art+ .art{border-left:1px solid var(--line)}.art img{display:block;width:100%;height:min(62vw,48rem);object-fit:contain}.view{position:absolute;left:.75rem;top:.75rem;padding:.38rem .5rem;background:#11191be8;border:1px solid #738184;color:var(--ink);font:800 .66rem/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}.card-foot{display:grid;grid-template-columns:minmax(12rem,.6fr) 1fr;gap:1rem;padding:1rem 1.15rem;border-top:1px solid var(--line)}.name h2{margin:0;font:500 1.55rem/1.05 Georgia,serif}.name p{margin:.35rem 0 0;color:var(--muted);font:.72rem/1.4 ui-monospace,monospace}.tags{display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:start;gap:.38rem}.tag{padding:.34rem .45rem;border:1px solid #526165;background:var(--panel2);font:700 .66rem/1 ui-monospace,monospace;color:#d9d0c1}.review{display:grid;gap:.75rem;padding:1rem 1.15rem;border-top:1px solid var(--line);background:#131c1e}.review fieldset{display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;border:0}.review legend{width:100%;margin:0 0 .2rem;color:var(--muted);font:800 .67rem/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em}.choice{position:relative;display:inline-flex}.choice input{position:absolute;opacity:0;inset:0}.choice span{display:inline-flex;align-items:center;min-height:2.35rem;padding:.48rem .65rem;border:1px solid var(--line);background:var(--panel2);font:750 .75rem/1 system-ui;cursor:pointer}.choice input:focus-visible+span{outline:3px solid var(--focus);outline-offset:3px}.choice input:checked+span{border-color:var(--amber);background:#433821;color:#fff8e9}.note-row{display:grid;grid-template-columns:minmax(8rem,1fr) auto;gap:.65rem;align-items:end}.note-row label{display:grid;gap:.3rem;color:var(--muted);font:800 .67rem/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em}.note-row textarea{min-height:4.25rem;resize:vertical;border:1px solid var(--line);border-radius:0;background:#0e1517;color:var(--ink);padding:.65rem;font:500 .86rem/1.45 system-ui}.decision-state{min-width:9rem;padding:.55rem .65rem;border-left:3px solid var(--amber);background:#11191b;color:var(--muted);font:750 .72rem/1.35 ui-monospace,monospace}.storage-warning{color:var(--danger)}.empty{padding:4rem 1rem;text-align:center;color:var(--muted);border:1px dashed var(--line)}.quarantine .card{border-color:#735047}.reasons{margin:.4rem 0 0;color:var(--danger);font:.8rem/1.5 system-ui}.artifact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));background:#0e1517}.artifact-grid .art img{height:32rem}.shelf-note{padding:1rem 1.15rem;color:var(--muted);line-height:1.55}.hidden{display:none!important}@media(max-width:760px){.card-foot{grid-template-columns:1fr;min-width:44rem}.tags{justify-content:flex-start}.bar{position:static}.filter{flex:1 1 8rem}.filter input{width:100%}.nav{width:100%;margin-left:0}.page-note{display:block}.note-row{grid-template-columns:1fr}}@media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s ease,transform .15s ease}.card:hover{border-color:#728083;transform:translateY(-1px)}}@media(forced-colors:active){*{forced-color-adjust:auto}}
 """
 
 
 JS = r"""
-const controls=[...document.querySelectorAll('[data-filter]')];const cards=[...document.querySelectorAll('[data-card]')];const count=document.querySelector('[data-visible-count]');function apply(){const values=Object.fromEntries(controls.map(el=>[el.dataset.filter,el.value.trim().toLowerCase()]));let visible=0;for(const card of cards){const ok=Object.entries(values).every(([key,value])=>!value||(key==='search'?card.dataset.search.includes(value):card.dataset[key]===value));card.classList.toggle('hidden',!ok);if(ok)visible++}if(count)count.textContent=String(visible)}for(const control of controls){control.addEventListener(control.tagName==='INPUT'?'input':'change',apply)}apply();
+const EXPERIMENT_ID=document.documentElement.dataset.experiment;
+const DECISION_VERSION=1;
+const ALLOWED_DECISIONS=new Set(['keep','revise-summon','revise-chibi','revise-both','pass']);
+const decisionLabels={'keep':'Keep','revise-summon':'Revise summon','revise-chibi':'Revise chibi','revise-both':'Revise both','pass':'Pass','pending':'Pending'};
+const rosterNode=document.getElementById('review-roster-data');
+const roster=rosterNode?JSON.parse(rosterNode.textContent):[];
+const storagePrefix=`summonlab.review.${EXPERIMENT_ID}.hero.`;
+let storageAvailable=true;
+function storageKey(heroId){return `${storagePrefix}${heroId}.v${DECISION_VERSION}`}
+function readDecision(heroId){
+  try{
+    const raw=localStorage.getItem(storageKey(heroId));
+    if(!raw)return {decision:'pending',note:''};
+    const parsed=JSON.parse(raw);
+    if(!parsed||parsed.version!==DECISION_VERSION||!ALLOWED_DECISIONS.has(parsed.decision))return {decision:'pending',note:''};
+    return {decision:parsed.decision,note:typeof parsed.note==='string'?parsed.note:''};
+  }catch(error){storageAvailable=false;return {decision:'pending',note:''}}
+}
+function effectiveDecision(hero){return hero.pairState==='complete-pair'?readDecision(hero.heroId):{decision:'pending',note:''}}
+function writeDecision(heroId,state){
+  try{
+    if(state.decision==='pending'&&!state.note){localStorage.removeItem(storageKey(heroId));return true}
+    localStorage.setItem(storageKey(heroId),JSON.stringify({version:DECISION_VERSION,decision:state.decision,note:state.note}));
+    return true;
+  }catch(error){storageAvailable=false;showStorageWarning();return false}
+}
+function showStorageWarning(){for(const node of document.querySelectorAll('[data-storage-state]')){node.textContent='Browser storage unavailable — export before leaving';node.classList.add('storage-warning')}}
+function updateCounts(){
+  const totals={pending:0,keep:0,'revise-summon':0,'revise-chibi':0,'revise-both':0,pass:0};
+  for(const hero of roster)totals[effectiveDecision(hero).decision]++;
+  const decided=roster.length-totals.pending;
+  const revisions=totals['revise-summon']+totals['revise-chibi']+totals['revise-both'];
+  for(const node of document.querySelectorAll('[data-decision-count]')){const key=node.dataset.decisionCount;node.textContent=key==='decided'?String(decided):key==='revisions'?String(revisions):String(totals[key]||0)}
+  if(!storageAvailable)showStorageWarning();
+}
+function hydrateCard(card){
+  const heroId=card.dataset.heroId;if(!heroId)return;
+  const state=readDecision(heroId);card.dataset.decision=state.decision;
+  const choice=card.querySelector(`input[type="radio"][value="${state.decision}"]`);if(choice)choice.checked=true;
+  const note=card.querySelector('[data-decision-note]');if(note)note.value=state.note;
+  const status=card.querySelector('[data-decision-state]');if(status)status.textContent=`Saved: ${decisionLabels[state.decision]}`;
+}
+const controls=[...document.querySelectorAll('[data-filter]')];
+const cards=[...document.querySelectorAll('[data-card]')];
+const visibleCount=document.querySelector('[data-visible-count]');
+function applyFilters(){
+  const values=Object.fromEntries(controls.map(el=>[el.dataset.filter,el.value.trim().toLowerCase()]));let visible=0;
+  for(const card of cards){const ok=Object.entries(values).every(([key,value])=>!value||(key==='search'?card.dataset.search.includes(value):card.dataset[key]===value));card.classList.toggle('hidden',!ok);if(ok)visible++}
+  if(visibleCount)visibleCount.textContent=String(visible);
+}
+for(const card of cards){hydrateCard(card);card.addEventListener('change',event=>{
+  if(!event.target.matches('[data-decision-choice]'))return;
+  const note=card.querySelector('[data-decision-note]');
+  const state={decision:event.target.value,note:note?note.value.trim():''};
+  if(writeDecision(card.dataset.heroId,state)){card.dataset.decision=state.decision;card.querySelector('[data-decision-state]').textContent=`Saved: ${decisionLabels[state.decision]}`}
+  updateCounts();applyFilters();
+});
+const note=card.querySelector('[data-decision-note]');if(note)note.addEventListener('input',()=>{
+  const selected=card.querySelector('[data-decision-choice]:checked');
+  const state={decision:selected?selected.value:'pending',note:note.value.trim()};
+  if(writeDecision(card.dataset.heroId,state))card.querySelector('[data-decision-state]').textContent=`Saved: ${decisionLabels[state.decision]}${state.note?' + note':''}`;
+  updateCounts();
+})}
+for(const control of controls)control.addEventListener(control.tagName==='INPUT'?'input':'change',applyFilters);
+const exportButton=document.querySelector('[data-export-decisions]');if(exportButton)exportButton.addEventListener('click',()=>{
+  const decisions=roster.map(hero=>{const state=effectiveDecision(hero);return {...hero,decision:state.decision,note:state.note}});
+  const payload={schemaVersion:'hero-one-star-review-decisions-v1',experimentId:EXPERIMENT_ID,candidateBoundary:'candidate-only; review decisions do not approve or promote candidates',exportedAt:new Date().toISOString(),entryCount:decisions.length,decisions};
+  const blob=new Blob([`${JSON.stringify(payload,null,2)}\n`],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`${EXPERIMENT_ID}-decisions-v1.json`;document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+});
+updateCounts();applyFilters();
 """
 
 
-def _shell(title: str, body: str, *, current: str, counts: dict[str, int], filters: bool) -> str:
+def _shell(
+    title: str,
+    body: str,
+    *,
+    current: str,
+    counts: dict[str, int],
+    filters: bool,
+    decision_roster: list[dict[str, Any]] | None = None,
+) -> str:
     filter_html = ""
     if filters:
         options = [
@@ -516,12 +683,25 @@ def _shell(title: str, body: str, *, current: str, counts: dict[str, int], filte
             for key, label in options
         )
         filter_html = f'<div class="filter"><label for="f-search">Find hero</label><input id="f-search" data-filter="search" type="search" autocomplete="off" placeholder="Name or tag"></div>{selects}'
+        if decision_roster is not None:
+            decision_options = '<option value="">All</option><option value="pending">Pending</option>' + "".join(
+                f'<option value="{_escape(value)}">{_escape(label)}</option>' for value, label in DECISIONS
+            )
+            filter_html += f'<div class="filter"><label for="f-decision">Decision</label><select id="f-decision" data-filter="decision" data-fixed-options>{decision_options}</select></div>'
+    decision_counts = ""
+    decision_tools = ""
+    embedded_roster = ""
+    if decision_roster is not None:
+        roster_size = len(decision_roster)
+        decision_counts = f'<span class="count"><span data-decision-count="decided">0</span> / {roster_size} decided</span><span class="count"><span data-decision-count="keep">0</span> keep</span><span class="count"><span data-decision-count="revisions">0</span> revise</span><span class="count"><span data-decision-count="pass">0</span> pass</span><span class="count"><span data-decision-count="pending">{roster_size}</span> pending review</span>'
+        decision_tools = '<button class="action" type="button" data-export-decisions>Export decisions</button><span class="count" data-storage-state aria-live="polite">Decisions save in this browser</span>'
+        embedded_roster = f'<script type="application/json" id="review-roster-data">{_json_script_payload(decision_roster)}</script>'
     nav = '<nav class="nav" aria-label="Review sections"><a href="index.html">Candidate pairs</a><a href="reference-shelf.html">Reference shelf</a><a href="quarantine.html">Quarantine</a></nav>'
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_escape(title)} · Summonlab</title><style>{CSS}</style></head><body><header class="mast"><p class="kicker">Candidate-only · no runtime promotion</p><h1>{_escape(title)}</h1><p class="mast-copy">Summon art and its source-bound combat chibi stay together. Every preview is a fixed-canvas review derivative; click either image to inspect the immutable full-resolution candidate.</p><div class="counts"><span class="count">{counts['complete']} / {counts['planned']} complete pairs</span><span class="count">{counts.get('started', counts['complete'])} started</span><span class="count">{counts.get('pending', counts['planned'] - counts['complete'])} pending</span><span class="count">{counts['quarantine']} quarantine records</span><span class="count">{counts['reserves']} reserve activations</span><span class="count"><span data-visible-count>{counts.get('page', 0)}</span> visible here</span></div></header><div class="bar">{filter_html}{nav}</div>{body}<script>{_options_script() if filters else ''}{JS if filters else ''}</script></body></html>'''
+    return f'''<!doctype html><html lang="en" data-experiment="{_escape(EXPERIMENT_ID)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_escape(title)} · Summonlab</title><style>{CSS}</style></head><body><header class="mast"><p class="kicker">Candidate-only · no runtime promotion</p><h1>{_escape(title)}</h1><p class="mast-copy">Summon art and its source-bound combat chibi stay together. Every preview is a fixed-canvas review derivative; click either image to inspect the immutable full-resolution candidate.</p><div class="counts"><span class="count">{counts['complete']} / {counts['planned']} complete pairs</span><span class="count">{counts.get('started', counts['complete'])} started</span><span class="count">{counts.get('pending', counts['planned'] - counts['complete'])} pending production</span><span class="count">{counts['quarantine']} quarantine records</span><span class="count">{counts['reserves']} reserve activations</span><span class="count"><span data-visible-count>{counts.get('page', 0)}</span> visible here</span>{decision_counts}</div></header><div class="bar">{filter_html}{decision_tools}{nav}</div>{body}{embedded_roster}<script>{_options_script() if filters else ''}{JS if filters else ''}</script></body></html>'''
 
 
 def _options_script() -> str:
-    return r"""for(const select of document.querySelectorAll('select[data-filter]')){const key=select.dataset.filter;const values=[...new Set([...document.querySelectorAll('[data-card]')].map(card=>card.dataset[key]).filter(Boolean))].sort();for(const value of values){const option=document.createElement('option');option.value=value;option.textContent=value.replaceAll('-',' ');select.append(option)}}"""
+    return r"""for(const select of document.querySelectorAll('select[data-filter]:not([data-fixed-options])')){const key=select.dataset.filter;const values=[...new Set([...document.querySelectorAll('[data-card]')].map(card=>card.dataset[key]).filter(Boolean))].sort();for(const value of values){const option=document.createElement('option');option.value=value;option.textContent=value.replaceAll('-',' ');select.append(option)}}"""
 
 
 def _art_link(page_path: str, derivative: dict[str, Any], label: str) -> str:
@@ -537,10 +717,25 @@ def _pair_card(page_path: str, pair: Pair, derivatives: dict[tuple[str, str, int
     summon = derivatives[(pair.summon.hero_id, pair.summon.kind, pair.summon.version)]
     chibi = derivatives[(pair.chibi.hero_id, pair.chibi.kind, pair.chibi.version)]
     tags = [meta[key] for key in ("gender", "age", "height", "body", "hair", "wardrobe", "palette", "details")]
-    return f'''<article class="card" data-card data-search="{_escape(search)}" {attrs}><div class="pair">{_art_link(page_path, summon, 'Summon')}{_art_link(page_path, chibi, 'Combat chibi')}</div><footer class="card-foot"><div class="name"><h2>{_escape(pair.roster['displayName'])}</h2><p>{_escape(pair.roster['heroId'])} · {meta['ageYears']} years · {meta['wave']} · summon v{pair.summon.version} / chibi v{pair.chibi.version}</p></div><div class="tags">{''.join(f'<span class="tag">{_escape(tag)}</span>' for tag in tags)}</div></footer></article>'''
+    hero_id = pair.roster["heroId"]
+    choice_name = f"decision-{hero_id}"
+    choices = "".join(
+        f'<label class="choice"><input type="radio" name="{_escape(choice_name)}" value="{_escape(value)}" data-decision-choice><span>{_escape(label)}</span></label>'
+        for value, label in DECISIONS
+    )
+    note_id = f"note-{hero_id}"
+    return f'''<article class="card" data-card data-hero-id="{_escape(hero_id)}" data-decision="pending" data-search="{_escape(search)}" {attrs}><div class="pair">{_art_link(page_path, summon, 'Summon')}{_art_link(page_path, chibi, 'Combat chibi')}</div><footer class="card-foot"><div class="name"><h2>{_escape(pair.roster['displayName'])}</h2><p>{_escape(hero_id)} · {meta['ageYears']} years · {meta['wave']} · summon v{pair.summon.version} / chibi v{pair.chibi.version}</p></div><div class="tags">{''.join(f'<span class="tag">{_escape(tag)}</span>' for tag in tags)}</div></footer><form class="review" aria-label="Review {_escape(pair.roster['displayName'])}"><fieldset><legend>Decision</legend>{choices}</fieldset><div class="note-row"><label for="{_escape(note_id)}">Optional note<textarea id="{_escape(note_id)}" data-decision-note rows="2" placeholder="What should change, or why this one works?"></textarea></label><output class="decision-state" data-decision-state aria-live="polite">Saved: Pending</output></div></form></article>'''
 
 
-def _render_pair_page(page_path: str, pairs: list[Pair], derivatives: dict[tuple[str, str, int], dict[str, Any]], page_number: int, total_pages: int, counts: dict[str, int]) -> str:
+def _render_pair_page(
+    page_path: str,
+    pairs: list[Pair],
+    derivatives: dict[tuple[str, str, int], dict[str, Any]],
+    page_number: int,
+    total_pages: int,
+    counts: dict[str, int],
+    decision_roster: list[dict[str, Any]] | None = None,
+) -> str:
     cards = "".join(_pair_card(page_path, pair, derivatives) for pair in pairs)
     if not cards:
         cards = '<div class="empty">No complete candidate-status pairs are available yet. Run production first, then rebuild this review.</div>'
@@ -553,7 +748,14 @@ def _render_pair_page(page_path: str, pairs: list[Pair], derivatives: dict[tuple
         pager.append(f'<a href="{next_page}">Next 20 →</a>')
     page_counts = {**counts, "page": len(pairs)}
     body = f'<main><div class="page-note"><span>Page {page_number} of {max(total_pages, 1)} · stable roster order</span><span>{" · ".join(pager) if pager else "Current complete set"}</span></div><section class="grid" aria-label="Hero candidate pairs">{cards}</section></main>'
-    return _shell("The one-star casting board", body, current="pairs", counts=page_counts, filters=True)
+    return _shell(
+        "The one-star casting board",
+        body,
+        current="pairs",
+        counts=page_counts,
+        filters=True,
+        decision_roster=decision_roster,
+    )
 
 
 def _quarantine_card(page_path: str, entry: QuarantineEntry, derivatives: dict[tuple[str, str, int], dict[str, Any]]) -> str:
@@ -624,12 +826,23 @@ def build_review(workspace: Path) -> dict[str, Any]:
         "quarantine": len(quarantine),
         "reserves": activations["count"],
     }
+    decision_roster = review_roster_entries(roster, pairs, artifacts_by_hero)
+    if len(decision_roster) != 200:
+        raise ContractError("decision export roster must contain exactly 200 effective active heroes")
     pages: dict[str, bytes] = {}
     for index in range(page_count):
         page_number = index + 1
         relative = f"{REVIEW_ROOT}/index.html" if page_number == 1 else f"{REVIEW_ROOT}/page-{page_number:02d}.html"
         segment = pairs[index * PAGE_SIZE : (index + 1) * PAGE_SIZE]
-        pages[relative] = _render_pair_page(relative, segment, pair_derivatives, page_number, page_count, counts).encode("utf-8")
+        pages[relative] = _render_pair_page(
+            relative,
+            segment,
+            pair_derivatives,
+            page_number,
+            page_count,
+            counts,
+            decision_roster,
+        ).encode("utf-8")
     quarantine_relative = f"{REVIEW_ROOT}/quarantine.html"
     pages[quarantine_relative] = _render_quarantine(quarantine_relative, quarantine, pair_derivatives, counts).encode("utf-8")
     reference_relative = f"{REVIEW_ROOT}/reference-shelf.html"

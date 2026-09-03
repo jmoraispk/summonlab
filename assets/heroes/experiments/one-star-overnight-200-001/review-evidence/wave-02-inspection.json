@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "hero-one-star-wave-inspection-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-02",
+  "inspectedAt": "2026-09-03T07:22:22Z",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "selectedPairCount": 20,
+  "selectedHeroIds": [
+    "zelan-grelin", "daiis-zhara", "keli-orel", "galen-nethel", "iana-joro",
+    "zelar-beli", "talon-corin", "senia-lorel", "quinon-veshel", "yasan-belek",
+    "yasia-falor", "galu-wyreth", "meio-ivereth", "eirel-halor", "aei-quoran",
+    "seni-veshen", "zelan-jorel", "galar-drena", "raa-belan", "delyn-quorai"
+  ],
+  "independentAudits": [
+    {
+      "scope": "first ten selected pairs",
+      "finding": "Six passed without caution. Keli Orel, Iana Joro, Talon Corin, and Yasan Belek received nonblocking visual-ratio cautions; Talon also received a face-simplification caution. No duplicate, containment, anatomy, painterly-register, or forbidden-content failure was found."
+    },
+    {
+      "scope": "second ten selected pairs",
+      "finding": "Meio Ivereth, Eirel Halor, and Aei Quoran passed cleanly. The remaining pairs received nonblocking cautions for facial simplification, hair scale, body emphasis, or visually borderline ratio. No blocker, duplicate, containment failure, anatomy failure, or forbidden content was found."
+    }
+  ],
+  "coordinatorAdjudication": {
+    "canonicalTargetHashes": "Pass. The inspector's systematic hash caution compared raw JSON bytes to the result's canonical JSON hash. Heroes-local contract validation recomputed canonical hashes and passed all bindings; exact prompts and selected PNG hashes also matched.",
+    "ratioCautions": "Accepted as manual-review evidence, not promotion claims. The retained candidates remain within or visually adjacent to the deliberately narrow 2.75-3.1-head band, all producer measurements passed, and Wave 02 structural validation passed. The cautions are preserved for human review and prompt-family monitoring rather than consuming corrections after accepted candidate results.",
+    "faceAndHairCautions": "Accepted as nonblocking candidate evidence. Several chibis simplify adult facial planes or amplify hair volume, but each remains identifiable from its paired summon through source-specific body, hair, wardrobe, palette, and personal anchors. This recurring tendency is recorded for Wave 03 producer inspection emphasis.",
+    "crossPairDistinctness": "Pass. All twenty pairs remain distinguishable across face geometry, age, body construction, hair silhouette and color, wardrobe family, palette, and personal details.",
+    "candidateBoundary": "These are review candidates only. Human Keep/Pass/Revise decisions remain authoritative and no runtime approval or promotion is implied."
+  },
+  "finalStatus": "candidate",
+  "passingPairCount": 20,
+  "failedPairCount": 0
+}

@@ -88,6 +88,52 @@ def _find_frozen_packet(plan: Mapping[str, Any], hero_id: str) -> dict[str, Any]
     return matches[0]
 
 
+def _activation_reserve_packet(
+    workspace: Path,
+    plan: Mapping[str, Any],
+    record: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Resolve the immutable reserve source explicitly bound by one activation."""
+
+    hero_id = record["reserveHeroId"]
+    frozen_matches = [
+        packet
+        for packet in list(plan.get("reserves", []))
+        if isinstance(packet, dict) and packet.get("heroId") == hero_id
+    ]
+    supplemental_matches = [
+        (relative, supplemental_record)
+        for relative, supplemental_record in reserve_activation.load_supplemental_reserves(
+            workspace, dict(plan)
+        )
+        if supplemental_record["reservePacket"]["heroId"] == hero_id
+    ]
+    if len(frozen_matches) + len(supplemental_matches) != 1:
+        raise ContractError(
+            f"expected exactly one immutable reserve packet for {hero_id}, found "
+            f"{len(frozen_matches) + len(supplemental_matches)}"
+        )
+    if frozen_matches:
+        evidence = record.get("decisionEvidence")
+        if isinstance(evidence, dict) and any(
+            key.startswith("supplementalReserve") for key in evidence
+        ):
+            raise ContractError("frozen activation unexpectedly declares supplemental evidence")
+        return frozen_matches[0]
+
+    relative, supplemental_record = supplemental_matches[0]
+    evidence = record.get("decisionEvidence")
+    if (
+        not isinstance(evidence, dict)
+        or evidence.get("supplementalReservePath") != relative
+        or evidence.get("supplementalReserveSha256") != sha256_json(supplemental_record)
+        or evidence.get("supplementalReservePacketSha256")
+        != sha256_json(supplemental_record["reservePacket"])
+    ):
+        raise ContractError("activation does not bind its supplemental reserve source")
+    return supplemental_record["reservePacket"]
+
+
 def _effective_activated_packet(
     workspace: Path,
     plan: Mapping[str, Any],
@@ -97,7 +143,7 @@ def _effective_activated_packet(
 
     hero_id = record["reserveHeroId"]
     wave_id = record["destinationWave"]
-    reserve_packet = _find_frozen_packet(plan, hero_id)
+    reserve_packet = _activation_reserve_packet(workspace, plan, record)
     failed_packet = _find_frozen_packet(plan, record["failedActiveHeroId"])
     if record["slotQuotaCoordinates"] != failed_packet["quotaCoordinates"]:
         raise ContractError("activation quota coordinates differ from the frozen failed slot")

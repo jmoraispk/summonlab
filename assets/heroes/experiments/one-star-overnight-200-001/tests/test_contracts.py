@@ -445,10 +445,23 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, "at most one image"):
             validate_result(result, target, assignment)
 
-    def test_versioned_correction_requires_exact_source(self) -> None:
-        invalid = self.fixture.target(version=2)
-        with self.assertRaisesRegex(ContractError, "correctionSource"):
-            validate_target(invalid)
+    def test_versioned_target_supports_provider_retry_or_exact_correction(self) -> None:
+        provider_retry = self.fixture.target(version=2)
+        validate_target(provider_retry)
+
+        invalid_later_retry = self.fixture.target(version=3)
+        with self.assertRaisesRegex(ContractError, "v2 provider retry"):
+            validate_target(invalid_later_retry)
+
+        invalid_correction = deepcopy(provider_retry)
+        invalid_correction["correctionSource"] = {
+            "targetId": "overnight-ari-test-summon-v1",
+            "resultPath": result_path_for("wave-01", "ari-test", "summon", 1),
+            "candidatePath": candidate_path_for("wave-01", "ari-test", "summon", 1),
+            "sha256": "a" * 64,
+        }
+        with self.assertRaisesRegex(ContractError, "exact preceding candidate"):
+            validate_target(invalid_correction)
 
     def test_one_pair_wave_binds_chibi_to_selected_summon(self) -> None:
         summon = self.fixture.target()

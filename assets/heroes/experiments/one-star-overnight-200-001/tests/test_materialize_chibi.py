@@ -20,6 +20,7 @@ sys.path.insert(0, str(HERE))
 
 import activate_reserve as activation  # noqa: E402
 import materialize_chibi as chibi  # noqa: E402
+import materialize_supplemental_reserve as supplemental  # noqa: E402
 from contracts import (  # noqa: E402
     ContractError,
     assignment_path_for,
@@ -32,6 +33,7 @@ from contracts import (  # noqa: E402
     validate_assignment,
     validate_target,
 )
+from test_activate_reserve import ActivationFixture  # noqa: E402
 
 
 def fake_png(width: int = 1024, height: int = 1536) -> bytes:
@@ -427,6 +429,107 @@ class MaterializeChibiTests(unittest.TestCase):
         self.assertEqual(target["sourceSummon"]["targetId"], corrected_target["targetId"])
         self.assertEqual(target["sourceSummon"]["sha256"], sha256_bytes(corrected_bytes))
         self.assertIn(corrected_result["resultId"], target["references"][0]["purpose"])
+
+    def _activated_supplemental_fixture(
+        self,
+    ) -> tuple[ActivationFixture, dict, dict]:
+        fixture = ActivationFixture()
+        supplemental_receipt = supplemental.materialize_supplemental_reserve(
+            fixture.root / fixture.roster_relative,
+            fixture.root,
+            created_at="2026-09-03T06:10:00Z",
+            reason="Test-only supplemental woman reserve after frozen pool exhaustion.",
+        )
+        failure_path = fixture.materialize_malformed_provider_failure("kaar-jorar")
+        selection = [
+            {"slotHeroId": packet["heroId"], "selectedHeroId": packet["heroId"]}
+            for packet in fixture.roster["active"]
+        ]
+        used_women = {
+            packet["heroId"]
+            for packet in fixture.roster["reserves"]
+            if packet["physicalManifest"]["genderPresentation"] == "woman"
+        }
+        with mock.patch.object(
+            activation,
+            "_current_selection",
+            return_value=(selection, used_women, set(), None, 0),
+        ):
+            activated = activation.activate_reserve(
+                fixture.root / fixture.roster_relative,
+                fixture.root,
+                failed_active_hero_id="kaar-jorar",
+                reserve_hero_id=supplemental_receipt["heroId"],
+                destination_wave="wave-01",
+                producer_id="image-producer-supplemental-test",
+                assigned_at="2026-09-03T06:11:00Z",
+                created_at="2026-09-03T06:10:30Z",
+                reason="Frozen woman reserve pool exhausted; activate the bound supplement.",
+                failure_result_path=fixture.root / failure_path,
+                supplemental_reserve_path=fixture.root / supplemental_receipt["path"],
+            )
+        return fixture, supplemental_receipt, activated
+
+    def test_activated_supplemental_reserve_is_effective_packet_authority(self) -> None:
+        fixture, supplemental_receipt, activated = self._activated_supplemental_fixture()
+        try:
+            source_record = json.loads(
+                (fixture.root / supplemental_receipt["path"]).read_text(encoding="utf-8")
+            )
+            activation_record = json.loads(
+                (fixture.root / activated["activationPath"]).read_text(encoding="utf-8")
+            )
+            packet = chibi._find_packet(
+                fixture.root,
+                fixture.roster,
+                supplemental_receipt["heroId"],
+                "wave-01",
+            )
+            self.assertEqual(packet["heroId"], supplemental_receipt["heroId"])
+            self.assertEqual(packet["waveId"], "wave-01")
+            self.assertEqual(
+                packet["characterKernel"], source_record["reservePacket"]["characterKernel"]
+            )
+            self.assertEqual(
+                packet["identitySignature"],
+                activation_record["preservedReserveIdentity"]["activatedIdentitySignature"],
+            )
+            self.assertEqual(packet["summonTargetPath"], activated["targetPath"])
+        finally:
+            fixture.close()
+
+    def test_nonactivated_supplemental_reserve_is_rejected(self) -> None:
+        fixture = ActivationFixture()
+        try:
+            receipt = supplemental.materialize_supplemental_reserve(
+                fixture.root / fixture.roster_relative,
+                fixture.root,
+                created_at="2026-09-03T06:10:00Z",
+                reason="Test-only supplemental woman reserve awaiting activation.",
+            )
+            with self.assertRaisesRegex(ContractError, "frozen roster packet"):
+                chibi._find_packet(
+                    fixture.root, fixture.roster, receipt["heroId"], "wave-01"
+                )
+        finally:
+            fixture.close()
+
+    def test_activated_supplemental_source_tamper_is_rejected(self) -> None:
+        fixture, supplemental_receipt, _activated = self._activated_supplemental_fixture()
+        try:
+            source_path = fixture.root / supplemental_receipt["path"]
+            source_record = json.loads(source_path.read_text(encoding="utf-8"))
+            source_record["reason"] = "Tampered after immutable publication."
+            fixture.write_json(supplemental_receipt["path"], source_record)
+            with self.assertRaisesRegex(ContractError, "content hash drifted"):
+                chibi._find_packet(
+                    fixture.root,
+                    fixture.roster,
+                    supplemental_receipt["heroId"],
+                    "wave-01",
+                )
+        finally:
+            fixture.close()
 
 
 class ChibiWorkspaceForFenel(ChibiWorkspace):

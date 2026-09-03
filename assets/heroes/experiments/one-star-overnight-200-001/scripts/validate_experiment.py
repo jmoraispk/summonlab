@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from contracts import ContractError
+from build_review import load_effective_roster
 from validate_wave import validate_wave
 
 
@@ -108,6 +109,17 @@ def validate_experiment(workspace: Path) -> dict[str, Any]:
     heroes = [entry for wave in waves for entry in wave["completed"]]
     if len(heroes) != 200 or len({entry["heroId"] for entry in heroes}) != 200:
         raise ContractError("final experiment requires exactly 200 unique complete pairs")
+
+    effective, _activations = load_effective_roster(workspace)
+    effective_by_id = {entry["heroId"]: entry for entry in effective}
+    completed_by_id = {entry["heroId"]: entry for entry in heroes}
+    if set(completed_by_id) != set(effective_by_id):
+        raise ContractError("completed pairs do not match the authoritative activation selection")
+    for hero_id, completed in completed_by_id.items():
+        expected_signature = effective_by_id[hero_id]["identitySignature"]
+        observed_signature = completed["heroSpec"]["identity"]["identitySignature"]
+        if observed_signature != expected_signature:
+            raise ContractError(f"activated identity signature mismatch: {hero_id}")
 
     specs = [entry["heroSpec"] for entry in heroes]
     _assert_counts("gender", Counter(spec["identity"]["gender"] for spec in specs), {"man": 100, "woman": 100})

@@ -27,6 +27,7 @@ FAILURE_KINDS = {
     "provider-throttle",
     "timeout",
     "malformed-output",
+    "no-output",
     "persistence",
     "other",
 }
@@ -379,9 +380,9 @@ def validate_target(value: Any, *, expected_path: str | None = None) -> dict[str
     correction = target["correctionSource"]
     if version == 1 and correction is not None:
         _fail("version-one targets cannot declare correctionSource")
-    if version > 1:
-        if correction is None:
-            _fail("revised targets require correctionSource")
+    if version > 2 and correction is None:
+        _fail("only a v2 provider retry may omit correctionSource")
+    if version > 1 and correction is not None:
         _validate_source(correction, "target.correctionSource")
         matching_correction = [
             entry for entry in references

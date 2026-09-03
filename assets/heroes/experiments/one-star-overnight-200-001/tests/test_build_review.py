@@ -19,11 +19,13 @@ from build_review import (  # noqa: E402
     CANVAS,
     EXPERIMENT_ROOT,
     Pair,
+    _json_script_payload,
     _render_pair_page,
     _webp_bytes,
     discover_review_state,
     load_effective_roster,
     materialize_derivative,
+    review_roster_entries,
     select_pairs,
 )
 
@@ -137,6 +139,76 @@ class ReviewBuilderTests(unittest.TestCase):
         self.assertIn("1 / 200 complete pairs", rendered)
         self.assertNotIn("runtime asset", rendered.lower())
 
+    def test_pair_page_exposes_accessible_persistent_mutually_exclusive_decisions(self) -> None:
+        summon = artifact("hero", "summon", 1)
+        chibi = artifact("hero", "combat-chibi", 1)
+        chibi.target["sourceSummon"].update({
+            "targetId": summon.target["targetId"], "candidatePath": summon.source_path,
+            "sha256": summon.source_sha256, "resultPath": summon.target["output"]["resultPath"],
+        })
+        pair = Pair(roster(), summon, chibi)
+        derivatives = {
+            ("hero", "summon", 1): {"path": "assets/review/s.webp", "sourcePath": summon.source_path},
+            ("hero", "combat-chibi", 1): {"path": "assets/review/c.webp", "sourcePath": chibi.source_path},
+        }
+        decision_roster = review_roster_entries([roster()], [pair], {"hero": [summon, chibi]})
+        rendered = _render_pair_page(
+            "assets/review/index.html", [pair], derivatives, 1, 1,
+            {"planned": 1, "complete": 1, "quarantine": 0, "reserves": 0},
+            decision_roster,
+        )
+        self.assertIn('data-hero-id="hero"', rendered)
+        self.assertIn('<fieldset><legend>Decision</legend>', rendered)
+        self.assertEqual(rendered.count('name="decision-hero"'), 5)
+        for value in ("keep", "revise-summon", "revise-chibi", "revise-both", "pass"):
+            self.assertIn(f'value="{value}" data-decision-choice', rendered)
+        self.assertIn('data-filter="decision"', rendered)
+        self.assertIn('data-export-decisions', rendered)
+        self.assertIn('aria-live="polite"', rendered)
+        self.assertIn("localStorage.getItem(storageKey(heroId))", rendered)
+        self.assertIn("hero-one-star-review-decisions-v1", rendered)
+        self.assertIn("candidate-only; review decisions do not approve or promote candidates", rendered)
+
+    def test_review_roster_export_model_is_stable_and_explicitly_pending(self) -> None:
+        entries = []
+        artifacts_by_hero = {}
+        for ordinal in range(200, 0, -1):
+            item = roster(f"hero-{ordinal}")
+            item["displayName"] = f"Hero {ordinal}"
+            item["physicalManifest"]["designOrdinal"] = ordinal
+            entries.append(item)
+            artifacts_by_hero[item["heroId"]] = []
+        modeled = review_roster_entries(entries, [], artifacts_by_hero)
+        self.assertEqual(len(modeled), 200)
+        self.assertEqual([entry["designOrdinal"] for entry in modeled], list(range(1, 201)))
+        self.assertTrue(all(entry["pairState"] == "unproduced" for entry in modeled))
+        self.assertTrue(all("selectedCandidates" not in entry for entry in modeled))
+
+    def test_review_roster_model_distinguishes_started_and_complete_pairs(self) -> None:
+        complete = roster("complete-hero")
+        complete["physicalManifest"]["designOrdinal"] = 2
+        started = roster("started-hero")
+        started["physicalManifest"]["designOrdinal"] = 1
+        summon = artifact("complete-hero", "summon", 1)
+        chibi = artifact("complete-hero", "combat-chibi", 1)
+        pair = Pair(complete, summon, chibi)
+        modeled = review_roster_entries(
+            [complete, started],
+            [pair],
+            {"complete-hero": [summon, chibi], "started-hero": [artifact("started-hero", "summon", 1)]},
+        )
+        self.assertEqual([entry["heroId"] for entry in modeled], ["started-hero", "complete-hero"])
+        self.assertEqual(modeled[0]["pairState"], "started-incomplete")
+        self.assertEqual(modeled[1]["pairState"], "complete-pair")
+        self.assertEqual(modeled[1]["selectedCandidates"]["summonTargetId"], summon.target["targetId"])
+
+    def test_embedded_roster_json_cannot_terminate_script_element(self) -> None:
+        malicious = [{"heroId": "hero", "displayName": "</script><script>alert(1)</script>\u2028"}]
+        payload = _json_script_payload(malicious)
+        self.assertNotIn("<", payload)
+        self.assertNotIn("\u2028", payload)
+        self.assertEqual(json.loads(payload), malicious)
+
     def test_unstarted_roster_slot_is_pending_not_quarantined(self) -> None:
         pairs, quarantine = select_pairs([roster()], {"hero": []})
         self.assertEqual(pairs, [])
@@ -188,7 +260,11 @@ class ReviewBuilderTests(unittest.TestCase):
                 "destinationWave": slot["waveId"],
                 "physicalManifest": slot["physicalManifest"],
                 "slotQuotaCoordinates": slot["quotaCoordinates"],
-                "preservedReserveIdentity": {"displayName": reserve["displayName"]},
+                "failedSlotEvidence": {"heroId": slot["heroId"]},
+                "preservedReserveIdentity": {
+                    "displayName": reserve["displayName"],
+                    "activatedIdentitySignature": "d" * 64,
+                },
             }
             activation_path.write_text(json.dumps(record))
             selection = [
@@ -228,6 +304,15 @@ class ReviewBuilderTests(unittest.TestCase):
             "count": 1,
             "replacements": [
                 {"reserveHeroId": "reserve-hero", "replacesHeroId": "retired-hero"}
+            ],
+            "transitions": [
+                {
+                    "slotHeroId": "retired-hero",
+                    "deactivatedHeroId": "retired-hero",
+                    "replacementHeroId": "reserve-hero",
+                    "activationPath": "activation.json",
+                    "roster": retired,
+                }
             ],
         }
         with patch.object(

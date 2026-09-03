@@ -19,6 +19,8 @@ sys.path.insert(0, str(SCRIPTS))
 sys.path.insert(0, str(HERE))
 
 import activate_reserve as activation  # noqa: E402
+import materialize_supplemental_reserve as supplemental  # noqa: E402
+from build_review import discover_review_state, load_effective_roster  # noqa: E402
 from contracts import ContractError, canonical_json, sha256_json  # noqa: E402
 from persist_candidate import persist_candidate  # noqa: E402
 from test_contracts import WorkspaceFixture, fake_png  # noqa: E402
@@ -144,6 +146,83 @@ class ActivationFixture(WorkspaceFixture):
             self.root,
         )
 
+    def materialize_malformed_provider_failure(self, hero_id: str) -> str:
+        packet = self.packet(hero_id)
+        target = deepcopy(packet["summonTarget"])
+        assignment = deepcopy(packet["summonAssignment"])
+        self.write_json(packet["summonTargetPath"], target)
+        self.write_json(packet["summonAssignmentPath"], assignment)
+        failed_criterion = "manifest-fidelity"
+        findings = [
+            {
+                "criterionId": criterion["criterionId"],
+                "evaluator": "automated" if criterion["criterionId"] == failed_criterion else "producer",
+                "outcome": "fail" if criterion["criterionId"] == failed_criterion else "pass",
+                "observation": (
+                    "Provider returned a malformed canvas, so no candidate can be retained."
+                    if criterion["criterionId"] == failed_criterion
+                    else "Criterion passes visual inspection."
+                ),
+            }
+            for criterion in target["acceptanceCriteria"]
+        ]
+        attempt_id = f"{hero_id}-summon-attempt-1"
+        result = {
+            "schemaVersion": "hero-one-star-image-result-v1",
+            "resultId": f"result-{target['targetId']}",
+            "experimentId": target["experimentId"],
+            "targetId": target["targetId"],
+            "targetSha256": sha256_json(target),
+            "assignmentId": assignment["assignmentId"],
+            "assignmentSha256": sha256_json(assignment),
+            "producerId": assignment["producerId"],
+            "status": "failed",
+            "attempts": [
+                {
+                    "attemptId": attempt_id,
+                    "attemptNumber": 1,
+                    "precedingAttemptId": None,
+                    "conclusion": "provider-failure",
+                    "failureKind": "malformed-output",
+                    "exactPrompt": target["canonicalPrompt"]["text"],
+                    "promptSha256": target["canonicalPrompt"]["sha256"],
+                    "referenceInputs": [
+                        {"path": reference["path"], "sha256": reference["sha256"]}
+                        for reference in target["references"]
+                    ],
+                    "requestStartedAt": "2026-09-02T12:00:00Z",
+                    "generationCompletedAt": "2026-09-02T12:00:10Z",
+                    "inspectionCompletedAt": "2026-09-02T12:00:12Z",
+                    "generationDurationMs": 10000,
+                    "inspectionDurationMs": 2000,
+                    "totalWallTimeMs": 12000,
+                    "sourceOutput": None,
+                    "persistence": None,
+                    "findings": findings,
+                    "retryReason": None,
+                }
+            ],
+            "selectedAttemptId": None,
+            "failedCriteria": [failed_criterion],
+            "candidate": None,
+            "startedAt": "2026-09-02T12:00:00Z",
+            "completedAt": "2026-09-02T12:00:12Z",
+            "totalWallTimeMs": 12000,
+            "writtenOutputPaths": [target["output"]["resultPath"]],
+            "attestations": {
+                "noSharedFilesEdited": True,
+                "selfPromoted": False,
+                "candidateOnly": True,
+            },
+        }
+        write_result(
+            self.root / packet["summonTargetPath"],
+            self.root / packet["summonAssignmentPath"],
+            result,
+            self.root,
+        )
+        return packet["summonTarget"]["output"]["resultPath"]
+
     def activate(self, failed: str, reserve: str) -> dict:
         return activation.activate_reserve(
             self.root / self.roster_relative,
@@ -268,6 +347,25 @@ class ActivateReserveTests(unittest.TestCase):
         activation_root = self.fixture.root / activation.EXPERIMENT_ROOT / "activations"
         self.assertFalse(activation_root.exists())
 
+    def test_terminal_malformed_provider_output_can_activate_a_reserve(self) -> None:
+        result_path = self.fixture.materialize_malformed_provider_failure("kaar-jorar")
+        receipt = activation.activate_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            failed_active_hero_id="kaar-jorar",
+            reserve_hero_id="zelen-soror",
+            destination_wave="wave-01",
+            producer_id="image-producer-reserve",
+            assigned_at="2026-09-03T01:00:00Z",
+            created_at="2026-09-03T00:59:00Z",
+            reason="Terminal malformed provider canvas; activate a frozen reserve.",
+            failure_result_path=self.fixture.root / result_path,
+        )
+        record = json.loads((self.fixture.root / receipt["activationPath"]).read_text())
+        self.assertEqual(record["decisionEvidence"]["failureStatus"], "failed")
+        self.assertIn("provider-output integrity", record["decisionEvidence"]["authorization"])
+        self.assertEqual(record["activeSelectedCount"], 200)
+
     def test_partial_publication_rolls_back_exact_created_inodes(self) -> None:
         real_create = activation.anchored_exclusive_create
         calls = 0
@@ -288,6 +386,170 @@ class ActivateReserveTests(unittest.TestCase):
             "waves/wave-01/targets/wenyn-amarun/summon-v1.json"
         )
         self.assertFalse(target.exists())
+
+    def test_supplemental_reserve_is_blocked_while_same_gender_frozen_reserve_remains(self) -> None:
+        receipt = supplemental.materialize_supplemental_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            created_at="2026-09-03T06:10:00Z",
+            reason="Test-only supplemental reserve after an exhausted same-gender pool.",
+        )
+        with self.assertRaisesRegex(ContractError, "unused frozen same-gender"):
+            activation.activate_reserve(
+                self.fixture.root / self.fixture.roster_relative,
+                self.fixture.root,
+                failed_active_hero_id="yasu-coro",
+                reserve_hero_id=receipt["heroId"],
+                destination_wave="wave-01",
+                producer_id="image-producer-supplemental-test",
+                assigned_at="2026-09-03T06:11:00Z",
+                created_at="2026-09-03T06:10:30Z",
+                reason="Test blocked until the frozen same-gender pool is exhausted.",
+                failure_result_path=self.fixture.root
+                / self.fixture.packet("yasu-coro")["summonTarget"]["output"]["resultPath"],
+                supplemental_reserve_path=self.fixture.root / receipt["path"],
+            )
+
+    def test_supplemental_activation_preserves_chain_quota_and_review_retirement(self) -> None:
+        receipt = supplemental.materialize_supplemental_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            created_at="2026-09-03T06:10:00Z",
+            reason="Test-only supplemental reserve after an exhausted same-gender pool.",
+        )
+        failure_path = self.fixture.materialize_malformed_provider_failure("kaar-jorar")
+        selection = [
+            {"slotHeroId": packet["heroId"], "selectedHeroId": packet["heroId"]}
+            for packet in self.fixture.roster["active"]
+        ]
+        used_women = {
+            packet["heroId"]
+            for packet in self.fixture.roster["reserves"]
+            if packet["physicalManifest"]["genderPresentation"] == "woman"
+        }
+        with patch.object(
+            activation,
+            "_current_selection",
+            return_value=(selection, used_women, set(), None, 0),
+        ):
+            activated = activation.activate_reserve(
+                self.fixture.root / self.fixture.roster_relative,
+                self.fixture.root,
+                failed_active_hero_id="kaar-jorar",
+                reserve_hero_id=receipt["heroId"],
+                destination_wave="wave-01",
+                producer_id="image-producer-supplemental-test",
+                assigned_at="2026-09-03T06:11:00Z",
+                created_at="2026-09-03T06:10:30Z",
+                reason="Frozen woman reserve pool exhausted; activate the hash-bound supplement.",
+                failure_result_path=self.fixture.root / failure_path,
+                supplemental_reserve_path=self.fixture.root / receipt["path"],
+            )
+        record = json.loads((self.fixture.root / activated["activationPath"]).read_text())
+        source_record = json.loads((self.fixture.root / receipt["path"]).read_text())
+        self.assertEqual(record["sequence"], 1)
+        self.assertIsNone(record["previousActivationSha256"])
+        self.assertEqual(record["decisionEvidence"]["supplementalReservePath"], receipt["path"])
+        self.assertEqual(
+            record["decisionEvidence"]["supplementalReserveSha256"], sha256_json(source_record)
+        )
+        self.assertEqual(
+            record["decisionEvidence"]["supplementalReservePacketSha256"],
+            sha256_json(source_record["reservePacket"]),
+        )
+        self.assertEqual(record["activeQuotaSummary"], self.fixture.roster["activeQuotaSummary"])
+        effective, summary = load_effective_roster(self.fixture.root)
+        self.assertEqual(len(effective), 200)
+        self.assertEqual(len({packet["heroId"] for packet in effective}), 200)
+        self.assertIn(receipt["heroId"], {packet["heroId"] for packet in effective})
+        self.assertEqual(summary["count"], 1)
+        _roster, _acts, _artifacts, _pairs, quarantine = discover_review_state(self.fixture.root)
+        retired = next(item for item in quarantine if item.roster["heroId"] == "kaar-jorar")
+        self.assertIn("replaced by reserve", retired.reasons[0])
+
+        current_selection = [
+            {
+                "slotHeroId": entry["slotHeroId"],
+                "selectedHeroId": (
+                    receipt["heroId"]
+                    if entry["slotHeroId"] == "kaar-jorar"
+                    else entry["selectedHeroId"]
+                ),
+            }
+            for entry in selection
+        ]
+        with patch.object(
+            activation,
+            "_current_selection",
+            return_value=(
+                current_selection,
+                used_women | {receipt["heroId"]},
+                {"kaar-jorar"},
+                sha256_json(record),
+                1,
+            ),
+        ):
+            with self.assertRaisesRegex(ContractError, "duplicates or reuses|already been activated"):
+                activation.activate_reserve(
+                    self.fixture.root / self.fixture.roster_relative,
+                    self.fixture.root,
+                    failed_active_hero_id="kaar-jorar",
+                    reserve_hero_id=receipt["heroId"],
+                    destination_wave="wave-01",
+                    producer_id="image-producer-supplemental-test",
+                    assigned_at="2026-09-03T06:12:00Z",
+                    created_at="2026-09-03T06:11:30Z",
+                    reason="Reuse must fail.",
+                    failure_result_path=self.fixture.root / failure_path,
+                    supplemental_reserve_path=self.fixture.root / receipt["path"],
+                )
+        record["decisionEvidence"]["supplementalReserveSha256"] = "f" * 64
+        self.fixture.write_json(activated["activationPath"], record)
+        with self.assertRaisesRegex(ContractError, "does not bind its supplemental reserve"):
+            activation._current_selection(self.fixture.root, self.fixture.roster)
+
+    def test_supplemental_activation_rejects_gender_mismatch(self) -> None:
+        receipt = supplemental.materialize_supplemental_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            created_at="2026-09-03T06:10:00Z",
+            reason="Test-only supplemental woman reserve.",
+        )
+        failed_man = next(
+            packet
+            for packet in self.fixture.roster["active"]
+            if packet["physicalManifest"]["genderPresentation"] == "man"
+            and packet["heroId"] not in {"fenel-esho", "yasu-coro"}
+        )
+        failure_path = self.fixture.materialize_malformed_provider_failure(failed_man["heroId"])
+        selection = [
+            {"slotHeroId": packet["heroId"], "selectedHeroId": packet["heroId"]}
+            for packet in self.fixture.roster["active"]
+        ]
+        used_men = {
+            packet["heroId"]
+            for packet in self.fixture.roster["reserves"]
+            if packet["physicalManifest"]["genderPresentation"] == "man"
+        }
+        with patch.object(
+            activation,
+            "_current_selection",
+            return_value=(selection, used_men, set(), None, 0),
+        ):
+            with self.assertRaisesRegex(ContractError, "preserve gender presentation"):
+                activation.activate_reserve(
+                    self.fixture.root / self.fixture.roster_relative,
+                    self.fixture.root,
+                    failed_active_hero_id=failed_man["heroId"],
+                    reserve_hero_id=receipt["heroId"],
+                    destination_wave="wave-01",
+                    producer_id="image-producer-supplemental-test",
+                    assigned_at="2026-09-03T06:11:00Z",
+                    created_at="2026-09-03T06:10:30Z",
+                    reason="Gender mismatch must fail.",
+                    failure_result_path=self.fixture.root / failure_path,
+                    supplemental_reserve_path=self.fixture.root / receipt["path"],
+                )
 
 
 if __name__ == "__main__":
