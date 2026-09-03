@@ -46,13 +46,129 @@ ISO_TIMESTAMP_PATTERN = re.compile(
     r"^(?P<seconds>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})"
     r"(?:\.(?P<fraction>\d+))?(?P<zone>Z|[+-]\d{2}:\d{2})$"
 )
+SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
+PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
+PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
+SUPERSESSION_REASON = "unattempted-packet-superseded-by-higher-revision"
 
 
-def _validate_attempt_count(assignment: dict[str, Any], attempt_count: int) -> None:
+def _validate_attempt_count(
+    assignment: dict[str, Any], attempt_count: int, *, status: str | None = None
+) -> None:
     if isinstance(attempt_count, bool) or not isinstance(attempt_count, int):
         fail("attempt count must be an integer")
+    if status == "superseded":
+        if attempt_count != 0:
+            fail("superseded evidence requires exactly zero provider attempts")
+        return
     if not 1 <= attempt_count <= 1 + assignment["retryCeiling"]:
         fail("attempt count violates the assignment retry ceiling")
+
+
+def _require_sha256(value: Any, label: str) -> str:
+    if not isinstance(value, str) or SHA256_PATTERN.fullmatch(value) is None:
+        fail(f"{label} must be a lowercase SHA-256 hash")
+    return value
+
+
+def _validate_profile_normalization_evidence(
+    target: dict[str, Any], result: dict[str, Any], output_hash: str | None
+) -> None:
+    """Check evidence whose meaning depends on the immutable profile literal."""
+
+    target_normalization = target.get("normalization")
+    evidence = result.get("normalization")
+    if not isinstance(target_normalization, dict) or not isinstance(evidence, dict):
+        fail("v2 result requires normalization authority and evidence")
+    profile = target_normalization.get("profile")
+    if evidence.get("profile") != profile:
+        fail("normalization evidence profile does not match target authority")
+    provider_source = evidence.get("providerSource")
+    if provider_source is not None:
+        if not isinstance(provider_source, dict) or "path" in provider_source:
+            fail("normalization provider source evidence must be pathless")
+        provider_hash = _require_sha256(
+            provider_source.get("contentHash"), "original provider content hash"
+        )
+        if evidence.get("sourceContentHash") != provider_hash:
+            fail("normalization source hash must bind the full original provider PNG")
+    elif evidence.get("sourceContentHash") is not None:
+        fail("normalization source hash requires observed provider evidence")
+
+    outcome = evidence.get("outcome")
+    if output_hash is not None and outcome != "completed":
+        fail("retained v2 candidate requires completed normalization evidence")
+    if outcome == "completed":
+        if provider_source is None:
+            fail("completed normalization requires full original provider evidence")
+        recorded_output_hash = _require_sha256(
+            evidence.get("outputContentHash"), "normalized output content hash"
+        )
+        if output_hash is not None and recorded_output_hash != output_hash:
+            fail("normalized output hash does not bind retained candidate")
+        if profile == PROFILE_V2:
+            _require_sha256(
+                evidence.get("decoderInputContentHash"),
+                "canonical decoder input content hash",
+            )
+            container_box = evidence.get("containerBox")
+            if not isinstance(container_box, dict) or set(container_box) != {
+                "chunkType",
+                "bytes",
+                "contentHash",
+            }:
+                fail("profile-v2 evidence requires one pathless caBX descriptor")
+            if container_box.get("chunkType") != "caBX":
+                fail("profile-v2 container evidence must identify caBX")
+            container_bytes = container_box.get("bytes")
+            if (
+                isinstance(container_bytes, bool)
+                or not isinstance(container_bytes, int)
+                or not 8 <= container_bytes <= 32_768
+            ):
+                fail("profile-v2 caBX evidence must record its bounded payload byte count")
+            _require_sha256(
+                container_box.get("contentHash"), "profile-v2 caBX payload content hash"
+            )
+            if evidence.get("colorSpaceDisposition") != "assigned-srgb":
+                fail("profile-v2 evidence must record assigned-srgb")
+        elif profile != PROFILE_V1:
+            fail("normalization evidence uses an unsupported profile")
+    elif profile == PROFILE_V2:
+        decoder_hash = evidence.get("decoderInputContentHash")
+        container_box = evidence.get("containerBox")
+        color_disposition = evidence.get("colorSpaceDisposition")
+        derived_presence = (
+            decoder_hash is not None,
+            container_box is not None,
+            color_disposition is not None,
+        )
+        if any(derived_presence) and not all(derived_presence):
+            fail("failed profile-v2 derived provenance must be all null or all present")
+        if all(derived_presence):
+            _require_sha256(decoder_hash, "canonical decoder input content hash")
+            if not isinstance(container_box, dict) or set(container_box) != {
+                "chunkType",
+                "bytes",
+                "contentHash",
+            }:
+                fail("profile-v2 caBX evidence must be pathless and exact")
+            if container_box.get("chunkType") != "caBX":
+                fail("profile-v2 container evidence must identify caBX")
+            container_bytes = container_box.get("bytes")
+            if (
+                isinstance(container_bytes, bool)
+                or not isinstance(container_bytes, int)
+                or not 8 <= container_bytes <= 32_768
+            ):
+                fail("profile-v2 caBX evidence must record its bounded payload byte count")
+            _require_sha256(
+                container_box.get("contentHash"), "profile-v2 caBX payload content hash"
+            )
+            if color_disposition != "assigned-srgb":
+                fail("profile-v2 color-space evidence must be assigned-srgb")
+    elif profile != PROFILE_V1:
+        fail("normalization evidence uses an unsupported profile")
 
 
 def _observed_provider_source(
@@ -90,6 +206,131 @@ def _observed_provider_source(
             "contentHash": content_hash,
         },
         snapshot,
+    )
+
+
+def _validate_superseding_authority(
+    target: dict[str, Any],
+    assignment: dict[str, Any],
+    result: dict[str, Any],
+    workspace: Path,
+    authority_snapshots: list[AuthoritySnapshot],
+    *,
+    contract_root: Path,
+) -> None:
+    """Bind coordinator-authored supersession evidence to live higher-revision packets."""
+
+    if result.get("status") != "superseded":
+        return
+    if result.get("supersessionReason") != SUPERSESSION_REASON:
+        fail("superseded evidence has an unsupported reason")
+    if result.get("output") is not None or "failureReason" in result:
+        fail("superseded evidence cannot retain output or claim a provider failure")
+    normalization = result.get("normalization")
+    if (
+        not isinstance(normalization, dict)
+        or normalization.get("outcome") != "not-run"
+        or normalization.get("providerSource") is not None
+        or normalization.get("sourceContentHash") is not None
+        or normalization.get("outputContentHash") is not None
+    ):
+        fail("superseded evidence requires a pathless not-run normalization outcome")
+    authority = result.get("supersedingAuthority")
+    if not isinstance(authority, dict):
+        fail("superseded evidence requires coordinator authority")
+    expected_fields = {
+        "targetPath",
+        "targetContentHash",
+        "assignmentPath",
+        "assignmentContentHash",
+        "jobId",
+        "logicalIdentity",
+        "revision",
+        "role",
+    }
+    if set(authority) != expected_fields:
+        fail("superseding authority fields are incomplete or unknown")
+    target_path = absolute_project_path(
+        workspace, authority.get("targetPath"), must_exist=True, regular_file=True
+    )
+    assignment_path = absolute_project_path(
+        workspace, authority.get("assignmentPath"), must_exist=True, regular_file=True
+    )
+    superseding_target, target_snapshot = load_json_snapshot(target_path)
+    superseding_assignment, assignment_snapshot = load_json_snapshot(assignment_path)
+    superseding_snapshots: list[AuthoritySnapshot] = []
+    validate(
+        superseding_target,
+        superseding_assignment,
+        workspace,
+        target_path=target_path,
+        assignment_path=assignment_path,
+        allow_existing_outputs=True,
+        contract_root=contract_root,
+        _authority_snapshots=superseding_snapshots,
+    )
+    # The authority hashes bind the first raw snapshots. `validate` deliberately
+    # performs its own stable reads, so also reassert these originals to reject a
+    # semantic-equal byte rewrite between the two reads.
+    reassert_stable_regular_file(
+        target_path, target_snapshot, label="superseding target raw authority"
+    )
+    reassert_stable_regular_file(
+        assignment_path,
+        assignment_snapshot,
+        label="superseding assignment raw authority",
+    )
+    if target_snapshot.content_hash != _require_sha256(
+        authority.get("targetContentHash"), "superseding target content hash"
+    ):
+        fail("superseding target hash does not match its exact packet bytes")
+    if assignment_snapshot.content_hash != _require_sha256(
+        authority.get("assignmentContentHash"), "superseding assignment content hash"
+    ):
+        fail("superseding assignment hash does not match its exact packet bytes")
+    expected_authority = {
+        "targetPath": authority["targetPath"],
+        "targetContentHash": target_snapshot.content_hash,
+        "assignmentPath": authority["assignmentPath"],
+        "assignmentContentHash": assignment_snapshot.content_hash,
+        "jobId": superseding_target.get("jobId"),
+        "logicalIdentity": superseding_target.get("logicalIdentity"),
+        "revision": superseding_target.get("revision"),
+        "role": superseding_target.get("role"),
+    }
+    if authority != expected_authority:
+        fail("superseding authority metadata does not match its exact target packet")
+    if (
+        superseding_target.get("schemaVersion") != "skill-icon-target-v2"
+        or superseding_assignment.get("schemaVersion") != "skill-icon-assignment-v2"
+    ):
+        fail("superseding authority must be a normalized structural-v2 packet")
+    if (
+        superseding_target.get("logicalIdentity") != target.get("logicalIdentity")
+        or superseding_target.get("role") != target.get("role")
+        or not isinstance(superseding_target.get("revision"), int)
+        or superseding_target["revision"] <= target.get("revision", -1)
+    ):
+        fail("superseding authority must bind the same role and identity at a higher revision")
+    if (
+        superseding_assignment.get("jobId") != superseding_target.get("jobId")
+        or superseding_assignment.get("logicalIdentity")
+        != superseding_target.get("logicalIdentity")
+        or superseding_assignment.get("revision") != superseding_target.get("revision")
+        or superseding_assignment.get("targetPath") != authority["targetPath"]
+        or superseding_assignment.get("assignmentPath") != authority["assignmentPath"]
+    ):
+        fail("superseding assignment does not bind its target and authority paths")
+    authority_snapshots.extend(
+        [
+            (target_path, target_snapshot, "superseding target raw authority"),
+            (
+                assignment_path,
+                assignment_snapshot,
+                "superseding assignment raw authority",
+            ),
+            *superseding_snapshots,
+        ]
     )
 
 
@@ -261,7 +502,15 @@ def verify(
         result["startedAt"], result["completedAt"], result["totalWallTimeMs"]
     )
 
-    _validate_attempt_count(assignment, attempt_count)
+    _validate_attempt_count(assignment, attempt_count, status=result.get("status"))
+    _validate_superseding_authority(
+        target,
+        assignment,
+        result,
+        root,
+        authority_snapshots,
+        contract_root=contract_root or root,
+    )
 
     expected_result = absolute_project_path(
         root, target["output"]["resultPath"], must_exist=True, regular_file=True
@@ -281,6 +530,8 @@ def verify(
     if output is None:
         if candidate.exists() or candidate.is_symlink():
             fail("result claims no output but a candidate exists")
+        if target.get("schemaVersion") == "skill-icon-target-v2":
+            _validate_profile_normalization_evidence(target, result, None)
     else:
         candidate = absolute_project_path(
             root, candidate_path, must_exist=True, regular_file=True
@@ -321,20 +572,10 @@ def verify(
             fail("result candidate metadata does not match the exact retained bytes")
         if target.get("schemaVersion") == "skill-icon-target-v2":
             normalization = result.get("normalization")
-            if (
-                not isinstance(normalization, dict)
-                or normalization.get("outcome") != "completed"
-            ):
-                fail("retained v2 candidate requires completed normalization evidence")
-            provider_source = normalization.get("providerSource")
-            if not isinstance(provider_source, dict) or "path" in provider_source:
-                fail("v2 provider source evidence must be pathless")
-            if normalization.get("sourceContentHash") != provider_source.get(
-                "contentHash"
-            ):
-                fail("v2 provider source hash binding is invalid")
-            if normalization.get("outputContentHash") != inspection["contentHash"]:
-                fail("v2 normalized output hash does not bind retained candidate")
+            _validate_profile_normalization_evidence(
+                target, result, inspection["contentHash"]
+            )
+            assert isinstance(normalization, dict)
             geometry_hash = geometry_snapshot.content_hash
             if normalization.get("geometryHash") != geometry_hash:
                 fail("v2 normalization geometry hash does not bind raw authority bytes")
@@ -680,6 +921,7 @@ def _create_failed_result_transaction(
     stage_name: str,
     result_bytes: bytes,
     owner_record_factory: Callable[[tuple[int, int]], dict[str, Any]],
+    post_owner_publication_check: Callable[[], None],
 ) -> tuple[tuple[int, int], tuple[int, int], int]:
     result_descriptor, result_identity = _open_fsynced_unnamed_file(
         parent_descriptor,
@@ -688,6 +930,7 @@ def _create_failed_result_transaction(
     )
     owner_identity: tuple[int, int] | None = None
     owner_descriptor: int | None = None
+    retained_owner_descriptor: int | None = None
     try:
         owner_record = owner_record_factory(result_identity)
         owner_bytes = _canonical_json_bytes(owner_record)
@@ -705,6 +948,7 @@ def _create_failed_result_transaction(
         retained_owner_descriptor = owner_descriptor
         owner_descriptor = None
         _failed_result_transaction_checkpoint("owner-published")
+        post_owner_publication_check()
         _link_unnamed_file(
             result_descriptor,
             parent_descriptor,
@@ -715,6 +959,9 @@ def _create_failed_result_transaction(
         _failed_result_transaction_checkpoint("staged")
         return result_identity, owner_identity, retained_owner_descriptor
     except Exception:
+        if retained_owner_descriptor is not None:
+            os.close(retained_owner_descriptor)
+            retained_owner_descriptor = None
         removed = _unlink_owned_at(parent_descriptor, stage_name, result_identity)
         if owner_identity is not None:
             removed = (
@@ -728,6 +975,13 @@ def _create_failed_result_transaction(
         if owner_descriptor is not None:
             os.close(owner_descriptor)
         os.close(result_descriptor)
+
+
+def _assert_supersession_intent_absent_at(
+    parent_descriptor: int, intent_name: str
+) -> None:
+    if _stat_at(parent_descriptor, intent_name) is not None:
+        fail("coordinator supersession intent blocks producer result persistence")
 
 
 def _process_start_time_ticks(pid: int) -> str | None:
@@ -945,6 +1199,14 @@ def persist_failed_result(
                 },
             }
         )
+        if normalization["profile"] == PROFILE_V2:
+            result["normalization"].update(
+                {
+                    "decoderInputContentHash": None,
+                    "containerBox": None,
+                    "colorSpaceDisposition": None,
+                }
+            )
     run_contract_validation(
         "execution",
         target,
@@ -960,11 +1222,17 @@ def persist_failed_result(
     result_bytes = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode("utf-8")
     stage_name = f".{result_path.name}.failed-result-stage"
     owner_name = f".{result_path.name}.failed-result-owner.json"
+    supersession_intent_name = (
+        f".{result_path.name}.skill-icon-supersession-intent.json"
+    )
     stage_path = result_path.parent / stage_name
     owner_path = result_path.parent / owner_name
+    supersession_intent_path = result_path.parent / supersession_intent_name
     result_relative = result_path.relative_to(root).as_posix()
     stage_relative = stage_path.relative_to(root).as_posix()
     owner_relative = owner_path.relative_to(root).as_posix()
+    if os.path.lexists(supersession_intent_path):
+        fail("coordinator supersession intent blocks producer result persistence")
     dirty = _changed_repository_paths(root) - {
         result_relative,
         stage_relative,
@@ -995,6 +1263,9 @@ def persist_failed_result(
         authority_snapshots, provider_source_snapshot
     )
     try:
+        _assert_supersession_intent_absent_at(
+            parent_descriptor, supersession_intent_name
+        )
         owner_metadata = _stat_at(parent_descriptor, owner_name)
         stage_metadata = _stat_at(parent_descriptor, stage_name)
         final_metadata = _stat_at(parent_descriptor, result_path.name)
@@ -1078,11 +1349,17 @@ def persist_failed_result(
                     owner_pid,
                     owner_process_epoch,
                 ),
+                lambda: _assert_supersession_intent_absent_at(
+                    parent_descriptor, supersession_intent_name
+                ),
             )
             owns_transaction = True
 
         assert result_identity is not None
         assert owner_identity is not None
+        _assert_supersession_intent_absent_at(
+            parent_descriptor, supersession_intent_name
+        )
         current_parent = result_path.parent.lstat()
         if (
             _metadata_identity(current_parent) != _metadata_identity(parent_metadata)
@@ -1203,7 +1480,10 @@ def main() -> None:
         "--attempt-count",
         type=int,
         required=True,
-        help="actual image-generation calls, including at most one corrective edit",
+        help=(
+            "actual image-generation calls, including at most one corrective edit; "
+            "use 0 only to verify coordinator-authored superseded evidence"
+        ),
     )
     parser.add_argument(
         "--write-failure",

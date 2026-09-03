@@ -12,18 +12,28 @@ import {
 } from '../packages/contracts/src/index.js';
 import { SKILL_ICON_FRAME_INNER_APERTURE_SCALE } from './validate-skill-icon-assets.js';
 
-export const SKILL_ICON_NORMALIZATION_PROFILE = 'skill-icon-green-key-role-mask-v1' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V1 = 'skill-icon-green-key-role-mask-v1' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V2 = 'skill-icon-green-key-role-mask-v2' as const;
+/** Compatibility alias for the original, default profile. */
+export const SKILL_ICON_NORMALIZATION_PROFILE = SKILL_ICON_NORMALIZATION_PROFILE_V1;
+export type SkillIconNormalizationProfile =
+	typeof SKILL_ICON_NORMALIZATION_PROFILE_V1 | typeof SKILL_ICON_NORMALIZATION_PROFILE_V2;
 export const SKILL_ICON_PROVIDER_SIZE = 1254;
 export const SKILL_ICON_PROVIDER_MATTE = '#00FF00' as const;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE = 12;
+export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2 = 24;
 export const SKILL_ICON_PROVIDER_OPAQUE_DISTANCE = 96;
 export const SKILL_ICON_NORMALIZER_SHARP_VERSION = '0.35.3';
 export const SKILL_ICON_NORMALIZER_VIPS_VERSION = '8.18.3';
 export const SKILL_ICON_PROVIDER_MAX_BYTES = 64 * 1024 * 1024;
 
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-const PNG_ALLOWED_CHUNKS = new Set(['IHDR', 'sRGB', 'pHYs', 'IDAT', 'IEND']);
+const PNG_V1_ALLOWED_CHUNKS = new Set(['IHDR', 'sRGB', 'pHYs', 'IDAT', 'IEND']);
+const PNG_V2_ALLOWED_CHUNKS = new Set(['IHDR', 'caBX', 'IDAT', 'IEND']);
 const PNG_SRGB_RENDERING_INTENT = 0;
+const PNG_V2_MAX_CHUNKS = 1024;
+const PNG_CABX_MIN_DATA_BYTES = 8;
+const PNG_CABX_MAX_DATA_BYTES = 32_768;
 const FORBIDDEN_ALPHA_MASS_LIMIT = 0.001;
 const FORBIDDEN_OPAQUE_PIXEL_LIMIT = 0.00025;
 const FORBIDDEN_COMPONENT_ALPHA_MASS_LIMIT = 64 * 255;
@@ -42,16 +52,35 @@ export interface SkillIconProviderSourceEvidence {
 	readonly contentHash: string;
 }
 
-export interface SkillIconNormalizationEvidence {
-	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE;
+interface SkillIconNormalizationEvidenceBase {
 	readonly geometryHash: string;
 	readonly sourceContentHash: string;
 	readonly outputContentHash: string;
 }
 
-export interface NormalizedSkillIconProviderSource {
+export interface SkillIconNormalizationEvidenceV1 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V1;
+}
+
+export interface SkillIconNormalizationEvidenceV2 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V2;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: {
+		readonly chunkType: 'caBX';
+		readonly bytes: number;
+		readonly contentHash: string;
+	};
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
+export type SkillIconNormalizationEvidence =
+	SkillIconNormalizationEvidenceV1 | SkillIconNormalizationEvidenceV2;
+
+export interface NormalizedSkillIconProviderSource<
+	Normalization extends SkillIconNormalizationEvidence = SkillIconNormalizationEvidence
+> {
 	readonly source: SkillIconProviderSourceEvidence;
-	readonly normalization: SkillIconNormalizationEvidence;
+	readonly normalization: Normalization;
 	readonly bytes: Buffer;
 }
 
@@ -93,35 +122,66 @@ function crc32(bytes: Buffer): number {
 	return (crc ^ 0xffffffff) >>> 0;
 }
 
+function pngChunk(type: string, data: Buffer): Buffer {
+	const typeBytes = Buffer.from(type, 'ascii');
+	const chunk = Buffer.alloc(data.length + 12);
+	chunk.writeUInt32BE(data.length, 0);
+	typeBytes.copy(chunk, 4);
+	data.copy(chunk, 8);
+	chunk.writeUInt32BE(crc32(Buffer.concat([typeBytes, data])), data.length + 8);
+	return chunk;
+}
+
+interface ProviderPngEnvelope {
+	readonly decoderInput: Buffer;
+	readonly containerBox?: SkillIconNormalizationEvidenceV2['containerBox'];
+}
+
 /**
  * Accept only the profile's explicit, color-metadata-free sRGB PNG envelope. Parsing
  * this before libvips prevents ancillary chunks or bytes after IEND from being
  * silently ignored or interpreted differently by another decoder.
  */
-function assertCanonicalProviderPngEnvelope(bytes: Buffer): void {
+function assertCanonicalProviderPngEnvelope(
+	bytes: Buffer,
+	profile: SkillIconNormalizationProfile
+): ProviderPngEnvelope {
 	if (bytes.length < PNG_SIGNATURE.length || !bytes.subarray(0, 8).equals(PNG_SIGNATURE))
 		throw new Error('Provider source must be a PNG');
 	let offset = PNG_SIGNATURE.length;
 	let chunkIndex = 0;
 	let sawSrgb = false;
 	let sawPhys = false;
+	let sawCabx = false;
 	let sawIdat = false;
 	let finishedIdat = false;
 	let sawIend = false;
+	let ihdrChunk: Buffer | undefined;
+	let cabxData: Buffer | undefined;
+	const idatChunks: Buffer[] = [];
 	while (offset < bytes.length) {
+		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && chunkIndex >= PNG_V2_MAX_CHUNKS)
+			throw new Error(`Provider PNG exceeds the ${PNG_V2_MAX_CHUNKS}-chunk limit`);
 		if (offset + 12 > bytes.length) throw new Error('Provider PNG has a truncated chunk');
 		const length = bytes.readUInt32BE(offset);
 		const chunkEnd = offset + 12 + length;
 		if (chunkEnd > bytes.length) throw new Error('Provider PNG has a truncated chunk');
 		const typeBytes = bytes.subarray(offset + 4, offset + 8);
+		if (
+			![...typeBytes].every(
+				(byte) => (byte >= 0x41 && byte <= 0x5a) || (byte >= 0x61 && byte <= 0x7a)
+			)
+		)
+			throw new Error('Provider PNG has a non-ASCII or invalid chunk type');
 		const type = typeBytes.toString('ascii');
-		if (!/^[A-Za-z]{4}$/u.test(type)) throw new Error('Provider PNG has an invalid chunk type');
 		const data = bytes.subarray(offset + 8, offset + 8 + length);
 		const storedCrc = bytes.readUInt32BE(offset + 8 + length);
 		if (crc32(bytes.subarray(offset + 4, offset + 8 + length)) !== storedCrc)
 			throw new Error(`Provider PNG ${type} chunk has an invalid CRC`);
-		if (!PNG_ALLOWED_CHUNKS.has(type))
+		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1 && !PNG_V1_ALLOWED_CHUNKS.has(type))
 			throw new Error(`Provider PNG contains forbidden ${type} metadata`);
+		if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !PNG_V2_ALLOWED_CHUNKS.has(type))
+			throw new Error(`Provider PNG v2 contains forbidden ${type} chunk`);
 		if (chunkIndex === 0 && type !== 'IHDR') throw new Error('Provider PNG must begin with IHDR');
 		if (chunkIndex > 0 && type === 'IHDR') throw new Error('Provider PNG contains duplicate IHDR');
 		if (type === 'IHDR') {
@@ -135,19 +195,43 @@ function assertCanonicalProviderPngEnvelope(bytes: Buffer): void {
 				);
 			if (data[8] !== 8 || data[9] !== 2 || data[10] !== 0 || data[11] !== 0 || data[12] !== 0)
 				throw new Error('Provider PNG must be non-interlaced 8-bit RGB');
+			ihdrChunk = bytes.subarray(offset, chunkEnd);
+		} else if (type === 'caBX') {
+			if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2)
+				throw new Error('Provider PNG contains forbidden caBX metadata');
+			if (sawCabx) throw new Error('Provider PNG v2 contains duplicate caBX chunks');
+			if (chunkIndex !== 1)
+				throw new Error('Provider PNG v2 caBX chunk must immediately follow IHDR');
+			if (length < PNG_CABX_MIN_DATA_BYTES || length > PNG_CABX_MAX_DATA_BYTES)
+				throw new Error('Provider PNG v2 caBX data length is outside the bounded envelope');
+			if (data.readUInt32BE(0) !== length)
+				throw new Error(
+					'Provider PNG v2 caBX embedded length does not match its chunk data length'
+				);
+			if (!data.subarray(4, 8).equals(Buffer.from('jumb', 'ascii')))
+				throw new Error('Provider PNG v2 caBX box type must be ASCII jumb');
+			sawCabx = true;
+			cabxData = Buffer.from(data);
 		} else if (type === 'sRGB') {
+			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2)
+				throw new Error('Provider PNG v2 contains forbidden sRGB chunk');
 			if (sawSrgb || sawIdat || length !== 1 || data[0] !== PNG_SRGB_RENDERING_INTENT)
 				throw new Error('Provider PNG must contain one canonical perceptual sRGB declaration');
 			sawSrgb = true;
 		} else if (type === 'pHYs') {
+			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2)
+				throw new Error('Provider PNG v2 contains forbidden pHYs chunk');
 			if (sawPhys || sawIdat || length !== 9 || (data[8] !== 0 && data[8] !== 1))
 				throw new Error('Provider PNG has an invalid pHYs chunk');
 			sawPhys = true;
 		} else if (type === 'IDAT') {
-			if (!sawSrgb)
+			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1 && !sawSrgb)
 				throw new Error('Provider PNG colorimetry is undeclared; an sRGB chunk is required');
+			if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !sawCabx)
+				throw new Error('Provider PNG v2 must contain caBX immediately after IHDR');
 			if (finishedIdat) throw new Error('Provider PNG IDAT chunks must be consecutive');
 			sawIdat = true;
+			idatChunks.push(bytes.subarray(offset, chunkEnd));
 		} else if (type === 'IEND') {
 			if (!sawIdat || length !== 0) throw new Error('Provider PNG has an invalid IEND');
 			sawIend = true;
@@ -160,6 +244,25 @@ function assertCanonicalProviderPngEnvelope(bytes: Buffer): void {
 		if (sawIend) break;
 	}
 	if (!sawIend) throw new Error('Provider PNG is missing IEND');
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 && !sawCabx)
+		throw new Error('Provider PNG v2 must contain exactly one caBX chunk');
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V1) return { decoderInput: bytes };
+	if (!ihdrChunk || !cabxData) throw new Error('Provider PNG v2 envelope is incomplete');
+	const decoderInput = Buffer.concat([
+		PNG_SIGNATURE,
+		ihdrChunk,
+		pngChunk('sRGB', Buffer.from([PNG_SRGB_RENDERING_INTENT])),
+		...idatChunks,
+		pngChunk('IEND', Buffer.alloc(0))
+	]);
+	return {
+		decoderInput,
+		containerBox: {
+			chunkType: 'caBX',
+			bytes: cabxData.byteLength,
+			contentHash: sha256(cabxData)
+		}
+	};
 }
 
 function assertNoBakedCheckerboard(data: Buffer): void {
@@ -313,7 +416,8 @@ function assertProviderMatte(
 	width: number,
 	height: number,
 	geometry: SkillIconGeometry,
-	allowsPixel: (x: number, y: number) => boolean
+	allowsPixel: (x: number, y: number) => boolean,
+	transparentDistance: number
 ): void {
 	const border = Math.max(8, Math.round(Math.min(width, height) * 0.025));
 	let sampled = 0;
@@ -333,7 +437,7 @@ function assertProviderMatte(
 			if (onPerimeter) {
 				sampled += 1;
 				const distance = keyDistance(red, green, blue);
-				if (distance <= SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE) strongMatte += 1;
+				if (distance <= transparentDistance) strongMatte += 1;
 				if (distance <= SKILL_ICON_PROVIDER_OPAQUE_DISTANCE) keyableMatte += 1;
 				else {
 					const bucket = Math.round((red + green + blue) / 48);
@@ -351,7 +455,7 @@ function assertProviderMatte(
 			if (!allowsPixel(outputX, outputY)) {
 				requiredTransparent += 1;
 				const distance = keyDistance(red, green, blue);
-				if (distance <= SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE) strongRequiredTransparent += 1;
+				if (distance <= transparentDistance) strongRequiredTransparent += 1;
 				if (distance <= SKILL_ICON_PROVIDER_OPAQUE_DISTANCE) keyableRequiredTransparent += 1;
 			}
 		}
@@ -523,12 +627,26 @@ function assertNoSpatialAlphaCheckerboard(
 
 /** Profile-owned alpha curve, exported so threshold behavior remains directly testable. */
 export function skillIconGreenKeyAlpha(red: number, green: number, blue: number): number {
+	return skillIconGreenKeyAlphaForProfile(red, green, blue, SKILL_ICON_NORMALIZATION_PROFILE_V1);
+}
+
+/** Profile-dispatched alpha curve. V2 widens only the fully transparent key distance. */
+export function skillIconGreenKeyAlphaForProfile(
+	red: number,
+	green: number,
+	blue: number,
+	profile: SkillIconNormalizationProfile
+): number {
 	const distance = keyDistance(red, green, blue);
-	if (distance <= SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE) return 0;
+	const transparentDistance =
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
+			? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
+			: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
+	if (distance <= transparentDistance) return 0;
 	if (distance >= SKILL_ICON_PROVIDER_OPAQUE_DISTANCE) return 255;
 	return Math.round(
-		(255 * (distance - SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE)) /
-			(SKILL_ICON_PROVIDER_OPAQUE_DISTANCE - SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE)
+		(255 * (distance - transparentDistance)) /
+			(SKILL_ICON_PROVIDER_OPAQUE_DISTANCE - transparentDistance)
 	);
 }
 
@@ -574,10 +692,34 @@ function scaleRoleMask(
 }
 
 /** Pure, deterministic provider-byte normalization. It never reads or writes the filesystem. */
-export async function normalizeSkillIconProviderSource(
+export function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV1>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V1
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV1>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV2>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
+	profile: SkillIconNormalizationProfile
+): Promise<NormalizedSkillIconProviderSource>;
+export async function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
+	profile: SkillIconNormalizationProfile = SKILL_ICON_NORMALIZATION_PROFILE_V1
 ): Promise<NormalizedSkillIconProviderSource> {
 	// Own both inputs before the first await. Callers cannot alter decoded pixels or
 	// provenance hashes by mutating a Buffer in a queued microtask.
@@ -585,7 +727,12 @@ export async function normalizeSkillIconProviderSource(
 		throw new Error('Provider source byte size is outside the bounded envelope');
 	const sourceSnapshot = Buffer.from(sourceBytes);
 	const geometrySnapshot = Buffer.from(geometrySourceBytes);
-	assertCanonicalProviderPngEnvelope(sourceSnapshot);
+	if (
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V1 &&
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2
+	)
+		throw new Error('Unsupported skill-icon normalization profile');
+	const envelope = assertCanonicalProviderPngEnvelope(sourceSnapshot, profile);
 	const role = SkillIconRoleSchema.parse(roleInput);
 	if (role !== 'rarity-frame' && role !== 'backing')
 		throw new Error('Green-key normalization is authorized only for rarity-frame and backing jobs');
@@ -599,12 +746,16 @@ export async function normalizeSkillIconProviderSource(
 	const roleMask = buildRoleMask(role, geometry);
 	const allowsPixel = (x: number, y: number): boolean =>
 		roleMask[y * geometry.canvas.width + x] === 1;
+	const transparentDistance =
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
+			? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
+			: SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE;
 	if (
 		sharp.versions.sharp !== SKILL_ICON_NORMALIZER_SHARP_VERSION ||
 		sharp.versions.vips !== SKILL_ICON_NORMALIZER_VIPS_VERSION
 	)
 		throw new Error('Green-key normalization requires the profile-pinned Sharp/libvips toolchain');
-	const image = sharp(sourceSnapshot, {
+	const image = sharp(envelope.decoderInput, {
 		failOn: 'error',
 		limitInputPixels: SKILL_ICON_PROVIDER_SIZE * SKILL_ICON_PROVIDER_SIZE,
 		sequentialRead: true
@@ -635,7 +786,14 @@ export async function normalizeSkillIconProviderSource(
 		.raw()
 		.toBuffer({ resolveWithObject: true });
 	assertNoBakedCheckerboard(decoded.data);
-	assertProviderMatte(decoded.data, decoded.info.width, decoded.info.height, geometry, allowsPixel);
+	assertProviderMatte(
+		decoded.data,
+		decoded.info.width,
+		decoded.info.height,
+		geometry,
+		allowsPixel,
+		transparentDistance
+	);
 	const providerRoleMask = scaleRoleMask(
 		roleMask,
 		geometry.canvas.width,
@@ -657,7 +815,7 @@ export async function normalizeSkillIconProviderSource(
 		const red = decoded.data[sourceOffset] ?? 0;
 		const green = decoded.data[sourceOffset + 1] ?? 0;
 		const blue = decoded.data[sourceOffset + 2] ?? 0;
-		const alpha = skillIconGreenKeyAlpha(red, green, blue);
+		const alpha = skillIconGreenKeyAlphaForProfile(red, green, blue, profile);
 		const amount = alpha / 255;
 		const unmatte = (channel: number, matte: number): number =>
 			Math.max(0, Math.min(255, Math.round((channel - (1 - amount) * matte) / amount)));
@@ -714,6 +872,24 @@ export async function normalizeSkillIconProviderSource(
 		.toBuffer();
 	const sourceHash = sha256(sourceSnapshot);
 	const outputHash = sha256(outputBytes);
+	const normalizationBase = {
+		geometryHash: sha256(geometrySnapshot),
+		sourceContentHash: sourceHash,
+		outputContentHash: outputHash
+	};
+	const normalization: SkillIconNormalizationEvidence =
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
+			? {
+					...normalizationBase,
+					profile,
+					decoderInputContentHash: sha256(envelope.decoderInput),
+					containerBox: envelope.containerBox!,
+					colorSpaceDisposition: 'assigned-srgb'
+				}
+			: {
+					...normalizationBase,
+					profile
+				};
 	return {
 		source: {
 			mediaType: 'image/png',
@@ -723,12 +899,7 @@ export async function normalizeSkillIconProviderSource(
 			alphaMode: 'rgb',
 			contentHash: sourceHash
 		},
-		normalization: {
-			profile: SKILL_ICON_NORMALIZATION_PROFILE,
-			geometryHash: sha256(geometrySnapshot),
-			sourceContentHash: sourceHash,
-			outputContentHash: outputHash
-		},
+		normalization,
 		bytes: outputBytes
 	};
 }

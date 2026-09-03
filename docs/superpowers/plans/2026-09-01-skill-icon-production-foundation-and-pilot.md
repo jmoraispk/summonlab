@@ -23,9 +23,10 @@
 - The approved F–S ladder remains weathered iron, aged bronze, tempered blue steel, moonlit silver, blackened amethyst, champagne electrum, and ceremonial antique gold.
 - Calibration plates are reference evidence only and are never cropped into production assets.
 - Individual skill masters are generated independently at the same size.
-- Frame/backing provider output is normalized only inside persistence under an exact v2 packet
-  profile; agents never transform, crop, key, resize, or mask it manually. Skill-art and
-  calibration jobs remain v1 exact-source work, and historical v1 evidence stays valid.
+- Frame/backing provider output is normalized only inside persistence under the exact profile named
+  by its packet; agents never transform, crop, key, resize, or mask it manually. Skill-art and
+  calibration jobs remain v1 exact-source work. Historical v1 evidence and existing revision-2
+  profile-v1 packets/results stay immutable.
 - Generated jobs may write only their declared candidate and result paths; only the coordinator may update shared catalogs, approvals, or runtime exports.
 - The 456-of-456 completion gate remains disabled until the fifteen-skill pilot receives owner approval.
 
@@ -42,7 +43,7 @@ This plan deliberately ends at the accepted three-domain pilot and a machine-gen
 | `tools/export-skill-icon-production.ts` | Deterministic `--write`/`--check` exporter for geometry guides, machine motif map, catalog, targets, and JSON schemas |
 | `tools/validate-skill-icon-assets.ts` | Sharp-based dimensions, alpha, safe-zone, registration, hash, and derivative validation |
 | `tools/persist-skill-icon-output.ts` | Collision-safe v1 exact-source/v2 normalized persistence and structured receipt generation for one image job |
-| `tools/normalize-skill-icon-provider-source.ts` | Pure profile-pinned 1254 RGB green-key to 1024 RGBA role normalization |
+| `tools/normalize-skill-icon-provider-source.ts` | Pure profile-pinned 1254 RGB green-key to 1024 RGBA role normalization, including v2 `caBX` isolation and canonical sRGB decoder input |
 | `tools/compose-skill-icon-assets.ts` | Backing/art/frame composition, runtime derivatives, recognition thumbnails, and contact sheets |
 | `tools/report-skill-icon-readiness.ts` | Exact coverage and lifecycle gate report for all 456 skills |
 | `tools/tsconfig.skill-icon-production.json` | Focused type-check boundary for the pipeline |
@@ -692,6 +693,51 @@ normalization manually. Global validation verifies every historical tuple, but o
 latest semantic revision may satisfy a slot; a latest failure/revise/incomplete tuple blocks
 without falling back.
 
+#### Additive profile-v2 amendment
+
+The revision-2 packets and the F revision-2 failed result remain unchanged profile-v1 history. The
+F canary correctly failed because its otherwise usable provider raster contained a `caBX` chunk that
+profile v1 forbids. Do not rewrite that result or relabel those packets. The next frame/backing
+revision may instead bind `skill-icon-green-key-role-mask-v2` and
+`summonlab-skill-icon-production-v3`. This is an additive compatibility route, not a reinterpretation
+of profile v1. No revision-3 target, assignment, result, candidate, or image has been issued yet.
+
+Profile v2 admits only a file of at most 64 MiB and at most 1,024 total chunks with this exact order:
+`IHDR`, exactly one `caBX`, one or more consecutive `IDAT`, `IEND`. The `caBX` must immediately follow
+`IHDR`; no other chunk, color declaration, or trailing byte is accepted. `IHDR` remains exactly
+1254×1254 RGB8 and non-interlaced. The `caBX` data length is 8–32,768 bytes inclusive, its CRC is
+valid, its first big-endian uint32 equals the data length, and bytes 4–7 are ASCII `jumb`. Every
+remaining byte is an opaque, untrusted container payload: the normalizer never parses, resolves,
+fetches, copies, or decodes it.
+
+The normalizer hashes four exact byte sequences with SHA-256: the complete original PNG for the
+provider-source/source hash, the raw `caBX` data for `containerBox.contentHash`, the decoder-input PNG,
+and the normalized output. It creates decoder input only in memory by stripping `caBX` and inserting
+a canonical intent-0 `sRGB` chunk with its computed CRC immediately after `IHDR`; it records that
+byte sequence as `decoderInputContentHash` and the disposition as
+`colorSpaceDisposition: 'assigned-srgb'`. Result evidence also records the pathless
+`containerBox: { chunkType: 'caBX', bytes, contentHash }`; it never records a local provider path.
+
+After decoding, only profile v2 changes matte tolerance. A decoded 1254-pixel source pixel is clean
+matte when the inclusive Chebyshev distance from `#00FF00` is
+`max(R, 255 - G, B) <= 24`, rather than profile v1's distance 12. That condition governs the source
+perimeter, every role-required-transparent source region, and the fully transparent endpoint for
+pre-resize chroma alpha. The resize, output role mask, and 1024 RGBA forbidden-region/geometry gates
+are unchanged. A synthesized exact-envelope canary whose artwork casts a shadow into required matte
+space must fail, proving provider compatibility does not relax the transparent-area contract.
+
+Only the coordinator may close an unattempted older packet as superseded. It writes the closure to
+the old packet's canonical result path through the established crash-safe result-only transaction,
+uses the exact reason `unattempted-packet-superseded-by-higher-revision`, and binds an authority block
+to the higher target and assignment's canonical paths and raw SHA-256 hashes plus that authority's
+job, logical identity, revision, and role. The higher packet must match the retired logical identity
+and role at a strictly greater revision. The coordinator must prove that the retired candidate and
+result paths are absent. The closure records zero attempts and wall time, empty findings, null output,
+exact `not-run` normalization, equal timestamps, and a result-only write set with no shared edit or
+self-promotion. The producer cannot author this status. Such evidence closes only the historical
+tuple; it never satisfies latest, never becomes a usable candidate, and never permits fallback when
+the higher revision fails or is incomplete.
+
 Production commands cooperate through the repository coordinator and defend accidental or
 concurrent file replacement with stable reads, inode/hash rechecks, and atomic publication. A
 malicious same-UID process that bypasses that coordinator and races the final syscall remains an
@@ -725,16 +771,21 @@ Create one target per rarity and one backing target. Every frame prompt must sta
 pnpm validate:skill-icons
 ```
 
-Expected for fresh v2 packets: FAIL with exactly eight missing latest-v2 outputs and no
-catalog-structure errors. Historical v1 result-only failures remain valid evidence and must not be
-misreported as missing candidates.
+Expected for the existing revision-2 packets: the F slot reports its immutable profile-v1
+normalization failure and the other seven report missing latest outputs, with no catalog-structure
+errors. Historical v1 result-only failures remain valid evidence and must not be misreported as
+missing candidates. Do not issue revision-3 packets or images as part of the profile-v2 protocol
+implementation.
 
-- [ ] **Step 3: Dispatch eight isolated generation jobs**
+- [ ] **Step 3: Supersede only unattempted packets, then dispatch an authorized revision**
 
-Use `summonlab-skill-icon-production` once per target. The seven frames may run independently; the
-backing is independent of all frames. The producer passes only the exact provider path/hash to the
-helper; the helper normalizes transactionally. Each job returns only its versioned candidate PNG
-and result JSON.
+When production resumes, the coordinator first issues one higher-revision target/assignment pair
+with the exact profile and assignment skill version. It may then author authority-bound superseded
+results only for lower packets proven unattempted. Use `summonlab-skill-icon-production` once per new
+target. The seven frames may run independently; the backing is independent of all frames. The
+producer passes only the exact provider path/hash to the helper; the helper normalizes
+transactionally. Each attempted job returns only its versioned candidate PNG and result JSON. A
+superseded result is coordinator evidence, never producer output and never fallback.
 
 - [ ] **Step 4: Validate candidates and create the comparison sheet**
 
@@ -1127,12 +1178,18 @@ images.
 - calibration plates establish consistency but never become asset crops;
 - individual masters are 1024-pixel transparent PNGs;
 - the exact new-skill lifecycle is map → author → calibrate if needed → generate → validate → owner review → promote → export;
-- green-key rarity-frame/backing retries use an exact v2 target/assignment/skill tuple and
-  packet-authorized provider normalization; skill-art and calibration jobs remain v1 exact-source
-  work unless a future contract revision adds those roles, and historical v1 evidence stays
-  immutable;
+- green-key rarity-frame/backing retries use an exact version-matched target/assignment/skill tuple
+  and packet-authorized provider normalization; existing revision-2 profile-v1 packets/results and
+  historical v1 exact-source evidence stay immutable, while future compatible frame/backing retries
+  may use profile v2 with assignment skill v3;
 - the producing agent never normalizes manually, copies a provider source into the repository, or
   persists its absolute path; retries use a new explicit revision and latest-revision validation;
+- profile-v2 evidence records full-provider, opaque-`caBX`, canonical-sRGB decoder-input, geometry,
+  and normalized-output hashes without preserving a provider path; its distance-24 clean-matte gate
+  must still reject shadow spill;
+- only the coordinator may write exact authority-bound
+  `unattempted-packet-superseded-by-higher-revision` evidence, and that evidence never satisfies the
+  latest slot or fallback;
 - changing rarity recomposes the frame and does not regenerate artwork;
 - the current pilot count and link to evidence.
 

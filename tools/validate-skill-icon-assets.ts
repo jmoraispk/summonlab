@@ -17,7 +17,11 @@ import {
 	type SkillIconGeometry,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
-import { resolveLatestSkillIconTargets, skillIconScopeForRole } from './skill-icon-revision-lib.js';
+import {
+	assertSkillIconSupersedingRevision,
+	resolveLatestSkillIconTargets,
+	skillIconScopeForRole
+} from './skill-icon-revision-lib.js';
 
 export const SKILL_ICON_TRANSPARENT_ALPHA_MAX = 8;
 export const SKILL_ICON_SUBJECT_SAFE_MINIMUM = 0.9;
@@ -514,6 +518,66 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 			if (error.code === 'ENOENT') return null;
 			throw error;
 		});
+		if (result.status === 'superseded') {
+			if (metadata) failures.push(`${target.jobId}: superseded result cannot retain a candidate`);
+			try {
+				const authority = result.supersedingAuthority;
+				const [higherTargetBytes, higherAssignmentBytes] = await Promise.all([
+					readSafeRepositoryFile(
+						resolvedRoot,
+						path.resolve(resolvedRoot, authority.targetPath),
+						'Superseding target'
+					),
+					readSafeRepositoryFile(
+						resolvedRoot,
+						path.resolve(resolvedRoot, authority.assignmentPath),
+						'Superseding assignment'
+					)
+				]);
+				if (
+					createHash('sha256').update(higherTargetBytes).digest('hex') !==
+						authority.targetContentHash ||
+					createHash('sha256').update(higherAssignmentBytes).digest('hex') !==
+						authority.assignmentContentHash
+				)
+					throw new Error('superseding packet content hashes changed');
+				const higherTarget = AnySkillIconTargetSchema.parse(
+					JSON.parse(higherTargetBytes.toString('utf8'))
+				);
+				const higherAssignment = AnySkillIconAssignmentSchema.parse(
+					JSON.parse(higherAssignmentBytes.toString('utf8'))
+				);
+				if (
+					higherTarget.schemaVersion !== 'skill-icon-target-v2' ||
+					higherAssignment.schemaVersion !== 'skill-icon-assignment-v2' ||
+					higherTarget.jobId !== authority.jobId ||
+					higherTarget.logicalIdentity !== authority.logicalIdentity ||
+					higherTarget.revision !== authority.revision ||
+					higherTarget.role !== authority.role ||
+					higherAssignment.jobId !== higherTarget.jobId ||
+					higherAssignment.logicalIdentity !== higherTarget.logicalIdentity ||
+					higherAssignment.revision !== higherTarget.revision ||
+					higherAssignment.targetPath !== authority.targetPath ||
+					higherAssignment.assignmentPath !== authority.assignmentPath ||
+					higherAssignment.assignmentId !== `assignment-${higherTarget.jobId}` ||
+					higherAssignment.normalization.profile !== higherTarget.normalization.profile ||
+					higherAssignment.permittedOutputs.candidatePath !== higherTarget.output.candidatePath ||
+					higherAssignment.permittedOutputs.resultPath !== higherTarget.output.resultPath
+				)
+					throw new Error(
+						'superseding target and assignment do not bind the same identity at a higher revision'
+					);
+				assertSkillIconSupersedingRevision(target, higherTarget);
+			} catch (error) {
+				failures.push(
+					`${target.jobId}: invalid superseding authority: ${
+						error instanceof Error ? error.message : String(error)
+					}`
+				);
+			}
+			executions.push({ target, result });
+			continue;
+		}
 		if (result.status === 'failed') {
 			if (metadata) failures.push(`${target.jobId}: failed result cannot retain a candidate`);
 			executions.push({ target, result });
@@ -568,7 +632,9 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 				const reason =
 					result.status === 'failed'
 						? `${result.failureReason?.kind ?? 'failed'}: ${result.failureReason?.message ?? 'terminal failure'}`
-						: 'revision requested';
+						: result.status === 'superseded'
+							? result.supersessionReason
+							: 'revision requested';
 				failures.push(
 					`${current.logicalKey} latest revision v${current.revision} is ${result.status} (${reason}); create a higher revision`
 				);

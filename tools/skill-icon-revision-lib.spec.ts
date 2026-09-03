@@ -4,7 +4,10 @@ import {
 	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
 	type AnySkillIconTarget
 } from '../packages/contracts/src/index.js';
-import { resolveLatestSkillIconTargets } from './skill-icon-revision-lib.js';
+import {
+	assertSkillIconSupersedingRevision,
+	resolveLatestSkillIconTargets
+} from './skill-icon-revision-lib.js';
 import { validateSkillIconAssets } from './validate-skill-icon-assets.js';
 
 function target(jobId: string, revision?: number): AnySkillIconTarget {
@@ -72,6 +75,29 @@ describe('skill-icon revision resolution', () => {
 		expect(() => resolveLatestSkillIconTargets([v2, { ...v2 }])).toThrow(/duplicate/iu);
 	});
 
+	it('accepts only a same-role, same-logical-key V2 superseding target at a higher revision', () => {
+		const v2 = target('charcoal-forged-stone-v2', 2);
+		const v3 = target('charcoal-forged-stone-v3', 3);
+		expect(() => assertSkillIconSupersedingRevision(v2, v3)).not.toThrow();
+		expect(() => assertSkillIconSupersedingRevision(v2, v2)).toThrow(/strictly higher/iu);
+		expect(() =>
+			assertSkillIconSupersedingRevision(v2, {
+				...v3,
+				logicalIdentity: 'different-backing'
+			} as AnySkillIconTarget)
+		).toThrow(/same role and logical identity/iu);
+		expect(() =>
+			assertSkillIconSupersedingRevision(v2, {
+				...v3,
+				role: 'rarity-frame',
+				rarity: 'F'
+			} as AnySkillIconTarget)
+		).toThrow(/same role and logical identity/iu);
+		expect(() =>
+			assertSkillIconSupersedingRevision(target('charcoal-forged-stone-v1'), v3)
+		).toThrow(/only V2 packets/iu);
+	});
+
 	it('rejects a V1 reference revision after v1 instead of allowing a protocol downgrade', () => {
 		const v1 = target('charcoal-forged-stone-v99') as AnySkillIconTarget;
 		const v2 = target('charcoal-forged-stone-v2', 2);
@@ -96,23 +122,27 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports only the eight incomplete latest v2 reference revisions after packet issuance', async () => {
+	it('reports the seven unattempted and one terminal failed latest v2 references', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
 		} catch (error) {
 			message = error instanceof Error ? error.message : String(error);
 		}
-		expect(message.split('\n')).toEqual([
+		const diagnostics = message.split('\n');
+		expect(diagnostics.slice(0, 7)).toEqual([
 			'references/charcoal-forged-stone-v2: missing result inventory entry',
 			'references/rarity-frame-a-v2: missing result inventory entry',
 			'references/rarity-frame-b-v2: missing result inventory entry',
 			'references/rarity-frame-c-v2: missing result inventory entry',
 			'references/rarity-frame-d-v2: missing result inventory entry',
 			'references/rarity-frame-e-v2: missing result inventory entry',
-			'references/rarity-frame-f-v2: missing result inventory entry',
 			'references/rarity-frame-s-v2: missing result inventory entry'
 		]);
+		expect(diagnostics).toHaveLength(8);
+		expect(diagnostics[7]).toMatch(
+			/rarity-frame:F latest revision v2 is failed \(validation: .*caBX metadata.*\); create a higher revision/iu
+		);
 		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);
 	});

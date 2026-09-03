@@ -34,10 +34,18 @@ import {
 	parsePersistSkillIconCliRequest,
 	persistSkillIconOutput,
 	persistSkillIconOutputBound,
+	persistSkillIconSupersededResult,
+	skillIconSupersessionIntentPath,
+	SkillIconSupersessionIntentSchema,
 	SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
 	SKILL_ICON_PERSISTENCE_LOCK_PATH,
 	SKILL_ICON_PERSISTENCE_TOKEN_PATH
 } from './persist-skill-icon-output.js';
+import {
+	normalizeSkillIconProviderSource,
+	SKILL_ICON_NORMALIZATION_PROFILE_V2
+} from './normalize-skill-icon-provider-source.js';
+import { parseSupersedeSkillIconCliRequest } from './supersede-skill-icon-result.js';
 
 const roots: string[] = [];
 const execFileAsync = promisify(execFile);
@@ -74,6 +82,35 @@ function declareSrgb(png: Buffer): Buffer {
 	chunk.writeUInt32BE(crc32(Buffer.concat([type, data])), 9);
 	const ihdrEnd = 8 + 12 + png.readUInt32BE(8);
 	return Buffer.concat([png.subarray(0, ihdrEnd), chunk, png.subarray(ihdrEnd)]);
+}
+
+function declareCabx(png: Buffer): Buffer {
+	const payload = Buffer.from('persist-profile-v2-container-evidence', 'ascii');
+	const data = Buffer.alloc(8 + payload.length);
+	data.writeUInt32BE(data.length, 0);
+	data.write('jumb', 4, 'ascii');
+	payload.copy(data, 8);
+	const type = Buffer.from('caBX', 'ascii');
+	const chunk = Buffer.alloc(data.length + 12);
+	chunk.writeUInt32BE(data.length, 0);
+	type.copy(chunk, 4);
+	data.copy(chunk, 8);
+	chunk.writeUInt32BE(crc32(Buffer.concat([type, data])), data.length + 8);
+	const ihdrEnd = 8 + 12 + png.readUInt32BE(8);
+	return Buffer.concat([png.subarray(0, ihdrEnd), chunk, png.subarray(ihdrEnd)]);
+}
+
+function withoutPngChunk(png: Buffer, removedType: string): Buffer {
+	const chunks = [png.subarray(0, 8)];
+	let offset = 8;
+	while (offset < png.length) {
+		const length = png.readUInt32BE(offset);
+		const end = offset + length + 12;
+		if (png.toString('ascii', offset + 4, offset + 8) !== removedType)
+			chunks.push(png.subarray(offset, end));
+		offset = end;
+	}
+	return Buffer.concat(chunks);
 }
 
 const geometry: SkillIconGeometry = {
@@ -218,7 +255,40 @@ function packetV2(geometrySourceBytes: Buffer) {
 	return { target, assignment, candidatePath };
 }
 
-async function v2ProviderSource(): Promise<Buffer> {
+function packetProfileV2(geometrySourceBytes: Buffer) {
+	const prior = packetV2(geometrySourceBytes);
+	const jobId = 'charcoal-forged-stone-v3';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const target: SkillIconTargetV2 = {
+		...prior.target,
+		jobId,
+		revision: 3,
+		output: { candidatePath, resultPath },
+		normalization: {
+			...prior.target.normalization,
+			profile: 'skill-icon-green-key-role-mask-v2'
+		}
+	};
+	const assignment: SkillIconAssignmentV2 = {
+		...prior.assignment,
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		revision: 3,
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+		skillVersion: 'summonlab-skill-icon-production-v3',
+		normalization: { profile: 'skill-icon-green-key-role-mask-v2' },
+		permittedOutputs: { candidatePath, resultPath }
+	};
+	return { target, assignment, candidatePath };
+}
+
+async function v2ProviderSource(
+	profile:
+		| 'skill-icon-green-key-role-mask-v1'
+		| 'skill-icon-green-key-role-mask-v2' = 'skill-icon-green-key-role-mask-v1'
+): Promise<Buffer> {
 	const png = await sharp({
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
 	})
@@ -232,7 +302,9 @@ async function v2ProviderSource(): Promise<Buffer> {
 		.removeAlpha()
 		.png({ progressive: false, palette: false })
 		.toBuffer();
-	return declareSrgb(png);
+	return profile === 'skill-icon-green-key-role-mask-v2'
+		? declareCabx(withoutPngChunk(png, 'pHYs'))
+		: declareSrgb(png);
 }
 
 async function workspace() {
@@ -314,6 +386,89 @@ async function crashPersistenceAt(
 }
 
 describe('persistSkillIconOutput', () => {
+	it('uses one immutable bound request when its caller mutates every field during source read', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const sourceHash = createHash('sha256')
+			.update(await readFile(sourcePath))
+			.digest('hex');
+		const redirectedCandidatePath = candidatePath.replace('.png', '-redirected.png');
+		const redirectedSourcePath = path.join(root, 'redirected-provider.png');
+		await writeFile(redirectedSourcePath, Buffer.from('not the authorized source'));
+		const options: Parameters<typeof persistSkillIconOutputBound>[0] = {
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art' as const,
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: sourceHash,
+			testHooks: {
+				afterSourceRead: mutateOptions
+			}
+		};
+		function mutateOptions(): void {
+			Object.assign(options, {
+				root: path.join(root, 'redirected-root'),
+				sourcePath: redirectedSourcePath,
+				candidatePath: redirectedCandidatePath,
+				expectedRole: 'backing',
+				geometry: { ...geometry, canvas: { width: 1, height: 1 } },
+				target: { ...target, jobId: 'redirected-job-v1' },
+				assignment: { ...assignment, jobId: 'redirected-job-v1' },
+				receivedAt: '2026-09-02T10:11:12.000Z',
+				expectedSourceHash: '1'.repeat(64),
+				testHooks: undefined
+			});
+		}
+
+		const receipt = await persistSkillIconOutputBound(options);
+		expect(receipt).toMatchObject({
+			jobId: target.jobId,
+			role: 'skill-art',
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			source: { path: sourcePath },
+			retained: { path: candidatePath }
+		});
+		await expect(access(path.join(root, candidatePath))).resolves.toBeUndefined();
+		await expect(access(path.join(root, redirectedCandidatePath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	});
+
+	it('does not let a bound hook heal an unauthorized source hash', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		const actualHash = createHash('sha256')
+			.update(await readFile(sourcePath))
+			.digest('hex');
+		const options: Parameters<typeof persistSkillIconOutputBound>[0] = {
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art' as const,
+			geometry,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: '1'.repeat(64),
+			testHooks: {
+				afterSourceRead: healSourceHash
+			}
+		};
+		function healSourceHash(): void {
+			Object.assign(options, { expectedSourceHash: actualHash });
+		}
+
+		await expect(persistSkillIconOutputBound(options)).rejects.toThrow(/hash mismatch/iu);
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	});
+
 	it('normalizes a hash-bound V2 provider source only inside the collision-safe transaction', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-v2-'));
 		roots.push(root);
@@ -352,6 +507,171 @@ describe('persistSkillIconOutput', () => {
 			outcome: 'completed',
 			sourceContentHash: sourceHash,
 			outputContentHash: createHash('sha256').update(retained).digest('hex')
+		});
+	}, 15_000);
+
+	it('persists the exact profile-v2 caBX normalization and its completed evidence', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-profile-v2-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
+		const source = await v2ProviderSource(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		await writeFile(sourcePath, source);
+		const geometrySourceBytes = canonicalGeometrySourceBytes;
+		const { target, assignment, candidatePath } = packetProfileV2(geometrySourceBytes);
+		const expected = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometrySourceBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+
+		const receipt = await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'backing',
+			geometry,
+			geometrySourceBytes,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+
+		const retained = await readFile(path.join(root, candidatePath));
+		expect(retained).toEqual(expected.bytes);
+		expect(receipt.source.contentHash).toBe(sourceHash);
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toMatchObject({
+			profile: SKILL_ICON_NORMALIZATION_PROFILE_V2,
+			outcome: 'completed',
+			providerSource: { contentHash: sourceHash },
+			sourceContentHash: sourceHash,
+			decoderInputContentHash: expected.normalization.decoderInputContentHash,
+			containerBox: expected.normalization.containerBox,
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: createHash('sha256').update(retained).digest('hex')
+		});
+		if (
+			result.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
+			result.normalization.outcome !== 'completed'
+		)
+			throw new Error('Expected completed profile-v2 normalization evidence');
+		expect(result.normalization.decoderInputContentHash).not.toBe(sourceHash);
+	}, 15_000);
+
+	it('rejects cross-profile and profile skill-version mismatches before persistence', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-profile-mismatch-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
+		const source = await v2ProviderSource(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		await writeFile(sourcePath, source);
+		const geometrySourceBytes = canonicalGeometrySourceBytes;
+		const { target, assignment, candidatePath } = packetProfileV2(geometrySourceBytes);
+		const common = {
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'backing' as const,
+			geometry,
+			geometrySourceBytes,
+			target,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: createHash('sha256').update(source).digest('hex')
+		};
+
+		await expect(
+			persistSkillIconOutputBound({
+				...common,
+				assignment: {
+					...assignment,
+					skillVersion: 'summonlab-skill-icon-production-v2',
+					normalization: { profile: 'skill-icon-green-key-role-mask-v1' }
+				}
+			})
+		).rejects.toThrow(/normalization profiles do not match/iu);
+		await expect(
+			persistSkillIconOutputBound({
+				...common,
+				assignment: {
+					...assignment,
+					skillVersion: 'summonlab-skill-icon-production-v2'
+				} as SkillIconAssignmentV2
+			})
+		).rejects.toThrow(/production-v3|requires/iu);
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	}, 15_000);
+
+	it('rejects profile-v2 source mutation during the bound read', async () => {
+		const root = await mkdtemp(
+			path.join(os.tmpdir(), 'skill-icon-persist-profile-v2-source-race-')
+		);
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
+		const source = await v2ProviderSource(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		await writeFile(sourcePath, source);
+		const geometrySourceBytes = canonicalGeometrySourceBytes;
+		const { target, assignment, candidatePath } = packetProfileV2(geometrySourceBytes);
+		const replacement = await v2ProviderSource(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		replacement[replacement.length - 1] ^= 1;
+
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'backing',
+				geometry,
+				geometrySourceBytes,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				expectedSourceHash: createHash('sha256').update(source).digest('hex'),
+				testHooks: { afterSourceRead: () => writeFile(sourcePath, replacement) }
+			})
+		).rejects.toThrow(/source changed while it was being read/iu);
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	}, 15_000);
+
+	it('rejects a profile-v2 provider source that does not match its authority hash', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-profile-v2-tamper-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedReference(root);
+		const source = await v2ProviderSource(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		await writeFile(sourcePath, source);
+		const geometrySourceBytes = canonicalGeometrySourceBytes;
+		const { target, assignment, candidatePath } = packetProfileV2(geometrySourceBytes);
+
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath,
+				expectedRole: 'backing',
+				geometry,
+				geometrySourceBytes,
+				target,
+				assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				expectedSourceHash: '1'.repeat(64)
+			})
+		).rejects.toThrow(/hash mismatch/iu);
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
 		});
 	}, 15_000);
 
@@ -1103,6 +1423,90 @@ describe('persistSkillIconOutput', () => {
 		}
 	});
 
+	it('snapshots the public request before its packet-authority await', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await seedPackets(root, target, assignment);
+		const expectedSourceHash = createHash('sha256')
+			.update(await readFile(sourcePath))
+			.digest('hex');
+		const redirectedCandidatePath = candidatePath.replace('.png', '-redirected.png');
+		const redirectedSourcePath = path.join(root, 'redirected-provider.png');
+		await writeFile(redirectedSourcePath, Buffer.from('not the authorized source'));
+		const options: Parameters<typeof persistSkillIconOutput>[0] = {
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			expectedSourceHash
+		};
+		const previous = process.cwd();
+		try {
+			process.chdir(root);
+			const receipt = await persistSkillIconOutput(options, {
+				now: () => new Date('2026-09-02T12:34:56.000Z'),
+				testHooks: {
+					afterAuthorityRead: () => {
+						Object.assign(options, {
+							sourcePath: redirectedSourcePath,
+							candidatePath: redirectedCandidatePath,
+							expectedRole: 'backing',
+							geometry: { ...geometry, canvas: { width: 1, height: 1 } },
+							expectedSourceHash: '1'.repeat(64)
+						});
+					}
+				}
+			});
+			expect(receipt).toMatchObject({
+				jobId: target.jobId,
+				role: 'skill-art',
+				source: { path: sourcePath },
+				retained: { path: candidatePath }
+			});
+		} finally {
+			process.chdir(previous);
+		}
+		await expect(access(path.join(root, candidatePath))).resolves.toBeUndefined();
+		await expect(access(path.join(root, redirectedCandidatePath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	});
+
+	it('does not let the public authority-read hook heal an unauthorized source hash', async () => {
+		const { root, sourcePath } = await workspace();
+		const { target, assignment, candidatePath } = packet();
+		await seedPackets(root, target, assignment);
+		const actualHash = createHash('sha256')
+			.update(await readFile(sourcePath))
+			.digest('hex');
+		const options: Parameters<typeof persistSkillIconOutput>[0] = {
+			sourcePath,
+			candidatePath,
+			expectedRole: 'skill-art',
+			geometry,
+			expectedSourceHash: '1'.repeat(64)
+		};
+		const previous = process.cwd();
+		try {
+			process.chdir(root);
+			await expect(
+				persistSkillIconOutput(options, {
+					testHooks: {
+						afterAuthorityRead: () => {
+							Object.assign(options, { expectedSourceHash: actualHash });
+						}
+					}
+				})
+			).rejects.toThrow(/hash mismatch/iu);
+		} finally {
+			process.chdir(previous);
+		}
+		await expect(access(path.join(root, candidatePath))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(access(path.join(root, target.output.resultPath))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	});
+
 	it.each(['target', 'assignment'] as const)(
 		'rolls back when the public API %s packet changes after its authority read',
 		async (changedAuthority) => {
@@ -1357,5 +1761,475 @@ describe('persistSkillIconOutput', () => {
 		await expect(
 			access(path.join(movedParent, path.basename(candidatePath)))
 		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	function supersessionPackets() {
+		const retired = packetV2(canonicalGeometrySourceBytes);
+		const supersedingJobId = 'charcoal-forged-stone-v3';
+		const supersedingCandidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${supersedingJobId}.png`;
+		const supersedingResultPath = `assets/wiki/skills/icon-production-v1/results/references/${supersedingJobId}.json`;
+		const supersedingTarget: SkillIconTargetV2 = {
+			...retired.target,
+			jobId: supersedingJobId,
+			revision: 3,
+			output: {
+				candidatePath: supersedingCandidatePath,
+				resultPath: supersedingResultPath
+			}
+		};
+		const supersedingAssignment: SkillIconAssignmentV2 = {
+			...retired.assignment,
+			assignmentId: `assignment-${supersedingJobId}`,
+			jobId: supersedingJobId,
+			revision: 3,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${supersedingJobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${supersedingJobId}.json`,
+			permittedOutputs: {
+				candidatePath: supersedingCandidatePath,
+				resultPath: supersedingResultPath
+			}
+		};
+		return { retired, supersedingTarget, supersedingAssignment };
+	}
+
+	async function supersessionWorkspace() {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-supersede-'));
+		roots.push(root);
+		await seedReference(root);
+		const packets = supersessionPackets();
+		await seedPackets(root, packets.retired.target, packets.retired.assignment);
+		await seedPackets(root, packets.supersedingTarget, packets.supersedingAssignment);
+		return { root, ...packets };
+	}
+
+	function supersedeOptions(input: Awaited<ReturnType<typeof supersessionWorkspace>>) {
+		return {
+			root: input.root,
+			targetPath: input.retired.assignment.targetPath,
+			assignmentPath: input.retired.assignment.assignmentPath,
+			supersedingTargetPath: input.supersedingAssignment.targetPath,
+			supersedingAssignmentPath: input.supersedingAssignment.assignmentPath,
+			reason: 'unattempted-packet-superseded-by-higher-revision' as const,
+			completedAt: '2026-09-02T13:00:00.000Z'
+		};
+	}
+
+	async function crashSupersessionAt(
+		input: Awaited<ReturnType<typeof supersessionWorkspace>>,
+		boundary:
+			| 'afterTokenInstall'
+			| 'afterLockInstall'
+			| 'afterIntentInstall'
+			| 'afterOutputStageComplete'
+			| 'afterJournalInstall'
+			| 'afterResultInstall'
+			| 'afterJournalRemoval'
+			| 'afterIntentRemoval'
+	): Promise<void> {
+		const payloadPath = path.join(input.root, 'supersede-crash-payload.json');
+		await writeFile(payloadPath, JSON.stringify(supersedeOptions(input)));
+		const moduleUrl = new URL('./persist-skill-icon-output.ts', import.meta.url).href;
+		const program = `
+			import { readFile } from 'node:fs/promises';
+			const { persistSkillIconSupersededResult } = await import(${JSON.stringify(moduleUrl)});
+			const payload = JSON.parse(await readFile(${JSON.stringify(payloadPath)}, 'utf8'));
+			await persistSkillIconSupersededResult({
+				...payload,
+				testHooks: { [${JSON.stringify(boundary)}]: () => process.kill(process.pid, 'SIGKILL') }
+			});
+		`;
+		await expect(
+			execFileAsync(
+				process.execPath,
+				['--import', 'tsx', '--input-type=module', '--eval', program],
+				{
+					cwd: process.cwd()
+				}
+			)
+		).rejects.toMatchObject({ signal: 'SIGKILL' });
+	}
+
+	it('coordinator supersedes only an output-free older packet and writes one result', async () => {
+		const input = await supersessionWorkspace();
+		const before = await Promise.all(
+			[
+				input.retired.assignment.targetPath,
+				input.retired.assignment.assignmentPath,
+				input.supersedingAssignment.targetPath,
+				input.supersedingAssignment.assignmentPath
+			].map((relativePath) => readFile(path.join(input.root, relativePath)))
+		);
+		const result = await persistSkillIconSupersededResult(supersedeOptions(input));
+		expect(result).toMatchObject({
+			status: 'superseded',
+			attemptCount: 0,
+			supersessionReason: 'unattempted-packet-superseded-by-higher-revision',
+			output: null,
+			normalization: {
+				outcome: 'not-run',
+				providerSource: null,
+				sourceContentHash: null,
+				outputContentHash: null
+			},
+			findings: [],
+			totalWallTimeMs: 0,
+			writtenOutputPaths: [input.retired.target.output.resultPath],
+			supersedingAuthority: {
+				jobId: input.supersedingTarget.jobId,
+				logicalIdentity: input.supersedingTarget.logicalIdentity,
+				revision: 3,
+				role: 'backing'
+			}
+		});
+		await expect(
+			access(path.join(input.root, input.retired.target.output.candidatePath))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		expect(
+			JSON.parse(
+				await readFile(path.join(input.root, input.retired.target.output.resultPath), 'utf8')
+			)
+		).toEqual(result);
+		const after = await Promise.all(
+			[
+				input.retired.assignment.targetPath,
+				input.retired.assignment.assignmentPath,
+				input.supersedingAssignment.targetPath,
+				input.supersedingAssignment.assignmentPath
+			].map((relativePath) => readFile(path.join(input.root, relativePath)))
+		);
+		expect(after).toEqual(before);
+		for (const authorityPath of [
+			SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+			SKILL_ICON_PERSISTENCE_LOCK_PATH,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+			skillIconSupersessionIntentPath(input.retired.target.output.resultPath)
+		]) {
+			await expect(access(path.join(input.root, authorityPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
+	});
+
+	it('publishes a mode-0600 intent bound to the recovery token and result', async () => {
+		const input = await supersessionWorkspace();
+		const intentPath = path.join(
+			input.root,
+			skillIconSupersessionIntentPath(input.retired.target.output.resultPath)
+		);
+		await persistSkillIconSupersededResult({
+			...supersedeOptions(input),
+			testHooks: {
+				afterIntentInstall: async () => {
+					const [intentBytes, tokenBytes, metadata] = await Promise.all([
+						readFile(intentPath),
+						readFile(path.join(input.root, SKILL_ICON_PERSISTENCE_TOKEN_PATH)),
+						lstat(intentPath)
+					]);
+					const intent = SkillIconSupersessionIntentSchema.parse(
+						JSON.parse(intentBytes.toString('utf8'))
+					);
+					const token = JSON.parse(tokenBytes.toString('utf8')) as { recoveryToken: string };
+					expect(intent).toMatchObject({
+						resultPath: input.retired.target.output.resultPath,
+						pid: process.pid,
+						recoveryTokenHash: createHash('sha256')
+							.update(Buffer.from(token.recoveryToken))
+							.digest('hex')
+					});
+					expect(metadata.mode & 0o777).toBe(0o600);
+				}
+			}
+		});
+		await expect(access(intentPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each(['candidate', 'result'] as const)(
+		'refuses to supersede a packet that already owns %s output',
+		async (kind) => {
+			const input = await supersessionWorkspace();
+			const outputPath =
+				kind === 'candidate'
+					? input.retired.target.output.candidatePath
+					: input.retired.target.output.resultPath;
+			await mkdir(path.dirname(path.join(input.root, outputPath)), { recursive: true });
+			await writeFile(path.join(input.root, outputPath), 'existing output');
+			await expect(persistSkillIconSupersededResult(supersedeOptions(input))).rejects.toThrow(
+				/output-free|already exists|already has candidate/iu
+			);
+			await expect(readFile(path.join(input.root, outputPath), 'utf8')).resolves.toBe(
+				'existing output'
+			);
+		}
+	);
+
+	it.each(['owner', 'stage'] as const)(
+		'rejects a live Python failed-result %s and cleans every owned JS authority',
+		async (kind) => {
+			const input = await supersessionWorkspace();
+			const resultPath = input.retired.target.output.resultPath;
+			const artifactPath = `${path.dirname(resultPath)}/.${path.basename(resultPath)}.${
+				kind === 'owner' ? 'failed-result-owner.json' : 'failed-result-stage'
+			}`;
+			await mkdir(path.dirname(path.join(input.root, artifactPath)), { recursive: true });
+			await writeFile(path.join(input.root, artifactPath), `python-${kind}`);
+
+			await expect(persistSkillIconSupersededResult(supersedeOptions(input))).rejects.toThrow(
+				/Python failed-result transaction blocks supersession/iu
+			);
+			await expect(readFile(path.join(input.root, artifactPath), 'utf8')).resolves.toBe(
+				`python-${kind}`
+			);
+			for (const authorityPath of [
+				SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+				SKILL_ICON_PERSISTENCE_LOCK_PATH,
+				SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+				skillIconSupersessionIntentPath(resultPath)
+			]) {
+				await expect(access(path.join(input.root, authorityPath))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			}
+		}
+	);
+
+	it.each([
+		[
+			'same revision',
+			(input: Awaited<ReturnType<typeof supersessionWorkspace>>) => {
+				input.supersedingTarget.revision = 2;
+				input.supersedingTarget.jobId = input.retired.target.jobId;
+			}
+		],
+		[
+			'different identity',
+			(input: Awaited<ReturnType<typeof supersessionWorkspace>>) => {
+				input.supersedingTarget.logicalIdentity = 'different-backing';
+			}
+		],
+		[
+			'different role',
+			(input: Awaited<ReturnType<typeof supersessionWorkspace>>) => {
+				Object.assign(
+					input.supersedingTarget as unknown as {
+						role: 'rarity-frame';
+						rarity: 'F';
+					},
+					{ role: 'rarity-frame', rarity: 'F' }
+				);
+			}
+		]
+	] as const)('rejects superseding authority with %s', async (_label, mutate) => {
+		const input = await supersessionWorkspace();
+		mutate(input);
+		await writeFile(
+			path.join(input.root, input.supersedingAssignment.targetPath),
+			JSON.stringify(input.supersedingTarget)
+		);
+		await expect(persistSkillIconSupersededResult(supersedeOptions(input))).rejects.toThrow();
+		await expect(
+			access(path.join(input.root, input.retired.target.output.resultPath))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each(['target', 'assignment', 'superseding-target', 'superseding-assignment'] as const)(
+		'rolls back result-only persistence when %s authority changes after its read',
+		async (authority) => {
+			const input = await supersessionWorkspace();
+			const relativePath =
+				authority === 'target'
+					? input.retired.assignment.targetPath
+					: authority === 'assignment'
+						? input.retired.assignment.assignmentPath
+						: authority === 'superseding-target'
+							? input.supersedingAssignment.targetPath
+							: input.supersedingAssignment.assignmentPath;
+			await expect(
+				persistSkillIconSupersededResult({
+					...supersedeOptions(input),
+					testHooks: {
+						afterAuthorityRead: () =>
+							writeFile(path.join(input.root, relativePath), Buffer.from('changed authority'))
+					}
+				})
+			).rejects.toThrow(/changed/iu);
+			await expect(
+				access(path.join(input.root, input.retired.target.output.resultPath))
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
+	);
+
+	it('serializes concurrent coordinator writers without overwriting the winner', async () => {
+		const input = await supersessionWorkspace();
+		const attempts = await Promise.allSettled([
+			persistSkillIconSupersededResult(supersedeOptions(input)),
+			persistSkillIconSupersededResult(supersedeOptions(input))
+		]);
+		expect(attempts.filter((attempt) => attempt.status === 'fulfilled')).toHaveLength(1);
+		expect(attempts.filter((attempt) => attempt.status === 'rejected')).toHaveLength(1);
+		expect(
+			JSON.parse(
+				await readFile(path.join(input.root, input.retired.target.output.resultPath), 'utf8')
+			)
+		).toMatchObject({ status: 'superseded', attemptCount: 0 });
+	});
+
+	it('never deletes a foreign same-byte result replacement during result-only rollback', async () => {
+		const input = await supersessionWorkspace();
+		const resultPath = path.join(input.root, input.retired.target.output.resultPath);
+		let foreignBytes = Buffer.alloc(0);
+		await expect(
+			persistSkillIconSupersededResult({
+				...supersedeOptions(input),
+				testHooks: {
+					afterResultInstall: async () => {
+						foreignBytes = await readFile(resultPath);
+						await rm(resultPath);
+						await writeFile(resultPath, foreignBytes);
+						throw new Error('force rollback after foreign replacement');
+					}
+				}
+			})
+		).rejects.toThrow(/rollback was incomplete/iu);
+		await expect(readFile(resultPath)).resolves.toEqual(foreignBytes);
+		await expect(access(path.join(input.root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))).resolves.toBe(
+			undefined
+		);
+		await expect(persistSkillIconSupersededResult(supersedeOptions(input))).rejects.toThrow(
+			/live coordinator|foreign result final path blocks persistence recovery/iu
+		);
+		await expect(readFile(resultPath)).resolves.toEqual(foreignBytes);
+	});
+
+	it('rolls back the result while preserving a candidate that appears during supersession', async () => {
+		const input = await supersessionWorkspace();
+		const candidatePath = path.join(input.root, input.retired.target.output.candidatePath);
+		await expect(
+			persistSkillIconSupersededResult({
+				...supersedeOptions(input),
+				testHooks: {
+					afterJournalInstall: async () => {
+						await mkdir(path.dirname(candidatePath), { recursive: true });
+						await writeFile(candidatePath, Buffer.from('foreign candidate'));
+					}
+				}
+			})
+		).rejects.toThrow(/candidate appeared/iu);
+		await expect(readFile(candidatePath, 'utf8')).resolves.toBe('foreign candidate');
+		await expect(
+			access(path.join(input.root, input.retired.target.output.resultPath))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each([
+		['afterJournalInstall', 'delete'],
+		['afterJournalInstall', 'replace'],
+		['afterResultInstall', 'delete'],
+		['afterResultInstall', 'replace']
+	] as const)('fails closed when the intent is %s at %s', async (boundary, mutation) => {
+		const input = await supersessionWorkspace();
+		const intentPath = path.join(
+			input.root,
+			skillIconSupersessionIntentPath(input.retired.target.output.resultPath)
+		);
+		let replacement = Buffer.alloc(0);
+		await expect(
+			persistSkillIconSupersededResult({
+				...supersedeOptions(input),
+				testHooks: {
+					[boundary]: async () => {
+						replacement = await readFile(intentPath);
+						await rm(intentPath);
+						if (mutation === 'replace') await writeFile(intentPath, replacement);
+					}
+				}
+			})
+		).rejects.toThrow(/rollback was incomplete/iu);
+		await expect(
+			access(path.join(input.root, input.retired.target.output.resultPath))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			access(path.join(input.root, SKILL_ICON_PERSISTENCE_JOURNAL_PATH))
+		).resolves.toBeUndefined();
+		if (mutation === 'replace') await expect(readFile(intentPath)).resolves.toEqual(replacement);
+		else await expect(access(intentPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it.each([
+		'afterTokenInstall',
+		'afterLockInstall',
+		'afterIntentInstall',
+		'afterOutputStageComplete',
+		'afterJournalInstall',
+		'afterResultInstall'
+	] as const)(
+		'recovers a killed result-only transaction at %s and commits one clean retry',
+		async (boundary) => {
+			const input = await supersessionWorkspace();
+			await crashSupersessionAt(input, boundary);
+			const result = await persistSkillIconSupersededResult(supersedeOptions(input));
+			expect(result.status).toBe('superseded');
+			await expect(
+				access(path.join(input.root, input.retired.target.output.candidatePath))
+			).rejects.toMatchObject({ code: 'ENOENT' });
+			for (const authorityPath of [
+				SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+				SKILL_ICON_PERSISTENCE_LOCK_PATH,
+				SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+				skillIconSupersessionIntentPath(input.retired.target.output.resultPath)
+			]) {
+				await expect(access(path.join(input.root, authorityPath))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			}
+		}
+	);
+
+	it.each(['afterJournalRemoval', 'afterIntentRemoval'] as const)(
+		'treats journal removal as the result-only commit point across %s death',
+		async (boundary) => {
+			const input = await supersessionWorkspace();
+			await crashSupersessionAt(input, boundary);
+			const resultPath = path.join(input.root, input.retired.target.output.resultPath);
+			expect(JSON.parse(await readFile(resultPath, 'utf8'))).toMatchObject({
+				status: 'superseded',
+				attemptCount: 0
+			});
+			await expect(persistSkillIconSupersededResult(supersedeOptions(input))).rejects.toThrow(
+				/output-free/iu
+			);
+			for (const authorityPath of [
+				SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+				SKILL_ICON_PERSISTENCE_LOCK_PATH,
+				SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+				skillIconSupersessionIntentPath(input.retired.target.output.resultPath)
+			]) {
+				await expect(access(path.join(input.root, authorityPath))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			}
+		}
+	);
+
+	it('keeps producer and coordinator CLI authority separate with an exact reason', () => {
+		const input = supersessionPackets();
+		const args = [
+			'--target',
+			input.retired.assignment.targetPath,
+			'--assignment',
+			input.retired.assignment.assignmentPath,
+			'--superseding-target',
+			input.supersedingAssignment.targetPath,
+			'--superseding-assignment',
+			input.supersedingAssignment.assignmentPath,
+			'--reason',
+			'unattempted-packet-superseded-by-higher-revision'
+		];
+		expect(parseSupersedeSkillIconCliRequest(args)).toMatchObject({
+			reason: 'unattempted-packet-superseded-by-higher-revision'
+		});
+		expect(() =>
+			parseSupersedeSkillIconCliRequest([...args.slice(0, -1), 'producer-decided-to-skip'])
+		).toThrow(/reason/iu);
+		expect(() => parsePersistSkillIconCliRequest(args)).toThrow(/unknown/iu);
 	});
 });

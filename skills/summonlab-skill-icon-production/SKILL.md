@@ -7,10 +7,11 @@ description: Produce one manifest-bound Summonlab skill-icon raster with exact p
 
 Produce exactly one assigned candidate and one result. The immutable target defines the art; the
 assignment defines ownership. Require the built-in `imagegen` skill/tool for raster generation.
-Dispatch is role-scoped: green-key `rarity-frame` and `backing` retries use
-`summonlab-skill-icon-production-v2`, while `skill-art` and `calibration-plate` jobs remain on
+Dispatch is packet-scoped: green-key `rarity-frame` and `backing` targets using normalization
+profile v1 require `summonlab-skill-icon-production-v2`; profile v2 targets require
+`summonlab-skill-icon-production-v3`. `skill-art` and `calibration-plate` jobs remain on
 `summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
-V1 packets retain exact provider bytes.
+Exact-source packets retain exact provider bytes.
 
 ## Inputs and preflight
 
@@ -40,11 +41,14 @@ must be absent at preflight.
    observed defect. Otherwise stop at one call.
 5. Inspect the provider image for fidelity, then pass its exact returned path directly to
    `pnpm persist:skill-icon-output`; a v2 packet also requires the provider hash. Do not crop,
-   resize, key, mask, recolor, copy, or otherwise normalize it. For v2 `rarity-frame` and `backing`,
-   the helper alone checks the declared opaque `#00FF00` matte, performs the profile-pinned role
-   mask and resize inside its exclusive transaction, and writes the canonical candidate. For v1
-   `skill-art`, `calibration-plate`, and compatibility frame/backing packets, the helper retains
-   exact selected provider bytes.
+   resize, key, mask, recolor, copy, or otherwise normalize it. For normalized `rarity-frame` and
+   `backing` packets, the helper alone validates the profile-pinned provider envelope, performs the
+   role mask and resize inside its exclusive transaction, and writes the canonical candidate.
+   Profile v2 admits only one bounded, valid `caBX` immediately after `IHDR`, records its pathless
+   payload evidence, removes it, constructs the canonical assigned-sRGB decoder input, and binds
+   both the full original-provider and decoder-input hashes. Exact-source `skill-art`,
+   `calibration-plate`, and compatibility frame/backing packets retain exact selected provider
+   bytes.
 6. Inspect the retained candidate both full-size and at 96 pixels using
    [review-rubric.md](references/review-rubric.md). Record both findings for every retained image,
    including `revise`. A candidate permits no concern or failure.
@@ -71,10 +75,14 @@ must be absent at preflight.
   job path.
 - Never invoke `promote:skill-icon-output`, create a master, update runtime assets, or claim owner
   acceptance. Promotion is a later coordinator action.
+- Never author or persist `superseded` evidence. Only the coordinator may terminalize an
+  unattempted older packet by binding it to exact, live, higher-revision target and assignment
+  bytes; this production skill cannot self-supersede.
 - Never create a composite, contact sheet, calibration crop, alternate, batch, or extra raster.
 - Never normalize provider output manually or copy a provider source into the repository. Never
-  persist its machine-local absolute path in result JSON; the v2 result records pathless source
-  media, dimensions, alpha mode, byte count, and content hash.
+  persist its machine-local absolute path or a `caBX` payload in result JSON; normalized results
+  record only pathless source media, dimensions, alpha mode, byte count, content hash, and the
+  profile-authorized derived evidence.
 - Never exceed one initial generation plus the assignment's zero-or-one corrective edit.
 - Treat the repository role-aware inspector and target canvas—not a generic 1024/RGBA header
   check—as the retained-image gate. Calibration plates may use their declared dimensions and RGB;

@@ -2,13 +2,14 @@
 
 The final file uses the strict result schema matching its packet tuple: `skill-icon-result-v1` for
 exact-source jobs, including current `skill-art` and `calibration-plate` work, and
-`skill-icon-result-v2` for green-key `rarity-frame` and `backing` retries. Unknown fields and mixed
-protocol versions are invalid.
+`skill-icon-result-v2` for both profile-v1/producer-v2 and profile-v2/producer-v3 green-key
+`rarity-frame` and `backing` retries. Unknown fields and mixed protocol versions are invalid.
 
 ## Required evidence
 
 - `resultId`, `jobId`, and `assignmentId` bind the packet.
-- `status` is `candidate`, `revise`, or `failed`—never `approved`.
+- Producer-authored `status` is `candidate`, `revise`, or `failed`—never `approved` or
+  `superseded`.
 - `exactPrompt` equals the immutable target string byte-for-byte; `promptHash` is its lowercase
   SHA-256 over UTF-8 bytes.
 - `referenceInputs` exactly repeats every target reference path and hash in manifest order.
@@ -26,6 +27,24 @@ metadata and no output hash; `not-run` has no source or output evidence. A retai
 `revise` requires `completed`. A terminal result may record `completed` only when normalization
 finished before a later validation or persistence failure. No normalization evidence has a provider
 path field.
+
+Profile-v2 `completed` evidence additionally binds `decoderInputContentHash` to the exact canonical
+PNG submitted to the pinned decoder, `containerBox` to the removed pathless
+`{chunkType: "caBX", bytes, contentHash}` payload descriptor, and
+`colorSpaceDisposition: "assigned-srgb"`. `providerSource.contentHash` and `sourceContentHash`
+always hash the complete original provider PNG, including the container. `containerBox` never
+contains a path or payload. A `failed` outcome records derived provenance only after the complete
+canonical envelope exists: decoder hash, container evidence, and color disposition are either all
+present and valid or all null. A `not-run` outcome always leaves all three null.
+
+The only `superseded` result is coordinator-authored evidence for an unattempted obsolete packet.
+It has zero provider attempts, no output or failure reason, a `not-run` normalization outcome, the
+literal reason `unattempted-packet-superseded-by-higher-revision`, and a
+`supersedingAuthority` binding the exact target/assignment paths and hashes for the same role and
+logical identity at a strictly higher revision. That authority must be a live structural-v2 packet
+whose profile and producer skill version form a valid pair. This production skill may verify such
+evidence but must never create it; use
+the coordinator's supersession command.
 
 Candidate output metadata must equal the retained bytes: versioned path, target media type and
 dimensions, alpha mode, byte count, and lowercase SHA-256. Verification invokes the repository's
@@ -56,7 +75,8 @@ and use a new transaction ID instead of adopting or deleting it. Such residue is
 inspection, never producer cleanup.
 
 The result schema intentionally has no attempt array. Supply the actual number of imagegen calls to
-the verifier separately with `--attempt-count`; it must be `1..retryCeiling+1`. The verifier invokes
+the verifier separately with `--attempt-count`; producer results require
+`1..retryCeiling+1`, while coordinator-authored `superseded` evidence requires exactly `0`. The verifier invokes
 the live Zod execution contract, recomputes reference and candidate hashes, parses PNG structure,
 rejects symlinks, compares the result argument with the owned result file, and requires the complete
 Git change set to equal the result's one or two written paths.
@@ -75,7 +95,17 @@ failure after provider bytes were received but deterministic normalization rejec
 `--normalization-source PROVIDER_PATH`; the helper stable-reads and hashes that source, records
 pathless observed metadata with `normalization.outcome: "failed"`, and does not create a candidate.
 Omit the flag when no provider bytes were received, which records
-`normalization.outcome: "not-run"`:
+`normalization.outcome: "not-run"`.
+
+The result-only failure transaction also participates in the coordinator supersession handshake.
+Before publishing its owner record and again immediately after owner publication while holding the
+owner lock, it requires the job's
+`.<result filename>.skill-icon-supersession-intent.json` pathname to be wholly absent. Any regular,
+symbolic-link, or otherwise occupied intent name makes the producer stop. If an intent wins the
+race between those checks, the producer removes only its exact owner/stage inode and preserves the
+coordinator intent unchanged.
+
+Run:
 
 ```bash
 python3 <skill-directory>/scripts/verify_result.py \

@@ -5,17 +5,21 @@ import { describe, expect, it } from 'vitest';
 import {
 	AnySkillIconExecutionSchema,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+	SKILL_ICON_SUPERSESSION_REASON,
 	SkillIconAssignmentSchema,
 	SkillIconAssignmentV2Schema,
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconCalibrationMasterAssetSchema,
 	SkillIconCatalogSchema,
+	SkillIconContainerBoxEvidenceSchema,
 	SkillIconExecutionSchema,
 	SkillIconExecutionV2Schema,
 	SkillIconGeometrySchema,
 	SkillIconMasterPathSchema,
 	SkillIconMasterySchema,
+	SkillIconNormalizationEvidenceSchema,
+	SkillIconProviderNormalizationProfileSchema,
 	SkillIconRaritySchema,
 	SkillIconRecordSchema,
 	SkillIconRecognitionPathSchema,
@@ -23,6 +27,7 @@ import {
 	SkillIconRepositoryPathSchema,
 	SkillIconResultSchema,
 	SkillIconResultV2Schema,
+	SkillIconSupersededResultV2Schema,
 	SkillIconResultPathSchema,
 	SkillIconReviewSchema,
 	SkillIconRuntimePathSchema,
@@ -995,6 +1000,433 @@ describe('skill-icon production contracts', () => {
 			SkillIconTargetV2Schema.safeParse({ ...target, exactPrompt: 'Paint a transparent frame.' })
 				.success
 		).toBe(false);
+	});
+
+	it('binds each structural normalization profile to its production skill version', () => {
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-green-key-role-mask-v1')
+				.success
+		).toBe(true);
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-green-key-role-mask-v2')
+				.success
+		).toBe(true);
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-green-key-role-mask-v3')
+				.success
+		).toBe(false);
+
+		const v2JobId = 'rarity-frame-f-v3';
+		const v2Paths = ownedPaths('references', v2JobId);
+		const v1Assignment = {
+			...assignment(),
+			schemaVersion: 'skill-icon-assignment-v2' as const,
+			assignmentId: `assignment-${v2JobId}`,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 3,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${v2JobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${v2JobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v2' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v1' as const },
+			permittedOutputs: v2Paths
+		};
+		expect(SkillIconAssignmentV2Schema.safeParse(v1Assignment).success).toBe(true);
+		expect(
+			SkillIconAssignmentV2Schema.safeParse({
+				...v1Assignment,
+				skillVersion: 'summonlab-skill-icon-production-v3'
+			}).success
+		).toBe(false);
+
+		const v2Assignment = {
+			...v1Assignment,
+			skillVersion: 'summonlab-skill-icon-production-v3' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v2' as const }
+		};
+		expect(SkillIconAssignmentV2Schema.safeParse(v2Assignment).success).toBe(true);
+		expect(
+			SkillIconAssignmentV2Schema.safeParse({
+				...v2Assignment,
+				skillVersion: 'summonlab-skill-icon-production-v2'
+			}).success
+		).toBe(false);
+	});
+
+	it('requires decoder-input and caBX provenance for completed profile-v2 normalization', () => {
+		const v2JobId = 'rarity-frame-f-v3';
+		const paths = ownedPaths('references', v2JobId);
+		const exactPrompt =
+			'Paint the F rarity frame over an opaque #00FF00 matte with no baked checkerboard.';
+		const target = {
+			schemaVersion: 'skill-icon-target-v2' as const,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 3,
+			role: 'rarity-frame' as const,
+			skillTargetId: null,
+			motifFamily: null,
+			rarity: 'F' as const,
+			exactPrompt,
+			references: skillTarget().references,
+			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
+			output: paths,
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v2' as const,
+				sourceContract: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					alphaMode: 'rgb' as const,
+					matteColor: '#00FF00' as const
+				},
+				outputContract: {
+					mediaType: 'image/png' as const,
+					width: 1024 as const,
+					height: 1024 as const,
+					alphaMode: 'rgba' as const
+				},
+				geometry: {
+					path: 'assets/wiki/skills/icon-production-v1/geometry.json' as const,
+					contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+				}
+			}
+		};
+		const assigned = {
+			schemaVersion: 'skill-icon-assignment-v2' as const,
+			assignmentId: `assignment-${v2JobId}`,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 3,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${v2JobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${v2JobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v3' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v2' as const },
+			assignedAt: '2026-09-02T08:00:00.000Z',
+			retryCeiling: 1,
+			permittedOutputs: paths,
+			forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+			completionContract: assignment().completionContract
+		};
+		const outputHash = 'f'.repeat(64);
+		const sourceHash = 'e'.repeat(64);
+		const produced = {
+			schemaVersion: 'skill-icon-result-v2' as const,
+			resultId: `result-${v2JobId}`,
+			jobId: v2JobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 3,
+			assignmentId: assigned.assignmentId,
+			status: 'candidate' as const,
+			exactPrompt,
+			promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+			referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v2' as const,
+				outcome: 'completed' as const,
+				geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+				providerSource: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					bytes: 2_000_000,
+					alphaMode: 'rgb' as const,
+					contentHash: sourceHash
+				},
+				sourceContentHash: sourceHash,
+				decoderInputContentHash: 'c'.repeat(64),
+				containerBox: {
+					chunkType: 'caBX' as const,
+					bytes: 72,
+					contentHash: 'd'.repeat(64)
+				},
+				colorSpaceDisposition: 'assigned-srgb' as const,
+				outputContentHash: outputHash
+			},
+			output: { ...candidateAsset, path: paths.candidatePath, contentHash: outputHash },
+			resultPath: paths.resultPath,
+			findings: producerFindings,
+			startedAt: '2026-09-02T08:00:00.000Z',
+			completedAt: '2026-09-02T08:00:00.000Z',
+			totalWallTimeMs: 0,
+			writtenOutputPaths: [paths.candidatePath, paths.resultPath] as const,
+			noSharedFilesEdited: true as const,
+			selfPromoted: false as const
+		};
+		const execution = {
+			schemaVersion: 'skill-icon-execution-v2' as const,
+			target,
+			assignment: assigned,
+			result: produced
+		};
+		expect(SkillIconExecutionV2Schema.safeParse(execution).success).toBe(true);
+		expect(
+			SkillIconResultV2Schema.safeParse({
+				...produced,
+				normalization: { ...produced.normalization, decoderInputContentHash: undefined }
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconResultV2Schema.safeParse({
+				...produced,
+				normalization: {
+					...produced.normalization,
+					containerBox: { ...produced.normalization.containerBox, payload: 'forbidden' }
+				}
+			}).success
+		).toBe(false);
+		for (const bytes of [8, 32_768]) {
+			expect(
+				SkillIconContainerBoxEvidenceSchema.safeParse({
+					...produced.normalization.containerBox,
+					bytes
+				}).success
+			).toBe(true);
+		}
+		for (const bytes of [7, 32_769]) {
+			expect(
+				SkillIconContainerBoxEvidenceSchema.safeParse({
+					...produced.normalization.containerBox,
+					bytes
+				}).success
+			).toBe(false);
+		}
+		expect(
+			SkillIconResultV2Schema.safeParse({
+				...produced,
+				normalization: {
+					...produced.normalization,
+					providerSource: {
+						...produced.normalization.providerSource,
+						bytes: 64 * 1024 * 1024
+					}
+				}
+			}).success
+		).toBe(true);
+		expect(
+			SkillIconResultV2Schema.safeParse({
+				...produced,
+				normalization: {
+					...produced.normalization,
+					providerSource: {
+						...produced.normalization.providerSource,
+						bytes: 64 * 1024 * 1024 + 1
+					}
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...execution,
+				assignment: {
+					...assigned,
+					normalization: { profile: 'skill-icon-green-key-role-mask-v1' },
+					skillVersion: 'summonlab-skill-icon-production-v2'
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('models failed profile-v2 derived provenance as all-or-none', () => {
+		const providerSource = {
+			mediaType: 'image/png' as const,
+			width: 1254,
+			height: 1254,
+			bytes: 2_000_000,
+			alphaMode: 'rgb' as const,
+			contentHash: 'e'.repeat(64)
+		};
+		const failedBeforeEnvelope = {
+			profile: 'skill-icon-green-key-role-mask-v2' as const,
+			outcome: 'failed' as const,
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+			providerSource,
+			sourceContentHash: providerSource.contentHash,
+			decoderInputContentHash: null,
+			containerBox: null,
+			colorSpaceDisposition: null,
+			outputContentHash: null
+		};
+		const failedAfterEnvelope = {
+			...failedBeforeEnvelope,
+			decoderInputContentHash: 'c'.repeat(64),
+			containerBox: {
+				chunkType: 'caBX' as const,
+				bytes: 8,
+				contentHash: 'd'.repeat(64)
+			},
+			colorSpaceDisposition: 'assigned-srgb' as const
+		};
+		expect(SkillIconNormalizationEvidenceSchema.safeParse(failedBeforeEnvelope).success).toBe(true);
+		expect(SkillIconNormalizationEvidenceSchema.safeParse(failedAfterEnvelope).success).toBe(true);
+
+		for (const partial of [
+			{ ...failedBeforeEnvelope, decoderInputContentHash: 'c'.repeat(64) },
+			{ ...failedBeforeEnvelope, containerBox: failedAfterEnvelope.containerBox },
+			{ ...failedBeforeEnvelope, colorSpaceDisposition: 'assigned-srgb' },
+			{ ...failedAfterEnvelope, decoderInputContentHash: null },
+			{ ...failedAfterEnvelope, containerBox: null },
+			{ ...failedAfterEnvelope, colorSpaceDisposition: null }
+		]) {
+			expect(SkillIconNormalizationEvidenceSchema.safeParse(partial).success).toBe(false);
+		}
+	});
+
+	it('records an unattempted superseded packet only against stronger raw authority', () => {
+		const retiredJobId = 'rarity-frame-f-v2';
+		const replacementJobId = 'rarity-frame-f-v3';
+		const retiredPaths = ownedPaths('references', retiredJobId);
+		const exactPrompt =
+			'Paint the F rarity frame over an opaque #00FF00 matte with no baked checkerboard.';
+		const normalization = {
+			profile: 'skill-icon-green-key-role-mask-v1' as const,
+			outcome: 'not-run' as const,
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
+			providerSource: null,
+			sourceContentHash: null,
+			outputContentHash: null
+		};
+		const superseded = {
+			schemaVersion: 'skill-icon-result-v2' as const,
+			resultId: `result-${retiredJobId}`,
+			jobId: retiredJobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			role: 'rarity-frame' as const,
+			assignmentId: `assignment-${retiredJobId}`,
+			status: 'superseded' as const,
+			attemptCount: 0 as const,
+			supersessionReason: SKILL_ICON_SUPERSESSION_REASON,
+			supersedingAuthority: {
+				targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${replacementJobId}.json`,
+				targetContentHash: '1'.repeat(64),
+				assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${replacementJobId}.json`,
+				assignmentContentHash: '2'.repeat(64),
+				jobId: replacementJobId,
+				logicalIdentity: 'rarity-frame-f',
+				revision: 3,
+				role: 'rarity-frame' as const
+			},
+			exactPrompt,
+			promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+			referenceInputs: skillTarget().references.map(({ path, contentHash }) => ({
+				path,
+				contentHash
+			})),
+			normalization,
+			output: null,
+			resultPath: retiredPaths.resultPath,
+			findings: [] as const,
+			startedAt: '2026-09-02T08:00:00.000Z',
+			completedAt: '2026-09-02T08:00:00.000Z',
+			totalWallTimeMs: 0 as const,
+			writtenOutputPaths: [retiredPaths.resultPath] as const,
+			noSharedFilesEdited: true as const,
+			selfPromoted: false as const
+		};
+		expect(SkillIconSupersededResultV2Schema.safeParse(superseded).success).toBe(true);
+		expect(SkillIconResultV2Schema.safeParse(superseded).success).toBe(true);
+		const target = {
+			schemaVersion: 'skill-icon-target-v2' as const,
+			jobId: retiredJobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			role: 'rarity-frame' as const,
+			skillTargetId: null,
+			motifFamily: null,
+			rarity: 'F' as const,
+			exactPrompt,
+			references: skillTarget().references,
+			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
+			output: retiredPaths,
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v1' as const,
+				sourceContract: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					alphaMode: 'rgb' as const,
+					matteColor: '#00FF00' as const
+				},
+				outputContract: {
+					mediaType: 'image/png' as const,
+					width: 1024 as const,
+					height: 1024 as const,
+					alphaMode: 'rgba' as const
+				},
+				geometry: {
+					path: 'assets/wiki/skills/icon-production-v1/geometry.json' as const,
+					contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_HASH
+				}
+			}
+		};
+		const assigned = {
+			schemaVersion: 'skill-icon-assignment-v2' as const,
+			assignmentId: `assignment-${retiredJobId}`,
+			jobId: retiredJobId,
+			logicalIdentity: 'rarity-frame-f',
+			revision: 2,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${retiredJobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${retiredJobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v2' as const,
+			normalization: { profile: 'skill-icon-green-key-role-mask-v1' as const },
+			assignedAt: '2026-09-02T08:00:00.000Z',
+			retryCeiling: 1,
+			permittedOutputs: retiredPaths,
+			forbiddenSharedPaths: ['assets/wiki/skills/icon-production-v1/catalog.json'],
+			completionContract: assignment().completionContract
+		};
+		const execution = {
+			schemaVersion: 'skill-icon-execution-v2' as const,
+			target,
+			assignment: assigned,
+			result: superseded
+		};
+		expect(SkillIconExecutionV2Schema.safeParse(execution).success).toBe(true);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...execution,
+				result: { ...superseded, role: 'backing' }
+			}).success
+		).toBe(false);
+
+		for (const invalid of [
+			{ ...superseded, attemptCount: 1 },
+			{ ...superseded, supersessionReason: 'superseded' },
+			{ ...superseded, output: candidateAsset },
+			{ ...superseded, normalization: { ...normalization, outcome: 'completed' } },
+			{
+				...superseded,
+				supersedingAuthority: { ...superseded.supersedingAuthority, revision: 2 }
+			},
+			{
+				...superseded,
+				supersedingAuthority: {
+					...superseded.supersedingAuthority,
+					logicalIdentity: 'rarity-frame-e'
+				}
+			},
+			{
+				...superseded,
+				supersedingAuthority: { ...superseded.supersedingAuthority, role: 'backing' }
+			},
+			{
+				...superseded,
+				supersedingAuthority: {
+					...superseded.supersedingAuthority,
+					targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${retiredJobId}.json`
+				}
+			},
+			{
+				...superseded,
+				supersedingAuthority: {
+					...superseded.supersedingAuthority,
+					assignmentContentHash: 'not-a-raw-hash'
+				}
+			}
+		]) {
+			expect(SkillIconSupersededResultV2Schema.safeParse(invalid).success).toBe(false);
+		}
 	});
 
 	it('keeps V1 frame and backing targets frozen at their historical v1 revision', () => {

@@ -8,11 +8,15 @@ import { z } from 'zod';
 
 import {
 	AnySkillIconAssignmentSchema,
+	AnySkillIconExecutionSchema,
+	AnySkillIconResultSchema,
 	AnySkillIconTargetSchema,
+	SKILL_ICON_SUPERSESSION_REASON,
 	SkillIconAssignmentV2Schema,
 	SkillIconAssignmentPathSchema,
 	SkillIconCandidatePathSchema,
 	SkillIconGeometrySchema,
+	SkillIconRoleSchema,
 	SkillIconResultSchema,
 	SkillIconResultV2Schema,
 	SkillIconTargetV2Schema,
@@ -31,9 +35,14 @@ import {
 import {
 	normalizeSkillIconProviderSource,
 	readSkillIconProviderSourceOnce,
-	SKILL_ICON_NORMALIZATION_PROFILE,
+	SKILL_ICON_NORMALIZATION_PROFILE_V1,
+	SKILL_ICON_NORMALIZATION_PROFILE_V2,
 	type SkillIconProviderSourceEvidence
 } from './normalize-skill-icon-provider-source.js';
+import {
+	assertSkillIconSupersedingRevision,
+	skillIconScopeForRole
+} from './skill-icon-revision-lib.js';
 
 interface PersistSkillIconOutputCommonOptions {
 	readonly sourcePath: string;
@@ -88,6 +97,30 @@ export interface SkillIconAssetReceipt {
 	};
 	readonly retained: SkillIconAssetInspection & { readonly path: string };
 	readonly result: { readonly path: string; readonly contentHash: string };
+}
+
+export interface PersistSkillIconSupersededResultTestHooks {
+	readonly afterAuthorityRead?: () => void | Promise<void>;
+	readonly afterTokenInstall?: () => void | Promise<void>;
+	readonly afterLockInstall?: () => void | Promise<void>;
+	readonly afterIntentInstall?: () => void | Promise<void>;
+	readonly afterResultOpen?: () => void | Promise<void>;
+	readonly afterOutputStageComplete?: () => void | Promise<void>;
+	readonly afterJournalInstall?: () => void | Promise<void>;
+	readonly afterResultInstall?: () => void | Promise<void>;
+	readonly afterJournalRemoval?: () => void | Promise<void>;
+	readonly afterIntentRemoval?: () => void | Promise<void>;
+}
+
+export interface PersistSkillIconSupersededResultOptions {
+	readonly root?: string;
+	readonly targetPath: string;
+	readonly assignmentPath: string;
+	readonly supersedingTargetPath: string;
+	readonly supersedingAssignmentPath: string;
+	readonly completedAt: string;
+	readonly reason: typeof SKILL_ICON_SUPERSESSION_REASON;
+	readonly testHooks?: PersistSkillIconSupersededResultTestHooks;
 }
 
 function inside(parent: string, child: string): boolean {
@@ -651,6 +684,26 @@ const PersistenceResultPathSchema = z
 	.regex(
 		/^assets\/wiki\/skills\/icon-production-v1\/results\/(?:references|calibration|icons)\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$/u
 	);
+export function skillIconSupersessionIntentPath(resultPath: string): string {
+	PersistenceResultPathSchema.parse(resultPath);
+	return `${path.dirname(resultPath)}/.${path.basename(resultPath)}.skill-icon-supersession-intent.json`;
+}
+export const SkillIconSupersessionIntentSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-supersession-intent-v1'),
+		transactionId: TransactionIdSchema,
+		recoveryTokenHash: Sha256Schema,
+		resultPath: PersistenceResultPathSchema,
+		pid: z.number().int().positive(),
+		processIdentity: ProcessIdentitySchema.nullable(),
+		createdAt: z.string().datetime({ offset: true })
+	})
+	.strict();
+const PersistenceSupersessionIntentPathSchema = z
+	.string()
+	.regex(
+		/^assets\/wiki\/skills\/icon-production-v1\/results\/(?:references|calibration|icons)\/\.[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json\.skill-icon-supersession-intent\.json$/u
+	);
 const PersistencePlanSchema = z
 	.object({
 		kind: z.enum(['candidate', 'result']),
@@ -682,6 +735,16 @@ const PersistenceOutputSchema = z
 			context.addIssue({ code: 'custom', message: `Invalid ${output.kind} output path` });
 	});
 
+const PersistenceSupersessionIntentPlanSchema = z
+	.object({
+		path: PersistenceSupersessionIntentPathSchema,
+		stagedPath: z.string().min(1),
+		contentHash: Sha256Schema,
+		parent: PersistenceParentSchema,
+		file: PersistenceFileSchema
+	})
+	.strict();
+
 const PersistenceTokenSchema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-persistence-recovery-token-v1'),
@@ -690,12 +753,41 @@ const PersistenceTokenSchema = z
 		pid: z.number().int().positive(),
 		processIdentity: ProcessIdentitySchema.nullable(),
 		createdAt: z.string().datetime({ offset: true }),
-		outputs: z.array(PersistencePlanSchema).length(2)
+		outputs: z.array(PersistencePlanSchema).min(1).max(2),
+		supersessionIntent: PersistenceSupersessionIntentPlanSchema.nullable().optional()
 	})
 	.strict()
 	.superRefine((token, context) => {
-		if (new Set(token.outputs.map((output) => output.kind)).size !== 2)
-			context.addIssue({ code: 'custom', message: 'Persistence token requires both outputs' });
+		if (new Set(token.outputs.map((output) => output.kind)).size !== token.outputs.length)
+			context.addIssue({
+				code: 'custom',
+				message: 'Persistence token output kinds must be unique'
+			});
+		if (token.outputs.length === 1 && token.outputs[0]?.kind !== 'result')
+			context.addIssue({
+				code: 'custom',
+				message: 'A single-output persistence transaction must contain only a result'
+			});
+		if ((token.outputs.length === 1) !== (token.supersessionIntent != null))
+			context.addIssue({
+				code: 'custom',
+				message: 'Result-only persistence requires one bound supersession intent'
+			});
+		if (token.supersessionIntent) {
+			const result = token.outputs[0];
+			const expectedIntentPath = result ? skillIconSupersessionIntentPath(result.path) : '';
+			if (
+				token.supersessionIntent.path !== expectedIntentPath ||
+				path.dirname(token.supersessionIntent.path) !==
+					path.dirname(token.supersessionIntent.stagedPath) ||
+				path.basename(token.supersessionIntent.stagedPath) !==
+					`${path.basename(token.supersessionIntent.path)}.skill-icon-tmp-intent-${token.transactionId}`
+			)
+				context.addIssue({
+					code: 'custom',
+					message: 'Supersession intent plan does not bind the result transaction'
+				});
+		}
 		for (const output of token.outputs) {
 			if (
 				path.dirname(output.path) !== path.dirname(output.stagedPath) ||
@@ -724,12 +816,20 @@ export const SkillIconPersistenceJournalSchema = z
 		recoveryTokenHash: Sha256Schema,
 		authorizationTag: Sha256Schema,
 		jobId: z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u),
-		outputs: z.array(PersistenceOutputSchema).length(2)
+		outputs: z.array(PersistenceOutputSchema).min(1).max(2)
 	})
 	.strict()
 	.superRefine((journal, context) => {
-		if (new Set(journal.outputs.map((output) => output.kind)).size !== 2)
-			context.addIssue({ code: 'custom', message: 'Persistence journal requires both outputs' });
+		if (new Set(journal.outputs.map((output) => output.kind)).size !== journal.outputs.length)
+			context.addIssue({
+				code: 'custom',
+				message: 'Persistence journal output kinds must be unique'
+			});
+		if (journal.outputs.length === 1 && journal.outputs[0]?.kind !== 'result')
+			context.addIssue({
+				code: 'custom',
+				message: 'A single-output persistence journal must contain only a result'
+			});
 		for (const output of journal.outputs) {
 			const expectedStagePrefix = `.${path.basename(output.path)}.skill-icon-tmp-`;
 			if (
@@ -751,6 +851,18 @@ interface PersistenceAuthority {
 	readonly tokenBinding: BoundTargetReference;
 	readonly lock: PersistenceLock;
 	readonly lockBinding: BoundTargetReference;
+	readonly supersessionIntent?: {
+		readonly record: z.infer<typeof SkillIconSupersessionIntentSchema>;
+		readonly binding: BoundTargetReference;
+	};
+}
+
+interface PersistenceAuthorityTestHooks {
+	readonly afterTokenStageOpen?: () => void | Promise<void>;
+	readonly afterTokenStageComplete?: () => void | Promise<void>;
+	readonly afterTokenInstall?: () => void | Promise<void>;
+	readonly afterLockInstall?: () => void | Promise<void>;
+	readonly afterIntentInstall?: () => void | Promise<void>;
 }
 
 function sha256(bytes: Buffer): string {
@@ -921,20 +1033,52 @@ async function removeAuthorityBinding(root: string, binding: BoundTargetReferenc
 
 async function acquirePersistenceAuthority(
 	root: string,
-	plannedOutputs: readonly [
-		{ readonly kind: 'candidate'; readonly path: string; readonly contentHash: string },
-		{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }
-	],
-	testHooks?: PersistSkillIconOutputBoundOptions['testHooks']
+	plannedOutputs:
+		| readonly [
+				{ readonly kind: 'candidate'; readonly path: string; readonly contentHash: string },
+				{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }
+		  ]
+		| readonly [{ readonly kind: 'result'; readonly path: string; readonly contentHash: string }],
+	testHooks?: PersistenceAuthorityTestHooks
 ): Promise<PersistenceAuthority> {
 	const transactionId = randomUUID();
 	const recoveryToken = randomUUID();
+	const recoveryTokenHash = sha256(Buffer.from(recoveryToken));
 	const processIdentity = await readProcessIdentity(process.pid);
 	const createdAt = new Date().toISOString();
 	const outputs = plannedOutputs.map((output) => ({
 		...output,
 		stagedPath: `${path.dirname(output.path)}/.${path.basename(output.path)}.skill-icon-tmp-transaction-${transactionId}`
 	}));
+	let intentParent: HeldPersistenceParent | undefined;
+	let stagedIntent: StagedPersistedFile | undefined;
+	let intentOwnership: OwnedPersistedFile | undefined;
+	let intentRecord: z.infer<typeof SkillIconSupersessionIntentSchema> | undefined;
+	let intentBytes: Buffer | undefined;
+	if (plannedOutputs.length === 1) {
+		const intentPath = skillIconSupersessionIntentPath(plannedOutputs[0].path);
+		const intentDestination = path.resolve(root, intentPath);
+		await ensureSafeParents(root, intentDestination);
+		intentParent = await openHeldPersistenceParent(root, intentDestination);
+		intentRecord = SkillIconSupersessionIntentSchema.parse({
+			schemaVersion: 'skill-icon-supersession-intent-v1',
+			transactionId,
+			recoveryTokenHash,
+			resultPath: plannedOutputs[0].path,
+			pid: process.pid,
+			processIdentity,
+			createdAt
+		});
+		intentBytes = transactionBytes(intentRecord);
+		stagedIntent = await stageCompleteSibling(
+			intentParent,
+			path.basename(intentDestination),
+			intentBytes,
+			undefined,
+			0o600,
+			`intent-${transactionId}`
+		);
+	}
 	const token = PersistenceTokenSchema.parse({
 		schemaVersion: 'skill-icon-persistence-recovery-token-v1',
 		transactionId,
@@ -942,30 +1086,43 @@ async function acquirePersistenceAuthority(
 		pid: process.pid,
 		processIdentity,
 		createdAt,
-		outputs
+		outputs,
+		...(intentParent && stagedIntent && intentRecord && intentBytes
+			? {
+					supersessionIntent: {
+						path: skillIconSupersessionIntentPath(intentRecord.resultPath),
+						stagedPath: path.relative(root, stagedIntent.path).split(path.sep).join('/'),
+						contentHash: sha256(intentBytes),
+						parent: intentParent.fingerprint,
+						file: stagedIntent.file
+					}
+				}
+			: {})
 	});
-	const tokenBinding = await writeAuthorityExclusive(
-		root,
-		SKILL_ICON_PERSISTENCE_TOKEN_PATH,
-		transactionBytes(token),
-		0o600,
-		'Persistence recovery token',
-		transactionId,
-		process.pid,
-		testHooks?.afterTokenStageOpen,
-		testHooks?.afterTokenStageComplete
-	);
-	await testHooks?.afterTokenInstall?.();
+	let tokenBinding: BoundTargetReference | undefined;
+	let lockBinding: BoundTargetReference | undefined;
 	try {
+		tokenBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_TOKEN_PATH,
+			transactionBytes(token),
+			0o600,
+			'Persistence recovery token',
+			transactionId,
+			process.pid,
+			testHooks?.afterTokenStageOpen,
+			testHooks?.afterTokenStageComplete
+		);
+		await testHooks?.afterTokenInstall?.();
 		const lock = PersistenceLockSchema.parse({
 			schemaVersion: 'skill-icon-persistence-lock-v1',
 			transactionId,
-			recoveryTokenHash: sha256(Buffer.from(recoveryToken)),
+			recoveryTokenHash,
 			pid: process.pid,
 			processIdentity,
 			acquiredAt: createdAt
 		});
-		const lockBinding = await writeAuthorityExclusive(
+		lockBinding = await writeAuthorityExclusive(
 			root,
 			SKILL_ICON_PERSISTENCE_LOCK_PATH,
 			transactionBytes(lock),
@@ -975,10 +1132,66 @@ async function acquirePersistenceAuthority(
 			process.pid
 		);
 		await testHooks?.afterLockInstall?.();
-		return { recoveryToken, token, tokenBinding, lock, lockBinding };
+		let supersessionIntent: PersistenceAuthority['supersessionIntent'];
+		if (intentParent && stagedIntent && intentRecord && intentBytes && token.supersessionIntent) {
+			intentOwnership = await installStagedNoReplace(
+				intentParent,
+				path.resolve(root, token.supersessionIntent.path),
+				stagedIntent
+			);
+			const intentMetadata = await lstat(path.resolve(root, token.supersessionIntent.path));
+			if ((intentMetadata.mode & 0o777) !== 0o600)
+				throw new Error('Supersession intent permissions changed during creation');
+			const binding = await readAuthorityBinding(
+				root,
+				token.supersessionIntent.path,
+				'Supersession intent'
+			);
+			if (binding.contentHash !== sha256(intentBytes))
+				throw new Error('Supersession intent changed during creation');
+			supersessionIntent = { record: intentRecord, binding };
+			await testHooks?.afterIntentInstall?.();
+		}
+		return {
+			recoveryToken,
+			token,
+			tokenBinding,
+			lock,
+			lockBinding,
+			...(supersessionIntent === undefined ? {} : { supersessionIntent })
+		};
 	} catch (error) {
-		await removeAuthorityBinding(root, tokenBinding).catch(() => undefined);
+		const cleanupFailures: unknown[] = [];
+		if (intentParent && intentOwnership && intentBytes) {
+			try {
+				await removeOwnedPersistedFileHeld(intentParent, intentOwnership, intentBytes);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		} else if (stagedIntent) {
+			try {
+				await unlinkStagedIfOwned(stagedIntent);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		for (const binding of [lockBinding, tokenBinding]) {
+			if (!binding) continue;
+			try {
+				await removeAuthorityBinding(root, binding);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				'Persistence authority acquisition failed and cleanup was incomplete',
+				{ cause: error }
+			);
 		throw error;
+	} finally {
+		await intentParent?.handle.close().catch(() => undefined);
 	}
 }
 
@@ -1051,6 +1264,112 @@ async function rollbackPersistenceJournal(
 	}
 }
 
+async function tokenIntentExtantPaths(
+	root: string,
+	plan: z.infer<typeof PersistenceSupersessionIntentPlanSchema>
+): Promise<readonly string[]> {
+	const extant: string[] = [];
+	for (const relativePath of [plan.path, plan.stagedPath]) {
+		const absolute = path.resolve(root, relativePath);
+		const metadata = await metadataOrNull(absolute);
+		if (!metadata) continue;
+		const parent = await persistenceParentFingerprint(absolute);
+		if (
+			parent.realPath !== plan.parent.realPath ||
+			parent.device !== plan.parent.device ||
+			parent.inode !== plan.parent.inode ||
+			metadata.isSymbolicLink() ||
+			!metadata.isFile() ||
+			metadata.dev !== plan.file.device ||
+			metadata.ino !== plan.file.inode ||
+			(metadata.mode & 0o777) !== 0o600
+		)
+			throw new Error('Foreign supersession intent path blocks persistence recovery');
+		const bytes = await readSafePacket(root, relativePath, 'Recovery supersession intent');
+		if (sha256(bytes) !== plan.contentHash)
+			throw new Error('Changed supersession intent bytes block persistence recovery');
+		extant.push(relativePath);
+	}
+	if (extant.length === 0)
+		throw new Error('Bound supersession intent disappeared; persistence recovery is fail-closed');
+	return extant;
+}
+
+async function assertTokenIntentBinding(root: string, token: PersistenceToken): Promise<void> {
+	const plan = token.supersessionIntent;
+	if (!plan) return;
+	const paths = await tokenIntentExtantPaths(root, plan);
+	const bytes = await readSafePacket(root, paths[0]!, 'Recovery supersession intent');
+	const intent = parseTransactionJson(
+		SkillIconSupersessionIntentSchema,
+		bytes,
+		'supersession intent'
+	);
+	if (
+		intent.transactionId !== token.transactionId ||
+		intent.recoveryTokenHash !== sha256(Buffer.from(token.recoveryToken)) ||
+		intent.resultPath !== token.outputs[0]?.path ||
+		intent.pid !== token.pid ||
+		!sameProcessIdentity(intent.processIdentity, token.processIdentity)
+	)
+		throw new Error('Supersession intent and recovery token do not describe one transaction');
+}
+
+async function tokenIntentHasAnyName(root: string, token: PersistenceToken): Promise<boolean> {
+	const plan = token.supersessionIntent;
+	if (!plan) return false;
+	return Boolean(
+		(await metadataOrNull(path.resolve(root, plan.path))) ||
+		(await metadataOrNull(path.resolve(root, plan.stagedPath)))
+	);
+}
+
+async function tokenHasExactCommittedResult(
+	root: string,
+	token: PersistenceToken
+): Promise<boolean> {
+	if (token.outputs.length !== 1 || token.outputs[0]?.kind !== 'result') return false;
+	const planned = token.outputs[0];
+	const absolute = path.resolve(root, planned.path);
+	const metadata = await metadataOrNull(absolute);
+	if (!metadata) return false;
+	if (metadata.isSymbolicLink() || !metadata.isFile())
+		throw new Error('Committed superseded result path is not a regular file');
+	const bytes = await readSafePacket(root, planned.path, 'Committed superseded result');
+	if (sha256(bytes) !== planned.contentHash)
+		throw new Error('Changed committed superseded result blocks persistence recovery');
+	return true;
+}
+
+async function removeTokenIntentBinding(root: string, token: PersistenceToken): Promise<void> {
+	const plan = token.supersessionIntent;
+	if (!plan) return;
+	const paths = await tokenIntentExtantPaths(root, plan);
+	const parent = await openHeldPersistenceParent(root, path.resolve(root, plan.path));
+	try {
+		for (const relativePath of paths) {
+			const expectedBytes = await readSafePacket(
+				root,
+				relativePath,
+				'Recovery supersession intent'
+			);
+			if (sha256(expectedBytes) !== plan.contentHash)
+				throw new Error('Changed supersession intent bytes block persistence recovery');
+			await removeOwnedPersistedFileHeld(
+				parent,
+				{
+					path: path.resolve(root, relativePath),
+					parent: plan.parent,
+					file: plan.file
+				},
+				expectedBytes
+			);
+		}
+	} finally {
+		await parent.handle.close();
+	}
+}
+
 async function cleanupDeadOrphanedTokenStages(root: string): Promise<void> {
 	const tokenDestination = path.resolve(root, SKILL_ICON_PERSISTENCE_TOKEN_PATH);
 	if (await metadataOrNull(tokenDestination)) return;
@@ -1116,10 +1435,21 @@ async function recoverStalePersistence(root: string): Promise<void> {
 		await readSafePacket(root, tokenBinding.path, tokenBinding.description),
 		'persistence recovery token'
 	);
+	let committedWithoutIntent = false;
+	if (token.supersessionIntent) {
+		if (await tokenIntentHasAnyName(root, token)) await assertTokenIntentBinding(root, token);
+		else if (!journalMetadata && (await tokenHasExactCommittedResult(root, token)))
+			committedWithoutIntent = true;
+		else
+			throw new Error(
+				'Bound supersession intent disappeared before result commit; persistence recovery is fail-closed'
+			);
+	}
 	if (!lockMetadata) {
 		if (journalMetadata) throw new Error('Persistence journal exists without its coordinator lock');
 		if (await coordinatorIsLive(token))
 			throw new Error('A live coordinator owns the persistence recovery token');
+		if (!committedWithoutIntent) await removeTokenIntentBinding(root, token);
 		await removeAuthorityBinding(root, tokenBinding);
 		return;
 	}
@@ -1150,6 +1480,7 @@ async function recoverStalePersistence(root: string): Promise<void> {
 		// uses a new UUID and remains nonblocking.
 		if (await coordinatorIsLive(lock))
 			throw new Error('Another live coordinator owns skill-icon persistence');
+		if (!committedWithoutIntent) await removeTokenIntentBinding(root, token);
 		await removeAuthorityBinding(root, lockBinding);
 		await removeAuthorityBinding(root, tokenBinding);
 		return;
@@ -1186,6 +1517,7 @@ async function recoverStalePersistence(root: string): Promise<void> {
 	if (await coordinatorIsLive(lock))
 		throw new Error('Another live coordinator owns skill-icon persistence');
 	await rollbackPersistenceJournal(root, journal);
+	await removeTokenIntentBinding(root, token);
 	await removeAuthorityBinding(root, journalBinding);
 	await removeAuthorityBinding(root, lockBinding);
 	await removeAuthorityBinding(root, tokenBinding);
@@ -1231,24 +1563,43 @@ async function persistSkillIconOutputBoundWithAuthorities(
 	options: PersistSkillIconOutputBoundOptions,
 	authorityBindings: readonly BoundTargetReference[]
 ): Promise<SkillIconAssetReceipt> {
-	if (!path.isAbsolute(options.sourcePath)) throw new Error('Source path must be absolute');
-	// Caller-owned buffers remain mutable across await boundaries. Capture the exact
-	// geometry authority once and use only this immutable snapshot for the whole run.
-	const geometrySourceBytes = options.geometrySourceBytes
-		? Buffer.from(options.geometrySourceBytes)
+	// Caller-owned values remain mutable across await boundaries. Parse/deep-clone
+	// structured values and capture scalars/callbacks before the first await.
+	const sourcePath = options.sourcePath;
+	if (!path.isAbsolute(sourcePath)) throw new Error('Source path must be absolute');
+	const suppliedGeometrySourceBytes = options.geometrySourceBytes;
+	const geometrySourceBytes = suppliedGeometrySourceBytes
+		? Buffer.from(suppliedGeometrySourceBytes)
 		: undefined;
+	const geometry = SkillIconGeometrySchema.parse(options.geometry);
+	const expectedRole = SkillIconRoleSchema.parse(options.expectedRole);
 	const receivedAt = IsoDateTimeSchema.parse(options.receivedAt);
-	if (options.expectedSourceHash) StateHashSchema.parse(options.expectedSourceHash);
+	const suppliedExpectedSourceHash = options.expectedSourceHash;
+	const expectedSourceHash =
+		suppliedExpectedSourceHash === undefined
+			? undefined
+			: StateHashSchema.parse(suppliedExpectedSourceHash);
 	const root = path.resolve(options.root ?? process.cwd());
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
 	const target = AnySkillIconTargetSchema.parse(options.target);
 	const assignment = AnySkillIconAssignmentSchema.parse(options.assignment);
-	assertPacketBinding(target, assignment, candidatePath, options.expectedRole);
+	const suppliedTestHooks = options.testHooks;
+	const testHooks = suppliedTestHooks ? { ...suppliedTestHooks } : undefined;
+	const authorityReferenceBindings = authorityBindings.map((binding) => ({
+		path: binding.path,
+		contentHash: binding.contentHash,
+		description: binding.description,
+		snapshot: {
+			parent: { ...binding.snapshot.parent },
+			file: { ...binding.snapshot.file }
+		}
+	}));
+	assertPacketBinding(target, assignment, candidatePath, expectedRole);
 	const isV2 = target.schemaVersion === 'skill-icon-target-v2';
 	if (isV2) {
 		SkillIconTargetV2Schema.parse(target);
 		const assignmentV2 = SkillIconAssignmentV2Schema.parse(assignment);
-		if (!options.expectedSourceHash)
+		if (!expectedSourceHash)
 			throw new Error('V2 persistence requires the expected provider source hash');
 		if (!geometrySourceBytes)
 			throw new Error('V2 persistence requires the raw geometry authority bytes');
@@ -1258,13 +1609,18 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		const parsedGeometry = SkillIconGeometrySchema.parse(
 			JSON.parse(geometrySourceBytes.toString('utf8'))
 		);
-		if (JSON.stringify(parsedGeometry) !== JSON.stringify(options.geometry))
+		if (JSON.stringify(parsedGeometry) !== JSON.stringify(geometry))
 			throw new Error('Parsed geometry and raw geometry authority bytes disagree');
-		if (
-			target.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE ||
-			assignmentV2.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE
-		)
-			throw new Error('V2 target and assignment do not authorize the normalization profile');
+		if (target.normalization.profile !== assignmentV2.normalization.profile)
+			throw new Error('V2 target and assignment normalization profiles do not match');
+		const expectedSkillVersion =
+			target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V1
+				? 'summonlab-skill-icon-production-v2'
+				: 'summonlab-skill-icon-production-v3';
+		if (assignmentV2.skillVersion !== expectedSkillVersion)
+			throw new Error(
+				`Normalization profile ${target.normalization.profile} requires ${expectedSkillVersion}`
+			);
 	}
 	const destination = path.resolve(root, candidatePath);
 	const resultDestination = path.resolve(root, target.output.resultPath);
@@ -1274,30 +1630,26 @@ async function persistSkillIconOutputBoundWithAuthorities(
 		!inside(path.resolve(root, 'assets/wiki/skills/icon-production-v1/results'), resultDestination)
 	)
 		throw new Error('Result output must remain inside the skill-icon results directory');
-	if (path.resolve(options.sourcePath) === destination)
+	if (path.resolve(sourcePath) === destination)
 		throw new Error('Source and candidate paths must differ');
 
-	const sourceBytes = await readSkillIconProviderSourceOnce(
-		options.sourcePath,
-		options.testHooks?.afterSourceRead
-	);
+	const sourceBytes = await readSkillIconProviderSourceOnce(sourcePath, testHooks?.afterSourceRead);
 	const sourceContentHash = createHash('sha256').update(sourceBytes).digest('hex');
-	if (options.expectedSourceHash && options.expectedSourceHash !== sourceContentHash)
+	if (expectedSourceHash && expectedSourceHash !== sourceContentHash)
 		throw new Error('Source/candidate hash mismatch against expected source hash');
 	const normalized = isV2
 		? await normalizeSkillIconProviderSource(
 				sourceBytes,
-				options.expectedRole,
-				geometrySourceBytes!
+				expectedRole,
+				geometrySourceBytes!,
+				target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V2
+					? SKILL_ICON_NORMALIZATION_PROFILE_V2
+					: SKILL_ICON_NORMALIZATION_PROFILE_V1
 			)
 		: null;
-	await options.testHooks?.afterNormalization?.();
+	await testHooks?.afterNormalization?.();
 	const candidateBytes = normalized?.bytes ?? sourceBytes;
-	const inspection = await inspectSkillIconAsset(
-		candidateBytes,
-		options.expectedRole,
-		options.geometry
-	);
+	const inspection = await inspectSkillIconAsset(candidateBytes, expectedRole, geometry);
 	if (inspection.width !== target.canvas.width || inspection.height !== target.canvas.height)
 		throw new Error(
 			`Source dimensions ${inspection.width}×${inspection.height} do not match target ${target.canvas.width}×${target.canvas.height}`
@@ -1331,7 +1683,7 @@ async function persistSkillIconOutputBoundWithAuthorities(
 				category: 'geometry',
 				evaluator: 'automated',
 				outcome: 'pass',
-				observation: `${options.expectedRole} dimensions, media type, alpha, and geometry checks passed.`
+				observation: `${expectedRole} dimensions, media type, alpha, and geometry checks passed.`
 			},
 			{
 				category: isV2 ? 'deterministic-normalization' : 'exact-source-persistence',
@@ -1355,12 +1707,9 @@ async function persistSkillIconOutputBoundWithAuthorities(
 				logicalIdentity: target.logicalIdentity,
 				revision: target.revision,
 				normalization: {
-					profile: normalized!.normalization.profile,
+					...normalized!.normalization,
 					outcome: 'completed',
-					geometryHash: normalized!.normalization.geometryHash,
-					providerSource: normalized!.source,
-					sourceContentHash: normalized!.normalization.sourceContentHash,
-					outputContentHash: normalized!.normalization.outputContentHash
+					providerSource: normalized!.source
 				},
 				...resultCommon
 			})
@@ -1373,14 +1722,14 @@ async function persistSkillIconOutputBoundWithAuthorities(
 	await ensureSafeParents(root, destination);
 	await ensureSafeParents(root, resultDestination);
 	await recoverStalePersistence(root);
-	await options.testHooks?.beforeCandidateWrite?.();
+	await testHooks?.beforeCandidateWrite?.();
 	const authority = await acquirePersistenceAuthority(
 		root,
 		[
 			{ kind: 'candidate', path: candidatePath, contentHash: sha256(candidateBytes) },
 			{ kind: 'result', path: target.output.resultPath, contentHash: sha256(resultBytes) }
 		],
-		options.testHooks
+		testHooks
 	);
 	let candidateParent: HeldPersistenceParent | undefined;
 	let resultParent: HeldPersistenceParent | undefined;
@@ -1404,7 +1753,7 @@ async function persistSkillIconOutputBoundWithAuthorities(
 			candidateParent,
 			path.basename(destination),
 			candidateBytes,
-			options.testHooks?.afterCandidateOpen,
+			testHooks?.afterCandidateOpen,
 			0o644,
 			`transaction-${authority.lock.transactionId}`
 		);
@@ -1412,11 +1761,11 @@ async function persistSkillIconOutputBoundWithAuthorities(
 			resultParent,
 			path.basename(resultDestination),
 			resultBytes,
-			options.testHooks?.afterResultOpen,
+			testHooks?.afterResultOpen,
 			0o644,
 			`transaction-${authority.lock.transactionId}`
 		);
-		await options.testHooks?.afterOutputStagesComplete?.();
+		await testHooks?.afterOutputStagesComplete?.();
 		const unsignedJournal = SkillIconPersistenceJournalSchema.parse({
 			schemaVersion: 'skill-icon-persistence-transaction-v1',
 			transactionId: authority.lock.transactionId,
@@ -1459,33 +1808,33 @@ async function persistSkillIconOutputBoundWithAuthorities(
 			destination,
 			stagedCandidate
 		);
-		await options.testHooks?.afterCandidateInstall?.();
-		await options.testHooks?.beforeResultWrite?.();
+		await testHooks?.afterCandidateInstall?.();
+		await testHooks?.beforeResultWrite?.();
 		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
 		resultOwnership = await publishStagedNoReplace(resultParent, resultDestination, stagedResult);
-		await options.testHooks?.afterResultInstall?.();
+		await testHooks?.afterResultInstall?.();
 		const retainedResult = await readSafePacket(root, target.output.resultPath, 'Retained result');
 		if (!retainedResult.equals(resultBytes))
 			throw new Error('Result bytes changed during persistence');
 		await assertOwnedPersistedFile(candidateOwnership, candidateBytes, 'Candidate');
 		await assertOwnedPersistedFile(resultOwnership, resultBytes, 'Result');
 		await assertTargetReferencesStillBound(root, referenceBindings);
-		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertTargetReferencesStillBound(root, authorityReferenceBindings);
 		await unlinkStagedIfOwned(stagedCandidate);
 		await candidateParent.handle.sync();
 		await unlinkStagedIfOwned(stagedResult);
 		await resultParent.handle.sync();
 		await removeAuthorityBinding(root, journalBinding);
 		journalBinding = undefined;
-		await options.testHooks?.afterJournalRemoval?.();
+		await testHooks?.afterJournalRemoval?.();
 		await removeAuthorityBinding(root, authority.lockBinding);
 		await removeAuthorityBinding(root, authority.tokenBinding);
 		return {
 			schemaVersion: 'skill-icon-asset-receipt-v1',
 			jobId: target.jobId,
-			role: options.expectedRole,
+			role: expectedRole,
 			receivedAt,
-			source: { path: options.sourcePath, ...(normalized?.source ?? inspection) },
+			source: { path: sourcePath, ...(normalized?.source ?? inspection) },
 			retained: { path: candidatePath, ...inspection },
 			result: {
 				path: target.output.resultPath,
@@ -1602,6 +1951,417 @@ export async function persistSkillIconOutputBound(
 	return persistSkillIconOutputBoundWithAuthorities(options, []);
 }
 
+function failedResultTransactionPaths(resultPath: string): readonly [string, string] {
+	const directory = path.dirname(resultPath);
+	const filename = path.basename(resultPath);
+	return [
+		`${directory}/.${filename}.failed-result-owner.json`,
+		`${directory}/.${filename}.failed-result-stage`
+	];
+}
+
+async function assertNoFailedResultTransactionArtifacts(
+	root: string,
+	resultPath: string
+): Promise<void> {
+	for (const relativePath of failedResultTransactionPaths(resultPath)) {
+		if (await metadataOrNull(path.resolve(root, relativePath)))
+			throw new Error(`Python failed-result transaction blocks supersession: ${relativePath}`);
+	}
+}
+
+async function persistCoordinatorResultOnly(
+	root: string,
+	jobId: string,
+	resultPath: string,
+	resultBytes: Buffer,
+	candidatePath: string,
+	authorityBindings: readonly BoundTargetReference[],
+	testHooks?: PersistSkillIconSupersededResultTestHooks
+): Promise<{ readonly path: string; readonly contentHash: string }> {
+	const resultDestination = path.resolve(root, resultPath);
+	const candidateDestination = path.resolve(root, candidatePath);
+	if (
+		!inside(path.resolve(root, 'assets/wiki/skills/icon-production-v1/results'), resultDestination)
+	)
+		throw new Error('Superseded result must remain inside the skill-icon results directory');
+	if (
+		!inside(
+			path.resolve(root, 'assets/wiki/skills/icon-production-v1/candidates'),
+			candidateDestination
+		)
+	)
+		throw new Error('Superseded candidate proof escaped the skill-icon candidates directory');
+	await ensureSafeParents(root, resultDestination);
+	await recoverStalePersistence(root);
+	const authority = await acquirePersistenceAuthority(
+		root,
+		[{ kind: 'result', path: resultPath, contentHash: sha256(resultBytes) }],
+		{
+			...(testHooks?.afterTokenInstall === undefined
+				? {}
+				: { afterTokenInstall: testHooks.afterTokenInstall }),
+			...(testHooks?.afterLockInstall === undefined
+				? {}
+				: { afterLockInstall: testHooks.afterLockInstall }),
+			...(testHooks?.afterIntentInstall === undefined
+				? {}
+				: { afterIntentInstall: testHooks.afterIntentInstall })
+		}
+	);
+	let resultParent: HeldPersistenceParent | undefined;
+	let stagedResult: StagedPersistedFile | undefined;
+	let resultOwnership: OwnedPersistedFile | undefined;
+	let journal: PersistenceJournal | undefined;
+	let journalBinding: BoundTargetReference | undefined;
+	let intentBinding = authority.supersessionIntent?.binding;
+	let committed = false;
+	const assertIntentStillBound = async () => {
+		if (!intentBinding)
+			throw new Error('Result-only transaction lost its supersession intent authority');
+		await assertTargetReferencesStillBound(root, [intentBinding]);
+	};
+	try {
+		await assertIntentStillBound();
+		await assertNoFailedResultTransactionArtifacts(root, resultPath);
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Superseded packet already has candidate output: ${candidatePath}`);
+		if (await metadataOrNull(resultDestination))
+			throw new Error(`Result output already exists (collision): ${resultPath}`);
+		resultParent = await openHeldPersistenceParent(root, resultDestination);
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		stagedResult = await stageCompleteSibling(
+			resultParent,
+			path.basename(resultDestination),
+			resultBytes,
+			testHooks?.afterResultOpen,
+			0o644,
+			`transaction-${authority.lock.transactionId}`
+		);
+		await testHooks?.afterOutputStageComplete?.();
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertNoFailedResultTransactionArtifacts(root, resultPath);
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared while superseding packet: ${candidatePath}`);
+		const unsignedJournal = SkillIconPersistenceJournalSchema.parse({
+			schemaVersion: 'skill-icon-persistence-transaction-v1',
+			transactionId: authority.lock.transactionId,
+			recoveryTokenHash: authority.lock.recoveryTokenHash,
+			authorizationTag: '0'.repeat(64),
+			jobId,
+			outputs: [
+				{
+					kind: 'result',
+					path: resultPath,
+					stagedPath: path.relative(root, stagedResult.path).split(path.sep).join('/'),
+					contentHash: sha256(resultBytes),
+					parent: resultParent.fingerprint,
+					file: stagedResult.file
+				}
+			]
+		});
+		journal = SkillIconPersistenceJournalSchema.parse(
+			authorizeJournal(unsignedJournal, authority.recoveryToken)
+		);
+		journalBinding = await writeAuthorityExclusive(
+			root,
+			SKILL_ICON_PERSISTENCE_JOURNAL_PATH,
+			transactionBytes(journal),
+			0o600,
+			'Persistence journal',
+			authority.lock.transactionId,
+			authority.lock.pid
+		);
+		await testHooks?.afterJournalInstall?.();
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertIntentStillBound();
+		await assertNoFailedResultTransactionArtifacts(root, resultPath);
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared while superseding packet: ${candidatePath}`);
+		await assertNoFailedResultTransactionArtifacts(root, resultPath);
+		resultOwnership = await publishStagedNoReplace(resultParent, resultDestination, stagedResult);
+		await testHooks?.afterResultInstall?.();
+		await assertOwnedPersistedFile(resultOwnership, resultBytes, 'Superseded result');
+		await assertTargetReferencesStillBound(root, authorityBindings);
+		await assertIntentStillBound();
+		await assertNoFailedResultTransactionArtifacts(root, resultPath);
+		if (await metadataOrNull(candidateDestination))
+			throw new Error(`Candidate appeared while superseding packet: ${candidatePath}`);
+		await unlinkStagedIfOwned(stagedResult);
+		await resultParent.handle.sync();
+		await assertIntentStillBound();
+		await removeAuthorityBinding(root, journalBinding);
+		journalBinding = undefined;
+		committed = true;
+		await testHooks?.afterJournalRemoval?.();
+		if (!intentBinding)
+			throw new Error('Result-only transaction lost its supersession intent authority');
+		await removeAuthorityBinding(root, intentBinding);
+		intentBinding = undefined;
+		await testHooks?.afterIntentRemoval?.();
+		await removeAuthorityBinding(root, authority.lockBinding);
+		await removeAuthorityBinding(root, authority.tokenBinding);
+		return { path: resultPath, contentHash: sha256(resultBytes) };
+	} catch (error) {
+		const cleanupFailures: unknown[] = [];
+		if (committed) {
+			if (intentBinding) {
+				try {
+					await removeAuthorityBinding(root, intentBinding);
+					intentBinding = undefined;
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
+			}
+		} else if (journal && journalBinding) {
+			try {
+				await rollbackPersistenceJournal(root, journal);
+				if (!intentBinding)
+					throw new Error('Result-only rollback lost its supersession intent authority', {
+						cause: error
+					});
+				await removeAuthorityBinding(root, intentBinding);
+				intentBinding = undefined;
+				await removeAuthorityBinding(root, journalBinding);
+				journalBinding = undefined;
+			} catch (cleanupError) {
+				const heldCleanupFailures: unknown[] = [];
+				if (resultParent && resultOwnership) {
+					try {
+						await removeOwnedPersistedFileHeld(resultParent, resultOwnership, resultBytes);
+					} catch (heldCleanupError) {
+						heldCleanupFailures.push(heldCleanupError);
+					}
+				}
+				if (resultParent && stagedResult) {
+					try {
+						await removeOwnedPersistedFileHeld(
+							resultParent,
+							{
+								path: stagedResult.path,
+								parent: resultParent.fingerprint,
+								file: stagedResult.file
+							},
+							resultBytes
+						);
+					} catch (heldCleanupError) {
+						heldCleanupFailures.push(heldCleanupError);
+					}
+				}
+				if (heldCleanupFailures.length === 0 && intentBinding) {
+					try {
+						await removeAuthorityBinding(root, intentBinding);
+						intentBinding = undefined;
+					} catch (heldCleanupError) {
+						heldCleanupFailures.push(heldCleanupError);
+					}
+				}
+				if (heldCleanupFailures.length === 0) {
+					await removeAuthorityBinding(root, journalBinding!);
+					journalBinding = undefined;
+				} else cleanupFailures.push(cleanupError, ...heldCleanupFailures);
+			}
+		} else if (stagedResult) {
+			try {
+				await unlinkStagedIfOwned(stagedResult);
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		if (!committed && !journalBinding && intentBinding) {
+			try {
+				await removeAuthorityBinding(root, intentBinding);
+				intentBinding = undefined;
+			} catch (cleanupError) {
+				cleanupFailures.push(cleanupError);
+			}
+		}
+		if (!journalBinding && !intentBinding) {
+			for (const binding of [authority.lockBinding, authority.tokenBinding]) {
+				try {
+					await removeAuthorityBinding(root, binding);
+				} catch (cleanupError) {
+					cleanupFailures.push(cleanupError);
+				}
+			}
+		}
+		if (cleanupFailures.length > 0)
+			throw new AggregateError(
+				[error, ...cleanupFailures],
+				'Superseded-result persistence failed and rollback was incomplete',
+				{ cause: error }
+			);
+		throw error;
+	} finally {
+		await resultParent?.handle.close().catch(() => undefined);
+	}
+}
+
+function canonicalPacketPaths(target: AnySkillIconTarget): {
+	readonly targetPath: string;
+	readonly assignmentPath: string;
+} {
+	const scope = skillIconScopeForRole(target.role);
+	return {
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/${scope}/${target.jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/${scope}/${target.jobId}.json`
+	};
+}
+
+/**
+ * Coordinator-only retirement of an output-free V2 packet. The production CLI
+ * intentionally has no route to this helper: a producer may report an attempt,
+ * but cannot declare its own assignment superseded.
+ */
+export async function persistSkillIconSupersededResult(
+	options: PersistSkillIconSupersededResultOptions
+): Promise<ReturnType<typeof AnySkillIconResultSchema.parse>> {
+	const root = path.resolve(options.root ?? process.cwd());
+	const completedAt = IsoDateTimeSchema.parse(options.completedAt);
+	if (options.reason !== SKILL_ICON_SUPERSESSION_REASON)
+		throw new Error(`Supersession requires exact reason ${SKILL_ICON_SUPERSESSION_REASON}`);
+	const targetPath = SkillIconTargetPathSchema.parse(options.targetPath);
+	const assignmentPath = SkillIconAssignmentPathSchema.parse(options.assignmentPath);
+	const supersedingTargetPath = SkillIconTargetPathSchema.parse(options.supersedingTargetPath);
+	const supersedingAssignmentPath = SkillIconAssignmentPathSchema.parse(
+		options.supersedingAssignmentPath
+	);
+	if (targetPath === supersedingTargetPath || assignmentPath === supersedingAssignmentPath)
+		throw new Error('Superseding authority must be a distinct higher packet');
+
+	const [targetSnapshot, assignmentSnapshot, higherTargetSnapshot, higherAssignmentSnapshot] =
+		await Promise.all([
+			readSafePacketSnapshot(root, targetPath, 'Superseded target packet'),
+			readSafePacketSnapshot(root, assignmentPath, 'Superseded assignment packet'),
+			readSafePacketSnapshot(root, supersedingTargetPath, 'Superseding target packet'),
+			readSafePacketSnapshot(root, supersedingAssignmentPath, 'Superseding assignment packet')
+		]);
+	const target = SkillIconTargetV2Schema.parse(JSON.parse(targetSnapshot.bytes.toString('utf8')));
+	const assignment = SkillIconAssignmentV2Schema.parse(
+		JSON.parse(assignmentSnapshot.bytes.toString('utf8'))
+	);
+	const supersedingTarget = SkillIconTargetV2Schema.parse(
+		JSON.parse(higherTargetSnapshot.bytes.toString('utf8'))
+	);
+	const supersedingAssignment = SkillIconAssignmentV2Schema.parse(
+		JSON.parse(higherAssignmentSnapshot.bytes.toString('utf8'))
+	);
+	const currentCanonical = canonicalPacketPaths(target);
+	const higherCanonical = canonicalPacketPaths(supersedingTarget);
+	if (
+		targetPath !== currentCanonical.targetPath ||
+		assignmentPath !== currentCanonical.assignmentPath ||
+		assignment.targetPath !== targetPath ||
+		assignment.assignmentPath !== assignmentPath
+	)
+		throw new Error('Superseded target and assignment paths are not canonical for their job');
+	if (
+		supersedingTargetPath !== higherCanonical.targetPath ||
+		supersedingAssignmentPath !== higherCanonical.assignmentPath ||
+		supersedingAssignment.targetPath !== supersedingTargetPath ||
+		supersedingAssignment.assignmentPath !== supersedingAssignmentPath
+	)
+		throw new Error('Superseding target and assignment paths are not canonical for their job');
+	assertPacketBinding(target, assignment, target.output.candidatePath, target.role);
+	assertPacketBinding(
+		supersedingTarget,
+		supersedingAssignment,
+		supersedingTarget.output.candidatePath,
+		supersedingTarget.role
+	);
+	assertSkillIconSupersedingRevision(target, supersedingTarget);
+	await recoverStalePersistence(root);
+	const candidateDestination = path.resolve(root, target.output.candidatePath);
+	const resultDestination = path.resolve(root, target.output.resultPath);
+	if ((await metadataOrNull(candidateDestination)) || (await metadataOrNull(resultDestination)))
+		throw new Error('Only output-free unattempted packets can be superseded');
+	await options.testHooks?.afterAuthorityRead?.();
+
+	const authorityBindings = [
+		bindSafePacket(targetPath, 'Superseded target packet', targetSnapshot),
+		bindSafePacket(assignmentPath, 'Superseded assignment packet', assignmentSnapshot),
+		bindSafePacket(supersedingTargetPath, 'Superseding target packet', higherTargetSnapshot),
+		bindSafePacket(
+			supersedingAssignmentPath,
+			'Superseding assignment packet',
+			higherAssignmentSnapshot
+		)
+	];
+	const normalization =
+		target.normalization.profile === 'skill-icon-green-key-role-mask-v1'
+			? {
+					profile: target.normalization.profile,
+					outcome: 'not-run' as const,
+					geometryHash: target.normalization.geometry.contentHash,
+					providerSource: null,
+					sourceContentHash: null,
+					outputContentHash: null
+				}
+			: {
+					profile: target.normalization.profile,
+					outcome: 'not-run' as const,
+					geometryHash: target.normalization.geometry.contentHash,
+					providerSource: null,
+					sourceContentHash: null,
+					decoderInputContentHash: null,
+					containerBox: null,
+					colorSpaceDisposition: null,
+					outputContentHash: null
+				};
+	const result = AnySkillIconResultSchema.parse({
+		schemaVersion: 'skill-icon-result-v2',
+		resultId: `result-${target.jobId}`,
+		jobId: target.jobId,
+		logicalIdentity: target.logicalIdentity,
+		revision: target.revision,
+		role: target.role,
+		assignmentId: assignment.assignmentId,
+		status: 'superseded',
+		attemptCount: 0,
+		supersessionReason: options.reason,
+		supersedingAuthority: {
+			targetPath: supersedingTargetPath,
+			targetContentHash: sha256(higherTargetSnapshot.bytes),
+			assignmentPath: supersedingAssignmentPath,
+			assignmentContentHash: sha256(higherAssignmentSnapshot.bytes),
+			jobId: supersedingTarget.jobId,
+			logicalIdentity: supersedingTarget.logicalIdentity,
+			revision: supersedingTarget.revision,
+			role: supersedingTarget.role
+		},
+		exactPrompt: target.exactPrompt,
+		promptHash: sha256(Buffer.from(target.exactPrompt)),
+		referenceInputs: target.references.map(({ path, contentHash }) => ({ path, contentHash })),
+		normalization,
+		output: null,
+		resultPath: target.output.resultPath,
+		findings: [],
+		startedAt: completedAt,
+		completedAt,
+		totalWallTimeMs: 0,
+		writtenOutputPaths: [target.output.resultPath],
+		noSharedFilesEdited: true,
+		selfPromoted: false
+	});
+	AnySkillIconExecutionSchema.parse({
+		schemaVersion: 'skill-icon-execution-v2',
+		target,
+		assignment,
+		result
+	});
+	const resultBytes = transactionBytes(result);
+	await persistCoordinatorResultOnly(
+		root,
+		target.jobId,
+		target.output.resultPath,
+		resultBytes,
+		target.output.candidatePath,
+		authorityBindings,
+		options.testHooks
+	);
+	return result;
+}
+
 function packetPathsForCandidate(candidatePath: string): {
 	readonly targetPath: string;
 	readonly assignmentPath: string;
@@ -1622,8 +2382,17 @@ export async function persistSkillIconOutput(
 	options: PersistSkillIconOutputOptions,
 	dependencies: PersistSkillIconOutputDependencies = {}
 ): Promise<SkillIconAssetReceipt> {
+	// This public wrapper awaits packet authorities before delegating, so it must not
+	// retain any live caller-owned request object across that await.
 	const root = process.cwd();
+	const sourcePath = options.sourcePath;
+	if (!path.isAbsolute(sourcePath)) throw new Error('Source path must be absolute');
 	const candidatePath = SkillIconCandidatePathSchema.parse(options.candidatePath);
+	const expectedRole = SkillIconRoleSchema.parse(options.expectedRole);
+	const geometry = SkillIconGeometrySchema.parse(options.geometry);
+	const expectedSourceHash = StateHashSchema.parse(options.expectedSourceHash);
+	const afterAuthorityRead = dependencies.testHooks?.afterAuthorityRead;
+	const now = dependencies.now;
 	const { targetPath, assignmentPath } = packetPathsForCandidate(candidatePath);
 	const [targetSnapshot, assignmentSnapshot] = await Promise.all([
 		readSafePacketSnapshot(root, targetPath, 'Target'),
@@ -1637,12 +2406,16 @@ export async function persistSkillIconOutput(
 		target.schemaVersion === 'skill-icon-target-v2'
 			? await readSafePacketSnapshot(root, SKILL_ICON_GEOMETRY_PATH, 'Geometry')
 			: undefined;
-	await dependencies.testHooks?.afterAuthorityRead?.();
-	const receivedAt = (dependencies.now?.() ?? new Date()).toISOString();
+	await afterAuthorityRead?.();
+	const receivedAt = (now?.() ?? new Date()).toISOString();
 	return persistSkillIconOutputBoundWithAuthorities(
 		{
-			...options,
 			root,
+			sourcePath,
+			candidatePath,
+			expectedRole,
+			geometry,
+			expectedSourceHash,
 			target,
 			assignment,
 			receivedAt,

@@ -32,6 +32,26 @@ export function skillIconRevision(target: AnySkillIconTarget): number {
 	return revision;
 }
 
+export function assertSkillIconSupersedingRevision(
+	retired: AnySkillIconTarget,
+	superseding: AnySkillIconTarget
+): void {
+	if (
+		retired.schemaVersion !== 'skill-icon-target-v2' ||
+		superseding.schemaVersion !== 'skill-icon-target-v2'
+	)
+		throw new Error('Only V2 packets may use explicit unattempted supersession evidence');
+	if (
+		retired.role !== superseding.role ||
+		retired.logicalIdentity !== superseding.logicalIdentity ||
+		skillIconLogicalKey(retired) !== skillIconLogicalKey(superseding) ||
+		skillIconRevision(superseding) <= skillIconRevision(retired)
+	)
+		throw new Error(
+			'Superseding authority must have the same role and logical identity at a strictly higher revision'
+		);
+}
+
 export function resolveLatestSkillIconTargets(
 	targets: readonly AnySkillIconTarget[]
 ): readonly SkillIconTargetRevision[] {

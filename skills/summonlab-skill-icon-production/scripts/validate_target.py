@@ -27,8 +27,16 @@ PROTOCOLS = {
         "skill-icon-assignment-v2",
         "summonlab-skill-icon-production-v2",
     ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v3",
+    ): "skill-icon-execution-v2",
 }
-NORMALIZATION_PROFILE = "skill-icon-green-key-role-mask-v1"
+NORMALIZATION_SKILL_VERSIONS = {
+    "skill-icon-green-key-role-mask-v1": "summonlab-skill-icon-production-v2",
+    "skill-icon-green-key-role-mask-v2": "summonlab-skill-icon-production-v3",
+}
 GEOMETRY_PATH = "assets/wiki/skills/icon-production-v1/geometry.json"
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
@@ -483,13 +491,20 @@ def validate(
     if execution_version == "skill-icon-execution-v2":
         target_normalization = target.get("normalization")
         assignment_normalization = assignment.get("normalization")
+        profile = (
+            target_normalization.get("profile")
+            if isinstance(target_normalization, dict)
+            else None
+        )
         if (
             not isinstance(target_normalization, dict)
             or not isinstance(assignment_normalization, dict)
-            or target_normalization.get("profile") != NORMALIZATION_PROFILE
-            or assignment_normalization.get("profile") != NORMALIZATION_PROFILE
+            or profile not in NORMALIZATION_SKILL_VERSIONS
+            or assignment_normalization.get("profile") != profile
         ):
-            fail("v2 target and assignment must bind the exact normalization profile")
+            fail("v2 target and assignment must bind the same supported normalization profile")
+        if assignment.get("skillVersion") != NORMALIZATION_SKILL_VERSIONS[profile]:
+            fail("normalization profile and producer skill version do not match")
         geometry = target_normalization.get("geometry")
         if not isinstance(geometry, dict) or geometry.get("path") != GEOMETRY_PATH:
             fail("v2 target must bind the canonical raw geometry authority")

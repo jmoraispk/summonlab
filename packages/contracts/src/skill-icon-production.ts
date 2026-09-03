@@ -131,9 +131,20 @@ export const SkillIconRoleSchema = z.enum([
 	'calibration-plate',
 	'skill-art'
 ]);
-export const SkillIconProviderNormalizationProfileSchema = z.literal(
+export const SkillIconProviderNormalizationProfileV1Schema = z.literal(
 	'skill-icon-green-key-role-mask-v1'
 );
+export const SkillIconProviderNormalizationProfileV2Schema = z.literal(
+	'skill-icon-green-key-role-mask-v2'
+);
+export const SkillIconProviderNormalizationProfileSchema = z.union([
+	SkillIconProviderNormalizationProfileV1Schema,
+	SkillIconProviderNormalizationProfileV2Schema
+]);
+export const SkillIconProductionSkillVersionSchema = z.union([
+	z.literal('summonlab-skill-icon-production-v2'),
+	z.literal('summonlab-skill-icon-production-v3')
+]);
 export const SKILL_ICON_NORMALIZATION_GEOMETRY_HASH =
 	'4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7' as const;
 
@@ -934,7 +945,7 @@ export const SkillIconAssignmentV2Schema = z
 		revision: z.number().int().min(2),
 		targetPath: SkillIconTargetPathSchema,
 		assignmentPath: SkillIconAssignmentPathSchema,
-		skillVersion: z.literal('summonlab-skill-icon-production-v2'),
+		skillVersion: SkillIconProductionSkillVersionSchema,
 		normalization: z.object({ profile: SkillIconProviderNormalizationProfileSchema }).strict(),
 		assignedAt: IsoDateTimeSchema,
 		retryCeiling: z.number().int().min(0).max(1),
@@ -951,6 +962,17 @@ export const SkillIconAssignmentV2Schema = z
 	})
 	.strict()
 	.superRefine((assignment, context) => {
+		const expectedSkillVersion =
+			assignment.normalization.profile === 'skill-icon-green-key-role-mask-v1'
+				? 'summonlab-skill-icon-production-v2'
+				: 'summonlab-skill-icon-production-v3';
+		if (assignment.skillVersion !== expectedSkillVersion) {
+			context.addIssue({
+				code: 'custom',
+				path: ['skillVersion'],
+				message: `Normalization profile ${assignment.normalization.profile} requires ${expectedSkillVersion}`
+			});
+		}
 		const boundPaths = [
 			assignment.targetPath,
 			assignment.assignmentPath,
@@ -1154,6 +1176,21 @@ export const SkillIconProviderSourceEvidenceSchema = z
 	})
 	.strict();
 
+export const SkillIconProviderSourceEvidenceV2Schema = z
+	.object({
+		mediaType: z.literal('image/png'),
+		width: z.literal(1254),
+		height: z.literal(1254),
+		bytes: z
+			.number()
+			.int()
+			.positive()
+			.max(64 * 1024 * 1024),
+		alphaMode: z.literal('rgb'),
+		contentHash: StateHashSchema
+	})
+	.strict();
+
 export const SkillIconObservedProviderSourceEvidenceSchema = z
 	.object({
 		mediaType: z.enum(['image/png', 'image/webp', 'application/octet-stream']),
@@ -1165,10 +1202,10 @@ export const SkillIconObservedProviderSourceEvidenceSchema = z
 	})
 	.strict();
 
-export const SkillIconNormalizationEvidenceSchema = z.discriminatedUnion('outcome', [
+const SkillIconNormalizationEvidenceV1Schema = z.discriminatedUnion('outcome', [
 	z
 		.object({
-			profile: SkillIconProviderNormalizationProfileSchema,
+			profile: SkillIconProviderNormalizationProfileV1Schema,
 			outcome: z.literal('not-run'),
 			geometryHash: StateHashSchema,
 			providerSource: z.null(),
@@ -1178,7 +1215,7 @@ export const SkillIconNormalizationEvidenceSchema = z.discriminatedUnion('outcom
 		.strict(),
 	z
 		.object({
-			profile: SkillIconProviderNormalizationProfileSchema,
+			profile: SkillIconProviderNormalizationProfileV1Schema,
 			outcome: z.literal('failed'),
 			geometryHash: StateHashSchema,
 			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
@@ -1188,7 +1225,7 @@ export const SkillIconNormalizationEvidenceSchema = z.discriminatedUnion('outcom
 		.strict(),
 	z
 		.object({
-			profile: SkillIconProviderNormalizationProfileSchema,
+			profile: SkillIconProviderNormalizationProfileV1Schema,
 			outcome: z.literal('completed'),
 			geometryHash: StateHashSchema,
 			providerSource: SkillIconProviderSourceEvidenceSchema,
@@ -1198,7 +1235,75 @@ export const SkillIconNormalizationEvidenceSchema = z.discriminatedUnion('outcom
 		.strict()
 ]);
 
-export const SkillIconResultV2Schema = z
+export const SkillIconContainerBoxEvidenceSchema = z
+	.object({
+		chunkType: z.literal('caBX'),
+		bytes: z.number().int().min(8).max(32_768),
+		contentHash: StateHashSchema
+	})
+	.strict();
+
+const SkillIconNormalizationEvidenceV2Schema = z.union([
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV2Schema,
+			outcome: z.literal('not-run'),
+			geometryHash: StateHashSchema,
+			providerSource: z.null(),
+			sourceContentHash: z.null(),
+			decoderInputContentHash: z.null(),
+			containerBox: z.null(),
+			colorSpaceDisposition: z.null(),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV2Schema,
+			outcome: z.literal('failed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: z.null(),
+			containerBox: z.null(),
+			colorSpaceDisposition: z.null(),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV2Schema,
+			outcome: z.literal('failed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: StateHashSchema,
+			containerBox: SkillIconContainerBoxEvidenceSchema,
+			colorSpaceDisposition: z.literal('assigned-srgb'),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV2Schema,
+			outcome: z.literal('completed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconProviderSourceEvidenceV2Schema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: StateHashSchema,
+			containerBox: SkillIconContainerBoxEvidenceSchema,
+			colorSpaceDisposition: z.literal('assigned-srgb'),
+			outputContentHash: StateHashSchema
+		})
+		.strict()
+]);
+
+export const SkillIconNormalizationEvidenceSchema = z.union([
+	SkillIconNormalizationEvidenceV1Schema,
+	SkillIconNormalizationEvidenceV2Schema
+]);
+
+export const SkillIconAttemptResultV2Schema = z
 	.object({
 		schemaVersion: z.literal('skill-icon-result-v2'),
 		resultId: SlugSchema,
@@ -1299,6 +1404,129 @@ export const SkillIconResultV2Schema = z
 			});
 		}
 	});
+
+export const SKILL_ICON_SUPERSESSION_REASON =
+	'unattempted-packet-superseded-by-higher-revision' as const;
+
+export const SkillIconSupersedingAuthoritySchema = z
+	.object({
+		targetPath: SkillIconTargetPathSchema,
+		targetContentHash: StateHashSchema,
+		assignmentPath: SkillIconAssignmentPathSchema,
+		assignmentContentHash: StateHashSchema,
+		jobId: SlugSchema,
+		logicalIdentity: SlugSchema,
+		revision: z.number().int().min(2),
+		role: SkillIconRoleSchema
+	})
+	.strict()
+	.superRefine((authority, context) => {
+		const expectedScope = productionScopeForRole(authority.role);
+		if (
+			authority.jobId !== `${authority.logicalIdentity}-v${authority.revision}` ||
+			authority.targetPath !==
+				`assets/wiki/skills/icon-production-v1/targets/${expectedScope}/${authority.jobId}.json` ||
+			authority.assignmentPath !==
+				`assets/wiki/skills/icon-production-v1/assignments/${expectedScope}/${authority.jobId}.json`
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Superseding authority paths must canonically bind its job identity and role'
+			});
+		}
+	});
+
+export const SkillIconSupersededResultV2Schema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-result-v2'),
+		resultId: SlugSchema,
+		jobId: SlugSchema,
+		logicalIdentity: SlugSchema,
+		revision: z.number().int().min(2),
+		role: SkillIconRoleSchema,
+		assignmentId: SlugSchema,
+		status: z.literal('superseded'),
+		attemptCount: z.literal(0),
+		supersessionReason: z.literal(SKILL_ICON_SUPERSESSION_REASON),
+		supersedingAuthority: SkillIconSupersedingAuthoritySchema,
+		exactPrompt: ExactPromptSchema,
+		promptHash: StateHashSchema,
+		referenceInputs: z
+			.array(
+				z
+					.object({
+						path: SkillIconReferencePathSchema,
+						contentHash: StateHashSchema
+					})
+					.strict()
+			)
+			.min(1)
+			.max(20),
+		normalization: SkillIconNormalizationEvidenceSchema,
+		output: z.null(),
+		resultPath: SkillIconResultPathSchema,
+		findings: z.tuple([]),
+		startedAt: IsoDateTimeSchema,
+		completedAt: IsoDateTimeSchema,
+		totalWallTimeMs: z.literal(0),
+		writtenOutputPaths: z.tuple([SkillIconResultPathSchema]),
+		noSharedFilesEdited: z.literal(true),
+		selfPromoted: z.literal(false)
+	})
+	.strict()
+	.superRefine((result, context) => {
+		if (
+			result.resultId !== `result-${result.jobId}` ||
+			result.assignmentId !== `assignment-${result.jobId}` ||
+			result.jobId !== `${result.logicalIdentity}-v${result.revision}` ||
+			pathBasenameWithoutExtension(result.resultPath) !== result.jobId ||
+			result.writtenOutputPaths[0] !== result.resultPath
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Superseded result identity and result-only output must bind the retired job'
+			});
+		}
+		if (
+			result.supersedingAuthority.logicalIdentity !== result.logicalIdentity ||
+			result.supersedingAuthority.role !== result.role ||
+			result.supersedingAuthority.revision <= result.revision
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['supersedingAuthority'],
+				message:
+					'Superseding authority must bind the same logical identity and role at a strictly higher revision'
+			});
+		}
+		if (
+			result.normalization.outcome !== 'not-run' ||
+			result.normalization.providerSource !== null ||
+			result.normalization.sourceContentHash !== null ||
+			result.normalization.outputContentHash !== null
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['normalization'],
+				message: 'An unattempted superseded result requires exact not-run normalization evidence'
+			});
+		}
+		if (
+			result.promptHash !== createHash('sha256').update(result.exactPrompt).digest('hex') ||
+			result.startedAt !== result.completedAt
+		) {
+			context.addIssue({
+				code: 'custom',
+				message:
+					'Superseded result prompt hash must match and its zero-duration timestamps must agree'
+			});
+		}
+	});
+
+export const SkillIconResultV2Schema = z.union([
+	SkillIconAttemptResultV2Schema,
+	SkillIconSupersededResultV2Schema
+]);
 export const AnySkillIconResultSchema = z.union([SkillIconResultSchema, SkillIconResultV2Schema]);
 
 export const SkillIconExecutionSchema = z
@@ -1413,6 +1641,7 @@ export const SkillIconExecutionV2Schema = z
 			target.revision !== assignment.revision ||
 			target.revision !== result.revision ||
 			assignment.assignmentId !== result.assignmentId ||
+			(result.status === 'superseded' && target.role !== result.role) ||
 			assignment.targetPath !== expectedTargetPath ||
 			assignment.assignmentPath !== expectedAssignmentPath
 		) {
@@ -1494,9 +1723,16 @@ export type SkillIconRarity = z.infer<typeof SkillIconRaritySchema>;
 export type SkillMastery = z.infer<typeof SkillMasterySchema>;
 export type SkillIconMastery = SkillMastery;
 export type SkillIconRole = z.infer<typeof SkillIconRoleSchema>;
+export type SkillIconProviderNormalizationProfileV1 = z.infer<
+	typeof SkillIconProviderNormalizationProfileV1Schema
+>;
+export type SkillIconProviderNormalizationProfileV2 = z.infer<
+	typeof SkillIconProviderNormalizationProfileV2Schema
+>;
 export type SkillIconProviderNormalizationProfile = z.infer<
 	typeof SkillIconProviderNormalizationProfileSchema
 >;
+export type SkillIconProductionSkillVersion = z.infer<typeof SkillIconProductionSkillVersionSchema>;
 export type SkillIconRepositoryPath = z.infer<typeof SkillIconRepositoryPathSchema>;
 export type SkillIconCandidatePath = z.infer<typeof SkillIconCandidatePathSchema>;
 export type SkillIconMasterPath = z.infer<typeof SkillIconMasterPathSchema>;
@@ -1539,6 +1775,14 @@ export type AnySkillIconAssignment = z.infer<typeof AnySkillIconAssignmentSchema
 export type SkillIconFailureReason = z.infer<typeof SkillIconFailureReasonSchema>;
 export type SkillIconResultFinding = z.infer<typeof SkillIconResultFindingSchema>;
 export type SkillIconResult = z.infer<typeof SkillIconResultSchema>;
+export type SkillIconContainerBoxEvidence = z.infer<typeof SkillIconContainerBoxEvidenceSchema>;
+export type SkillIconProviderSourceEvidenceV2 = z.infer<
+	typeof SkillIconProviderSourceEvidenceV2Schema
+>;
+export type SkillIconNormalizationEvidence = z.infer<typeof SkillIconNormalizationEvidenceSchema>;
+export type SkillIconAttemptResultV2 = z.infer<typeof SkillIconAttemptResultV2Schema>;
+export type SkillIconSupersedingAuthority = z.infer<typeof SkillIconSupersedingAuthoritySchema>;
+export type SkillIconSupersededResultV2 = z.infer<typeof SkillIconSupersededResultV2Schema>;
 export type SkillIconResultV2 = z.infer<typeof SkillIconResultV2Schema>;
 export type AnySkillIconResult = z.infer<typeof AnySkillIconResultSchema>;
 export type SkillIconExecution = z.infer<typeof SkillIconExecutionSchema>;

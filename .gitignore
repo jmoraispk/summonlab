@@ -27,8 +27,10 @@ artifacts/private-playtest/
 /assets/wiki/skills/icon-production-v1/.persistence*.skill-icon-tmp-authority-*
 /assets/wiki/skills/icon-production-v1/candidates/**/.*.skill-icon-tmp-transaction-*
 /assets/wiki/skills/icon-production-v1/results/**/.*.skill-icon-tmp-transaction-*
+/assets/wiki/skills/icon-production-v1/results/**/.*.skill-icon-tmp-intent-*
 /assets/wiki/skills/icon-production-v1/results/**/.*.failed-result-stage
 /assets/wiki/skills/icon-production-v1/results/**/.*.failed-result-owner.json
+/assets/wiki/skills/icon-production-v1/results/**/.*.skill-icon-supersession-intent.json
 
 # Private inspiration sources: checksums and derived audits may be committed, source media may not.
 references/private/

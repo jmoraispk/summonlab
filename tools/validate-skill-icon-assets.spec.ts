@@ -325,10 +325,66 @@ function failedResult(target: TestTarget) {
 	};
 }
 
+function supersededResult(
+	target: ReturnType<typeof targetV2>,
+	higherTarget: ReturnType<typeof targetV2>,
+	higherAssignment = assignment(higherTarget)
+) {
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${higherTarget.jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${higherTarget.jobId}.json`;
+	return {
+		schemaVersion: 'skill-icon-result-v2' as const,
+		resultId: `result-${target.jobId}`,
+		jobId: target.jobId,
+		logicalIdentity: target.logicalIdentity,
+		revision: target.revision,
+		role: target.role,
+		assignmentId: `assignment-${target.jobId}`,
+		status: 'superseded' as const,
+		attemptCount: 0 as const,
+		supersessionReason: 'unattempted-packet-superseded-by-higher-revision' as const,
+		supersedingAuthority: {
+			targetPath,
+			targetContentHash: createHash('sha256').update(JSON.stringify(higherTarget)).digest('hex'),
+			assignmentPath,
+			assignmentContentHash: createHash('sha256')
+				.update(JSON.stringify(higherAssignment))
+				.digest('hex'),
+			jobId: higherTarget.jobId,
+			logicalIdentity: higherTarget.logicalIdentity,
+			revision: higherTarget.revision,
+			role: higherTarget.role
+		},
+		exactPrompt: target.exactPrompt,
+		promptHash: createHash('sha256').update(target.exactPrompt).digest('hex'),
+		referenceInputs: referenceInputs.map(({ path, contentHash }) => ({ path, contentHash })),
+		normalization: {
+			profile: target.normalization.profile,
+			outcome: 'not-run' as const,
+			geometryHash,
+			providerSource: null,
+			sourceContentHash: null,
+			outputContentHash: null
+		},
+		output: null,
+		resultPath: target.output.resultPath,
+		findings: [] as const,
+		startedAt: '2026-09-02T00:00:00.000Z',
+		completedAt: '2026-09-02T00:00:00.000Z',
+		totalWallTimeMs: 0 as const,
+		writtenOutputPaths: [target.output.resultPath] as const,
+		noSharedFilesEdited: true as const,
+		selfPromoted: false as const
+	};
+}
+
 async function writeExecution(
 	root: string,
 	target: TestTarget,
-	result: ReturnType<typeof candidateResult> | ReturnType<typeof failedResult>,
+	result:
+		| ReturnType<typeof candidateResult>
+		| ReturnType<typeof failedResult>
+		| ReturnType<typeof supersededResult>,
 	candidate?: Buffer
 ) {
 	const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
@@ -346,7 +402,7 @@ async function writeExecution(
 	);
 	if (candidate) {
 		await writeFile(path.join(base, `candidates/references/${target.jobId}.png`), candidate);
-	} else if (result.status === 'failed') {
+	} else if (result.status === 'failed' || result.status === 'superseded') {
 		await rm(path.join(base, `candidates/references/${target.jobId}.png`), { force: true });
 	}
 }
@@ -628,6 +684,71 @@ describe('validateSkillIconAssets revision authority', () => {
 
 		await expect(validateSkillIconAssets(root)).rejects.toThrow(
 			/references\/charcoal-forged-stone-v2: missing result inventory entry/iu
+		);
+	});
+
+	it('accepts a valid historical unattempted superseded result bound to the higher packet', async () => {
+		const root = await revisionTestRoot();
+		const v2 = targetV2(2);
+		const v3 = targetV2(3);
+		const v3Assignment = assignment(v3);
+		const candidate = await validBacking();
+		await writeExecution(root, v2, supersededResult(v2, v3, v3Assignment));
+		await writeExecution(root, v3, candidateResult(v3, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+	});
+
+	it('never falls back through superseded history when the highest revision fails', async () => {
+		const root = await revisionTestRoot();
+		const v2 = targetV2(2);
+		const v3 = targetV2(3);
+		await writeExecution(root, v2, supersededResult(v2, v3));
+		await writeExecution(root, v3, failedResult(v3));
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/backing latest revision v3 is failed/iu
+		);
+	});
+
+	it.each(['target-hash', 'assignment-hash', 'missing-target', 'changed-assignment'] as const)(
+		'rejects superseded evidence with %s superseding authority',
+		async (tamper) => {
+			const root = await revisionTestRoot();
+			const v2 = targetV2(2);
+			const v3 = targetV2(3);
+			const v3Assignment = assignment(v3);
+			const result = supersededResult(v2, v3, v3Assignment);
+			if (tamper === 'target-hash') result.supersedingAuthority.targetContentHash = 'f'.repeat(64);
+			if (tamper === 'assignment-hash')
+				result.supersedingAuthority.assignmentContentHash = 'f'.repeat(64);
+			await writeExecution(root, v2, result);
+			await writeExecution(root, v3, failedResult(v3));
+			const base = path.join(root, 'assets/wiki/skills/icon-production-v1');
+			if (tamper === 'missing-target')
+				await rm(path.join(base, `targets/references/${v3.jobId}.json`));
+			if (tamper === 'changed-assignment')
+				await writeFile(
+					path.join(base, `assignments/references/${v3.jobId}.json`),
+					JSON.stringify({ ...v3Assignment, assignedAt: '2026-09-02T00:00:01.000Z' })
+				);
+
+			await expect(validateSkillIconAssets(root)).rejects.toThrow(
+				/invalid superseding authority|orphan assignment|missing required|content hashes changed/iu
+			);
+		}
+	);
+
+	it('rejects a candidate retained beside superseded result-only evidence', async () => {
+		const root = await revisionTestRoot();
+		const v2 = targetV2(2);
+		const v3 = targetV2(3);
+		const candidate = await validBacking();
+		await writeExecution(root, v2, supersededResult(v2, v3), candidate);
+		await writeExecution(root, v3, candidateResult(v3, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/superseded result cannot retain a candidate/iu
 		);
 	});
 

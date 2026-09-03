@@ -1,9 +1,11 @@
 # Producer review rubric
 
-For a v2 `rarity-frame` or `backing` retry, first inspect the provider raster only for visible
-fidelity and eligibility: it must be a non-interlaced 8-bit 1254×1254 RGB PNG with an explicit
-perceptual-sRGB declaration over an opaque `#00FF00` matte, never a depicted checkerboard. Then let
-the helper normalize it. V1 `skill-art` and
+For a normalized `rarity-frame` or `backing` retry, first inspect the provider raster only for
+visible fidelity and eligibility: it must be a non-interlaced 8-bit 1254×1254 RGB PNG over an
+opaque `#00FF00` matte, never a depicted checkerboard. Profile v1 requires an explicit
+perceptual-sRGB declaration. Profile v2 instead requires exactly one bounded, structurally valid
+`caBX` provider container and assigns perceptual sRGB after removing it; neither rule relaxes the matte,
+role-mask, or forbidden-region gates. Then let the helper normalize it. V1 `skill-art` and
 `calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
 at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
 for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either

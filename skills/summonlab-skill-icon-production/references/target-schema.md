@@ -5,8 +5,10 @@ schemas, then adds filesystem and hash checks. Do not weaken or mirror around a 
 The accepted tuples are exact:
 
 - target-v1 + assignment-v1 + `summonlab-skill-icon-production-v1` (exact-source mode);
-- target-v2 + assignment-v2 + `summonlab-skill-icon-production-v2` (green-key frame/backing
-  normalization mode).
+- target-v2 + assignment-v2 + profile `skill-icon-green-key-role-mask-v1` +
+  `summonlab-skill-icon-production-v2` (historical green-key normalization mode);
+- target-v2 + assignment-v2 + profile `skill-icon-green-key-role-mask-v2` +
+  `summonlab-skill-icon-production-v3` (bounded provider-container and assigned-sRGB mode).
 
 Every mixed tuple is invalid. The `icon-production-v1/` path namespace names the asset system and
 does not imply packet-schema v1.
@@ -27,10 +29,14 @@ Roles are `rarity-frame`, `backing`, `calibration-plate`, and `skill-art`. Stand
 A v2 target is currently allowed only for a green-key `rarity-frame` or `backing` retry. New and
 revised `skill-art` and `calibration-plate` jobs remain v1 exact-source packets unless a future
 contract revision explicitly adds those roles. V2 adds explicit `logicalIdentity`, integer
-`revision`, and strict `normalization` authority. That authority permits only
-`skill-icon-green-key-role-mask-v1`, whose source contract is one non-interlaced 1254×1254
-8-bit sRGB PNG, RGB without alpha or profile, over an opaque `#00FF00` matte with no baked
-checkerboard. Its output contract is 1024×1024 RGBA PNG. The target binds the raw-byte SHA-256 of
+`revision`, and strict `normalization` authority. Profile v1 accepts one non-interlaced 1254×1254
+8-bit perceptual-sRGB PNG, RGB without alpha, over an opaque `#00FF00` matte with no baked
+checkerboard. Profile v2 accepts the same raster envelope without source color declarations and
+requires exactly one bounded, structurally valid `caBX` provider container immediately after
+`IHDR`; it rejects color metadata and all other undeclared chunks. It removes the container,
+assigns canonical perceptual sRGB, and
+decodes only the reconstructed canonical envelope. Both profiles produce a 1024×1024 RGBA PNG.
+The target binds the raw-byte SHA-256 of
 `assets/wiki/skills/icon-production-v1/geometry.json`, currently
 `4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7`; semantic JSON
 reserialization is not the same authority. The profile pins Sharp 0.35.3/libvips 8.18.3, two fixed
@@ -74,8 +80,8 @@ completion contract:
 ```
 
 Assignment-v2 additionally binds the same explicit logical identity, revision, and normalization
-profile as target-v2, and its `skillVersion` is exactly
-`summonlab-skill-icon-production-v2`. It grants no raw-provider repository path. Assignment-v1
+profile as target-v2. Profile v1 requires `summonlab-skill-icon-production-v2`; profile v2 requires
+`summonlab-skill-icon-production-v3`. It grants no raw-provider repository path. Assignment-v1
 continues to bind `summonlab-skill-icon-production-v1` and authorizes exact-source persistence only.
 
 Authorization stops at the two permitted outputs. It never includes catalogs, visual specs,

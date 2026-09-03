@@ -423,6 +423,11 @@ class SkillIconVerifierTests(unittest.TestCase):
             f".{self.packet.result_file.name}.failed-result-owner.json"
         )
 
+    def supersession_intent(self) -> Path:
+        return self.packet.result_file.with_name(
+            f".{self.packet.result_file.name}.skill-icon-supersession-intent.json"
+        )
+
     def test_accepts_exactly_one_owned_candidate_and_result(self) -> None:
         report = self.packet.verify()
         self.assertEqual(report["verification"], "pass")
@@ -524,6 +529,25 @@ class SkillIconVerifierTests(unittest.TestCase):
             "profile": "skill-icon-green-key-role-mask-v1"
         }
         with self.assertRaisesRegex(ValueError, "contract validation failed|protocol tuple"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_profile_v2_rejects_profile_v1_producer_skill_version(self) -> None:
+        self._prepare_v2_result_only_failure()
+        target_normalization = self.packet.target["normalization"]
+        assignment_normalization = self.packet.assignment["normalization"]
+        assert isinstance(target_normalization, dict)
+        assert isinstance(assignment_normalization, dict)
+        target_normalization["profile"] = "skill-icon-green-key-role-mask-v2"
+        assignment_normalization["profile"] = "skill-icon-green-key-role-mask-v2"
+        with self.assertRaisesRegex(
+            ValueError, "contract validation failed|skill version"
+        ):
             validate(
                 self.packet.target,
                 self.packet.assignment,
@@ -798,6 +822,202 @@ class SkillIconVerifierTests(unittest.TestCase):
         ]
         self.packet.result = load_json(self.packet.result_file)
 
+    def _prepare_superseded_packet(
+        self,
+        *,
+        higher_profile: str = "skill-icon-green-key-role-mask-v2",
+        higher_skill_version: str = "summonlab-skill-icon-production-v3",
+    ) -> Path:
+        for path in (
+            self.packet.candidate_file,
+            self.packet.result_file,
+            self.packet.target_file,
+            self.packet.assignment_file,
+        ):
+            if path.exists() or path.is_symlink():
+                path.unlink()
+        logical_identity = "charcoal-forged-stone"
+        old_job = f"{logical_identity}-v2"
+        new_job = f"{logical_identity}-v3"
+        geometry_hash = hashlib.sha256(
+            (self.packet.root / GEOMETRY_PATH).read_bytes()
+        ).hexdigest()
+        references = self.packet.target["references"]
+        exact_prompt = (
+            "Paint one charcoal forged-stone backing over an opaque #00FF00 matte "
+            "with no baked checkerboard."
+        )
+
+        def paths(job_id: str) -> dict[str, str]:
+            root = "assets/wiki/skills/icon-production-v1"
+            return {
+                "target": f"{root}/targets/references/{job_id}.json",
+                "assignment": f"{root}/assignments/references/{job_id}.json",
+                "candidate": f"{root}/candidates/references/{job_id}.png",
+                "result": f"{root}/results/references/{job_id}.json",
+            }
+
+        def normalization(profile: str) -> dict[str, object]:
+            return {
+                "profile": profile,
+                "sourceContract": {
+                    "mediaType": "image/png",
+                    "width": 1254,
+                    "height": 1254,
+                    "alphaMode": "rgb",
+                    "matteColor": "#00FF00",
+                },
+                "outputContract": {
+                    "mediaType": "image/png",
+                    "width": 1024,
+                    "height": 1024,
+                    "alphaMode": "rgba",
+                },
+                "geometry": {"path": GEOMETRY_PATH, "contentHash": geometry_hash},
+            }
+
+        def target(job_id: str, revision: int, profile: str) -> dict[str, object]:
+            packet_paths = paths(job_id)
+            return {
+                "schemaVersion": "skill-icon-target-v2",
+                "jobId": job_id,
+                "logicalIdentity": logical_identity,
+                "revision": revision,
+                "role": "backing",
+                "skillTargetId": None,
+                "motifFamily": None,
+                "rarity": None,
+                "exactPrompt": exact_prompt,
+                "references": references,
+                "canvas": {"width": 1024, "height": 1024, "mediaType": "image/png"},
+                "output": {
+                    "candidatePath": packet_paths["candidate"],
+                    "resultPath": packet_paths["result"],
+                },
+                "normalization": normalization(profile),
+            }
+
+        def assignment(
+            job_id: str, revision: int, profile: str, skill_version: str
+        ) -> dict[str, object]:
+            packet_paths = paths(job_id)
+            return {
+                "schemaVersion": "skill-icon-assignment-v2",
+                "assignmentId": f"assignment-{job_id}",
+                "jobId": job_id,
+                "logicalIdentity": logical_identity,
+                "revision": revision,
+                "targetPath": packet_paths["target"],
+                "assignmentPath": packet_paths["assignment"],
+                "skillVersion": skill_version,
+                "normalization": {"profile": profile},
+                "assignedAt": "2026-09-02T12:00:00.000Z",
+                "retryCeiling": 1,
+                "permittedOutputs": {
+                    "candidatePath": packet_paths["candidate"],
+                    "resultPath": packet_paths["result"],
+                },
+                "forbiddenSharedPaths": [
+                    "assets/wiki/skills/icon-production-v1/catalog.json",
+                    "assets/wiki/skills/icon-production-v1/visual-specs.json",
+                ],
+                "completionContract": {
+                    "oneTargetOneImage": True,
+                    "structuredResultRequired": True,
+                    "sharedFilesMustRemainUntouched": True,
+                    "selfPromotionForbidden": True,
+                },
+            }
+
+        old_paths = paths(old_job)
+        new_paths = paths(new_job)
+        old_target = target(old_job, 2, "skill-icon-green-key-role-mask-v1")
+        old_assignment = assignment(
+            old_job,
+            2,
+            "skill-icon-green-key-role-mask-v1",
+            "summonlab-skill-icon-production-v2",
+        )
+        new_target = target(new_job, 3, higher_profile)
+        new_assignment = assignment(
+            new_job,
+            3,
+            higher_profile,
+            higher_skill_version,
+        )
+        old_target_file = write_json(self.packet.root, old_paths["target"], old_target)
+        old_assignment_file = write_json(
+            self.packet.root, old_paths["assignment"], old_assignment
+        )
+        new_target_file = write_json(self.packet.root, new_paths["target"], new_target)
+        new_assignment_file = write_json(
+            self.packet.root, new_paths["assignment"], new_assignment
+        )
+        subprocess.run(["git", "add", "-A"], cwd=self.packet.root, check=True)
+        subprocess.run(
+            ["git", "commit", "-qm", "supersession fixture"],
+            cwd=self.packet.root,
+            check=True,
+        )
+        timestamp = "2026-09-02T12:01:00.000Z"
+        result = {
+            "schemaVersion": "skill-icon-result-v2",
+            "resultId": f"result-{old_job}",
+            "jobId": old_job,
+            "logicalIdentity": logical_identity,
+            "revision": 2,
+            "role": "backing",
+            "assignmentId": f"assignment-{old_job}",
+            "status": "superseded",
+            "attemptCount": 0,
+            "supersessionReason": (
+                "unattempted-packet-superseded-by-higher-revision"
+            ),
+            "supersedingAuthority": {
+                "targetPath": new_paths["target"],
+                "targetContentHash": hashlib.sha256(new_target_file.read_bytes()).hexdigest(),
+                "assignmentPath": new_paths["assignment"],
+                "assignmentContentHash": hashlib.sha256(
+                    new_assignment_file.read_bytes()
+                ).hexdigest(),
+                "jobId": new_job,
+                "logicalIdentity": logical_identity,
+                "revision": 3,
+                "role": "backing",
+            },
+            "exactPrompt": exact_prompt,
+            "promptHash": hashlib.sha256(exact_prompt.encode()).hexdigest(),
+            "referenceInputs": [
+                {"path": item["path"], "contentHash": item["contentHash"]}
+                for item in references
+            ],
+            "normalization": {
+                "profile": "skill-icon-green-key-role-mask-v1",
+                "outcome": "not-run",
+                "geometryHash": geometry_hash,
+                "providerSource": None,
+                "sourceContentHash": None,
+                "outputContentHash": None,
+            },
+            "output": None,
+            "resultPath": old_paths["result"],
+            "findings": [],
+            "startedAt": timestamp,
+            "completedAt": timestamp,
+            "totalWallTimeMs": 0,
+            "writtenOutputPaths": [old_paths["result"]],
+            "noSharedFilesEdited": True,
+            "selfPromoted": False,
+        }
+        self.packet.target = old_target
+        self.packet.assignment = old_assignment
+        self.packet.target_file = old_target_file
+        self.packet.assignment_file = old_assignment_file
+        self.packet.result = result
+        self.packet.result_file = write_json(self.packet.root, old_paths["result"], result)
+        self.packet.candidate_file = self.packet.root / old_paths["candidate"]
+        return new_target_file
+
     def test_rejects_target_file_symlink(self) -> None:
         real_target = self.packet.target_file.with_suffix(".real.json")
         self.packet.target_file.rename(real_target)
@@ -812,6 +1032,77 @@ class SkillIconVerifierTests(unittest.TestCase):
                 allow_existing_outputs=True,
                 contract_root=REPOSITORY_ROOT,
             )
+
+    def test_accepts_coordinator_supersession_bound_to_live_higher_revision(self) -> None:
+        self._prepare_superseded_packet()
+        report = self.packet.verify(attempt_count=0, bind_input_paths=True)
+        self.assertEqual(report["status"], "superseded")
+        self.assertEqual(report["attemptCount"], 0)
+        self.assertEqual(report["writtenOutputPaths"], [self.packet.result["resultPath"]])
+
+    def test_accepts_profile_v1_higher_superseding_authority(self) -> None:
+        self._prepare_superseded_packet(
+            higher_profile="skill-icon-green-key-role-mask-v1",
+            higher_skill_version="summonlab-skill-icon-production-v2",
+        )
+        self.assertEqual(
+            self.packet.verify(attempt_count=0, bind_input_paths=True)["status"],
+            "superseded",
+        )
+
+    def test_rejects_supersession_when_higher_target_bytes_change(self) -> None:
+        higher_target = self._prepare_superseded_packet()
+        retained = load_json(higher_target)
+        retained["exactPrompt"] = str(retained["exactPrompt"]) + " Changed."
+        higher_target.write_text(json.dumps(retained, indent=2) + "\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "hash does not match|changed"):
+            self.packet.verify(attempt_count=0, bind_input_paths=True)
+
+    def test_rejects_semantic_equal_superseding_target_rewrite_between_reads(self) -> None:
+        higher_target = self._prepare_superseded_packet()
+        original_validate = verify_result_module.validate
+        rewritten = False
+
+        def rewrite_before_validation(*args: object, **kwargs: object) -> dict[str, object]:
+            nonlocal rewritten
+            target = args[0]
+            assert isinstance(target, dict)
+            if target.get("jobId") == "charcoal-forged-stone-v3" and not rewritten:
+                retained = load_json(higher_target)
+                higher_target.write_text(
+                    json.dumps(retained, indent=4) + "\n", encoding="utf-8"
+                )
+                rewritten = True
+            return original_validate(*args, **kwargs)
+
+        with patch.object(
+            verify_result_module, "validate", side_effect=rewrite_before_validation
+        ):
+            with self.assertRaisesRegex(ValueError, "raw authority.*changed"):
+                self.packet.verify(attempt_count=0, bind_input_paths=True)
+
+    def test_superseded_evidence_rejects_nonzero_provider_attempt_count(self) -> None:
+        self._prepare_superseded_packet()
+        with self.assertRaisesRegex(ValueError, "exactly zero provider attempts"):
+            self.packet.verify(attempt_count=1, bind_input_paths=True)
+
+    def test_producer_failure_writer_cannot_self_supersede(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        with self.assertRaisesRegex(ValueError, "failure kind is unsupported"):
+            persist_failed_result(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                attempt_count=1,
+                failure_kind="protocol-superseded",
+                failure_message="A coordinator created a newer packet.",
+                started_at=STARTED_AT,
+                completed_at=COMPLETED_AT,
+                total_wall_time_ms=TOTAL_WALL_TIME_MS,
+                contract_root=REPOSITORY_ROOT,
+            )
+        self.assertFalse(self.packet.result_file.exists())
 
     def test_rejects_png_without_alpha(self) -> None:
         self.packet.candidate_bytes = png(color_type=2)
@@ -1375,6 +1666,42 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.assertEqual(stage.read_bytes(), foreign_bytes)
         self.assertFalse(self.packet.result_file.exists())
 
+    def test_supersession_intent_race_after_owner_publish_rolls_back_producer(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        intent = self.supersession_intent()
+        intent_bytes = b'{"coordinator":"supersession"}\n'
+
+        def publish_intent_after_owner(phase: str) -> None:
+            if phase == "owner-published":
+                intent.write_bytes(intent_bytes)
+
+        with patch.object(
+            verify_result_module,
+            "_failed_result_transaction_checkpoint",
+            side_effect=publish_intent_after_owner,
+        ):
+            with self.assertRaisesRegex(ValueError, "supersession intent"):
+                self.persist_failure()
+        self.assertEqual(intent.read_bytes(), intent_bytes)
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertFalse(self.packet.result_file.exists())
+        intent.unlink()
+        self.assertEqual(self.persist_failure()["verification"], "pass")
+
+    def test_supersession_intent_symlink_blocks_without_mutation(self) -> None:
+        self.packet.candidate_file.unlink()
+        self.packet.result_file.unlink()
+        intent = self.supersession_intent()
+        intent.symlink_to("foreign-intent-record.json")
+        with self.assertRaisesRegex(ValueError, "supersession intent"):
+            self.persist_failure()
+        self.assertTrue(intent.is_symlink())
+        self.assertFalse(self.failed_result_owner().exists())
+        self.assertFalse(self.failed_result_stage().exists())
+        self.assertFalse(self.packet.result_file.exists())
+
     def test_v2_failure_records_pathless_observed_normalization_source(self) -> None:
         self.packet.candidate_file.unlink()
         self.packet.result_file.unlink()
@@ -1417,7 +1744,7 @@ class SkillIconVerifierTests(unittest.TestCase):
             "canvas": {"width": 1024, "height": 1024, "mediaType": "image/png"},
             "output": {"candidatePath": candidate_path, "resultPath": result_path},
             "normalization": {
-                "profile": "skill-icon-green-key-role-mask-v1",
+                "profile": "skill-icon-green-key-role-mask-v2",
                 "sourceContract": {
                     "mediaType": "image/png",
                     "width": 1254,
@@ -1443,8 +1770,8 @@ class SkillIconVerifierTests(unittest.TestCase):
             "revision": 2,
             "targetPath": target_path,
             "assignmentPath": assignment_path,
-            "skillVersion": "summonlab-skill-icon-production-v2",
-            "normalization": {"profile": "skill-icon-green-key-role-mask-v1"},
+            "skillVersion": "summonlab-skill-icon-production-v3",
+            "normalization": {"profile": "skill-icon-green-key-role-mask-v2"},
             "permittedOutputs": {
                 "candidatePath": candidate_path,
                 "resultPath": result_path,
@@ -1487,6 +1814,143 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.assertEqual(evidence["contentHash"], hashlib.sha256(provider_bytes).hexdigest())
         self.assertEqual(
             retained["normalization"]["sourceContentHash"], evidence["contentHash"]
+        )
+        self.assertIsNone(retained["normalization"]["decoderInputContentHash"])
+        self.assertIsNone(retained["normalization"]["containerBox"])
+        self.assertIsNone(retained["normalization"]["colorSpaceDisposition"])
+
+    def test_profile_v2_completed_evidence_binds_full_source_decoder_and_cabx(self) -> None:
+        provider_hash = hashlib.sha256(b"complete provider png").hexdigest()
+        decoder_hash = hashlib.sha256(b"canonical decoder png").hexdigest()
+        output_hash = hashlib.sha256(b"normalized candidate png").hexdigest()
+        cabx_hash = hashlib.sha256(b"jumb container payload").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-green-key-role-mask-v2"}}
+        result = {
+            "normalization": {
+                "profile": "skill-icon-green-key-role-mask-v2",
+                "outcome": "completed",
+                "providerSource": {"contentHash": provider_hash},
+                "sourceContentHash": provider_hash,
+                "decoderInputContentHash": decoder_hash,
+                "containerBox": {
+                    "chunkType": "caBX",
+                    "bytes": 21,
+                    "contentHash": cabx_hash,
+                },
+                "colorSpaceDisposition": "assigned-srgb",
+                "outputContentHash": output_hash,
+            }
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, result, output_hash
+        )
+        # A later persistence/validation failure may retain completed hash evidence
+        # even though no candidate pathname was retained.
+        verify_result_module._validate_profile_normalization_evidence(
+            target, result, None
+        )
+
+    def test_profile_v2_completed_evidence_rejects_path_or_payload_in_cabx(self) -> None:
+        content_hash = hashlib.sha256(b"evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-green-key-role-mask-v2"}}
+        for forbidden_field in ("path", "payload"):
+            with self.subTest(forbidden_field=forbidden_field):
+                result = {
+                    "normalization": {
+                        "profile": "skill-icon-green-key-role-mask-v2",
+                        "outcome": "completed",
+                        "providerSource": {"contentHash": content_hash},
+                        "sourceContentHash": content_hash,
+                        "decoderInputContentHash": content_hash,
+                        "containerBox": {
+                            "chunkType": "caBX",
+                            "bytes": 21,
+                            "contentHash": content_hash,
+                            forbidden_field: "forbidden",
+                        },
+                        "colorSpaceDisposition": "assigned-srgb",
+                        "outputContentHash": content_hash,
+                    }
+                }
+                with self.assertRaisesRegex(ValueError, "pathless caBX"):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, result, content_hash
+                    )
+
+    def test_profile_v2_completed_evidence_rejects_hash_and_color_drift(self) -> None:
+        content_hash = hashlib.sha256(b"evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-green-key-role-mask-v2"}}
+        baseline = {
+            "profile": "skill-icon-green-key-role-mask-v2",
+            "outcome": "completed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+            "outputContentHash": content_hash,
+        }
+        for field, invalid in (
+            ("sourceContentHash", "0" * 64),
+            ("decoderInputContentHash", "not-a-hash"),
+            ("colorSpaceDisposition", "declared-srgb"),
+        ):
+            with self.subTest(field=field):
+                evidence = dict(baseline)
+                evidence[field] = invalid
+                with self.assertRaises(ValueError):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, {"normalization": evidence}, content_hash
+                    )
+
+    def test_profile_v2_failed_evidence_rejects_partial_derived_provenance(self) -> None:
+        content_hash = hashlib.sha256(b"evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-green-key-role-mask-v2"}}
+        derived = {
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+        }
+        for omitted_field in derived:
+            with self.subTest(omitted_field=omitted_field):
+                evidence = {
+                    "profile": "skill-icon-green-key-role-mask-v2",
+                    "outcome": "failed",
+                    "providerSource": {"contentHash": content_hash},
+                    "sourceContentHash": content_hash,
+                    "outputContentHash": None,
+                    **derived,
+                }
+                evidence[omitted_field] = None
+                with self.assertRaisesRegex(ValueError, "all null or all present"):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, {"normalization": evidence}, None
+                    )
+
+        all_null = {
+            "profile": "skill-icon-green-key-role-mask-v2",
+            "outcome": "failed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": None,
+            "containerBox": None,
+            "colorSpaceDisposition": None,
+            "outputContentHash": None,
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": all_null}, None
+        )
+        all_present = {**all_null, **derived}
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": all_present}, None
         )
 
     def test_result_only_failure_refuses_collision(self) -> None:

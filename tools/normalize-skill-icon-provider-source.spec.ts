@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFile, rename, rm, symlink, writeFile, mkdtemp } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -11,8 +12,10 @@ import { SkillIconGeometrySchema } from '../packages/contracts/src/index.js';
 import {
 	normalizeSkillIconProviderSource,
 	readSkillIconProviderSourceOnce,
+	SKILL_ICON_NORMALIZATION_PROFILE_V2,
 	SKILL_ICON_PROVIDER_MAX_BYTES,
-	skillIconGreenKeyAlpha
+	skillIconGreenKeyAlpha,
+	skillIconGreenKeyAlphaForProfile
 } from './normalize-skill-icon-provider-source.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 
@@ -35,7 +38,10 @@ function crc32(bytes: Buffer): number {
 }
 
 function pngChunk(type: string, data: Buffer): Buffer {
-	const typeBytes = Buffer.from(type, 'ascii');
+	return pngChunkWithTypeBytes(Buffer.from(type, 'ascii'), data);
+}
+
+function pngChunkWithTypeBytes(typeBytes: Buffer, data: Buffer): Buffer {
 	const chunk = Buffer.alloc(data.length + 12);
 	chunk.writeUInt32BE(data.length, 0);
 	typeBytes.copy(chunk, 4);
@@ -64,6 +70,49 @@ function removePngChunk(png: Buffer, target: string): Buffer {
 
 function declareSrgb(png: Buffer): Buffer {
 	return insertPngChunkAfterIhdr(png, 'sRGB', Buffer.from([0]));
+}
+
+interface ParsedPngChunk {
+	readonly type: string;
+	readonly data: Buffer;
+	readonly bytes: Buffer;
+}
+
+function pngChunks(png: Buffer): ParsedPngChunk[] {
+	const chunks: ParsedPngChunk[] = [];
+	let offset = 8;
+	while (offset < png.length) {
+		const length = png.readUInt32BE(offset);
+		const end = offset + 12 + length;
+		chunks.push({
+			type: png.toString('ascii', offset + 4, offset + 8),
+			data: Buffer.from(png.subarray(offset + 8, offset + 8 + length)),
+			bytes: Buffer.from(png.subarray(offset, end))
+		});
+		offset = end;
+	}
+	return chunks;
+}
+
+function encodePngChunks(chunks: readonly Buffer[]): Buffer {
+	return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), ...chunks]);
+}
+
+function cabxData(payload: Buffer = Buffer.from('canonical-jumbf-evidence', 'ascii')): Buffer {
+	const data = Buffer.alloc(8 + payload.length);
+	data.writeUInt32BE(data.length, 0);
+	data.write('jumb', 4, 'ascii');
+	payload.copy(data, 8);
+	return data;
+}
+
+function declareCabx(png: Buffer, data = cabxData()): Buffer {
+	const chunks = pngChunks(png).filter(({ type }) => type !== 'sRGB' && type !== 'pHYs');
+	return encodePngChunks([
+		chunks[0]!.bytes,
+		pngChunk('caBX', data),
+		...chunks.slice(1).map(({ bytes }) => bytes)
+	]);
 }
 
 async function providerSource(role: 'rarity-frame' | 'backing'): Promise<Buffer> {
@@ -99,6 +148,48 @@ describe('skill-icon provider normalization', () => {
 		expect(skillIconGreenKeyAlpha(80, 241, 80)).toBeGreaterThan(0);
 		expect(skillIconGreenKeyAlpha(159, 255, 0)).toBe(255);
 		expect(skillIconGreenKeyAlpha(160, 255, 0)).toBe(255);
+	});
+
+	it('dispatches the v2 transparent-distance curve without changing v1', () => {
+		expect(skillIconGreenKeyAlpha(0, 235, 0)).toBeGreaterThan(0);
+		expect(skillIconGreenKeyAlphaForProfile(0, 235, 0, SKILL_ICON_NORMALIZATION_PROFILE_V2)).toBe(
+			0
+		);
+		expect(
+			skillIconGreenKeyAlphaForProfile(0, 230, 0, SKILL_ICON_NORMALIZATION_PROFILE_V2)
+		).toBeGreaterThan(0);
+		expect(skillIconGreenKeyAlphaForProfile(0, 159, 0, SKILL_ICON_NORMALIZATION_PROFILE_V2)).toBe(
+			255
+		);
+	});
+
+	it('accepts a clean near-green matte only under the v2 distance', async () => {
+		const content = Buffer.from(
+			'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/></svg>'
+		);
+		const nearGreen = await sharp({
+			create: { width: 1254, height: 1254, channels: 3, background: '#00eb00' }
+		})
+			.composite([{ input: content }])
+			.removeAlpha()
+			.png({ progressive: false, palette: false })
+			.toBuffer();
+		await expect(
+			normalizeSkillIconProviderSource(declareSrgb(nearGreen), 'backing', geometryBytes)
+		).rejects.toThrow(/clean #00FF00 edge matte/u);
+		await expect(
+			normalizeSkillIconProviderSource(
+				declareCabx(nearGreen),
+				'backing',
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			)
+		).resolves.toMatchObject({
+			normalization: {
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V2,
+				colorSpaceDisposition: 'assigned-srgb'
+			}
+		});
 	});
 
 	it.each(['rarity-frame', 'backing'] as const)(
@@ -137,6 +228,207 @@ describe('skill-icon provider normalization', () => {
 		);
 		expect(normalized.normalization.outputContentHash).toBe(goldenHash);
 	});
+
+	it('normalizes the exact v2 caBX envelope and binds container and decoder evidence', async () => {
+		const v1 = await providerSource('backing');
+		const firstCabxData = cabxData(Buffer.from('same-length-jumbf-claim-a', 'ascii'));
+		const secondCabxData = cabxData(Buffer.from('same-length-jumbf-claim-b', 'ascii'));
+		const firstSource = declareCabx(v1, firstCabxData);
+		const secondSource = declareCabx(v1, secondCabxData);
+		const first = await normalizeSkillIconProviderSource(
+			firstSource,
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		const second = await normalizeSkillIconProviderSource(
+			secondSource,
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		expect(first.normalization.profile).toBe(SKILL_ICON_NORMALIZATION_PROFILE_V2);
+		if (first.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2)
+			throw new Error('Expected v2 normalization evidence');
+		if (second.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2)
+			throw new Error('Expected v2 normalization evidence');
+		expect(first.normalization).toMatchObject({
+			colorSpaceDisposition: 'assigned-srgb',
+			containerBox: {
+				chunkType: 'caBX',
+				bytes: firstCabxData.length,
+				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+			}
+		});
+		expect(first.source.contentHash).toBe(createHash('sha256').update(firstSource).digest('hex'));
+		expect(first.normalization.containerBox.contentHash).toBe(
+			createHash('sha256').update(firstCabxData).digest('hex')
+		);
+		expect(second.normalization.containerBox.contentHash).toBe(
+			createHash('sha256').update(secondCabxData).digest('hex')
+		);
+		expect(first.source.contentHash).not.toBe(second.source.contentHash);
+		expect(first.normalization.containerBox.contentHash).not.toBe(
+			second.normalization.containerBox.contentHash
+		);
+		expect(first.normalization.decoderInputContentHash).toBe(
+			second.normalization.decoderInputContentHash
+		);
+		expect(first.normalization.outputContentHash).toBe(second.normalization.outputContentHash);
+		expect(first.bytes).toEqual(second.bytes);
+		expect(pngChunks(first.bytes).map(({ type }) => type)).not.toContain('caBX');
+	});
+
+	it('makes v2 decoder and output hashes pixel-sensitive independently of caBX', async () => {
+		const original = await providerSource('backing');
+		const decoded = await sharp(original).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+		const changedPixels = Buffer.from(decoded.data);
+		const centerOffset = (627 * decoded.info.width + 627) * 3;
+		changedPixels[centerOffset] = (changedPixels[centerOffset] ?? 0) ^ 1;
+		const changed = await sharp(changedPixels, {
+			raw: { width: decoded.info.width, height: decoded.info.height, channels: 3 }
+		})
+			.png({ progressive: false, palette: false })
+			.toBuffer();
+		const first = await normalizeSkillIconProviderSource(
+			declareCabx(original),
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		const second = await normalizeSkillIconProviderSource(
+			declareCabx(changed),
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		if (
+			first.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
+			second.normalization.profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2
+		)
+			throw new Error('Expected v2 normalization evidence');
+		expect(first.normalization.decoderInputContentHash).not.toBe(
+			second.normalization.decoderInputContentHash
+		);
+		expect(first.normalization.outputContentHash).not.toBe(second.normalization.outputContentHash);
+		expect(first.source.contentHash).not.toBe(second.source.contentHash);
+		expect(first.normalization.containerBox.contentHash).toBe(
+			second.normalization.containerBox.contentHash
+		);
+	});
+
+	it('rejects malformed or noncanonical v2 PNG envelopes before decoding', async () => {
+		const v1 = await providerSource('backing');
+		const valid = declareCabx(v1);
+		const parsed = pngChunks(valid);
+		const ihdr = parsed[0]!.bytes;
+		const cabx = parsed[1]!.bytes;
+		const idats = parsed.filter(({ type }) => type === 'IDAT').map(({ bytes }) => bytes);
+		const iend = parsed.at(-1)!.bytes;
+		const normalizeV2 = (source: Buffer) =>
+			normalizeSkillIconProviderSource(
+				source,
+				'backing',
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			);
+		const minimumCabx = Buffer.alloc(8);
+		minimumCabx.writeUInt32BE(minimumCabx.length, 0);
+		minimumCabx.write('jumb', 4, 'ascii');
+		const compressedIdat = Buffer.concat(
+			parsed.filter(({ type }) => type === 'IDAT').map(({ data }) => data)
+		);
+		const exactChunkLimitIdats = Array.from({ length: 1021 }, (_, index) => {
+			const start = Math.floor((compressedIdat.length * index) / 1021);
+			const end = Math.floor((compressedIdat.length * (index + 1)) / 1021);
+			return pngChunk('IDAT', compressedIdat.subarray(start, end));
+		});
+		await expect(
+			normalizeV2(
+				encodePngChunks([ihdr, pngChunk('caBX', minimumCabx), ...exactChunkLimitIdats, iend])
+			)
+		).resolves.toMatchObject({ normalization: { profile: SKILL_ICON_NORMALIZATION_PROFILE_V2 } });
+		const maximumCabx = Buffer.alloc(32_768);
+		maximumCabx.writeUInt32BE(maximumCabx.length, 0);
+		maximumCabx.write('jumb', 4, 'ascii');
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', maximumCabx), ...idats, iend]))
+		).resolves.toMatchObject({
+			normalization: {
+				profile: SKILL_ICON_NORMALIZATION_PROFILE_V2,
+				containerBox: { bytes: 32_768 }
+			}
+		});
+
+		await expect(normalizeV2(encodePngChunks([ihdr, cabx, cabx, ...idats, iend]))).rejects.toThrow(
+			/duplicate caBX/u
+		);
+		const sevenByteCabx = Buffer.alloc(7);
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', sevenByteCabx), ...idats, iend]))
+		).rejects.toThrow(/caBX data length/u);
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', Buffer.alloc(0)), ...idats, iend]))
+		).rejects.toThrow(/caBX data length/u);
+		const oversized = Buffer.alloc(32_769);
+		oversized.writeUInt32BE(oversized.length, 0);
+		oversized.write('jumb', 4, 'ascii');
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', oversized), ...idats, iend]))
+		).rejects.toThrow(/caBX data length/u);
+		await expect(normalizeV2(encodePngChunks([ihdr, ...idats, cabx, iend]))).rejects.toThrow(
+			/caBX immediately after IHDR/u
+		);
+		await expect(normalizeV2(encodePngChunks([ihdr, ...idats, iend]))).rejects.toThrow(
+			/caBX immediately after IHDR|exactly one caBX/u
+		);
+		const badCrc = Buffer.from(valid);
+		const cabxCrcOffset = 8 + ihdr.length + cabx.length - 1;
+		badCrc[cabxCrcOffset] = (badCrc[cabxCrcOffset] ?? 0) ^ 1;
+		await expect(normalizeV2(badCrc)).rejects.toThrow(/caBX chunk has an invalid CRC/u);
+		const wrongLength = cabxData();
+		wrongLength.writeUInt32BE(wrongLength.length - 1, 0);
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', wrongLength), ...idats, iend]))
+		).rejects.toThrow(/embedded length/u);
+		const wrongType = cabxData();
+		wrongType.write('json', 4, 'ascii');
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, pngChunk('caBX', wrongType), ...idats, iend]))
+		).rejects.toThrow(/ASCII jumb/u);
+		const highBitCabx = pngChunkWithTypeBytes(Buffer.from([0xe3, 0x61, 0x42, 0x58]), cabxData());
+		await expect(normalizeV2(encodePngChunks([ihdr, highBitCabx, ...idats, iend]))).rejects.toThrow(
+			/non-ASCII|invalid chunk type/u
+		);
+		const highBitIhdr = pngChunkWithTypeBytes(
+			Buffer.from([0xc9, 0x48, 0x44, 0x52]),
+			parsed[0]!.data
+		);
+		await expect(normalizeV2(encodePngChunks([highBitIhdr, cabx, ...idats, iend]))).rejects.toThrow(
+			/non-ASCII|invalid chunk type/u
+		);
+		const highBitIdat = pngChunkWithTypeBytes(
+			Buffer.from([0xc9, 0x44, 0x41, 0x54]),
+			parsed.find(({ type }) => type === 'IDAT')!.data
+		);
+		await expect(normalizeV2(encodePngChunks([ihdr, cabx, highBitIdat, iend]))).rejects.toThrow(
+			/non-ASCII|invalid chunk type/u
+		);
+		const excessiveIdats = Array.from({ length: 1022 }, (_, index) =>
+			index === 1021 ? idats[0]! : pngChunk('IDAT', Buffer.alloc(0))
+		);
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, cabx, ...excessiveIdats, iend]))
+		).rejects.toThrow(/1024-chunk limit/u);
+		await expect(
+			normalizeV2(encodePngChunks([ihdr, cabx, pngChunk('sRGB', Buffer.from([0])), ...idats, iend]))
+		).rejects.toThrow(/forbidden sRGB/u);
+		await expect(normalizeV2(Buffer.concat([valid, Buffer.from([0])]))).rejects.toThrow(
+			/trailing data/u
+		);
+		const alpha = await sharp(v1).ensureAlpha().png().toBuffer();
+		await expect(normalizeV2(declareCabx(alpha))).rejects.toThrow(/RGB|alpha/u);
+	}, 15_000);
 
 	it('rejects wrong size, wrong alpha, non-green matte, checkerboards, and gross misregistration', async () => {
 		const valid = await providerSource('rarity-frame');
@@ -434,6 +726,13 @@ describe('skill-icon provider normalization', () => {
 	it('requires one explicit sRGB declaration and rejects metadata and trailing data', async () => {
 		const source = await providerSource('backing');
 		await expect(
+			normalizeSkillIconProviderSource(
+				insertPngChunkAfterIhdr(source, 'caBX', cabxData()),
+				'backing',
+				geometryBytes
+			)
+		).rejects.toThrow(/forbidden caBX/u);
+		await expect(
 			normalizeSkillIconProviderSource(removePngChunk(source, 'sRGB'), 'backing', geometryBytes)
 		).rejects.toThrow(/undeclared|sRGB/u);
 		for (const [type, data] of [
@@ -475,6 +774,51 @@ describe('skill-icon provider normalization', () => {
 			mutableGeometry.fill(0);
 		});
 		await expect(pending).resolves.toEqual(baseline);
+
+		const stableV2Source = declareCabx(stableSource);
+		const v2Baseline = await normalizeSkillIconProviderSource(
+			stableV2Source,
+			'backing',
+			geometryBytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		const mutableV2Source = Buffer.from(stableV2Source);
+		const mutableV2Geometry = Buffer.from(geometryBytes);
+		const v2Pending = normalizeSkillIconProviderSource(
+			mutableV2Source,
+			'backing',
+			mutableV2Geometry,
+			SKILL_ICON_NORMALIZATION_PROFILE_V2
+		);
+		queueMicrotask(() => {
+			mutableV2Source.fill(0);
+			mutableV2Geometry.fill(0);
+		});
+		await expect(v2Pending).resolves.toEqual(v2Baseline);
+	});
+
+	it('still rejects a v2 exact-envelope canary with forbidden shadow spill', async () => {
+		const canary = await sharp({
+			create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+		})
+			.composite([
+				{
+					input: Buffer.from(
+						'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/><rect x="80" y="100" width="14" height="14" fill="#60ff00"/></svg>'
+					)
+				}
+			])
+			.removeAlpha()
+			.png({ progressive: false, palette: false })
+			.toBuffer();
+		await expect(
+			normalizeSkillIconProviderSource(
+				declareCabx(canary),
+				'backing',
+				geometryBytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V2
+			)
+		).rejects.toThrow(/alpha mass|required transparent/u);
 	});
 
 	it('rejects unsupported roles and an all-key degenerate source', async () => {
