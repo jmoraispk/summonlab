@@ -34,8 +34,12 @@
   droplets; Earth remains flowing spell-matter with detached orbiting mineral fragments rather than
   becoming a solid rock body. The owner accepted all four Wisp v2 candidates on 2026-09-02; use
   this material-and-motion distinction as the calibration for later Elemental forms.
-- Elemental Spirit Fire/Earth/Wind/Water v2 candidates apply that calibration and await owner review;
-  their v1 palette/mechanical-shell treatments retain immutable `revise` evidence. The full
+- Elemental Spirit Fire/Earth/Wind/Water v2 candidates apply that calibration; their v1
+  palette/mechanical-shell treatments retain immutable `revise` evidence. On 2026-09-03, the owner
+  accepted all 173 active images in the consolidated review gallery: 166 canonical candidates and
+  seven provisional Earth bridge candidates. This visual acceptance is recorded in
+  `docs/evidence/enemy-image-review-gallery-v1/owner-acceptance.md`; it does not replace the
+  independent blind-review requirement for T3/T5 or promote any image to runtime. The full
   collision-safe overnight schedule is recorded in
   `docs/superpowers/plans/2026-09-02-monster-image-overnight-goal-harness.md`.
 - Do not modify `packages/contracts`, engine code, skills, unrelated visual domains, or shared runtime catalogs. Any later runtime promotion is a separate integration request to the root orchestrator.
