@@ -6,7 +6,7 @@ Wiki ID: `monster.arachnid-weaver-queen`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Crawler, Stalker, Weaver, and Broodmother each own one silk knot and arch; sever
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-weaver-queen/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-weaver-queen/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-weaver-queen/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-weaver-queen/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-weaver-queen/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-weaver-queen/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-weaver-queen/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-weaver-queen/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/arachnids/arachnid-weaver-queen/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/arachnids/arachnid-weaver-queen/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-weaver-queen/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/arachnids/arachnid-weaver-queen/wind-v1.json` |
