@@ -6,7 +6,7 @@ Wiki ID: `monster.lizardfolk-spineback`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Warriors brace the closed spine segments and Scouts stab through gaps; breaking 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-spineback/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-spineback/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-spineback/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-spineback/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-spineback/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-spineback/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-spineback/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-spineback/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-spineback/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-spineback/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-spineback/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-spineback/wind-v1.json` |

@@ -6,7 +6,7 @@ Wiki ID: `monster.lizardfolk-warrior`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Scouts jab past the braced shield, but cutting its weave also exposes their pred
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-warrior/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-warrior/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-warrior/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-warrior/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-warrior/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-warrior/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-warrior/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-warrior/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-warrior/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-warrior/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/lizardfolk/lizardfolk-warrior/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/lizardfolk/lizardfolk-warrior/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/lizardfolk/lizardfolk-warrior/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/lizardfolk/lizardfolk-warrior/wind-v1.json` |
