@@ -6,7 +6,7 @@ Wiki ID: `monster.rotwalker-ghoul`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ A fallen or recovering Shambler can serve as a longer Carrion Draw anchor; movin
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-ghoul/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-ghoul/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-ghoul/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-ghoul/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-ghoul/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-ghoul/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-ghoul/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-ghoul/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-ghoul/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-ghoul/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-ghoul/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-ghoul/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-ghoul/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-ghoul/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-ghoul/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-ghoul/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-ghoul/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-ghoul/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-ghoul/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-ghoul/wind-v1.json` |

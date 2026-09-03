@@ -6,7 +6,7 @@ Wiki ID: `monster.rotwalker-plague-lord`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ The four aisles produce or promote Shamblers, Ghouls, Rot Brutes, and Amalgams a
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-plague-lord/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-plague-lord/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-plague-lord/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-plague-lord/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/rotwalkers/rotwalker-plague-lord/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/wind-v1.json` |
