@@ -2,8 +2,9 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C is the canonical comparison authority. Seven new individually generated
-1024×1024 RGBA frame candidates are ready for owner review; none has been promoted yet**.
+Design status: **Option C is the canonical comparison authority. The seven individually generated
+frame appearances are owner-accepted and their 1024×1024 RGBA canvases pass, but exact shared
+registration remains a promotion gate**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -14,8 +15,9 @@ Design status: **Option C is the canonical comparison authority. Seven new indiv
 The [review-set record](../../../assets/wiki/skills/rarity-frame-v2/README.md) contains one standalone
 frame for each rarity, all at the same 1024×1024 size with genuine alpha inside and outside the
 hexagon. The candidates follow Option C's material and ornament hierarchy and contain no skill
-emblem, standard backing, mastery, level, or display label beyond the rank letter. They remain review
-assets until the owner accepts them or requests rank-specific revisions.
+emblem, standard backing, mastery, level, or display label beyond the rank letter. Their appearance
+is accepted, but their visible alpha bounds vary and must be normalized to the shared geometry-v2
+envelope before they become production masters.
 
 The image provider rendered a checkerboard into its RGB output even after one tightly scoped
 background-extraction edit per frame. The review assets preserve the generated frame artwork and use

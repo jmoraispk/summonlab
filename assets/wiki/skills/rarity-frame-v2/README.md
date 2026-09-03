@@ -1,6 +1,7 @@
 # Individual rarity frames — review set
 
-Status: **visual review candidates; not approved or promoted**.
+Status: **visual direction accepted; common-canvas validation passed; exact shared registration is
+still required before promotion**.
 
 This set follows the approved Option C rarity appearance in
 `assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png` while giving every rank a
@@ -35,6 +36,9 @@ use deterministic connected-component matte removal against that checkerboard; t
 background transparency and scales every asset to the common 1024×1024 canvas. No visual candidate
 was rejected after generation.
 
-Review material hierarchy, ornament density, geometry consistency, and readability before treating
-this set as canonical. Skill-emblem production must not begin until the seven frames are accepted or
-specific revisions are requested.
+The owner accepted the visual direction on 2026-09-03. All seven files are genuine 1024×1024 RGBA
+PNGs, but their visible alpha bounds do not yet share one exact aperture and outer-envelope
+registration. Preserve the accepted materials and ornaments while normalizing that geometry, then
+approve the deterministic composite at 1024 and 96 pixels before promotion. Mass skill-art
+generation must not begin until this registration gate and the provider-compatibility pilot in the
+rollout plan pass.
