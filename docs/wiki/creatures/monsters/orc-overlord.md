@@ -6,7 +6,7 @@ Wiki ID: `monster.orc-overlord`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Grunts, Warriors, Berserkers, and any Warchief receive standard-specific routes 
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-overlord/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-overlord/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-overlord/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-overlord/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-overlord/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-overlord/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-overlord/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-overlord/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-overlord/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-overlord/wind-v1.json` |

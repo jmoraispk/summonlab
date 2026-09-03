@@ -6,7 +6,7 @@ Wiki ID: `monster.orc-grunt`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Not applicable for this form.
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-grunt/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-grunt/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-grunt/wind-v1.json` |

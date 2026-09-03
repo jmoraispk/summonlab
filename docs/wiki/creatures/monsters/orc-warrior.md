@@ -6,7 +6,7 @@ Wiki ID: `monster.orc-warrior`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ A Warrior can stop beside an overextended Grunt and use the Grunt's spear line a
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warrior/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warrior/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warrior/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warrior/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warrior/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warrior/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warrior/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warrior/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warrior/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warrior/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warrior/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warrior/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warrior/wind-v1.json` |
