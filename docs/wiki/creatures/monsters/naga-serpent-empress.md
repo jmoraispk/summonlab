@@ -6,7 +6,7 @@ Wiki ID: `monster.naga-serpent-empress`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: planned; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,7 +63,7 @@ Serpentling, Coilguard, Hooded Adept, and Temple Guardian each operate one relic
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/nagas/naga-serpent-empress/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/nagas/naga-serpent-empress/normal-v1.json` |
+| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/nagas/naga-serpent-empress/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/nagas/naga-serpent-empress/normal-v1.json` |
 | Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/nagas/naga-serpent-empress/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/nagas/naga-serpent-empress/fire-v1.json` |
 | Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/nagas/naga-serpent-empress/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/nagas/naga-serpent-empress/earth-v1.json` |
 | Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/nagas/naga-serpent-empress/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/nagas/naga-serpent-empress/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/nagas/naga-serpent-empress/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/nagas/naga-serpent-empress/wind-v1.json` |
