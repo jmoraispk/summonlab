@@ -113,6 +113,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `living-village-observatory-restored-perspective-phone-v4.png` /
   `living-village-observatory-restored-perspective-desktop-v4.png` — restored phone and desktop proof:
   the original painted 2.5D observatory is visible while the 7×9 board remains an engine contract.
+- `living-village-observatory-projected-cells-phone-v5.png` /
+  `living-village-observatory-projected-cells-desktop-v5.png` — phone and desktop proof for the
+  `authored-quad-v1` calibration: selection corners, actor anchors, paths, and impacts share one
+  perspective-aware projection without drawing a grid over the art.
 - `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are

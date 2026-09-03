@@ -37,10 +37,10 @@ packs already exist.
 The v2 and v3 floor experiments were rejected. A faint orthographic overlay disappeared at gameplay
 scale; strengthening it produced a readable but flat checkerboard that destroyed the accepted 2.5D
 camera. The lab therefore restores the original authored observatory plate. Its 7×9 engine board
-remains authoritative, but the current rectangular anchor function is only an interim placement
-model. C0 must replace it with a scene-owned mapping from each cell ID to four projected corners plus
-a bottom-center feet anchor. Selection, paths, shadows, and actors then share that projection without
-drawing an orthographic grid over the art.
+remains authoritative. An `authored-quad-v1` scene calibration now maps each cell ID to four projected
+corners plus a center feet anchor. Selection, paths, shadows, and actors share that projection without
+drawing an orthographic grid over the art. The calibration is presentation-only and does not change
+occupancy, distance, targeting, or any other engine rule.
 
 The first runtime pack contains:
 

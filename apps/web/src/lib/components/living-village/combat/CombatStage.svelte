@@ -8,6 +8,7 @@
 		type CombatPlaybackSnapshot,
 		type CombatReceipt
 	} from './combat-playback';
+	import { createPerspectiveBoardProjection } from './combat-board-projection';
 
 	type PlaybackCommand = Readonly<{
 		sequence: number;
@@ -42,6 +43,12 @@
 	let unloadArt: (() => void) | undefined;
 
 	const ART_ROOT = '/runtime/combat/observatory-art-pilot-v1';
+	const OBSERVATORY_BOARD_CORNERS = Object.freeze({
+		topLeft: { x: 72, y: 102 },
+		topRight: { x: 628, y: 102 },
+		bottomRight: { x: 637, y: 846 },
+		bottomLeft: { x: 62, y: 846 }
+	});
 	const ART_SOURCES = [
 		`${ART_ROOT}/observatory-empty-v1.png`,
 		`${ART_ROOT}/dara-zev-chibi-screen-v1.png`,
@@ -106,12 +113,10 @@
 			world.eventMode = 'none';
 			app.stage.addChild(world);
 
-			const board = { x: 62, y: 102, width: 575, height: 744 };
-			const cellWidth = board.width / receipt.board.columns;
-			const cellHeight = board.height / receipt.board.rows;
-			const cellCenter = (column: number, row: number) => ({
-				x: board.x + (column + 0.5) * cellWidth,
-				y: board.y + (row + 0.5) * cellHeight
+			const boardProjection = createPerspectiveBoardProjection({
+				columns: receipt.board.columns,
+				rows: receipt.board.rows,
+				...OBSERVATORY_BOARD_CORNERS
 			});
 			const makeBlackFieldFilter = () =>
 				Filter.from({
@@ -165,17 +170,27 @@
 			moonVeil.rect(0, 0, logicalWidth, 150).fill({ color: 0x020812, alpha: 0.28 });
 			world.addChild(moonVeil);
 
-			const selection = new Graphics({ label: 'selected-cell' });
-			selection
-				.rect(-cellWidth / 2 + 3, -cellHeight / 2 + 3, cellWidth - 6, cellHeight - 6)
-				.fill({ color: 0xf5c86b, alpha: 0.06 })
-				.stroke({ color: 0xffd77c, alpha: 0.96, width: 3 });
-			selection.zIndex = 3;
-			world.addChild(selection);
+			const selectionLayer = new Container({ label: 'projected-cell-selection' });
+			const selectionViews: Record<string, Graphics> = {};
+			for (let row = 0; row < receipt.board.rows; row += 1) {
+				for (let column = 0; column < receipt.board.columns; column += 1) {
+					const cell = boardProjection.projectCell({ column, row });
+					const selection = new Graphics({ label: `selected-cell-${column}-${row}` })
+						.poly([cell.topLeft, cell.topRight, cell.bottomRight, cell.bottomLeft], true)
+						.fill({ color: 0xf5c86b, alpha: 0.06 })
+						.stroke({ color: 0xffd77c, alpha: 0.96, width: 3, alignment: 1 });
+					selection.alpha = 0;
+					selectionViews[`${column}:${row}`] = selection;
+					selectionLayer.addChild(selection);
+				}
+			}
+			selectionLayer.zIndex = 3;
+			world.addChild(selectionLayer);
+			let activeSelection: Graphics | undefined;
 
 			const motionPath = new Graphics({ label: 'fleeting-step-path' });
-			const origin = cellCenter(receipt.from.column, receipt.from.row);
-			const destination = cellCenter(receipt.to.column, receipt.to.row);
+			const origin = boardProjection.projectCellCenter(receipt.from);
+			const destination = boardProjection.projectCellCenter(receipt.to);
 			motionPath
 				.moveTo(origin.x, origin.y - 8)
 				.bezierCurveTo(
@@ -352,16 +367,18 @@
 			actorsLayer.addChild(impact);
 
 			renderSnapshot = (snapshot) => {
-				const selected = cellCenter(snapshot.selectedCell.column, snapshot.selectedCell.row);
-				selection.position.set(selected.x, selected.y);
-				selection.alpha =
+				if (activeSelection) activeSelection.alpha = 0;
+				activeSelection =
+					selectionViews[`${snapshot.selectedCell.column}:${snapshot.selectedCell.row}`];
+				if (!activeSelection) throw new Error('Selected combat cell has no projected geometry.');
+				activeSelection.alpha =
 					snapshot.beat === 'complete' ? 0.55 : snapshot.beat === 'impact' ? 1 : 0.72;
 				motionPath.alpha =
 					snapshot.beat === 'move' ? Math.sin(snapshot.beatProgress * Math.PI) * 0.72 : 0;
 
 				for (const actor of snapshot.actors) {
 					const view = actorViews[actor.id]!;
-					const point = cellCenter(actor.position.column, actor.position.row);
+					const point = boardProjection.projectCellCenter(actor.position);
 					view.container.position.set(point.x + actor.recoil * 15, point.y);
 					view.container.rotation =
 						actor.id === receipt.targetActorId ? actor.downProgress * 1.15 : 0;
@@ -382,7 +399,7 @@
 				}
 
 				const target = snapshot.actors.find((actor) => actor.id === receipt.targetActorId)!;
-				const targetPoint = cellCenter(target.position.column, target.position.row);
+				const targetPoint = boardProjection.projectCellCenter(target.position);
 				impact.position.set(targetPoint.x - 18, targetPoint.y - 34);
 				impact.alpha = snapshot.impactStrength;
 				impact.scale.set(0.72 + snapshot.impactStrength * 0.42);
@@ -427,7 +444,7 @@
 	bind:this={host}
 	data-testid="combat-pixi-host"
 	data-board-contract={`${receipt.board.columns}x${receipt.board.rows}`}
-	data-board-projection="painted-perspective"
+	data-board-projection="authored-quad-v1"
 >
 	<canvas bind:this={canvas} data-testid="combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>

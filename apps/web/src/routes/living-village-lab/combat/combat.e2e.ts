@@ -8,7 +8,7 @@ test('plays, skips, and replays the deterministic combat motion receipt', async 
 	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute('data-board-contract', '7x9');
 	await expect(page.getByTestId('combat-pixi-host')).toHaveAttribute(
 		'data-board-projection',
-		'painted-perspective'
+		'authored-quad-v1'
 	);
 	await expect(page.getByTestId('combat-beat')).toContainText('Choose an action');
 	await expect(page.getByTestId('initiative-rail')).toContainText('Mara');
