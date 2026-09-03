@@ -96,14 +96,24 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('treats current historical failed v1 evidence as valid evidence, not a missing candidate', async () => {
+	it('reports only the eight incomplete latest v2 reference revisions after packet issuance', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
 		} catch (error) {
 			message = error instanceof Error ? error.message : String(error);
 		}
-		expect(message).toMatch(/latest revision v1 is failed/iu);
+		expect(message.split('\n')).toEqual([
+			'references/charcoal-forged-stone-v2: missing result inventory entry',
+			'references/rarity-frame-a-v2: missing result inventory entry',
+			'references/rarity-frame-b-v2: missing result inventory entry',
+			'references/rarity-frame-c-v2: missing result inventory entry',
+			'references/rarity-frame-d-v2: missing result inventory entry',
+			'references/rarity-frame-e-v2: missing result inventory entry',
+			'references/rarity-frame-f-v2: missing result inventory entry',
+			'references/rarity-frame-s-v2: missing result inventory entry'
+		]);
+		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);
 	});
 });

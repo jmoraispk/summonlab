@@ -1,0 +1,37 @@
+{
+	"schemaVersion": "skill-icon-target-v2",
+	"jobId": "rarity-frame-c-v2",
+	"logicalIdentity": "rarity-frame-c",
+	"revision": 2,
+	"role": "rarity-frame",
+	"skillTargetId": null,
+	"motifFamily": null,
+	"rarity": "C",
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the tier C (Epic) rarity-frame layer. Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration after the pipeline's full-canvas resize to 1024×1024. Build a moonlit-silver frame with bright but controlled silver, a stepped rim, and one precise geometric channel; it must read brighter and more precisely finished than the D-tier blue steel without bloom. Include one small integrated top-center medallion bearing only the uppercase letter C. Keep the intended central aperture and the entire area outside the frame empty of asset pixels so the pipeline can make them transparent; the frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels after normalization. Render the asset on a perfectly uniform opaque #00FF00 matte with no baked checkerboard. The matte field must contain no simulated transparency, shadows, texture, gradient, color variation, or other marks. Use no green material, reflection, oxidation, or patina anywhere in the frame. The pipeline will remove the source matte, resize the raster, and apply the fixed rarity-frame role mask. No skill icon, emblem, backing, scenery, glow, or any other symbol, number, word, label, or text. Output only this isolated provider-source raster; do not attempt final transparency.",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Canonical Option C rarity-frame material and ornament authority.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png",
+			"purpose": "Geometry guide for registration and safe zones.",
+			"contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4"
+		}
+	],
+	"canvas": { "width": 1024, "height": 1024, "mediaType": "image/png" },
+	"output": {
+		"candidatePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v2.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v2.json"
+	},
+	"normalization": {
+		"profile": "skill-icon-green-key-role-mask-v1",
+		"sourceContract": { "mediaType": "image/png", "width": 1254, "height": 1254, "alphaMode": "rgb", "matteColor": "#00FF00" },
+		"outputContract": { "mediaType": "image/png", "width": 1024, "height": 1024, "alphaMode": "rgba" },
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry.json",
+			"contentHash": "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7"
+		}
+	}
+}
