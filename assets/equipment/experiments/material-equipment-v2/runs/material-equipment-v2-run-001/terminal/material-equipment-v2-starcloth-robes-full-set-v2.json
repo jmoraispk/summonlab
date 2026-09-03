@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-starcloth-robes-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-starcloth-robes-full-set-v2",
+	"recordedAt": "2026-09-02T22:34:43.604Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/a/starcloth/robes-full-set-v2.json",
+		"canonicalSha256": "77a4fc104534305b183b21638047bf3c3db32afe853a236979b35b8f9df79c32"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/a/starcloth/robes-full-set-v2.json",
+		"canonicalSha256": "a7db1a840e92779ef71d0ce3570c8053b689a1a4bae27ed8235dd7db97772c42"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/a/starcloth/robes-full-set-v2.json",
+		"canonicalSha256": "f14e4f14102d62615b348a675b41b4ba506930721f693e8962e71a343924e1ee",
+		"candidateSha256": "072f3f4f7929381ef40f5a7a95ea8ae6aafe78caf408b7efcfcb9ad4a30740de"
+	}
+}

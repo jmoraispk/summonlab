@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-sunsteel-axe-v3-attempt-2",
+	"targetId": "material-equipment-v3-sunsteel-axe-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/s/sunsteel/axe-v3.json",
+		"canonicalSha256": "e6c4aec9a4c8d5d275ec027fa05859a531e6069748c0374e4463c61974ae5032"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-sunsteel.json",
+		"canonicalSha256": "f1fbd4ae7d031f8cc66e71fc2821777bfeb0a39828e58e439a3ec905c5db4ffd"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/axe-v3.png",
+		"sha256": "372b2a3579e6377b856226a69dc302e2106f20361b41a775a0cf20c795dd282f",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",
+			"sha256": "b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd",
+			"purpose": "Rank escalation, single-bit silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/axe-v3.png",
+			"sha256": "372b2a3579e6377b856226a69dc302e2106f20361b41a775a0cf20c795dd282f",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Create a dramatic but unmistakably single-bit Sunsteel war-axe with one sweeping radiant cutting edge, a small non-cutting counterspike, and an apex S-rank silhouette. Do not make a mirrored or double-bit head.",
+	"prompt": "Render one dedicated Sunsteel Axe, rank S, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One dominant cutting bit on a practical haft. Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant. Use the accepted progression reference as the authoritative design for the S column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Sunsteel:\nPalette: White-gold metal, warm solar gold, small ember-orange cores, and deep charcoal contrast.\nValue: Legendary bright focal edges balanced by solid dark recesses.\nSurface/wear: Flawless radiant alloy, sunburst grain, immaculate edges, ceremonial micro-engraving, no rust.\nConstruction: Iconic heroic silhouette, solar arcs, crownlike guards, controlled asymmetric spectacle, masterful joined geometry.\nSupernatural behavior: Contained sunlight glows through narrow channels and the strongest edges; no uncontrolled bloom.\nNeutral secondary materials: Black leather, dark hardwood, charcoal cloth, and tiny white-silver fittings.\nNeighbor distinction: Warmer, more iconic, and unmistakably solar beyond Starmetal while remaining usable equipment.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Create a dramatic but unmistakably single-bit Sunsteel war-axe with one sweeping radiant cutting edge, a small non-cutting counterspike, and an apex S-rank silhouette. Do not make a mirrored or double-bit head.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "5971ef08e099a4321aef71bab61b4d77ac311070b027694966d0605550471bf3",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

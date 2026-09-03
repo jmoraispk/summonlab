@@ -1,0 +1,93 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-class-direction-assignment-v3"
+		},
+		"assignmentId": {
+			"type": "string",
+			"pattern": "^assignment-equipment-v3-[a-z-]+-rank-progression(?:-attempt-[1-9][0-9]*)?$"
+		},
+		"directionId": {
+			"type": "string",
+			"pattern": "^equipment-v3-[a-z-]+-rank-progression$"
+		},
+		"immutable": {
+			"type": "boolean",
+			"const": true
+		},
+		"prompt": {
+			"type": "string",
+			"minLength": 1
+		},
+		"promptSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"references": {
+			"minItems": 2,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"path": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"sha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"purpose": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": [
+					"path",
+					"sha256",
+					"purpose"
+				],
+				"additionalProperties": false
+			}
+		},
+		"permittedOutputs": {
+			"type": "object",
+			"properties": {
+				"candidatePath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"resultPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				}
+			},
+			"required": [
+				"candidatePath",
+				"resultPath"
+			],
+			"additionalProperties": false
+		},
+		"selfPromotionForbidden": {
+			"type": "boolean",
+			"const": true
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"assignmentId",
+		"directionId",
+		"immutable",
+		"prompt",
+		"promptSha256",
+		"references",
+		"permittedOutputs",
+		"selfPromotionForbidden"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/direction-assignment.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

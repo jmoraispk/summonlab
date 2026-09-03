@@ -1,0 +1,16 @@
+Render one dedicated Spiritwood Bow, rank B, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the B column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Spiritwood:
+Palette: Silver-gray wood, desaturated blue grain, and soft teal-white inner traces.
+Value: Cool middle-light values with translucent-looking edges.
+Surface/wear: Smooth ancient grain, soft ghostlike striations, few physical scars, clean grown joints.
+Construction: Elegant sweeping limbs, forked growth, hollow negative spaces, floating-looking but connected rings.
+Supernatural behavior: A restrained inner glow follows selected grain lines; the object remains solid wood.
+Neutral secondary materials: Silver, gray leather, pale cord, and charcoal cloth.
+Neighbor distinction: Cooler, lighter, and more spectral than Heartwood; less lush and actively growing than Living Branch.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

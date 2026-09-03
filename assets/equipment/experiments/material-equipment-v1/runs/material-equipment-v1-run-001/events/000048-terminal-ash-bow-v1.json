@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 48,
+	"previousEventCanonicalSha256": "c922c7194584cbaef25adda370bb36470ac76da873f52ad54acae494b3308af7",
+	"recordedAt": "2026-09-02T14:54:37.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-ash-bow-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:36.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-ash-bow-v1",
+		"workerId": "equipment-worker-9",
+		"status": "revise",
+		"resultCanonicalSha256": "c0b1aa3557d0ae3422f087e413f63b4090fe8030c424bb9be6c358db988da0ed",
+		"failureKind": null
+	}
+}

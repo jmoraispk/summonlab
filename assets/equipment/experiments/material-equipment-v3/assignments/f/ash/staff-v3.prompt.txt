@@ -1,0 +1,16 @@
+Render one dedicated Ash Staff, rank F, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Full-length wood-led magical focus with a readable crown and grounded shaft. Single staff standing on its base with a gentle rightward lean; crown gestures away from vertical. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Ash:
+Palette: Pale tan sapwood with quiet cream grain and gray-brown end grain.
+Value: Light middle values with modest contrast.
+Surface/wear: Open straight grain, hand-smoothed facets, small nicks, and dry rubbed edges.
+Construction: Plain carved limbs and shafts, wrapped grips, simple pegs, minimal fittings.
+Supernatural behavior: None.
+Neutral secondary materials: Hemp cord, dark leather, dull bronze, and undyed cloth.
+Neighbor distinction: Paler, simpler, and less elastic-looking than Yew; unmistakably real common wood.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

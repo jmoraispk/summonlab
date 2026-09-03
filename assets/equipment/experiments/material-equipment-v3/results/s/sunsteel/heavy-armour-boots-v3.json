@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-sunsteel-heavy-armour-boots-v3-attempt-1",
+	"targetId": "material-equipment-v3-sunsteel-heavy-armour-boots-v3",
+	"assignmentId": "assignment-material-equipment-v3-sunsteel-heavy-armour-boots-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:42:37.372Z",
+	"completedAt": "2026-09-03T17:43:46.105Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "093700c13d8f8083302cf553120078db636acb6d94d9d39d441d597b279750e1",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armour-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-full-set-v3.png",
+			"sha256": "0d560a1d850b706578729343bf9076ee1c042b7eea17f25e9624d71b0ab9e83a",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a06850-3030-7000-9011-da48bdde35dd/exec-e14aed52-2d7f-42c6-8ba4-fb122494d34f.png",
+		"sha256": "edb9131e98a18c55234fc2dd5fdc0d5b5fdcd9dc45d7313015a8d5f8d6f4b656",
+		"bytes": 1986215,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-boots-v3.png",
+		"sha256": "10cffa85c253aa506ac56792806389cc1aa8ce8c23d7fe9119ed693e04cf5b07",
+		"bytes": 1581216,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

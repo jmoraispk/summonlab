@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 222,
+	"previousEventCanonicalSha256": "29f1021d0306f06e818471878d6ea46b95092e1047be0361fbb40fc8f1fbc3e8",
+	"recordedAt": "2026-09-02T15:16:11.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-sunsteel-axe-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:16:10.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-sunsteel-axe-v1",
+		"workerId": "equipment-worker-194",
+		"status": "revise",
+		"resultCanonicalSha256": "8b1f9978adfb4a3f90a1487175dfda15987aa3540ab8f5304d9720de980a9ddd",
+		"failureKind": null
+	}
+}

@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-blacksteel-dagger-v1",
+	"targetId": "material-equipment-v1-blacksteel-dagger-v1",
+	"assignmentId": "assignment-material-equipment-v1-blacksteel-dagger-v1",
+	"status": "candidate",
+	"promptSha256": "3fbf6f08108e7ee44d731494f3874918929a084d24dea608eaa12a4d61d18a38",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-blacksteel-dagger-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-b294-7ba1-ac25-7c4219c3b026/exec-056e8130-6c42-48a6-948e-dab99d846bf0.png",
+			"requestStartedAt": "2026-09-02T15:01:58.668Z",
+			"generationCompletedAt": "2026-09-02T15:03:22.598Z",
+			"inspectionCompletedAt": "2026-09-02T15:03:44.178Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The full blade tip, guard, wrapped grip, and pommel remain visible with clear midnight-charcoal ground beyond the complete dagger inside the safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete fighting dagger is present, with no sheath, duplicate weapon, or detached component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The compact double-edged pointed blade, small guard, single-hand grip, and pommel read immediately as a fighting dagger."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The blade aligns through a restrained guard into a tightly wrapped grip capped by a substantial pommel, presenting believable tang alignment, balance, and hand clearance."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Near-black forged steel dominates the blade, guard, and pommel; the subordinate dark leather grip introduces no competing rank or precious-metal cue."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "A dense charcoal forged surface, shallow hammer texture, black oxide-like recesses, and sharply abraded silver-grey bevels establish blacksteel through physical finish and wear beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Controlled cold reflections and a restrained warm rim remain localized to edges; there is no emission, aura, or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Premium realistic painterly rendering, honest scratches and abrasion, cold key light, restrained warm rim, midnight-charcoal ground, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred subject, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornamental material substitute, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/dagger-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1547713,
+		"sha256": "018be46870d6906c3f1d45321cc6f164db954b381c4b75f69a620e9c7711ffaf"
+	},
+	"candidateSha256": "018be46870d6906c3f1d45321cc6f164db954b381c4b75f69a620e9c7711ffaf",
+	"startedAt": "2026-09-02T15:01:58.668Z",
+	"completedAt": "2026-09-02T15:03:59.910Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/dagger-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/dagger-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

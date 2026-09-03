@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 79,
+	"previousEventCanonicalSha256": "2db806c769794ad682f981a24ee26c9c234a433bfe7c7e5974ffded5d56f05c7",
+	"recordedAt": "2026-09-02T14:55:31.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-iron-mace-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:55:30.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-iron-mace-v1",
+		"workerId": "equipment-worker-17",
+		"status": "candidate",
+		"resultCanonicalSha256": "40a2a1e53eb3e313c1b541c533fc9094203a97f8b786d3431cc27bfa183904ef",
+		"failureKind": null
+	}
+}

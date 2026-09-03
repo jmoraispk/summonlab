@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-spellweave-robes-head-v3-attempt-1",
+	"targetId": "material-equipment-v3-spellweave-robes-head-v3",
+	"assignmentId": "assignment-material-equipment-v3-spellweave-robes-head-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:35:38.022Z",
+	"completedAt": "2026-09-03T17:36:29.072Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "4ca067bf0a30c32634d4becdfcee1d7a8e301c048ff8fccd6147f61e48126066",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-full-set-v3.png",
+			"sha256": "2583be932e05edf55d70caa5864f8441d172efa2882f101f62ef710a81e89448",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a06850-4914-7d62-9d47-3182d0464875/exec-ee5fd6d9-2297-4d30-a441-d5a9170e047f.png",
+		"sha256": "c1a1a8c5b3f67b7fe39b7c184195f55a4d42d5d4fec499fc7415e66e85979b23",
+		"bytes": 1841632,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-head-v3.png",
+		"sha256": "512990f3f3c59a63cf85db057c56bdf9908dd39789e80cf69b03c7c56633f559",
+		"bytes": 1407844,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

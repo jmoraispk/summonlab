@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 113,
+	"previousEventCanonicalSha256": "2a00e9dbfe9e21c9e782cac0266bfe4ac570fd8d3effbc3fdbe12f78ce54f84e",
+	"recordedAt": "2026-09-02T15:02:03.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-113",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:02.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-spellweave-robes-full-set-v1-113",
+		"targetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+		"workerId": "equipment-worker-113"
+	}
+}

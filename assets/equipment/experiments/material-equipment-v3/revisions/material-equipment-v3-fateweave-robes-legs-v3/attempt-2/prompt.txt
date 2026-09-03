@@ -1,0 +1,24 @@
+Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the S column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Fateweave:
+Palette: Void black, luminous pearl, royal violet, and thin gold destiny-lines.
+Value: Near-black depth crossed by brilliant precise threads and pale folds.
+Surface/wear: Perfect impossible weave, folds with subtly contradictory depth, unfrayed edges, immaculate threadwork.
+Construction: Legendary layered silhouette, sweeping destiny arcs, impossible but connected hems, crownlike collar, masterful asymmetry.
+Supernatural behavior: A few threads appear to pass ahead of or behind their fold and glow softly; no portal, aura, or detached magic.
+Neutral secondary materials: White-silver clasps, black leather, dark lining, and minimal gold fittings.
+Neighbor distinction: More mythic, reality-bending, and iconic than Starcloth while remaining clearly wearable cloth equipment.
+
+One isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.
+
+REVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.
+
+Correct this exact audited issue: Render only the Fateweave Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot.
+
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated legs candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.

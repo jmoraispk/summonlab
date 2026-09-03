@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-living-branch-bow-v3",
+	"productionOrder": 127,
+	"rank": "A",
+	"materialId": "living-branch",
+	"materialName": "Living Branch",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-living-branch.json",
+	"classId": "bow",
+	"classDirectionId": "equipment-v3-bow-rank-progression",
+	"artifactId": "bow",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/a/living-branch/bow-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/a/living-branch/bow-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/a/living-branch/bow-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/bow-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/a/living-branch/bow-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/a/living-branch/bow-v3.json"
+	}
+}

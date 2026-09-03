@@ -1,0 +1,57 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-starcloth-robes-torso-v3-attempt-3",
+	"targetId": "material-equipment-v3-starcloth-robes-torso-v3",
+	"attempt": 3,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/a/starcloth/robes-torso-v3.json",
+		"canonicalSha256": "935cba67253d6666a4c892f9a5bf32f4cfa353b526e08aee3a2701c844e58ca3"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-starcloth.json",
+		"canonicalSha256": "e7f9ae674180a045754f197971260e6fbf074fb632e41e2842efeeef42d3614b"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-torso-v3.png",
+		"sha256": "8e86ffd8d5fb98631bd7ad5631605b24d05618c883e6e94db051e7f6c50ebb00",
+		"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-full-set-v3.png",
+			"sha256": "c02dc954d3ac92af7a2b4235eaeaad3b243963c0edca949a29e6c762c3862c3b",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-torso-v3.png",
+			"sha256": "8e86ffd8d5fb98631bd7ad5631605b24d05618c883e6e94db051e7f6c50ebb00",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"classification": "class-rule-violation",
+	"correction": "Render a waist-length Starcloth sleeved upper-robe with a plain open neckline and a clean high-hip hem. Zero hood, cowl, high collar, mantle, shoulder overlay, skirt, apron, lower robe panel, Legs item, or Boots item. Empty background must be visible above the neckline and below the hem.",
+	"prompt": "Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Starcloth:\nPalette: Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points.\nValue: Very dark cloth carrying crisp luminous accents.\nSurface/wear: Impossibly fine weave, deep clean folds, constellation embroidery, pristine resilient edges.\nConstruction: Celestial arcs, layered mantle, long star-trail hems, elegant open sleeves, precise luminous borders.\nSupernatural behavior: Tiny constellation points and faint thread paths glow within the cloth, never around it.\nNeutral secondary materials: Silver clasps, black leather, dark lining, and minimal gold thread.\nNeighbor distinction: More radiant, cosmic, and sharply detailed than Moonweave; less reality-bending than Fateweave.\n\nOne isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.\n\nREVISION PASS 3. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.\n\nCorrect this exact audited issue: Render a waist-length Starcloth sleeved upper-robe with a plain open neckline and a clean high-hip hem. Zero hood, cowl, high collar, mantle, shoulder overlay, skirt, apron, lower robe panel, Legs item, or Boots item. Empty background must be visible above the neckline and below the hem.\n\nThe owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "fe50264dff2c8ea66f9114c7afac14974f10a2bcc3c29917af2a1d7ba2ff0e38",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-3/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-3/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass Armour-piece candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"change another Armour slot or the owner-accepted full-set source",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

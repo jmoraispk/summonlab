@@ -1,0 +1,252 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-production-run-plan-v1"
+		},
+		"runId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"productionId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"maximumConcurrency": {
+			"type": "number",
+			"const": 16
+		},
+		"boundArtifacts": {
+			"type": "object",
+			"properties": {
+				"manifestCanonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				},
+				"allocationCanonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				},
+				"profileCanonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				},
+				"profileAcceptanceCanonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"manifestCanonicalSha256",
+				"allocationCanonicalSha256",
+				"profileCanonicalSha256",
+				"profileAcceptanceCanonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"versions": {
+			"type": "object",
+			"properties": {
+				"contract": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"renderer": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"verifier": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"persistence": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				},
+				"journal": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9-]{1,119}$"
+				}
+			},
+			"required": [
+				"contract",
+				"renderer",
+				"verifier",
+				"persistence",
+				"journal"
+			],
+			"additionalProperties": false
+		},
+		"targetIds": {
+			"minItems": 161,
+			"maxItems": 161,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9-]{1,119}$"
+			}
+		},
+		"rootPackets": {
+			"minItems": 77,
+			"maxItems": 77,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"targetId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"targetPath": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					},
+					"targetCanonicalSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"assignmentPath": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					},
+					"assignmentCanonicalSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					}
+				},
+				"required": [
+					"targetId",
+					"targetPath",
+					"targetCanonicalSha256",
+					"assignmentPath",
+					"assignmentCanonicalSha256"
+				],
+				"additionalProperties": false
+			}
+		},
+		"reviewGates": {
+			"minItems": 21,
+			"maxItems": 21,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"gateId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"sourceTargetId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"unlocksTargetIds": {
+						"minItems": 4,
+						"maxItems": 4,
+						"type": "array",
+						"items": {
+							"type": "string",
+							"pattern": "^[a-z][a-z0-9-]{1,119}$"
+						}
+					},
+					"reviewPath": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				},
+				"required": [
+					"gateId",
+					"sourceTargetId",
+					"unlocksTargetIds",
+					"reviewPath"
+				],
+				"additionalProperties": false
+			}
+		},
+		"unmaterializedReviewGatedTargetIds": {
+			"minItems": 84,
+			"maxItems": 84,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9-]{1,119}$"
+			}
+		},
+		"reservedPaths": {
+			"type": "object",
+			"properties": {
+				"candidates": {
+					"minItems": 1,
+					"maxItems": 161,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				},
+				"results": {
+					"minItems": 1,
+					"maxItems": 161,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				},
+				"reviews": {
+					"minItems": 1,
+					"maxItems": 161,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				},
+				"runArtifacts": {
+					"minItems": 2,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				}
+			},
+			"required": [
+				"candidates",
+				"results",
+				"reviews",
+				"runArtifacts"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"runId",
+		"productionId",
+		"createdAt",
+		"maximumConcurrency",
+		"boundArtifacts",
+		"versions",
+		"targetIds",
+		"rootPackets",
+		"reviewGates",
+		"unmaterializedReviewGatedTargetIds",
+		"reservedPaths"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/run-plan.schema.json"
+}

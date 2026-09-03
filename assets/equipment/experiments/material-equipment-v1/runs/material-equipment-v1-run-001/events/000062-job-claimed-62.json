@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 62,
+	"previousEventCanonicalSha256": "af008d7cb6be4aa05becd6b3f447d796044a2484b4a470636458d40224828488",
+	"recordedAt": "2026-09-02T14:54:39.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-62",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:38.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-ironwood-bow-v1-62",
+		"targetId": "material-equipment-v1-ironwood-bow-v1",
+		"workerId": "equipment-worker-62"
+	}
+}

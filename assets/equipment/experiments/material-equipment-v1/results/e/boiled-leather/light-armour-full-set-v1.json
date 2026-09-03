@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+	"targetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "eb1dd964f11eb614165cfea630a185e58fb8733fee037af3d930f0477edc6d2c",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-b294-7ba1-ac25-7c4219c3b026/exec-70d8d578-8729-4a35-87f2-cc26a61c92c1.png",
+			"requestStartedAt": "2026-09-02T14:57:17.385Z",
+			"generationCompletedAt": "2026-09-02T14:58:05.348Z",
+			"inspectionCompletedAt": "2026-09-02T14:58:32.139Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete display form, including the top of the head, both hands, and both boots, remains visible with clear background inside the declared safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "fail",
+			"observation": "Torso armour, articulated leg protection, and boots are readable, but the featureless display form has a bare head with no distinct Head armour component, so the required Head, Torso, Legs, and Boots set is incomplete."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The fitted layered hide construction, flexible skirt splits, articulated limb coverage, and restrained bulk read as mobile light armour rather than rigid plate armour."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping scales, stitched backing, belts, buckles, rivets, articulated joints, and shaped boots form a plausible wearable construction with believable movement clearances."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Dark brown boiled leather dominates the torso, limb coverings, skirt, and boots; small neutral buckles and rivets remain structurally subordinate and introduce no second rank cue."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Rigid molded leather scales, compressed rolled edges, stitching, creasing, scuffs, and worn highlights establish boiled leather through physical construction and response beyond palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "No supernatural emission or full-set glow is present; rank behaviour remains bounded to controlled leather sheen and restrained warm rim light."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly finish, honest abrasion, cold key light, restrained warm rim, midnight-charcoal ground, and subtle floor plane match the accepted Equipment profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The image has a featureless display form and no transferred person, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornamental material substitute, weapons, loose extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2299485,
+		"sha256": "45fcfa76a295c8202d9463312cf0f1c81f8dfcf882e63646858603092e140cfd"
+	},
+	"candidateSha256": "45fcfa76a295c8202d9463312cf0f1c81f8dfcf882e63646858603092e140cfd",
+	"startedAt": "2026-09-02T14:57:17.385Z",
+	"completedAt": "2026-09-02T14:58:47.607Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-iron-shield-v3-attempt-2",
+	"targetId": "material-equipment-v3-iron-shield-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/e/iron/shield-v3.json",
+		"canonicalSha256": "b24aae42aa0e44b171ba35954b31f0b68153db446b6b3797e32a35e4f0542834"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-iron.json",
+		"canonicalSha256": "9a934caaf3d627c5abc6d7bab10dc65386ed6fa01ea0c945937f4276632528a3"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/shield-v3.png",
+		"sha256": "9c0d86a4b819535cbf26edfda91b696ea3a781ec25b73f7f846e041fc4b6ce08",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"purpose": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/shield-v3.png",
+			"sha256": "9c0d86a4b819535cbf26edfda91b696ea3a781ec25b73f7f846e041fc4b6ce08",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Use a clearly round, workmanlike Iron shield silhouette so it cannot be mistaken for the Bronze heater shield. Keep E-rank decoration minimal and preserve the iron surface language.",
+	"prompt": "Render one dedicated Iron Shield, rank E, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One-hand defensive face with readable rim, boss or grip structure. Single shield in consistent mild three-quarter view, standing vertically with face and thickness readable. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Iron:\nPalette: Cool charcoal-gray metal with pale gray edges and near-black recesses.\nValue: Dark middle values with stronger edge highlights than Bronze.\nSurface/wear: Forged texture, hammer marks, fine scratches, and sparse red-brown oxidation at joints.\nConstruction: Straightforward forged profiles, visible peening, reinforced rims, straps, and practical rivets.\nSupernatural behavior: None.\nNeutral secondary materials: Dark wood, brown leather, charcoal cloth, and tiny bronze fasteners.\nNeighbor distinction: Cooler, harder-edged, and more deliberately forged than Bronze; less refined than Steel.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Use a clearly round, workmanlike Iron shield silhouette so it cannot be mistaken for the Bronze heater shield. Keep E-rank decoration minimal and preserve the iron surface language.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "c832fa3be08c547eb53f8e016e5bfe9e9ea477b5ce21aa8cf184dbb6c4a28d01",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

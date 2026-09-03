@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-blacksteel-shield-v1",
+	"targetId": "material-equipment-v1-blacksteel-shield-v1",
+	"assignmentId": "assignment-material-equipment-v1-blacksteel-shield-v1",
+	"status": "candidate",
+	"promptSha256": "d6a5b09d6e3a381c22e4dbb79f66f0d6b7912d00da66971a0050c9b78631295f",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-blacksteel-shield-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-c28f-7e81-afd0-22c8524354fc/exec-b6d3dd0d-9f1b-48e9-ab37-aefcfbaaee30.png",
+			"requestStartedAt": "2026-09-02T15:03:38.837Z",
+			"generationCompletedAt": "2026-09-02T15:04:37.023Z",
+			"inspectionCompletedAt": "2026-09-02T15:05:12.740Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete shield is visible without clipping; its top edge and pointed base remain approximately 10% and 9% inside the canvas, with wider side clearance, satisfying the 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete shield is shown, with one coherent face, perimeter reinforcement, central boss, and no duplicate object or separate prop."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The broad shoulder line, gently curved sides, convex protective face, and tapered pointed base read immediately as a medium heater shield."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A thick curved shield body, continuous riveted edge band, separately riveted central boss, visible plate depth, and grounded weight provide plausible medieval construction and fastening."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Blacksteel dominates the face, perimeter band, rivets, and boss; no secondary material is prominent enough to assert another visible rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense dark forge skin across the plate and narrow silver-grey abrasion along stressed edges and the boss establish blacksteel through surface behavior and construction beyond black palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The Standard rank-C shield has no supernatural emission or full-object glow; the cold central sheen and warm rim are bounded reflected light on metal."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image maintains a premium realistic painterly dark-fantasy finish, honest scratches and wear, cold key light with restrained warm rim, and a midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred person, clothing, hammer, or design; no published-character resemblance, rarity rainbow, gold inflation, object glow, oversized silhouette, ornament-dependent identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/shield-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1696095,
+		"sha256": "a08e5a274806d68e9380c2abd389672aedfe7a04bd99b86b73520fe9186e2764"
+	},
+	"candidateSha256": "a08e5a274806d68e9380c2abd389672aedfe7a04bd99b86b73520fe9186e2764",
+	"startedAt": "2026-09-02T15:03:38.837Z",
+	"completedAt": "2026-09-02T15:05:12.740Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/shield-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/shield-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

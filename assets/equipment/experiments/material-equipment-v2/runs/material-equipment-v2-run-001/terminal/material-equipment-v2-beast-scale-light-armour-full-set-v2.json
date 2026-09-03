@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-beast-scale-light-armour-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-beast-scale-light-armour-full-set-v2",
+	"recordedAt": "2026-09-02T22:27:08.517Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/d/beast-scale/light-armour-full-set-v2.json",
+		"canonicalSha256": "ba1ea145e78615b27142cc195ab186e1178f2b6810d38fd6da2463de0090ced7"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/d/beast-scale/light-armour-full-set-v2.json",
+		"canonicalSha256": "dd08e9642cfb93a82bc0ef1f6f71acf6e952ba7768cb37c46423860ffc59cf2b"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/d/beast-scale/light-armour-full-set-v2.json",
+		"canonicalSha256": "0c4db3eef1e571fdc562d27c9dbc8117576521810231fe988036ea84fa1d877b",
+		"candidateSha256": "72f9e8b7f53978d4da1c74832beb0e67e8ca656f13898c39c8b99f83c304402a"
+	}
+}

@@ -1,0 +1,20 @@
+Render one dedicated Bronze Axe, rank F, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: One dominant cutting bit on a practical haft. Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Bronze:
+Palette: Warm ochre-brown metal with muted gold edges and dark umber recesses.
+Value: Middle-dark overall; restrained highlights, no mirror polish.
+Surface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.
+Construction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.
+Supernatural behavior: None.
+Neutral secondary materials: Dark brown wood, plain leather, charcoal cloth, and dull iron only.
+Neighbor distinction: Warmer, rougher, and more plainly cast than Iron; never reads as polished gold.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+REVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest.
+
+Return one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.

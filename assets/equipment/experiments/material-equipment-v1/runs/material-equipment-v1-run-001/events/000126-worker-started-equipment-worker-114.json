@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 126,
+	"previousEventCanonicalSha256": "0c4b9fb08535623ae80395d345a6fcdc3d8dd8de3cb8fe9ff48cdac261808938",
+	"recordedAt": "2026-09-02T15:02:05.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-114",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:04.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-skyiron-sword-v1-114",
+		"targetId": "material-equipment-v1-skyiron-sword-v1",
+		"workerId": "equipment-worker-114"
+	}
+}

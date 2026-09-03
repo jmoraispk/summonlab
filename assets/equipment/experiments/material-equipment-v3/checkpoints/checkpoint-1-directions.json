@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-owner-checkpoint-receipt-v3",
+	"checkpointId": "equipment-v3-checkpoint-1-directions",
+	"createdAt": "2026-09-03T13:19:35.000Z",
+	"decidedBy": "equipment-owner",
+	"manifestCanonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a",
+	"galleryPath": "assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-1/index.html",
+	"decisions": [
+		{
+			"subjectId": "equipment-v3-bow-rank-progression",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+			"imageSha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+			"decision": "accept",
+			"notes": "Owner accepted all checkpoint-1 directions."
+		},
+		{
+			"subjectId": "equipment-v3-staff-rank-progression",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/staff-wood-ranks-v3.png",
+			"imageSha256": "864daabb5f736f814dcd6fcd4fc67401119fe477a58cf9029842809977b8b8af",
+			"decision": "accept",
+			"notes": "Owner accepted all checkpoint-1 directions."
+		},
+		{
+			"subjectId": "equipment-v3-light-armour-rank-progression",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"imageSha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+			"decision": "accept",
+			"notes": "Owner accepted corrected empty, self-supporting set direction."
+		},
+		{
+			"subjectId": "equipment-v3-robes-rank-progression",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"imageSha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"decision": "accept",
+			"notes": "Owner accepted all checkpoint-1 directions."
+		}
+	],
+	"summary": {
+		"accept": 4,
+		"revise": 0,
+		"defer": 0
+	}
+}

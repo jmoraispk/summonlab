@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-spiritwood-staff-v2",
+	"targetId": "material-equipment-v2-spiritwood-staff-v2",
+	"assignmentId": "assignment-material-equipment-v2-spiritwood-staff-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "702a5e3a1263062015ffd073ad09e065a9972d1a077cff6cbd3f4772db8c57df",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "staff-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/staff-v1.png",
+			"contentHash": "ed773449d4adac0b87531c9ed1c5d4f62e3a03518becb3a7e56137be2ca81fab"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-spiritwood-staff-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a0643d-4f3b-7b92-b894-76abdf238b16/exec-e196fa0a-6092-4910-a98c-3be3d59cbd88.png",
+			"requestStartedAt": "2026-09-02T22:29:52.694Z",
+			"generationCompletedAt": "2026-09-02T22:30:30.672Z",
+			"inspectionCompletedAt": "2026-09-02T22:31:12.887Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/b/spiritwood/staff-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1203849,
+		"sha256": "e503da8f1d525d2bc2e0efbd8a017ec822f7a7e02b3d8ac066d87089394365e2"
+	},
+	"candidateSha256": "e503da8f1d525d2bc2e0efbd8a017ec822f7a7e02b3d8ac066d87089394365e2",
+	"startedAt": "2026-09-02T22:29:52.694Z",
+	"completedAt": "2026-09-02T22:31:12.887Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/b/spiritwood/staff-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/b/spiritwood/staff-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

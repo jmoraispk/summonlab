@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-living-branch-bow-v3",
+	"targetId": "material-equipment-v3-living-branch-bow-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+		"sha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-living-branch.json",
+		"canonicalSha256": "de6a65653d379704fa78d611b8a15e67826eb773b4d118258b66065809175f72"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Living Branch Bow, rank A, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Living Branch:\nPalette: Rich bark brown, fresh green-gold cambium, and small emerald leaf accents.\nValue: Deep natural body with bright living seams.\nSurface/wear: Supple bark, polished exposed grain, healed cuts, tiny fresh buds, no dead splintering.\nConstruction: Actively grown curves, entwined branches, leaflike tips, root-grip structures, seamless living joints.\nSupernatural behavior: Selected buds and cambium lines emit a faint green-gold vitality; growth remains bounded.\nNeutral secondary materials: Gold-bronze caps, dark leather, natural cord, and muted green cloth.\nNeighbor distinction: Lusher, more alive, and more dynamically grown than Spiritwood; smaller and less primordial than Worldtree Limb.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "4ce78eacb03e30a74f40b0dcccef0aa91e9ddebaa7fbcca56be9c3aef90ad5f0",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/bow-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/a/living-branch/bow-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

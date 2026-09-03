@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+	"productionOrder": 7,
+	"rank": "F",
+	"materialId": "bronze",
+	"materialName": "Bronze",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json",
+	"classId": "heavy-armour",
+	"classDirectionId": "equipment-v3-heavy-armour-rank-progression",
+	"artifactId": "heavy-armour-full-set",
+	"artifactRole": "set-source",
+	"slot": null,
+	"setId": "bronze-heavy-armour",
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1536,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/f/bronze/heavy-armour-full-set-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/bronze/heavy-armour-full-set-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/bronze/heavy-armour-full-set-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/heavy-armour-full-set-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/f/bronze/heavy-armour-full-set-v3.json"
+	}
+}

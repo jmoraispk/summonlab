@@ -61,9 +61,10 @@ person's name on it.
 
 ## Still to author
 
-- Consumables—potions, poisons, food, and volatiles are outputs of the Alchemy and Cooking ladders
-  and need their own listing.
-- Ammunition types—arrowheads, bolt heads, and their alchemical variants.
+- Potion recipes and Food recipes need their own listings in the Alchemy and Cooking pages. Recipe
+  differences do not create additional item classes.
+- Bow ammunition is implicit in ordinary use. A later named property may alter an attack without
+  creating ammunition inventory classes.
 - Durability and repair, if adopted.
 - Per-item stat values, once the attribute numerics pass is done.
 
@@ -71,7 +72,8 @@ person's name on it.
 
 - Clarify the claimed three axes and whether material/monster is one source axis while enchantment
   and binding are separate overlays.
-- Define what counts as a full set across the eight armour slots, weapons, shield, cloak, and belt.
+- Define what counts as a full set across the canonical Weapon, Armour, Shield, Staff, Tool, and
+  Accessory forms without multiplying slots or item classes.
 - Define set-piece uniqueness, duplicate behavior, signature-component consumption, extraction,
   crafting provenance, and anti-farming constraints.
 - Reconcile fixed item rarity with enchantment, Living Metal growth, granted skills, and the claim

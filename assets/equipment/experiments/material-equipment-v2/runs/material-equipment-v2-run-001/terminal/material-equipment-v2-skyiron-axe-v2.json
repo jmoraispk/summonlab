@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-skyiron-axe-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-skyiron-axe-v2",
+	"recordedAt": "2026-09-02T22:31:38.617Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/b/skyiron/axe-v2.json",
+		"canonicalSha256": "2a4233bea5e12e025e0a40e24be6b6edafc33594783df621b208995f2fcf2f99"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/b/skyiron/axe-v2.json",
+		"canonicalSha256": "6d1b33ff93aaa0b7bedf090cf86f9da023a60d779f09bdf00a8289da0095fe31"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/b/skyiron/axe-v2.json",
+		"canonicalSha256": "3f3064691ac1e097c6cddb3150739722a1c62344e251bd928c7a92a65d9cfcdf",
+		"candidateSha256": "865b4c5b57a6039daeb448b5acfc6794dda770b0cbf77b1bee95ef7677b0954e"
+	}
+}

@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-sunsteel-dagger-v2",
+	"targetId": "material-equipment-v2-sunsteel-dagger-v2",
+	"assignmentId": "assignment-material-equipment-v2-sunsteel-dagger-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "2f7e214739ab1c8d2f4ec4ac989bce61d41ca2a7d80ad497877ad30d26724c27",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "dagger-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/dagger-v1.png",
+			"contentHash": "8771e23891f87323130ce2aecda5dffaa98b7308055ac9c744623d784d93dbfe"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-sunsteel-dagger-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-dc0180d9-7f9d-406d-a472-d891e003ffa6.png",
+			"requestStartedAt": "2026-09-02T22:32:56.550Z",
+			"generationCompletedAt": "2026-09-02T22:33:40.486Z",
+			"inspectionCompletedAt": "2026-09-02T22:34:15.098Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/s/sunsteel/dagger-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1405728,
+		"sha256": "27cfa6a06578f27a2a142a9d134f0bf027e5c8fe872ef324857f7a3ea9da91d6"
+	},
+	"candidateSha256": "27cfa6a06578f27a2a142a9d134f0bf027e5c8fe872ef324857f7a3ea9da91d6",
+	"startedAt": "2026-09-02T22:32:56.550Z",
+	"completedAt": "2026-09-02T22:34:15.098Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/s/sunsteel/dagger-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/s/sunsteel/dagger-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

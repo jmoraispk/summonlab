@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-steel-shield-v3",
+	"productionOrder": 52,
+	"rank": "D",
+	"materialId": "steel",
+	"materialName": "Steel",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-steel.json",
+	"classId": "shield",
+	"classDirectionId": "equipment-v3-shield-rank-progression",
+	"artifactId": "shield",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/d/steel/shield-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/shield-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/shield-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/shield-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/shield-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/d/steel/shield-v3.json"
+	}
+}

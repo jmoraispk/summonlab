@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "blacksteel",
+	"displayName": "Blacksteel",
+	"family": "metal",
+	"rank": "C",
+	"palette": "Blue-black metal, charcoal planes, and narrow cold-silver cutting edges.",
+	"valueRange": "Predominantly dark with sharp, deliberate highlight control.",
+	"surfaceAndWear": "Dense satin-black finish, crisp polish at edges, subtle grind pattern, almost no oxidation.",
+	"constructionVocabulary": "Bold cutouts, angular guards, blackened plate overlaps, hooked accents, exact fittings.",
+	"supernaturalBehavior": "Absorbs ambient light slightly in recesses; no aura or full-object glow.",
+	"neutralSecondaryMaterials": "Black leather, dark hardwood, charcoal textile, and tiny silver pins.",
+	"neighborDifference": "Darker, bolder, and more ominously shaped than Steel; less airy and luminous than Skyiron.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-blacksteel.json"
+}

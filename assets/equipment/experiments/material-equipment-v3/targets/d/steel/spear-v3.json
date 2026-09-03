@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-steel-spear-v3",
+	"productionOrder": 49,
+	"rank": "D",
+	"materialId": "steel",
+	"materialName": "Steel",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-steel.json",
+	"classId": "spear",
+	"classDirectionId": "equipment-v3-spear-rank-progression",
+	"artifactId": "spear",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/d/steel/spear-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/spear-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/spear-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/spear-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/d/steel/spear-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/d/steel/spear-v3.json"
+	}
+}

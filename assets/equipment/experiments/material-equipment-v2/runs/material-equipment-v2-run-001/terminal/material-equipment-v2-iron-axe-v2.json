@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-iron-axe-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-iron-axe-v2",
+	"recordedAt": "2026-09-02T22:23:47.303Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "failed",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/e/iron/axe-v2.json",
+		"canonicalSha256": "f94055abafa2cae95379eee40531f7747aa132d3572f710ad2f790e24f5b5806"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/e/iron/axe-v2.json",
+		"canonicalSha256": "1a481ce29a7d669021aff3bd5fa53a8e9f35b446901dc7db4be38f065efbdc3f"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/e/iron/axe-v2.json",
+		"canonicalSha256": "554a035c9716aa922988abadd05867a6892a0bd9dd8f9b4366d4794db4fa3246",
+		"candidateSha256": null
+	}
+}

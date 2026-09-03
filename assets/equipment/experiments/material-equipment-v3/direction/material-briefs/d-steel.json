@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "steel",
+	"displayName": "Steel",
+	"family": "metal",
+	"rank": "D",
+	"palette": "Neutral silver-gray steel with cool blue-gray shadows and darkened fittings.",
+	"valueRange": "Broad mid-to-bright metal range with disciplined highlights.",
+	"surfaceAndWear": "Even forged finish, fine grind lines, polished contact edges, and restrained battle wear.",
+	"constructionVocabulary": "Refined tapers, fitted sockets, crisp fullers, articulated plates, clean rivet rhythm.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Blackened iron, dark leather, hardwood, and charcoal cloth.",
+	"neighborDifference": "Cleaner and structurally more refined than Iron; brighter and less ominous than Blacksteel.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-steel.json"
+}

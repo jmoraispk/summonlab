@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "starmetal",
+	"displayName": "Starmetal",
+	"family": "metal",
+	"rank": "A",
+	"palette": "Deep blue-silver, near-black cosmic facets, and sparse white-gold star points.",
+	"valueRange": "Strong dark-to-bright contrast controlled along facets and edges.",
+	"surfaceAndWear": "Flawless faceted alloy, meteor-like grain, razor-clean edges, almost no mundane corrosion.",
+	"constructionVocabulary": "Extraordinary tapered geometry, orbit-like negative spaces, fine celestial inlay, precise floating impression while connected.",
+	"supernaturalBehavior": "Sparse star-point glints and a faint depth within dark facets; never a full aura.",
+	"neutralSecondaryMaterials": "Black leather, dark hardwood, silver, and charcoal textile.",
+	"neighborDifference": "More cosmic, faceted, and extraordinary than Skyiron; colder and less solar than Sunsteel.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-starmetal.json"
+}

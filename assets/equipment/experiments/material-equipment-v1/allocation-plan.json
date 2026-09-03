@@ -1,0 +1,3113 @@
+{
+	"schemaVersion": "equipment-material-allocation-plan-v1",
+	"planId": "material-equipment-v1-full-production-allocation",
+	"productionId": "material-equipment-v1",
+	"artifactRole": "non-executable-allocation-template",
+	"status": "gated",
+	"activation": {
+		"includedInTemplate": false,
+		"requiresSeparateHashBoundAuthorization": true,
+		"requiresRunSpecificImmutableCopy": true,
+		"prerequisites": [
+			"approved-equipment-visual-profile",
+			"equipment-job-runner-with-strict-schema-reader",
+			"equipment-armour-source-review-receipt-schema",
+			"run-specific-immutable-plan-and-journal",
+			"provider-capacity-verification"
+		]
+	},
+	"sourceManifest": {
+		"path": "assets/equipment/experiments/material-equipment-v1/manifest.json",
+		"canonicalSha256": "d4e161a4aeff46e60c1d1f64ce44448dcda270b86a1969dc7a08275eb1c4ff58"
+	},
+	"schedulerIntent": {
+		"mode": "dependency-aware-ready-queue",
+		"logicalProductionRunCount": 1,
+		"configuredMaximumConcurrency": 16,
+		"admissionFormula": "min(16 - activeEquipmentWorkers, availableWorkerSlots, readyUnclaimedJobs)",
+		"parallelWorkPolicy": "no-voluntary-throttling-for-unrelated-work",
+		"technicalFailureCircuitBreaker": {
+			"failureCountPerEpoch": 3,
+			"action": "stop-new-starts-drain-active-resume-with-backoff",
+			"synchronousRetry": false
+		}
+	},
+	"ownership": {
+		"root": "assets/equipment/experiments/material-equipment-v1",
+		"workerOwnedOutputKinds": [
+			"candidate",
+			"provenance-result"
+		],
+		"reviewerOwnedOutputKinds": [
+			"review-evidence"
+		],
+		"exclusiveCreateRequired": true,
+		"forbiddenSharedPaths": [
+			"assets/enemies",
+			"packages/contracts/src/image-production.ts",
+			"skills/summonlab-image-production"
+		]
+	},
+	"summary": {
+		"jobCount": 161,
+		"initiallyReadyJobCount": 77,
+		"armourPieceJobCount": 84,
+		"armourReviewGateCount": 21
+	},
+	"reviewGates": [
+		{
+			"gateId": "material-equipment-v1-copper-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-copper-heavy-armour-head-v1",
+				"material-equipment-v1-copper-heavy-armour-torso-v1",
+				"material-equipment-v1-copper-heavy-armour-legs-v1",
+				"material-equipment-v1-copper-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-coarse-hide-light-armour-head-v1",
+				"material-equipment-v1-coarse-hide-light-armour-torso-v1",
+				"material-equipment-v1-coarse-hide-light-armour-legs-v1",
+				"material-equipment-v1-coarse-hide-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-hemp-weave-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-hemp-weave-robes-head-v1",
+				"material-equipment-v1-hemp-weave-robes-torso-v1",
+				"material-equipment-v1-hemp-weave-robes-legs-v1",
+				"material-equipment-v1-hemp-weave-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-iron-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-iron-heavy-armour-head-v1",
+				"material-equipment-v1-iron-heavy-armour-torso-v1",
+				"material-equipment-v1-iron-heavy-armour-legs-v1",
+				"material-equipment-v1-iron-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-boiled-leather-light-armour-head-v1",
+				"material-equipment-v1-boiled-leather-light-armour-torso-v1",
+				"material-equipment-v1-boiled-leather-light-armour-legs-v1",
+				"material-equipment-v1-boiled-leather-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-wool-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-wool-robes-head-v1",
+				"material-equipment-v1-wool-robes-torso-v1",
+				"material-equipment-v1-wool-robes-legs-v1",
+				"material-equipment-v1-wool-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-steel-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-steel-heavy-armour-head-v1",
+				"material-equipment-v1-steel-heavy-armour-torso-v1",
+				"material-equipment-v1-steel-heavy-armour-legs-v1",
+				"material-equipment-v1-steel-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-beast-scale-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-beast-scale-light-armour-head-v1",
+				"material-equipment-v1-beast-scale-light-armour-torso-v1",
+				"material-equipment-v1-beast-scale-light-armour-legs-v1",
+				"material-equipment-v1-beast-scale-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-layered-silk-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-layered-silk-robes-head-v1",
+				"material-equipment-v1-layered-silk-robes-torso-v1",
+				"material-equipment-v1-layered-silk-robes-legs-v1",
+				"material-equipment-v1-layered-silk-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-blacksteel-heavy-armour-head-v1",
+				"material-equipment-v1-blacksteel-heavy-armour-torso-v1",
+				"material-equipment-v1-blacksteel-heavy-armour-legs-v1",
+				"material-equipment-v1-blacksteel-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-chitin-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-chitin-light-armour-head-v1",
+				"material-equipment-v1-chitin-light-armour-torso-v1",
+				"material-equipment-v1-chitin-light-armour-legs-v1",
+				"material-equipment-v1-chitin-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-spellweave-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-spellweave-robes-head-v1",
+				"material-equipment-v1-spellweave-robes-torso-v1",
+				"material-equipment-v1-spellweave-robes-legs-v1",
+				"material-equipment-v1-spellweave-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-skyiron-heavy-armour-head-v1",
+				"material-equipment-v1-skyiron-heavy-armour-torso-v1",
+				"material-equipment-v1-skyiron-heavy-armour-legs-v1",
+				"material-equipment-v1-skyiron-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-drakescale-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-drakescale-light-armour-head-v1",
+				"material-equipment-v1-drakescale-light-armour-torso-v1",
+				"material-equipment-v1-drakescale-light-armour-legs-v1",
+				"material-equipment-v1-drakescale-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-moonweave-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-moonweave-robes-head-v1",
+				"material-equipment-v1-moonweave-robes-torso-v1",
+				"material-equipment-v1-moonweave-robes-legs-v1",
+				"material-equipment-v1-moonweave-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-starmetal-heavy-armour-head-v1",
+				"material-equipment-v1-starmetal-heavy-armour-torso-v1",
+				"material-equipment-v1-starmetal-heavy-armour-legs-v1",
+				"material-equipment-v1-starmetal-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-wyrmscale-light-armour-head-v1",
+				"material-equipment-v1-wyrmscale-light-armour-torso-v1",
+				"material-equipment-v1-wyrmscale-light-armour-legs-v1",
+				"material-equipment-v1-wyrmscale-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-starcloth-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-starcloth-robes-head-v1",
+				"material-equipment-v1-starcloth-robes-torso-v1",
+				"material-equipment-v1-starcloth-robes-legs-v1",
+				"material-equipment-v1-starcloth-robes-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-sunsteel-heavy-armour-head-v1",
+				"material-equipment-v1-sunsteel-heavy-armour-torso-v1",
+				"material-equipment-v1-sunsteel-heavy-armour-legs-v1",
+				"material-equipment-v1-sunsteel-heavy-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-ancient-dragon-scale-light-armour-head-v1",
+				"material-equipment-v1-ancient-dragon-scale-light-armour-torso-v1",
+				"material-equipment-v1-ancient-dragon-scale-light-armour-legs-v1",
+				"material-equipment-v1-ancient-dragon-scale-light-armour-boots-v1"
+			]
+		},
+		{
+			"gateId": "material-equipment-v1-fateweave-robes-full-set-v1-review-pass",
+			"sourceTargetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"initialStatus": "pending",
+			"acceptanceRequirement": "human-accepted-hash-bound-source-receipt",
+			"fileExistenceDoesNotPass": true,
+			"receiptSchemaRequiredBeforeActivation": "equipment-armour-source-review-receipt-v1",
+			"evidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-full-set-v1.json",
+			"unlocksTargetIds": [
+				"material-equipment-v1-fateweave-robes-head-v1",
+				"material-equipment-v1-fateweave-robes-torso-v1",
+				"material-equipment-v1-fateweave-robes-legs-v1",
+				"material-equipment-v1-fateweave-robes-boots-v1"
+			]
+		}
+	],
+	"jobs": [
+		{
+			"jobId": "job-material-equipment-v1-copper-sword-v1",
+			"targetId": "material-equipment-v1-copper-sword-v1",
+			"productionOrder": 1,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-dagger-v1",
+			"targetId": "material-equipment-v1-copper-dagger-v1",
+			"productionOrder": 2,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-spear-v1",
+			"targetId": "material-equipment-v1-copper-spear-v1",
+			"productionOrder": 3,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-axe-v1",
+			"targetId": "material-equipment-v1-copper-axe-v1",
+			"productionOrder": 4,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-mace-v1",
+			"targetId": "material-equipment-v1-copper-mace-v1",
+			"productionOrder": 5,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-shield-v1",
+			"targetId": "material-equipment-v1-copper-shield-v1",
+			"productionOrder": 6,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"productionOrder": 7,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-copper-heavy-armour-head-v1",
+			"productionOrder": 8,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-copper-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-copper-heavy-armour-torso-v1",
+			"productionOrder": 9,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-copper-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-copper-heavy-armour-legs-v1",
+			"productionOrder": 10,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-copper-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-copper-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-copper-heavy-armour-boots-v1",
+			"productionOrder": 11,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-copper-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/copper/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ash-bow-v1",
+			"targetId": "material-equipment-v1-ash-bow-v1",
+			"productionOrder": 12,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/ash/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/ash/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/ash/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ash-staff-v1",
+			"targetId": "material-equipment-v1-ash-staff-v1",
+			"productionOrder": 13,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/ash/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/ash/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/ash/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"productionOrder": 14,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/coarse-hide/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-coarse-hide-light-armour-head-v1",
+			"targetId": "material-equipment-v1-coarse-hide-light-armour-head-v1",
+			"productionOrder": 15,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/coarse-hide/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-coarse-hide-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-coarse-hide-light-armour-torso-v1",
+			"productionOrder": 16,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/coarse-hide/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-coarse-hide-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-coarse-hide-light-armour-legs-v1",
+			"productionOrder": 17,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/coarse-hide/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-coarse-hide-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-coarse-hide-light-armour-boots-v1",
+			"productionOrder": 18,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/coarse-hide/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/coarse-hide/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"targetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"productionOrder": 19,
+			"productionWave": 1,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/hemp-weave/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/hemp-weave/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-hemp-weave-robes-head-v1",
+			"targetId": "material-equipment-v1-hemp-weave-robes-head-v1",
+			"productionOrder": 20,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-hemp-weave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/hemp-weave/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/hemp-weave/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-hemp-weave-robes-torso-v1",
+			"targetId": "material-equipment-v1-hemp-weave-robes-torso-v1",
+			"productionOrder": 21,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-hemp-weave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/hemp-weave/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/hemp-weave/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-hemp-weave-robes-legs-v1",
+			"targetId": "material-equipment-v1-hemp-weave-robes-legs-v1",
+			"productionOrder": 22,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-hemp-weave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/hemp-weave/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/hemp-weave/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-hemp-weave-robes-boots-v1",
+			"targetId": "material-equipment-v1-hemp-weave-robes-boots-v1",
+			"productionOrder": 23,
+			"productionWave": 1,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-hemp-weave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-hemp-weave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/f/hemp-weave/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/f/hemp-weave/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/f/hemp-weave/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-sword-v1",
+			"targetId": "material-equipment-v1-iron-sword-v1",
+			"productionOrder": 24,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-dagger-v1",
+			"targetId": "material-equipment-v1-iron-dagger-v1",
+			"productionOrder": 25,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-spear-v1",
+			"targetId": "material-equipment-v1-iron-spear-v1",
+			"productionOrder": 26,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-axe-v1",
+			"targetId": "material-equipment-v1-iron-axe-v1",
+			"productionOrder": 27,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-mace-v1",
+			"targetId": "material-equipment-v1-iron-mace-v1",
+			"productionOrder": 28,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-shield-v1",
+			"targetId": "material-equipment-v1-iron-shield-v1",
+			"productionOrder": 29,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"productionOrder": 30,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-iron-heavy-armour-head-v1",
+			"productionOrder": 31,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-iron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-iron-heavy-armour-torso-v1",
+			"productionOrder": 32,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-iron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-iron-heavy-armour-legs-v1",
+			"productionOrder": 33,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-iron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-iron-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-iron-heavy-armour-boots-v1",
+			"productionOrder": 34,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-iron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/iron/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/iron/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-yew-bow-v1",
+			"targetId": "material-equipment-v1-yew-bow-v1",
+			"productionOrder": 35,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/yew/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/yew/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/yew/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-yew-staff-v1",
+			"targetId": "material-equipment-v1-yew-staff-v1",
+			"productionOrder": 36,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/yew/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/yew/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/yew/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"productionOrder": 37,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-boiled-leather-light-armour-head-v1",
+			"targetId": "material-equipment-v1-boiled-leather-light-armour-head-v1",
+			"productionOrder": 38,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-boiled-leather-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-boiled-leather-light-armour-torso-v1",
+			"productionOrder": 39,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-boiled-leather-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-boiled-leather-light-armour-legs-v1",
+			"productionOrder": 40,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-boiled-leather-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-boiled-leather-light-armour-boots-v1",
+			"productionOrder": 41,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/boiled-leather/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/boiled-leather/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/boiled-leather/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wool-robes-full-set-v1",
+			"targetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"productionOrder": 42,
+			"productionWave": 2,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wool-robes-head-v1",
+			"targetId": "material-equipment-v1-wool-robes-head-v1",
+			"productionOrder": 43,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wool-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wool-robes-torso-v1",
+			"targetId": "material-equipment-v1-wool-robes-torso-v1",
+			"productionOrder": 44,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wool-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wool-robes-legs-v1",
+			"targetId": "material-equipment-v1-wool-robes-legs-v1",
+			"productionOrder": 45,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wool-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wool-robes-boots-v1",
+			"targetId": "material-equipment-v1-wool-robes-boots-v1",
+			"productionOrder": 46,
+			"productionWave": 2,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wool-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wool-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/e/wool/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/e/wool/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/e/wool/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-sword-v1",
+			"targetId": "material-equipment-v1-steel-sword-v1",
+			"productionOrder": 47,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-dagger-v1",
+			"targetId": "material-equipment-v1-steel-dagger-v1",
+			"productionOrder": 48,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-spear-v1",
+			"targetId": "material-equipment-v1-steel-spear-v1",
+			"productionOrder": 49,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-axe-v1",
+			"targetId": "material-equipment-v1-steel-axe-v1",
+			"productionOrder": 50,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-mace-v1",
+			"targetId": "material-equipment-v1-steel-mace-v1",
+			"productionOrder": 51,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-shield-v1",
+			"targetId": "material-equipment-v1-steel-shield-v1",
+			"productionOrder": 52,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"productionOrder": 53,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-steel-heavy-armour-head-v1",
+			"productionOrder": 54,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-steel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-steel-heavy-armour-torso-v1",
+			"productionOrder": 55,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-steel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-steel-heavy-armour-legs-v1",
+			"productionOrder": 56,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-steel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-steel-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-steel-heavy-armour-boots-v1",
+			"productionOrder": 57,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-steel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/steel/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ironwood-bow-v1",
+			"targetId": "material-equipment-v1-ironwood-bow-v1",
+			"productionOrder": 58,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/ironwood/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/ironwood/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/ironwood/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ironwood-staff-v1",
+			"targetId": "material-equipment-v1-ironwood-staff-v1",
+			"productionOrder": 59,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/ironwood/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/ironwood/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/ironwood/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"productionOrder": 60,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/beast-scale/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/beast-scale/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-beast-scale-light-armour-head-v1",
+			"targetId": "material-equipment-v1-beast-scale-light-armour-head-v1",
+			"productionOrder": 61,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-beast-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/beast-scale/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/beast-scale/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-beast-scale-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-beast-scale-light-armour-torso-v1",
+			"productionOrder": 62,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-beast-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/beast-scale/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/beast-scale/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-beast-scale-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-beast-scale-light-armour-legs-v1",
+			"productionOrder": 63,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-beast-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/beast-scale/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/beast-scale/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-beast-scale-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-beast-scale-light-armour-boots-v1",
+			"productionOrder": 64,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-beast-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-beast-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/beast-scale/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/beast-scale/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/beast-scale/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-layered-silk-robes-full-set-v1",
+			"targetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"productionOrder": 65,
+			"productionWave": 3,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/layered-silk/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/layered-silk/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-layered-silk-robes-head-v1",
+			"targetId": "material-equipment-v1-layered-silk-robes-head-v1",
+			"productionOrder": 66,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-layered-silk-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/layered-silk/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/layered-silk/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-layered-silk-robes-torso-v1",
+			"targetId": "material-equipment-v1-layered-silk-robes-torso-v1",
+			"productionOrder": 67,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-layered-silk-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/layered-silk/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/layered-silk/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-layered-silk-robes-legs-v1",
+			"targetId": "material-equipment-v1-layered-silk-robes-legs-v1",
+			"productionOrder": 68,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-layered-silk-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/layered-silk/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/layered-silk/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-layered-silk-robes-boots-v1",
+			"targetId": "material-equipment-v1-layered-silk-robes-boots-v1",
+			"productionOrder": 69,
+			"productionWave": 3,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-layered-silk-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/layered-silk/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/d/layered-silk/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/d/layered-silk/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-sword-v1",
+			"targetId": "material-equipment-v1-blacksteel-sword-v1",
+			"productionOrder": 70,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-dagger-v1",
+			"targetId": "material-equipment-v1-blacksteel-dagger-v1",
+			"productionOrder": 71,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-spear-v1",
+			"targetId": "material-equipment-v1-blacksteel-spear-v1",
+			"productionOrder": 72,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-axe-v1",
+			"targetId": "material-equipment-v1-blacksteel-axe-v1",
+			"productionOrder": 73,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-mace-v1",
+			"targetId": "material-equipment-v1-blacksteel-mace-v1",
+			"productionOrder": 74,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-shield-v1",
+			"targetId": "material-equipment-v1-blacksteel-shield-v1",
+			"productionOrder": 75,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"productionOrder": 76,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-blacksteel-heavy-armour-head-v1",
+			"productionOrder": 77,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-blacksteel-heavy-armour-torso-v1",
+			"productionOrder": 78,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-blacksteel-heavy-armour-legs-v1",
+			"productionOrder": 79,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-blacksteel-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-blacksteel-heavy-armour-boots-v1",
+			"productionOrder": 80,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-blacksteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/blacksteel/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-heartwood-bow-v1",
+			"targetId": "material-equipment-v1-heartwood-bow-v1",
+			"productionOrder": 81,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/heartwood/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/heartwood/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-heartwood-staff-v1",
+			"targetId": "material-equipment-v1-heartwood-staff-v1",
+			"productionOrder": 82,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/heartwood/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/heartwood/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-chitin-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"productionOrder": 83,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/chitin/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/chitin/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-chitin-light-armour-head-v1",
+			"targetId": "material-equipment-v1-chitin-light-armour-head-v1",
+			"productionOrder": 84,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-chitin-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/chitin/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/chitin/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-chitin-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-chitin-light-armour-torso-v1",
+			"productionOrder": 85,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-chitin-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/chitin/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/chitin/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-chitin-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-chitin-light-armour-legs-v1",
+			"productionOrder": 86,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-chitin-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/chitin/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/chitin/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-chitin-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-chitin-light-armour-boots-v1",
+			"productionOrder": 87,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-chitin-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/chitin/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/chitin/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/chitin/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spellweave-robes-full-set-v1",
+			"targetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"productionOrder": 88,
+			"productionWave": 4,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/spellweave/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/spellweave/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spellweave-robes-head-v1",
+			"targetId": "material-equipment-v1-spellweave-robes-head-v1",
+			"productionOrder": 89,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-spellweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/spellweave/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/spellweave/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spellweave-robes-torso-v1",
+			"targetId": "material-equipment-v1-spellweave-robes-torso-v1",
+			"productionOrder": 90,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-spellweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/spellweave/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/spellweave/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spellweave-robes-legs-v1",
+			"targetId": "material-equipment-v1-spellweave-robes-legs-v1",
+			"productionOrder": 91,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-spellweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/spellweave/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/spellweave/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spellweave-robes-boots-v1",
+			"targetId": "material-equipment-v1-spellweave-robes-boots-v1",
+			"productionOrder": 92,
+			"productionWave": 4,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-spellweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-spellweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/c/spellweave/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/c/spellweave/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/c/spellweave/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-sword-v1",
+			"targetId": "material-equipment-v1-skyiron-sword-v1",
+			"productionOrder": 93,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-dagger-v1",
+			"targetId": "material-equipment-v1-skyiron-dagger-v1",
+			"productionOrder": 94,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-spear-v1",
+			"targetId": "material-equipment-v1-skyiron-spear-v1",
+			"productionOrder": 95,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-axe-v1",
+			"targetId": "material-equipment-v1-skyiron-axe-v1",
+			"productionOrder": 96,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-mace-v1",
+			"targetId": "material-equipment-v1-skyiron-mace-v1",
+			"productionOrder": 97,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-shield-v1",
+			"targetId": "material-equipment-v1-skyiron-shield-v1",
+			"productionOrder": 98,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"productionOrder": 99,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-skyiron-heavy-armour-head-v1",
+			"productionOrder": 100,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-skyiron-heavy-armour-torso-v1",
+			"productionOrder": 101,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-skyiron-heavy-armour-legs-v1",
+			"productionOrder": 102,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-skyiron-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-skyiron-heavy-armour-boots-v1",
+			"productionOrder": 103,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-skyiron-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/skyiron/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/skyiron/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spiritwood-bow-v1",
+			"targetId": "material-equipment-v1-spiritwood-bow-v1",
+			"productionOrder": 104,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/spiritwood/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/spiritwood/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-spiritwood-staff-v1",
+			"targetId": "material-equipment-v1-spiritwood-staff-v1",
+			"productionOrder": 105,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/spiritwood/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/spiritwood/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"productionOrder": 106,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-drakescale-light-armour-head-v1",
+			"targetId": "material-equipment-v1-drakescale-light-armour-head-v1",
+			"productionOrder": 107,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-drakescale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-drakescale-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-drakescale-light-armour-torso-v1",
+			"productionOrder": 108,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-drakescale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-drakescale-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-drakescale-light-armour-legs-v1",
+			"productionOrder": 109,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-drakescale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-drakescale-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-drakescale-light-armour-boots-v1",
+			"productionOrder": 110,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-drakescale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/drakescale/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-moonweave-robes-full-set-v1",
+			"targetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"productionOrder": 111,
+			"productionWave": 5,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-moonweave-robes-head-v1",
+			"targetId": "material-equipment-v1-moonweave-robes-head-v1",
+			"productionOrder": 112,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-moonweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-moonweave-robes-torso-v1",
+			"targetId": "material-equipment-v1-moonweave-robes-torso-v1",
+			"productionOrder": 113,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-moonweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-moonweave-robes-legs-v1",
+			"targetId": "material-equipment-v1-moonweave-robes-legs-v1",
+			"productionOrder": 114,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-moonweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-moonweave-robes-boots-v1",
+			"targetId": "material-equipment-v1-moonweave-robes-boots-v1",
+			"productionOrder": 115,
+			"productionWave": 5,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-moonweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/b/moonweave/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-sword-v1",
+			"targetId": "material-equipment-v1-starmetal-sword-v1",
+			"productionOrder": 116,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-dagger-v1",
+			"targetId": "material-equipment-v1-starmetal-dagger-v1",
+			"productionOrder": 117,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-spear-v1",
+			"targetId": "material-equipment-v1-starmetal-spear-v1",
+			"productionOrder": 118,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-axe-v1",
+			"targetId": "material-equipment-v1-starmetal-axe-v1",
+			"productionOrder": 119,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-mace-v1",
+			"targetId": "material-equipment-v1-starmetal-mace-v1",
+			"productionOrder": 120,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-shield-v1",
+			"targetId": "material-equipment-v1-starmetal-shield-v1",
+			"productionOrder": 121,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"productionOrder": 122,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-starmetal-heavy-armour-head-v1",
+			"productionOrder": 123,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-starmetal-heavy-armour-torso-v1",
+			"productionOrder": 124,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-starmetal-heavy-armour-legs-v1",
+			"productionOrder": 125,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starmetal-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-starmetal-heavy-armour-boots-v1",
+			"productionOrder": 126,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starmetal/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starmetal/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starmetal/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-living-branch-bow-v1",
+			"targetId": "material-equipment-v1-living-branch-bow-v1",
+			"productionOrder": 127,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/living-branch/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/living-branch/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-living-branch-staff-v1",
+			"targetId": "material-equipment-v1-living-branch-staff-v1",
+			"productionOrder": 128,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/living-branch/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/living-branch/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"productionOrder": 129,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wyrmscale-light-armour-head-v1",
+			"targetId": "material-equipment-v1-wyrmscale-light-armour-head-v1",
+			"productionOrder": 130,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wyrmscale-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-wyrmscale-light-armour-torso-v1",
+			"productionOrder": 131,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wyrmscale-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-wyrmscale-light-armour-legs-v1",
+			"productionOrder": 132,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-wyrmscale-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-wyrmscale-light-armour-boots-v1",
+			"productionOrder": 133,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-wyrmscale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/wyrmscale/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/wyrmscale/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/wyrmscale/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starcloth-robes-full-set-v1",
+			"targetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"productionOrder": 134,
+			"productionWave": 6,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starcloth-robes-head-v1",
+			"targetId": "material-equipment-v1-starcloth-robes-head-v1",
+			"productionOrder": 135,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starcloth-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starcloth-robes-torso-v1",
+			"targetId": "material-equipment-v1-starcloth-robes-torso-v1",
+			"productionOrder": 136,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starcloth-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starcloth-robes-legs-v1",
+			"targetId": "material-equipment-v1-starcloth-robes-legs-v1",
+			"productionOrder": 137,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starcloth-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-starcloth-robes-boots-v1",
+			"targetId": "material-equipment-v1-starcloth-robes-boots-v1",
+			"productionOrder": 138,
+			"productionWave": 6,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-starcloth-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/a/starcloth/robes-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-sword-v1",
+			"targetId": "material-equipment-v1-sunsteel-sword-v1",
+			"productionOrder": 139,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/sword-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/sword-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/sword-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-dagger-v1",
+			"targetId": "material-equipment-v1-sunsteel-dagger-v1",
+			"productionOrder": 140,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/dagger-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/dagger-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/dagger-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-spear-v1",
+			"targetId": "material-equipment-v1-sunsteel-spear-v1",
+			"productionOrder": 141,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/spear-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/spear-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/spear-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-axe-v1",
+			"targetId": "material-equipment-v1-sunsteel-axe-v1",
+			"productionOrder": 142,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/axe-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/axe-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/axe-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-mace-v1",
+			"targetId": "material-equipment-v1-sunsteel-mace-v1",
+			"productionOrder": 143,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/mace-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/mace-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/mace-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-shield-v1",
+			"targetId": "material-equipment-v1-sunsteel-shield-v1",
+			"productionOrder": 144,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/shield-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/shield-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/shield-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"targetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"productionOrder": 145,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-heavy-armour-head-v1",
+			"targetId": "material-equipment-v1-sunsteel-heavy-armour-head-v1",
+			"productionOrder": 146,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-heavy-armour-torso-v1",
+			"targetId": "material-equipment-v1-sunsteel-heavy-armour-torso-v1",
+			"productionOrder": 147,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-heavy-armour-legs-v1",
+			"targetId": "material-equipment-v1-sunsteel-heavy-armour-legs-v1",
+			"productionOrder": 148,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-sunsteel-heavy-armour-boots-v1",
+			"targetId": "material-equipment-v1-sunsteel-heavy-armour-boots-v1",
+			"productionOrder": 149,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/heavy-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/heavy-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/sunsteel/heavy-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-worldtree-limb-bow-v1",
+			"targetId": "material-equipment-v1-worldtree-limb-bow-v1",
+			"productionOrder": 150,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/bow-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/worldtree-limb/bow-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/worldtree-limb/bow-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-worldtree-limb-staff-v1",
+			"targetId": "material-equipment-v1-worldtree-limb-staff-v1",
+			"productionOrder": 151,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/worldtree-limb/staff-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/worldtree-limb/staff-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/worldtree-limb/staff-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"targetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"productionOrder": 152,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/ancient-dragon-scale/light-armour-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/ancient-dragon-scale/light-armour-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ancient-dragon-scale-light-armour-head-v1",
+			"targetId": "material-equipment-v1-ancient-dragon-scale-light-armour-head-v1",
+			"productionOrder": 153,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/ancient-dragon-scale/light-armour-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/ancient-dragon-scale/light-armour-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ancient-dragon-scale-light-armour-torso-v1",
+			"targetId": "material-equipment-v1-ancient-dragon-scale-light-armour-torso-v1",
+			"productionOrder": 154,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/ancient-dragon-scale/light-armour-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/ancient-dragon-scale/light-armour-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ancient-dragon-scale-light-armour-legs-v1",
+			"targetId": "material-equipment-v1-ancient-dragon-scale-light-armour-legs-v1",
+			"productionOrder": 155,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/ancient-dragon-scale/light-armour-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/ancient-dragon-scale/light-armour-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-ancient-dragon-scale-light-armour-boots-v1",
+			"targetId": "material-equipment-v1-ancient-dragon-scale-light-armour-boots-v1",
+			"productionOrder": 156,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-ancient-dragon-scale-light-armour-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/ancient-dragon-scale/light-armour-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/ancient-dragon-scale/light-armour-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/ancient-dragon-scale/light-armour-boots-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-fateweave-robes-full-set-v1",
+			"targetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"productionOrder": 157,
+			"productionWave": 7,
+			"phase": "independent",
+			"consistencySourceTargetId": null,
+			"executionEnvelopeMaterialization": "before-root-dispatch",
+			"prerequisiteReviewGateId": null,
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/fateweave/robes-full-set-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/fateweave/robes-full-set-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-full-set-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-fateweave-robes-head-v1",
+			"targetId": "material-equipment-v1-fateweave-robes-head-v1",
+			"productionOrder": 158,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-fateweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/fateweave/robes-head-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/fateweave/robes-head-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-head-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-fateweave-robes-torso-v1",
+			"targetId": "material-equipment-v1-fateweave-robes-torso-v1",
+			"productionOrder": 159,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-fateweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/fateweave/robes-torso-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/fateweave/robes-torso-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-torso-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-fateweave-robes-legs-v1",
+			"targetId": "material-equipment-v1-fateweave-robes-legs-v1",
+			"productionOrder": 160,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-fateweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/fateweave/robes-legs-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/fateweave/robes-legs-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-legs-v1.json"
+		},
+		{
+			"jobId": "job-material-equipment-v1-fateweave-robes-boots-v1",
+			"targetId": "material-equipment-v1-fateweave-robes-boots-v1",
+			"productionOrder": 161,
+			"productionWave": 7,
+			"phase": "armour-piece",
+			"consistencySourceTargetId": "material-equipment-v1-fateweave-robes-full-set-v1",
+			"executionEnvelopeMaterialization": "after-review-receipt-hash-is-known",
+			"prerequisiteReviewGateId": "material-equipment-v1-fateweave-robes-full-set-v1-review-pass",
+			"synchronousRetryCeiling": 0,
+			"dryRun": false,
+			"permittedOutputs": {
+				"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/s/fateweave/robes-boots-v1.png",
+				"provenanceResultPath": "assets/equipment/experiments/material-equipment-v1/results/s/fateweave/robes-boots-v1.json"
+			},
+			"reviewEvidencePath": "assets/equipment/experiments/material-equipment-v1/reviews/s/fateweave/robes-boots-v1.json"
+		}
+	]
+}

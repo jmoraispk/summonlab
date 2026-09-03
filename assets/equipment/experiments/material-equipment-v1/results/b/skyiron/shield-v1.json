@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-skyiron-shield-v1",
+	"targetId": "material-equipment-v1-skyiron-shield-v1",
+	"assignmentId": "assignment-material-equipment-v1-skyiron-shield-v1",
+	"status": "revise",
+	"promptSha256": "0d498750d4816c80c46e92a1ba736a54e2fbade08816562b7371a6fe656ab1f6",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-skyiron-shield-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-output-exec-94c1b367-125c-435f-9abb-d4d5b31e78d6",
+			"requestStartedAt": "2026-09-02T15:06:42.000Z",
+			"generationCompletedAt": "2026-09-02T15:07:09.730Z",
+			"inspectionCompletedAt": "2026-09-02T15:07:54.977Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete shield is visible, but its crown and lower point sit only about 5–6% from the canvas edges, violating the declared 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete isolated shield is present, with no character, weapon, or loose equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The broad shoulders, tapered lower point, convex face, reinforced rim, and central boss read immediately as a medium heater shield."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A riveted perimeter, raised central boss, segmented face plates, and load-bearing ribs form a plausible convex shield structure with credible weight and coverage."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Skyiron covers the entire shield face, boss, ribs, and rim and supplies the sole visible rank signal without a competing secondary material."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "A densely hammered silvery surface and narrow storm-like energy seams establish skyiron through physical surface response and construction cues beyond palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Cool emission is confined to sparse branching seams and a few junction points; the shield body remains solid, dark, and non-glowing."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The candidate uses premium realistic painterly metal, honest abrasion and hammering, cold blue key, restrained warm rim, charcoal backdrop, and understated floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material substitution, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/shield-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1752222,
+		"sha256": "7bbd2c908e7b2cf01338ad2f2d80e7a44b350fb031fd5ab33d9670e7171dfb8d"
+	},
+	"candidateSha256": "7bbd2c908e7b2cf01338ad2f2d80e7a44b350fb031fd5ab33d9670e7171dfb8d",
+	"startedAt": "2026-09-02T15:06:42.000Z",
+	"completedAt": "2026-09-02T15:07:54.977Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/shield-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/skyiron/shield-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

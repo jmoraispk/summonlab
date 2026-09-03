@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 171,
+	"previousEventCanonicalSha256": "cab5bdb18705751b886f7a1970eb3cc89ccd101455dd1d75db84de2855c28094",
+	"recordedAt": "2026-09-02T15:08:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-skyiron-dagger-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-skyiron-dagger-v1",
+		"workerId": "equipment-worker-115",
+		"status": "candidate",
+		"resultCanonicalSha256": "e377f23c8abeb1ab759a93c35913d27fea3d6ef86795709d41bd49d54420c099",
+		"failureKind": null
+	}
+}

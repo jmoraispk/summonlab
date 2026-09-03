@@ -1,0 +1,57 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-beast-scale-light-armour-legs-v3-attempt-2",
+	"targetId": "material-equipment-v3-beast-scale-light-armour-legs-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/d/beast-scale/light-armour-legs-v3.json",
+		"canonicalSha256": "bf37af35f1cf9c69dd6deddfa746e67e3a9d669773a6c8bb91d8af35395f8449"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-beast-scale.json",
+		"canonicalSha256": "1fad21cece53e455704a77e017c4d79b11acfd8256ee480763db70edbd2a5a6b"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-legs-v3.png",
+		"sha256": "9149a3cfa06d48ad937e5f920aeadbbd5a17c182a3bdaf780bc490cd4930a765",
+		"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-full-set-v3.png",
+			"sha256": "c138586bfb6005373054453f4386645d2026766ec29724383f4528ab62ad2a3d",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-legs-v3.png",
+			"sha256": "9149a3cfa06d48ad937e5f920aeadbbd5a17c182a3bdaf780bc490cd4930a765",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"classification": "class-rule-violation",
+	"correction": "Render only the Beast Scale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot.",
+	"prompt": "Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Beast Scale:\nPalette: Smoky umber, gray-green, and bone-tan scale edges.\nValue: Middle-dark with directional scale highlights.\nSurface/wear: Natural overlapping scales, keratin ridges, chipped tips, worn high points, supple hide joins.\nConstruction: Sorted scale rows on flexible backing, reinforced zones, tied edges, practical closures.\nSupernatural behavior: None; biological durability is visible but grounded.\nNeutral secondary materials: Hard Leather, linen, dull steel, and dark cord.\nNeighbor distinction: More articulated and protective than Hard Leather; less plated and alien than Chitin.\n\nOne isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.\n\nREVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.\n\nCorrect this exact audited issue: Render only the Beast Scale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot.\n\nThe owner-accepted full set remains the first and authoritative reference. Return one new isolated legs candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "babaecf14ae2c0c856e8606f1309b06a80e9f45148b8d740dfcd1d4469a14081",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass Armour-piece candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"change another Armour slot or the owner-accepted full-set source",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

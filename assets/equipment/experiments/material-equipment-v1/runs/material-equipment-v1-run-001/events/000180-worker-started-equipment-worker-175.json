@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 180,
+	"previousEventCanonicalSha256": "aaf6ca64fd805ef741e68d9ee442b0df9334334b7af3e73ad72b31125948726f",
+	"recordedAt": "2026-09-02T15:08:05.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-175",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:04.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-living-branch-bow-v1-175",
+		"targetId": "material-equipment-v1-living-branch-bow-v1",
+		"workerId": "equipment-worker-175"
+	}
+}

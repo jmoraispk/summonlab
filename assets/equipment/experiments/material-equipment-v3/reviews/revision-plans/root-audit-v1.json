@@ -1,0 +1,76 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-plan-v3",
+	"revisionPlanId": "equipment-v3-root-audit-revisions-v1",
+	"createdAt": "2026-09-03T14:15:00.000Z",
+	"createdBy": "equipment-producer-audit",
+	"classAuditBasis": [
+		"assets/equipment/experiments/material-equipment-v3/reviews/class-audits/axe-f-to-s-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/class-audits/mace-f-to-s-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/class-audits/shield-f-to-s-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/class-audits/spear-f-to-s-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/class-audits/sword-f-to-s-v3.png"
+	],
+	"materialAuditBasis": [
+		"assets/equipment/experiments/material-equipment-v3/reviews/material-audits/f-bronze-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/material-audits/e-iron-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/material-audits/d-steel-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/material-audits/a-starmetal-v3.png",
+		"assets/equipment/experiments/material-equipment-v3/reviews/material-audits/s-sunsteel-v3.png"
+	],
+	"revisions": [
+		{
+			"targetId": "material-equipment-v3-bronze-axe-v3",
+			"attempt": 2,
+			"classification": "class-rule-violation",
+			"correction": "Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest."
+		},
+		{
+			"targetId": "material-equipment-v3-iron-shield-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Use a clearly round, workmanlike Iron shield silhouette so it cannot be mistaken for the Bronze heater shield. Keep E-rank decoration minimal and preserve the iron surface language."
+		},
+		{
+			"targetId": "material-equipment-v3-steel-shield-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Use a compact rectangular or softly squared Steel shield silhouette, visibly distinct from both the Bronze heater and round Iron shields. Keep it refined but restrained at D rank."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-shield-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Create a distinct celestial Starmetal shield outline with an elegant asymmetric star-point or crescent influence. Do not reuse the open oval Skyiron silhouette; preserve A-rank readability and starlit material behavior."
+		},
+		{
+			"targetId": "material-equipment-v3-steel-sword-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Make the Steel sword a refined hand-and-a-half longsword with a longer blade, a clearly shaped fuller, and a more authored guard than the Iron sword. It must remain practical D-rank steel, not magical."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-mace-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Give the Starmetal mace a distinctive angular star-flanged striking head and authored A-rank proportions, visibly different from the slim Skyiron mace while preserving mace recognition and controlled starlit detail."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-sword-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Push the S-rank silhouette into a singular radiant solar sword: a bolder authored blade profile, sunburst guard, and controlled luminous edge. It must be unmistakably above Starmetal at phone scale while remaining a sword."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-spear-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Create an unmistakable S-rank sunlance spearhead with a longer central point and restrained winged solar geometry. Keep one primary spear point, not a trident, and preserve the long functional shaft."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-axe-v3",
+			"attempt": 2,
+			"classification": "rank-silhouette-collision",
+			"correction": "Create a dramatic but unmistakably single-bit Sunsteel war-axe with one sweeping radiant cutting edge, a small non-cutting counterspike, and an apex S-rank silhouette. Do not make a mirrored or double-bit head."
+		}
+	]
+}

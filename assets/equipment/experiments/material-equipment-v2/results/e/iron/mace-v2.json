@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-iron-mace-v2",
+	"targetId": "material-equipment-v2-iron-mace-v2",
+	"assignmentId": "assignment-material-equipment-v2-iron-mace-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "92bae3841dd05198e0e56aea329bbf12eaaf60560b215c7ecc94dea602d5238b",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "mace-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+			"contentHash": "286e4dd52cf4205ecdcd9949f6d677ed93eb4fd7b0c33041dc6baec1cb86551d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-iron-mace-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-exec-624dc841-1266-4190-95bc-b06d3cb282a6",
+			"requestStartedAt": "2026-09-02T22:20:21.161Z",
+			"generationCompletedAt": "2026-09-02T22:21:04.189Z",
+			"inspectionCompletedAt": "2026-09-02T22:21:43.251Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/e/iron/mace-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1112976,
+		"sha256": "db18c9dd4194af7d3a8c54ac381f3d8c3a7bbb5a0d863fa6daff62087b988121"
+	},
+	"candidateSha256": "db18c9dd4194af7d3a8c54ac381f3d8c3a7bbb5a0d863fa6daff62087b988121",
+	"startedAt": "2026-09-02T22:20:21.161Z",
+	"completedAt": "2026-09-02T22:21:43.251Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/e/iron/mace-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/e/iron/mace-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

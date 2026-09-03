@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "hard-leather",
+	"displayName": "Hard Leather",
+	"family": "hide-scale",
+	"rank": "E",
+	"palette": "Deep chestnut, russet edges, and dark brown seams.",
+	"valueRange": "Middle-dark with controlled warm highlights on formed edges.",
+	"surfaceAndWear": "Waxed matte surface, compression creases, burnished edges, scratches, and repaired stitching.",
+	"constructionVocabulary": "Molded leather plates, reinforced seams, articulated lames, buckles, and fitted closures.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Linen lining, dull iron buckles, dark cord, and small wood stiffeners.",
+	"neighborDifference": "Cleaner, firmer, and purpose-shaped than Coarse Hide; no scales or monstrous anatomy.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-hard-leather.json"
+}

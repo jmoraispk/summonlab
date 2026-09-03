@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-yew-bow-v2",
+	"targetId": "material-equipment-v2-yew-bow-v2",
+	"assignmentId": "assignment-material-equipment-v2-yew-bow-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "0405203fb0ca6bd55435d02d12e02aa03dbeab11994a73f04217c1e2cb7a6153",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "bow-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/ash/bow-v1.png",
+			"contentHash": "79dc8ac9bda5d078773465cddb076bb177292e88db1e608bff19e547974f7eb2"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-yew-bow-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-aa1b05a9-7228-49aa-8cab-66dad656e419",
+			"requestStartedAt": "2026-09-02T22:22:20.723Z",
+			"generationCompletedAt": "2026-09-02T22:23:03.195Z",
+			"inspectionCompletedAt": "2026-09-02T22:23:58.508Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/e/yew/bow-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1284135,
+		"sha256": "437b97bff5c789157266aebaa7fc0644ef50c3bbcc16c67a1c23da1eafbd7ad3"
+	},
+	"candidateSha256": "437b97bff5c789157266aebaa7fc0644ef50c3bbcc16c67a1c23da1eafbd7ad3",
+	"startedAt": "2026-09-02T22:22:20.723Z",
+	"completedAt": "2026-09-02T22:23:58.508Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/e/yew/bow-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/e/yew/bow-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

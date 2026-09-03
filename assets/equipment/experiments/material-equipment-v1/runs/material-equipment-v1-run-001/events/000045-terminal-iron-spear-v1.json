@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 45,
+	"previousEventCanonicalSha256": "d0a528aed1d65b8360435567d8d48c827ce3a61624fef0693600745eb2123119",
+	"recordedAt": "2026-09-02T14:52:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-iron-spear-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:52:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-iron-spear-v1",
+		"workerId": "equipment-worker-15",
+		"status": "revise",
+		"resultCanonicalSha256": "90106161cb96e34577c0d564785a45e9917565988601d75d175ea41ab6ccf454",
+		"failureKind": null
+	}
+}

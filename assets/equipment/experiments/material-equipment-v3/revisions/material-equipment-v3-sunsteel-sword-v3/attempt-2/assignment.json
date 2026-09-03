@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-sunsteel-sword-v3-attempt-2",
+	"targetId": "material-equipment-v3-sunsteel-sword-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/s/sunsteel/sword-v3.json",
+		"canonicalSha256": "a70e2b3d9177ecc0b9ae6c4c92009c3a475cdd55e05f4f7d82fa08dac0e6384c"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-sunsteel.json",
+		"canonicalSha256": "f1fbd4ae7d031f8cc66e71fc2821777bfeb0a39828e58e439a3ec905c5db4ffd"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/sword-v3.png",
+		"sha256": "7adbaf9daffdc48a9ffd803b2e831b8eed34f9877a919c25f4fa24ab3980c190",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+			"sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+			"purpose": "Rank escalation, silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/sword-v3.png",
+			"sha256": "7adbaf9daffdc48a9ffd803b2e831b8eed34f9877a919c25f4fa24ab3980c190",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Push the S-rank silhouette into a singular radiant solar sword: a bolder authored blade profile, sunburst guard, and controlled luminous edge. It must be unmistakably above Starmetal at phone scale while remaining a sword.",
+	"prompt": "Render one dedicated Sunsteel Sword, rank S, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Long cutting blade and usable one- or two-hand grip. Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable. Use the accepted progression reference as the authoritative design for the S column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Sunsteel:\nPalette: White-gold metal, warm solar gold, small ember-orange cores, and deep charcoal contrast.\nValue: Legendary bright focal edges balanced by solid dark recesses.\nSurface/wear: Flawless radiant alloy, sunburst grain, immaculate edges, ceremonial micro-engraving, no rust.\nConstruction: Iconic heroic silhouette, solar arcs, crownlike guards, controlled asymmetric spectacle, masterful joined geometry.\nSupernatural behavior: Contained sunlight glows through narrow channels and the strongest edges; no uncontrolled bloom.\nNeutral secondary materials: Black leather, dark hardwood, charcoal cloth, and tiny white-silver fittings.\nNeighbor distinction: Warmer, more iconic, and unmistakably solar beyond Starmetal while remaining usable equipment.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Push the S-rank silhouette into a singular radiant solar sword: a bolder authored blade profile, sunburst guard, and controlled luminous edge. It must be unmistakably above Starmetal at phone scale while remaining a sword.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "0c3caf094b4d3ba9181a38eca65e4457d4826adcb04331ec0081b224bf0c302d",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

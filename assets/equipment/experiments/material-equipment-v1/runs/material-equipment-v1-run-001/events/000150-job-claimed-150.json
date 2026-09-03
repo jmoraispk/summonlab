@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 150,
+	"previousEventCanonicalSha256": "9a642fd1c46495028490ed175f55591ef958f0b313b6c06101619a9b07735375",
+	"recordedAt": "2026-09-02T15:06:43.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-150",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:42.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-moonweave-robes-full-set-v1-150",
+		"targetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+		"workerId": "equipment-worker-150"
+	}
+}

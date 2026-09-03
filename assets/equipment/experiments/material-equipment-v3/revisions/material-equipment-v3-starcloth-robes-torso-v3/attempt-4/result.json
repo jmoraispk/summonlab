@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-starcloth-robes-torso-v3-attempt-4",
+	"targetId": "material-equipment-v3-starcloth-robes-torso-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-starcloth-robes-torso-v3-attempt-4",
+	"attempt": 4,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:34:50.402Z",
+	"completedAt": "2026-09-03T18:35:13.467Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "920a2bfa44ca6d970510373035ec65c543490f01052a430b40348e87edf3dbe1",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-full-set-v3.png",
+			"sha256": "c02dc954d3ac92af7a2b4235eaeaad3b243963c0edca949a29e6c762c3862c3b",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-torso-v3.png",
+			"sha256": "8e86ffd8d5fb98631bd7ad5631605b24d05618c883e6e94db051e7f6c50ebb00",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a06850-642b-7ef0-b0af-d65dbcc34e55/exec-94473c7a-59d2-4a70-aaf6-cc997f19b29f.png",
+		"sha256": "163b504c4577e8bee3233471d452763cf2e5cce3e1b06802fe0e59fdfbbc8733",
+		"bytes": 1991152,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-4/candidate.png",
+		"sha256": "80ee9a9ce532891e123ad2b0e2f62d9ae2f2d98ce4f1ba754c9ab6b92b4f4b92",
+		"bytes": 1460232,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

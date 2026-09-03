@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-blacksteel-sword-v1",
+	"targetId": "material-equipment-v1-blacksteel-sword-v1",
+	"assignmentId": "assignment-material-equipment-v1-blacksteel-sword-v1",
+	"status": "revise",
+	"promptSha256": "caae372383bf20aa5832fe246a4ec04a74e5fc8bc8f1c8d30d32d19382063013",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-blacksteel-sword-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-1c1bc406-c0b7-4ccd-9412-4749885abb69",
+			"requestStartedAt": "2026-09-02T15:01:59.162Z",
+			"generationCompletedAt": "2026-09-02T15:03:05.591Z",
+			"inspectionCompletedAt": "2026-09-02T15:03:28.556Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete sword is visible, but its pommel and tip sit only about 60 source pixels from the top and bottom edges on a 1254 pixel square, below the required 8 percent safe margin of about 100 pixels."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete sword is present, with no duplicate weapon or detached component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long straight double-edged blade, crossguard, extended wrapped grip, and pommel read immediately as a practical hand-and-a-half sword."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The aligned blade, compact crossguard, long usable grip, and substantial pommel form a coherent assembly with plausible joins and weight distribution."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Dense near-black steel dominates the blade, guard, and pommel; the black grip wrap stays subordinate and no second material presents a competing rank signal."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "The deep black forged body, abrasion-revealed gray bevels, shallow blade channels, and hard narrow highlights establish blacksteel beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural full-object glow; the restrained amber line is local rim lighting and all other response remains narrow reflected highlights."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly finish, honest wear, cold key, restrained warm rim, midnight-charcoal backdrop, and grounded floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person, published-character resemblance, transferred hammer design, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-defined material identity, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/sword-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1290277,
+		"sha256": "980104d8ada2b7876443814d81dd4c42a91038e28eac84400640e6c85d133645"
+	},
+	"candidateSha256": "980104d8ada2b7876443814d81dd4c42a91038e28eac84400640e6c85d133645",
+	"startedAt": "2026-09-02T15:01:59.162Z",
+	"completedAt": "2026-09-02T15:03:35.521Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/c/blacksteel/sword-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/c/blacksteel/sword-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

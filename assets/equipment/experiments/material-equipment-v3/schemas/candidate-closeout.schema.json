@@ -1,0 +1,306 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-candidate-closeout-v3"
+		},
+		"reportId": {
+			"type": "string",
+			"const": "material-equipment-v3-candidate-closeout-v1"
+		},
+		"runId": {
+			"type": "string",
+			"const": "material-equipment-v3-run-001"
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"createdBy": {
+			"type": "string",
+			"minLength": 1
+		},
+		"status": {
+			"type": "string",
+			"const": "candidate-closeout"
+		},
+		"manifest": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"canonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"canonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"repository": {
+			"type": "object",
+			"properties": {
+				"branch": {
+					"type": "string",
+					"minLength": 1
+				},
+				"basisCommit": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{40}$"
+				},
+				"commits": {
+					"minItems": 1,
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"hash": {
+								"type": "string",
+								"pattern": "^[a-f0-9]{40}$"
+							},
+							"subject": {
+								"type": "string",
+								"minLength": 1
+							}
+						},
+						"required": [
+							"hash",
+							"subject"
+						],
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": [
+				"branch",
+				"basisCommit",
+				"commits"
+			],
+			"additionalProperties": false
+		},
+		"checkpoints": {
+			"minItems": 3,
+			"maxItems": 3,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"path": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"canonicalSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"summary": {
+						"type": "object",
+						"properties": {
+							"accept": {
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							},
+							"revise": {
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							},
+							"defer": {
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							}
+						},
+						"required": [
+							"accept",
+							"revise",
+							"defer"
+						],
+						"additionalProperties": false
+					}
+				},
+				"required": [
+					"path",
+					"canonicalSha256",
+					"summary"
+				],
+				"additionalProperties": false
+			}
+		},
+		"decisionTotals": {
+			"type": "object",
+			"properties": {
+				"accept": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"revise": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"defer": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"noImage": {
+					"type": "number",
+					"const": 0
+				}
+			},
+			"required": [
+				"accept",
+				"revise",
+				"defer",
+				"noImage"
+			],
+			"additionalProperties": false
+		},
+		"evidence": {
+			"type": "object",
+			"properties": {
+				"directionSheetCount": {
+					"type": "number",
+					"const": 11
+				},
+				"rootCandidateCount": {
+					"type": "number",
+					"const": 77
+				},
+				"armourPieceCandidateCount": {
+					"type": "number",
+					"const": 84
+				},
+				"classAuditCount": {
+					"type": "number",
+					"const": 11
+				},
+				"materialAuditCount": {
+					"type": "number",
+					"const": 28
+				},
+				"armourAuditCount": {
+					"type": "number",
+					"const": 21
+				},
+				"baseAssignmentCount": {
+					"type": "number",
+					"const": 161
+				},
+				"revisionAssignmentCount": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"terminalResultCount": {
+					"type": "integer",
+					"exclusiveMinimum": 0,
+					"maximum": 9007199254740991
+				},
+				"succeededResultCount": {
+					"type": "integer",
+					"exclusiveMinimum": 0,
+					"maximum": 9007199254740991
+				},
+				"failedResultCount": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				},
+				"withheldCallCount": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991
+				}
+			},
+			"required": [
+				"directionSheetCount",
+				"rootCandidateCount",
+				"armourPieceCandidateCount",
+				"classAuditCount",
+				"materialAuditCount",
+				"armourAuditCount",
+				"baseAssignmentCount",
+				"revisionAssignmentCount",
+				"terminalResultCount",
+				"succeededResultCount",
+				"failedResultCount",
+				"withheldCallCount"
+			],
+			"additionalProperties": false
+		},
+		"promotionProposal": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"canonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"canonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"validationCommands": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"unresolvedIntegrationRequests": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"candidateOnly": {
+			"type": "boolean",
+			"const": true
+		},
+		"noRuntimeMutation": {
+			"type": "boolean",
+			"const": true
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"reportId",
+		"runId",
+		"createdAt",
+		"createdBy",
+		"status",
+		"manifest",
+		"repository",
+		"checkpoints",
+		"decisionTotals",
+		"evidence",
+		"promotionProposal",
+		"validationCommands",
+		"unresolvedIntegrationRequests",
+		"candidateOnly",
+		"noRuntimeMutation"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/candidate-closeout.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

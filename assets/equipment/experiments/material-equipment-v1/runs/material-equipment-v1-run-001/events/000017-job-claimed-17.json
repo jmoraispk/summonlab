@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 17,
+	"previousEventCanonicalSha256": "5c24d9582568dd3d4111ebca8d84d6cb3518a9eb9047e2723ad3120504ea532d",
+	"recordedAt": "2026-09-02T14:45:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-17",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:45:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-iron-mace-v1-17",
+		"targetId": "material-equipment-v1-iron-mace-v1",
+		"workerId": "equipment-worker-17"
+	}
+}

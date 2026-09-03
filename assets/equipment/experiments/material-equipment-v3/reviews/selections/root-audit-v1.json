@@ -1,0 +1,112 @@
+{
+	"schemaVersion": "equipment-root-candidate-selection-manifest-v3",
+	"selectionManifestId": "equipment-v3-root-candidate-selections-v1",
+	"createdAt": "2026-09-03T14:23:17.158Z",
+	"createdBy": "equipment-producer-audit",
+	"approvalStatus": "candidate-only",
+	"revisionPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/revision-plans/root-audit-v1.json",
+		"canonicalSha256": "c024ef4076bf99ffa3caf244fa38587ecd9141739a4b73722be47bcfee952992"
+	},
+	"selections": [
+		{
+			"targetId": "material-equipment-v3-bronze-axe-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png",
+			"candidateSha256": "75e000d4ecaa7c1099922ddba8d358027c4773ea1d431f0f08aaea011412b39d",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/assignment.json",
+			"assignmentSha256": "c7333f7bf4462030e5d964b1d4134d8c9268a43a4707e86d58ebd6e6f8b455ce",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/result.json",
+			"resultSha256": "036c4a1addfd27346de0d06dee8aaf6a4a1f2f848f299b02c9d7a6d2c7cc9bfa",
+			"reason": "class-rule-violation: Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest."
+		},
+		{
+			"targetId": "material-equipment-v3-iron-shield-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/candidate.png",
+			"candidateSha256": "39de8f67c6e38d8474300cfbc4f8eb5b0eeea1a005c61b99aa31556d5b9f9401",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/assignment.json",
+			"assignmentSha256": "30a517e2d61e5f2ae11235d4effec8f394f9a0cb2aee13d2c9a1cd216248a36b",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/result.json",
+			"resultSha256": "9dbeb3005a7910e010c52d85ff30154fbbe3b624918c3b19abec63f01803697d",
+			"reason": "rank-silhouette-collision: Use a clearly round, workmanlike Iron shield silhouette so it cannot be mistaken for the Bronze heater shield. Keep E-rank decoration minimal and preserve the iron surface language."
+		},
+		{
+			"targetId": "material-equipment-v3-steel-shield-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/candidate.png",
+			"candidateSha256": "1054cc92907f7c81cda3e2e58c76db46d4b0202e4934b8361e15ed5fa7062484",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/assignment.json",
+			"assignmentSha256": "62d6b55f2379b63938fe25b7802fa959c5c96bc3b4c68ea9f163d3e71050d91e",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/result.json",
+			"resultSha256": "39ae321f7fb1104cc61578abf184bf170bae301b3d21ae7b1d0423055389ea02",
+			"reason": "rank-silhouette-collision: Use a compact rectangular or softly squared Steel shield silhouette, visibly distinct from both the Bronze heater and round Iron shields. Keep it refined but restrained at D rank."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-shield-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-shield-v3/attempt-2/candidate.png",
+			"candidateSha256": "ba649380c97a49c474ebb1bc5699b7e5b0a4ace9ae4bdcb40958b842fc1f9246",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-shield-v3/attempt-2/assignment.json",
+			"assignmentSha256": "484968dc51d3bc7f2cb5af7dea98f2d6c09e2f5c6a1a9a0058a49e4f34cfc2e9",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-shield-v3/attempt-2/result.json",
+			"resultSha256": "fa2af2d175a21c534bfb253c8bc24115b4cdf5ebebe8245e0994fa2712a95050",
+			"reason": "rank-silhouette-collision: Create a distinct celestial Starmetal shield outline with an elegant asymmetric star-point or crescent influence. Do not reuse the open oval Skyiron silhouette; preserve A-rank readability and starlit material behavior."
+		},
+		{
+			"targetId": "material-equipment-v3-steel-sword-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/candidate.png",
+			"candidateSha256": "1a93b6f4772d3f5b11d60290d11d175f948e1d1faecc715fbd82e2569fec6156",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/assignment.json",
+			"assignmentSha256": "6e9f16c3598271d804f58c9fb9558378ebd37daa08bd34833203bcf4b22161cb",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/result.json",
+			"resultSha256": "6f82748b456d4f43e14b432381a61d9ed4c46a1c127767b75cabe0247be6b752",
+			"reason": "rank-silhouette-collision: Make the Steel sword a refined hand-and-a-half longsword with a longer blade, a clearly shaped fuller, and a more authored guard than the Iron sword. It must remain practical D-rank steel, not magical."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-mace-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/candidate.png",
+			"candidateSha256": "89c1f75b087111228f651285d9b00c8639b6e0fd339851e2e53401c21ccca226",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/assignment.json",
+			"assignmentSha256": "5380de0212ca474eb1ed6fd28110d8edaa442af689772941c50f5daf15fa992c",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/result.json",
+			"resultSha256": "0e62f1d5faa0b7d451a609ff6f5932604e7a797542d5eef116e5a01bda6f3e82",
+			"reason": "rank-silhouette-collision: Give the Starmetal mace a distinctive angular star-flanged striking head and authored A-rank proportions, visibly different from the slim Skyiron mace while preserving mace recognition and controlled starlit detail."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-sword-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/candidate.png",
+			"candidateSha256": "c0e8138d5af24742c5f4a7f81116aed13e21ee4a50fde79179e082048e7e5606",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/assignment.json",
+			"assignmentSha256": "ab8912b3a97592e411d0427b333db5365522cc6740d30d5e93c67d49f4f735a0",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/result.json",
+			"resultSha256": "8c9de2a0d48b28b83bcc91348b68a187b25fbe7ce979e76fca8e4e5e1618bc66",
+			"reason": "rank-silhouette-collision: Push the S-rank silhouette into a singular radiant solar sword: a bolder authored blade profile, sunburst guard, and controlled luminous edge. It must be unmistakably above Starmetal at phone scale while remaining a sword."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-spear-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-spear-v3/attempt-2/candidate.png",
+			"candidateSha256": "840a52bf745d31268b6d81ec8b4b8446524a9a3aa871a276780297d14b47deed",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-spear-v3/attempt-2/assignment.json",
+			"assignmentSha256": "353ac803e104976f068f3835b76c07ec2fa0ba8e5eade6cb106bb458c699f419",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-spear-v3/attempt-2/result.json",
+			"resultSha256": "fb57d4614447419482409ec18067186d03d839fc141604b8a952f14141d200d5",
+			"reason": "rank-silhouette-collision: Create an unmistakable S-rank sunlance spearhead with a longer central point and restrained winged solar geometry. Keep one primary spear point, not a trident, and preserve the long functional shaft."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-axe-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/candidate.png",
+			"candidateSha256": "1fe55413b602b636948dec9aa90915eacc50091eff1ae06cd8cb0cda896f3802",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/assignment.json",
+			"assignmentSha256": "449e1c05366dcf75dcbe85e692cb44376b0555738b181be74d5814238d458ea2",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/result.json",
+			"resultSha256": "f40b93595f6edb9a61fdb5404323a5c0a7d3b4df0fdf330c1fb9c19cf2a56549",
+			"reason": "rank-silhouette-collision: Create a dramatic but unmistakably single-bit Sunsteel war-axe with one sweeping radiant cutting edge, a small non-cutting counterspike, and an apex S-rank silhouette. Do not make a mirrored or double-bit head."
+		}
+	]
+}

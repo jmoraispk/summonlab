@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-yew-bow-v3",
+	"productionOrder": 35,
+	"rank": "E",
+	"materialId": "yew",
+	"materialName": "Yew",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-yew.json",
+	"classId": "bow",
+	"classDirectionId": "equipment-v3-bow-rank-progression",
+	"artifactId": "bow",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/e/yew/bow-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/e/yew/bow-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/e/yew/bow-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/bow-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/e/yew/bow-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/e/yew/bow-v3.json"
+	}
+}

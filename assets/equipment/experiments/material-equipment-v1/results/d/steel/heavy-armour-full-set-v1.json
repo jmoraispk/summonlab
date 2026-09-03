@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-steel-heavy-armour-full-set-v1",
+	"targetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-steel-heavy-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "4bc19c31ff6ad20a6b4af3053a233ae352e57999c6345701a1445897b037eccb",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-steel-heavy-armour-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-175d-7120-96a7-b8f44434e17f/exec-9823651b-6714-4476-9fe6-381955eae92b.png",
+			"requestStartedAt": "2026-09-02T14:58:36.000Z",
+			"generationCompletedAt": "2026-09-02T14:59:22.310Z",
+			"inspectionCompletedAt": "2026-09-02T15:00:13.435Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete set remains visible, but the helmet crest begins only about 5% below the top edge, inside the required 8% safe margin; the remaining canvas edges retain adequate clearance."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one coherent complete armour set is shown on one featureless display form, with Head, Torso, paired Legs, and paired Boots readable together and no separate prop or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The closed helmet, broad cuirass, layered pauldrons and arm plates, cuisses, poleyns, greaves, and sabatons read immediately as heavy armour."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping articulated plates, rivets, buckled side fastenings, mail at movement gaps, segmented joints, and continuous coverage present plausible grounded construction and weight."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Worn steel plate dominates every armour region, while dark mail and fastening materials remain neutral and subordinate without asserting a second visible rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Forged plate variation, riveted overlapping construction, darkened recesses, scuffs, shallow dents, and rubbed bright edges establish steel through physical form and response beyond palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The rank-D steel exhibits no supernatural emission or full-object glow; brightness remains bounded to narrow metallic reflections and restrained warm rim light."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly dark-fantasy finish, honest surface wear, cold key, restrained warm rim, midnight-charcoal backdrop, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The closed set reveals no transferred person or reference subject and shows no published-character resemblance, rarity rainbow, gold inflation, full-object glow, implausibly oversized silhouette, ornament-led material identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2285239,
+		"sha256": "00ef91f6357d86c11d7f23a71046ba36392261c7b6a666a358239c7e36442ace"
+	},
+	"candidateSha256": "00ef91f6357d86c11d7f23a71046ba36392261c7b6a666a358239c7e36442ace",
+	"startedAt": "2026-09-02T14:58:36.000Z",
+	"completedAt": "2026-09-02T15:00:13.435Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/d/steel/heavy-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/d/steel/heavy-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

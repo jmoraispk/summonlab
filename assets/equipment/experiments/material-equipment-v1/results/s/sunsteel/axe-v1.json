@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-axe-v1",
+	"targetId": "material-equipment-v1-sunsteel-axe-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-axe-v1",
+	"status": "revise",
+	"promptSha256": "ea8430d223a63a0b5e9e43026601793ba0023f53d0075208efee7d2b245e767e",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-axe-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-6305-7b43-85e3-ef4e4f051591/exec-7a43b1dd-72de-48c4-8702-4c1e7b186b33.png",
+			"requestStartedAt": "2026-09-02T15:13:56.500Z",
+			"generationCompletedAt": "2026-09-02T15:14:26.084Z",
+			"inspectionCompletedAt": "2026-09-02T15:14:54.465Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete axe head, cutting edge, poll, haft, wrapped grip, and pommel are visible and contained with approximately the declared safe clearance at the closest top edge."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete one-hand axe is present, with no second weapon, detached component, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The broad cutting edge, deep beard, rear poll, and one-hand haft read immediately as a practical bearded axe."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The head is seated around a visible wooden haft with plausible eye geometry, the poll balances the edge, and the wrapped grip terminates in a reinforced pommel."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "fail",
+			"observation": "Ordinary dark steel and a silver cutting edge dominate the head, while the visible sunsteel rank cue is confined to a small applied gold medallion rather than the functional metal itself."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "fail",
+			"observation": "Sunsteel identity depends on the gold sun emblem and its warm color; the axe lacks a distinct physical construction or material-response cue beyond that ornament and palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The supernatural light is tightly confined to the small medallion center and does not wash across the axe head, haft, or full object."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The output uses a premium realistic painterly finish, honest wear, cold key light, restrained warm rim, midnight-charcoal background, and grounded floor plane consistent with the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "fail",
+			"observation": "The conspicuous gold sun medallion supplies material identity through ornament and reads as a logo-like mark, violating no-gold-inflation, no-ornament-as-material-identity, and no-logos; the remaining declared negatives pass."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/axe-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1610279,
+		"sha256": "fb20bc55acf26ed72057e8843f94c470a77cf66776ec57fdc90bc30597b037b6"
+	},
+	"candidateSha256": "fb20bc55acf26ed72057e8843f94c470a77cf66776ec57fdc90bc30597b037b6",
+	"startedAt": "2026-09-02T15:13:55.500Z",
+	"completedAt": "2026-09-02T15:14:55.000Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/axe-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/axe-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

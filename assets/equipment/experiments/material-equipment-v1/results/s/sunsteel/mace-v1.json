@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-mace-v1",
+	"targetId": "material-equipment-v1-sunsteel-mace-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-mace-v1",
+	"status": "revise",
+	"promptSha256": "0b5a078835717dfdcf10a3a41a17335fa45e3dfb307135134644939f586d6679",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-mace-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-5b03-7f93-a102-68ca048e2fda/exec-43f6f3ff-e963-4537-bf88-18d2fd8da434.png",
+			"requestStartedAt": "2026-09-02T15:14:50.233Z",
+			"generationCompletedAt": "2026-09-02T15:15:58.412Z",
+			"inspectionCompletedAt": "2026-09-02T15:16:54.913Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete mace remains visible, but the butt and head approach roughly 5–7% from the left and right edges, crossing the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete mace is present with no duplicate weapon, detached component, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The radial striking ribs around a compact head, straight haft, wrapped one-hand grip, and pommel read immediately as a flanged mace."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "fail",
+			"observation": "The collars, haft, grip wrap, and pommel are coherent, but the very large solid-looking spherical head and heavy encircling ribs are implausibly massive and poorly balanced for practical one-hand use."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Sunsteel dominates the head, ribs, haft, collars, and pommel as the sole rank-bearing material; the dark grip wrap remains subordinate and neutral."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense forged surfaces, rubbed silver edges, and restrained amber heat-light visible through fine fracture seams establish sunsteel through physical response beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Amber emission is confined to fine fissures and small recessed motifs on the head and pommel; the mace does not become a full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Premium realistic painterly rendering, honest wear, cold key light, restrained warm emission and rim, midnight-charcoal ground, and floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "fail",
+			"observation": "Most negative constraints pass, but the oversized spherical head violates no-oversized-silhouettes, and conspicuous sunburst medallions on head and pommel make ornament contribute materially to identity."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/mace-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1606371,
+		"sha256": "547a2b8b58a066d7325cca96bb3f3a55a40f61dedfc38d4a551326e05e185535"
+	},
+	"candidateSha256": "547a2b8b58a066d7325cca96bb3f3a55a40f61dedfc38d4a551326e05e185535",
+	"startedAt": "2026-09-02T15:14:50.233Z",
+	"completedAt": "2026-09-02T15:16:54.913Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/mace-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/mace-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

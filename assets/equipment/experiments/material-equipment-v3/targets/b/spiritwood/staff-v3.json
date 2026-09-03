@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-spiritwood-staff-v3",
+	"productionOrder": 105,
+	"rank": "B",
+	"materialId": "spiritwood",
+	"materialName": "Spiritwood",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-spiritwood.json",
+	"classId": "staff",
+	"classDirectionId": "equipment-v3-staff-rank-progression",
+	"artifactId": "staff",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/b/spiritwood/staff-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/spiritwood/staff-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/spiritwood/staff-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/staff-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/b/spiritwood/staff-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/b/spiritwood/staff-v3.json"
+	}
+}

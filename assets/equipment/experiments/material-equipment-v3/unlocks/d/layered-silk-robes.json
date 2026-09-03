@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armour-set-unlock-receipt-v3",
+	"setId": "layered-silk-robes",
+	"sourceTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-full-set-v3.png",
+	"sourceCandidateSha256": "d25e29f103e037737aeb43486811715a43f16a44a7614aeb9b3afee4b2042abe",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "e04e9d81b79653b1266593a7c24a97ddce808314d2cf7b3b426ba574acc02d2d"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/robes-f-to-s-v3.png",
+		"sha256": "32a90b8fdc27db788a4cd2c4812ea6d9abcb89f9104ae1ec80c46504ef7964b5"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/d-layered-silk-v3.png",
+		"sha256": "1384454efaa34e86ca4a63ba0e2caab7189c11967a7d9d71f8573761fbd0a38a"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural neck and sleeve cavities. Head covering, torso garment, leg garment, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-layered-silk-robes-head-v3",
+		"material-equipment-v3-layered-silk-robes-torso-v3",
+		"material-equipment-v3-layered-silk-robes-legs-v3",
+		"material-equipment-v3-layered-silk-robes-boots-v3"
+	]
+}

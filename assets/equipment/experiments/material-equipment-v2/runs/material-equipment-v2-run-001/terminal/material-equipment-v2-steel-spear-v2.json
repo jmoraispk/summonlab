@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-steel-spear-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-steel-spear-v2",
+	"recordedAt": "2026-09-02T22:27:16.936Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/d/steel/spear-v2.json",
+		"canonicalSha256": "fe40513e054bffff885b0ac2a8e9c4c2cd7471ac597e9fd4d316c06d57aa07d6"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/d/steel/spear-v2.json",
+		"canonicalSha256": "ce90ff11ca86f6308f6fa8a9f5c9af8348c89591d260df1c52dd96fc28acf3bf"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/d/steel/spear-v2.json",
+		"canonicalSha256": "f5cc8f28ad6850799a99ae302d6036d0bbffe2bc41d66565e2f0c5e8434b3fe8",
+		"candidateSha256": "69b3852b77d068296ee75313c4e8b5274fdb2d6a401e450f2d7e7016567d8354"
+	}
+}

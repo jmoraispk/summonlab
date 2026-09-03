@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 71,
+	"previousEventCanonicalSha256": "2d6c650bed8cfd5d238be9af19eff2bd9878b40fe1f2b2d1ea09e12ea3aa2ff8",
+	"recordedAt": "2026-09-02T14:54:41.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-56",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:40.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-steel-dagger-v1-56",
+		"targetId": "material-equipment-v1-steel-dagger-v1",
+		"workerId": "equipment-worker-56"
+	}
+}

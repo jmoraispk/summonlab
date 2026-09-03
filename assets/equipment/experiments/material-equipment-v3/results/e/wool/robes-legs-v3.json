@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-wool-robes-legs-v3-attempt-1",
+	"targetId": "material-equipment-v3-wool-robes-legs-v3",
+	"assignmentId": "assignment-material-equipment-v3-wool-robes-legs-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:31:19.235Z",
+	"completedAt": "2026-09-03T17:32:05.146Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "6d373a19b0bd263fabbc57ed1810d10350c2c9d7cef3c17e4b9bbbd01c2027c3",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+			"sha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-cf8d-7a13-b42b-10dd4f41adf7/exec-e0b7854a-45ee-4703-bd47-a69853318e9b.png",
+		"sha256": "fd953116ce3b15ed53ef56eb08f6322378a9cabb77069a2a2a07b9256d05b116",
+		"bytes": 1934281,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-legs-v3.png",
+		"sha256": "1d7501cfba76267a6426c71df6efebfeb76a55c64ec1b8b4f084ce9e7aedb03f",
+		"bytes": 1416191,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

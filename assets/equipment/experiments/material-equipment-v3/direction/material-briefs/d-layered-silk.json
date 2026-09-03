@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "layered-silk",
+	"displayName": "Layered Silk",
+	"family": "cloth-fibre",
+	"rank": "D",
+	"palette": "Ink blue, muted teal, smoke gray, and restrained pearl highlights.",
+	"valueRange": "Deep folds with clean silky edge sheen.",
+	"surfaceAndWear": "Fine tight weave, layered translucency only at edges, smooth folds, minimal fraying.",
+	"constructionVocabulary": "Multiple offset layers, wrapped closures, precise pleats, slim hems, flowing panels.",
+	"supernaturalBehavior": "None; apparent lightness comes from textile behavior only.",
+	"neutralSecondaryMaterials": "Dark leather, black cord, small steel clasps, and matte linen lining.",
+	"neighborDifference": "Finer, lighter, and more layered than Wool; less arcane and self-structured than Spellweave.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-layered-silk.json"
+}

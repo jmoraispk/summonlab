@@ -1,0 +1,105 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-hemp-weave-robes-full-set-v2",
+	"targetId": "material-equipment-v2-hemp-weave-robes-full-set-v2",
+	"assignmentId": "assignment-material-equipment-v2-hemp-weave-robes-full-set-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "8222c619b6b1a014f7bb5e1c0dc34f880e1f19578be53a7c2d49d6be76dc4916",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "coarse-hide-armour-camera",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+			"contentHash": "b3b973ffa5eec4fb7f0125202b16b845cd271feec5c5d1351ebd55bfb7fef247"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-hemp-weave-robes-full-set-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06434-2b9a-7112-a91f-448f9347fce5/exec-8a228d01-71cf-47b6-8f69-38eabb3044aa.png",
+			"requestStartedAt": "2026-09-02T22:19:54.075Z",
+			"generationCompletedAt": "2026-09-02T22:20:38.925Z",
+			"inspectionCompletedAt": "2026-09-02T22:21:11.008Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "empty-full-set",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/f/hemp-weave/robes-full-set-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2353753,
+		"sha256": "b2c60ed9a8bfd74ab4f7b90b5ca28aa3b6faddf1f0e1dabf0ad57189d459e96e"
+	},
+	"candidateSha256": "b2c60ed9a8bfd74ab4f7b90b5ca28aa3b6faddf1f0e1dabf0ad57189d459e96e",
+	"startedAt": "2026-09-02T22:19:54.075Z",
+	"completedAt": "2026-09-02T22:21:11.008Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/f/hemp-weave/robes-full-set-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/f/hemp-weave/robes-full-set-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

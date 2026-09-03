@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 199,
+	"previousEventCanonicalSha256": "ec51685e5861ff5ee85e6fe902a469b502ff5544198342992fc4d5b2eeb0e13b",
+	"recordedAt": "2026-09-02T15:10:37.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-starmetal-spear-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:10:36.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-starmetal-spear-v1",
+		"workerId": "equipment-worker-153",
+		"status": "revise",
+		"resultCanonicalSha256": "d917df396e2ef906c384f1f63a689c7aa5184633ae6c6948377703ed607a3986",
+		"failureKind": null
+	}
+}

@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-yew-bow-v1",
+	"targetId": "material-equipment-v1-yew-bow-v1",
+	"assignmentId": "assignment-material-equipment-v1-yew-bow-v1",
+	"status": "revise",
+	"promptSha256": "c9652079894f6b42a46c677372d76f07a231961c94ba59576c39277c1115d714",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-yew-bow-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-5b84-78c1-876a-975b71b18080/exec-51c21a84-5f53-4e9d-a233-ff87e5a785d1.png",
+			"requestStartedAt": "2026-09-02T14:57:06.733Z",
+			"generationCompletedAt": "2026-09-02T14:58:08.693Z",
+			"inspectionCompletedAt": "2026-09-02T14:58:33.266Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete bow is visible, but its upper and lower limb tips sit roughly 2% to 3% from the canvas edges instead of outside the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete strung bow is present with no arrow, quiver, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The curved limbs, centered grip, recurved tips, and taut string read immediately as a bow."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "concern",
+			"observation": "The limbs, grip, and string are coherent overall, but the string is bound below each extended hooked tip rather than visibly seated in terminal nocks, weakening the practical construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Yew wood dominates both limbs and the riser while leather and string remain neutral, subordinate functional materials."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense longitudinal grain, amber-red heartwood variation, carved limb facets, and worn edges establish yew-like wood beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural or full-object glow; material response is limited to controlled highlights."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly finish, honest wear, cold key, restrained warm rim, midnight-charcoal backdrop, and floor plane match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No reference subject, person, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized fantasy silhouette, ornament-led material identity, extra gear, text, labels, UI, border, frame, logo, or watermark is present."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/yew/bow-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1222393,
+		"sha256": "56585a4ed2f0df7d91fece7fef7b76f640ef5489c12bedd117ac5740ad970eeb"
+	},
+	"candidateSha256": "56585a4ed2f0df7d91fece7fef7b76f640ef5489c12bedd117ac5740ad970eeb",
+	"startedAt": "2026-09-02T14:57:06.733Z",
+	"completedAt": "2026-09-02T14:58:45.147Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/yew/bow-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/yew/bow-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

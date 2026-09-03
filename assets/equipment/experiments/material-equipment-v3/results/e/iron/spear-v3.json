@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-iron-spear-v3-attempt-1",
+	"targetId": "material-equipment-v3-iron-spear-v3",
+	"assignmentId": "assignment-material-equipment-v3-iron-spear-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:33:19.214Z",
+	"completedAt": "2026-09-03T13:34:30.438Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "aee9d6afbadaa3b20d021f84dd51803a9d7a802b258ef625cd46aa556f682ba9",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/spear-metal-ranks-v1.png",
+			"sha256": "bdfa20d86ca6b2a4c6b9540e6b0924e018cfe749b1dc8981fdead06ded7101bd",
+			"purpose": "Rank escalation, proportions, silhouette variety, and finish."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-2e2473f9-e282-4629-b4e0-067a20514a2c.png",
+		"sha256": "0af87afe25d499cb504357c13752b97cc4a887caed109a70e7f6d7061f700d1b",
+		"bytes": 1570370,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/spear-v3.png",
+		"sha256": "bd4d7ed9236fb9f21bf3a44f8f18d79100ea2ef73ed2e7fdb71639dcf09b004b",
+		"bytes": 1114180,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

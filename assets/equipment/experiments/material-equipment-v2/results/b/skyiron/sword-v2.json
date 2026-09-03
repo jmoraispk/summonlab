@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-skyiron-sword-v2",
+	"targetId": "material-equipment-v2-skyiron-sword-v2",
+	"assignmentId": "assignment-material-equipment-v2-skyiron-sword-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "2cc59da606c6d1020a2fe83afd64cfd3800fd918699ab37dce50dd8619d00484",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "sword-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/sword-v1.png",
+			"contentHash": "3e19745a17220da67b227413499fa635cfdecb39b5c3d5ded164094a9d4aa437"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-skyiron-sword-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-53f418c3-15b9-435a-b6d0-b553871dc483",
+			"requestStartedAt": "2026-09-02T22:27:45.470Z",
+			"generationCompletedAt": "2026-09-02T22:28:24.899Z",
+			"inspectionCompletedAt": "2026-09-02T22:29:32.745Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/b/skyiron/sword-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1263892,
+		"sha256": "8cdca78f040a5fb47641727d1954d45d71b524241aa4da846d740e02f71e81d7"
+	},
+	"candidateSha256": "8cdca78f040a5fb47641727d1954d45d71b524241aa4da846d740e02f71e81d7",
+	"startedAt": "2026-09-02T22:27:45.470Z",
+	"completedAt": "2026-09-02T22:29:32.745Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/b/skyiron/sword-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/b/skyiron/sword-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

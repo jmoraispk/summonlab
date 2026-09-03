@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 100,
+	"previousEventCanonicalSha256": "dcd32ceff76b7c784817b46f02d8fcbb4d0af6348652da3dbaef78e0f42770d6",
+	"recordedAt": "2026-09-02T15:02:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-steel-heavy-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-steel-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-61",
+		"status": "revise",
+		"resultCanonicalSha256": "365bc02f6bfb551bd4ff13d650db07d425c0088e677cb39841488813d20e4915",
+		"failureKind": null
+	}
+}

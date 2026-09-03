@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-steel-mace-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-steel-mace-v2",
+	"recordedAt": "2026-09-02T22:27:14.899Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/d/steel/mace-v2.json",
+		"canonicalSha256": "56756f6dd69d23f1f95704508a3ed7e11f5e4980d4e7470ec7ba373834b467a4"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/d/steel/mace-v2.json",
+		"canonicalSha256": "6304860db44e8fefd762cbe18601d81317797323b85aa31d0ec056f913de5627"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/d/steel/mace-v2.json",
+		"canonicalSha256": "afeec63093096e90096c3b4e8a8c02c2d3b9873984a5ae160877da0e8b1be328",
+		"candidateSha256": "3e4a1f01200deb796df5409b015b6194671a98a819ebf04cea8a44c13d6c4826"
+	}
+}

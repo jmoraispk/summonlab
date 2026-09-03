@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-starmetal-sword-v2",
+	"targetId": "material-equipment-v2-starmetal-sword-v2",
+	"assignmentId": "assignment-material-equipment-v2-starmetal-sword-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "7c67cfe0c8f1c818d31867c93815c7b0a1032999d3c021e8fa5378f99149f458",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "sword-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/sword-v1.png",
+			"contentHash": "3e19745a17220da67b227413499fa635cfdecb39b5c3d5ded164094a9d4aa437"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-starmetal-sword-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen:exec-b2c29a23-3233-472a-b069-75e4955f3d0a",
+			"requestStartedAt": "2026-09-02T22:30:31.566Z",
+			"generationCompletedAt": "2026-09-02T22:31:11.859Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:03.346Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/sword-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1123365,
+		"sha256": "8a38e605510640f969d6c8ea74cd1de28f15b7029a380db74446e76b5bc965f5"
+	},
+	"candidateSha256": "8a38e605510640f969d6c8ea74cd1de28f15b7029a380db74446e76b5bc965f5",
+	"startedAt": "2026-09-02T22:30:31.566Z",
+	"completedAt": "2026-09-02T22:32:03.346Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/sword-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/a/starmetal/sword-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

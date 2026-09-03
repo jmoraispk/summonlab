@@ -1,0 +1,6 @@
+{
+	"schemaVersion": "equipment-rank-first-run-journal-v3",
+	"runId": "material-equipment-v3-run-001",
+	"appendPolicy": "immutable-versioned-events",
+	"events": []
+}

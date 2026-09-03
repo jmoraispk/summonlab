@@ -1,0 +1,30 @@
+{
+	"schemaVersion": "equipment-class-direction-assignment-v3",
+	"assignmentId": "assignment-equipment-v3-light-armour-rank-progression-attempt-2",
+	"directionId": "equipment-v3-light-armour-rank-progression",
+	"immutable": true,
+	"prompt": "Revise the attached exact seven-column Light Armour progression sheet for Summonlab. Preserve the seven designs, left-to-right F/E/D/C/B/A/S order, material identities, colors, silhouettes, labels, spacing, mild three-quarter camera, lighting, floor, and premium realistic-painterly dark-fantasy finish.\n\nCRITICAL CORRECTION ONLY: remove every implied body, wearer, mannequin, pose dummy, black human silhouette, filled neck, filled sleeve, filled glove, filled trouser, and connected humanoid under-suit. Each column must instead show an EMPTY, SELF-SUPPORTING equipment set composed of exactly four readable inventory components: Head, Torso, Legs, Boots. Helmets and hoods have open hollow interiors with only natural cavity shadow. Torso armor has visibly empty neck, arm, and waist openings. Leg pieces and boot pairs can stand in aligned display position, but midnight-charcoal background must be visible through all openings and gaps. The armor pieces may imply a set arrangement, never a person. Keep the rank progression and material designs otherwise unchanged.\n\nDo not add text, objects, mannequins, bodies, faces, hands, scenery, UI, borders, logos, particles, or dramatic aura. Do not redesign or homogenize the ranks.",
+	"promptSha256": "9ad61278105bf177edbaa88f7adad98e75b1acb2bf3d060f32ffb03b19b2b797",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/revisions/light-armour-attempt-1-source.png",
+			"sha256": "5a11d89ea1eaf38c41a98c6ef5a8734c8c720abbe147aae4800877270bc10467",
+			"purpose": "Attempt 1 design source; preserve all seven material/rank designs while correcting the failed mannequin treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+			"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+			"purpose": "Accepted F-to-S escalation rhythm and target coolness; do not copy dagger geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour.result.json"
+	},
+	"selfPromotionForbidden": true
+}

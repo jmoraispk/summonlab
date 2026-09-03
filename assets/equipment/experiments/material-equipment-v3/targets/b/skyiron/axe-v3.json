@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-skyiron-axe-v3",
+	"productionOrder": 96,
+	"rank": "B",
+	"materialId": "skyiron",
+	"materialName": "Skyiron",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-skyiron.json",
+	"classId": "axe",
+	"classDirectionId": "equipment-v3-axe-rank-progression",
+	"artifactId": "axe",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/b/skyiron/axe-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/skyiron/axe-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/b/skyiron/axe-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/axe-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/axe-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/b/skyiron/axe-v3.json"
+	}
+}

@@ -1,0 +1,543 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-visual-profile-v2"
+		},
+		"profileId": {
+			"type": "string",
+			"const": "equipment-material-visual-profile-v2"
+		},
+		"productionId": {
+			"type": "string",
+			"const": "material-equipment-v2"
+		},
+		"status": {
+			"type": "string",
+			"const": "approval-candidate"
+		},
+		"runnerCompatibility": {
+			"type": "string",
+			"const": "planning-only-requires-v2-execution-contract"
+		},
+		"validation": {
+			"type": "object",
+			"properties": {
+				"jsonSchemaScope": {
+					"type": "string",
+					"const": "structural-only"
+				},
+				"semanticValidator": {
+					"type": "string",
+					"const": "EquipmentVisualProfileV2Schema.parse"
+				},
+				"semanticValidationRequiredForAcceptance": {
+					"type": "boolean",
+					"const": true
+				}
+			},
+			"required": [
+				"jsonSchemaScope",
+				"semanticValidator",
+				"semanticValidationRequiredForAcceptance"
+			],
+			"additionalProperties": false
+		},
+		"craftsmanship": {
+			"type": "object",
+			"properties": {
+				"grade": {
+					"type": "string",
+					"const": "Standard"
+				},
+				"rankAdjustment": {
+					"type": "number",
+					"const": 0
+				}
+			},
+			"required": [
+				"grade",
+				"rankAdjustment"
+			],
+			"additionalProperties": false
+		},
+		"reviewLanguage": {
+			"type": "object",
+			"properties": {
+				"candidate": {
+					"type": "string",
+					"const": "Pass"
+				},
+				"revise": {
+					"type": "string",
+					"const": "Check"
+				},
+				"failed": {
+					"type": "string",
+					"const": "No image"
+				}
+			},
+			"required": [
+				"candidate",
+				"revise",
+				"failed"
+			],
+			"additionalProperties": false
+		},
+		"style": {
+			"type": "object",
+			"properties": {
+				"medium": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"construction": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"materialResponse": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"lighting": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"background": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				}
+			},
+			"required": [
+				"medium",
+				"construction",
+				"materialResponse",
+				"lighting",
+				"background"
+			],
+			"additionalProperties": false
+		},
+		"framing": {
+			"type": "object",
+			"properties": {
+				"compositionTargetPercent": {
+					"type": "number",
+					"const": 8
+				},
+				"hardMinimumPercent": {
+					"type": "number",
+					"const": 5
+				},
+				"priority": {
+					"type": "string",
+					"const": "pose-consistency-over-margin-above-hard-minimum"
+				}
+			},
+			"required": [
+				"compositionTargetPercent",
+				"hardMinimumPercent",
+				"priority"
+			],
+			"additionalProperties": false
+		},
+		"isolatedPresentation": {
+			"type": "object",
+			"properties": {
+				"mode": {
+					"type": "string",
+					"const": "isolated-item-or-piece"
+				},
+				"subject": {
+					"type": "string",
+					"const": "one-complete-object-or-required-pair"
+				},
+				"canvas": {
+					"type": "object",
+					"properties": {
+						"width": {
+							"type": "number",
+							"const": 1024
+						},
+						"height": {
+							"type": "number",
+							"const": 1024
+						},
+						"mediaType": {
+							"type": "string",
+							"const": "image/png"
+						}
+					},
+					"required": [
+						"width",
+						"height",
+						"mediaType"
+					],
+					"additionalProperties": false
+				},
+				"consistencyLock": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "string",
+							"const": "camera"
+						},
+						{
+							"type": "string",
+							"const": "pivot"
+						},
+						{
+							"type": "string",
+							"const": "normalized-scale"
+						},
+						{
+							"type": "string",
+							"const": "presentation-angle"
+						}
+					]
+				},
+				"commonPose": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				}
+			},
+			"required": [
+				"mode",
+				"subject",
+				"canvas",
+				"consistencyLock",
+				"commonPose"
+			],
+			"additionalProperties": false
+		},
+		"fullSetPresentation": {
+			"type": "object",
+			"properties": {
+				"mode": {
+					"type": "string",
+					"const": "complete-armour-set"
+				},
+				"subject": {
+					"type": "string",
+					"const": "empty-self-supporting-armour-set"
+				},
+				"canvas": {
+					"type": "object",
+					"properties": {
+						"width": {
+							"type": "number",
+							"const": 1024
+						},
+						"height": {
+							"type": "number",
+							"const": 1536
+						},
+						"mediaType": {
+							"type": "string",
+							"const": "image/png"
+						}
+					},
+					"required": [
+						"width",
+						"height",
+						"mediaType"
+					],
+					"additionalProperties": false
+				},
+				"anchorReferenceId": {
+					"type": "string",
+					"const": "coarse-hide-armour-camera"
+				},
+				"composition": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"interior": {
+					"type": "string",
+					"const": "natural-interior-cavity-shadow-only"
+				},
+				"requiredComponents": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "string",
+							"const": "Head"
+						},
+						{
+							"type": "string",
+							"const": "Torso"
+						},
+						{
+							"type": "string",
+							"const": "Legs"
+						},
+						{
+							"type": "string",
+							"const": "Boots"
+						}
+					]
+				}
+			},
+			"required": [
+				"mode",
+				"subject",
+				"canvas",
+				"anchorReferenceId",
+				"composition",
+				"interior",
+				"requiredComponents"
+			],
+			"additionalProperties": false
+		},
+		"dependentPiecePresentation": {
+			"type": "object",
+			"properties": {
+				"mode": {
+					"type": "string",
+					"const": "dependent-armour-piece"
+				},
+				"subject": {
+					"type": "string",
+					"const": "one-matching-object-or-required-pair"
+				},
+				"canvas": {
+					"type": "object",
+					"properties": {
+						"width": {
+							"type": "number",
+							"const": 1024
+						},
+						"height": {
+							"type": "number",
+							"const": 1024
+						},
+						"mediaType": {
+							"type": "string",
+							"const": "image/png"
+						}
+					},
+					"required": [
+						"width",
+						"height",
+						"mediaType"
+					],
+					"additionalProperties": false
+				},
+				"composition": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2000
+				},
+				"acceptedFullSetSourceMustBeFirstReference": {
+					"type": "boolean",
+					"const": true
+				},
+				"additionalReferenceIds": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "string",
+							"const": "remy-finish-style"
+						}
+					]
+				},
+				"continuityRequirements": {
+					"minItems": 1,
+					"maxItems": 20,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					}
+				}
+			},
+			"required": [
+				"mode",
+				"subject",
+				"canvas",
+				"composition",
+				"acceptedFullSetSourceMustBeFirstReference",
+				"additionalReferenceIds",
+				"continuityRequirements"
+			],
+			"additionalProperties": false
+		},
+		"equipmentClassDefaults": {
+			"minItems": 11,
+			"maxItems": 11,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"equipmentClass": {
+						"type": "string",
+						"enum": [
+							"sword",
+							"dagger",
+							"spear",
+							"bow",
+							"axe",
+							"mace",
+							"shield",
+							"staff",
+							"heavy-armour",
+							"light-armour",
+							"robes"
+						]
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					},
+					"anchorReferenceId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"pose": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					},
+					"proportionRules": {
+						"minItems": 1,
+						"maxItems": 8,
+						"type": "array",
+						"items": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 2000
+						}
+					}
+				},
+				"required": [
+					"equipmentClass",
+					"description",
+					"anchorReferenceId",
+					"pose",
+					"proportionRules"
+				],
+				"additionalProperties": false
+			}
+		},
+		"references": {
+			"minItems": 10,
+			"maxItems": 10,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"referenceId": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"path": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					},
+					"contentHash": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"usage": {
+						"type": "string",
+						"enum": [
+							"style-only",
+							"pose-only",
+							"camera-and-display-only"
+						]
+					},
+					"appliesTo": {
+						"type": "object",
+						"properties": {
+							"presentationModes": {
+								"minItems": 1,
+								"maxItems": 3,
+								"type": "array",
+								"items": {
+									"type": "string",
+									"enum": [
+										"isolated-item",
+										"complete-armour-set",
+										"dependent-armour-piece"
+									]
+								}
+							},
+							"artifactRoles": {
+								"minItems": 1,
+								"maxItems": 2,
+								"type": "array",
+								"items": {
+									"type": "string",
+									"enum": [
+										"item",
+										"set-source"
+									]
+								}
+							}
+						},
+						"required": [
+							"presentationModes",
+							"artifactRoles"
+						],
+						"additionalProperties": false
+					},
+					"purpose": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					}
+				},
+				"required": [
+					"referenceId",
+					"path",
+					"contentHash",
+					"usage",
+					"appliesTo",
+					"purpose"
+				],
+				"additionalProperties": false
+			}
+		},
+		"negativeConstraints": {
+			"minItems": 1,
+			"maxItems": 50,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9-]{1,119}$"
+			}
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"profileId",
+		"productionId",
+		"status",
+		"runnerCompatibility",
+		"validation",
+		"craftsmanship",
+		"reviewLanguage",
+		"style",
+		"framing",
+		"isolatedPresentation",
+		"fullSetPresentation",
+		"dependentPiecePresentation",
+		"equipmentClassDefaults",
+		"references",
+		"negativeConstraints"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/profile-v2.schema.json",
+	"$comment": "Structural validation only. Approval also requires EquipmentVisualProfileV2Schema.parse so repository-path, reference-binding, class-completeness, and primary-Axe semantic invariants run."
+}

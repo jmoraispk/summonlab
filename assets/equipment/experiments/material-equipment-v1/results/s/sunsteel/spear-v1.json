@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-sunsteel-spear-v1",
+	"targetId": "material-equipment-v1-sunsteel-spear-v1",
+	"assignmentId": "assignment-material-equipment-v1-sunsteel-spear-v1",
+	"status": "revise",
+	"promptSha256": "f8c0d405b3211368e79f5fa39a40856305db1805a0bc8d58779b1035e2df379d",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-sunsteel-spear-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-175d-7120-96a7-b8f44434e17f/exec-c64557b4-0b3b-4e32-9872-55b9c54ea5cd.png",
+			"requestStartedAt": "2026-09-02T15:13:52.000Z",
+			"generationCompletedAt": "2026-09-02T15:14:53.865Z",
+			"inspectionCompletedAt": "2026-09-02T15:15:47.789Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete spear remains visible, but the head tip and butt cap sit only about 4% from the nearest canvas edges, inside the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete spear is present, with one connected head, shaft, grip wraps, and butt cap and no duplicate weapon or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long two-hand seasoned-wood shaft and distinct pointed metal thrusting head read immediately as a spear."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "fail",
+			"observation": "Although the socket aligns cleanly with the shaft, the very large broad winged head and exposed ornamental core appear excessively top-heavy for the narrow wooden haft and grounded two-hand use."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "The bright metal spearhead supplies the only overt rank-bearing material, while the long seasoned-wood shaft and dark wraps remain neutral and subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "fail",
+			"observation": "The metal reads as conventional cool polished steel, while the rank distinction is carried mainly by a decorative cyan circular core and elaborate head silhouette rather than one or two physical Sunsteel construction cues."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The only supernatural emission is a small localized cyan-white core; it does not wash across or turn the full spearhead or shaft into a glowing object."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly dark-fantasy finish, worn shaft and metal surfaces, cold key, restrained warm rim, midnight-charcoal backdrop, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "fail",
+			"observation": "No person, text, UI, logo, watermark, rainbow, gold inflation, or full-object glow appears, but the oversized winged spearhead and ornament-led material identity violate the declared no-oversized-silhouettes and no-ornament-as-material-identity constraints."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/spear-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1351125,
+		"sha256": "781eb95afb637d2ddea7e1246ec1ddd3ee7935313dbdbcd0826d5bcd0f66454e"
+	},
+	"candidateSha256": "781eb95afb637d2ddea7e1246ec1ddd3ee7935313dbdbcd0826d5bcd0f66454e",
+	"startedAt": "2026-09-02T15:13:52.000Z",
+	"completedAt": "2026-09-02T15:15:47.789Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/s/sunsteel/spear-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/s/sunsteel/spear-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

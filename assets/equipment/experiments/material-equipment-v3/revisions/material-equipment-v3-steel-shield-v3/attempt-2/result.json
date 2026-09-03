@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-steel-shield-v3-attempt-2",
+	"targetId": "material-equipment-v3-steel-shield-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-steel-shield-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T14:18:25.626Z",
+	"completedAt": "2026-09-03T14:20:03.130Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "faff001f7ed60adf77281129520db8a5ea046251547ac6b615929288391b2db1",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"purpose": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/shield-v3.png",
+			"sha256": "0b443925836bc139a09a617d1f74caca93547915c93caf2261633b0bf1d18b01",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-00bb9a28-84f6-4d34-92c5-689eab9e0ecf.png",
+		"sha256": "e5b154f0d39f711255ca09ab57ebfe7d12554d26de15547feccb17cd9472af5d",
+		"bytes": 2119063,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/candidate.png",
+		"sha256": "1054cc92907f7c81cda3e2e58c76db46d4b0202e4934b8361e15ed5fa7062484",
+		"bytes": 1598600,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

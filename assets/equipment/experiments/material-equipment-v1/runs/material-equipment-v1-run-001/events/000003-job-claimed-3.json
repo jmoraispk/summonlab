@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 3,
+	"previousEventCanonicalSha256": "95024837c8bc71cc1e1450de975555c2f2737db7f76997d8f386e4665e01990e",
+	"recordedAt": "2026-09-02T14:45:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-3",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:45:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-copper-dagger-v1-3",
+		"targetId": "material-equipment-v1-copper-dagger-v1",
+		"workerId": "equipment-worker-3"
+	}
+}

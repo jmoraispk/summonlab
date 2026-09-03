@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-living-branch-staff-v1",
+	"targetId": "material-equipment-v1-living-branch-staff-v1",
+	"assignmentId": "assignment-material-equipment-v1-living-branch-staff-v1",
+	"status": "revise",
+	"promptSha256": "f2291f1847dc17906bd19d34b1e926dc7ea8a1a7a3dbe4add4965e7b5271749b",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-living-branch-staff-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-b23f20b8-1ea7-40bc-b297-0624461dc161.png",
+			"requestStartedAt": "2026-09-02T15:13:57.924Z",
+			"generationCompletedAt": "2026-09-02T15:14:47.815Z",
+			"inspectionCompletedAt": "2026-09-02T15:15:19.916Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The entire staff remains visible, but its highest leaf and root-like lower foot sit closer than the required 8% top and bottom safe margins."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete staff is shown, with its small attached grip fitting and charm integrated into the object and no duplicate or separate equipment."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long hand-width shaft, wrapped central grip, grounded lower foot, and branched crown read immediately as a full-length staff."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A continuous naturally twisted trunk connects the root-like foot to the living crown, while a tightly wrapped central grip provides a plausible handling point without interrupting the wood's load path."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Living wood dominates the complete shaft, base, and crown; the restrained leather wrap and tiny hanging fitting remain neutral and subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Continuous furrowed bark, root-like growth at the foot, and fresh buds and leaves growing directly from the crown establish Living Branch beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "A narrow blue inner-sap seam appears only in two short exposed channels; the wood and foliage do not become a full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image uses premium realistic painterly bark and leather wear, cold key light, restrained warm rim, midnight-charcoal ground, and a subtle floor contact plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "There is no transferred subject, character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-led material identity, extra gear, orb, text, label, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/staff-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1241376,
+		"sha256": "5df10ff80b11c66aef73cbf3de0cae596d1814168bcfe1dae20a4f00978a9e90"
+	},
+	"candidateSha256": "5df10ff80b11c66aef73cbf3de0cae596d1814168bcfe1dae20a4f00978a9e90",
+	"startedAt": "2026-09-02T15:13:57.924Z",
+	"completedAt": "2026-09-02T15:15:40.526Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/a/living-branch/staff-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/a/living-branch/staff-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

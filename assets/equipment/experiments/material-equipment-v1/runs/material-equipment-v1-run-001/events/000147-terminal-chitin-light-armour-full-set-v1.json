@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 147,
+	"previousEventCanonicalSha256": "0b316885c4c248baabf3f5cd85f0beb7f2bc1560cc249d89d877a7823788c8f4",
+	"recordedAt": "2026-09-02T15:06:41.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-chitin-light-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:40.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-chitin-light-armour-full-set-v1",
+		"workerId": "equipment-worker-112",
+		"status": "revise",
+		"resultCanonicalSha256": "bfed847bbaaf192136a1b8e32706c9a05f4f6e482c37c56a30a54ee55a626fb4",
+		"failureKind": null
+	}
+}

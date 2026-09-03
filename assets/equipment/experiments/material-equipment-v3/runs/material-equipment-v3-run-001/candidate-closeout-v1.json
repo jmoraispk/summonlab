@@ -1,0 +1,399 @@
+{
+	"schemaVersion": "equipment-candidate-closeout-v3",
+	"reportId": "material-equipment-v3-candidate-closeout-v1",
+	"runId": "material-equipment-v3-run-001",
+	"createdAt": "2026-09-03T20:50:30Z",
+	"createdBy": "summonlab-owner",
+	"status": "candidate-closeout",
+	"manifest": {
+		"path": "assets/equipment/experiments/material-equipment-v3/manifest.json",
+		"canonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a"
+	},
+	"repository": {
+		"branch": "codex/equipment-material-cleanup",
+		"basisCommit": "c1cfb8fce6ab79230484f258c141acca6ee362f7",
+		"commits": [
+			{
+				"hash": "e6aeeee75663a3968ab736db8697570305469471",
+				"subject": "feat: add interactive wiki skill tree"
+			},
+			{
+				"hash": "8febb993f8743fba704abbc2fe0a7f0e858ac3d2",
+				"subject": "fix: align skill tree with canonical taxonomy"
+			},
+			{
+				"hash": "a108cf47605644f69f70624829c94941809e3751",
+				"subject": "docs: design consolidated skill taxonomy"
+			},
+			{
+				"hash": "51d2fda1ea3185143ae751764f536552911f0f34",
+				"subject": "docs: plan skill taxonomy consolidation"
+			},
+			{
+				"hash": "0a07141ae8890c6b7b0c52a04f5c7f911d12650b",
+				"subject": "test: characterize legacy skill catalog"
+			},
+			{
+				"hash": "b3ba9abc0e00de893e360149d2d6f5b114d448c4",
+				"subject": "feat: define skill taxonomy migration ledger"
+			},
+			{
+				"hash": "9f152de77c72f05165efbbf027baeb934b3dcda9",
+				"subject": "fix: harden skill taxonomy ledger"
+			},
+			{
+				"hash": "395710ea1cd3c00a48d1f42fe23aaf32ed308f5e",
+				"subject": "feat: consolidate martial skill families"
+			},
+			{
+				"hash": "3ef0abef616c04fca2b3b5ddb3293e1df0a0e5c9",
+				"subject": "fix: enforce martial migration fidelity"
+			},
+			{
+				"hash": "363fa413d99312e1504c73c58543e08d7c605d0d",
+				"subject": "docs: adopt consolidated skill taxonomy"
+			},
+			{
+				"hash": "45190cda141faf1977b3a88a1627bda917675bea",
+				"subject": "docs: migrate skill taxonomy references"
+			},
+			{
+				"hash": "55a5820e75a52ca8f93397c99fe7059a85b09d5c",
+				"subject": "fix: complete skill taxonomy migration"
+			},
+			{
+				"hash": "0b6e7e6ecd515fa55969e7b389bdb18364f568fc",
+				"subject": "feat: browse skills by family and label"
+			},
+			{
+				"hash": "1354713304f77707bc80fe95c2ec5bab25b41eb6",
+				"subject": "fix: harden skill browser accessibility"
+			},
+			{
+				"hash": "e269e72574a53fca0e62c8a537d96d40fd44917e",
+				"subject": "fix: close skill taxonomy integrity gaps"
+			},
+			{
+				"hash": "301a06cf534a8654d6433c412e6185604ed02c4a",
+				"subject": "refactor(web): retire procedural hero renderer"
+			},
+			{
+				"hash": "34e74d15199c856318d630d4f980ae01957a1732",
+				"subject": "merge: integrate interactive skill taxonomy"
+			},
+			{
+				"hash": "7986b7bad1bd4eb47fa6439e08b61243885026e9",
+				"subject": "merge: retire procedural hero renderer"
+			},
+			{
+				"hash": "37c6e76826b8e9e06f5717b7c9694230066c4652",
+				"subject": "docs(equipment): simplify metal materials"
+			},
+			{
+				"hash": "2c31cdedd665b8dcdb42b7435632d4a1814d0783",
+				"subject": "docs(equipment): define material rank ladders"
+			},
+			{
+				"hash": "f9d819037618e3072d53cdd4281b637e2eba110c",
+				"subject": "docs(equipment): establish minimal item theory"
+			},
+			{
+				"hash": "deb5bb6f777e10c40f5ec10cecbead15eeaad2aa",
+				"subject": "docs(equipment): define armour set production"
+			},
+			{
+				"hash": "19c9dae8d5f1116b900d17e0c29894355e4a5d52",
+				"subject": "feat(equipment): add material production manifest"
+			},
+			{
+				"hash": "76032b05f47eb2e5c20ca1da42cea2a231afa140",
+				"subject": "feat(equipment): add material allocation plan"
+			},
+			{
+				"hash": "0e31a81e5e315e2801325d1138fde9567ebfbf8e",
+				"subject": "docs(equipment): design image production readiness"
+			},
+			{
+				"hash": "0c7702907764adff69cf9681552af8b012158756",
+				"subject": "docs(equipment): plan image production readiness"
+			},
+			{
+				"hash": "4896bda71bb0ab71bb877f77e9c66bd08a0eb385",
+				"subject": "feat(equipment): define image production contracts"
+			},
+			{
+				"hash": "bf9a6edf3554b3aefc640e1b41826227b22e8246",
+				"subject": "fix(equipment): enforce production contract topology"
+			},
+			{
+				"hash": "a07bf1f10d50eed8f47430edf34fdf5a60d460d0",
+				"subject": "fix(equipment): enforce disjoint run partitions"
+			},
+			{
+				"hash": "f9e1a2cc5f97abd75d179d7e102172dae96a3110",
+				"subject": "feat(equipment): add material visual profile"
+			},
+			{
+				"hash": "a68a625e956ee6a157f33b6e042a8e194d8b710b",
+				"subject": "fix(equipment): complete visual profile rules"
+			},
+			{
+				"hash": "956b1ff59e756be068817579c2ed1d854acb7101",
+				"subject": "feat(equipment): materialize root image packets"
+			},
+			{
+				"hash": "57397b20531136f163431f7ef59787ddf9d994ab",
+				"subject": "feat(equipment): add exclusive image persistence"
+			},
+			{
+				"hash": "e7c7df0c46815d6deb5fbbc8e7cb4cc532f933e0",
+				"subject": "fix(equipment): harden image persistence safety"
+			},
+			{
+				"hash": "8b06e297478d0046e5caafc9217f9cc56607922a",
+				"subject": "feat(equipment): verify image worker results"
+			},
+			{
+				"hash": "242dd76cee2e6bfd519e0bb8273127099576ac8f",
+				"subject": "fix(equipment): tolerate result parent races"
+			},
+			{
+				"hash": "fec80758b0d955ab618661149e905aa22d823513",
+				"subject": "feat(equipment): add immutable run activation"
+			},
+			{
+				"hash": "924e668cba0ef577c3faaf032e2c7feeb7673c2a",
+				"subject": "fix(equipment): harden activation preflight"
+			},
+			{
+				"hash": "ddb223ca5a5c15446c1bd2305a724ffe30120caf",
+				"subject": "feat(equipment): add resumable job claiming"
+			},
+			{
+				"hash": "1bad030afab40a43a1b56269cf74ea828a6c7e29",
+				"subject": "fix(equipment): harden resumable job claiming"
+			},
+			{
+				"hash": "dc1ab87fac0cc83dcd0be63805dd21380f0414ea",
+				"subject": "feat(equipment): gate armour piece production"
+			},
+			{
+				"hash": "bb9cd6af7848ef2c33531ea403c53a727f29f288",
+				"subject": "feat(equipment): validate production readiness"
+			},
+			{
+				"hash": "231fb1813013c98143b8da87a76f0c109252bd85",
+				"subject": "fix(equipment): bind reconciliation authorization"
+			},
+			{
+				"hash": "6ff730d80be1a2f3f4854d12c2135f88d692c7ef",
+				"subject": "fix(equipment): secure production evidence flow"
+			},
+			{
+				"hash": "58dc3296b01c2e446c3522e8b29fdbf66cd0c926",
+				"subject": "feat(equipment): generate material root candidates"
+			},
+			{
+				"hash": "459c1cccc2e1990ce1724178315d1e384a93c2e3",
+				"subject": "test(equipment): isolate live production evidence"
+			},
+			{
+				"hash": "eacc7933032327241b3194d148158969df99feec",
+				"subject": "docs(equipment): add root candidate review packet"
+			},
+			{
+				"hash": "629b38a5c1789f80420cd793c6e08cd31e52614f",
+				"subject": "docs(equipment): record visual revision rules"
+			},
+			{
+				"hash": "5a1618de8b895a04b78cd948a2925006a920af10",
+				"subject": "docs(equipment): lock revised material vocabulary"
+			},
+			{
+				"hash": "a2cfc4a212bf3621146ce8725bf5184a57dfa400",
+				"subject": "feat(equipment): prepare v2 production plan"
+			},
+			{
+				"hash": "3012798cc167cfaf506bec9ee8a8e025fec1423e",
+				"subject": "feat(equipment): bind v2 image contracts"
+			},
+			{
+				"hash": "30dfe1e52793cf85243c3399c2a0dee0b90732a9",
+				"subject": "feat(equipment): activate v2 root production"
+			},
+			{
+				"hash": "2b949b49da4a352e2f5f855b61f745af6694c007",
+				"subject": "fix(equipment): secure v2 production writes"
+			},
+			{
+				"hash": "5a578ac3e9ed263ce843901a31ac170cbf579c73",
+				"subject": "feat(equipment): generate v2 root image batch one"
+			},
+			{
+				"hash": "39772a9d862eda024d0161723f6b37d8a2a81b8a",
+				"subject": "feat(equipment): complete v2 root image run"
+			},
+			{
+				"hash": "24beb6c21206c8b49634ed75ad2386405f5e6100",
+				"subject": "feat(equipment): add root review gallery"
+			},
+			{
+				"hash": "555a5cb7e6ee26680fe3c1b0f5c224ffd94debf3",
+				"subject": "docs(equipment): capture material variation direction"
+			},
+			{
+				"hash": "5f5a6edbc2cce6b80170e76c84b42eecd4ab017a",
+				"subject": "feat(equipment): compare material and class concept workflows"
+			},
+			{
+				"hash": "8aacf8fb3a7c6b238564f6e6f2c074d19842af3a",
+				"subject": "docs(equipment): plan material-first full production"
+			},
+			{
+				"hash": "c2e9cc342441b7c305df73b6604bc1a7017fa8df",
+				"subject": "feat(equipment): calibrate rank-first visual progression"
+			},
+			{
+				"hash": "94476d8f4d12970e6afe1c657f2f3870b0427bf5",
+				"subject": "docs(equipment): finalize rank-first production plan"
+			},
+			{
+				"hash": "f740b9a7037f4b4961c19b79a3d380a6f65c0e7b",
+				"subject": "feat(equipment): scaffold rank-first v3 production"
+			},
+			{
+				"hash": "ec96eeb15c1c2d53fcea0e3428d84eee1c69c3e4",
+				"subject": "feat(equipment): complete rank-first direction review"
+			},
+			{
+				"hash": "5a11877bab0bc8096cd6402f0ed5853609bd14fa",
+				"subject": "feat(equipment): activate rank-first root production"
+			},
+			{
+				"hash": "8d7e79406799355f632489a9ea6af5972ed5bd84",
+				"subject": "feat(equipment): generate F and E root candidates"
+			},
+			{
+				"hash": "454f600431a38972c032b67fef46ad8a8ec3c0ff",
+				"subject": "feat(equipment): complete first-pass root production"
+			},
+			{
+				"hash": "8f4322e8ca14271af91a972aaa34f3f5ce637edb",
+				"subject": "feat(equipment): finalize audited root candidates"
+			},
+			{
+				"hash": "be5c05ccd2226638805f858f1865140a38ddeff4",
+				"subject": "feat(equipment): prepare armour unlock activation"
+			},
+			{
+				"hash": "7410ff051cb9b52c6258b196a146728b7db5d1c1",
+				"subject": "feat(equipment): schedule armour piece production"
+			},
+			{
+				"hash": "199ecfe3ec776399e6c55307572089f5832f7f58",
+				"subject": "fix(equipment): bind checkpoints to selected assets"
+			},
+			{
+				"hash": "6dbab53d9765a2104278f79f8deb37bef5ab8545",
+				"subject": "feat(equipment): activate armour piece production"
+			},
+			{
+				"hash": "971b4f776b0cd9314b74dbbdf16a60012b6da29d",
+				"subject": "feat(equipment): generate armour piece first pass"
+			},
+			{
+				"hash": "de85d7b556f729374a2f73c77f292b1584e53b99",
+				"subject": "feat(equipment): schedule armour piece corrections"
+			},
+			{
+				"hash": "ec125a58ff02600eabac62cd6a74cef6785fdd69",
+				"subject": "feat(equipment): refine armour piece boundaries"
+			},
+			{
+				"hash": "d7e79d0aa34e60801ba4201c10d739e15b453051",
+				"subject": "feat(equipment): isolate advanced armour slots"
+			},
+			{
+				"hash": "ac221277274b7754e2913e32768ff4965afc453a",
+				"subject": "feat(equipment): publish armour piece review gallery"
+			},
+			{
+				"hash": "3f3d8bb9de12f411d181461a6ef2cac2976c4e4f",
+				"subject": "fix(equipment): record failed generation attempts"
+			},
+			{
+				"hash": "56ae6ecb5a85345b86b3fac03f11f98831cc0973",
+				"subject": "feat(equipment): prepare candidate closeout"
+			},
+			{
+				"hash": "c1cfb8fce6ab79230484f258c141acca6ee362f7",
+				"subject": "feat(equipment): accept final armour pieces"
+			}
+		]
+	},
+	"checkpoints": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json",
+			"canonicalSha256": "50572df501e039722331bc0d0c2aadf037a9b5a83547905f7fcea50262d682f2",
+			"summary": {
+				"accept": 4,
+				"revise": 0,
+				"defer": 0
+			}
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+			"canonicalSha256": "ff2fde9c9904bd47604473f026356e02218505ba68236df76f9774ac85c98dcf",
+			"summary": {
+				"accept": 77,
+				"revise": 0,
+				"defer": 0
+			}
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json",
+			"canonicalSha256": "39ad1cb1fb5f8e3b7d872a80d527006e645008641bda75202033de16efc0d578",
+			"summary": {
+				"accept": 84,
+				"revise": 0,
+				"defer": 0
+			}
+		}
+	],
+	"decisionTotals": {
+		"accept": 165,
+		"revise": 0,
+		"defer": 0,
+		"noImage": 0
+	},
+	"evidence": {
+		"directionSheetCount": 11,
+		"rootCandidateCount": 77,
+		"armourPieceCandidateCount": 84,
+		"classAuditCount": 11,
+		"materialAuditCount": 28,
+		"armourAuditCount": 21,
+		"baseAssignmentCount": 161,
+		"revisionAssignmentCount": 49,
+		"terminalResultCount": 210,
+		"succeededResultCount": 193,
+		"failedResultCount": 17,
+		"withheldCallCount": 36
+	},
+	"promotionProposal": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json",
+		"canonicalSha256": "08720524e89abedbc8c41268ccfe327ba5b1e4fbd425ca7c3bfe3d01c9c5bd8b"
+	},
+	"validationCommands": [
+		"corepack pnpm tsc -p tools/tsconfig.equipment-rank-first-v3.json --noEmit",
+		"corepack pnpm vitest run tools/equipment-rank-first-production-v3.spec.ts tools/equipment-armour-review.spec.ts tools/equipment-armour-piece-revisions-v3.spec.ts tools/equipment-rank-first-failures-v3.spec.ts",
+		"corepack pnpm tsx tools/export-equipment-rank-first-production-v3.ts --check",
+		"corepack pnpm tsx tools/validate-equipment-rank-first-evidence-v3.ts --phase closeout",
+		"corepack pnpm tsx tools/validate-equipment-rank-first-terminal-evidence-v3.ts"
+	],
+	"unresolvedIntegrationRequests": [
+		"Approved-source promotion and runtime catalog integration require a separate owner decision and root-orchestrator coordination."
+	],
+	"candidateOnly": true,
+	"noRuntimeMutation": true
+}
