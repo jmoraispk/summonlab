@@ -1,0 +1,115 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-armour-piece-candidate-selection-manifest-v3"
+		},
+		"selectionManifestId": {
+			"type": "string",
+			"pattern": "^equipment-v3-armour-piece-candidate-selections-v[1-9][0-9]*$"
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"createdBy": {
+			"type": "string",
+			"minLength": 1
+		},
+		"approvalStatus": {
+			"type": "string",
+			"const": "candidate-only"
+		},
+		"revisionPlan": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"canonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"canonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"selections": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"targetId": {
+						"type": "string",
+						"pattern": "^material-equipment-v3-[a-z0-9-]+-v3$"
+					},
+					"selectedAttempt": {
+						"type": "integer",
+						"minimum": 2,
+						"maximum": 9007199254740991
+					},
+					"candidatePath": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"candidateSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"assignmentPath": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"assignmentSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"resultPath": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"resultSha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"reason": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": [
+					"targetId",
+					"selectedAttempt",
+					"candidatePath",
+					"candidateSha256",
+					"assignmentPath",
+					"assignmentSha256",
+					"resultPath",
+					"resultSha256",
+					"reason"
+				],
+				"additionalProperties": false
+			}
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"selectionManifestId",
+		"createdAt",
+		"createdBy",
+		"approvalStatus",
+		"revisionPlan",
+		"selections"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/armour-piece-candidate-selection-manifest.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

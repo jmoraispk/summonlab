@@ -16,6 +16,7 @@ import {
 	serializeJson
 } from './equipment-rank-first-production-v3.js';
 import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
+import { resolveEquipmentArmourPieceCandidatesV3 } from './materialize-equipment-armour-piece-selections-v3.js';
 import {
 	exclusiveCreateEquipmentRepositoryFile,
 	readEquipmentRepositoryJson
@@ -57,11 +58,10 @@ const CHECKPOINTS = {
 
 const CHECKPOINT_GALLERIES = {
 	'1': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-1/index.html`,
-	'2': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-2-final/index.html`,
-	'3': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3/index.html`
+	'2': `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-2-final/index.html`
 } as const;
 
-async function expectedImagePaths(
+export async function resolveEquipmentCheckpointImagePathsV3(
 	workspaceRoot: string,
 	checkpoint: keyof typeof CHECKPOINTS
 ): Promise<Map<string, string>> {
@@ -78,7 +78,7 @@ async function expectedImagePaths(
 			: target.artifactRole === 'armour-piece'
 	);
 	if (checkpoint === '3') {
-		return new Map(targets.map((target) => [target.targetId, target.output.candidatePath]));
+		return (await resolveEquipmentArmourPieceCandidatesV3(workspaceRoot)).candidatePaths;
 	}
 	const selections = EquipmentRootCandidateSelectionManifestV3Schema.parse(
 		await readEquipmentRepositoryJson(workspaceRoot, EQUIPMENT_V3_ROOT_SELECTION_PATH)
@@ -110,10 +110,21 @@ export async function recordEquipmentCheckpointV3(input: {
 			`Checkpoint ${input.checkpoint} requires exactly its ${expected.length} subjects`
 		);
 	}
-	if (input.galleryPath !== CHECKPOINT_GALLERIES[input.checkpoint]) {
+	const pieceSelections =
+		input.checkpoint === '3'
+			? await resolveEquipmentArmourPieceCandidatesV3(input.workspaceRoot)
+			: null;
+	const expectedGalleryPath =
+		input.checkpoint === '3'
+			? `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3${pieceSelections?.manifest ? '-final' : ''}/index.html`
+			: CHECKPOINT_GALLERIES[input.checkpoint];
+	if (input.galleryPath !== expectedGalleryPath) {
 		throw new Error(`Checkpoint ${input.checkpoint} gallery path is not authoritative`);
 	}
-	const imagePaths = await expectedImagePaths(input.workspaceRoot, input.checkpoint);
+	const imagePaths = await resolveEquipmentCheckpointImagePathsV3(
+		input.workspaceRoot,
+		input.checkpoint
+	);
 	for (const decision of input.decisions) {
 		if (imagePaths.get(decision.subjectId) !== decision.imagePath) {
 			throw new Error(`Checkpoint image path is stale or unselected: ${decision.subjectId}`);

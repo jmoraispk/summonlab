@@ -22,6 +22,7 @@ import {
 	fileSha256
 } from './equipment-rank-first-production-v3.js';
 import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
+import { resolveEquipmentArmourPieceCandidatesV3 } from './materialize-equipment-armour-piece-selections-v3.js';
 import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
 
 type Phase = 'directions' | 'roots' | 'pieces' | 'closeout';
@@ -95,15 +96,18 @@ async function verifyDirections(workspaceRoot: string) {
 async function verifyCandidateGroup(
 	workspaceRoot: string,
 	targets: ReturnType<typeof buildEquipmentCandidateTargetsV3>,
-	useRootSelections = false
+	useRootSelections = false,
+	pieceSelectionState?: Awaited<ReturnType<typeof resolveEquipmentArmourPieceCandidatesV3>>
 ) {
 	const selectionManifest = useRootSelections
 		? EquipmentRootCandidateSelectionManifestV3Schema.parse(
 				await readEquipmentRepositoryJson(workspaceRoot, EQUIPMENT_V3_ROOT_SELECTION_PATH)
 			)
-		: null;
+		: (pieceSelectionState?.manifest ?? null);
 	const selections = new Map(
-		(selectionManifest?.selections ?? []).map((selection) => [selection.targetId, selection])
+		useRootSelections
+			? (selectionManifest?.selections ?? []).map((selection) => [selection.targetId, selection])
+			: (pieceSelectionState?.selections.entries() ?? [])
 	);
 	if (selectionManifest) {
 		const planValue = await readEquipmentRepositoryJson(
@@ -111,7 +115,11 @@ async function verifyCandidateGroup(
 			selectionManifest.revisionPlan.path
 		);
 		if (canonicalSha256(planValue) !== selectionManifest.revisionPlan.canonicalSha256) {
-			throw new Error('Root selection revision-plan hash mismatch');
+			throw new Error(
+				useRootSelections
+					? 'Root selection revision-plan hash mismatch'
+					: 'Armour-piece selection revision-plan hash mismatch'
+			);
 		}
 	}
 	let bytes = 0;
@@ -130,13 +138,15 @@ async function verifyCandidateGroup(
 		if (
 			selection &&
 			(fileSha256(path.join(workspaceRoot, ...selection.candidatePath.split('/'))) !==
-					selection.candidateSha256 ||
+				selection.candidateSha256 ||
 				fileSha256(path.join(workspaceRoot, ...selection.assignmentPath.split('/'))) !==
 					selection.assignmentSha256 ||
 				fileSha256(path.join(workspaceRoot, ...selection.resultPath.split('/'))) !==
 					selection.resultSha256)
 		) {
-			throw new Error(`Root selection evidence hash mismatch: ${target.targetId}`);
+			throw new Error(
+				`${useRootSelections ? 'Root' : 'Armour-piece'} selection evidence hash mismatch: ${target.targetId}`
+			);
 		}
 		if (
 			assignment.targetId !== target.targetId ||
@@ -184,11 +194,12 @@ async function verifyRoots(workspaceRoot: string) {
 async function verifyPieces(workspaceRoot: string) {
 	const targets = buildEquipmentCandidateTargetsV3();
 	const pieces = targets.filter(({ artifactRole }) => artifactRole === 'armour-piece');
-	const candidates = await verifyCandidateGroup(workspaceRoot, pieces);
+	const pieceSelectionState = await resolveEquipmentArmourPieceCandidatesV3(workspaceRoot);
+	const candidates = await verifyCandidateGroup(workspaceRoot, pieces, false, pieceSelectionState);
 	for (const source of targets.filter(({ artifactRole }) => artifactRole === 'set-source')) {
 		await verifyPng({
 			workspaceRoot,
-			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits/${source.rank.toLowerCase()}-${source.setId}-v3.png`
+			repositoryPath: `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits${pieceSelectionState.manifest ? '/final' : ''}/${source.rank.toLowerCase()}-${source.setId}-v3.png`
 		});
 	}
 	return { ...candidates, armourAuditCount: 21 };
@@ -203,11 +214,17 @@ async function verifyCheckpoint(workspaceRoot: string, number: 1 | 2 | 3) {
 		)
 	);
 	const expected = [4, 77, 84][number - 1]!;
-	const expectedGallery = [
+	let expectedGallery = [
 		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-1/index.html`,
 		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-2-final/index.html`,
 		`${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3/index.html`
 	][number - 1]!;
+	if (
+		number === 3 &&
+		(await resolveEquipmentArmourPieceCandidatesV3(workspaceRoot)).manifest !== null
+	) {
+		expectedGallery = `${EQUIPMENT_V3_ROOT}/reviews/checkpoint-3-final/index.html`;
+	}
 	if (receipt.galleryPath !== expectedGallery) {
 		throw new Error(`Checkpoint ${number} gallery path drift`);
 	}

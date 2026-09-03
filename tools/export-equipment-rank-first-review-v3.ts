@@ -18,6 +18,7 @@ import {
 	fileSha256
 } from './equipment-rank-first-production-v3.js';
 import { EQUIPMENT_V3_ROOT_SELECTION_PATH } from './materialize-equipment-rank-first-revisions-v3.js';
+import { resolveEquipmentArmourPieceCandidatesV3 } from './materialize-equipment-armour-piece-selections-v3.js';
 import { readEquipmentRepositoryJson } from './equipment-repository-io.js';
 import { equipmentArmourUnlockPath } from './record-equipment-armour-unlocks-v3.js';
 
@@ -239,17 +240,21 @@ async function checkpoint2Cards(workspaceRoot: string, edition: Edition): Promis
 	return [...classAuditCards, ...materialAuditCards, ...rootCards];
 }
 
-async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
+async function checkpoint3Cards(workspaceRoot: string, edition: Edition): Promise<Card[]> {
 	const targets = buildEquipmentCandidateTargetsV3();
 	const pieces = targets.filter(({ artifactRole }) => artifactRole === 'armour-piece');
+	const pieceCandidatePaths =
+		edition === 'final'
+			? (await resolveEquipmentArmourPieceCandidatesV3(workspaceRoot)).candidatePaths
+			: new Map(pieces.map((target) => [target.targetId, target.output.candidatePath]));
 	const pieceCards = await Promise.all(
 		pieces.map((target) =>
-			card(workspaceRoot, '3', {
+			card(workspaceRoot, edition === 'final' ? '3-final' : '3', {
 				id: target.targetId,
 				label: `${target.materialName} ${title(target.classId)} ${title(target.slot!)}`,
 				rank: target.rank,
 				group: target.setId!,
-				imagePath: target.output.candidatePath,
+				imagePath: pieceCandidatePaths.get(target.targetId)!,
 				reviewable: true
 			})
 		)
@@ -269,23 +274,19 @@ async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
 		const children = targets.filter(
 			({ dependsOnTargetId }) => dependsOnTargetId === source.targetId
 		);
-		const auditPath = `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits/${source.rank.toLowerCase()}-${source.setId}-v3.png`;
-		await auditSheet(
-			workspaceRoot,
-			auditPath,
-			[
-				{ label: 'Full Set', imagePath: unlock.sourceCandidatePath },
-				...children.map((target) => ({
-					label: title(target.slot!),
-					imagePath: target.output.candidatePath
-				}))
-			]
-		);
+		const auditPath = `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-audits${edition === 'final' ? '/final' : ''}/${source.rank.toLowerCase()}-${source.setId}-v3.png`;
+		await auditSheet(workspaceRoot, auditPath, [
+			{ label: 'Full Set', imagePath: unlock.sourceCandidatePath },
+			...children.map((target) => ({
+				label: title(target.slot!),
+				imagePath: pieceCandidatePaths.get(target.targetId)!
+			}))
+		]);
 		auditEntries.push({ source, auditPath });
 	}
 	const auditCards = await Promise.all(
 		auditEntries.map(({ source, auditPath }) =>
-			card(workspaceRoot, '3', {
+			card(workspaceRoot, edition === 'final' ? '3-final' : '3', {
 				id: `equipment-v3-armour-audit-${source.setId}`,
 				label: `${source.materialName} ${title(source.classId)} · set/pieces audit`,
 				rank: source.rank,
@@ -300,7 +301,7 @@ async function checkpoint3Cards(workspaceRoot: string): Promise<Card[]> {
 
 function html(checkpoint: Checkpoint, cards: readonly Card[], edition: Edition): string {
 	const reviewableCount = cards.filter(({ reviewable }) => reviewable).length;
-	const editionLabel = checkpoint === '2' ? ` · ${edition} audit` : '';
+	const editionLabel = checkpoint === '2' || checkpoint === '3' ? ` · ${edition} audit` : '';
 	const cardMarkup = cards
 		.map(
 			(entry) =>
@@ -325,9 +326,11 @@ export async function exportEquipmentRankFirstReviewV3(input: {
 			? await checkpoint1Cards(input.workspaceRoot)
 			: input.checkpoint === '2'
 				? await checkpoint2Cards(input.workspaceRoot, edition)
-				: await checkpoint3Cards(input.workspaceRoot);
+				: await checkpoint3Cards(input.workspaceRoot, edition);
 	const checkpointDirectory =
-		input.checkpoint === '2' && edition === 'final' ? 'checkpoint-2-final' : `checkpoint-${input.checkpoint}`;
+		(input.checkpoint === '2' || input.checkpoint === '3') && edition === 'final'
+			? `checkpoint-${input.checkpoint}-final`
+			: `checkpoint-${input.checkpoint}`;
 	const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/${checkpointDirectory}/index.html`;
 	const contents = html(input.checkpoint, cards, edition);
 	await persistDerived(input.workspaceRoot, outputPath, Buffer.from(contents));

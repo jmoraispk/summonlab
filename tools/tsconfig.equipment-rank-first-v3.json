@@ -20,6 +20,9 @@
 		"materialize-equipment-rank-first-assignments-v3.ts",
 		"materialize-equipment-rank-first-revisions-v3.ts",
 		"materialize-equipment-root-selections-v3.ts",
+		"materialize-equipment-armour-piece-revisions-v3.ts",
+		"materialize-equipment-armour-piece-selections-v3.ts",
+		"equipment-armour-piece-revisions-v3.spec.ts",
 		"export-equipment-rank-first-review-v3.ts",
 		"serve-equipment-rank-first-review-v3.ts",
 		"validate-equipment-rank-first-evidence-v3.ts"

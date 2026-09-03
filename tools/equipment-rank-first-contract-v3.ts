@@ -125,6 +125,38 @@ export const EquipmentCandidateRevisionPlanV3Schema = z
 	})
 	.strict();
 
+export const EquipmentArmourPieceRevisionPlanV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-armour-piece-revision-plan-v3'),
+		revisionPlanId: z.string().regex(/^equipment-v3-armour-piece-revisions-v[1-9][0-9]*$/u),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		reviewBasis: z.array(RepositoryPathSchema).min(1),
+		revisions: z
+			.array(
+				z
+					.object({
+						targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+						attempt: z.number().int().min(2),
+						classification: z.enum([
+							'class-rule-violation',
+							'rank-silhouette-collision',
+							'material-expression-drift'
+						]),
+						correction: NonEmptySchema
+					})
+					.strict()
+			)
+			.min(1)
+	})
+	.strict()
+	.superRefine((plan, context) => {
+		const targetIds = plan.revisions.map(({ targetId }) => targetId);
+		if (new Set(targetIds).size !== targetIds.length) {
+			context.addIssue({ code: 'custom', message: 'Armour-piece revisions must be target-unique' });
+		}
+	});
+
 export const EquipmentCandidateRevisionAssignmentV3Schema = z
 	.object({
 		schemaVersion: z.literal('equipment-rank-first-revision-assignment-v3'),
@@ -276,6 +308,45 @@ export const EquipmentRootCandidateSelectionManifestV3Schema = z
 		const targetIds = manifest.selections.map(({ targetId }) => targetId);
 		if (new Set(targetIds).size !== targetIds.length) {
 			context.addIssue({ code: 'custom', message: 'Candidate selections must be target-unique' });
+		}
+	});
+
+export const EquipmentArmourPieceCandidateSelectionManifestV3Schema = z
+	.object({
+		schemaVersion: z.literal('equipment-armour-piece-candidate-selection-manifest-v3'),
+		selectionManifestId: z
+			.string()
+			.regex(/^equipment-v3-armour-piece-candidate-selections-v[1-9][0-9]*$/u),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: NonEmptySchema,
+		approvalStatus: z.literal('candidate-only'),
+		revisionPlan: z.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema }).strict(),
+		selections: z
+			.array(
+				z
+					.object({
+						targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
+						selectedAttempt: z.number().int().min(2),
+						candidatePath: RepositoryPathSchema,
+						candidateSha256: Sha256Schema,
+						assignmentPath: RepositoryPathSchema,
+						assignmentSha256: Sha256Schema,
+						resultPath: RepositoryPathSchema,
+						resultSha256: Sha256Schema,
+						reason: NonEmptySchema
+					})
+					.strict()
+			)
+			.min(1)
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const targetIds = manifest.selections.map(({ targetId }) => targetId);
+		if (new Set(targetIds).size !== targetIds.length) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Armour-piece candidate selections must be target-unique'
+			});
 		}
 	});
 
@@ -463,9 +534,14 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['target.schema.json', EquipmentCandidateTargetV3Schema],
 	['assignment.schema.json', EquipmentCandidateAssignmentV3Schema],
 	['revision-plan.schema.json', EquipmentCandidateRevisionPlanV3Schema],
+	['armour-piece-revision-plan.schema.json', EquipmentArmourPieceRevisionPlanV3Schema],
 	['revision-assignment.schema.json', EquipmentCandidateRevisionAssignmentV3Schema],
 	['provenance-result.schema.json', EquipmentProvenanceResultV3Schema],
 	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
+	[
+		'armour-piece-candidate-selection-manifest.schema.json',
+		EquipmentArmourPieceCandidateSelectionManifestV3Schema
+	],
 	['checkpoint-receipt.schema.json', EquipmentCheckpointReceiptV3Schema],
 	['armour-set-unlock-receipt.schema.json', EquipmentArmourSetUnlockReceiptV3Schema],
 	['armour-source-checks.schema.json', EquipmentArmourSourceChecksV3Schema],
