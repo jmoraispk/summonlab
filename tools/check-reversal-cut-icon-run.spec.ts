@@ -12,6 +12,7 @@ describe('Reversal Cut icon run', () => {
 			status: 'candidate',
 			candidateHash: 'e505f796d2ec174c5db35eb762ea37dd1fe51f0a08579f403847a5303d3a7d54',
 			selfPromoted: false,
+			ownerDecision: 'accepted',
 			individualStatus: 'blocked-pending-owner-authorities'
 		});
 	});

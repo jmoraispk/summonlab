@@ -6,7 +6,8 @@ import { pathToFileURL } from 'node:url';
 import {
 	AnySkillIconAssignmentSchema,
 	AnySkillIconResultSchema,
-	AnySkillIconTargetSchema
+	AnySkillIconTargetSchema,
+	SkillIconReviewSchema
 } from '../packages/contracts/src/index.js';
 import { z } from 'zod';
 
@@ -64,6 +65,8 @@ const CompletionSchema = z.object({
 
 const COMPLETION_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/completion.json';
+const REVIEW_PATH =
+	'assets/wiki/skills/icon-production-v1/review/decisions/calibration/blade-guard-flow-reversal-cut-v2.json';
 
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -81,6 +84,7 @@ export interface ReversalCutIconRunReport {
 	readonly status: 'candidate';
 	readonly candidateHash: string;
 	readonly selfPromoted: false;
+	readonly ownerDecision: 'accepted';
 	readonly individualStatus: 'blocked-pending-owner-authorities';
 }
 
@@ -115,6 +119,9 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	const result = AnySkillIconResultSchema.parse(
 		JSON.parse((await readBound(root, completion.result)).toString('utf8'))
 	);
+	const review = SkillIconReviewSchema.parse(
+		JSON.parse(await readFile(path.join(root, REVIEW_PATH), 'utf8'))
+	);
 
 	if (target.jobId !== assignment.jobId || target.jobId !== result.jobId)
 		throw new Error('Target, assignment, and result job identities diverge');
@@ -128,6 +135,13 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	)
 		throw new Error('Result output does not bind the retained candidate');
 	if (result.selfPromoted !== false) throw new Error('Producer result must not self-promote');
+	if (
+		review.jobId !== target.jobId ||
+		review.candidatePath !== completion.candidate.path ||
+		review.candidateHash !== completion.candidate.contentHash ||
+		review.decision !== 'accepted'
+	)
+		throw new Error('Owner review does not accept the retained revision 2 candidate');
 
 	return {
 		runId: completion.runId,
@@ -135,6 +149,7 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		status: completion.status,
 		candidateHash: completion.candidate.contentHash,
 		selfPromoted: false,
+		ownerDecision: review.decision,
 		individualStatus: completion.individualStatus
 	};
 }

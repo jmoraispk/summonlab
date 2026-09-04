@@ -29,7 +29,15 @@ explicit net-new provenance rather than a fabricated migration record.
 
 ## Production gate
 
-The revised `blade.guard-flow` calibration plate contains all six lineage stages and remains a
-candidate until owner review. Reversal Cut's individual art cannot be dispatched until both the
-revised plate and its immediate-parent Mirrored Edge master are approved authorities. Promotion and
-individual generation are intentionally deferred to that review.
+The revised `blade.guard-flow` calibration plate contains all six lineage stages. Revision 2 is
+owner-accepted but remains an unpromoted candidate: its exact provider-native 1254×1254 envelope
+does not yet satisfy the current 1024×1024 master-promotion gate. Reversal Cut's individual art
+cannot be dispatched until the plate has a compliant approved master and its immediate-parent
+Mirrored Edge master is an approved authority.
+
+## Owner feedback
+
+- **Accepted:** the second guard-flow calibration design (`blade-guard-flow-reversal-cut-v2`).
+- **Preference:** revision 2 is the selected family direction.
+- **Still separate:** accepting the family sheet does not approve a standalone Mirrored Edge or
+  Reversal Cut icon, and it does not publish candidate art to the Skill Wiki.
