@@ -3,7 +3,7 @@ import { lstat, mkdir, open, readFile, readdir, realpath, rename, rm } from 'nod
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { format } from 'prettier';
+import { format, resolveConfig } from 'prettier';
 import sharp from 'sharp';
 
 export const WIKI_SKILL_VISUAL_ROOT =
@@ -13,6 +13,11 @@ export const WIKI_SKILL_VISUAL_EXPORTER_VERSION = 'wiki-skill-visual-catalog-exp
 export const WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES = 133_120 as const;
 export const WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES = 44_040_192 as const;
 
+const REPOSITORY_MANIFEST_PATH = path.resolve(
+	path.dirname(fileURLToPath(import.meta.url)),
+	'..',
+	WIKI_SKILL_VISUAL_MANIFEST_PATH
+);
 const CATALOG_PATH = 'assets/wiki/skills/icon-production-v1/catalog.json';
 const MASS_MANIFEST_PATH = 'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
 const MASS_ICON_ROOT = 'assets/wiki/skills/icon-production-v1/mass-production-v1/icons';
@@ -225,8 +230,13 @@ function assertMatched(canonical: CanonicalRecord, mass: MassRecord): void {
 }
 
 async function formatManifest(manifest: WikiSkillVisualRuntimeManifest): Promise<Buffer> {
+	const config = await resolveConfig(REPOSITORY_MANIFEST_PATH, { useCache: false });
 	return Buffer.from(
-		await format(JSON.stringify(manifest), { parser: 'json', printWidth: 100, tabWidth: 2 }),
+		await format(JSON.stringify(manifest), {
+			...config,
+			filepath: REPOSITORY_MANIFEST_PATH,
+			parser: 'json'
+		}),
 		'utf8'
 	);
 }

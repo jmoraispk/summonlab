@@ -82,9 +82,64 @@ background. Existing art-quality defects, if any, remain assigned to the separat
 
 ## Concerns
 
-- No blocking delivery concerns. The generated manifest intentionally uses the Task 1 exporter’s
-  two-space JSON formatting; the repository-wide Prettier configuration prefers tabs and therefore
-  warns on this generated file. Reformatting it would make the exporter’s deterministic `--check`
-  fail, so it was left unchanged.
-- This task publishes the approved Task 1 derivatives only; source art defects were not edited and
-  should be handled by the separate cleanup issue.
+- No blocking delivery concerns. This task publishes the approved Task 1 derivatives only; source
+  art defects were not edited and should be handled by the separate cleanup issue.
+
+## Review fix round 1 — repository Prettier configuration
+
+### Root cause
+
+The first publication hard-coded `printWidth: 100` and `tabWidth: 2` in `formatManifest`, bypassing
+the repository `prettier.config.js` (`useTabs: true`). The generated manifest therefore passed the
+exporter’s own check but failed the repository’s explicit Prettier check.
+
+### RED/GREEN evidence
+
+1. Added `formats the generated manifest with the resolved repository Prettier config` to the
+   focused exporter suite. Before the implementation change it failed as intended, with the
+   expected tab-indented output versus the two-space manifest:
+
+   ```text
+   Test Files  1 failed (1)
+   Tests       1 failed | 7 skipped (8)
+   AssertionError: expected '{\\n  "schemaVersion"...' to be '{\\n\\t"schemaVersion"...'
+   ```
+
+2. Updated the exporter to call Prettier’s `resolveConfig` with `useCache: false`, using the
+   repository manifest path derived from the exporter location, and to pass the resolved options
+   (plus `filepath` and `parser: 'json'`) to `format`. Write and check now share the same source of
+   formatting truth, including when test fixtures use a temporary output workspace.
+
+3. GREEN and publication verification:
+
+   ```text
+   corepack pnpm vitest run tools/wiki-skill-visual-catalog-lib.spec.ts
+   Test Files  1 passed (1)
+   Tests       8 passed (8)
+
+   corepack pnpm tsc -p tools/tsconfig.skill-icon-production.json --noEmit
+   exit 0
+
+   corepack pnpm prettier --check apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json
+   Checking formatting...
+   All matched files use Prettier code style!
+
+   corepack pnpm validate:wiki-skill-visual-catalog
+   exit 0
+
+   git diff --check
+   exit 0
+   ```
+
+4. Recomputed SHA-256 sums for all 456 WebPs before and after regeneration; the sorted hash files
+   were byte-identical (`webp_hashes_identical`). Only the generated manifest changed formatting.
+
+5. Repeated the deterministic zero-write proof after regeneration: validation exited 0 and the
+   before/after `git status --short` diff produced no output.
+
+### Files changed in this fix round
+
+- `tools/wiki-skill-visual-catalog-lib.ts`
+- `tools/wiki-skill-visual-catalog-lib.spec.ts`
+- `apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json`
+- `.superpowers/sdd/2026-09-04-wiki-skill-visual-catalog/task-2-report.md`

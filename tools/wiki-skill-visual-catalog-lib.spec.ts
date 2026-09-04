@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from 'node:f
 import os from 'node:os';
 import path from 'node:path';
 
+import { format, resolveConfig } from 'prettier';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -288,5 +289,28 @@ describe('wiki skill visual catalog exporter', () => {
 			manifest.summary.totalBytes += 1;
 		});
 		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/stale manifest/i);
+	});
+
+	it('formats the generated manifest with the resolved repository Prettier config', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		await writeWikiSkillVisualCatalog(built, item.root);
+
+		const repositoryManifestPath = path.resolve(
+			path.dirname(new URL(import.meta.url).pathname),
+			'../apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json'
+		);
+		const config = await resolveConfig(repositoryManifestPath);
+		const expected = await format(JSON.stringify(built.manifest), {
+			...config,
+			filepath: repositoryManifestPath,
+			parser: 'json'
+		});
+		const actual = await readFile(
+			path.join(item.root, WIKI_SKILL_VISUAL_ROOT, 'manifest.json'),
+			'utf8'
+		);
+
+		expect(actual).toBe(expected);
 	});
 });
