@@ -69,6 +69,33 @@ reproducible and do not depend on Codex-managed temporary storage.
   camera, fixed feet baseline, mass, and lighting. Use a uniform white matte with no scenery, text,
   shadow, mirroring, or design drift.
 
+### Asha gait correction v2
+
+- Generation original: `exec-0000de41-b6c3-4b7d-b57d-38f8aafa743e.png`
+- Project source: `animation-canary-v1/asha/asha-motion-sheet-source-v2.png`
+- Source SHA-256: `3a8ebfd62479c95aec94b934e5cebb24770ad9bea019b96f7388d5bdd0e4902f`
+- Runtime atlas SHA-256: `11d40da687b1795f8a8797ba09c348f332100a8d0b1d6420544d19830a82f996`
+- Mode: built-in Codex image generation edit.
+- Final prompt: edit only row two of the existing five-by-four Asha motion sheet into an explicit
+  five-frame alternating gait: left-foot contact with right trailing, passing, airborne, right-foot
+  contact with left trailing, then recovery. Alternate both arms and legs on a stable baseline while
+  preserving rows one, three, and four, identity, right shaved temple, left braid, costume, camera,
+  palette, and white matte; do not mirror, crop, relight, add props, or redesign the character.
+
+### Lesser-rat gait correction v2
+
+- Generation original: `exec-0a29101f-3e88-44a7-8046-4ea186f7e3be.png`
+- Project source:
+  `../../../../enemies/experiments/realtime-combat-study-v1/animation-canary-v1/lesser-rat/lesser-rat-motion-sheet-source-v2.png`
+- Source SHA-256: `f22609eeb531ee4f64e0512d1a12235ab4d6f065f440b3db5267b4fa4a581d2b`
+- Runtime atlas SHA-256: `56a3338099ac3d71238d3c0406a91d6519b5246771f0cdde63bf3fcf0019ce0b`
+- Mode: built-in Codex image generation edit.
+- Final prompt: edit only row two of the existing five-by-four lesser-rat sheet into an explicit
+  five-frame quadruped gallop: left-fore/right-hind contact, compression, airborne extension,
+  right-fore/left-hind contact, then recovery. Change all four limbs, spine, and tail while preserving
+  every other row, the rat's identity, infection markings, camera, palette, mass, fixed baseline, and
+  white matte; do not add scenery, text, shadows, props, cropping, or design drift.
+
 `tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
 isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
 256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion

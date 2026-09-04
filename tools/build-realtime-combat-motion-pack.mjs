@@ -94,9 +94,14 @@ for (let index = 2; index < process.argv.length; index += 2) {
 const actorId = args.get('--actor');
 const inputPath = args.get('--input');
 const outputDirectory = args.get('--out-dir');
+const version = Number.parseInt(args.get('--version') ?? '1', 10);
 if (!actorId || !inputPath || !outputDirectory) {
-	throw new Error('Usage: --actor <id> --input <sheet.png> --out-dir <directory>');
+	throw new Error(
+		'Usage: --actor <id> --input <sheet.png> --out-dir <directory> [--version <number>]'
+	);
 }
+if (!Number.isInteger(version) || version < 1)
+	throw new Error('Version must be a positive integer.');
 
 const actorConfig = {
 	asha: { sourceActorId: 'saffron-braid', baseDisplaySize: 178 },
@@ -189,7 +194,7 @@ for (const cell of keyedCells) {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-const atlasName = `${actorId}-motion-v1.png`;
+const atlasName = `${actorId}-motion-v${version}.png`;
 const atlasPath = path.join(outputDirectory, atlasName);
 await sharp({
 	create: {
@@ -242,7 +247,7 @@ const atlas = {
 	animations,
 	meta: {
 		app: 'Summonlab realtime motion pack builder',
-		version: '1',
+		version: String(version),
 		image: atlasName,
 		format: 'RGBA8888',
 		size: { w: FRAME_SIZE * COLUMNS, h: FRAME_SIZE * ROWS },
@@ -250,9 +255,9 @@ const atlas = {
 	}
 };
 const manifest = {
-	version: 1,
+	version,
 	actorId: actorConfig.sourceActorId,
-	atlas: `${actorId}-motion-v1.json`,
+	atlas: `${actorId}-motion-v${version}.json`,
 	canvas: { width: FRAME_SIZE, height: FRAME_SIZE },
 	feetAnchor: { x: 0.5, y: FEET_Y / FRAME_SIZE },
 	healthClearance: 12,
@@ -267,11 +272,11 @@ const manifest = {
 };
 
 await writeFile(
-	path.join(outputDirectory, `${actorId}-motion-v1.json`),
+	path.join(outputDirectory, `${actorId}-motion-v${version}.json`),
 	`${JSON.stringify(atlas, null, 2)}\n`
 );
 await writeFile(
-	path.join(outputDirectory, `${actorId}-motion-manifest-v1.json`),
+	path.join(outputDirectory, `${actorId}-motion-manifest-v${version}.json`),
 	`${JSON.stringify(manifest, null, 2)}\n`
 );
 console.log(JSON.stringify({ actorId, inputPath, atlasPath, commonScale }, null, 2));

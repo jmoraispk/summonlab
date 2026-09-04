@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { isInsideObstacle } from './combat-spatial';
 import { createRealtimeCombat, runRealtimeCombat, stepRealtimeCombat } from './realtime-combat';
 
 describe('realtime combat simulation', () => {
@@ -35,5 +36,16 @@ describe('realtime combat simulation', () => {
 	it('does not mutate a settled receipt', () => {
 		const settled = runRealtimeCombat(40);
 		expect(stepRealtimeCombat(settled, 1)).toBe(settled);
+	});
+
+	it('keeps living actors outside the solid well footprint throughout the encounter', () => {
+		let state = createRealtimeCombat();
+		for (let tick = 0; tick < 40 * 60 && state.phase === 'running'; tick += 1) {
+			state = stepRealtimeCombat(state, 1 / 60);
+			for (const actor of state.actors.filter((entry) => entry.health > 0)) {
+				expect(isInsideObstacle(actor), actor.id).toBe(false);
+			}
+		}
+		expect(state.phase).toBe('victory');
 	});
 });

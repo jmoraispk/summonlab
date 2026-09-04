@@ -1,3 +1,12 @@
+import {
+	actorCollisionPadding,
+	engagementPoint,
+	engagementRange,
+	pushOutsideObstacle,
+	routeAroundObstacle,
+	separationSteering
+} from './combat-spatial';
+
 export type CombatTeam = 'heroes' | 'rats';
 export type CombatPhase = 'running' | 'victory' | 'defeat';
 export type CombatIntent = 'advance' | 'attack' | 'down';
@@ -134,7 +143,7 @@ export function createRealtimeCombat(): RealtimeCombatState {
 			...[
 				[0.22, 0.3],
 				[0.38, 0.34],
-				[0.62, 0.32],
+				[0.61, 0.24],
 				[0.79, 0.29]
 			].map(([x, y], index) =>
 				actor({
@@ -157,6 +166,9 @@ export function createRealtimeCombat(): RealtimeCombatState {
 
 const distance = (a: RealtimeActor, b: RealtimeActor): number =>
 	Math.hypot(a.x - b.x, (a.y - b.y) * 1.18);
+
+const distanceToPoint = (actor: RealtimeActor, point: Readonly<{ x: number; y: number }>): number =>
+	Math.hypot(actor.x - point.x, (actor.y - point.y) * 1.18);
 
 function chooseTarget(actor: RealtimeActor, actors: RealtimeActor[]): RealtimeActor | undefined {
 	const enemies = actors.filter(
@@ -230,20 +242,33 @@ export function stepRealtimeCombat(
 		entry.facingX = (target.x - entry.x) / facingLength;
 		entry.facingY = (target.y - entry.y) / facingLength;
 		const gap = distance(entry, target);
-		if (gap > entry.range) {
+		const combatPosition = engagementPoint(entry, target);
+		const attackReach = engagementRange(entry, target);
+		const navigationGoal = routeAroundObstacle(entry, combatPosition, entry.id);
+		const positionGap = distanceToPoint(entry, combatPosition);
+		const separation = separationSteering(entry, state.actors);
+		if (gap > attackReach || positionGap > 0.026) {
 			entry.intent = 'advance';
-			const amount = Math.min(entry.speed * deltaSeconds, Math.max(0, gap - entry.range * 0.84));
-			const dx = target.x - entry.x;
-			const dy = target.y - entry.y;
-			const length = Math.hypot(dx, dy) || 1;
-			entry.velocityX = (dx / length) * entry.speed;
-			entry.velocityY = (dy / length) * entry.speed;
-			entry.x = Math.min(0.93, Math.max(0.07, entry.x + (dx / length) * amount));
-			entry.y = Math.min(0.93, Math.max(0.07, entry.y + (dy / length) * amount));
+			const dx = navigationGoal.x - entry.x;
+			const dy = navigationGoal.y - entry.y;
+			const desiredX = dx + separation.x * 0.045;
+			const desiredY = dy + separation.y * 0.045;
+			const length = Math.hypot(desiredX, desiredY) || 1;
+			const amount = entry.speed * deltaSeconds;
+			entry.velocityX = (desiredX / length) * entry.speed;
+			entry.velocityY = (desiredY / length) * entry.speed;
+			entry.x = Math.min(0.93, Math.max(0.07, entry.x + (desiredX / length) * amount));
+			entry.y = Math.min(0.93, Math.max(0.07, entry.y + (desiredY / length) * amount));
 		} else {
 			entry.intent = 'attack';
 			if (entry.attackTimer <= 0) damageTarget(state, entry, target);
+			const separationAmount = entry.speed * deltaSeconds * 0.72;
+			entry.x += separation.x * separationAmount;
+			entry.y += separation.y * separationAmount;
 		}
+		const safePosition = pushOutsideObstacle(entry, actorCollisionPadding(entry));
+		entry.x = Math.min(0.93, Math.max(0.07, safePosition.x));
+		entry.y = Math.min(0.93, Math.max(0.07, safePosition.y));
 	}
 
 	const livingHeroes = state.actors.filter((entry) => entry.team === 'heroes' && entry.health > 0);

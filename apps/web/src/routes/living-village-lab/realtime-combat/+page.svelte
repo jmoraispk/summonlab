@@ -196,8 +196,8 @@
 			<footer>
 				<b>Prototype boundary</b>
 				<span
-					>Asha and one lesser rat use authored pose animation. The remaining cast stays static
-					until the motion canary is accepted.</span
+					>Asha and every lesser rat use authored pose animation. Toma, Nessa, and the brute remain
+					intentionally static until the next motion-production pass.</span
 				>
 			</footer>
 		</aside>

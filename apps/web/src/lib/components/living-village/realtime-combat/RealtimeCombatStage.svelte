@@ -17,6 +17,7 @@
 		type ActorAnimatorState,
 		type CombatClip
 	} from './actor-animator';
+	import { WELL_OBSTACLE } from './combat-spatial';
 	import {
 		projectCombatPoint,
 		type CombatPresentationMode,
@@ -63,8 +64,8 @@
 		'plague-rat': `${ART_ROOT}/lesser-rat-ready-v1.png`
 	} as const;
 	const MOTION = {
-		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v1.json`,
-		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v1.json`
+		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`,
+		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json`
 	} as const;
 	const ART_SOURCES = [...Object.values(ART), ...Object.values(MOTION)];
 	const CLIP_META: Record<CombatClip, { framesPerSecond: number; loop: boolean }> = {
@@ -130,10 +131,9 @@
 			const scene = new Container({ label: 'realtime-combat-scene' });
 			const backdropLayer = new Container({ label: 'painted-backdrop' });
 			const worldLayer = new Container({ label: 'depth-sorted-world', sortableChildren: true });
-			const occluderLayer = new Container({ label: 'environment-occluders' });
 			const atmosphereLayer = new Container({ label: 'atmosphere' });
 			const transientUiLayer = new Container({ label: 'transient-world-ui' });
-			scene.addChild(backdropLayer, worldLayer, occluderLayer, atmosphereLayer, transientUiLayer);
+			scene.addChild(backdropLayer, worldLayer, atmosphereLayer, transientUiLayer);
 			app.stage.addChild(scene);
 			const sceneMask = new Graphics({ label: 'portrait-stage-mask' })
 				.rect(0, 0, logicalWidth, logicalHeight)
@@ -154,7 +154,13 @@
 			});
 			wellOccluder.width = logicalWidth;
 			wellOccluder.height = logicalHeight;
-			occluderLayer.addChild(wellOccluder);
+			wellOccluder.zIndex = projectCombatPoint(
+				'2.5d-v2',
+				WELL_OBSTACLE.centerX,
+				WELL_OBSTACLE.centerY + WELL_OBSTACLE.radiusY,
+				{ width: logicalWidth, height: logicalHeight }
+			).depth;
+			worldLayer.addChild(wellOccluder);
 
 			const grade = new Graphics({ label: 'mode-grade' })
 				.rect(0, 0, logicalWidth, logicalHeight)
@@ -237,14 +243,21 @@
 			const motionSheetFor = (entry: RealtimeActor): Spritesheet | undefined =>
 				entry.id === 'saffron-braid'
 					? motionSheets.asha
-					: entry.id === 'plague-rat-1'
+					: entry.role === 'swarm'
 						? motionSheets['lesser-rat']
 						: undefined;
+			const initialAnimatorState = (entry: RealtimeActor): ActorAnimatorState => {
+				const state = createActorAnimator(entry);
+				const ratIndex = entry.id.match(/plague-rat-(\d+)/)?.[1];
+				return ratIndex
+					? { ...state, elapsedSeconds: (Number.parseInt(ratIndex, 10) - 1) * 0.09 }
+					: state;
+			};
 
 			for (const entry of simulation.actors) {
 				const container = new Container({ label: entry.id, sortableChildren: true });
 				const shadow = new Graphics({ label: `${entry.id}-contact-shadow` })
-					.ellipse(0, 5, entry.role === 'brute' ? 72 : entry.role === 'swarm' ? 29 : 45, 14)
+					.ellipse(0, 0, entry.role === 'brute' ? 72 : entry.role === 'swarm' ? 29 : 45, 14)
 					.fill({ color: 0x010305, alpha: 0.62 });
 				const motionSheet = motionSheetFor(entry);
 				const body = motionSheet
@@ -276,8 +289,8 @@
 					.circle(0, -54, entry.role === 'brute' ? 62 : 38)
 					.stroke({ color: entry.team === 'rats' ? 0xffd072 : 0xe95a4c, alpha: 0.88, width: 5 });
 				impact.alpha = 0;
-				container.addChild(shadow, body, impact);
-				worldLayer.addChild(container);
+				container.addChild(body, impact);
+				worldLayer.addChild(shadow, container);
 				transientUiLayer.addChild(healthContainer);
 				actorViews[entry.id] = {
 					container,
@@ -295,7 +308,7 @@
 						? {
 								sprite: body as AnimatedSprite,
 								sheet: motionSheet,
-								state: createActorAnimator(entry),
+								state: initialAnimatorState(entry),
 								clip: 'idle'
 							}
 						: undefined
@@ -306,7 +319,7 @@
 				for (const entry of snapshot.actors) {
 					const motion = actorViews[entry.id]?.motion;
 					if (!motion) continue;
-					motion.state = createActorAnimator(entry);
+					motion.state = initialAnimatorState(entry);
 					motion.clip = motion.state.clip;
 					motion.sprite.textures = motion.sheet.animations[motion.clip]!;
 					motion.sprite.gotoAndStop(0);
@@ -343,8 +356,8 @@
 				trapezoidGuide.visible = showV2Projection;
 				trapezoidGuide.renderable = showV2Projection;
 				trapezoidGuide.alpha = showV2Projection ? 1 : 0;
-				occluderLayer.visible = showV2Projection;
-				occluderLayer.renderable = showV2Projection;
+				wellOccluder.visible = showV2Projection;
+				wellOccluder.renderable = showV2Projection;
 				renderSimulation?.(simulation);
 			};
 
@@ -370,6 +383,11 @@
 					view.container.scale.set(renderedPoint.scale);
 					view.container.zIndex =
 						activeMode === '2d' ? (entry.team === 'rats' ? 10 : 20) : renderedPoint.depth;
+					view.shadow.position.set(
+						renderedPoint.x - (activeMode === '2.5d-v2' ? 4.5 * renderedPoint.scale : 0),
+						renderedPoint.y + 3 * renderedPoint.scale
+					);
+					view.shadow.zIndex = view.container.zIndex - 1;
 					view.container.alpha = entry.health <= 0 ? (view.motion ? 0.72 : 0.22) : 1;
 					view.container.rotation =
 						entry.health <= 0 && !view.motion ? (entry.team === 'rats' ? 0.92 : -0.92) : 0;
@@ -394,11 +412,11 @@
 						view.baseHeight * (1 - pulse * 0.035)
 					);
 					view.shadow.scale.set(
-						activeMode === '2d' ? 0.82 : 1 + pulse * 0.18,
-						activeMode === '2d' ? 0.82 : 1 - pulse * 0.22
+						renderedPoint.scale * (activeMode === '2d' ? 0.82 : 1.02),
+						renderedPoint.scale * (activeMode === '2d' ? 0.82 : 0.68)
 					);
-					view.shadow.alpha = activeMode === '2d' ? 0.36 : 0.62;
-					view.shadow.rotation = activeMode === '2.5d-v2' ? -0.17 : 0;
+					view.shadow.alpha = entry.health <= 0 ? 0.18 : activeMode === '2d' ? 0.36 : 0.52;
+					view.shadow.rotation = activeMode === '2.5d-v2' ? -0.12 : 0;
 				}
 			};
 
@@ -434,15 +452,14 @@
 				if (!reducedMotion && activeMode !== '2d') {
 					const time = simulation.elapsedSeconds;
 					const cameraStrength = activeMode === '2.5d-v2' ? 1.45 : 1;
-					backdropLayer.position.set(
-						Math.sin(time * 0.19) * 2.5 * cameraStrength,
-						Math.cos(time * 0.16) * 1.5 * cameraStrength
-					);
+					const backdropX = Math.sin(time * 0.19) * 2.5 * cameraStrength;
+					const backdropY = Math.cos(time * 0.16) * 1.5 * cameraStrength;
+					backdropLayer.position.set(backdropX, backdropY);
 					const worldX = Math.sin(time * 0.19) * -1.2 * cameraStrength;
 					const worldY = Math.cos(time * 0.16) * -0.8 * cameraStrength;
 					worldLayer.position.set(worldX, worldY);
 					transientUiLayer.position.set(worldX, worldY);
-					occluderLayer.position.copyFrom(backdropLayer.position);
+					wellOccluder.position.set(backdropX - worldX, backdropY - worldY);
 					fogBanks[0]!.x = Math.sin(time * 0.11) * 46;
 					fogBanks[1]!.x = Math.cos(time * 0.09) * 38;
 					motes.forEach((mote, index) => {
@@ -453,7 +470,7 @@
 					backdropLayer.position.set(0);
 					worldLayer.position.set(0);
 					transientUiLayer.position.set(0);
-					occluderLayer.position.set(0);
+					wellOccluder.position.set(0);
 				}
 				publishTimer += frameSeconds;
 				if (publishTimer >= 0.12 || simulation.phase !== 'running') {

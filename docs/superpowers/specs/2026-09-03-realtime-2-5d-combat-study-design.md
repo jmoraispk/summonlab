@@ -1,13 +1,13 @@
 # Near-3D Real-Time 2.5D Combat Study Design
 
-**Status:** Initial slice implemented. Owner approved the animation-and-depth canary follow-up on
-2026-09-03, with the supplied hero confirmed as owner-created and fully available for derivative
-prototype assets.
+**Status:** Readability follow-up implemented. Owner accepted the animation direction on 2026-09-03,
+confirmed all remaining heroes deserve authored motion packs in a later pass, and confirmed the
+supplied hero is owner-created and fully available for derivative prototype assets.
 
 ## Purpose
 
 Build an isolated, visually ambitious real-time combat study that tests whether Summonlab can achieve
-the readable, polished party-versus-monster presentation seen in the supplied *Last Asylum: Plague*
+the readable, polished party-versus-monster presentation seen in the supplied _Last Asylum: Plague_
 clips without copying that game's assets, characters, interface, names, or data.
 
 The study is not a replacement for the accepted turn-based combat direction. It is a sibling lab
@@ -65,6 +65,16 @@ scale; animation does not restart on every simulation update; health bars clear 
 and the distinction among 2D, classic 2.5D, and trapezoidal 2.5D V2 is immediately observable without
 changing the encounter.
 
+## Accepted follow-up: combat readability
+
+The accepted canary now drives Asha and every lesser-rat instance from shared atlases with independent
+phase offsets. The remaining hero and brute packs are deferred production work, not a rejection of
+animation. Until those packs exist, readability takes priority through stable target-relative
+engagement slots, continuous separation, larger-body clearance, foot-anchored directional shadows,
+and a solid well footprint whose occlusion follows world depth rather than a blanket foreground
+layer. These changes remain presentation and navigation concerns; target selection and combat
+resolution stay authoritative in the autonomous simulation.
+
 ## Reference findings
 
 The supplied footage shows three control sources operating on a common-looking world and actor
@@ -114,7 +124,7 @@ art gate; low-quality companions must not be added merely to complete the party 
 - Integrate with `/mission/:runId`, alter the authoritative turn-based mission engine, or decide that
   real-time combat replaces it.
 - Use the supplied video or still frames in the shipped experience.
-- Extract, recreate, or approximate proprietary *Last Asylum: Plague* assets or interface chrome.
+- Extract, recreate, or approximate proprietary _Last Asylum: Plague_ assets or interface chrome.
 - Produce a full roster animation library before one hero and one enemy pass the art and motion gate.
 - Add networked agents or unconstrained model decisions. The autonomous policy is deterministic and
   replaceable.

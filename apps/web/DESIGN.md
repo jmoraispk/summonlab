@@ -169,7 +169,15 @@ parallax. `2.5D V2` is the only lens allowed to apply trapezoidal lane convergen
 scale, foreground occlusion, and visible projection guides. Switching lenses never restarts the
 encounter. The owned saffron-braid lead is the identity and quality gate; supporting heroes and
 enemies match her compact adult proportions without copying her identity or costume. Motion expansion
-is gated on an authored Asha-and-one-rat canary rather than applying low-quality animation to the cast.
+begins with an authored Asha-and-lesser-rat canary rather than applying low-quality animation to the
+whole cast. The canary is accepted for Asha and all lesser-rat instances; authored packs for Toma,
+Nessa, and the brute are an explicitly accepted later pass.
+
+Combat spacing is silhouette-aware. Actors pursue stable engagement slots around their targets,
+continue separating while attacking, and reserve more screen space for larger bodies. The V2 well
+has a solid elliptical navigation footprint and participates in the same foot-anchor depth ordering
+as actors, so it occludes only characters actually behind it. Contact shadows are world siblings
+anchored to rendered feet rather than children inheriting attack animation transforms.
 
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
