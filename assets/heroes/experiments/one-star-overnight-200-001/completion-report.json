@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "hero-one-star-completion-report-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "state": "candidate-set-complete-budget-exceeded",
+  "candidateBoundary": "candidate-only; no human approval or runtime promotion implied",
+  "completedAt": "2026-09-04",
+  "counts": {
+    "effectiveRoster": 200,
+    "startedHeroes": 200,
+    "pendingHeroes": 0,
+    "completePairs": 200,
+    "resultRecords": 1780,
+    "versionOneResultRecords": 1263,
+    "versionTwoResultRecords": 517,
+    "generationCalls": 1786,
+    "baseImageCalls": 1268,
+    "correctionCalls": 518,
+    "reserveActivations": 538,
+    "supplementalReservePackets": 521,
+    "quarantineRecords": 650,
+    "reviewDerivatives": 1718,
+    "reviewPages": 12
+  },
+  "productionBudget": {
+    "baseImageCallsLimit": 800,
+    "correctionCallsLimit": 250,
+    "baseImageCallsUsed": 1268,
+    "correctionCallsUsed": 518,
+    "baseImageCallsOver": 468,
+    "correctionCallsOver": 268,
+    "withinBudget": false
+  },
+  "validation": {
+    "reviewContract": "pass",
+    "unitTests": "84 passed",
+    "experimentContract": "fail: production budget exceeded: 1786 calls, 517 correction targets"
+  },
+  "reviewManifest": {
+    "path": "assets/heroes/experiments/one-star-overnight-200-001/review/review-manifest.json",
+    "sha256": "8ae3ee617fb200018c261cdee7b2e3fb5a2f1d807cea77df2fe75b78464c6fe5"
+  },
+  "finalActivation": {
+    "path": "assets/heroes/experiments/one-star-overnight-200-001/activations/activation-0538-delu-sorai--oryn-resha.json"
+  },
+  "notes": [
+    "All generated attempts remain append-only provenance; failed or superseded work was not deleted to manufacture a passing budget result.",
+    "The completed pair set and review surface are valid independently of the disclosed operational budget failure.",
+    "No candidate is approved, promoted, or registered in a shared runtime catalog by this report."
+  ]
+}

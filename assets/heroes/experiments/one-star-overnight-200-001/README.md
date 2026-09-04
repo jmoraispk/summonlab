@@ -22,3 +22,8 @@ python3 -m unittest discover \
 Producers may write only their assignment's candidate and result paths. Roster plans, production
 reports, journals, review pages, catalogs, wiki pages, and repository history remain coordinator
 owned.
+
+`production-report.json` is the immutable wave-03 checkpoint report. The completed 200-pair run is
+summarized in `completion-report.json`, including the final review-manifest binding and the disclosed
+production-budget overrun. The budget gate remains strict in `scripts/validate_experiment.py`; asset
+completion does not erase or redefine that operational failure.
