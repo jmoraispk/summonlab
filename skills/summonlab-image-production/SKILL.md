@@ -19,10 +19,13 @@ This is `summonlab-image-production-v3`. Read the machine-readable
 repository target's literal `schemaVersion`:
 
 - `family-affinity-target-v1` uses the skill-side `image-production-family-target-v1` profile.
+- A `family-affinity-target-v1` with literal `experimentId: fauna-family-v1` uses the
+  `image-production-fauna-family-target-v1` profile and collision-safe fauna path templates.
 - `image-production-target-v1` and `image-production-target-v2` retain the legacy profile and its
   immutable v1/v2 evidence. Wood and Metal exist only in that legacy mode.
 
-Never translate a target into another schema inside a job.
+Legacy family targets omit `experimentId` and remain bound to `family-affinity-v1`. Never translate
+a target into another schema or experiment inside a job.
 
 ## Inputs
 
