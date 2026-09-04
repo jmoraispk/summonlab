@@ -2,9 +2,10 @@
 
 Wiki ID: `art.skill-rarity-frames`
 
-Design status: **Option C remains the canonical material authority. The owner reset frame-shape
-authority to a later seven-empty-frame reference; it awaits immutable repository import and
-deterministic reconstruction. Existing v6 crops and composites remain historical review evidence**.
+Design status: **Option C remains the canonical material authority. The later owner-selected
+seven-empty-frame reference is imported immutably into the full-catalog production run and guides
+every generated family sheet and framed individual candidate. Existing v6 crops and composites
+remain historical review evidence**.
 
 ![Canonical seven-tier skill rarity-frame comparison](../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp)
 
@@ -105,10 +106,11 @@ The current owner-selected reference is the seven-empty-frame image originally g
 `/home/joao/.codex/generated_images/01a058d5-4568-76e1-bae0-81d6988ab046/exec-aba43e6f-7d3d-4fec-a87d-cd3c1b1aecc3.png`.
 It is a 1484×1060 RGB image with SHA-256
 `4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266`. Its depicted checkerboard
-is not alpha. Execution must first import the exact bytes into a versioned repository source record,
-then reconstruct F–S on one regular point-up chassis with a shared aperture and integrated crest
-letter. The reference supplies shape, material, ornament, and proportion; its individual crops are
-not upscaled into runtime masters.
+is not alpha. Exact bytes are preserved at
+`assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png`
+and bound by the same hash. The full-catalog candidate run uses it as a generation reference for
+shape, material, ornament, proportion, and integrated crest letters; its individual cells are never
+upscaled into skill masters.
 
 The accepted frame system fixes one hexagonal frame language for every skill domain. Domain, family,
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;

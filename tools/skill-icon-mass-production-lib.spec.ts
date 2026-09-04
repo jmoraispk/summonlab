@@ -17,7 +17,14 @@ describe('skill icon mass-production manifest', () => {
 		const built = buildMassProductionManifest({
 			catalog: SkillIconCatalogSchema.parse(JSON.parse(catalogBytes.toString('utf8'))),
 			motifMap: JSON.parse(motifBytes.toString('utf8')) as SkillIconMotifMap,
-			hashes: { catalog: 'a'.repeat(64), motifMap: 'b'.repeat(64), visualSpecs: 'c'.repeat(64) }
+			hashes: {
+				catalog: 'a'.repeat(64),
+				motifMap: 'b'.repeat(64),
+				visualSpecs: 'c'.repeat(64),
+				geometry: 'd'.repeat(64),
+				geometryGuide: 'e'.repeat(64),
+				paintedEmblem: 'f'.repeat(64)
+			}
 		});
 
 		expect(built.manifest.expected).toEqual({

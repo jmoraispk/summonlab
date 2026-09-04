@@ -35,9 +35,11 @@ the intended interface can present skill icons at approximately 300–400 pixels
 
 ## Consequences
 
-All 456 current skills can use the existing complete 124-family motif map without sacrificing
-individual resolution. Visual specifications must identify a concrete anchor and may declare an
-`abstract-pinnacle` mode only for an explicitly approved S skill. New review tooling needs an
-additive 384-pixel profile rather than rewriting historical 96-pixel evidence. Production remains
-gated by approval of the reset frame authority, provider normalization, and the three-domain pilot
-before the full generation budget is released.
+All 456 current skills use the complete 124-family motif map without sacrificing individual
+resolution. Visual specifications identify a concrete anchor and may declare an
+`abstract-pinnacle` mode only for an explicitly approved S skill. The owner subsequently approved
+an uninterrupted `full-catalog-v1` candidate run: every family receives a framed reference sheet,
+then every member receives an independent full-resolution framed generation. Review happens after
+the complete candidate set exists; generation completion does not imply owner approval or runtime
+promotion. Historical 96-pixel evidence remains immutable, while this run retains 1024-pixel
+candidates and derives larger review contact sheets.

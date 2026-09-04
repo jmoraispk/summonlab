@@ -11,7 +11,11 @@ import {
 	inferredVisualSpec,
 	MASS_PRODUCTION_FRAME_AUTHORITY_HASH,
 	MASS_PRODUCTION_FRAME_AUTHORITY_PATH,
+	MASS_PRODUCTION_GEOMETRY_GUIDE_PATH,
+	MASS_PRODUCTION_GEOMETRY_PATH,
 	MASS_PRODUCTION_MANIFEST_PATH,
+	MASS_PRODUCTION_PAINTED_EMBLEM_PATH,
+	type MassProductionManifest,
 	sha256
 } from './skill-icon-mass-production-lib.js';
 
@@ -23,6 +27,42 @@ type Mode = 'check' | 'write';
 
 function jsonBytes(value: unknown): Buffer {
 	return Buffer.from(`${JSON.stringify(value, null, '\t')}\n`);
+}
+
+function pendingProjection(manifest: MassProductionManifest): MassProductionManifest {
+	return {
+		schemaVersion: manifest.schemaVersion,
+		runId: manifest.runId,
+		completionState: 'incomplete',
+		authorities: manifest.authorities,
+		expected: manifest.expected,
+		families: manifest.families.map((record) => ({
+			familyId: record.familyId,
+			slug: record.slug,
+			domain: record.domain,
+			family: record.family,
+			memberTargetIds: record.memberTargetIds,
+			promptPath: record.promptPath,
+			referenceSheetPath: record.referenceSheetPath,
+			cellMapPath: record.cellMapPath,
+			resultPath: record.resultPath,
+			status: 'pending'
+		})),
+		skills: manifest.skills.map((record) => ({
+			targetId: record.targetId,
+			slug: record.slug,
+			name: record.name,
+			domain: record.domain,
+			family: record.family,
+			motifFamily: record.motifFamily,
+			rarity: record.rarity,
+			primaryVisualParent: record.primaryVisualParent,
+			promptPath: record.promptPath,
+			finalImagePath: record.finalImagePath,
+			resultPath: record.resultPath,
+			status: 'pending'
+		}))
+	};
 }
 
 async function regularBytes(filePath: string): Promise<Buffer | null> {
@@ -86,6 +126,13 @@ export async function exportSkillIconMassProduction(options: {
 	const motifBytes = await readFile(path.resolve(root, MOTIF_MAP_PATH));
 	let visualBytes = await readFile(path.resolve(root, VISUAL_SPECS_PATH));
 	const frameBytes = await readFile(path.resolve(root, MASS_PRODUCTION_FRAME_AUTHORITY_PATH));
+	const geometryBytes = await readFile(path.resolve(root, MASS_PRODUCTION_GEOMETRY_PATH));
+	const geometryGuideBytes = await readFile(
+		path.resolve(root, MASS_PRODUCTION_GEOMETRY_GUIDE_PATH)
+	);
+	const paintedEmblemBytes = await readFile(
+		path.resolve(root, MASS_PRODUCTION_PAINTED_EMBLEM_PATH)
+	);
 	if (sha256(frameBytes) !== MASS_PRODUCTION_FRAME_AUTHORITY_HASH) {
 		throw new Error('Approved seven-frame authority hash does not match the owner-selected source');
 	}
@@ -125,11 +172,13 @@ export async function exportSkillIconMassProduction(options: {
 		hashes: {
 			catalog: sha256(catalogBytes),
 			motifMap: sha256(motifBytes),
-			visualSpecs: sha256(visualBytes)
+			visualSpecs: sha256(visualBytes),
+			geometry: sha256(geometryBytes),
+			geometryGuide: sha256(geometryGuideBytes),
+			paintedEmblem: sha256(paintedEmblemBytes)
 		}
 	});
 	const outputs: { path: string; bytes: Buffer }[] = [
-		{ path: MASS_PRODUCTION_MANIFEST_PATH, bytes: jsonBytes(built.manifest) },
 		...built.familyPrompts.map((packet) => ({
 			path: built.manifest.families.find((family) => family.familyId === packet.identity)!
 				.promptPath,
@@ -160,15 +209,31 @@ export async function exportSkillIconMassProduction(options: {
 			})
 		}))
 	];
-	let current = 0;
+	const manifestPath = path.resolve(root, MASS_PRODUCTION_MANIFEST_PATH);
+	const currentManifestBytes = await regularBytes(manifestPath);
+	let manifestCurrent = false;
+	if (currentManifestBytes) {
+		const currentManifest = JSON.parse(
+			currentManifestBytes.toString('utf8')
+		) as MassProductionManifest;
+		manifestCurrent = jsonBytes(pendingProjection(currentManifest)).equals(
+			jsonBytes(built.manifest)
+		);
+	}
+	if (!manifestCurrent && options.mode === 'write') {
+		await writeAtomic(manifestPath, jsonBytes(built.manifest));
+		manifestCurrent = true;
+	}
+	let current = manifestCurrent ? 1 : 0;
 	for (const output of outputs) {
 		if (await syncFile(root, output.path, output.bytes, options.mode)) current += 1;
 	}
+	const total = outputs.length + 1;
 	process.stdout.write(
-		`${options.mode}: ${current}/${outputs.length} current files; ${built.manifest.expected.families} families; ${built.manifest.expected.skills} skills; frame ${createHash('sha256').update(frameBytes).digest('hex')}\n`
+		`${options.mode}: ${current}/${total} current files; ${built.manifest.expected.families} families; ${built.manifest.expected.skills} skills; frame ${createHash('sha256').update(frameBytes).digest('hex')}\n`
 	);
-	if (current !== outputs.length) process.exitCode = 1;
-	return { current, total: outputs.length };
+	if (current !== total) process.exitCode = 1;
+	return { current, total };
 }
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {

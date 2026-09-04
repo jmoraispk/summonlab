@@ -61,6 +61,8 @@ reference-sheet-maps/
   <family-slug>.json
 icons/
   <skill-slug>.png
+provider-sources/
+  <skill-slug>-v<revision>.png
 results/
   families/<family-slug>.json
   skills/<skill-slug>.json

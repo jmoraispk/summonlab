@@ -18,6 +18,18 @@
 		"frameSheet": {
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
 			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"geometryGuide": {
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		"paintedEmblem": {
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
 		}
 	},
 	"expected": {

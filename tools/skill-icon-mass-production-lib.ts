@@ -10,6 +10,12 @@ export const MASS_PRODUCTION_FRAME_AUTHORITY_PATH =
 	`${MASS_PRODUCTION_ROOT}/references/approved-seven-frame-sheet.png` as const;
 export const MASS_PRODUCTION_FRAME_AUTHORITY_HASH =
 	'4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266' as const;
+export const MASS_PRODUCTION_GEOMETRY_PATH =
+	'assets/wiki/skills/icon-production-v1/geometry-v2.json' as const;
+export const MASS_PRODUCTION_GEOMETRY_GUIDE_PATH =
+	'assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png' as const;
+export const MASS_PRODUCTION_PAINTED_EMBLEM_PATH =
+	'assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png' as const;
 
 export interface MassProductionPromptPacket {
 	readonly schemaVersion: 'skill-icon-mass-prompt-v1';
@@ -29,7 +35,9 @@ export interface MassProductionFamilyRecord {
 	readonly referenceSheetPath: string;
 	readonly cellMapPath: string;
 	readonly resultPath: string;
-	readonly status: 'pending';
+	readonly status: 'pending' | 'candidate';
+	readonly referenceSheetHash?: string;
+	readonly resultHash?: string;
 }
 
 export interface MassProductionSkillRecord {
@@ -44,18 +52,25 @@ export interface MassProductionSkillRecord {
 	readonly promptPath: string;
 	readonly finalImagePath: string;
 	readonly resultPath: string;
-	readonly status: 'pending';
+	readonly status: 'pending' | 'candidate';
+	readonly finalImageHash?: string;
+	readonly providerSourceHash?: string;
+	readonly resultHash?: string;
 }
 
 export interface MassProductionManifest {
 	readonly schemaVersion: 'skill-icon-mass-production-manifest-v1';
 	readonly runId: 'full-catalog-v1';
-	readonly completionState: 'incomplete';
+	readonly completionState: 'incomplete' | 'complete';
+	readonly completedAt?: string;
 	readonly authorities: {
 		readonly catalog: { readonly path: string; readonly contentHash: string };
 		readonly motifMap: { readonly path: string; readonly contentHash: string };
 		readonly visualSpecs: { readonly path: string; readonly contentHash: string };
 		readonly frameSheet: { readonly path: string; readonly contentHash: string };
+		readonly geometry: { readonly path: string; readonly contentHash: string };
+		readonly geometryGuide: { readonly path: string; readonly contentHash: string };
+		readonly paintedEmblem: { readonly path: string; readonly contentHash: string };
 	};
 	readonly expected: {
 		readonly families: number;
@@ -64,6 +79,26 @@ export interface MassProductionManifest {
 	};
 	readonly families: readonly MassProductionFamilyRecord[];
 	readonly skills: readonly MassProductionSkillRecord[];
+	readonly evidence?: {
+		readonly providerCalls: {
+			readonly families: number;
+			readonly skills: number;
+			readonly total: number;
+		};
+		readonly contactSheets: {
+			readonly families: readonly {
+				readonly familyId: string;
+				readonly path: string;
+				readonly contentHash: string;
+			}[];
+			readonly catalog: readonly {
+				readonly page: number;
+				readonly path: string;
+				readonly contentHash: string;
+			}[];
+		};
+		readonly validation: readonly { readonly command: string; readonly completedAt: string }[];
+	};
 }
 
 type CatalogRecord = SkillIconCatalog['records'][number];
@@ -185,6 +220,9 @@ export function buildMassProductionManifest(options: {
 		readonly catalog: string;
 		readonly motifMap: string;
 		readonly visualSpecs: string;
+		readonly geometry: string;
+		readonly geometryGuide: string;
+		readonly paintedEmblem: string;
 	};
 }): {
 	readonly manifest: MassProductionManifest;
@@ -304,6 +342,18 @@ export function buildMassProductionManifest(options: {
 				frameSheet: {
 					path: MASS_PRODUCTION_FRAME_AUTHORITY_PATH,
 					contentHash: MASS_PRODUCTION_FRAME_AUTHORITY_HASH
+				},
+				geometry: {
+					path: MASS_PRODUCTION_GEOMETRY_PATH,
+					contentHash: options.hashes.geometry
+				},
+				geometryGuide: {
+					path: MASS_PRODUCTION_GEOMETRY_GUIDE_PATH,
+					contentHash: options.hashes.geometryGuide
+				},
+				paintedEmblem: {
+					path: MASS_PRODUCTION_PAINTED_EMBLEM_PATH,
+					contentHash: options.hashes.paintedEmblem
 				}
 			},
 			expected: { families: families.length, skills: skills.length, domains },
