@@ -24,6 +24,9 @@ import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+	SKILL_ICON_APPROVED_FRAME_SHEET_HASH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
@@ -674,6 +677,14 @@ async function installOrdinaryFrameV6(root: string) {
 		...originalTarget,
 		jobId,
 		revision: 6,
+		references: [
+			...(originalTarget.references as Array<Record<string, unknown>>),
+			{
+				path: SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+				purpose: SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
+				contentHash: SKILL_ICON_APPROVED_FRAME_SHEET_HASH
+			}
+		],
 		output: { candidatePath, resultPath }
 	};
 	const originalAssignment = JSON.parse(
@@ -708,6 +719,10 @@ async function installOrdinaryFrameV6(root: string) {
 		revision: 6,
 		assignmentId: assignment.assignmentId,
 		status: 'candidate',
+		referenceInputs: target.references.map(({ path: referencePath, contentHash }) => ({
+			path: referencePath,
+			contentHash
+		})),
 		normalization: {
 			...originalResult.normalization,
 			outcome: 'completed',
@@ -748,6 +763,13 @@ async function installOrdinaryFrameV6(root: string) {
 		writtenOutputPaths: [candidatePath, resultPath]
 	};
 	delete (result as { failureReason?: unknown }).failureReason;
+	await mkdir(path.dirname(path.join(root, SKILL_ICON_APPROVED_FRAME_SHEET_PATH)), {
+		recursive: true
+	});
+	await copyFile(
+		path.resolve(SKILL_ICON_APPROVED_FRAME_SHEET_PATH),
+		path.join(root, SKILL_ICON_APPROVED_FRAME_SHEET_PATH)
+	);
 	const review = {
 		schemaVersion: 'skill-icon-review-v1',
 		reviewId: `review-${jobId}`,

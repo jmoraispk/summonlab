@@ -102,6 +102,14 @@ reference cannot satisfy multiple authorities by mentioning their names in its p
 missing conditional authority or an unapproved parent is an invalid coordinator packet, not
 permission to improvise. Calibration plates guide motif progression and are never crop sources.
 
+The validator defaults to the frozen v1 catalog. For a post-v1 additive target, the coordinator
+must pass its exact versioned successor with `--catalog`. When an immediate parent remains authored
+in that successor because its accepted candidate came from a frozen historical mass run, also pass
+the repository's `skill-icon-lineage-authority-v1` file with `--lineage-authority`. That authority
+must hash-bind the selected catalog, owner review, mass manifest, source candidate, and exact copied
+parent master. Use the same two options for final verification. Never infer a newer catalog or
+approval ledger by directory scanning.
+
 ## Assignment
 
 An assignment binds the matching `jobId`, canonical target and assignment paths, `retryCeiling` of
