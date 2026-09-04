@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+
 import sharp from 'sharp';
+import { describe, expect, it } from 'vitest';
 
 import { AnySkillIconGeometrySchema } from '../packages/contracts/src/index.js';
 
@@ -8,10 +10,23 @@ import {
 	normalizeAcceptedCheckerboardSkillArt,
 	renderReversalCutRuntimeIcon
 } from './activate-reversal-cut-runtime-icon.js';
+import * as activationModule from './activate-reversal-cut-runtime-icon.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 import geometry from '../assets/wiki/skills/icon-production-v1/geometry.json' with { type: 'json' };
+import geometryV2 from '../assets/wiki/skills/icon-production-v1/geometry-v2.json' with { type: 'json' };
 
 const parsedGeometry = AnySkillIconGeometrySchema.parse(geometry);
+const parsedGeometryV2 = AnySkillIconGeometrySchema.parse(geometryV2);
+
+async function pixelAt(image: Buffer, x: number, y: number): Promise<number[]> {
+	return [
+		...(await sharp(image)
+			.extract({ left: x, top: y, width: 1, height: 1 })
+			.ensureAlpha()
+			.raw()
+			.toBuffer())
+	];
+}
 
 async function syntheticProviderSource(): Promise<Buffer> {
 	const checker = Buffer.from(
@@ -67,5 +82,69 @@ describe('Reversal Cut accepted-source activation', () => {
 		expect([...corner].filter((_, index) => index % 4 === 3).every((alpha) => alpha === 0)).toBe(
 			true
 		);
+	});
+
+	it('composites the supplied A-rank frame last without redrawing it', async () => {
+		const renderFromLayers = (
+			activationModule as unknown as {
+				renderReversalCutRuntimeIconFromLayers?: (
+					backing: Buffer,
+					art: Buffer,
+					frame: Buffer,
+					size: 1024
+				) => Promise<Buffer>;
+			}
+		).renderReversalCutRuntimeIconFromLayers;
+		expect(renderFromLayers).toBeTypeOf('function');
+
+		const backing = await sharp(
+			Buffer.from(
+				'<svg width="1024" height="1024"><rect x="100" y="100" width="824" height="824" fill="#f00"/></svg>'
+			)
+		)
+			.png()
+			.toBuffer();
+		const art = await sharp(
+			Buffer.from(
+				'<svg width="1024" height="1024"><circle cx="512" cy="512" r="120" fill="#0f0"/></svg>'
+			)
+		)
+			.png()
+			.toBuffer();
+		const frame = await sharp(
+			Buffer.from(
+				'<svg width="1024" height="1024"><path d="M80 80H944V944H80ZM120 120V904H904V120Z" fill="#00f" fill-rule="evenodd"/></svg>'
+			)
+		)
+			.png()
+			.toBuffer();
+		const icon = await renderFromLayers!(backing, art, frame, 1024);
+
+		expect(await pixelAt(icon, 100, 512)).toEqual([0, 0, 255, 255]);
+		expect(await pixelAt(icon, 512, 512)).toEqual([0, 255, 0, 255]);
+		expect(await pixelAt(icon, 0, 0)).toEqual([0, 0, 0, 0]);
+	});
+
+	it('isolates the authoritative frame while removing its embedded skill interior', async () => {
+		const extractFrame = (
+			activationModule as unknown as {
+				extractReversalCutFrameLayer?: (
+					source: Buffer,
+					geometry: typeof parsedGeometry
+				) => Promise<Buffer>;
+			}
+		).extractReversalCutFrameLayer;
+		expect(extractFrame).toBeTypeOf('function');
+
+		const source = await readFile(
+			'assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-void-cut.png'
+		);
+		const frame = await extractFrame!(source, parsedGeometryV2);
+
+		expect(await pixelAt(frame, 512, 45)).toEqual(await pixelAt(source, 512, 45));
+		expect(await pixelAt(frame, 512, 200)).toEqual(await pixelAt(source, 512, 200));
+		expect((await pixelAt(frame, 330, 760))[3]).toBe(0);
+		expect((await pixelAt(frame, 512, 512))[3]).toBe(0);
+		expect((await pixelAt(frame, 0, 0))[3]).toBe(0);
 	});
 });

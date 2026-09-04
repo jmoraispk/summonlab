@@ -149,6 +149,8 @@
 		"check:reversal-cut-icon-run": "tsx tools/check-reversal-cut-icon-run.ts",
 		"activate:reversal-cut-runtime": "tsx tools/activate-reversal-cut-runtime-icon.ts --write",
 		"check:reversal-cut-runtime": "tsx tools/activate-reversal-cut-runtime-icon.ts --check",
+		"prepare:reversal-cut-frame-correction": "tsx tools/prepare-reversal-cut-frame-correction.ts --write",
+		"check:reversal-cut-frame-correction": "tsx tools/prepare-reversal-cut-frame-correction.ts --check",
 		"export:skill-icon-mass-production": "tsx tools/export-skill-icon-mass-production.ts",
 		"finalize:skill-icon-mass-production": "tsx tools/finalize-skill-icon-mass-production.ts --write",
 		"check:skill-icon-mass-production": "tsx tools/export-skill-icon-mass-production.ts --check && tsx tools/finalize-skill-icon-mass-production.ts --check",

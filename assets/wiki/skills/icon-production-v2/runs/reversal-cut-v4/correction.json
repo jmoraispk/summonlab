@@ -1,0 +1,78 @@
+{
+	"schemaVersion": "skill-icon-frame-correction-v1",
+	"correctionId": "martial-blade-reversal-cut-frame-correction-v1",
+	"targetId": "martial:blade:reversal-cut",
+	"status": "candidate",
+	"feedback": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json",
+		"contentHash": "b646b75e03e77e884e3aef0393ad2a0a3f262fd4e1a735e4768d8b33f2030c6c"
+	},
+	"priorActivation": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json",
+		"contentHash": "d317d0f5d4b3c42b4a38c8603a35963235ee43c142302e6a9bcade54744a65a8"
+	},
+	"approvedArtMaster": {
+		"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-reversal-cut.png",
+		"contentHash": "f9a9d4845a5f586a665664f201aa2cf728a77342b5aac0c34f030fcd3e5da049"
+	},
+	"frameAuthority": {
+		"approvedSheet": {
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		"massManifest": {
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
+			"contentHash": "7103c8d6c7ac006dcc4c332875ac4b44213d239079219363f9056b78bd3506bf"
+		},
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"exemplar": {
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-void-cut.png",
+			"contentHash": "6028dba290599da6bc9d56fcd8123c7675cc66d1ad1b35f70b5aba9f4f4ad0f7"
+		},
+		"extractionProfile": "full-catalog-a-frame-outer-layer-v1"
+	},
+	"outputs": {
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/presentation/charcoal-backing.png",
+			"contentHash": "01c482582007efcd6f08da066d412c285ecedf5bd1c393c1827372c34756fcfa",
+			"mediaType": "image/png",
+			"width": 1024,
+			"height": 1024,
+			"alphaMode": "rgba",
+			"bytes": 43963
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/presentation/rarity-frame-a.png",
+			"contentHash": "1cf5f597c669c036d3c4100e26e58a445abcf3f37576e66251c99377dbdda84c",
+			"mediaType": "image/png",
+			"width": 1024,
+			"height": 1024,
+			"alphaMode": "rgba",
+			"bytes": 353881
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/candidates/martial-blade-reversal-cut-framed-v1.png",
+			"contentHash": "ce580401cd55ee31f83c1bbf35174b9b6f3c566449c4b2d1631d249225ad6d70",
+			"mediaType": "image/png",
+			"width": 1024,
+			"height": 1024,
+			"alphaMode": "rgba",
+			"bytes": 737290
+		},
+		"recognition": {
+			"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/review/martial-blade-reversal-cut-framed-96.png",
+			"contentHash": "135d7721772d2f9fc70d7a93c19f303d6a7c1a26d37873c44e70d2254c52527f",
+			"mediaType": "image/png",
+			"width": 96,
+			"height": 96,
+			"alphaMode": "rgba",
+			"bytes": 12609
+		}
+	},
+	"promotionStatus": "pending-owner-review",
+	"runtimeUpdated": false,
+	"selfPromoted": false
+}

@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import { z } from 'zod';
 
+import type { AnySkillIconGeometry } from '../packages/contracts/src/index.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 
 const PROVIDER_SIZE = 1254;
@@ -219,6 +220,83 @@ export async function renderReversalCutRuntimeIcon(
 	return size === 1024 || size === 96
 		? resized.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false }).toBuffer()
 		: resized.webp({ lossless: true, quality: 100, alphaQuality: 100, effort: 6 }).toBuffer();
+}
+
+export async function renderReversalCutRuntimeIconFromLayers(
+	backing: Buffer,
+	art: Buffer,
+	frame: Buffer,
+	size: 1024 | 512 | 256 | 128 | 96
+): Promise<Buffer> {
+	const composite = await sharp({
+		create: {
+			width: WORKING_SIZE,
+			height: WORKING_SIZE,
+			channels: 4,
+			background: { r: 0, g: 0, b: 0, alpha: 0 }
+		}
+	})
+		.composite([
+			{ input: backing, blend: 'over' },
+			{ input: art, blend: 'over' },
+			{ input: frame, blend: 'over' }
+		])
+		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
+		.toBuffer();
+	const resized = sharp(composite)
+		.resize(size, size, { fit: 'fill', kernel: sharp.kernel.lanczos3 })
+		.ensureAlpha();
+	return size === 1024 || size === 96
+		? resized.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false }).toBuffer()
+		: resized.webp({ lossless: true, quality: 100, alphaQuality: 100, effort: 6 }).toBuffer();
+}
+
+export async function extractReversalCutFrameLayer(
+	source: Buffer,
+	geometry: AnySkillIconGeometry
+): Promise<Buffer> {
+	if (geometry.schemaVersion !== 'skill-icon-geometry-v2') {
+		throw new Error('Frame extraction requires skill-icon geometry v2');
+	}
+	const { data, info } = await sharp(source)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	if (info.width !== WORKING_SIZE || info.height !== WORKING_SIZE || info.channels !== 4) {
+		throw new Error('Frame authority must decode to a 1024-square RGBA raster');
+	}
+	const completeIconInteriorScale = 0.92;
+	const points = geometry.aperturePoints.map(([x, y]) => {
+		const absoluteX = x * WORKING_SIZE;
+		const absoluteY = y * WORKING_SIZE;
+		return [
+			geometry.center.x + (absoluteX - geometry.center.x) * completeIconInteriorScale,
+			geometry.center.y + (absoluteY - geometry.center.y) * completeIconInteriorScale
+		] as const;
+	});
+	const polygon = points.map(([x, y]) => `${x},${y}`).join(' ');
+	const crest = '400,78 512,20 624,78 620,188 512,270 404,188';
+	const mask = await sharp(
+		Buffer.from(
+			`<svg width="${WORKING_SIZE}" height="${WORKING_SIZE}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#000"/><polygon points="${polygon}" fill="#fff"/><polygon points="${crest}" fill="#000"/></svg>`
+		)
+	)
+		.greyscale()
+		.raw()
+		.toBuffer();
+	for (let pixel = 0; pixel < WORKING_SIZE * WORKING_SIZE; pixel += 1) {
+		const offset = pixel * 4;
+		const removal = mask[pixel] ?? 0;
+		data[offset + 3] = Math.round(((data[offset + 3] ?? 0) * (255 - removal)) / 255);
+		if (data[offset + 3] === 0) {
+			data[offset] = 0;
+			data[offset + 1] = 0;
+			data[offset + 2] = 0;
+		}
+	}
+	return sharp(data, { raw: info })
+		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
+		.toBuffer();
 }
 
 async function readBound(root: string, binding: z.infer<typeof BoundFileSchema>): Promise<Buffer> {

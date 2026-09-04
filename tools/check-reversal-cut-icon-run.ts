@@ -79,6 +79,10 @@ const ACTIVATION_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json';
 const OWNER_REVIEW_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/owner-review.json';
+const FRAME_CORRECTION_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json';
+const FRAME_FEEDBACK_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json';
 
 const ActivationAssetSchema = BoundFileSchema.extend({
 	mediaType: z.enum(['image/png', 'image/webp']),
@@ -109,6 +113,44 @@ const ActivationSchema = z.object({
 	selfPromoted: z.literal(false)
 });
 
+const FrameCorrectionSchema = z.object({
+	schemaVersion: z.literal('skill-icon-frame-correction-v1'),
+	correctionId: z.literal('martial-blade-reversal-cut-frame-correction-v1'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	status: z.literal('candidate'),
+	feedback: BoundFileSchema,
+	priorActivation: BoundFileSchema,
+	approvedArtMaster: BoundFileSchema,
+	frameAuthority: z.object({
+		approvedSheet: BoundFileSchema,
+		massManifest: BoundFileSchema,
+		geometry: BoundFileSchema,
+		exemplar: BoundFileSchema,
+		extractionProfile: z.literal('full-catalog-a-frame-outer-layer-v1')
+	}),
+	outputs: z.object({
+		backing: ActivationAssetSchema,
+		frame: ActivationAssetSchema,
+		composite: ActivationAssetSchema,
+		recognition: ActivationAssetSchema
+	}),
+	promotionStatus: z.literal('pending-owner-review'),
+	runtimeUpdated: z.literal(false),
+	selfPromoted: z.literal(false)
+});
+
+const FrameFeedbackSchema = z.object({
+	schemaVersion: z.literal('skill-icon-frame-feedback-v1'),
+	feedbackId: z.literal('reversal-cut-frame-feedback-v1'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	reviewerRole: z.literal('owner'),
+	decision: z.literal('revise'),
+	observation: z.literal('The skill frame is wrong.'),
+	rejectedActivation: BoundFileSchema,
+	rejectedComposite: BoundFileSchema,
+	requiredFrameAuthority: BoundFileSchema
+});
+
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -130,8 +172,10 @@ export interface ReversalCutIconRunReport {
 	readonly individualStatus: 'failed-provider-envelope';
 	readonly individualJobId: 'martial-blade-reversal-cut-v1';
 	readonly individualAttemptCount: 2;
-	readonly activationStatus: 'approved-runtime';
+	readonly activationStatus: 'rejected-frame';
 	readonly activationId: 'martial-blade-reversal-cut-activation-v2';
+	readonly correctionStatus: 'candidate';
+	readonly correctionId: 'martial-blade-reversal-cut-frame-correction-v1';
 	readonly runtimeSizes: readonly [512, 256, 128];
 }
 
@@ -168,8 +212,10 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	);
 	const reviewBytes = await readFile(path.join(root, REVIEW_PATH));
 	const review = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
-	const activation = ActivationSchema.parse(
-		JSON.parse(await readFile(path.join(root, ACTIVATION_PATH), 'utf8'))
+	const activationBytes = await readFile(path.join(root, ACTIVATION_PATH));
+	const activation = ActivationSchema.parse(JSON.parse(activationBytes.toString('utf8')));
+	const correction = FrameCorrectionSchema.parse(
+		JSON.parse(await readFile(path.join(root, FRAME_CORRECTION_PATH), 'utf8'))
 	);
 	const receipt = SkillIconPromotionReceiptSchema.parse(
 		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
@@ -236,6 +282,33 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	if (activation.runtime.map(({ width }) => width).join(',') !== '512,256,128') {
 		throw new Error('Runtime activation does not publish the required size ladder');
 	}
+	const [frameFeedbackBytes] = await Promise.all([
+		readBound(root, correction.feedback),
+		readBound(root, correction.approvedArtMaster),
+		readBound(root, correction.frameAuthority.approvedSheet),
+		readBound(root, correction.frameAuthority.massManifest),
+		readBound(root, correction.frameAuthority.geometry),
+		readBound(root, correction.frameAuthority.exemplar),
+		readBound(root, correction.outputs.backing),
+		readBound(root, correction.outputs.frame),
+		readBound(root, correction.outputs.composite),
+		readBound(root, correction.outputs.recognition)
+	]);
+	const frameFeedback = FrameFeedbackSchema.parse(JSON.parse(frameFeedbackBytes.toString('utf8')));
+	if (
+		correction.feedback.path !== FRAME_FEEDBACK_PATH ||
+		correction.priorActivation.path !== ACTIVATION_PATH ||
+		correction.priorActivation.contentHash !== sha256(activationBytes) ||
+		frameFeedback.rejectedActivation.path !== ACTIVATION_PATH ||
+		frameFeedback.rejectedActivation.contentHash !== sha256(activationBytes) ||
+		frameFeedback.rejectedComposite.path !== activation.compositeMaster.path ||
+		frameFeedback.rejectedComposite.contentHash !== activation.compositeMaster.contentHash ||
+		frameFeedback.requiredFrameAuthority.path !== correction.frameAuthority.approvedSheet.path ||
+		frameFeedback.requiredFrameAuthority.contentHash !==
+			correction.frameAuthority.approvedSheet.contentHash
+	) {
+		throw new Error('Frame correction does not supersede the rejected presentation authority');
+	}
 	if (
 		individualTarget.jobId !== individualAttempt.jobId ||
 		individualAssignment.jobId !== individualAttempt.jobId ||
@@ -289,8 +362,10 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		individualStatus: individualAttempt.status,
 		individualJobId: individualAttempt.jobId,
 		individualAttemptCount: individualAttempt.attemptCount,
-		activationStatus: activation.status,
+		activationStatus: 'rejected-frame',
 		activationId: activation.activationId,
+		correctionStatus: correction.status,
+		correctionId: correction.correctionId,
 		runtimeSizes: [512, 256, 128]
 	};
 }

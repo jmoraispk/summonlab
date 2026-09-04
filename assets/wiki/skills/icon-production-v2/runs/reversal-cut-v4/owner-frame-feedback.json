@@ -1,0 +1,22 @@
+{
+	"schemaVersion": "skill-icon-frame-feedback-v1",
+	"feedbackId": "reversal-cut-frame-feedback-v1",
+	"targetId": "martial:blade:reversal-cut",
+	"reviewer": "project-owner",
+	"reviewerRole": "owner",
+	"decision": "revise",
+	"reviewedAt": "2026-09-04T20:42:31Z",
+	"observation": "The skill frame is wrong.",
+	"rejectedActivation": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json",
+		"contentHash": "d317d0f5d4b3c42b4a38c8603a35963235ee43c142302e6a9bcade54744a65a8"
+	},
+	"rejectedComposite": {
+		"path": "assets/wiki/skills/icon-production-v1/masters/composites/martial-blade-reversal-cut.png",
+		"contentHash": "4e15d4368933262111eb47b74ca4f970970e112b7ceedfff5439625bbb8dfc25"
+	},
+	"requiredFrameAuthority": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+		"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+	}
+}
