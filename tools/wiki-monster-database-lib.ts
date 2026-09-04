@@ -693,13 +693,14 @@ states; this export promotes nothing.
 
 ${familySections}
 
-## Planned fauna expansion — separate production set
+## Fauna expansion — complete candidate set
 
 The completed 30-family matrix above remains frozen and will not be regenerated. Eight accepted new
 fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, and Raptors—add
-40 designed T1–T5 forms in a separate future 200-coordinate production set. No targets
-or images for that expansion have been created yet. See the
-[fauna family expansion](../fauna-family-expansion.md) for its progression and status boundaries.
+40 designed T1–T5 forms in a separate 200-coordinate production set. Every coordinate now has an
+individual candidate and provenance receipt, with zero approvals and zero runtime promotions. See
+the [fauna family expansion](../fauna-family-expansion.md) for its progression, review gallery, and
+status boundaries.
 
 ## Completed v1 class reconciliation
 

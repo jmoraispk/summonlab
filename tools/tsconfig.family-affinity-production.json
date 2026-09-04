@@ -18,6 +18,8 @@
 		"build-family-affinity-dispatch-bundle.ts",
 		"export-family-affinity-production.ts",
 		"export-fauna-family-production.ts",
+		"export-fauna-family-handoff.ts",
+		"export-fauna-family-handoff.spec.ts",
 		"fauna-family-design.spec.ts",
 		"report-family-affinity-pixel-completion.ts",
 		"family-affinity-review-lib.ts",

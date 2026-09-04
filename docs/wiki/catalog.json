@@ -783,8 +783,8 @@
       "pageType": "monster-family-index",
       "owner": "visuals-content",
       "designStatus": "accepted",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
       "spoilerScope": "discoverable"
     },
     {

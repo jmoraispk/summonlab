@@ -7,7 +7,8 @@ import {
 	FAUNA_FAMILY_ROOT,
 	FamilyPacketSchema,
 	FaunaFamilyManifestSchema,
-	stableFamilyAffinityJson
+	stableFamilyAffinityJson,
+	validateFaunaFamilyProductionBundle
 } from './family-affinity-production-lib.js';
 
 const ACTIVE_SOURCES_PATH = `${FAUNA_FAMILY_ROOT}/active-sources.json`;
@@ -94,53 +95,75 @@ export async function exportFaunaFamilyProduction(input: {
 	const currentManifest = JSON.parse(
 		(await assertRealFile(input.repositoryRoot, manifestPath)).toString('utf8')
 	) as unknown;
-	const bundle = buildFaunaFamilyProductionBundle(
-		families,
-		designInput(currentManifest),
-		ACTIVE_SOURCES_PATH
-	);
-
-	for (const artifact of bundle.artifacts) {
-		const absolute = join(input.repositoryRoot, artifact.path);
-		const expected = stableFamilyAffinityJson(artifact.value);
-		if (await exists(absolute)) {
-			const actual = await readFile(absolute, 'utf8');
-			if (actual === expected) continue;
-			if (
-				artifact.path !== manifestPath ||
-				FaunaFamilyManifestSchema.safeParse(currentManifest).success
-			) {
-				throw new Error(`Fauna production artifact drift or collision: ${artifact.path}`);
+	const parsedCurrent = FaunaFamilyManifestSchema.safeParse(currentManifest);
+	let targetCount: number;
+	let assignmentCount: number;
+	if (parsedCurrent.success) {
+		const targets = await Promise.all(
+			parsedCurrent.data.canonicalMatrix.activeCoordinates.map(async ({ targetPath }) =>
+				JSON.parse((await assertRealFile(input.repositoryRoot, targetPath)).toString('utf8'))
+			)
+		);
+		const assignments = await Promise.all(
+			parsedCurrent.data.canonicalMatrix.activeCoordinates.map(async ({ assignmentPath }) =>
+				JSON.parse((await assertRealFile(input.repositoryRoot, assignmentPath)).toString('utf8'))
+			)
+		);
+		validateFaunaFamilyProductionBundle(
+			{ manifest: parsedCurrent.data, targets, assignments, artifacts: [] },
+			families
+		);
+		targetCount = targets.length;
+		assignmentCount = assignments.length;
+	} else {
+		const bundle = buildFaunaFamilyProductionBundle(
+			families,
+			designInput(currentManifest),
+			ACTIVE_SOURCES_PATH
+		);
+		for (const artifact of bundle.artifacts) {
+			const absolute = join(input.repositoryRoot, artifact.path);
+			const expected = stableFamilyAffinityJson(artifact.value);
+			if (await exists(absolute)) {
+				const actual = await readFile(absolute, 'utf8');
+				if (actual === expected) continue;
+				if (artifact.path !== manifestPath) {
+					throw new Error(`Fauna production artifact drift or collision: ${artifact.path}`);
+				}
+				if (input.check) throw new Error('Fauna production manifest is not materialized');
+				const temporary = `${absolute}.fauna-materialization-${process.pid}`;
+				try {
+					await writeFile(temporary, expected, { flag: 'wx' });
+					await rename(temporary, absolute);
+				} finally {
+					await unlink(temporary).catch(() => undefined);
+				}
+				continue;
 			}
-			if (input.check) throw new Error('Fauna production manifest is not materialized');
-			const temporary = `${absolute}.fauna-materialization-${process.pid}`;
-			try {
-				await writeFile(temporary, expected, { flag: 'wx' });
-				await rename(temporary, absolute);
-			} finally {
-				await unlink(temporary).catch(() => undefined);
-			}
-			continue;
+			if (input.check) throw new Error(`Missing fauna production artifact: ${artifact.path}`);
+			await mkdir(dirname(absolute), { recursive: true });
+			await writeFile(absolute, expected, { flag: 'wx' });
 		}
-		if (input.check) throw new Error(`Missing fauna production artifact: ${artifact.path}`);
-		await mkdir(dirname(absolute), { recursive: true });
-		await writeFile(absolute, expected, { flag: 'wx' });
+		targetCount = bundle.targets.length;
+		assignmentCount = bundle.assignments.length;
 	}
 
 	const candidateFiles = await listFiles(
 		join(input.repositoryRoot, FAUNA_FAMILY_ROOT, 'candidates')
 	);
 	const resultFiles = await listFiles(join(input.repositoryRoot, FAUNA_FAMILY_ROOT, 'results'));
-	if (candidateFiles.length !== 0 || resultFiles.length !== 0) {
-		throw new Error('Task 1 forbids fauna candidate or result outputs');
+	if (candidateFiles.length !== resultFiles.length) {
+		throw new Error(
+			`Fauna production has partial candidate/result coverage: ${candidateFiles.length}/${resultFiles.length}`
+		);
 	}
 	return {
 		status: input.check ? ('verified' as const) : ('materialized' as const),
 		experimentId: 'fauna-family-v1' as const,
 		familyCount: 8,
 		formCount: 40,
-		targetCount: bundle.targets.length,
-		assignmentCount: bundle.assignments.length,
+		targetCount,
+		assignmentCount,
 		candidateCount: candidateFiles.length,
 		resultCount: resultFiles.length
 	};

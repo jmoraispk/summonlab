@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { exportFaunaFamilyProduction } from './export-fauna-family-production.js';
 import {
 	FamilyAffinityActiveSourcesSchema,
 	FamilyPacketSchema,
@@ -93,7 +94,7 @@ describe('fauna-family-v1 design', () => {
 			const crossRootAnchor = {
 				...target,
 				anchor:
-					target.anchor.kind === 'normal-approved-review'
+					'normalTargetPath' in target.anchor
 						? {
 								...target.anchor,
 								normalTargetPath: target.anchor.normalTargetPath.replace(
@@ -215,10 +216,16 @@ describe('fauna-family-v1 design', () => {
 			targetMaterializationStatus: 'materialized',
 			targetCount: 200,
 			assignmentCount: 200,
-			candidateCount: 0,
+			candidateCount: 200,
+			resultCount: 200,
+			provenanceRecordCount: 200,
+			unresolvedProviderFailureCount: 0,
 			approvedCount: 0,
 			runtimeCount: 0,
-			runtimeCatalogMutationForbidden: true
+			runtimeCatalogMutationForbidden: true,
+			inventoryPath: `${expansionRoot}/inventory.json`,
+			evidenceInventoryPath: 'docs/evidence/fauna-family-v1/inventory.json',
+			reviewGalleryPath: 'docs/evidence/fauna-family-v1/index.html'
 		});
 		expect(manifest.canonicalMatrix).toMatchObject({
 			familyCount: 8,
@@ -278,6 +285,18 @@ describe('fauna-family-v1 design', () => {
 			formCount: 150,
 			targetCount: 750,
 			assignmentCount: 750
+		});
+	});
+
+	it('keeps the materialized production bundle valid after its candidate matrix is complete', async () => {
+		const report = await exportFaunaFamilyProduction({ repositoryRoot, check: true });
+
+		expect(report).toMatchObject({
+			status: 'verified',
+			targetCount: 200,
+			assignmentCount: 200,
+			candidateCount: 200,
+			resultCount: 200
 		});
 	});
 });

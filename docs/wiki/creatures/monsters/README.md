@@ -782,13 +782,14 @@ states; this export promotes nothing.
 | T4 — Champion | [Facewearer](doppelganger-facewearer.md) | Three-Face Champion (Champion) | Control three alternating attack rules by rotating layered faces to the front of an otherwise flawless copy. | Teach that the rear mask edge moves before the next face and remains vulnerable after the transition. | Front in Turn: three layered faces rotate through the front position, each calling a learned reach, cut, or mirrored response while the vacated edge stays open. | Two mask profiles slide backward and the third face becomes unnaturally still before its rule begins. | Read the incoming profile, answer its familiar rule, and strike the trailing mask edge after it rotates away. | Blank, Halfling Copy, and Mimic each supply one face rule; disabling that lower form leaves its layer unable to close. |
 | T5 — Sovereign | [Faceless Sovereign](doppelganger-faceless-sovereign.md) | Many-Face Sovereign (Sovereign) | Transform a copy arena through body-wide face processions while the mask crown commands learned lower-form defects. | Test blank wrists, unfinished sides, wrong joints, and rotating mask edges while each removed crown mask strips one copied phase from the body. | Arena Transformation — Parade of Faces: one mask-crown segment lowers, body-wide faces stream from chest to arms and back, and the sovereign copies a lower Doppelganger rule until its source defect reaches the crown latch. | Borrowed colors move across the smooth flesh, one crown mask tips forward, and the called lower-form defect appears on the last face in the procession. | Answer the announced copied rule and strike the crown latch when its source defect arrives; each removed mask erases one procession and reveals more blank native flesh. | Blank, Halfling Copy, Mimic, and Facewearer each define one mask-crown phase; solving its defect exposes the linked latch. |
 
-## Planned fauna expansion — separate production set
+## Fauna expansion — complete candidate set
 
 The completed 30-family matrix above remains frozen and will not be regenerated. Eight accepted new
 fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, and Raptors—add
-40 designed T1–T5 forms in a separate future 200-coordinate production set. No targets
-or images for that expansion have been created yet. See the
-[fauna family expansion](../fauna-family-expansion.md) for its progression and status boundaries.
+40 designed T1–T5 forms in a separate 200-coordinate production set. Every coordinate now has an
+individual candidate and provenance receipt, with zero approvals and zero runtime promotions. See
+the [fauna family expansion](../fauna-family-expansion.md) for its progression, review gallery, and
+status boundaries.
 
 ## Completed v1 class reconciliation
 

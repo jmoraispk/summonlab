@@ -15,9 +15,9 @@ families and 150 forms. It publishes family classification caveats, visual const
 combat duties, teaching goals, telegraphs, counterplay, lower-form interactions, and the complete
 750-coordinate production plan.
 
-The accepted [fauna family expansion](../fauna-family-expansion.md) adds eight separately planned
-families and 40 designed forms. Its future queue contains only 200 new coordinates; it does not
-reopen or regenerate the original 750.
+The accepted [fauna family expansion](../fauna-family-expansion.md) adds eight separately produced
+families and 40 designed forms. Its 200-coordinate candidate matrix is complete in its own
+collision-safe program; it does not reopen or regenerate the original 750.
 
 Family means a shared visual and encounter grammar. It does not automatically mean species,
 ancestry, faction, personhood, culture, morality, or universal hostility. The individual family
@@ -42,12 +42,14 @@ These remain **source briefs**, not accepted species canon or runtime statistics
 positions have now been consolidated into explicit Initiate, Soldier, Specialist, Champion, and
 Sovereign forms without rewriting the source volumes in place.
 
-The five production coordinates are ownership plans, not finished images. Normal begins as
+For the original 30-family database, the five production coordinates began as ownership plans.
+Normal begins as
 `planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor`. The current single-checkpoint
 production run may open a blocked coordinate as `planned-provisional-anchor` when the exact Normal
 target, candidate, result, prompt, and source chain verifies. That status authorizes candidate
 generation while human review remains pending; it is neither approval nor runtime promotion.
-Candidate, approved-review, and runtime remain separate states.
+Candidate, approved-review, and runtime remain separate states. The later fauna expansion has all
+200 candidate/result pairs but remains at the same candidate-only ceiling.
 
 ## Earlier forty-class reconciliation
 

@@ -27,7 +27,7 @@
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
 			"references/target-schema.md": "ebd0afd360e83eda95d374f2145c9ea2a302aae017302d43434cccec44ed7494",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "e292333a73fa4c4af901d50929e5292b56bfe25133ae109c41ae0dd98b349b1e",
+			"scripts/family_dispatch_gate.mjs": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58",
 			"scripts/persist_family_candidate.py": "5d1872e4c4a79d014867bff6138026b27d960237bbb749e2d764b825c68b143b",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
 			"scripts/validate_target.py": "aee4d51b3c33e9a80fafeff57c81cdbc6f2cb2879531edcbf7c31841383d4ba1",
@@ -46,7 +46,7 @@
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "e292333a73fa4c4af901d50929e5292b56bfe25133ae109c41ae0dd98b349b1e"
+			"sha256": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58"
 		},
 		"sources": [
 			{
@@ -55,11 +55,11 @@
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "d11ca689b36e94b059a0b92e75818861274b279c6656b5260d70b05016ff6bd3"
+				"sha256": "bc9a43d16737823102a5841c8a8d5a3eb78348d978ade1896bc3f74a70e30b80"
 			},
 			{
 				"path": "package.json",
-				"sha256": "0345a1e83a8aefab489cd553356dbf0b72c553333b3aa50535a22117850942c4"
+				"sha256": "ab89f664496018190ee3d20859c731acc1cc420d033024b6bd40ac9bdcc40ad5"
 			},
 			{
 				"path": "pnpm-lock.yaml",

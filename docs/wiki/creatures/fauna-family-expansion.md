@@ -4,18 +4,21 @@ Wiki ID: `creatures.fauna-family-expansion`
 
 Design status: **accepted**
 
-Visual-production status: **brief only — no new targets or images have been created**
+Visual-production status: **candidate matrix complete — 200 candidates, 0 approved, 0 runtime**
 
 This expansion adds eight expedition-first animal families without reopening the completed original
 30-family image program. The [canonical monster database](monsters/README.md) and its 750 generated
-coordinates remain unchanged. Future production is restricted to these **40 new forms × five image
-targets = 200 new image coordinates**.
+coordinates remain unchanged. The separate fauna program now contains **40 new forms × five image
+targets = 200 individually generated candidate coordinates**.
 
 The complete mechanics, visual escalation, affinity constraints, legacy mappings, and production
 boundary live in the
 [approved fauna design](../../superpowers/specs/2026-09-04-fauna-family-expansion-design.md).
 Machine-readable family packets live under
 [`assets/enemies/experiments/fauna-family-v1`](../../../assets/enemies/experiments/fauna-family-v1/active-sources.json).
+The complete candidate-only matrix is available in the
+[visual review gallery](../../evidence/fauna-family-v1/index.html) and the
+[machine-readable inventory](../../../assets/enemies/experiments/fauna-family-v1/inventory.json).
 
 ## Progression overview
 
@@ -130,9 +133,27 @@ The legacy Burrowing Worm bridge coordinate is retired in favor of the new Burro
 Armored Brood Guard is assigned to Arachnids, Death Knight to Skeletons, and Cave Drake to Dragons as
 secondary archetypes. Other bridge expansion work is removed from the active roadmap.
 
+## Candidate-production handoff
+
+Every one of the 200 active coordinates has a hash-bound target, exclusive assignment, individual
+PNG candidate, and immutable `family-affinity-result-v1` provenance receipt. The
+[evidence inventory](../../evidence/fauna-family-v1/inventory.json) mirrors the canonical inventory
+used by the static gallery. The matrix remains wholly **candidate-only**: no review decision in this
+handoff approves an image, and no image has entered a runtime catalog.
+
+| Measure | Count |
+| --- | ---: |
+| Families | 8 |
+| T1–T5 forms | 40 |
+| Targets and assignments | 200 each |
+| Individual candidates and provenance receipts | 200 each |
+| Unresolved provider failures | 0 |
+| Approved images | 0 |
+| Runtime images | 0 |
+
 ## Affinity rule
 
-All 40 forms eventually receive separate Normal, Fire, Earth, Wind, and Water images. Affinity must
+All 40 forms have separate Normal, Fire, Earth, Wind, and Water candidate images. Affinity must
 change at least two construction dimensions while preserving animal anatomy and combat readability:
 
 - Fire uses localized combustion, heat response, smoke direction, and cooling weak points.

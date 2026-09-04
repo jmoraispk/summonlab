@@ -1698,7 +1698,7 @@ export const FaunaFamilyManifestSchema = z
 	.object({
 		schemaVersion: z.literal('fauna-family-production-manifest-v1'),
 		experimentId: z.literal('fauna-family-v1'),
-		status: z.literal('production-materialized'),
+		status: z.enum(['production-materialized', 'candidate-matrix-complete']),
 		scope: z
 			.object({
 				existingFamilyAction: z.literal('retain-without-regeneration'),
@@ -1740,9 +1740,15 @@ export const FaunaFamilyManifestSchema = z
 				targetMaterializationStatus: z.literal('materialized'),
 				targetCount: z.literal(200),
 				assignmentCount: z.literal(200),
-				candidateCount: z.literal(0),
+				candidateCount: z.union([z.literal(0), z.literal(200)]),
+				resultCount: z.literal(200).optional(),
+				provenanceRecordCount: z.literal(200).optional(),
+				unresolvedProviderFailureCount: z.literal(0).optional(),
 				approvedCount: z.literal(0),
 				runtimeCount: z.literal(0),
+				inventoryPath: z.literal(`${FAUNA_FAMILY_ROOT}/inventory.json`).optional(),
+				evidenceInventoryPath: z.literal('docs/evidence/fauna-family-v1/inventory.json').optional(),
+				reviewGalleryPath: z.literal('docs/evidence/fauna-family-v1/index.html').optional(),
 				reviewCheckpoint: z.literal('after-new-fauna-candidate-matrix-is-complete'),
 				runtimeCatalogMutationForbidden: z.literal(true)
 			})
@@ -1782,6 +1788,33 @@ export const FaunaFamilyManifestSchema = z
 			context.addIssue({
 				code: 'custom',
 				message: 'Fauna coordinates must use canonical fauna paths'
+			});
+		}
+		const finalFields = [
+			manifest.production.resultCount,
+			manifest.production.provenanceRecordCount,
+			manifest.production.unresolvedProviderFailureCount,
+			manifest.production.inventoryPath,
+			manifest.production.evidenceInventoryPath,
+			manifest.production.reviewGalleryPath
+		];
+		if (
+			manifest.status === 'candidate-matrix-complete' &&
+			(manifest.production.candidateCount !== 200 ||
+				finalFields.some((value) => value === undefined))
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Complete fauna handoff requires the full candidate inventory and evidence paths'
+			});
+		}
+		if (
+			manifest.status === 'production-materialized' &&
+			(manifest.production.candidateCount !== 0 || finalFields.some((value) => value !== undefined))
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Materialized fauna production cannot claim final candidate handoff evidence'
 			});
 		}
 	});
