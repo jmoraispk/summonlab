@@ -1,51 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460" role="img" aria-labelledby="title description">
   <title id="title">Classical five-beat human run</title>
   <desc id="description">Five labeled panels show left, left, none, right, right support, shared ground, center-of-mass arc, travel, and loop seam.</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#253341" /></marker>
-    <style>text{font-family:system-ui,sans-serif;fill:#253341}.panel{fill:#f8fafc;stroke:#9aa8b5;stroke-width:2}.ground{stroke:#253341;stroke-width:3}.body{fill:none;stroke:#1f6feb;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}.support{fill:#188038}.air{fill:#b3261e}.arc{fill:none;stroke:#7b3fb2;stroke-width:3;stroke-dasharray:7 6}</style>
+    <style>text{font-family:system-ui,sans-serif;fill:#253341}.panel{fill:#f8fafc;stroke:#9aa8b5;stroke-width:2}.ground{stroke:#253341;stroke-width:3}.body{fill:none;stroke:#1f6feb;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}.support{fill:#188038}.air{fill:#b3261e}.com-trajectory{fill:none;stroke:#7b3fb2;stroke-width:4;stroke-dasharray:8 6;stroke-linecap:round}.com-point{fill:#7b3fb2;stroke:#fff;stroke-width:2}.loop-seam{fill:none;stroke:#0b7285;stroke-width:4;stroke-linecap:round}</style>
   </defs>
-  <rect width="1280" height="420" fill="#ffffff" />
+  <rect width="1280" height="460" fill="#ffffff" />
   <text x="640" y="32" text-anchor="middle" font-size="24" font-weight="700">Classical human run: five-beat support sequence</text>
   <path d="M72 365 H1210" class="ground" />
-  <text x="72" y="392" font-size="16">shared ground line</text>
+  <text x="72" y="354" font-size="16">shared ground line</text>
   <path d="M105 62 H1165" stroke="#253341" stroke-width="3" marker-end="url(#arrow)" />
   <text x="635" y="57" text-anchor="middle" font-size="16">travel</text>
-  <path d="M1160 124 C1235 124 1235 252 1160 252" fill="none" stroke="#253341" stroke-width="3" marker-end="url(#arrow)" />
-  <text x="1170" y="110" font-size="15">loop to 1</text>
   <g transform="translate(40 0)">
     <rect x="0" y="90" width="210" height="250" rx="12" class="panel" />
     <text x="105" y="118" text-anchor="middle" font-size="17" font-weight="700">1 Contact A</text><text x="105" y="141" text-anchor="middle" font-size="15">support=left</text>
     <circle cx="100" cy="174" r="20" class="body" /><path d="M100 194 L96 256 L62 297 M96 256 L135 303 M96 214 L59 236 M96 214 L133 231" class="body" />
     <circle cx="62" cy="306" r="7" class="support" /><text x="36" y="325" font-size="14">left foot</text><text x="127" y="325" font-size="14">right foot</text>
-    <path d="M72 165 Q105 143 137 165" class="arc" /><text x="105" y="155" text-anchor="middle" font-size="13">COM</text>
   </g>
   <g transform="translate(285 0)">
     <rect x="0" y="90" width="210" height="250" rx="12" class="panel" />
     <text x="105" y="118" text-anchor="middle" font-size="17" font-weight="700">2 Compression A</text><text x="105" y="141" text-anchor="middle" font-size="15">support=left</text>
     <circle cx="100" cy="189" r="20" class="body" /><path d="M100 209 L96 264 L67 305 M96 264 L132 301 M96 228 L57 246 M96 228 L134 243" class="body" />
     <circle cx="67" cy="313" r="7" class="support" /><text x="40" y="325" font-size="14">left foot</text><text x="127" y="325" font-size="14">right foot</text>
-    <path d="M70 180 Q105 204 141 180" class="arc" /><text x="105" y="216" text-anchor="middle" font-size="13">COM low</text>
   </g>
   <g transform="translate(530 0)">
     <rect x="0" y="90" width="210" height="250" rx="12" class="panel" />
     <text x="105" y="118" text-anchor="middle" font-size="17" font-weight="700">3 Airborne pass</text><text x="105" y="141" text-anchor="middle" font-size="15">support=none</text>
     <circle cx="100" cy="165" r="20" class="body" /><path d="M100 185 L103 240 L73 270 M103 240 L140 260 M103 205 L65 223 M103 205 L140 216" class="body" />
     <circle cx="73" cy="279" r="7" class="air" /><circle cx="140" cy="269" r="7" class="air" /><text x="40" y="325" font-size="14">left foot</text><text x="127" y="325" font-size="14">right foot</text>
-    <path d="M72 157 Q105 130 141 157" class="arc" /><text x="105" y="148" text-anchor="middle" font-size="13">COM</text>
   </g>
   <g transform="translate(775 0)">
     <rect x="0" y="90" width="210" height="250" rx="12" class="panel" />
     <text x="105" y="118" text-anchor="middle" font-size="17" font-weight="700">4 Contact B</text><text x="105" y="141" text-anchor="middle" font-size="15">support=right</text>
     <circle cx="105" cy="174" r="20" class="body" /><path d="M105 194 L111 254 L74 302 M111 254 L152 295 M111 214 L74 232 M111 214 L146 238" class="body" />
     <circle cx="152" cy="304" r="7" class="support" /><text x="48" y="325" font-size="14">left foot</text><text x="132" y="325" font-size="14">right foot</text>
-    <path d="M76 165 Q111 143 146 165" class="arc" /><text x="111" y="155" text-anchor="middle" font-size="13">COM</text>
   </g>
   <g transform="translate(1020 0)">
     <rect x="0" y="90" width="210" height="250" rx="12" class="panel" />
     <text x="105" y="118" text-anchor="middle" font-size="17" font-weight="700">5 Recovery B</text><text x="105" y="141" text-anchor="middle" font-size="15">support=right</text>
     <circle cx="105" cy="181" r="20" class="body" /><path d="M105 201 L111 258 L80 296 M111 258 L150 306 M111 220 L76 240 M111 220 L145 229" class="body" />
     <circle cx="150" cy="314" r="7" class="support" /><text x="48" y="325" font-size="14">left foot</text><text x="132" y="325" font-size="14">right foot</text>
-    <path d="M76 172 Q111 194 146 172" class="arc" /><text x="111" y="206" text-anchor="middle" font-size="13">COM</text>
   </g>
+  <path d="M136 225 C220 214 305 225 381 238 S558 225 633 215 S810 222 886 234 S1055 227 1131 239" class="com-trajectory" />
+  <circle cx="136" cy="225" r="6" class="com-point" /><circle cx="381" cy="238" r="6" class="com-point" /><circle cx="633" cy="215" r="6" class="com-point" /><circle cx="886" cy="234" r="6" class="com-point" /><circle cx="1131" cy="239" r="6" class="com-point" />
+  <text x="640" y="84" text-anchor="middle" font-size="15" fill="#7b3fb2">center-of-mass trajectory</text>
+  <path d="M1125 348 C1125 438 145 438 145 348" class="loop-seam" marker-end="url(#arrow)" />
+  <text x="640" y="450" text-anchor="middle" font-size="17" fill="#0b7285">loop seam: 5 → 1</text>
 </svg>

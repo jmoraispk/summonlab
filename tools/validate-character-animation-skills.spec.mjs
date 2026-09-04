@@ -51,6 +51,22 @@ function runValidatorWithKnownActions(knownActions) {
 	});
 }
 
+function runValidatorWithRunDiagram(diagram) {
+	return withFixture((fixtureRoot) => {
+		const fixturePath = join(
+			fixtureRoot,
+			'skills/summonlab-character-animations/references/classical-human-run.svg'
+		);
+		writeFileSync(fixturePath, diagram);
+		return runValidator({
+			'known-actions': join(
+				fixtureRoot,
+				'skills/summonlab-character-animations/references/known-actions.md'
+			)
+		});
+	});
+}
+
 test('validates the repository character-animation skill contract', () => {
 	const result = runValidator();
 	assert.equal(result.status, 0, result.stderr);
@@ -73,4 +89,29 @@ test('requires the classical run support sequence', () => {
 	);
 	assert.notEqual(result.status, 0);
 	assert.match(result.stderr, /classical human run.*support/i);
+});
+
+test('requires each classical run table row to retain its ordered support', () => {
+	const knownActions = readFileSync(knownActionsPath, 'utf8');
+	const result = runValidatorWithKnownActions(
+		knownActions.replace(/\| 3\s+\| Airborne pass \| none\s+\|/, '| 3 | Airborne pass | right |')
+	);
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /classical human run table.*support/i);
+});
+
+test('requires each classical run SVG panel to retain its ordered support', () => {
+	const diagramPath = join(
+		repositoryRoot,
+		'skills/summonlab-character-animations/references/classical-human-run.svg'
+	);
+	const diagram = readFileSync(diagramPath, 'utf8');
+	const result = runValidatorWithRunDiagram(
+		diagram.replace(
+			'3 Airborne pass</text><text x="105" y="141" text-anchor="middle" font-size="15">support=none',
+			'3 Airborne pass</text><text x="105" y="141" text-anchor="middle" font-size="15" data-original="support=none">support=right'
+		)
+	);
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /classical human run SVG.*support/i);
 });

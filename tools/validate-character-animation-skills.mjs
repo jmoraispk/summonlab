@@ -38,6 +38,34 @@ function requireText(text, pattern, message, errors) {
 	if (!pattern.test(text)) errors.push(message);
 }
 
+const classicalRunSupports = ['left', 'left', 'none', 'right', 'right'];
+
+function compareSupportSequence(actual, source, errors) {
+	for (const [index, expected] of classicalRunSupports.entries()) {
+		if (actual[index] !== expected) {
+			errors.push(
+				`classical human run ${source} support at beat ${index + 1} must be ${expected}, got ${actual[index] ?? 'missing'}`
+			);
+		}
+	}
+}
+
+function parseKnownActionTableSupports(markdown) {
+	return [...markdown.matchAll(/^\|\s*([1-5])\s*\|[^|]+\|\s*(left|right|none)\s*\|/gm)]
+		.sort((left, right) => Number(left[1]) - Number(right[1]))
+		.map((match) => match[2]);
+}
+
+function parseRunDiagramSupports(svg) {
+	return [
+		...svg.matchAll(
+			/<g transform="translate\([^)]*\)">[\s\S]*?<text[^>]*>([1-5]) [^<]+<\/text><text[^>]*>support=(left|right|none)<\/text>/g
+		)
+	]
+		.sort((left, right) => Number(left[1]) - Number(right[1]))
+		.map((match) => match[2]);
+}
+
 function validateMarkdownLinks(path, text, errors) {
 	for (const match of text.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)) {
 		const target = match[1].trim().replace(/^<|>$/g, '').split(/[\s#]/, 1)[0];
@@ -175,24 +203,10 @@ function main() {
 		'known actions must preserve the classical human run beat order',
 		errors
 	);
+	compareSupportSequence(parseKnownActionTableSupports(knownActions), 'table', errors);
 	const diagramPath = resolve(dirname(paths['known-actions']), 'classical-human-run.svg');
 	const diagram = read(diagramPath, 'classical human run diagram', errors);
-	for (const label of [
-		'1 Contact A',
-		'2 Compression A',
-		'3 Airborne pass',
-		'4 Contact B',
-		'5 Recovery B',
-		'support=left',
-		'support=none',
-		'support=right'
-	])
-		requireText(
-			diagram,
-			new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-			`classical human run diagram must include ${label}`,
-			errors
-		);
+	compareSupportSequence(parseRunDiagramSupports(diagram), 'SVG panel', errors);
 
 	for (const [path, text] of [
 		[paths['animation-skill'], animationSkill],
