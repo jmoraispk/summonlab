@@ -167,6 +167,15 @@ class ValidateWaveTests(unittest.TestCase):
         with self.assertRaisesRegex(self.validator.ContractError, "undeclared|preceding"):
             self.validator.validate_wave("wave-01", root=self.root)
 
+    def test_rejects_retry_started_before_its_primary_completed(self) -> None:
+        journal = self.root / "provenance/production-journal.jsonl"
+        primary = {"schemaVersion": "five-head-chibi-provider-call-v1", "experimentId": self.assignment["experimentId"], "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01", "callOrdinal": 1, "callKind": "primary", "startedAt": "2026-09-04T00:00:00+00:00", "completedAt": "2026-09-04T00:02:00+00:00", "outcome": "provider-no-output", "providerMetadata": {"provider": "imagegen"}}
+        retry = dict(primary)
+        retry.update({"callOrdinal": 2, "callKind": "provider-no-output-retry", "startedAt": "2026-09-04T00:01:00Z", "completedAt": "2026-09-04T00:03:00Z", "outcome": "succeeded"})
+        journal.write_text("\n".join(json.dumps(item) for item in (primary, retry)) + "\n")
+        with self.assertRaisesRegex(self.validator.ContractError, "retry starts before primary completion"):
+            self.validator.validate_wave("wave-01", root=self.root)
+
     def test_rejects_plan_assignment_with_paths_in_another_wave(self) -> None:
         plan = json.loads((self.root / "production-plan.json").read_text())
         foreign_target = dict(self.target)

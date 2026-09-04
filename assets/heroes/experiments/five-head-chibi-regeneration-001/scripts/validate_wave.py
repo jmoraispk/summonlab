@@ -169,8 +169,13 @@ def _validate_calls(records: Iterable[dict[str, Any]], assignments: Iterable[dic
             raise ContractError(f"assignment {binding[0]} has duplicate primary calls")
         if len(retry) > 1:
             raise ContractError(f"assignment {binding[0]} has more than one retry")
-        if retry and (len(primary) != 1 or primary[0]["outcome"] != "provider-no-output" or primary[0]["callOrdinal"] >= retry[0]["callOrdinal"]):
-            raise ContractError(f"assignment {binding[0]} retry lacks a preceding provider no-output primary")
+        if retry:
+            if len(primary) != 1 or primary[0]["outcome"] != "provider-no-output" or primary[0]["callOrdinal"] >= retry[0]["callOrdinal"]:
+                raise ContractError(f"assignment {binding[0]} retry lacks a preceding provider no-output primary")
+            retry_started = _timestamp(retry[0]["startedAt"], "journal retry startedAt")
+            primary_completed = _timestamp(primary[0]["completedAt"], "journal primary completedAt")
+            if retry_started < primary_completed:
+                raise ContractError(f"assignment {binding[0]} retry starts before primary completion")
 
 
 def _validate_declared_files(root: Path, assignments: list[dict[str, Any]]) -> None:
