@@ -1,0 +1,56 @@
+{
+	"schemaVersion": "skill-icon-additive-run-v1",
+	"runId": "reversal-cut-v2",
+	"createdAt": "2026-09-04T18:37:14.197Z",
+	"statusAtDispatch": "awaiting-calibration-production",
+	"supersedes": {
+		"runId": "reversal-cut-v1",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/calibration/blade-guard-flow-reversal-cut-v1.json",
+		"resultContentHash": "957b9a23a6f721ef08e09f1f0177db9b75c937b62bc7fada79f059b4e6ee9821",
+		"reason": "The provider returned a valid-looking 1254×1254 source for a packet whose immutable canvas declared 1024×1024; exact-source production forbids resizing it."
+	},
+	"canonicalAuthority": {
+		"catalog": {
+			"path": "assets/wiki/skills/icon-production-v2/catalog.json",
+			"contentHash": "aaedbac845e16c065b42885b8e695463ed57da92623a9a4cf5612a4ae059b01e"
+		},
+		"motifMap": {
+			"path": "assets/wiki/skills/icon-production-v2/motif-map.json",
+			"contentHash": "aa4ab0337e5eb3ca5c22d457949935f9f753bd8bf7bb21c4c6eacac2b6ac4e80"
+		},
+		"visualSpecs": {
+			"path": "assets/wiki/skills/icon-production-v2/visual-specs.json",
+			"contentHash": "2d0a7b89fcc7838b15c8fdadb711db21f9d052c021f227e2057393ec3ff1a579"
+		}
+	},
+	"calibration": {
+		"motifFamily": "blade.guard-flow",
+		"cellMap": {
+			"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/blade-guard-flow-cell-map.json",
+			"contentHash": "5af2fd04ecb8331f783d2dea5b325d2ced33ddcdbc3b58460b8ca15a8074b165"
+		},
+		"target": {
+			"path": "assets/wiki/skills/icon-production-v1/targets/calibration/blade-guard-flow-reversal-cut-v2.json",
+			"contentHash": "e7a0443154ca1706e2899f23f52a2062b430f570d8acd9a869ce77743943fc81"
+		},
+		"assignment": {
+			"path": "assets/wiki/skills/icon-production-v1/assignments/calibration/blade-guard-flow-reversal-cut-v2.json",
+			"contentHash": "8edcf98b0177da66c49e0791f4b119eca18afb00b5865dc6d182c253bf8fe816"
+		},
+		"exactPromptHash": "1997f08507be504fbd856625d7882b39de38aa9ca93841a98ce2c8c47a056ae5",
+		"producerSkillVersion": "summonlab-skill-icon-production-v1",
+		"candidatePath": "assets/wiki/skills/icon-production-v1/candidates/calibration/blade-guard-flow-reversal-cut-v2.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/calibration/blade-guard-flow-reversal-cut-v2.json"
+	},
+	"individual": {
+		"targetId": "martial:blade:reversal-cut",
+		"status": "blocked-pending-owner-authorities",
+		"requiredCalibrationMaster": "assets/wiki/skills/icon-production-v1/masters/calibration/blade-guard-flow.png",
+		"requiredParentMaster": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-mirrored-edge.png",
+		"reason": "The strict skill-art producer requires an approved revised family plate and approved immediate-parent master; neither may be created or promoted by this run."
+	},
+	"promotion": {
+		"selfPromotionForbidden": true,
+		"ownerReviewRequired": true
+	}
+}
