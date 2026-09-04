@@ -1,11 +1,15 @@
 # Opening story and onboarding storyboard
 
-**Status:** Visual story proposal for review
+**Status:** Visual story proposal with an isolated playable laboratory
 
 **Date:** 2026-09-03
 
 **Boundary:** Mockups and presentation logic only. This proposal does not change gameplay contracts,
 runtime story envelopes, or shared content catalogs.
+
+Playable route: `/living-village-lab/opening`. It exercises the four approved presentation beats with
+local state, then enters the existing Living Village laboratory. The implied first defense is not a
+combat prototype and does not call combat or campaign APIs.
 
 ## The simple start
 

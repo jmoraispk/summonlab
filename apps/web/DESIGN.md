@@ -152,6 +152,12 @@ State transitions run roughly 150–250ms with direct easing. Motion may clarify
 changes; it does not orchestrate routine reading. `prefers-reduced-motion: reduce` removes reveal,
 transform, and transition effects.
 
+The playable opening laboratory is the deliberate exception for scene choreography. Its four states
+reuse the approved full-screen story plates while one engraved interaction surface changes at a time.
+The summoning glow becomes the equipment-selection line and then the Tower-floor marker, giving the
+sequence one continuous visual gesture. Reduced motion preserves the same state and focus order with
+near-instant transitions.
+
 ### Content and data visualization
 
 Copy is concise, literal, and written from the reader's perspective. Taxonomy language follows the
