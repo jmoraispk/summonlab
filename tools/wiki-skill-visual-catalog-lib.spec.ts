@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -46,6 +46,19 @@ async function png(
 			height: width,
 			channels,
 			background: { r: color[0], g: color[1], b: color[2], alpha: 0.5 }
+		}
+	})
+		.png()
+		.toBuffer();
+}
+
+async function opaqueRgbaPng(): Promise<Buffer> {
+	return sharp({
+		create: {
+			width: 1024,
+			height: 1024,
+			channels: 4,
+			background: { r: 47, g: 93, b: 147, alpha: 1 }
 		}
 	})
 		.png()
@@ -205,6 +218,37 @@ describe('wiki skill visual catalog exporter', () => {
 			);
 		});
 		await expect(rgb.build()).rejects.toThrow(/rgba|alpha/i);
+	});
+
+	it('rejects an opaque RGBA source when its encoded WebP omits alpha', async () => {
+		const item = await fixture();
+		const sourcePath = path.join(item.root, iconRoot, `${item.records[0]!.targetId}.png`);
+		await writeFile(sourcePath, await opaqueRgbaPng());
+		await mutateJson(item.root, massPath, async (mass) => {
+			mass.skills[0].finalImageHash = hash(await readFile(sourcePath));
+		});
+		await expect(item.build()).rejects.toThrow(/alpha/i);
+	});
+
+	it('rejects a source authority reached through an escaping ancestor symlink', async () => {
+		const item = await fixture();
+		const externalRoot = await mkdtemp(path.join(os.tmpdir(), 'wiki-skill-visual-catalog-escape-'));
+		roots.push(externalRoot);
+		await rename(path.join(item.root, 'assets'), path.join(externalRoot, 'assets'));
+		await symlink(path.join(externalRoot, 'assets'), path.join(item.root, 'assets'));
+		await expect(item.build()).rejects.toThrow(/symbolic link|escapes/i);
+	});
+
+	it('rejects a managed runtime parent reached through an escaping ancestor symlink', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		const externalRoot = await mkdtemp(path.join(os.tmpdir(), 'wiki-skill-visual-catalog-escape-'));
+		roots.push(externalRoot);
+		await mkdir(path.join(externalRoot, 'apps'));
+		await symlink(path.join(externalRoot, 'apps'), path.join(item.root, 'apps'));
+		await expect(writeWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(
+			/symbolic link|escapes/i
+		);
 	});
 
 	it('writes atomically and detects unexpected, changed, or stale generated output without repair', async () => {

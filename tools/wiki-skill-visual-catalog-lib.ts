@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { lstat, mkdir, open, readFile, readdir, rename, rm } from 'node:fs/promises';
+import { lstat, mkdir, open, readFile, readdir, realpath, rename, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -154,8 +154,37 @@ function workspacePath(root: string, relativePath: string, label: string): strin
 	return absolute;
 }
 
+function isContained(root: string, target: string): boolean {
+	const relative = path.relative(root, target);
+	return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..');
+}
+
+async function assertResolvedContainment(
+	workspaceRoot: string,
+	absolutePath: string,
+	label: string
+): Promise<void> {
+	const canonicalRoot = await realpath(workspaceRoot);
+	let probe = absolutePath;
+	while (true) {
+		try {
+			const resolved = await realpath(probe);
+			if (!isContained(canonicalRoot, resolved)) {
+				throw new Error(`${label} escapes workspace through a symbolic link: ${absolutePath}`);
+			}
+			return;
+		} catch (error: unknown) {
+			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+			const parent = path.dirname(probe);
+			if (parent === probe) throw error;
+			probe = parent;
+		}
+	}
+}
+
 async function readRegularFile(root: string, relativePath: string, label: string): Promise<Buffer> {
 	const absolute = workspacePath(root, relativePath, label);
+	await assertResolvedContainment(root, absolute, label);
 	const metadata = await lstat(absolute);
 	if (metadata.isSymbolicLink() || !metadata.isFile())
 		throw new Error(`Expected regular file: ${relativePath}`);
@@ -308,7 +337,14 @@ export async function buildWikiSkillVisualCatalogFromAuthorities(
 			.resize(512, 512, { fit: 'fill' })
 			.webp({ quality: 86, alphaQuality: 100, effort: 4, smartSubsample: true })
 			.toBuffer({ resolveWithObject: true });
-		if (info.width !== 512 || info.height !== 512 || info.channels !== 4) {
+		const decodedOutput = await sharp(data, { failOn: 'error' }).metadata();
+		if (
+			info.width !== 512 ||
+			info.height !== 512 ||
+			decodedOutput.width !== 512 ||
+			decodedOutput.height !== 512 ||
+			!decodedOutput.hasAlpha
+		) {
 			throw new Error(`Invalid WebP derivative geometry or alpha for ${record.targetId}`);
 		}
 		if (data.byteLength > WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES) {
@@ -372,10 +408,13 @@ export async function writeWikiSkillVisualCatalog(
 	workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 ): Promise<void> {
 	const outputRoot = workspacePath(workspaceRoot, WIKI_SKILL_VISUAL_ROOT, 'managed output root');
+	await assertResolvedContainment(workspaceRoot, outputRoot, 'managed output root');
 	const outputParent = path.dirname(outputRoot);
 	await mkdir(outputParent, { recursive: true });
 	const stage = `${outputRoot}.staging-${process.pid}-${randomUUID()}`;
 	const backup = `${outputRoot}.backup-${process.pid}-${randomUUID()}`;
+	await assertResolvedContainment(workspaceRoot, stage, 'managed staging root');
+	await assertResolvedContainment(workspaceRoot, backup, 'managed backup root');
 	await mkdir(stage, { recursive: false });
 	try {
 		await mkdir(path.join(stage, 'icons'), { recursive: false });
@@ -415,6 +454,7 @@ export async function checkWikiSkillVisualCatalog(
 	workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 ): Promise<void> {
 	const outputRoot = workspacePath(workspaceRoot, WIKI_SKILL_VISUAL_ROOT, 'managed output root');
+	await assertResolvedContainment(workspaceRoot, outputRoot, 'managed output root');
 	const metadata = await lstat(outputRoot);
 	if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
 		throw new Error('Managed output root must be a non-symbolic-link directory');

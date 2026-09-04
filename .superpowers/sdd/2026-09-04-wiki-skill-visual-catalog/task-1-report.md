@@ -85,3 +85,54 @@
 ## Concerns
 
 - No blocking concerns. The generated 456-file runtime directory is deliberately deferred to Task 2.
+
+## Review fix round — alpha and symlink containment
+
+### Root cause
+
+- Sharp's `toBuffer({ resolveWithObject: true })` reported a four-channel pipeline for an opaque
+  RGBA input even when the emitted WebP contained no alpha plane. Pipeline metadata is not a
+  validation of the encoded file.
+- Lexical `path.resolve` containment accepted an `assets/` or `apps/` ancestor symlink that pointed
+  outside the workspace. The final leaf could be regular while its authority or destructive output
+  parent escaped.
+
+### RED/GREEN evidence
+
+1. Added three regressions and ran the focused suite before the fix:
+
+   ```text
+   Test Files  1 failed (1)
+   Tests  3 failed | 3 passed (6)
+
+   rejects an opaque RGBA source when its encoded WebP omits alpha
+   promise resolved instead of rejecting
+
+   rejects a source authority reached through an escaping ancestor symlink
+   promise resolved instead of rejecting
+
+   rejects a managed runtime parent reached through an escaping ancestor symlink
+   promise resolved instead of rejecting
+   ```
+
+2. The exporter now decodes each encoded WebP buffer with Sharp and requires decoded `hasAlpha` in
+   addition to 512×512 dimensions. It resolves authority paths and managed output, staging, and
+   backup paths from the nearest existing ancestor against the canonical `realpath` workspace root,
+   rejecting an ancestor whose resolution escapes that root before any write, rename, or removal.
+
+3. GREEN verification:
+
+   ```text
+   corepack pnpm vitest run tools/wiki-skill-visual-catalog-lib.spec.ts
+   Test Files  1 passed (1)
+   Tests  6 passed (6)
+
+   corepack pnpm tsc -p tools/tsconfig.skill-icon-production.json --noEmit
+   exit 0
+
+   git diff --check
+   exit 0
+
+   corepack pnpm tsx -e "...buildWikiSkillVisualCatalog()..."
+   {"skillCount":456,"assetCount":456,"totalBytes":38597676,"maximumAssetBytes":133120}
+   ```
