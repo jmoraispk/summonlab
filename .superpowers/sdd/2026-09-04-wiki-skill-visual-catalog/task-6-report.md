@@ -37,31 +37,67 @@ Required preview listener:
 LISTEN 0 511 0.0.0.0:4189 0.0.0.0:* users:(("MainThread",pid=...,fd=24))
 ```
 
-The route returned 648,765 uncompressed bytes. A warm production Chromium navigation measured
-43 ms response end, 87–89 ms DOMContentLoaded, 216 ms load, and 354 ms until the status and all 120
-initial cards were present. Direct query state hydrated to `parry / Martial / Blade /
-blade.dual-guard` with one match. No console or page errors occurred. The prior 30-second result was
-a missing-role probe timeout, not stalled hydration.
+The route returned 648,765 uncompressed bytes. An initial unfiltered production Chromium sample
+measured 43 ms response end, 87–89 ms DOMContentLoaded, 216 ms load, and observed the 120 SSR cards
+by 354 ms; that sample did not itself prove hydration. The review-round shared-query sample proved
+the client transition from the unfiltered 456/120 response HTML to `parry / Martial / Blade /
+blade.dual-guard`, one exact result, in 743 ms. No console or page errors occurred. The prior
+30-second result was a missing-role probe timeout, not stalled hydration.
 
 ## Verification summary
 
 - Catalog/hash check: PASS, 456 exact 512×512 derivatives.
 - Runtime images: 38,597,676 bytes; managed tree: 38,860,144 bytes; max file: 112,372 bytes.
 - Wiki validation: PASS, 215 pages; canonical 258 Martial / 124 Magical / 74 Craft split.
-- Exporter Vitest: 8/8; web Vitest: 109/109; typecheck: clean.
+- Exporter Vitest: 8/8; web Vitest: 110/110 across 23 files; typecheck: clean.
 - Full web lint: initially reproduced only the known `_wikiId` error; after an explicit behavior-
   neutral discard, PASS.
 - Focused production Playwright: 6/6; desktop and phone screenshots captured.
 - Production build and build-budget validator: PASS; no selected source PNG is bundled.
 - `git diff --check`: PASS.
 
-## Command compatibility note
+## Review fix round 1
 
-`corepack pnpm --filter @summonlab/web test:e2e -- wiki-skill-visual-catalog.e2e.ts` forwards the
-literal separator to Playwright and therefore ran all 75 specs instead of filtering. The correct
-package-script spelling is `corepack pnpm --filter @summonlab/web test:e2e
-wiki-skill-visual-catalog.e2e.ts`; it passes all six required tests. Out-of-scope screenshot changes
-from the accidental broad run were restored.
+All Important findings and both easy Minor findings were addressed:
+
+1. Added `scripts/run-playwright.js`, a reusable package-script wrapper that strips only a leading
+   literal `--` and otherwise forwards Playwright arguments unchanged. Its RED unit test initially
+   failed because the module did not exist; GREEN is 1/1. The exact mandated command changed from
+   running 75 tests and failing five unrelated disabled monster-visual specs to running only the six
+   catalog tests and passing 6/6.
+2. Strengthened the hydration test to inspect the shared-query response HTML and prove SSR begins
+   unfiltered at `456 skills` / 120 cards. It then waits for all four query controls, exact `1 skill`
+   status, one card, and the exact URL after client hydration. Fresh production timing was 615 ms to
+   DOMContentLoaded and 743 ms to client-applied state, with no browser errors.
+3. Replaced every result-count substring assertion with exact normalized `toHaveText` assertions.
+4. Gated tracked screenshot regeneration behind
+   `UPDATE_WIKI_SKILL_VISUAL_CATALOG_SCREENSHOTS=1`. A routine exact E2E run produced an identical
+   before/after porcelain-status snapshot: `routine_e2e_zero_write=yes`.
+
+Fresh affected verification:
+
+```text
+corepack pnpm --filter @summonlab/web exec vitest run src/lib/run-playwright.spec.js
+Test Files  1 passed (1)
+Tests       1 passed (1)
+
+corepack pnpm --filter @summonlab/web test:e2e -- wiki-skill-visual-catalog.e2e.ts
+Running 6 tests using 1 worker
+6 passed
+
+corepack pnpm --filter @summonlab/web test
+Test Files  23 passed (23)
+Tests       110 passed (110)
+
+corepack pnpm --filter @summonlab/web typecheck
+svelte-check found 0 errors and 0 warnings
+
+corepack pnpm --filter @summonlab/web lint
+exit 0
+
+before/after git status snapshot
+routine_e2e_zero_write=yes
+```
 
 ## Self-review and concerns
 

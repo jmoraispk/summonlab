@@ -45,15 +45,22 @@ The previously reported 649 KiB response is reproducible and is not a hydration 
 | Cold local curl first byte / total | 0.443 s / 0.445 s |
 | Warm browser response end | 43 ms |
 | DOMContentLoaded | 87–89 ms |
-| 120 cards present and status interactive | 354 ms |
+| Unfiltered page's 120 SSR cards observed | 354 ms |
 | Browser load event | 216 ms |
 | Browser console/page errors | 0 |
+| Fresh shared-query DOMContentLoaded | 615 ms |
+| Shared query applied by client | 743 ms (128 ms after DOMContentLoaded) |
+
+The strengthened hydration check proves this is a client transition rather than SSR presence. Its
+shared-query response HTML contains the initial unfiltered `456 skills` status and 120 cards. The
+browser then hydrates `q=parry`, `domain=Martial`, `family=Blade`, and `motif=blade.dual-guard` to
+the exact `1 skill` status and one Double Parry card. A fresh production sample completed that
+transition in 743 ms with no console/page errors.
 
 The earlier 30-second probe targeted a role the component did not expose. Once `role="status"` was
-added, both the focused production Playwright assertion and an independent browser probe settled in
-well under one second. The large HTML is expected from server serialization of all 456 filterable
-records; progressive rendering still limits created card/image nodes to 120. No runtime regression
-or client deadlock was found.
+added, the client-applied state settled in well under one second. The large HTML is expected from
+server serialization of all 456 filterable records; progressive rendering still limits initial
+card/image nodes to 120. No runtime regression or client deadlock was found.
 
 ## Derivative and build evidence
 
@@ -89,20 +96,34 @@ skill-source PNG from the 806 MiB source directory.
 | `corepack pnpm validate:wiki` | PASS — 215 pages, 25 asset references; 520 legacy rows → 456 targets (258/124/74) |
 | `corepack pnpm tsc -p tools/tsconfig.skill-icon-production.json --noEmit` | PASS |
 | `corepack pnpm vitest run tools/wiki-skill-visual-catalog-lib.spec.ts` | PASS — 8/8 |
-| `corepack pnpm --filter @summonlab/web test` | PASS — 109/109 across 22 files |
+| `corepack pnpm --filter @summonlab/web exec vitest run src/lib/run-playwright.spec.js` | PASS — 1/1 argument-normalization test |
+| `corepack pnpm --filter @summonlab/web test` | PASS — 110/110 across 23 files |
 | `corepack pnpm --filter @summonlab/web typecheck` | PASS — 0 errors, 0 warnings |
 | `corepack pnpm --filter @summonlab/web lint` | PASS — after one behavior-neutral pre-existing warning fix |
-| `corepack pnpm --filter @summonlab/web test:e2e wiki-skill-visual-catalog.e2e.ts` | PASS — 6/6 |
+| `corepack pnpm --filter @summonlab/web test:e2e -- wiki-skill-visual-catalog.e2e.ts` | PASS — 6/6 |
 | `corepack pnpm --filter @summonlab/web build` | PASS |
 | `corepack pnpm validate:web-build-budget` | PASS — all measured budgets within limits |
 | `git diff --check` | PASS |
 
-The brief's spelling `test:e2e -- wiki-skill-visual-catalog.e2e.ts` passes a literal `--` through to
-Playwright 1.60, which disables the filename filter and runs all 75 repository specs. It was run for
-the mandated RED observation and proved that behavior. The working focused spelling above is the
-same package script with only the erroneous separator removed; it runs the required six catalog
-tests. During the accidental broad run, unrelated currently-disabled monster visual tests failed
-and existing Living Village screenshots were regenerated; those out-of-scope changes were restored.
+Review fix round 1 replaced the direct package script with a reusable forwarding wrapper. The RED
+exact command passed `playwright test -- wiki-skill-visual-catalog.e2e.ts`, ran all 75 repository
+specs, failed five unrelated disabled monster-visual specs, and regenerated existing evidence. The
+wrapper now removes only a leading package-script separator before invoking Playwright. A focused
+unit test covers no arguments, a normal filename, the literal separator form, a Playwright flag,
+and a separator followed by a flag. The exact mandated command now runs only this file and passes
+6/6.
+
+Routine catalog E2E is zero-write. A byte-for-byte comparison of `git status --porcelain=v1`
+before and after the exact command passed. Stable report screenshots regenerate only when
+`UPDATE_WIKI_SKILL_VISUAL_CATALOG_SCREENSHOTS=1` is explicitly set; ordinary verification neither
+updates nor removes them.
+
+Explicit screenshot refresh command:
+
+```bash
+UPDATE_WIKI_SKILL_VISUAL_CATALOG_SCREENSHOTS=1 \
+  corepack pnpm --filter @summonlab/web test:e2e -- wiki-skill-visual-catalog.e2e.ts
+```
 
 The production build retains existing warnings for browser-externalized `node:crypto`, large
 repository-wide chunks, and optional Sharp platform packages. The budget validator passes and none
@@ -115,8 +136,9 @@ of those warnings originates in the skill catalog route.
 - Task 3 server join: `0f7b37675`, review fixes `c4ad911c4`, `50b0179c6`
 - Task 4 model: `38776a803`, review fix `792f31a4f`
 - Task 5 route: `fa237f9a4`
-- Task 6 browser verification: the commit containing this report; its stable hash is reported in
-  the delivery because a Git commit cannot embed its own hash.
+- Task 6 browser verification: `e6c206e14`
+- Task 6 review fix round 1: the commit containing this addendum; its stable hash is reported in the
+  delivery because a Git commit cannot embed its own hash.
 
 ## Deferred icon-quality work
 
