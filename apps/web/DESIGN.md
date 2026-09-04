@@ -40,6 +40,11 @@ components:
     textColor: '{colors.paper}'
   ledger-divider:
     backgroundColor: '{colors.line}'
+  equipment-workshop:
+    backgroundColor: '{colors.background}'
+    textColor: '{colors.paper}'
+    accentColor: '{colors.primary}'
+    focusColor: '{colors.focus}'
 ---
 
 # Summonlab Web Design System
@@ -210,6 +215,27 @@ destination tile before impact and let the resolved state become readable before
 - Identify character-voice messages with a concise colored name prefix. Do not repeat portrait
   thumbnails in the feed; the name supplies identity while preserving battlefield space and keeping
   mechanical event lines easy to scan.
+
+### Equipment workshop
+
+The in-game forge is a field-archive workbench inside the play surface, never the top-level character
+portrait `/forge`. It consumes the existing `background`, `surface`, `paper`, `muted`, `primary`,
+`focus`, and `line` roles directly; no Equipment-only theme values or parallel token source exists.
+
+- Use a stacked `material → form → assay → inventory → loadout` workflow on phone and a
+  selection/inspection split on desktop. The order is functional and remains visible in the numbered
+  ledger headings.
+- The signature surface is a square material assay plate: selected approved art, one rank stamp,
+  Standard craftsmanship, and abbreviated source/runtime provenance. The surrounding workflow stays
+  flat and quiet.
+- Material and form choices are square ledger rows separated by fine rules. Do not convert them to
+  SaaS cards, pills, glass, gradients, or ornamental containers.
+- Reserve a square image area before decode. Lists request 256px card art lazily; only the actively
+  inspected definition requests its 512px detail art.
+- Keep forging server-owned and explicit. Pending, completed, unavailable, error, and empty states
+  occupy stable space, and busy controls preserve their size.
+- Present the authoritative six slots as `main-hand`, `off-hand`, `head`, `torso`, `legs`, and
+  `boots`. Item rows retain their acquisition provenance after forging, equipping, and reload.
 
 ### Content and data visualization
 
