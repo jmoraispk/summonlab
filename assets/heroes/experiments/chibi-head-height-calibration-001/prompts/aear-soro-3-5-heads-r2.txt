@@ -1,0 +1,10 @@
+Use case: identity-preserve
+Asset type: controlled Summonlab combat-chibi proportion edit
+EDIT TARGET: The supplied image is the exact Aear Soro combat chibi to edit. Do not redesign or reinterpret her.
+Primary request: Keep the anatomical head at its current visual size and reconstruct the body below the chin so the complete standing figure is exactly 3.5 anatomical heads tall.
+MEASUREMENT TEST: One anatomical head is the distance from the underlying skull crown to the chin, excluding all locs and hair volume. If that head distance were copied downward exactly three and one-half times, the final half-copy must end at the soles. Therefore the body from chin to soles is exactly two and one-half head lengths. Make this visibly obvious: an oversized adult chibi head with a moderately lengthened torso and limbs—not ordinary human proportions.
+Preserve exactly: the same mature adult identity, facial geometry, unsmiling expression, deep brown skin, cheek mole, shaved right side, asymmetric red-copper loc crest, gold hair wraps, athletic-conditioned physique, mustard mantle, cream wrap top, olive sash and layered lower garments, pouch, wrapped boots, empty hands, painterly line-and-wash finish, warm parchment backdrop, three-quarter ready-idle stance, and full-body safe margins.
+Body constraint: Preserve realistic slender athletic arm, wrist, hand, torso, hip, and leg widths for this hero. Do not make the body or limbs fatter to compensate for the larger head.
+Canvas: exactly 1024 x 1536, exactly one complete figure, both hands and feet visible.
+Avoid: normal 6-to-8-head human anatomy, tiny head, identity drift, child identity, doll face, inflated arms or hands, widened torso, added muscle, clothing changes, new accessory, weapon, armor, magic, aura, gem, star, frame, text, UI, logo, watermark, extra subject, crop, duplicate anatomy, unfinished canvas.
+
