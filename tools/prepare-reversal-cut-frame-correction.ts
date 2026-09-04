@@ -1,5 +1,5 @@
-import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -95,26 +95,6 @@ async function readBound(root: string, value: z.infer<typeof BoundFileSchema>): 
 	return bytes;
 }
 
-async function writeExact(destination: string, bytes: Buffer): Promise<boolean> {
-	const current = await readFile(destination).catch((error: NodeJS.ErrnoException) => {
-		if (error.code === 'ENOENT') return null;
-		throw error;
-	});
-	if (current?.equals(bytes)) return false;
-	if (current)
-		throw new Error(`Refusing to replace differing frame-correction output ${destination}`);
-	await mkdir(path.dirname(destination), { recursive: true });
-	const temporary = `${destination}.stage-${process.pid}-${randomUUID()}`;
-	try {
-		await writeFile(temporary, bytes, { flag: 'wx' });
-		await rename(temporary, destination);
-	} catch (error) {
-		await unlink(temporary).catch(() => undefined);
-		throw error;
-	}
-	return true;
-}
-
 async function renderBacking(): Promise<Buffer> {
 	return sharp(
 		Buffer.from(`<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
@@ -134,6 +114,11 @@ export async function prepareReversalCutFrameCorrection(options: {
 	readonly written: readonly string[];
 	readonly correctionHash: string;
 }> {
+	if (options.mode === 'write') {
+		throw new Error(
+			'Decommissioned: a complete skill icon cannot be used to regenerate a reusable rarity frame'
+		);
+	}
 	const root = path.resolve(options.root ?? process.cwd());
 	const [feedbackBytes, priorActivationBytes, manifestBytes, geometryBytes] = await Promise.all([
 		readFile(path.join(root, FEEDBACK_PATH)),
@@ -221,16 +206,12 @@ export async function prepareReversalCutFrameCorrection(options: {
 	const written: string[] = [];
 	for (const output of outputs) {
 		const destination = path.join(root, output.path);
-		if (options.mode === 'write') {
-			if (await writeExact(destination, output.bytes)) written.push(output.path);
-		} else {
-			const current = await readFile(destination).catch((error: NodeJS.ErrnoException) => {
-				if (error.code === 'ENOENT') return null;
-				throw error;
-			});
-			if (!current?.equals(output.bytes)) {
-				return { current: false, written, correctionHash: sha256(correctionBytes) };
-			}
+		const current = await readFile(destination).catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return null;
+			throw error;
+		});
+		if (!current?.equals(output.bytes)) {
+			return { current: false, written, correctionHash: sha256(correctionBytes) };
 		}
 	}
 	return { current: true, written, correctionHash: sha256(correctionBytes) };
