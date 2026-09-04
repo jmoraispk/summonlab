@@ -208,6 +208,58 @@ reproducible and do not depend on Codex-managed temporary storage.
 - Assembly validation: source rows one, three, and four are byte-identical to v2. The v3 atlas passes
   the advance ground-artifact ceiling that intentionally rejects v2. Candidate awaiting owner
   playtest.
+
+### Toma / iron guardian run-contract rebuild v4
+
+- Accepted source binding: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v3.png`
+  (`b22c5390f290abf4ff3cca9540c713eb30d1045ed4f1c9573389a8d223df99d9`).
+- Identity binding: `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png`
+  (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`).
+- Action authority: `classical-human-run-5`; visible support sequence: `left, left, none, right,
+  right`.
+- Selected generation original: `exec-bd79d1ad-def1-42ec-9f2c-8ba3d35668d1.png`
+  (`bc0c48141c891f92fab515024575fd7d8d6884836a13dc9cb70129209f7d4791`).
+- Project strip: `animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v4.png`
+  (`bc0c48141c891f92fab515024575fd7d8d6884836a13dc9cb70129209f7d4791`).
+- Project sheet: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png`
+  (`9c513f0ffd0447fdd37a05551b969346ef5fd98eb09245cc2abc50844699b165`).
+- Runtime atlas: `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.png`
+  (`6b10d4ee67fd166e049de884d8117c28d27bc68a09a084f1be5d6452670a6756`).
+- Mode: built-in Codex image generation, with the five poses authored as one temporal strip from the
+  v3 sheet, identity cutout, and repository action diagram, followed by bounded built-in
+  precise-object edits to make the visible contact anatomy survive deterministic bottom alignment.
+- Exact final prompt:
+
+  ```text
+  Use case: precise-object-edit
+  Asset type: production source strip for a five-frame game-character run animation
+  Primary request: Change only Toma's right arm and mace in the CENTER/THIRD airborne cell of Image 1. Swing his right arm down naturally during flight so the complete mace head hangs substantially LOWER than both airborne boot soles, while remaining firmly gripped in his right hand. The mace head must be the lowest non-white point in cell 3, with at least a full boot-height of uninterrupted white visible below both boots before the level of the mace head. This low hanging mace preserves visible air under both feet when the cell is bottom-aligned during deterministic sheet assembly.
+  Preserve all five leg poses exactly. Preserve cells 1, 2, 4, and 5 unchanged. Cell 1 and 2 keep the shield-side/anatomical-left foot support; cell 3 keeps NEITHER boot planted; cells 4 and 5 keep mace-side/anatomical-right foot support. Preserve the opposite-contact silhouettes in cells 1 and 4.
+  Invariants: exact Toma identity, gray topknot, beard, stocky adult proportions, navy-and-teal armor, bronze shield on left arm, same compact mace in right hand, handedness, steep three-quarter up-field camera, body scale, lighting, pure uniform white matte, full-body/equipment clearance, and painterly 2.5D finish.
+  Avoid: changing the airborne legs or boot positions; adding any ground line, cast/contact shadow, ground ellipse or floor mark; changing other cells; scenery; text; dividers; crop; mirrored or swapped equipment; extra/missing limbs; identity/costume/camera/scale/lighting drift.
+  ```
+
+- Row preservation after decoded raw-pixel extraction: one-based row 1 is identical between v3 and
+  v4 at `dcaeac075ba2854972f2edf112e1ad6384817ba75b0c4b541fef0dfc76bc7208`; row 3 is
+  identical at `68e16c62bccdd190af1f01987509bc8d8fa471474e9d0168bb6c40a3eb426762`; row 4 is
+  identical at `3f35c3fd6b8504876b3189a55b3e995a098c111922cd1184a675853e38b15547`.
+- Visual inspection: all five full bodies and both boots are unobstructed. Frames 1 and 2 visibly
+  retain shield-side left support; frame 3 has neither boot planted and clear white below both soles;
+  frame 4 lands on the mace-side right foot in a silhouette distinct from frame 1; frame 5 recovers
+  over that right foot toward the loop return. Toma retains his face, gray topknot, beard, stocky
+  proportions, navy-and-teal armor, left bronze shield, right mace, camera, and white matte. No baked
+  shadow, scenery, text, mirror, equipment swap, or extra limb was observed at source or runtime size.
+- Build command/result: `node tools/build-realtime-combat-motion-pack.mjs --actor iron-guardian
+  --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png
+  --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian
+  --version 4` completed with `commonScale: 0.8472222222222222`.
+- Validator command/result: `node tools/validate-realtime-combat-motion-pack.mjs
+  apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-manifest-v4.json
+  --max-advance-ground-artifact-pixels 500 --advance-support-evidence
+  assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-support-v4.json`
+  returned `{"valid":true,"actorId":"iron-guardian","frames":20,"atlasPath":"apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.png"}`.
+- Status: `candidate`; owner playtest is still required for approval.
+
 - Runtime registration: living Toma frames receive a `-3` logical-pixel body offset and a `39×13`
   contact-shadow radius; living Nessa frames receive a `-4` logical-pixel body offset. Down clips
   return to the shared ground line, while combat coordinates, shadows, health bars, and targeting
