@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Summonlab Item Production'
+  short_description: 'Build complete, reviewable Summonlab item families'
+  default_prompt: 'Use $summonlab-item-production to plan and produce a new Summonlab item through review-ready, provenance-bound integration.'
