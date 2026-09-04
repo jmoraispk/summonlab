@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-archery-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-archery-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 684282,
-		"contentHash": "56f80c40727df492b32bb8952934101428b88656a5a38da389305a588925de81"
+		"bytes": 1469125,
+		"contentHash": "a974ac7e074645d56f6bc03570bb62f7e6d4d629f3a6e102dd1f1e4cc1791247"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "56f80c40727df492b32bb8952934101428b88656a5a38da389305a588925de81",
+		"postRepairContentHash": "a974ac7e074645d56f6bc03570bb62f7e6d4d629f3a6e102dd1f1e4cc1791247",
+		"removedPixels": 384942
+	}
 }

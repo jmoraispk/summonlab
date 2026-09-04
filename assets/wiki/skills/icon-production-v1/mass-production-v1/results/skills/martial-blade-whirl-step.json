@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-whirl-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-whirl-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1061589,
-		"contentHash": "32cc75a5b8ad556dbba58c34ec5505435f8c6fd6029898c5ab85fbe12df136d3"
+		"bytes": 1771473,
+		"contentHash": "c55c46c48ab7e5cafad2188077851382e2f357c5de1eec0b40eec222a9f0d287"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "32cc75a5b8ad556dbba58c34ec5505435f8c6fd6029898c5ab85fbe12df136d3",
+		"postRepairContentHash": "c55c46c48ab7e5cafad2188077851382e2f357c5de1eec0b40eec222a9f0d287",
+		"removedPixels": 384942
+	}
 }

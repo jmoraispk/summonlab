@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-windmill-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-windmill-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1102159,
-		"contentHash": "db9fd330bd68db4b82eb0ad7c961dad81e947d17076883ce2f61458aa1a0cbec"
+		"bytes": 1808318,
+		"contentHash": "a88335aaeb4d613f2e887a7b01ece31b8137405294ca08df6354683c0adfff98"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "db9fd330bd68db4b82eb0ad7c961dad81e947d17076883ce2f61458aa1a0cbec",
+		"postRepairContentHash": "a88335aaeb4d613f2e887a7b01ece31b8137405294ca08df6354683c0adfff98",
+		"removedPixels": 384942
+	}
 }

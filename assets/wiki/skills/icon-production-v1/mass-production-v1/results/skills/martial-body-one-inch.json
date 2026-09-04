@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-one-inch-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-one-inch-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1125373,
-		"contentHash": "e822139431b1d769d58b4fb24be7d3c925d1807d29152d5c78b42aae79233310"
+		"bytes": 1909136,
+		"contentHash": "45d2790961de66de8ee28134bdf94eae329ee85b6ef6ca4ef7bb52a838436c82"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e822139431b1d769d58b4fb24be7d3c925d1807d29152d5c78b42aae79233310",
+		"postRepairContentHash": "45d2790961de66de8ee28134bdf94eae329ee85b6ef6ca4ef7bb52a838436c82",
+		"removedPixels": 384942
+	}
 }

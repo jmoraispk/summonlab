@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-unyielding-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-unyielding-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1231540,
-		"contentHash": "eb37c3df34f04f804db2b1d503cf6ac2dcd7302611166f570078720c99e5d027"
+		"bytes": 1809182,
+		"contentHash": "ecac12ec1e377baec418f04836a2cca9d1603f2a990fcea081c1368af4788a03"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "eb37c3df34f04f804db2b1d503cf6ac2dcd7302611166f570078720c99e5d027",
+		"postRepairContentHash": "ecac12ec1e377baec418f04836a2cca9d1603f2a990fcea081c1368af4788a03",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-heaven-s-fall-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-heaven-s-fall-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1375472,
-		"contentHash": "9a522c400a403c4e74b2498ee570b226bf6059036a3fb2fb19479b251dd7eb9d"
+		"bytes": 1910270,
+		"contentHash": "369f8027a94fd910a29777df2e48f6861d637da8b03ca09fb1ed4ced79d05924"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9a522c400a403c4e74b2498ee570b226bf6059036a3fb2fb19479b251dd7eb9d",
+		"postRepairContentHash": "369f8027a94fd910a29777df2e48f6861d637da8b03ca09fb1ed4ced79d05924",
+		"removedPixels": 384942
+	}
 }

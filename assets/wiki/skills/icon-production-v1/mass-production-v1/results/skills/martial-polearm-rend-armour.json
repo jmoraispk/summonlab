@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-rend-armour-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-rend-armour-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 961395,
-		"contentHash": "27bc4fbf85ff62969984b5e9763726f730e45e08ea0ae0145f48720d1aedc73b"
+		"bytes": 1691653,
+		"contentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "27bc4fbf85ff62969984b5e9763726f730e45e08ea0ae0145f48720d1aedc73b",
+		"postRepairContentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-perfect-symmetry-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-perfect-symmetry-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1285291,
-		"contentHash": "01231e4cd55a8e4c0b073b0ea0874bd1bdba65e3816d2ec16d98d5999f20390c"
+		"bytes": 2025713,
+		"contentHash": "5ddf625021b723a367051b4be881bce435c8a58e3cebc6f2df28433692ebd26b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "01231e4cd55a8e4c0b073b0ea0874bd1bdba65e3816d2ec16d98d5999f20390c",
+		"postRepairContentHash": "5ddf625021b723a367051b4be881bce435c8a58e3cebc6f2df28433692ebd26b",
+		"removedPixels": 384942
+	}
 }

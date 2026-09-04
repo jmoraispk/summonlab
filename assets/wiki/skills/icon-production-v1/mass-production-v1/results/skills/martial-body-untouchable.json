@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-untouchable-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-untouchable-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1009262,
-		"contentHash": "32af7e48d5083ce04c2ec0027dc88e8c2b58090586023f0fd1e1dbc50f86668a"
+		"bytes": 1794649,
+		"contentHash": "9902b48b28b96eac9f749cffd7ae085f79666e87944fb882cfa9268e4a54a282"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "32af7e48d5083ce04c2ec0027dc88e8c2b58090586023f0fd1e1dbc50f86668a",
+		"postRepairContentHash": "9902b48b28b96eac9f749cffd7ae085f79666e87944fb882cfa9268e4a54a282",
+		"removedPixels": 384942
+	}
 }

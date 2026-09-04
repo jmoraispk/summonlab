@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-blade-dance-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-blade-dance-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1025611,
-		"contentHash": "57d2c192bd887a08f176e9d8e657100f48233525f1c5f894825ce616f181fd0f"
+		"bytes": 1860287,
+		"contentHash": "67b7f8ef9bce59a6e748f87119cd17b68062fcc4fb04b11c962b842704871455"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "57d2c192bd887a08f176e9d8e657100f48233525f1c5f894825ce616f181fd0f",
+		"postRepairContentHash": "67b7f8ef9bce59a6e748f87119cd17b68062fcc4fb04b11c962b842704871455",
+		"removedPixels": 384942
+	}
 }

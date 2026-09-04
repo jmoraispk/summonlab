@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-diamond-body-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-diamond-body-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1235801,
-		"contentHash": "4b4b3c78ac8f62da3b7ec12f8f05828a389648b0b64cd17c50df4de88cdaa186"
+		"bytes": 1793704,
+		"contentHash": "84952c0eda937deb1365615443661a166b23573f4236d22b1aa7dbe48ccdfc13"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4b4b3c78ac8f62da3b7ec12f8f05828a389648b0b64cd17c50df4de88cdaa186",
+		"postRepairContentHash": "84952c0eda937deb1365615443661a166b23573f4236d22b1aa7dbe48ccdfc13",
+		"removedPixels": 384942
+	}
 }

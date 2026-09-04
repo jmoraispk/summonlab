@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-hewing-blow-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-hewing-blow-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1065131,
-		"contentHash": "764504e47c41bddb7b2671eb098ef90a18b9554be329e5c4eeffc9f89e982bf1"
+		"bytes": 1822105,
+		"contentHash": "990e37c65f4fd787543d741e1711bcb5a57077e9960c050be814a5c28dffc33b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "764504e47c41bddb7b2671eb098ef90a18b9554be329e5c4eeffc9f89e982bf1",
+		"postRepairContentHash": "990e37c65f4fd787543d741e1711bcb5a57077e9960c050be814a5c28dffc33b",
+		"removedPixels": 384942
+	}
 }

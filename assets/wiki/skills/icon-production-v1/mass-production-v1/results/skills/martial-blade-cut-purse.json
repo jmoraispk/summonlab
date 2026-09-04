@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cut-purse-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-cut-purse-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 756896,
-		"contentHash": "e7251d14d5ed1a9bdf4c7e22ad3eb8f0e576889e455556f970e8668a2b00eb2d"
+		"bytes": 1587697,
+		"contentHash": "d90f98e1ac31b5f77114b5675710936b4af1aa80fdece8c54eb5fc8547873e02"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e7251d14d5ed1a9bdf4c7e22ad3eb8f0e576889e455556f970e8668a2b00eb2d",
+		"postRepairContentHash": "d90f98e1ac31b5f77114b5675710936b4af1aa80fdece8c54eb5fc8547873e02",
+		"removedPixels": 384942
+	}
 }

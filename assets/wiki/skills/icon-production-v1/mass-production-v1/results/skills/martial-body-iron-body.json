@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-iron-body-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-iron-body-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1342928,
-		"contentHash": "5f82c83bf354bf7e528a86a1d1b172ca2929f5190329e6f6baf1bb22bdb8bec8"
+		"bytes": 1998383,
+		"contentHash": "86f813317226222f07d05c77e329d58000ac265c1be7eb83459db7e2947eba4e"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5f82c83bf354bf7e528a86a1d1b172ca2929f5190329e6f6baf1bb22bdb8bec8",
+		"postRepairContentHash": "86f813317226222f07d05c77e329d58000ac265c1be7eb83459db7e2947eba4e",
+		"removedPixels": 384942
+	}
 }

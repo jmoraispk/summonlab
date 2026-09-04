@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-knifework-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-knifework-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 832218,
-		"contentHash": "bf1ec9844c925d2dff2d091118526188c5266221e57cbf5b7c7a07ea71475cd6"
+		"bytes": 1688892,
+		"contentHash": "f855f95229113e0e14f2fd53ab39583a9791e0074c73cc2002e85921e8bf2fe4"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "bf1ec9844c925d2dff2d091118526188c5266221e57cbf5b7c7a07ea71475cd6",
+		"postRepairContentHash": "f855f95229113e0e14f2fd53ab39583a9791e0074c73cc2002e85921e8bf2fe4",
+		"removedPixels": 384942
+	}
 }

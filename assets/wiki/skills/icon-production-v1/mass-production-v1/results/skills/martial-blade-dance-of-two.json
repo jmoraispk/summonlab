@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-dance-of-two-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-dance-of-two-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1106945,
-		"contentHash": "52756b55709c804ca24b73199cc07f7ffac8cbe411d6d4e35810dd56b34cf5ce"
+		"bytes": 1841449,
+		"contentHash": "57d79c614cc7f9a38b7b01e9add505d4b63ed078348770e07baaa2855400ac66"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "52756b55709c804ca24b73199cc07f7ffac8cbe411d6d4e35810dd56b34cf5ce",
+		"postRepairContentHash": "57d79c614cc7f9a38b7b01e9add505d4b63ed078348770e07baaa2855400ac66",
+		"removedPixels": 384942
+	}
 }

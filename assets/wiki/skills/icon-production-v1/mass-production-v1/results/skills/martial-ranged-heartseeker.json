@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-heartseeker-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-heartseeker-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 989051,
-		"contentHash": "390fd78a875d760914cb1ba84f0f8066661d944167e944b7d3b95a4822a7d917"
+		"bytes": 1786558,
+		"contentHash": "e731b13d3e79e7e8dd50c0ced9d7346397c6f747d9f66a42dd3fd49b8fb13503"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "390fd78a875d760914cb1ba84f0f8066661d944167e944b7d3b95a4822a7d917",
+		"postRepairContentHash": "e731b13d3e79e7e8dd50c0ced9d7346397c6f747d9f66a42dd3fd49b8fb13503",
+		"removedPixels": 384942
+	}
 }

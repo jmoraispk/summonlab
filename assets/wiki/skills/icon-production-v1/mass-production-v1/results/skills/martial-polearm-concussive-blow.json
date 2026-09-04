@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-concussive-blow-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-concussive-blow-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1340006,
-		"contentHash": "f73db1b3c8c752548f5772b68abb43856cb49256e1db97b0a241ded5b82dce11"
+		"bytes": 1984188,
+		"contentHash": "2306f5df02dad011c43d449de8d5f4fce4b144be804704e460eec9ab6c06d4c2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f73db1b3c8c752548f5772b68abb43856cb49256e1db97b0a241ded5b82dce11",
+		"postRepairContentHash": "2306f5df02dad011c43d449de8d5f4fce4b144be804704e460eec9ab6c06d4c2",
+		"removedPixels": 384942
+	}
 }

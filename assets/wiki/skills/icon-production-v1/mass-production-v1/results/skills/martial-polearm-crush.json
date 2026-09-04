@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-crush-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-crush-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1113933,
-		"contentHash": "0070fee894838058131bbc4658f014273b550b91c5a679e9b6432351e2ac306f"
+		"bytes": 1820464,
+		"contentHash": "5b18d449e73acdcb940debc6d312bf9f52da3e303b80543a7d8c850ba46475c6"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0070fee894838058131bbc4658f014273b550b91c5a679e9b6432351e2ac306f",
+		"postRepairContentHash": "5b18d449e73acdcb940debc6d312bf9f52da3e303b80543a7d8c850ba46475c6",
+		"removedPixels": 384942
+	}
 }

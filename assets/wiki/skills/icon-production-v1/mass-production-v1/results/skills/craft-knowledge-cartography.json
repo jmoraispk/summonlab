@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:cartography",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-cartography.json",
+	"promptHash": "3654a44a32c0ddb43f04c9d65abc7280c017bb96c24d6bda8f4df0d1e5abf404",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-mapping.png",
+			"contentHash": "015c67f4c442b4d31dcfa499b18832b2796314a1d72e49aa1bb7687bbe2bf736"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-mapping.png",
+			"contentHash": "3eeaaedf265c1448e201d0abb0c90c8cfcea5b7eab9906b88681317d3492a3db"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-cartography-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2223150,
+		"contentHash": "957f1b1d384b7e6ab34975dc677d312c588b84843497a09ab687635503ebc5b7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-cartography.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1948795,
+		"contentHash": "d7d5c60a81a81a5d526e26fcb94013821faefe030f0753509340d51f7f6a16ee"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5aba336d08d121346d05b08fe23ef1902de7d97862808f69d10c7f30cf6b41ef",
+		"postRepairContentHash": "d7d5c60a81a81a5d526e26fcb94013821faefe030f0753509340d51f7f6a16ee",
+		"removedPixels": 384942
+	}
+}

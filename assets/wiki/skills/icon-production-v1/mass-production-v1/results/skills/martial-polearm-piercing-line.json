@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-piercing-line-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-piercing-line-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 867385,
-		"contentHash": "36c6ea18c4bfb0f0dca7f4918433bbd524d61c4d3c8e21d773d16de7a0b24672"
+		"bytes": 1513054,
+		"contentHash": "4c8eb92e7716e36ec0e6806a05fb7300e7d3e9ad46fcde4c66c99fb7986cf103"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "36c6ea18c4bfb0f0dca7f4918433bbd524d61c4d3c8e21d773d16de7a0b24672",
+		"postRepairContentHash": "4c8eb92e7716e36ec0e6806a05fb7300e7d3e9ad46fcde4c66c99fb7986cf103",
+		"removedPixels": 384942
+	}
 }

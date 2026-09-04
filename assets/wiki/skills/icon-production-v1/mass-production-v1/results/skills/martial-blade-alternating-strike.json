@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-alternating-strike-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-alternating-strike-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 879535,
-		"contentHash": "c5bb0dda32c9eb498c146637b060cae00f9d65da8d3a600bd82adfaefe37d124"
+		"bytes": 1785907,
+		"contentHash": "348a44329406231c12aebc2123b2756c3c00279aceee66be4013693a82d736e2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c5bb0dda32c9eb498c146637b060cae00f9d65da8d3a600bd82adfaefe37d124",
+		"postRepairContentHash": "348a44329406231c12aebc2123b2756c3c00279aceee66be4013693a82d736e2",
+		"removedPixels": 384942
+	}
 }

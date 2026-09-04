@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-silent-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-silent-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 867863,
-		"contentHash": "78b69ed8a161b322240973b429b84e3e86c77e08844e66447e4fb3fa8f7636b6"
+		"bytes": 1612343,
+		"contentHash": "0bbe4b7cc17131056e4e0a2c05bc7b91a1dff882a8a2fbf73b1f4924841b652a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "78b69ed8a161b322240973b429b84e3e86c77e08844e66447e4fb3fa8f7636b6",
+		"postRepairContentHash": "0bbe4b7cc17131056e4e0a2c05bc7b91a1dff882a8a2fbf73b1f4924841b652a",
+		"removedPixels": 384942
+	}
 }

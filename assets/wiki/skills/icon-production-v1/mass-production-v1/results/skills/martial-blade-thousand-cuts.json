@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-thousand-cuts-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-thousand-cuts-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1172762,
-		"contentHash": "50a8d7c9d77b730ef70f6ae1c8cc494c4be9ba6fd2b7cd2612c37f5c4a5c3f32"
+		"bytes": 1911556,
+		"contentHash": "899d6481c90d287342f75e6e809496416bf9f01724251db9736869ba8053bd25"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "50a8d7c9d77b730ef70f6ae1c8cc494c4be9ba6fd2b7cd2612c37f5c4a5c3f32",
+		"postRepairContentHash": "899d6481c90d287342f75e6e809496416bf9f01724251db9736869ba8053bd25",
+		"removedPixels": 384942
+	}
 }

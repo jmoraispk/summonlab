@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-chokehold-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-chokehold-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1275233,
-		"contentHash": "03c7906ea878b062a5246b339ab1dac5702f90e200380fd2d1302d0d8aafd003"
+		"bytes": 2001890,
+		"contentHash": "bd30437b2e45a6a211db0f8029399530a9d5c43af5d0b435d70b64a0badd2f79"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "03c7906ea878b062a5246b339ab1dac5702f90e200380fd2d1302d0d8aafd003",
+		"postRepairContentHash": "bd30437b2e45a6a211db0f8029399530a9d5c43af5d0b435d70b64a0badd2f79",
+		"removedPixels": 384942
+	}
 }

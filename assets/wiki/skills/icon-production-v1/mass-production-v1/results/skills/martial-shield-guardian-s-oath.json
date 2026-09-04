@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-guardian-s-oath-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-guardian-s-oath-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1109130,
-		"contentHash": "6611be70d5d67a519e984450b5f4478ec2ee3c0e498f6da0ff042398784bd41b"
+		"bytes": 1785843,
+		"contentHash": "7544bf310d45d4f27b3b31f292fbe8393a4cdd0352d40b1e307109889f0c9834"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6611be70d5d67a519e984450b5f4478ec2ee3c0e498f6da0ff042398784bd41b",
+		"postRepairContentHash": "7544bf310d45d4f27b3b31f292fbe8393a4cdd0352d40b1e307109889f0c9834",
+		"removedPixels": 384942
+	}
 }

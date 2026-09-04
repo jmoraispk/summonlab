@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-bolt-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-bolt-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 856791,
-		"contentHash": "fd1070dbb66208b5e68656e80d78bca7f4b13006a6ce051dc491a5432a6d6ddb"
+		"bytes": 1722423,
+		"contentHash": "5a60d66b6bde18a40bdd3545ff3b56d54eaf83ca1260702ae931450d0713a0ae"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fd1070dbb66208b5e68656e80d78bca7f4b13006a6ce051dc491a5432a6d6ddb",
+		"postRepairContentHash": "5a60d66b6bde18a40bdd3545ff3b56d54eaf83ca1260702ae931450d0713a0ae",
+		"removedPixels": 384942
+	}
 }

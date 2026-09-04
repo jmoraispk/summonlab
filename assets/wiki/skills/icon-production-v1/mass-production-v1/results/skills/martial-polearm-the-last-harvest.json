@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-the-last-harvest-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-the-last-harvest-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1261408,
-		"contentHash": "e1f88b991034178c982f3d135d5cc46ce8609f090044e4f8b6c4e5b40824343b"
+		"bytes": 1617228,
+		"contentHash": "6e8a09e45365dc3196d6b0736820b1e6134f07944467ded17fedc7eb4f7ce652"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e1f88b991034178c982f3d135d5cc46ce8609f090044e4f8b6c4e5b40824343b",
+		"postRepairContentHash": "6e8a09e45365dc3196d6b0736820b1e6134f07944467ded17fedc7eb4f7ce652",
+		"removedPixels": 384942
+	}
 }

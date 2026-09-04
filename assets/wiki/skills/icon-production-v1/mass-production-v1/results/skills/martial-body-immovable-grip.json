@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-immovable-grip-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-immovable-grip-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1417832,
-		"contentHash": "72c7d24ea632eb6d24560620b25832d007f447d9199882a2ca71ac082d808ae7"
+		"bytes": 2108764,
+		"contentHash": "c8ba5d0d89af61482804452d939c41ce7999bc26f46f1ee5ab4ca24fb8536876"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "72c7d24ea632eb6d24560620b25832d007f447d9199882a2ca71ac082d808ae7",
+		"postRepairContentHash": "c8ba5d0d89af61482804452d939c41ce7999bc26f46f1ee5ab4ca24fb8536876",
+		"removedPixels": 384942
+	}
 }

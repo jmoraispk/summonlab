@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-the-fist-that-ends-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-the-fist-that-ends-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1068301,
-		"contentHash": "ffa149d89d6326b1acd87a598bdb4c213f33c402ac88baf7f2c8519f8dd29948"
+		"bytes": 1823441,
+		"contentHash": "241e42b196af83c04f562751a6938cac3e64b0c1415d1f7e51b3dba9365a4b2a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ffa149d89d6326b1acd87a598bdb4c213f33c402ac88baf7f2c8519f8dd29948",
+		"postRepairContentHash": "241e42b196af83c04f562751a6938cac3e64b0c1415d1f7e51b3dba9365a4b2a",
+		"removedPixels": 384942
+	}
 }

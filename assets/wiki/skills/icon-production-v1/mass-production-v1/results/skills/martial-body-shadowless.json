@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-shadowless-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-shadowless-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 900979,
-		"contentHash": "54c982c85cf85595bc895fabe73c0eb0354c6ccd5a994d84378efe876c0b4390"
+		"bytes": 1713779,
+		"contentHash": "14cf35974239edb8e3506290a54128e1a0590b468aed7bdec39b35784ac3baf5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "54c982c85cf85595bc895fabe73c0eb0354c6ccd5a994d84378efe876c0b4390",
+		"postRepairContentHash": "14cf35974239edb8e3506290a54128e1a0590b468aed7bdec39b35784ac3baf5",
+		"removedPixels": 384942
+	}
 }

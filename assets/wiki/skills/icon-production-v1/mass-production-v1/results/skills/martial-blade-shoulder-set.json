@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-shoulder-set-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-shoulder-set-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 898063,
-		"contentHash": "0b42000e26bab4299b3ecf356a936d52b653bf64cefc86bbe3ac80041e8529ad"
+		"bytes": 1630489,
+		"contentHash": "84b98c35b511db9f25961d31c6c66ef3a53b396bdac48c641abe31895e7dccda"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0b42000e26bab4299b3ecf356a936d52b653bf64cefc86bbe3ac80041e8529ad",
+		"postRepairContentHash": "84b98c35b511db9f25961d31c6c66ef3a53b396bdac48c641abe31895e7dccda",
+		"removedPixels": 384942
+	}
 }

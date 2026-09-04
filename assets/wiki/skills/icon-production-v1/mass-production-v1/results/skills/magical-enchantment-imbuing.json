@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:imbuing",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-imbuing.json",
+	"promptHash": "42d45b1039fd8f1004613ec3fa3dd45268d95b433b3ba3cb63477f94f49d458e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-imbued-object.png",
+			"contentHash": "0e8d57a24473dacba9ec32f2162926b990601aa11c3ee94dad195c1813bcdfa8"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-imbuing-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2163324,
+		"contentHash": "ce547c46f7e253ce2cf594e7c8dd698af33890e8460af82516cf4c1130ba35b9"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-imbuing.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1835026,
+		"contentHash": "1113e2191637ffe0d35193fb81afb8b5be24a0e67cc909a9f3794ea4fae64008"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d3d0c8553f0719bf2725dd60e1129da1566151e46b24d24e7d10f93529331386",
+		"postRepairContentHash": "1113e2191637ffe0d35193fb81afb8b5be24a0e67cc909a9f3794ea4fae64008",
+		"removedPixels": 384942
+	}
+}

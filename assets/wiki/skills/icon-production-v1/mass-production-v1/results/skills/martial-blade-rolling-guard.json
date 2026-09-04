@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-rolling-guard-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-rolling-guard-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1135320,
-		"contentHash": "0a1fe29b808cade27daf637a6845efd7ce7fe6c6f5cdc5b105afddc26aa794a1"
+		"bytes": 1856191,
+		"contentHash": "c5543d9a54dd0eec8c2f12a62f3c08e1b45c2199a8112da42786a30df7062ec4"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0a1fe29b808cade27daf637a6845efd7ce7fe6c6f5cdc5b105afddc26aa794a1",
+		"postRepairContentHash": "c5543d9a54dd0eec8c2f12a62f3c08e1b45c2199a8112da42786a30df7062ec4",
+		"removedPixels": 384942
+	}
 }

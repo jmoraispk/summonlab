@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-quick-draw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-quick-draw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 817206,
-		"contentHash": "49ca6b50bc33b94f1fcc8c14d93547076e00c22cb53286859be221071412fd9b"
+		"bytes": 1720733,
+		"contentHash": "87e1e59ca3da05fc6b0cd4f1484cf3ef1a0970e8bf2ca65cc77b6777d77fec30"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "49ca6b50bc33b94f1fcc8c14d93547076e00c22cb53286859be221071412fd9b",
+		"postRepairContentHash": "87e1e59ca3da05fc6b0cd4f1484cf3ef1a0970e8bf2ca65cc77b6777d77fec30",
+		"removedPixels": 384942
+	}
 }

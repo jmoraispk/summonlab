@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-coiling-dragon-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-coiling-dragon-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 913507,
-		"contentHash": "2c02603988588e2ac85646d8c42c45d0c79a2900b772817226bd0ecd4d513d6f"
+		"bytes": 1780853,
+		"contentHash": "894697834ab3ca98e3016e5d14035d6fd611a26f6c4c1ccfe5eb62eed8783aa3"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2c02603988588e2ac85646d8c42c45d0c79a2900b772817226bd0ecd4d513d6f",
+		"postRepairContentHash": "894697834ab3ca98e3016e5d14035d6fd611a26f6c4c1ccfe5eb62eed8783aa3",
+		"removedPixels": 384942
+	}
 }

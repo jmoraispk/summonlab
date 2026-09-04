@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-hundred-steps-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-hundred-steps-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1310330,
-		"contentHash": "10ade59f7b2294148837d87a13a1950f6fb0b31487e400f814488347cb33438e"
+		"bytes": 1848173,
+		"contentHash": "c1f2035171044bca301067a696b4968fa5d47206038532e0d011407db56a00ef"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "10ade59f7b2294148837d87a13a1950f6fb0b31487e400f814488347cb33438e",
+		"postRepairContentHash": "c1f2035171044bca301067a696b4968fa5d47206038532e0d011407db56a00ef",
+		"removedPixels": 384942
+	}
 }

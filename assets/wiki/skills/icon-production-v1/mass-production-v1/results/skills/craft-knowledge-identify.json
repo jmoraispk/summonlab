@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:identify",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-identify.json",
+	"promptHash": "e23d0d84bdec3e74f1622b2c1cb6709109810f65768822d243c3cfa64897e90d",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-appraisal.png",
+			"contentHash": "e2589258004765bb0dfd487a23b132f8e2493d526289dc43c7055f0f98c18452"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-identify-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2136113,
+		"contentHash": "ba51550d77d21411dc588f8dfca05b95b34fb4ac13687ee4ebeed639149a107f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-identify.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1758913,
+		"contentHash": "3618ff7de3346eb5a091a00a626af0e01f8246d1df1da15e6307c8cd4bde47b4"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6291e86db505bf697eb2bcee780b8df3fd244a925e9ac259d560ebdb665eeecf",
+		"postRepairContentHash": "3618ff7de3346eb5a091a00a626af0e01f8246d1df1da15e6307c8cd4bde47b4",
+		"removedPixels": 384942
+	}
+}

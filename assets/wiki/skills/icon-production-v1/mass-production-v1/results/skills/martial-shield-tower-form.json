@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-tower-form-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-tower-form-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1125825,
-		"contentHash": "e9cbc8ad41c010576649376be3a7cc23bb0357ca686a905da8b2d45fc34c357f"
+		"bytes": 1752013,
+		"contentHash": "67ac016477ca12ace824e0ad3236a910b6c7cce2836157d733a1d0a70a141a9c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e9cbc8ad41c010576649376be3a7cc23bb0357ca686a905da8b2d45fc34c357f",
+		"postRepairContentHash": "67ac016477ca12ace824e0ad3236a910b6c7cce2836157d733a1d0a70a141a9c",
+		"removedPixels": 384942
+	}
 }

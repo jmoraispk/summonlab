@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-split-grip-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-split-grip-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1087567,
-		"contentHash": "49f75961336bae21e7bcf458e3ff66af886ead071b0ac71448c55605445100e3"
+		"bytes": 1855420,
+		"contentHash": "d4644e5dbfc4ec58ba0799d1222e4b7a09bc077277cb983693e01d855e774ab5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "49f75961336bae21e7bcf458e3ff66af886ead071b0ac71448c55605445100e3",
+		"postRepairContentHash": "d4644e5dbfc4ec58ba0799d1222e4b7a09bc077277cb983693e01d855e774ab5",
+		"removedPixels": 384942
+	}
 }

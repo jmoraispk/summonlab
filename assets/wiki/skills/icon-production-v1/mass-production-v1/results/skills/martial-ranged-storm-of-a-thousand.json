@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1316666,
-		"contentHash": "37a19c0e2efae006fbab8f796d8e14f5ed1d4e65a74ed4ec997f2da71da5cde8"
+		"bytes": 1958674,
+		"contentHash": "6891a6604b2eef2d2ae915405ed18bcbf5695c650d30c77f072e49437d3c74e6"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "37a19c0e2efae006fbab8f796d8e14f5ed1d4e65a74ed4ec997f2da71da5cde8",
+		"postRepairContentHash": "6891a6604b2eef2d2ae915405ed18bcbf5695c650d30c77f072e49437d3c74e6",
+		"removedPixels": 384942
+	}
 }

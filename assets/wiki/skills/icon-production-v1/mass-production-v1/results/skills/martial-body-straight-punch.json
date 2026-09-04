@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-straight-punch-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-straight-punch-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 837813,
-		"contentHash": "8f3f1d81fc03146e15e2141fd7048be56c13d8343cceb5f4f5a80d4dc6bb0db9"
+		"bytes": 1620124,
+		"contentHash": "b4669f2585387f922fc3114d09e13b4d541123119d6b646cdae7a67584804bed"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8f3f1d81fc03146e15e2141fd7048be56c13d8343cceb5f4f5a80d4dc6bb0db9",
+		"postRepairContentHash": "b4669f2585387f922fc3114d09e13b4d541123119d6b646cdae7a67584804bed",
+		"removedPixels": 384942
+	}
 }

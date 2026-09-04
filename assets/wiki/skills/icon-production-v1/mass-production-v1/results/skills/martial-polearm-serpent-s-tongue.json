@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-serpent-s-tongue-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-serpent-s-tongue-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 873654,
-		"contentHash": "608bef5db7d564784349327f1ea9623d6ec2b6f115f4ead1351dd1ef363a2f58"
+		"bytes": 1584812,
+		"contentHash": "430b10ebb1ac7b53fa454d4bd5fec64c0bbc1a8437f3af65579652a96f6cf3f8"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "608bef5db7d564784349327f1ea9623d6ec2b6f115f4ead1351dd1ef363a2f58",
+		"postRepairContentHash": "430b10ebb1ac7b53fa454d4bd5fec64c0bbc1a8437f3af65579652a96f6cf3f8",
+		"removedPixels": 384942
+	}
 }

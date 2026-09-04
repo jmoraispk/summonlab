@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-twin-souls-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-twin-souls-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1347444,
-		"contentHash": "498902a51a47c3be58cadc665c18c8ba8166a58112e5a744d9fc35b0cce5f9db"
+		"bytes": 2046620,
+		"contentHash": "47606ff93bdf9a43186d0dda5fea20743fed8bb4a21d074f6d25f6bddfac6aae"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "498902a51a47c3be58cadc665c18c8ba8166a58112e5a744d9fc35b0cce5f9db",
+		"postRepairContentHash": "47606ff93bdf9a43186d0dda5fea20743fed8bb4a21d074f6d25f6bddfac6aae",
+		"removedPixels": 384942
+	}
 }

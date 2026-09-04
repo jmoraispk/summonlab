@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-butt-strike-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-butt-strike-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 883913,
-		"contentHash": "e04c851c0baacb4c6896b17b58599030283ce5cafbe9db3a73fbcb9b2fc082e5"
+		"bytes": 1775720,
+		"contentHash": "541892ccb610c36c2174874886c347280aefc531fa98a1a3fd825ade39f9dbb8"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e04c851c0baacb4c6896b17b58599030283ce5cafbe9db3a73fbcb9b2fc082e5",
+		"postRepairContentHash": "541892ccb610c36c2174874886c347280aefc531fa98a1a3fd825ade39f9dbb8",
+		"removedPixels": 384942
+	}
 }

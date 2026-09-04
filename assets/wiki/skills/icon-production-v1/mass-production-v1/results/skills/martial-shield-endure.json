@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-endure-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-endure-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1072247,
-		"contentHash": "adccc25042931e37a0a39ce7b09a031c88b823aa5dfd6fa2222a86f22b44dd43"
+		"bytes": 1742589,
+		"contentHash": "25260405098b0d7612bc09944281a8750c29880fcfd7a74d563476d9996692ee"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "adccc25042931e37a0a39ce7b09a031c88b823aa5dfd6fa2222a86f22b44dd43",
+		"postRepairContentHash": "25260405098b0d7612bc09944281a8750c29880fcfd7a74d563476d9996692ee",
+		"removedPixels": 384942
+	}
 }

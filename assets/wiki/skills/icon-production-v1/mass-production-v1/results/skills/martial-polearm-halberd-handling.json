@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-halberd-handling-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-halberd-handling-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 967501,
-		"contentHash": "3152ceccb6ba95fc6e43d963a73ea178abdfa99ca0a7e5d34174a3a4f7d0d3bb"
+		"bytes": 1752204,
+		"contentHash": "b34024913a36977b27ab30f682e19257815030330295ad7ebda18609c9936d3f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3152ceccb6ba95fc6e43d963a73ea178abdfa99ca0a7e5d34174a3a4f7d0d3bb",
+		"postRepairContentHash": "b34024913a36977b27ab30f682e19257815030330295ad7ebda18609c9936d3f",
+		"removedPixels": 384942
+	}
 }

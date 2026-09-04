@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-immovable-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-immovable-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1242560,
-		"contentHash": "78d89f463c3b1cc1eefe5e487081c63eaf6035a0e25aa6065c7e95000c14462d"
+		"bytes": 1802744,
+		"contentHash": "12d7794564d3250ba22dc7e3dda1ede1c2fe583017f147d10d60ed4338ea0f9c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "78d89f463c3b1cc1eefe5e487081c63eaf6035a0e25aa6065c7e95000c14462d",
+		"postRepairContentHash": "12d7794564d3250ba22dc7e3dda1ede1c2fe583017f147d10d60ed4338ea0f9c",
+		"removedPixels": 384942
+	}
 }

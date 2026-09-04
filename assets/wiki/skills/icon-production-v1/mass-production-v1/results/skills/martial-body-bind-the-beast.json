@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-bind-the-beast-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-bind-the-beast-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1051991,
-		"contentHash": "852bfed3627df90f3fc6858a768257ae009254c76221d571b69db9106dda5cbb"
+		"bytes": 1904288,
+		"contentHash": "867fa4b0165e61b6d8891fd80b9a2e363ff316e9a40f7165867c1806fe83debf"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "852bfed3627df90f3fc6858a768257ae009254c76221d571b69db9106dda5cbb",
+		"postRepairContentHash": "867fa4b0165e61b6d8891fd80b9a2e363ff316e9a40f7165867c1806fe83debf",
+		"removedPixels": 384942
+	}
 }

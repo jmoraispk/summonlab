@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-ruin-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-ruin-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1091685,
-		"contentHash": "45c7f52ad2e0ec1d06c67c6724c0dee592405098fddff8ebcb124f165f80674a"
+		"bytes": 1855428,
+		"contentHash": "9e08c98752245e909e29f3d475a5d8c0d0a6d7fcec89983b2ce25659d30f371d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "45c7f52ad2e0ec1d06c67c6724c0dee592405098fddff8ebcb124f165f80674a",
+		"postRepairContentHash": "9e08c98752245e909e29f3d475a5d8c0d0a6d7fcec89983b2ce25659d30f371d",
+		"removedPixels": 384942
+	}
 }

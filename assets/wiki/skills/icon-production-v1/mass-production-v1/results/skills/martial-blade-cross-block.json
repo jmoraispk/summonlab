@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cross-block-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-cross-block-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1012986,
-		"contentHash": "fad22da2dcab7f36d556eaf75bdff02af8d7442203e576c5604b741fc42a5efc"
+		"bytes": 1758733,
+		"contentHash": "42ac7ca94b0ef705888527d98508cf89fecf1d73ee845e144d1d28a852c0fa76"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fad22da2dcab7f36d556eaf75bdff02af8d7442203e576c5604b741fc42a5efc",
+		"postRepairContentHash": "42ac7ca94b0ef705888527d98508cf89fecf1d73ee845e144d1d28a852c0fa76",
+		"removedPixels": 384942
+	}
 }

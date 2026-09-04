@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-vault-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-vault-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 922436,
-		"contentHash": "0bf0bedbed62c09a616f87d61789c43fd6183a685f64b06d65d821d04cedb037"
+		"bytes": 1616680,
+		"contentHash": "010a66e6bbb6e7427f577a8bce375c00e60a226ac7f5709dda788cd3032130fc"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0bf0bedbed62c09a616f87d61789c43fd6183a685f64b06d65d821d04cedb037",
+		"postRepairContentHash": "010a66e6bbb6e7427f577a8bce375c00e60a226ac7f5709dda788cd3032130fc",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-whirlwind-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-whirlwind-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1217276,
-		"contentHash": "4956460c5621b9e76ec92cc3271653bfcc51f1fabf0b16a7ba48bfa6ac250ad7"
+		"bytes": 1951315,
+		"contentHash": "fbe3fab1eeb817ebff489bfa38c077fbe6df5ea77a9f07a5e07cb89006d01485"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4956460c5621b9e76ec92cc3271653bfcc51f1fabf0b16a7ba48bfa6ac250ad7",
+		"postRepairContentHash": "fbe3fab1eeb817ebff489bfa38c077fbe6df5ea77a9f07a5e07cb89006d01485",
+		"removedPixels": 384942
+	}
 }

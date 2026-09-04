@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:prospecting",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-prospecting.json",
+	"promptHash": "2f3f8b2b00695bdfc815003c20dea516b205bd27208309879c0bc2a6753d5b7a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-mining.png",
+			"contentHash": "26a2900c50f477f1bcd714cf9e360c255a06e433490579223df89ec935b5de6a"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-mining.png",
+			"contentHash": "b4d5491f114e893a5941000b2262f18c97cacd6762ccbc54f3a1883de174110c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-prospecting-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2103314,
+		"contentHash": "cad362529f29e3503b66af7e12e752bc16b39824f39a4ad587d0d38dd8b02195"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-prospecting.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1877759,
+		"contentHash": "075b099f1234f8f40363e75190012594a97cd469f9afe533dcebf42227fea8a0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "89d7298bdfbccc684a1117c55ec732cf289fc4edd6f2d6035bd2d02efef42b4e",
+		"postRepairContentHash": "075b099f1234f8f40363e75190012594a97cd469f9afe533dcebf42227fea8a0",
+		"removedPixels": 384942
+	}
+}

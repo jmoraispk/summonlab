@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-heavy-footing-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-heavy-footing-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1303410,
-		"contentHash": "ea731c24cef1692ecb94a19b1810e3da2d6db3b32951b09203c9b720763395d9"
+		"bytes": 2008269,
+		"contentHash": "5d7916eb45f6e282d3e95fb75cc1cb13c8e17546fb81dba37898478d4204192a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ea731c24cef1692ecb94a19b1810e3da2d6db3b32951b09203c9b720763395d9",
+		"postRepairContentHash": "5d7916eb45f6e282d3e95fb75cc1cb13c8e17546fb81dba37898478d4204192a",
+		"removedPixels": 384942
+	}
 }

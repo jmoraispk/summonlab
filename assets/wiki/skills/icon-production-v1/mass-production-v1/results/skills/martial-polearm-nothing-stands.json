@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-nothing-stands-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-nothing-stands-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1438553,
-		"contentHash": "fb5502fa2da3098ecbc116ea27b835f2b995ecfc2ae74097ee49be3f1835fdfa"
+		"bytes": 2008842,
+		"contentHash": "bf05290136c273eb1fc02ae1324d38cd412646da90869eb61f2152e36358ab22"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fb5502fa2da3098ecbc116ea27b835f2b995ecfc2ae74097ee49be3f1835fdfa",
+		"postRepairContentHash": "bf05290136c273eb1fc02ae1324d38cd412646da90869eb61f2152e36358ab22",
+		"removedPixels": 384942
+	}
 }

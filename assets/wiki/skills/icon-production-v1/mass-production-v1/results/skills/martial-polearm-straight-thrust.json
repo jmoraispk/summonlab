@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-straight-thrust-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-straight-thrust-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 863841,
-		"contentHash": "951019bed377d3f63c6ece1ad1af283150a220e029d3b8a3c30abaf0455f1f8d"
+		"bytes": 1762111,
+		"contentHash": "6ec8cfad8d65762e886c55f9118bc4f1b1cd0b10b7b96d8a255a4b153b0321d2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "951019bed377d3f63c6ece1ad1af283150a220e029d3b8a3c30abaf0455f1f8d",
+		"postRepairContentHash": "6ec8cfad8d65762e886c55f9118bc4f1b1cd0b10b7b96d8a255a4b153b0321d2",
+		"removedPixels": 384942
+	}
 }

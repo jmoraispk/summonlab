@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:stone-sentinel",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stone-sentinel.json",
+	"promptHash": "03ef82f85c1f685de4a13ccc273c98d1bae6ef6c5c622dcf12c076566f1145a2",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-shape.png",
+			"contentHash": "6813ae2ec94c1e702cdac3cc1b3e9577dcc9a926d9ac4354726531d83237fd00"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-boulder-throw.png",
+			"contentHash": "deb1f22b311409c25a333f1e5b2ab2a85974bcfc66fccfbeb0813f4c5aeaafa6"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-stone-sentinel-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2390692,
+		"contentHash": "456fcd0df6e2c45a8a1b61451cb3c696054249cc599a3ef76d60cbbacc29ef84"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-stone-sentinel.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2069189,
+		"contentHash": "1ccf8748b1ef2573a543d8a840cdb39be9d46102f3a25f9fc6fba08354b21ebc"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3b19153fc07a1836b97e5425a4b69d1dc5bc71b90c25dcf4d2802cce763e6905",
+		"postRepairContentHash": "1ccf8748b1ef2573a543d8a840cdb39be9d46102f3a25f9fc6fba08354b21ebc",
+		"removedPixels": 384942
+	}
+}

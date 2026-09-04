@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-still-water-stance-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-still-water-stance-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1188537,
-		"contentHash": "ec106a9b9ef70f2806b33f06bb390ef02e6da89ff0ac44c708b84a3b600cd775"
+		"bytes": 1804976,
+		"contentHash": "554a5d07cbaa9627b9c8d4dce6623074e610cafeeed15e6263b70a0b9bb49bbe"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ec106a9b9ef70f2806b33f06bb390ef02e6da89ff0ac44c708b84a3b600cd775",
+		"postRepairContentHash": "554a5d07cbaa9627b9c8d4dce6623074e610cafeeed15e6263b70a0b9bb49bbe",
+		"removedPixels": 384942
+	}
 }

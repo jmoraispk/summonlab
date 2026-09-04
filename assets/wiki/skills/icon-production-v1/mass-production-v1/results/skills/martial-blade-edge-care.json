@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-edge-care-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-edge-care-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 925329,
-		"contentHash": "314d2b277ef498420af97081bdeb273b89a8511aff9b3b8988fc6e11248ca9af"
+		"bytes": 1825980,
+		"contentHash": "439fdd473f266c5bbb4df913a6ecd365be33b50a722e8fd7c464e51c5be1f085"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "314d2b277ef498420af97081bdeb273b89a8511aff9b3b8988fc6e11248ca9af",
+		"postRepairContentHash": "439fdd473f266c5bbb4df913a6ecd365be33b50a722e8fd7c464e51c5be1f085",
+		"removedPixels": 384942
+	}
 }

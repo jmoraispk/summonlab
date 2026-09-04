@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-low-kick-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-low-kick-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 789496,
-		"contentHash": "1aeffa87e8d6e6d583ce3254c7562b169cae1210d0d53a04e67bdae1002ded33"
+		"bytes": 1734631,
+		"contentHash": "54b4987a7b4f832251f836f11a936541a831ff278c08f7e2f90882a5150807af"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1aeffa87e8d6e6d583ce3254c7562b169cae1210d0d53a04e67bdae1002ded33",
+		"postRepairContentHash": "54b4987a7b4f832251f836f11a936541a831ff278c08f7e2f90882a5150807af",
+		"removedPixels": 384942
+	}
 }

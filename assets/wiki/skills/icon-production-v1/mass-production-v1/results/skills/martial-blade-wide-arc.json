@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-wide-arc-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-wide-arc-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1454761,
-		"contentHash": "f43fdee7c25ddf9c97ec4923cd1eaab6a8236e440fe0f9bdc748d453a63601ea"
+		"bytes": 1945456,
+		"contentHash": "943423f03c742815db16094e16c0420de2a935fb2de8ad844639c89925251b2c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f43fdee7c25ddf9c97ec4923cd1eaab6a8236e440fe0f9bdc748d453a63601ea",
+		"postRepairContentHash": "943423f03c742815db16094e16c0420de2a935fb2de8ad844639c89925251b2c",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cleave-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-cleave-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1153846,
-		"contentHash": "4204115756c48a72aeb924e5c3bbce61e8a006def48ce83c8b5d6a20f8caeac3"
+		"bytes": 1744859,
+		"contentHash": "e603f19d2a9c19eecfceb6fb024d62221e02e570d832c9834788c04cdf23b791"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4204115756c48a72aeb924e5c3bbce61e8a006def48ce83c8b5d6a20f8caeac3",
+		"postRepairContentHash": "e603f19d2a9c19eecfceb6fb024d62221e02e570d832c9834788c04cdf23b791",
+		"removedPixels": 384942
+	}
 }

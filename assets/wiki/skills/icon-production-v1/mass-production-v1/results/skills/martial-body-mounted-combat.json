@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-mounted-combat-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-mounted-combat-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1100191,
-		"contentHash": "f774a8727617412193afac249e4a91eb473e2a1b01e85ad7f725c4ad638556d0"
+		"bytes": 1849705,
+		"contentHash": "fe09ef5c86eb5cf1d6b9034975ca7bebd141a5c280e33b8146549cba0c0f9f23"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f774a8727617412193afac249e4a91eb473e2a1b01e85ad7f725c4ad638556d0",
+		"postRepairContentHash": "fe09ef5c86eb5cf1d6b9034975ca7bebd141a5c280e33b8146549cba0c0f9f23",
+		"removedPixels": 384942
+	}
 }

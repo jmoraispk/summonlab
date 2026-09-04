@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:close-wound",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-close-wound.json",
+	"promptHash": "69c83799101419e7f2e7405c7a5afcc8c2a9230aefe9a1e9b2b7b9c03d64e1b6",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-wound-mending.png",
+			"contentHash": "b457d99c9aff0b04c21a6fd2f8afe91751537f301310968c7fdea0f6ebed0bdb"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-mending.png",
+			"contentHash": "fe54b3de4df6f07e64254d2d6aed11600f7ed7b72d58917994263fd518a13832"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-close-wound-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2104309,
+		"contentHash": "b52b80270e4c563d75b3fef2531a7422eab7863c93d1a27f06cd9e6442fe1ff6"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-close-wound.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1869528,
+		"contentHash": "22cfe0726251d89cdde082caf533f7ccd006daf00b0ba4e336f2c60a8f273a6c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4cd00bc66131b9c6ef58469e5124b13a109dead9baa02d40d4253562de879275",
+		"postRepairContentHash": "22cfe0726251d89cdde082caf533f7ccd006daf00b0ba4e336f2c60a8f273a6c",
+		"removedPixels": 384942
+	}
+}

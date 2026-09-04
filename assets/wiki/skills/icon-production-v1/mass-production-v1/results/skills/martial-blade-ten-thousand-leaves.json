@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-ten-thousand-leaves-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-ten-thousand-leaves-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1346045,
-		"contentHash": "8692f763393ef63ad23e8e2005b343136d35f742da99dea55f257387754fad08"
+		"bytes": 1905654,
+		"contentHash": "9365e90e3900eea82e1a0b129633c77e5c43cda9c2c5ac37772cee1599e5956b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8692f763393ef63ad23e8e2005b343136d35f742da99dea55f257387754fad08",
+		"postRepairContentHash": "9365e90e3900eea82e1a0b129633c77e5c43cda9c2c5ac37772cee1599e5956b",
+		"removedPixels": 384942
+	}
 }

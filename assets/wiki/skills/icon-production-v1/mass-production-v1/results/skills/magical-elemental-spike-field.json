@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:spike-field",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-spike-field.json",
+	"promptHash": "49d0fff1979a1314baf36638c6d777da59442cedf51b14563cc8fe91f4be5340",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-fracture.png",
+			"contentHash": "d432e71f8a64a692cedc42cd0a882f5a57ea48bbcc0972de9415f775584e7329"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-spike-field-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1989313,
+		"contentHash": "8302bfc0abacf856346bc501a9e803cc0d462236f343fd7d372006f02fdedb85"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-spike-field.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1720525,
+		"contentHash": "9a52f9a590d72e20cad25a866fc183dc2d4c81134844a633c065586fa30a50a8"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2dbf12bb44f49b7f90b403d62cfbf150d8e30d4065ecf9fdc04114b4d85c2764",
+		"postRepairContentHash": "9a52f9a590d72e20cad25a866fc183dc2d4c81134844a633c065586fa30a50a8",
+		"removedPixels": 384942
+	}
+}

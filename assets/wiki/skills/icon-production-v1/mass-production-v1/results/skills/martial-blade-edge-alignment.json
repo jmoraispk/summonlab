@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-edge-alignment-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-edge-alignment-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1036597,
-		"contentHash": "233c7f1e0fff210e8c23e9df882b93496ccb7b5feb1475610739fd8a85810fd5"
+		"bytes": 1769004,
+		"contentHash": "6b47d06e3860f84ab0516ed82f28709458b1d3908b722a0dda39ab634a8e271d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "233c7f1e0fff210e8c23e9df882b93496ccb7b5feb1475610739fd8a85810fd5",
+		"postRepairContentHash": "6b47d06e3860f84ab0516ed82f28709458b1d3908b722a0dda39ab634a8e271d",
+		"removedPixels": 384942
+	}
 }

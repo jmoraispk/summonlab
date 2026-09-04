@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-counter-flow-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-counter-flow-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 986318,
-		"contentHash": "2d82697d9e69539afffdb6c94a18fa71f04148fc4a21f5be27725d13babdb58b"
+		"bytes": 1725452,
+		"contentHash": "f4d4cad9537f1ef2ab0487600b4f076adacd5e44d8854a13bfcde7041d7ea6ef"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2d82697d9e69539afffdb6c94a18fa71f04148fc4a21f5be27725d13babdb58b",
+		"postRepairContentHash": "f4d4cad9537f1ef2ab0487600b4f076adacd5e44d8854a13bfcde7041d7ea6ef",
+		"removedPixels": 384942
+	}
 }

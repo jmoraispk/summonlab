@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-called-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-called-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 930839,
-		"contentHash": "d0e163a2e6af4076c5b3ada0ba01b01c4b68ad912d3dbde345ad84408b464cd8"
+		"bytes": 1698880,
+		"contentHash": "8fe3db1af5d99885bfc62b1f5bb5af29c4063cc763a9abafb503da5c434e3866"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d0e163a2e6af4076c5b3ada0ba01b01c4b68ad912d3dbde345ad84408b464cd8",
+		"postRepairContentHash": "8fe3db1af5d99885bfc62b1f5bb5af29c4063cc763a9abafb503da5c434e3866",
+		"removedPixels": 384942
+	}
 }

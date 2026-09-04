@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-shove-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-shove-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 914482,
-		"contentHash": "d8b2a46444078d6a4c8628d142274b61069baf1cd13c0604068f91bb42635735"
+		"bytes": 1688714,
+		"contentHash": "a2e303477ead75bb04623b12499dcab5c78fa147e13eef8e9e4e95f8aac5f978"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d8b2a46444078d6a4c8628d142274b61069baf1cd13c0604068f91bb42635735",
+		"postRepairContentHash": "a2e303477ead75bb04623b12499dcab5c78fa147e13eef8e9e4e95f8aac5f978",
+		"removedPixels": 384942
+	}
 }

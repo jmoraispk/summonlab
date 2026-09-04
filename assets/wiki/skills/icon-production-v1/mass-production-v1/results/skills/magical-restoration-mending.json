@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:mending",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-mending.json",
+	"promptHash": "ad5e8dfd73703f75a11477fc54d4375145819512bb42f05808f934ebf101b617",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-wound-mending.png",
+			"contentHash": "b457d99c9aff0b04c21a6fd2f8afe91751537f301310968c7fdea0f6ebed0bdb"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-mending-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2200734,
+		"contentHash": "75f75bafe7c80ae17b5aff321c2b1a7f4d08831ba5b22697024176d953ad7fc9"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-mending.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1923672,
+		"contentHash": "a0be040431ce805e85b229f90e392ebffbb82c88db95fe441332904fa94cd80f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fe54b3de4df6f07e64254d2d6aed11600f7ed7b72d58917994263fd518a13832",
+		"postRepairContentHash": "a0be040431ce805e85b229f90e392ebffbb82c88db95fe441332904fa94cd80f",
+		"removedPixels": 384942
+	}
+}

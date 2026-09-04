@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:cure",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-cure.json",
+	"promptHash": "76b89ff2f242914f8a16510764a134ca531579677d56d11f01736769eaf0ed54",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-purification.png",
+			"contentHash": "185d7167bc8601d53613073b6cd2ceb9f83e75e7fbad1d99a9638f1800febd86"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-cure-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2144434,
+		"contentHash": "80b10261e10491ef58edea4bf4d91aa2362c7184eaabd578326757d4b63b0a17"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-cure.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1909180,
+		"contentHash": "8cc9c536248313da7d7323adcc7060ef56a961d784547633042f24aecec9618f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4fe8eea29e44f9e7cead1e9eedcf462c0d7946ba80dff16bec8bc42a2039ac6a",
+		"postRepairContentHash": "8cc9c536248313da7d7323adcc7060ef56a961d784547633042f24aecec9618f",
+		"removedPixels": 384942
+	}
+}

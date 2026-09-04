@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-void-cut-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-void-cut-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1111913,
-		"contentHash": "c8b3b6d66854a01a2fc3da59a0bfe1dbc4fb5571ca16410b0989b0891c386739"
+		"bytes": 1788078,
+		"contentHash": "6028dba290599da6bc9d56fcd8123c7675cc66d1ad1b35f70b5aba9f4f4ad0f7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c8b3b6d66854a01a2fc3da59a0bfe1dbc4fb5571ca16410b0989b0891c386739",
+		"postRepairContentHash": "6028dba290599da6bc9d56fcd8123c7675cc66d1ad1b35f70b5aba9f4f4ad0f7",
+		"removedPixels": 384942
+	}
 }

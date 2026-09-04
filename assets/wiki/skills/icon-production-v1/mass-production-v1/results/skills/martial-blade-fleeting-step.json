@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-fleeting-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-fleeting-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1009744,
-		"contentHash": "f0adec90d0ce084962bf074ef82b8393113d5dd7afe5a8beffb0d4bc91118276"
+		"bytes": 1788475,
+		"contentHash": "ed17f07be14975c5419805eef23587a4de99544ffa8a51ab025cc0d87a0d4edf"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f0adec90d0ce084962bf074ef82b8393113d5dd7afe5a8beffb0d4bc91118276",
+		"postRepairContentHash": "ed17f07be14975c5419805eef23587a4de99544ffa8a51ab025cc0d87a0d4edf",
+		"removedPixels": 384942
+	}
 }

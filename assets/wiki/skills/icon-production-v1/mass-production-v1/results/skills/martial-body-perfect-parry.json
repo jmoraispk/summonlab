@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-perfect-parry-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-perfect-parry-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 923918,
-		"contentHash": "9a6d218367a459bc45bce966367bfbfab0896725ad0b4fc71101b4cb7af690dd"
+		"bytes": 1714137,
+		"contentHash": "881f061b213482447d422c6156078ca9fa9299c337586337702f4f65704c35a5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9a6d218367a459bc45bce966367bfbfab0896725ad0b4fc71101b4cb7af690dd",
+		"postRepairContentHash": "881f061b213482447d422c6156078ca9fa9299c337586337702f4f65704c35a5",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-storm-of-steel-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-storm-of-steel-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1077437,
-		"contentHash": "8da9ceb33e0da2b8a5452b29338209dca340d3b969d3f774b91c1096449a6c3d"
+		"bytes": 1763507,
+		"contentHash": "40ce37a756557dfa6099421b5e9a2929837247868e4540861cc5ea095288d376"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8da9ceb33e0da2b8a5452b29338209dca340d3b969d3f774b91c1096449a6c3d",
+		"postRepairContentHash": "40ce37a756557dfa6099421b5e9a2929837247868e4540861cc5ea095288d376",
+		"removedPixels": 384942
+	}
 }

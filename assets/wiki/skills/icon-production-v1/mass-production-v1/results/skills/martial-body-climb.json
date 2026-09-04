@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-climb-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-climb-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 912490,
-		"contentHash": "e4392cfe52f26f05b242ecdff32427df1161582ea2181a57cc9d39939c87ca97"
+		"bytes": 1685934,
+		"contentHash": "58a0790ea52afbc99e6910bb0b37c079857db8fa24ab91e0c67cfb30f7a34b15"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e4392cfe52f26f05b242ecdff32427df1161582ea2181a57cc9d39939c87ca97",
+		"postRepairContentHash": "58a0790ea52afbc99e6910bb0b37c079857db8fa24ab91e0c67cfb30f7a34b15",
+		"removedPixels": 384942
+	}
 }

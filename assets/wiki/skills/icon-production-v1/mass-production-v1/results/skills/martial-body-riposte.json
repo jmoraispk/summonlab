@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-riposte-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-riposte-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 981748,
-		"contentHash": "77ce27d4bf175ca09e8de68de2858dc9b148403e00e67c45b77e19aaf8509052"
+		"bytes": 1726729,
+		"contentHash": "acd611fd44cba9096f330226b9198158eda5fd11ac0bb196a4c46509fde11271"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "77ce27d4bf175ca09e8de68de2858dc9b148403e00e67c45b77e19aaf8509052",
+		"postRepairContentHash": "acd611fd44cba9096f330226b9198158eda5fd11ac0bb196a4c46509fde11271",
+		"removedPixels": 384942
+	}
 }

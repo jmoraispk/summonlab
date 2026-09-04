@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-momentum-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-momentum-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1043543,
-		"contentHash": "5b299802070e264014c844243522a3f960a9348535ed2feaff24bf2285645b86"
+		"bytes": 1790239,
+		"contentHash": "87c5a0b3ba049a3c291fc89ad82d46bed36b5d1fdaeddab5174e204cffcebc1a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5b299802070e264014c844243522a3f960a9348535ed2feaff24bf2285645b86",
+		"postRepairContentHash": "87c5a0b3ba049a3c291fc89ad82d46bed36b5d1fdaeddab5174e204cffcebc1a",
+		"removedPixels": 384942
+	}
 }

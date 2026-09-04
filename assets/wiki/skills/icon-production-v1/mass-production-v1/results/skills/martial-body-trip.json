@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-trip-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-trip-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1083813,
-		"contentHash": "18ab9bc800f7f78d5686f65c194b59a85fa19b39348cd52cfa6db6d8bbee891c"
+		"bytes": 1746807,
+		"contentHash": "1037f8dd4520fdcb9b88d76a2c30021f2f7992208e8a51dfc8ab025cc950a24d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "18ab9bc800f7f78d5686f65c194b59a85fa19b39348cd52cfa6db6d8bbee891c",
+		"postRepairContentHash": "1037f8dd4520fdcb9b88d76a2c30021f2f7992208e8a51dfc8ab025cc950a24d",
+		"removedPixels": 384942
+	}
 }

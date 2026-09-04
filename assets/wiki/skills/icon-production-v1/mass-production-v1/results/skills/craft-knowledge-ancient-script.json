@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:ancient-script",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-ancient-script.json",
+	"promptHash": "9baa306852e31e345f75d6f07cd7bda5723b05ff38258b4fd66e5d45e5aebf71",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-script.png",
+			"contentHash": "c5d10668872bb924ea1bbe0bf49b1c73e122a37989fbb4646cfbd2e781481e67"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-languages.png",
+			"contentHash": "bfa173e4b331ddb996cd08e157e1d6cb7583b3b7d1b943d1050b9e29e944952a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-ancient-script-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2333400,
+		"contentHash": "b0a43f4d2d005fcb3470c5858a28cac8bc5a108d74b031960ae291f34a5dcda0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-ancient-script.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1954766,
+		"contentHash": "f77372af0933929494277250d8feb19876d17b5f4d7fb71d827f752b01612898"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a463d7b0cb7322bb7e2f389d442ec12323fd715a0999b69d7e3244f3b9eebd6f",
+		"postRepairContentHash": "f77372af0933929494277250d8feb19876d17b5f4d7fb71d827f752b01612898",
+		"removedPixels": 384942
+	}
+}

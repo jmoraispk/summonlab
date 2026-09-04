@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-elbow-and-knee-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-elbow-and-knee-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 973470,
-		"contentHash": "9030548a1a593cdbe9c7610874b455124a9d2d46d710dcc95b250a7b4117bdbe"
+		"bytes": 1761066,
+		"contentHash": "8ece3317d819d5f81bf05d72eae00fcafbb2c543a9a9615041d43ce1d408b6ec"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9030548a1a593cdbe9c7610874b455124a9d2d46d710dcc95b250a7b4117bdbe",
+		"postRepairContentHash": "8ece3317d819d5f81bf05d72eae00fcafbb2c543a9a9615041d43ce1d408b6ec",
+		"removedPixels": 384942
+	}
 }

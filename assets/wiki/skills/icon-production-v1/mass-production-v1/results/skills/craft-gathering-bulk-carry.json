@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:bulk-carry",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-bulk-carry.json",
+	"promptHash": "73dab307f9ebbe511bdf7c9301519f517af66da5a0152db33d31a5380bc85ddc",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-bulk-carry.png",
+			"contentHash": "c005b2196baea6f3d1d0189af83f24cbaadfbe50ab926cacf606b6f44a94a449"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-bulk-carry-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2106689,
+		"contentHash": "439e8c6a92e6c3f697a817b1e942438151ac87ccee646b1e60e4e26a2fa7af6d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-bulk-carry.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1870340,
+		"contentHash": "e3799a5aa5288d786f920bc2499bc6c350a824b9a2563988ab10c47587174730"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b3f25ef48158b019439e7406427dcd3e81dd7d7bc400410843baef802d316a3a",
+		"postRepairContentHash": "e3799a5aa5288d786f920bc2499bc6c350a824b9a2563988ab10c47587174730",
+		"removedPixels": 384942
+	}
+}

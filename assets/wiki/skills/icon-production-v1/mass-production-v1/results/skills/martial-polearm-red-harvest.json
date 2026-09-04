@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-red-harvest-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-red-harvest-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1052573,
-		"contentHash": "75be2321549736ef87448b059e5106e69876c99e284a62a663fe92be91e86ea9"
+		"bytes": 1840610,
+		"contentHash": "9bb261bfcb8f3b9e9740d95c86f5c4ab8505839d17228dd3c046f9e52d11f686"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "75be2321549736ef87448b059e5106e69876c99e284a62a663fe92be91e86ea9",
+		"postRepairContentHash": "9bb261bfcb8f3b9e9740d95c86f5c4ab8505839d17228dd3c046f9e52d11f686",
+		"removedPixels": 384942
+	}
 }

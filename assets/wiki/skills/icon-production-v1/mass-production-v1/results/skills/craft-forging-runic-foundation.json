@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:forging:runic-foundation",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-runic-foundation.json",
+	"promptHash": "caad8f820124a724201091f904c5a47139118a55409eade447598211a34fd446",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-runic-mark.png",
+			"contentHash": "9fe303e694628fa3d228abcb0f71b45380f4f200fe64a02064f40ce6d9d6cfe1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-runic-foundation-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2170324,
+		"contentHash": "4bea9d7f4e77afde3439ca2decb849b64fe9552754c3273c47fbc8821b00c36b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-runic-foundation.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1861138,
+		"contentHash": "3418c8f0302cd63da6122263c3de83417a8f621c6e770d6b46502b7bc7ac0c82"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f5c24427e198864e728124ae0fac74d2f55a2ea24f8544abf4675efd14c705a4",
+		"postRepairContentHash": "3418c8f0302cd63da6122263c3de83417a8f621c6e770d6b46502b7bc7ac0c82",
+		"removedPixels": 384942
+	}
+}

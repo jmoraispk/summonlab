@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-half-sword-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-half-sword-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1093967,
-		"contentHash": "66adf073f48950c553539df3a4878f21caa01a2ac57413a236f902c50261183e"
+		"bytes": 1781010,
+		"contentHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "66adf073f48950c553539df3a4878f21caa01a2ac57413a236f902c50261183e",
+		"postRepairContentHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-piercing-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-piercing-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 924251,
-		"contentHash": "7f2c5fe1da6492cb684f352d44dec5f2afba04de07e173fd99b06a1014a5ac70"
+		"bytes": 1733782,
+		"contentHash": "d7906ce02c0c6817ea0e87794123b427a873b3c611adbf2ff072ef9d551f236d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "7f2c5fe1da6492cb684f352d44dec5f2afba04de07e173fd99b06a1014a5ac70",
+		"postRepairContentHash": "d7906ce02c0c6817ea0e87794123b427a873b3c611adbf2ff072ef9d551f236d",
+		"removedPixels": 384942
+	}
 }

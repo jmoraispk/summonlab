@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:mind:domination",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-mind-domination.json",
+	"promptHash": "f35ad5b2e3ae391aa95535deeaa5e07d0622fb0b69a4def69b7ff314fd106cbe",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-influence.png",
+			"contentHash": "f7d292dc5ab5d7a4ccc4f0735a45932bbbbf9046abbc5e36b0f227a74e67c683"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-suggestion.png",
+			"contentHash": "6d8923dc5a903e0c9f45f8b05709fe19f94452725f9ba2f6dd44ec0a708508e4"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-mind-domination-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2379098,
+		"contentHash": "c55d1398a6126c7c825ae4e1c3f3fe7f410edc78cf9c7eea2f94c09cfa63b73f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-domination.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2133730,
+		"contentHash": "88d5713ba628cbbce3b8992a84f1c1a04be8fa992814545096871bbb1a51d159"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "844bc5d64ae7ca9f7376bb0ea5d00b7a5bc9d35eefd3ca45ec8cdb12dfcc5ea9",
+		"postRepairContentHash": "88d5713ba628cbbce3b8992a84f1c1a04be8fa992814545096871bbb1a51d159",
+		"removedPixels": 384942
+	}
+}

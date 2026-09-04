@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-riding-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-riding-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1170326,
-		"contentHash": "84afda67550e31fb80728e464da86cdebd06a7df0d473f021fd3f53f2c04e0f3"
+		"bytes": 1883695,
+		"contentHash": "559ea796dca88d0cf9f363c3220e55ce2d15f691a0af11dc930c10192efc5c02"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "84afda67550e31fb80728e464da86cdebd06a7df0d473f021fd3f53f2c04e0f3",
+		"postRepairContentHash": "559ea796dca88d0cf9f363c3220e55ce2d15f691a0af11dc930c10192efc5c02",
+		"removedPixels": 384942
+	}
 }

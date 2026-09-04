@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-the-arrow-that-finds-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-the-arrow-that-finds-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1063032,
-		"contentHash": "fb6c66aec11c3e1138b258d266df9e2e594e03246e3a10f094e98f053e51d580"
+		"bytes": 1756058,
+		"contentHash": "eae46a8eea000a35dade2c2541d176eb4327c9e238a46389ceec4026c0bb03a0"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fb6c66aec11c3e1138b258d266df9e2e594e03246e3a10f094e98f053e51d580",
+		"postRepairContentHash": "eae46a8eea000a35dade2c2541d176eb4327c9e238a46389ceec4026c0bb03a0",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-never-where-struck-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-never-where-struck-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1153487,
-		"contentHash": "cf9b6e22b027781bc9100b1d053749561438b3f9d270901fc69c8785fdee3e7d"
+		"bytes": 1869695,
+		"contentHash": "b79040981c00f97ebe481315dfe165f41f97c6f5a78cc76c63353e8cb08103d5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cf9b6e22b027781bc9100b1d053749561438b3f9d270901fc69c8785fdee3e7d",
+		"postRepairContentHash": "b79040981c00f97ebe481315dfe165f41f97c6f5a78cc76c63353e8cb08103d5",
+		"removedPixels": 384942
+	}
 }

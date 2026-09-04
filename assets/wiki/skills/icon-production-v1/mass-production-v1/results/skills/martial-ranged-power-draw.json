@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-power-draw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-power-draw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 890259,
-		"contentHash": "67b6e67a90ce84ede34ab8a4ec12d9d34eb5d784768488dbd693d2f9e0b9f142"
+		"bytes": 1674447,
+		"contentHash": "4b8b036660f04b23c79f01f6fa2bcc3143226a080d7b50a58169ff29f940fbea"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "67b6e67a90ce84ede34ab8a4ec12d9d34eb5d784768488dbd693d2f9e0b9f142",
+		"postRepairContentHash": "4b8b036660f04b23c79f01f6fa2bcc3143226a080d7b50a58169ff29f940fbea",
+		"removedPixels": 384942
+	}
 }

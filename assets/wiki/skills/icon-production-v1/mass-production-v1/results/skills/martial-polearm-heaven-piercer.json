@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-heaven-piercer-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-heaven-piercer-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 757825,
-		"contentHash": "e84bbe8eb22ad3130e43c94880a199a248ad95f667880f7ad2e0a42dd5f6d7ea"
+		"bytes": 1449379,
+		"contentHash": "1b3f550ec0bc92e1fa36cf4c2428e3617eadae39a39d2d2d42828dec1b6094e5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e84bbe8eb22ad3130e43c94880a199a248ad95f667880f7ad2e0a42dd5f6d7ea",
+		"postRepairContentHash": "1b3f550ec0bc92e1fa36cf4c2428e3617eadae39a39d2d2d42828dec1b6094e5",
+		"removedPixels": 384942
+	}
 }

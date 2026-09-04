@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-quick-loose-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-quick-loose-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 668859,
-		"contentHash": "c153f65506dacb45284fb04205f1cbf8fede9987cd4124e9f79e9219a2515176"
+		"bytes": 1537171,
+		"contentHash": "012090937530f973414029e92a094908e3ad3e8c13cecbbd9f338a316518cf1f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c153f65506dacb45284fb04205f1cbf8fede9987cd4124e9f79e9219a2515176",
+		"postRepairContentHash": "012090937530f973414029e92a094908e3ad3e8c13cecbbd9f338a316518cf1f",
+		"removedPixels": 384942
+	}
 }

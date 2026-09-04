@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-steady-stance-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-steady-stance-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 768887,
-		"contentHash": "d897348e5eb7e93fcee95a4e4221c8a84ccffc2d063a71289f9903b281eecac4"
+		"bytes": 1582222,
+		"contentHash": "d32c4ec09d3f6d34ab948b208e6c39a541a6ce2d002e266491dceac23b379f54"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d897348e5eb7e93fcee95a4e4221c8a84ccffc2d063a71289f9903b281eecac4",
+		"postRepairContentHash": "d32c4ec09d3f6d34ab948b208e6c39a541a6ce2d002e266491dceac23b379f54",
+		"removedPixels": 384942
+	}
 }

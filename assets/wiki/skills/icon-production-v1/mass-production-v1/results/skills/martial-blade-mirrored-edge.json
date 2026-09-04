@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-mirrored-edge-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-mirrored-edge-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1052208,
-		"contentHash": "a6e55621709208a7afb63dfb49f1b8a99aed2c2ec27c376027962d2ca19bf09c"
+		"bytes": 1951896,
+		"contentHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a6e55621709208a7afb63dfb49f1b8a99aed2c2ec27c376027962d2ca19bf09c",
+		"postRepairContentHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44",
+		"removedPixels": 384942
+	}
 }

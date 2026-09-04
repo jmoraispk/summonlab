@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:what-was-taken-back",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-what-was-taken-back.json",
+	"promptHash": "cdcd0126b7da980b241a9df6d3fcc1b63f0e1ca024ffccba01489f14b846dc61",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-return-life.png",
+			"contentHash": "e916d4bd59af878e4375271a7eec5a21536ce7a3044b6434b2af2e7b85f84ba9"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-return.png",
+			"contentHash": "d017e03943d670bb0b02b31804e3329c4726fbc132bc1c0dfe3f835c462c2f62"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-what-was-taken-back-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2308374,
+		"contentHash": "0e44d964ee62c190e16fa4f8609dd58b75de416e5dd32bf4ca2480e68211629b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-what-was-taken-back.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2078432,
+		"contentHash": "7c2918ea67fb77ff322c9e551a50dbf39a0a1dc0a58c18b1420f7478bd628624"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "702c7695557d3b00256af8d953895b57c51a623c7348e451cb37b0e5605a82ab",
+		"postRepairContentHash": "7c2918ea67fb77ff322c9e551a50dbf39a0a1dc0a58c18b1420f7478bd628624",
+		"removedPixels": 384942
+	}
+}

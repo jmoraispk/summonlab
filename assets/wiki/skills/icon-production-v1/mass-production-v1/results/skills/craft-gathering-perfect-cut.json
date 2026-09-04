@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:perfect-cut",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-perfect-cut.json",
+	"promptHash": "dbbd51273c0fc32d821d18801827739f3d6509ffdbd3d98832a087f6e8aae421",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-skinning.png",
+			"contentHash": "f8f4e0a0e8d20ee288eff986194e52ad3831d6a089e61a2e3e80b3e1e67d7ba6"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-skinning.png",
+			"contentHash": "7fa426d5249108d89863152cb82d1d2c20524a951d2a899583cdd0aa3632941c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-perfect-cut-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2317909,
+		"contentHash": "481b48620ad41eb272f717ec7092849cd05ffe42afe0e4c0957944205d220e21"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-perfect-cut.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1996597,
+		"contentHash": "4a64043e45fd93b72a1b630d1724151ea596a2c81eef96c65d555b948b22ac51"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d20d80f4acd44825a5d07951c320ae959a5943fc3b0f84da13a9055db817d795",
+		"postRepairContentHash": "4a64043e45fd93b72a1b630d1724151ea596a2c81eef96c65d555b948b22ac51",
+		"removedPixels": 384942
+	}
+}

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-martial-form-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-martial-form-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1015845,
-		"contentHash": "4a0759b0b230fa04591ea3ea3e6ac79386d01db4f8e10af0c889afa99ada117c"
+		"bytes": 1710085,
+		"contentHash": "69402cc62df6e189581de7950dda1c63af667ae6baa5f3d1a8aa3235b18b63ee"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4a0759b0b230fa04591ea3ea3e6ac79386d01db4f8e10af0c889afa99ada117c",
+		"postRepairContentHash": "69402cc62df6e189581de7950dda1c63af667ae6baa5f3d1a8aa3235b18b63ee",
+		"removedPixels": 384942
+	}
 }

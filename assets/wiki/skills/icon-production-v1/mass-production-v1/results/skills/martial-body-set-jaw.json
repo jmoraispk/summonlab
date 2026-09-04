@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-set-jaw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-set-jaw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1205401,
-		"contentHash": "509124e607d47f8862f1565a6e4884b38a61d8d549782869002b37940256ed03"
+		"bytes": 1846317,
+		"contentHash": "e19c81889efb21ccc214d6f012b08d9d2c52f6ecfe6b39f4c86676a23a0b30f8"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "509124e607d47f8862f1565a6e4884b38a61d8d549782869002b37940256ed03",
+		"postRepairContentHash": "e19c81889efb21ccc214d6f012b08d9d2c52f6ecfe6b39f4c86676a23a0b30f8",
+		"removedPixels": 384942
+	}
 }

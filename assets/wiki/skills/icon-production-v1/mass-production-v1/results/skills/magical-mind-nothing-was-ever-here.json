@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:mind:nothing-was-ever-here",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-mind-nothing-was-ever-here.json",
+	"promptHash": "a55329eebfd0b2762a7a947301cf0cdbd02c8799c6468e973b527353fb316c2c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-illusion.png",
+			"contentHash": "ee9dffe5e6f964b068e0705dc2a1614c0a66b257478a47026c9f68e8d2238508"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-mass-illusion.png",
+			"contentHash": "7c337ef18370073cf9225b1bbda0fb708fbcf9ced7869c1d63fb3a161f68d6a2"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-mind-nothing-was-ever-here-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2147654,
+		"contentHash": "7f182ae21b449c5721ebe3d9b71226ed03f507623da5e355eb2438c1cd12f841"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-nothing-was-ever-here.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1979917,
+		"contentHash": "ca119f9cf697e2ddbdae3fa2d4ce7bd5e29f5c945f8be012045a921445c06fe4"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c7c278b9fc0130282fe2992895d06aedc59b87f7d9cfdb112c7a3994065b1f89",
+		"postRepairContentHash": "ca119f9cf697e2ddbdae3fa2d4ce7bd5e29f5c945f8be012045a921445c06fe4",
+		"removedPixels": 384942
+	}
+}

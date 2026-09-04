@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:purity",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-purity.json",
+	"promptHash": "752375f78332c3b94e8e51f7162a121af5c37def7aa26ab69725593d6f727137",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-purification.png",
+			"contentHash": "185d7167bc8601d53613073b6cd2ceb9f83e75e7fbad1d99a9638f1800febd86"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-cure.png",
+			"contentHash": "4fe8eea29e44f9e7cead1e9eedcf462c0d7946ba80dff16bec8bc42a2039ac6a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-purity-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2347561,
+		"contentHash": "2aa71ab9de086493c1f706a4f59d4bc060dae5fd3c88dad4e11020a0bd7e4351"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-purity.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2105154,
+		"contentHash": "b550822075852e8e0164cb1e5a087a129b99e2c3b636f71d3cc3d4fd159164a3"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b4872cb433412cbc851caede34ba009883e52f89fe0c6602e9fc15e284e5f526",
+		"postRepairContentHash": "b550822075852e8e0164cb1e5a087a129b99e2c3b636f71d3cc3d4fd159164a3",
+		"removedPixels": 384942
+	}
+}

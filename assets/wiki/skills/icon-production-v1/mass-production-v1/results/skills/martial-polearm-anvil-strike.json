@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-anvil-strike-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-anvil-strike-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1217773,
-		"contentHash": "61cfb954d654e68c76581add6e0101b6133086dd052427043c1f89530ff2abf7"
+		"bytes": 1922496,
+		"contentHash": "77dc2d97535f23c19960210be60c6208004c526daa88389d325cfd227dfbf693"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "61cfb954d654e68c76581add6e0101b6133086dd052427043c1f89530ff2abf7",
+		"postRepairContentHash": "77dc2d97535f23c19960210be60c6208004c526daa88389d325cfd227dfbf693",
+		"removedPixels": 384942
+	}
 }

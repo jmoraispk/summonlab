@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-hundred-hands-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-hundred-hands-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1197598,
-		"contentHash": "4df96034c248a3309dd6d06f379e52122d804f507fb75b9bdc13369a26622856"
+		"bytes": 1974327,
+		"contentHash": "5d0b05bf899e29f5f7043df7857f859a069534241c337b471e31835a52c37f43"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4df96034c248a3309dd6d06f379e52122d804f507fb75b9bdc13369a26622856",
+		"postRepairContentHash": "5d0b05bf899e29f5f7043df7857f859a069534241c337b471e31835a52c37f43",
+		"removedPixels": 384942
+	}
 }

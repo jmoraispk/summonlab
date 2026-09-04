@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-vital-nick-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-vital-nick-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1042502,
-		"contentHash": "dba55c1dc4cf5e62bf0f87691e156c4168b964f27c1796eb9bbf8eac240f4dbb"
+		"bytes": 1874789,
+		"contentHash": "d1c2d116a388592344248aeae868a2001b1d42ff1681b10f06b598eb2f62365c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "dba55c1dc4cf5e62bf0f87691e156c4168b964f27c1796eb9bbf8eac240f4dbb",
+		"postRepairContentHash": "d1c2d116a388592344248aeae868a2001b1d42ff1681b10f06b598eb2f62365c",
+		"removedPixels": 384942
+	}
 }

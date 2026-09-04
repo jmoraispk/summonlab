@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-seismic-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-seismic-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1173012,
-		"contentHash": "bdf771ebeb0ab476e60a48dcb715fff4b03f5801b81503e74ac690416e3f20da"
+		"bytes": 2004004,
+		"contentHash": "6b6d6aa1d9fe1d83f94bb66ee3940de7e51e6c2058c5e095447f45357af3c246"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "bdf771ebeb0ab476e60a48dcb715fff4b03f5801b81503e74ac690416e3f20da",
+		"postRepairContentHash": "6b6d6aa1d9fe1d83f94bb66ee3940de7e51e6c2058c5e095447f45357af3c246",
+		"removedPixels": 384942
+	}
 }

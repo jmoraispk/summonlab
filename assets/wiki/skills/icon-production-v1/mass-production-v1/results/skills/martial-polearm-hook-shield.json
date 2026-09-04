@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-hook-shield-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-hook-shield-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1006313,
-		"contentHash": "e3840ec6bfc05ceceb6268056aed735345ae376acf0e2fecfc9c911604c98d47"
+		"bytes": 1706766,
+		"contentHash": "688e46402d67b00fa58865eb77e46ed5e1a8a6418f753655ec11a2a197de9d8d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e3840ec6bfc05ceceb6268056aed735345ae376acf0e2fecfc9c911604c98d47",
+		"postRepairContentHash": "688e46402d67b00fa58865eb77e46ed5e1a8a6418f753655ec11a2a197de9d8d",
+		"removedPixels": 384942
+	}
 }

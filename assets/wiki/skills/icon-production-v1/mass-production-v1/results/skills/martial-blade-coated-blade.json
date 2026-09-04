@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-coated-blade-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-coated-blade-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 899945,
-		"contentHash": "2c5b0ee6d70c5ff2ef01d5ed2899d125d386961d7bd2b3d8bce2e175287df1f0"
+		"bytes": 1695968,
+		"contentHash": "efb6f07ca569548113f3d25703c8e999215f73589755dd29b8819cc56c245047"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2c5b0ee6d70c5ff2ef01d5ed2899d125d386961d7bd2b3d8bce2e175287df1f0",
+		"postRepairContentHash": "efb6f07ca569548113f3d25703c8e999215f73589755dd29b8819cc56c245047",
+		"removedPixels": 384942
+	}
 }

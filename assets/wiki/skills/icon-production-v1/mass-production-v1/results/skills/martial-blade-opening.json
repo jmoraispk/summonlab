@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-opening-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-opening-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1068759,
-		"contentHash": "e5e9498e97dc9f6e825b6b6ae7acc99336d9ccd2815479e7303c4507db469f5a"
+		"bytes": 1884285,
+		"contentHash": "ab767592d939a3fa4d408c4cbd367d4ac0d54dfe49ac1bce6b26ca45cdc81bc3"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e5e9498e97dc9f6e825b6b6ae7acc99336d9ccd2815479e7303c4507db469f5a",
+		"postRepairContentHash": "ab767592d939a3fa4d408c4cbd367d4ac0d54dfe49ac1bce6b26ca45cdc81bc3",
+		"removedPixels": 384942
+	}
 }

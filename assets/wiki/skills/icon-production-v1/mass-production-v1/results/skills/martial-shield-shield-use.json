@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-shield-use-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-shield-use-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 769807,
-		"contentHash": "93f740345f4a8bd7decb6917d7ddc37414e7faf0ad54314694c63e02b1c4840d"
+		"bytes": 1570626,
+		"contentHash": "bdc1d49bdf031853a1c32824c1f607bc2e7e1b6fb0ff84bdd6a003407a660ddd"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "93f740345f4a8bd7decb6917d7ddc37414e7faf0ad54314694c63e02b1c4840d",
+		"postRepairContentHash": "bdc1d49bdf031853a1c32824c1f607bc2e7e1b6fb0ff84bdd6a003407a660ddd",
+		"removedPixels": 384942
+	}
 }

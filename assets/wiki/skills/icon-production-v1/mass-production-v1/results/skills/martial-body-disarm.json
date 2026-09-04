@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-disarm-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-disarm-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 992525,
-		"contentHash": "330a6de826108b9608d48ce9d24878f34fc1df4ed917a343c4da122aeb20a353"
+		"bytes": 1693936,
+		"contentHash": "2347ef90fc3bdd113da133ba7851e72624c0202b5ff64646159f94d6c898f5d4"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "330a6de826108b9608d48ce9d24878f34fc1df4ed917a343c4da122aeb20a353",
+		"postRepairContentHash": "2347ef90fc3bdd113da133ba7851e72624c0202b5ff64646159f94d6c898f5d4",
+		"removedPixels": 384942
+	}
 }

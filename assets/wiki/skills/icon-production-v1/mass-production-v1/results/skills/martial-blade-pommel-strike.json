@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-pommel-strike-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-pommel-strike-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1178994,
-		"contentHash": "61c4460e3dc7c5ad713cba239ec9c009b2bb62b20ad25ce9e563af7dc833c715"
+		"bytes": 1881134,
+		"contentHash": "7b828a6b860c2b5edeb791a7c1ddc5cd5b3702ec55de67a9d2d9b6f463e9ba40"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "61c4460e3dc7c5ad713cba239ec9c009b2bb62b20ad25ce9e563af7dc833c715",
+		"postRepairContentHash": "7b828a6b860c2b5edeb791a7c1ddc5cd5b3702ec55de67a9d2d9b6f463e9ba40",
+		"removedPixels": 384942
+	}
 }

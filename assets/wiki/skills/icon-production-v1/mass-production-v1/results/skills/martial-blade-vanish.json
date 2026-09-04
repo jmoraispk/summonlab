@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-vanish-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-vanish-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 920536,
-		"contentHash": "cab5d3f88d1d9064451509ca329d5725307e3f864189f8b988c19f26c1249334"
+		"bytes": 1707915,
+		"contentHash": "00a6a3c763f3fd373630bd6e23fb030b079717a1b127e112abf65a353700f831"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cab5d3f88d1d9064451509ca329d5725307e3f864189f8b988c19f26c1249334",
+		"postRepairContentHash": "00a6a3c763f3fd373630bd6e23fb030b079717a1b127e112abf65a353700f831",
+		"removedPixels": 384942
+	}
 }

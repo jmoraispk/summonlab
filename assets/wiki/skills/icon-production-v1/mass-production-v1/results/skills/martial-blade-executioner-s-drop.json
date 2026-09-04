@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-executioner-s-drop-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-executioner-s-drop-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1107619,
-		"contentHash": "133e86c351c5c30d63f05d2ec700a5876fb83a82a9126ec13b1cac37d47803de"
+		"bytes": 1795896,
+		"contentHash": "ad1c4dd061468d3a90ac004e89c4784845b94528a595b4209f49bd6e91e47128"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "133e86c351c5c30d63f05d2ec700a5876fb83a82a9126ec13b1cac37d47803de",
+		"postRepairContentHash": "ad1c4dd061468d3a90ac004e89c4784845b94528a595b4209f49bd6e91e47128",
+		"removedPixels": 384942
+	}
 }

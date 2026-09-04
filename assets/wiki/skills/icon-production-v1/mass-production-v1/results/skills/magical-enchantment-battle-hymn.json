@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:battle-hymn",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-battle-hymn.json",
+	"promptHash": "86c5a263282dc878898d02940c803761b9e645d20e11c39b938c871ba98b862f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-blessing.png",
+			"contentHash": "0792687655aa52247c870522798e153af9bcee2079405e6822d100e084539baf"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-group-blessing.png",
+			"contentHash": "396235591b2ad7bf06195ad6de873789dbd0ce62482a4f66332ee2a0e48781ca"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-battle-hymn-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2226190,
+		"contentHash": "6f37863f7e019f52b47b3e317782bc70ef8a39276e9ef63c39cf4630a2aaf8dd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-battle-hymn.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2047584,
+		"contentHash": "f7400047f6b778bdd71865f415b05ac52882e3d20f070e0c239058fef64faeb4"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "24eb82e22c10f4f56056690caba87afce42a890897d46b9bd459ed97c195ccf2",
+		"postRepairContentHash": "f7400047f6b778bdd71865f415b05ac52882e3d20f070e0c239058fef64faeb4",
+		"removedPixels": 384942
+	}
+}

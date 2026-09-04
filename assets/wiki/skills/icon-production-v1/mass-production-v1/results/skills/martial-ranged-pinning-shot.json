@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-pinning-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-pinning-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1001378,
-		"contentHash": "5a80b7026439c2018a6b712651e3e157dc4327f7bb85c1c84945f25c8d7bc972"
+		"bytes": 1791436,
+		"contentHash": "155b255dee44eacdba2379ecc4819172304055407afddae5fa7246892b1371b2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5a80b7026439c2018a6b712651e3e157dc4327f7bb85c1c84945f25c8d7bc972",
+		"postRepairContentHash": "155b255dee44eacdba2379ecc4819172304055407afddae5fa7246892b1371b2",
+		"removedPixels": 384942
+	}
 }

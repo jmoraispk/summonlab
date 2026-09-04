@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:sea-of-flame",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-sea-of-flame.json",
+	"promptHash": "00ea4eb2738eda1e4485a0e1892ce4be0f93a1ca72389684f406133f2fa6f08f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-field.png",
+			"contentHash": "8690006c98f155c74570dfd459b9b171d695927f3a76f2c24f838bfd50247c65"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ashfall.png",
+			"contentHash": "cda147a2c794ccb401e916ccbaf081ce780d4f4f30a3d9123b559651ab68c678"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-sea-of-flame-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2178824,
+		"contentHash": "e4d976659531e0cd74433916a5e5a2b62839a13251ad8cf7580b00bb79ddac83"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-sea-of-flame.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2045969,
+		"contentHash": "a9f370cad94dc59b5531f59fbcfefcdf99592300b0bffd485efec042bf1efd1d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "faf001bd22546504c96cec3bda8310db4825fa1caf32269ffe474b5611200ec3",
+		"postRepairContentHash": "a9f370cad94dc59b5531f59fbcfefcdf99592300b0bffd485efec042bf1efd1d",
+		"removedPixels": 384942
+	}
+}

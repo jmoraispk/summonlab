@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-bleeding-edge-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-bleeding-edge-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 897053,
-		"contentHash": "abd66090aad3a2afa6079427b28c1c5187daad06530a4e4f78229ed4eb1f5c57"
+		"bytes": 1807825,
+		"contentHash": "706611f9a26f1d47209a063627de70d692e0c62d19db5a0a92a6ce954ccb6e7a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "abd66090aad3a2afa6079427b28c1c5187daad06530a4e4f78229ed4eb1f5c57",
+		"postRepairContentHash": "706611f9a26f1d47209a063627de70d692e0c62d19db5a0a92a6ce954ccb6e7a",
+		"removedPixels": 384942
+	}
 }

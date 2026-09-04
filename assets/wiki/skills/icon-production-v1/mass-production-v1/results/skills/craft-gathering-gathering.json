@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:gathering",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-gathering.json",
+	"promptHash": "e175444f7cc5d40d685281163b3b222599d630742df06e5c1f2d20dccd709403",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-harvest.png",
+			"contentHash": "a5b5fc7a515ea58655185c83f8b6b39c2cafbc482a27b6e2e9e57465bda5476e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-gathering-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2000247,
+		"contentHash": "cbdd03cea302b62bed6bf28be19f9eab3d1b3587af59df2918c1b1544582d8d7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-gathering.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1627297,
+		"contentHash": "0001fa19b1923cdf464d37e27ca438c10627348dba011009f458f27a69c6c5db"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "70f128dd54ea13fe31aedcfc0d2fe63c7fdaac4c6de8e45103353940ef0222aa",
+		"postRepairContentHash": "0001fa19b1923cdf464d37e27ca438c10627348dba011009f458f27a69c6c5db",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:sanctified-ground",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-sanctified-ground.json",
+	"promptHash": "c4109d3efde4f30b0cc69381dd026e06ab811b8bb97ded0c1fb82607d5e21b29",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-vital-renewal.png",
+			"contentHash": "f1380af2499df12ec6fe6193c013df7754ea15f345a5d9af54d2d49d1436c958"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
+			"contentHash": "2e85f4044e41cd811c718a68fd2e2ae08372f138441cbf8fa470d4af8f9a3675"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-sanctified-ground-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1998274,
+		"contentHash": "09c908c3905260cf02654013ab476d06803719c2b35ab73940a3c979509df8c8"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-sanctified-ground.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1848836,
+		"contentHash": "132d10fb5e384c14b46426cdc8213cf5966932dabd01390bc868d4873a6d728a"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b9d38a08db6f4c04a118a0bb5e69e8fedd82f93798c0794fec2a7abf2b0b1550",
+		"postRepairContentHash": "132d10fb5e384c14b46426cdc8213cf5966932dabd01390bc868d4873a6d728a",
+		"removedPixels": 384942
+	}
+}

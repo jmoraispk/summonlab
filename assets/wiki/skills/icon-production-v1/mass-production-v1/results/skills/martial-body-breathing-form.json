@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-breathing-form-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-breathing-form-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1131312,
-		"contentHash": "a72bd461607a6278c735089f5b78845d9cb41aa0583a9e6904faad7ecc634d47"
+		"bytes": 1789158,
+		"contentHash": "080f0f2cc27a0961321a58d1ec5a2c7d2cdd3716318c0fdcbe1309edf2c1544c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a72bd461607a6278c735089f5b78845d9cb41aa0583a9e6904faad7ecc634d47",
+		"postRepairContentHash": "080f0f2cc27a0961321a58d1ec5a2c7d2cdd3716318c0fdcbe1309edf2c1544c",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cross-guard-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-cross-guard-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 751671,
-		"contentHash": "efa87b4f200dce704ffe1492bf664db104bf4e5aa792d967a885be0bd635e8b4"
+		"bytes": 1589001,
+		"contentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "efa87b4f200dce704ffe1492bf664db104bf4e5aa792d967a885be0bd635e8b4",
+		"postRepairContentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803",
+		"removedPixels": 384942
+	}
 }

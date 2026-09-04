@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-rising-moon-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-rising-moon-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1157890,
-		"contentHash": "d29d14630193717640552c16e33f7f6adf64db5f31b8a73ea06b820426865590"
+		"bytes": 1846522,
+		"contentHash": "5068e51a2db14fe8598a846c6a060f4523ada6cfd0cbcc0da668701b5111f91d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d29d14630193717640552c16e33f7f6adf64db5f31b8a73ea06b820426865590",
+		"postRepairContentHash": "5068e51a2db14fe8598a846c6a060f4523ada6cfd0cbcc0da668701b5111f91d",
+		"removedPixels": 384942
+	}
 }

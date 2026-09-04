@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-bracing-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-bracing-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 882955,
-		"contentHash": "e315cce53a5219461fa36380393390a8c370b44dd1cf9da18a9f28159ce1d498"
+		"bytes": 1669875,
+		"contentHash": "2474dda89b8ce07d48b05644250aad8424d77983f6366057a6289e76d425b507"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e315cce53a5219461fa36380393390a8c370b44dd1cf9da18a9f28159ce1d498",
+		"postRepairContentHash": "2474dda89b8ce07d48b05644250aad8424d77983f6366057a6289e76d425b507",
+		"removedPixels": 384942
+	}
 }

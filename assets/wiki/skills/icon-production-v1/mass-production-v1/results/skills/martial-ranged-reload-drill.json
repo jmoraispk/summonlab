@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-reload-drill-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-reload-drill-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 903661,
-		"contentHash": "bf37f2ab40c3138bb168cfda3ea9c9a19903e47d30ad5d5b4c0369357abbe98e"
+		"bytes": 1802599,
+		"contentHash": "71993342b9b4f116ba6966769a9a6cf7458dac651c976ec7ce2b2571b1a3745c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "bf37f2ab40c3138bb168cfda3ea9c9a19903e47d30ad5d5b4c0369357abbe98e",
+		"postRepairContentHash": "71993342b9b4f116ba6966769a9a6cf7458dac651c976ec7ce2b2571b1a3745c",
+		"removedPixels": 384942
+	}
 }

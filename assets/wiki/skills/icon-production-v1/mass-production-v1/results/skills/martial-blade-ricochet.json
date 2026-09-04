@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-ricochet-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-ricochet-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 934374,
-		"contentHash": "6cdc473a2f5b5ea49d287aa524fa891c2a548bf0d48eb7b78378b181c80665eb"
+		"bytes": 1827838,
+		"contentHash": "ff223f5eb04cae44e159c7a4335420015a29e43ded693d2179097b4d81a5cbc9"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6cdc473a2f5b5ea49d287aa524fa891c2a548bf0d48eb7b78378b181c80665eb",
+		"postRepairContentHash": "ff223f5eb04cae44e159c7a4335420015a29e43ded693d2179097b4d81a5cbc9",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-weight-shift-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-weight-shift-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1110553,
-		"contentHash": "9435795a96ff581050a8aea83ee0a27b95e9373c6de127a52c6894cc0d81b8f6"
+		"bytes": 1840892,
+		"contentHash": "5a9370ad87a49c433fa12c3e9878f5fe2064f7bf3f4eb86018eb0e005fd24ffa"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9435795a96ff581050a8aea83ee0a27b95e9373c6de127a52c6894cc0d81b8f6",
+		"postRepairContentHash": "5a9370ad87a49c433fa12c3e9878f5fe2064f7bf3f4eb86018eb0e005fd24ffa",
+		"removedPixels": 384942
+	}
 }

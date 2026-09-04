@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-unstoppable-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-unstoppable-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1256469,
-		"contentHash": "0d5a36fb49f4c6e221ea24d950f7f60b8f269024f6c7e94c5434e0b1a47dcdf1"
+		"bytes": 1912312,
+		"contentHash": "479ca33c7ae60b95d209229f9ad8f7f1b661b779a30295c6ea3bc50510d17d3c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0d5a36fb49f4c6e221ea24d950f7f60b8f269024f6c7e94c5434e0b1a47dcdf1",
+		"postRepairContentHash": "479ca33c7ae60b95d209229f9ad8f7f1b661b779a30295c6ea3bc50510d17d3c",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-silence-the-bell-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-silence-the-bell-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1173521,
-		"contentHash": "b5b9b5bbffe86b61c200d2bbdc759459de3b424bca8985f686589f6ffc2b81e8"
+		"bytes": 1846411,
+		"contentHash": "fe9389a9b1595924015b0720ee2e5c044fb7d4c76da869279c95cdb2ec89152b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b5b9b5bbffe86b61c200d2bbdc759459de3b424bca8985f686589f6ffc2b81e8",
+		"postRepairContentHash": "fe9389a9b1595924015b0720ee2e5c044fb7d4c76da869279c95cdb2ec89152b",
+		"removedPixels": 384942
+	}
 }

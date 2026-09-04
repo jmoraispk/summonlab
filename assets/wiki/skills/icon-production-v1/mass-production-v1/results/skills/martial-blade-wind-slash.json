@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-wind-slash-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-wind-slash-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 917778,
-		"contentHash": "cb0b8cbd4fc069927fd41cbce804e3ad160d9f5686c08dc15a03eedcb0b3ac87"
+		"bytes": 1732025,
+		"contentHash": "850f96635920d464c431b13766eb425575729c682048b7615efabd2e11c74f38"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cb0b8cbd4fc069927fd41cbce804e3ad160d9f5686c08dc15a03eedcb0b3ac87",
+		"postRepairContentHash": "850f96635920d464c431b13766eb425575729c682048b7615efabd2e11c74f38",
+		"removedPixels": 384942
+	}
 }

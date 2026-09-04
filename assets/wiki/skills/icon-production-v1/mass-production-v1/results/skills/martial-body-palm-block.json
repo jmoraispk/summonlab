@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-palm-block-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-palm-block-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 937633,
-		"contentHash": "01540a37ca86b3ff7608a28e10f8784ee496b24041ebd4e48d0e3fbbad9bad8a"
+		"bytes": 1814536,
+		"contentHash": "8b9d92adbb34151f49e18376483e97c5f5fddd4b39237c2645a5af4889909aaf"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "01540a37ca86b3ff7608a28e10f8784ee496b24041ebd4e48d0e3fbbad9bad8a",
+		"postRepairContentHash": "8b9d92adbb34151f49e18376483e97c5f5fddd4b39237c2645a5af4889909aaf",
+		"removedPixels": 384942
+	}
 }

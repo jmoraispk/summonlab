@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-blind-spot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-blind-spot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 819532,
-		"contentHash": "4a78a0f526b310d66a25f582af7112a7b7581864fd2cecfa5699c5d376ac03e2"
+		"bytes": 1758246,
+		"contentHash": "edf5a369635f21cc2f16140d7ecd82a994b4a12c8491b9d19234b09f63d4d2cd"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4a78a0f526b310d66a25f582af7112a7b7581864fd2cecfa5699c5d376ac03e2",
+		"postRepairContentHash": "edf5a369635f21cc2f16140d7ecd82a994b4a12c8491b9d19234b09f63d4d2cd",
+		"removedPixels": 384942
+	}
 }

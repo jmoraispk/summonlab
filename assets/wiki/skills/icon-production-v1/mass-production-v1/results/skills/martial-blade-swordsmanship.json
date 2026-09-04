@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-swordsmanship-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-swordsmanship-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1002713,
-		"contentHash": "68f248abbb9377a34fbda6362a3046f7159299acec915bc6ae885a481aa2b1f6"
+		"bytes": 1869053,
+		"contentHash": "2f05cdcb68eedbf58a399ec08812cc259145313497a2a58f948ae4a8150321db"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "68f248abbb9377a34fbda6362a3046f7159299acec915bc6ae885a481aa2b1f6",
+		"postRepairContentHash": "2f05cdcb68eedbf58a399ec08812cc259145313497a2a58f948ae4a8150321db",
+		"removedPixels": 384942
+	}
 }

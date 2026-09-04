@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-the-road-has-no-end-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-the-road-has-no-end-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1117274,
-		"contentHash": "81a2a36a9eb3e772bf60b74f2692cfc203e589ca14b6296fbb95cb1e6af36943"
+		"bytes": 1703939,
+		"contentHash": "8823ec11b89ab3240109749406f2dea9a1af7850ec7a372de42c90667b488611"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "81a2a36a9eb3e772bf60b74f2692cfc203e589ca14b6296fbb95cb1e6af36943",
+		"postRepairContentHash": "8823ec11b89ab3240109749406f2dea9a1af7850ec7a372de42c90667b488611",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-raise-shield-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-raise-shield-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 904548,
-		"contentHash": "a6ae12b4200e9492d1f76d657b2c475ed47d7c751ad2cb51fabf8512d1bd6458"
+		"bytes": 1588980,
+		"contentHash": "9daedad3bb66682cc062cf0f0fa8fc4066cc8635c87706d9d7683ec8e76d8e7e"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a6ae12b4200e9492d1f76d657b2c475ed47d7c751ad2cb51fabf8512d1bd6458",
+		"postRepairContentHash": "9daedad3bb66682cc062cf0f0fa8fc4066cc8635c87706d9d7683ec8e76d8e7e",
+		"removedPixels": 384942
+	}
 }

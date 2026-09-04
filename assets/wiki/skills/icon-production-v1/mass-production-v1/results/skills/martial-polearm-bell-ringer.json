@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-bell-ringer-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-bell-ringer-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1303462,
-		"contentHash": "a91689d0c63cb951170d20ede2d7048e1fdd525610f0c9c38631a75dbadec082"
+		"bytes": 2001513,
+		"contentHash": "a802d21180622c3a28ff45e6273249aace1240f6e0c33ec4976e0809b05ac9c5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a91689d0c63cb951170d20ede2d7048e1fdd525610f0c9c38631a75dbadec082",
+		"postRepairContentHash": "a802d21180622c3a28ff45e6273249aace1240f6e0c33ec4976e0809b05ac9c5",
+		"removedPixels": 384942
+	}
 }

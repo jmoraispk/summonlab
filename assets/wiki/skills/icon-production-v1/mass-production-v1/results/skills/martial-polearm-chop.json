@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-chop-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-chop-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 964736,
-		"contentHash": "d92a3f571527de1267b410dcfc3e63cc717419368ce977f2c3a148462b30981e"
+		"bytes": 1747684,
+		"contentHash": "7491d78760eff6d8154b4a83fc3507d52056159e0aae26813d3fe938ddbc64ee"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d92a3f571527de1267b410dcfc3e63cc717419368ce977f2c3a148462b30981e",
+		"postRepairContentHash": "7491d78760eff6d8154b4a83fc3507d52056159e0aae26813d3fe938ddbc64ee",
+		"removedPixels": 384942
+	}
 }

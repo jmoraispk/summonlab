@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-feint-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-feint-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 940814,
-		"contentHash": "6fb721d897c774516dd1e4d5448a303f640322c8938be5239c14f3d6314be2e8"
+		"bytes": 1615430,
+		"contentHash": "890f9ac4dbb4d95e0957bca0942c80166eaba6ba6948ae35856e98ed723e2fd2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6fb721d897c774516dd1e4d5448a303f640322c8938be5239c14f3d6314be2e8",
+		"postRepairContentHash": "890f9ac4dbb4d95e0957bca0942c80166eaba6ba6948ae35856e98ed723e2fd2",
+		"removedPixels": 384942
+	}
 }

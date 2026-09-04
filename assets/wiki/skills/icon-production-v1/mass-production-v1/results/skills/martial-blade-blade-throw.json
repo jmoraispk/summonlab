@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-blade-throw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-blade-throw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 862008,
-		"contentHash": "6c2ef2ef15d02d90788b8477f905583e36d3174396db2aedf31ada8cb2deb981"
+		"bytes": 1788285,
+		"contentHash": "23e266a7de08410f0c2dc6bfbb18e2020c60d198ebdf417ea0793813e3744ef2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6c2ef2ef15d02d90788b8477f905583e36d3174396db2aedf31ada8cb2deb981",
+		"postRepairContentHash": "23e266a7de08410f0c2dc6bfbb18e2020c60d198ebdf417ea0793813e3744ef2",
+		"removedPixels": 384942
+	}
 }

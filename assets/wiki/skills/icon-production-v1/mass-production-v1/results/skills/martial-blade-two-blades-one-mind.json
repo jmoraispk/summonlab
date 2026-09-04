@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-two-blades-one-mind-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-two-blades-one-mind-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1186882,
-		"contentHash": "8a246681b9f4ebfc5ae4313f28ac94988e267d344f75835d5e55129995034f41"
+		"bytes": 1980171,
+		"contentHash": "bd44a2b3739cd23eddb7360821616fdd08e03cf0345ce2ddb441d3174afe9f9f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8a246681b9f4ebfc5ae4313f28ac94988e267d344f75835d5e55129995034f41",
+		"postRepairContentHash": "bd44a2b3739cd23eddb7360821616fdd08e03cf0345ce2ddb441d3174afe9f9f",
+		"removedPixels": 384942
+	}
 }

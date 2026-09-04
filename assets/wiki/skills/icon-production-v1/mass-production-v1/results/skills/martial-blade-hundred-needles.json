@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-hundred-needles-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-hundred-needles-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1016682,
-		"contentHash": "3f462b4bd53ef5dfab48ad7be2783ddf0d4f71364a1541e23f51b9d98a802429"
+		"bytes": 1822342,
+		"contentHash": "b7fd8df85f2b1e36524e80e0246dcaf7f175f08aa5b9c8dd1c2b6af78a22f550"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3f462b4bd53ef5dfab48ad7be2783ddf0d4f71364a1541e23f51b9d98a802429",
+		"postRepairContentHash": "b7fd8df85f2b1e36524e80e0246dcaf7f175f08aa5b9c8dd1c2b6af78a22f550",
+		"removedPixels": 384942
+	}
 }

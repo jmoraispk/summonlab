@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-drawing-cut-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-drawing-cut-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1052573,
-		"contentHash": "bdae0070b1e5941f049cf04e7d39df4a74f3c579d2b31ede344fb5b68145b043"
+		"bytes": 1747034,
+		"contentHash": "dd4e3327bc5061aad6507d2e59429d5c0810d67254825a4571aac7e8bb997e2f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "bdae0070b1e5941f049cf04e7d39df4a74f3c579d2b31ede344fb5b68145b043",
+		"postRepairContentHash": "dd4e3327bc5061aad6507d2e59429d5c0810d67254825a4571aac7e8bb997e2f",
+		"removedPixels": 384942
+	}
 }

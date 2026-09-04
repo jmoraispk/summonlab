@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-roll-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-roll-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1023974,
-		"contentHash": "10441c4568e385963abad2cb62fdcbf177b8af08bb1006075f1673854f43a63b"
+		"bytes": 1771718,
+		"contentHash": "bf13c25717a7601e50e18008adf77fa0350576ba9515f8230affd6d9fa8e1159"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "10441c4568e385963abad2cb62fdcbf177b8af08bb1006075f1673854f43a63b",
+		"postRepairContentHash": "bf13c25717a7601e50e18008adf77fa0350576ba9515f8230affd6d9fa8e1159",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-great-blade-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-great-blade-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1162524,
-		"contentHash": "0f994b6904ab9cfedb1619eacb9255a457104f3606170bd207dd669c51ed39f4"
+		"bytes": 1875973,
+		"contentHash": "10c21d7d980429c887193a37cdad7417c471cb572a4cd9d988f05fa775551633"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0f994b6904ab9cfedb1619eacb9255a457104f3606170bd207dd669c51ed39f4",
+		"postRepairContentHash": "10c21d7d980429c887193a37cdad7417c471cb572a4cd9d988f05fa775551633",
+		"removedPixels": 384942
+	}
 }

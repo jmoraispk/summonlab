@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:alchemy:reagent-sense",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-alchemy-reagent-sense.json",
+	"promptHash": "cdbdc0cbad4ea946d21709864f66b5c6442cab9026384faeb94180ccf6ae5163",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-brewing.png",
+			"contentHash": "8bf890dc06453f4a3534226a9b616773766f549224bbeec55318aa92afd39b1c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-alchemy-reagent-sense-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2154500,
+		"contentHash": "1d375571005393018bbe8eeb6b84892d533a3cfb853e354d652d93e69cef1c97"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-reagent-sense.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1883472,
+		"contentHash": "5f4bdbfbac948cdab166d5b851e4e6e22668336c2bb7894fbe6a9bbee9fae65d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "182ac36309c47ea075ab3192001cde50783440289e64f9ebddc47c2bae81acb0",
+		"postRepairContentHash": "5f4bdbfbac948cdab166d5b851e4e6e22668336c2bb7894fbe6a9bbee9fae65d",
+		"removedPixels": 384942
+	}
+}

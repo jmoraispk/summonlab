@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-blink-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-blink-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1035928,
-		"contentHash": "7b853bbd601c9e18116bbfbbff6cfe1e9e12f1ead345cdd91da49f2244f8f751"
+		"bytes": 1880928,
+		"contentHash": "f501662621ff9538102ba723a0335c99deedbcc0e951eb39dc65a1abe401c276"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "7b853bbd601c9e18116bbfbbff6cfe1e9e12f1ead345cdd91da49f2244f8f751",
+		"postRepairContentHash": "f501662621ff9538102ba723a0335c99deedbcc0e951eb39dc65a1abe401c276",
+		"removedPixels": 384942
+	}
 }

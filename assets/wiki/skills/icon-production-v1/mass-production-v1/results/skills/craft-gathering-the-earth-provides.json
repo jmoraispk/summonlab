@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:the-earth-provides",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-the-earth-provides.json",
+	"promptHash": "9e8f888df0a7968983f364b5f732400d327333a0a5a7b26ed3ee9171556f3178",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-harvest.png",
+			"contentHash": "a5b5fc7a515ea58655185c83f8b6b39c2cafbc482a27b6e2e9e57465bda5476e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-nothing-wasted.png",
+			"contentHash": "7e860fdddb121fce8a106c535b3a5ab90fa3ec159da5be353c8cd041cc38d820"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2135039,
+		"contentHash": "14768b9c39ee43560f663dfe86e7cca05c95dac50a0b9f99f76c4493a005b1db"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-the-earth-provides.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1865245,
+		"contentHash": "9b3256eb5b744cb73d184e132cfcca627e56f52e7a440d10904e51c03e1d0ad0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "fc4034a3783d420181a15006c2478ea8a078be0f1a9f613b2c16ada34e434516",
+		"postRepairContentHash": "9b3256eb5b744cb73d184e132cfcca627e56f52e7a440d10904e51c03e1d0ad0",
+		"removedPixels": 384942
+	}
+}

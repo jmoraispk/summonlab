@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-combination-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-combination-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1103393,
-		"contentHash": "5893f919c9eaf6ef1f8406fc0dd9a4b875de6163c193d045625a426e4b9ce1e4"
+		"bytes": 1767008,
+		"contentHash": "4e41bea5d459007182de62f425c8d64ffed4681de460874ccd31c04392ac80c1"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5893f919c9eaf6ef1f8406fc0dd9a4b875de6163c193d045625a426e4b9ce1e4",
+		"postRepairContentHash": "4e41bea5d459007182de62f425c8d64ffed4681de460874ccd31c04392ac80c1",
+		"removedPixels": 384942
+	}
 }

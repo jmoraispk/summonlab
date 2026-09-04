@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-executioner-s-grip-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-executioner-s-grip-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1166951,
-		"contentHash": "0f79f27a140d0d8e74a78626220f7442b4b01b000940f7b997ec0a8d44e3d633"
+		"bytes": 1929323,
+		"contentHash": "2a1fd4e3a238a7d3fcc778335221134ecd9684abb69d1fcca60a5cbde7bbf64d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0f79f27a140d0d8e74a78626220f7442b4b01b000940f7b997ec0a8d44e3d633",
+		"postRepairContentHash": "2a1fd4e3a238a7d3fcc778335221134ecd9684abb69d1fcca60a5cbde7bbf64d",
+		"removedPixels": 384942
+	}
 }

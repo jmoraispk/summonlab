@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-pack-bond-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-pack-bond-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1069155,
-		"contentHash": "84882922c31ec56532ee0d25aa8decb206979e4215e27d219d5fc1ee36c47cd3"
+		"bytes": 1841627,
+		"contentHash": "ff11a9b4c1ebeb05e0af769ff7d83a090f5891020dc84bb4fc7e6ee220371456"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "84882922c31ec56532ee0d25aa8decb206979e4215e27d219d5fc1ee36c47cd3",
+		"postRepairContentHash": "ff11a9b4c1ebeb05e0af769ff7d83a090f5891020dc84bb4fc7e6ee220371456",
+		"removedPixels": 384942
+	}
 }

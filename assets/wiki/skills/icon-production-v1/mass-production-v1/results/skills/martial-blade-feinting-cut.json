@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-feinting-cut-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-feinting-cut-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1081892,
-		"contentHash": "88c1b012743644a8dfdcf011f59f41a08aa25958e414e79bafb229d243755509"
+		"bytes": 1807680,
+		"contentHash": "4bea9fd537a8f0d8253e35b9b623bbd203410714d1e03d9c8f1a2c14f133fff1"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "88c1b012743644a8dfdcf011f59f41a08aa25958e414e79bafb229d243755509",
+		"postRepairContentHash": "4bea9fd537a8f0d8253e35b9b623bbd203410714d1e03d9c8f1a2c14f133fff1",
+		"removedPixels": 384942
+	}
 }

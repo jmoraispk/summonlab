@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-puncture-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-puncture-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 981536,
-		"contentHash": "e2f7333a8d87ceb29e43f580ff0d2ce57bb313d3466bca563f3e37a4bad86c97"
+		"bytes": 1849101,
+		"contentHash": "e85dcd32956697c74bb43db7f6fdd4dc2f1e4e8547bed0255fb53fad6428c2ec"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e2f7333a8d87ceb29e43f580ff0d2ce57bb313d3466bca563f3e37a4bad86c97",
+		"postRepairContentHash": "e85dcd32956697c74bb43db7f6fdd4dc2f1e4e8547bed0255fb53fad6428c2ec",
+		"removedPixels": 384942
+	}
 }

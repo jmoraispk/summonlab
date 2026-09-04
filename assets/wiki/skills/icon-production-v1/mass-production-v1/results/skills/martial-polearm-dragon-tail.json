@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-dragon-tail-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-dragon-tail-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1034812,
-		"contentHash": "49ec1b0fbc4a40809fc5f5d5cac40e7266cb2972960f9de9c118ecd4f36d4fb3"
+		"bytes": 1760556,
+		"contentHash": "ebf925cd4ea459e7fd5faa6d92b37e89f6204b7d85abf3a65416fd0bfe180bab"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "49ec1b0fbc4a40809fc5f5d5cac40e7266cb2972960f9de9c118ecd4f36d4fb3",
+		"postRepairContentHash": "ebf925cd4ea459e7fd5faa6d92b37e89f6204b7d85abf3a65416fd0bfe180bab",
+		"removedPixels": 384942
+	}
 }

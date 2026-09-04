@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:forging:tempering",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-tempering.json",
+	"promptHash": "32415ee4b171b68345d1ff4f2b6a1be607bac5c5cc7fd55ff8afca05b2706af6",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-metallurgy.png",
+			"contentHash": "e23895cc5fb5796297caf7506d70ea501f18ee014251e5610e37bff4a08952cf"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-alloying.png",
+			"contentHash": "99d514841db085e2a784a5ff5aabd892e6095a443c48a3d2ee8e1af5dfc0a5d1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-tempering-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2149431,
+		"contentHash": "0b0bf69476ab009f928ce675752c70c220c2c8656a46711114e2f8d3f9cf941a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-tempering.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1925556,
+		"contentHash": "3d431f367f2b913e906d75bb760af2f0e531f089feae1f1debb0205990a78251"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "505b792a0861b312a604ac67034c43e48768e369ad9b41c486f5f04dde1e3e05",
+		"postRepairContentHash": "3d431f367f2b913e906d75bb760af2f0e531f089feae1f1debb0205990a78251",
+		"removedPixels": 384942
+	}
+}

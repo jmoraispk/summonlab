@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-tremor-field-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-tremor-field-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1432039,
-		"contentHash": "21c8084256d95afd4c6a0dcd046dcfb312b7790867668544b207373f84198994"
+		"bytes": 1984083,
+		"contentHash": "8f5a796db8ee54adbea0da180efaaf279cbab86d927a400fb1a2159717805a42"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "21c8084256d95afd4c6a0dcd046dcfb312b7790867668544b207373f84198994",
+		"postRepairContentHash": "8f5a796db8ee54adbea0da180efaaf279cbab86d927a400fb1a2159717805a42",
+		"removedPixels": 384942
+	}
 }

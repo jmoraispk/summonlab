@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-storm-of-fists-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-storm-of-fists-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1259082,
-		"contentHash": "c4b64e975adcbb45434ca587186d888b6ab9953a106942a3bbf8c80b5f90c593"
+		"bytes": 1888210,
+		"contentHash": "f8ab1ab35697187138e7037ce8239ba82821123b706dd429f2fe8e7286a03138"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c4b64e975adcbb45434ca587186d888b6ab9953a106942a3bbf8c80b5f90c593",
+		"postRepairContentHash": "f8ab1ab35697187138e7037ce8239ba82821123b706dd429f2fe8e7286a03138",
+		"removedPixels": 384942
+	}
 }

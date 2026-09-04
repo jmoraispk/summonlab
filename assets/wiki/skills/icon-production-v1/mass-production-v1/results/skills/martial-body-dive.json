@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-dive-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-dive-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1216666,
-		"contentHash": "f13e7903dfd1b0dd1ee9a43fc4957ccc6db375a89820d37e855d607683102403"
+		"bytes": 1838733,
+		"contentHash": "396652e9ebd282c5c16214a294799e0a05a583913a16825b6febefe9d387e6a6"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f13e7903dfd1b0dd1ee9a43fc4957ccc6db375a89820d37e855d607683102403",
+		"postRepairContentHash": "396652e9ebd282c5c16214a294799e0a05a583913a16825b6febefe9d387e6a6",
+		"removedPixels": 384942
+	}
 }

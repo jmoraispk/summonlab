@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-parry-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-parry-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1046627,
-		"contentHash": "0ede1712aa8e6c71091634c57b55299cebd7381d5ce4ae869e37197c49700663"
+		"bytes": 1714849,
+		"contentHash": "f243d7fb077bc44409f81eb6a2d2630c2d13002b5376735c34f682765b3086a6"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0ede1712aa8e6c71091634c57b55299cebd7381d5ce4ae869e37197c49700663",
+		"postRepairContentHash": "f243d7fb077bc44409f81eb6a2d2630c2d13002b5376735c34f682765b3086a6",
+		"removedPixels": 384942
+	}
 }

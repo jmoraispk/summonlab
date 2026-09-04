@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-suplex-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-suplex-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1299249,
-		"contentHash": "26e12774a604329258263a4466e25f9f321173bc2d1dd1ab08c26cfd9341220b"
+		"bytes": 2044053,
+		"contentHash": "14ddf00d2bbada1de6c61ab5f09f3c12ff894ade2e75f9b25ba2e1c3d5ce5284"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "26e12774a604329258263a4466e25f9f321173bc2d1dd1ab08c26cfd9341220b",
+		"postRepairContentHash": "14ddf00d2bbada1de6c61ab5f09f3c12ff894ade2e75f9b25ba2e1c3d5ce5284",
+		"removedPixels": 384942
+	}
 }

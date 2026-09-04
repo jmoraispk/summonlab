@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:shield-sigil",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-shield-sigil.json",
+	"promptHash": "3a1c2832bd56cfd04cd90aa121cb82a6ab597889ac95cfd858c74a8744f605a0",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-sealed-barrier.png",
+			"contentHash": "eafb4279e7015c20fa41659ba2a76e820cb41a24b475845decc5b537f0ef91d2"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-warding.png",
+			"contentHash": "c3272073ddafd6fc8d6a98a7aa627fc4112f1f03eaeb65cd2e1858aeba2747f8"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-shield-sigil-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2238644,
+		"contentHash": "c4442fd451dc90042eaf7176e80b87ad5199a94b7d68ad9788389bd2927e2e41"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-shield-sigil.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1966858,
+		"contentHash": "902864b28d43abf3161546147b2c48400d96dc82c45c2fadd4e5eecde8c32cf6"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9f0e31970041403385d15957ca71b92ce2be17580a8acf61b8866911e3b1bd4f",
+		"postRepairContentHash": "902864b28d43abf3161546147b2c48400d96dc82c45c2fadd4e5eecde8c32cf6",
+		"removedPixels": 384942
+	}
+}

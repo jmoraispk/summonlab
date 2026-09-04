@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-taunt-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-taunt-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1044139,
-		"contentHash": "ffdbbfceb5ae487135228c1c212461a86af4be1b0b86fc90c4003c0bbad15942"
+		"bytes": 1706287,
+		"contentHash": "d2570a9a41a38fa17a26905c8bbd08b992b9e191762d6518c4789cd6a8d730cc"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ffdbbfceb5ae487135228c1c212461a86af4be1b0b86fc90c4003c0bbad15942",
+		"postRepairContentHash": "d2570a9a41a38fa17a26905c8bbd08b992b9e191762d6518c4789cd6a8d730cc",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-combat-reading-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-combat-reading-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1073366,
-		"contentHash": "6cbe01ab1f06d3f152ebaf245944c7d54d8ab672b2d80c1af917b6256f188a32"
+		"bytes": 1796169,
+		"contentHash": "37713c79f96408cbe16453ef9a5d0430e2a507ec61186022a7088348a05b9f0c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6cbe01ab1f06d3f152ebaf245944c7d54d8ab672b2d80c1af917b6256f188a32",
+		"postRepairContentHash": "37713c79f96408cbe16453ef9a5d0430e2a507ec61186022a7088348a05b9f0c",
+		"removedPixels": 384942
+	}
 }

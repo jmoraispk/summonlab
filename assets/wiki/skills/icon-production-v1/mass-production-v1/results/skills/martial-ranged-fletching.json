@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-fletching-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-fletching-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 891423,
-		"contentHash": "6506257893c620b23c65dd8ee1eff7dad291270326ed66c6e37052f385c3cc67"
+		"bytes": 1469065,
+		"contentHash": "317f341b2118ac862b353a3dae0a6fa8a9d3256bbb40975609caf354fc82cd96"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6506257893c620b23c65dd8ee1eff7dad291270326ed66c6e37052f385c3cc67",
+		"postRepairContentHash": "317f341b2118ac862b353a3dae0a6fa8a9d3256bbb40975609caf354fc82cd96",
+		"removedPixels": 384942
+	}
 }

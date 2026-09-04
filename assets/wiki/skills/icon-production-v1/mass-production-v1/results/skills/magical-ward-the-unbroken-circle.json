@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:the-unbroken-circle",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-the-unbroken-circle.json",
+	"promptHash": "0790ddf35c8c5fa95eb0c2e20512dd4c1ebab9bd488123b2c4dcc49918e8dafa",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-sealed-barrier.png",
+			"contentHash": "eafb4279e7015c20fa41659ba2a76e820cb41a24b475845decc5b537f0ef91d2"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-layered-ward.png",
+			"contentHash": "2ce235dee6a0056b69228e861519d1fa28fc5f33bc387cfe8221b98453d5c78d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-the-unbroken-circle-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2292147,
+		"contentHash": "f6745fc5192c4c5bc38d5dfc5981f21c4c9f2f336e4fe707aba8210402d4bdf7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-the-unbroken-circle.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2045485,
+		"contentHash": "6428a2ac507b3d22fa165123402a1139304031039f67d5e6e048ba2863bc5e94"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "96fd5cf1a5cc5263806414962ebca2298f548223279e0ec001cf52235ffb44f9",
+		"postRepairContentHash": "6428a2ac507b3d22fa165123402a1139304031039f67d5e6e048ba2863bc5e94",
+		"removedPixels": 384942
+	}
+}

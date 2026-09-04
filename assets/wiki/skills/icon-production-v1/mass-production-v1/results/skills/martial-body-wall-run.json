@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-wall-run-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-wall-run-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1135012,
-		"contentHash": "45c4f2b0a740afe99c7f998e3ed6313d25832a91d6f69522c19502f22494eb0e"
+		"bytes": 1781769,
+		"contentHash": "6bca3f4c3399cb1438b708051a4009ff3605b7d759709e1c0aa92cb9e840ec30"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "45c4f2b0a740afe99c7f998e3ed6313d25832a91d6f69522c19502f22494eb0e",
+		"postRepairContentHash": "6bca3f4c3399cb1438b708051a4009ff3605b7d759709e1c0aa92cb9e840ec30",
+		"removedPixels": 384942
+	}
 }

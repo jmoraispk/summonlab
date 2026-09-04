@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-bonded-mount-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-bonded-mount-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1219133,
-		"contentHash": "9705f43a9aed2b3eac5b19a4f970efeae41cf228785162e3e75891ddb8b2523f"
+		"bytes": 1805616,
+		"contentHash": "902c6022e835bb41d0086db1b6d427847770775c54be36d5110f13a8d5ff762a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9705f43a9aed2b3eac5b19a4f970efeae41cf228785162e3e75891ddb8b2523f",
+		"postRepairContentHash": "902c6022e835bb41d0086db1b6d427847770775c54be36d5110f13a8d5ff762a",
+		"removedPixels": 384942
+	}
 }

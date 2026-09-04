@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:forging:weightless-craft",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-weightless-craft.json",
+	"promptHash": "d7a92f5a14a76cadc6f4969757070659eb6b26a23872cbf6d06ffb1863f4d149",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-finishing.png",
+			"contentHash": "f43adfb787ad4cd166d08e275960eb5a42c909c9829fa53ad901a3eede0d0de7"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-fittings.png",
+			"contentHash": "03f266ee50b5877c58de3d1292e722394ddb13b35692b718a6e16c67103f22b0"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-weightless-craft-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2113956,
+		"contentHash": "99ab846aa0e9441cf32356bf6d8e2f4f0303f094801551c2f2c506bee69a2c37"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-weightless-craft.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1760550,
+		"contentHash": "87b62f5c23ac496f3dbb305654942c479ee7b562b593ab510d9d45b2803336aa"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "7671457ef8b1e95f055fc1174765f1f3f530cb406ce7ea368b25aa872f3cc105",
+		"postRepairContentHash": "87b62f5c23ac496f3dbb305654942c479ee7b562b593ab510d9d45b2803336aa",
+		"removedPixels": 384942
+	}
+}

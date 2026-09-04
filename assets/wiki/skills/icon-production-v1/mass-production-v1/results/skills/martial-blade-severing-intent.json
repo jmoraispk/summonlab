@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-severing-intent-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-severing-intent-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1113720,
-		"contentHash": "d8b34aaf71b542d4b6d325715c2d34c279251320059bcecd131a2545447ce94b"
+		"bytes": 1866914,
+		"contentHash": "4e54405ea333dc5334d2504f9b46c20d9d05b8bb00fa8f874512900ecdfba079"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d8b34aaf71b542d4b6d325715c2d34c279251320059bcecd131a2545447ce94b",
+		"postRepairContentHash": "4e54405ea333dc5334d2504f9b46c20d9d05b8bb00fa8f874512900ecdfba079",
+		"removedPixels": 384942
+	}
 }

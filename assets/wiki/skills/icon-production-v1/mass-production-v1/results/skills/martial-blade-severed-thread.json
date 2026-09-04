@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-severed-thread-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-severed-thread-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1233681,
-		"contentHash": "cc275179d2c25cb3d14824fe7199ab6643e171a0b49d4669cae6700b9e424980"
+		"bytes": 1981412,
+		"contentHash": "3d9ccdb65d21f87e42c6585f81aa5bbef7f8b3a220115aad788558e616b9545c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cc275179d2c25cb3d14824fe7199ab6643e171a0b49d4669cae6700b9e424980",
+		"postRepairContentHash": "3d9ccdb65d21f87e42c6585f81aa5bbef7f8b3a220115aad788558e616b9545c",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-overhead-chop-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-overhead-chop-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 969889,
-		"contentHash": "d510f90f86b229c1ba68780bca451e73ec85dfdaf89fc152470dbb0e22d5510f"
+		"bytes": 1749440,
+		"contentHash": "953d0b7d649bffdb060323d3eb9cb50b9af43cc5351d555edebe16bd8a27d32b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d510f90f86b229c1ba68780bca451e73ec85dfdaf89fc152470dbb0e22d5510f",
+		"postRepairContentHash": "953d0b7d649bffdb060323d3eb9cb50b9af43cc5351d555edebe16bd8a27d32b",
+		"removedPixels": 384942
+	}
 }

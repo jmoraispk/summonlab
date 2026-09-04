@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-wrestling-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-wrestling-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 857979,
-		"contentHash": "b07543e011b414086e1df53f3942bc22f379cec2f84473dbd06092363daa7065"
+		"bytes": 1622188,
+		"contentHash": "f18d4d43d9958b7edcf24617ea7c62afa5fe8464b2523389a908ebf40e56d761"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b07543e011b414086e1df53f3942bc22f379cec2f84473dbd06092363daa7065",
+		"postRepairContentHash": "f18d4d43d9958b7edcf24617ea7c62afa5fe8464b2523389a908ebf40e56d761",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-nightfall-flurry-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-nightfall-flurry-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 930121,
-		"contentHash": "13765714c047c238c6193d6bf0d87a740b822caaf646b1981af56a361fb6a0d5"
+		"bytes": 1881325,
+		"contentHash": "56338a62c5a813881788a09162489877b6b93ea13b3e47099d607af67df86a38"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "13765714c047c238c6193d6bf0d87a740b822caaf646b1981af56a361fb6a0d5",
+		"postRepairContentHash": "56338a62c5a813881788a09162489877b6b93ea13b3e47099d607af67df86a38",
+		"removedPixels": 384942
+	}
 }

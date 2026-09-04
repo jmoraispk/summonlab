@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-crescent-sweep-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-crescent-sweep-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1101558,
-		"contentHash": "351646f707830b40babe9aab52118979015dc001e82e2f1776b903458aa4ea42"
+		"bytes": 1735318,
+		"contentHash": "3afd78dd7254adec2c4e0f8ec53f7498d9eb714d4d5e10859bfb50ae58fc79e9"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "351646f707830b40babe9aab52118979015dc001e82e2f1776b903458aa4ea42",
+		"postRepairContentHash": "3afd78dd7254adec2c4e0f8ec53f7498d9eb714d4d5e10859bfb50ae58fc79e9",
+		"removedPixels": 384942
+	}
 }

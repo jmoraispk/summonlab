@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-hook-and-pull-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-hook-and-pull-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1162526,
-		"contentHash": "f98bcd8a42c3b3162db15e538006db32f91ce5259b7377654f01a79d9c55a8eb"
+		"bytes": 1798666,
+		"contentHash": "67edcad49cefa6a77d125facfee608bd4c133283de53dea160f2d518aca49d56"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f98bcd8a42c3b3162db15e538006db32f91ce5259b7377654f01a79d9c55a8eb",
+		"postRepairContentHash": "67edcad49cefa6a77d125facfee608bd4c133283de53dea160f2d518aca49d56",
+		"removedPixels": 384942
+	}
 }

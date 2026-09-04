@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:read-the-body",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-read-the-body.json",
+	"promptHash": "f06c1ccaf13c11af08d4f899ae858726541e0d4335c8702bde15c9d3ca12b4a7",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-appraisal.png",
+			"contentHash": "e2589258004765bb0dfd487a23b132f8e2493d526289dc43c7055f0f98c18452"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-appraisal.png",
+			"contentHash": "28d49d29b39ecb05d03595bf4b64faafbae2f028a6760d5c956f63a26af98a73"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-read-the-body-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1954431,
+		"contentHash": "9f033be95a1fa0eebc8a80372ec941229a8a0116ec042f6cad8c5c14d0b7f80c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-read-the-body.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1753240,
+		"contentHash": "1348ed346c542d57f3c5514b97b6f124762516c484dee7400ee308b83cc26e1c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "230ae53032508d45035751ae82127893410ee2aaacff016007b2de7c0ad8baf0",
+		"postRepairContentHash": "1348ed346c542d57f3c5514b97b6f124762516c484dee7400ee308b83cc26e1c",
+		"removedPixels": 384942
+	}
+}

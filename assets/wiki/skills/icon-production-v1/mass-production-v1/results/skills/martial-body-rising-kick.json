@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-rising-kick-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-rising-kick-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1173284,
-		"contentHash": "08d57dd274939b2c8048c27cc22ce366879836edc9efd36b147064091f1f273b"
+		"bytes": 1925377,
+		"contentHash": "cabf08677e032d551a2ee93ffedf461e8c9e787fea8fe1dd8c6a398d094b0582"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "08d57dd274939b2c8048c27cc22ce366879836edc9efd36b147064091f1f273b",
+		"postRepairContentHash": "cabf08677e032d551a2ee93ffedf461e8c9e787fea8fe1dd8c6a398d094b0582",
+		"removedPixels": 384942
+	}
 }

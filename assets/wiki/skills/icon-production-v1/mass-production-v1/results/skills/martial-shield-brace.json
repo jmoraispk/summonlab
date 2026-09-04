@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-brace-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-brace-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1087202,
-		"contentHash": "babed84497e2e61fff17a16682850c038d7d3f7d87079c9f7849cea9dcae521d"
+		"bytes": 1734867,
+		"contentHash": "c5a6e95c31a34e53c6dc61c3f8bfd1a54702ec8174b84565b8727b1e2bb6e818"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "babed84497e2e61fff17a16682850c038d7d3f7d87079c9f7849cea9dcae521d",
+		"postRepairContentHash": "c5a6e95c31a34e53c6dc61c3f8bfd1a54702ec8174b84565b8727b1e2bb6e818",
+		"removedPixels": 384942
+	}
 }

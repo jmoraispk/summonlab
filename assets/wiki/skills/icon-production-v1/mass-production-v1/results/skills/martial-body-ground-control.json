@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-ground-control-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-ground-control-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1154246,
-		"contentHash": "77827767882ed899430586bc066827ee0ae791b0d7cb743da9307499cc15b222"
+		"bytes": 1910778,
+		"contentHash": "082be7ab644cb9640433dc0694935c6b0a3e97b7a80df2adfeebaefcaa026c09"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "77827767882ed899430586bc066827ee0ae791b0d7cb743da9307499cc15b222",
+		"postRepairContentHash": "082be7ab644cb9640433dc0694935c6b0a3e97b7a80df2adfeebaefcaa026c09",
+		"removedPixels": 384942
+	}
 }

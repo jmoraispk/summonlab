@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-quick-stab-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-quick-stab-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 700155,
-		"contentHash": "e5023b62b567a198715b4f29d200c7fa0f23c01044e34288cc69da76f6f32d16"
+		"bytes": 1595720,
+		"contentHash": "b1bcb163ef56c5d8ca53ae1f726bb8b6b295a171e06eac47ab51b09cb39be49e"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e5023b62b567a198715b4f29d200c7fa0f23c01044e34288cc69da76f6f32d16",
+		"postRepairContentHash": "b1bcb163ef56c5d8ca53ae1f726bb8b6b295a171e06eac47ab51b09cb39be49e",
+		"removedPixels": 384942
+	}
 }

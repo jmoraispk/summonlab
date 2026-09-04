@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-sidestep-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-sidestep-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1014105,
-		"contentHash": "39db64b2392447062f1570bbae72d6b18e1a91f1bdf58ca886b99c37e7114d95"
+		"bytes": 1681900,
+		"contentHash": "c681a5e077f379836efe5f5660ee9a3fb2699b2ff7fda35bbfacdd796ec8409c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "39db64b2392447062f1570bbae72d6b18e1a91f1bdf58ca886b99c37e7114d95",
+		"postRepairContentHash": "c681a5e077f379836efe5f5660ee9a3fb2699b2ff7fda35bbfacdd796ec8409c",
+		"removedPixels": 384942
+	}
 }

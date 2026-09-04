@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-shadow-sever-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-shadow-sever-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 932332,
-		"contentHash": "5add99aa7e8445e2aa5fcd619e28051c4fe93abf6fa6837a8b9bc68e5b9512ed"
+		"bytes": 1717616,
+		"contentHash": "c8098537222b12768afce993e453d4c0ee5000352cea6532dbe5a25c572b0c15"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5add99aa7e8445e2aa5fcd619e28051c4fe93abf6fa6837a8b9bc68e5b9512ed",
+		"postRepairContentHash": "c8098537222b12768afce993e453d4c0ee5000352cea6532dbe5a25c572b0c15",
+		"removedPixels": 384942
+	}
 }

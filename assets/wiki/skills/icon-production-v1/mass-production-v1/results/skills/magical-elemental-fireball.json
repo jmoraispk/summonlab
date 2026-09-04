@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:fireball",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-fireball.json",
+	"promptHash": "8c685984518717b952f77fc29118bf2ef6bf6595429c28f7f441a1f370c54b61",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-projectile.png",
+			"contentHash": "9931b1143a842b369224b0d0caacc2d0d11ce5ee46fd8fd5c4fa2000c48a99c1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-fireball-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2027984,
+		"contentHash": "6eeb5b5f58c91b9a36682b4d68f7ede08774013859339a3efafddb761c6b1559"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-fireball.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1981824,
+		"contentHash": "f36dee1ef8b57ba5edf2b8db363810a680c7c048284ed9ce81c1f5f7af16f627"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "576dc2c4c2e413b128a9c3472acb55fa40a627383437e620576b80ffccfa2c8c",
+		"postRepairContentHash": "f36dee1ef8b57ba5edf2b8db363810a680c7c048284ed9ce81c1f5f7af16f627",
+		"removedPixels": 384942
+	}
+}

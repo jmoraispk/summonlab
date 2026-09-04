@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-sky-piercer-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-sky-piercer-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 854371,
-		"contentHash": "ed9b5c57ffc57e9ccd68eb9c0235e8d2c223d2581fe0ca648fa2a112e18ccf6b"
+		"bytes": 1637200,
+		"contentHash": "ee5b1f7ef4e6957a2d12f56ee503bdae4265f46d9bb4c3229846b50cdc10e31a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ed9b5c57ffc57e9ccd68eb9c0235e8d2c223d2581fe0ca648fa2a112e18ccf6b",
+		"postRepairContentHash": "ee5b1f7ef4e6957a2d12f56ee503bdae4265f46d9bb4c3229846b50cdc10e31a",
+		"removedPixels": 384942
+	}
 }

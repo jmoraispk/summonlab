@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-braced-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-braced-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1153806,
-		"contentHash": "180f0a2e84323a456133bd13a046f904f2a22e08f34a138f786988a80af2c13a"
+		"bytes": 1934366,
+		"contentHash": "3818d4e630313a262ba8e16f6325c332b6c870185f1d4adb3727da4b98c96ea7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "180f0a2e84323a456133bd13a046f904f2a22e08f34a138f786988a80af2c13a",
+		"postRepairContentHash": "3818d4e630313a262ba8e16f6325c332b6c870185f1d4adb3727da4b98c96ea7",
+		"removedPixels": 384942
+	}
 }

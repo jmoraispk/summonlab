@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-retaliation-ward-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-retaliation-ward-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1166822,
-		"contentHash": "924025e37f9f9936da4828008e26393e8b7c546ad846c00e9a2d9140c1cff709"
+		"bytes": 1844314,
+		"contentHash": "754d45a7619e9f3780aa1b69195b27eeab546a79c838b7d1ae93f367c103d7a5"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "924025e37f9f9936da4828008e26393e8b7c546ad846c00e9a2d9140c1cff709",
+		"postRepairContentHash": "754d45a7619e9f3780aa1b69195b27eeab546a79c838b7d1ae93f367c103d7a5",
+		"removedPixels": 384942
+	}
 }

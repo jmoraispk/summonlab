@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-the-last-wall-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-the-last-wall-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1439946,
-		"contentHash": "268c0217d556a7a6c52b027f5481ccdcfa901798d7c73fe8af101c882567d2d7"
+		"bytes": 2089243,
+		"contentHash": "db81a70bf74bbf696c9bc6b32a202cecd7e36b52693454c92c6fe7288d7ca39d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "268c0217d556a7a6c52b027f5481ccdcfa901798d7c73fe8af101c882567d2d7",
+		"postRepairContentHash": "db81a70bf74bbf696c9bc6b32a202cecd7e36b52693454c92c6fe7288d7ca39d",
+		"removedPixels": 384942
+	}
 }

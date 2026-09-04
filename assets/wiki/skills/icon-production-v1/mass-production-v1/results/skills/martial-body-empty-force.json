@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-empty-force-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-empty-force-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 935267,
-		"contentHash": "3b838a4c80de4af20fe6f113de67f13b2be8f639928c195295b5badbbf558696"
+		"bytes": 1776971,
+		"contentHash": "99f05225480932eebda206f7d763ea41b5a76b7ef031bd1fb8290ddeb7cb2d50"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3b838a4c80de4af20fe6f113de67f13b2be8f639928c195295b5badbbf558696",
+		"postRepairContentHash": "99f05225480932eebda206f7d763ea41b5a76b7ef031bd1fb8290ddeb7cb2d50",
+		"removedPixels": 384942
+	}
 }

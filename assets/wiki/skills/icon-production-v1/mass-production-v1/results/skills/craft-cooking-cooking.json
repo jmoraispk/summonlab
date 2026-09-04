@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:cooking:cooking",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-cooking-cooking.json",
+	"promptHash": "51da5f6d71ee655e8be64a299a5bd123d4320a5625543ecc5f372b3a396f06db",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-shared-meal.png",
+			"contentHash": "278b6aaedd16b8df6d773598497f72a03f35f2ed267d11888f2a2b5417711842"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-cooking-cooking-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1928249,
+		"contentHash": "11b2f54ab06d0124c592cbecde63abdf1ab9965c5ed4eabc54c273f4d08ed752"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-cooking.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1750907,
+		"contentHash": "4e7839cbde03e6a4c30e0659f29e0593c06275c05562365cffe20273e511aaf9"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ff2f9b40f96136ea49c89eac13af25b7899a7987ce98b5d26d1db5a33ffdddc5",
+		"postRepairContentHash": "4e7839cbde03e6a4c30e0659f29e0593c06275c05562365cffe20273e511aaf9",
+		"removedPixels": 384942
+	}
+}

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-thousand-silent-deaths-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-thousand-silent-deaths-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1117480,
-		"contentHash": "0d398b1d00b253810200bee68adbf4e204c37bfe2ef02661ebb2ff9fdc636816"
+		"bytes": 1909400,
+		"contentHash": "e385b7c277b7994bb4a25642b53951f7d3711f14e0ae058abd70e0da40ed80bf"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0d398b1d00b253810200bee68adbf4e204c37bfe2ef02661ebb2ff9fdc636816",
+		"postRepairContentHash": "e385b7c277b7994bb4a25642b53951f7d3711f14e0ae058abd70e0da40ed80bf",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-siege-bolt-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-siege-bolt-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1141473,
-		"contentHash": "2b5025513ff6b1f4242f8fb1cb963b7430f45bbf7029928fd86c24493053267d"
+		"bytes": 1946934,
+		"contentHash": "4f8fa65b588e681de5978d4b23a5ae395117574eb7492f14409d13e0768429f7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2b5025513ff6b1f4242f8fb1cb963b7430f45bbf7029928fd86c24493053267d",
+		"postRepairContentHash": "4f8fa65b588e681de5978d4b23a5ae395117574eb7492f14409d13e0768429f7",
+		"removedPixels": 384942
+	}
 }

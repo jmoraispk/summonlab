@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-polehammer-handling-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-polehammer-handling-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 982217,
-		"contentHash": "05917c823f76682673798fa1feb9a3c1f95fa9bab20d48c597a27e8d26dc6fc0"
+		"bytes": 1731543,
+		"contentHash": "6687d54ac72da48734402670004e510503383d45e5b01b5661e24736dc3631ca"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "05917c823f76682673798fa1feb9a3c1f95fa9bab20d48c597a27e8d26dc6fc0",
+		"postRepairContentHash": "6687d54ac72da48734402670004e510503383d45e5b01b5661e24736dc3631ca",
+		"removedPixels": 384942
+	}
 }

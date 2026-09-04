@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-grab-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-grab-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 996947,
-		"contentHash": "cd1fc097afbc6ac55b3a4ddda80f0261f7a293d9b9a9ceba69c10fe844666503"
+		"bytes": 1876857,
+		"contentHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cd1fc097afbc6ac55b3a4ddda80f0261f7a293d9b9a9ceba69c10fe844666503",
+		"postRepairContentHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2",
+		"removedPixels": 384942
+	}
 }

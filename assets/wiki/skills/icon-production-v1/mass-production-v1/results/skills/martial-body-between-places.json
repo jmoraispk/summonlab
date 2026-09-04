@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-between-places-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-between-places-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1036843,
-		"contentHash": "e901135e370d9068d48cfea0927fe020e078311ca81e344b21043248ea866d98"
+		"bytes": 1876879,
+		"contentHash": "cbfca81eaa43c1c42aeae1697bd8756f79aa05739fe606f98369bc9d05886e1c"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e901135e370d9068d48cfea0927fe020e078311ca81e344b21043248ea866d98",
+		"postRepairContentHash": "cbfca81eaa43c1c42aeae1697bd8756f79aa05739fe606f98369bc9d05886e1c",
+		"removedPixels": 384942
+	}
 }

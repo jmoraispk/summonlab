@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-aimed-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-aimed-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 728093,
-		"contentHash": "9fc448a52b5fdd494e8f0cc591885d66dcd9c7053cad61876760d0b9f8ca31d2"
+		"bytes": 1547358,
+		"contentHash": "be3c1e67269a43171c13fabb63ca7e8abff7f8cd8a925767a70f79539040a01a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9fc448a52b5fdd494e8f0cc591885d66dcd9c7053cad61876760d0b9f8ca31d2",
+		"postRepairContentHash": "be3c1e67269a43171c13fabb63ca7e8abff7f8cd8a925767a70f79539040a01a",
+		"removedPixels": 384942
+	}
 }

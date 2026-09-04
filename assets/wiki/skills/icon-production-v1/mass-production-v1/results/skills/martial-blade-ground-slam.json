@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-ground-slam-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-ground-slam-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1306189,
-		"contentHash": "beea8d056fa66aac73af244bd754da5198dc319a0ffc3d39835dcde2bca24979"
+		"bytes": 1915026,
+		"contentHash": "26f950df301cc1d7b6411f9287adeffb8303e1359a23d78cb06c75140f6b3f6f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "beea8d056fa66aac73af244bd754da5198dc319a0ffc3d39835dcde2bca24979",
+		"postRepairContentHash": "26f950df301cc1d7b6411f9287adeffb8303e1359a23d78cb06c75140f6b3f6f",
+		"removedPixels": 384942
+	}
 }

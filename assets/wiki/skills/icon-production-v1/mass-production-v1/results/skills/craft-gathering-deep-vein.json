@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:deep-vein",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-deep-vein.json",
+	"promptHash": "dc604f377e0cae775a001e231a003fdbf4bce7296d24bbe2d0eca8c8c818a87a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-mining.png",
+			"contentHash": "26a2900c50f477f1bcd714cf9e360c255a06e433490579223df89ec935b5de6a"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-prospecting.png",
+			"contentHash": "89d7298bdfbccc684a1117c55ec732cf289fc4edd6f2d6035bd2d02efef42b4e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-deep-vein-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2243444,
+		"contentHash": "367352f97a9c702162497ecd18aa450a811c71f1b032449a9df721235e6c12fd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-deep-vein.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1931362,
+		"contentHash": "f9ac9c5ce008a848b666a5bef315dbe0ec0615c809c268e91fc6a932228d33f0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "41717b798adc8673d9d6911dc4a8cd9b38bd94dd6a9cf3a236e980cca12ff506",
+		"postRepairContentHash": "f9ac9c5ce008a848b666a5bef315dbe0ec0615c809c268e91fc6a932228d33f0",
+		"removedPixels": 384942
+	}
+}

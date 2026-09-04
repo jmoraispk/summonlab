@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-grip-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-grip-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 995899,
-		"contentHash": "1111900394bc8bb2d718889f3984afb0693fffd58a0c4fca1b8cf34e1f3ec43b"
+		"bytes": 1732825,
+		"contentHash": "0db3a0476292351db9519cc8660d5d30ceb7f3c50b7a371e8f46ee769f32a3ac"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1111900394bc8bb2d718889f3984afb0693fffd58a0c4fca1b8cf34e1f3ec43b",
+		"postRepairContentHash": "0db3a0476292351db9519cc8660d5d30ceb7f3c50b7a371e8f46ee769f32a3ac",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-shield-throw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-shield-throw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 995654,
-		"contentHash": "95dd4f83870add670f8410f72cae951520cdc486657f0edf2106199b170787e4"
+		"bytes": 1680181,
+		"contentHash": "834f46797abc62d5b495a4ce7e56dbdd45ec856c9fa37b1670a3f752c3c4c5d7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "95dd4f83870add670f8410f72cae951520cdc486657f0edf2106199b170787e4",
+		"postRepairContentHash": "834f46797abc62d5b495a4ce7e56dbdd45ec856c9fa37b1670a3f752c3c4c5d7",
+		"removedPixels": 384942
+	}
 }

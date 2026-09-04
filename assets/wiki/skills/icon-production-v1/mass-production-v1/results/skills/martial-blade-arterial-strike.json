@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-arterial-strike-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-arterial-strike-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1155771,
-		"contentHash": "b0af3ae59642deffaa7ebbbfe527cc5f4d166097020e77c4f899618b1606731a"
+		"bytes": 1905750,
+		"contentHash": "ee4d48173a9beb3ac05ff6f8003eda5ccebc34f05ec5842ccb75cb1b04d9212f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b0af3ae59642deffaa7ebbbfe527cc5f4d166097020e77c4f899618b1606731a",
+		"postRepairContentHash": "ee4d48173a9beb3ac05ff6f8003eda5ccebc34f05ec5842ccb75cb1b04d9212f",
+		"removedPixels": 384942
+	}
 }

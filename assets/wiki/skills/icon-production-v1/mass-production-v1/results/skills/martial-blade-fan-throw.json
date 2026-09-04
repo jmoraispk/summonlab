@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-fan-throw-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-fan-throw-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 895130,
-		"contentHash": "6f5c1a5d759466db3c7f90eab4e04cc849cb954f4eeb9c9541c7bd999126f064"
+		"bytes": 1702835,
+		"contentHash": "eb98faa1b28a87375e14f83d3d8b1186c8827474389d7ccec0b0087157c657b0"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6f5c1a5d759466db3c7f90eab4e04cc849cb954f4eeb9c9541c7bd999126f064",
+		"postRepairContentHash": "eb98faa1b28a87375e14f83d3d8b1186c8827474389d7ccec0b0087157c657b0",
+		"removedPixels": 384942
+	}
 }

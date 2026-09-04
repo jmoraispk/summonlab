@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:stoneshape",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stoneshape.json",
+	"promptHash": "4654096c866af9102748bed48a60fb689a6978de60f2d99d3b82cf3f0e7a12f8",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-shape.png",
+			"contentHash": "6813ae2ec94c1e702cdac3cc1b3e9577dcc9a926d9ac4354726531d83237fd00"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-stoneshape-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2263079,
+		"contentHash": "87a2933844d7cd023d59d837e9aca837660c29775a8642200c25aa6ed5025341"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-stoneshape.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1879110,
+		"contentHash": "8159cacd65d0dcc684e75061540de6c17de7b948a9739968e014523d0b6b84af"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "29b6ddf40f648ecc1905857915721bad734ef4e2631d203fdf1931fe15b8d48c",
+		"postRepairContentHash": "8159cacd65d0dcc684e75061540de6c17de7b948a9739968e014523d0b6b84af",
+		"removedPixels": 384942
+	}
+}

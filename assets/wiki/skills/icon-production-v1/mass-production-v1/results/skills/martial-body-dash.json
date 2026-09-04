@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-dash-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-dash-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 920141,
-		"contentHash": "1508d00088adc5d9f269d3a237f67f811e5ad8a00af04ee60b1f0da14590babe"
+		"bytes": 1656325,
+		"contentHash": "6f658e3da48c4a0613836fd5e2f0be028b28380c4d16b693d394cbd98756b770"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1508d00088adc5d9f269d3a237f67f811e5ad8a00af04ee60b1f0da14590babe",
+		"postRepairContentHash": "6f658e3da48c4a0613836fd5e2f0be028b28380c4d16b693d394cbd98756b770",
+		"removedPixels": 384942
+	}
 }

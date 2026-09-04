@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-perfect-arc-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-perfect-arc-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1090488,
-		"contentHash": "25ba071e56905577d9d65940a7e6ae1d6bab8351cdb60fa6defcfc74c314573a"
+		"bytes": 1910562,
+		"contentHash": "73fc58bafa339c7cca22627ec48930a1b6a51b389d512e997e12591c2cb57960"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "25ba071e56905577d9d65940a7e6ae1d6bab8351cdb60fa6defcfc74c314573a",
+		"postRepairContentHash": "73fc58bafa339c7cca22627ec48930a1b6a51b389d512e997e12591c2cb57960",
+		"removedPixels": 384942
+	}
 }

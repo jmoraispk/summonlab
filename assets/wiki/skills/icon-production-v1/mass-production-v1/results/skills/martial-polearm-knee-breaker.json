@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-knee-breaker-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-knee-breaker-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1078672,
-		"contentHash": "0c4d277c6e3442efbd5e06543b4043271fd6ef71f8b3bcafc3020e48fc059fab"
+		"bytes": 1831739,
+		"contentHash": "0b93b09b9d6983ad9bbcf71f200697313edb65e313637e1362568d4f3e3d933a"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "0c4d277c6e3442efbd5e06543b4043271fd6ef71f8b3bcafc3020e48fc059fab",
+		"postRepairContentHash": "0b93b09b9d6983ad9bbcf71f200697313edb65e313637e1362568d4f3e3d933a",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-ghost-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-ghost-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1048056,
-		"contentHash": "84bc0685b421c29afa769ce7be6f592e3025ecf232006f5342ff9ac5f7105660"
+		"bytes": 1707493,
+		"contentHash": "e3cd8bf21e3e5484c112dca099b9c273150bb49ba275c53f1046aa42fb570c75"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "84bc0685b421c29afa769ce7be6f592e3025ecf232006f5342ff9ac5f7105660",
+		"postRepairContentHash": "e3cd8bf21e3e5484c112dca099b9c273150bb49ba275c53f1046aa42fb570c75",
+		"removedPixels": 384942
+	}
 }

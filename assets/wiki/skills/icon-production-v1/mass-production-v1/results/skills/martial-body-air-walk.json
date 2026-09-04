@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-air-walk-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-air-walk-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 966104,
-		"contentHash": "8159f1c549051693799fc892b6feeb28260ac7873efaef573f05181245d74218"
+		"bytes": 1788771,
+		"contentHash": "863e424c370b46cf576fe841afa116b91ec960d5e915d316c25ee36aa632679d"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8159f1c549051693799fc892b6feeb28260ac7873efaef573f05181245d74218",
+		"postRepairContentHash": "863e424c370b46cf576fe841afa116b91ec960d5e915d316c25ee36aa632679d",
+		"removedPixels": 384942
+	}
 }

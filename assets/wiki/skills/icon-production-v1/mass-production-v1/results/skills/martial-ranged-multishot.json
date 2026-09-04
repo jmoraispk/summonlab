@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-multishot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-multishot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 790276,
-		"contentHash": "07e36a15c5cc9a75f0a6d43fed400ae05927cc794d0708418c8e146e05a4d014"
+		"bytes": 1727934,
+		"contentHash": "87f374807040f054e6c25cb4e94e96629321b684e42e495ce9d8e6aecec937fc"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "07e36a15c5cc9a75f0a6d43fed400ae05927cc794d0708418c8e146e05a4d014",
+		"postRepairContentHash": "87f374807040f054e6c25cb4e94e96629321b684e42e495ce9d8e6aecec937fc",
+		"removedPixels": 384942
+	}
 }

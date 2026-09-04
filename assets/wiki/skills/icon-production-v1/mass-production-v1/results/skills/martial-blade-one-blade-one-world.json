@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-one-blade-one-world-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-one-blade-one-world-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1301739,
-		"contentHash": "34554987d04be02c6dcce6989e7e5d82241c9629797563294ca5657d38f1a74a"
+		"bytes": 1903032,
+		"contentHash": "af6eccdff56f1fd49ed176ea99e8dea61ae9680f4fc083725e5e62beb0e418bd"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "34554987d04be02c6dcce6989e7e5d82241c9629797563294ca5657d38f1a74a",
+		"postRepairContentHash": "af6eccdff56f1fd49ed176ea99e8dea61ae9680f4fc083725e5e62beb0e418bd",
+		"removedPixels": 384942
+	}
 }

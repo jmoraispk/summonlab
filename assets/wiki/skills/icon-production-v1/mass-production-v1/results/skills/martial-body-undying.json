@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-undying-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-undying-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1196518,
-		"contentHash": "782f2a76f343dbe811547e7213b90b8edddf803587fc5017b7a5581efd698d52"
+		"bytes": 1837612,
+		"contentHash": "b5762793888dfc674bd5d38c80189e18ff5d6c65992d2d545ff3f7eb87789366"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "782f2a76f343dbe811547e7213b90b8edddf803587fc5017b7a5581efd698d52",
+		"postRepairContentHash": "b5762793888dfc674bd5d38c80189e18ff5d6c65992d2d545ff3f7eb87789366",
+		"removedPixels": 384942
+	}
 }

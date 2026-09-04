@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-cover-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-cover-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 822521,
-		"contentHash": "add83ce3881e563b2443ba28a00260156de622136f4d2db1df13bb010672a827"
+		"bytes": 1597855,
+		"contentHash": "8030fd32c663e5bfb58bf6595be97a0aaedf30177b2ab79bef34ca323fc9eb84"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "add83ce3881e563b2443ba28a00260156de622136f4d2db1df13bb010672a827",
+		"postRepairContentHash": "8030fd32c663e5bfb58bf6595be97a0aaedf30177b2ab79bef34ca323fc9eb84",
+		"removedPixels": 384942
+	}
 }

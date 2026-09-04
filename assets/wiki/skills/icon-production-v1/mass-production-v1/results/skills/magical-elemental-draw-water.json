@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:draw-water",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-draw-water.json",
+	"promptHash": "7fca58b96d1980992fdc49cf5a42cad47266aee7d9f6403da4c60d6a425fb1d5",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-projectile.png",
+			"contentHash": "f349c6f13390f83e3dab9e46e08796130cf9b9a4e6cddb638c28ac7e5777d0ea"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-draw-water-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2142634,
+		"contentHash": "3850fde46b8e1fc08b01fcc673ebaec07ce3e8da67c779f2c65304b58a81f586"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-draw-water.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1936688,
+		"contentHash": "725e9bdde34a40abd5500a273c14352b0cb0f75c102d160d4c4f70135c791d66"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a079d91bea5263fea106c5e071b8019c926a147e3733fd28ef58e673b93e0942",
+		"postRepairContentHash": "725e9bdde34a40abd5500a273c14352b0cb0f75c102d160d4c4f70135c791d66",
+		"removedPixels": 384942
+	}
+}

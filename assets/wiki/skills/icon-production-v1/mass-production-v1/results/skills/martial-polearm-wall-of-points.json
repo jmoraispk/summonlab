@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-wall-of-points-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-wall-of-points-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 964410,
-		"contentHash": "f5a45e879d550892ddc235b434572d2a89e906cc0cde4c8edd750b98d473c59f"
+		"bytes": 1669501,
+		"contentHash": "d69effa1b52c8eed4ecbd2d1ed9fc5e35d1db196ed96224d31b78816965d3a1f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f5a45e879d550892ddc235b434572d2a89e906cc0cde4c8edd750b98d473c59f",
+		"postRepairContentHash": "d69effa1b52c8eed4ecbd2d1ed9fc5e35d1db196ed96224d31b78816965d3a1f",
+		"removedPixels": 384942
+	}
 }

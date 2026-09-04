@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-slash-across-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-slash-across-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 820453,
-		"contentHash": "98d33bb97a2d8c5fdc1765b7a5843ae729720663522c42f87961dd9cbcbda0df"
+		"bytes": 1582154,
+		"contentHash": "d2b6c7cbe9f64125b568f45022ce007bd2b8edcc4ad8b1f8e4858435db1f8d1f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "98d33bb97a2d8c5fdc1765b7a5843ae729720663522c42f87961dd9cbcbda0df",
+		"postRepairContentHash": "d2b6c7cbe9f64125b568f45022ce007bd2b8edcc4ad8b1f8e4858435db1f8d1f",
+		"removedPixels": 384942
+	}
 }

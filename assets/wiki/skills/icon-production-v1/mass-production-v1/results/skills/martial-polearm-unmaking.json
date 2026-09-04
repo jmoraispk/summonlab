@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-unmaking-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-unmaking-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1276571,
-		"contentHash": "47d964e6cbe71cdb596df0f9cef5aac27c86acea8baf7f71b54117c7afac2813"
+		"bytes": 1941635,
+		"contentHash": "133b5b8ab6afe00a4cffda535248614a4e8224b82a79ee738b5004b3c6532d3b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "47d964e6cbe71cdb596df0f9cef5aac27c86acea8baf7f71b54117c7afac2813",
+		"postRepairContentHash": "133b5b8ab6afe00a4cffda535248614a4e8224b82a79ee738b5004b3c6532d3b",
+		"removedPixels": 384942
+	}
 }

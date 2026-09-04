@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-footing-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-footing-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1025191,
-		"contentHash": "eefc8e1216a2e0f6c1fff8d2284f466623a2dd129a27e0a01eafaec0aefe3482"
+		"bytes": 1846578,
+		"contentHash": "381ae55af2a411007ac2dfc0551c7a1e595a3134a300dba2f1c9e96026614195"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "eefc8e1216a2e0f6c1fff8d2284f466623a2dd129a27e0a01eafaec0aefe3482",
+		"postRepairContentHash": "381ae55af2a411007ac2dfc0551c7a1e595a3134a300dba2f1c9e96026614195",
+		"removedPixels": 384942
+	}
 }

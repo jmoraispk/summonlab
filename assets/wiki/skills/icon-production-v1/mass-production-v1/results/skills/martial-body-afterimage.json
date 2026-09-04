@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-afterimage-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-afterimage-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1042819,
-		"contentHash": "417fd798af363c9bec218a37c12f6a3c79f5674c498c97d4a894a267fbd2d8a4"
+		"bytes": 1810318,
+		"contentHash": "ec5b58e6c8f181ab2d6ed4a8d3b77bcb7d10c321d1de212c08542c0123104965"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "417fd798af363c9bec218a37c12f6a3c79f5674c498c97d4a894a267fbd2d8a4",
+		"postRepairContentHash": "ec5b58e6c8f181ab2d6ed4a8d3b77bcb7d10c321d1de212c08542c0123104965",
+		"removedPixels": 384942
+	}
 }

@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-sweep-low-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-sweep-low-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1056625,
-		"contentHash": "22f0b1701e10d63b80899d3f0a03ea8d6c996b8ae6846f5cf328ec503e841671"
+		"bytes": 1818018,
+		"contentHash": "9f12018a6e834e022f41f5762cb20f5faf3db54ecb8cbb51fedb986c1eabfd8b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "22f0b1701e10d63b80899d3f0a03ea8d6c996b8ae6846f5cf328ec503e841671",
+		"postRepairContentHash": "9f12018a6e834e022f41f5762cb20f5faf3db54ecb8cbb51fedb986c1eabfd8b",
+		"removedPixels": 384942
+	}
 }

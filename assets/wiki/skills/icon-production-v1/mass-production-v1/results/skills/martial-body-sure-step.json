@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-sure-step-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-sure-step-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 913685,
-		"contentHash": "b41380f554604c538f739b9b25ad5bbbf0e2b52c759f5acf02d6eeaf0a4e5c1f"
+		"bytes": 1742333,
+		"contentHash": "4e94610ddf8ca3bbac7a6bbb9440581074ea45e95ffa1fec30a899856b986d41"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b41380f554604c538f739b9b25ad5bbbf0e2b52c759f5acf02d6eeaf0a4e5c1f",
+		"postRepairContentHash": "4e94610ddf8ca3bbac7a6bbb9440581074ea45e95ffa1fec30a899856b986d41",
+		"removedPixels": 384942
+	}
 }

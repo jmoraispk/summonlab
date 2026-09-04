@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-arcing-volley-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-arcing-volley-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1002401,
-		"contentHash": "ad5068e7520d03ac7eb5adfb7183c52aaac087d5564e177b23c8f4fd0bb978e6"
+		"bytes": 1759723,
+		"contentHash": "2952ee4518149fee60eb97c6f5315b78759e789782c984647a814e68be67826b"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ad5068e7520d03ac7eb5adfb7183c52aaac087d5564e177b23c8f4fd0bb978e6",
+		"postRepairContentHash": "2952ee4518149fee60eb97c6f5315b78759e789782c984647a814e68be67826b",
+		"removedPixels": 384942
+	}
 }

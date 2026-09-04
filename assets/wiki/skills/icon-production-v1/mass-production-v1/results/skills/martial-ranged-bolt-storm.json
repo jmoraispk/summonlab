@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-bolt-storm-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-bolt-storm-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 943369,
-		"contentHash": "c2bb560f0384d9450cfd7d4ac69405910a713180a0ceabdc7cda5ca440f4d33b"
+		"bytes": 1772244,
+		"contentHash": "920c5ecd3a272c646663d30a74745fa03a56d4ef007ca18482088da3853cf99e"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c2bb560f0384d9450cfd7d4ac69405910a713180a0ceabdc7cda5ca440f4d33b",
+		"postRepairContentHash": "920c5ecd3a272c646663d30a74745fa03a56d4ef007ca18482088da3853cf99e",
+		"removedPixels": 384942
+	}
 }

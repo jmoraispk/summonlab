@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-mountain-s-weight-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-mountain-s-weight-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1291531,
-		"contentHash": "f52338580e075d4b39ccb419653791fb7a61c31e84413a16a80582ca1b872e4c"
+		"bytes": 2044856,
+		"contentHash": "4e2ff5c1b24dc49e1d599734f9b759f128fe83aa50f7da697442335947dc4b75"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f52338580e075d4b39ccb419653791fb7a61c31e84413a16a80582ca1b872e4c",
+		"postRepairContentHash": "4e2ff5c1b24dc49e1d599734f9b759f128fe83aa50f7da697442335947dc4b75",
+		"removedPixels": 384942
+	}
 }

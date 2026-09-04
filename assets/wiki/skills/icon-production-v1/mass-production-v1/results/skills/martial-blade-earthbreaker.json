@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-earthbreaker-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-earthbreaker-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1208727,
-		"contentHash": "afbf7ff0288a6b8b06734306c878f8fbd1894b9dc3f7751a0a497ec5f4335029"
+		"bytes": 1847485,
+		"contentHash": "f04b1ecd5de352282025829ecb4fbfc961f4efd0e7e6ce2f64eed66479a73cd4"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "afbf7ff0288a6b8b06734306c878f8fbd1894b9dc3f7751a0a497ec5f4335029",
+		"postRepairContentHash": "f04b1ecd5de352282025829ecb4fbfc961f4efd0e7e6ce2f64eed66479a73cd4",
+		"removedPixels": 384942
+	}
 }

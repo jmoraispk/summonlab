@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:warmth",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-warmth.json",
+	"promptHash": "a9d705f87f6aa896abcc86d585094b80c6995212590a5f6198460f1ea92bed56",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-kindling.png",
+			"contentHash": "53f54dda6d13cbff8608ec09ce8632d7348d49a16640c0060040578bbab8d141"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-spark.png",
+			"contentHash": "6ea860393448ee8beb9196503028aa87c4446e55b7d0eb89e721bff6ed23b9f0"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-warmth-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2234346,
+		"contentHash": "f4bdd8bebf78bc7eea561cb69b88d4daf3b210d9aa96868b9bcc56a413ebc833"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-warmth.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2010576,
+		"contentHash": "a355411d13fa11e05516acb03f6e171c3ef540bb3ae946e832d51537067ac7a0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e13804e8984383ff7bbbcaac7de8a86b551f6b3cfc24bca01cfd800fbe15e979",
+		"postRepairContentHash": "a355411d13fa11e05516acb03f6e171c3ef540bb3ae946e832d51537067ac7a0",
+		"removedPixels": 384942
+	}
+}

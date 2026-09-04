@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-piercing-thrust-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-piercing-thrust-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1021072,
-		"contentHash": "469065975b73a3e4411255206d254127187b32628829a3b20a5f9f775abc4bf0"
+		"bytes": 1722969,
+		"contentHash": "050f8589938feaea7433ef673a707ae9520ce56e8d50ec54e623a4bd91db8204"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "469065975b73a3e4411255206d254127187b32628829a3b20a5f9f775abc4bf0",
+		"postRepairContentHash": "050f8589938feaea7433ef673a707ae9520ce56e8d50ec54e623a4bd91db8204",
+		"removedPixels": 384942
+	}
 }

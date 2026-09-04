@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-formless-body-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-formless-body-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1323355,
-		"contentHash": "b66332b54edf1dc985d1d7ee01c8002a611b77fa486b2527c8235facb096ad9c"
+		"bytes": 1832816,
+		"contentHash": "7aca326cc02eaf21758b287d3afb4045f4e126e495e06db5363134aa88e9ff07"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b66332b54edf1dc985d1d7ee01c8002a611b77fa486b2527c8235facb096ad9c",
+		"postRepairContentHash": "7aca326cc02eaf21758b287d3afb4045f4e126e495e06db5363134aa88e9ff07",
+		"removedPixels": 384942
+	}
 }

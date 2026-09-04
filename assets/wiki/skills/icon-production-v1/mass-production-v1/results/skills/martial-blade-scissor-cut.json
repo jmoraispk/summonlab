@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-scissor-cut-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-scissor-cut-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 955402,
-		"contentHash": "895420ed73047b1a886ef4ebdb65582c5ed7f4d43111a446e4932261a3660f2e"
+		"bytes": 1759214,
+		"contentHash": "f92c78be40639d63748c6b17bed17a7d2ee6fcf0793e6e464573300cc9837fe7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "895420ed73047b1a886ef4ebdb65582c5ed7f4d43111a446e4932261a3660f2e",
+		"postRepairContentHash": "f92c78be40639d63748c6b17bed17a7d2ee6fcf0793e6e464573300cc9837fe7",
+		"removedPixels": 384942
+	}
 }

@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-wall-stance-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-wall-stance-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1090293,
-		"contentHash": "4f5a822ef86dca8ce3d29655e01074361e3c243da847c0af5e13d1f3f3ddf263"
+		"bytes": 1740397,
+		"contentHash": "9426db0298e18e99a06f506513cacaad12a70095b6c215a163beba697be1ad4f"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4f5a822ef86dca8ce3d29655e01074361e3c243da847c0af5e13d1f3f3ddf263",
+		"postRepairContentHash": "9426db0298e18e99a06f506513cacaad12a70095b6c215a163beba697be1ad4f",
+		"removedPixels": 384942
+	}
 }

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:alchemy:philosopher-s-work",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-alchemy-philosopher-s-work.json",
+	"promptHash": "cac24bb05d1eba0cfb98fb3ad3f7893a63f365f96743b07bf9cdf8c4631c25fc",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-refinement.png",
+			"contentHash": "48db7cfed2df20e568a8c924e2306f70d37c212c4c00d53e0939c4834355b0b7"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-transmutation.png",
+			"contentHash": "749f374d608515ac8832b6991af83db6203052d747481d71ceb2d90d59488abf"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-alchemy-philosopher-s-work-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2202064,
+		"contentHash": "0c6a13f4c55ee1ca86ed7deaaef5a81b355a47d279b663b38ff40a0dffb0b9e0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-philosopher-s-work.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1968096,
+		"contentHash": "9ca05acd6647fbc0d836066a8d852d7a007e8471c410f376ba3037f30a33ecb4"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9b1828a9172f3359a056d73b211ae6dae0c68aee3634cb74c23d0bd2d25f6f14",
+		"postRepairContentHash": "9ca05acd6647fbc0d836066a8d852d7a007e8471c410f376ba3037f30a33ecb4",
+		"removedPixels": 384942
+	}
+}

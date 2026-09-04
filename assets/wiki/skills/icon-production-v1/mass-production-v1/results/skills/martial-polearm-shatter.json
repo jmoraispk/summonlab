@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-shatter-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-shatter-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1342724,
-		"contentHash": "2ee3eb6bf9551eebff9d0bcaca53254a8390aced90beffa038c5091e44a4a63b"
+		"bytes": 2042834,
+		"contentHash": "e3334264311ed3db95ee23922e5b7bf08b40d065547c365a198cf0ea2df9e495"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2ee3eb6bf9551eebff9d0bcaca53254a8390aced90beffa038c5091e44a4a63b",
+		"postRepairContentHash": "e3334264311ed3db95ee23922e5b7bf08b40d065547c365a198cf0ea2df9e495",
+		"removedPixels": 384942
+	}
 }

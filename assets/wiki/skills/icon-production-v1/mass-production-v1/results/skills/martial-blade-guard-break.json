@@ -20,7 +20,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-guard-break-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-guard-break-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -34,9 +34,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 880384,
-		"contentHash": "bb914ba218d176b1dfa3b6ffaae1972c4bd06bced2d535e3f02abca981e6dfbf"
+		"bytes": 1805473,
+		"contentHash": "bab60782d905df3c016d31f02524bb2331dfeb5d0f9cc9e6ebf80e8bfd7baec7"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "bb914ba218d176b1dfa3b6ffaae1972c4bd06bced2d535e3f02abca981e6dfbf",
+		"postRepairContentHash": "bab60782d905df3c016d31f02524bb2331dfeb5d0f9cc9e6ebf80e8bfd7baec7",
+		"removedPixels": 384942
+	}
 }

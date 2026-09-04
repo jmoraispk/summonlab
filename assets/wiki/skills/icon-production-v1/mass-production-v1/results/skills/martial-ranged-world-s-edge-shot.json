@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-world-s-edge-shot-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-world-s-edge-shot-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1234950,
-		"contentHash": "f0e4a08de636330d7215b6b1df35321ad52f8924a9ee83cd9811ba7dae39d90e"
+		"bytes": 2031540,
+		"contentHash": "bd17389c9e442a44fb4343703b1cd9e42993bcb95e97a1a2e13b97564228a961"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f0e4a08de636330d7215b6b1df35321ad52f8924a9ee83cd9811ba7dae39d90e",
+		"postRepairContentHash": "bd17389c9e442a44fb4343703b1cd9e42993bcb95e97a1a2e13b97564228a961",
+		"removedPixels": 384942
+	}
 }

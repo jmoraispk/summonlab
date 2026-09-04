@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-bulwark-swing-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-bulwark-swing-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -38,9 +38,15 @@
 		"width": 1024,
 		"height": 1024,
 		"alphaMode": "rgba",
-		"bytes": 1086610,
-		"contentHash": "1fd823355b0a43b8bd759502f8cd1203899fe8a904361a344295eb54bcffea72"
+		"bytes": 1940964,
+		"contentHash": "c9a5f295cfe8bff7f78770ec6d303a4596bf20dd64e3682dd3e7f6990d85fd05"
 	},
-	"processing": "edge-key-and-fit-1024",
-	"attemptCount": 1
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1fd823355b0a43b8bd759502f8cd1203899fe8a904361a344295eb54bcffea72",
+		"postRepairContentHash": "c9a5f295cfe8bff7f78770ec6d303a4596bf20dd64e3682dd3e7f6990d85fd05",
+		"removedPixels": 384942
+	}
 }
