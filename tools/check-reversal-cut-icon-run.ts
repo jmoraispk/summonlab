@@ -83,6 +83,8 @@ const FRAME_CORRECTION_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json';
 const FRAME_FEEDBACK_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json';
+const APPROVED_FRAME_COMPLETION_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/completion.json';
 
 const ActivationAssetSchema = BoundFileSchema.extend({
 	mediaType: z.enum(['image/png', 'image/webp']),
@@ -151,6 +153,56 @@ const FrameFeedbackSchema = z.object({
 	requiredFrameAuthority: BoundFileSchema
 });
 
+const ApprovedFrameCompletionSchema = z.object({
+	schemaVersion: z.literal('skill-icon-approved-frame-review-v1'),
+	runId: z.literal('reversal-cut-v6'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	status: z.literal('candidate'),
+	visualApproval: BoundFileSchema,
+	authorities: z.object({
+		source: BoundFileSchema,
+		geometry: BoundFileSchema,
+		approvedArtMaster: BoundFileSchema,
+		backing: BoundFileSchema
+	}),
+	registration: z.object({
+		profile: z.literal('owner-selected-a-frame-centered-scale-mask-v1'),
+		scale: z.literal(1.14),
+		canvas: z.tuple([z.literal(1024), z.literal(1024)]),
+		matte: z.literal('#00FF00'),
+		normalizationProfile: z.literal('skill-icon-green-key-role-mask-v3'),
+		geometryDisposition: z.literal('canonical-role-mask-applied-after-centered-registration')
+	}),
+	inspection: z.object({
+		contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+		violations: z.array(z.string()).length(0)
+	}),
+	outputs: z.object({
+		frame: ActivationAssetSchema,
+		composite: ActivationAssetSchema,
+		recognition: ActivationAssetSchema
+	}),
+	promotionStatus: z.literal('pending-owner-review'),
+	runtimeUpdated: z.literal(false),
+	selfPromoted: z.literal(false),
+	supersedes: z.literal(
+		'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json'
+	)
+});
+
+const ApprovedFrameVisualReviewSchema = z.object({
+	schemaVersion: z.literal('skill-icon-frame-visual-approval-v1'),
+	approvalId: z.literal('reversal-cut-a-frame-visual-approval-v1'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	reviewerRole: z.literal('owner'),
+	decision: z.literal('accepted'),
+	acceptedSource: ActivationAssetSchema.extend({
+		width: z.literal(1254),
+		height: z.literal(1254),
+		alphaMode: z.literal('rgb')
+	})
+});
+
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -174,8 +226,13 @@ export interface ReversalCutIconRunReport {
 	readonly individualAttemptCount: 2;
 	readonly activationStatus: 'rejected-frame';
 	readonly activationId: 'martial-blade-reversal-cut-activation-v2';
-	readonly correctionStatus: 'candidate';
+	readonly correctionStatus: 'superseded';
 	readonly correctionId: 'martial-blade-reversal-cut-frame-correction-v1';
+	readonly approvedFrameStatus: 'candidate';
+	readonly approvedFrameRunId: 'reversal-cut-v6';
+	readonly frameVisualDecision: 'accepted';
+	readonly framePromotionStatus: 'pending-owner-review';
+	readonly approvedFrameHash: string;
 	readonly runtimeSizes: readonly [512, 256, 128];
 }
 
@@ -216,6 +273,9 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	const activation = ActivationSchema.parse(JSON.parse(activationBytes.toString('utf8')));
 	const correction = FrameCorrectionSchema.parse(
 		JSON.parse(await readFile(path.join(root, FRAME_CORRECTION_PATH), 'utf8'))
+	);
+	const approvedFrame = ApprovedFrameCompletionSchema.parse(
+		JSON.parse(await readFile(path.join(root, APPROVED_FRAME_COMPLETION_PATH), 'utf8'))
 	);
 	const receipt = SkillIconPromotionReceiptSchema.parse(
 		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
@@ -295,6 +355,31 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		readBound(root, correction.outputs.recognition)
 	]);
 	const frameFeedback = FrameFeedbackSchema.parse(JSON.parse(frameFeedbackBytes.toString('utf8')));
+	const [approvedFrameReviewBytes] = await Promise.all([
+		readBound(root, approvedFrame.visualApproval),
+		readBound(root, approvedFrame.authorities.source),
+		readBound(root, approvedFrame.authorities.geometry),
+		readBound(root, approvedFrame.authorities.approvedArtMaster),
+		readBound(root, approvedFrame.authorities.backing),
+		readBound(root, approvedFrame.outputs.frame),
+		readBound(root, approvedFrame.outputs.composite),
+		readBound(root, approvedFrame.outputs.recognition)
+	]);
+	const approvedFrameReview = ApprovedFrameVisualReviewSchema.parse(
+		JSON.parse(approvedFrameReviewBytes.toString('utf8'))
+	);
+	if (
+		approvedFrameReview.targetId !== approvedFrame.targetId ||
+		approvedFrameReview.acceptedSource.path !== approvedFrame.authorities.source.path ||
+		approvedFrameReview.acceptedSource.contentHash !==
+			approvedFrame.authorities.source.contentHash ||
+		approvedFrame.inspection.contentHash !== approvedFrame.outputs.frame.contentHash ||
+		approvedFrame.supersedes !== FRAME_CORRECTION_PATH
+	) {
+		throw new Error(
+			'Approved A-frame review does not bind its source, output, and superseded correction'
+		);
+	}
 	if (
 		correction.feedback.path !== FRAME_FEEDBACK_PATH ||
 		correction.priorActivation.path !== ACTIVATION_PATH ||
@@ -364,8 +449,13 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		individualAttemptCount: individualAttempt.attemptCount,
 		activationStatus: 'rejected-frame',
 		activationId: activation.activationId,
-		correctionStatus: correction.status,
+		correctionStatus: 'superseded',
 		correctionId: correction.correctionId,
+		approvedFrameStatus: approvedFrame.status,
+		approvedFrameRunId: approvedFrame.runId,
+		frameVisualDecision: approvedFrameReview.decision,
+		framePromotionStatus: approvedFrame.promotionStatus,
+		approvedFrameHash: approvedFrame.outputs.frame.contentHash,
 		runtimeSizes: [512, 256, 128]
 	};
 }

@@ -30,6 +30,8 @@
 		"activate-reversal-cut-runtime-icon.ts",
 		"activate-reversal-cut-runtime-icon.spec.ts",
 		"prepare-reversal-cut-frame-correction.ts",
+		"materialize-reversal-cut-approved-frame.ts",
+		"materialize-reversal-cut-approved-frame.spec.ts",
 		"check-reversal-cut-icon-run.ts",
 		"check-reversal-cut-icon-run.spec.ts",
 		"validate-skill-icon-assets.ts",
