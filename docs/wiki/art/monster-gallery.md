@@ -7,10 +7,15 @@ None is presented as an approved runtime rig or proof of individual continuity. 
 hashes, generation provenance, and prompts remain in the linked domain catalogs/records.
 
 For canonical family and form identities rather than these historical plates, open the
-[monster database](../creatures/monsters/README.md). It publishes 30 families, 150 T1–T5 forms, and
-750 planned Normal/Fire/Earth/Wind/Water coordinates. The earlier forty classes and their 160 public
+[monster database](../creatures/monsters/README.md). It publishes 38 families, 190 T1–T5 forms, and
+950 Normal/Fire/Earth/Wind/Water coordinates. The earlier forty classes and their 160 public
 images survive only in the database's candidate-only reconciliation records; none is automatically
 eligible as a canonical anchor.
+
+The separate [fauna expansion](../creatures/fauna-family-expansion.md) now provides 200
+owner-approved images and hash-addressed wiki-runtime derivatives across Wolves, Bears, Boars,
+Burrowers, Great Cats, Serpents, Crocodilians, and Raptors. Those assets do not replace the
+historical candidate-only studies below.
 
 ## First progression families
 

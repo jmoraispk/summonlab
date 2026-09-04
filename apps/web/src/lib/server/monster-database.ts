@@ -1,11 +1,17 @@
 import visualIndexJson from '../../../../../docs/wiki/creatures/monsters/visual-index.json';
+import runtimeCatalogJson from '../../../../../assets/enemies/runtime/fauna-family-v1/catalog.json';
 
 export type MonsterTier = 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
 export type MonsterAffinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
 export type MonsterProductionStatus =
 	'planned' | 'planned-provisional-anchor' | 'blocked-on-anchor' | 'earth-bridge-provisional';
 export type MonsterProductionPresentationStatus =
-	'planned' | 'blocked-on-anchor' | 'candidate-only' | 'approved-review' | 'revision-required';
+	| 'planned'
+	| 'blocked-on-anchor'
+	| 'candidate-only'
+	| 'approved-review'
+	| 'revision-required'
+	| 'runtime';
 export type MonsterCandidatePresentationStatus = 'candidate-only';
 export type MonsterCurrentClassDisposition =
 	'map' | 'rename-map' | 'secondary-archetype' | 'fauna' | 'retire';
@@ -50,6 +56,10 @@ export interface MonsterProductionVariant {
 	candidatePath: string;
 	resultPath: string;
 	version: number;
+	approvedPath?: string;
+	runtimePath?: string;
+	runtimePublicUrl?: string;
+	contentHash?: string;
 }
 
 export interface MonsterProductionEntry {
@@ -100,9 +110,9 @@ interface MonsterReconciliationEntry {
 export interface MonsterVisualIndexV2 {
 	schemaVersion: 'summonlab-monster-visual-index-v2';
 	sourceStatus: MonsterVisualIndexSourceStatus;
-	familyCount: 30;
-	formCount: 150;
-	coordinateCount: 750;
+	familyCount: 38;
+	formCount: 190;
+	coordinateCount: 950;
 	currentClassCount: 40;
 	affinities: readonly MonsterAffinity[];
 	families: MonsterProductionFamily[];
@@ -175,14 +185,14 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 	const root = record(input, 'root');
 	literal(root.schemaVersion, ['summonlab-monster-visual-index-v2'] as const, 'schemaVersion');
 	literal(root.sourceStatus, ['canonical-production-plan'] as const, 'sourceStatus');
-	literal(root.familyCount, [30] as const, 'familyCount');
-	literal(root.formCount, [150] as const, 'formCount');
-	literal(root.coordinateCount, [750] as const, 'coordinateCount');
+	literal(root.familyCount, [38] as const, 'familyCount');
+	literal(root.formCount, [190] as const, 'formCount');
+	literal(root.coordinateCount, [950] as const, 'coordinateCount');
 	literal(root.currentClassCount, [40] as const, 'currentClassCount');
 	exactStringArray(root.affinities, MONSTER_AFFINITIES, 'affinities');
 
 	const families = array(root.families, 'families');
-	if (families.length !== 30) throw new Error('Invalid monster visual index family count');
+	if (families.length !== 38) throw new Error('Invalid monster visual index family count');
 	for (const [familyIndex, familyInput] of families.entries()) {
 		const family = record(familyInput, `families[${familyIndex}]`);
 		string(family.familyId, `families[${familyIndex}].familyId`);
@@ -190,7 +200,7 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 		if (
 			!Number.isInteger(family.sourceRaceNumber) ||
 			Number(family.sourceRaceNumber) < 1 ||
-			Number(family.sourceRaceNumber) > 30
+			Number(family.sourceRaceNumber) > 38
 		) {
 			throw new Error(`Invalid monster visual index families[${familyIndex}].sourceRaceNumber`);
 		}
@@ -205,7 +215,7 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 	}
 
 	const monsters = array(root.monsters, 'monsters');
-	if (monsters.length !== 150) throw new Error('Invalid monster visual index monster count');
+	if (monsters.length !== 190) throw new Error('Invalid monster visual index monster count');
 	for (const [monsterIndex, monsterInput] of monsters.entries()) {
 		const monster = record(monsterInput, `monsters[${monsterIndex}]`);
 		for (const field of ['id', 'name', 'familyId', 'familyName', 'role', 'pagePath'] as const) {
@@ -228,7 +238,8 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 					'blocked-on-anchor',
 					'candidate-only',
 					'approved-review',
-					'revision-required'
+					'revision-required',
+					'runtime'
 				] as const,
 				'variant presentationStatus'
 			);
@@ -243,6 +254,16 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 			}
 			if (!Number.isInteger(variant.version) || Number(variant.version) < 1) {
 				throw new Error(`Invalid monster visual index variant version: ${String(variant.version)}`);
+			}
+			if (variant.presentationStatus === 'runtime') {
+				for (const field of [
+					'approvedPath',
+					'runtimePath',
+					'runtimePublicUrl',
+					'contentHash'
+				] as const) {
+					string(variant[field], `runtime variant.${field}`);
+				}
 			}
 		}
 	}
@@ -311,6 +332,82 @@ const legacyRedirectByCurrentClassId = new Map(
 	visualIndex.legacyRoutes.map((route) => [route.currentClassId, route.destination])
 );
 
+type RuntimeCatalogRecord = {
+	coordinateId: string;
+	familyId: string;
+	formId: string;
+	affinity: MonsterAffinity;
+	source: { path: string; sha256: string };
+	runtime: {
+		path: string;
+		publicUrl: string;
+		sha256: string;
+		width: number;
+		height: number;
+	};
+};
+
+export interface MonsterVisualVariant extends MonsterProductionVariant {
+	thumbnailPath: string;
+	approvedPath: string;
+	contentHash: string;
+	width: number;
+	height: number;
+}
+
+export interface MonsterVisualEntry extends Omit<MonsterProductionEntry, 'variants'> {
+	variants: MonsterVisualVariant[];
+}
+
+function buildRuntimeVisuals(): Map<string, MonsterVisualEntry> {
+	const catalog = record(runtimeCatalogJson as unknown, 'runtime catalog');
+	literal(
+		catalog.schemaVersion,
+		['fauna-family-runtime-catalog-v1'] as const,
+		'runtime catalog schemaVersion'
+	);
+	const records = array(catalog.records, 'runtime catalog records') as RuntimeCatalogRecord[];
+	if (records.length !== 200) throw new Error('Invalid fauna runtime catalog record count');
+	const byCoordinate = new Map(records.map((entry) => [entry.coordinateId, entry]));
+	if (byCoordinate.size !== 200) throw new Error('Duplicate fauna runtime catalog coordinate');
+	const visuals = new Map<string, MonsterVisualEntry>();
+	for (const monster of visualIndex.monsters) {
+		if (!monster.variants.every(({ presentationStatus }) => presentationStatus === 'runtime')) {
+			continue;
+		}
+		const variants = monster.variants.map((variant) => {
+			const runtime = byCoordinate.get(`${monster.familyId}/${monster.id}/${variant.affinity}`);
+			if (
+				!runtime ||
+				runtime.familyId !== monster.familyId ||
+				runtime.formId !== monster.id ||
+				runtime.affinity !== variant.affinity ||
+				runtime.source.path !== variant.approvedPath ||
+				runtime.source.sha256 !== variant.contentHash ||
+				runtime.runtime.path !== variant.runtimePath ||
+				runtime.runtime.publicUrl !== variant.runtimePublicUrl ||
+				!Number.isInteger(runtime.runtime.width) ||
+				!Number.isInteger(runtime.runtime.height)
+			) {
+				throw new Error(`Invalid fauna runtime binding: ${monster.id}/${variant.affinity}`);
+			}
+			return {
+				...variant,
+				thumbnailPath: runtime.runtime.publicUrl,
+				approvedPath: runtime.source.path,
+				contentHash: runtime.source.sha256,
+				width: runtime.runtime.width,
+				height: runtime.runtime.height
+			};
+		});
+		visuals.set(`monster.${monster.id}`, { ...monster, variants });
+	}
+	if (visuals.size !== 40) throw new Error('Invalid fauna runtime visual form count');
+	return visuals;
+}
+
+const runtimeVisualByWikiId = buildRuntimeVisuals();
+
 export function getMonsterProductionDatabase(): readonly MonsterProductionEntry[] {
 	return visualIndex.monsters;
 }
@@ -333,7 +430,6 @@ export function getMonsterVisualDatabase(): null {
 	return null;
 }
 
-export function getMonsterVisualEntry(wikiId: string): null {
-	void wikiId;
-	return null;
+export function getMonsterVisualEntry(wikiId: string): MonsterVisualEntry | null {
+	return runtimeVisualByWikiId.get(wikiId) ?? null;
 }

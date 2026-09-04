@@ -10,9 +10,11 @@
 		status: string;
 		presentationStatus: string;
 		thumbnailPath: string;
-		candidatePath: string;
+		approvedPath: string;
 		contentHash: string;
 		version: number;
+		width: number;
+		height: number;
 	};
 
 	type Monster = {
@@ -35,13 +37,13 @@
 	const currentTargets: readonly CurrentAffinity[] = ['fire', 'earth', 'wind', 'water'];
 	const normal = $derived(
 		monster.variants.find(
-			(variant) => variant.affinity === 'normal' && variant.presentationStatus === 'candidate-only'
+			(variant) => variant.affinity === 'normal' && variant.presentationStatus === 'runtime'
 		)
 	);
 	const affinityVariants = $derived(
 		currentTargets.flatMap((target) => {
 			const variant = monster.variants.find(
-				(entry) => entry.affinity === target && entry.presentationStatus === 'candidate-only'
+				(entry) => entry.affinity === target && entry.presentationStatus === 'runtime'
 			);
 			return variant ? [{ ...variant, affinity: currentAffinity(variant.affinity) }] : [];
 		})
@@ -50,8 +52,7 @@
 		currentTargets.filter(
 			(target) =>
 				!monster.variants.some(
-					(variant) =>
-						variant.affinity === target && variant.presentationStatus === 'candidate-only'
+					(variant) => variant.affinity === target && variant.presentationStatus === 'runtime'
 				)
 		)
 	);
@@ -78,8 +79,8 @@
 				<img
 					src={normal.thumbnailPath}
 					alt={`${monster.name} base form`}
-					width="720"
-					height="480"
+					width={normal.width}
+					height={normal.height}
 					fetchpriority="high"
 				/>
 			</figure>
@@ -92,15 +93,16 @@
 					</p>
 				</div>
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external GitHub source -->
-				<a href={sourceUrl(normal.candidatePath)}>Full-resolution source ↗</a>
+				<a href={sourceUrl(normal.approvedPath)}>Approved full-resolution source ↗</a>
 			</div>
 		</div>
 	{/if}
 
 	<div class="variant-heading">
-		<h2>Current production target</h2>
+		<h2>Approved affinity forms</h2>
 		<p>
-			Normal plus Fire, Earth, Wind, and Water. Available images remain candidate-only evidence.
+			Normal plus Fire, Earth, Wind, and Water. Each image is owner-approved and wired to the
+			enemy-only wiki runtime.
 		</p>
 	</div>
 
@@ -113,14 +115,14 @@
 			>
 				<img
 					src={selectedVariant.thumbnailPath}
-					alt={`${monster.name}, ${label(selectedVariant.affinity)} candidate-only image`}
-					width="720"
-					height="480"
+					alt={`${monster.name}, ${label(selectedVariant.affinity)} affinity`}
+					width={selectedVariant.width}
+					height={selectedVariant.height}
 				/>
 				<span class="variant-mark">
 					<AffinityIcon affinity={selectedVariant.affinity} />
 				</span>
-				<span class="variant-status">candidate-only</span>
+				<span class="variant-status">approved · runtime</span>
 				<button
 					class="carousel-control previous"
 					type="button"
@@ -136,21 +138,21 @@
 				<figcaption>
 					<!-- eslint-disable svelte/no-navigation-without-resolve -- external GitHub source -->
 					<a
-						href={sourceUrl(selectedVariant.candidatePath)}
+						href={sourceUrl(selectedVariant.approvedPath)}
 						aria-label={`Open ${label(selectedVariant.affinity)} full-resolution source`}
 					>
-						Full-resolution source ↗
+						Approved full-resolution source ↗
 					</a>
 					<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				</figcaption>
 			</figure>
 
-			<div class="variant-selector" role="group" aria-label="Choose a candidate-only image">
+			<div class="variant-selector" role="group" aria-label="Choose an approved affinity image">
 				{#each affinityVariants as variant, index (variant.affinity)}
 					<button
 						class={`affinity-${variant.affinity}`}
 						type="button"
-						aria-label={`${label(variant.affinity)} candidate-only image`}
+						aria-label={`${label(variant.affinity)} approved image`}
 						aria-controls="selected-affinity-variant"
 						aria-pressed={selectedIndex === index}
 						title={label(variant.affinity)}
@@ -162,7 +164,7 @@
 				{#each missingCurrentTargets as target (target)}
 					<span class={`target-status affinity-${target}`}>
 						<AffinityIcon affinity={target} />
-						<i>{label(target)} candidate not yet available</i>
+						<i>{label(target)} runtime image not available</i>
 					</span>
 				{/each}
 			</div>
@@ -242,7 +244,7 @@
 		display: block;
 		width: 100%;
 		height: auto;
-		aspect-ratio: 3 / 2;
+		aspect-ratio: 5 / 4;
 		object-fit: cover;
 	}
 	.neutral-copy {

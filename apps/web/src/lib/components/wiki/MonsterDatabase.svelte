@@ -37,7 +37,7 @@
 <section class="database" aria-labelledby="monster-database-heading">
 	<header>
 		<div>
-			<p>Summonlab bestiary · 40 identities · 240 visual studies</p>
+			<p>Summonlab bestiary · {monsters.length} canonical forms</p>
 			<h1 id="monster-database-heading">Monster database</h1>
 			<span>
 				Every monster identity anchors the Normal plus Fire, Earth, Wind, and Water production
