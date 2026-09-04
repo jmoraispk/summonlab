@@ -1,0 +1,42 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:piercing-thrust",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-piercing-thrust.json",
+	"promptHash": "d35d402e4ad3b10aee2b54b03aad6f5bd821dd0f645ee898b4169ff577ad26aa",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-thrust.png",
+			"contentHash": "35e279a11ba949f45d6008a96e31890ddc58d4f28ac1b687765ce9ee122cf8ec"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-piercing-thrust-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2012707,
+		"contentHash": "6e6684c74bed3117b35257f9098a41459093d5834a2596ee93eac095e2ad32fc"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-piercing-thrust.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1021072,
+		"contentHash": "469065975b73a3e4411255206d254127187b32628829a3b20a5f9f775abc4bf0"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

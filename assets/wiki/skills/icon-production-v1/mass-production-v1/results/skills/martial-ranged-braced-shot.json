@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:braced-shot",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-braced-shot.json",
+	"promptHash": "6646187c4d3dda2b4ad2097092cdab5fdce81e19e4dfbe650a04e23fa4c6ee31",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-crossbow-cycle.png",
+			"contentHash": "3c902de6ff2a7d957293bfd97c8119a1f1541cad18321376b370eae3516270d6"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-reload-drill.png",
+			"contentHash": "bf37f2ab40c3138bb168cfda3ea9c9a19903e47d30ad5d5b4c0369357abbe98e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-braced-shot-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2242772,
+		"contentHash": "68e8151c4ff796df635a1153bedc679f2876bc9b1b3f8ec153a972c4b1ad03db"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-braced-shot.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1153806,
+		"contentHash": "180f0a2e84323a456133bd13a046f904f2a22e08f34a138f786988a80af2c13a"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

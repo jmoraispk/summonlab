@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:still-water-stance",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-still-water-stance.json",
+	"promptHash": "49c1538e625892117531d9c24f31d8c5345347371ab5e100a532439dc4a69d3a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-guard-flow.png",
+			"contentHash": "7965198fed452244fbad42e5f1279f1cdd2ca9fbfcabc5d6fa79f2b9a0684e32"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-counter-flow.png",
+			"contentHash": "2d82697d9e69539afffdb6c94a18fa71f04148fc4a21f5be27725d13babdb58b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-still-water-stance-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1992602,
+		"contentHash": "9312fd11a0350288501a1662a30c0306ac9d89578428b4c3bab5f0ca74a94cdd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-still-water-stance.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1188537,
+		"contentHash": "ec106a9b9ef70f2806b33f06bb390ef02e6da89ff0ac44c708b84a3b600cd775"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

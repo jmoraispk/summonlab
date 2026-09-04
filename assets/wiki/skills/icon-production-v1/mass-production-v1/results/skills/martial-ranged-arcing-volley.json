@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:arcing-volley",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-arcing-volley.json",
+	"promptHash": "2c9c6e5125c18daa7d8c75556dc41f8a74b697c26c3fc6ddb0a232b92d413f05",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-arrow-volley.png",
+			"contentHash": "ff10ab2b719a746e57a1ab1a5e4c2f599ee072b8fffc374ddb89351367e4d0f1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-multishot.png",
+			"contentHash": "07e36a15c5cc9a75f0a6d43fed400ae05927cc794d0708418c8e146e05a4d014"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-arcing-volley-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2016181,
+		"contentHash": "fa039a9f124bd1323bf224359e672a0bac252eb564ef5fa362f6ea2f020d7425"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-arcing-volley.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1002401,
+		"contentHash": "ad5068e7520d03ac7eb5adfb7183c52aaac087d5564e177b23c8f4fd0bb978e6"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

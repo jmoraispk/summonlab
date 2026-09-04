@@ -1,0 +1,42 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:cross-block",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-cross-block.json",
+	"promptHash": "b26e56c40098eb285b49fef3deed59208026ab36d938892934fde57fd6872d97",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-guard.png",
+			"contentHash": "aca4524dff9f14668f72f0e25b736bb6ea5cd477790efc0703e43e7a1cb69c46"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cross-block-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2178782,
+		"contentHash": "bf47f5f524f06f720ae57feb79d8d91f0115d39436aafa0b6e1e4726af3fce9f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cross-block.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1012986,
+		"contentHash": "fad22da2dcab7f36d556eaf75bdff02af8d7442203e576c5604b741fc42a5efc"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

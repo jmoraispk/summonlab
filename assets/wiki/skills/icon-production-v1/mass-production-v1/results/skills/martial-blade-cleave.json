@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:cleave",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-cleave.json",
+	"promptHash": "fb95a3260b6f5d0ed777e7b9e688c708554df198be119311737dc98279ec2d69",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-cleave.png",
+			"contentHash": "a256dc404db650c846a444cb296c22bcb243022438fe506907aa9ea986b59110"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-great-blade.png",
+			"contentHash": "0f994b6904ab9cfedb1619eacb9255a457104f3606170bd207dd669c51ed39f4"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-cleave-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2151056,
+		"contentHash": "4e081162110151128b3996a4ccc740724bb863d6ea0a2d560075b30bb5ece692"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cleave.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1153846,
+		"contentHash": "4204115756c48a72aeb924e5c3bbce61e8a006def48ce83c8b5d6a20f8caeac3"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

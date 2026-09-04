@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:bulwark-swing",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-bulwark-swing.json",
+	"promptHash": "992645ac97b0b73c14c62fea81c1b2ade4240a3320560e909e6dcc100dd59fa7",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-break.png",
+			"contentHash": "406f47cb4a7f7f0396f38543c83b6f26d245260cc48cffeb8fd94745a5587307"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-pommel-strike.png",
+			"contentHash": "61c4460e3dc7c5ad713cba239ec9c009b2bb62b20ad25ce9e563af7dc833c715"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-bulwark-swing-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2238254,
+		"contentHash": "2883e7627e1f94d5b6c919a219d4975666dc21d5e90522a8a4295cede5c3b812"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-bulwark-swing.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1086610,
+		"contentHash": "1fd823355b0a43b8bd759502f8cd1203899fe8a904361a344295eb54bcffea72"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

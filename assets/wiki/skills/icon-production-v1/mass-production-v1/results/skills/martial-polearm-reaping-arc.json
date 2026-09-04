@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:reaping-arc",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-reaping-arc.json",
+	"promptHash": "0a47aaca838a1fcf38ca9c280054848f1bfe433bbce779156376b07f24a570b1",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-reaping-blade.png",
+			"contentHash": "cb5250ab6c16075ab0f659834c5cd4cd9f32863266dbb1b4fb85e4f7bfe78caa"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-berserk-swing.png",
+			"contentHash": "57d1ec691e9205d80b58e64819546e1eb868f3d5e8f4001ae3fec09cc09c9b3f"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-reaping-arc-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2058286,
+		"contentHash": "e089ab59a4a3d42ffa80a1199a3f8d5d2dd83edc3e30ae628304677ee058e47d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-reaping-arc.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1131228,
+		"contentHash": "b0e2a95d64b61220dbe49a690c19d91261dc0023dc49e91463ab8d916d976351"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

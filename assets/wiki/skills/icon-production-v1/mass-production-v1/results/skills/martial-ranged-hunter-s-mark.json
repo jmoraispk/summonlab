@@ -1,0 +1,42 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:hunter-s-mark",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-hunter-s-mark.json",
+	"promptHash": "74b494bb76eb7f81069fa3d455175c25e0928e72ed36e5afdd7a1e60a5d9c1b4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-hunters-mark.png",
+			"contentHash": "845b5a5fa3e8c23273bc80985dd42aac7f0ea431524e1d8207bb98f0a1efd1a5"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-hunter-s-mark-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1869713,
+		"contentHash": "8800ae8ae851fe9c1124e1957e0d17977e0d30c905a225382ea416b177ea5762"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-hunter-s-mark.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 801862,
+		"contentHash": "7bd213373f6c43515a17cb4f377e6e640e476336cbe0cd90aebcbca023641545"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

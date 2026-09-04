@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:the-fist-that-ends",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-the-fist-that-ends.json",
+	"promptHash": "70922f7cc6badcf4a3ea341946d5bd7de330c50becc781072738045061cfe112",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-striking-form.png",
+			"contentHash": "089a5b208fe5f51a2673f1bb44b6ed55d2bfb755f393149aa17316679116eaed"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-empty-force.png",
+			"contentHash": "3b838a4c80de4af20fe6f113de67f13b2be8f639928c195295b5badbbf558696"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-the-fist-that-ends-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2072242,
+		"contentHash": "b72fb54efb7cbd4990e20475706c2cc85b3482394ba4e26b80cc11fc8a8a62bb"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-the-fist-that-ends.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1068301,
+		"contentHash": "ffa149d89d6326b1acd87a598bdb4c213f33c402ac88baf7f2c8519f8dd29948"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

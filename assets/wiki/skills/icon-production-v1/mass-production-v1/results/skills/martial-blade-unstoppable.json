@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:unstoppable",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-unstoppable.json",
+	"promptHash": "e435db5dc7cefa51ccff2ae2b0f8ecac4e1aa6df3a060266154067b7b7d9c8e2",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-momentum.png",
+			"contentHash": "15b3d8e3b63a46e6c0b54c4ec2ffc226d91cb768b53c73e8007b4078101109ad"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-momentum.png",
+			"contentHash": "5b299802070e264014c844243522a3f960a9348535ed2feaff24bf2285645b86"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-unstoppable-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2207269,
+		"contentHash": "55169493b4f7ef5e3a0b92c60e9ef302bb1b3efdc733464eab8c99e10b0894b2"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-unstoppable.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1256469,
+		"contentHash": "0d5a36fb49f4c6e221ea24d950f7f60b8f269024f6c7e94c5434e0b1a47dcdf1"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

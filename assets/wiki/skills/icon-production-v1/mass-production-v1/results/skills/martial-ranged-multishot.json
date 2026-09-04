@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:multishot",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-multishot.json",
+	"promptHash": "b40c589448e9612a3d12a157a580bdbaa0b55b712069d6f28daa5b80461dcfc3",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-arrow-volley.png",
+			"contentHash": "ff10ab2b719a746e57a1ab1a5e4c2f599ee072b8fffc374ddb89351367e4d0f1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-quick-loose.png",
+			"contentHash": "c153f65506dacb45284fb04205f1cbf8fede9987cd4124e9f79e9219a2515176"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-multishot-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2029988,
+		"contentHash": "d67078437b0b56246e1bf76dbc99556ad2d16ba33a1b8b99b0affc97f748e33e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-multishot.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 790276,
+		"contentHash": "07e36a15c5cc9a75f0a6d43fed400ae05927cc794d0708418c8e146e05a4d014"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

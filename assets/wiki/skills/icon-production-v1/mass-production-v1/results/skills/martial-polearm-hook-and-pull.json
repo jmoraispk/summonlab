@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:hook-and-pull",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-hook-and-pull.json",
+	"promptHash": "81582d3ad11935574e7adcbd5008b32691ece4a76b60c995c610fb33a5395908",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-sweep-hook.png",
+			"contentHash": "0b81d334bacc97350496cec4ea28fb86014513401a5f70741c65fc859c9f8057"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-sweep-low.png",
+			"contentHash": "22f0b1701e10d63b80899d3f0a03ea8d6c996b8ae6846f5cf328ec503e841671"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-hook-and-pull-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2064081,
+		"contentHash": "763763a944e382e701f8fd2cabe09228d4e8862f6cfb0c9709695bbc45d8cbf1"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-hook-and-pull.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1162526,
+		"contentHash": "f98bcd8a42c3b3162db15e538006db32f91ce5259b7377654f01a79d9c55a8eb"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

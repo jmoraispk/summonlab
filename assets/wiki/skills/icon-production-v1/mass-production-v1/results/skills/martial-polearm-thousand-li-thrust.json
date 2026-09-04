@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:thousand-li-thrust",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-thousand-li-thrust.json",
+	"promptHash": "52f88613ca377796225df37d3d8562fa21be73fede9c37cb7577f8f44e687a22",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-piercing-line.png",
+			"contentHash": "d9857907f0f4a0a2f6bd3fe3e5a47c4814e002922424ecdd9578d2bd13783922"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-heaven-piercer.png",
+			"contentHash": "e84bbe8eb22ad3130e43c94880a199a248ad95f667880f7ad2e0a42dd5f6d7ea"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-thousand-li-thrust-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1925106,
+		"contentHash": "621f1779ff8ce222700fb8ac520bd4f22dcce883a01ff9eeec616d938a6cb30b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-thousand-li-thrust.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 826859,
+		"contentHash": "a493e2ddab33dde35a285866a92de69320cf3f2f2e53c550da7a1f6583816408"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

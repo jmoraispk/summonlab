@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:flowing-redirect",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-flowing-redirect.json",
+	"promptHash": "a59bfc5a947559313c83097eb7340096b9c351a5b8b1fdb41ab7d07f11970523",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-empty-defense.png",
+			"contentHash": "9c97db3175ee611371e7c573c6899074e4ea247e784934277cb76ab5a2531d8e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-iron-body.png",
+			"contentHash": "5f82c83bf354bf7e528a86a1d1b172ca2929f5190329e6f6baf1bb22bdb8bec8"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-flowing-redirect-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2124268,
+		"contentHash": "79778be755b284f74065afdaa557c9487e8b660a1c42335a0d795b0d9d26b405"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-flowing-redirect.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1131607,
+		"contentHash": "6180c9c7bcccae3e40a840bc09441e631f5dea8bf735e89dd1efbce05e14dcf0"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

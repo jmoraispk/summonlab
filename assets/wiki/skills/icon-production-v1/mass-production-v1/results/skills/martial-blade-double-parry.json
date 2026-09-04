@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:double-parry",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-double-parry.json",
+	"promptHash": "89a43d01ef63da11a3cb8c7aca99e1e4e60ccfc01e32e1ae6d864facbdb49194",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-guard.png",
+			"contentHash": "aca4524dff9f14668f72f0e25b736bb6ea5cd477790efc0703e43e7a1cb69c46"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rolling-guard.png",
+			"contentHash": "0a1fe29b808cade27daf637a6845efd7ce7fe6c6f5cdc5b105afddc26aa794a1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-double-parry-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2037404,
+		"contentHash": "2ae5dba3010bf76b4a5dc2b4d32f198103ebb52279e043761ba89833aab530ff"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-double-parry.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 977853,
+		"contentHash": "6957b3232e3b48a17e131e6f48c7d6da127a1feb665d15005cc72babaaa2a505"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

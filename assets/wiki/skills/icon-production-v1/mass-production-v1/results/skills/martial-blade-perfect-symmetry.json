@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:perfect-symmetry",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-perfect-symmetry.json",
+	"promptHash": "640c6c8232c9152df2f51a3df7390db5f789d54c00d4e47c51795d6565b4f73e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-flow.png",
+			"contentHash": "d9be38f429a2c18c6e68f0927245569521b4bb2f05db257f2cd251a9454c8de0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-storm-of-blades.png",
+			"contentHash": "2081687e474f16fb58e759a7649808b4aaeeff1311144f1a954722bc6b286143"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-perfect-symmetry-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2311130,
+		"contentHash": "f5acdf9221373cb27b34930bc083c86b767f65dc14a93509aff1f9738a9d18a1"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-perfect-symmetry.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1285291,
+		"contentHash": "01231e4cd55a8e4c0b073b0ea0874bd1bdba65e3816d2ec16d98d5999f20390c"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

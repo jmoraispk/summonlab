@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:the-arrow-that-finds",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-the-arrow-that-finds.json",
+	"promptHash": "a8f0b54032641240bfb0549661b31ad07764af9471a7c00c61bf6ffd510ae219",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-precision-arrow.png",
+			"contentHash": "d0a5e2f6a1e55a43d7b4921e1ccd8ce96a4b0a689423f198644136714e3fee8b"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-heartseeker.png",
+			"contentHash": "390fd78a875d760914cb1ba84f0f8066661d944167e944b7d3b95a4822a7d917"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-the-arrow-that-finds-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2105662,
+		"contentHash": "528b78e0d74282fe8cf20df1e2ffa15226fff6c4bd5cc5f022d7b712c360ef04"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-the-arrow-that-finds.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1063032,
+		"contentHash": "fb6c66aec11c3e1138b258d266df9e2e594e03246e3a10f094e98f053e51d580"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

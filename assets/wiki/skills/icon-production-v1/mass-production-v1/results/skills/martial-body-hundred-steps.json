@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:hundred-steps",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-hundred-steps.json",
+	"promptHash": "10295285037103c94bb57f35dd95703c30d6b25c5128a5f36735b917477d36df",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-ground-movement.png",
+			"contentHash": "1860690f77d22a99db61e049c917e3f66b384eeeddcdf7c76f35249fc4552d77"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-dive.png",
+			"contentHash": "f13e7903dfd1b0dd1ee9a43fc4957ccc6db375a89820d37e855d607683102403"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-hundred-steps-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2053850,
+		"contentHash": "93bb94195aac579b7603023e19819241ae87862fcb04b3dc097e78a31d6f1338"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-hundred-steps.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1310330,
+		"contentHash": "10ade59f7b2294148837d87a13a1950f6fb0b31487e400f814488347cb33438e"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

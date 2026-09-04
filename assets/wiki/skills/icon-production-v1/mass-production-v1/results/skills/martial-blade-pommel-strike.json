@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:pommel-strike",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-pommel-strike.json",
+	"promptHash": "029932c79599a6aecdb7b16d50cefa10adb5074b8a9a9e86f7c659b93b154d2e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-break.png",
+			"contentHash": "406f47cb4a7f7f0396f38543c83b6f26d245260cc48cffeb8fd94745a5587307"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-guard-break.png",
+			"contentHash": "bb914ba218d176b1dfa3b6ffaae1972c4bd06bced2d535e3f02abca981e6dfbf"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-pommel-strike-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2139591,
+		"contentHash": "de166c2bd237b9e4e7d1e0c427c8f73f2ad274dd16c3127639f2197907f1c33d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-pommel-strike.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1178994,
+		"contentHash": "61c4460e3dc7c5ad713cba239ec9c009b2bb62b20ad25ce9e563af7dc833c715"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

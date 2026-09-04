@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:formless-body",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-formless-body.json",
+	"promptHash": "0424349707adab870ea2ab6187580991479bc742fd693a44a10dd18b46146952",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-empty-defense.png",
+			"contentHash": "9c97db3175ee611371e7c573c6899074e4ea247e784934277cb76ab5a2531d8e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-diamond-body.png",
+			"contentHash": "4b4b3c78ac8f62da3b7ec12f8f05828a389648b0b64cd17c50df4de88cdaa186"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-formless-body-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2107389,
+		"contentHash": "1fe990795ddb3a165f7e16168748cfa4384d0f50d02d53b1c691f41251f93686"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-formless-body.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1323355,
+		"contentHash": "b66332b54edf1dc985d1d7ee01c8002a611b77fa486b2527c8235facb096ad9c"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

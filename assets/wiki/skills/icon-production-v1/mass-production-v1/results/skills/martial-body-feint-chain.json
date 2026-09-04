@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:feint-chain",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-feint-chain.json",
+	"promptHash": "36d79128858e7d88bb1e62360a18c2ee1ffc385a42f483226cc69376705a3021",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-combat-reading.png",
+			"contentHash": "27bb6da5cb2827c61cbd54ae4f73ab3bac12160003faff6ef7488a6da99aaac0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-feint.png",
+			"contentHash": "6fb721d897c774516dd1e4d5448a303f640322c8938be5239c14f3d6314be2e8"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-feint-chain-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1994238,
+		"contentHash": "1dbb45e96082344c0b67447353698e8d7efc4d57e54019f08e5eb0aa8808f48a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-feint-chain.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 869553,
+		"contentHash": "d13cb527b6560217cee42b0754ab997f1d1756d14f7fe51cb7388d97b44595f9"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

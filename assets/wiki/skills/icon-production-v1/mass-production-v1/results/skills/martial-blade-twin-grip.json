@@ -1,0 +1,42 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:twin-grip",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-twin-grip.json",
+	"promptHash": "dd43b1e7d2028f66b548033279289681ea799d13731dc6bcfb0163799438771a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-twin-dagger.png",
+			"contentHash": "e708d3949c7d0c5448631f6953554c0abdd50d17bc0788d52d0255ccd3afd8c3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-twin-grip-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2057762,
+		"contentHash": "f523be8cddae570f0c071762b1e8484f44b1a21ab9df92c080ddd143ef3f0ab1"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-twin-grip.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1012873,
+		"contentHash": "57ff5dc53715ee3dbedb96f0037abd994711cd951b8e56c523976e80077fc739"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

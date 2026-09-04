@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:executioner-s-grip",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-executioner-s-grip.json",
+	"promptHash": "ec6a2bf73eb86303519b32918e3c204ae73017bb0c5652c16add7c5e095961f5",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-hook-grip.png",
+			"contentHash": "be5a9db6ff920b01b47ce7b836861441a1c537fa4fae453015cf7fcb8c65f0cf"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-split-grip.png",
+			"contentHash": "49f75961336bae21e7bcf458e3ff66af886ead071b0ac71448c55605445100e3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-executioner-s-grip-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2189617,
+		"contentHash": "1ffc3a581c323e0135398642e5e940b48b3fea81b67b6894a680bb2a09670dd5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-executioner-s-grip.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1166951,
+		"contentHash": "0f79f27a140d0d8e74a78626220f7442b4b01b000940f7b997ec0a8d44e3d633"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

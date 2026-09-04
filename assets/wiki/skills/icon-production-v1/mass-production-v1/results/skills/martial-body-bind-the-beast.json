@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:bind-the-beast",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-bind-the-beast.json",
+	"promptHash": "c508f0fa14214d85388767c7f8dc35156056b038c2efd5d521c8df272014252a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-grappling-control.png",
+			"contentHash": "6ffc76e1895e900667fb63453acc1f5818336949c8ec851b961e03c6737bb586"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-giant-toss.png",
+			"contentHash": "bb25c7b4919478f1f8662f3a1b4cab9e41d26e27835c7fa41b33c28e9c2fe720"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-bind-the-beast-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2113056,
+		"contentHash": "6dd714fdb1ed3485c89a24fa2282b9779245c86d12ca7a3e5e9a0e372111c6da"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-bind-the-beast.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1051991,
+		"contentHash": "852bfed3627df90f3fc6858a768257ae009254c76221d571b69db9106dda5cbb"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

@@ -1,0 +1,42 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:sidestep",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-sidestep.json",
+	"promptHash": "94f13b4a81cdaf60fd1e0ace60bf7d83e202fe9f7edd1ab606b453be63202d3a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-sidestep.png",
+			"contentHash": "fd35ada6f0a1e8239aeb06356c671dc644f328202c5ec82f539751420011d215"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-sidestep-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1908533,
+		"contentHash": "74b4528aead10f874b63cd8cd296c023d5c317f47d9e4b29d68478760b8bb739"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-sidestep.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1014105,
+		"contentHash": "39db64b2392447062f1570bbae72d6b18e1a91f1bdf58ca886b99c37e7114d95"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

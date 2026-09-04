@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:blind-spot",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-blind-spot.json",
+	"promptHash": "644b5242cde2b8a66e17910e61f946a7ba2fce3d6f6b2937af2cda291d82cb41",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-assassin-angle.png",
+			"contentHash": "0d1d2b483ba85dc9c6151b6bf5be9e7ae51ba9ee7e16e84030781760ba147bc1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-low-guard.png",
+			"contentHash": "39e2073b2516029b9030c59a2061f761b2c6edcdb27491d3b6cabfc18502490d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-blind-spot-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2006367,
+		"contentHash": "b3a1c1fd4561b5df49b8e0eb7efdcbb65cd0a65c7c52bfa53b5440641b7e43fd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-blind-spot.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 819532,
+		"contentHash": "4a78a0f526b310d66a25f582af7112a7b7581864fd2cecfa5699c5d376ac03e2"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

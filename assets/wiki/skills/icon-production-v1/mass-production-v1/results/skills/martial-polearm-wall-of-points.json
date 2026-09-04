@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:wall-of-points",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-wall-of-points.json",
+	"promptHash": "945ccc0cab1cee53707b7f97a455319824183fc3020535c8afcd2839e131dc76",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-held-line.png",
+			"contentHash": "c263764fa90f4fefced547ecaab8a2878ab6cb79df5d755ae78e965e346396a3"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-keep-away.png",
+			"contentHash": "5bfcade21dc44ffff6df9dd64cf5c432fa0262599fc5cfe527ecf92c0cc86199"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-wall-of-points-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1887222,
+		"contentHash": "09a761d44d115a2040d0e7a6871deff2090dc9a26603cfddaf71253fc9c2a2f4"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-wall-of-points.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 964410,
+		"contentHash": "f5a45e879d550892ddc235b434572d2a89e906cc0cde4c8edd750b98d473c59f"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

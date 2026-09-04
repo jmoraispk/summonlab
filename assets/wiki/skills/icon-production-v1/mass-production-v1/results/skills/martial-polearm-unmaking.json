@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:unmaking",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-unmaking.json",
+	"promptHash": "fe172c90b18e712b2a46868f1b6c48056bd442cfd4d8708fb8b171c64ef80599",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-hammer-impact.png",
+			"contentHash": "4b4b5f4f3be2b0ac74e04cc75964f21087600cb3328506a2524fa062c0771537"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-bell-ringer.png",
+			"contentHash": "a91689d0c63cb951170d20ede2d7048e1fdd525610f0c9c38631a75dbadec082"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-unmaking-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2322053,
+		"contentHash": "6278b9ea3dcd3e5f2ddf5a1e54aa53ac4084c42c2fbf04ed0d6f02a59e46b327"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-unmaking.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1276571,
+		"contentHash": "47d964e6cbe71cdb596df0f9cef5aac27c86acea8baf7f71b54117c7afac2813"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

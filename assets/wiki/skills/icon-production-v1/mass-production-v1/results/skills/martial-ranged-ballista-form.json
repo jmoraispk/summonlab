@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:ballista-form",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-ballista-form.json",
+	"promptHash": "b408591eadb5fdb1128cac8643ee661cd7ce1c2f60986f4faf23fd7953450d7b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-siege-bolt.png",
+			"contentHash": "66d31fe5f674e14b094811d506e43737f0d03e44cd063c99ba52a5804f99fb19"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-puncture.png",
+			"contentHash": "e2f7333a8d87ceb29e43f580ff0d2ce57bb313d3466bca563f3e37a4bad86c97"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-ballista-form-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2362283,
+		"contentHash": "5a34f394355a97a1df0e2c3378e79be9eef298fe0195a29f103ac8f7162e3397"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-ballista-form.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1207889,
+		"contentHash": "16c0ab59e394ce95a3d4ab732523d24e71fb224e33080b24a09e3568a439c122"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:hewing-blow",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-hewing-blow.json",
+	"promptHash": "cc48d9c2acf8011d8120eb9ee326bb81884261ea50e3ef374564db283e005d03",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-cleave.png",
+			"contentHash": "a256dc404db650c846a444cb296c22bcb243022438fe506907aa9ea986b59110"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-wide-arc.png",
+			"contentHash": "f43fdee7c25ddf9c97ec4923cd1eaab6a8236e440fe0f9bdc748d453a63601ea"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-hewing-blow-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2086435,
+		"contentHash": "2a3c1d6a450e809f1e802aa9b6d91db94b14c43266a95f289841193d36c1cfe0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-hewing-blow.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1065131,
+		"contentHash": "764504e47c41bddb7b2671eb098ef90a18b9554be329e5c4eeffc9f89e982bf1"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

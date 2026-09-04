@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:rolling-guard",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-rolling-guard.json",
+	"promptHash": "817e75c9e452356af65b07a69e9e4fa285bd8dbbb224b74138c489e1d305c6cc",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-guard.png",
+			"contentHash": "aca4524dff9f14668f72f0e25b736bb6ea5cd477790efc0703e43e7a1cb69c46"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cross-block.png",
+			"contentHash": "fad22da2dcab7f36d556eaf75bdff02af8d7442203e576c5604b741fc42a5efc"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-rolling-guard-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2090089,
+		"contentHash": "ac0af8c3caaf8497f7ca51819a4536a71701cd226c111056a6848367d69d224e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rolling-guard.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1135320,
+		"contentHash": "0a1fe29b808cade27daf637a6845efd7ce7fe6c6f5cdc5b105afddc26aa794a1"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

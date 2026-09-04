@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:crescent-sweep",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-crescent-sweep.json",
+	"promptHash": "af3134d92c90ba7f03f133a7c394ea1c8a37dd0a30841803c480b696dd205e5a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-sweeping-cut.png",
+			"contentHash": "e2c931c7058a3c9c9750778c037dac55b6ed05e573ed7a8f4833a1888ecea3d5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-horizontal-slash.png",
+			"contentHash": "ff2156f1e2fb3d69eb3d419639a925c493975b6181d788e2e9fd7bee50b48b8b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-crescent-sweep-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1985488,
+		"contentHash": "343a2eca62ff91960fe6facfafe2d9f13ff5d20f725d31cd44544eb682732c5f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-crescent-sweep.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1101558,
+		"contentHash": "351646f707830b40babe9aab52118979015dc001e82e2f1776b903458aa4ea42"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

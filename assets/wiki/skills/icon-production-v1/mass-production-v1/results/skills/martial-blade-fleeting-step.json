@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:fleeting-step",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-fleeting-step.json",
+	"promptHash": "ecfbecab1c20dce158befdb67d96b2d4e3b66853a5c68753431904694504b532",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-concealed-kill.png",
+			"contentHash": "8e11d612845e6f74ea0cc0f6bf13333623464cb3db7376f1ccabd7879c180d17"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-silent-step.png",
+			"contentHash": "78b69ed8a161b322240973b429b84e3e86c77e08844e66447e4fb3fa8f7636b6"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-fleeting-step-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2003198,
+		"contentHash": "0831233f86b1b0e1d4bb715bd0867da60a84d610d7ca792e64060e285e0266c5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-fleeting-step.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1009744,
+		"contentHash": "f0adec90d0ce084962bf074ef82b8393113d5dd7afe5a8beffb0d4bc91118276"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

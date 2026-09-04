@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:draw-attention",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-draw-attention.json",
+	"promptHash": "badc91f70a9ddfcf76f8caaf0062ccb7f9a0caf0d77adce6d0337daec2347419",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-attention.png",
+			"contentHash": "35386b5b376293da4b82f1645828ed05a26b418b007850d21d892323d145af72"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-taunt.png",
+			"contentHash": "ffdbbfceb5ae487135228c1c212461a86af4be1b0b86fc90c4003c0bbad15942"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-draw-attention-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2230076,
+		"contentHash": "c45e01360b92e042a626d2ba11e23fc3310f85db80a0e2b369931abf004a9c0b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-draw-attention.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1193415,
+		"contentHash": "89d58ae19e94edb8e8dfa7939fbc6992d62df1e1f957303429db6de72a405b17"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

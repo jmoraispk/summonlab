@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:void-cut",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-void-cut.json",
+	"promptHash": "4a74051bd948bad8107ee917bfee066f45f85bfdaaf4df9e3a7f210d15d6b8cf",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-precision-cut.png",
+			"contentHash": "b14faef05e91195a886b272259bcdf4246fa591f3a226d60f14f01241c63103f"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-formless-blade.png",
+			"contentHash": "06f140a9d83dd82f41febea2e7bf49cd21062d980ca760282cc401ac71ddc69e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-void-cut-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2061336,
+		"contentHash": "8ab6047593239186b5750626a941a03dd5fa504dc02ec4371785ba1b3c33f8c5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-void-cut.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1111913,
+		"contentHash": "c8b3b6d66854a01a2fc3da59a0bfe1dbc4fb5571ca16410b0989b0891c386739"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

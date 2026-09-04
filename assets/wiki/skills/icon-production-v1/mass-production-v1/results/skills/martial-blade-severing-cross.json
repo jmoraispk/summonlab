@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:severing-cross",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-severing-cross.json",
+	"promptHash": "172c0d4e3e614c86d291323381b21d94461147a229e52cbdee6b060c98c63a3b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-offense.png",
+			"contentHash": "d5c7eed25a51a482cac53dde01c890e20dd99ad9ee222a21ce7284f823a9f68e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-scissor-cut.png",
+			"contentHash": "895420ed73047b1a886ef4ebdb65582c5ed7f4d43111a446e4932261a3660f2e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-severing-cross-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1958635,
+		"contentHash": "12c396b0d3f8f3920a8e058a37a0f19d489a1860fc36cb080ee98e836246573f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severing-cross.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 901100,
+		"contentHash": "702d09d5062134a0f5be9142f46dd60cdc5b5903b57b624a202cd10024d79254"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

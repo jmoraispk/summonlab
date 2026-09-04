@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:bonded-mount",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-bonded-mount.json",
+	"promptHash": "61e678b2d223ef5727933af0dcf67318a32057f3ad9982142d375400b0ab0bc5",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-mounted-bond.png",
+			"contentHash": "dfd588da7ef50ee3ed48a99ed42d67333910fffc799d2d722c03c340586de6c1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-mounted-combat.png",
+			"contentHash": "f774a8727617412193afac249e4a91eb473e2a1b01e85ad7f725c4ad638556d0"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-bonded-mount-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2046096,
+		"contentHash": "851439e899523d841829de316e32d3d251aa2868007a4d08f4ddac67bbad8f32"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-bonded-mount.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1219133,
+		"contentHash": "9705f43a9aed2b3eac5b19a4f970efeae41cf228785162e3e75891ddb8b2523f"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

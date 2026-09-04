@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:pinning-shot",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-pinning-shot.json",
+	"promptHash": "4c6e05c510bb0d773420e8868e7ad6d676ddf00948d0d44ed7090273622b19d4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-power-piercing.png",
+			"contentHash": "0d57c62e2daad33b704b8a5ccd3d0331e1b0697c7eaefab73ecf8a4400626cb4"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-power-draw.png",
+			"contentHash": "67b6e67a90ce84ede34ab8a4ec12d9d34eb5d784768488dbd693d2f9e0b9f142"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-ranged-pinning-shot-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2105344,
+		"contentHash": "8a76204ee8c059b71a36d92f461ea2cab2c6beaa0b879df90dd399234f778a07"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-pinning-shot.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1001378,
+		"contentHash": "5a80b7026439c2018a6b712651e3e157dc4327f7bb85c1c84945f25c8d7bc972"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

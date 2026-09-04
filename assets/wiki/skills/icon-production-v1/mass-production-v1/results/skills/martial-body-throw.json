@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:throw",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-throw.json",
+	"promptHash": "0aa636e01ca6f479fbeffae729f27f0f3b74efc780d7b112034f8750574e2fbf",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-grappling-control.png",
+			"contentHash": "6ffc76e1895e900667fb63453acc1f5818336949c8ec851b961e03c6737bb586"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-joint-lock.png",
+			"contentHash": "850a439004beff05f957ecf2c7df29a695e93d3b00f4b7d24dcd22e7e0172d42"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-throw-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2125553,
+		"contentHash": "08fd76ed9835ddea402bfd68e5f691841b63863df9528a2aed62f004bcaa67fd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-throw.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1247548,
+		"contentHash": "facab2c025129e7f8dfb450ed5a22a764160da078f5837cf8caecb8c86934f7e"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

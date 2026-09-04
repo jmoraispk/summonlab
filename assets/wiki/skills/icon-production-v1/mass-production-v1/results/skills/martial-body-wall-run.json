@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:wall-run",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-wall-run.json",
+	"promptHash": "8f5e854e62f23f4b9b75bc1fd02bdd28a525bba891faf6a87c17efcc340c993b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-acrobatics.png",
+			"contentHash": "3b7b76b7964c36e3236b18ed8deb88f0164273634d3d69e279658fde7db10529"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-vault.png",
+			"contentHash": "0bf0bedbed62c09a616f87d61789c43fd6183a685f64b06d65d821d04cedb037"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-wall-run-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2040965,
+		"contentHash": "5f6d28c67b422072c0aa746099447e9768fde50822f2bd114fda32d9964ad8ad"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-wall-run.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1135012,
+		"contentHash": "45c4f2b0a740afe99c7f998e3ed6313d25832a91d6f69522c19502f22494eb0e"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

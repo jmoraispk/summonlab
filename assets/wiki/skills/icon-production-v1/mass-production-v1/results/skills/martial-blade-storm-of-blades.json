@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:storm-of-blades",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-storm-of-blades.json",
+	"promptHash": "c4e68cc34306ec2fc71f7e835a7b2c45e5937415a84686ab07d872f8ab53021b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-flow.png",
+			"contentHash": "d9be38f429a2c18c6e68f0927245569521b4bb2f05db257f2cd251a9454c8de0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-whirlwind.png",
+			"contentHash": "4956460c5621b9e76ec92cc3271653bfcc51f1fabf0b16a7ba48bfa6ac250ad7"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-storm-of-blades-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2394314,
+		"contentHash": "77cf19e9567e7b638367e71d73f796cf05b8d6442ce7411e7ff4df9194714ea8"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-storm-of-blades.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1464092,
+		"contentHash": "2081687e474f16fb58e759a7649808b4aaeeff1311144f1a954722bc6b286143"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

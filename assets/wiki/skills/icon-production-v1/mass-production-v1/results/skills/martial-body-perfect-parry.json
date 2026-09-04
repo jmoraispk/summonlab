@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:perfect-parry",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-perfect-parry.json",
+	"promptHash": "2d7c9e6b92d9b99547d6715448535a1654ae126b88eb055f53a5f37cc6487b25",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-parry-counter.png",
+			"contentHash": "b09140e6068adc5239f1f95ebc8718939e45e0864a1adbf7641d802fe6e7fe6c"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-riposte.png",
+			"contentHash": "77ce27d4bf175ca09e8de68de2858dc9b148403e00e67c45b77e19aaf8509052"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-perfect-parry-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1995199,
+		"contentHash": "a9f87c407bad05f059dfd1d895acbe45652671b89457998eda782b7e7e3c5ce9"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-perfect-parry.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 923918,
+		"contentHash": "9a6d218367a459bc45bce966367bfbfab0896725ad0b4fc71101b4cb7af690dd"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

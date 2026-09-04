@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:shield-push",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-shield-push.json",
+	"promptHash": "e584c3c2f68dc134929fa96fb595132c93489359d57a55c41f1f2fac2e412246",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-impact.png",
+			"contentHash": "9d47244c95efb431c19d15b4201bc6d374f05b364ef159fa59184925ded8119d"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-bash.png",
+			"contentHash": "1fe2079e73361381502d38443b72aa1c88ab8e41d5c5f096a9fe1c62aaeaa64b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-shield-shield-push-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2023378,
+		"contentHash": "678ec108a8c06a14b5a5f81df49297e3c9d4f0f5e203bd5c0fb938f3dd3330b3"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-push.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1200760,
+		"contentHash": "7c34f24d8eaa77a8b434b89d19f91c2f1057c7bec1456ab986546f9bf9e47396"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

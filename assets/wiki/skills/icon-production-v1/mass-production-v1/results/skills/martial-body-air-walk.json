@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:air-walk",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-air-walk.json",
+	"promptHash": "3024e1a4d09655df3babe80b6196833f6f39b9af8f5b1db251f56fa0ae62a54b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-impossible-movement.png",
+			"contentHash": "7ca7d47240b45b98dbd232c3491539126f536effb2a51d03d6d310a00daac0cd"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-blink-step.png",
+			"contentHash": "7b853bbd601c9e18116bbfbbff6cfe1e9e12f1ead345cdd91da49f2244f8f751"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-air-walk-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2047495,
+		"contentHash": "28dac881a020bc93d363f67f170ed5665bf8b56180132f42738eb402766d992a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-air-walk.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 966104,
+		"contentHash": "8159f1c549051693799fc892b6feeb28260ac7873efaef573f05181245d74218"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

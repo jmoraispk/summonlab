@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:nothing-stands",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-nothing-stands.json",
+	"promptHash": "033206befc05d3c128a3b33e80022e30a7e4523e4a442941d17cbbcdde35600f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-hammer-impact.png",
+			"contentHash": "4b4b5f4f3be2b0ac74e04cc75964f21087600cb3328506a2524fa062c0771537"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-silence-the-bell.png",
+			"contentHash": "b5b9b5bbffe86b61c200d2bbdc759459de3b424bca8985f686589f6ffc2b81e8"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-nothing-stands-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2397061,
+		"contentHash": "92d9a194a70979717451572a48aed51b65677661ed201d854d0e4a078f9e2cbb"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-nothing-stands.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1438553,
+		"contentHash": "fb5502fa2da3098ecbc116ea27b835f2b995ecfc2ae74097ee49be3f1835fdfa"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

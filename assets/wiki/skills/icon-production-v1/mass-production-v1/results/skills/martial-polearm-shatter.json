@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:shatter",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-shatter.json",
+	"promptHash": "ea30469b613f6c1a9f70e31193c19a24727d825fa545daf910dc7902f534f4b2",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-hammer-impact.png",
+			"contentHash": "4b4b5f4f3be2b0ac74e04cc75964f21087600cb3328506a2524fa062c0771537"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-crush.png",
+			"contentHash": "0070fee894838058131bbc4658f014273b550b91c5a679e9b6432351e2ac306f"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-shatter-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2378377,
+		"contentHash": "29c2178865fbb25220569171081ef68499af9087ae435d8916f4a71ba9e077ce"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-shatter.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1342724,
+		"contentHash": "2ee3eb6bf9551eebff9d0bcaca53254a8390aced90beffa038c5091e44a4a63b"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

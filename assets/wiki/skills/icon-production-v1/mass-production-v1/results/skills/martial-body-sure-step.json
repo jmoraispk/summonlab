@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:sure-step",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-sure-step.json",
+	"promptHash": "57eeeb870efe35a0042f5887efce261d6d903671a5dac58688e28e0955b8822e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-ground-movement.png",
+			"contentHash": "1860690f77d22a99db61e049c917e3f66b384eeeddcdf7c76f35249fc4552d77"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-roll.png",
+			"contentHash": "10441c4568e385963abad2cb62fdcbf177b8af08bb1006075f1673854f43a63b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-sure-step-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2042660,
+		"contentHash": "67b3f7d57cc35d1db4b95b22fe29acb4e513e995112b167ec10575abd62cdead"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-sure-step.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 913685,
+		"contentHash": "b41380f554604c538f739b9b25ad5bbbf0e2b52c759f5acf02d6eeaf0a4e5c1f"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

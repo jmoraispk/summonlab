@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:the-last-harvest",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-the-last-harvest.json",
+	"promptHash": "aad5667e7787f590a78df60158a651ff2b63ee752079687d6ab4c5e172685049",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-reaping-blade.png",
+			"contentHash": "cb5250ab6c16075ab0f659834c5cd4cd9f32863266dbb1b4fb85e4f7bfe78caa"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-red-harvest.png",
+			"contentHash": "75be2321549736ef87448b059e5106e69876c99e284a62a663fe92be91e86ea9"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-the-last-harvest-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1916816,
+		"contentHash": "3bf5744471bc89a69c01ec4b2347234c86c619a201296fca2c4d0829b1b55f00"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-the-last-harvest.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1261408,
+		"contentHash": "e1f88b991034178c982f3d135d5cc46ce8609f090044e4f8b6c4e5b40824343b"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

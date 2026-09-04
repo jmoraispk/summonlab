@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:ground-control",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-ground-control.json",
+	"promptHash": "8cbb437b97eb0213c18b9eb1228141d80aed498919436877395bf3f12a87b3e0",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-grappling-control.png",
+			"contentHash": "6ffc76e1895e900667fb63453acc1f5818336949c8ec851b961e03c6737bb586"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-throw.png",
+			"contentHash": "facab2c025129e7f8dfb450ed5a22a764160da078f5837cf8caecb8c86934f7e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-body-ground-control-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2165756,
+		"contentHash": "2a68e2c99f57b83ef23676070afb10c0173b3129b6b4f63b39224cb83acf7365"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-ground-control.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1154246,
+		"contentHash": "77827767882ed899430586bc066827ee0ae791b0d7cb743da9307499cc15b222"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

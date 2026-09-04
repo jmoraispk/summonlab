@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:piercing-line",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-piercing-line.json",
+	"promptHash": "bb332e24b8d493a2debb6c87be63b7469073dbeffc5eb5f011bd5a1baec23462",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-piercing-line.png",
+			"contentHash": "d9857907f0f4a0a2f6bd3fe3e5a47c4814e002922424ecdd9578d2bd13783922"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-straight-thrust.png",
+			"contentHash": "951019bed377d3f63c6ece1ad1af283150a220e029d3b8a3c30abaf0455f1f8d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-polearm-piercing-line-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1794614,
+		"contentHash": "ca798b6cd822b608e5f0dde52ffbb924effa947b7ed738ac44364c51a53c3c70"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-piercing-line.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 867385,
+		"contentHash": "36c6ea18c4bfb0f0dca7f4918433bbd524d61c4d3c8e21d773d16de7a0b24672"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}

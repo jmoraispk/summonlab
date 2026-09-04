@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:heaven-s-fall",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-heaven-s-fall.json",
+	"promptHash": "3281c0b6322dc6374332aedf1414b7d515866d99c835f0d4bccbeb3746fec9d4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-overhead-cut.png",
+			"contentHash": "3aea4333bc7554f62cb9802fc5f7e005fcbc9ae8235ea9cc15c35ff3b57f2cd2"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-half-sword.png",
+			"contentHash": "66adf073f48950c553539df3a4878f21caa01a2ac57413a236f902c50261183e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/../provider-sources/martial-blade-heaven-s-fall-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2138042,
+		"contentHash": "62d410674a68662e873228b5a1caeaefb82b3a9558c0bd5ed5f165879a44b0f4"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-heaven-s-fall.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1375472,
+		"contentHash": "9a522c400a403c4e74b2498ee570b226bf6059036a3fb2fb19479b251dd7eb9d"
+	},
+	"processing": "edge-key-and-fit-1024",
+	"attemptCount": 1
+}
