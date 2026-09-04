@@ -3,6 +3,32 @@
 Use the live schema and neighboring packets as structural authority. This reference defines the
 design decisions that must be present; it does not freeze catalog totals.
 
+## Request routes
+
+### New family
+
+Create a complete family packet with five T1–T5 forms. The family name may be the only product input;
+derive a cohesive encounter thesis and propose the rest for one owner review.
+
+### Standalone enemy
+
+Do not silently invent a five-form family. Resolve whether the enemy is:
+
+- a canonical form in an existing family;
+- a secondary archetype associated with an existing family;
+- an explicitly independent production identity.
+
+Record its name, family relationship, combat tier or difficulty role, battlefield duty, mechanic,
+telegraph, counterplay, anatomy, visual description, and requested affinity coverage. If the family
+relationship or tier changes taxonomy or production structure, ask the user to choose before
+implementation.
+
+### Existing-family addition or revision
+
+Preserve the current family thesis and accepted siblings. Explain whether the addition fills a tier,
+adds a secondary archetype, or supersedes a legacy identity. A revision changes only the explicitly
+requested identity and any derived sources that must remain consistent.
+
 ## Family packet
 
 Record:
@@ -17,6 +43,11 @@ Record:
 Each T1–T5 form needs a display name, primary archetype, battlefield duty, teaching goal, signature
 mechanic, telegraph, counterplay, visual delta, lower-form interaction where applicable, and source
 references.
+
+Descriptions must be long enough to drive both combat implementation and consistent image prompts:
+state posture, proportions, surface anatomy, motion, recognizable landmarks, attack commitment, and
+the exposed counterplay region. Invent these details coherently when the user provides only a name;
+ask about them only when distinct interpretations would materially change the family.
 
 ## Five-tier progression
 

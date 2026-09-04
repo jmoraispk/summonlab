@@ -17,16 +17,27 @@ Read `AGENTS.md`, then inspect the relevant enemy sources, usually:
 Use `rg` to find every live mention of the family and current program totals. Check git status and
 the diff boundary before editing.
 
+Derive prerequisites and totals from current sources. A user prompt never needs to supply commit
+hashes, branch ancestry, packet paths, current counts, validators, or exporter commands. If the
+checkout lacks a required authority, report the concrete missing prerequisite instead of
+reconstructing it from stale prompt text.
+
 Choose one route:
 
 - **New family:** add it to a collision-safe expansion root or the explicitly active unfinished
   expansion. Do not alter a completed baseline merely to keep all families together.
 - **Revision:** create a new version/revision when the current manifest is frozen or evidence is
   immutable. Preserve accepted siblings unless the user requests their revision.
+- **Standalone enemy:** attach it to an existing family or create an independent record only after
+  the intake resolves that taxonomy; do not force it into the five-tier family schema.
 
 The completed original enemy matrix under `family-affinity-v1` is protected unless current owner
 instructions explicitly reopen it. Never modify engine contracts, unrelated visual domains, or a
 shared runtime catalog without root-orchestrator integration.
+
+Deleted, retired, and historical packets may be inspected as provenance, but they are not current
+design authority. Do not recover or copy them as the new implementation unless the user explicitly
+asks to restore that work.
 
 ## 2. Design-only implementation
 

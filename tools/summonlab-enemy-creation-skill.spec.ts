@@ -52,4 +52,21 @@ describe('summonlab-enemy-creation skill', () => {
 			expect(documentation).toContain(requiredTerm);
 		}
 	});
+
+	it('turns a minimal invocation into a complete intake without prompt boilerplate', async () => {
+		const skill = await readSkillFile('SKILL.md');
+		const familyContract = await readSkillFile('references/family-design-contract.md');
+		const agentConfig = await readSkillFile('agents/openai.yaml');
+
+		expect(agentConfig).toContain('Use $summonlab-enemy-creation to add Rodents as a new family.');
+		for (const intakeDecision of [
+			'new family',
+			'standalone enemy',
+			'family name',
+			'long-form description',
+			'requested production phase'
+		]) {
+			expect(`${skill}\n${familyContract}`).toContain(intakeDecision);
+		}
+	});
 });
