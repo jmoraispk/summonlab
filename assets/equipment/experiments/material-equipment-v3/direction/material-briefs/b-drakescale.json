@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "drakescale",
+	"displayName": "Drakescale",
+	"family": "hide-scale",
+	"rank": "B",
+	"palette": "Deep ember red, soot-black, and warm bronze-gold scale ridges.",
+	"valueRange": "Dark body with bright directional ridge accents.",
+	"surfaceAndWear": "Hard overlapping reptilian scales, heat-darkened recesses, chipped ridges, glossy high points.",
+	"constructionVocabulary": "Tight aerodynamic scale rows, reinforced crests, clawlike trim, heat-resistant layered joints.",
+	"supernaturalBehavior": "A few ember-warm seams suggest retained heat; no flames.",
+	"neutralSecondaryMaterials": "Black leather, dark steel, charcoal lining, and bronze fasteners.",
+	"neighborDifference": "More refined, draconic, and heat-bearing than Chitin; smaller-scaled and less regal than Wyrmscale.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-drakescale.json"
+}

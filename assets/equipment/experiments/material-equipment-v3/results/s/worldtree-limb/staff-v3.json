@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-worldtree-limb-staff-v3-attempt-1",
+	"targetId": "material-equipment-v3-worldtree-limb-staff-v3",
+	"assignmentId": "assignment-material-equipment-v3-worldtree-limb-staff-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T14:01:20.330Z",
+	"completedAt": "2026-09-03T14:05:42.219Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "317ca18616269489717abe7f1b0ee425c152e691469f902940cdb50553063e55",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/staff-wood-ranks-v3.png",
+			"sha256": "864daabb5f736f814dcd6fcd4fc67401119fe477a58cf9029842809977b8b8af",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-6d30be89-b128-4ef1-b3c6-5c1f5d566c4d.png",
+		"sha256": "e259a8eece0b0d826f32dcd32daeef02cdb610d31f246b2d210c039cf461a907",
+		"bytes": 1809698,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/staff-v3.png",
+		"sha256": "e939804188d3aacfac018e2497b86c935fafcf976f37b240d1d3dc272e80b7cb",
+		"bytes": 1375329,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

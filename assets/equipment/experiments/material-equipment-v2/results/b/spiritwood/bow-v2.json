@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-spiritwood-bow-v2",
+	"targetId": "material-equipment-v2-spiritwood-bow-v2",
+	"assignmentId": "assignment-material-equipment-v2-spiritwood-bow-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "99db44ce6435c16e556a37c7be8b647002ef03193dc3feee742e0339cf1924ec",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "bow-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/ash/bow-v1.png",
+			"contentHash": "79dc8ac9bda5d078773465cddb076bb177292e88db1e608bff19e547974f7eb2"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-spiritwood-bow-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-dd7a2332-f809-4bbe-b542-bfe8d05a34a6.png",
+			"requestStartedAt": "2026-09-02T22:29:05.963Z",
+			"generationCompletedAt": "2026-09-02T22:29:45.268Z",
+			"inspectionCompletedAt": "2026-09-02T22:30:09.253Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/b/spiritwood/bow-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1213577,
+		"sha256": "e1aebd710a1b4718418f42b62d9a3c7bd94d9c17152836e8d99d6f9ef1759d11"
+	},
+	"candidateSha256": "e1aebd710a1b4718418f42b62d9a3c7bd94d9c17152836e8d99d6f9ef1759d11",
+	"startedAt": "2026-09-02T22:29:05.963Z",
+	"completedAt": "2026-09-02T22:30:09.253Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/b/spiritwood/bow-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/b/spiritwood/bow-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "spiritwood",
+	"displayName": "Spiritwood",
+	"family": "wood",
+	"rank": "B",
+	"palette": "Silver-gray wood, desaturated blue grain, and soft teal-white inner traces.",
+	"valueRange": "Cool middle-light values with translucent-looking edges.",
+	"surfaceAndWear": "Smooth ancient grain, soft ghostlike striations, few physical scars, clean grown joints.",
+	"constructionVocabulary": "Elegant sweeping limbs, forked growth, hollow negative spaces, floating-looking but connected rings.",
+	"supernaturalBehavior": "A restrained inner glow follows selected grain lines; the object remains solid wood.",
+	"neutralSecondaryMaterials": "Silver, gray leather, pale cord, and charcoal cloth.",
+	"neighborDifference": "Cooler, lighter, and more spectral than Heartwood; less lush and actively growing than Living Branch.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-spiritwood.json"
+}

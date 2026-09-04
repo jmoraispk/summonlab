@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-sunsteel-shield-v3-attempt-1",
+	"targetId": "material-equipment-v3-sunsteel-shield-v3",
+	"assignmentId": "assignment-material-equipment-v3-sunsteel-shield-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T14:01:20.330Z",
+	"completedAt": "2026-09-03T14:03:47.704Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "1cfe27d42c77557b958349eca6d2201aa1d18aa14a78720b26d02bb7e574896f",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"purpose": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-977f8341-c5b0-4aac-8d0d-64882924d362.png",
+		"sha256": "12de4e800f93274d92f5585cfa4a48499bb707eec6b6e2e2ce13ee75f8ababb2",
+		"bytes": 2000229,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/shield-v3.png",
+		"sha256": "4a4c6b0c2efa9b9bfe1ed5a7fefec9a923b73ea1b699d01391e6e5a50cf83c1c",
+		"bytes": 1559732,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 192,
+	"previousEventCanonicalSha256": "935c9f801d8b23d4f191dd8409942f8952346716b12dfa137bb4e57c2c58a87c",
+	"recordedAt": "2026-09-02T15:10:31.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-starmetal-sword-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:10:30.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-starmetal-sword-v1",
+		"workerId": "equipment-worker-151",
+		"status": "revise",
+		"resultCanonicalSha256": "b25897d25e717b9719b2e77fcb66d7d3947ffcd87d3d0f3a8c7b49afa67076ef",
+		"failureKind": null
+	}
+}

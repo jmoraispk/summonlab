@@ -1,0 +1,129 @@
+{
+	"schemaVersion": "summonlab-image-production-contract-v3",
+	"skillVersion": "summonlab-image-production-v3",
+	"executionSurface": {
+		"framing": "length-prefixed-sha256-v1",
+		"files": [
+			"references/contract-v3.json",
+			"SKILL.md",
+			"references/affinity-grammar.md",
+			"references/result-schema.md",
+			"references/review-rubric.md",
+			"references/species-grammar.md",
+			"references/target-schema.md",
+			"scripts/anchored_io.py",
+			"scripts/family_dispatch_gate.mjs",
+			"scripts/persist_family_candidate.py",
+			"scripts/render_prompt.py",
+			"scripts/validate_target.py",
+			"scripts/verify_result.py",
+			"scripts/write_family_result.py"
+		],
+		"expectedNonContractSha256": {
+			"SKILL.md": "b852e6ca55eb62c70304edbeb2d43aba39d2ef22fff8e288fecf131838ea9f13",
+			"references/affinity-grammar.md": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda",
+			"references/result-schema.md": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce",
+			"references/review-rubric.md": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3",
+			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
+			"references/target-schema.md": "5a4c4e0936eadcae97358914d232329827f07848dc932a749abbaa539b26068e",
+			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
+			"scripts/family_dispatch_gate.mjs": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490",
+			"scripts/persist_family_candidate.py": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce",
+			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
+			"scripts/validate_target.py": "aa3fd2f7f31896e84ef675ac5ae6bb11f60a61f337c2295ff40902e23e42baee",
+			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
+			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
+		}
+	},
+	"repositoryDispatch": {
+		"path": "tools/check-family-affinity-production-dispatch.ts",
+		"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+	},
+	"sealedLauncher": {
+		"node": {
+			"path": "/home/joao/.nvm/versions/node/v24.14.1/bin/node",
+			"sha256": "bf9112eb83a827dc9f9c8d19bb7bddcbf00f7b2fedae18fdcaee05406981f20a"
+		},
+		"bundle": {
+			"path": "scripts/family_dispatch_gate.mjs",
+			"sha256": "0f3b2ee737adf65a9610ad07a1e73d3ac333d35179ec606fb4396c3068651490"
+		},
+		"sources": [
+			{
+				"path": "tools/check-family-affinity-production-dispatch.ts",
+				"sha256": "1ec0caba2a86c87999a5411bb602939d68ccc19259762577635ccc9ce0bd03a7"
+			},
+			{
+				"path": "tools/family-affinity-production-lib.ts",
+				"sha256": "eb11667fc639d094ebe9ce855471878de1a7ea7fe3b6a0acddef064eb14fdc4d"
+			},
+			{
+				"path": "package.json",
+				"sha256": "fb2b6f3ec023b1ec8fd79a010f1daf7c225664ead7760fccefc209fcb2a41895"
+			},
+			{
+				"path": "pnpm-lock.yaml",
+				"sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
+			}
+		],
+		"environment": {
+			"LANG": "C.UTF-8",
+			"LC_ALL": "C.UTF-8",
+			"TZ": "UTC"
+		}
+	},
+	"profiles": {
+		"image-production-family-target-v1": {
+			"repositoryTargetSchema": "family-affinity-target-v1",
+			"assignmentSchema": "family-affinity-assignment-v1",
+			"resultSchema": "family-affinity-result-v1",
+			"promptMaterialSchema": "family-affinity-prompt-material-v1",
+			"sourcePacketSchemas": ["family-packet-v1", "bridge-identity-packet-v1"],
+			"experimentId": "family-affinity-v1",
+			"affinities": ["normal", "fire", "earth", "wind", "water"],
+			"namespaces": ["canonical", "bridge"],
+			"pathTemplates": {
+				"canonicalTarget": "assets/enemies/experiments/family-affinity-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
+				"canonicalAssignment": "assets/enemies/experiments/family-affinity-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
+				"canonicalCandidate": "assets/enemies/experiments/family-affinity-v1/candidates/{familyId}/{formId}/{affinity}-v{version}.png",
+				"canonicalResult": "assets/enemies/experiments/family-affinity-v1/results/{familyId}/{formId}/{affinity}-v{version}.json",
+				"bridgeTarget": "assets/enemies/experiments/family-affinity-v1/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json",
+				"bridgeAssignment": "assets/enemies/experiments/family-affinity-v1/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json",
+				"bridgeCandidate": "assets/enemies/experiments/family-affinity-v1/bridge/candidates/{currentClassId}/{affinity}-v{version}.png",
+				"bridgeResult": "assets/enemies/experiments/family-affinity-v1/bridge/results/{currentClassId}/{affinity}-v{version}.json"
+			},
+			"producerRoleAllowlist": ["image-producer"],
+			"retryCeiling": [0, 1],
+			"ownership": {
+				"exclusiveCandidateCreate": true,
+				"immutableSingleCreateResult": true,
+				"overwriteForbidden": true
+			},
+			"requiredBindings": [
+				"target-assignment-cross-hash",
+				"namespace-source-packet-canonical-json-hash",
+				"bridge-normal-reference-raw-bytes-hash",
+				"candidate-raw-bytes-hash",
+				"prompt-material-raw-bytes-hash",
+				"source-path",
+				"result-path"
+			],
+			"forbiddenWriteClasses": [
+				"review",
+				"catalog",
+				"contact-sheet",
+				"wiki",
+				"runtime",
+				"manifest"
+			],
+			"promotionCeiling": "candidate-only"
+		},
+		"legacy-affinity-v1-v2": {
+			"targetSchemas": ["image-production-target-v1", "image-production-target-v2"],
+			"assignmentSchema": "image-production-assignment-v1",
+			"resultSchema": "image-production-result-v1",
+			"affinities": ["normal", "wood", "fire", "metal", "water", "wind"],
+			"experimentRoots": ["affinity-workflow-v1", "affinity-expansion-v1"]
+		}
+	}
+}

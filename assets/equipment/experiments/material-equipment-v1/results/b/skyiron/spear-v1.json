@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-skyiron-spear-v1",
+	"targetId": "material-equipment-v1-skyiron-spear-v1",
+	"assignmentId": "assignment-material-equipment-v1-skyiron-spear-v1",
+	"status": "revise",
+	"promptSha256": "0797a972e32a8dc4122de6b439153155dd56735ddbb9df1631bb5ec3ead7b8ef",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-skyiron-spear-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-0a04-7700-97a0-04c2a4b54598/exec-cc46e612-f2e2-4604-b796-13f731afb33f.png",
+			"requestStartedAt": "2026-09-02T15:04:32.936Z",
+			"generationCompletedAt": "2026-09-02T15:05:43.708Z",
+			"inspectionCompletedAt": "2026-09-02T15:06:04.251Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete spear is visible, but the head tip begins about 2% below the top and the butt spike ends about 3% above the bottom, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete spear is shown, comprising one head, one continuous shaft, and one fitted butt spike with no separate prop or duplicate."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long two-hand wood shaft, socketed pointed metal head, and aligned butt spike read immediately as a spear."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The skyiron head is seated through a collared socket, the straight seasoned-wood shaft has credible grip wrapping, and the metal butt cap is axially aligned for plausible balance and use."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "The large skyiron head is the visual focal point and only exceptional rank-bearing material; the brown wood shaft and dark wrapping remain neutral and subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Faceted ridges, dense striated metal texture, and cold narrow reflections establish a distinct forged skyiron head beyond blue-gray palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Restrained blue-white energy is localized to the skyiron head and a narrow surrounding haze; the shaft and full object do not glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly dark-fantasy rendering, honest wood and metal wear, cold key with a restrained warm rim, and the midnight-charcoal floor and background follow the profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject or hammer, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material substitute, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/spear-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1253288,
+		"sha256": "ebcd6fb0d144d00d08760491379b418eb8ea4e656510bb6360c0e3da1bf38879"
+	},
+	"candidateSha256": "ebcd6fb0d144d00d08760491379b418eb8ea4e656510bb6360c0e3da1bf38879",
+	"startedAt": "2026-09-02T15:04:32.936Z",
+	"completedAt": "2026-09-02T15:06:21.668Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/spear-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/skyiron/spear-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

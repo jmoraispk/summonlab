@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "hero-star-progression-study-v1",
+  "experimentId": "ultra-realistic-star-progression-v1",
+  "status": "rejected-rendering-direction",
+  "createdAt": "2026-09-02",
+  "purpose": "Test whether four fixed identities remain recognizable while 1-star, 3-star, 5-star, and 7-star forms become unmistakably more exceptional in an ultra-realistic cinematic direction.",
+  "decision": "Rejected on 2026-09-02: the literal photographic correction pass exceeds the accepted hero realism ceiling. Retained only as review and provenance evidence.",
+  "authority": "docs/wiki/art/hero-identity-and-evolution.md",
+  "rankOrder": [1, 3, 5, 7],
+  "summonRule": "Only 1-star through 5-star heroes may be summoned; 6-star and 7-star forms are reached through evolution.",
+  "comparisonRules": [
+    "Each sheet contains the same person four times in left-to-right rank order.",
+    "Face, age, body proportions, skin, hair identity, and durable recognition cues remain stable.",
+    "Five-star is a major transformation rather than an incremental costume upgrade.",
+    "Seven-star is a nearly unattainable mythic end-state and must read decisively beyond five-star.",
+    "No printed stars, labels, affinity colors, weapons, card frames, or UI are baked into candidate pixels.",
+    "Candidates are not approved or runtime assets."
+  ],
+  "targets": [
+    {
+      "targetId": "progression-ochre-braid",
+      "displayName": "Ochre Braid — user-favorite identity anchor",
+      "referenceRole": "User-supplied identity, hairstyle, physicality, posture, and wardrobe-language reference",
+      "candidate": "candidates/ochre-braid-1-3-5-7.png",
+      "width": 1790,
+      "height": 879,
+      "sha256": "f6f1b258bdfbb0cb4ae0ae318f550e42338ce7a04312c4fd1adfa7fba032a6a3"
+    },
+    {
+      "targetId": "progression-nera-voss",
+      "displayName": "Nera Voss",
+      "referenceRole": "Existing candidate used only as an identity and wardrobe-language anchor",
+      "candidate": "candidates/nera-voss-1-3-5-7.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "9d5bc57fc92120297735907424aa0190bd3f5bf724eb361e8774ef3345841006"
+    },
+    {
+      "targetId": "progression-oren-dae",
+      "displayName": "Oren Dae",
+      "referenceRole": "Existing candidate used only as an identity and wardrobe-language anchor",
+      "candidate": "candidates/oren-dae-1-3-5-7.png",
+      "width": 1781,
+      "height": 883,
+      "sha256": "61605dc9ad0a83719c022bd644ff003bb9d60190fc96f4846c981df8bf66ab3d"
+    },
+    {
+      "targetId": "progression-tavo-renn",
+      "displayName": "Tavo Renn",
+      "referenceRole": "Existing candidate used only as an identity and wardrobe-language anchor",
+      "candidate": "candidates/tavo-renn-1-3-5-7.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "bc16d1f10bf6a9ca58cce745b8f5766a5a143a2605b0d2a263c6ffda1b78d70c"
+    }
+  ],
+  "reviewPage": "review/index.html",
+  "provenance": "provenance/prompts.json"
+}

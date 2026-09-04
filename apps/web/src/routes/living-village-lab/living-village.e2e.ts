@@ -18,6 +18,10 @@ test('provides one comparison entry point for all Living Village screens', async
 		'href',
 		'/living-village-lab/tower'
 	);
+	await expect(page.getByRole('link', { name: /Test Combat Motion/ })).toHaveAttribute(
+		'href',
+		'/living-village-lab/combat'
+	);
 });
 
 test('keeps the comparison entry point usable at phone width', async ({ page }) => {

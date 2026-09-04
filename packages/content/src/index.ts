@@ -4,6 +4,7 @@ export * from './affinity-workflow.js';
 export * from './enemy-affinity.js';
 export * from './enemy-affinity-expansion.js';
 export * from './enemy-roster.js';
+export * from './equipment.js';
 export * from './iron-moon.js';
 export * from './monster-policies.js';
 export * from './pack-two-monsters.js';

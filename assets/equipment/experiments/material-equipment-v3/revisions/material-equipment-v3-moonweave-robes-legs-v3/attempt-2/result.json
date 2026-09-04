@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-moonweave-robes-legs-v3-attempt-2",
+	"targetId": "material-equipment-v3-moonweave-robes-legs-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-moonweave-robes-legs-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:12:26.857Z",
+	"completedAt": "2026-09-03T18:14:21.680Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "bd11de420b8feb16ce1fb24c0afd5fbe96c9cb29994a53ca479c86d49c6d9929",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-full-set-v3.png",
+			"sha256": "2690e6e24438c43ce87e10e3d756695612485b61e64c3f0309d8337657d5282a",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-legs-v3.png",
+			"sha256": "2567b5f8556e01d8093e0f283478b761ea2cde74d19003debae6eb2725da83b5",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a06850-7d31-7561-a4a9-0ed20a32150c/exec-ff792562-8eac-40a1-a8cc-0c08fa2c0f94.png",
+		"sha256": "5233732c74e0dc50182c0199974a2ec862eb3285268780faf33614a4ece30ad7",
+		"bytes": 1866054,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-legs-v3/attempt-2/candidate.png",
+		"sha256": "7f3c6b35ac49b13e7e203783d51ebddb3d3379e0f5aa5cc8356e6c77ebd0eca0",
+		"bytes": 1482531,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

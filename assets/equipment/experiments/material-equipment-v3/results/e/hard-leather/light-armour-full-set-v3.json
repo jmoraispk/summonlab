@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-hard-leather-light-armour-full-set-v3-attempt-1",
+	"targetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+	"assignmentId": "assignment-material-equipment-v3-hard-leather-light-armour-full-set-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:33:19.214Z",
+	"completedAt": "2026-09-03T13:37:59.350Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "caaeb963ffa2b0072acd46d35b588f34727b113dd13863b0f8cad035c36ea261",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-43f89447-d0bc-4a2e-a394-11f9952e6459.png",
+		"sha256": "c150b8dbc7516577d7681232b2c1c37e47562349eb8acac6f1f8591793262d91",
+		"bytes": 1937896,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-full-set-v3.png",
+		"sha256": "8bc83bd66fafbe29adea553914b4d682ebbcb2eff8c2e9cb85f9fa5bf776e0b8",
+		"bytes": 1386670,
+		"width": 1024,
+		"height": 1536,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

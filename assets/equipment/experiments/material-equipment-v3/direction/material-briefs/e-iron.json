@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "iron",
+	"displayName": "Iron",
+	"family": "metal",
+	"rank": "E",
+	"palette": "Cool charcoal-gray metal with pale gray edges and near-black recesses.",
+	"valueRange": "Dark middle values with stronger edge highlights than Bronze.",
+	"surfaceAndWear": "Forged texture, hammer marks, fine scratches, and sparse red-brown oxidation at joints.",
+	"constructionVocabulary": "Straightforward forged profiles, visible peening, reinforced rims, straps, and practical rivets.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Dark wood, brown leather, charcoal cloth, and tiny bronze fasteners.",
+	"neighborDifference": "Cooler, harder-edged, and more deliberately forged than Bronze; less refined than Steel.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-iron.json"
+}

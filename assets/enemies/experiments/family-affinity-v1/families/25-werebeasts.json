@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "werebeasts",
+  "displayName": "Werebeasts",
+  "sourceRaceNumber": 25,
+  "sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-05.md",
+  "classificationNotes": "Source-draft Werebeasts are treated as a staged hybrid-transformation visual and encounter-production family. Claims about human origin, curse, permanence, culture, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.",
+  "visualConstants": [
+    "A human frame progressively stretches toward animal proportions while hands, shoulders, legs, muzzle, and tail change at explicit tiers.",
+    "Grey, black, russet, or silver fur remains distinct from torn muted human clothing, hide, iron restraints, claw, and fang.",
+    "Shredded dress, snapped restraints, ritual scars, and restrained moon motifs record the unfinished transformation without defining an affinity.",
+    "Loss of human proportion escalates from patchy changes to an authored sovereign transformation while readable joints remain exposed."
+  ],
+  "escalationAxis": "The visible degree and permanence of hybrid transformation advances from an afflicted human probe to a sovereign that commands staged transformations.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": [
+        "Family-native, non-affinity fur, eye glow and moon glow, torn cloth, broken chain and iron collar, and the transformation curse remain source-supported anatomy, remnants, restraints, and condition—not Fire, Earth, Wind, Water, or any other affinity.",
+        "Hide, claw, fang, ritual scars, muted clothing, and restrained animal motion preserve the source progression without elemental substitution."
+      ],
+      "counterplaySignal": "The established hand, planted foot, hip turn, collar link, or binding-rune break remains readable.",
+      "forbidden": ["unexplained elemental anatomy", "unexplained elemental glow", "unexplained environmental wake", "Treating native moonlight or transformation as affinity evidence"]
+    },
+    "fire": {
+      "constructionDimensions": [
+        "Material/structure branches: T1 patchy fur and long fingers carry ember-threaded torn seams; T2 the emerging muzzle and hybrid shoulders gain heat-black cheek tabs; T3 digitigrade hocks and mature claws gain vented claw guards; T4 the broken chain and iron collar gain cooling links; T5 the horn-and-antler crown and broken runes gain bounded ignition sockets.",
+        "Motion/process branches: T1 a torn seam vents one short combustion cycle along the patchy forearm; T2 the hybrid pounce exhausts through muzzle-side cheek tabs; T3 digitigrade crosscuts open each claw-guard vent; T4 chain rotation pumps smoke through the collar heat sink; T5 each crown rune ignites and cools in a commanded sequence."
+      ],
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam opens its forearm vent after combustion; T2 the hybrid muzzle-side cheek tab exposes its cooling gap after the pounce; T3 a digitigrade landing opens the active claw-guard vent; T4 the chain-and-collar heat sink opens after a full rotation; T5 the crown rune exposes its ignition socket between commanded cycles.",
+      "forbidden": ["Palette-only orange fur", "Glow-only fire treatment", "Uniform burning pelt", "Premature later-tier anatomy"]
+    },
+    "earth": {
+      "constructionDimensions": [
+        "Material/structure branches: T1 patchy fur and long fingers carry mineral-set torn-seam tabs; T2 the emerging muzzle and hybrid shoulders gain sediment cheek braces; T3 digitigrade hocks and mature claws gain crystal load keys; T4 the broken chain and iron collar gain compressed mineral links; T5 the horn-and-antler crown and broken runes gain fractured load sockets.",
+        "Motion/process branches: T1 a planted reach with long fingers loads one torn seam fault; T2 the hybrid pounce transfers weight through a muzzle-side brace; T3 digitigrade crosscuts alternate claw-key loads; T4 chain rotation commits the collar anchor; T5 each crown rune roots and releases one arena load."
+      ],
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam reveals its mineral fault after the planted reach; T2 the hybrid muzzle brace fractures after the pounce; T3 a digitigrade landing exposes the active claw load key; T4 the chain-and-collar anchor cracks after a full rotation; T5 the crown rune exposes its load socket when the commanded root releases.",
+      "forbidden": ["Palette-only brown fur", "Glow-only earth treatment", "Pasted rocks", "Mass that hides the transformation silhouette"]
+    },
+    "wind": {
+      "constructionDimensions": [
+        "Material/structure branches: T1 patchy fur and long fingers carry tiny torn-seam vanes; T2 the emerging muzzle and hybrid shoulders gain cheek pressure channels; T3 digitigrade hocks and mature claws gain directional fur lanes; T4 the broken chain and iron collar gain calibrated air links; T5 the horn-and-antler crown and broken runes gain pressure-route sockets.",
+        "Motion/process branches: T1 a sweep with long fingers drives the torn seam tabs around one still wrist; T2 the hybrid pounce follows a muzzle-side pressure channel; T3 digitigrade crosscuts reverse directional fur flow; T4 chain rotation circles a still collar anchor; T5 each crown rune redirects one commanded debris vector."
+      ],
+      "counterplaySignal": "Affinity counterplay branches: T1 the patchy-fur torn seam reveals a still wrist between vane sweeps; T2 the hybrid muzzle channel leaves one still shoulder after the pounce; T3 a digitigrade landing exposes the claw-lane pressure anchor; T4 the chain-and-collar still link appears after a full rotation; T5 the crown rune exposes its pressure socket between commanded vectors.",
+      "forbidden": ["Palette-only pale fur", "Glow-only wind treatment", "Directionless vapor", "Floating anatomy without ground contact"]
+    },
+    "water": {
+      "constructionDimensions": [
+        "Material/structure branches: T1 patchy fur and long fingers carry a reflective torn-seam conduit; T2 the emerging muzzle and hybrid shoulders gain cheek-pressure tubes; T3 digitigrade hocks and mature claws gain draining claw guards; T4 the broken chain and iron collar gain linked water valves; T5 the horn-and-antler crown and broken runes gain bounded pressure sockets.",
+        "Motion/process branches: T1 a sweep with long fingers fills and drains the torn seam conduit; T2 the hybrid pounce pressurizes one muzzle-side tube; T3 digitigrade crosscuts alternate claw-guard flow; T4 chain rotation pumps the collar valves; T5 each crown rune releases one coherent pressure cycle."
+      ],
+      "counterplaySignal": "Affinity counterplay branches: T1 pressure loss opens the patchy fur torn seam conduit at the wrist; T2 the hybrid muzzle tube exposes its valve after the pounce; T3 a digitigrade landing drains the active claw guard; T4 the chain-and-collar valve opens after a full rotation; T5 the crown rune exposes its pressure socket after the commanded release.",
+      "forbidden": ["Palette-only blue fur", "Glow-only water treatment", "Shapeless liquid body", "Spray that hides hands, hocks, or collar"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1", "formId": "werebeast-afflicted", "displayName": "Afflicted", "primaryArchetype": "Reach-Tell Initiate (Initiate)",
+      "battlefieldDuty": "Probe close spacing with one overlong grasp from a mostly human stance.", "teachingGoal": "Teach that the patchy forearm tightens before the elongated fingers sweep and leaves the human wrist exposed.",
+      "signatureMechanic": "Seam-Split Reach: one sleeve seam tears as the long fingers make a single hooking sweep.", "telegraph": "Wolfish yellow eyes fix on the target while patchy forearm fur rises beneath an intact but straining sleeve.",
+      "counterplay": "Step inside the hooking fingertips and strike the exposed wrist before the sleeve settles.", "visualDelta": "Mostly human frame with patchy fur, wolfish yellow eyes, elongated fingers, and clothing intact but torn at the seams.",
+      "lowerFormInteraction": null, "sourceReferences": ["Afflicted"]
+    },
+    {
+      "tier": "T2", "formId": "werebeast-half-turned", "displayName": "Half-turned", "primaryArchetype": "Crouch-Pounce Soldier (Soldier)",
+      "battlefieldDuty": "Repeat a readable pounce from a crouched hybrid posture and reset through a vulnerable upright turn.", "teachingGoal": "Teach that muzzle direction names the pounce lane and the trailing cloth strip marks the recovery side.",
+      "signatureMechanic": "Half-Turn Pounce: the hybrid drops its shoulders, lunges along the muzzle line, then must haul one not-yet-digitigrade leg underneath itself.", "telegraph": "The elongated snout lowers and fur across the back lifts as clothing strips trail straight behind.",
+      "counterplay": "Leave the muzzle lane and punish the recovering rear leg before the crouch reforms.", "visualDelta": "Crouched hybrid with elongated snout, fur across back and arms, human-like legs, and clothing hanging in strips.",
+      "lowerFormInteraction": "Afflicted sweep at targets displaced by the pounce; breaking the Half-turned recovery opens both forms.", "sourceReferences": ["Half-turned"]
+    },
+    {
+      "tier": "T3", "formId": "werebeast-werebeast", "displayName": "Werebeast", "primaryArchetype": "Digitigrade Crosscut Specialist (Specialist)",
+      "battlefieldDuty": "Qualitatively pivot into a mobile hunter that crosses two claw lanes from different digitigrade footholds.", "teachingGoal": "Teach players to read hock compression, leave the second lane, and break the belt pivot rather than chase speed.",
+      "signatureMechanic": "Hock Crosscut: one digitigrade leg plants for a low claw lane, then the opposite hock snaps the full beast through a crossing high lane.", "telegraph": "The thick pelt parts over one compressed hock while the ragged belt twists opposite the raised claws.",
+      "counterplay": "Cross behind the first planted hock and sever or stagger the belt pivot before the second claw lane resolves.", "visualDelta": "Full anthropomorphic beast with thick pelt, digitigrade legs, heavy claws, fangs, and only a belt and rag left of human dress.",
+      "lowerFormInteraction": "Half-turned pounces herd targets into the first cut; interrupting their recovery leaves the crosscut without its setup.", "sourceReferences": ["Werebeast"]
+    },
+    {
+      "tier": "T4", "formId": "werebeast-alpha", "displayName": "Alpha", "primaryArchetype": "Collar-Chain Champion (Champion)",
+      "battlefieldDuty": "Control a rotating radius with the snapped chain while directing lower forms into exposed approaches.", "teachingGoal": "Teach that the iron collar link bearing the chain load opens after every full rotation.",
+      "signatureMechanic": "Broken-Moon Orbit: the Alpha whirls the snapped chain through one marked arc, then lunges through the opposite gap with oversized fangs.", "telegraph": "Moon-white eyes brighten, the scarred silver pelt flattens, and one iron collar link pulls visibly open.",
+      "counterplay": "Follow the chain tail into the quiet gap and strike the loaded collar link before the lunge.", "visualDelta": "Scarred silver pelt, oversized fangs, moon-glow eyes, and a snapped chain hanging from an iron collar.",
+      "lowerFormInteraction": "Werebeasts crosscut along the chain boundary; breaking the collar collapses their marked lanes.", "sourceReferences": ["Alpha"]
+    },
+    {
+      "tier": "T5", "formId": "werebeast-primal-beast-king", "displayName": "Primal Beast-King", "primaryArchetype": "Rune-Break Transformation Sovereign (Sovereign)",
+      "battlefieldDuty": "Transform a four-quadrant hunting arena by shattering one binding rune and commanding a learned lower-form hunt in each phase.", "teachingGoal": "Test reach, pounce lanes, hock pivots, and collar openings while each solved hunt restores one restraint to the sovereign.",
+      "signatureMechanic": "Arena Transformation — Four Broken Bindings: the horn-and-antler crown points to one floating rune, the rune shatters, and an Afflicted, Half-turned, Werebeast, or Alpha performs its learned hunt before the King's matching limb fully transforms.", "telegraph": "One crown tine aligns with a binding rune, its fracture travels toward the matching limb, and the lower form assumes its familiar starting posture.",
+      "counterplay": "Solve the announced lower-form lesson, then strike the exposed crown root before the limb locks; each restored binding removes one hunt and reduces the final transformation.", "visualDelta": "Dire-scaled bulk, storm-like mane, horn-and-antler crown grown from the skull, and shattered binding runes floating around the body.",
+      "lowerFormInteraction": "Afflicted, Half-turned, Werebeast, and Alpha each author one transformation phase; defeating or disrupting that form exposes the linked crown root.", "sourceReferences": ["Primal Beast-King"]
+    }
+  ]
+}

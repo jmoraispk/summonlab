@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-blacksteel-dagger-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-blacksteel-dagger-v2",
+	"recordedAt": "2026-09-02T22:28:26.185Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/c/blacksteel/dagger-v2.json",
+		"canonicalSha256": "1bc62f292e4f0331bab688919001d81c92f0cc1bf6438362869713faaad839a3"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/c/blacksteel/dagger-v2.json",
+		"canonicalSha256": "277bef771ef824f4bfff6ccfe621306522e10eccac760073816ed160772f18b7"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/c/blacksteel/dagger-v2.json",
+		"canonicalSha256": "a73a9f3e1502d3743d672ff0bf15a87c34de69f75e285129cd480ed7a3470b18",
+		"candidateSha256": "3686d7de3ef1dbf042bf04c478e66dd4c80f3d7d19fe5109b89891d9f3b62419"
+	}
+}

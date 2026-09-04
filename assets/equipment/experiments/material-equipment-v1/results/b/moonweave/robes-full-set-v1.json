@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-moonweave-robes-full-set-v1",
+	"targetId": "material-equipment-v1-moonweave-robes-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-moonweave-robes-full-set-v1",
+	"status": "revise",
+	"promptSha256": "b7a62b2aef2fd47ec44618793ce45b9b2aa4aed875d6a22fa3ca6d0ebb7b1151",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-moonweave-robes-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06298-175d-7120-96a7-b8f44434e17f/exec-581bdb06-392a-4161-a6f0-4299a6a0d7db.png",
+			"requestStartedAt": "2026-09-02T15:09:17.000Z",
+			"generationCompletedAt": "2026-09-02T15:09:42.318Z",
+			"inspectionCompletedAt": "2026-09-02T15:10:29.289Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete robe set remains visible, but the hood peak and boot soles sit only about 5% from the nearest top and bottom edges, inside the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one coherent complete robe set is shown on one featureless charcoal display form, with hooded Head, layered Torso, paired Legs, and paired Boots readable together and no separate prop."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The deep hood, wrapped mantle, long layered tunic panels, draped split skirts, cloth-covered legs, and soft tall boots read immediately as a complete robe armour set."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Layered shoulder cloth, reinforced seams, wrapped sleeves, central belt fastening, overlapping skirt panels, and leg bindings form a coherent wearable construction with credible drape and movement clearance."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Moonweave cloth dominates the hood, mantle, torso, sleeves, skirts, trousers, bindings, and boots; small dark buckles and fastenings remain neutral and subordinate without asserting another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense fine-thread texture and lightweight layered drape with crisp fold retention establish Moonweave through fibre construction and behavior beyond its dark palette or surface ornament."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Pale lunar-thread accents and a faint cool sheen remain localized to select seams and woven motifs; the garment has no full-object glow or uncontrolled emission."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The realistic painterly dark-fantasy finish, worn hems and seams, cold key, restrained warm rim, midnight-charcoal backdrop, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The hood encloses a featureless charcoal void with no transferred person, body, or reference design; no published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-only material identity, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2168139,
+		"sha256": "054af17129a482ed3442530183bec0701f4bbc049898f2bb07640ac6e36ab836"
+	},
+	"candidateSha256": "054af17129a482ed3442530183bec0701f4bbc049898f2bb07640ac6e36ab836",
+	"startedAt": "2026-09-02T15:09:17.000Z",
+	"completedAt": "2026-09-02T15:10:29.289Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/moonweave/robes-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/moonweave/robes-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

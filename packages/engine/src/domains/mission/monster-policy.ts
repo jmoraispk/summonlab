@@ -9,6 +9,7 @@ import {
 	type EngineGameStateV20,
 	type EngineGameStateV21,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type EntropyDraw,
 	type MissionMonsterIntent,
 	type MissionMonsterState,
@@ -304,7 +305,8 @@ export function spawnMissionCombatants(
 		| EngineGameStateV19
 		| EngineGameStateV20
 		| EngineGameStateV21
-		| EngineGameStateV23,
+		| EngineGameStateV23
+		| EngineGameStateV24,
 	attempt: MissionCombatAttempt,
 	positions: Readonly<Record<string, string>>,
 	entropyInput: ReturnType<typeof createEntropyCursor>

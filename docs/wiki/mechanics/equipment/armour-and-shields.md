@@ -2,92 +2,85 @@
 
 Wiki ID: `mechanics.equipment.armour-shields`
 
-Design status: **draft**.
+Design status: **owner-approved structure; runtime-v1 visuals and item definitions integrated**.
 
-Armour is split into three classes. Class is determined by material, not by slot: plate requires
-metal, and light protection at low weight requires creature scale or fine cloth.
+Runtime-v1 implements all four pieces for every retained Armour material and a metal Shield at every
+rank. The 21 complete-set images are approved continuity references only; the 84 individual Armour
+pieces are the equippable definitions. Protection values, weight penalties, and set convenience
+actions remain deferred.
 
-## Heavy — metal required
+Armour uses three classes. The rank-bearing material determines the class; named cuts, cultural
+styles, coverage details, and monster-derived appearances do not create more mechanical classes.
 
-Requires the metal line. High mitigation and poise, high weight. Commonly paired with Shield,
-Polehammer, or Greatsword equipment.
+| Armour class | Rank-bearing material | Identity | Natural users |
+| --- | --- | --- | --- |
+| **Heavy Armour** | Metal | Highest physical protection and weight | Martial |
+| **Light Armour** | Hide or scale | Mobile protection at moderate weight | Martial and Craft |
+| **Robes** | Cloth or fibre | Lowest physical weight and strongest magical support | Magical and Craft |
 
-| Armour | R band | Weight | Material required | Notes |
-| --- | --- | --- | --- | --- |
-| **Mail** | F+ | Medium | Any metal | Rings. Good against cuts, poor against blunt. |
-| **Scale Mail** | E+ | Medium | Any metal | Metal scales on backing; better against thrusts |
-| **Brigandine** | E+ | Medium | Metal + leather | Plates riveted inside cloth. The practical middle. |
-| **Half Plate** | D+ | Heavy | Steel or better | Torso and limbs; joints left in mail |
-| **Full Plate** | C+ | Heavy | Blacksteel or better | Complete coverage. The highest mitigation available. |
-| **Great Plate** | B+ | Very Heavy | Deepvein or better | Effectively a walking fortification |
+These are natural fits, not Domain locks. A hero may use another Domain's typical armour when the
+eventual equipment and weight rules permit it.
 
-## Medium — creature scale and hide
+Each Armour class is authored as one visually consistent set and equipped as four separate items:
 
-Requires the hide and scale line. The best protection-to-weight ratio in the game, and the reason
-monster hunting matters. Commonly paired with Sword, Spear, Dagger, and Body-compatible unarmed
-equipment.
-
-| Armour | R band | Weight | Material required | Notes |
-| --- | --- | --- | --- | --- |
-| **Hide Armour** | F+ | Light | Coarse hide | Barely protective, weighs nothing |
-| **Boiled Leather** | E+ | Light | Boiled leather | The baseline for anyone who moves |
-| **Studded Leather** | E+ | Medium | Hide + metal studs | Hybrid; some blunt protection |
-| **Scale Harness** | D+ | Medium | Beast scale | Approaches mail at lower weight |
-| **Chitin Plate** | C+ | Light | Chitin | Very light, strong against cuts, weak to blunt |
-| **Lamellar** | C+ | Medium | Serpentscale or metal | Laced plates; flexible and quiet |
-| **Drakescale Coat** | B+ | Medium | Drakescale | Near-plate mitigation with heat resistance |
-| **Wyrmscale** | A+ | Light | Wyrmscale | Plate-tier protection at light weight. The best armour in the game. |
-
-## Light — cloth and fibre
-
-Requires the cloth line. Minimal mitigation, substantial magical benefit. Worn by every caster in
-the source draft.
-
-| Armour | R band | Weight | Material required | Notes |
-| --- | --- | --- | --- | --- |
-| **Padded Coat** | F+ | Light | Rough cloth | Token protection; worn under everything else |
-| **Travelling Robes** | F+ | Light | Hemp or wool | No protection, no penalty |
-| **Silk Weave** | D+ | Light | Layered silk | Resists piercing far better than it should |
-| **Warded Robes** | C+ | Light | Warded weave | Standing magical resistance |
-| **Spidersilk Mantle** | C+ | Light | Spider silk | Light, tough, holds two enchantments |
-| **Moonweave Vestments** | B+ | Light | Moonweave | Substantial mana pool and regeneration |
-| **Starcloth Raiment** | A+ | Light | Starcloth | Every caster stat, and a granted skill |
-
-## Armour slots
-
-| Slot | Notes |
+| Item | Includes |
 | --- | --- |
-| Head | Helm, hood, circlet. Heavy helms reduce peripheral awareness. |
-| Chest | The main mitigation piece; determines armour class |
-| Arms | Bracers, sleeves, pauldrons |
-| Hands | Gloves and gauntlets—may overlap with Body-compatible unarmed equipment |
-| Legs | Greaves, trousers |
-| Feet | Boots. The main movement-speed slot. |
-| Cloak | Weather, concealment, small resistances |
-| Belt | Carry capacity and quick-access slots |
+| **Head** | Helmet, hat, hood, or another class-appropriate head covering |
+| **Torso** | Primary upper-body protection or robe body, including any attached sleeves |
+| **Legs** | Pants, skirt, robe lower, or leg protection |
+| **Boots** | Boots, shoes, greaves, or another class-appropriate foot treatment |
+
+Vambraces, gloves, belts, and cloaks may appear as construction details but are not separate item
+slots in this scope.
+
+## Required set-production sequence
+
+Anything authored as a set must establish the complete matching set before its pieces are produced:
+
+1. create one image showing the full set together;
+2. use that accepted set image as the consistency source;
+3. create four separate item images in order: Head, Torso, Legs, and Boots.
+
+The complete-set image is required visual-production evidence, not a fifth equippable item. The
+four item images must preserve the accepted set's material, silhouette language, palette, trim,
+fastenings, wear, and ornament. Weapons are independent items and do not need to match an Armour
+set unless a later named set explicitly includes them.
+
+This rule applies to Heavy Armour, Light Armour, and Robes at every retained material rank. It also
+applies to any later named or monster-derived equipment explicitly presented as a set.
+
+### Full-set visual anchor
+
+All full-set sources use one consistent moderate three-quarter view and facing direction. Coarse
+Hide is the composition reference: the set appears empty and self-supported, with subtle cavity
+shading inside openings. A visible mannequin, body, or black void figure is not part of the asset.
+
+The Head item must be present and readable in every full-set source. Camera consistency applies
+across material ranks: sets do not alternate between straight-on, opposite-facing, and strongly
+rotated views. Each source must also retain its class silhouette—mobile Light Armour, protective
+Heavy Armour, or cloth-led Robes—before its four separated items can be produced.
 
 ## Shields
 
-Shields occupy the off-hand and are the only equipment described as protecting other people.
+Shield is one equipment class with metal as its rank-bearing material. Size and shape may change
+its appearance, weight, and authored properties without producing separate Buckler, Round Shield,
+Kite Shield, Tower Shield, Pavise, or Aegis classes.
 
-| Shield | R band | Weight | Notes |
-| --- | --- | --- | --- |
-| **Buckler** | F+ | Light | Fist-sized. Parry aid rather than a wall. Does not block projectiles. |
-| **Round Shield** | F+ | Medium | The baseline. Balanced. |
-| **Heater Shield** | E+ | Medium | Better coverage; standard for a mounted hero |
-| **Kite Shield** | D+ | Medium | Covers the leg; excellent for a formation line |
-| **Tower Shield** | C+ | Heavy | Full-body coverage; enables Tower Form and Wall Stance |
-| **Pavise** | C+ | Very Heavy | Plantable; provides cover to allies behind it |
-| **Aegis** | B+ | Heavy | Enchantment-woven; supports Aegis and Phalanx at full strength |
+A Shield occupies one hand and therefore cannot be combined with a two-handed Weapon, Bow, or
+Staff. It may accompany a one-handed Sword, Dagger, Axe, or Mace.
+
+## Rank
+
+The armour or shield design and selected material set the combined crafting difficulty. The
+material supplies base rank, and Forging craftsmanship adds `+0`, `+1`, or `+2`, capped at S, as
+defined in [Equipment rarity and craftsmanship](rarity-and-weight.md).
 
 ## Open implementation questions
 
-- Decide whether armour is a single design instance or eight independently equipped pieces; the
-  catalog currently describes both whole designs and slots.
-- Define material/design rarity interaction, mixed materials, underlayers, and whether changing one
-  slot changes the armour class.
-- Define mitigation, poise, damage-type resistance, coverage, awareness, movement, magic, mana,
-  concealment, carry capacity, and quick-access mechanics.
-- Define protection of allies through guard geometry/formations without allowing presentation to
-  invent collision or cover.
-- Resolve hand armour and unarmed-equipment overlap and off-hand/two-handed conflicts.
+- Define the compact protection, weight, and magical-support differences among the three armour
+  classes.
+- Define whether the four Armour items divide protection evenly or use slot-specific values.
+- Define the exact benefit and weight effects that distinguish Shield presentations without
+  multiplying classes.
+- Define how later monster materials bind to Light Armour without creating a separate class for
+  every creature.

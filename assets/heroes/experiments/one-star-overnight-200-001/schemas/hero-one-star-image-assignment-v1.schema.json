@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hero-one-star-image-assignment-v1.schema.json",
+  "title": "Heroes one-star image assignment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "assignmentId", "experimentId", "targetId", "targetPath", "targetSha256", "producerId", "assignedAt", "dryRun", "retryCeiling", "permittedOutputs", "forbiddenSharedPaths", "completionContract"],
+  "properties": {
+    "schemaVersion": { "const": "hero-one-star-image-assignment-v1" },
+    "assignmentId": { "$ref": "#/$defs/slug" },
+    "experimentId": { "const": "one-star-overnight-200-001" },
+    "targetId": { "$ref": "#/$defs/slug" },
+    "targetPath": { "$ref": "#/$defs/path" },
+    "targetSha256": { "$ref": "#/$defs/sha256" },
+    "producerId": { "$ref": "#/$defs/slug" },
+    "assignedAt": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "dryRun": { "type": "boolean" },
+    "retryCeiling": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "permittedOutputs": {
+      "type": "object", "additionalProperties": false, "required": ["candidatePath", "resultPath"],
+      "properties": { "candidatePath": { "$ref": "#/$defs/path" }, "resultPath": { "$ref": "#/$defs/path" } }
+    },
+    "forbiddenSharedPaths": { "type": "array", "minItems": 5, "maxItems": 100, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+    "completionContract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["oneTargetOneImage", "structuredResultRequired", "sharedFilesMustRemainUntouched", "candidateOnly", "selfPromotionForbidden"],
+      "properties": {
+        "oneTargetOneImage": { "const": true }, "structuredResultRequired": { "const": true },
+        "sharedFilesMustRemainUntouched": { "const": true }, "candidateOnly": { "const": true },
+        "selfPromotionForbidden": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "pattern": "^assets/heroes/experiments/one-star-overnight-200-001/[^\\\\]+$" }
+  }
+}

@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "ironwood",
+	"displayName": "Ironwood",
+	"family": "wood",
+	"rank": "D",
+	"palette": "Deep brown-black heartwood with narrow copper-brown grain lines.",
+	"valueRange": "Dark, weighty values with small satin highlights.",
+	"surfaceAndWear": "Exceptionally dense closed grain, hard polished ridges, minor impact whitening, few dents.",
+	"constructionVocabulary": "Thick load-bearing limbs and shafts, precise carved facets, robust collars, inset grips.",
+	"supernaturalBehavior": "Only an uncanny sense of weight and hardness; no glow.",
+	"neutralSecondaryMaterials": "Steel, dark leather, black cord, and muted bronze.",
+	"neighborDifference": "Darker, denser, and more architectural than Yew; less alive and expressive than Heartwood.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-ironwood.json"
+}

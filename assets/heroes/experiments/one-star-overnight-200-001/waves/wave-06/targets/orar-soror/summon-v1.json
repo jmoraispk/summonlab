@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "226f8a490c776db10e4dc9920a87d2cab75c9b9c4eb135eb862e78a34068b4a6",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Orar Soror: 38-year-old woman, 164 cm (medium), soft rounded construction with an evident middle and gentle limb contours, skin value band-3-light-medium. Face: heart-shaped face; small bright eyes and fine straight brows; long straight nose, narrow upper lip; one brow notch. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: gray-white-silver, bun-topknot-wrapped, deliberate accent: architectural high knot. Wardrobe: layered-wrap, specifically overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; rolled sleeves and one architectural lapel; bounded palette moss-ivory. Visible personal details: one hand-sized botanical shoulder tattoo. Make a tattoo, scar, freckle field, or birthmark the primary recognition device. Maintenance cue: meticulous daily maintenance. Color treatment: balances one confident color field against quiet neutrals. Pose cue: one thumb hooks lightly beneath the waist wrap while the other hand rests open. Include a worn spool of colored thread only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "orar-soror",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "one hand-sized botanical shoulder tattoo"
+      ],
+      "coolnessAnchor": "durable-body-marking",
+      "density": 1,
+      "tattooScope": "bounded"
+    },
+    "hair": {
+      "accent": "architectural high knot",
+      "chibiReadability": "Preserve the front and side silhouette of bun-topknot-wrapped, the parting, gathered mass, shaved areas, and architectural high knot; color remains gray-white-silver.",
+      "colorFamily": "gray-white-silver",
+      "silhouetteFamily": "bun-topknot-wrapped"
+    },
+    "identity": {
+      "age": 38,
+      "displayName": "Orar Soror",
+      "faceDescription": "heart-shaped face; small bright eyes and fine straight brows; long straight nose, narrow upper lip; one brow notch",
+      "gender": "woman",
+      "identitySignature": "21e09a8f8ad27d3a86a93e402a4de0b495c7f0b0719c20fae6aa6a92524ee756",
+      "skinValueBand": 3
+    },
+    "kernel": {
+      "colorOrnamentTaste": "balances one confident color field against quiet neutrals; accepts one cherished personal detail.",
+      "counterTrait": "avoids conflict until a boundary breaks",
+      "culturalFragments": [
+        "values carved wood closures over metal",
+        "never crosses a threshold with footwear unlaced"
+      ],
+      "dominantTrait": "mischievously competitive",
+      "groomingAttitude": "meticulous daily maintenance",
+      "lifeEcho": "medicine",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one thumb hooks lightly beneath the waist wrap while the other hand rests open",
+      "socialPresentation": "reserved with dry humor",
+      "tension": "Appears reserved with dry humor, yet avoids conflict until a boundary breaks."
+    },
+    "physique": {
+      "bodyType": "soft-round",
+      "description": "164 cm; soft rounded construction with an evident middle and gentle limb contours.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "meticulous daily maintenance",
+      "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; rolled sleeves and one architectural lapel.",
+      "family": "layered-wrap",
+      "paletteFamily": "moss-ivory"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/candidates/orar-soror/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/orar-soror/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "orar-soror-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-06"
+}

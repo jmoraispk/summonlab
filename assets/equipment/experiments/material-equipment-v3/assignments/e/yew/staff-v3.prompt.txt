@@ -1,0 +1,16 @@
+Render one dedicated Yew Staff, rank E, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Full-length wood-led magical focus with a readable crown and grounded shaft. Single staff standing on its base with a gentle rightward lean; crown gestures away from vertical. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Yew:
+Palette: Honey-gold sapwood with warm reddish heartwood bands.
+Value: Warm middle values with readable two-tone grain.
+Surface/wear: Dense smooth grain, flex-polished surfaces, shallow handling wear, and clean carved edges.
+Construction: Graceful tensioned curves, laminated-looking natural color bands, neat bindings, slim fittings.
+Supernatural behavior: None.
+Neutral secondary materials: Dark leather, linen cord, dull iron, and small bronze caps.
+Neighbor distinction: Richer, springier, and more carefully shaped than Ash; less massive and dark than Ironwood.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

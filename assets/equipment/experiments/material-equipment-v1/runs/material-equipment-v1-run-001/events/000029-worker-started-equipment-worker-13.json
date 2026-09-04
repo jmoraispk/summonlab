@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 29,
+	"previousEventCanonicalSha256": "b8140059604be8ab2d9410210da1a1130b3c4ea4ed44c65eb39ba69e5612a26f",
+	"recordedAt": "2026-09-02T14:45:03.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-13",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:45:02.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-iron-sword-v1-13",
+		"targetId": "material-equipment-v1-iron-sword-v1",
+		"workerId": "equipment-worker-13"
+	}
+}

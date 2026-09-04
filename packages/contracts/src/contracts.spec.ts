@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	CharacterManifestSchema,
+	EquipmentRuntimeVisualAssetSchema,
+	EquipmentRuntimeVisualManifestSchema,
 	HealthResponseSchema,
 	LegalActionSchema,
 	PhonePerformanceReportSchema,
@@ -641,5 +643,146 @@ describe('foundation contracts', () => {
 				measurements: { ...report.measurements, activeSceneFramesPerSecond: 29 }
 			})
 		).toThrow();
+	});
+
+	it('accepts a strict, lazy Equipment runtime visual catalog with 140 two-size bundles', () => {
+		const sourceManifestHash = 'a'.repeat(64);
+		const bundles = Array.from({ length: 140 }, (_, index) => {
+			const sourceAssetKey = `equipment-v1-f-bronze-sword-${index}`;
+			const assets = (['card', 'detail'] as const).map((usage) => {
+				const isCard = usage === 'card';
+				const contentHash = (isCard ? 'b' : 'c').repeat(64);
+				const publicPath = `/runtime/equipment-v1/${sourceAssetKey}/${usage}.${contentHash.slice(0, 12)}.webp`;
+				return {
+					alias: `equipment.${sourceAssetKey}.${usage}`,
+					usage,
+					sourceAssetKey,
+					sourceRole: 'item' as const,
+					sourceApprovalStatus: 'approved' as const,
+					sourceApprovedPath: `assets/equipment/approved/material-equipment-v1/items/f/bronze/sword-${index}.png`,
+					sourceContentHash: 'd'.repeat(64),
+					approvedSourceManifestHash: sourceManifestHash,
+					file: `apps/web/static${publicPath}`,
+					publicPath,
+					width: isCard ? 256 : 512,
+					height: isCard ? 256 : 512,
+					bytes: isCard ? 1_000 : 4_000,
+					contentHash,
+					budgetBytes: isCard ? (16_000 as const) : (64_000 as const),
+					budgetStatus: 'within-budget' as const,
+					encoder: {
+						format: 'webp' as const,
+						quality: isCard ? (76 as const) : (80 as const),
+						effort: 6 as const,
+						preset: 'drawing' as const,
+						smartSubsample: true as const,
+						metadata: 'stripped' as const
+					}
+				};
+			});
+			return {
+				name: sourceAssetKey,
+				sourceAssetKey,
+				loadPolicy: 'lazy' as const,
+				bytes: 5_000,
+				budgetBytes: 80_000 as const,
+				budgetStatus: 'within-budget' as const,
+				assets
+			};
+		});
+		const manifest = {
+			schemaVersion: 'equipment-runtime-visual-manifest-v1' as const,
+			catalogVersion: 'equipment-v1' as const,
+			exporterVersion: 'equipment-runtime-visual-exporter-v1' as const,
+			approvedSource: {
+				schemaVersion: 'equipment-approved-source-manifest-v1' as const,
+				catalogId: 'material-equipment-v1' as const,
+				manifestPath: 'assets/equipment/approved/material-equipment-v1/manifest.json' as const,
+				manifestContentHash: sourceManifestHash,
+				createdAt: '2026-09-04T02:25:27Z',
+				createdBy: 'summonlab-owner'
+			},
+			loading: {
+				catalogLoadPolicy: 'lazy-per-definition' as const,
+				includedInInitialPhonePayload: false as const,
+				initialPayloadBytes: 0 as const
+			},
+			profiles: [
+				{
+					usage: 'card' as const,
+					boundPixels: 256 as const,
+					quality: 76 as const,
+					budgetBytes: 16_000 as const
+				},
+				{
+					usage: 'detail' as const,
+					boundPixels: 512 as const,
+					quality: 80 as const,
+					budgetBytes: 64_000 as const
+				}
+			],
+			toolchain: { sharp: '0.35.3', vips: '8.17.3', webp: '1.6.0' },
+			summary: {
+				bundleCount: 140 as const,
+				assetCount: 280 as const,
+				armourSetReferenceCount: 0 as const,
+				cardBytes: 140_000,
+				detailBytes: 560_000,
+				totalBytes: 700_000
+			},
+			bundles,
+			manifestHash: 'e'.repeat(64)
+		};
+		expect(EquipmentRuntimeVisualManifestSchema.parse(manifest).bundles).toHaveLength(140);
+		expect(EquipmentRuntimeVisualManifestSchema.parse(manifest).loading.initialPayloadBytes).toBe(
+			0
+		);
+	});
+
+	it('rejects non-approved Equipment sources, set references, and broken output evidence', () => {
+		const sourceAssetKey = 'equipment-v1-f-bronze-sword';
+		const contentHash = 'b'.repeat(64);
+		const publicPath = `/runtime/equipment-v1/${sourceAssetKey}/card.${contentHash.slice(0, 12)}.webp`;
+		const valid = {
+			alias: `equipment.${sourceAssetKey}.card`,
+			usage: 'card' as const,
+			sourceAssetKey,
+			sourceRole: 'item' as const,
+			sourceApprovalStatus: 'approved' as const,
+			sourceApprovedPath:
+				'assets/equipment/approved/material-equipment-v1/items/f/bronze/sword.png',
+			sourceContentHash: 'a'.repeat(64),
+			approvedSourceManifestHash: 'c'.repeat(64),
+			file: `apps/web/static${publicPath}`,
+			publicPath,
+			width: 256,
+			height: 256,
+			bytes: 8_000,
+			contentHash,
+			budgetBytes: 16_000 as const,
+			budgetStatus: 'within-budget' as const,
+			encoder: {
+				format: 'webp' as const,
+				quality: 76 as const,
+				effort: 6 as const,
+				preset: 'drawing' as const,
+				smartSubsample: true as const,
+				metadata: 'stripped' as const
+			}
+		};
+		expect(EquipmentRuntimeVisualAssetSchema.parse(valid).usage).toBe('card');
+		expect(() =>
+			EquipmentRuntimeVisualAssetSchema.parse({
+				...valid,
+				sourceApprovedPath: 'assets/equipment/experiments/material-equipment-v3/candidate.png'
+			})
+		).toThrow();
+		expect(() =>
+			EquipmentRuntimeVisualAssetSchema.parse({ ...valid, sourceRole: 'armour-set-reference' })
+		).toThrow();
+		expect(() => EquipmentRuntimeVisualAssetSchema.parse({ ...valid, bytes: 16_001 })).toThrow(
+			/budget/i
+		);
+		expect(() => EquipmentRuntimeVisualAssetSchema.parse({ ...valid, unexpected: true })).toThrow();
 	});
 });

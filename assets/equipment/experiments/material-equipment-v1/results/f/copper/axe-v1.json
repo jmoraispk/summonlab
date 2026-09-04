@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-copper-axe-v1",
+	"targetId": "material-equipment-v1-copper-axe-v1",
+	"assignmentId": "assignment-material-equipment-v1-copper-axe-v1",
+	"status": "candidate",
+	"promptSha256": "9bb9942b400f8986619657a3dc4b35429958d2d4ac344a7a5dc711fd005ef391",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-copper-axe-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-output-exec-35a5842e-1939-4b24-aac0-c9aa995f86e6",
+			"requestStartedAt": "2026-09-02T14:48:44.000Z",
+			"generationCompletedAt": "2026-09-02T14:49:06.194Z",
+			"inspectionCompletedAt": "2026-09-02T14:51:13.627Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The full axe, including blade, poll, haft, and pommel, remains visible with at least the declared 8% safe margin and no cutoff."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one isolated axe is present; there are no additional weapons, tools, people, or loose components."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The compact one-hand haft, pronounced beard, curved cutting edge, and rear poll read immediately as a practical bearded axe."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The head encloses the haft at a visible eye, the poll seats above the handle, and metal bands plus a wrapped grip support a plausible hand-tool construction and weight."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Hammered copper visibly dominates the large axe head and repeats only in functional haft fittings; subordinate wood and dark leather remain neutral and do not suggest another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "A strongly hammered, peened face and warm worked-metal edge/fitting response establish copper as physical construction rather than palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural emission or full-object glow; brightness is limited to narrow reflected highlights and the restrained warm rim."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The candidate uses a premium realistic painterly finish, honest wear, cold blue key, restrained copper rim light, midnight-charcoal backdrop, and understated floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject, recognizable published character, rainbow rarity color, gold inflation, glow, oversized silhouette, ornamental identity substitution, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/axe-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1461093,
+		"sha256": "c522fbf1b24093b490252d5fa900f1ea452b5c132d1fb129ed790839defa0d6d"
+	},
+	"candidateSha256": "c522fbf1b24093b490252d5fa900f1ea452b5c132d1fb129ed790839defa0d6d",
+	"startedAt": "2026-09-02T14:48:44.000Z",
+	"completedAt": "2026-09-02T14:51:13.627Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/f/copper/axe-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/f/copper/axe-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

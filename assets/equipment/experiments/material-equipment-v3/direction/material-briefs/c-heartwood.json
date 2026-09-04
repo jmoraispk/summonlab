@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "heartwood",
+	"displayName": "Heartwood",
+	"family": "wood",
+	"rank": "C",
+	"palette": "Rich crimson-brown core, dark bark-brown ridges, and warm amber grain.",
+	"valueRange": "Deep warm values with a brighter living center.",
+	"surfaceAndWear": "Old dense grain, naturally interlocked fibers, polished growth ridges, healed knots.",
+	"constructionVocabulary": "Organic curves grown around the load path, branch-like braces, carved rings, integrated knots.",
+	"supernaturalBehavior": "A faint warm pulse visible only in a few grain channels.",
+	"neutralSecondaryMaterials": "Dark leather, black cord, steel caps, and muted bronze.",
+	"neighborDifference": "More organic and visibly vital than Ironwood; less spectral and weightless than Spiritwood.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-heartwood.json"
+}

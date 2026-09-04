@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-review-v1",
+  "reviewId": "greatsword-v1-direction-review",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "state": "candidate",
+  "humanReviewPending": true,
+  "rankOrder": [
+    "F Bronze",
+    "E Iron",
+    "D Steel",
+    "C Blacksteel",
+    "B Skyiron",
+    "A Starmetal",
+    "S Sunsteel"
+  ],
+  "candidate": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+    "sha256": "2a4261338b94a4d5586172fe6751928dae258f8ea1447316ea584dce2d4b34dd",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2320433
+  },
+  "reviewDerivatives": [
+    {
+      "use": "phone-rank-readability",
+      "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/direction/thumbnails/greatsword-metal-ranks-v1-phone-390.webp",
+      "sha256": "e697a1619fc87b751c470ccb29f062ab464fd85cc9fdf7d82e2e7e5f307fbbc9",
+      "width": 390,
+      "height": 260
+    },
+    {
+      "use": "tablet-overview",
+      "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/direction/thumbnails/greatsword-metal-ranks-v1-tablet-768.webp",
+      "sha256": "4fcc1f9d5acce80c8465485a70430fe5ce485c094f3294df33ff832397aa1b02",
+      "width": 768,
+      "height": 512
+    }
+  ],
+  "producerInspection": {
+    "coverage": "pass",
+    "classRecognition": "pass",
+    "twoHandReadability": "pass",
+    "rankProgression": "pass",
+    "materialDistinction": "pass",
+    "phoneThumbnail": "pass",
+    "nativeDetail": "pass",
+    "productionHygiene": "pass"
+  },
+  "allowedOwnerDecisions": [
+    "accept",
+    "revise",
+    "experiment",
+    "defer"
+  ]
+}

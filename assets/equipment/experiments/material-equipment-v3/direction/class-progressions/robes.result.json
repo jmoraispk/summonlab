@@ -1,0 +1,34 @@
+{
+	"schemaVersion": "equipment-class-direction-result-v3",
+	"resultId": "result-equipment-v3-robes-rank-progression-attempt-1",
+	"directionId": "equipment-v3-robes-rank-progression",
+	"assignmentId": "assignment-equipment-v3-robes-rank-progression",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T03:34:39.000Z",
+	"completedAt": "2026-09-03T03:35:19.000Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "e3fe0edd3e92b8cf0982ff71d95161d4f8c219fd8fcf414a3cfc7e6a367279bb",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+			"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+			"purpose": "Accepted F-to-S escalation rhythm and target coolness; do not copy dagger geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+		"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+		"bytes": 2417120,
+		"width": 1536,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

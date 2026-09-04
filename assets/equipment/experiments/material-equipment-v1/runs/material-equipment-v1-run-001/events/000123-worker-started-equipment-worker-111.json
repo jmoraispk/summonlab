@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 123,
+	"previousEventCanonicalSha256": "1b1ed5e6217f153560a18917e0e1d127b6e4ceaeeb0594b5ad024ce49d660b5d",
+	"recordedAt": "2026-09-02T15:02:05.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-111",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:04.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-heartwood-staff-v1-111",
+		"targetId": "material-equipment-v1-heartwood-staff-v1",
+		"workerId": "equipment-worker-111"
+	}
+}

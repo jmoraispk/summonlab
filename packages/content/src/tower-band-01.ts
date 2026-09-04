@@ -1,4 +1,8 @@
-import { MissionPackageSchema, type MissionPackage } from '@summonlab/contracts';
+import {
+	MissionEquipmentDropFixtureSchema,
+	MissionPackageSchema,
+	type MissionPackage
+} from '@summonlab/contracts';
 
 import { loadMonsterPolicyCatalog } from './monster-policies.js';
 import {
@@ -16,6 +20,7 @@ export const TOWER_FLOOR_02_RUNTIME_CONTENT_VERSION = 'tower-floor-02-v2';
 export const TOWER_FLOOR_03_RUNTIME_CONTENT_VERSION = 'tower-floor-03-v2';
 export const TOWER_FLOOR_04_RUNTIME_CONTENT_VERSION = 'tower-floor-04-v2';
 export const TOWER_FLOOR_05_RUNTIME_CONTENT_VERSION = 'tower-floor-05-v2';
+export const TOWER_BAND_01_EQUIPMENT_DROP_CONTENT_VERSION = 'tower-band-01-equipment-drop-v1';
 
 const standardDeployment = {
 	entryNodeIds: ['tower-threshold'],
@@ -2038,6 +2043,21 @@ export const TOWER_BAND_01_PACKAGES = deepFreeze([
 	TOWER_FLOOR_04_PACKAGE,
 	TOWER_FLOOR_05_PACKAGE
 ] as const);
+
+export const TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE = deepFreeze(
+	MissionEquipmentDropFixtureSchema.parse({
+		schemaVersion: 'mission-equipment-drop-fixture-v1',
+		contentVersion: TOWER_BAND_01_EQUIPMENT_DROP_CONTENT_VERSION,
+		contentHash: 'd59665cbc1423a9e2a0ef36408cdb839b886d2d5419ab559d0f6c220a2c9c372',
+		missionId: 'tower-floor-01',
+		rewardId: 'ember-hauler-bronze-dagger',
+		sourceId: 'goblin-ember-hauler',
+		definitionId: 'equipment-bronze-dagger',
+		craftsmanship: { label: 'standard', bonus: 0 },
+		initialCondition: { durability: 80, maxDurability: 100 },
+		recipientRule: 'lowest-id-surviving-hero'
+	})
+);
 
 const verifiedFloors = new Map<number, Promise<MissionPackage>>();
 

@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-yew-bow-v3-attempt-1",
+	"targetId": "material-equipment-v3-yew-bow-v3",
+	"assignmentId": "assignment-material-equipment-v3-yew-bow-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:33:19.214Z",
+	"completedAt": "2026-09-03T13:36:52.722Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "917182c13c148e2ee02ccc255bfdf6108b2a66626e2344caedfb9d9a0984f495",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/bow-wood-ranks-v3.png",
+			"sha256": "46ce486c79d68da3dd3de5743de4caa83c44330e5478ea444c7cd6d75741f1d0",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-5a194d1c-d715-48a9-b783-6d93744359b4.png",
+		"sha256": "8f772c105ced9834d9082ec67430cd6d07a4d25c941fbc6a9032ff7cfe0c10ca",
+		"bytes": 1735610,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/bow-v3.png",
+		"sha256": "d416ed5cca414b829591c7ee7fe6db4aefeadb231bba9f13e978aeecfb22342e",
+		"bytes": 1201334,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

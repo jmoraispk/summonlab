@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 50,
+	"previousEventCanonicalSha256": "d737940d9cca603ff4aa12deb6468d97ebea231a87554129087de9521f1fe15a",
+	"recordedAt": "2026-09-02T14:54:39.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-50",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:54:38.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-iron-heavy-armour-full-set-v1-50",
+		"targetId": "material-equipment-v1-iron-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-50"
+	}
+}

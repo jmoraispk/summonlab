@@ -1,0 +1,24 @@
+Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Beast Scale:
+Palette: Smoky umber, gray-green, and bone-tan scale edges.
+Value: Middle-dark with directional scale highlights.
+Surface/wear: Natural overlapping scales, keratin ridges, chipped tips, worn high points, supple hide joins.
+Construction: Sorted scale rows on flexible backing, reinforced zones, tied edges, practical closures.
+Supernatural behavior: None; biological durability is visible but grounded.
+Neutral secondary materials: Hard Leather, linen, dull steel, and dark cord.
+Neighbor distinction: More articulated and protective than Hard Leather; less plated and alien than Chitin.
+
+One isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.
+
+REVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.
+
+Correct this exact audited issue: Render only the Beast Scale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot.
+
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated legs candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.

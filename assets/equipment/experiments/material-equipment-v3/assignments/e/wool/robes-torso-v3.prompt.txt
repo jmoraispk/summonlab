@@ -1,0 +1,18 @@
+Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Wool:
+Palette: Deep moss, warm gray, muted burgundy, and natural cream accents.
+Value: Soft middle values with deep fold shadows.
+Surface/wear: Dense fuzzy weave, pill-soft edges, compressed folds, and careful darning.
+Construction: Layered warm panels, fitted mantle or hood, broad hems, braided ties, practical drape.
+Supernatural behavior: None.
+Neutral secondary materials: Plain leather, linen lining, wood toggles, and dull iron clasps.
+Neighbor distinction: Denser, warmer, and more tailored than Hemp Weave; less sleek and layered than Silk.
+
+One isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.

@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-skyiron-dagger-v3-attempt-1",
+	"targetId": "material-equipment-v3-skyiron-dagger-v3",
+	"assignmentId": "assignment-material-equipment-v3-skyiron-dagger-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:50:40.348Z",
+	"completedAt": "2026-09-03T13:52:17.894Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "bdf1963b9fddda9edba762a5b4da7fcb89f34eab424ff3d78388835e736fff2a",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+			"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+			"purpose": "Primary rank-escalation rhythm and the target level of coolness."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-db280990-e750-41f9-8634-77489347bf4a.png",
+		"sha256": "63ad249928b837fc49ceba950d46025e7e675799c5cf5ee7857993708f4df266",
+		"bytes": 1601788,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/dagger-v3.png",
+		"sha256": "47a2e9c66ba4cb8ab289b12744c7637b713e6897ba13b646e4d366d9fc5886ba",
+		"bytes": 1270014,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

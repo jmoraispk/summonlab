@@ -101,6 +101,22 @@ Captured screenshots for reviewable implementation milestones live here. They ar
 - `phase-6-player-journal.png` / `.json` — database-backed company ledger and deterministic report
   proving exact reward/XP/level and party-progress deltas, action/control provenance, direction and
   story records, semantic filters, replay cursors, state hashes, and strict replay.
+- `living-village-observatory-art-pilot-desktop-v1.png` — desktop review evidence for the first
+  PixiJS authored-art replacement: empty painted observatory, identity-derived Dara Zev, authored
+  Sprout Goblin, and six visibly secondary proxy combatants.
+- `living-village-observatory-art-pilot-phone-v1.png` — 390px phone composition at the ready state,
+  preserving the top initiative rail, exact cell anchors, three-line feed, and command overlay.
+- `living-village-observatory-art-pilot-impact-v1.png` — phone action evidence for the unchanged
+  Fleeting Step receipt and its raster-character movement, projected path, and destination claim.
+- Rejected v2/v3 floor experiments are retained in Git history only: the faint grid disappeared at
+  gameplay scale, while persistent grout flattened the accepted painted perspective.
+- `living-village-observatory-restored-perspective-phone-v4.png` /
+  `living-village-observatory-restored-perspective-desktop-v4.png` — restored phone and desktop proof:
+  the original painted 2.5D observatory is visible while the 7×9 board remains an engine contract.
+- `living-village-observatory-projected-cells-phone-v5.png` /
+  `living-village-observatory-projected-cells-desktop-v5.png` — phone and desktop proof for the
+  `authored-quad-v1` calibration: selection corners, actor anchors, paths, and impacts share one
+  perspective-aware projection without drawing a grid over the art.
 - `phase-6-runtime-story-patch.png` / `.json` — database-backed Floor 04 StoryDirector aperture and
   deterministic report proving one knowledge-bound optional beat passes all 17 authority checks,
   commits once, enters the player journal, and strictly replays while 11 adversarial candidates are
@@ -131,6 +147,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   code-native hero rig and no source PNG delivery.
 - `phase-7-fin005-phone-settlement.png` — the fully arrived image-backed Hearth scene measured by
   the throttled phone browser gate, with the 296.2 KB plate, authoritative overlay, and player HUD.
+- `equipment-workshop-phone-assay-v1.png` — the 390×844/2× engine-v24 workshop assay with one
+  source-bound detail image, rank-bearing material, Standard quality, and explicit base/final rank.
+- `equipment-workshop-phone-loadout-v1.png` — the 390×844/2× persisted Equipment inventory and
+  six-slot loadout after forge completion, equip, and reload.
 - `phase-7-fin005-phone-performance.json` — the versioned 390×844/2×, simulated-4G, 4×-CPU browser
   report covering shell, JavaScript, title/settlement visuals, pause response, reconnect, frame
   cadence, and the JS-heap-plus-decoded-images working-set reference.

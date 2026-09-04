@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 221,
+	"previousEventCanonicalSha256": "21511fdd69be9edf6aa792194c5a2c7fb100fdacfd3b50f8c36cd7bb7bfc396b",
+	"recordedAt": "2026-09-02T15:15:52.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-starmetal-heavy-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:15:51.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-starmetal-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-174",
+		"status": "revise",
+		"resultCanonicalSha256": "f6aac985002e753feb5238cd10865f30c4a6bf34c2b15203eb5a13efd16b28c8",
+		"failureKind": null
+	}
+}

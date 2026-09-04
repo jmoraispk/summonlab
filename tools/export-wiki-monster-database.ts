@@ -1,58 +1,41 @@
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import sharp from 'sharp';
-
 import {
-	ENEMY_ARCHETYPES,
-	ENEMY_REVIEW_FAMILIES,
-	PACK_TWO_MONSTER_ARCHETYPES,
-	PACK_TWO_MONSTER_FAMILIES
-} from '../packages/content/src/index.js';
+	FamilyAffinityManifestSchema,
+	FamilyAffinityTargetSchema,
+	loadFamilyAffinityActiveSources,
+	type FamilyAffinityManifest
+} from './family-affinity-production-lib.js';
+import { buildFamilyAffinityReviewArtifacts } from './family-affinity-review-lib.js';
 import {
-	assertMonsterVisualIndexProvenance,
+	assertGeneratedMonsterWikiFreshness,
+	assertManagedMonsterCatalogEntries,
+	buildCanonicalMonsterWikiDatabase,
+	buildMonsterDatabaseIndex,
+	buildMonsterVisualIndex,
 	buildMonsterWikiPage,
-	CURRENT_MONSTER_PRODUCTION_TARGET,
-	LEGACY_MONSTER_VISUAL_STUDIES,
-	matchesContentHash,
-	MONSTER_AFFINITIES,
-	MONSTER_VISUAL_INDEX_SOURCE_STATUS,
-	presentationStatusForVisualStudy,
-	selectCanonicalVariants,
-	type CurrentMonsterAffinity,
-	type MonsterAffinity,
-	type MonsterVisualCandidate,
-	type MonsterVisualPresentationStatus,
-	type MonsterWikiIdentity,
-	wikiPresentationCounterplay
+	generatedMonsterPageFileNames,
+	obsoleteGeneratedMonsterPages,
+	RETIRED_CANONICAL_MONSTER_FORM_IDS,
+	unmanagedMonsterPageCollisions,
+	type CanonicalMonsterWikiDatabase,
+	type LegacyCandidateReference,
+	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const productionRoot = resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1');
 const monsterWikiRoot = resolve(repositoryRoot, 'docs/wiki/creatures/monsters');
 const visualIndexPath = resolve(monsterWikiRoot, 'visual-index.json');
 const wikiCatalogPath = resolve(repositoryRoot, 'docs/wiki/catalog.json');
-const baselineCatalogPath = resolve(
-	repositoryRoot,
-	'assets/enemies/experiments/affinity-workflow-v1/review/catalog.json'
-);
-const expansionCatalogPath = resolve(
-	repositoryRoot,
-	'assets/enemies/experiments/affinity-expansion-v1/review/catalog.json'
-);
-
-type SourceCatalogEntry = {
-	targetId: string;
-	speciesId: string;
-	affinity: MonsterAffinity;
-	status: 'candidate' | 'revise';
-	candidatePath: string;
-	candidateHash?: string;
-	contentHash?: string;
-	selectedVersion?: string;
-};
+const legacyCatalogPaths = [
+	resolve(repositoryRoot, 'assets/enemies/experiments/affinity-workflow-v1/review/catalog.json'),
+	resolve(repositoryRoot, 'assets/enemies/experiments/affinity-expansion-v1/review/catalog.json')
+];
 
 type WikiCatalog = {
 	schemaVersion: string;
@@ -60,289 +43,181 @@ type WikiCatalog = {
 	entries: Array<Record<string, unknown> & { wikiId: string }>;
 };
 
-type MonsterVisualIndexEntry = MonsterWikiIdentity & {
-	variants: Array<
-		MonsterVisualCandidate & {
-			presentationStatus: MonsterVisualPresentationStatus;
-			thumbnailPath: string;
-			thumbnailHash: string;
-		}
-	>;
+type LegacyCatalogEntry = {
+	speciesId: string;
+	affinity: string;
+	status: 'candidate' | 'revise';
+	candidatePath: string;
+	candidateHash?: string;
+	contentHash?: string;
+	selectedVersion?: string;
 };
 
 async function readJson<T>(path: string): Promise<T> {
 	return JSON.parse(await readFile(path, 'utf8')) as T;
 }
 
-function contentHash(buffer: Buffer): string {
-	return createHash('sha256').update(buffer).digest('hex');
-}
-
-function versionFrom(entry: SourceCatalogEntry): number {
-	const explicit = entry.selectedVersion?.match(/v(\d+)/u)?.[1];
-	const fromPath = entry.candidatePath.match(/-v(\d+)\.png$/u)?.[1];
-	return Number(explicit ?? fromPath ?? 1);
-}
-
-function normalizeCandidate(entry: SourceCatalogEntry): MonsterVisualCandidate {
-	const hash = entry.contentHash ?? entry.candidateHash;
-	if (!hash) throw new Error(`Missing source hash for ${entry.targetId}`);
-	return {
-		targetId: entry.targetId,
-		speciesId: entry.speciesId,
-		affinity: entry.affinity,
-		status: entry.status,
-		candidatePath: entry.candidatePath,
-		contentHash: hash,
-		version: versionFrom(entry)
-	};
-}
-
-function monsterIdentities(): MonsterWikiIdentity[] {
-	const packOneFamilies = new Map(ENEMY_REVIEW_FAMILIES.map((family) => [family.id, family.name]));
-	const packTwoFamilies = new Map(
-		PACK_TWO_MONSTER_FAMILIES.map((family) => [family.id, family.name])
-	);
-	const packOne = ENEMY_ARCHETYPES.map((monster) => ({
-		id: monster.id,
-		name: monster.name,
-		familyId: monster.family,
-		familyName: packOneFamilies.get(monster.family)!,
-		role: monster.role,
-		telegraph: `Signature actions: ${monster.skills.join(', ')}.`,
-		counterplay: `Teaches ${monster.teaches.join(', ')}.`,
-		skills: [...monster.skills],
-		debutFloor: monster.debutFloor
-	}));
-	const packTwo = PACK_TWO_MONSTER_ARCHETYPES.map((monster) => ({
-		id: monster.id,
-		name: monster.name,
-		familyId: monster.family,
-		familyName: packTwoFamilies.get(monster.family)!,
-		role: monster.duty,
-		telegraph: monster.telegraph,
-		counterplay: wikiPresentationCounterplay(monster.id, monster.weakPoint),
-		skills: [] as string[],
-		debutFloor: null
-	}));
-	return [...packOne, ...packTwo].sort(
-		(left, right) =>
-			left.familyName.localeCompare(right.familyName) || left.name.localeCompare(right.name)
+function versionFrom(entry: LegacyCatalogEntry): number {
+	return Number(
+		entry.selectedVersion?.match(/v(\d+)/u)?.[1] ??
+			entry.candidatePath.match(/-v(\d+)\.png$/u)?.[1] ??
+			1
 	);
 }
 
-function buildDatabaseIndex(monsters: readonly MonsterWikiIdentity[]): string {
-	const families = new Map<string, { name: string; monsters: MonsterWikiIdentity[] }>();
-	for (const monster of monsters) {
-		const family = families.get(monster.familyId) ?? { name: monster.familyName, monsters: [] };
-		family.monsters.push(monster);
-		families.set(monster.familyId, family);
-	}
-	const sections = [...families.entries()]
-		.sort((left, right) => left[1].name.localeCompare(right[1].name))
-		.map(
-			([, family]) => `## ${family.name}
-
-${family.monsters.map((monster) => `- [${monster.name}](${monster.id}.md) — ${monster.role}`).join('\n')}`
+async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
+	const { families, mapping } = await loadFamilyAffinityActiveSources(repositoryRoot);
+	const reviewArtifacts = await buildFamilyAffinityReviewArtifacts(repositoryRoot);
+	const manifest = FamilyAffinityManifestSchema.parse(
+		await readJson(resolve(productionRoot, 'manifest.json'))
+	);
+	const targets = await Promise.all(
+		manifest.canonicalMatrix.activeCoordinates.map(async ({ targetPath }) =>
+			FamilyAffinityTargetSchema.parse(await readJson(resolve(repositoryRoot, targetPath)))
 		)
-		.join('\n\n');
-	return `# Monster database
-
-Wiki ID: \`creatures.monster-database\`
-
-This is the visual identity index for the **40 currently authored monster archetypes**. Every card
-opens a dedicated monster page. Each page leads with the identity reference and separates the
-accepted target from preserved visual evidence.
-
-Current production target: Normal, Fire, Earth, Wind, Water
-
-Legacy visual studies: Wood and Metal candidates; not current affinities and not runtime assets
-
-The online images are web derivatives of candidate artwork. Earth remains a current target without
-an available candidate in this preserved set. Candidate evidence is not approved or runtime art;
-source provenance and review state remain in the visual catalog.
-
-${sections}
-
-## Production synchronization
-
-Visual workers own only their manifest-bound target, candidate, and result paths. The coordinator
-refreshes this database with \`pnpm export:wiki-monsters\` after branches are consolidated. This
-keeps individual image production collision-safe while making the wiki the shared review surface.
-`;
+	);
+	const candidateReferences: LegacyCandidateReference[] = [];
+	for (const catalogPath of legacyCatalogPaths) {
+		const catalog = await readJson<{ entries: LegacyCatalogEntry[] }>(catalogPath);
+		for (const entry of catalog.entries) {
+			const contentHash = entry.contentHash ?? entry.candidateHash;
+			if (!contentHash) throw new Error(`Missing candidate hash for ${entry.candidatePath}`);
+			candidateReferences.push({
+				currentClassId: entry.speciesId,
+				affinity: entry.affinity,
+				candidatePath: entry.candidatePath,
+				contentHash,
+				sourceStatus: 'candidate-only',
+				selectionStatus: entry.status,
+				version: versionFrom(entry)
+			});
+		}
+	}
+	const reviewEvidence = reviewArtifacts.families.flatMap(({ summary }) => summary.cells);
+	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
 }
 
-function buildCatalog(current: WikiCatalog, monsters: readonly MonsterWikiIdentity[]): WikiCatalog {
-	const retained = current.entries.filter(
-		(entry) => entry.wikiId !== 'creatures.monster-database' && !entry.wikiId.startsWith('monster.')
-	);
-	const shared = {
-		owner: 'visuals-content',
-		designStatus: 'draft',
-		implementationStatus: 'partial',
-		visualStatus: 'candidate',
-		spoilerScope: 'discoverable'
-	};
+function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDatabase): WikiCatalog {
+	assertManagedMonsterCatalogEntries(database, current.entries);
+	const replaceableWikiIds = new Set([
+		'creatures.monster-database',
+		...database.forms.map(({ formId }) => `monster.${formId}`),
+		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`),
+		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `monster.${formId}`)
+	]);
+	const retained = current.entries.filter((entry) => !replaceableWikiIds.has(entry.wikiId));
 	return {
 		...current,
-		lastReviewed: '2026-08-31',
+		lastReviewed: '2026-09-01',
 		entries: [
 			...retained,
 			{
 				wikiId: 'creatures.monster-database',
 				path: 'docs/wiki/creatures/monsters/README.md',
 				pageType: 'monster-database',
-				...shared
+				owner: 'visuals-content',
+				designStatus: 'draft',
+				implementationStatus: 'partial',
+				visualStatus: 'brief',
+				spoilerScope: 'discoverable'
 			},
-			...monsters.map((monster) => ({
-				wikiId: `monster.${monster.id}`,
-				path: `docs/wiki/creatures/monsters/${monster.id}.md`,
+			...database.forms.map(({ formId }) => ({
+				wikiId: `monster.${formId}`,
+				path: `docs/wiki/creatures/monsters/${formId}.md`,
 				pageType: 'monster-entry',
-				...shared
+				owner: 'visuals-content',
+				designStatus: 'draft',
+				implementationStatus: 'none',
+				visualStatus: 'brief',
+				spoilerScope: 'discoverable'
 			}))
 		]
 	};
 }
 
-async function renderThumbnail(source: Buffer): Promise<Buffer> {
-	return sharp(source)
-		.resize({ width: 720, height: 480, fit: 'cover', position: 'centre', withoutEnlargement: true })
-		.webp({ quality: 82, effort: 5, smartSubsample: true })
-		.toBuffer();
-}
-
-async function buildVisualIndex(write: boolean): Promise<MonsterVisualIndexEntry[]> {
-	const baseline = await readJson<{ entries: SourceCatalogEntry[] }>(baselineCatalogPath);
-	const expansion = await readJson<{ entries: SourceCatalogEntry[] }>(expansionCatalogPath);
-	const candidates = [...baseline.entries, ...expansion.entries].map(normalizeCandidate);
-	const monsters = monsterIdentities();
-	const result: MonsterVisualIndexEntry[] = [];
-	for (const monster of monsters) {
-		const variants = selectCanonicalVariants(
-			candidates.filter((candidate) => candidate.speciesId === monster.id)
-		);
-		const rendered = [];
-		for (const variant of variants) {
-			const thumbnailPath = `/wiki-media/monsters/${monster.id}/${variant.affinity}.webp`;
-			const outputPath = resolve(repositoryRoot, `apps/web/static${thumbnailPath}`);
-			const sourcePath = resolve(repositoryRoot, variant.candidatePath);
-			const source = await readFile(sourcePath);
-			if (!matchesContentHash(source, variant.contentHash)) {
-				throw new Error(`Source hash mismatch ${variant.candidatePath}`);
+async function validateReferenceAssets(
+	reconciliation: ReturnType<typeof buildCanonicalMonsterWikiDatabase>['reconciliation']
+): Promise<void> {
+	for (const entry of reconciliation) {
+		for (const reference of entry.references) {
+			const absolutePath = resolve(repositoryRoot, reference.candidatePath);
+			if (!existsSync(absolutePath)) {
+				throw new Error(`Missing candidate-only reference ${reference.candidatePath}`);
 			}
-			const thumbnail = await renderThumbnail(source);
-			if (write) {
-				await mkdir(dirname(outputPath), { recursive: true });
-				await writeFile(outputPath, thumbnail);
+			const digest = createHash('sha256')
+				.update(await readFile(absolutePath))
+				.digest('hex');
+			if (digest !== reference.contentHash) {
+				throw new Error(`Candidate-only reference hash drift ${reference.candidatePath}`);
 			}
-			rendered.push({
-				...variant,
-				presentationStatus: presentationStatusForVisualStudy(variant.affinity),
-				thumbnailPath,
-				thumbnailHash: contentHash(thumbnail)
-			});
 		}
-		result.push({ ...monster, variants: rendered });
 	}
-	return result;
 }
 
-async function writeOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promise<void> {
+async function validateSourcePages(manifest: FamilyAffinityManifest): Promise<void> {
+	const sourcePages = new Set<string>();
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const target = FamilyAffinityTargetSchema.parse(
+			await readJson(resolve(repositoryRoot, coordinate.targetPath))
+		);
+		sourcePages.add(target.sources.sourcePage);
+	}
+	for (const sourcePage of sourcePages) {
+		if (!existsSync(resolve(repositoryRoot, sourcePage))) {
+			throw new Error(`Missing family source page ${sourcePage}`);
+		}
+	}
+}
+
+async function writeOutputs(input: MonsterWikiBuildInput): Promise<number> {
+	const database = buildCanonicalMonsterWikiDatabase(input);
+	await validateReferenceAssets(database.reconciliation);
+	await validateSourcePages(input.manifest);
 	await mkdir(monsterWikiRoot, { recursive: true });
-	await writeFile(resolve(monsterWikiRoot, 'README.md'), buildDatabaseIndex(monsters));
-	for (const monster of monsters) {
-		const pagePath = resolve(monsterWikiRoot, `${monster.id}.md`);
-		await writeFile(pagePath, buildMonsterWikiPage(monster));
+	const existingFileNames = await readdir(monsterWikiRoot);
+	const unmanagedPages = unmanagedMonsterPageCollisions(database, existingFileNames);
+	if (unmanagedPages.length > 0) {
+		throw new Error(`Unmanaged monster page collision: ${unmanagedPages.join(', ')}`);
+	}
+	const currentCatalog = await readJson<WikiCatalog>(wikiCatalogPath);
+	assertManagedMonsterCatalogEntries(database, currentCatalog.entries);
+	const obsoletePages = obsoleteGeneratedMonsterPages(database, existingFileNames);
+	for (const fileName of obsoletePages) await unlink(resolve(monsterWikiRoot, fileName));
+
+	await writeFile(resolve(monsterWikiRoot, 'README.md'), buildMonsterDatabaseIndex(database));
+	for (const form of database.forms) {
+		await writeFile(resolve(monsterWikiRoot, `${form.formId}.md`), buildMonsterWikiPage(form));
 	}
 	await writeFile(
 		visualIndexPath,
-		`${JSON.stringify(
-			{
-				schemaVersion: 'summonlab-monster-visual-index-v1',
-				sourceStatus: MONSTER_VISUAL_INDEX_SOURCE_STATUS,
-				monsterCount: monsters.length,
-				affinities: CURRENT_MONSTER_PRODUCTION_TARGET,
-				legacyVisualStudies: LEGACY_MONSTER_VISUAL_STUDIES,
-				sourceVisualLabels: MONSTER_AFFINITIES,
-				monsters
-			},
-			null,
-			2
-		)}\n`
+		`${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`
 	);
-	const catalog = await readJson<WikiCatalog>(wikiCatalogPath);
-	await writeFile(wikiCatalogPath, `${JSON.stringify(buildCatalog(catalog, monsters), null, 2)}\n`);
+	await writeFile(
+		wikiCatalogPath,
+		`${JSON.stringify(buildCatalog(currentCatalog, database), null, 2)}\n`
+	);
+	return obsoletePages.length;
 }
 
-async function checkOutputs(monsters: readonly MonsterVisualIndexEntry[]): Promise<void> {
-	const stored = await readJson<{
-		schemaVersion: string;
-		sourceStatus: unknown;
-		monsterCount: number;
-		affinities: readonly CurrentMonsterAffinity[];
-		legacyVisualStudies: readonly string[];
-		sourceVisualLabels: readonly MonsterAffinity[];
-		monsters: MonsterVisualIndexEntry[];
-	}>(visualIndexPath);
-	assertMonsterVisualIndexProvenance(stored);
-	if (stored.schemaVersion !== 'summonlab-monster-visual-index-v1' || stored.monsterCount !== 40) {
-		throw new Error('Monster visual index schema or count is stale');
-	}
-	if (
-		JSON.stringify(stored.affinities) !== JSON.stringify(CURRENT_MONSTER_PRODUCTION_TARGET) ||
-		JSON.stringify(stored.legacyVisualStudies) !== JSON.stringify(LEGACY_MONSTER_VISUAL_STUDIES) ||
-		JSON.stringify(stored.sourceVisualLabels) !== JSON.stringify(MONSTER_AFFINITIES)
-	) {
-		throw new Error('Monster visual index production-target metadata is stale');
-	}
-	if (JSON.stringify(stored.monsters) !== JSON.stringify(monsters)) {
-		throw new Error('Monster visual index entries are stale');
-	}
-	const currentById = new Map(monsters.map((monster) => [monster.id, monster]));
-	for (const storedMonster of stored.monsters) {
-		const current = currentById.get(storedMonster.id);
-		if (!current) throw new Error(`Unexpected stored monster ${storedMonster.id}`);
-		for (const storedVariant of storedMonster.variants) {
-			const currentVariant = current.variants.find(
-				(variant) => variant.affinity === storedVariant.affinity
-			);
-			if (!currentVariant) throw new Error(`Missing ${storedMonster.id}/${storedVariant.affinity}`);
-			for (const key of [
-				'candidatePath',
-				'contentHash',
-				'status',
-				'presentationStatus',
-				'version',
-				'thumbnailHash'
-			] as const) {
-				if (storedVariant[key] !== currentVariant[key]) {
-					throw new Error(`Stale ${storedMonster.id}/${storedVariant.affinity} ${key}`);
-				}
-			}
-			const thumbnailFile = resolve(
-				repositoryRoot,
-				`apps/web/static${storedVariant.thumbnailPath}`
-			);
-			if (!existsSync(thumbnailFile))
-				throw new Error(`Missing thumbnail ${storedVariant.thumbnailPath}`);
-			const thumbnailHash = contentHash(await readFile(thumbnailFile));
-			if (thumbnailHash !== storedVariant.thumbnailHash) {
-				throw new Error(`Thumbnail hash mismatch ${storedVariant.thumbnailPath}`);
-			}
-		}
-		const pagePath = resolve(monsterWikiRoot, `${storedMonster.id}.md`);
-		if (!existsSync(pagePath)) throw new Error(`Missing wiki page for ${storedMonster.id}`);
-		const page = await readFile(pagePath, 'utf8');
-		if (page !== buildMonsterWikiPage(current)) {
-			throw new Error(`Generated wiki page is stale for ${storedMonster.id}`);
+async function checkOutputs(input: MonsterWikiBuildInput): Promise<void> {
+	const database = buildCanonicalMonsterWikiDatabase(input);
+	await validateReferenceAssets(database.reconciliation);
+	await validateSourcePages(input.manifest);
+	const existingFileNames = await readdir(monsterWikiRoot);
+	const pages = new Map<string, string>();
+	for (const fileName of generatedMonsterPageFileNames(database)) {
+		if (existsSync(resolve(monsterWikiRoot, fileName))) {
+			pages.set(fileName, await readFile(resolve(monsterWikiRoot, fileName), 'utf8'));
 		}
 	}
-	const databaseIndex = await readFile(resolve(monsterWikiRoot, 'README.md'), 'utf8');
-	if (databaseIndex !== buildDatabaseIndex(monsters)) {
-		throw new Error('Generated monster database index is stale');
-	}
+	assertGeneratedMonsterWikiFreshness(database, {
+		readme: await readFile(resolve(monsterWikiRoot, 'README.md'), 'utf8'),
+		visualIndex: await readFile(visualIndexPath, 'utf8'),
+		pages,
+		existingFileNames
+	});
 	const catalog = await readJson<WikiCatalog>(wikiCatalogPath);
-	const expectedCatalog = buildCatalog(catalog, monsters);
+	const expectedCatalog = buildCatalog(catalog, database);
 	if (JSON.stringify(catalog) !== JSON.stringify(expectedCatalog)) {
 		throw new Error('Wiki catalog monster registrations are stale');
 	}
@@ -352,14 +227,15 @@ const write = process.argv.includes('--write');
 const check = process.argv.includes('--check');
 if (write === check) throw new Error('Pass exactly one of --write or --check');
 
-const monsters = await buildVisualIndex(write);
-if (monsters.length !== 40 || monsters.some((monster) => monster.variants.length !== 6)) {
-	throw new Error('Expected 40 monsters with six preserved visual studies each');
-}
+const input = await loadBuildInput();
 if (write) {
-	await writeOutputs(monsters);
-	console.log('Exported 40 monster pages and 240 preserved web visual studies.');
+	const deleted = await writeOutputs(input);
+	console.log(
+		`Exported 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
+	);
 } else {
-	await checkOutputs(monsters);
-	console.log('Validated 40 monster pages and 240 preserved web visual studies.');
+	await checkOutputs(input);
+	console.log(
+		'Validated 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations.'
+	);
 }

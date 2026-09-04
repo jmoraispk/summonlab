@@ -44,9 +44,7 @@ test('labels candidate provenance without implying approval or runtime promotion
 }) => {
 	await page.goto('/wiki/creatures/monsters/death-knight');
 
-	await expect(page.locator('main')).toContainText('current-target candidate');
-	await expect(page.locator('main')).toContainText('legacy-candidate');
-	await expect(page.locator('main')).toContainText('not current affinities and not runtime assets');
+	await expect(page.locator('main')).toContainText('candidate-only');
 	await expect(page.locator('main')).not.toContainText(/approved for runtime|runtime-approved/iu);
 	await expect(page.locator('main')).not.toContainText(/\b[a-f0-9]{16,}\b/iu);
 });
@@ -59,45 +57,33 @@ test('uses an icon selector for available current targets and names the pending 
 
 	await expect(page.getByRole('heading', { name: 'Current production target' })).toBeVisible();
 	const selectors = page.locator('.variant-selector').getByRole('button', {
-		name: /current-target candidate/iu
+		name: /candidate-only image/iu
 	});
 	await expect(selectors).toHaveCount(3);
 	await expect(page.locator('.variant-stage img')).toHaveAttribute('src', /fire\.webp$/u);
 	await expect(page.getByText('Earth candidate not yet available', { exact: true })).toBeVisible();
 	await expect(page.locator('[data-affinity-icon="earth-crystal"]')).toHaveCount(1);
 
-	await page.getByRole('button', { name: 'Water current-target candidate' }).click();
+	await page.getByRole('button', { name: 'Water candidate-only image' }).click();
 	await expect(page.locator('.variant-stage img')).toHaveAttribute('src', /water\.webp$/u);
-	await expect(
-		page.getByRole('button', { name: 'Water current-target candidate' })
-	).toHaveAttribute('aria-pressed', 'true');
-	await page.getByRole('button', { name: 'Fire current-target candidate' }).click();
-	await expect(page.locator('.variant-stage img')).toHaveAttribute('src', /fire\.webp$/u);
-	await expect(page.getByRole('button', { name: 'Fire current-target candidate' })).toHaveAttribute(
+	await expect(page.getByRole('button', { name: 'Water candidate-only image' })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);
-	await expect(page.locator('.variant-selector [data-affinity-icon="wood-trunk"]')).toHaveCount(0);
-	await expect(page.locator('.variant-selector [data-affinity-icon="metal-ingot"]')).toHaveCount(0);
+	await page.getByRole('button', { name: 'Fire candidate-only image' }).click();
+	await expect(page.locator('.variant-stage img')).toHaveAttribute('src', /fire\.webp$/u);
+	await expect(page.getByRole('button', { name: 'Fire candidate-only image' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 	await expect(page.locator('.variant-stage figcaption')).not.toContainText(
 		/fire|earth|wind|water/iu
 	);
 });
 
-test('keeps Wood and Metal records in a separate legacy-candidate evidence section', async ({
-	page
-}) => {
+test('does not expose a retired evidence section', async ({ page }) => {
 	await page.goto('/wiki/creatures/monsters/death-knight');
-
-	const legacy = page.locator('.legacy-studies');
-	await expect(legacy.getByRole('heading', { name: 'Legacy visual studies' })).toBeVisible();
-	await expect(legacy.locator('figure')).toHaveCount(2);
-	await expect(legacy.locator('img').nth(0)).toHaveAttribute('src', /wood\.webp$/u);
-	await expect(legacy.locator('img').nth(1)).toHaveAttribute('src', /metal\.webp$/u);
-	for (const image of await legacy.locator('img').all()) {
-		await expect(image).toHaveAttribute('alt', /legacy-candidate visual study/iu);
-		await expect(image).not.toHaveAttribute('alt', /affinity variant/iu);
-	}
+	await expect(page.locator('.legacy-studies')).toHaveCount(0);
 });
 
 test('cycles through available current-target candidates with carousel controls', async ({

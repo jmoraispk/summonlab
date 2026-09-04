@@ -31,7 +31,8 @@ type NavigationState = Extract<
 			| 20
 			| 21
 			| 22
-			| 23;
+			| 23
+			| 24;
 	}
 >;
 
@@ -168,7 +169,8 @@ export function currentTravelFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 21 ||
 		state.schemaVersion === 22 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 		? (state.heroes[heroId]?.currentTravel ?? null)
 		: null;
 }

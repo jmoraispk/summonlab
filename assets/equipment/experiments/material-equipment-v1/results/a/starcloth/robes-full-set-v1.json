@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-starcloth-robes-full-set-v1",
+	"targetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-starcloth-robes-full-set-v1",
+	"status": "revise",
+	"promptSha256": "96ad2a9eac379cd11f4f366b8adc75a9bada1e8c3ede86aa7de9759281ed3f48",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-starcloth-robes-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-b294-7ba1-ac25-7c4219c3b026/exec-83993d43-f257-48a7-b8b1-27ce8ebba023.png",
+			"requestStartedAt": "2026-09-02T15:11:03.989Z",
+			"generationCompletedAt": "2026-09-02T15:11:52.211Z",
+			"inspectionCompletedAt": "2026-09-02T15:12:18.049Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The whole set is visible, but the hood crest and boot soles sit only about five to seven percent from the vertical canvas edges, short of the declared eight-percent safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one coordinated set is shown with a hood for Head, layered robe and mantle for Torso, divided cloth leg layers for Legs, and a matched pair of Boots."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The hood, broad draped mantle, belted overlapping tunic panels, flowing divided lower layers, and soft boots read immediately as a complete robes set."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Layer overlaps, stitched hems, shoulder fastener, waist belts, fitted sleeves, split lower panels, wrapped calves, and boot closures form plausible wearable cloth construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Deep midnight starcloth dominates every major garment layer; neutral dark leather closures and small muted metal fasteners remain subordinate and introduce no second rank cue."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Visible fine woven texture, soft weighty drape, layered hems, and sparse light-catching fibres embedded throughout the cloth establish starcloth beyond a dark-blue palette or isolated ornament."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Star-like pinpricks and fine constellational threads remain sparse and confined within the weave; neither the full garment nor the surrounding ground glows."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Premium realistic painterly rendering, honest cloth abrasion, cold key light, restrained warm rim, midnight-charcoal background, and subtle floor plane match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The display form remains featureless and there is no transferred person, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-only material identity, loose extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2084386,
+		"sha256": "5b9fc0cbcd22bb04a302819f49c3493f9872da3c150e734aa6d293e41dfc23c3"
+	},
+	"candidateSha256": "5b9fc0cbcd22bb04a302819f49c3493f9872da3c150e734aa6d293e41dfc23c3",
+	"startedAt": "2026-09-02T15:11:03.989Z",
+	"completedAt": "2026-09-02T15:12:41.327Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/a/starcloth/robes-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/a/starcloth/robes-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

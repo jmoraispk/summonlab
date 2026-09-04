@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "coarse-hide",
+	"displayName": "Coarse Hide",
+	"family": "hide-scale",
+	"rank": "F",
+	"palette": "Earth brown, dusty tan, and soot-dark seams.",
+	"valueRange": "Middle-dark with broad matte shapes.",
+	"surfaceAndWear": "Uneven thickness, visible pores, raw edges, creases, scuffs, and patched abrasions.",
+	"constructionVocabulary": "Large overlapping hide panels, simple ties, crude stitching, and few hard fittings.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Hemp thread, plain wood toggles, dull bronze, and undyed lining.",
+	"neighborDifference": "Softer, rougher, and less formed than Hard Leather; no polished rigid cuirass shapes.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-coarse-hide.json"
+}

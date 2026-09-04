@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-yew-staff-v3",
+	"targetId": "material-equipment-v3-yew-staff-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/staff-wood-ranks-v3.png",
+		"sha256": "864daabb5f736f814dcd6fcd4fc67401119fe477a58cf9029842809977b8b8af",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-yew.json",
+		"canonicalSha256": "20dfd0f3eefbb82c488dbc59498173492dd35177adea8907cbd35bcae61e5cf7"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Yew Staff, rank E, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Full-length wood-led magical focus with a readable crown and grounded shaft. Single staff standing on its base with a gentle rightward lean; crown gestures away from vertical. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Yew:\nPalette: Honey-gold sapwood with warm reddish heartwood bands.\nValue: Warm middle values with readable two-tone grain.\nSurface/wear: Dense smooth grain, flex-polished surfaces, shallow handling wear, and clean carved edges.\nConstruction: Graceful tensioned curves, laminated-looking natural color bands, neat bindings, slim fittings.\nSupernatural behavior: None.\nNeutral secondary materials: Dark leather, linen cord, dull iron, and small bronze caps.\nNeighbor distinction: Richer, springier, and more carefully shaped than Ash; less massive and dark than Ironwood.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "066d4903b68b1e3b9c594de759c5cc2f628a24841eca49df900218183c382a3b",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/staff-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/e/yew/staff-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

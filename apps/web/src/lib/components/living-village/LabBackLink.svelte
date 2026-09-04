@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+
+	let { placement = 'bottom' }: { placement?: 'top' | 'bottom' } = $props();
 </script>
 
-<a href={resolve('/living-village-lab')} aria-label="All prototype screens">← Screen index</a>
+<a
+	href={resolve('/living-village-lab')}
+	aria-label="All prototype screens"
+	class:top={placement === 'top'}>← Screen index</a
+>
 
 <style>
 	a {
@@ -32,5 +38,10 @@
 		border-color: rgba(131, 205, 211, 0.75);
 		color: #fff;
 		outline: none;
+	}
+
+	a.top {
+		top: 0.65rem;
+		bottom: auto;
 	}
 </style>

@@ -1,0 +1,97 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-class-direction-target-v3"
+		},
+		"directionId": {
+			"type": "string",
+			"pattern": "^equipment-v3-[a-z-]+-rank-progression$"
+		},
+		"classId": {
+			"type": "string",
+			"enum": [
+				"sword",
+				"dagger",
+				"spear",
+				"axe",
+				"mace",
+				"shield",
+				"bow",
+				"staff",
+				"heavy-armour",
+				"light-armour",
+				"robes"
+			]
+		},
+		"width": {
+			"type": "number",
+			"const": 1536
+		},
+		"height": {
+			"type": "number",
+			"const": 1024
+		},
+		"mediaType": {
+			"type": "string",
+			"const": "image/png"
+		},
+		"orderedRanks": {
+			"type": "array",
+			"prefixItems": [
+				{
+					"type": "string",
+					"const": "F"
+				},
+				{
+					"type": "string",
+					"const": "E"
+				},
+				{
+					"type": "string",
+					"const": "D"
+				},
+				{
+					"type": "string",
+					"const": "C"
+				},
+				{
+					"type": "string",
+					"const": "B"
+				},
+				{
+					"type": "string",
+					"const": "A"
+				},
+				{
+					"type": "string",
+					"const": "S"
+				}
+			]
+		},
+		"candidatePath": {
+			"type": "string",
+			"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+		},
+		"resultPath": {
+			"type": "string",
+			"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"directionId",
+		"classId",
+		"width",
+		"height",
+		"mediaType",
+		"orderedRanks",
+		"candidatePath",
+		"resultPath"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/direction-target.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

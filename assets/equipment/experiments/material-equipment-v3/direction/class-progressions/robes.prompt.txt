@@ -1,0 +1,22 @@
+Create one polished seven-column EQUIPMENT DESIGN PROGRESSION SHEET for Summonlab. This is a direction reference, not seven final item assets.
+
+CLASS: Robes. Stable identity: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots.
+POSE/CAMERA: Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure.
+
+LAYOUT: one clean landscape 3:2 sheet, exactly seven evenly spaced full-object columns ordered left-to-right F, E, D, C, B, A, S. Put a small plain rank letter and material name below each column. No title, no legend, no lore text, no UI frame. Every object fully inside canvas with generous margins and no overlap. Midnight-charcoal studio background and restrained floor plane.
+
+PROGRESSION: F practical and appealing with minimal ornament; E sturdier and more deliberate; D refined professional; C bold silhouette with first supernatural construction cues; B visibly exceptional; A extraordinary geometry and ornament; S legendary controlled spectacle. Adjacent ranks must differ structurally at phone-thumbnail size. Palette alone is never the difference. Variation levers: Hem, sleeves, collar or hood, layers, weave behavior, closures, and increasing supernatural structure.
+
+MATERIAL COLUMNS:
+F — Hemp Weave: Natural flax beige, oatmeal, and weathered gray-brown. Simple rectangular panels, practical hems, cord belts, broad sleeves, minimal layers. None.
+E — Wool: Deep moss, warm gray, muted burgundy, and natural cream accents. Layered warm panels, fitted mantle or hood, broad hems, braided ties, practical drape. None.
+D — Layered Silk: Ink blue, muted teal, smoke gray, and restrained pearl highlights. Multiple offset layers, wrapped closures, precise pleats, slim hems, flowing panels. None; apparent lightness comes from textile behavior only.
+C — Spellweave: Deep indigo, muted violet, charcoal, and narrow cyan-violet thread accents. Structured drape, geometric panels, inscribed borders, suspended-looking collars and cuffs. A few stitched glyph paths emit a faint controlled light.
+B — Moonweave: Midnight blue, cool silver, smoky lavender, and moon-pale trim. Long layered drape, crescent arcs, asymmetric mantle, narrow silver-bound edges. Subtle moonlit shimmer moves only across folds facing the key light.
+A — Starcloth: Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points. Celestial arcs, layered mantle, long star-trail hems, elegant open sleeves, precise luminous borders. Tiny constellation points and faint thread paths glow within the cloth, never around it.
+S — Fateweave: Void black, luminous pearl, royal violet, and thin gold destiny-lines. Legendary layered silhouette, sweeping destiny arcs, impossible but connected hems, crownlike collar, masterful asymmetry. A few threads appear to pass ahead of or behind their fold and glow softly; no portal, aura, or detached magic.
+ARMOUR RULES: Each column is one complete empty self-supporting equipment set with exactly four readable components: Head, Torso, Legs, Boots. Mild three-quarter front view, matching camera and stance across all seven. Natural cavity shadows only. Absolutely no person, mannequin, body, face, hands, pose dummy, black void figure, or extra fifth component.
+
+STYLE: premium realistic-painterly dark fantasy equipment concept art, grounded medieval construction, crisp readable silhouettes, honest material response and wear, cold key light with restrained warm rim, high-end game inventory art. Use the attached Dagger progression only for escalation rhythm and the attached Steel cohort only for finish/material discipline. Do not reproduce their shapes, emblems, characters, text, or recognizable copyrighted designs.
+
+EXCLUDE: repeated identical geometry with color swaps, generic near-duplicates, extra objects, hands, wielders, mannequins, scenery, dramatic VFX, detached particles, full-object glow, illegible labels, watermarks, signatures, logos, crops, and recognizable copying.

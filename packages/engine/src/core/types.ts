@@ -1,6 +1,7 @@
 import type {
 	AuthoritativeEvent,
 	CharacterMind,
+	EquipmentMaterialId,
 	EngineCommand,
 	EngineGameState,
 	EngineGameStateV2,
@@ -25,6 +26,7 @@ import type {
 	EngineGameStateV21,
 	EngineGameStateV22,
 	EngineGameStateV23,
+	EngineGameStateV24,
 	EngineSnapshot,
 	EntropyDraw,
 	LegalAction,
@@ -54,7 +56,8 @@ export type EngineGameStateModern =
 	| EngineGameStateV20
 	| EngineGameStateV21
 	| EngineGameStateV22
-	| EngineGameStateV23;
+	| EngineGameStateV23
+	| EngineGameStateV24;
 export type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
@@ -74,7 +77,8 @@ export type EngineRoutineState =
 	| EngineGameStateV20
 	| EngineGameStateV21
 	| EngineGameStateV22
-	| EngineGameStateV23;
+	| EngineGameStateV23
+	| EngineGameStateV24;
 
 export interface BootstrapEngineInput {
 	readonly runId: string;
@@ -98,6 +102,11 @@ export interface BootstrapEngineInput {
 		readonly enableFirstBandArchive?: boolean;
 		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
 		readonly foundryRouteMemoryHeroId?: string;
+	};
+	readonly developmentEquipmentScenario?: {
+		readonly enabled: true;
+		readonly materialLots?: Readonly<Partial<Record<EquipmentMaterialId, number>>>;
+		readonly forgeReady?: true;
 	};
 }
 

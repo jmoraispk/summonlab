@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-blacksteel-sword-v3-attempt-1",
+	"targetId": "material-equipment-v3-blacksteel-sword-v3",
+	"assignmentId": "assignment-material-equipment-v3-blacksteel-sword-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:45:26.341Z",
+	"completedAt": "2026-09-03T13:45:46.850Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "5397f251d3cf007838b40567398a0720066764cac2b2a8878dc379f30f266628",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+			"sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+			"purpose": "Rank escalation, silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-cd2d2a95-8ebc-4daa-838a-ac643d5e3eec.png",
+		"sha256": "f543298b13284d4410eaaeaf91673ac11cc5828fd01dadfad26b1b650c4cfca6",
+		"bytes": 1584071,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/sword-v3.png",
+		"sha256": "094819eb2eae878f9da235daf23ef3a81d0708a0b5b3b8dca555918b269c55ff",
+		"bytes": 1155057,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

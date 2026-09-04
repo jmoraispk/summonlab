@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 97,
+	"previousEventCanonicalSha256": "716b31757be1e233e1cb601706e3933b2097c525cf315243723b6bfd71e94ad6",
+	"recordedAt": "2026-09-02T15:02:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-steel-axe-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-steel-axe-v1",
+		"workerId": "equipment-worker-58",
+		"status": "candidate",
+		"resultCanonicalSha256": "3b61185360b58fa62725b5534ad4ca3df7720878d1e169a8d400ff18e54f5a09",
+		"failureKind": null
+	}
+}

@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "rotwalkers",
+	"displayName": "Rotwalkers",
+	"sourceRaceNumber": 7,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-02.md",
+	"classificationNotes": "Source-draft Rotwalkers are treated as plague-animated human or humanoid corpses, not as a biological people or a claim about the identity, agency, morality, or allegiance of the deceased. Their family identity comes from wet opened remains, wrong-jointed posture, visible death wounds, and an animating rot that reverses decay into increasingly coordinated cohesion.",
+	"visualConstants": [
+		"A recognizably human but wrong silhouette retains dislocated shoulders, a dragging or mismatched gait, a hanging jaw, and a head or torso held at an impossible angle.",
+		"Grey-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.",
+		"Rotting flesh, exposed sinew, wet bone, grave dirt, torn burial clothing, and the visible marks or embedded tools of death preserve each corpse's material history.",
+		"Every form is wet and partly open, with readable seams at tendons, ribs, sutures, or fused bodies that explain both animation and counterplay.",
+		"Escalation reverses decay into coordination: sagging fragments become corded muscle, reinforced bone, cooperative corpse anatomy, and finally a plague court built from many still-legible bodies."
+	],
+	"escalationAxis": "The animating plague turns loose, death-marked remains into faster tendon systems, bone-bladed pressure, coordinated composite bodies, and a cathedral-like corpse sovereign that manufactures cohesion while preserving breakable seams.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Materials remain corpse-native and unaffiliated: grey-green wet flesh, bruise-purple pooling, brown dried blood, bile staining, dirty burial linen, grave dirt, exposed sinew, and wet bone retain recognizable bodily provenance.",
+				"Motion and surface behavior stay plague-biological rather than elemental: tendon tension, joint slip, fluid seepage, fly movement, dragging cloth, embedded weapons, and stitched-body load transfer expose the active seam without a supernatural environmental wake."
+			],
+			"counterplaySignal": "Dragging ankles, exposed tendon cords, open ribs, loaded corpse sutures, central faces, throne seams, and fly columns preserve each form's established weak point without elemental assistance.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Generic gore that hides which corpse seam, tendon, rib gap, or death wound carries the mechanic"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Corpse material becomes a controlled char-house system through cauterized hide, ember-dry tendon cords, blackened burial cloth, bone heat sinks, and iron death wounds converted into visible exhaust staples; fused T4–T5 bodies repeat the same routing at every loaded suture.",
+				"Attack motion follows combustion cycles: jaws and rib gaps open as vents, corded limbs tighten through heat, smoke streams identify the committed body, and cooling seams contract between lunges or production pulses."
+			],
+			"counterplaySignal": "A rib vent or corpse suture glows dull and then darkens after a committed burn; striking the cooling bone staple severs that body from the plague load path.",
+			"forbidden": [
+				"Palette-only fire treatment without cauterized materials, exhaust anatomy, and heat-cycle motion",
+				"Glow-only fire treatment without a vent, fuel route, or cooling seam",
+				"Flame that sterilizes or conceals wet corpse identity and visible death wounds",
+				"Uniform emission across every fused body regardless of which seam is active"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Grave matter reinforces rather than replaces the corpse: packed loam braces joints, mineral salts crust exposed sinew, wet bone calcifies into load-bearing blades, and T4–T5 corpse seams lock around tombstone-like ossified plates.",
+				"Stance becomes fault-driven through rooted dragging feet, compressed grave-soil wakes local to contact, pale stress lines across loaded bone, and sediment shedding from only the body currently carrying composite weight."
+			],
+			"counterplaySignal": "A calcified tendon or shared suture turns chalk-white after the form commits its weight; breaking that fault releases the supported limb or corpse cluster.",
+			"forbidden": [
+				"Palette-only earth treatment without grave reinforcement, mineralized seams, and changed load paths",
+				"Glow-only earth treatment without a readable fracture or binding joint",
+				"Pasted rocks that hide human anatomy, wet openings, or death wounds",
+				"Solid stone replacement that makes the family read as golems rather than animated corpses"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Corpse anatomy becomes a pressure bellows through hollow exposed ribs, vane-like burial strips, dried tendon sails, whistle gaps in bone blades, and on T4–T5 distinct head-and-torso vents that preserve every component body.",
+				"Motion gains directional articulation through cloth pull, fly-stream alignment, rib compression, asymmetric limb lift, and a visible still pocket behind the dislocated joint or central face anchoring the gust."
+			],
+			"counterplaySignal": "Ribs compress and burial strips snap flat before a pressure action while one wrong-angled joint remains still; entering that lee or striking the still anchor collapses the gust-assisted motion.",
+			"forbidden": [
+				"Palette-only wind treatment without bellows anatomy, directional cloth, and changed articulation",
+				"Glow-only wind treatment without force direction or a still anchor",
+				"Transparency that removes wet flesh, exposed sinew, or component corpse readability",
+				"Omnidirectional debris or flies that obscure the loaded body and counterplay seam"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"The already wet corpse becomes a deliberate pressure anatomy through waterlogged linen, translucent fluid sacs beside exposed tendons, shell-like bone valves, swollen joint reservoirs, and T4–T5 distribution channels crossing only visible corpse sutures.",
+				"Movement and attacks show coherent flow through filling limbs, narrow jets from death wounds, wet reflections, draining rib cavities, and pressure loss that visibly slackens the active tendon or fused body."
+			],
+			"counterplaySignal": "A fluid sac fills toward the attacking limb or composite body and its bone valve lifts; rupturing the sac or opening the valve drains that route and leaves the attached anatomy slack.",
+			"forbidden": [
+				"Palette-only water treatment without reservoirs, valves, and pressure-driven articulation",
+				"Glow-only water treatment without coherent filling and drainage",
+				"Shapeless water replacement that erases corpse material, openings, and death wounds",
+				"Generic wetness that is indistinguishable from the family's Normal seepage"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "rotwalker-shambler",
+			"displayName": "Shambler",
+			"primaryArchetype": "Death-Wound Stumble Initiate (Initiate)",
+			"battlefieldDuty": "Probe spacing with an uneven advance whose dragging foot stores one sudden fall-lunge along the line of the corpse's visible death wound.",
+			"teachingGoal": "Teach that apparent slowness is a readable load cycle: identify the dragging side, leave its fall lane, and punish the exposed ankle before the corpse hauls itself upright.",
+			"signatureMechanic": "Last Step: grave dirt gathers under the dragging foot until the Shambler's wrong-angled head snaps toward a target; it releases the stored imbalance as a full-body fall and clawing slide, then must pull the dislocated shoulder and ankle back under itself.",
+			"telegraph": "The dragging heel stops, strips of funeral clothing pull taut toward the planted leg, and the hanging jaw closes once before the whole corpse tips.",
+			"counterplay": "Step across the healthy-leg side rather than retreating down the fall lane, then strike or displace the exposed dragging ankle while the Shambler reconstructs its stance.",
+			"visualDelta": "A barely coherent human corpse with sagging skin, sunken eyes, one dragging foot, grave dirt across torn burial strips, a hanging jaw, and a clearly dislocated shoulder.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Shambler"]
+		},
+		{
+			"tier": "T2",
+			"formId": "rotwalker-ghoul",
+			"displayName": "Ghoul",
+			"primaryArchetype": "Sinew-Hook Pursuit Soldier (Soldier)",
+			"battlefieldDuty": "Apply reliable pursuit by hooking one claw into terrain or a fallen body and using exposed arm sinew to slingshot through a short, fixed chase lane.",
+			"teachingGoal": "Teach the mature rot grammar: faster movement is built from visible tendon tension, so cutting the anchor line or crossing behind the hooked hand defeats the rush.",
+			"signatureMechanic": "Carrion Draw: the Ghoul plants a hooked hand, cords the exposed sinew along both arms, and reels its fresher body into a jaw-first rush; a Shambler lying in the lane becomes an optional anchor that lengthens the pull but does not change its direction.",
+			"telegraph": "One claw bites into floor, wall, or corpse, the arm sinew rises like cables, and the clenched jaw points straight down the chosen lane.",
+			"counterplay": "Break or displace the hooked hand, cross behind the planted shoulder, or interrupt the exposed tendon before the body releases; the Ghoul overshoots if its anchor vanishes late.",
+			"visualDelta": "A fresher, faster corpse with taut posture, exposed sinew running along the arms, hooked claw-hands, a clenched jaw, and burial clothes tight enough to reveal the loaded tendon route.",
+			"lowerFormInteraction": "A fallen or recovering Shambler can serve as a longer Carrion Draw anchor; moving the Shambler changes or shortens the Ghoul's fixed rush without empowering the Shambler itself.",
+			"sourceReferences": ["Ghoul"]
+		},
+		{
+			"tier": "T3",
+			"formId": "rotwalker-rot-brute",
+			"displayName": "Rot Brute",
+			"primaryArchetype": "Open-Rib Plague Pump (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the floor into route control by pumping infected matter through existing corpse trails, turning familiar Shambler falls and Ghoul anchors into timed eruption lines.",
+			"teachingGoal": "Teach players to read an arena network rather than only a body: sever a marked trail, jam the open rib pump, or use a clean lane before the Brute pressurizes it.",
+			"signatureMechanic": "Ribcage Peristalsis: the bloated Brute plants both forearm bone blades and opens its cracked ribs like pump handles. One visible wet trail leading to a Shambler or Ghoul pulses from corpse to corpse, then erupts in a sequence of short grasping hands. Only one network can be charged; breaking any bright tendon junction stops the eruption and vents the Brute's belly.",
+			"telegraph": "Forearm blades lock into the ground, the cracked ribcage spreads around a swollen central sac, and one chain of wet footprints and corpse seams begins pulsing toward the selected lane.",
+			"counterplay": "Leave the pulsing route, sever one exposed tendon junction between bodies, or strike the swollen sac through the open ribs before the third pulse; the planted blades prevent the Brute from turning during the cast.",
+			"visualDelta": "A muscle-corded, bloated corpse with bone burst through both forearms as natural blades, a ribcage cracked open around a visible plague sac, and reinforced legs built to brace the pumping action.",
+			"lowerFormInteraction": "Shambler fall lanes and Ghoul anchor routes become links in the chosen pump network; disrupting either lower form breaks that link and shortens the eruption instead of merely damaging the Brute.",
+			"sourceReferences": ["Rot Brute"]
+		},
+		{
+			"tier": "T4",
+			"formId": "rotwalker-amalgam",
+			"displayName": "Amalgam",
+			"primaryArchetype": "Many-Body Gait Architect (Champion)",
+			"battlefieldDuty": "Rebuild the arena's movement lanes by assigning different fused torsos and extra arms to pull, brace, carry, or redirect lower Rotwalkers around its hulking mass.",
+			"teachingGoal": "Teach composite dismantling: the Amalgam is not one health sponge, because each visible corpse suture carries one duty and cutting it removes a specific lane or support action.",
+			"signatureMechanic": "Borrowed Gaits: three folded heads call in sequence while their attached torsos act. The dragging torso sweeps a Shambler into a new fall lane, the hooked torso catches a Ghoul anchor, and the open-rib torso relays a Rot Brute pulse through the Amalgam. Each action loads a different stitched waist seam, and a severed seam permanently removes that gait.",
+			"telegraph": "One folded head lifts and bites its own stitching, the matching pair of extra arms spreads, and a wet load line becomes visible from that torso to its lower-form partner.",
+			"counterplay": "Identify the raised head, avoid its inherited lane, then attack the matching loaded waist suture; every severed torso reduces the Amalgam's command sequence and leaves an unguarded side.",
+			"visualDelta": "A hulking but legible fusion of multiple corpses with two torsos, several heads folded into the mass, extra arms assigned to different grips, and thick stitched seams connecting every borrowed anatomy.",
+			"lowerFormInteraction": "Separate torsos reposition Shamblers, complete Ghoul anchor lines, and relay Rot Brute pumps; severing the responsible torso removes only that interaction for the rest of the encounter.",
+			"sourceReferences": ["Amalgam"]
+		},
+		{
+			"tier": "T5",
+			"formId": "rotwalker-plague-lord",
+			"displayName": "Plague Lord",
+			"primaryArchetype": "Cathedral-of-Corpses Sovereign (Sovereign)",
+			"battlefieldDuty": "Rule a stitched-shroud boss arena that produces lower Rotwalkers, routes their death trails through four corpse aisles, and progressively transforms its throne into a mobile but mechanically simpler central body.",
+			"teachingGoal": "Test mastery of dragging-side falls, tendon anchors, rib pumps, and loaded composite sutures by asking players to disable the exact corpse aisle supporting each command before confronting the released central face.",
+			"signatureMechanic": "Throne of the Dead: four stitched-shroud aisles radiate from the Lord's fused-body throne. The Foot aisle assembles a Shambler and stores a fall lane; the Hand aisle cords a surviving corpse into a Ghoul; the Rib aisle pressurizes all connected trails through a Rot Brute; and the Many aisle folds two disabled bodies into an Amalgam. The central grinning face exhales a fly column toward one aisle while its corpses tighten that aisle's great suture. Cutting the exposed suture permanently collapses that production and tears one structural body from the throne. After two aisles fall, the remaining corpses unfold as mismatched limbs around the central body, which cycles only surviving commands and loses one limb whenever its matching aisle is destroyed.",
+			"telegraph": "The stitched shrouds lift toward one aisle, flies stream in a single readable column, the central grin turns to the matching corpse arch, and its great wet suture pulls taut before bodies begin moving.",
+			"counterplay": "Follow the fly column, interrupt or displace the lower form feeding the selected aisle, cut the taut great suture during production, and use each collapsed aisle as clean ground; every destroyed aisle permanently removes a command, a throne support, and one later transformation limb.",
+			"visualDelta": "A cathedral-like architecture of individually readable fused bodies centered on one grinning face, draped in stitched shrouds, veiled by a directed haze of flies, and seated on a throne whose four corpse aisles can visibly tear away.",
+			"lowerFormInteraction": "The four aisles produce or promote Shamblers, Ghouls, Rot Brutes, and Amalgams and route their learned mechanics; destroying an aisle removes its lower-form production and the corresponding command from every later phase.",
+			"sourceReferences": ["Plague Lord"]
+		}
+	]
+}

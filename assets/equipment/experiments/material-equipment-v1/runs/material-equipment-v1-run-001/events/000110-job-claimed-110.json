@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 110,
+	"previousEventCanonicalSha256": "f4dcdce5445af55bd9c83f1da5164d985185faf92a7b96e19a26d2d443c80369",
+	"recordedAt": "2026-09-02T15:02:03.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-110",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:02.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-heartwood-bow-v1-110",
+		"targetId": "material-equipment-v1-heartwood-bow-v1",
+		"workerId": "equipment-worker-110"
+	}
+}

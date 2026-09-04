@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 import { ActivityKindSchema } from './base-state.js';
+import {
+	EquipmentCraftsmanshipSchema,
+	EquipmentDefinitionIdSchema,
+	EquipmentLoadoutSlotSchema,
+	EquipmentMaterialIdSchema
+} from '../equipment.js';
 import { MasterFallbackPrioritySchema, MasterFallbackSafetyStopsSchema } from './master-control.js';
 import { MissionTurnChoiceSchema } from './mission-state.js';
 import {
@@ -252,7 +258,15 @@ export const StartActivityCommandSchema = EngineCommandBaseSchema.extend({
 
 export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.equip.item'),
-	itemId: EntityIdSchema
+	itemId: EntityIdSchema,
+	targetSlot: EquipmentLoadoutSlotSchema.optional()
+}).strict();
+
+export const StartForgingCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.start.forging'),
+	definitionId: EquipmentDefinitionIdSchema,
+	materialId: EquipmentMaterialIdSchema,
+	craftsmanship: EquipmentCraftsmanshipSchema
 }).strict();
 
 export const AdvanceSimulationCommandSchema = EngineCommandBaseSchema.extend({
@@ -389,6 +403,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
+	StartForgingCommandSchema,
 	AdvanceSimulationCommandSchema,
 	SyncSimulationClockCommandSchema,
 	ApplyDamageCommandSchema,

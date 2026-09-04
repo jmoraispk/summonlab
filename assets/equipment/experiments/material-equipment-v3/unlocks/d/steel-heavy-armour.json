@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armour-set-unlock-receipt-v3",
+	"setId": "steel-heavy-armour",
+	"sourceTargetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-full-set-v3.png",
+	"sourceCandidateSha256": "0734aa4ae775cfbbe523072f13fc666758a752bac58208da49e8181da0b92f2f",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "e04e9d81b79653b1266593a7c24a97ddce808314d2cf7b3b426ba574acc02d2d"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/heavy-armour-f-to-s-v3.png",
+		"sha256": "7f99810ec5875696a51d369f1488514ec673f42c826998f1a0f0e3adbfcd2a44"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/d-steel-v3.png",
+		"sha256": "c8e73cd71bca672b141368c2ccf4942f1db6fbe47d8f2a9c449bfe7e069f51d8"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural helmet and joint cavity shadows only. Head, torso, leg armour, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-steel-heavy-armour-head-v3",
+		"material-equipment-v3-steel-heavy-armour-torso-v3",
+		"material-equipment-v3-steel-heavy-armour-legs-v3",
+		"material-equipment-v3-steel-heavy-armour-boots-v3"
+	]
+}

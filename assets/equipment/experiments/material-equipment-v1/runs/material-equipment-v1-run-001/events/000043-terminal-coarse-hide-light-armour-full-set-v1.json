@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 43,
+	"previousEventCanonicalSha256": "e7729a49b8562a158eb88290a05f7ef90900985c977c053997e3a664eb9f19c0",
+	"recordedAt": "2026-09-02T14:52:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-coarse-hide-light-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:52:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-coarse-hide-light-armour-full-set-v1",
+		"workerId": "equipment-worker-11",
+		"status": "revise",
+		"resultCanonicalSha256": "70055fe14e3884f153c71b8a84946e9bff0411e395a246e429c01eb6b12347a0",
+		"failureKind": null
+	}
+}

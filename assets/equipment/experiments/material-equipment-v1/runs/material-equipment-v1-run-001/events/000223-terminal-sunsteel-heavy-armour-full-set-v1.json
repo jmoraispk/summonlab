@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 223,
+	"previousEventCanonicalSha256": "d378380638763b23be7f5f10213fbaf693fa22773f37ec70e885db353af9c993",
+	"recordedAt": "2026-09-02T15:17:11.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-sunsteel-heavy-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:17:10.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-202",
+		"status": "revise",
+		"resultCanonicalSha256": "e45847508f8f2e8c98e23a42ad8c2b464b0eb982cbf5049ffa71ee2013924b86",
+		"failureKind": null
+	}
+}

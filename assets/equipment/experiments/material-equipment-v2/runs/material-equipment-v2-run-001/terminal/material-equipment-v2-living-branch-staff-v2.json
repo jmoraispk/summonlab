@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-living-branch-staff-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-living-branch-staff-v2",
+	"recordedAt": "2026-09-02T22:34:42.564Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/a/living-branch/staff-v2.json",
+		"canonicalSha256": "e8dfc653d6a4c5f51587e65656ad04881d9ade55016ddc4615838a63b75e3b27"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/a/living-branch/staff-v2.json",
+		"canonicalSha256": "5ae1228a9e1a112e2920d2f890c69e7c9f494c13f432203fc6952fc3248e4aaa"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/a/living-branch/staff-v2.json",
+		"canonicalSha256": "7dba7a147f4cfe6c627b57167e5e8fdadea8afe968b0a0a0c257a00a0c5d30d4",
+		"candidateSha256": "acdfbbda380ba1f45d75fc62fad3f9924cd03fd3286feade6ef1c94e02d19d43"
+	}
+}

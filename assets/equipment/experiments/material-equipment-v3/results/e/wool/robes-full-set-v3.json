@@ -1,0 +1,43 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-wool-robes-full-set-v3-attempt-1",
+	"targetId": "material-equipment-v3-wool-robes-full-set-v3",
+	"assignmentId": "assignment-material-equipment-v3-wool-robes-full-set-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T13:33:19.214Z",
+	"completedAt": "2026-09-03T13:37:16.621Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "ebfdedb97e8451f5509e8c679370d7133f2d5284817dfd823edc1658ff7f5476",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-60853f54-fc2b-43e0-88ee-f0b3f1ff4f11.png",
+		"sha256": "3e0a802a9ff616b8cdf0f112f8c71095291d9685c2dde154390b682812ebae48",
+		"bytes": 1938996,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+		"sha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
+		"bytes": 1431354,
+		"width": 1024,
+		"height": 1536,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

@@ -1,0 +1,16 @@
+Render one dedicated Blacksteel Sword, rank C, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Long cutting blade and usable one- or two-hand grip. Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable. Use the accepted progression reference as the authoritative design for the C column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Blacksteel:
+Palette: Blue-black metal, charcoal planes, and narrow cold-silver cutting edges.
+Value: Predominantly dark with sharp, deliberate highlight control.
+Surface/wear: Dense satin-black finish, crisp polish at edges, subtle grind pattern, almost no oxidation.
+Construction: Bold cutouts, angular guards, blackened plate overlaps, hooked accents, exact fittings.
+Supernatural behavior: Absorbs ambient light slightly in recesses; no aura or full-object glow.
+Neutral secondary materials: Black leather, dark hardwood, charcoal textile, and tiny silver pins.
+Neighbor distinction: Darker, bolder, and more ominously shaped than Steel; less airy and luminous than Skyiron.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

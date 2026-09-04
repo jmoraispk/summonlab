@@ -1,0 +1,158 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "dragons",
+	"displayName": "Dragons",
+	"sourceRaceNumber": 5,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-01.md",
+	"classificationNotes": "Source-draft Dragons are treated as a draconic visual and encounter-production family, not as a universal claim about intelligence, temperament, treasure ownership, or morality. The packet preserves long reptilian anatomy, four limbs plus age-dependent wings, horn and scale growth, territorial hoard materials, and direct silhouette-based maturation while assigning each hostile form a specific arena duty.",
+	"visualConstants": [
+		"Long neck and tail, deep chest, four clawed limbs, wedge-shaped horned skull, and wings that emerge and expand after the wingless first form.",
+		"Each individual holds one coherent metallic or jewel-tone scale identity with a paler underbelly and bright reflective eyes, rather than changing base identity by affinity.",
+		"Overlapping scales, horn, bone spurs, and leathery wing membrane retain reptilian load paths and readable joints at every tier.",
+		"Horn crowns, spinal ridges, battle scars, torn membrane, and hoard metal fused into old belly scales accumulate as age and territorial history.",
+		"Wingspan and horn crown escalate together from absent wings and horn nubs to storm-front wings and branching imperial antlers, while the ground-to-sky grammar remains recognizable."
+	],
+	"escalationAxis": "Wings and horns mature from absent and unreliable to arena-defining structures, turning a ground pounce into short draft hops, authored flight lanes, hoard-shaped landing control, and a Sovereign circuit through every earlier movement grammar.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Anatomy and materials remain species-native and non-elemental: jewel- or metallic-tone scales, pale belly plates, horn, bone spur, leathery membranes, old scars, and physically fused hoard metal retain natural wear.",
+				"Motion and effects stay physical and bounded: claw gouges, wing-driven dust, membrane snap, shed scale, reflective eye-shine, and localized breath heat during exertion reveal force without persistent aura or magical trail."
+			],
+			"counterplaySignal": "Wing knuckles, horn pivots, pale belly seams, breath cadence, hoard anchors, and marked takeoff or landing lanes preserve each form's established weak point.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Affinity-neutral spectacle that hides the Dragon's age, wings, horns, or territorial equipment"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"For the wingless T1 Whelp, heat-bearing construction stays ground-based: blackened scale rims, ember seams beneath belly plates, a visible throat furnace, heat-swollen hindleg seams, and tail-tip smoke align with its committed ground pounce; no wing, membrane, powered-takeoff, or flight anatomy appears early.",
+				"For T2–T5, maturing flight anatomy adds vented horn channels, charred membrane spars, heat-tensioned wings, and directional smoke along the spinal ridge while retaining overlapping scales, pale belly sinks, and the visible throat furnace.",
+				"Across all tiers, motion and surface response follow a readable combustion cycle: throat plates inflate before release, cooling belly seams open afterward, and flame stays confined to the announced ground-pounce, breath, or wingbeat lane."
+			],
+			"counterplaySignal": "For the wingless T1 Whelp, the throat furnace closes and a pale belly heat sink opens after its ground pounce; striking that exposed sink interrupts the next combustion cycle. For T2–T5, the same sink opens after breath or powered takeoff beneath the age-appropriate wing structure.",
+			"forbidden": [
+				"Palette-only fire treatment without tier-appropriate throat, scale, horn, ground-pressure, or membrane construction changes",
+				"Glow-only fire treatment without visible combustion routing or cooling behavior",
+				"Featureless flame anatomy that erases scales, horns, the Whelp's wingless body, or later wing silhouettes",
+				"Constant emission that hides the announced ground, breath, or wingbeat lane and exposed heat sink"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Load-bearing anatomy gains mineral structure through sediment-layered belly plates, crystal horn buttresses, ore-veined scale keels, stone-weighted tail clubs, and talus caught in reinforced wing joints.",
+				"Stance and flight behavior become mass-conscious: claws root into fracture sockets, wingbeats launch visible scree, crystal braces lock before dives, and landing sends localized faults toward the loaded limbs."
+			],
+			"counterplaySignal": "A crystal wing or horn buttress turns chalk-white after committed launch or landing; breaking that fracture seam releases the load and grounds the next movement.",
+			"forbidden": [
+				"Palette-only earth treatment without mineral load paths, changed stance, and fracture response",
+				"Glow-only earth treatment without crystal structure or readable stress seams",
+				"Pasted rocks that conceal scale overlap or wing joints",
+				"Complete stone replacement that makes the Dragon read as a generic golem"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"For the wingless T1 Whelp, pressure-tuned construction stays ground-based: feather-fine cheek and flank scale fringes, hollow spinal channels, an aerodynamic tail fin, and pressure dents beneath the chest point along its four-legged ground pounce; no wing, membrane, takeoff, or flight anatomy appears early.",
+				"For T2–T5, maturing flight anatomy adds ribbed translucent membrane windows, vane-like horn branches, adjustable wing camber, and inner-knuckle pressure anchors while retaining directional scale fringes, spinal channels, and tail control.",
+				"Across all tiers, debris streamers and directional vapor channels expose force direction while a visible still center sits behind the Whelp's loaded shoulder or inside each later turning lane."
+			],
+			"counterplaySignal": "For the wingless T1 Whelp, cheek fringes stream flat before its ground pounce while a still pressure pocket forms behind the loaded shoulder; entering that lee or striking the grounded shoulder spoils the launch. For T2–T5, bowed wing windows and the still inner-knuckle anchor expose the corresponding flight turn.",
+			"forbidden": [
+				"Palette-only wind treatment without tier-appropriate ground-pressure or flight construction and directional debris",
+				"Glow-only wind treatment without readable airflow or a stable pressure anchor",
+				"Transparency alone that removes scale and horn construction, invents Whelp membranes, or erases later wing membranes",
+				"Omnidirectional cloud effects that hide the announced ground-pounce or flight lane"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Scale and breath anatomy become hydraulic through overlapping channel scales, finned horn gutters, throat pressure bladders, slick membrane ribs, and hoard-metal valves embedded along pale belly plates.",
+				"Surface and motion track coherent water volume through wet reflections, filling throat chambers, narrow tail-following jets, membrane runoff, mist only at pressure release, and visibly draining body channels."
+			],
+			"counterplaySignal": "The throat bladder swells and belly valves lift before a pressure action; striking an open valve drains the chamber and leaves the associated wing or jaw heavy.",
+			"forbidden": [
+				"Palette-only water treatment without channel scales, pressure organs, and wet material response",
+				"Glow-only water treatment without coherent reservoirs, valves, or flow direction",
+				"Shapeless water bodies that erase reptilian anatomy and age silhouette",
+				"Opaque spray that conceals flight lanes, throat pressure, or belly valves"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "dragon-whelp",
+			"displayName": "Whelp",
+			"primaryArchetype": "Hoard-Scent Ground Pouncer (Initiate)",
+			"battlefieldDuty": "Probe ground spacing by circling one claimed shiny object and making a committed four-legged pounce across its edge.",
+			"teachingGoal": "Teach the Dragon family's territorial movement grammar before flight appears: read head, tail, and hind-leg loading, then use the claimed center against the attacker.",
+			"signatureMechanic": "First Claim: the Whelp noses one loose hoard object into a visible circle and pounces at anything crossing the boundary; the oversized head pulls the landing forward, leaving the hornless nape and belly exposed until it scrambles around the claim again.",
+			"telegraph": "Wet-looking scales tighten over the hind legs, the oversized head lowers beside the shiny claim, and the long tail goes rigid along the intended pounce line.",
+			"counterplay": "Feint across one side of the circle and leave before launch, then cross behind the rigid tail and strike the exposed nape or pale belly during the clumsy landing.",
+			"visualDelta": "Wingless, with wet-looking juvenile scales, an oversized wedge-shaped head on a small deep-chested body, long tail, four claws, and nubs where the first horns will grow.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Whelp"]
+		},
+		{
+			"tier": "T2",
+			"formId": "dragon-fledgling",
+			"displayName": "Fledgling",
+			"primaryArchetype": "Unsteady Draft-Hopper (Soldier)",
+			"battlefieldDuty": "Apply repeatable short-range pressure by converting the Whelp's pounce into a low wing-assisted hop that can clear one obstacle but must land on a visible second claim.",
+			"teachingGoal": "Teach takeoff and landing as separate tells: immature wings extend reach but cannot correct midair, so the marked landing claim is the reliable counterplay anchor.",
+			"signatureMechanic": "Claim Hop: the Fledgling bats a hoard object to mark its landing, beats its small membrane wings once, and glides on a fixed arc toward it; a bad landing folds one unreliable wing beneath the body before recovery.",
+			"telegraph": "One clean horn pair points at the landing object, glossy scales lift over the deep chest, and both small wings stretch to their full but visibly trembling span.",
+			"counterplay": "Move away from the marked object rather than tracking the body in flight, or displace the claim before landing to force the wing-fold recovery.",
+			"visualDelta": "Bright glossy scales, one clean pair of horns, and small leathery membrane wings whose narrow spars and trembling span do not yet look reliable.",
+			"lowerFormInteraction": "Whelps guard the landing claim and may pounce at players leaving it; drawing them across the fixed glide line makes the Fledgling abort or collide with its own screen.",
+			"sourceReferences": ["Fledgling"]
+		},
+		{
+			"tier": "T3",
+			"formId": "dragon-drake",
+			"displayName": "Drake",
+			"primaryArchetype": "Crosswind Sky-Lane Hunter (Specialist)",
+			"battlefieldDuty": "Transform the encounter into a three-dimensional lane hunt by drawing a complete aerial circuit, crossing it once at speed, and turning only around a readable horn-side pressure anchor.",
+			"teachingGoal": "Teach the qualitative Specialist pivot: full wings create authored airspace rather than simple extra reach, and the safe response is to read the circuit and attack its inner turning anchor.",
+			"signatureMechanic": "Crown Circuit: the Drake flies a broad loop that leaves three physical tells—claw-scraped launch stone, one shed spinal scale at the far turn, and a tail gouge at landing—then makes a fast pass through those points. Its broad wings can bank only toward the horn branch angled inside the loop, exposing that inner wing knuckle during the turn.",
+			"telegraph": "The proper crown of horns tilts toward the inner circuit, the metallic spinal ridge rises to the tail tip, and one broad wing lowers as the three route markers align.",
+			"counterplay": "Stand outside the aligned markers, move into the inner lee after the pass, and strike the lowered wing knuckle while the Drake banks around its fixed horn-side anchor.",
+			"visualDelta": "Full-grown with broad functional wings, a proper crown of horns, metallic gleam across every overlapping scale, and a continuous spinal ridge running to the tail tip.",
+			"lowerFormInteraction": "Whelps contest the launch stone and Fledglings hop toward the landing gouge, but moving either claim out of alignment breaks the Drake's complete circuit and forces a grounded reset.",
+			"sourceReferences": ["Drake"]
+		},
+		{
+			"tier": "T4",
+			"formId": "dragon-elder-wyrm",
+			"displayName": "Elder Wyrm",
+			"primaryArchetype": "Hoardfall Roost Controller (Champion)",
+			"battlefieldDuty": "Control takeoff and landing zones by unfurling scarred sun-blocking wings and shedding fused belly coins into temporary roost lines that organize younger Dragons' movement.",
+			"teachingGoal": "Teach that the Champion combines territory and flight: the gold-fall makes dangerous routes visible and useful to lower forms, while every torn membrane seam and recently emptied belly patch remains punishable.",
+			"signatureMechanic": "Hoardfall Roost: the Elder Wyrm rakes one coin-fused belly plate across a scarred wing spar, releasing a line of hot, heavy coins between a launch perch and landing mound. Younger Dragons use the line as a shared claim and circuit edge; the Wyrm guards it with one sun-blot wing sweep but cannot cover the torn trailing membrane.",
+			"telegraph": "Chipped horns lower, fused belly coins lift like scales, and sunlight appears through one old membrane tear as the massive wing stretches over the selected route.",
+			"counterplay": "Cross through the visible membrane tear, scatter the coin line before lower Dragons establish claims, or strike the pale belly patch exposed where the fused hoard was shed.",
+			"visualDelta": "Ancient and immense, with wings broad enough to blot out the sun, torn and scarred membrane, thick chipped horns, and old gold coins fused visibly into the belly scales.",
+			"lowerFormInteraction": "Whelps claim individual coins, Fledglings use them as landing marks, and Drakes align circuits along the roost line; scattering that line dissolves all three movement benefits at once.",
+			"sourceReferences": ["Elder Wyrm"]
+		},
+		{
+			"tier": "T5",
+			"formId": "dragon-emperor",
+			"displayName": "Dragon Emperor",
+			"primaryArchetype": "Four-Horizon Hoard Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a phased territorial boss arena through four hoard-metal horizon pylons, each transforming the arena into one learned ground, hop, circuit, or roost grammar before the Emperor enters the exposed center.",
+			"teachingGoal": "Test mastery of claimed centers, fixed landings, inner flight anchors, and hoardfall routes by asking players to break the pylon supporting each phase while managing the corresponding lower Dragons.",
+			"signatureMechanic": "Imperial Circuit: four hoard-metal pylons face the arena horizons beneath the Emperor's storm-front wings. The Claw pylon causes Whelps to establish moving claims; the Wing pylon links Fledgling landing marks; the Crown pylon closes a Drake circuit; and the Hoard pylon lets an Elder Wyrm lay a coin roost. The Emperor branches its antler crown toward one pylon, conducts that lower-form phase, then lands on the central hoard with one body-warm heat shimmer and grows the selected pylon's metal across the matching armor quadrant. Breaking a pylon during the landing permanently removes both command and armor growth. After two breaks, the Emperor alternates ground and sky sides of the arena through the surviving grammar instead of repeating the Elder Wyrm at larger scale.",
+			"telegraph": "One antler branch hooks toward a horizon, the matching hoard metal rings through the hide, the vast wings bank like a storm front, and every lower Dragon turns its head, horn, or landing marker toward the selected pylon.",
+			"counterplay": "Follow the selected lower-form tell, disrupt its claims or route, attack the pylon when the Emperor commits to the central landing, and use the opened armor quadrant as shelter from the alternating ground-sky pass; each destroyed pylon permanently simplifies the circuit.",
+			"visualDelta": "An immense Dragon with a branching antler-like horn crown, wings like storm fronts, localized body-heat shimmer at landing, and hoard metal grown into distinct armor quadrants linked to four horizon pylons.",
+			"lowerFormInteraction": "Whelps, Fledglings, Drakes, and an Elder Wyrm each operate one pylon's learned territorial grammar; destroying that pylon removes the relevant command, route benefit, and armor quadrant for the rest of the fight.",
+			"sourceReferences": ["Dragon Emperor"]
+		}
+	]
+}

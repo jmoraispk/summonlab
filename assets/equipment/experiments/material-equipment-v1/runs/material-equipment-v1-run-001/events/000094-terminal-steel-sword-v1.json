@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 94,
+	"previousEventCanonicalSha256": "97963dbb3e37bed66fca9f8ff03e7755a7ac18c2023d6766bd48c1428e5a851e",
+	"recordedAt": "2026-09-02T15:02:01.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-steel-sword-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:02:00.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-steel-sword-v1",
+		"workerId": "equipment-worker-55",
+		"status": "revise",
+		"resultCanonicalSha256": "aa0c503a6a489aa7305f80784a3b5319636a43287f6f4423cb2f8b8863b4f885",
+		"failureKind": null
+	}
+}

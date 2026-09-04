@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 86,
+	"previousEventCanonicalSha256": "54b67ab329d3b506160f2a6ef66aef784da06c2029128594ccf70e83bc46503f",
+	"recordedAt": "2026-09-02T15:00:03.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-boiled-leather-light-armour-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:00:02.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-boiled-leather-light-armour-full-set-v1",
+		"workerId": "equipment-worker-53",
+		"status": "revise",
+		"resultCanonicalSha256": "437d45c11b9c7304f99557abbe6ffd44543f14f01b9958eadc5e0d42009de548",
+		"failureKind": null
+	}
+}

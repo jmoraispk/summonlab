@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a1",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A1-01",
+      "coordinateId": "giants/giant-primordial-titan/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/giants/giant-primordial-titan/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v1.png",
+      "candidateSha256": "d351d93eb858453105ee605a728245ad7e404118da53e63895682018ee2c3025"
+    },
+    {
+      "token": "A1-02",
+      "coordinateId": "goblins/goblin-raider/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-raider/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-raider/normal-v1.png",
+      "candidateSha256": "30cd0c0903d38ef4b7ddfed68c6a636b32f7981b1527de844a9e67ed74258b3d"
+    },
+    {
+      "token": "A1-03",
+      "coordinateId": "orcs/orc-overlord/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-overlord/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v1.png",
+      "candidateSha256": "ca68a4fdc72483a05335db585081ad1f5d4b6e40ac55a59280d1fcac17bdc7bd"
+    },
+    {
+      "token": "A1-04",
+      "coordinateId": "giants/giant-stone-giant/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/giants/giant-stone-giant/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-stone-giant/normal-v1.png",
+      "candidateSha256": "d87564e6204a987764398704c503d2a6e2852245145afa12b95781791784d9fa"
+    },
+    {
+      "token": "A1-05",
+      "coordinateId": "dragons/dragon-drake/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-drake/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-drake/normal-v1.png",
+      "candidateSha256": "185c7cc2dcc9be4e8e2055eae9870294ca006e32cbd494b758018dd1e41c4abe"
+    },
+    {
+      "token": "A1-06",
+      "coordinateId": "orcs/orc-berserker/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png",
+      "candidateSha256": "d146c9d76428c00882ad350e1a2cfcb9260ae77c4f64a497a9fbfa0415c5b531"
+    },
+    {
+      "token": "A1-07",
+      "coordinateId": "trolls/troll-mutant-troll/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-mutant-troll/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-mutant-troll/normal-v1.png",
+      "candidateSha256": "6fdf35a8abd494d934535424aea920b4e523879cef82ee3540842721b13ef7df"
+    },
+    {
+      "token": "A1-08",
+      "coordinateId": "trolls/troll-elder-troll/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-elder-troll/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v1.png",
+      "candidateSha256": "dc477e2c07b7b18165ae0f9ce619f803da21ad7163beb4b3e7131f03fcf8f630"
+    },
+    {
+      "token": "A1-09",
+      "coordinateId": "goblins/goblin-king/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-king/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-king/normal-v1.png",
+      "candidateSha256": "17b250903850706d29a38b08c24ace829118a568279066123a2c55d27e1378c9"
+    },
+    {
+      "token": "A1-10",
+      "coordinateId": "dragons/dragon-emperor/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-emperor/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v1.png",
+      "candidateSha256": "7d1e4d3ebe172211a5233bea4520eaeb2fedd81f1bf45766fe89e92b1e7277dd"
+    }
+  ]
+}

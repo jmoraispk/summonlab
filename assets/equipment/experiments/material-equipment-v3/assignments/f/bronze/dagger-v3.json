@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-bronze-dagger-v3",
+	"targetId": "material-equipment-v3-bronze-dagger-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+		"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+		"purpose": "Primary rank-escalation rhythm and the target level of coolness."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json",
+		"canonicalSha256": "3273ff91a587a59528daf0485b6a882cd2f741de50425216388dedb883110363"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Bronze Dagger, rank F, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Compact one-hand fighting weapon with a clear point and grip. Single dagger upright on its pommel with a slight rightward diagonal; whole silhouette readable. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Bronze:\nPalette: Warm ochre-brown metal with muted gold edges and dark umber recesses.\nValue: Middle-dark overall; restrained highlights, no mirror polish.\nSurface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.\nConstruction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.\nSupernatural behavior: None.\nNeutral secondary materials: Dark brown wood, plain leather, charcoal cloth, and dull iron only.\nNeighbor distinction: Warmer, rougher, and more plainly cast than Iron; never reads as polished gold.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "9d34b7e9fda2118ad18b84a81fec0770914fcd7f4a45a3249aeee3e099073f31",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/dagger-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/f/bronze/dagger-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

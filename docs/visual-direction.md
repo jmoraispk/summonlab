@@ -97,6 +97,21 @@ Each portal shows:
 
 Portal worlds can vary art direction dramatically while the surrounding chamber and interface keep the product coherent.
 
+## Combat view
+
+![Accepted phone combat direction](evidence/living-village-combat-phone-direction-v1.png)
+
+This is the accepted visual baseline for the first phone combat slice. Preserve its steep top-down
+2.5D camera, tile-centered combatants, subtle portrait timeline, exact tile selection outline,
+three-line name-only activity feed, and low-profile autonomy and skill controls. New mockups may
+change characters and environments without silently resetting these interface decisions.
+
+![Accepted combat motion storyboard](evidence/living-village-combat-motion-storyboard-v1.png)
+
+The locked first action cadence is `focus -> move -> impact -> settle`. Motion can remain fluid, but
+the acting character must visibly claim the destination tile before the hit, and the final state must
+settle long enough for the battlefield, timeline, and feed to agree.
+
 ## Character presentation
 
 ### Clean-slate reveal
@@ -125,7 +140,7 @@ Build a developer-facing Character Forge before producing a large cast. It must 
 
 - Settlement management uses a hand-composed 2.5D three-quarter view with clickable buildings and visible hero routes.
 - Building interiors and conversations use illustrated eye-level or over-the-shoulder compositions with subtle parallax.
-- Missions use authored third-person arenas and limited camera tracks.
+- Combat missions use authored steep top-down 2.5D tactical arenas with limited camera movement.
 - First-person is reserved for the opening summon and rare confrontation shots.
 - Free settlement traversal waits until a one-courtyard experiment proves it adds more embodiment than it costs in visual control.
 

@@ -40,6 +40,11 @@ components:
     textColor: '{colors.paper}'
   ledger-divider:
     backgroundColor: '{colors.line}'
+  equipment-workshop:
+    backgroundColor: '{colors.background}'
+    textColor: '{colors.paper}'
+    accentColor: '{colors.primary}'
+    focusColor: '{colors.focus}'
 ---
 
 # Summonlab Web Design System
@@ -165,6 +170,94 @@ taxonomy name. Decorative arrows are hidden from assistive technology.
 State transitions run roughly 150–250ms with direct easing. Motion may clarify domain or filter
 changes; it does not orchestrate routine reading. `prefers-reduced-motion: reduce` removes reveal,
 transform, and transition effects.
+
+### Combat presentation
+
+Combat is a scene-first game surface, not an archive dashboard. A PixiJS canvas may own the arena,
+characters, depth sorting, contact shadows, camera movement, and effects. Svelte remains responsible
+for readable controls, initiative information, public intent, responsive layout, and accessibility.
+Both layers consume the same authoritative combat projection; neither invents timing, legality, or
+results.
+
+Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
+Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
+command-bar proportions as the visual baseline for the first combat slice.
+
+Accepted motion reference: [combat motion storyboard v1](../../docs/evidence/living-village-combat-motion-storyboard-v1.png).
+Use its `focus -> move -> impact -> settle` sequence as the baseline action cadence. Establish the
+destination tile before impact and let the resolved state become readable before advancing.
+
+- Use a steep top-down 2.5D camera, with only enough pitch to preserve silhouettes, environmental
+  depth, and elliptical contact shadows.
+- Make action order unmistakable. The primary initiative display is a portrait rail with a visible
+  `Now` origin and a dominant ready-actor treatment. Do not print relative-time labels beside every
+  portrait by default; exact engine-projected timing can appear on inspection and through accessible
+  descriptions.
+- On phone, anchor that rail horizontally to the top edge of the battlefield. It is a thin overlay,
+  not an opaque header or a reserved band: the scene remains visible beneath it, with only a local
+  contrast veil behind portraits. Future actors sweep left toward `Now`.
+- Desktop may preserve the same top rail or reposition it within the wider combat shell, but it must
+  keep the same leftward order semantics and ready-actor emphasis as phone.
+- Keep the battlefield dominant. Action controls and Manual, Assist, or Auto ownership remain quiet
+  overlays and must not compete with the ready actor or the next material event.
+- Render environmental opportunities as part of the battlefield. Surprise, concealment, hazards,
+  and other encounter advantages originate in authoritative environment and perception state; the
+  canvas reveals only the projected evidence and legal affordances.
+- Preserve a flat chibi character language at combat scale: stable feet anchors, readable
+  silhouettes, consistent directional frames, and soft elliptical shadows. Dimensionality comes
+  from authored layers, overlap, lighting, and motion rather than requiring full 3D models.
+- Center each combatant's feet anchor and contact shadow on one tactical tile. Selection outlines
+  trace that tile's exact projected edges; they must not float inside it, exceed it, or straddle seams.
+- Keep tactical cells logically square and authoritative in engine space, then project them through
+  the scene's steep top-down camera. Screen-space cells may be foreshortened or trapezoidal; never
+  flatten the painted battlefield into an equal-pixel checkerboard. Environment plates may author
+  square paving in perspective, while interaction uses a scene-owned mapping from each cell ID to
+  projected corners and a feet anchor. Selection outlines trace those projected corners exactly.
+- Present combat activity as a live, chat-like feed. Engine-authored outcome lines stay terse and
+  causal. For example:
+  `hero_04 used Fleeting Step → flanked goblin_02 → Opening → critical → goblin_02 died`.
+  Optional character messages are short public intent or personality, not private reasoning, and
+  never imply an outcome before the engine resolves it.
+- Keep the feed subordinate to the battlefield: on phone it is a shallow, collapsible overlay above
+  the command bar showing the latest three messages by default; expanding it reveals the complete
+  history. Desktop uses adjacent space for the feed. Each message retains actor identity, event
+  order, and replay linkage, and the complete feed remains reachable without relying on transient
+  animation.
+- In the compact live view, keep the newest message at full emphasis and fade the preceding two
+  progressively. Expanded history restores uniform readable contrast; fading never removes content
+  or becomes the only indication of event order.
+- Identify character-voice messages with a concise colored name prefix. Do not repeat portrait
+  thumbnails in the feed; the name supplies identity while preserving battlefield space and keeping
+  mechanical event lines easy to scan.
+
+### Opening presentation
+
+The playable opening laboratory is the deliberate exception for scene choreography. Its four states
+reuse the approved full-screen story plates while one engraved interaction surface changes at a time.
+The summoning glow becomes the equipment-selection line and then the Tower-floor marker, giving the
+sequence one continuous visual gesture. Reduced motion preserves the same state and focus order with
+near-instant transitions.
+
+### Equipment workshop
+
+The in-game forge is a field-archive workbench inside the play surface, never the top-level character
+portrait `/forge`. It consumes the existing `background`, `surface`, `paper`, `muted`, `primary`,
+`focus`, and `line` roles directly; no Equipment-only theme values or parallel token source exists.
+
+- Use a stacked `material → form → assay → inventory → loadout` workflow on phone and a
+  selection/inspection split on desktop. The order is functional and remains visible in the numbered
+  ledger headings.
+- The signature surface is a square material assay plate: selected approved art, one rank stamp,
+  Standard craftsmanship, and abbreviated source/runtime provenance. The surrounding workflow stays
+  flat and quiet.
+- Material and form choices are square ledger rows separated by fine rules. Do not convert them to
+  SaaS cards, pills, glass, gradients, or ornamental containers.
+- Reserve a square image area before decode. Lists request 256px card art lazily; only the actively
+  inspected definition requests its 512px detail art.
+- Keep forging server-owned and explicit. Pending, completed, unavailable, error, and empty states
+  occupy stable space, and busy controls preserve their size.
+- Present the authoritative six slots as `main-hand`, `off-hand`, `head`, `torso`, `legs`, and
+  `boots`. Item rows retain their acquisition provenance after forging, equipping, and reload.
 
 ### Content and data visualization
 

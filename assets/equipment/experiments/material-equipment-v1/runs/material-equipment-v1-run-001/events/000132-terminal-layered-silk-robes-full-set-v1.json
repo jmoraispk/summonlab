@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 132,
+	"previousEventCanonicalSha256": "a7028faa2b0ed60f6336da579c0727bf3a35d292596c68f4e0fcf79c837fca5d",
+	"recordedAt": "2026-09-02T15:04:46.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-layered-silk-robes-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:04:45.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-layered-silk-robes-full-set-v1",
+		"workerId": "equipment-worker-83",
+		"status": "revise",
+		"resultCanonicalSha256": "ea64c43c12e48301493a870cc3626be41f95037e7c4e1304255f5f9da1f4d401",
+		"failureKind": null
+	}
+}

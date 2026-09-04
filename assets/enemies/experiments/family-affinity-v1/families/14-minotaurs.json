@@ -1,0 +1,156 @@
+{
+	"schemaVersion": "family-packet-v1",
+	"familyId": "minotaurs",
+	"displayName": "Minotaurs",
+	"sourceRaceNumber": 14,
+	"sourcePage": "docs/wiki/creatures/monster-races/generator-bestiary-03.md",
+	"classificationNotes": "Source-draft Minotaurs are treated as a horned visual and encounter-production family, not as an accepted biological people or a universal statement about culture, intelligence, rank, blood sport, or hostility. Labyrinth and arena imagery becomes authored battlefield geometry rather than an assumed social identity.",
+	"visualConstants": [
+		"A bull head, bovine snout and ears, wide horns, vastly overbuilt humanoid torso, digitigrade hooved legs, and thick tail remain legible at every tier.",
+		"Deep russet and black hide, bronze, ox-blood red, and bone define the family palette.",
+		"Coarse hair, horn, bronze, heavy leather harness, chain, and hewn stone remain distinct load-bearing materials.",
+		"Nose rings, horn caps, brands, arena trophies, and chained slabs communicate rank through visible history and repairs.",
+		"Weapon mass and horn spread always preserve a readable commitment direction and recovery side."
+	],
+	"escalationAxis": "Horn spread, visible arena history, and weapon mass escalate from a rangy maul carrier to a sovereign who reconfigures a shattered arena through gateway-wide horn arcs.",
+	"floorSlot": null,
+	"affinityThemes": {
+		"normal": {
+			"constructionDimensions": [
+				"Family-native, non-affinity horn, bronze, hewn stone, chain, coarse hide, arena dust, impact sparks, and the Bull Emperor's brazier-like eye glow remain physical or ceremonial motifs rather than Fire or Earth affinity evidence.",
+				"Motion stays mass-driven: hooves chip flooring, chains pull taut, weapons lag behind turns, and dust follows impacts without supernatural wake or material transformation."
+			],
+			"counterplaySignal": "The loaded hoof, inside horn, weapon chain, or harness buckle remains visibly exposed during each committed line.",
+			"forbidden": [
+				"unexplained elemental anatomy",
+				"unexplained elemental glow",
+				"unexplained environmental wake",
+				"Treating ordinary bronze, stone weapons, impact sparks, or brazier-like T5 eye glow as affinity construction"
+			]
+		},
+		"fire": {
+			"constructionDimensions": [
+				"Tier-safe construction: T1 Bull-kin keeps short uncapped horns, a rope harness, wooden maul, and unarmored hide while clay fuel beads and a charred rope wick remain tied to the wood; T2–T5 may add vented horn caps, heat-blued bronze, leather collars, chain, axe, slab, and armor according to their source forms.",
+				"Committed attacks drive combustion through the loaded side: the T1 wick smokes along the wooden maul and cools at a planted hoof, while later tiers vent the active capped horn or metal weapon and expose a black harness seam after release."
+			],
+			"counterplaySignal": "T1 Bull-kin exposes the rope wick on its wooden maul beside the planted hoof before ignition; T2–T5 expose the fuel collar or vented horn cap before the charge and the blackened harness seam during cooldown.",
+			"forbidden": [
+				"Palette-only orange hide or brighter native bronze",
+				"Glow-only fire treatment without fuel, venting, combustion, and cooldown",
+				"Using the Bull Emperor's family-native brazier-like eye glow alone as Fire affinity",
+				"Flame anatomy that obscures horns, hooves, weapon mass, or commitment direction"
+			]
+		},
+		"earth": {
+			"constructionDimensions": [
+				"Tier-safe construction: T1 Bull-kin keeps short uncapped horns, a rope harness, wooden maul, and unarmored hide while mineral wedges brace planted hooves and a small stone weight is lashed to the wood; T2–T5 may add stratified horn sleeves, fitted stone harness plates, ore counterweights, chain, and bronze repairs supported by their forms.",
+				"Movement becomes anchor-and-release: the T1 planted hoof compresses sediment and a pale fracture crosses its lashed maul weight, while later tiers route fractures through the loaded weapon, plated harness, or horn sleeve."
+			],
+			"counterplaySignal": "T1 Bull-kin sinks a planted hoof behind a mineral wedge while the rope on its wooden maul pulls taut; T2–T5 expose a pale fracture in the loaded horn sleeve, harness plate, or counterweight before release.",
+			"forbidden": [
+				"Palette-only brown treatment without strata, weight, and altered load paths",
+				"Glow-only earth treatment without fractures, anchors, or structural mineral construction",
+				"Generic pasted boulders that duplicate family-native stone weapons",
+				"Rock replacement of the bull head, hooves, or readable harness"
+			]
+		},
+		"wind": {
+			"constructionDimensions": [
+				"Tier-safe construction: T1 Bull-kin keeps short uncapped horns, a rope harness, wooden maul, and unarmored hide while knotted rope vanes and hollow wooden whistle holes mark pressure; T2–T5 may add hollow horn flutes, slotted bronze caps, sail-cut hide, chain vanes, and vented weapon faces supported by their equipment.",
+				"Motion gains directional pressure grammar: the T1 rope and tail align with its planted stance while a still pocket forms behind the short inside horn, and later tiers lift chain slack or weapon vanes before release."
+			],
+			"counterplaySignal": "T1 Bull-kin points its rope vanes and tail down one lane while the planted hoof and short inside horn remain still; T2–T5 sound hollow horns and align harness or chain vanes, exposing the silent inside cap or flute.",
+			"forbidden": [
+				"Palette-only pale hide without flutes, vanes, and directional pressure",
+				"Glow-only wind treatment without a force route and still center",
+				"Weightless floating that erases the family's committed mass",
+				"Dust clouds that conceal hooves, horn lane, or chain slack"
+			]
+		},
+		"water": {
+			"constructionDimensions": [
+				"Tier-safe construction: T1 Bull-kin keeps short uncapped horns, a rope harness, wooden maul, and unarmored hide while a stitched-hide bladder and reed tube are tied low to the rope and wood; T2–T5 may add horn-channel valves, wet leather seals, bronze pipes, riveted cistern plates, chain, and armored reservoirs.",
+				"Mass and flow interact visibly: the T1 hide bladder sloshes opposite the wooden maul and drains at the planted hoof, while later tanks feed narrow jets along the chosen horn or weapon arc and expose rear valves."
+			],
+			"counterplaySignal": "T1 Bull-kin exposes the stitched-hide bladder on its rope harness beside the planted hoof; T2–T5 swell a low cistern or chatter a horn valve before the assisted rush, exposing the rear drain afterward.",
+			"forbidden": [
+				"Palette-only blue hide without reservoirs, valves, and wet material response",
+				"Glow-only water treatment without coherent pressure and drainage",
+				"Shapeless liquid anatomy replacing bull, humanoid, or hooved structure",
+				"Spray that hides the loaded hoof or fixed weapon arc"
+			]
+		}
+	},
+	"forms": [
+		{
+			"tier": "T1",
+			"formId": "minotaur-bull-kin",
+			"displayName": "Bull-kin",
+			"primaryArchetype": "Maul-Line Initiate (Initiate)",
+			"battlefieldDuty": "Probe commitment reading with one rangy overhead maul strike that cannot change direction after the hoof plants.",
+			"teachingGoal": "Teach that horn and weapon size matter less than the visible loaded hoof and exposed recovery side.",
+			"signatureMechanic": "Young Swing: the Bull-kin drags its wooden maul into a single overhead line after planting one hoof.",
+			"telegraph": "The rope harness tightens, short stubby horns dip, and one unarmored hoof stamps behind the maul head.",
+			"counterplay": "Cross the unloaded side and strike the bare back while the wooden maul rebounds from the floor.",
+			"visualDelta": "Young and rangy with short stubby horns, rope harness, wooden maul, bare torso, and no armor.",
+			"lowerFormInteraction": null,
+			"sourceReferences": ["Bull-kin"]
+		},
+		{
+			"tier": "T2",
+			"formId": "minotaur-charger",
+			"displayName": "Charger",
+			"primaryArchetype": "Horn-Lane Soldier (Soldier)",
+			"battlefieldDuty": "Repeat front-line pressure through a fixed horn charge followed by a single-bladed axe sweep on the outside flank.",
+			"teachingGoal": "Teach players to cross behind the inside horn and punish the axe's opposite recovery rather than retreat in the lane.",
+			"signatureMechanic": "Capped Run: iron horn caps define a straight charge; on impact or miss, the Charger pivots only toward its axe side.",
+			"telegraph": "The brass nose ring stops swinging, the thick neck lowers, and both iron-capped horns align before the hooves accelerate.",
+			"counterplay": "Leave the fixed lane toward the non-axe side, then attack the exposed neck before the one-way pivot finishes.",
+			"visualDelta": "Thick neck, iron-capped horns, brass nose ring, chest scars, and a single-bladed axe replace the Bull-kin's rangy outline.",
+			"lowerFormInteraction": "Bull-kin maul lines can discourage the safe side, but interrupting the young carrier restores the Charger's learned crossing route.",
+			"sourceReferences": ["Charger"]
+		},
+		{
+			"tier": "T3",
+			"formId": "minotaur-labyrinth-warrior",
+			"displayName": "Labyrinth Warrior",
+			"primaryArchetype": "Turning-Wall Specialist (Specialist)",
+			"battlefieldDuty": "Qualitatively pivot the fight by dragging chained bronze plate into a temporary labyrinth wall, redirecting movement before striking around its corner.",
+			"teachingGoal": "Teach that the Specialist edits routes rather than merely hitting harder: follow chain slack to predict which corridor remains open.",
+			"signatureMechanic": "Bronze Turn: the Warrior unhooks one chained plate, plants it as a wall, and pulls the chain around a horn wider than its shoulders to swing the wall ninety degrees; its one-handed greataxe covers only the closing side.",
+			"telegraph": "Chained plate drops from the torso, the chain wraps one broad horn, and the greataxe moves to the side the wall will close.",
+			"counterplay": "Move through the slack-chain corridor, sever the exposed hinge, or cross the non-axe corner while the wall rotates.",
+			"visualDelta": "Massive body, horns spreading past the shoulders, chained bronze plate sections, and a greataxe carried one-handed form a mobile labyrinth mechanism.",
+			"lowerFormInteraction": "Chargers run the corridor the wall preserves and Bull-kin cover its hinge; breaking the chain collapses both routes into open ground.",
+			"sourceReferences": ["Labyrinth Warrior"]
+		},
+		{
+			"tier": "T4",
+			"formId": "minotaur-arena-champion",
+			"displayName": "Arena Champion",
+			"primaryArchetype": "Chain-Block Champion (Champion)",
+			"battlefieldDuty": "Control a circular arena lane by orbiting a chained stone block around a bronze-repaired horn and converting family walls into moving hazards.",
+			"teachingGoal": "Teach timing through chain tension: enter after the block passes, then break trophies that balance the next orbit.",
+			"signatureMechanic": "Champion's Orbit: the re-forged horn serves as a chain guide while the stone block makes one accelerating circuit; each trophy on the harness acts as a counterweight and can be destroyed to shorten the arc.",
+			"telegraph": "The bronze horn catches the chain, arena trophies lift from the harness, and the block grinds a bright circular line before leaving the floor.",
+			"counterplay": "Step inside the circuit after the block passes, break a lifted trophy, and attack the repaired horn when the shortened chain snaps slack.",
+			"visualDelta": "One horn is broken and re-forged in bronze, trophies cover the heavy harness, and a chained hewn-stone block dominates the champion silhouette.",
+			"lowerFormInteraction": "Labyrinth Warriors place walls that redirect the orbit while Chargers occupy exits; each destroyed counterweight makes those lower-form setups less effective.",
+			"sourceReferences": ["Arena Champion"]
+		},
+		{
+			"tier": "T5",
+			"formId": "minotaur-bull-emperor",
+			"displayName": "Bull Emperor",
+			"primaryArchetype": "Shattered-Arena Sovereign (Sovereign)",
+			"battlefieldDuty": "Command a five-gate boss arena, using gateway-wide horn arcs to rotate wall, charge, and orbit patterns until each broken horn band removes a gate and strips the imperial phase.",
+			"teachingGoal": "Test mastery of loaded hooves, fixed charges, slack-chain corridors, and orbit timing while making arena destruction permanently simplify the fight.",
+			"signatureMechanic": "Imperial Labyrinth: five bronze horn bands correspond to five shattered arena gates. The Emperor points its massive greataxe to assign Bull-kin to a hinge, Chargers to a lane, a Labyrinth Warrior to rotate a gate wall, or an Arena Champion to orbit a central block. The family-native brazier-like eye glow brightens only as a ceremonial command tell. After each formation resolves, the responsible band unlocks on the inside horn; breaking it drops one gate, removes that command, and cracks away one slab of bronze armor. At two gates the Emperor abandons command and makes slow, cape-dragging horn sweeps across the open floor.",
+			"telegraph": "One horn band rings, the hide cape pulls toward its matching gate, the brazier-like eyes brighten without flame, and the chosen lower form takes its learned starting posture.",
+			"counterplay": "Use the named lower-form response, cross behind the loaded horn, and break the unlocked inner band; every broken band permanently opens an arena route and removes one imperial command.",
+			"visualDelta": "Gateway-wide horn arc, bronze slab armor, family-native brazier-like eye glow, cape of hides, massive command axe, and shattered arena floor define the sovereign rather than size alone.",
+			"lowerFormInteraction": "Bull-kin hold hinges, Chargers run gates, Labyrinth Warriors turn walls, and Arena Champions orbit blocks; the matching broken horn band dismisses that formation for all later phases.",
+			"sourceReferences": ["Bull Emperor"]
+		}
+	]
+}

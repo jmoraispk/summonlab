@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-bronze-mace-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-bronze-mace-v2",
+	"recordedAt": "2026-09-02T22:23:58.865Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "failed",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/f/bronze/mace-v2.json",
+		"canonicalSha256": "fc790c1733b588287d60084fb65e1b9728073d67c7f7627a0d1b23552b8dbd51"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/f/bronze/mace-v2.json",
+		"canonicalSha256": "b0c8c6958b958a27e9e72c54dfc52db48ef962459b57f064d4443745f00d241a"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/f/bronze/mace-v2.json",
+		"canonicalSha256": "6fe0f3405f87801c1aa071f04dfab2194c37a0bc4f6b411f4d82f40ad1654b05",
+		"candidateSha256": null
+	}
+}

@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "f38e31a387c2934db7614f2af74b5740990da5435202f8c53bb9c117582d5c90",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Kaan Orai: 27-year-old woman, 170 cm (medium), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-3-light-medium. Face: long narrow face; close-set eyes and a high arched brow; long straight nose, narrow upper lip; faint freckles. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: brown-chestnut, medium-loose, deliberate accent: none. Wardrobe: tailored-longcoat, specifically a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a divided hem and broad folded collar; bounded palette ochre-cream. Visible personal details: a small throat necklace. Make body construction and habitual posture the primary recognition device. Maintenance cue: severe grooming softened by one unruly feature. Color treatment: lets faded and repaired areas vary the palette. Pose cue: feet plant evenly while fingertips touch a small personal keepsake. Include a palm-sized map roll only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "kaan-orai",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a small throat necklace"
+      ],
+      "coolnessAnchor": "body-or-posture",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": null,
+      "chibiReadability": "Preserve the front and side silhouette of medium-loose, the parting, gathered mass, shaved areas, and none; color remains brown-chestnut.",
+      "colorFamily": "brown-chestnut",
+      "silhouetteFamily": "medium-loose"
+    },
+    "identity": {
+      "age": 27,
+      "displayName": "Kaan Orai",
+      "faceDescription": "long narrow face; close-set eyes and a high arched brow; long straight nose, narrow upper lip; faint freckles",
+      "gender": "woman",
+      "identitySignature": "c6500b92865978efed5def44b3a0744f264a90a2fb4f85b7d03eda46524c85d9",
+      "skinValueBand": 3
+    },
+    "kernel": {
+      "colorOrnamentTaste": "lets faded and repaired areas vary the palette; enjoys two mismatched personal details.",
+      "counterTrait": "forgives mistakes faster than excuses",
+      "culturalFragments": [
+        "reads knot patterns as personal signatures",
+        "leaves one closure deliberately unmatched for luck"
+      ],
+      "dominantTrait": "serenely contrarian",
+      "groomingAttitude": "severe grooming softened by one unruly feature",
+      "lifeEcho": "trade",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "feet plant evenly while fingertips touch a small personal keepsake",
+      "socialPresentation": "guarded and formal",
+      "tension": "Appears guarded and formal, yet forgives mistakes faster than excuses."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "170 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "severe grooming softened by one unruly feature",
+      "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a divided hem and broad folded collar.",
+      "family": "tailored-longcoat",
+      "paletteFamily": "ochre-cream"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/kaan-orai/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/results/kaan-orai/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "kaan-orai-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-09"
+}

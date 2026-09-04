@@ -1,9 +1,11 @@
 import {
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	MissionRunStateV8Schema,
 	type AuthoritativeEvent,
 	type EngineGameState,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type MissionRunStateV8
 } from '@summonlab/contracts';
 
@@ -34,16 +36,19 @@ function reduceFirstBandMissionEvent(
 	state: EngineGameState,
 	event: AuthoritativeEvent
 ): EngineGameState {
-	if (state.schemaVersion !== 23) return reduceMissionEvent(state, event);
+	if (state.schemaVersion !== 23 && state.schemaVersion !== 24)
+		return reduceMissionEvent(state, event);
 	return reduceFirstBandMissionTransition(
-		EngineGameStateV23Schema.parse(state),
+		state.schemaVersion === 24
+			? EngineGameStateV24Schema.parse(state)
+			: EngineGameStateV23Schema.parse(state),
 		event,
 		reduceFirstBandMissionConsequences
 	);
 }
 
 export const buildFirstBandMissionCommandConsequences: BuildFirstBandMissionCommandConsequences = (
-	state: EngineGameStateV23,
+	state: EngineGameStateV23 | EngineGameStateV24,
 	eventId: string,
 	transition,
 	mission: MissionRunStateV8

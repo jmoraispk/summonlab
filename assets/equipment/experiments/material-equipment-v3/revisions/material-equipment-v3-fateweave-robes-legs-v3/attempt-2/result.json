@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-fateweave-robes-legs-v3-attempt-2",
+	"targetId": "material-equipment-v3-fateweave-robes-legs-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-fateweave-robes-legs-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:15:40.011Z",
+	"completedAt": "2026-09-03T18:16:03.158Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "a72277d9db3919a8fec50c947c9733ae5ed7b1db2504c335937d4ed1aab85f3b",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-full-set-v3.png",
+			"sha256": "3078f7535252d48efafa76efa7bcf006bd11a8f7f7b7e441a2bb9b6e24c2db73",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-legs-v3.png",
+			"sha256": "bcb638f9c2077a65b6ab50c65c5f1b278b15804feb12c73cb4a91f05b85f0342",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684e-fb79-70f1-8f52-810b03774915/exec-b9073f53-20b4-4455-a5ba-c2fe364757ae.png",
+		"sha256": "d44d2b2ab6556ba8c6633b0b8e60dcede98d4f7cbdcfd794d5100d723b6fdd35",
+		"bytes": 1774946,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-legs-v3/attempt-2/candidate.png",
+		"sha256": "8ae5b43115597179ba7bc50a36dec0d3a2e5cf17b4640ada5d1aad6b3f6baaa9",
+		"bytes": 1436503,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

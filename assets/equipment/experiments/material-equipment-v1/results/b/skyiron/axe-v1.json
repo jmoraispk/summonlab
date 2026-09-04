@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-skyiron-axe-v1",
+	"targetId": "material-equipment-v1-skyiron-axe-v1",
+	"assignmentId": "assignment-material-equipment-v1-skyiron-axe-v1",
+	"status": "candidate",
+	"promptSha256": "c84bbb8d370a82535b1b43ee7ef09fa3d14b277d420039c218c7502f7721bf4d",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-skyiron-axe-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-388b-75a0-97aa-1ae334a41907/exec-f7744bb8-5505-40e1-98bb-d3ead696a2b1.png",
+			"requestStartedAt": "2026-09-02T15:04:55.875Z",
+			"generationCompletedAt": "2026-09-02T15:05:21.575Z",
+			"inspectionCompletedAt": "2026-09-02T15:06:03.824Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "The complete axe head, haft crown, and pommel remain visible inside the declared 8 percent safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete axe is shown, with no person, sheath, second weapon, or extra gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The broad single cutting edge, deep beard, compact head, and one-hand haft read immediately as a bearded axe."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "A stout eye and metal socket collar seat the head on the wooden haft, with a riveted lower strap, wrapped grip, and capped pommel providing coherent reinforcement."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "The large forged Skyiron head is the visual and functional focus; wood and leather remain neutral subordinate handle materials without a second rank cue."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense pebbled forging texture, a bright honed edge, and a localized lightning-vein fissure establish unusual Skyiron beyond blue-gray palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Sky-blue energy is confined to one narrow branching fissure in the axe head; the rest of the object does not glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly rendering, honest wear, cold key light, restrained warm rim, midnight-charcoal backdrop, and subdued floor plane match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No transferred subject, published-character likeness, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material cue, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/axe-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1372583,
+		"sha256": "3a14e3b80c64ab5da3061c9fe346c7e5fc60657d5463620ad9575bf0dbd34189"
+	},
+	"candidateSha256": "3a14e3b80c64ab5da3061c9fe346c7e5fc60657d5463620ad9575bf0dbd34189",
+	"startedAt": "2026-09-02T15:04:35.854Z",
+	"completedAt": "2026-09-02T15:06:24.023Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/skyiron/axe-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/skyiron/axe-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

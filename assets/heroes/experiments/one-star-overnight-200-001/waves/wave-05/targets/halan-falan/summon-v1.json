@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "644b3bc132bd7239c9d15ca32228ec8190f8b8dda4301b5897c77ebf756f83ae",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Halan Falan: 30-year-old woman, 196 cm (very-tall), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-2-light. Face: long narrow face; large hooded eyes and a broken brow line; long straight nose, narrow upper lip; one cheek mole. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: blue-teal, shaved-close-cropped, deliberate accent: sculpted edge pattern. Wardrobe: quilted-outerwear, specifically lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; offset closures and narrow reinforced cuffs; bounded palette moss-ivory. Visible personal details: three hair rings. Make one clasp, buckle, piercing, or piece of hair hardware the primary recognition device. Maintenance cue: practical grooming with one carefully perfected detail. Color treatment: uses small rhythmic repeats of the palette. Pose cue: one shoulder leads subtly and the gaze meets the viewer without a smile. Include a small empty medicine pouch only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "halan-falan",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "three hair rings"
+      ],
+      "coolnessAnchor": "jewelry-hardware",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "sculpted edge pattern",
+      "chibiReadability": "Preserve the front and side silhouette of shaved-close-cropped, the parting, gathered mass, shaved areas, and sculpted edge pattern; color remains blue-teal.",
+      "colorFamily": "blue-teal",
+      "silhouetteFamily": "shaved-close-cropped"
+    },
+    "identity": {
+      "age": 30,
+      "displayName": "Halan Falan",
+      "faceDescription": "long narrow face; large hooded eyes and a broken brow line; long straight nose, narrow upper lip; one cheek mole",
+      "gender": "woman",
+      "identitySignature": "ca6b21d65299436bcb09db2629067442a8882648b2d5f96f2428b400e5d4e03f",
+      "skinValueBand": 2
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses small rhythmic repeats of the palette; enjoys two mismatched personal details.",
+      "counterTrait": "needs long silences after crowds",
+      "culturalFragments": [
+        "keeps tiny bells muted with thread",
+        "folds shared cloth inward to signal trust"
+      ],
+      "dominantTrait": "incisively curious",
+      "groomingAttitude": "practical grooming with one carefully perfected detail",
+      "lifeEcho": "trade",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one shoulder leads subtly and the gaze meets the viewer without a smile",
+      "socialPresentation": "open and attentive",
+      "tension": "Appears open and attentive, yet needs long silences after crowds."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "196 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "very-tall"
+    },
+    "wardrobe": {
+      "condition": "practical grooming with one carefully perfected detail",
+      "description": "lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; offset closures and narrow reinforced cuffs.",
+      "family": "quilted-outerwear",
+      "paletteFamily": "moss-ivory"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/halan-falan/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/halan-falan/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "halan-falan-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-05"
+}

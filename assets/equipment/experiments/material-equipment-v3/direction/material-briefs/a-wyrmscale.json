@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "wyrmscale",
+	"displayName": "Wyrmscale",
+	"family": "hide-scale",
+	"rank": "A",
+	"palette": "Royal cobalt or deep crimson scales, black recesses, and luminous gold edge accents.",
+	"valueRange": "Rich saturated darks with brilliant armored ridges.",
+	"surfaceAndWear": "Large ancient scales, layered enamel-like sheen, scarred high ridges, nearly impenetrable overlaps.",
+	"constructionVocabulary": "Regal scale fields, pronounced crests, sweeping draconic panels, gold-bound joints, powerful silhouette.",
+	"supernaturalBehavior": "A restrained elemental gleam travels through a few scale edges; no breath effect.",
+	"neutralSecondaryMaterials": "Black leather, dark steel, gold fittings, and charcoal lining.",
+	"neighborDifference": "Larger, more regal, and more magically potent than Drakescale; less colossal and primeval than Ancient Dragon Scale.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-wyrmscale.json"
+}

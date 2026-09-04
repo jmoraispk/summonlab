@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-skyiron-axe-v3",
+	"targetId": "material-equipment-v3-skyiron-axe-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",
+		"sha256": "b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd",
+		"purpose": "Rank escalation, single-bit silhouette variety, finish, and class recognition."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-skyiron.json",
+		"canonicalSha256": "e9348608145b9bfee92b997ac0b9c06ddcb706d807ac9ac7be2128a2f5c1741a"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": null,
+	"prompt": "Render one dedicated Skyiron Axe, rank B, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One dominant cutting bit on a practical haft. Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant. Use the accepted progression reference as the authoritative design for the B column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Skyiron:\nPalette: Pale blue-silver metal with cloud-gray shadows and restrained azure seams.\nValue: Light, high-clarity metal values without becoming white.\nSurface/wear: Unusually smooth light metal, wind-swept polish lines, crisp edges, sparse abrasion.\nConstruction: Long sweeping profiles, lightened apertures, winglike ribs, elegant thin reinforcement.\nSupernatural behavior: A faint cool sheen gathers on upward edges as if catching open-sky light.\nNeutral secondary materials: Slate leather, pale hardwood, silver fittings, and gray cloth.\nNeighbor distinction: Lighter, more open, and more graceful than Blacksteel; less cosmic and faceted than Starmetal.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.",
+	"promptSha256": "9fcb17db97604e1973f061ef1098290ed3716bab86faf84f164423c7292f76a1",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/axe-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/b/skyiron/axe-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

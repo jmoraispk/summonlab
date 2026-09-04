@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "worldtree-limb",
+	"displayName": "Worldtree Limb",
+	"family": "wood",
+	"rank": "S",
+	"palette": "Ancient dark bark, luminous gold-green heartwood, emerald leaves, and pale root-white accents.",
+	"valueRange": "Deep primordial mass with brilliant but contained living channels.",
+	"surfaceAndWear": "Age-ring complexity, monumental grain, self-healed scars, living moss traces, flawless load-bearing fibers.",
+	"constructionVocabulary": "Mythic branching silhouette, root and crown motifs, vast growth compressed into a usable form, nested natural arches.",
+	"supernaturalBehavior": "Contained seasons appear in selected leaves and sap-light channels; no detached particles or aura.",
+	"neutralSecondaryMaterials": "Sunsteel or gold-bronze accents, dark leather, natural cord, and deep green cloth.",
+	"neighborDifference": "More ancient, monumental, and cosmically alive than Living Branch; the apex of wood without becoming a tree scene.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-worldtree-limb.json"
+}

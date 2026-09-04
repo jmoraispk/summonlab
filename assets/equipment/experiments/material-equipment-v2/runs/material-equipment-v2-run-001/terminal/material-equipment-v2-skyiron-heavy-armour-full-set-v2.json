@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-skyiron-heavy-armour-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-skyiron-heavy-armour-full-set-v2",
+	"recordedAt": "2026-09-02T22:31:40.698Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/b/skyiron/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "d848d96ae7383ed42f0e2436d627069aef2519e1a3d4ee4eed470d42efa076f5"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/b/skyiron/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "8a8c6c30a345b0dc1817b29fa9a8b46938a67c1404ed089bbcbec2bd4c6bd273"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/b/skyiron/heavy-armour-full-set-v2.json",
+		"canonicalSha256": "e2cefddecdae7c5acd12b67e717f896b3930ab721a3f3e4b784525294e85ac98",
+		"candidateSha256": "54bcfd9c71544a2feca85ad1e040e5f4900757153eece91aa78229cdea4b2309"
+	}
+}

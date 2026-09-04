@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 206,
+	"previousEventCanonicalSha256": "cfeaf63b5970ff4876ffa25da7fcccd2068ff7fd97e56582429179846684543a",
+	"recordedAt": "2026-09-02T15:13:43.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-starmetal-shield-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:13:42.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-starmetal-shield-v1",
+		"workerId": "equipment-worker-165",
+		"status": "revise",
+		"resultCanonicalSha256": "1d15c7eb8f7a5224fc2c554a86555d2aa53d8dec9d5b2d8ab82a8322292ca479",
+		"failureKind": null
+	}
+}

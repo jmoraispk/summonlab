@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "fateweave",
+	"displayName": "Fateweave",
+	"family": "cloth-fibre",
+	"rank": "S",
+	"palette": "Void black, luminous pearl, royal violet, and thin gold destiny-lines.",
+	"valueRange": "Near-black depth crossed by brilliant precise threads and pale folds.",
+	"surfaceAndWear": "Perfect impossible weave, folds with subtly contradictory depth, unfrayed edges, immaculate threadwork.",
+	"constructionVocabulary": "Legendary layered silhouette, sweeping destiny arcs, impossible but connected hems, crownlike collar, masterful asymmetry.",
+	"supernaturalBehavior": "A few threads appear to pass ahead of or behind their fold and glow softly; no portal, aura, or detached magic.",
+	"neutralSecondaryMaterials": "White-silver clasps, black leather, dark lining, and minimal gold fittings.",
+	"neighborDifference": "More mythic, reality-bending, and iconic than Starcloth while remaining clearly wearable cloth equipment.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-fateweave.json"
+}

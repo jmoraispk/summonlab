@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-steel-shield-v3-attempt-2",
+	"targetId": "material-equipment-v3-steel-shield-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/shield-v3.json",
+		"canonicalSha256": "25784509716f91f6e4e2bdca15560f2d1c4cbfe1f22ffad3411338d9d573c09b"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-steel.json",
+		"canonicalSha256": "0fc0e22fff89bd0f12d7e1967dd59549b5e136321af3d0a5d6d5039c0597e2d1"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/shield-v3.png",
+		"sha256": "0b443925836bc139a09a617d1f74caca93547915c93caf2261633b0bf1d18b01",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",
+			"sha256": "fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2",
+			"purpose": "Rank escalation, varied standard-shield silhouettes, finish, and camera."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/shield-v3.png",
+			"sha256": "0b443925836bc139a09a617d1f74caca93547915c93caf2261633b0bf1d18b01",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Use a compact rectangular or softly squared Steel shield silhouette, visibly distinct from both the Bronze heater and round Iron shields. Keep it refined but restrained at D rank.",
+	"prompt": "Render one dedicated Steel Shield, rank D, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One-hand defensive face with readable rim, boss or grip structure. Single shield in consistent mild three-quarter view, standing vertically with face and thickness readable. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Steel:\nPalette: Neutral silver-gray steel with cool blue-gray shadows and darkened fittings.\nValue: Broad mid-to-bright metal range with disciplined highlights.\nSurface/wear: Even forged finish, fine grind lines, polished contact edges, and restrained battle wear.\nConstruction: Refined tapers, fitted sockets, crisp fullers, articulated plates, clean rivet rhythm.\nSupernatural behavior: None.\nNeutral secondary materials: Blackened iron, dark leather, hardwood, and charcoal cloth.\nNeighbor distinction: Cleaner and structurally more refined than Iron; brighter and less ominous than Blacksteel.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Use a compact rectangular or softly squared Steel shield silhouette, visibly distinct from both the Bronze heater and round Iron shields. Keep it refined but restrained at D rank.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "faff001f7ed60adf77281129520db8a5ea046251547ac6b615929288391b2db1",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

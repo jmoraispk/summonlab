@@ -1,0 +1,321 @@
+{
+	"schemaVersion": "equipment-armour-piece-candidate-selection-manifest-v3",
+	"selectionManifestId": "equipment-v3-armour-piece-candidate-selections-v1",
+	"createdAt": "2026-09-03T18:37:33.989Z",
+	"createdBy": "equipment-armour-piece-audit",
+	"approvalStatus": "candidate-only",
+	"revisionPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/revision-plans/armour-pieces-final-v4.json",
+		"canonicalSha256": "e9cade6916093d46979e93be753efdb950e4822e45239d4520e6bed0867ee466"
+	},
+	"selections": [
+		{
+			"targetId": "material-equipment-v3-bronze-heavy-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "32279610b7b21def8a709097d8d22a2706f9bb3e526d2f14a4d180f236ded2a3",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "f1aa55f23c0b243d37a8e37628051664ec7053a9978992da5615b98aea547426",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "bd265623bd9e71bef636fc102ffb75e34ba06a61285b3fcf87563a4207530901",
+			"reason": "class-rule-violation: Render only the Bronze Legs slot: belt, fauld or tassets, hip, thigh, and knee protection. Remove all boots, shoes, sabatons, greaves that belong to footwear, and any detached extra item; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-iron-heavy-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "6028e2aa9628452f5abcefb48f308ea52a7001afb71e374f4391f0bb327cf76b",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-heavy-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "65a53d23bcf3f5e33e0b4ec66e12f706f2d0d63c9fc14931928c98288412be5a",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-heavy-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "e417223cfdcca3c2cbae8c1249dfcb0e268492c02b11458d86cdc0752f2ec09a",
+			"reason": "class-rule-violation: Render only the Iron Legs slot: belt, fauld or tassets, hip, thigh, and knee protection. Remove all boots, shoes, sabatons, greaves that belong to footwear, and any detached extra item; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-steel-heavy-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "a6da82205d6067e46f3463130fdbf62b35310100e3db3360003ade7300ae6a63",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-heavy-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "68af9ed44ca67d3ce863f2411a5bce20c40a3add42cf9ce45df4d80737b729c2",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-heavy-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "cc8a01d364ce1a350dd77e180664a454327fdb32a51e9997c281225cd09daeaf",
+			"reason": "class-rule-violation: Render only the Steel Legs slot: belt, fauld or tassets, hip, thigh, and knee protection. Remove all boots, shoes, sabatons, greaves that belong to footwear, and any detached extra item; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-blacksteel-heavy-armour-legs-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-blacksteel-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"candidateSha256": "21a3ce2d8da4c56f686a6d1b3075db649e18236ee2d555aa3d9cd661b202ebf0",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-blacksteel-heavy-armour-legs-v3/attempt-3/assignment.json",
+			"assignmentSha256": "c3cd03e857389c6db95e45faf59dcc87d41e2cd69f1ddf8d61f5f92a6bbf7030",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-blacksteel-heavy-armour-legs-v3/attempt-3/result.json",
+			"resultSha256": "167c36c0903c0938ef872ee32de7ad35dc56d55bef89625798e0ac37465aeafe",
+			"reason": "class-rule-violation: Create a paired Blacksteel thigh-and-knee assembly joined at the belt and fauld. Each side must terminate immediately beneath its knee cop, with large visible empty background below. Absolutely no shin or calf plates, greaves, sabatons, boots, feet, or second item."
+		},
+		{
+			"targetId": "material-equipment-v3-skyiron-heavy-armour-legs-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-skyiron-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"candidateSha256": "9a36b8f7971bd170dc55956f6f9b21b9755252ed0deee7cb886baf9654974ca5",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-skyiron-heavy-armour-legs-v3/attempt-3/assignment.json",
+			"assignmentSha256": "ba44cb7e3a5ebb20d51f6210b177db343f70c3afd3ff21f7b2b0d2d284e5dd45",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-skyiron-heavy-armour-legs-v3/attempt-3/result.json",
+			"resultSha256": "ce33b9f9155b60c12e9fdb46e948a461c8c8c5aac0e23df92e7cefcd90432418",
+			"reason": "class-rule-violation: Create a paired Skyiron thigh-and-knee assembly joined at the belt and fauld. Each side must terminate immediately beneath its knee cop, with large visible empty background below. Absolutely no shin or calf plates, greaves, sabatons, boots, feet, or second item."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-heavy-armour-legs-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"candidateSha256": "1ac4b15690ff32acec5a1ed08c750aca87c0f3405445cd2e41568ca29b3dda04",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armour-legs-v3/attempt-3/assignment.json",
+			"assignmentSha256": "c0934b1213e328fefb829693b6a15776a37eb2526a39197df00b3442a9383cc8",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armour-legs-v3/attempt-3/result.json",
+			"resultSha256": "0f9ea775285209ceb11efe1cb0c2c0c4e435c01df7039fffd6b7f21af0a6cfdc",
+			"reason": "class-rule-violation: Create a paired Starmetal thigh-and-knee assembly joined at the belt and fauld. Each side must terminate immediately beneath its knee cop, with large visible empty background below. Absolutely no shin or calf plates, greaves, sabatons, boots, feet, or second item."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-heavy-armour-legs-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"candidateSha256": "78972e83af5b9664e8f077d07cf02db751f7b103c29d9994dd234a1e903ec85c",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-heavy-armour-legs-v3/attempt-3/assignment.json",
+			"assignmentSha256": "192cd75c308885b355fd52076111b8d072f16119fd468efb8a75f30386f3a1bd",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-heavy-armour-legs-v3/attempt-3/result.json",
+			"resultSha256": "d75828ad6aeea52b6aa5fec0b44b1629fd96c038fd45bcfb5db38e0ceaf6dca1",
+			"reason": "class-rule-violation: Create a paired Sunsteel thigh-and-knee assembly joined at the belt and fauld. Each side must terminate immediately beneath its knee cop, with large visible empty background below. Absolutely no shin or calf plates, greaves, sabatons, boots, feet, or second item."
+		},
+		{
+			"targetId": "material-equipment-v3-hard-leather-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hard-leather-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "91793391ee3aedc3b08e7dba8afb94312847db3c88f7369e36093bb076d98373",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hard-leather-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "5527cca062d636241f157b5bedbd21c60228bd7b7680c2edc3b23b257dc95b30",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hard-leather-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "7f55ef8fe8c9b360d3b06499953de0fe278dbf73b3e0f0435ff5f23c2272b2e7",
+			"reason": "class-rule-violation: Reconstruct only the Hard Leather Legs slot from the accepted full set: waistband, hip and thigh armour, trousers or leg panels. Do not render boots, shoes, gaiters, or any detached extra item; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-beast-scale-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "91632813550ef92f0341577112b12cc41f9ce3149f28e7aee73a47e42aae0622",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "46dc726243475600de5021878618f1b79a262c19041db1dcba7803e0a17ebdde",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "c288cde3f598f6dd1cf954201acef110a1fe47acbe4e93d3206f033a2084756a",
+			"reason": "class-rule-violation: Render only the Beast Scale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-chitin-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-chitin-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "eb8af4ffcf931d36918d45dedda7ba863f896a12a31897e57e72b9e300c562f6",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-chitin-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "e3a776cc9ff6f2389167ebbca46781d051dfca65b76cebbd5b52774031c89f22",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-chitin-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "ee25177e6ce86c98a52aa20630fdd326ad54f6842451ad84b0ecb8ed52b5af6d",
+			"reason": "class-rule-violation: Render only the Chitin Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-drakescale-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "5e17cd03fbcba983e722befe042deeb3e7989f92369f675b5589e66cfd4acd0f",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "d2ae972bf1bb9cbc329c15bf73ca7196f6c7273cd7d2b81e07edd2e89751118d",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "0efe15bb0a01db959d82d2010e8f0f05f79697acf4ed519490598c48698ee087",
+			"reason": "class-rule-violation: Reconstruct only the Drakescale Legs slot from the accepted full set: waistband, hip and thigh armour, trousers or leg panels. Do not render boots, shoes, gaiters, or any detached extra item; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "d8ca9ef30f798bc33c25628a3bdc53c3feb45b839052f82762560a12ab580479",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "11e372743bbfa470c99027f4d181fef71dcd381f3c3beb2cf1411e5223d6e46e",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "5908e9b671cda8bdb6994e2ed66b4f2e3b88ddc81e58bee059b3f378a01b64f6",
+			"reason": "class-rule-violation: Render only the Wyrmscale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "a8a3c591a1501eaefa1ae4b1f88c962248950bad4264819600aedc330e8e354e",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "19b0b096ba93baab744b4146bac3b3e448d22f5f8f36dfef3291c57e837a3382",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3/attempt-2/result.json",
+			"resultSha256": "7f88c5a745f0894396fd36b93e0a1f356d884fb43dae5da61133a78145a845df",
+			"reason": "class-rule-violation: Render only the Ancient Dragon Scale Legs slot: waistband, hip and thigh armour, trousers or leg panels. Remove all boots, shoes, gaiters, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-layered-silk-robes-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "16a0e7bd065f527b45bc7c1f3c4d1c1d913a5b9a147104b1d510889e05aa2342",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "aa4339f654e27c56248bad49e1397c6f11c8dfcae411f703ac6906b82922b4fb",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-legs-v3/attempt-2/result.json",
+			"resultSha256": "9656fcd3aea3a99ca67bfcca178b319242426aaddc617f0c6dbc19016c6dab2d",
+			"reason": "class-rule-violation: Render only the Layered Silk Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-moonweave-robes-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "7f3c6b35ac49b13e7e203783d51ebddb3d3379e0f5aa5cc8356e6c77ebd0eca0",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "5e140d02bea013c1ec82475134cb263a8e3d03da20c953d63806167222aeaf36",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-legs-v3/attempt-2/result.json",
+			"resultSha256": "0fedd97ffb2654a170a5f8c98cc1f1db6fdfdeb075b3b01c54472192f73ba179",
+			"reason": "class-rule-violation: Render only the Moonweave Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-starcloth-robes-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "8f4572127e7600caee6895f89ad2ba97cac4eaff1f7453b5c3f2c48c651135e6",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "88fd170776cbe6c40689da7dbc425e23ba094afa8a4be74ae1653c0720bc4ed3",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-legs-v3/attempt-2/result.json",
+			"resultSha256": "a45f106d9efe8bc341b6ad84c0314d872101b21f7acc65b2cc4f203893939d3c",
+			"reason": "class-rule-violation: Render only the Starcloth Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-fateweave-robes-legs-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-legs-v3/attempt-2/candidate.png",
+			"candidateSha256": "8ae5b43115597179ba7bc50a36dec0d3a2e5cf17b4640ada5d1aad6b3f6baaa9",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-legs-v3/attempt-2/assignment.json",
+			"assignmentSha256": "d3cf05f84cdf37e5bb0d98d3dc59567365246b2e8820555db132e16a0994ca47",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-legs-v3/attempt-2/result.json",
+			"resultSha256": "7225152d1ef14d366c2998fc2aeeeaff3e1be4d5c67de504b1069b79c9198c4d",
+			"reason": "class-rule-violation: Render only the Fateweave Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot."
+		},
+		{
+			"targetId": "material-equipment-v3-beast-scale-light-armour-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "2e1de6072fe3d824f1fce55192d61f7128c46ea9a0a6a48f07942ebaa387c258",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "9453dd969745a01a9bb1baf1604ef0eac0a50fd57216d730bee07d1793144453",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-torso-v3/attempt-2/result.json",
+			"resultSha256": "ca9139c558b67d4d22f5bbf2eb2f60ebb1787ca2ad91a8f5f291c4f1823cd045",
+			"reason": "class-rule-violation: Render exactly one connected Beast Scale Torso garment. Remove the separately displayed lower-body, waist, or Legs item; retain only torso-connected edging or short skirt panels that are physically part of the single chest garment."
+		},
+		{
+			"targetId": "material-equipment-v3-drakescale-light-armour-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "e9c0cd4b26af9813f8ad3bb330fd0a2fef5061409528b83c5a58d7a70d0413d2",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "0d6611bce03c44828062432ab191b55d7378e8e75e9b5ed613271a954d3823fe",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-torso-v3/attempt-2/result.json",
+			"resultSha256": "a81e00033950f76c8b7f70c29e6e6926791b64426cf89cb0d7992e8bb82dfeab",
+			"reason": "class-rule-violation: Reconstruct exactly one connected Drakescale Torso garment from the accepted full set. Do not add a separate lower-body, waist, Legs, Head, or Boots item; retain only elements physically connected to the chest garment."
+		},
+		{
+			"targetId": "material-equipment-v3-wyrmscale-light-armour-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "aa775d5324e0a43a1752ebec74700b48fe2c9882654fd0989cc0a47244f2e770",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "4e24e8f3700fef2cbf186d0d64384404155ad7ebd812a279a6447eab9ef17fe4",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-torso-v3/attempt-2/result.json",
+			"resultSha256": "f9c9512d1fbdeec9a619da1b485ddadaf76d9d4d2b3af3a7edec0cdc75a2b2c6",
+			"reason": "class-rule-violation: Render exactly one connected Wyrmscale Torso garment. Remove the separately displayed lower-body, waist, or Legs item; retain only torso-connected edging or short skirt panels that are physically part of the single chest garment."
+		},
+		{
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-3/candidate.png",
+			"candidateSha256": "abeead7ea9d6ff40a77dc118d04133a4a2fd1f9bb57dd2d92bf72c7accf2ffb6",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-3/assignment.json",
+			"assignmentSha256": "2ed6df5880b8ae6bc09086f5214a223eb6f141af569496101f8e73a5140dc666",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-3/result.json",
+			"resultSha256": "a6e8c0408104796276a455941d6cfdeda9fa47606b88ad7ab58422d14b84708c",
+			"reason": "class-rule-violation: Render one connected Ancient Dragon Scale upper-body cuirass from shoulders through upper abdomen, ending cleanly at the high hip. Omit every separate or attached belt, waist assembly, fauld, tasset, skirt, apron, and lower-body panel. Show empty background immediately below the single Torso object."
+		},
+		{
+			"targetId": "material-equipment-v3-hemp-weave-robes-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hemp-weave-robes-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "969cb9586abb7870bb18b3308076d4d4149094c84929589efa8b8a5ff1ebb6c6",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hemp-weave-robes-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "ca3a56af679c60e3a001a9989dd7eb2ca7e7993b9e15760718aab394db5c0423",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hemp-weave-robes-torso-v3/attempt-2/result.json",
+			"resultSha256": "18c62a584df4838d793b3c4445bdbc85bbd4f4ece90aaf4b93d78e321fab5c87",
+			"reason": "class-rule-violation: Render only the connected Hemp Weave Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items."
+		},
+		{
+			"targetId": "material-equipment-v3-wool-robes-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "42c342e9a44ef2bc19b46a0b9852a21cc7dddf711d6f9f2940f5f39c1bba201e",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "023fdf0d738b0ddf8c0326b0d6255626db4e36c9b7ec9df8e0c06fad467b9988",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/result.json",
+			"resultSha256": "ce68c3ba8f5792ba76df7e4136e174450508572bc4db2fa18540418fa97e88c5",
+			"reason": "class-rule-violation: Render only the connected Wool Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items."
+		},
+		{
+			"targetId": "material-equipment-v3-layered-silk-robes-torso-v3",
+			"selectedAttempt": 3,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-torso-v3/attempt-3/candidate.png",
+			"candidateSha256": "6486aeebc1bd4cdfc4bdbd8ed1c95cfa76502469aa7e60610eb28452da56c1d9",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-torso-v3/attempt-3/assignment.json",
+			"assignmentSha256": "d358c161b7f15c866d1df4ab7360a257aa1cc0793f34dbef28ba64c991dedaf6",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-layered-silk-robes-torso-v3/attempt-3/result.json",
+			"resultSha256": "ad56d7a1c9f5b57b6e4ebe79398293f7dbfc22ca829fc6907ef29c4f0c9e36e8",
+			"reason": "class-rule-violation: Render a waist-length Layered Silk sleeved upper-robe with a plain open neckline and a clean high-hip hem. Zero hood, cowl, high collar, mantle, shoulder overlay, skirt, apron, lower robe panel, Legs item, or Boots item. Empty background must be visible above the neckline and below the hem."
+		},
+		{
+			"targetId": "material-equipment-v3-spellweave-robes-torso-v3",
+			"selectedAttempt": 4,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-spellweave-robes-torso-v3/attempt-4/candidate.png",
+			"candidateSha256": "6ea6f0aece737615c6635104cda2d9a078df0c13ae72505484006dedf0a0dffd",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-spellweave-robes-torso-v3/attempt-4/assignment.json",
+			"assignmentSha256": "76e9e9145f696a9f25fe1142084efda2da802286d759489f0f6f35ea176fe3ff",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-spellweave-robes-torso-v3/attempt-4/result.json",
+			"resultSha256": "7dbcc1fcf12c6f66ae31077c1de3ff30edbc412d146def5d7919ef710902787a",
+			"reason": "class-rule-violation: Construct the Spellweave Torso as one cropped sleeved wrap jacket. Use a plain open V neckline and one continuous nearly horizontal bottom hem immediately below the waist belt. No pointed, split, dangling, or skirt-like fabric may extend beneath that line. No collar, cowl, mantle, shoulder overlay, apron, lower panel, Legs, or Boots. Show broad empty background below the hem."
+		},
+		{
+			"targetId": "material-equipment-v3-moonweave-robes-torso-v3",
+			"selectedAttempt": 4,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-torso-v3/attempt-4/candidate.png",
+			"candidateSha256": "3e0b47bbd620e0f638b2acb88d9de9159ddd37f55618b7c1a9c052cad189effb",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-torso-v3/attempt-4/assignment.json",
+			"assignmentSha256": "c2a081b0cf9e8befce1dfe3fef1e1bb8f790a53a7dc6bfed30d26c71d67182b7",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-moonweave-robes-torso-v3/attempt-4/result.json",
+			"resultSha256": "fd85039259da330df6bfdf83992205533209946a912d37f64ca2003398dc6418",
+			"reason": "class-rule-violation: Construct the Moonweave Torso as one cropped sleeved wrap jacket. Use a plain open V neckline and one continuous nearly horizontal bottom hem immediately below the waist belt. No pointed, split, dangling, or skirt-like fabric may extend beneath that line. No collar, cowl, mantle, shoulder overlay, apron, lower panel, Legs, or Boots. Show broad empty background below the hem."
+		},
+		{
+			"targetId": "material-equipment-v3-starcloth-robes-torso-v3",
+			"selectedAttempt": 4,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-4/candidate.png",
+			"candidateSha256": "80ee9a9ce532891e123ad2b0e2f62d9ae2f2d98ce4f1ba754c9ab6b92b4f4b92",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-4/assignment.json",
+			"assignmentSha256": "c962bb684568e93354ec2fc113e10f12b96848b7a0a487365b718b85a13d33f8",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starcloth-robes-torso-v3/attempt-4/result.json",
+			"resultSha256": "f62a0dfff5d997ddad40fb9f1210671e11a6acfef60a0cb9e94540ac703394fb",
+			"reason": "class-rule-violation: Construct the Starcloth Torso as one cropped sleeved wrap jacket. Use a plain open V neckline and one continuous nearly horizontal bottom hem immediately below the waist belt. No pointed, split, dangling, or skirt-like fabric may extend beneath that line. No collar, cowl, mantle, shoulder overlay, apron, lower panel, Legs, or Boots. Show broad empty background below the hem."
+		},
+		{
+			"targetId": "material-equipment-v3-fateweave-robes-torso-v3",
+			"selectedAttempt": 2,
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-torso-v3/attempt-2/candidate.png",
+			"candidateSha256": "197767d6aa067b11a7b9a593b27ca67dfb1ba70e1a1bfdf3e2abfcd380c6c1e3",
+			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-torso-v3/attempt-2/assignment.json",
+			"assignmentSha256": "b6b0e8be86fc2cef4211c129806d2ab26f84712b6236fbc5fe4f9e95cd7fd41e",
+			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-fateweave-robes-torso-v3/attempt-2/result.json",
+			"resultSha256": "b9a5328539fbcd8b96c99d431aff65a2d1f893f2ec299c6755b452c6bd503fa3",
+			"reason": "class-rule-violation: Render only the connected Fateweave Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items."
+		}
+	]
+}

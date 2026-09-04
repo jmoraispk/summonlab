@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-steel-dagger-v2",
+	"targetId": "material-equipment-v2-steel-dagger-v2",
+	"assignmentId": "assignment-material-equipment-v2-steel-dagger-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "f469c6773da684d973566a8b103efa399a205297b55fd31afcd2e896fe5aa4b2",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "dagger-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/dagger-v1.png",
+			"contentHash": "8771e23891f87323130ce2aecda5dffaa98b7308055ac9c744623d784d93dbfe"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-steel-dagger-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "built-in-imagegen:exec-ca80498d-9e05-4edb-ab22-c89157df17f8",
+			"requestStartedAt": "2026-09-02T22:23:46.037Z",
+			"generationCompletedAt": "2026-09-02T22:24:28.986Z",
+			"inspectionCompletedAt": "2026-09-02T22:25:22.668Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/d/steel/dagger-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1289691,
+		"sha256": "f3087b06e973247e4d30ffae0eb52fc48bfc73f2cad38d28470a6c2e9e4f0685"
+	},
+	"candidateSha256": "f3087b06e973247e4d30ffae0eb52fc48bfc73f2cad38d28470a6c2e9e4f0685",
+	"startedAt": "2026-09-02T22:23:46.037Z",
+	"completedAt": "2026-09-02T22:25:22.668Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/d/steel/dagger-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/d/steel/dagger-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

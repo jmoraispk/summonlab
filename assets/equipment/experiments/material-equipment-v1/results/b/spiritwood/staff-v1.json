@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-spiritwood-staff-v1",
+	"targetId": "material-equipment-v1-spiritwood-staff-v1",
+	"assignmentId": "assignment-material-equipment-v1-spiritwood-staff-v1",
+	"status": "revise",
+	"promptSha256": "75d237391f031044d3a20e4d7979129e7bafb973b8763b421efb92eb954a1d5a",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-spiritwood-staff-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-c28f-7e81-afd0-22c8524354fc/exec-f9b20d26-25e5-48bb-9552-868d2a0faecd.png",
+			"requestStartedAt": "2026-09-02T15:08:48.667Z",
+			"generationCompletedAt": "2026-09-02T15:10:24.757Z",
+			"inspectionCompletedAt": "2026-09-02T15:11:02.044Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete staff remains inside the canvas, but the curled crown begins only about 4–5% below the top and the foot ends about 6% above the bottom, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete staff is shown, including one continuous wooden shaft, curled crown, wrapped grip, and small attached cord fitting; no duplicate object or separate prop appears."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long hand-height shaft, reinforced grip section, grounded foot, and distinctive but compact natural crown read immediately as a full-length staff."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The staff is a continuous grown wooden form with believable taper and grain direction; tight fibre wraps reinforce the grip and crown junction without implausible joins or top-heavy fittings."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Spiritwood dominates the crown, shaft, grip core, and foot; dark fibre wraps and the small hanging cord remain neutral, subordinate fittings and do not assert another rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Continuous twisted grain that follows the shaft and two naturally grown limbs curling into the crown establish spiritwood through physical growth structure beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Faint blue spirit response is confined to narrow fissures in the upper grown twist; the rest of the staff remains non-emissive and avoids full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image maintains a premium realistic painterly dark-fantasy finish, honest wood and wrap wear, cold key light with restrained warm rim, and a midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred person, clothing, hammer, or design; no published-character resemblance, rarity rainbow, gold inflation, object glow, oversized silhouette, ornament-dependent identity, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/staff-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1165438,
+		"sha256": "8330b99fbcf52e7e6af82ed1bb0564e0ad44f61433ff81a3c4e7506702154dca"
+	},
+	"candidateSha256": "8330b99fbcf52e7e6af82ed1bb0564e0ad44f61433ff81a3c4e7506702154dca",
+	"startedAt": "2026-09-02T15:08:48.667Z",
+	"completedAt": "2026-09-02T15:11:02.044Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/staff-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/spiritwood/staff-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

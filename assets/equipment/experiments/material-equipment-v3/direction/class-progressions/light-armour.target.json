@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-class-direction-target-v3",
+	"directionId": "equipment-v3-light-armour-rank-progression",
+	"classId": "light-armour",
+	"width": 1536,
+	"height": 1024,
+	"mediaType": "image/png",
+	"orderedRanks": [
+		"F",
+		"E",
+		"D",
+		"C",
+		"B",
+		"A",
+		"S"
+	],
+	"candidatePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+	"resultPath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour.result.json"
+}

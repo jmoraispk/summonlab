@@ -1,0 +1,17 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 204,
+	"previousEventCanonicalSha256": "e032d0d2ed0df0c989a768ebbd7fde6dc214d5c6181dfbeec93df7ac383d15df",
+	"recordedAt": "2026-09-02T15:10:41.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "worker-started-equipment-worker-202",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:10:40.000Z",
+		"actor": "root-orchestrator",
+		"kind": "worker-started",
+		"claimId": "claim-material-equipment-v1-sunsteel-heavy-armour-full-set-v1-202",
+		"targetId": "material-equipment-v1-sunsteel-heavy-armour-full-set-v1",
+		"workerId": "equipment-worker-202"
+	}
+}

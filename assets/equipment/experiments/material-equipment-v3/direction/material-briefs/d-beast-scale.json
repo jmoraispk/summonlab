@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "beast-scale",
+	"displayName": "Beast Scale",
+	"family": "hide-scale",
+	"rank": "D",
+	"palette": "Smoky umber, gray-green, and bone-tan scale edges.",
+	"valueRange": "Middle-dark with directional scale highlights.",
+	"surfaceAndWear": "Natural overlapping scales, keratin ridges, chipped tips, worn high points, supple hide joins.",
+	"constructionVocabulary": "Sorted scale rows on flexible backing, reinforced zones, tied edges, practical closures.",
+	"supernaturalBehavior": "None; biological durability is visible but grounded.",
+	"neutralSecondaryMaterials": "Hard Leather, linen, dull steel, and dark cord.",
+	"neighborDifference": "More articulated and protective than Hard Leather; less plated and alien than Chitin.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-beast-scale.json"
+}

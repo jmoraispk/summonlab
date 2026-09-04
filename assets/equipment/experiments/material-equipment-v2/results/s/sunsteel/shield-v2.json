@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-sunsteel-shield-v2",
+	"targetId": "material-equipment-v2-sunsteel-shield-v2",
+	"assignmentId": "assignment-material-equipment-v2-sunsteel-shield-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "8d871b1728f7d5517653f87dfa3229eddb55320111b3c89714f491494783991d",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "shield-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/shield-v1.png",
+			"contentHash": "b3c53ca726dacb121c3b75c82957b3c7a5dcdd4dcf272e60d413ebcf2df1b018"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-sunsteel-shield-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "exec-f7984fff-7122-42a9-b51f-1a4cb0cf4e82",
+			"requestStartedAt": "2026-09-02T22:34:29.454Z",
+			"generationCompletedAt": "2026-09-02T22:35:09.985Z",
+			"inspectionCompletedAt": "2026-09-02T22:35:39.813Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/s/sunsteel/shield-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1586898,
+		"sha256": "a3dabda5fdd27e9fe21b48bf8265581a15664d5fe3dcad1be950272bbdc062ab"
+	},
+	"candidateSha256": "a3dabda5fdd27e9fe21b48bf8265581a15664d5fe3dcad1be950272bbdc062ab",
+	"startedAt": "2026-09-02T22:34:29.454Z",
+	"completedAt": "2026-09-02T22:35:39.813Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/s/sunsteel/shield-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/s/sunsteel/shield-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

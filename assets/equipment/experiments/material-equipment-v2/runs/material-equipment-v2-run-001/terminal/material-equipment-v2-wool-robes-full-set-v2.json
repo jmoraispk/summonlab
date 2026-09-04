@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-wool-robes-full-set-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-wool-robes-full-set-v2",
+	"recordedAt": "2026-09-02T22:27:21.200Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "revise",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/e/wool/robes-full-set-v2.json",
+		"canonicalSha256": "330a6f7516b94439eb06fce5806a9483c8c672c66f3441f0a9fa9898bf159cfb"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/e/wool/robes-full-set-v2.json",
+		"canonicalSha256": "4c3219da737d2721a17b100629f9b12070501d33cfcd93ec034d390d725655da"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/e/wool/robes-full-set-v2.json",
+		"canonicalSha256": "fa76e788c5c5e66a8959ce8b8c283185c72be0b9f6a6eca6ba7a51552a1bbbb9",
+		"candidateSha256": "416dc8e274daf66f704c096946d02ae54858d014e1ddb61b88d30308320c3ec0"
+	}
+}

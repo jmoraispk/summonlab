@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+	"productionOrder": 65,
+	"rank": "D",
+	"materialId": "layered-silk",
+	"materialName": "Layered Silk",
+	"materialFamily": "cloth-fibre",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-layered-silk.json",
+	"classId": "robes",
+	"classDirectionId": "equipment-v3-robes-rank-progression",
+	"artifactId": "robes-full-set",
+	"artifactRole": "set-source",
+	"slot": null,
+	"setId": "layered-silk-robes",
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1536,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/d/layered-silk/robes-full-set-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/layered-silk/robes-full-set-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/d/layered-silk/robes-full-set-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-full-set-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/d/layered-silk/robes-full-set-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/d/layered-silk/robes-full-set-v3.json"
+	}
+}

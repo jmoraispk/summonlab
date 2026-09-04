@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 209,
+	"previousEventCanonicalSha256": "a4be1921b15883f30ca4988fe5b80ee7cb013b54d2782e045dac7066b0915240",
+	"recordedAt": "2026-09-02T15:13:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-starcloth-robes-full-set-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:13:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-starcloth-robes-full-set-v1",
+		"workerId": "equipment-worker-178",
+		"status": "revise",
+		"resultCanonicalSha256": "13df562c34dfc62b03e78394c60bab5789a9fe4f1353dd9d61ea0cc910fd2904",
+		"failureKind": null
+	}
+}

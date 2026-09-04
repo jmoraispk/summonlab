@@ -1,0 +1,97 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+	"targetId": "material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+	"assignmentId": "assignment-material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+	"status": "failed",
+	"humanReviewLabel": "No image",
+	"promptSha256": "f5169d08b48d22b426efdef849baa75c7c74e494fa051c4c50f8dcfe99184663",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "coarse-hide-armour-camera",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/coarse-hide/light-armour-full-set-v1.png",
+			"contentHash": "b3b973ffa5eec4fb7f0125202b16b845cd271feec5c5d1351ebd55bfb7fef247"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-blacksteel-heavy-armour-full-set-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": null,
+			"requestStartedAt": "2026-09-02T22:27:38.266Z",
+			"generationCompletedAt": "2026-09-02T22:27:58.300Z",
+			"inspectionCompletedAt": "2026-09-02T22:28:34.556Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "empty-full-set",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		}
+	],
+	"candidate": null,
+	"candidateSha256": null,
+	"startedAt": "2026-09-02T22:27:38.266Z",
+	"completedAt": "2026-09-02T22:28:34.556Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/results/c/blacksteel/heavy-armour-full-set-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

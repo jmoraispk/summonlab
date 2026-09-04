@@ -1,0 +1,101 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-production-run-readiness-report-v1"
+		},
+		"runId": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9-]{1,119}$"
+		},
+		"checkedAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"status": {
+			"type": "string",
+			"enum": [
+				"ready",
+				"blocked"
+			]
+		},
+		"writesPerformed": {
+			"type": "number",
+			"const": 0
+		},
+		"summary": {
+			"type": "object",
+			"properties": {
+				"totalJobs": {
+					"type": "number",
+					"const": 161
+				},
+				"materializedRootJobs": {
+					"type": "number",
+					"const": 77
+				},
+				"gatedPieceJobs": {
+					"type": "number",
+					"const": 84
+				},
+				"armourReviewGates": {
+					"type": "number",
+					"const": 21
+				},
+				"maximumConcurrency": {
+					"type": "number",
+					"const": 16
+				}
+			},
+			"required": [
+				"totalJobs",
+				"materializedRootJobs",
+				"gatedPieceJobs",
+				"armourReviewGates",
+				"maximumConcurrency"
+			],
+			"additionalProperties": false
+		},
+		"blockers": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]{1,119}$"
+					},
+					"message": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 2000
+					},
+					"path": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 500
+					}
+				},
+				"required": [
+					"code",
+					"message"
+				],
+				"additionalProperties": false
+			}
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"runId",
+		"checkedAt",
+		"status",
+		"writesPerformed",
+		"summary",
+		"blockers"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/run-readiness-report.schema.json"
+}

@@ -1,0 +1,6 @@
+Use case: precise-object-edit
+Asset type: bounded correction of a Summonlab Equipment direction board
+Primary request: Correct only the canvas and framing of Image 1. Recompose the existing seven-greatsword board onto an exact 3:2 landscape canvas intended for 1536×1024 output, extending the midnight-charcoal studio background above and below as needed. Preserve all seven weapon designs exactly: same left-to-right Bronze F, Iron E, Steel D, Blacksteel C, Skyiron B, Starmetal A, Sunsteel S order; same silhouettes, blade profiles, two-hand grips, guards, pommels, materials, colors, spacing, slight rightward pose, lighting, and finish.
+Composition/framing: Exactly seven complete weapons, evenly spaced, each fully inside the canvas with comfortable top, bottom, and side safe margins. Do not crop, stretch, squash, rotate, redesign, relabel, reorder, add, or remove any weapon.
+Constraints: This is an edit, not a redesign. Change only the canvas aspect ratio and resulting safe-margin framing. Preserve every passing visual trait from Image 1. Complete the full expanded canvas.
+Avoid: New geometry; changed colors; altered materials; changed rank progression; extra objects; text; letters; title; legend; labels; UI; border; logo; watermark; signature; characters; hands; wielders; scenery; detached particles; blank or unfinished bands.

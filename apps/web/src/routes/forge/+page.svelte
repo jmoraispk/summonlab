@@ -74,7 +74,6 @@
 		<nav>
 			<a href={resolve('/forge/pack-2')}>Pack 2 pilot</a>
 			<a href={resolve('/forge/enemies')}>Enemy roster</a>
-			<a href={resolve('/forge/enemies/affinity-workflow')}>Affinity lab</a>
 			<a href={resolve('/forge/contact-sheet')}>Seed audit</a>
 		</nav>
 	</header>

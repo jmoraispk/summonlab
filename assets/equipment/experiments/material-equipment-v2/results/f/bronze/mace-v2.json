@@ -1,0 +1,92 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-bronze-mace-v2",
+	"targetId": "material-equipment-v2-bronze-mace-v2",
+	"assignmentId": "assignment-material-equipment-v2-bronze-mace-v2",
+	"status": "failed",
+	"humanReviewLabel": "No image",
+	"promptSha256": "11b90a9cf92654fb91f1a5693a1cc5f56684f2163de157ea6de4641141a0df37",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "mace-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/iron/mace-v1.png",
+			"contentHash": "286e4dd52cf4205ecdcd9949f6d677ed93eb4fd7b0c33041dc6baec1cb86551d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-bronze-mace-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": null,
+			"requestStartedAt": "2026-09-02T22:19:17.494Z",
+			"generationCompletedAt": "2026-09-02T22:20:15.720Z",
+			"inspectionCompletedAt": "2026-09-02T22:20:15.720Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "not-applicable",
+			"observation": "No image was available for producer inspection."
+		}
+	],
+	"candidate": null,
+	"candidateSha256": null,
+	"startedAt": "2026-09-02T22:19:17.494Z",
+	"completedAt": "2026-09-02T22:20:15.720Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/results/f/bronze/mace-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

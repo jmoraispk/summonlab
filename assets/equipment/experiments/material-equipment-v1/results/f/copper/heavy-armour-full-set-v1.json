@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-copper-heavy-armour-full-set-v1",
+	"targetId": "material-equipment-v1-copper-heavy-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-copper-heavy-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "35a516788eb331d0a29fff762053e388edc561572eb011712713b7ef70a827e8",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-copper-heavy-armour-full-set-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06297-0a04-7700-97a0-04c2a4b54598/exec-dd13e55d-b3c4-45b8-b25b-2fda09810472.png",
+			"requestStartedAt": "2026-09-02T14:49:10.564Z",
+			"generationCompletedAt": "2026-09-02T14:50:08.261Z",
+			"inspectionCompletedAt": "2026-09-02T14:50:36.170Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The complete armour remains inside the canvas, but the helmet crest begins around 4% below the top and the boot soles end around 4% above the bottom, violating the required 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one coherent complete armour set is shown on one display form, with Head, Torso, paired Legs, and paired Boots readable together and no separate prop."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Closed helmet, broad cuirass, articulated pauldrons, vambraces, gauntlets, cuisses, poleyns, greaves, and sabatons give an immediate heavy-armour silhouette."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping plates, riveted edges, leather fastening points, articulated joints, and consistent coverage present plausible grounded medieval construction and weight."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Worn copper plate dominates every armour region; subordinate dark leather and textile remain neutral and do not imply a second material rank."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Hammered copper plate surfaces and warm narrow metallic reflections establish copper through physical surface response beyond hue alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "There is no supernatural emission or full-object glow; bright areas are bounded reflected highlights on copper plate."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image maintains a realistic painterly dark-fantasy finish, honest scuffs and wear, cold dark presentation lighting with restrained warm copper response, and a midnight-charcoal floor and background."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred person or prop, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental identity substitute, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2223154,
+		"sha256": "48d1f5401e6e55c9a1248c875f8bf76a7876cc349fe4d2a9706f3748852a794b"
+	},
+	"candidateSha256": "48d1f5401e6e55c9a1248c875f8bf76a7876cc349fe4d2a9706f3748852a794b",
+	"startedAt": "2026-09-02T14:49:10.564Z",
+	"completedAt": "2026-09-02T14:51:02.666Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/f/copper/heavy-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/f/copper/heavy-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

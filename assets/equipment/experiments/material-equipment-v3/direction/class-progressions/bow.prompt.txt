@@ -1,0 +1,21 @@
+Create one polished seven-column EQUIPMENT DESIGN PROGRESSION SHEET for Summonlab. This is a direction reference, not seven final item assets.
+
+CLASS: Bow. Stable identity: Two wood-led limbs, central grip, and one clearly readable string.
+POSE/CAMERA: Single strung bow upright with a slight rightward diagonal; entire string and both tips visible.
+
+LAYOUT: one clean landscape 3:2 sheet, exactly seven evenly spaced full-object columns ordered left-to-right F, E, D, C, B, A, S. Put a small plain rank letter and material name below each column. No title, no legend, no lore text, no UI frame. Every object fully inside canvas with generous margins and no overlap. Midnight-charcoal studio background and restrained floor plane.
+
+PROGRESSION: F practical and appealing with minimal ornament; E sturdier and more deliberate; D refined professional; C bold silhouette with first supernatural construction cues; B visibly exceptional; A extraordinary geometry and ornament; S legendary controlled spectacle. Adjacent ranks must differ structurally at phone-thumbnail size. Palette alone is never the difference. Variation levers: Recurve, limb profile, tips, inlay, negative space, and increasing construction ambition.
+
+MATERIAL COLUMNS:
+F — Ash: Pale tan sapwood with quiet cream grain and gray-brown end grain. Plain carved limbs and shafts, wrapped grips, simple pegs, minimal fittings. None.
+E — Yew: Honey-gold sapwood with warm reddish heartwood bands. Graceful tensioned curves, laminated-looking natural color bands, neat bindings, slim fittings. None.
+D — Ironwood: Deep brown-black heartwood with narrow copper-brown grain lines. Thick load-bearing limbs and shafts, precise carved facets, robust collars, inset grips. Only an uncanny sense of weight and hardness; no glow.
+C — Heartwood: Rich crimson-brown core, dark bark-brown ridges, and warm amber grain. Organic curves grown around the load path, branch-like braces, carved rings, integrated knots. A faint warm pulse visible only in a few grain channels.
+B — Spiritwood: Silver-gray wood, desaturated blue grain, and soft teal-white inner traces. Elegant sweeping limbs, forked growth, hollow negative spaces, floating-looking but connected rings. A restrained inner glow follows selected grain lines; the object remains solid wood.
+A — Living Branch: Rich bark brown, fresh green-gold cambium, and small emerald leaf accents. Actively grown curves, entwined branches, leaflike tips, root-grip structures, seamless living joints. Selected buds and cambium lines emit a faint green-gold vitality; growth remains bounded.
+S — Worldtree Limb: Ancient dark bark, luminous gold-green heartwood, emerald leaves, and pale root-white accents. Mythic branching silhouette, root and crown motifs, vast growth compressed into a usable form, nested natural arches. Contained seasons appear in selected leaves and sap-light channels; no detached particles or aura.
+
+STYLE: premium realistic-painterly dark fantasy equipment concept art, grounded medieval construction, crisp readable silhouettes, honest material response and wear, cold key light with restrained warm rim, high-end game inventory art. Use the attached Dagger progression only for escalation rhythm and the attached Steel cohort only for finish/material discipline. Do not reproduce their shapes, emblems, characters, text, or recognizable copyrighted designs.
+
+EXCLUDE: repeated identical geometry with color swaps, generic near-duplicates, extra objects, hands, wielders, mannequins, scenery, dramatic VFX, detached particles, full-object glow, illegible labels, watermarks, signatures, logos, crops, and recognizable copying.

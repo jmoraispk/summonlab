@@ -1,9 +1,21 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import openingArtwork from '../../../../../docs/design-proposals/living-village-ui/mockups/opening-master-connection-desktop.png';
 	import summonArtwork from '../../../../../assets/agent-summoning-concept.png';
 	import towerArtwork from '../../../../../assets/tower-prototype.png';
+	import combatArtwork from '../../../../../docs/evidence/living-village-combat-motion-storyboard-v1.png';
 
 	const screens = [
+		{
+			eyebrow: 'Playable prologue',
+			title: 'The First Three',
+			description:
+				'Connect as Master, summon the first company, answer their questions, assign three starter weapons, and learn why the Tower matters.',
+			action: 'Play Opening',
+			href: '/living-village-lab/opening' as const,
+			image: openingArtwork,
+			alt: 'An empty summoning chamber waiting for the Master'
+		},
 		{
 			eyebrow: 'Home surface',
 			title: 'The Living Village',
@@ -33,6 +45,16 @@
 			href: '/living-village-lab/tower' as const,
 			image: towerArtwork,
 			alt: 'The Tower rising above the settlement'
+		},
+		{
+			eyebrow: 'Combat surface',
+			title: 'The Ruined Observatory',
+			description:
+				'Commit Fleeting Step, then inspect the accepted focus, move, impact, and settle cadence on a tile-true Pixi stage.',
+			action: 'Test Combat Motion',
+			href: '/living-village-lab/combat' as const,
+			image: combatArtwork,
+			alt: 'Four-frame combat motion storyboard in the ruined observatory'
 		}
 	] as const;
 </script>
@@ -57,7 +79,7 @@
 	</header>
 
 	<section class="loop" aria-label="Living Village core loop">
-		<span>Summon a person</span><i>→</i><span>Prepare in Hearth</span><i>→</i><span
+		<span>Meet the first three</span><i>→</i><span>Prepare in Hearth</span><i>→</i><span
 			>Hunt the Tower</span
 		><i>→</i><span>Return with growth</span>
 	</section>
@@ -194,7 +216,7 @@
 
 	.screen-grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: clamp(0.8rem, 1.6vw, 1.5rem);
 		margin-top: 1.5rem;
 	}

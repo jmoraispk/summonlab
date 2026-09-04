@@ -10,23 +10,27 @@
 	} from '@summonlab/contracts';
 	import { onMount, tick } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
+	import EquipmentWorkshop from '$lib/components/EquipmentWorkshop.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
+	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
-	let walking = $state(!snapshot.arrived);
+	let walking = $state(!data.equipment && !snapshot.arrived);
 	let journalOpen = $state(false);
 	let errorMessage = $state('');
 	// svelte-ignore state_referenced_locally
 	let clock = $state<SimulationClock | null>(data.clock);
 	// svelte-ignore state_referenced_locally
 	let presentation = $state<SettlementPresentation | null>(data.presentation);
+	// svelte-ignore state_referenced_locally
+	let equipment = $state<EquipmentWorkshopProjection | null>(data.equipment);
 	let eventCue = $state<AuthoritativeEvent | null>(null);
 	let emberPending = $state(false);
 	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
@@ -82,7 +86,7 @@
 	);
 	const wallSpines = Array.from({ length: 11 }, (_, index) => index);
 	const destinationLabel = $derived(
-		snapshot.destination === 'kitchen' ? 'Kitchen' : 'Training Ground'
+		equipment ? 'Workshop' : snapshot.destination === 'kitchen' ? 'Kitchen' : 'Training Ground'
 	);
 	const destinationCopy = $derived(
 		snapshot.destination === 'kitchen'
@@ -92,7 +96,7 @@
 
 	onMount(() => {
 		let arrivalTimeout: number | null = null;
-		if (!snapshot.arrived) {
+		if (!snapshot.arrived && !equipment) {
 			const reducedMotion =
 				document.documentElement.dataset.playerMotion === 'reduced' ||
 				window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -100,7 +104,9 @@
 			arrivalTimeout = window.setTimeout(() => void recordArrival(), delay);
 		}
 		const projectionInterval = window.setInterval(() => {
-			if (snapshot.arrived && document.visibilityState === 'visible') void refreshProjection();
+			if ((snapshot.arrived || equipment) && document.visibilityState === 'visible') {
+				void refreshProjection();
+			}
 		}, 15_000);
 		return () => {
 			if (arrivalTimeout !== null) window.clearTimeout(arrivalTimeout);
@@ -127,13 +133,20 @@
 	}
 
 	async function refreshProjection() {
-		const [projectionResponse, clockResponse] = await Promise.all([
+		const equipmentQuery = new URLSearchParams({ heroId: snapshot.manifest.characterId });
+		const [projectionResponse, clockResponse, equipmentResponse] = await Promise.all([
 			fetch(`/api/runs/${snapshot.runId}/projection`),
-			fetch(`/api/runs/${snapshot.runId}/clock`)
+			fetch(`/api/runs/${snapshot.runId}/clock`),
+			equipment
+				? fetch(`/api/runs/${snapshot.runId}/equipment?${equipmentQuery}`)
+				: Promise.resolve(null)
 		]);
 		if (projectionResponse.ok)
 			presentation = (await projectionResponse.json()) as SettlementPresentation;
 		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
+		if (equipmentResponse?.ok) {
+			equipment = (await equipmentResponse.json()) as EquipmentWorkshopProjection;
+		}
 	}
 
 	async function recoverFirstEmber() {
@@ -239,270 +252,287 @@
 		onEvent={showEventCue}
 	/>
 
-	{#if walking || !presentation}
-		<section
-			class="world"
-			aria-label={`${snapshot.manifest.displayName} walking through Hearth 01`}
-		>
-			<div class="sky"><i></i><i></i><i></i></div>
-			<div class="far-wall">
-				{#each wallSpines as spine (spine)}<span></span>{/each}
-			</div>
-			<div class="tower-silhouette">
-				<div></div>
-				<span>100</span>
-			</div>
-			<div class="settlement">
-				<div class="building dormitory">
-					<div class="roof"></div>
-					<div class="facade"><span></span><span></span><span></span></div>
-					<span class="building-label">Summoning Hall</span>
+	{#if equipment}
+		<EquipmentWorkshop
+			runId={snapshot.runId}
+			initialProjection={equipment}
+			onChanged={refreshProjection}
+		/>
+	{:else}
+		{#if walking || !presentation}
+			<section
+				class="world"
+				aria-label={`${snapshot.manifest.displayName} walking through Hearth 01`}
+			>
+				<div class="sky"><i></i><i></i><i></i></div>
+				<div class="far-wall">
+					{#each wallSpines as spine (spine)}<span></span>{/each}
 				</div>
-				<div class="building destination">
-					<div class="roof"></div>
-					<div class="facade">
-						<span></span><span></span>
-						<div class="door"><i></i></div>
+				<div class="tower-silhouette">
+					<div></div>
+					<span>100</span>
+				</div>
+				<div class="settlement">
+					<div class="building dormitory">
+						<div class="roof"></div>
+						<div class="facade"><span></span><span></span><span></span></div>
+						<span class="building-label">Summoning Hall</span>
 					</div>
-					{#if snapshot.destination === 'kitchen'}
-						<div class="chimney"><i></i><i></i><i></i></div>
-					{:else}
-						<div class="targets"><i></i><i></i></div>
-					{/if}
-					<span class="building-label">{destinationLabel}</span>
+					<div class="building destination">
+						<div class="roof"></div>
+						<div class="facade">
+							<span></span><span></span>
+							<div class="door"><i></i></div>
+						</div>
+						{#if snapshot.destination === 'kitchen'}
+							<div class="chimney"><i></i><i></i><i></i></div>
+						{:else}
+							<div class="targets"><i></i><i></i></div>
+						{/if}
+						<span class="building-label">{destinationLabel}</span>
+					</div>
+					<div class="route-line"><i></i><i></i><i></i><i></i><i></i></div>
 				</div>
-				<div class="route-line"><i></i><i></i><i></i><i></i><i></i></div>
-			</div>
 
-			<div class:in-transit={walking} class:at-destination={!walking} class="walker">
-				<div class="thought">
-					{walking
-						? snapshot.mind.dailyHabit === 'checks-exits'
-							? 'One gate. Two towers. Three exits.'
-							: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
-						: snapshot.destination === 'kitchen'
-							? 'Listen before speaking.'
-							: 'Balance first. Then reach.'}
+				<div class:in-transit={walking} class:at-destination={!walking} class="walker">
+					<div class="thought">
+						{walking
+							? snapshot.mind.dailyHabit === 'checks-exits'
+								? 'One gate. Two towers. Three exits.'
+								: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
+							: snapshot.destination === 'kitchen'
+								? 'Listen before speaking.'
+								: 'Balance first. Then reach.'}
+					</div>
+					{#if data.heroPortrait}
+						<img
+							class="walking-portrait"
+							src={data.heroPortrait.publicPath}
+							width={data.heroPortrait.width}
+							height={data.heroPortrait.height}
+							alt={`${snapshot.manifest.displayName} crossing Hearth 01`}
+						/>
+					{:else}
+						<HeroArtPlaceholder name={snapshot.manifest.displayName} compact />
+					{/if}
 				</div>
+
+				<div class="foreground"><span></span><span></span><span></span></div>
+			</section>
+		{:else}
+			<LivingHearthScene
+				scene={data.scene}
+				{presentation}
+				manifest={snapshot.manifest}
+				{eventCue}
+			/>
+		{/if}
+
+		{#if !walking && firstEmber}
+			<section class:committed={firstEmber.status === 'committed'} class="ember-council">
+				<div class="ember-heading">
+					<p>Settlement council · First Ember</p>
+					{#if firstEmber.status === 'unrecovered'}
+						<h2>The first ascent waits.</h2>
+						<span
+							>For this prototype, return the company from Floor 01 with the core that will define
+							Hearth 01’s first real advantage.</span
+						>
+					{:else if firstEmber.status === 'available'}
+						<h2>One core. Three promises.</h2>
+						<span
+							>The recovered ember can awaken one facility. Your explanation shapes how the summoned
+							heroes receive the choice.</span
+						>
+					{:else}
+						<h2>{emberOptions.find((option) => option.id === firstEmber.buildingId)?.name}</h2>
+						<span
+							>The core is permanently bound to {firstEmber.buildingId?.replaceAll('-', ' ')}. Its
+							effect now belongs to this history.</span
+						>
+					{/if}
+				</div>
+
+				{#if firstEmber.status === 'unrecovered'}
+					<button
+						class="recover-ember"
+						type="button"
+						onclick={recoverFirstEmber}
+						disabled={emberPending}
+						data-sound-cue="threshold"
+						><span>Prototype story bridge</span><strong
+							>{emberPending ? 'Recovering…' : 'Return from Floor 01'}</strong
+						></button
+					>
+				{:else if firstEmber.status === 'available'}
+					<div class="ember-options" aria-label="First Ember facility choices">
+						{#each emberOptions as option, index (option.id)}
+							<button
+								type="button"
+								onclick={() => prepareFirstEmberChoice(option)}
+								disabled={emberPending}
+								data-sound-cue="menu"
+							>
+								<i>0{index + 1}</i>
+								<span>{option.id.replaceAll('-', ' ')}</span>
+								<strong>{option.name}</strong>
+								<small>{option.promise}</small>
+								<code>{option.effect}</code>
+							</button>
+						{/each}
+					</div>
+				{:else}
+					<div class="ember-resolution">
+						<div class="ember-effects">
+							<span>Permanent settlement effect</span>
+							{#each firstEmber.modifiers as modifier (`${modifier.key}-${modifier.amount}`)}
+								<strong>{emberModifierLabel(modifier)}</strong>
+							{/each}
+						</div>
+						<div class="ember-reactions">
+							<span>Immediate response</span>
+							{#each firstEmber.reactions as reaction (reaction.heroId)}
+								<article>
+									<strong
+										>{reaction.heroId === snapshot.manifest.characterId
+											? snapshot.manifest.displayName
+											: reaction.heroId.slice(0, 8)}</strong
+									>
+									<i class={`stance-${reaction.stance}`}>{reaction.stance} · {reaction.score}</i>
+									<p>{reaction.summary}</p>
+									{#if reaction.heroId === snapshot.manifest.characterId && heroSocial}
+										<small
+											>{heroSocial.relationshipToMaster.tone} toward the Master · authority
+											{heroSocial.authority.standing}</small
+										>
+									{/if}
+								</article>
+							{/each}
+						</div>
+					</div>
+				{/if}
+			</section>
+		{/if}
+
+		{#if selectedEmberOption}
+			<div class="ember-confirm-backdrop">
+				<dialog
+					bind:this={emberConfirmDialog}
+					open
+					class="ember-confirm"
+					aria-modal="true"
+					aria-labelledby="ember-title"
+					tabindex="-1"
+					onkeydown={(event) =>
+						handleModalKeydown(event, emberConfirmDialog, closeFirstEmberChoice)}
+				>
+					<button
+						class="ember-close"
+						type="button"
+						onclick={closeFirstEmberChoice}
+						aria-label="Close First Ember choice">×</button
+					>
+					<p>Irreversible commitment</p>
+					<h2 id="ember-title">{selectedEmberOption.name}</h2>
+					<span>{selectedEmberOption.effect}</span>
+					<label for="ember-rationale">What do you tell the company?</label>
+					<select id="ember-rationale" bind:value={selectedEmberRationale}>
+						<option value="feed-everyone">No one under my command goes hungry.</option>
+						<option value="protect-recovery"
+							>We protect the people who carry this settlement.</option
+						>
+						<option value="prepare-tower">The tower will punish anyone we fail to prepare.</option>
+					</select>
+					<small>This choice cannot be moved later.</small>
+					<div>
+						<button class="secondary-choice" type="button" onclick={closeFirstEmberChoice}
+							>Keep deciding</button
+						>
+						<button
+							type="button"
+							onclick={commitFirstEmber}
+							disabled={emberPending}
+							data-sound-cue="warning">{emberPending ? 'Binding…' : 'Bind the First Ember'}</button
+						>
+					</div>
+				</dialog>
+			</div>
+		{/if}
+
+		<section class="hero-hud">
+			<div class="portrait">
 				{#if data.heroPortrait}
 					<img
-						class="walking-portrait"
 						src={data.heroPortrait.publicPath}
 						width={data.heroPortrait.width}
 						height={data.heroPortrait.height}
-						alt={`${snapshot.manifest.displayName} crossing Hearth 01`}
+						decoding="async"
+						alt={`${snapshot.manifest.displayName} portrait`}
 					/>
 				{:else}
 					<HeroArtPlaceholder name={snapshot.manifest.displayName} compact />
 				{/if}
 			</div>
-
-			<div class="foreground"><span></span><span></span><span></span></div>
-		</section>
-	{:else}
-		<LivingHearthScene scene={data.scene} {presentation} manifest={snapshot.manifest} {eventCue} />
-	{/if}
-
-	{#if !walking && firstEmber}
-		<section class:committed={firstEmber.status === 'committed'} class="ember-council">
-			<div class="ember-heading">
-				<p>Settlement council · First Ember</p>
-				{#if firstEmber.status === 'unrecovered'}
-					<h2>The first ascent waits.</h2>
-					<span
-						>For this prototype, return the company from Floor 01 with the core that will define
-						Hearth 01’s first real advantage.</span
-					>
-				{:else if firstEmber.status === 'available'}
-					<h2>One core. Three promises.</h2>
-					<span
-						>The recovered ember can awaken one facility. Your explanation shapes how the summoned
-						heroes receive the choice.</span
-					>
-				{:else}
-					<h2>{emberOptions.find((option) => option.id === firstEmber.buildingId)?.name}</h2>
-					<span
-						>The core is permanently bound to {firstEmber.buildingId?.replaceAll('-', ' ')}. Its
-						effect now belongs to this history.</span
-					>
-				{/if}
+			<div class="hud-copy">
+				<p>{'✦'.repeat(snapshot.manifest.rarityStars)} · Summon 001</p>
+				<h1>{snapshot.manifest.displayName}</h1>
+				<span>{walking ? `Walking to ${destinationLabel}` : `Arrived · ${destinationLabel}`}</span>
 			</div>
+			<div class="status-bars">
+				<div><span>Body</span><i><b style="width: 100%"></b></i><strong>100</strong></div>
+				<div>
+					<span>Resolve</span><i
+						><b style={`width: ${snapshot.mind.aptitudes.resolve * 10}%`}></b></i
+					><strong>{snapshot.mind.aptitudes.resolve}</strong>
+				</div>
+				<div>
+					<span>Trust</span><i
+						><b
+							style={`width: ${heroSocial?.relationshipToMaster.tone === 'trusting' ? 78 : heroSocial?.relationshipToMaster.tone === 'receptive' ? 52 : heroSocial?.relationshipToMaster.tone === 'guarded' ? 18 : 32}%`}
+						></b></i
+					><strong>{heroSocial?.relationshipToMaster.tone ?? 'unknown'}</strong>
+				</div>
+			</div>
+			<div class="proof-state">
+				<span>{walking ? 'In transit' : 'Persistent state updated'}</span>
+				<code>{snapshot.manifestHash.slice(0, 12)}</code>
+			</div>
+		</section>
 
-			{#if firstEmber.status === 'unrecovered'}
-				<button
-					class="recover-ember"
-					type="button"
-					onclick={recoverFirstEmber}
-					disabled={emberPending}
-					data-sound-cue="threshold"
-					><span>Prototype story bridge</span><strong
-						>{emberPending ? 'Recovering…' : 'Return from Floor 01'}</strong
-					></button
-				>
-			{:else if firstEmber.status === 'available'}
-				<div class="ember-options" aria-label="First Ember facility choices">
-					{#each emberOptions as option, index (option.id)}
-						<button
-							type="button"
-							onclick={() => prepareFirstEmberChoice(option)}
-							disabled={emberPending}
-							data-sound-cue="menu"
+		{#if !walking && heroSocial}
+			<section class="social-ledger" data-testid="hero-social-ledger">
+				<div>
+					<p>What {snapshot.manifest.displayName} actually knows</p>
+					<h2>{heroSocial.beliefCount} held beliefs · {heroSocial.authority.standing} authority</h2>
+					<span>{heroSocial.latestObservation?.summary}</span>
+				</div>
+				<div class="social-signals">
+					<p><span>Relationship</span><strong>{heroSocial.relationshipToMaster.tone}</strong></p>
+					<p>
+						<span>Evidence</span><strong
+							>{heroSocial.relationshipToMaster.latestEvidence ??
+								'Only the awakening is known.'}</strong
 						>
-							<i>0{index + 1}</i>
-							<span>{option.id.replaceAll('-', ' ')}</span>
-							<strong>{option.name}</strong>
-							<small>{option.promise}</small>
-							<code>{option.effect}</code>
-						</button>
+					</p>
+					{#each heroSocial.activePromiseTerms as promise (promise)}
+						<p><span>Active promise</span><strong>{promise}</strong></p>
 					{/each}
 				</div>
-			{:else}
-				<div class="ember-resolution">
-					<div class="ember-effects">
-						<span>Permanent settlement effect</span>
-						{#each firstEmber.modifiers as modifier (`${modifier.key}-${modifier.amount}`)}
-							<strong>{emberModifierLabel(modifier)}</strong>
-						{/each}
-					</div>
-					<div class="ember-reactions">
-						<span>Immediate response</span>
-						{#each firstEmber.reactions as reaction (reaction.heroId)}
-							<article>
-								<strong
-									>{reaction.heroId === snapshot.manifest.characterId
-										? snapshot.manifest.displayName
-										: reaction.heroId.slice(0, 8)}</strong
-								>
-								<i class={`stance-${reaction.stance}`}>{reaction.stance} · {reaction.score}</i>
-								<p>{reaction.summary}</p>
-								{#if reaction.heroId === snapshot.manifest.characterId && heroSocial}
-									<small
-										>{heroSocial.relationshipToMaster.tone} toward the Master · authority
-										{heroSocial.authority.standing}</small
-									>
-								{/if}
-							</article>
-						{/each}
-					</div>
-				</div>
-			{/if}
-		</section>
-	{/if}
+			</section>
+		{/if}
 
-	{#if selectedEmberOption}
-		<div class="ember-confirm-backdrop">
-			<dialog
-				bind:this={emberConfirmDialog}
-				open
-				class="ember-confirm"
-				aria-modal="true"
-				aria-labelledby="ember-title"
-				tabindex="-1"
-				onkeydown={(event) => handleModalKeydown(event, emberConfirmDialog, closeFirstEmberChoice)}
-			>
-				<button
-					class="ember-close"
-					type="button"
-					onclick={closeFirstEmberChoice}
-					aria-label="Close First Ember choice">×</button
-				>
-				<p>Irreversible commitment</p>
-				<h2 id="ember-title">{selectedEmberOption.name}</h2>
-				<span>{selectedEmberOption.effect}</span>
-				<label for="ember-rationale">What do you tell the company?</label>
-				<select id="ember-rationale" bind:value={selectedEmberRationale}>
-					<option value="feed-everyone">No one under my command goes hungry.</option>
-					<option value="protect-recovery">We protect the people who carry this settlement.</option>
-					<option value="prepare-tower">The tower will punish anyone we fail to prepare.</option>
-				</select>
-				<small>This choice cannot be moved later.</small>
-				<div>
-					<button class="secondary-choice" type="button" onclick={closeFirstEmberChoice}
-						>Keep deciding</button
-					>
-					<button
-						type="button"
-						onclick={commitFirstEmber}
-						disabled={emberPending}
-						data-sound-cue="warning">{emberPending ? 'Binding…' : 'Bind the First Ember'}</button
-					>
-				</div>
-			</dialog>
-		</div>
-	{/if}
-
-	<section class="hero-hud">
-		<div class="portrait">
-			{#if data.heroPortrait}
-				<img
-					src={data.heroPortrait.publicPath}
-					width={data.heroPortrait.width}
-					height={data.heroPortrait.height}
-					decoding="async"
-					alt={`${snapshot.manifest.displayName} portrait`}
-				/>
-			{:else}
-				<HeroArtPlaceholder name={snapshot.manifest.displayName} compact />
-			{/if}
-		</div>
-		<div class="hud-copy">
-			<p>{'✦'.repeat(snapshot.manifest.rarityStars)} · Summon 001</p>
-			<h1>{snapshot.manifest.displayName}</h1>
-			<span>{walking ? `Walking to ${destinationLabel}` : `Arrived · ${destinationLabel}`}</span>
-		</div>
-		<div class="status-bars">
-			<div><span>Body</span><i><b style="width: 100%"></b></i><strong>100</strong></div>
+		<section class="choice-result">
 			<div>
-				<span>Resolve</span><i><b style={`width: ${snapshot.mind.aptitudes.resolve * 10}%`}></b></i
-				><strong>{snapshot.mind.aptitudes.resolve}</strong>
+				<p>Agent-altered route · {snapshot.events[2]?.decisionSource}</p>
+				<h2>{snapshot.storyBranch?.replaceAll('-', ' ')}</h2>
+				<span>{destinationCopy}</span>
 			</div>
-			<div>
-				<span>Trust</span><i
-					><b
-						style={`width: ${heroSocial?.relationshipToMaster.tone === 'trusting' ? 78 : heroSocial?.relationshipToMaster.tone === 'receptive' ? 52 : heroSocial?.relationshipToMaster.tone === 'guarded' ? 18 : 32}%`}
-					></b></i
-				><strong>{heroSocial?.relationshipToMaster.tone ?? 'unknown'}</strong>
-			</div>
-		</div>
-		<div class="proof-state">
-			<span>{walking ? 'In transit' : 'Persistent state updated'}</span>
-			<code>{snapshot.manifestHash.slice(0, 12)}</code>
-		</div>
-	</section>
-
-	{#if !walking && heroSocial}
-		<section class="social-ledger" data-testid="hero-social-ledger">
-			<div>
-				<p>What {snapshot.manifest.displayName} actually knows</p>
-				<h2>{heroSocial.beliefCount} held beliefs · {heroSocial.authority.standing} authority</h2>
-				<span>{heroSocial.latestObservation?.summary}</span>
-			</div>
-			<div class="social-signals">
-				<p><span>Relationship</span><strong>{heroSocial.relationshipToMaster.tone}</strong></p>
-				<p>
-					<span>Evidence</span><strong
-						>{heroSocial.relationshipToMaster.latestEvidence ??
-							'Only the awakening is known.'}</strong
-					>
-				</p>
-				{#each heroSocial.activePromiseTerms as promise (promise)}
-					<p><span>Active promise</span><strong>{promise}</strong></p>
-				{/each}
+			<div class="spine">
+				<span>Fixed plot remains</span>
+				<strong>Form a company → open Floor 01 → survive the first five-floor band.</strong>
 			</div>
 		</section>
 	{/if}
-
-	<section class="choice-result">
-		<div>
-			<p>Agent-altered route · {snapshot.events[2]?.decisionSource}</p>
-			<h2>{snapshot.storyBranch?.replaceAll('-', ' ')}</h2>
-			<span>{destinationCopy}</span>
-		</div>
-		<div class="spine">
-			<span>Fixed plot remains</span>
-			<strong>Form a company → open Floor 01 → survive the first five-floor band.</strong>
-		</div>
-	</section>
 
 	{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 

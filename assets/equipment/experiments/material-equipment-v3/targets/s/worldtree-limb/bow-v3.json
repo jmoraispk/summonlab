@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-worldtree-limb-bow-v3",
+	"productionOrder": 150,
+	"rank": "S",
+	"materialId": "worldtree-limb",
+	"materialName": "Worldtree Limb",
+	"materialFamily": "wood",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-worldtree-limb.json",
+	"classId": "bow",
+	"classDirectionId": "equipment-v3-bow-rank-progression",
+	"artifactId": "bow",
+	"artifactRole": "item",
+	"slot": null,
+	"setId": null,
+	"dependsOnTargetId": null,
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/s/worldtree-limb/bow-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/s/worldtree-limb/bow-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/s/worldtree-limb/bow-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/bow-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/s/worldtree-limb/bow-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/s/worldtree-limb/bow-v3.json"
+	}
+}

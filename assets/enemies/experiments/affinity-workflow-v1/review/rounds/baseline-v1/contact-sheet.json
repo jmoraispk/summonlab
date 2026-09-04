@@ -8,7 +8,6 @@
 	"width": 1920,
 	"height": 1080,
 	"sourceCount": 24,
-	"imagePath": "assets/enemies/experiments/affinity-workflow-v1/review/rounds/baseline-v1/contact-sheet.png",
 	"imageByteSha256": "4bcc0d65701065bbf576107c92e9c3e1a5fe13b94bb5454e2296e3422f16260c",
 	"orderedSources": [
 		{
@@ -39,15 +38,6 @@
 			"candidateByteSha256": "7cf465d187839d124827474309cae6075f95f727d75c6dc02e0388033da73fa9"
 		},
 		{
-			"index": 4,
-			"opaqueLabel": "S04",
-			"targetId": "affinity-workflow-v1-death-knight-wood",
-			"resultId": "result-affinity-workflow-v1-death-knight-wood-v1",
-			"resultCanonicalSha256": "1508ebf112cc6762b49563c0087c5a48b36cf4e078c4d07a34b2b40f695a69ac",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wood-v1.png",
-			"candidateByteSha256": "e6333d96611236a09efba50606a45732acd0561f456040c2e0693c44572e15f3"
-		},
-		{
 			"index": 5,
 			"opaqueLabel": "S05",
 			"targetId": "affinity-workflow-v1-elemental-wind",
@@ -75,15 +65,6 @@
 			"candidateByteSha256": "7aeb280568a852d6b9526a7f83da2c69b1e7e263caf8624d2913cc06460ba1fc"
 		},
 		{
-			"index": 8,
-			"opaqueLabel": "S08",
-			"targetId": "affinity-workflow-v1-grey-wolf-metal",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-metal",
-			"resultCanonicalSha256": "5bf3e3fb0a035b1c970ee8d6791c3638ba94069062a703b9167bc34c3b37ee6c",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
-			"candidateByteSha256": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321"
-		},
-		{
 			"index": 9,
 			"opaqueLabel": "S09",
 			"targetId": "affinity-workflow-v1-grey-wolf-water",
@@ -91,33 +72,6 @@
 			"resultCanonicalSha256": "2819388e3a7274bbe057c8dc7d1c8a0004f7eb04f21c87b3eb3e2d22e9def687",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/water-v1.png",
 			"candidateByteSha256": "c49cef7a3291189961b887721e5e98e5b13c275bef97e3377a49a09b1eea28c4"
-		},
-		{
-			"index": 10,
-			"opaqueLabel": "S10",
-			"targetId": "affinity-workflow-v1-death-knight-metal",
-			"resultId": "result-affinity-workflow-v1-death-knight-metal-v1",
-			"resultCanonicalSha256": "fd6eb031a320cf46374a4117ee31b5ca04c8fef37f8665b295f90763383bc505",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/metal-v1.png",
-			"candidateByteSha256": "eda3cf74f69dd76dc21a178122c30b51a7ca07bb5725660445d7f8f386f98138"
-		},
-		{
-			"index": 11,
-			"opaqueLabel": "S11",
-			"targetId": "affinity-workflow-v1-grey-wolf-wood",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-wood-v1",
-			"resultCanonicalSha256": "7b61cb8d7b824fb47af8440880a6022a50cf428b1cb35b89be8ccec59e3f7d5a",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
-			"candidateByteSha256": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35"
-		},
-		{
-			"index": 12,
-			"opaqueLabel": "S12",
-			"targetId": "affinity-workflow-v1-cave-bear-wood",
-			"resultId": "result-affinity-workflow-v1-cave-bear-wood",
-			"resultCanonicalSha256": "ea1a8f95af6a3b75576dcb7182a0e1e8b508fbe1025c0fa8810feedffd3e2b9b",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
-			"candidateByteSha256": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8"
 		},
 		{
 			"index": 13,
@@ -174,15 +128,6 @@
 			"candidateByteSha256": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
 		},
 		{
-			"index": 19,
-			"opaqueLabel": "S19",
-			"targetId": "affinity-workflow-v1-elemental-wood",
-			"resultId": "result-affinity-workflow-v1-elemental-wood",
-			"resultCanonicalSha256": "a8c04e5dd8b1395a6bd91eab5c5af77f07d00a5ced96c365049a79f255108e3d",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/wood-v1.png",
-			"candidateByteSha256": "2c91e873016b001fc8b5d98a2e81171a45d7e064c17ff4ce7aadd0588cc0f90a"
-		},
-		{
 			"index": 20,
 			"opaqueLabel": "S20",
 			"targetId": "affinity-workflow-v1-elemental-normal",
@@ -201,15 +146,6 @@
 			"candidateByteSha256": "2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc"
 		},
 		{
-			"index": 22,
-			"opaqueLabel": "S22",
-			"targetId": "affinity-workflow-v1-elemental-metal",
-			"resultId": "result-affinity-workflow-v1-elemental-metal-v1",
-			"resultCanonicalSha256": "2e87916dd60a4958d4fba0990fc7cb264602ab3d74a2b30a496ec6b7d2f829a2",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/metal-v1.png",
-			"candidateByteSha256": "b026e5b7175c2631ea510e388b682261a6a1b5cdcdd5d99903b79926ada69a8e"
-		},
-		{
 			"index": 23,
 			"opaqueLabel": "S23",
 			"targetId": "affinity-workflow-v1-cave-bear-fire",
@@ -217,15 +153,6 @@
 			"resultCanonicalSha256": "469055acdc8053050765bfd30b41ff86156f9572a5ba14ab7d5c3baa207a28e8",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/fire-v1.png",
 			"candidateByteSha256": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a"
-		},
-		{
-			"index": 24,
-			"opaqueLabel": "S24",
-			"targetId": "affinity-workflow-v1-cave-bear-metal",
-			"resultId": "result-affinity-workflow-v1-cave-bear-metal",
-			"resultCanonicalSha256": "6ea2a0394f5da41781a69d63e352ba04b38b6dba492cae8a0d631635e3586de7",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
-			"candidateByteSha256": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1"
 		}
 	]
 }

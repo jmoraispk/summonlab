@@ -1,0 +1,554 @@
+{
+	"schemaVersion": "equipment-owner-checkpoint-receipt-v3",
+	"checkpointId": "equipment-v3-checkpoint-2-roots",
+	"createdAt": "2026-09-03T17:25:00.000Z",
+	"decidedBy": "summonlab-owner",
+	"manifestCanonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a",
+	"galleryPath": "assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-2-final/index.html",
+	"decisions": [
+		{
+			"subjectId": "material-equipment-v3-bronze-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png",
+			"imageSha256": "efd2ae2acabaa61325b065fe793bbc40a87d7bd412afdc4c7b9fe99f595ae138",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/dagger-v3.png",
+			"imageSha256": "965a18feb29cde053d56d4d8e4217b7d45e3f4ac47ba63855e3f2a7f66e75b90",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/spear-v3.png",
+			"imageSha256": "3c7c5533dd835b8d7087cbbde2a424cd50c72394c6bc4d84a5c4925bc1cb1ee2",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png",
+			"imageSha256": "75e000d4ecaa7c1099922ddba8d358027c4773ea1d431f0f08aaea011412b39d",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/mace-v3.png",
+			"imageSha256": "14ae8c8e7c082a2f4d4e2e0a8cbae7a9e33ef36776fbee2fd650f66832f79041",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/shield-v3.png",
+			"imageSha256": "cedc85161c4587e5ba8426e9910e68fdab1612e047d146990f14e4f84939b0a4",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-v3.png",
+			"imageSha256": "2427658c5f5aa71e236aa7e3425af0ae2234d8a4e0e518ca75b91625f3e48da5",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-ash-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/ash/bow-v3.png",
+			"imageSha256": "7e3eb1bdb5a2bae4a185cf2b9bb15d0568b9ca88b09c0901537c080544679663",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-ash-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/ash/staff-v3.png",
+			"imageSha256": "dcfb728bfa830866672dddd3355c6f1ff82f2b80504137bae46bd7a98494c069",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-full-set-v3.png",
+			"imageSha256": "b51335521e27af145621d249e597ea4e63842637b4d4469fe8eb201612f0a532",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-hemp-weave-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/hemp-weave/robes-full-set-v3.png",
+			"imageSha256": "4bb55ccf9929a2061ae7b5bb5f3633bdaa29cd996079f793a9be6124828bf6a8",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/sword-v3.png",
+			"imageSha256": "c56d35abd1607d4598ac6a2e4940f70b1d0872996a0d8a5f958adcfc3aefe186",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/dagger-v3.png",
+			"imageSha256": "3fcca797d56e2b2ecdd9d73eb31d983b385ca605f4654625c2f3dff253737c8d",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/spear-v3.png",
+			"imageSha256": "bd4d7ed9236fb9f21bf3a44f8f18d79100ea2ef73ed2e7fdb71639dcf09b004b",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/axe-v3.png",
+			"imageSha256": "0dc1ab8bb2d4e84308af293444a8b76a69e127390ab4283d96fbab90b437b4ae",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/mace-v3.png",
+			"imageSha256": "bc5ef4898a4b0e29448946bd62109edae3e1e5c98b6d8f5a167a5cdf8b5dec71",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-shield-v3/attempt-2/candidate.png",
+			"imageSha256": "39de8f67c6e38d8474300cfbc4f8eb5b0eeea1a005c61b99aa31556d5b9f9401",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-full-set-v3.png",
+			"imageSha256": "55aedcb94ce7b5b7ba695c669c5198f752d4da3922406d61d8d52d2298f93992",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-yew-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/bow-v3.png",
+			"imageSha256": "d416ed5cca414b829591c7ee7fe6db4aefeadb231bba9f13e978aeecfb22342e",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-yew-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/yew/staff-v3.png",
+			"imageSha256": "7aa04700434e3606d23d86042d74625eda7fa508ed68117ed189447d2fd46e48",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-full-set-v3.png",
+			"imageSha256": "8bc83bd66fafbe29adea553914b4d682ebbcb2eff8c2e9cb85f9fa5bf776e0b8",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-wool-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
+			"imageSha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/candidate.png",
+			"imageSha256": "1a93b6f4772d3f5b11d60290d11d175f948e1d1faecc715fbd82e2569fec6156",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/dagger-v3.png",
+			"imageSha256": "1673d20ee47401c13c6dad0224ef5931271e5ac8cd026fae4ae63f378c531727",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/spear-v3.png",
+			"imageSha256": "55cd575ac5ebeca48ee0259ca7a744f0a22577e39f0be85a18072a4283042b3e",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/axe-v3.png",
+			"imageSha256": "0d9cb84171171c97ed3bafe7d45a1b503dfe9df28276cdd19203eb67d9557c1d",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/mace-v3.png",
+			"imageSha256": "b1dc6b6012ef34447e3879adf54acc7f6af9a44cd3b6a193caef87cc38d20e4a",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-shield-v3/attempt-2/candidate.png",
+			"imageSha256": "1054cc92907f7c81cda3e2e58c76db46d4b0202e4934b8361e15ed5fa7062484",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-full-set-v3.png",
+			"imageSha256": "0734aa4ae775cfbbe523072f13fc666758a752bac58208da49e8181da0b92f2f",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-ironwood-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/ironwood/bow-v3.png",
+			"imageSha256": "8d2f8052bae147871cbb71def4b73c68c6ffdd7b3246d4ef5e1d2e8e86c1b213",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-ironwood-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/ironwood/staff-v3.png",
+			"imageSha256": "bf5cba1dfe36a339fc023844164396c641cf1cf02dd9f18c7bbecf03a92d2ab1",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-full-set-v3.png",
+			"imageSha256": "c138586bfb6005373054453f4386645d2026766ec29724383f4528ab62ad2a3d",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-layered-silk-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-full-set-v3.png",
+			"imageSha256": "d25e29f103e037737aeb43486811715a43f16a44a7614aeb9b3afee4b2042abe",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/sword-v3.png",
+			"imageSha256": "094819eb2eae878f9da235daf23ef3a81d0708a0b5b3b8dca555918b269c55ff",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/dagger-v3.png",
+			"imageSha256": "5ca7ea1f1cdc28211843381e1699db311f42b70cd6089e744dc153613f068ce6",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/spear-v3.png",
+			"imageSha256": "b8143738fd83431902373a4aeaa6a906f532c4978c89f35ed6ac4643a02a1b48",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/axe-v3.png",
+			"imageSha256": "a012234dd0bb86fd2b1d7de7c89db24a0d4de8e6b7d846c0b4025cea6db720ea",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/mace-v3.png",
+			"imageSha256": "ebb86249b1508ba931bfa28e1dbed978ef8191e9983dfea21842b45f48709e52",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/shield-v3.png",
+			"imageSha256": "9ca11dd3993d5551cbd7a920b2ae04f8582f2a829b2bdf2a07ab66d84303ae4f",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-full-set-v3.png",
+			"imageSha256": "167a303df4e54baf2bfbfd1399b30dd9bd324c473e11ef46b23b7a96f77a6072",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-heartwood-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/bow-v3.png",
+			"imageSha256": "ef831c4aae70ae302bfb00b3741a47506428f78b3b1b3aee4a39735d353d3beb",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-heartwood-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/heartwood/staff-v3.png",
+			"imageSha256": "e08876ecd838c0ae55e4daa66600d815d4b48db23e3077c43482349be31c8944",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-chitin-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-full-set-v3.png",
+			"imageSha256": "00ccb17097cbdd10bd14884d62d38976f853f1334f2c3643d663781b387ea027",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-spellweave-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-full-set-v3.png",
+			"imageSha256": "2583be932e05edf55d70caa5864f8441d172efa2882f101f62ef710a81e89448",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/sword-v3.png",
+			"imageSha256": "c5eaec85f7be57f0cd15f4fff302920aee38306b573d7c56dc9977ea56dfdf1b",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/dagger-v3.png",
+			"imageSha256": "47a2e9c66ba4cb8ab289b12744c7637b713e6897ba13b646e4d366d9fc5886ba",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/spear-v3.png",
+			"imageSha256": "af528a80f6d86a34fb19871384af16554b1b796492ac7bb19d5120c8abc61b63",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/axe-v3.png",
+			"imageSha256": "3db05f3458407a1a9e084cd4221fee35684264d78b973e5397613902af1579cb",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/mace-v3.png",
+			"imageSha256": "38d789c4f5216ec1a5857b3f1740bd5517cf46bf63213a53d20564f30a641380",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/shield-v3.png",
+			"imageSha256": "4744a1908399f8f504a3980acb36972fed3b84a3dcb6c71a098de879a60e8e07",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-full-set-v3.png",
+			"imageSha256": "e9f6b7808621c16eb3d38147f99b2a27c225cd17b66c399068f16c8fae930e4b",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-spiritwood-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/bow-v3.png",
+			"imageSha256": "47b7c4ba69b231c09b1d9b054ba7b8fdac0fd80a51acbd92be8b6e9cb9968a6c",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-spiritwood-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/spiritwood/staff-v3.png",
+			"imageSha256": "34d054da118a68150a1a33636daa2517cc5153dd88f2566817188168868d9ad0",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-full-set-v3.png",
+			"imageSha256": "175834e6870944b8226ad8d677ef94423a7237c82c5cfe23b9cc7c744bbb6663",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-moonweave-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/moonweave/robes-full-set-v3.png",
+			"imageSha256": "2690e6e24438c43ce87e10e3d756695612485b61e64c3f0309d8337657d5282a",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/sword-v3.png",
+			"imageSha256": "c9c69c5fbe6003d2fed2f5a41d54d6c21decf4544f65f7278a1894a7e4a7c064",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/dagger-v3.png",
+			"imageSha256": "9648a701c6deeef83c085411e6aebe9c67bf7cf925d78c0b0ba21440f2f61729",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/spear-v3.png",
+			"imageSha256": "e00658e8888555f599956941614400336f1371d31693b3bab56b8917f6bf4480",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/axe-v3.png",
+			"imageSha256": "0c7b8d3009b98d41580724c9b163802a60ebb72f94afb0ca604edf08d200c59e",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/candidate.png",
+			"imageSha256": "89c1f75b087111228f651285d9b00c8639b6e0fd339851e2e53401c21ccca226",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-shield-v3/attempt-2/candidate.png",
+			"imageSha256": "ba649380c97a49c474ebb1bc5699b7e5b0a4ace9ae4bdcb40958b842fc1f9246",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-full-set-v3.png",
+			"imageSha256": "6e12b9636d827113ffe1e32cd769d69bba8d5e54c9f681da9d2972879950134c",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-living-branch-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/bow-v3.png",
+			"imageSha256": "ac73ee6c5515d5eed0c9146cb1b50c4abbbddf989edce53eeefd7fc9a4ba6aac",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-living-branch-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/living-branch/staff-v3.png",
+			"imageSha256": "a8fe93694fdff5358c16c7b0035cfa254d87a4897eb2a6ff231e2533a4da5498",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-full-set-v3.png",
+			"imageSha256": "20032eb42dc16ce8a65ce2a39cc2d00d762723fa89fcb22fd463b5165e2b1927",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-starcloth-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-full-set-v3.png",
+			"imageSha256": "c02dc954d3ac92af7a2b4235eaeaad3b243963c0edca949a29e6c762c3862c3b",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-sword-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/candidate.png",
+			"imageSha256": "c0e8138d5af24742c5f4a7f81116aed13e21ee4a50fde79179e082048e7e5606",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-dagger-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/dagger-v3.png",
+			"imageSha256": "4286ff9e7df7afed749fe6702e97cae9594f7026bd3806c9dd8a84bf6028f64d",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-spear-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-spear-v3/attempt-2/candidate.png",
+			"imageSha256": "840a52bf745d31268b6d81ec8b4b8446524a9a3aa871a276780297d14b47deed",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-axe-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-axe-v3/attempt-2/candidate.png",
+			"imageSha256": "1fe55413b602b636948dec9aa90915eacc50091eff1ae06cd8cb0cda896f3802",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-mace-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/mace-v3.png",
+			"imageSha256": "8ac40374f0496709f1f53d21aa925eb23cf01a29b3ca2f5de767f04e8bc1a696",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-shield-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/shield-v3.png",
+			"imageSha256": "4a4c6b0c2efa9b9bfe1ed5a7fefec9a923b73ea1b699d01391e6e5a50cf83c1c",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-full-set-v3.png",
+			"imageSha256": "0d560a1d850b706578729343bf9076ee1c042b7eea17f25e9624d71b0ab9e83a",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-worldtree-limb-bow-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/bow-v3.png",
+			"imageSha256": "fc3c6c8dae7ee72e093e10944df29e0beb154913db4c1d18bbca82907eebcda0",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-worldtree-limb-staff-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/worldtree-limb/staff-v3.png",
+			"imageSha256": "e939804188d3aacfac018e2497b86c935fafcf976f37b240d1d3dc272e80b7cb",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-full-set-v3.png",
+			"imageSha256": "83b6a6ec1854808eec44159678dc8bc0b1f10335dbca19072b08518d317f47a9",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		},
+		{
+			"subjectId": "material-equipment-v3-fateweave-robes-full-set-v3",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-full-set-v3.png",
+			"imageSha256": "3078f7535252d48efafa76efa7bcf006bd11a8f7f7b7e441a2bb9b6e24c2db73",
+			"decision": "accept",
+			"notes": "Owner accepted all 77 root equipment candidates in Codex task on 2026-09-03."
+		}
+	],
+	"summary": {
+		"accept": 77,
+		"revise": 0,
+		"defer": 0
+	}
+}

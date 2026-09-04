@@ -9,17 +9,9 @@ test('browses every generated enemy family and canonical archetype', async ({ pa
 	await expect(page.getByTestId('all-enemy-family')).toHaveCount(10);
 	await expect(page.getByTestId('all-enemy-card')).toHaveCount(40);
 	await expect(page.getByTestId('enemy-proof')).toHaveCount(2);
-	await expect(page.getByTestId('enemy-affinity-link')).toHaveCount(40);
-	await expect(page.getByTestId('family-affinity-pilot')).toHaveCount(2);
 	await expect(page.getByRole('heading', { name: 'Goblin Skirmisher' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Grey Wolf' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Giant Tower Dragon' })).toBeVisible();
-	await expect(
-		page.getByRole('link', { name: 'Explore Normal + five elemental affinities →' }).first()
-	).toHaveAttribute('href', /\/forge\/enemies\/affinity-workflow#affinity-/);
-	await expect(
-		page.getByRole('link', { name: 'Explore Normal + five elemental affinities →' }).last()
-	).toHaveAttribute('href', /\/forge\/enemies\/affinity-expansion#affinity-/);
 	if (process.env.CAPTURE_ALL_ENEMIES) {
 		await page.screenshot({ path: process.env.CAPTURE_ALL_ENEMIES, fullPage: true });
 	}

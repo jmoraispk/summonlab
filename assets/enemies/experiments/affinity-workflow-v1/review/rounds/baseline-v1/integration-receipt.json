@@ -22,19 +22,6 @@
 			"candidateByteSha256": "a36c9c4da2439c8557cfbb71d0e997f0147b1c06d444969ad7acb960cb563e6a"
 		},
 		{
-			"targetId": "affinity-workflow-v1-cave-bear-metal",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-bear/metal.json",
-			"targetCanonicalSha256": "2e38b0d948f85764aa87771cbbaf901cd56e0c1ff272c9df556c8e1eeea33ee5",
-			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-metal",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-bear/metal.json",
-			"assignmentCanonicalSha256": "10e6a92ba8fc285b880b2fd0918f31faa5970665bd175cb9fe970dbd1c488e4c",
-			"resultId": "result-affinity-workflow-v1-cave-bear-metal",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-bear-metal-v1.json",
-			"resultCanonicalSha256": "6ea2a0394f5da41781a69d63e352ba04b38b6dba492cae8a0d631635e3586de7",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/metal-v1.png",
-			"candidateByteSha256": "54ddc74f76d84dbdc057847412f036a165c530c406b4bf710bdf6ca1f06488c1"
-		},
-		{
 			"targetId": "affinity-workflow-v1-cave-bear-normal",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-bear/normal.json",
 			"targetCanonicalSha256": "4a0872550226e31a076e0faec8112d91753e6616a086b89b8ecf499ae01ba3dc",
@@ -74,19 +61,6 @@
 			"candidateByteSha256": "2e259a5dd3cc6a6dcad32b40a5e0b984298edfc1fd573ffe52d3551cf48bb0fc"
 		},
 		{
-			"targetId": "affinity-workflow-v1-cave-bear-wood",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/cave-bear/wood.json",
-			"targetCanonicalSha256": "8404aab0744c6b82980b8fc758e73b5a2b4e149f793cfd480aea79ed109aab0e",
-			"assignmentId": "assignment-affinity-workflow-v1-cave-bear-wood",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/cave-bear/wood.json",
-			"assignmentCanonicalSha256": "5899744360803ae355018c18ce82a8adada48174bc1df6c9b2050a827626f8de",
-			"resultId": "result-affinity-workflow-v1-cave-bear-wood",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/cave-bear-wood-v1.json",
-			"resultCanonicalSha256": "ea1a8f95af6a3b75576dcb7182a0e1e8b508fbe1025c0fa8810feedffd3e2b9b",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png",
-			"candidateByteSha256": "6acf22b3da726f4f3682841ea36f8f57f7e5e8835227f933f5b399ad1b6fedd8"
-		},
-		{
 			"targetId": "affinity-workflow-v1-death-knight-fire",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/death-knight/fire.json",
 			"targetCanonicalSha256": "7e4f58fb5be2935fdaa8417a6d13fee33dbf5deb428cb14177b282eed23bac29",
@@ -98,19 +72,6 @@
 			"resultCanonicalSha256": "32b27ffd918a0004964c4202711dd4ced19c147de79ae367782a5a24207d130d",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/fire-v1.png",
 			"candidateByteSha256": "ae8c4b067ebadbed3621253e169e940213e6c6eb15663e4899b4ca6bde823d56"
-		},
-		{
-			"targetId": "affinity-workflow-v1-death-knight-metal",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/death-knight/metal.json",
-			"targetCanonicalSha256": "5c7b178802322fcf62a4274f4cc5684f8b105eb4d9b422dc0dd1d0cb68280ab3",
-			"assignmentId": "assignment-affinity-workflow-v1-death-knight-metal",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/death-knight/metal.json",
-			"assignmentCanonicalSha256": "5f84087c4434ef603440905fdcebe47e866219370c1de0f2744d26c428966704",
-			"resultId": "result-affinity-workflow-v1-death-knight-metal-v1",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/death-knight-metal-v1.json",
-			"resultCanonicalSha256": "fd6eb031a320cf46374a4117ee31b5ca04c8fef37f8665b295f90763383bc505",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/metal-v1.png",
-			"candidateByteSha256": "eda3cf74f69dd76dc21a178122c30b51a7ca07bb5725660445d7f8f386f98138"
 		},
 		{
 			"targetId": "affinity-workflow-v1-death-knight-normal",
@@ -152,19 +113,6 @@
 			"candidateByteSha256": "b052d6a821d808bfa75b4a551bb8b41ea5d3ab5bad9795d4f64e53ad687c5f09"
 		},
 		{
-			"targetId": "affinity-workflow-v1-death-knight-wood",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/death-knight/wood.json",
-			"targetCanonicalSha256": "5594f32e7d63e4be31a5976a6e3a4cd67b3ec00a9a32900c4812c40059162a77",
-			"assignmentId": "assignment-affinity-workflow-v1-death-knight-wood",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/death-knight/wood.json",
-			"assignmentCanonicalSha256": "e9951b85144aa0c8b8d44e123c1806b3ff4df4ea9f994861073b48faf62b58bc",
-			"resultId": "result-affinity-workflow-v1-death-knight-wood-v1",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/death-knight-wood-v1.json",
-			"resultCanonicalSha256": "1508ebf112cc6762b49563c0087c5a48b36cf4e078c4d07a34b2b40f695a69ac",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/death-knight/wood-v1.png",
-			"candidateByteSha256": "e6333d96611236a09efba50606a45732acd0561f456040c2e0693c44572e15f3"
-		},
-		{
 			"targetId": "affinity-workflow-v1-elemental-fire",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/elemental/fire.json",
 			"targetCanonicalSha256": "9fa36f82cde0374e0020c051611baaa99346cd83153edf3a8a480d5c615d6291",
@@ -176,19 +124,6 @@
 			"resultCanonicalSha256": "6dd540ec5b8bc33a728bcc714c2870bbccbbfc419be8c52e0f38cc9020ac5371",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/fire-v1.png",
 			"candidateByteSha256": "c10e8876e592e493559287364f3c1564e98488622098a796d11167bacd145b92"
-		},
-		{
-			"targetId": "affinity-workflow-v1-elemental-metal",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/elemental/metal.json",
-			"targetCanonicalSha256": "bc42ad734786aabc0cbad38934e1ea838e4454a6667cd19539307f82b9a79222",
-			"assignmentId": "assignment-affinity-workflow-v1-elemental-metal",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/elemental/metal.json",
-			"assignmentCanonicalSha256": "ca2d77c30e80ab3f2bf17f405cc7321f748b024dd103f9dadd52cc74d6a5c717",
-			"resultId": "result-affinity-workflow-v1-elemental-metal-v1",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/elemental-metal-v1.json",
-			"resultCanonicalSha256": "2e87916dd60a4958d4fba0990fc7cb264602ab3d74a2b30a496ec6b7d2f829a2",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/metal-v1.png",
-			"candidateByteSha256": "b026e5b7175c2631ea510e388b682261a6a1b5cdcdd5d99903b79926ada69a8e"
 		},
 		{
 			"targetId": "affinity-workflow-v1-elemental-normal",
@@ -230,19 +165,6 @@
 			"candidateByteSha256": "249ea5f61e16a64a9437eaaf01488b13ce6c10897799c511dc0e91d116a7d816"
 		},
 		{
-			"targetId": "affinity-workflow-v1-elemental-wood",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/elemental/wood.json",
-			"targetCanonicalSha256": "2c02bded7b96e10bf9da96b7e9f6a2ad354961c05ca8b8b45dcf80868ed56fb0",
-			"assignmentId": "assignment-affinity-workflow-v1-elemental-wood",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/elemental/wood.json",
-			"assignmentCanonicalSha256": "ed1a736d9937ecc327f1342eb84e483afe9d0223102bbf363348543a1915afd1",
-			"resultId": "result-affinity-workflow-v1-elemental-wood",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/elemental-wood-v1.json",
-			"resultCanonicalSha256": "a8c04e5dd8b1395a6bd91eab5c5af77f07d00a5ced96c365049a79f255108e3d",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/elemental/wood-v1.png",
-			"candidateByteSha256": "2c91e873016b001fc8b5d98a2e81171a45d7e064c17ff4ce7aadd0588cc0f90a"
-		},
-		{
 			"targetId": "affinity-workflow-v1-grey-wolf-fire",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/grey-wolf/fire.json",
 			"targetCanonicalSha256": "f2d45b1ae8adc633282f407a6cf83d435f92d1e2744ff101377ac9509071fc90",
@@ -254,19 +176,6 @@
 			"resultCanonicalSha256": "086581fcaae4ead548a2a6e0a132a02053dc5a41acc9cdb604af911352e154c1",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png",
 			"candidateByteSha256": "e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed"
-		},
-		{
-			"targetId": "affinity-workflow-v1-grey-wolf-metal",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/grey-wolf/metal.json",
-			"targetCanonicalSha256": "1ff0a4dd377e3051da359f0605579e9c25841d9276613fed962ba9a5e80f80d5",
-			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-metal",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/grey-wolf/metal.json",
-			"assignmentCanonicalSha256": "537a4d874c838a8b423d664acbaf90c7c600421f25f63a1daa57fd5d862c1625",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-metal",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/grey-wolf-metal-v1.json",
-			"resultCanonicalSha256": "5bf3e3fb0a035b1c970ee8d6791c3638ba94069062a703b9167bc34c3b37ee6c",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/metal-v1.png",
-			"candidateByteSha256": "e5304905956f98628df09fd950efc1fd2822bc059d76a50e49fba231e3ba2321"
 		},
 		{
 			"targetId": "affinity-workflow-v1-grey-wolf-normal",
@@ -306,19 +215,6 @@
 			"resultCanonicalSha256": "3b4e579578b5161b755854ed1e6c12d2aa16a10200abafff71cb9b28e1fb71a8",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
 			"candidateByteSha256": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
-		},
-		{
-			"targetId": "affinity-workflow-v1-grey-wolf-wood",
-			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/grey-wolf/wood.json",
-			"targetCanonicalSha256": "a7353d98de91a0d7a9c30cf2e891a8fcf1759482f51475dea8ff8f2dc8d39eac",
-			"assignmentId": "assignment-affinity-workflow-v1-grey-wolf-wood",
-			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/grey-wolf/wood.json",
-			"assignmentCanonicalSha256": "9dd86d234c120b48bac419bdfefae323a61e81b2f487dda8803c96cc16a7ab27",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-wood-v1",
-			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/grey-wolf-wood-v1.json",
-			"resultCanonicalSha256": "7b61cb8d7b824fb47af8440880a6022a50cf428b1cb35b89be8ccec59e3f7d5a",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wood-v1.png",
-			"candidateByteSha256": "fc6a9204ca613818fbbe5ced4ca7810060f15aa16ad79ecf48cdbe34a34dea35"
 		}
 	],
 	"aggregates": [

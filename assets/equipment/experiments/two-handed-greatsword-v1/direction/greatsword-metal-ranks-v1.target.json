@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-target-v1",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "campaignId": "two-handed-greatsword-v1",
+  "artifactRole": "direction-reference",
+  "visualFamilyId": "greatsword",
+  "mechanicalClass": "sword",
+  "orderedRanks": [
+    "F",
+    "E",
+    "D",
+    "C",
+    "B",
+    "A",
+    "S"
+  ],
+  "orderedMaterials": [
+    "bronze",
+    "iron",
+    "steel",
+    "blacksteel",
+    "skyiron",
+    "starmetal",
+    "sunsteel"
+  ],
+  "width": 1536,
+  "height": 1024,
+  "mediaType": "image/png",
+  "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+  "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.result.json",
+  "reviewGroup": "greatsword-rank-progression",
+  "acceptanceCriteria": [
+    "exactly seven complete Greatswords appear in F-to-S order",
+    "every weapon has an unmistakable two-hand grip and plausible greatsword construction",
+    "adjacent ranks differ through silhouette and construction rather than color alone",
+    "low ranks remain practical and high ranks escalate without becoming oversized slabs",
+    "camera, normalized footprint, backdrop, and lighting stay comparable",
+    "all silhouettes are readable at phone-thumbnail size",
+    "no text, labels, UI, watermark, wielder, extra object, crop, or unfinished region"
+  ]
+}

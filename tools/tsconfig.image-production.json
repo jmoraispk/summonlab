@@ -8,6 +8,8 @@
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
+		"family-affinity-production-lib.ts",
+		"family-affinity-production-lib.spec.ts",
 		"image-production-lib.ts",
 		"image-production-lib.spec.ts",
 		"persist-image-production-output.ts",

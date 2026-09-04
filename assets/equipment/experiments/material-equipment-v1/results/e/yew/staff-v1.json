@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-yew-staff-v1",
+	"targetId": "material-equipment-v1-yew-staff-v1",
+	"assignmentId": "assignment-material-equipment-v1-yew-staff-v1",
+	"status": "revise",
+	"promptSha256": "f43e5716ec59e86791864e0757b79481913395c2d2e541c33efb50f36b1516f1",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-yew-staff-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-output-exec-4358a3b7-52e0-4598-b694-93b3c774b0e4",
+			"requestStartedAt": "2026-09-02T14:57:31.000Z",
+			"generationCompletedAt": "2026-09-02T14:57:57.990Z",
+			"inspectionCompletedAt": "2026-09-02T14:58:54.223Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The whole staff is visible, but the upper fork and lower ferrule sit only about 3–5% from the canvas edges, violating the declared 8% safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one isolated staff is present; the bound hanging bead is a subordinate fitting attached to that single object, not separate gear."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long straight shaft, balanced hand-held proportions, and forked upper end read immediately as a full-length staff."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "The staff is a continuous wooden shaft with a naturally forked crown, practical wrapped grip, bound neck, and modest protective ferrule."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Yew-toned wood overwhelmingly dominates the shaft and fork; dark leather bindings and small fittings remain neutral and subordinate with no competing rank signal."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Tight flowing grain, warm reddish heartwood response, natural knots, and the branch-like fork establish worked yew wood through physical construction cues beyond palette."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "No supernatural emission or full-object glow is present; luminous values are confined to narrow reflected highlights and restrained rim light."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "The image uses a premium realistic painterly finish, honest wood and leather wear, cold blue key, restrained warm rim, charcoal backdrop, and grounded floor plane."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Inspection found no transferred subject, published-character resemblance, rarity rainbow, gold inflation, glow, oversized silhouette, ornamental material substitution, extra gear, text, labels, UI, border, frame, logo, or watermark."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/e/yew/staff-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1272608,
+		"sha256": "9a35390258a6a3d98fa573f93ad56d5f5bf1c278c5e53e2de22583c5ed562c79"
+	},
+	"candidateSha256": "9a35390258a6a3d98fa573f93ad56d5f5bf1c278c5e53e2de22583c5ed562c79",
+	"startedAt": "2026-09-02T14:57:31.000Z",
+	"completedAt": "2026-09-02T14:58:54.223Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/e/yew/staff-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/e/yew/staff-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

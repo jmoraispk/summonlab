@@ -1,0 +1,118 @@
+{
+	"schemaVersion": "equipment-image-target-v1",
+	"targetId": "material-equipment-v1-steel-axe-v1",
+	"productionId": "material-equipment-v1",
+	"profileId": "equipment-material-visual-profile-v1",
+	"manifestCanonicalSha256": "d4e161a4aeff46e60c1d1f64ce44448dcda270b86a1969dc7a08275eb1c4ff58",
+	"allocationCanonicalSha256": "40e7de30bfe26789fa8972de30b46fe87dcd44e360118f4901f7d80c8dafd869",
+	"profileCanonicalSha256": "f773bdaab246314d53a596c11404a9e242826838926ecb8121948b375c267d5a",
+	"profileAcceptanceCanonicalSha256": "1182d9f58de61cd3e88c79da212b2085aed6cf5e95e92ca958056bd05d3dee56",
+	"material": {
+		"id": "steel",
+		"name": "Steel",
+		"family": "metal",
+		"rank": "D",
+		"craftsmanship": "Standard"
+	},
+	"equipment": {
+		"class": "axe",
+		"artifactRole": "item",
+		"slot": null
+	},
+	"consistencySource": null,
+	"references": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d",
+			"purpose": "Use only for painterly finish, honest wear, material response, cold key with restrained warm rim, floor, and midnight-charcoal background. Do not transfer Remy, her body, clothing, hammer, or design."
+		}
+	],
+	"presentation": {
+		"mode": "isolated-item",
+		"subject": "one-complete-object-or-required-pair",
+		"composition": "neutral three-quarter view with the complete object or required pair entirely inside the safe margin",
+		"canvas": {
+			"width": 1024,
+			"height": 1024,
+			"mediaType": "image/png",
+			"safeMarginPercent": 8
+		},
+		"negativeConstraints": [
+			"no-subject-transfer",
+			"no-published-character-resemblance",
+			"no-rarity-rainbow",
+			"no-gold-inflation",
+			"no-full-object-glow",
+			"no-oversized-silhouettes",
+			"no-ornament-as-material-identity",
+			"no-extra-gear",
+			"no-text",
+			"no-labels",
+			"no-ui",
+			"no-borders",
+			"no-frames",
+			"no-logos",
+			"no-watermarks"
+		]
+	},
+	"acceptanceCriteria": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"category": "canvas-and-framing",
+			"description": "The complete subject remains visible inside the declared safe margin.",
+			"required": true
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"category": "object-count",
+			"description": "The image contains exactly the expected object, pair, or Armour components.",
+			"required": true
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"category": "equipment-silhouette",
+			"description": "The silhouette reads immediately as the declared Equipment class.",
+			"required": true
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"category": "structural-plausibility",
+			"description": "Construction, joins, fastenings, grip, coverage, and weight are plausible.",
+			"required": true
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"category": "material-dominance",
+			"description": "The declared material is dominant and supplies the only visible rank.",
+			"required": true
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"category": "material-cue-strength",
+			"description": "One or two physical construction cues establish material identity beyond palette.",
+			"required": true
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"category": "bounded-rank-behaviour",
+			"description": "Any supernatural material behaviour is bounded and does not become full-object glow.",
+			"required": true
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"category": "style-cohesion",
+			"description": "Finish, wear, lighting, background, and construction follow the accepted profile.",
+			"required": true
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"category": "negative-constraint-safety",
+			"description": "Every declared negative constraint is satisfied.",
+			"required": true
+		}
+	],
+	"output": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v1/candidates/d/steel/axe-v1.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v1/results/d/steel/axe-v1.json"
+	}
+}

@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-iron-shield-v2",
+	"targetId": "material-equipment-v2-iron-shield-v2",
+	"assignmentId": "assignment-material-equipment-v2-iron-shield-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "97ede6e12b742c3ff60d0c2de1bdcdbb7701b37768b02d631e6cbed1d5c2e1d1",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "shield-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/shield-v1.png",
+			"contentHash": "b3c53ca726dacb121c3b75c82957b3c7a5dcdd4dcf272e60d413ebcf2df1b018"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-iron-shield-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06436-421a-7ca0-8d39-92692af03201/exec-293e1005-d535-408a-bbd2-a1a291565465.png",
+			"requestStartedAt": "2026-09-02T22:22:18.944Z",
+			"generationCompletedAt": "2026-09-02T22:22:58.902Z",
+			"inspectionCompletedAt": "2026-09-02T22:23:35.803Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/e/iron/shield-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1723060,
+		"sha256": "2354f844271772b0f2dcb5af5e9ff30e7d2efa2ee048108580499ecb2fdf5f8c"
+	},
+	"candidateSha256": "2354f844271772b0f2dcb5af5e9ff30e7d2efa2ee048108580499ecb2fdf5f8c",
+	"startedAt": "2026-09-02T22:22:18.944Z",
+	"completedAt": "2026-09-02T22:23:35.803Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/e/iron/shield-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/e/iron/shield-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

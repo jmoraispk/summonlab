@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-drakescale-light-armour-full-set-v1",
+	"targetId": "material-equipment-v1-drakescale-light-armour-full-set-v1",
+	"assignmentId": "assignment-material-equipment-v1-drakescale-light-armour-full-set-v1",
+	"status": "revise",
+	"promptSha256": "bc234fa9027f08ec93d18e385334a6b93ba65db0749c0727bae9347b1fbf0548",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-drakescale-light-armour-full-set-v1-1",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen-exec-066f7c21-81a2-4c1b-ad60-54f43bd89d41",
+			"requestStartedAt": "2026-09-02T15:08:56.849Z",
+			"generationCompletedAt": "2026-09-02T15:10:20.762Z",
+			"inspectionCompletedAt": "2026-09-02T15:10:55.310Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "fail",
+			"observation": "The full display form is visible, but the helmet and boot soles extend inside the declared 8% vertical safe-margin exclusion zones."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "One complete set is shown with Head, Torso, Legs and Boots all distinctly readable together on one featureless display form."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "fail",
+			"observation": "The enclosed helmet, broad layered pauldrons, full arm coverage and rigid-looking greaves create a heavy-armour silhouette rather than mobile light armour."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Overlapping scales, leather-backed joints, belts, straps and articulated limb coverage form a plausible wearable construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Drakescale visibly dominates every set component and supplies the sole rank-bearing material; dark leather fastenings remain subordinate."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Dense overlapping reptilian scales and visibly worn scale edges establish drakescale beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The standard rank-B treatment uses controlled highlights without supernatural or full-object glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Realistic painterly finish, honest wear, cold key, restrained warm rim, floor plane and midnight-charcoal ground match the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "The display form is featureless and no transferred subject, published-character resemblance, weapon, extra gear, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornament-led identity, text, label, UI, border, frame, logo or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-full-set-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1536,
+		"bytes": 2416149,
+		"sha256": "fb4f57b6e95f869e8f42c4844d9c6da93f325f9e73d0c238305235a0a1547119"
+	},
+	"candidateSha256": "fb4f57b6e95f869e8f42c4844d9c6da93f325f9e73d0c238305235a0a1547119",
+	"startedAt": "2026-09-02T15:08:56.849Z",
+	"completedAt": "2026-09-02T15:10:55.310Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/drakescale/light-armour-full-set-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/drakescale/light-armour-full-set-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

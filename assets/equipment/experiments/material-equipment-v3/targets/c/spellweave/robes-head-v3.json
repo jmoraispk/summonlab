@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-spellweave-robes-head-v3",
+	"productionOrder": 89,
+	"rank": "C",
+	"materialId": "spellweave",
+	"materialName": "Spellweave",
+	"materialFamily": "cloth-fibre",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-spellweave.json",
+	"classId": "robes",
+	"classDirectionId": "equipment-v3-robes-rank-progression",
+	"artifactId": "robes-head",
+	"artifactRole": "armour-piece",
+	"slot": "head",
+	"setId": "spellweave-robes",
+	"dependsOnTargetId": "material-equipment-v3-spellweave-robes-full-set-v3",
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/c/spellweave/robes-head-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/c/spellweave/robes-head-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/c/spellweave/robes-head-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-head-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/c/spellweave/robes-head-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/c/spellweave/robes-head-v3.json"
+	}
+}

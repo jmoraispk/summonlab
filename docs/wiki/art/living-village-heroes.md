@@ -81,6 +81,9 @@ online presentation, then froze all six displayed identities as the complete Liv
 prototype roster. Broader procedural human generation remains future work and is not a parallel
 production lane for this milestone.
 
+The accepted [hero identity and evolution workflow](hero-identity-and-evolution.md) governs that
+future production lane. It does not expand or redesign this fixed prototype roster.
+
 ## Handoff boundary
 
 A hero visual worker returns candidate bytes and a manifest fragment only. One integration owner

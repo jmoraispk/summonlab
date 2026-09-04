@@ -1,5 +1,8 @@
 # Affinity grammar
 
+The v3 family profile supports exactly Normal, Fire, Earth, Wind, and Water. Wood and Metal below
+are legacy-only grammars for immutable v1/v2 targets.
+
 Affinity must change at least two meaningful dimensions among material, silhouette, motion,
 anatomy, equipment, attack telegraph, environmental wake, and counterplay. Color alone never
 qualifies.
@@ -37,6 +40,12 @@ structure. Reject shapeless blue blobs and generic blue glow.
 
 Use directional fur or cloth, vapor channels, debris flow, pressure distortion, and a clearly
 legible force direction. Reject pale recolors, transparency alone, and directionless particles.
+
+## Earth
+
+Use load-bearing stone, compacted soil, sediment layers, fracture seams, crystal or mineral growth,
+and grounded mass while preserving the declared anatomy and duty. Reject a brown recolor, generic
+rock armor pasted over unchanged anatomy, or weight that erases the target's movement language.
 
 ## Construction modes
 

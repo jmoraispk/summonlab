@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-sunsteel-sword-v3-attempt-2",
+	"targetId": "material-equipment-v3-sunsteel-sword-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-sunsteel-sword-v3-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T14:18:25.627Z",
+	"completedAt": "2026-09-03T14:21:57.508Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "0c3caf094b4d3ba9181a38eca65e4457d4826adcb04331ec0081b224bf0c302d",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+			"sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+			"purpose": "Rank escalation, silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/sword-v3.png",
+			"sha256": "7adbaf9daffdc48a9ffd803b2e831b8eed34f9877a919c25f4fa24ab3980c190",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a05d9f-98a4-7632-b46c-592ff8d726ac/exec-00a22daa-ce75-499a-bd78-dc4acfed3964.png",
+		"sha256": "943b647a7196c8ffc3cc6382a0f792c4daab721210d326db55e1023576603691",
+		"bytes": 1719762,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-sword-v3/attempt-2/candidate.png",
+		"sha256": "c0e8138d5af24742c5f4a7f81116aed13e21ee4a50fde79179e082048e7e5606",
+		"bytes": 1443105,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

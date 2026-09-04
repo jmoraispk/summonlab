@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 142,
+	"previousEventCanonicalSha256": "6fc94a1514bd60ecec64914e4abc955d465e80274664d50c10dcccc6038fd7fe",
+	"recordedAt": "2026-09-02T15:06:26.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-blacksteel-shield-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:06:25.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-blacksteel-shield-v1",
+		"workerId": "equipment-worker-108",
+		"status": "candidate",
+		"resultCanonicalSha256": "1987c0e6f61d242f74b00f2e84fe73d0fa8cc8f424e04e44948adb7d17a974fd",
+		"failureKind": null
+	}
+}

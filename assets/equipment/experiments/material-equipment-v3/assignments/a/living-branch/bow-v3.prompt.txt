@@ -1,0 +1,16 @@
+Render one dedicated Living Branch Bow, rank A, as a new individual image—not a crop from a progression sheet.
+
+CLASS DIRECTION: Two wood-led limbs, central grip, and one clearly readable string. Single strung bow upright with a slight rightward diagonal; entire string and both tips visible. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Living Branch:
+Palette: Rich bark brown, fresh green-gold cambium, and small emerald leaf accents.
+Value: Deep natural body with bright living seams.
+Surface/wear: Supple bark, polished exposed grain, healed cuts, tiny fresh buds, no dead splintering.
+Construction: Actively grown curves, entwined branches, leaflike tips, root-grip structures, seamless living joints.
+Supernatural behavior: Selected buds and cambium lines emit a faint green-gold vitality; growth remains bounded.
+Neutral secondary materials: Gold-bronze caps, dark leather, natural cord, and muted green cloth.
+Neighbor distinction: Lusher, more alive, and more dynamically grown than Spiritwood; smaller and less primordial than Worldtree Limb.
+
+
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.

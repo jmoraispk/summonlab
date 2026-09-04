@@ -4,31 +4,33 @@ Wiki ID: `mechanics.equipment.rarity-weight`
 
 Design status: **draft**.
 
-## Material band plus craftsmanship
+Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
+final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
+penalties, and the property table below remain explicit design work rather than active mechanics.
 
-Material rarity and item rarity are related but not identical. A material sets the band an item is
-likely to land in. The smith's craftsmanship moves it within and beyond that band.
+## Material rank plus craftsmanship
 
-| Craft quality | Result | Driven by |
-| --- | --- | --- |
-| **Crude** | One tier *below* the material band | Low Forging mastery, poor fuel, improvised tools |
-| **Standard** | The material band | Ordinary competent work |
-| **Fine** | One tier above | High Forging mastery, Tempering, good fuel |
-| **Masterwork** | Two tiers above | Master-tier Forging, high Dexterity, Master's Mark, excellent tools |
+A material supplies the item's base rank. The item design and material each contribute difficulty;
+together they set the Forging level required to make that combination. The smith's Forging level
+relative to that difficulty determines craftsmanship.
 
-A masterwork copper blade is described in the source as genuinely Uncommon, and an exceptional one
-as able to reach Rare. A crude steel blade is merely Uncommon. This is why a settlement with a
-great smith and poor mines can still outfit a party well, and why raw material access is not the
-whole story.
+| Forging result | Craftsmanship | Rank effect |
+| --- | --- | ---: |
+| Below the combined difficulty | Cannot craft successfully | — |
+| Meets the combined difficulty | **Standard** | `+0` |
+| Clearly exceeds the combined difficulty | **Fine** | `+1` |
+| Greatly exceeds the combined difficulty | **Masterwork** | `+2` |
 
-The stated ceiling is material band plus two, capped at S. Copper tops out at Rare no matter who
-forges it. Reaching Legendary requires both Legendary-adjacent material and Godsmithing.
+```text
+final item rank = material rank + craftsmanship bonus, capped at S
+```
 
-Once forged, the item's rarity is fixed forever. Nothing raises it.
+An Iron item begins at E: Standard remains E, Fine becomes D, and Masterwork becomes C. A Fine
+Starmetal item rises from A to S. An S-rank material cannot create a rank above S; excess
+craftsmanship instead improves its S-rank benefits within the eventual benefit table.
 
-> Draft conflict: the table's Masterwork `+2` rule would make F-band Copper into D-band Rare, not
-> Uncommon. “Exceptional” is not one of the four listed craft qualities. This needs an explicit
-> correction before implementation.
+Once made, the item's final rank is fixed. Enchantment and later use may add or change properties,
+but they do not recalculate rank.
 
 ## What each rarity band grants
 
@@ -52,10 +54,10 @@ supported by Vitality in the source draft.
 
 | Class | Typical wearer | Penalty if over tolerance |
 | --- | --- | --- |
-| **Light** | Dagger, Bow, Body-compatible unarmed equipment, casters | Rarely an issue |
-| **Medium** | Sword, Spear, Crossbow, Shield | Movement and evasion loss |
-| **Heavy** | Greatsword, Halberd, Polehammer, Tower Shield | Movement, evasion, attack speed and initiative loss |
-| **Very Heavy** | Bulwark builds only | Severe penalties across all Agility-driven stats |
+| **Light** | Dagger, Robes, Accessory | Rarely an issue |
+| **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | Movement and evasion loss |
+| **Heavy** | Two-handed Sword, Axe, Mace, or Heavy Armour | Movement, evasion, attack speed and initiative loss |
+| **Very Heavy** | Exceptional named Equipment only | Severe penalties across all Agility-driven stats |
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
 which is one of the main reasons a roster wants a good armoursmith.
@@ -67,4 +69,5 @@ which is one of the main reasons a roster wants a good armoursmith.
 - Define whether weight is per item, total loadout, carried inventory, or some combination.
 - Define exact tolerance, penalty curves, stacking, and how Weightless Craft affects reservations
   and visuals.
-- Define the exact meaning of `F+`, `E+`, and the other minimum-band notation.
+- Define the shared item-difficulty and material-difficulty scales, the Forging margins for Fine and
+  Masterwork, and the bounded benefit improvement for craftsmanship beyond S.

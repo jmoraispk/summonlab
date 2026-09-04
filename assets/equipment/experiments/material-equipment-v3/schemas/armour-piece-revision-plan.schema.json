@@ -1,0 +1,79 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-armour-piece-revision-plan-v3"
+		},
+		"revisionPlanId": {
+			"type": "string",
+			"pattern": "^equipment-v3-armour-piece-revisions-v[1-9][0-9]*$"
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time",
+			"pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+		},
+		"createdBy": {
+			"type": "string",
+			"minLength": 1
+		},
+		"reviewBasis": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+			}
+		},
+		"revisions": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"targetId": {
+						"type": "string",
+						"pattern": "^material-equipment-v3-[a-z0-9-]+-v3$"
+					},
+					"attempt": {
+						"type": "integer",
+						"minimum": 2,
+						"maximum": 9007199254740991
+					},
+					"classification": {
+						"type": "string",
+						"enum": [
+							"class-rule-violation",
+							"rank-silhouette-collision",
+							"material-expression-drift"
+						]
+					},
+					"correction": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": [
+					"targetId",
+					"attempt",
+					"classification",
+					"correction"
+				],
+				"additionalProperties": false
+			}
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"revisionPlanId",
+		"createdAt",
+		"createdBy",
+		"reviewBasis",
+		"revisions"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/armour-piece-revision-plan.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

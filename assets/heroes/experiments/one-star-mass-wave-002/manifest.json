@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "hero-one-star-mass-wave-v2",
+  "experimentId": "one-star-mass-wave-002",
+  "status": "candidate-review-only",
+  "createdAt": "2026-09-02",
+  "purpose": "Review four wave-001 survivors and twelve completely new painted one-star identities as summon/chibi pairs, with strict body-proportion continuity.",
+  "candidateBoundary": "Nothing in this experiment is approved or runtime-ready. A Keep decision means worth developing, not catalog promotion.",
+  "supersedesForReview": "one-star-mass-wave-001",
+  "inputReviewEvidence": "review-evidence/one-star-mass-wave-001-decisions.json",
+  "postReviewEvidence": {
+    "decisions": "review-evidence/one-star-mass-wave-002-decisions.json",
+    "ownerNotes": "review-evidence/owner-notes-2026-09-02.md"
+  },
+  "batchRules": {
+    "count": 16,
+    "nativeStars": 1,
+    "summonable": true,
+    "weaponless": true,
+    "waveOneSurvivors": 4,
+    "newIdentities": 12,
+    "renderingRegister": "cinematic semi-realistic painted character drawing; visibly illustrated, never photographic",
+    "identityFreedoms": [
+      "body type",
+      "proportions",
+      "wardrobe",
+      "hairstyle",
+      "jewelry",
+      "tattoos",
+      "piercings"
+    ],
+    "combatDerivative": "approximately three-head chibi; cuteness comes from head and simplification, never generic body or arm inflation",
+    "reviewPresentation": "pair-only"
+  },
+  "acceptedCarryForward": {
+    "unchangedPairs": ["ochre-braid", "nera-voss"],
+    "correctedChibi": ["oren-dae"],
+    "correctedSummon": ["zuri-pell"]
+  },
+  "knownIssues": [
+    "The image generator baked a white-and-light-gray checkerboard into the chibi RGB pixels instead of returning an alpha channel.",
+    "Chibi transparency cleanup and canvas normalization happen only after selection; these files remain valid identity and body-match candidates."
+  ],
+  "targets": [
+    {
+      "id": "ochre-braid",
+      "name": "Ochre Braid",
+      "cohort": "wave-001-survivor-unchanged",
+      "signature": "Monumental side braid, shaved temple mark, ochre wrap layers, hoops and brass bracelets",
+      "summon": "summon/ochre-braid.png",
+      "summonSha256": "42b39d1d6932403bdb24b7ad10977ee5421f28460ccbddc25b2d491fa680cf78",
+      "chibi": "combat-chibi/ochre-braid.png",
+      "chibiSha256": "95ec84b875f90579613aa73bf641413d35572cad8439e9cb1b00a3552b5a2949"
+    },
+    {
+      "id": "nera-voss",
+      "name": "Nera Voss",
+      "cohort": "wave-001-survivor-unchanged",
+      "signature": "Broad older silhouette, silver curls, red shortcoat, plaid shoulder cloth and forearm ink",
+      "summon": "summon/nera-voss.png",
+      "summonSha256": "33b0911580a49427daae5a82c2eea724c54574cf7f87b1e304a9509c24a866b1",
+      "chibi": "combat-chibi/nera-voss.png",
+      "chibiSha256": "77909608aeecbefe45ef96d09cc2b581bcb2dde4136257467ade85cb71cad188"
+    },
+    {
+      "id": "oren-dae",
+      "name": "Oren Dae",
+      "cohort": "wave-001-survivor-chibi-corrected",
+      "signature": "Tall slight build, high twists, ivory long vest, wood pendant and deliberately narrow arms",
+      "summon": "summon/oren-dae.png",
+      "summonSha256": "d4263a2af1cb2f0d91908ec55b8a9a0ad19cbb104af24d236da7b5dbf38e0f37",
+      "chibi": "combat-chibi/oren-dae.png",
+      "chibiSha256": "14ab76996ab838a2b7edfe88c54a01bba38ab07ee933ec0c66dff1b875121e0c"
+    },
+    {
+      "id": "zuri-pell",
+      "name": "Zuri Pell",
+      "cohort": "wave-001-survivor-summon-corrected",
+      "signature": "Very tall lean fighter, asymmetric microbraids, ivory cutwork vest, ear chain and tattoo language",
+      "summon": "summon/zuri-pell.png",
+      "summonSha256": "736d3ddc21cc238e5db320783f4ff8544cfe20d242a177c698cdd01fe420a63e",
+      "chibi": "combat-chibi/zuri-pell.png",
+      "chibiSha256": "63c8792d87cebf60505d920e2c4a89717f6a74f75f6d30b164720aea1a2e0700"
+    },
+    {
+      "id": "kaya-serr",
+      "name": "Kaya Serr",
+      "cohort": "new-painted-identity",
+      "signature": "Very tall bodybuilder mass, braided crown, shaved geometry, moss sleeveless coat and bold arm bands",
+      "summon": "summon/kaya-serr.png",
+      "summonSha256": "0553a0f9fc036355797cf32e82486bff95aacaa863fb608980bc2dbfa4892617",
+      "chibi": "combat-chibi/kaya-serr.png",
+      "chibiSha256": "4995ba776ec7b408589a6991e681a4830b81a901bdebc34c37b6dc927076bf8b"
+    },
+    {
+      "id": "daro-miri",
+      "name": "Daro Miri",
+      "cohort": "new-painted-identity",
+      "signature": "Short slight elder, silver pageboy, burnt-orange scholar wrap, reading lenses and inked fingers",
+      "summon": "summon/daro-miri.png",
+      "summonSha256": "816c0720d2ca1ac17cf858a29342510556200e0e8d5baab2e377fc61b7dc1aa0",
+      "chibi": "combat-chibi/daro-miri.png",
+      "chibiSha256": "ece2906cdc44c7a2fcfd2c1174b602222fa47cb64a6819704df4af2fa2e1deb2"
+    },
+    {
+      "id": "senna-vale",
+      "name": "Senna Vale",
+      "cohort": "new-painted-identity",
+      "signature": "Very tall plus-size silhouette, enormous crimson curl halo, plum scalloped coat and moon jewelry",
+      "summon": "summon/senna-vale.png",
+      "summonSha256": "ab6a7b152c043e147b12819d8ddc9801bccb13000467c9e4898c867113e263ac",
+      "chibi": "combat-chibi/senna-vale.png",
+      "chibiSha256": "bbc79912594eb9f1419d8d8cb76d6e2239d8a0938ff8932eb9e08e25b3f2675c"
+    },
+    {
+      "id": "kes-aro",
+      "name": "Kes Aro",
+      "cohort": "new-painted-identity",
+      "signature": "Wiry long-limbed build, extreme high topknot, cropped charcoal layers, rings and hand ink",
+      "summon": "summon/kes-aro.png",
+      "summonSha256": "1bfcf22bab776dc4b65b1f6a7a5496e3204a9a89f2544e7d67092565fe31fdc2",
+      "chibi": "combat-chibi/kes-aro.png",
+      "chibiSha256": "32b1042e06f3733b0c812a53533428531f337484dbd122abb4bdd5e5af83ad52"
+    },
+    {
+      "id": "hana-vey",
+      "name": "Hana Vey",
+      "cohort": "new-painted-identity",
+      "signature": "Compact runner build, sharp black bob with copper streak, teal wrap and botanical forearm tattoo",
+      "summon": "summon/hana-vey.png",
+      "summonSha256": "42029e77f9c0405b3da61e34c1faa8136d87bbfb2aa5eb26f9d786703a947ed3",
+      "chibi": "combat-chibi/hana-vey.png",
+      "chibiSha256": "e4112d91d0757511702b8a09d930965e9a987235479f59131c907e0879b6beec"
+    },
+    {
+      "id": "rem-orin",
+      "name": "Rem Orin",
+      "cohort": "new-painted-identity",
+      "signature": "Heavy older barrel torso, forked white moustache, quilted blue robe, rings and knuckle ink",
+      "summon": "summon/rem-orin.png",
+      "summonSha256": "baae55a19873dd471931cdf7846667c6ef02063b6d03eca411b328fde00b5b3d",
+      "chibi": "combat-chibi/rem-orin.png",
+      "chibiSha256": "f0e3a557ac64ef2b5daaea7e1aaf7517a71aa1af39d4672742e9e1f4b7d277af"
+    },
+    {
+      "id": "sal-terek",
+      "name": "Sal Terek",
+      "cohort": "new-painted-identity",
+      "signature": "Exceptionally tall lean silhouette, waist-length loc ponytail, oxblood longcoat and fine gold harness",
+      "summon": "summon/sal-terek.png",
+      "summonSha256": "fc4ae33efebc2e1ef0e372885a509b0808dee6feb7c6bd7fc8b6e81a50715b23",
+      "chibi": "combat-chibi/sal-terek.png",
+      "chibiSha256": "bd5430529b2484bcb3142bba8e7da20c5a191fa3f1457a6f831c5fec7ea5975b"
+    },
+    {
+      "id": "bea-nahl",
+      "name": "Bea Nahl",
+      "cohort": "new-painted-identity",
+      "signature": "Very short and extremely muscular, asymmetric close curls, cream-indigo mantle and dense arm tattoos",
+      "summon": "summon/bea-nahl.png",
+      "summonSha256": "dc546fe6cf9919072079cbf7ff16229525fc74b885a6387d64262d117b6ed8fb",
+      "chibi": "combat-chibi/bea-nahl.png",
+      "chibiSha256": "785232c703c7cd628d3b6ceeb99fbaf08bd9fe7c9f97ba876ba9e60ab3a86bfa"
+    },
+    {
+      "id": "niko-resh",
+      "name": "Niko Resh",
+      "cohort": "new-painted-identity",
+      "signature": "Lanky narrow frame, copper-red shoulder braid, lilac patchwork, large hands and ear cuffs",
+      "summon": "summon/niko-resh.png",
+      "summonSha256": "c5f4dbc826c68425dc84364145c07da6006bf2600897093d80dd19166d707ba4",
+      "chibi": "combat-chibi/niko-resh.png",
+      "chibiSha256": "f8c3df9ebd0a068ef8a9c2637a93a4ed77475a355f5106e6d58d7352313acac8"
+    },
+    {
+      "id": "mira-kest",
+      "name": "Mira Kest",
+      "cohort": "new-painted-identity",
+      "signature": "Curvy soft-waisted build, sculptural braided bun, terracotta workdress and sternum tattoo",
+      "summon": "summon/mira-kest.png",
+      "summonSha256": "e7052c43b8b9596732b79db766ce2e983a6cc79ca36e4b580384a87ebe7c0f85",
+      "chibi": "combat-chibi/mira-kest.png",
+      "chibiSha256": "c14366db2c605a7680fe691729f534c102d00c717f9ddb61cec7783d991873d8"
+    },
+    {
+      "id": "tor-venn",
+      "name": "Tor Venn",
+      "cohort": "new-painted-identity",
+      "signature": "Extremely tall gangly elder, cloud-white hair, scarf coat, large earrings and constellation hand tattoos",
+      "summon": "summon/tor-venn.png",
+      "summonSha256": "34d1ef6314c6089381ea7a856924d770db9d24e71c3d41e004c507ed2c51537d",
+      "chibi": "combat-chibi/tor-venn.png",
+      "chibiSha256": "77795edb9a42a6b45510917b5e6de59c02732aabfd292d3d034ddb01a2bc1b1a"
+    },
+    {
+      "id": "ilya-sorel",
+      "name": "Ilya Sorel",
+      "cohort": "new-painted-identity",
+      "signature": "Compact sturdy frame, long black hair with hidden undercut, marigold-green workdress and tattoo cuffs",
+      "summon": "summon/ilya-sorel.png",
+      "summonSha256": "376660b9fd932bac7bdac4ad4434b54c66d11293f62e1e8e02407176cfba7286",
+      "chibi": "combat-chibi/ilya-sorel.png",
+      "chibiSha256": "3c10103a97736f04d45f51f56c70ea52551d4f8dd9e3c99a9e6682d0efab13bb"
+    }
+  ],
+  "reviewPage": "review/index.html",
+  "provenance": "provenance/prompts.json",
+  "validator": "validate.py"
+}

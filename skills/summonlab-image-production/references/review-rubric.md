@@ -3,6 +3,11 @@
 Inspect the full-resolution image before retaining it. Record each dimension as `pass`, `concern`,
 or `fail` with a concise observation.
 
+For the v3 family profile, evaluate the target's eight repository-authored acceptance criteria and
+return observations in the job handoff. Persist none of those observations in the strict compact
+result. The producer can retain only candidate-only evidence and cannot issue review or blind-review
+receipts.
+
 ## Dimensions
 
 1. `canvasCompletion`: the entire canvas is rendered; no blank band, unpainted region, or abrupt

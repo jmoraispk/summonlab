@@ -1,0 +1,57 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3-attempt-2",
+	"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/s/ancient-dragon-scale/light-armour-torso-v3.json",
+		"canonicalSha256": "d493ede4d62592fc2deea60926f2f6a355e8fe5abc86a6daa5a0ab6761ccfe0c"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-ancient-dragon-scale.json",
+		"canonicalSha256": "f9c92dceb09e54e9182ff542d24b4d403cdeb09a0ec4622724f121df2db8ee2a"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-torso-v3.png",
+		"sha256": "3e90be70980cfd6f84e46899eb4b856177934def5e6ff1f5f4ef00a3f7c7e1fa",
+		"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-full-set-v3.png",
+			"sha256": "83b6a6ec1854808eec44159678dc8bc0b1f10335dbca19072b08518d317f47a9",
+			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-torso-v3.png",
+			"sha256": "3e90be70980cfd6f84e46899eb4b856177934def5e6ff1f5f4ef00a3f7c7e1fa",
+			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"classification": "class-rule-violation",
+	"correction": "Render exactly one connected Ancient Dragon Scale Torso garment. Remove the separately displayed lower-body, waist, or Legs item; retain only torso-connected edging or short skirt panels that are physically part of the single chest garment.",
+	"prompt": "Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the S column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Ancient Dragon Scale:\nPalette: Obsidian dragon scales, molten gold fissures, ancient crimson undertones, and ivory horn accents.\nValue: Apex dark mass with brilliant controlled scale rims and fissures.\nSurface/wear: Colossal time-worn scales, glass-hard ridges, legendary battle scars, perfectly fitted ancient overlaps.\nConstruction: Monumental draconic plating, crownlike crests, horn-bound contours, grand interlocking scale architecture.\nSupernatural behavior: Ancient inner fire glows through a few deep fissures; no flames, smoke, or creature body.\nNeutral secondary materials: Black leather, sunsteel fittings, charcoal lining, and ivory horn only.\nNeighbor distinction: Older, larger, more monumental, and more mythic than Wyrmscale; unmistakably true dragon material.\n\nOne isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.\n\nREVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.\n\nCorrect this exact audited issue: Render exactly one connected Ancient Dragon Scale Torso garment. Remove the separately displayed lower-body, waist, or Legs item; retain only torso-connected edging or short skirt panels that are physically part of the single chest garment.\n\nThe owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "2c299308f3611fcd58b6b6ee81fe601aa071b22f4a628131053892570f7e5806",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass Armour-piece candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"change another Armour slot or the owner-accepted full-set source",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

@@ -82,6 +82,26 @@ reference for this boundary. It names the source owners, import directions, focu
 consumer seams; the registries remain the executable authority for exact command and event
 discriminators.
 
+### Equipment runtime integration
+
+Engine-v24 adds definition-backed Equipment without changing v1–v23 state or replay contracts. The
+authoritative split is:
+
+```text
+approved PNG sources (161: 140 items + 21 set references)
+  → Equipment-only lazy runtime manifest (140 bundles / 280 WebPs)
+  → equipment-content-v1 (140 legal material/form definitions)
+  → shared item factory
+      ├─ Standard workshop Forging from one normalized material lot
+      └─ bounded authored mission drop
+  → company inventory and six-slot loadout
+```
+
+Candidate art, approved masters, runtime derivatives, definitions, and item instances remain
+separate states. The 21 full Armour-set images are visual continuity evidence, not inventory items.
+Fine/Masterwork resolution, complete Gathering, broad random loot, and monster-derived Equipment
+remain outside engine-v24.
+
 ## Bounded contexts
 
 | Context | Owns | Publishes | Must not own |
@@ -100,7 +120,7 @@ discriminators.
 | Summoning | channels, odds, pity/anomaly, draw and creation receipt | new hero identity reference | Premium ledger, visual rendering |
 | Synthesis | irreversible transaction, source valuation, output choice and receipt | lifecycle and typed grant request | Memory/personality transfer |
 | Reward orchestration | reward definitions, eligibility, cadence, repeat rules, and claim request | typed reward claims and engagement projection | Balances, progression mutation, or narrative outcomes |
-| Economy | resources, gems, items, atomic reserve/debit/credit/grant receipts | ledger projection | Odds, narrative, hero valuation |
+| Economy | resources, gems, definition-backed items, material lots, atomic reserve/debit/credit/grant receipts | ledger and equipment projection | Odds, narrative, hero valuation |
 | Destinations | known signals, persistent routes, neighbor relations, vehicle travel state | destination capabilities and itinerary | Neighbor's internal aggregate |
 | Presentation | audience-specific UI/art/audio projections | render state | Canonical mutation |
 

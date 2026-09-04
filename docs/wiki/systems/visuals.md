@@ -21,11 +21,11 @@ required views. The
 [monster gallery](../art/monster-gallery.md) contains current candidates; candidate images are not
 automatically approved runtime assets.
 
-The [monster database](../creatures/monsters/README.md) is the individual production/review surface:
-one page per authored monster, with the identity reference first and the Normal plus Fire, Earth,
-Wind, and Water production target beneath it. Wood and Metal images remain separately labeled
-legacy-candidate evidence. The checked export converts candidate PNGs into compact web derivatives
-while retaining source paths, hashes, versions, and review status.
+The [monster database](../creatures/monsters/README.md) is the canonical production-planning surface:
+one page per T1–T5 form, with family grammar, combat reading, and exact Normal, Fire, Earth, Wind,
+and Water ownership coordinates. The checked export validates the 30/150/750 matrix and keeps the
+earlier forty-class image evidence in a separate candidate-only reconciliation. Planned paths are
+not rendered as images, and no candidate is treated as approved or runtime art.
 
 ## Deferred breadth
 

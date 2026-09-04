@@ -1,0 +1,126 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "05876a23ce1a3917406e4c757bdd810ff83c05d04461e8b25ad9fe3cc2273e96",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Zelan Jorel: 28-year-old man, 163 cm (short), sturdy stocky construction with a broad frame and compact proportions, skin value band-6-deepest. Face: heart-shaped face; asymmetric brows and broad cheek planes; prominent bridge, compact mouth; faint freckles. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: black, braids-twists-locs, deliberate accent: rings on three strands. Wardrobe: layered-wrap, specifically overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; visible hand repairs and contrasting inner edges; bounded palette marigold-green. Visible personal details: no accessory and no tattoo. Make repair, patina, customization, or a keepsake the primary recognition device. Maintenance cue: deliberately tousled but clean. Color treatment: uses the palette boldly in large blocks. Pose cue: one shoulder leads subtly and the gaze meets the viewer without a smile. Include a small empty medicine pouch only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "zelan-jorel",
+  "heroSpec": {
+    "details": {
+      "anchors": [],
+      "coolnessAnchor": "repairs-patina-keepsake",
+      "density": 0,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "rings on three strands",
+      "chibiReadability": "Preserve the front and side silhouette of braids-twists-locs, the parting, gathered mass, shaved areas, and rings on three strands; color remains black.",
+      "colorFamily": "black",
+      "silhouetteFamily": "braids-twists-locs"
+    },
+    "identity": {
+      "age": 28,
+      "displayName": "Zelan Jorel",
+      "faceDescription": "heart-shaped face; asymmetric brows and broad cheek planes; prominent bridge, compact mouth; faint freckles",
+      "gender": "man",
+      "identitySignature": "ac0f02270ce9b5892a0d10f7a70f498c2777c1fe1c8944ebee9e7955595d1240",
+      "skinValueBand": 6
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses the palette boldly in large blocks; avoids ornament unless it serves a fastening purpose.",
+      "counterTrait": "cannot resist correcting a crooked seam",
+      "culturalFragments": [
+        "keeps tiny bells muted with thread",
+        "gives bright thread as a promise of return"
+      ],
+      "dominantTrait": "quietly audacious",
+      "groomingAttitude": "deliberately tousled but clean",
+      "lifeEcho": "textile work",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one shoulder leads subtly and the gaze meets the viewer without a smile",
+      "socialPresentation": "open and attentive",
+      "tension": "Appears open and attentive, yet cannot resist correcting a crooked seam."
+    },
+    "physique": {
+      "bodyType": "sturdy-stocky",
+      "description": "163 cm; sturdy stocky construction with a broad frame and compact proportions.",
+      "heightBand": "short"
+    },
+    "wardrobe": {
+      "condition": "deliberately tousled but clean",
+      "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; visible hand repairs and contrasting inner edges.",
+      "family": "layered-wrap",
+      "paletteFamily": "marigold-green"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/zelan-jorel/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/results/zelan-jorel/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "zelan-jorel-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-02"
+}

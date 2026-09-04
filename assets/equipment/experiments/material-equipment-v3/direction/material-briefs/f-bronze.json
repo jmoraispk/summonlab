@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "bronze",
+	"displayName": "Bronze",
+	"family": "metal",
+	"rank": "F",
+	"palette": "Warm ochre-brown metal with muted gold edges and dark umber recesses.",
+	"valueRange": "Middle-dark overall; restrained highlights, no mirror polish.",
+	"surfaceAndWear": "Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.",
+	"constructionVocabulary": "Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.",
+	"supernaturalBehavior": "None.",
+	"neutralSecondaryMaterials": "Dark brown wood, plain leather, charcoal cloth, and dull iron only.",
+	"neighborDifference": "Warmer, rougher, and more plainly cast than Iron; never reads as polished gold.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json"
+}

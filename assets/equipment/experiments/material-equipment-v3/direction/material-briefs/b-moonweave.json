@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "moonweave",
+	"displayName": "Moonweave",
+	"family": "cloth-fibre",
+	"rank": "B",
+	"palette": "Midnight blue, cool silver, smoky lavender, and moon-pale trim.",
+	"valueRange": "Deep nocturnal folds with soft silver highlights.",
+	"surfaceAndWear": "Silky matte weave that catches cool light, clean floating hems, fine crescent stitching.",
+	"constructionVocabulary": "Long layered drape, crescent arcs, asymmetric mantle, narrow silver-bound edges.",
+	"supernaturalBehavior": "Subtle moonlit shimmer moves only across folds facing the key light.",
+	"neutralSecondaryMaterials": "Silver clasps, black leather, charcoal lining, and dark cord.",
+	"neighborDifference": "Softer, more ethereal, and more nocturnal than Spellweave; less radiant and cosmic than Starcloth.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/b-moonweave.json"
+}

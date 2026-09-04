@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "living-branch",
+	"displayName": "Living Branch",
+	"family": "wood",
+	"rank": "A",
+	"palette": "Rich bark brown, fresh green-gold cambium, and small emerald leaf accents.",
+	"valueRange": "Deep natural body with bright living seams.",
+	"surfaceAndWear": "Supple bark, polished exposed grain, healed cuts, tiny fresh buds, no dead splintering.",
+	"constructionVocabulary": "Actively grown curves, entwined branches, leaflike tips, root-grip structures, seamless living joints.",
+	"supernaturalBehavior": "Selected buds and cambium lines emit a faint green-gold vitality; growth remains bounded.",
+	"neutralSecondaryMaterials": "Gold-bronze caps, dark leather, natural cord, and muted green cloth.",
+	"neighborDifference": "Lusher, more alive, and more dynamically grown than Spiritwood; smaller and less primordial than Worldtree Limb.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-living-branch.json"
+}

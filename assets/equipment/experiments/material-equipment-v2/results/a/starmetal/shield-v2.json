@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-starmetal-shield-v2",
+	"targetId": "material-equipment-v2-starmetal-shield-v2",
+	"assignmentId": "assignment-material-equipment-v2-starmetal-shield-v2",
+	"status": "candidate",
+	"humanReviewLabel": "Pass",
+	"promptSha256": "8850db3b409b3b6c3083ed068326a310d364c2ae04278f1ff900086ed5bacd81",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "shield-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/f/copper/shield-v1.png",
+			"contentHash": "b3c53ca726dacb121c3b75c82957b3c7a5dcdd4dcf272e60d413ebcf2df1b018"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-starmetal-shield-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "imagegen:exec-fbdecdb3-7102-4d9e-83e5-1056d11d51ef",
+			"requestStartedAt": "2026-09-02T22:31:15.000Z",
+			"generationCompletedAt": "2026-09-02T22:31:33.829Z",
+			"inspectionCompletedAt": "2026-09-02T22:32:33.737Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/shield-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1637231,
+		"sha256": "f36c3d19c214a7f6bc9ae3d9a4a7346b4540ae8a26636b772d712b5d56c1093d"
+	},
+	"candidateSha256": "f36c3d19c214a7f6bc9ae3d9a4a7346b4540ae8a26636b772d712b5d56c1093d",
+	"startedAt": "2026-09-02T22:31:15.000Z",
+	"completedAt": "2026-09-02T22:32:33.737Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/a/starmetal/shield-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/a/starmetal/shield-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

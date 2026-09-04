@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-starmetal-mace-v3-attempt-2",
+	"targetId": "material-equipment-v3-starmetal-mace-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/a/starmetal/mace-v3.json",
+		"canonicalSha256": "e8323b5310b43075964492d30da9e706cdc7475fb5e559e8a41fa3132b3026d2"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/a-starmetal.json",
+		"canonicalSha256": "f90b43dd1466e962b19b250e763e3e86620612eec35f53d1c08006917be57e9b"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/mace-v3.png",
+		"sha256": "4d8614a654202a20931c0e160f532d468b15b56daa788c7555eeecb7454a2c95",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/mace-metal-ranks-v1.png",
+			"sha256": "b8e12d3b64ec7ac4515ef067b87dad09c5b51b02a1f5d6a1fb13f1c425389359",
+			"purpose": "Rank escalation, proportions, silhouette variety, and finish."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/mace-v3.png",
+			"sha256": "4d8614a654202a20931c0e160f532d468b15b56daa788c7555eeecb7454a2c95",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Give the Starmetal mace a distinctive angular star-flanged striking head and authored A-rank proportions, visibly different from the slim Skyiron mace while preserving mace recognition and controlled starlit detail.",
+	"prompt": "Render one dedicated Starmetal Mace, rank A, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Weighted striking head on a practical haft, shorter than a sword but not stubby. Single mace upright on the haft end with a slight rightward diagonal; full practical length visible. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Starmetal:\nPalette: Deep blue-silver, near-black cosmic facets, and sparse white-gold star points.\nValue: Strong dark-to-bright contrast controlled along facets and edges.\nSurface/wear: Flawless faceted alloy, meteor-like grain, razor-clean edges, almost no mundane corrosion.\nConstruction: Extraordinary tapered geometry, orbit-like negative spaces, fine celestial inlay, precise floating impression while connected.\nSupernatural behavior: Sparse star-point glints and a faint depth within dark facets; never a full aura.\nNeutral secondary materials: Black leather, dark hardwood, silver, and charcoal textile.\nNeighbor distinction: More cosmic, faceted, and extraordinary than Skyiron; colder and less solar than Sunsteel.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Give the Starmetal mace a distinctive angular star-flanged striking head and authored A-rank proportions, visibly different from the slim Skyiron mace while preserving mace recognition and controlled starlit detail.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "561308a8d42fd56ab58ca0ac1c20e9628aaef3263c3a8d7d3a29bd7f78a116d6",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-mace-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

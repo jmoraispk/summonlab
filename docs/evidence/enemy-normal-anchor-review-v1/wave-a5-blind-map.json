@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v1",
+  "waveId": "a5",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map.",
+  "entries": [
+    {
+      "token": "A5-01",
+      "coordinateId": "werebeasts/werebeast-primal-beast-king/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/werebeasts/werebeast-primal-beast-king/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/werebeasts/werebeast-primal-beast-king/normal-v1.png",
+      "candidateSha256": "d39fe6fb593bca0a6a0689e52bc229047fa5b6cc221c84851410dcb35405426e"
+    },
+    {
+      "token": "A5-02",
+      "coordinateId": "treants/treant-oakheart/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/treants/treant-oakheart/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v1.png",
+      "candidateSha256": "45dc66893c85f49c3cba33746949248c5e64ad3aad554b72c11570d6f62ed52e"
+    },
+    {
+      "token": "A5-03",
+      "coordinateId": "elementals/elemental-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/normal/target-v2.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/normal-v2.png",
+      "candidateSha256": "16812f8a4dfcd831fa6a2dcaf9fca9add611d6bfb27a69b0f639bb617f2d2d3b"
+    },
+    {
+      "token": "A5-04",
+      "coordinateId": "werebeasts/werebeast-werebeast/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/werebeasts/werebeast-werebeast/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/werebeasts/werebeast-werebeast/normal-v1.png",
+      "candidateSha256": "838d346efdb80a6f2c63ba4debded988b2c8735becc1e35bbbb8950c67da539e"
+    },
+    {
+      "token": "A5-05",
+      "coordinateId": "treants/treant-world-tree-warden/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/treants/treant-world-tree-warden/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png",
+      "candidateSha256": "3c11d970a8f378001c111ef5810d36371cc9e4e0ae36e47043c663c081848263"
+    },
+    {
+      "token": "A5-06",
+      "coordinateId": "fungalfolk/fungalfolk-mycelial-sovereign/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fungalfolk/fungalfolk-mycelial-sovereign/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fungalfolk/fungalfolk-mycelial-sovereign/normal-v1.png",
+      "candidateSha256": "d44f4c8cf0555a37e1a0623f31d6859763b22de249bd66c3540c03752b0f2abf"
+    },
+    {
+      "token": "A5-07",
+      "coordinateId": "fungalfolk/fungalfolk-sporeguard/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fungalfolk/fungalfolk-sporeguard/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fungalfolk/fungalfolk-sporeguard/normal-v1.png",
+      "candidateSha256": "01ef752ac1d0f43dd061a2002e8af69ce5a5e2b1ec65fe3416f26bc1b27a7ea1"
+    },
+    {
+      "token": "A5-08",
+      "coordinateId": "deep-ones/deep-one-leviathan-lord/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/deep-ones/deep-one-leviathan-lord/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-leviathan-lord/normal-v1.png",
+      "candidateSha256": "8364c3abac5d05b0a5924e961d8ed785e4070be3abb3ed9ac037d4b47409372c"
+    },
+    {
+      "token": "A5-09",
+      "coordinateId": "elementals/elemental-warden/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-warden/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-warden/normal-v1.png",
+      "candidateSha256": "f5debeacfa39f3aeda897ef5469040014cdb9455d4924a1cbd98d48b6a90a458"
+    },
+    {
+      "token": "A5-10",
+      "coordinateId": "deep-ones/deep-one-abyssal-hunter/normal",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/deep-ones/deep-one-abyssal-hunter/normal/target-v1.json",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-abyssal-hunter/normal-v1.png",
+      "candidateSha256": "b0a3b9b064f095f52a0480a07710cf23b688b1568b32a11136546da7caed3dd6"
+    }
+  ]
+}

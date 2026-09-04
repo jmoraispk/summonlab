@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "equipment-production-terminal-journal-v2",
+	"journalEntryId": "terminal-material-equipment-v2-ash-bow-v2",
+	"runId": "material-equipment-v2-run-001",
+	"targetId": "material-equipment-v2-ash-bow-v2",
+	"recordedAt": "2026-09-02T22:23:53.666Z",
+	"recordedBy": "root-orchestrator",
+	"terminalStatus": "candidate",
+	"runPlan": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json",
+		"canonicalSha256": "40f174c589881af351603cd891050ceae12c10570b59e0c578e173132ba6d7ed"
+	},
+	"activation": {
+		"path": "assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json",
+		"canonicalSha256": "2449314342ee499a7c818637efe75dc5430e8bd28568c9e25a898d71b60d45d0",
+		"activationId": "material-equipment-v2-run-001-activation"
+	},
+	"target": {
+		"path": "assets/equipment/experiments/material-equipment-v2/targets/f/ash/bow-v2.json",
+		"canonicalSha256": "8e6c2e54742e641926042cc1c9ed18802e6cb17350ffd925d0b36f81867527b0"
+	},
+	"assignment": {
+		"path": "assets/equipment/experiments/material-equipment-v2/assignments/f/ash/bow-v2.json",
+		"canonicalSha256": "82bee17304965e0312c56db0e2ed8ae4058b2194552b43733b6f6228d890507d"
+	},
+	"result": {
+		"path": "assets/equipment/experiments/material-equipment-v2/results/f/ash/bow-v2.json",
+		"canonicalSha256": "192e7ca6820df8fd3cc1a285a44860f7f5b71097f7ab0e833b0e996340df6a35",
+		"candidateSha256": "0026bec04644b68a63586c14e13c2ceeb70d839592397bc8b18d4b02f9e6b0bb"
+	}
+}

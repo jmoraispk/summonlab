@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "equipment-material-brief-v3",
+	"materialId": "chitin",
+	"displayName": "Chitin",
+	"family": "hide-scale",
+	"rank": "C",
+	"palette": "Obsidian brown, muted violet-black, bone edges, and dark red joint traces.",
+	"valueRange": "Dark glossy ridges over matte recessed membranes.",
+	"surfaceAndWear": "Hard segmented shell, ribbed growth lines, chipped tips, polished raised plates.",
+	"constructionVocabulary": "Interlocking carapace plates, asymmetric biological curves, hooked overlaps, flexible dark joints.",
+	"supernaturalBehavior": "None beyond an uncanny grown precision.",
+	"neutralSecondaryMaterials": "Black leather, dark textile, steel pins, and bone toggles.",
+	"neighborDifference": "Harder, stranger, and more sculptural than Beast Scale; less draconic and luminous than Drakescale.",
+	"briefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/c-chitin.json"
+}

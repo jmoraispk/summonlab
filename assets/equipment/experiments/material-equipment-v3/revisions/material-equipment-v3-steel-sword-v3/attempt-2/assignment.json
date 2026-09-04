@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-steel-sword-v3-attempt-2",
+	"targetId": "material-equipment-v3-steel-sword-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/d/steel/sword-v3.json",
+		"canonicalSha256": "94c19628104130ed94fe9a698f8420a8609922851015f87460ff6b22ed19c638"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-steel.json",
+		"canonicalSha256": "0fc0e22fff89bd0f12d7e1967dd59549b5e136321af3d0a5d6d5039c0597e2d1"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/sword-v3.png",
+		"sha256": "b8f4efefe661c4397196be86b3c035c67d684cccfad3dc2619d3ece89dbb1be6",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+			"sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+			"purpose": "Rank escalation, silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/sword-v3.png",
+			"sha256": "b8f4efefe661c4397196be86b3c035c67d684cccfad3dc2619d3ece89dbb1be6",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "rank-silhouette-collision",
+	"correction": "Make the Steel sword a refined hand-and-a-half longsword with a longer blade, a clearly shaped fuller, and a more authored guard than the Iron sword. It must remain practical D-rank steel, not magical.",
+	"prompt": "Render one dedicated Steel Sword, rank D, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: Long cutting blade and usable one- or two-hand grip. Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Steel:\nPalette: Neutral silver-gray steel with cool blue-gray shadows and darkened fittings.\nValue: Broad mid-to-bright metal range with disciplined highlights.\nSurface/wear: Even forged finish, fine grind lines, polished contact edges, and restrained battle wear.\nConstruction: Refined tapers, fitted sockets, crisp fullers, articulated plates, clean rivet rhythm.\nSupernatural behavior: None.\nNeutral secondary materials: Blackened iron, dark leather, hardwood, and charcoal cloth.\nNeighbor distinction: Cleaner and structurally more refined than Iron; brighter and less ominous than Blacksteel.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Make the Steel sword a refined hand-and-a-half longsword with a longer blade, a clearly shaped fuller, and a more authored guard than the Iron sword. It must remain practical D-rank steel, not magical.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "a4492a1a385cb6c09135dd3c29ee64b7e267e88c7de711c2f8a07193dd68b85d",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-sword-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

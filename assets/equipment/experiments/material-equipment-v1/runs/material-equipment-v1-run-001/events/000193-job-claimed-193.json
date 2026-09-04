@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 193,
+	"previousEventCanonicalSha256": "bbfdbca226b693bf57dd53622a48039e81ddf786d26fd1063a2348b50ffc04ca",
+	"recordedAt": "2026-09-02T15:10:33.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-193",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:10:32.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-sunsteel-spear-v1-193",
+		"targetId": "material-equipment-v1-sunsteel-spear-v1",
+		"workerId": "equipment-worker-193"
+	}
+}

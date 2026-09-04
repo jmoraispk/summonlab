@@ -1,5 +1,4 @@
 import {
-	EngineGameStateSchema,
 	LegalActionSchema,
 	type EngineGameState,
 	type EngineGameStateV3,
@@ -23,10 +22,12 @@ import {
 	type EngineGameStateV21,
 	type EngineGameStateV22,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type LegalAction
 } from '@summonlab/contracts';
 
 import { settlementForState } from '../../core/content-bindings.js';
+import { parseGameState } from '../../core/state.js';
 import type { EngineGameStateModern } from '../../core/types.js';
 import {
 	hasFirstEmberState,
@@ -42,6 +43,12 @@ import {
 } from './navigation.js';
 import { currentRoutineFor, gameDayIndex, resolveDailyRoutine } from './routines.js';
 import { heroCanHearCommunication } from './society.js';
+import { equipmentItemDisplayName } from './equipment.js';
+import {
+	availableStandardForgeDefinitions,
+	currentForgingFor,
+	heroHasForgePermission
+} from './forging.js';
 
 export function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalAction {
 	return LegalActionSchema.parse(input);
@@ -69,7 +76,8 @@ export function settlementTravelActions(
 		| EngineGameStateV20
 		| EngineGameStateV21
 		| EngineGameStateV22
-		| EngineGameStateV23,
+		| EngineGameStateV23
+		| EngineGameStateV24,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -114,6 +122,7 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 	if (!hero || hero.lifeState !== 'active') return [];
 	if (currentTravelFor(state, actorId)) return [];
 	if (hero.destination === null) {
+		if (hasNavigationState(state) && state.heroes[actorId]?.firstArrivalCompleted) return [];
 		return [
 			action({
 				actionId: 'hero.choose.kitchen',
@@ -169,7 +178,8 @@ function masterSettlementActions(
 			(hero) =>
 				hero.currentActivity ||
 				currentTravelFor(state, hero.heroId) ||
-				currentRoutineFor(state, hero.heroId)
+				currentRoutineFor(state, hero.heroId) ||
+				currentForgingFor(state, hero.heroId)
 		) ||
 		((state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
@@ -445,10 +455,33 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 		hero.lifeState !== 'active' ||
 		hero.currentActivity ||
 		currentTravelFor(state, actorId) ||
-		currentRoutineFor(state, actorId)
+		currentRoutineFor(state, actorId) ||
+		currentForgingFor(state, actorId)
 	)
 		return [];
 	const actions: LegalAction[] = [];
+	if (state.schemaVersion === 24 && heroHasForgePermission(state, actorId)) {
+		for (const definition of availableStandardForgeDefinitions(state, actorId)) {
+			actions.push(
+				action({
+					actionId: `hero.forge.${definition.definitionId}`,
+					actorId,
+					kind: 'work',
+					label: `Forge ${definition.displayName}`,
+					description: `Consume one ${definition.materialId} lot and complete one Standard item after 60 game minutes.`,
+					targetIds: [],
+					resourceCosts: { [definition.materialId]: 1 },
+					tags: [
+						'forging',
+						'equipment',
+						'standard',
+						definition.materialId,
+						definition.equipmentClass
+					]
+				})
+			);
+		}
+	}
 	if (hasRoutineState(state)) {
 		const heroV5 = state.heroes[actorId];
 		if (!heroV5) return [];
@@ -542,7 +575,7 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 				actionId: 'hero.activity.repair',
 				actorId,
 				kind: 'work',
-				label: `Repair ${equipped.displayName}`,
+				label: `Repair ${equipmentItemDisplayName(equipped)}`,
 				description: 'Reserve one iron ore and restore durability after 20 game minutes.',
 				targetIds: [equipped.itemId],
 				resourceCosts: { 'iron-ore': 1 },
@@ -561,7 +594,7 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 					actionId: `hero.equip.${item.itemId}`,
 					actorId,
 					kind: 'interact',
-					label: `Equip ${item.displayName}`,
+					label: `Equip ${equipmentItemDisplayName(item)}`,
 					description: 'Change the authoritative main-hand equipment slot.',
 					targetIds: [item.itemId],
 					resourceCosts: {},
@@ -591,7 +624,7 @@ export function settlementLegalActions(
 	stateInput: EngineGameState,
 	actorId: string
 ): LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
+	const state = parseGameState(stateInput);
 	if (state.status !== 'active') return [];
 	if (actorId === state.master.masterId) {
 		if (state.master.lifeState !== 'alive') return [];

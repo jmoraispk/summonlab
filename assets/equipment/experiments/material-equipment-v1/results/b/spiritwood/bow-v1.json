@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "equipment-image-result-v1",
+	"resultId": "result-material-equipment-v1-spiritwood-bow-v1",
+	"targetId": "material-equipment-v1-spiritwood-bow-v1",
+	"assignmentId": "assignment-material-equipment-v1-spiritwood-bow-v1",
+	"status": "candidate",
+	"promptSha256": "ee27630f8f96c2e8a50afc629eb03074a6fad432a7cb075366852838fb98fe35",
+	"referenceInputs": [
+		{
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v1-spiritwood-bow-v1",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06296-b294-7ba1-ac25-7c4219c3b026/exec-c95fa907-cb6e-4a26-a8e3-8902bd617afa.png",
+			"requestStartedAt": "2026-09-02T15:06:31.916Z",
+			"generationCompletedAt": "2026-09-02T15:07:17.129Z",
+			"inspectionCompletedAt": "2026-09-02T15:07:37.317Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "complete-canvas-safe-framing",
+			"outcome": "pass",
+			"observation": "Both recurved limb tips, the full string path, central grip, and lower nock remain completely visible with clear dark ground inside the declared safe margin."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Exactly one complete strung bow is present, with no arrow, quiver, duplicate bow, or detached component."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "The long paired curved limbs, recurved tips, central hand grip, and taut chord read immediately as a practical bow."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Continuous tapered wooden limbs, reinforced central grip, wrapped tip bindings, defined nocks, and an attached bowstring present plausible load-bearing construction."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Spiritwood visibly dominates both limbs and the riser; subordinate dark leather and fiber bindings are limited to grip and reinforcement and introduce no second rank cue."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Deep longitudinal grain follows the bent limbs while darker knots and fine living turquoise channels track the wood fibers, establishing spiritwood beyond palette alone."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "The supernatural cue is confined to thin turquoise channels within the grain; the bow, string, and surrounding ground do not glow."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Premium realistic painterly rendering, rubbed wood and binding wear, cold key light, restrained warm rim, midnight-charcoal background, and subtle floor plane follow the accepted profile."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "No person or transferred subject, published-character resemblance, rarity rainbow, gold inflation, full-object glow, oversized silhouette, ornamental material substitute, extra gear, text, labels, UI, border, frame, logo, or watermark is visible."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/bow-v1.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1223147,
+		"sha256": "af7fff506a39c9a5fc00a4b944b413ef7a766470358eb4b3692c78b6f9f8443a"
+	},
+	"candidateSha256": "af7fff506a39c9a5fc00a4b944b413ef7a766470358eb4b3692c78b6f9f8443a",
+	"startedAt": "2026-09-02T15:06:31.916Z",
+	"completedAt": "2026-09-02T15:07:54.213Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v1/candidates/b/spiritwood/bow-v1.png",
+		"assets/equipment/experiments/material-equipment-v1/results/b/spiritwood/bow-v1.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

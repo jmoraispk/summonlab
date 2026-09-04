@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 34,
+	"previousEventCanonicalSha256": "8728eb8c83d2c94b407a3b0b504f194937979d6b08a07284d13f7344ca1484c9",
+	"recordedAt": "2026-09-02T14:52:49.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "terminal-copper-mace-v1",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T14:52:48.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-terminal",
+		"targetId": "material-equipment-v1-copper-mace-v1",
+		"workerId": "equipment-worker-6",
+		"status": "candidate",
+		"resultCanonicalSha256": "41661f08451ae8fdf2ead27742abbd15a4615c074e5874cdd647e8fd70d87f2d",
+		"failureKind": null
+	}
+}

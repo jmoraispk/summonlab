@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "equipment-rank-first-revision-assignment-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-bronze-axe-v3-attempt-2",
+	"targetId": "material-equipment-v3-bronze-axe-v3",
+	"attempt": 2,
+	"immutable": true,
+	"baseAssignment": {
+		"path": "assets/equipment/experiments/material-equipment-v3/assignments/f/bronze/axe-v3.json",
+		"canonicalSha256": "a65fc4d6af9f12b092052d7959e82afa5826764cdcfdad4902b4bd27e3c83118"
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-bronze.json",
+		"canonicalSha256": "3273ff91a587a59528daf0485b6a882cd2f741de50425216388dedb883110363"
+	},
+	"revisionSource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/axe-v3.png",
+		"sha256": "4b20276ef6431b2a3ef6322b2f51b5996f6d424303d51d0258459035ce97faca",
+		"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+	},
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",
+			"sha256": "b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd",
+			"purpose": "Rank escalation, single-bit silhouette variety, finish, and class recognition."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/axe-v3.png",
+			"sha256": "4b20276ef6431b2a3ef6322b2f51b5996f6d424303d51d0258459035ce97faca",
+			"purpose": "First-pass candidate retained as immutable evidence; correct only the stated audit issue."
+		}
+	],
+	"classification": "class-rule-violation",
+	"correction": "Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest.",
+	"prompt": "Render one dedicated Bronze Axe, rank F, as a new individual image—not a crop from a progression sheet.\n\nCLASS DIRECTION: One dominant cutting bit on a practical haft. Single axe upright on the haft end with a slight rightward diagonal; standard single-bit variant. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Bronze:\nPalette: Warm ochre-brown metal with muted gold edges and dark umber recesses.\nValue: Middle-dark overall; restrained highlights, no mirror polish.\nSurface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.\nConstruction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.\nSupernatural behavior: None.\nNeutral secondary materials: Dark brown wood, plain leather, charcoal cloth, and dull iron only.\nNeighbor distinction: Warmer, rougher, and more plainly cast than Iron; never reads as polished gold.\n\n\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nREVISION PASS 2. The attached first-pass candidate is immutable evidence, not an output template. Preserve its successful material identity, finish, framing, pose, and class recognition while correcting this exact audited issue: Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest.\n\nReturn one new dedicated candidate only. Do not make unrelated redesigns, add extra objects, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "ecaa8762b44af38af9d69313cc20a696c3275934e4e6426d5bb297208ceae8c9",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/result.json"
+	},
+	"forbiddenActions": [
+		"overwrite the first-pass candidate or result",
+		"write outside the attempt-scoped Equipment v3 revision directory",
+		"promote a candidate to approved or runtime state",
+		"edit shared catalogs, engine contracts, or another visual domain"
+	]
+}

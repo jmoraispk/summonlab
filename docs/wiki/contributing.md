@@ -73,9 +73,9 @@ review boundary.
 
 For monster-affinity work, the visual worker updates only its assigned target, candidate, and result
 paths. After branches are integrated, the coordinator runs `pnpm export:wiki-monsters`. That checked
-export selects the strongest recorded version for each affinity, preserves candidate/revision
-status, refreshes web derivatives and `visual-index.json`, registers new individual pages, and never
-overwrites an existing monster page's authored notes.
+export reads the validated family packets, current-class mapping, and active manifest; regenerates
+the canonical form pages and `visual-index.json`; preserves old pixels only as candidate-only
+reconciliation references; and never promotes a candidate or mutates a runtime catalog.
 
 For a creature image, the page supplies anatomy, scale, material, movement, habitat, affinity cues,
 combat duty, comparison references, prohibited shortcuts, and required camera views. The image may

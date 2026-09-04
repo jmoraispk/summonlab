@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-08",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "valan-ivera",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/valan-ivera/summon-v1.json",
+      "selectedResultSha256": "e861c950c76d31ceabeff2736a85707e21215b975b2d37b68ed62f019bc2bcab",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output"],
+      "evidence": "The provider returned a nonconforming 1023x1537 raster. Exact-byte provenance forbids normalization, so no candidate was retained."
+    },
+    {
+      "heroId": "joron-keshen",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/joron-keshen/summon-v1.json",
+      "selectedResultSha256": "8168375b4a5132bf443c4a29be3b306977daa4d92b188e0adad77e7266b4a3c3",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output"],
+      "evidence": "The single provider call exposed no bindable output path; no candidate could be retained under exact-source provenance."
+    },
+    {
+      "heroId": "nelor-halar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/nelor-halar/summon-v1.json",
+      "selectedResultSha256": "fed78ed0db21f66709198557aaf2fd9f325cb1dfab6c646238e3f3c67014db52",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output"],
+      "evidence": "The provider returned 1023x1537 rather than 1024x1536. No candidate was retained."
+    },
+    {
+      "heroId": "loris-iverin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/loris-iverin/combat-chibi-v2.json",
+      "selectedResultSha256": "5271293c5a4e30650c0400737478db4c911aac44d5b18e936ca0272e12d14cd0",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "The source-bound v2 retained an undeclared earlobe stud below the authorized cartilage cuff. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "meiis-zharun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/meiis-zharun/summon-v2.json",
+      "selectedResultSha256": "38a0e93ba04c9bf38dfcf97d835032ff2204751e9da1f1b565b06dba3ea9b289",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 retained tattoo coverage across most of the upper arm rather than the declared bounded placement. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "adyn-veshar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/adyn-veshar/combat-chibi-v1.json",
+      "selectedResultSha256": "392ddf27dda03419bb5d27511ff64403c511e812a1c21a1e9b6a385708ac082b",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "The initial chibi became juvenile, omitted the notebook, and measured outside the frozen ratio band. Multiple blockers make it ineligible for correction."
+    },
+    {
+      "heroId": "peryn-amarin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/peryn-amarin/summon-v2.json",
+      "selectedResultSha256": "6620eb2e5a21f1686770dd8a13770f74d9d124610d9cefcbb23b63a494d84022",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 retained undeclared ear hardware. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "brinyn-zhara",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/brinyn-zhara/combat-chibi-v1.json",
+      "selectedResultSha256": "a4762032aad7ca419a2231b401f92bb9394395d5ad036f1ea0094de01edb08d7",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "chibi-ratio"],
+      "evidence": "The initial chibi omitted the declared recipe leaf and measured outside the frozen ratio band. Multiple blockers make it ineligible for correction."
+    },
+    {
+      "heroId": "orin-resheth",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/orin-resheth/combat-chibi-v1.json",
+      "selectedResultSha256": "892ca165a4f21bd4a6f027e492a2c3bcdad94121e3fa02d053aec6421918f98d",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "body-continuity"],
+      "evidence": "The initial chibi replaced the mature source identity and changed the source-relative body construction. Multiple blockers make it ineligible for correction."
+    },
+    {
+      "heroId": "talia-pellai",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/talia-pellai/combat-chibi-v1.json",
+      "selectedResultSha256": "c29400be45e15fad8809c96d58e641ccc9556c5253dd48af1a58c78520ff1cf5",
+      "verdict": "fail",
+      "blockingCriteria": ["body-continuity", "arm-hand-continuity"],
+      "evidence": "The initial chibi inflated the source-relative body and hands. Multiple blockers make it ineligible for correction."
+    },
+    {
+      "heroId": "lanyn-jorun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/lanyn-jorun/combat-chibi-v1.json",
+      "selectedResultSha256": "40cb52cd787ab8060718da0eba29fc38d25111396b48723ec6d3fabad9e3fbb7",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "arm-hand-continuity", "chibi-ratio"],
+      "evidence": "The initial chibi became juvenile, enlarged a hand, and measured below the frozen ratio band. Multiple blockers make it ineligible for correction."
+    },
+    {
+      "heroId": "ianu-keshi",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/ianu-keshi/combat-chibi-v2.json",
+      "selectedResultSha256": "e83bc1a6098bb4e445b64c32ba8e1e000e5bd5316693d3fa2da1a81df59a61cc",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "The source-bound v2 overcorrected to approximately 36.7-37%, above the frozen maximum. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "lorin-quorar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/lorin-quorar/combat-chibi-v2.json",
+      "selectedResultSha256": "94d4482ab4e94c3bf5970b3bffaaf4372d75bf659ea933b34f822a38f610de84",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "The source-bound v2 no longer retained the accepted folded indigo handkerchief. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "lanel-zhari",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/lanel-zhari/combat-chibi-v1.json",
+      "selectedResultSha256": "96bb4a110cac5be2abb242b2ae8f45bd866a917ef3a44c9bc39175d3aab7b9e9",
+      "verdict": "fail",
+      "blockingCriteria": ["hair-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution inspection found undeclared temple stripes, three rings instead of two, and approximately 38-39% head-plus-hair height. Multiple blockers require replacement."
+    },
+    {
+      "heroId": "brinel-grelun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/brinel-grelun/combat-chibi-v1.json",
+      "selectedResultSha256": "4eb44db3a2c4822c45684cae2d7411e533bf7f72b06737ecd96bf329d99b3a84",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "chibi-ratio"],
+      "evidence": "The chibi omitted the wooden thread gauge and measured approximately 43.1% head-plus-hair height. Multiple blockers require replacement."
+    },
+    {
+      "heroId": "talar-orin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/talar-orin/combat-chibi-v1.json",
+      "selectedResultSha256": "850cea586916b9c59dad6ae6e83a45fec34db6bf305c00a78241a207249c1024",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "chibi-ratio"],
+      "evidence": "The chibi rendered four hair rings instead of exactly three and measured approximately 31-32%, not clearly inside the frozen band. Multiple blockers require replacement."
+    },
+    {
+      "heroId": "cali-wyror",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/cali-wyror/summon-v2.json",
+      "selectedResultSha256": "9e87fc87269921c55dceefd58379a84d460ce69dd01d94b345f3739d0577f5d2",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 correction retained the undeclared hoop earring. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "valu-wyreth",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/valu-wyreth/combat-chibi-v2.json",
+      "selectedResultSha256": "e9b643054f968f859da1ace5c20a6df05ae0d7638320a5e3dc870fbd914aab24",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "The source-bound v2 ratio correction remained approximately 39%, above the frozen 36% maximum. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "brinel-keshun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/brinel-keshun/summon-v2.json",
+      "selectedResultSha256": "2c2d8b60e6d2edc93aea2358856eb0fe8a0b2b515f775f7af247153e760a2ff1",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 correction reduced the tattoo but left it lateral below the ear rather than on the posterior nape. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "ulu-pellun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/results/ulu-pellun/combat-chibi-v2.json",
+      "selectedResultSha256": "594de708b821660470e589c71ba6f24578d84ff6756cafa60725b8727e835d06",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "chibi-ratio"],
+      "evidence": "The source-bound v2 retained a juvenile glossy-eyed face and shifted the ratio to the upper boundary rather than clearly interior. The exhausted correction remains ineligible."
+    }
+  ]
+}

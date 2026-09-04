@@ -1,0 +1,179 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"schemaVersion": {
+			"type": "string",
+			"const": "equipment-rank-first-revision-assignment-v3"
+		},
+		"assignmentId": {
+			"type": "string",
+			"pattern": "^revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*$"
+		},
+		"targetId": {
+			"type": "string",
+			"pattern": "^material-equipment-v3-[a-z0-9-]+-v3$"
+		},
+		"attempt": {
+			"type": "integer",
+			"minimum": 2,
+			"maximum": 9007199254740991
+		},
+		"immutable": {
+			"type": "boolean",
+			"const": true
+		},
+		"baseAssignment": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"canonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"canonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"materialBrief": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"canonicalSha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				}
+			},
+			"required": [
+				"path",
+				"canonicalSha256"
+			],
+			"additionalProperties": false
+		},
+		"revisionSource": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"sha256": {
+					"type": "string",
+					"pattern": "^[a-f0-9]{64}$"
+				},
+				"purpose": {
+					"type": "string",
+					"minLength": 1
+				}
+			},
+			"required": [
+				"path",
+				"sha256",
+				"purpose"
+			],
+			"additionalProperties": false
+		},
+		"references": {
+			"minItems": 3,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"path": {
+						"type": "string",
+						"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+					},
+					"sha256": {
+						"type": "string",
+						"pattern": "^[a-f0-9]{64}$"
+					},
+					"purpose": {
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": [
+					"path",
+					"sha256",
+					"purpose"
+				],
+				"additionalProperties": false
+			}
+		},
+		"classification": {
+			"type": "string",
+			"enum": [
+				"class-rule-violation",
+				"rank-silhouette-collision",
+				"material-expression-drift"
+			]
+		},
+		"correction": {
+			"type": "string",
+			"minLength": 1
+		},
+		"prompt": {
+			"type": "string",
+			"minLength": 1
+		},
+		"promptSha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$"
+		},
+		"permittedOutputs": {
+			"type": "object",
+			"properties": {
+				"candidatePath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				},
+				"resultPath": {
+					"type": "string",
+					"pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[a-zA-Z0-9._/-]+$"
+				}
+			},
+			"required": [
+				"candidatePath",
+				"resultPath"
+			],
+			"additionalProperties": false
+		},
+		"forbiddenActions": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "string",
+				"minLength": 1
+			}
+		}
+	},
+	"required": [
+		"schemaVersion",
+		"assignmentId",
+		"targetId",
+		"attempt",
+		"immutable",
+		"baseAssignment",
+		"materialBrief",
+		"revisionSource",
+		"references",
+		"classification",
+		"correction",
+		"prompt",
+		"promptSha256",
+		"permittedOutputs",
+		"forbiddenActions"
+	],
+	"additionalProperties": false,
+	"$id": "https://summonlab.local/schemas/equipment/v3/revision-assignment.schema.json",
+	"$comment": "Structural interchange validation only; semantic validation uses the corresponding Zod schema."
+}

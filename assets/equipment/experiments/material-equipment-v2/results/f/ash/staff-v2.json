@@ -1,0 +1,100 @@
+{
+	"schemaVersion": "equipment-image-result-v2",
+	"resultId": "result-material-equipment-v2-ash-staff-v2",
+	"targetId": "material-equipment-v2-ash-staff-v2",
+	"assignmentId": "assignment-material-equipment-v2-ash-staff-v2",
+	"status": "revise",
+	"humanReviewLabel": "Check",
+	"promptSha256": "9083832024c372e1315d66f0ebe5838acf4358198caf5f6c496f17bbf7030da0",
+	"referenceInputs": [
+		{
+			"referenceId": "remy-finish-style",
+			"path": "assets/heroes/visuals/forge-v2/benchmarks/remy-esen-equipped-v1.png",
+			"contentHash": "9c726ad578a6a6d8ed510a7e7117443ce471e553d233b36a8c20afedddd1040d"
+		},
+		{
+			"referenceId": "staff-pose",
+			"path": "assets/equipment/experiments/material-equipment-v1/candidates/c/heartwood/staff-v1.png",
+			"contentHash": "ed773449d4adac0b87531c9ed1c5d4f62e3a03518becb3a7e56137be2ca81fab"
+		}
+	],
+	"attempts": [
+		{
+			"attemptId": "attempt-material-equipment-v2-ash-staff-v2",
+			"attemptNumber": 1,
+			"sourceOutputId": "/home/joao/.codex/generated_images/01a06434-0012-7273-9bb6-24bad1433ba2/exec-a5b999a2-2a3e-4c91-9b91-9a687aaf0b9f.png",
+			"requestStartedAt": "2026-09-02T22:19:37.011Z",
+			"generationCompletedAt": "2026-09-02T22:20:15.509Z",
+			"inspectionCompletedAt": "2026-09-02T22:21:22.099Z"
+		}
+	],
+	"findings": [
+		{
+			"criterionId": "v2-framing",
+			"outcome": "concern",
+			"observation": "Producer inspection found a concern requiring human review."
+		},
+		{
+			"criterionId": "expected-object-component-count",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "equipment-class-silhouette",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "class-pose-lock",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "structural-plausibility",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "rank-bearing-material-dominance",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "material-cue-strength",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "bounded-rank-behaviour",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "profile-style-cohesion",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		},
+		{
+			"criterionId": "negative-constraint-safety",
+			"outcome": "pass",
+			"observation": "Producer inspection passed this declared criterion."
+		}
+	],
+	"candidate": {
+		"path": "assets/equipment/experiments/material-equipment-v2/candidates/f/ash/staff-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1175098,
+		"sha256": "2edb55dc70a20a58ecb3759c1aec55d9d41af02c49970c02c2a460647dda0ac2"
+	},
+	"candidateSha256": "2edb55dc70a20a58ecb3759c1aec55d9d41af02c49970c02c2a460647dda0ac2",
+	"startedAt": "2026-09-02T22:19:37.011Z",
+	"completedAt": "2026-09-02T22:21:22.099Z",
+	"writtenOutputPaths": [
+		"assets/equipment/experiments/material-equipment-v2/candidates/f/ash/staff-v2.png",
+		"assets/equipment/experiments/material-equipment-v2/results/f/ash/staff-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

@@ -1,0 +1,18 @@
+{
+	"schemaVersion": "equipment-production-event-v1",
+	"sequence": 188,
+	"previousEventCanonicalSha256": "dde5054f0b1f80686361eb9905c8339c5af23c890d795359fdba5a20e5d376c0",
+	"recordedAt": "2026-09-02T15:08:15.000Z",
+	"request": {
+		"schemaVersion": "equipment-production-event-request-v1",
+		"eventId": "job-claimed-188",
+		"runId": "material-equipment-v1-run-001",
+		"requestedAt": "2026-09-02T15:08:14.000Z",
+		"actor": "root-orchestrator",
+		"kind": "job-claimed",
+		"epochId": "equipment-epoch-001",
+		"claimId": "claim-material-equipment-v1-sunsteel-dagger-v1-188",
+		"targetId": "material-equipment-v1-sunsteel-dagger-v1",
+		"workerId": "equipment-worker-188"
+	}
+}
