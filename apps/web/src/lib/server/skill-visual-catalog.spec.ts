@@ -7,6 +7,7 @@ import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-producti
 import massProductionManifestSource from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
 import massProductionManifestRaw from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json?raw';
 import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json';
+import runtimeManifestRaw from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json?raw';
 import {
 	buildSkillVisualCatalog,
 	getSkillVisualCatalog,
@@ -19,6 +20,7 @@ type TestAuthorities = SkillVisualCatalogAuthorities & {
 	runtimeManifest: typeof runtimeManifestSource;
 	canonicalCatalogBytes: Uint8Array;
 	massProductionManifestBytes: Uint8Array;
+	runtimeManifestBytes: Uint8Array;
 };
 
 const encoder = new TextEncoder();
@@ -37,8 +39,27 @@ function authorities(): TestAuthorities {
 		massProductionManifest: structuredClone(massProductionManifestSource),
 		runtimeManifest: structuredClone(runtimeManifestSource),
 		canonicalCatalogBytes: encoder.encode(canonicalCatalogRaw),
-		massProductionManifestBytes: encoder.encode(massProductionManifestRaw)
+		massProductionManifestBytes: encoder.encode(massProductionManifestRaw),
+		runtimeManifestBytes: encoder.encode(runtimeManifestRaw)
 	};
+}
+
+function encodeRuntimeManifestBytes(input: TestAuthorities): void {
+	input.runtimeManifestBytes = rawBytes(input.runtimeManifest);
+}
+
+function synchronizeRuntimeManifestBytes(input: TestAuthorities): void {
+	const summary = input.runtimeManifest.summary as unknown as {
+		totalBytes: number;
+		managedDirectoryBytes: number;
+	};
+	for (let attempt = 0; attempt < 5; attempt += 1) {
+		encodeRuntimeManifestBytes(input);
+		const expected = summary.totalBytes + input.runtimeManifestBytes.byteLength;
+		if (summary.managedDirectoryBytes === expected) return;
+		summary.managedDirectoryBytes = expected;
+	}
+	throw new Error('Test runtime manifest byte total did not converge');
 }
 
 function synchronizeSourceAuthorityHashes(input: TestAuthorities): void {
@@ -52,6 +73,7 @@ function synchronizeSourceAuthorityHashes(input: TestAuthorities): void {
 	(
 		input.runtimeManifest.sourceAuthorities.massProductionManifest as { contentHash: string }
 	).contentHash = hash(input.massProductionManifestBytes);
+	synchronizeRuntimeManifestBytes(input);
 }
 
 describe('skill visual catalog', () => {
@@ -93,6 +115,7 @@ describe('skill visual catalog', () => {
 	it('rejects a missing runtime record', () => {
 		const input = authorities();
 		(input.runtimeManifest.records as unknown[]).pop();
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*456|456.*runtime/iu);
 	});
@@ -102,6 +125,7 @@ describe('skill visual catalog', () => {
 		(input.runtimeManifest.records as unknown[]).push(
 			structuredClone(input.runtimeManifest.records[0])
 		);
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/duplicate.*runtime target id/iu);
 	});
@@ -110,8 +134,96 @@ describe('skill visual catalog', () => {
 		const input = authorities();
 		(input.runtimeManifest.records[0] as { sourceContentHash: string }).sourceContentHash =
 			'0'.repeat(64);
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/source hash/i);
+	});
+
+	it('rejects invalid runtime derivative bytes', () => {
+		const input = authorities();
+		(input.runtimeManifest.records[0] as { bytes: number }).bytes = 0;
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*bytes/i);
+	});
+
+	it('rejects an invalid runtime derivative content hash', () => {
+		const input = authorities();
+		(input.runtimeManifest.records[0] as { contentHash: string }).contentHash = '0'.repeat(63);
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*content hash/i);
+	});
+
+	it('rejects runtime exporter-version drift', () => {
+		const input = authorities();
+		(input.runtimeManifest as { exporterVersion: string }).exporterVersion =
+			'wiki-skill-visual-catalog-exporter-v2';
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime exporter version/i);
+	});
+
+	it('rejects a parsed runtime manifest that differs from its raw bytes', () => {
+		const input = authorities();
+		(input.runtimeManifest as { exporterVersion: string }).exporterVersion =
+			'wiki-skill-visual-catalog-exporter-v2';
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime manifest.*raw bytes/i);
+	});
+
+	it('rejects runtime encoder-setting drift', () => {
+		const input = authorities();
+		(input.runtimeManifest.encoder as { quality: number }).quality = 85;
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime encoder quality/i);
+	});
+
+	it('rejects runtime summary-count drift', () => {
+		const input = authorities();
+		(input.runtimeManifest.summary as { skillCount: number }).skillCount = 455;
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime summary skill count/i);
+	});
+
+	it('rejects a runtime record-total mismatch', () => {
+		const input = authorities();
+		(input.runtimeManifest.summary as { totalBytes: number }).totalBytes += 1;
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime total bytes/i);
+	});
+
+	it.each(['maximumAssetBytes', 'maximumManagedDirectoryBytes'] as const)(
+		'rejects runtime %s limit drift',
+		(limit) => {
+			const input = authorities();
+			(input.runtimeManifest.summary as unknown as Record<typeof limit, number>)[limit] += 1;
+			synchronizeRuntimeManifestBytes(input);
+
+			expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime maximum/i);
+		}
+	);
+
+	it('rejects a runtime managed-directory total mismatch', () => {
+		const input = authorities();
+		(
+			input.runtimeManifest.summary as unknown as { managedDirectoryBytes: number }
+		).managedDirectoryBytes += 1;
+		encodeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/managed directory bytes/i);
+	});
+
+	it('rejects runtime records outside deterministic target order', () => {
+		const input = authorities();
+		const records = input.runtimeManifest.records as unknown as [unknown, unknown, ...unknown[]];
+		[records[0], records[1]] = [records[1], records[0]];
+		synchronizeRuntimeManifestBytes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime record order/i);
 	});
 
 	it('rejects a stale runtime source authority hash', () => {
@@ -119,6 +231,7 @@ describe('skill visual catalog', () => {
 		(
 			input.runtimeManifest.sourceAuthorities.massProductionManifest as { contentHash: string }
 		).contentHash = '0'.repeat(64);
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*source.*hash/i);
 	});
@@ -158,6 +271,7 @@ describe('skill visual catalog', () => {
 		(
 			input.runtimeManifest.sourceAuthorities.massProductionManifest as { contentHash: string }
 		).contentHash = hash(input.massProductionManifestBytes);
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*catalog.*source hash/i);
 	});
@@ -203,6 +317,7 @@ describe('skill visual catalog', () => {
 		const input = authorities();
 		(input.runtimeManifest.records[0] as { publicPath: string }).publicPath =
 			'/wiki-media/other.webp';
+		synchronizeRuntimeManifestBytes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/public path/i);
 	});

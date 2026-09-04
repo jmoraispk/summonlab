@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { format, resolveConfig } from 'prettier';
 import sharp from 'sharp';
@@ -9,7 +10,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	WIKI_SKILL_VISUAL_ROOT,
+	WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES,
 	assertWikiSkillVisualDerivative,
+	assertWikiSkillVisualManagedBudget,
 	buildWikiSkillVisualCatalogFromAuthorities,
 	checkWikiSkillVisualCatalog,
 	writeWikiSkillVisualCatalog
@@ -145,6 +148,26 @@ async function mutateJson(
 }
 
 describe('wiki skill visual catalog exporter', () => {
+	it('keeps the derivative validator in local and CI release gates and the durable root suite', async () => {
+		const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+		const packageJson = JSON.parse(
+			await readFile(path.join(workspaceRoot, 'package.json'), 'utf8')
+		) as { scripts: Record<string, string> };
+		const workflow = await readFile(path.join(workspaceRoot, '.github/workflows/ci.yml'), 'utf8');
+		const visualAssetsStep = workflow.match(
+			/- name: Validate visual assets[\s\S]*?(?=\n\s+- name:)/u
+		)?.[0];
+
+		expect(packageJson.scripts.check.split(' && ')[0]).toBe(
+			'pnpm validate:wiki-skill-visual-catalog'
+		);
+		expect(packageJson.scripts.test.split(' && ')[0]).toBe('pnpm test:wiki-skill-visual-catalog');
+		expect(packageJson.scripts['test:wiki-skill-visual-catalog']).toContain(
+			'tools/wiki-skill-visual-catalog-lib.spec.ts'
+		);
+		expect(visualAssetsStep).toContain('pnpm validate:wiki-skill-visual-catalog');
+	});
+
 	it('creates deterministic, bounded 512px WebP assets from strict paired authorities', async () => {
 		const item = await fixture();
 		await mutateJson(item.root, catalogPath, (catalog) => {
@@ -159,7 +182,9 @@ describe('wiki skill visual catalog exporter', () => {
 			skillCount: 2,
 			assetCount: 2,
 			totalBytes: expect.any(Number),
-			maximumAssetBytes: 133_120
+			managedDirectoryBytes: expect.any(Number),
+			maximumAssetBytes: 133_120,
+			maximumManagedDirectoryBytes: 44_040_192
 		});
 		expect(first.generated).toHaveLength(2);
 		expect(first.generated.every(({ record }) => record.width === 512)).toBe(true);
@@ -169,6 +194,34 @@ describe('wiki skill visual catalog exporter', () => {
 			second.generated.map(({ buffer }) => buffer)
 		);
 		expect(first.manifest).toEqual(second.manifest);
+	});
+
+	it('includes the formatted manifest in the managed-directory byte total', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		const repositoryManifestPath = path.resolve(
+			path.dirname(fileURLToPath(import.meta.url)),
+			'../apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json'
+		);
+		const config = await resolveConfig(repositoryManifestPath);
+		const formatted = await format(JSON.stringify(built.manifest), {
+			...config,
+			filepath: repositoryManifestPath,
+			parser: 'json'
+		});
+
+		expect(built.manifest.summary.managedDirectoryBytes).toBe(
+			built.manifest.summary.totalBytes + Buffer.byteLength(formatted)
+		);
+	});
+
+	it('accepts the exact managed-directory budget and rejects one byte beyond it', () => {
+		expect(() =>
+			assertWikiSkillVisualManagedBudget(WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES - 10, 10)
+		).not.toThrow();
+		expect(() =>
+			assertWikiSkillVisualManagedBudget(WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES - 10, 11)
+		).toThrow(/managed.*budget/i);
 	});
 
 	it('rejects source-hash drift, duplicate or missing IDs, and invalid input image formats', async () => {
@@ -291,13 +344,68 @@ describe('wiki skill visual catalog exporter', () => {
 		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/stale manifest/i);
 	});
 
+	it('rejects a missing managed WebP', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		await writeWikiSkillVisualCatalog(built, item.root);
+		await rm(path.join(item.root, WIKI_SKILL_VISUAL_ROOT, built.generated[0]!.record.file));
+
+		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/inventory/i);
+	});
+
+	it('rejects a corrupt managed WebP', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		await writeWikiSkillVisualCatalog(built, item.root);
+		await writeFile(
+			path.join(item.root, WIKI_SKILL_VISUAL_ROOT, built.generated[0]!.record.file),
+			'not a WebP'
+		);
+
+		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/stale|changed/i);
+	});
+
+	it('rejects an opaque managed WebP', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		await writeWikiSkillVisualCatalog(built, item.root);
+		const opaqueWebp = await sharp({
+			create: {
+				width: 512,
+				height: 512,
+				channels: 4,
+				background: { r: 47, g: 93, b: 147, alpha: 1 }
+			}
+		})
+			.webp()
+			.toBuffer();
+		await writeFile(
+			path.join(item.root, WIKI_SKILL_VISUAL_ROOT, built.generated[0]!.record.file),
+			opaqueWebp
+		);
+
+		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/stale|changed/i);
+	});
+
+	it('rejects an oversized managed WebP', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		await writeWikiSkillVisualCatalog(built, item.root);
+		await writeFile(
+			path.join(item.root, WIKI_SKILL_VISUAL_ROOT, built.generated[0]!.record.file),
+			Buffer.alloc(133_121)
+		);
+
+		await expect(checkWikiSkillVisualCatalog(built, item.root)).rejects.toThrow(/stale|changed/i);
+	});
+
 	it('formats the generated manifest with the resolved repository Prettier config', async () => {
 		const item = await fixture();
 		const built = await item.build();
 		await writeWikiSkillVisualCatalog(built, item.root);
 
 		const repositoryManifestPath = path.resolve(
-			path.dirname(new URL(import.meta.url).pathname),
+			path.dirname(fileURLToPath(import.meta.url)),
 			'../apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json'
 		);
 		const config = await resolveConfig(repositoryManifestPath);

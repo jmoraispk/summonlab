@@ -5041,6 +5041,8 @@
 		"skillCount": 456,
 		"assetCount": 456,
 		"totalBytes": 38597676,
-		"maximumAssetBytes": 133120
+		"managedDirectoryBytes": 38860225,
+		"maximumAssetBytes": 133120,
+		"maximumManagedDirectoryBytes": 44040192
 	}
 }

@@ -138,15 +138,20 @@ marketing cards, glass effects, gradients, drop shadows, or ornamental connector
 ### Pagination and empty state
 
 Filtering always resets the visible limit to 120. `Load more` appends the next 120 matching records
-without changing filter state or scroll position. The button states how many records remain.
+without changing filter state or scroll position. The button states the exact next batch size. After
+activation, keyboard focus moves without scrolling to the first appended skill heading and remains
+there when the final button disappears. The polite status reports both the matching total and the
+displayed `1–N` range.
 
 When no records match, the page preserves the control area and displays `No skills match these
 filters.` with a native button to clear the current state.
 
 ## Responsive behavior
 
-- Four columns at widths above 72rem.
-- Three columns from 52rem through 72rem.
+- Card density follows the catalog's available inline size, not the raw viewport around the fixed
+  wiki sidebar.
+- Four columns at catalog widths above 64rem.
+- Three columns from 52rem through 64rem.
 - Two columns from 30rem through 52rem.
 - One column below 30rem.
 - Controls wrap without horizontal document overflow.

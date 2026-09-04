@@ -19,7 +19,11 @@ afterEach(async () => {
 	);
 });
 
-async function writeFixture(options: { provenance: boolean; mutateDerived?: boolean }) {
+async function writeFixture(options: {
+	provenance: boolean;
+	mutateDerived?: boolean;
+	designStatus?: string;
+}) {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'wiki-provenance-'));
 	temporaryRoots.push(root);
 	const derivedFile = 'apps/web/static/wiki-media/skills/test-domain.webp';
@@ -48,7 +52,7 @@ async function writeFixture(options: { provenance: boolean; mutateDerived?: bool
 					{
 						wikiId: 'test.page',
 						path: 'docs/wiki/test.md',
-						designStatus: 'draft',
+						designStatus: options.designStatus ?? 'draft',
 						implementationStatus: 'partial',
 						visualStatus: 'candidate',
 						spoilerScope: 'public',
@@ -129,6 +133,24 @@ async function writeFixture(options: { provenance: boolean; mutateDerived?: bool
 }
 
 describe('wiki generated-art provenance validation', () => {
+	it('accepts approved page design independently of candidate visual status', async () => {
+		const root = await writeFixture({ provenance: true, designStatus: 'approved' });
+
+		await expect(
+			execFileAsync(process.execPath, [validatorPath, '--repository-root', root])
+		).resolves.toMatchObject({ stdout: expect.stringContaining('Validated 1 wiki pages') });
+	});
+
+	it('rejects an undocumented design status', async () => {
+		const root = await writeFixture({ provenance: true, designStatus: 'reviewed' });
+
+		await expect(
+			execFileAsync(process.execPath, [validatorPath, '--repository-root', root])
+		).rejects.toMatchObject({
+			stderr: expect.stringContaining('test.page has invalid designStatus reviewed')
+		});
+	});
+
 	it('binds every runtime skill-tree domain image to the Skills index catalog', async () => {
 		const catalog = JSON.parse(await readFile('docs/wiki/catalog.json', 'utf8')) as {
 			entries: Array<{ wikiId: string; assets?: Array<{ file: string }> }>;

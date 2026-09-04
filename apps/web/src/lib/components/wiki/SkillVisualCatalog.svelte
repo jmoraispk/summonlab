@@ -3,6 +3,7 @@
 	import { afterNavigate, replaceState } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { tick } from 'svelte';
 
 	import type { SkillVisualCatalogRecord } from '$lib/server/skill-visual-catalog';
 
@@ -22,6 +23,7 @@
 	let filters = $state<SkillCatalogFilters>({ ...EMPTY_SKILL_CATALOG_FILTERS });
 	let visibleCount = $state(SKILL_CATALOG_PAGE_SIZE);
 	let searchInput: HTMLInputElement;
+	let focusTargetId = $state<string | null>(null);
 	let queryInitialized = false;
 
 	const filterOptions = $derived(compatibleSkillCatalogOptions(records, filters));
@@ -41,12 +43,14 @@
 	}
 
 	function applyFilters(nextFilters: SkillCatalogFilters): void {
+		focusTargetId = null;
 		filters = normalizeSkillCatalogFilters(records, nextFilters);
 		visibleCount = SKILL_CATALOG_PAGE_SIZE;
 		replaceQuery(filters);
 	}
 
 	function updateSearch(q: string): void {
+		focusTargetId = null;
 		filters = { ...filters, q };
 		visibleCount = SKILL_CATALOG_PAGE_SIZE;
 		replaceQuery(filters);
@@ -59,6 +63,19 @@
 
 	function clearFilters(): void {
 		applyFilters({ ...EMPTY_SKILL_CATALOG_FILTERS });
+	}
+
+	function skillHeadingId(targetId: string): string {
+		return `skill-catalog-${targetId.replaceAll(':', '-')}`;
+	}
+
+	async function loadMore(): Promise<void> {
+		const firstAppended = matchingRecords[visibleRecords.length];
+		if (!firstAppended) return;
+		focusTargetId = firstAppended.targetId;
+		visibleCount = Math.min(visibleCount + SKILL_CATALOG_PAGE_SIZE, matchingRecords.length);
+		await tick();
+		document.getElementById(skillHeadingId(firstAppended.targetId))?.focus({ preventScroll: true });
 	}
 
 	afterNavigate(() => {
@@ -149,9 +166,14 @@
 		{/if}
 	</form>
 
-	<p class="result-count" role="status" aria-live="polite">
+	<p class="result-count" role="status" aria-live="polite" aria-atomic="true">
 		{matchingRecords.length}
 		{matchingRecords.length === 1 ? 'skill' : 'skills'}
+		· {matchingRecords.length === 0
+			? 'Showing 0'
+			: visibleRecords.length === 1
+				? 'Showing 1'
+				: `Showing 1–${visibleRecords.length}`}
 	</p>
 
 	{#if matchingRecords.length === 0}
@@ -175,7 +197,14 @@
 					</div>
 					<header>
 						<p>{skill.domain} <span aria-hidden="true">→</span> {skill.family}</p>
-						<h2>{skill.name}</h2>
+						<!-- Deliberate programmatic focus target after incremental reveal. -->
+						<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+						<h2
+							id={skillHeadingId(skill.targetId)}
+							tabindex={skill.targetId === focusTargetId ? -1 : undefined}
+						>
+							{skill.name}
+						</h2>
 						{#if skill.labels.length > 0}
 							<ul aria-label="Compatibility labels">
 								{#each skill.labels as label (`${label.namespace}:${label.value}`)}
@@ -232,11 +261,7 @@
 	{/if}
 
 	{#if visibleRecords.length < matchingRecords.length}
-		<button
-			type="button"
-			class="load-more"
-			onclick={() => (visibleCount += SKILL_CATALOG_PAGE_SIZE)}
-		>
+		<button type="button" class="load-more" onclick={loadMore}>
 			Load {nextBatchCount} more · {remainingCount} skills remaining
 		</button>
 	{/if}
@@ -251,6 +276,7 @@
 		--catalog-ember: #d4773d;
 		--catalog-focus: #e5aa73;
 		--catalog-line: rgba(231, 206, 164, 0.14);
+		container-type: inline-size;
 		color: var(--catalog-paper);
 	}
 
@@ -573,7 +599,7 @@
 		margin-top: 1rem;
 	}
 
-	@media (max-width: 72rem) {
+	@container (max-width: 64rem) {
 		.catalog-controls {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
@@ -583,7 +609,7 @@
 		}
 	}
 
-	@media (max-width: 52rem) {
+	@container (max-width: 52rem) {
 		.catalog-intro > div {
 			align-items: flex-start;
 			flex-direction: column;
@@ -594,7 +620,7 @@
 		}
 	}
 
-	@media (max-width: 30rem) {
+	@container (max-width: 30rem) {
 		.catalog-intro h1 {
 			font-size: clamp(2.7rem, 14vw, 3.5rem);
 		}

@@ -6,6 +6,7 @@ import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-producti
 import massProductionManifestSource from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
 import massProductionManifestRaw from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json?raw';
 import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json';
+import runtimeManifestRaw from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json?raw';
 
 const CATALOG_PATH = 'assets/wiki/skills/icon-production-v1/catalog.json';
 const MASS_MANIFEST_PATH = 'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
@@ -14,6 +15,9 @@ const PUBLIC_ROOT = '/wiki-media/skills/visual-catalog-v1/';
 const PUBLIC_ICON_ROOT = `${PUBLIC_ROOT}icons/`;
 const SKILL_COUNT = 456;
 const DOMAIN_COUNTS = { Martial: 258, Magical: 124, Craft: 74 } as const;
+const RUNTIME_EXPORTER_VERSION = 'wiki-skill-visual-catalog-exporter-v1';
+const MAXIMUM_ASSET_BYTES = 133_120;
+const MAXIMUM_MANAGED_DIRECTORY_BYTES = 44_040_192;
 
 type SkillDomain = 'Martial' | 'Magical' | 'Craft';
 type SkillType = 'Active' | 'Passive' | 'Stance' | 'Craft';
@@ -44,6 +48,7 @@ export interface SkillVisualCatalogAuthorities {
 	readonly massProductionManifest: unknown;
 	readonly massProductionManifestBytes: Uint8Array;
 	readonly runtimeManifest: unknown;
+	readonly runtimeManifestBytes: Uint8Array;
 }
 
 interface CanonicalRecord {
@@ -82,12 +87,37 @@ interface RuntimeRecord {
 	readonly publicPath: string;
 	readonly width: 512;
 	readonly height: 512;
+	readonly bytes: number;
+	readonly contentHash: string;
+}
+
+interface RuntimeSummary {
+	readonly skillCount: 456;
+	readonly assetCount: 456;
+	readonly totalBytes: number;
+	readonly managedDirectoryBytes: number;
+	readonly maximumAssetBytes: 133_120;
+	readonly maximumManagedDirectoryBytes: 44_040_192;
 }
 
 function object(value: unknown, label: string): Record<string, unknown> {
 	if (!value || typeof value !== 'object' || Array.isArray(value))
 		throw new Error(`Invalid ${label}`);
 	return value as Record<string, unknown>;
+}
+
+function exactObject(
+	value: unknown,
+	label: string,
+	expectedKeys: readonly string[]
+): Record<string, unknown> {
+	const source = object(value, label);
+	const actualKeys = Object.keys(source).sort();
+	const sortedExpectedKeys = [...expectedKeys].sort();
+	if (!isDeepStrictEqual(actualKeys, sortedExpectedKeys)) {
+		throw new Error(`Invalid ${label} fields`);
+	}
+	return source;
 }
 
 function array(value: unknown, label: string): readonly unknown[] {
@@ -107,6 +137,13 @@ function literal<T extends string | number | boolean>(
 ): T {
 	if (value !== expected) throw new Error(`Invalid ${label}`);
 	return expected;
+}
+
+function positiveInteger(value: unknown, label: string): number {
+	if (!Number.isSafeInteger(value) || (value as number) <= 0) {
+		throw new Error(`Invalid ${label}`);
+	}
+	return value as number;
 }
 
 function domain(value: unknown, label: string): SkillDomain {
@@ -227,7 +264,17 @@ function massRecord(value: unknown): MassRecord {
 }
 
 function runtimeRecord(value: unknown): RuntimeRecord {
-	const record = object(value, 'runtime skill record');
+	const record = exactObject(value, 'runtime skill record', [
+		'targetId',
+		'sourcePath',
+		'sourceContentHash',
+		'file',
+		'publicPath',
+		'width',
+		'height',
+		'bytes',
+		'contentHash'
+	]);
 	return {
 		targetId: string(record.targetId, 'runtime target ID'),
 		sourcePath: string(record.sourcePath, 'runtime source path'),
@@ -235,12 +282,44 @@ function runtimeRecord(value: unknown): RuntimeRecord {
 		file: string(record.file, 'runtime file'),
 		publicPath: string(record.publicPath, 'runtime public path'),
 		width: literal(record.width, 512, 'runtime width'),
-		height: literal(record.height, 512, 'runtime height')
+		height: literal(record.height, 512, 'runtime height'),
+		bytes: positiveInteger(record.bytes, 'runtime bytes'),
+		contentHash: hash(record.contentHash, 'runtime content hash')
+	};
+}
+
+function runtimeSummary(value: unknown): RuntimeSummary {
+	const summary = exactObject(value, 'runtime summary', [
+		'skillCount',
+		'assetCount',
+		'totalBytes',
+		'managedDirectoryBytes',
+		'maximumAssetBytes',
+		'maximumManagedDirectoryBytes'
+	]);
+	return {
+		skillCount: literal(summary.skillCount, SKILL_COUNT, 'runtime summary skill count'),
+		assetCount: literal(summary.assetCount, SKILL_COUNT, 'runtime summary asset count'),
+		totalBytes: positiveInteger(summary.totalBytes, 'runtime summary total bytes'),
+		managedDirectoryBytes: positiveInteger(
+			summary.managedDirectoryBytes,
+			'runtime summary managed directory bytes'
+		),
+		maximumAssetBytes: literal(
+			summary.maximumAssetBytes,
+			MAXIMUM_ASSET_BYTES,
+			'runtime maximum asset bytes'
+		),
+		maximumManagedDirectoryBytes: literal(
+			summary.maximumManagedDirectoryBytes,
+			MAXIMUM_MANAGED_DIRECTORY_BYTES,
+			'runtime maximum managed directory bytes'
+		)
 	};
 }
 
 function authority(value: unknown, expectedPath: string, label: string): string {
-	const source = object(value, label);
+	const source = exactObject(value, label, ['path', 'contentHash']);
 	if (string(source.path, `${label} path`) !== expectedPath) {
 		throw new Error(`Invalid ${label} path`);
 	}
@@ -282,7 +361,8 @@ const defaultAuthorities: SkillVisualCatalogAuthorities = {
 	canonicalCatalogBytes: new TextEncoder().encode(canonicalCatalogRaw),
 	massProductionManifest: massProductionManifestSource,
 	massProductionManifestBytes: new TextEncoder().encode(massProductionManifestRaw),
-	runtimeManifest: runtimeManifestSource
+	runtimeManifest: runtimeManifestSource,
+	runtimeManifestBytes: new TextEncoder().encode(runtimeManifestRaw)
 };
 
 export function buildSkillVisualCatalog(
@@ -290,11 +370,20 @@ export function buildSkillVisualCatalog(
 ): readonly SkillVisualCatalogRecord[] {
 	const rawCatalog = parseRawJson(input.canonicalCatalogBytes, 'canonical catalog');
 	const rawMass = parseRawJson(input.massProductionManifestBytes, 'mass-production manifest');
+	const rawRuntime = parseRawJson(input.runtimeManifestBytes, 'runtime manifest');
 	assertMatchesRawBytes(input.canonicalCatalog, rawCatalog, 'Canonical catalog');
 	assertMatchesRawBytes(input.massProductionManifest, rawMass, 'Mass-production manifest');
+	assertMatchesRawBytes(input.runtimeManifest, rawRuntime, 'Runtime manifest');
 	const catalog = object(rawCatalog, 'canonical catalog');
 	const mass = object(rawMass, 'mass-production manifest');
-	const runtime = object(input.runtimeManifest, 'runtime manifest');
+	const runtime = exactObject(rawRuntime, 'runtime manifest', [
+		'schemaVersion',
+		'exporterVersion',
+		'encoder',
+		'sourceAuthorities',
+		'records',
+		'summary'
+	]);
 
 	literal(catalog.schemaVersion, 'skill-icon-catalog-v1', 'canonical catalog schema');
 	literal(
@@ -304,6 +393,21 @@ export function buildSkillVisualCatalog(
 	);
 	literal(mass.completionState, 'complete', 'mass-production completion state');
 	literal(runtime.schemaVersion, 'wiki-skill-visual-catalog-v1', 'runtime manifest schema');
+	literal(runtime.exporterVersion, RUNTIME_EXPORTER_VERSION, 'runtime exporter version');
+	const encoder = exactObject(runtime.encoder, 'runtime encoder', [
+		'format',
+		'quality',
+		'alphaQuality',
+		'effort',
+		'smartSubsample',
+		'metadata'
+	]);
+	literal(encoder.format, 'webp', 'runtime encoder format');
+	literal(encoder.quality, 86, 'runtime encoder quality');
+	literal(encoder.alphaQuality, 100, 'runtime encoder alpha quality');
+	literal(encoder.effort, 4, 'runtime encoder effort');
+	literal(encoder.smartSubsample, true, 'runtime encoder smart subsampling');
+	literal(encoder.metadata, 'stripped', 'runtime encoder metadata');
 
 	const canonical = array(catalog.records, 'canonical records').map(canonicalRecord);
 	const massRecords = array(mass.skills, 'mass-production skills').map(massRecord);
@@ -311,6 +415,11 @@ export function buildSkillVisualCatalog(
 	unique(canonical, (record) => record.targetId, 'canonical target ID');
 	unique(massRecords, (record) => record.targetId, 'mass-production target ID');
 	unique(runtimeRecords, (record) => record.targetId, 'runtime target ID');
+	for (let index = 1; index < runtimeRecords.length; index += 1) {
+		if (runtimeRecords[index - 1]!.targetId.localeCompare(runtimeRecords[index]!.targetId) >= 0) {
+			throw new Error('Invalid runtime record order');
+		}
+	}
 	const canonicalByTargetId = new Map(canonical.map((record) => [record.targetId, record]));
 	for (const record of canonical) {
 		if (record.primaryVisualParent && !canonicalByTargetId.has(record.primaryVisualParent)) {
@@ -325,6 +434,23 @@ export function buildSkillVisualCatalog(
 	}
 	if (runtimeRecords.length !== SKILL_COUNT) {
 		throw new Error(`Expected ${SKILL_COUNT} runtime records; got ${runtimeRecords.length}`);
+	}
+	const summary = runtimeSummary(runtime.summary);
+	const runtimeTotalBytes = runtimeRecords.reduce((total, record) => total + record.bytes, 0);
+	if (runtimeTotalBytes !== summary.totalBytes) {
+		throw new Error('Runtime total bytes do not match record bytes');
+	}
+	if (runtimeRecords.some((record) => record.bytes > summary.maximumAssetBytes)) {
+		throw new Error('Runtime record exceeds maximum asset bytes');
+	}
+	if (
+		summary.managedDirectoryBytes !==
+		summary.totalBytes + input.runtimeManifestBytes.byteLength
+	) {
+		throw new Error('Runtime managed directory bytes do not include the exact manifest bytes');
+	}
+	if (summary.managedDirectoryBytes > summary.maximumManagedDirectoryBytes) {
+		throw new Error('Runtime managed directory exceeds maximum managed directory bytes');
 	}
 	const actualDomainCounts = Object.fromEntries(
 		(Object.keys(DOMAIN_COUNTS) as SkillDomain[]).map((expectedDomain) => [
@@ -349,7 +475,10 @@ export function buildSkillVisualCatalog(
 		CATALOG_PATH,
 		'mass catalog authority'
 	);
-	const runtimeAuthorities = object(runtime.sourceAuthorities, 'runtime source authorities');
+	const runtimeAuthorities = exactObject(runtime.sourceAuthorities, 'runtime source authorities', [
+		'catalog',
+		'massProductionManifest'
+	]);
 	const catalogHash = rawContentHash(input.canonicalCatalogBytes);
 	const massManifestHash = rawContentHash(input.massProductionManifestBytes);
 	if (massCatalogHash !== catalogHash) {

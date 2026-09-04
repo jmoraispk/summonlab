@@ -57,7 +57,9 @@ export interface WikiSkillVisualRuntimeManifest {
 		readonly skillCount: number;
 		readonly assetCount: number;
 		readonly totalBytes: number;
+		readonly managedDirectoryBytes: number;
 		readonly maximumAssetBytes: typeof WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES;
+		readonly maximumManagedDirectoryBytes: typeof WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES;
 	};
 }
 
@@ -241,6 +243,47 @@ async function formatManifest(manifest: WikiSkillVisualRuntimeManifest): Promise
 	);
 }
 
+export function assertWikiSkillVisualManagedBudget(
+	imageBytes: number,
+	manifestBytes: number
+): number {
+	if (
+		!Number.isSafeInteger(imageBytes) ||
+		imageBytes < 0 ||
+		!Number.isSafeInteger(manifestBytes) ||
+		manifestBytes < 0
+	) {
+		throw new Error('Invalid managed-directory byte total');
+	}
+	const managedDirectoryBytes = imageBytes + manifestBytes;
+	if (
+		!Number.isSafeInteger(managedDirectoryBytes) ||
+		managedDirectoryBytes > WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES
+	) {
+		throw new Error('Wiki skill visual managed-directory budget exceeded');
+	}
+	return managedDirectoryBytes;
+}
+
+async function finalizeManagedDirectorySummary(
+	manifest: WikiSkillVisualRuntimeManifest
+): Promise<WikiSkillVisualRuntimeManifest> {
+	let candidate = manifest;
+	for (let attempt = 0; attempt < 10; attempt += 1) {
+		const manifestBytes = await formatManifest(candidate);
+		const managedDirectoryBytes = assertWikiSkillVisualManagedBudget(
+			candidate.summary.totalBytes,
+			manifestBytes.byteLength
+		);
+		if (managedDirectoryBytes === candidate.summary.managedDirectoryBytes) return candidate;
+		candidate = {
+			...candidate,
+			summary: { ...candidate.summary, managedDirectoryBytes }
+		};
+	}
+	throw new Error('Managed-directory byte total did not converge');
+}
+
 export async function assertWikiSkillVisualDerivative(
 	data: Buffer,
 	targetId: string
@@ -289,21 +332,33 @@ async function writeExclusive(destination: string, bytes: Buffer, sync = false):
 async function assertBuiltInventory(
 	root: string,
 	built: BuiltWikiSkillVisualCatalog,
-	manifestBytes?: Buffer
+	manifestBytes: Buffer
 ): Promise<void> {
 	const actual = await listFiles(root);
 	const expected = ['manifest.json', ...built.generated.map(({ record }) => record.file)].sort();
 	if (actual.length !== expected.length || actual.some((file, index) => file !== expected[index])) {
 		throw new Error('Unexpected output file inventory');
 	}
+	for (const asset of built.generated) {
+		if (asset.record.bytes !== asset.buffer.byteLength) {
+			throw new Error(`Runtime byte count mismatch for ${asset.record.targetId}`);
+		}
+		if (asset.record.bytes > WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES) {
+			throw new Error(`Derivative exceeds byte budget for ${asset.record.targetId}`);
+		}
+	}
 	const totalBytes = built.generated.reduce((total, asset) => total + asset.buffer.byteLength, 0);
+	const managedDirectoryBytes = assertWikiSkillVisualManagedBudget(
+		totalBytes,
+		manifestBytes.byteLength
+	);
 	if (
 		totalBytes !== built.manifest.summary.totalBytes ||
-		totalBytes > WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES
+		managedDirectoryBytes !== built.manifest.summary.managedDirectoryBytes
 	) {
-		throw new Error('Runtime output exceeds total budget');
+		throw new Error('Runtime output byte summary mismatch');
 	}
-	if (manifestBytes && !(await readFile(path.join(root, 'manifest.json'))).equals(manifestBytes)) {
+	if (!(await readFile(path.join(root, 'manifest.json'))).equals(manifestBytes)) {
 		throw new Error('Stale manifest');
 	}
 }
@@ -384,7 +439,7 @@ export async function buildWikiSkillVisualCatalogFromAuthorities(
 	});
 	const records = generated.map(({ record }) => record);
 	const totalBytes = records.reduce((total, record) => total + record.bytes, 0);
-	const manifest: WikiSkillVisualRuntimeManifest = {
+	const manifest = await finalizeManagedDirectorySummary({
 		schemaVersion: 'wiki-skill-visual-catalog-v1',
 		exporterVersion: WIKI_SKILL_VISUAL_EXPORTER_VERSION,
 		encoder: {
@@ -404,9 +459,11 @@ export async function buildWikiSkillVisualCatalogFromAuthorities(
 			skillCount: records.length,
 			assetCount: records.length,
 			totalBytes,
-			maximumAssetBytes: WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES
+			managedDirectoryBytes: 0,
+			maximumAssetBytes: WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES,
+			maximumManagedDirectoryBytes: WIKI_SKILL_VISUAL_MAXIMUM_TOTAL_BYTES
 		}
-	};
+	});
 	return { manifest, generated };
 }
 

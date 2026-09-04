@@ -63,16 +63,21 @@ history, use [implementation progress](../progress.md) and the [ADR directory](.
 
 A page never hides several kinds of readiness behind one “done” label:
 
-| Axis | Values | Meaning |
-| --- | --- | --- |
-| Design | `seed`, `draft`, `accepted`, `superseded` | Whether its rules/lore are product canon |
-| Implementation | `none`, `partial`, `implemented`, `verified` | Whether game behavior exists and matches |
-| Visual | `none`, `brief`, `candidate`, `approved`, `runtime` | Whether visual instantiation exists and is promoted |
-| Spoiler | `public`, `discoverable`, `internal` | Which audience may receive the page or section |
+| Axis           | Values                                                | Meaning                                                                                                     |
+| -------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Design         | `seed`, `draft`, `accepted`, `approved`, `superseded` | Whether rules, lore, or presentation design are proposed, canonical, explicitly review-approved, or retired |
+| Implementation | `none`, `partial`, `implemented`, `verified`          | Whether game behavior exists and matches                                                                    |
+| Visual         | `none`, `brief`, `candidate`, `approved`, `runtime`   | Whether visual instantiation exists and is promoted                                                         |
+| Spoiler        | `public`, `discoverable`, `internal`                  | Which audience may receive the page or section                                                              |
 
 The checked [catalog](catalog.json) records these axes for every page. `pnpm validate:wiki` rejects
 unregistered pages, duplicate IDs, invalid status values, missing local links, and missing registered
 assets.
+
+Design `approved` records explicit approval of the page's rules, information architecture, or
+interaction design; it does not approve the page's media. `visualStatus` is a separate promotion
+axis, so an approved page design may intentionally continue to present `candidate` visuals until
+their provenance and human visual review are complete.
 
 Release availability is a separate axis owned by the [roadmap](roadmap/README.md). A complete,
 accepted mechanic may still be `off` in Living Village; that means it remains available for future

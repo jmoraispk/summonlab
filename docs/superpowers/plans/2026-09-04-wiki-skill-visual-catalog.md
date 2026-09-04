@@ -540,9 +540,12 @@ Use Svelte 5 runes with one `filters` state and one `visibleCount` state. Initia
 the browser from `window.location.search`, normalize after every broader filter change, reset
 `visibleCount` to 120, and call `history.replaceState` with the serialized query.
 
-Render native labeled search/select controls, an `aria-live="polite"` count, semantic `article`
+Render native labeled search/select controls, an `aria-live="polite"` status with the displayed
+range, semantic `article`
 cards, lazy 512×512 images, definition rows, native provenance `details`, clear actions, no-results
-copy, and a `Load more` button whose label includes the remaining count.
+copy, and a `Load more` button whose label includes the exact next batch size. Each activation moves
+focus with `preventScroll` to the first appended heading, including the final batch where the button
+disappears.
 
 Use this exact hierarchy:
 
@@ -550,7 +553,7 @@ Use this exact hierarchy:
 <section class="skill-catalog" aria-labelledby="skill-catalog-heading">
   <header class="catalog-intro">...</header>
   <form class="catalog-controls" onsubmit={(event) => event.preventDefault()}>...</form>
-  <p class="result-count" aria-live="polite">...</p>
+  <p class="result-count" role="status" aria-live="polite">...</p>
   <div class="skill-grid">
     {#each visibleRecords as skill (skill.targetId)}
       <article class="skill-card">...</article>
@@ -560,10 +563,11 @@ Use this exact hierarchy:
 </section>
 ```
 
-Styles consume the existing archive colors. Use `grid-template-columns: repeat(4, minmax(0, 1fr))`
-above 72rem, then 3/2/1 at the approved breakpoints. Use `aspect-ratio: 1`, `object-fit: contain`, and
-`background: #090805` for image wells. Use square surfaces, fine dividers, Georgia headings/body,
-monospace metadata, visible focus, 40px control targets, and reduced-motion rules.
+Styles consume the existing archive colors. Make the catalog an inline-size container and use
+`grid-template-columns: repeat(4, minmax(0, 1fr))` above 64rem of available catalog width, then
+3/2/1 at 52rem and 30rem. Use `aspect-ratio: 1`, `object-fit: contain`, and `background: #090805`
+for image wells. Use square surfaces, fine dividers, Georgia headings/body, monospace metadata,
+visible focus, 40px control targets, and reduced-motion rules.
 
 - [ ] **Step 5: Select the dedicated page renderer**
 
@@ -717,4 +721,3 @@ git push
   production build, and build-budget validation all pass.
 - The icon-quality issue remains separate, linked, and does not mutate source candidates during this
   implementation.
-
