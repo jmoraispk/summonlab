@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "hero-chibi-head-height-calibration-result-v1",
+  "experimentId": "chibi-head-height-calibration-001",
+  "targetId": "aear-soro-3-0-heads-r2",
+  "status": "candidate",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/candidates/aear-soro-3-0-heads-r2.png",
+    "sha256": "c08333d84426cfcfbe85db852083e2148e7952766884dfc7c6e8b416f941f533",
+    "bytes": 2562357,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "exactSourcePath": "/home/joao/.codex/generated_images/01a06d2f-2cee-7002-829a-633e0cab762f/exec-6a2d8d07-207f-4904-a6c6-330331be8d11.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/prompts/aear-soro-3-0-heads-r2.txt",
+    "sha256": "e377e78d7f8c6f77ebf84f63cbc88b96ef1af53b503f58028aa317a0741c23c6"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass",
+      "evidence": "PNG is 1024x1536 and original-detail inspection shows one complete standing figure with both hands and boots inside the safe canvas area."
+    },
+    {
+      "criterion": "Aear Soro identity and adult age remain recognizable",
+      "outcome": "pass",
+      "evidence": "The deep-brown-skinned adult woman retains the stern facial geometry, cheek mole, shaved right side, and asymmetric red-copper loc crest with gold wraps."
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "pass",
+      "evidence": "The large skull-crown-to-chin head and compact body read as approximately three anatomical head lengths from crown to soles, visibly distinct from ordinary human anatomy."
+    },
+    {
+      "criterion": "current head size is preserved while body length changes below the chin",
+      "outcome": "pass",
+      "evidence": "The head remains visually consistent with the reference while the shortened torso and limbs below the chin establish the new proportion."
+    },
+    {
+      "criterion": "summon physique and non-inflated arms and hands are preserved",
+      "outcome": "pass",
+      "evidence": "The figure retains a slender athletic summon physique with proportional arms, wrists, and empty hands."
+    },
+    {
+      "criterion": "hair, wardrobe, palette, pouch, boots, and markings remain continuous",
+      "outcome": "pass",
+      "evidence": "The red-copper locs, gold wraps, mustard mantle, cream wrap top, olive layers, pouch, wrapped boots, and cheek mole remain continuous."
+    },
+    {
+      "criterion": "no weapon, magic, text, UI, frame, star, or extra subject",
+      "outcome": "pass",
+      "evidence": "Original-detail inspection found no prohibited weapon, magic, text, UI, frame, star, or extra subject."
+    }
+  ]
+}

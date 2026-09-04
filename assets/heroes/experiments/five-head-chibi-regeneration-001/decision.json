@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "five-head-chibi-regeneration-decision-v1",
+  "experimentId": "five-head-chibi-regeneration-001",
+  "promptVersion": "five-head-v1",
+  "promptTemplateSha256": "9b25033627bd99830e3dee3a2da7526852bd51e7a5d73b502c93ab43377c348c",
+  "canvas": {
+    "width": 1024,
+    "height": 1536,
+    "mimeType": "image/png"
+  },
+  "ratioTarget": 5.0,
+  "sourceRosterPath": "assets/heroes/experiments/one-star-overnight-200-001/review/review-manifest.json",
+  "sourceRosterSha256": "8ae3ee617fb200018c261cdee7b2e3fb5a2f1d807cea77df2fe75b78464c6fe5",
+  "upstreamCompletionReportSha256": "ce2534962da3c6e869cc3a18d26d6b88bd61ebfbef1a25915aabf0cdf4f370ef",
+  "productionBaseCommit": "cfd84536c51a1df4a995d529efe71e6708b934ab",
+  "waveSizes": [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 8],
+  "primaryCallLimit": 200,
+  "retryCallLimit": 10,
+  "totalCallLimit": 210,
+  "lifecycle": "candidate",
+  "workflow": {
+    "pilot": false,
+    "review": false,
+    "promotion": false
+  }
+}
