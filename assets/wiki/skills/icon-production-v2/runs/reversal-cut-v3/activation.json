@@ -1,0 +1,91 @@
+{
+	"schemaVersion": "skill-icon-accepted-source-activation-v1",
+	"activationId": "martial-blade-reversal-cut-activation-v2",
+	"targetId": "martial:blade:reversal-cut",
+	"status": "approved-runtime",
+	"normalizationProfile": "skill-art-connected-checkerboard-safe-fit-v1",
+	"review": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/owner-review.json",
+		"contentHash": "d438569b7a49b8836c3c5e831b67d07a0e8a2b5760ff2ea1d1660aa4cf8f4a08"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/provider-sources/martial-blade-reversal-cut-accepted-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1321014,
+		"contentHash": "a874473619143fdb5b2d9a4f7340fbb1cc4ecdd291fe9be517ba3b0179f63e51"
+	},
+	"candidate": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/candidates/martial-blade-reversal-cut-activation-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 386152,
+		"contentHash": "f9a9d4845a5f586a665664f201aa2cf728a77342b5aac0c34f030fcd3e5da049"
+	},
+	"approvedArtMaster": {
+		"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-reversal-cut.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 386152,
+		"contentHash": "f9a9d4845a5f586a665664f201aa2cf728a77342b5aac0c34f030fcd3e5da049"
+	},
+	"compositeMaster": {
+		"path": "assets/wiki/skills/icon-production-v1/masters/composites/martial-blade-reversal-cut.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 515225,
+		"contentHash": "4e15d4368933262111eb47b74ca4f970970e112b7ceedfff5439625bbb8dfc25"
+	},
+	"runtime": [
+		{
+			"path": "apps/web/static/skill-icons/v1/512/martial-blade-reversal-cut.webp",
+			"mediaType": "image/webp",
+			"width": 512,
+			"height": 512,
+			"alphaMode": "rgba",
+			"bytes": 115364,
+			"contentHash": "19487cbcb5ee0087af8d04ad67210e079cc9516197f27967cdc9576ba1a20ee4"
+		},
+		{
+			"path": "apps/web/static/skill-icons/v1/256/martial-blade-reversal-cut.webp",
+			"mediaType": "image/webp",
+			"width": 256,
+			"height": 256,
+			"alphaMode": "rgba",
+			"bytes": 41604,
+			"contentHash": "8fa2edc0b6b7f075e6dfd701779d15e40d67530dfa62710b76bd5256b7123d71"
+		},
+		{
+			"path": "apps/web/static/skill-icons/v1/128/martial-blade-reversal-cut.webp",
+			"mediaType": "image/webp",
+			"width": 128,
+			"height": 128,
+			"alphaMode": "rgba",
+			"bytes": 15082,
+			"contentHash": "40f23d268d3dfb1fb5a9c72bc0a5454251ea8f35e42c03bbc4bfc481065d1ae2"
+		}
+	],
+	"recognition": {
+		"path": "assets/wiki/skills/icon-production-v1/review/recognition/martial-blade-reversal-cut.png",
+		"mediaType": "image/png",
+		"width": 96,
+		"height": 96,
+		"alphaMode": "rgba",
+		"bytes": 14576,
+		"contentHash": "83376c8c64883619ba0df3554384531e8102d4a8d8c076402878cdb3aaad719f"
+	},
+	"inspection": {
+		"fullSize": "pass",
+		"recognition96": "accepted-by-owner-before-deterministic-normalization",
+		"subjectSafeCoverage": 0.977050189485024
+	},
+	"selfPromoted": false
+}

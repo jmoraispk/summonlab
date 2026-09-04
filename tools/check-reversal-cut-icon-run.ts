@@ -75,6 +75,39 @@ const PROMOTION_RECEIPT_PATH =
 	'assets/wiki/skills/icon-production-v1/promotion-receipts/blade-guard-flow-reversal-cut-v2.json';
 const INDIVIDUAL_ATTEMPT_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/individual-attempt-v1.json';
+const ACTIVATION_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json';
+const OWNER_REVIEW_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/owner-review.json';
+
+const ActivationAssetSchema = BoundFileSchema.extend({
+	mediaType: z.enum(['image/png', 'image/webp']),
+	width: z.number().int().positive(),
+	height: z.number().int().positive(),
+	alphaMode: z.literal('rgba'),
+	bytes: z.number().int().positive()
+});
+
+const ActivationSchema = z.object({
+	schemaVersion: z.literal('skill-icon-accepted-source-activation-v1'),
+	activationId: z.literal('martial-blade-reversal-cut-activation-v2'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	status: z.literal('approved-runtime'),
+	review: BoundFileSchema,
+	providerSource: BoundFileSchema.extend({
+		mediaType: z.literal('image/png'),
+		width: z.literal(1254),
+		height: z.literal(1254),
+		alphaMode: z.literal('rgb'),
+		bytes: z.number().int().positive()
+	}),
+	candidate: ActivationAssetSchema,
+	approvedArtMaster: ActivationAssetSchema,
+	compositeMaster: ActivationAssetSchema,
+	runtime: z.tuple([ActivationAssetSchema, ActivationAssetSchema, ActivationAssetSchema]),
+	recognition: ActivationAssetSchema,
+	selfPromoted: z.literal(false)
+});
 
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -97,6 +130,9 @@ export interface ReversalCutIconRunReport {
 	readonly individualStatus: 'failed-provider-envelope';
 	readonly individualJobId: 'martial-blade-reversal-cut-v1';
 	readonly individualAttemptCount: 2;
+	readonly activationStatus: 'approved-runtime';
+	readonly activationId: 'martial-blade-reversal-cut-activation-v2';
+	readonly runtimeSizes: readonly [512, 256, 128];
 }
 
 export async function checkReversalCutIconRun(root: string): Promise<ReversalCutIconRunReport> {
@@ -132,6 +168,9 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	);
 	const reviewBytes = await readFile(path.join(root, REVIEW_PATH));
 	const review = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
+	const activation = ActivationSchema.parse(
+		JSON.parse(await readFile(path.join(root, ACTIVATION_PATH), 'utf8'))
+	);
 	const receipt = SkillIconPromotionReceiptSchema.parse(
 		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
 	);
@@ -179,6 +218,24 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	]);
 	await readBound(root, individualAttempt.catalog);
 	await readBound(root, individualAttempt.lineageAuthority);
+	const [ownerReviewBytes] = await Promise.all([
+		readBound(root, activation.review),
+		readBound(root, activation.providerSource),
+		readBound(root, activation.candidate),
+		readBound(root, activation.approvedArtMaster),
+		readBound(root, activation.compositeMaster),
+		...activation.runtime.map((runtime) => readBound(root, runtime)),
+		readBound(root, activation.recognition)
+	]);
+	if (
+		activation.review.path !== OWNER_REVIEW_PATH ||
+		activation.review.contentHash !== sha256(ownerReviewBytes)
+	) {
+		throw new Error('Runtime activation does not bind the accepted owner review');
+	}
+	if (activation.runtime.map(({ width }) => width).join(',') !== '512,256,128') {
+		throw new Error('Runtime activation does not publish the required size ladder');
+	}
 	if (
 		individualTarget.jobId !== individualAttempt.jobId ||
 		individualAssignment.jobId !== individualAttempt.jobId ||
@@ -231,7 +288,10 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		calibrationStatus: 'approved',
 		individualStatus: individualAttempt.status,
 		individualJobId: individualAttempt.jobId,
-		individualAttemptCount: individualAttempt.attemptCount
+		individualAttemptCount: individualAttempt.attemptCount,
+		activationStatus: activation.status,
+		activationId: activation.activationId,
+		runtimeSizes: [512, 256, 128]
 	};
 }
 

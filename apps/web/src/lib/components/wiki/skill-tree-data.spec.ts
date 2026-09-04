@@ -119,6 +119,11 @@ describe('skill tree navigation data', () => {
 			labels: [],
 			href: '/wiki/mechanics/skills/martial-blade'
 		});
+		expect(skills.find((skill) => skill.name === 'Reversal Cut')).toMatchObject({
+			family: 'Blade',
+			labels: [{ namespace: 'Equipment', value: 'Sword' }],
+			href: '/wiki/mechanics/skills/martial-blade'
+		});
 		expect(skills.find((skill) => skill.name === 'Ember')).toMatchObject({
 			family: 'Elemental',
 			href: '/wiki/mechanics/skills/magical-elemental'

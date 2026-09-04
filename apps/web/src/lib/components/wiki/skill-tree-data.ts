@@ -50,6 +50,7 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 				labels: [equipment('Sword'), equipment('Dagger'), equipment('Greatsword')],
 				skills: [
 					skill('Swordsmanship', bladeHref, [equipment('Sword')]),
+					skill('Reversal Cut', bladeHref, [equipment('Sword')]),
 					skill('Blade Throw', bladeHref, [equipment('Dagger')]),
 					skill('Great Blade', bladeHref, [equipment('Greatsword')]),
 					skill('Two Blades', bladeHref)
