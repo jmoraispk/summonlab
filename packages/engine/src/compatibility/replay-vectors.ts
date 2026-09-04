@@ -469,6 +469,7 @@ const EXPECTATIONS = {
 		finalStateHash: '000ef899bceda61815053ed39434d1a6108c0430dd4647c16cbcaa238a51ad56',
 		legalActionIds: [
 			'master.inspect.gate',
+			'mission.prepare',
 			'simulation.damage.hero.91568a1b-76b3-4591-a7f3-60360ea322ce',
 			'simulation.damage.master'
 		],

@@ -3,6 +3,7 @@ import {
 	EQUIPMENT_DEFINITION_CATALOG,
 	getEquipmentDefinition,
 	IRON_MOON_PACKAGE,
+	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE,
 	TOWER_BAND_01_RUNTIME_PACKAGES,
 	TOWER_BAND_01_STORY_ENVELOPE,
 	TOWER_FLOOR_01_PACKAGE
@@ -13,6 +14,7 @@ import type {
 	EquipmentDefinition,
 	EquipmentLoadoutSlot,
 	EquipmentRank,
+	MissionEquipmentDropFixture,
 	MissionPackage,
 	SettlementDefinition
 } from '@summonlab/contracts';
@@ -57,6 +59,7 @@ let verifiedSettlement: SettlementDefinition | undefined;
 const verifiedMissions = new Map<string, MissionPackage>();
 let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
 let verifiedEquipment = false;
+let verifiedEquipmentDropFixture: MissionEquipmentDropFixture | undefined;
 const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
 
 function verifyEquipmentCatalog(): void {
@@ -87,6 +90,24 @@ export function verifiedEquipmentCatalogBinding(): Readonly<{
 		contentVersion: EQUIPMENT_DEFINITION_CATALOG.contentVersion,
 		contentHash: EQUIPMENT_DEFINITION_CATALOG.contentHash
 	});
+}
+
+export function verifiedMissionEquipmentDropFixture(): Readonly<MissionEquipmentDropFixture> {
+	if (verifiedEquipmentDropFixture) return verifiedEquipmentDropFixture;
+	const fixture = TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE;
+	const { contentHash, ...payload } = fixture;
+	if (hashCanonical(payload) !== contentHash) {
+		throw new Error(
+			`Equipment drop fixture hash drifted: expected ${contentHash}, calculated ${hashCanonical(payload)}`
+		);
+	}
+	const mission = verifiedMissionContent(fixture.missionId);
+	if (!mission.monsterDuties.some((duty) => duty.dutySlotId === fixture.sourceId)) {
+		throw new Error(`Equipment drop source is unavailable: ${fixture.sourceId}`);
+	}
+	verifiedEquipmentDefinition(fixture.definitionId);
+	verifiedEquipmentDropFixture = fixture;
+	return verifiedEquipmentDropFixture;
 }
 
 export function equipmentRankWithBonus(baseRank: EquipmentRank, bonus: 0 | 1 | 2): EquipmentRank {

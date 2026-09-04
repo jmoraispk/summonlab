@@ -3,6 +3,8 @@ import {
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
+	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type EntropyDraw,
 	type MissionRunStateV3,
 	type MissionRunStateV4,
@@ -17,6 +19,7 @@ import { IllegalActionError } from '../../errors.js';
 import { hashCanonical } from '../../hash.js';
 import { normalizedMissionTurnChoices } from './actions.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
+import { buildMissionEquipmentDrop } from './equipment-drop.js';
 import {
 	cancelMissionPreparation,
 	completeMissionExtraction,
@@ -69,12 +72,12 @@ export type MissionCommand = Extract<
 >;
 
 export interface FirstBandMissionCommandConsequences {
-	readonly bandStory: Extract<EngineGameState, { schemaVersion: 23 }>['bandStory'];
-	readonly firstBandArchive: Extract<EngineGameState, { schemaVersion: 23 }>['firstBandArchive'];
+	readonly bandStory: EngineGameStateV23['bandStory'];
+	readonly firstBandArchive: EngineGameStateV23['firstBandArchive'];
 }
 
 export type BuildFirstBandMissionCommandConsequences = (
-	state: Extract<EngineGameState, { schemaVersion: 23 }>,
+	state: EngineGameStateV23 | EngineGameStateV24,
 	eventId: string,
 	transition: Exclude<MissionTransition, 'open-extraction'>,
 	mission: MissionRunStateV8
@@ -182,7 +185,8 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 			state.schemaVersion !== 18 &&
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
-			state.schemaVersion !== 23) ||
+			state.schemaVersion !== 23 &&
+			state.schemaVersion !== 24) ||
 		state.status !== 'active' ||
 		state.master.lifeState !== 'alive' ||
 		command.actorId !== state.master.masterId
@@ -211,7 +215,8 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 			state.schemaVersion !== 18 &&
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
-			state.schemaVersion !== 23
+			state.schemaVersion !== 23 &&
+			state.schemaVersion !== 24
 		)
 			throw new IllegalActionError(command.commandType, []);
 		const choices = normalizedMissionTurnChoices(state, command.choices);
@@ -410,7 +415,8 @@ export function buildMissionEvent(
 		state.schemaVersion !== 18 &&
 		state.schemaVersion !== 19 &&
 		state.schemaVersion !== 20 &&
-		state.schemaVersion !== 23
+		state.schemaVersion !== 23 &&
+		state.schemaVersion !== 24
 	)
 		throw new IllegalActionError(command.commandType);
 	if (command.commandType === 'mission.resolve.turn') {
@@ -424,7 +430,8 @@ export function buildMissionEvent(
 			state.schemaVersion !== 18 &&
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
-			state.schemaVersion !== 23
+			state.schemaVersion !== 23 &&
+			state.schemaVersion !== 24
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'mission.round.resolved');
@@ -438,7 +445,8 @@ export function buildMissionEvent(
 					  state.schemaVersion === 18 ||
 					  state.schemaVersion === 19 ||
 					  state.schemaVersion === 20 ||
-					  state.schemaVersion === 23
+					  state.schemaVersion === 23 ||
+					  state.schemaVersion === 24
 					? resolveMissionCombatTurn(
 							state,
 							command.choices,
@@ -447,7 +455,8 @@ export function buildMissionEvent(
 								state.schemaVersion === 18 ||
 								state.schemaVersion === 19 ||
 								state.schemaVersion === 20 ||
-								state.schemaVersion === 23
+								state.schemaVersion === 23 ||
+								state.schemaVersion === 24
 								? base.eventId
 								: null
 						)
@@ -509,7 +518,8 @@ export function buildMissionEvent(
 					state.schemaVersion === 18 ||
 					state.schemaVersion === 19 ||
 					state.schemaVersion === 20 ||
-					state.schemaVersion === 23) &&
+					state.schemaVersion === 23 ||
+					state.schemaVersion === 24) &&
 				'consequences' in resolution
 					? { consequences: resolution.consequences }
 					: {}),
@@ -566,7 +576,8 @@ export function buildMissionEvent(
 					  state.schemaVersion === 18 ||
 					  state.schemaVersion === 19 ||
 					  state.schemaVersion === 20 ||
-					  state.schemaVersion === 23
+					  state.schemaVersion === 23 ||
+					  state.schemaVersion === 24
 					? `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8).attempt!.turnState.monsters).length} deterministic monster duties activated.`
 					: 'The prepared party crossed the Tower Threshold as one authoritative deployment.';
 	} else if (command.commandType === 'mission.open.extraction') {
@@ -603,7 +614,7 @@ export function buildMissionEvent(
 	}
 	const base = eventBase(state, command, eventType);
 	const firstBandConsequences =
-		state.schemaVersion === 23 && transition !== 'open-extraction'
+		(state.schemaVersion === 23 || state.schemaVersion === 24) && transition !== 'open-extraction'
 			? buildFirstBandConsequences?.(state, base.eventId, transition, mission as MissionRunStateV8)
 			: undefined;
 	const endedDecision =
@@ -638,6 +649,14 @@ export function buildMissionEvent(
 			),
 			...(state.schemaVersion === 15 ? { resourceChanges } : {}),
 			...(firstBandConsequences ?? {}),
+			...(state.schemaVersion === 24
+				? {
+						equipmentDrop:
+							transition === 'extract'
+								? buildMissionEquipmentDrop(state, base.eventId, mission as MissionRunStateV8)
+								: null
+					}
+				: {}),
 			...(endedDecision
 				? {
 						masterControl: endedDecision.control,

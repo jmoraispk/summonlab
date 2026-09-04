@@ -8,14 +8,20 @@ import {
 	EngineGameStateV17Schema,
 	EngineGameStateV20Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EntropyDraw
 } from '@summonlab/contracts';
+import {
+	EQUIPMENT_DEFINITION_CATALOG,
+	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE
+} from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { createEntropyCursor } from '../../entropy.js';
@@ -28,6 +34,7 @@ import {
 	firstBandMissionEventReducer
 } from '../../orchestration/first-band-mission-reducer.js';
 import { MISSION_COMMAND_TYPES, missionCommandHandler } from './commands.js';
+import { createEquipmentItem, equipEquipmentItem } from '../settlement/equipment.js';
 import { retreatMissionAttempt } from './lifecycle.js';
 import { masterFallbackSafetySource } from './master-control.js';
 
@@ -1616,7 +1623,7 @@ describe('mission runtime ownership', () => {
 			);
 			const observedTransitions: string[] = [];
 			const distinctiveConsequenceFailure = (
-				_state: EngineGameStateV23,
+				_state: EngineGameStateV23 | EngineGameStateV24,
 				consequence: { readonly transition: string; readonly sequence: number }
 			): never => {
 				observedTransitions.push(consequence.transition);
@@ -1675,6 +1682,178 @@ describe('mission runtime ownership', () => {
 				(record.event.payload as { transition: string }).transition
 			]);
 		}
+	});
+});
+
+describe('v24 authored equipment extraction drop', () => {
+	it('creates one replay-stable shared-factory item for the lowest-id surviving hero', () => {
+		const lowerHeroId = '31000000-0000-4000-8000-000000000001';
+		const higherHeroId = '31000000-0000-4000-8000-000000000002';
+		const initial = EngineGameStateV24Schema.parse(
+			createBootstrapEngine({
+				runId: deterministicUuid('equipment-drop-run'),
+				seed: 'equipment-drop-seed',
+				heroId: higherHeroId,
+				manifestHash: sha256Hex('equipment-drop-higher-manifest'),
+				additionalHeroes: [
+					{
+						heroId: lowerHeroId,
+						manifestHash: sha256Hex('equipment-drop-lower-manifest')
+					}
+				],
+				developmentMissionScenario: {
+					initialMissionId: 'tower-floor-01',
+					availableMissionIds: ['tower-floor-01'],
+					enableFirstBandArchive: true
+				},
+				developmentEquipmentScenario: { enabled: true }
+			}).snapshot.state
+		);
+		const prepared = applyCommand(
+			initial,
+			missionTestCommand(initial, 'equipment-drop-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [higherHeroId, lowerHeroId]
+			})
+		).state;
+		const deployed = applyCommand(
+			prepared,
+			missionTestCommand(prepared, 'equipment-drop-deploy', {
+				commandType: 'mission.deploy'
+			})
+		).state;
+		const deployedV24 = EngineGameStateV24Schema.parse(deployed);
+		const attempt = deployedV24.mission.attempt!;
+		const extraction = EngineGameStateV24Schema.parse({
+			...deployedV24,
+			mission: {
+				...deployedV24.mission,
+				attempt: {
+					...attempt,
+					status: 'extraction',
+					positions: Object.fromEntries(
+						attempt.party.memberIds.map((memberId) => [memberId, attempt.extractionNodeId])
+					),
+					completedObjectiveIds: ['recover-first-ember'],
+					extractionOpenedAt: deployedV24.simulatedAt,
+					turnState: {
+						...attempt.turnState,
+						objective: {
+							...attempt.turnState.objective,
+							status: 'delivered',
+							carrierId: null,
+							recoveredOnRound: 1,
+							deliveredOnRound: 1
+						}
+					}
+				}
+			}
+		});
+		const beforeItemCount = Object.keys(extraction.items).length;
+		const result = applyCommand(
+			extraction,
+			missionTestCommand(extraction, 'equipment-drop-extract', {
+				commandType: 'mission.extract'
+			})
+		);
+		const event = result.events[0]!;
+		const resultState = EngineGameStateV24Schema.parse(result.state);
+		const payload = event.payload as {
+			equipmentDrop: {
+				fixtureContentVersion: string;
+				fixtureContentHash: string;
+				catalogContentVersion: string;
+				catalogContentHash: string;
+				recipientHeroId: string;
+				item: EngineGameStateV24['items'][string];
+			};
+		};
+		const outcome = payload.equipmentDrop;
+		const dropped = outcome.item;
+
+		expect(Object.keys(resultState.items)).toHaveLength(beforeItemCount + 1);
+		expect(outcome).toMatchObject({
+			fixtureContentVersion: TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE.contentVersion,
+			fixtureContentHash: TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE.contentHash,
+			catalogContentVersion: EQUIPMENT_DEFINITION_CATALOG.contentVersion,
+			catalogContentHash: EQUIPMENT_DEFINITION_CATALOG.contentHash,
+			recipientHeroId: lowerHeroId
+		});
+		expect(dropped).toMatchObject({
+			itemId: deterministicUuid(
+				`${event.eventId}:${TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE.rewardId}:equipment-drop`
+			),
+			definitionId: TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE.definitionId,
+			ownerId: lowerHeroId,
+			durability: 80,
+			maxDurability: 100,
+			origin: {
+				kind: 'dropped',
+				missionId: 'tower-floor-01',
+				rewardId: 'ember-hauler-bronze-dagger',
+				sourceId: 'goblin-ember-hauler'
+			}
+		});
+
+		const replayed = firstBandMissionEventReducer.reduce(extraction, event);
+		expect(replayed).toStrictEqual(result.state);
+		expect(() => firstBandMissionEventReducer.reduce(result.state, event)).toThrow(
+			'Equipment mission transition version diverged'
+		);
+		const tampered = {
+			...event,
+			payload: {
+				...event.payload,
+				equipmentDrop: { ...outcome, fixtureContentHash: '0'.repeat(64) }
+			}
+		};
+		expect(() => firstBandMissionEventReducer.reduce(extraction, tampered)).toThrow(
+			'Equipment mission transition payload diverged'
+		);
+
+		const forged = createEquipmentItem({
+			itemId: deterministicUuid('equipment-drop-forged-comparison'),
+			definitionId: dropped.definitionId,
+			ownerId: lowerHeroId,
+			craftsmanship: { label: 'standard', bonus: 0 },
+			origin: {
+				kind: 'forged',
+				forgeEventId: deterministicUuid('equipment-drop-forge-event'),
+				crafterId: lowerHeroId
+			}
+		});
+		const {
+			itemId: _dropId,
+			origin: _dropOrigin,
+			durability: _dropDurability,
+			...dropAuthoredFields
+		} = dropped;
+		const {
+			itemId: _forgeId,
+			origin: _forgeOrigin,
+			durability: _forgeDurability,
+			...forgeAuthoredFields
+		} = forged;
+		expect(dropAuthoredFields).toStrictEqual(forgeAuthoredFields);
+		expect(dropped.durability).not.toBe(forged.durability);
+		const definition = EQUIPMENT_DEFINITION_CATALOG.definitions.find(
+			(candidate) => candidate.definitionId === dropped.definitionId
+		)!;
+		expect(definition).toMatchObject({
+			materialId: 'bronze',
+			materialRank: 'F',
+			equipmentClass: 'dagger',
+			slot: 'main-hand',
+			handedness: 'one-handed',
+			approvedVisualAssetKey: 'equipment-v1-f-bronze-dagger',
+			runtimeCardAlias: 'equipment.equipment-v1-f-bronze-dagger.card',
+			runtimeDetailAlias: 'equipment.equipment-v1-f-bronze-dagger.detail'
+		});
+		const equipped = equipEquipmentItem(resultState, {
+			heroId: lowerHeroId,
+			itemId: dropped.itemId
+		});
+		expect(equipped.heroes[lowerHeroId]!.equipment.mainHand).toBe(dropped.itemId);
 	});
 });
 

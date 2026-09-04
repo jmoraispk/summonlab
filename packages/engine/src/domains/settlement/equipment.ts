@@ -1,19 +1,16 @@
 import {
-	EngineEquipmentItemStateV24Schema,
 	EngineGameStateV24Schema,
 	type EngineEquipmentItemStateV24,
 	type EngineGameStateV24,
-	type EquipmentCraftsmanship,
-	type EquipmentLoadoutSlot,
-	type EquipmentOrigin
+	type EquipmentLoadoutSlot
 } from '@summonlab/contracts';
 
 import { ReplayIntegrityError } from '../../errors.js';
-import {
-	equipmentRankWithBonus,
-	equipmentSlotIsLegal,
-	verifiedEquipmentDefinition
-} from '../../core/content-bindings.js';
+import { equipmentSlotIsLegal, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
+import { createEquipmentItem } from '../../core/equipment.js';
+
+export { createEquipmentItem } from '../../core/equipment.js';
+export type { CreateEquipmentItemInput } from '../../core/equipment.js';
 
 export { validateEquipmentStateContent } from '../../core/content-bindings.js';
 
@@ -28,37 +25,10 @@ export const LEGACY_EQUIPMENT_TEMPLATE_BINDINGS = Object.freeze({
 	})
 } as const);
 
-export interface CreateEquipmentItemInput {
-	readonly itemId: string;
-	readonly definitionId: string;
-	readonly ownerId: string;
-	readonly craftsmanship: EquipmentCraftsmanship;
-	readonly origin: EquipmentOrigin;
-	readonly equippedById?: string | null;
-	readonly durability?: number;
-	readonly maxDurability?: number;
-}
-
 export interface EquipEquipmentItemInput {
 	readonly heroId: string;
 	readonly itemId: string;
 	readonly targetSlot?: EquipmentLoadoutSlot;
-}
-
-export function createEquipmentItem(input: CreateEquipmentItemInput): EngineEquipmentItemStateV24 {
-	const definition = verifiedEquipmentDefinition(input.definitionId);
-	const maxDurability = input.maxDurability ?? 100;
-	return EngineEquipmentItemStateV24Schema.parse({
-		itemId: input.itemId,
-		definitionId: definition.definitionId,
-		ownerId: input.ownerId,
-		equippedById: input.equippedById ?? null,
-		craftsmanship: input.craftsmanship,
-		finalRank: equipmentRankWithBonus(definition.materialRank, input.craftsmanship.bonus),
-		durability: input.durability ?? maxDurability,
-		maxDurability,
-		origin: input.origin
-	});
 }
 
 export function equipmentItemDisplayName(

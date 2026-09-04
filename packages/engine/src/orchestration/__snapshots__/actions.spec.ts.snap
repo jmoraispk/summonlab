@@ -3855,6 +3855,20 @@ exports[`orchestration legal actions > preserves complete ordered Master and act
         "targetIds": [],
       },
       {
+        "actionId": "mission.prepare",
+        "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        "description": "Reserve the Master and up to four ready heroes at the Tower Threshold.",
+        "kind": "interact",
+        "label": "Prepare Floor 01 · The Unlit Muster party",
+        "resourceCosts": {},
+        "tags": [
+          "mission",
+          "preparation",
+          "content-bound",
+        ],
+        "targetIds": [],
+      },
+      {
         "actionId": "simulation.damage.hero.5b3a17f8-45ee-414d-948b-ad55185d16ad",
         "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
         "description": "Development proof for injury, terminal state, and schedule cancellation.",

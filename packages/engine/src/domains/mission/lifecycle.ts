@@ -68,7 +68,8 @@ export type MissionEngineState =
 	| EngineGameStateV20
 	| EngineGameStateV21
 	| EngineGameStateV22
-	| EngineGameStateV23;
+	| EngineGameStateV23
+	| EngineGameStateV24;
 export type MissionEngineRunState =
 	| MissionRunState
 	| MissionRunStateV2
@@ -83,7 +84,8 @@ export function parseMissionRunState(
 	state: MissionEngineState,
 	value: unknown
 ): MissionEngineRunState {
-	return state.schemaVersion === 23 ||
+	return state.schemaVersion === 24 ||
+		state.schemaVersion === 23 ||
 		state.schemaVersion === 22 ||
 		state.schemaVersion === 21 ||
 		state.schemaVersion === 20 ||
@@ -195,7 +197,8 @@ export function prepareMissionAttempt(
 			(state.schemaVersion === 18 ||
 				state.schemaVersion === 19 ||
 				state.schemaVersion === 20 ||
-				state.schemaVersion === 23) &&
+				state.schemaVersion === 23 ||
+				state.schemaVersion === 24) &&
 			prior.status === 'success'
 		)
 	) {
@@ -211,7 +214,8 @@ export function prepareMissionAttempt(
 		...(state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 			? {
 					aftermath: {
 						...state.mission.aftermath,
@@ -354,7 +358,8 @@ export function prepareMissionAttempt(
 						  state.schemaVersion === 18 ||
 						  state.schemaVersion === 19 ||
 						  state.schemaVersion === 20 ||
-						  state.schemaVersion === 23
+						  state.schemaVersion === 23 ||
+						  state.schemaVersion === 24
 						? {
 								turnState: {
 									turnVersion: 'mission-turn-v2',
@@ -424,7 +429,9 @@ export function reviseMissionParty(
 			state.schemaVersion === 17 ||
 			state.schemaVersion === 18 ||
 			state.schemaVersion === 19 ||
-			state.schemaVersion === 20
+			state.schemaVersion === 20 ||
+			state.schemaVersion === 23 ||
+			state.schemaVersion === 24
 				? {
 						turnState: {
 							...state.mission.attempt!.turnState,
@@ -496,7 +503,8 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy)
 			: null;
 	if (combat) entropy = combat.entropy;
@@ -519,7 +527,8 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 							state.schemaVersion === 18 ||
 							state.schemaVersion === 19 ||
 							state.schemaVersion === 20 ||
-							state.schemaVersion === 23
+							state.schemaVersion === 23 ||
+							state.schemaVersion === 24
 								? state.mission.attempt!.turnState
 								: {}),
 							monsters: combat.monsters,
