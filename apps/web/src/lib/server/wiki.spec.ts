@@ -81,6 +81,21 @@ describe('online wiki registry', () => {
 		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });
 	});
 
+	it('parses the current monster production presentation states', () => {
+		const parsed = parseMonsterVisualIndexV2(monsterIndex);
+		const statuses = new Set(
+			parsed.monsters.flatMap((monster) =>
+				monster.variants.map((variant) => variant.presentationStatus)
+			)
+		);
+
+		expect([...statuses].sort()).toEqual([
+			'approved-review',
+			'blocked-on-anchor',
+			'candidate-only'
+		]);
+	});
+
 	it('rejects invalid v2 literal values at the JSON server boundary', () => {
 		const invalid = structuredClone(monsterIndex) as unknown as {
 			monsters: Array<{ tier: string }>;
