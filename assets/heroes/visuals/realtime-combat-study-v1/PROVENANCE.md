@@ -217,26 +217,34 @@ reproducible and do not depend on Codex-managed temporary storage.
   (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`).
 - Action authority: `classical-human-run-5`; visible support sequence: `left, left, none, right,
   right`.
-- Selected generation original: `exec-bd79d1ad-def1-42ec-9f2c-8ba3d35668d1.png`
-  (`bc0c48141c891f92fab515024575fd7d8d6884836a13dc9cb70129209f7d4791`).
+- Independent review rejected the first v4 submission because its frame-3 mace was elongated to the
+  plant baseline and the per-cell source normalization caused visible scale variation. That
+  submission is superseded and not retained as the project strip.
+- Selected generation original: `exec-3855ea8f-2aeb-4216-9722-52bd21d332ed.png`
+  (`a7d82acca4a132d2f8a5fc399e7c8dddc7c7844f0e98a99bf692901752f04b80`).
 - Project strip: `animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v4.png`
-  (`bc0c48141c891f92fab515024575fd7d8d6884836a13dc9cb70129209f7d4791`).
+  (`a7d82acca4a132d2f8a5fc399e7c8dddc7c7844f0e98a99bf692901752f04b80`).
 - Project sheet: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png`
-  (`9c513f0ffd0447fdd37a05551b969346ef5fd98eb09245cc2abc50844699b165`).
+  (`0a751496ecd72743dba97051231f5c34fb67e7dbab0637df0a6e0531399481dc`).
+- Support evidence: `animation-canary-v1/iron-guardian/iron-guardian-motion-support-v4.json`
+  (`e1f66bfd39f2dc6f3c7421b998e17de6f8c0fcd12f84a05f51079b91707d729e`).
 - Runtime atlas: `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.png`
-  (`6b10d4ee67fd166e049de884d8117c28d27bc68a09a084f1be5d6452670a6756`).
+  (`4a53c67d6ea9a6bb4bcb0846734a164fa92ede0f09d967db549566187ed2d36c`).
 - Mode: built-in Codex image generation, with the five poses authored as one temporal strip from the
   v3 sheet, identity cutout, and repository action diagram, followed by bounded built-in
-  precise-object edits to make the visible contact anatomy survive deterministic bottom alignment.
+  precise-object edits. Final assembly applies one common source scale to all five generated cells;
+  frame 3 receives an 18-pixel white source gap and a v4-only 18-pixel upward translation inside its
+  transparent runtime cell after the standard build. Equipment is not used as a registration anchor.
 - Exact final prompt:
 
   ```text
   Use case: precise-object-edit
   Asset type: production source strip for a five-frame game-character run animation
-  Primary request: Change only Toma's right arm and mace in the CENTER/THIRD airborne cell of Image 1. Swing his right arm down naturally during flight so the complete mace head hangs substantially LOWER than both airborne boot soles, while remaining firmly gripped in his right hand. The mace head must be the lowest non-white point in cell 3, with at least a full boot-height of uninterrupted white visible below both boots before the level of the mace head. This low hanging mace preserves visible air under both feet when the cell is bottom-aligned during deterministic sheet assembly.
-  Preserve all five leg poses exactly. Preserve cells 1, 2, 4, and 5 unchanged. Cell 1 and 2 keep the shield-side/anatomical-left foot support; cell 3 keeps NEITHER boot planted; cells 4 and 5 keep mace-side/anatomical-right foot support. Preserve the opposite-contact silhouettes in cells 1 and 4.
-  Invariants: exact Toma identity, gray topknot, beard, stocky adult proportions, navy-and-teal armor, bronze shield on left arm, same compact mace in right hand, handedness, steep three-quarter up-field camera, body scale, lighting, pure uniform white matte, full-body/equipment clearance, and painterly 2.5D finish.
-  Avoid: changing the airborne legs or boot positions; adding any ground line, cast/contact shadow, ground ellipse or floor mark; changing other cells; scenery; text; dividers; crop; mirrored or swapped equipment; extra/missing limbs; identity/costume/camera/scale/lighting drift.
+  Primary request: Edit Image 1 using Image 2 only as a spatial annotation guide. In the FIRST/LEFTMOST cell only: lift and bend backward the boot circled RED and labeled LIFT THIS in Image 2, leaving a large clear band of white below its entire sole. Lower and flatten the boot circled GREEN and labeled PLANT so it alone bears Toma's weight on the shared baseline. Remove all guide circles, arrows, and text; none may appear in the result.
+  Input images: Image 1 is the clean edit target. Image 2 is an annotation guide only. Image 3 is Toma's accepted v3 design/camera/style reference. Image 4 is Toma's accepted identity reference.
+  Preserve cells 2, 3, 4, and 5 exactly. Preserve every other part of cell 1 unchanged. The final strip must visibly read: cell 1 shield-side/anatomical-left foot only; cell 2 shield-side/anatomical-left foot only; cell 3 neither foot with white air under both boots; cell 4 mace-side/anatomical-right foot only; cell 5 mace-side/anatomical-right foot only.
+  Constraints: pure uniform white matte; no shadow or ground mark; exact face, gray topknot, beard, stocky proportions, navy-and-teal armor, left bronze shield, right mace, handedness, camera, scale, lighting, full-body clearance, and painterly 2.5D finish.
+  Avoid: guide graphics or text in output; changes outside the circled boots/legs in cell 1; shadows; scenery; dividers; crop; mirroring; equipment changes; extra/missing limbs; identity/style drift.
   ```
 
 - Row preservation after decoded raw-pixel extraction: one-based row 1 is identical between v3 and
@@ -247,8 +255,11 @@ reproducible and do not depend on Codex-managed temporary storage.
   retain shield-side left support; frame 3 has neither boot planted and clear white below both soles;
   frame 4 lands on the mace-side right foot in a silhouette distinct from frame 1; frame 5 recovers
   over that right foot toward the loop return. Toma retains his face, gray topknot, beard, stocky
-  proportions, navy-and-teal armor, left bronze shield, right mace, camera, and white matte. No baked
-  shadow, scenery, text, mirror, equipment swap, or extra limb was observed at source or runtime size.
+  proportions, navy-and-teal armor, left bronze shield, compact right mace, camera, and white matte.
+  Runtime shield heights are `76, 72, 77, 75, 74` pixels; frame-5 to frame-1 shield-size change is 2
+  pixels, while overall alpha width changes from 168 to 180 pixels because the contact pose opens its
+  stride. No scale snap, ground-dragging weapon, baked shadow, scenery, text, mirror, equipment swap,
+  or extra limb was observed in the 184-pixel, three-loop review.
 - Build command/result: `node tools/build-realtime-combat-motion-pack.mjs --actor iron-guardian
   --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png
   --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian
