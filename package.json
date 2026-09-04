@@ -137,6 +137,8 @@
 		"validate:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --check",
 		"validate:wiki-affinities": "tsx tools/affinity-wiki-contract.ts",
 		"validate:skill-taxonomy": "tsx tools/validate-skill-taxonomy.ts",
+		"export:wiki-skill-visual-catalog": "tsx tools/export-wiki-skill-visual-catalog.ts --write",
+		"validate:wiki-skill-visual-catalog": "tsx tools/export-wiki-skill-visual-catalog.ts --check",
 		"export:skill-icons": "tsx tools/export-skill-icon-production.ts --write",
 		"check:skill-icon-catalog": "tsx tools/export-skill-icon-production.ts --check",
 		"export:skill-icon-mass-production": "tsx tools/export-skill-icon-mass-production.ts",
