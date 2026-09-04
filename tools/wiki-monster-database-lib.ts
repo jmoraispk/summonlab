@@ -693,13 +693,22 @@ states; this export promotes nothing.
 
 ${familySections}
 
-## Current class reconciliation
+## Planned fauna expansion — separate production set
 
-The forty earlier class identities are reconciled exactly once below. Ten map or rename-map into
-the 150 canonical forms. The other thirty are useful secondary roles or expedition fauna retained
-as bridge-only identities; they are not “missing” canonical forms and do not increase the 150-form
-count. Their 160 old public images remain candidate-only reference evidence. Every reuse flag is
-false, so none is automatically accepted for a canonical coordinate.
+The completed 30-family matrix above remains frozen and will not be regenerated. Nine accepted new
+fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, Raptors, and
+Rodents—add 45 designed T1–T5 forms in a separate future 225-coordinate production set. No targets
+or images for that expansion have been created yet. See the
+[fauna family expansion](../fauna-family-expansion.md) for its progression and status boundaries.
+
+## Completed v1 class reconciliation
+
+The forty earlier class identities were reconciled below for the completed 30-family production
+program. This table remains immutable historical production provenance because its source bindings
+are hashed into that program. The accepted fauna expansion supersedes the future design disposition
+of Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, Burrowing Worm, Armored Brood Guard, Death Knight,
+and Cave Drake without rewriting completed targets. Their old images remain candidate-only reference
+evidence, and none is automatically accepted for a new coordinate.
 
 ### Current class reconciliation
 

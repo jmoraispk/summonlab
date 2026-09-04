@@ -2,6 +2,12 @@
 
 **Status:** owner-approved production plan
 
+> **Historical completion boundary (2026-09-04):** This plan belongs only to the original
+> 30-family, 750-coordinate matrix. That matrix is complete and must not be regenerated. The owner
+> replaced all prospective legacy-bridge expansion work with nine new fauna families documented in
+> [the fauna expansion design](../specs/2026-09-04-fauna-family-expansion-design.md). Any future image
+> run must use a new `fauna-family-v1` manifest and may target only its 225 new coordinates.
+
 **Objective:** Produce the complete enemy-owned canonical visual matrix—30 families, 150 T1–T5
 forms, and 750 individual Normal/Fire/Earth/Wind/Water images—without requesting owner visual
 decisions during production. Preserve strict provenance, collision-safe versioning, candidate-only

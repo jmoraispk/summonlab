@@ -15,6 +15,10 @@ families and 150 forms. It publishes family classification caveats, visual const
 combat duties, teaching goals, telegraphs, counterplay, lower-form interactions, and the complete
 750-coordinate production plan.
 
+The accepted [fauna family expansion](../fauna-family-expansion.md) adds nine separately planned
+families and 45 designed forms. Its future queue contains only 225 new coordinates; it does not
+reopen or regenerate the original 750.
+
 Family means a shared visual and encounter grammar. It does not automatically mean species,
 ancestry, faction, personhood, culture, morality, or universal hostility. The individual family
 packets preserve those caveats rather than silently converting generator language into accepted
@@ -50,8 +54,11 @@ Candidate, approved-review, and runtime remain separate states.
 The prior forty-class visual database is an input, not an additional family roster. Ten identities
 map or rename-map into canonical forms. Thirty remain useful secondary archetypes or expedition
 fauna outside the 150-form count. Their earlier public images remain candidate-only references, and
-none is automatically eligible for canonical reuse. The exact forty-row ledger appears in the
-[canonical monster database](../monsters/README.md#current-class-reconciliation).
+none is automatically eligible for canonical reuse. The completed program's exact forty-row ledger
+appears in the
+[canonical monster database](../monsters/README.md#completed-v1-class-reconciliation). The fauna
+expansion supersedes the future treatment of its five animal identities plus Armored Brood Guard,
+Death Knight, and Cave Drake without rewriting that historical production mapping.
 
 ## Required entry depth
 

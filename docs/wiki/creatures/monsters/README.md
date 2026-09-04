@@ -782,13 +782,22 @@ states; this export promotes nothing.
 | T4 — Champion | [Facewearer](doppelganger-facewearer.md) | Three-Face Champion (Champion) | Control three alternating attack rules by rotating layered faces to the front of an otherwise flawless copy. | Teach that the rear mask edge moves before the next face and remains vulnerable after the transition. | Front in Turn: three layered faces rotate through the front position, each calling a learned reach, cut, or mirrored response while the vacated edge stays open. | Two mask profiles slide backward and the third face becomes unnaturally still before its rule begins. | Read the incoming profile, answer its familiar rule, and strike the trailing mask edge after it rotates away. | Blank, Halfling Copy, and Mimic each supply one face rule; disabling that lower form leaves its layer unable to close. |
 | T5 — Sovereign | [Faceless Sovereign](doppelganger-faceless-sovereign.md) | Many-Face Sovereign (Sovereign) | Transform a copy arena through body-wide face processions while the mask crown commands learned lower-form defects. | Test blank wrists, unfinished sides, wrong joints, and rotating mask edges while each removed crown mask strips one copied phase from the body. | Arena Transformation — Parade of Faces: one mask-crown segment lowers, body-wide faces stream from chest to arms and back, and the sovereign copies a lower Doppelganger rule until its source defect reaches the crown latch. | Borrowed colors move across the smooth flesh, one crown mask tips forward, and the called lower-form defect appears on the last face in the procession. | Answer the announced copied rule and strike the crown latch when its source defect arrives; each removed mask erases one procession and reveals more blank native flesh. | Blank, Halfling Copy, Mimic, and Facewearer each define one mask-crown phase; solving its defect exposes the linked latch. |
 
-## Current class reconciliation
+## Planned fauna expansion — separate production set
 
-The forty earlier class identities are reconciled exactly once below. Ten map or rename-map into
-the 150 canonical forms. The other thirty are useful secondary roles or expedition fauna retained
-as bridge-only identities; they are not “missing” canonical forms and do not increase the 150-form
-count. Their 160 old public images remain candidate-only reference evidence. Every reuse flag is
-false, so none is automatically accepted for a canonical coordinate.
+The completed 30-family matrix above remains frozen and will not be regenerated. Nine accepted new
+fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, Raptors, and
+Rodents—add 45 designed T1–T5 forms in a separate future 225-coordinate production set. No targets
+or images for that expansion have been created yet. See the
+[fauna family expansion](../fauna-family-expansion.md) for its progression and status boundaries.
+
+## Completed v1 class reconciliation
+
+The forty earlier class identities were reconciled below for the completed 30-family production
+program. This table remains immutable historical production provenance because its source bindings
+are hashed into that program. The accepted fauna expansion supersedes the future design disposition
+of Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, Burrowing Worm, Armored Brood Guard, Death Knight,
+and Cave Drake without rewriting completed targets. Their old images remain candidate-only reference
+evidence, and none is automatically accepted for a new coordinate.
 
 ### Current class reconciliation
 
