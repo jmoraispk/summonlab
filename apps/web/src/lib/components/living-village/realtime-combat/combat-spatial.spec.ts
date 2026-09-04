@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	WELL_OBSTACLE,
+	arenaBounds,
+	clampToArena,
 	engagementPoint,
 	engagementRange,
 	isInsideObstacle,
 	pushOutsideObstacle,
 	routeAroundObstacle,
 	segmentCrossesObstacle,
-	separationSteering,
 	type SpatialActor
 } from './combat-spatial';
 
@@ -67,10 +68,16 @@ describe('combat spatial layout', () => {
 		expect(engagementRange(brute, hero)).toBeGreaterThan(hero.range);
 	});
 
-	it('steers overlapping actors away from one another', () => {
-		const first = rat('plague-rat-1', 0.4, 0.4);
-		const second = rat('plague-rat-2', 0.41, 0.4);
-		const steering = separationSteering(first, [first, second]);
-		expect(steering.x).toBeLessThan(0);
+	it('keeps large actors farther inside the visible stage than small rats', () => {
+		const brute: SpatialActor = {
+			...rat('rat-brute', 0.99, 0.99),
+			role: 'brute'
+		};
+		const clampedBrute = clampToArena(brute, brute);
+		const clampedRat = clampToArena(rat('plague-rat-1', 0.99, 0.99), { x: 0.99, y: 0.99 });
+
+		expect(clampedBrute.x).toBe(arenaBounds(brute).maximumX);
+		expect(clampedRat.x).toBe(arenaBounds(rat('plague-rat-1', 0, 0)).maximumX);
+		expect(clampedBrute.x).toBeLessThan(clampedRat.x);
 	});
 });

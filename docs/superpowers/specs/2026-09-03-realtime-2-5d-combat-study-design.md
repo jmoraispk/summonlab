@@ -70,10 +70,11 @@ changing the encounter.
 The accepted canary now drives Asha and every lesser-rat instance from shared atlases with independent
 phase offsets. The remaining hero and brute packs are deferred production work, not a rejection of
 animation. Until those packs exist, readability takes priority through stable target-relative
-engagement slots, continuous separation, larger-body clearance, foot-anchored directional shadows,
-and a solid well footprint whose occlusion follows world depth rather than a blanket foreground
-layer. These changes remain presentation and navigation concerns; target selection and combat
-resolution stay authoritative in the autonomous simulation.
+approach slots, a locked attack stance with exit hysteresis, role-aware stage margins, foot-anchored
+directional shadows, and an enlarged solid well footprint whose occlusion follows world depth rather
+than a blanket foreground layer. Actor-to-actor repulsion is excluded because it caused continuous
+formation churn and running-in-place. These changes remain presentation and navigation concerns;
+target selection and combat resolution stay authoritative in the autonomous simulation.
 
 ## Reference findings
 

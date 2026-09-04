@@ -173,11 +173,12 @@ begins with an authored Asha-and-lesser-rat canary rather than applying low-qual
 whole cast. The canary is accepted for Asha and all lesser-rat instances; authored packs for Toma,
 Nessa, and the brute are an explicitly accepted later pass.
 
-Combat spacing is silhouette-aware. Actors pursue stable engagement slots around their targets,
-continue separating while attacking, and reserve more screen space for larger bodies. The V2 well
-has a solid elliptical navigation footprint and participates in the same foot-anchor depth ordering
-as actors, so it occludes only characters actually behind it. Contact shadows are world siblings
-anchored to rendered feet rather than children inheriting attack animation transforms.
+Combat spacing is silhouette-aware. Actors use stable engagement slots while approaching, then lock
+in place while their target remains within a small exit threshold; actor-to-actor repulsion must not
+create orbiting or running-in-place. Role-aware arena margins keep full silhouettes on stage. The V2
+well has an enlarged solid elliptical navigation footprint and participates in the same foot-anchor
+depth ordering as actors, so it occludes only characters actually behind it. Contact shadows are
+world siblings anchored to rendered feet rather than children inheriting attack transforms.
 
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and

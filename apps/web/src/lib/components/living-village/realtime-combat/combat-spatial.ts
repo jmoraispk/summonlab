@@ -19,9 +19,16 @@ export type EllipseObstacle = Readonly<{
 export const WELL_OBSTACLE: EllipseObstacle = {
 	centerX: 0.674,
 	centerY: 0.35,
-	radiusX: 0.094,
-	radiusY: 0.066
+	radiusX: 0.108,
+	radiusY: 0.078
 };
+
+export type ArenaBounds = Readonly<{
+	minimumX: number;
+	maximumX: number;
+	minimumY: number;
+	maximumY: number;
+}>;
 
 const clamp = (value: number, minimum: number, maximum: number): number =>
 	Math.min(maximum, Math.max(minimum, value));
@@ -112,6 +119,24 @@ const slotOrdinal = (actor: SpatialActor): number => {
 const collisionRadius = (actor: SpatialActor): number =>
 	actor.role === 'brute' ? 0.065 : actor.role === 'swarm' ? 0.025 : 0.04;
 
+export function arenaBounds(actor: SpatialActor): ArenaBounds {
+	const horizontalMargin = actor.role === 'brute' ? 0.16 : actor.role === 'swarm' ? 0.09 : 0.13;
+	return {
+		minimumX: horizontalMargin,
+		maximumX: 1 - horizontalMargin,
+		minimumY: actor.role === 'brute' ? 0.16 : 0.08,
+		maximumY: 0.91
+	};
+}
+
+export function clampToArena(actor: SpatialActor, point: CombatPoint): CombatPoint {
+	const bounds = arenaBounds(actor);
+	return {
+		x: clamp(point.x, bounds.minimumX, bounds.maximumX),
+		y: clamp(point.y, bounds.minimumY, bounds.maximumY)
+	};
+}
+
 export function engagementRange(actor: SpatialActor, target: SpatialActor): number {
 	return Math.max(actor.range, (collisionRadius(actor) + collisionRadius(target)) * 0.96);
 }
@@ -122,34 +147,12 @@ export function engagementPoint(actor: SpatialActor, target: SpatialActor): Comb
 	const angles = actor.team === 'heroes' ? heroAngles : ratAngles;
 	const angle = angles[slotOrdinal(actor) % angles.length]!;
 	const reach = engagementRange(actor, target) * (actor.role === 'archer' ? 0.88 : 0.82);
-	return {
-		x: clamp(target.x + Math.cos(angle) * reach, 0.07, 0.93),
-		y: clamp(target.y + (Math.sin(angle) * reach) / 1.18, 0.07, 0.93)
-	};
-}
-
-export function separationSteering(
-	actor: SpatialActor,
-	actors: readonly SpatialActor[]
-): CombatPoint {
-	let x = 0;
-	let y = 0;
-	for (const other of actors) {
-		if (other.id === actor.id || other.health <= 0) continue;
-		const deltaX = actor.x - other.x;
-		const deltaY = (actor.y - other.y) * 1.18;
-		const distance = Math.hypot(deltaX, deltaY);
-		const minimum = collisionRadius(actor) + collisionRadius(other);
-		if (distance >= minimum) continue;
-		const safeDistance = distance || 0.0001;
-		const strength = (minimum - distance) / minimum;
-		x += (deltaX / safeDistance || stableSide(actor.id)) * strength;
-		y += ((deltaY / safeDistance || -1) * strength) / 1.18;
-	}
-	const length = Math.hypot(x, y);
-	return length > 1 ? { x: x / length, y: y / length } : { x, y };
+	return clampToArena(actor, {
+		x: target.x + Math.cos(angle) * reach,
+		y: target.y + (Math.sin(angle) * reach) / 1.18
+	});
 }
 
 export function actorCollisionPadding(actor: SpatialActor): number {
-	return collisionRadius(actor) * 0.45;
+	return collisionRadius(actor) * 0.72;
 }
