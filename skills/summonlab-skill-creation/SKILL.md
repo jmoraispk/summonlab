@@ -11,9 +11,38 @@ must describe the same skill.
 Before editing, read [repository-workflow.md](references/repository-workflow.md). Choose its
 **existing-family** or **new-family** route.
 
+## Minimal invocation and intake
+
+A skill name is a complete invocation. For example:
+
+`$summonlab-skill-creation Reversal Cut`
+
+When the request supplies only a name or an incomplete concept, inspect the current repository
+read-only and make the strongest coherent initial proposal. The first user-facing response must be
+only a compact proposed brief containing:
+
+- skill name;
+- Domain and Family;
+- rarity and type;
+- optional Equipment or Element label when applicable;
+- requirements and effect;
+- motif family, lineage position, and immediate visual parent or standalone status;
+- concrete icon subject, supporting cue, palette, and exclusions.
+
+Derive the stable target ID, provenance route, production revision, file paths, and validation work
+without asking the user to remember them. Mark genuinely uncertain product assumptions, offer an
+alternative only when two interpretations materially differ, and end with one request to approve or
+correct the proposed brief. Do not begin edits or image production before that confirmation. Do not
+explain repository procedure in the intake unless a blocking product choice depends on it.
+
+If the request already contains some fields, preserve them and propose only the missing decisions in
+the same complete brief. After approval, execute the encoded workflow without asking the user to
+restate implementation details.
+
 ## Authoring contract
 
-Resolve and record this brief before implementation:
+Resolve and record this brief before implementation. The agent proposes it; the user only approves
+or corrects product decisions:
 
 | Field      | Required decision                                                    |
 | ---------- | -------------------------------------------------------------------- |
@@ -41,9 +70,10 @@ Use current repository files as authority; never copy catalog totals from this s
 
 ## Stop conditions
 
-Stop on missing authoring authority. Never invent provenance, overwrite historical evidence, reuse
-a sibling icon, enlarge a family-sheet cell, or call a candidate approved. If schemas accept only
-migrated legacy rows, extend and test explicit net-new provenance; never falsify legacy inventory.
+Stop if the user has not confirmed the proposed product brief or if repository authority remains
+ambiguous after inspection. Never invent provenance, overwrite historical evidence, reuse a sibling
+icon, enlarge a family-sheet cell, or call a candidate approved. If schemas accept only migrated
+legacy rows, extend and test explicit net-new provenance; never falsify legacy inventory.
 
 ## Quick reference
 
