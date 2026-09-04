@@ -96,6 +96,49 @@ reproducible and do not depend on Codex-managed temporary storage.
   every other row, the rat's identity, infection markings, camera, palette, mass, fixed baseline, and
   white matte; do not add scenery, text, shadows, props, cropping, or design drift.
 
+### Toma / iron guardian motion sheet
+
+- Generation original: `exec-c5171e8b-24e7-4ceb-b96d-ec0ceaa4e62b.png`
+- Project source: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v1.png`
+- Source SHA-256: `c32d30711b625fa999071ed791c3130446bad8d87f4223b75b9c7b74c3b559e5`
+- Runtime atlas SHA-256: `c853e2eb86c7e7f4638f9b1b5c8d6f9512ec5f28c538e2368b6dc2581365dd7d`
+- Mode: built-in Codex image generation with identity and layout references.
+- Final prompt: preserve Toma's exact face, gray topknot, beard, iron-blue armor, left-arm round
+  shield, and right-hand mace in a precise five-by-four sheet. Author five idles, an alternating
+  armored advance, a shield-and-mace attack, two equipped hit reactions, and three defeat poses on a
+  uniform white matte. Preserve camera, adult proportions, palette, lighting, handedness, and
+  identity; no mirroring, equipment swap, extra figures, crop, scenery, text, or shadow.
+
+### Nessa / moss archer motion sheet
+
+- Initial generation original: `exec-54946f93-fa60-4fd7-91b3-cf2d4f3679f0.png`
+- Selected corrected generation original: `exec-92622f81-2555-42a5-bada-e8037ddcbab3.png`
+- Project source: `animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v1.png`
+- Source SHA-256: `2194d6a3a8622b7879743fe5ea08f2e71dc9b6b540bb483b1d2b021d7337ce4a`
+- Runtime atlas SHA-256: `1186df30ee2455da96ee6a92a979a6d66ab803ce356a30dfc4c49bda11dc89be`
+- Mode: built-in Codex image generation followed by one identity-preserving edit.
+- Final prompt set: preserve Nessa's exact face, copper curls, moss mantle, travel armor, quiver, and
+  recurved bow in a precise five-by-four sheet. Author five idles, an alternating agile advance, a
+  mechanically readable nock-draw-release-recovery attack, two hit reactions, and three defeat poses
+  on a uniform white matte. The correction changed only the first two hit cells to retain the same
+  fully visible bow and grip continuity. Preserve camera, palette, handedness, and identity; no
+  mirroring, detached hands, random arrows, extra figures, crop, scenery, text, or shadow.
+
+### Rat King / rat brute motion sheet
+
+- Generation original: `exec-27b6eade-0038-42bd-b25e-4b0dae6c24a8.png`
+- Project source:
+  `../../../enemies/experiments/realtime-combat-study-v1/animation-canary-v1/rat-brute/rat-brute-motion-sheet-source-v1.png`
+- Source SHA-256: `dda07e06a8514c32a3c99a4d4a13ac42cca5f9657c6bfb86946280f97957a767`
+- Runtime atlas SHA-256: `4b6960602cd66044659b23f3bc4b6757ad0f19a18db7dcedc164d7e5baa5e7cc`
+- Mode: built-in Codex image generation with identity and layout references.
+- Final prompt: preserve the exact colossal Rat King identity, scarred anatomy, long tail, plague
+  wounds, harness, and same-side asymmetric shoulder armor in a precise five-by-four sheet. Author
+  five heavy idles, a four-limb quadrupedal charge, a claw-and-body-slam attack, two heavy hit
+  reactions, and three collapse poses on a uniform white matte. Preserve boss weight, camera,
+  asymmetry, palette, and lighting; no mirroring, armor swap, cute proportions, extra figures, crop,
+  scenery, text, or shadow.
+
 `tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
 isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
 256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion

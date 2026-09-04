@@ -196,8 +196,7 @@
 			<footer>
 				<b>Prototype boundary</b>
 				<span
-					>Asha and every lesser rat use authored pose animation. Toma, Nessa, and the brute remain
-					intentionally static until the next motion-production pass.</span
+					>Every combatant now uses an authored idle, advance, attack, hit, and defeat pack.</span
 				>
 			</footer>
 		</aside>

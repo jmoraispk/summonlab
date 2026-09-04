@@ -104,8 +104,19 @@ if (!Number.isInteger(version) || version < 1)
 	throw new Error('Version must be a positive integer.');
 
 const actorConfig = {
-	asha: { sourceActorId: 'saffron-braid', baseDisplaySize: 178 },
-	'lesser-rat': { sourceActorId: 'plague-rat-1', baseDisplaySize: 118 }
+	asha: { sourceActorId: 'saffron-braid', baseDisplaySize: 178, direction: 'up-field' },
+	'iron-guardian': {
+		sourceActorId: 'iron-guardian',
+		baseDisplaySize: 184,
+		direction: 'up-field'
+	},
+	'moss-archer': { sourceActorId: 'moss-archer', baseDisplaySize: 168, direction: 'up-field' },
+	'rat-brute': { sourceActorId: 'rat-brute', baseDisplaySize: 250, direction: 'down-field' },
+	'lesser-rat': {
+		sourceActorId: 'plague-rat-1',
+		baseDisplaySize: 118,
+		direction: 'down-field'
+	}
 }[actorId];
 if (!actorConfig) throw new Error(`Unsupported motion actor: ${actorId}`);
 
@@ -262,7 +273,7 @@ const manifest = {
 	feetAnchor: { x: 0.5, y: FEET_Y / FRAME_SIZE },
 	healthClearance: 12,
 	baseDisplaySize: actorConfig.baseDisplaySize,
-	direction: actorId === 'asha' ? 'up-field' : 'down-field',
+	direction: actorConfig.direction,
 	clips: Object.fromEntries(
 		Object.entries(clipRows).map(([clip, config]) => [
 			clip,

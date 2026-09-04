@@ -19,8 +19,8 @@ export type EllipseObstacle = Readonly<{
 export const WELL_OBSTACLE: EllipseObstacle = {
 	centerX: 0.674,
 	centerY: 0.35,
-	radiusX: 0.108,
-	radiusY: 0.078
+	radiusX: 0.126,
+	radiusY: 0.092
 };
 
 export type ArenaBounds = Readonly<{

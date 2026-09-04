@@ -50,6 +50,21 @@ describe('combat spatial layout', () => {
 		expect(isInsideObstacle(pushOutsideObstacle(inside, 0.01))).toBe(false);
 	});
 
+	it('reserves visual clearance beyond the well stone rim', () => {
+		expect(
+			isInsideObstacle({
+				x: WELL_OBSTACLE.centerX + 0.12,
+				y: WELL_OBSTACLE.centerY
+			})
+		).toBe(true);
+		expect(
+			isInsideObstacle({
+				x: WELL_OBSTACLE.centerX,
+				y: WELL_OBSTACLE.centerY + 0.085
+			})
+		).toBe(true);
+	});
+
 	it('assigns distinct engagement positions around one target', () => {
 		const points = [1, 2, 3, 4].map((index) =>
 			engagementPoint(rat(`plague-rat-${index}`, 0, 0), hero)

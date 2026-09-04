@@ -65,6 +65,9 @@
 	} as const;
 	const MOTION = {
 		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`,
+		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v1.json`,
+		'moss-archer': `${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v1.json`,
+		'rat-brute': `${ART_ROOT}/animation-canary-v1/rat-brute/rat-brute-motion-v1.json`,
 		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json`
 	} as const;
 	const ART_SOURCES = [...Object.values(ART), ...Object.values(MOTION)];
@@ -108,6 +111,9 @@
 			const sheetFor = (source: string): Spritesheet => assetBySource.get(source) as Spritesheet;
 			const motionSheets = {
 				asha: sheetFor(MOTION.asha),
+				'iron-guardian': sheetFor(MOTION['iron-guardian']),
+				'moss-archer': sheetFor(MOTION['moss-archer']),
+				'rat-brute': sheetFor(MOTION['rat-brute']),
 				'lesser-rat': sheetFor(MOTION['lesser-rat'])
 			};
 			app = new Application();
@@ -245,7 +251,9 @@
 					? motionSheets.asha
 					: entry.role === 'swarm'
 						? motionSheets['lesser-rat']
-						: undefined;
+						: entry.id === 'iron-guardian' || entry.id === 'moss-archer' || entry.id === 'rat-brute'
+							? motionSheets[entry.id]
+							: undefined;
 			const initialAnimatorState = (entry: RealtimeActor): ActorAnimatorState => {
 				const state = createActorAnimator(entry);
 				const ratIndex = entry.id.match(/plague-rat-(\d+)/)?.[1];
@@ -314,6 +322,9 @@
 						: undefined
 				};
 			}
+			host.dataset.animatedActorCount = String(
+				Object.values(actorViews).filter((view) => view.motion).length
+			);
 
 			resetPresentationState = (snapshot) => {
 				for (const entry of snapshot.actors) {

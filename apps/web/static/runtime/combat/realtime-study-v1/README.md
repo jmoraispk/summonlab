@@ -16,3 +16,7 @@ Enemy prompt direction: original plague-mutated rats, steep top-down combat came
 Environment prompt direction: an original plague-touched ruined village threshold at dusk, vertical 2:3 steep three-quarter top-down camera, broad uncluttered central lane, perimeter palisades, stone well, canvas awnings, distant cottages, rat-nest opening, cold fog, warm hero-side lanterns, and no actors or interface.
 
 The actor PNGs were mechanically keyed and resized by `tools/key-checkerboard-background.mjs`. See `assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md` for the owned source authorization and final hero generation briefs.
+
+Every combatant has an authored 20-frame motion atlas under `animation-canary-v1/`. Each atlas
+contains idle, advance, attack, hit, and defeat clips and is generated reproducibly by
+`tools/build-realtime-combat-motion-pack.mjs` from a versioned project source sheet.

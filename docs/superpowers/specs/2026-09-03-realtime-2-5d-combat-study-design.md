@@ -1,8 +1,8 @@
 # Near-3D Real-Time 2.5D Combat Study Design
 
-**Status:** Readability follow-up implemented. Owner accepted the animation direction on 2026-09-03,
-confirmed all remaining heroes deserve authored motion packs in a later pass, and confirmed the
-supplied hero is owner-created and fully available for derivative prototype assets.
+**Status:** Full encounter animation pass implemented. Owner accepted the animation direction and
+full-roster expansion on 2026-09-03, and confirmed the supplied hero is owner-created and fully
+available for derivative prototype assets.
 
 ## Purpose
 
@@ -67,12 +67,13 @@ changing the encounter.
 
 ## Accepted follow-up: combat readability
 
-The accepted canary now drives Asha and every lesser-rat instance from shared atlases with independent
-phase offsets. The remaining hero and brute packs are deferred production work, not a rejection of
-animation. Until those packs exist, readability takes priority through stable target-relative
-approach slots, a locked attack stance with exit hysteresis, role-aware stage margins, foot-anchored
-directional shadows, and an enlarged solid well footprint whose occlusion follows world depth rather
-than a blanket foreground layer. Actor-to-actor repulsion is excluded because it caused continuous
+The accepted vocabulary now drives every combatant from authored atlases: Asha, Toma, Nessa, the Rat
+King, and each lesser-rat instance. Toma retains shield-and-mace weight, Nessa retains mechanically
+readable bow handling, and the Rat King uses a slower quadrupedal charge and heavy strike rather than
+an enlarged lesser-rat gait. Readability continues through stable target-relative approach slots, a
+locked attack stance with exit hysteresis, role-aware stage margins, foot-anchored directional
+shadows, and an expanded well clearance footprint whose occlusion follows world depth rather than a
+blanket foreground layer. Actor-to-actor repulsion remains excluded because it caused continuous
 formation churn and running-in-place. These changes remain presentation and navigation concerns;
 target selection and combat resolution stay authoritative in the autonomous simulation.
 

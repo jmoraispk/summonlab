@@ -169,16 +169,17 @@ parallax. `2.5D V2` is the only lens allowed to apply trapezoidal lane convergen
 scale, foreground occlusion, and visible projection guides. Switching lenses never restarts the
 encounter. The owned saffron-braid lead is the identity and quality gate; supporting heroes and
 enemies match her compact adult proportions without copying her identity or costume. Motion expansion
-begins with an authored Asha-and-lesser-rat canary rather than applying low-quality animation to the
-whole cast. The canary is accepted for Asha and all lesser-rat instances; authored packs for Toma,
-Nessa, and the brute are an explicitly accepted later pass.
+began with an authored Asha-and-lesser-rat canary rather than applying low-quality animation to the
+whole cast. The accepted vocabulary now covers every combatant: idle, advance, attack, hit, and
+defeat, with equipment and weight specific to each silhouette.
 
 Combat spacing is silhouette-aware. Actors use stable engagement slots while approaching, then lock
 in place while their target remains within a small exit threshold; actor-to-actor repulsion must not
 create orbiting or running-in-place. Role-aware arena margins keep full silhouettes on stage. The V2
-well has an enlarged solid elliptical navigation footprint and participates in the same foot-anchor
-depth ordering as actors, so it occludes only characters actually behind it. Contact shadows are
-world siblings anchored to rendered feet rather than children inheriting attack transforms.
+well has an expanded visual-clearance ellipse beyond the visible stone rim and participates in the
+same foot-anchor depth ordering as actors, so it occludes only characters actually behind it. Contact
+shadows are world siblings anchored to rendered feet rather than children inheriting attack
+transforms.
 
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
