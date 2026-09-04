@@ -17,6 +17,10 @@ test('switches presentation without restarting the autonomous fight', async ({ p
 		'data-animated-actor-count',
 		'8'
 	);
+	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+		'data-motion-pack-versions',
+		'asha:2,iron-guardian:2,moss-archer:2,rat-brute:1,lesser-rat:2'
+	);
 	await expect(page.getByTestId('presentation-evidence')).toContainText(
 		'Trapezoidal lane convergence is on'
 	);

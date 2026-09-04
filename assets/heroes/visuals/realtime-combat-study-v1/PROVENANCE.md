@@ -139,6 +139,53 @@ reproducible and do not depend on Codex-managed temporary storage.
   asymmetry, palette, and lighting; no mirroring, armor swap, cute proportions, extra figures, crop,
   scenery, text, or shadow.
 
+### Toma / iron guardian gait correction v2
+
+- Accepted source binding: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v1.png`
+  (`c32d30711b625fa999071ed791c3130446bad8d87f4223b75b9c7b74c3b559e5`).
+- Identity binding: `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png`
+  (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`).
+- Selected generation original: `exec-fdf32fb5-0d4e-4f90-a06b-8ef0a12da2ad.png`
+  (`d91a4d97a783b9e59d89a25c6d50ed4dd66af819fce39a86d01639258d07747c`).
+- Project source: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v2.png`.
+- Source SHA-256: `94544c8cf10d557993fe91313aef935758abc412dc5a4fad303c51b1b9580976`.
+- Runtime atlas SHA-256: `3f81572ead38b2464750386da0f4ebdd30094c26735bf709481cc98c29c567aa`.
+- Mode: built-in Codex image generation edit, followed by deterministic clip-row assembly.
+- Final prompt: create one five-frame horizontal heavy-run strip while preserving Toma's face, gray
+  topknot, stocky proportions, navy-and-teal armor, left-hand bronze shield, right-hand mace,
+  three-quarter up-field camera, scale, lighting, stable baseline, and 2.5D painterly finish. Make
+  left contact, compression/right-knee pass, right contact, opposite compression/left-knee pass, and
+  recovery mechanically distinct; never swap, crop, duplicate, or remove equipment.
+- Temporal assembly: generated cells `0,1,2,1,4` are sequenced as left/right/left/right/recovery in
+  source row two; every other v1 row remains pixel-identical. Candidate awaiting owner playtest.
+
+### Nessa / moss archer gait and defeat correction v2
+
+- Accepted source binding: `animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v1.png`
+  (`2194d6a3a8622b7879743fe5ea08f2e71dc9b6b540bb483b1d2b021d7337ce4a`).
+- Identity binding: `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png`
+  (`9c94401448f51dc6521c7aae3d00fa15e47bc4b27c452b666023f1d5fcd5bb36`).
+- Selected run generation original: `exec-0a1e0f5b-616e-4c33-81ed-dfc090296c33.png`
+  (`dbf6413e8f6cef3b085c4ab5f9b6e250ec2df4df86409c4e400fd69909dc81ed`).
+- Selected defeat generation original: `exec-9e3e1a00-391c-4d7e-b169-caaf9d09f5cc.png`
+  (`6f382aa68e2ced97ee41b26ba2cdb209905d60930af394c489135661ca98eba0`).
+- Project source: `animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v2.png`.
+- Source SHA-256: `97cab854e83a8b90d1f0e23556338300d5c06b19521b4f572e1451f0ed3021ed`.
+- Runtime atlas SHA-256: `03bcc9b118b98f1aa44a80f60ac75c5b911ffb0896149bdd3e5a4bf9440afd38`.
+- Mode: built-in Codex image generation edits, followed by deterministic clip-row assembly.
+- Final run prompt: create one five-frame horizontal agile-run strip while preserving Nessa's face,
+  copper curls, athletic proportions, travel armor, moss mantle, attached quiver, complete recurved
+  bow continuously in her left hand, three-quarter up-field camera, scale, lighting, stable baseline,
+  and 2.5D painterly finish. Author left contact, compression, airborne extension, right contact, and
+  recovery; keep the bow fully visible, arrows in the quiver, and generous clearance in every cell.
+- Final defeat prompt: edit only row four into two readable hit reactions followed by buckle,
+  impact, and settled rest. Remove the embedded/floating arrow entirely; let the bow leave her hand
+  along a visible path and remain on the ground without vanishing or reappearing. Preserve identity,
+  costume, quiver, camera, lighting, scale, and every other row.
+- Temporal assembly: run cells `0,4,1,4,2` are sequenced as left/right/left/right/airborne recovery
+  in source row two; the defeat generation supplies source row four; rows one and three remain
+  pixel-identical to v1. Candidate awaiting owner playtest.
+
 `tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
 isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
 256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion

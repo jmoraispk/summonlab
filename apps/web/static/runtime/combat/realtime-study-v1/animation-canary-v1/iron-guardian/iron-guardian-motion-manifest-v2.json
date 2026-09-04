@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "actorId": "iron-guardian",
+  "atlas": "iron-guardian-motion-v2.json",
+  "canvas": {
+    "width": 256,
+    "height": 256
+  },
+  "feetAnchor": {
+    "x": 0.5,
+    "y": 0.9609375
+  },
+  "healthClearance": 12,
+  "baseDisplaySize": 184,
+  "direction": "up-field",
+  "clips": {
+    "idle": {
+      "frames": [
+        "iron-guardian-idle-01.png",
+        "iron-guardian-idle-02.png",
+        "iron-guardian-idle-03.png",
+        "iron-guardian-idle-04.png",
+        "iron-guardian-idle-05.png"
+      ],
+      "fps": 6,
+      "loop": true
+    },
+    "advance": {
+      "frames": [
+        "iron-guardian-advance-01.png",
+        "iron-guardian-advance-02.png",
+        "iron-guardian-advance-03.png",
+        "iron-guardian-advance-04.png",
+        "iron-guardian-advance-05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    "attack": {
+      "frames": [
+        "iron-guardian-attack-01.png",
+        "iron-guardian-attack-02.png",
+        "iron-guardian-attack-03.png",
+        "iron-guardian-attack-04.png",
+        "iron-guardian-attack-05.png"
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    "hit": {
+      "frames": [
+        "iron-guardian-hit-01.png",
+        "iron-guardian-hit-02.png"
+      ],
+      "fps": 9,
+      "loop": false
+    },
+    "down": {
+      "frames": [
+        "iron-guardian-down-01.png",
+        "iron-guardian-down-02.png",
+        "iron-guardian-down-03.png"
+      ],
+      "fps": 6,
+      "loop": false
+    }
+  }
+}

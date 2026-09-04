@@ -15,6 +15,9 @@ and is not copied into Git. The pre-canary realtime combat route is the implemen
 ## Canary acceptance checks
 
 - Asha and one lesser rat visibly transition through idle, advance, attack, hit, and down animation.
+- Toma's v2 advance alternates planted boots while keeping the shield left and mace right.
+- Nessa's v2 advance alternates planted boots without losing her bow; her defeat contains no
+  embedded arrow and carries the released bow into the settled pose.
 - Asha is never horizontally mirrored; her right undercut and left braid stay authored.
 - Health bars live in a screen-space layer and clear the visible head/ears by at least 12 logical px.
 - `2D` keeps fixed actor scale and fixed team layer priority.
