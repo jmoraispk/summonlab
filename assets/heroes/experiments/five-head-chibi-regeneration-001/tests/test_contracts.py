@@ -48,6 +48,7 @@ class FrozenExperimentContractTests(unittest.TestCase):
         self.assertEqual(contract.PRIMARY_CALL_LIMIT, 200)
         self.assertEqual(contract.RETRY_CALL_LIMIT, 10)
         self.assertEqual(contract.LIFECYCLE, "candidate")
+        self.assertEqual(contract.PRODUCTION_BASE_COMMIT, "cfd84536c51a1df4a995d529efe71e6708b934ab")
 
     def test_decision_binds_the_exact_template_and_candidate_only_workflow(self) -> None:
         contract = self.contracts

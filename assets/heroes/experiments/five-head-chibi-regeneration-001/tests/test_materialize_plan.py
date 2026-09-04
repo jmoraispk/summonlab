@@ -225,6 +225,23 @@ class MaterializerTests(unittest.TestCase):
             with self.assertRaisesRegex(self.materializer.ContractError, "incomplete materialization"):
                 self.materializer.check(root, self.roster, self.targets, self.assignments)
 
+    def test_check_rejects_extra_target_assignment_or_wave_inventory(self) -> None:
+        extras = (
+            "waves/wave-01/targets/undeclared.json",
+            "waves/wave-01/assignments/undeclared.json",
+            "waves/wave-14/targets/undeclared.json",
+        )
+        for relative in extras:
+            with self.subTest(relative=relative), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary) / "experiment"
+                root.mkdir()
+                self.materializer.materialize(root, self.roster, self.targets, self.assignments)
+                extra = root / relative
+                extra.parent.mkdir(parents=True, exist_ok=True)
+                extra.write_text("{}\n", encoding="utf-8")
+                with self.assertRaisesRegex(self.materializer.ContractError, "inventory"):
+                    self.materializer.check(root, self.roster, self.targets, self.assignments)
+
     def test_only_the_exclusive_writer_can_publish_or_clear_its_transaction(self) -> None:
         context = multiprocessing.get_context("fork")
         with tempfile.TemporaryDirectory() as temporary:

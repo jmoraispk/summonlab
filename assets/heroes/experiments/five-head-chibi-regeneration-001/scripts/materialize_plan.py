@@ -514,6 +514,33 @@ def check(root: Path, roster: dict[str, Any], targets: list[dict[str, Any]], ass
         raise ContractError("incomplete materialization transaction is present; rerun --write to recover")
     validate_plan(build_production_plan(roster, targets, assignments))
     expected = _expected_files(roster, targets, assignments)
+    expected_queue = {
+        relative for relative, _ in expected
+        if "/targets/" in relative or "/assignments/" in relative
+    }
+    expected_waves = {f"wave-{index:02d}" for index in range(1, len(WAVE_SIZES) + 1)}
+    waves_root = root / "waves"
+    observed_queue: set[str] = set()
+    if waves_root.exists():
+        if waves_root.is_symlink() or not waves_root.is_dir():
+            raise ContractError("materialized queue inventory has an invalid waves directory")
+        for wave in waves_root.iterdir():
+            if wave.name.startswith("wave-") and (wave.name not in expected_waves or wave.is_symlink() or not wave.is_dir()):
+                raise ContractError("materialized queue inventory contains an undeclared wave")
+        for wave_id in expected_waves:
+            for directory in ("targets", "assignments"):
+                location = waves_root / wave_id / directory
+                if not location.exists():
+                    continue
+                if location.is_symlink() or not location.is_dir():
+                    raise ContractError("materialized queue inventory has an invalid directory")
+                for path in location.rglob("*"):
+                    if path.is_symlink() or (path.exists() and not path.is_file() and not path.is_dir()):
+                        raise ContractError("materialized queue inventory has an invalid path")
+                    if path.is_file():
+                        observed_queue.add(path.relative_to(root).as_posix())
+    if observed_queue != expected_queue:
+        raise ContractError("materialized queue differs: inventory contains missing or undeclared target/assignment files")
     missing = 0
     for relative, payload in expected:
         path = root / relative

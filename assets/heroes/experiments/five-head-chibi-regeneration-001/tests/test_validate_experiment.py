@@ -74,7 +74,22 @@ class ValidateExperimentTests(unittest.TestCase):
         self.assertEqual(report["lifecycle"], "candidate")
         self.assertEqual(report["workflow"], {
             "approvals": 0, "runtimeBindings": 0, "review": False, "promotion": False,
+            "committedFilesOutsideAuthorizedScope": 0,
         })
+
+    def test_committed_scope_rejects_runtime_or_approved_catalog_changes(self) -> None:
+        allowed = [
+            "assets/heroes/experiments/five-head-chibi-regeneration-001/decision.json",
+            "docs/wiki/art/hero-identity-and-evolution.md",
+        ]
+        self.validator.validate_committed_scope(allowed)
+        for forbidden in (
+            "assets/heroes/visuals/catalog.json",
+            "assets/heroes/visuals/approved/new-hero.png",
+            "packages/web/src/runtime-hero-catalog.ts",
+        ):
+            with self.subTest(forbidden=forbidden), self.assertRaises(self.validator.ContractError):
+                self.validator.validate_committed_scope([*allowed, forbidden])
 
     def test_summary_contract_rejects_every_completion_class_when_tampered(self) -> None:
         mutations = (

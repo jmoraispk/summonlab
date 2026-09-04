@@ -6,16 +6,18 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
-from contracts import CANVAS_HEIGHT, CANVAS_MIME_TYPE, CANVAS_WIDTH, ContractError, EXPERIMENT_ID, exclusive_write, sha256_file
+from contracts import CANVAS_HEIGHT, CANVAS_MIME_TYPE, CANVAS_WIDTH, ContractError, EXPERIMENT_ID, confine_relative, exclusive_write, sha256_file
 from persist_candidate import load_assignment, load_target, readable_png
 
 
 RESULT_SCHEMA = "five-head-chibi-result-v1"
 CALL_SCHEMA = "five-head-chibi-provider-call-v1"
 CALL_KINDS = frozenset({"primary", "provider-no-output-retry"})
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
 
 def _canonical(value: Any) -> bytes:
@@ -40,8 +42,13 @@ def _load_call(path: Path, assignment: dict[str, Any]) -> dict[str, Any]:
         raise ContractError("call record callOrdinal must be a positive integer")
     if call.get("outcome") != "succeeded":
         raise ContractError("only successful provider calls can write a result")
-    if not isinstance(call.get("providerMetadata"), dict) or not call["providerMetadata"].get("provider"):
+    metadata = call.get("providerMetadata")
+    if not isinstance(metadata, dict) or not metadata.get("provider"):
         raise ContractError("call record lacks provider metadata")
+    if not isinstance(call.get("returnedProviderArtifact"), str) or not call["returnedProviderArtifact"]:
+        raise ContractError("successful call record lacks returned provider artifact")
+    if not isinstance(metadata.get("externalArtifactSha256"), str) or SHA256_RE.fullmatch(metadata["externalArtifactSha256"]) is None:
+        raise ContractError("successful call record lacks provider artifact digest")
     if not isinstance(call.get("startedAt"), str) or not isinstance(call.get("completedAt"), str):
         raise ContractError("call record lacks timestamps")
     return call
@@ -61,8 +68,8 @@ def write_result(assignment_path: Path, call_record_path: Path) -> Path:
     prompt = target.get("renderedPrompt")
     if not isinstance(prompt, str) or target.get("renderedPromptSha256") != hashlib.sha256(prompt.encode()).hexdigest():
         raise ContractError("target rendered prompt hash is stale")
-    provider_path = workspace / assignment["providerSourcePath"]
-    candidate_path = workspace / assignment["candidatePath"]
+    provider_path = confine_relative(workspace, assignment["providerSourcePath"])
+    candidate_path = confine_relative(workspace, assignment["candidatePath"])
     if provider_path.is_symlink() or candidate_path.is_symlink() or not provider_path.is_file() or not candidate_path.is_file():
         raise ContractError("persisted provider source and candidate are required")
     provider_bytes, candidate_bytes = provider_path.read_bytes(), candidate_path.read_bytes()
@@ -72,6 +79,8 @@ def write_result(assignment_path: Path, call_record_path: Path) -> Path:
     if (width, height) != (CANVAS_WIDTH, CANVAS_HEIGHT):
         raise ContractError("persisted candidate dimensions differ from frozen contract")
     image_hash = hashlib.sha256(provider_bytes).hexdigest()
+    if call["providerMetadata"]["externalArtifactSha256"] != image_hash:
+        raise ContractError("provider artifact digest differs from retained provider source")
     result = {
         "schemaVersion": RESULT_SCHEMA, "experimentId": EXPERIMENT_ID,
         "assignmentId": assignment["assignmentId"], "targetId": target["targetId"], "waveId": assignment["waveId"],
@@ -86,7 +95,7 @@ def write_result(assignment_path: Path, call_record_path: Path) -> Path:
         # crash-resume produces identical receipt bytes rather than a new timestamp.
         "resultWrittenAt": call["completedAt"],
     }
-    result_path = workspace / assignment["resultPath"]
+    result_path = confine_relative(workspace, assignment["resultPath"])
     exclusive_write(result_path, _canonical(result))
     return result_path
 

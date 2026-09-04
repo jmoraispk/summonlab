@@ -144,6 +144,16 @@ class PersistenceTests(unittest.TestCase):
             self.call()
         self.assertEqual(candidate.read_bytes(), b"conflicting bytes")
 
+    def test_rejects_symlinked_output_parent_before_writing_outside_workspace(self) -> None:
+        outside = Path(self.temporary.name) / "outside"
+        outside.mkdir()
+        redirected = self.experiment / "waves/wave-01/provider-sources"
+        redirected.parent.mkdir(parents=True, exist_ok=True)
+        redirected.symlink_to(outside, target_is_directory=True)
+        with self.assertRaisesRegex(self.persist.ContractError, "escapes"):
+            self.call()
+        self.assertFalse((outside / "hero-a.png").exists())
+
     def test_writes_complete_receipt_bound_to_target_assignment_and_call(self) -> None:
         persisted = self.call()
         call_path = self.workspace / "call.json"
@@ -152,7 +162,11 @@ class PersistenceTests(unittest.TestCase):
             "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01",
             "callOrdinal": 1, "callKind": "primary", "startedAt": "2026-09-04T00:00:00Z",
             "completedAt": "2026-09-04T00:01:00Z", "outcome": "succeeded",
-            "providerMetadata": {"provider": "imagegen", "requestId": "request-1"},
+            "returnedProviderArtifact": str(self.source_path),
+            "providerMetadata": {
+                "provider": "imagegen", "requestId": "request-1",
+                "externalArtifactSha256": digest(self.image),
+            },
         }
         call_path.write_bytes(canonical(call))
         result_path = self.results.write_result(self.assignment_path, call_path)
@@ -168,6 +182,21 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(result["dimensions"], {"width": 1024, "height": 1536})
         self.assertEqual(result["mimeType"], "image/png")
         self.assertEqual(result["callKind"], "primary")
+
+    def test_rejects_successful_call_whose_provider_digest_does_not_match_retained_source(self) -> None:
+        self.call()
+        call_path = self.workspace / "call.json"
+        call = {
+            "schemaVersion": "five-head-chibi-provider-call-v1", "experimentId": self.assignment["experimentId"],
+            "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01",
+            "callOrdinal": 1, "callKind": "primary", "startedAt": "2026-09-04T00:00:00Z",
+            "completedAt": "2026-09-04T00:01:00Z", "outcome": "succeeded",
+            "returnedProviderArtifact": str(self.source_path),
+            "providerMetadata": {"provider": "imagegen", "externalArtifactSha256": "0" * 64},
+        }
+        call_path.write_bytes(canonical(call))
+        with self.assertRaisesRegex(self.results.ContractError, "artifact digest"):
+            self.results.write_result(self.assignment_path, call_path)
 
     def test_rejects_call_records_not_bound_to_assignment_or_call_kind_enum(self) -> None:
         self.call()

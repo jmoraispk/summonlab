@@ -8,6 +8,8 @@
     "reviewManifestSha256": "8ae3ee617fb200018c261cdee7b2e3fb5a2f1d807cea77df2fe75b78464c6fe5",
     "upstreamCompletionReportPath": "assets/heroes/experiments/one-star-overnight-200-001/completion-report.json",
     "upstreamCompletionReportSha256": "ce2534962da3c6e869cc3a18d26d6b88bd61ebfbef1a25915aabf0cdf4f370ef",
+    "productionBaseCommit": "cfd84536c51a1df4a995d529efe71e6708b934ab",
+    "committedFileCount": 1021,
     "sourceRosterSha256": "994b3f36af5ebb7f8b3e96b345c9a1d7a4470c90232e15e144c4e359c5479157",
     "productionPlanSha256": "f15aa1a0aeffae333ad1da61c7b0e4402fb308c48d7bdfa7381f1e80d04b6c0b",
     "productionJournalSha256": "ee93cbb6057d03fc7d9d47c2b7cc115bc490bbf866683564f011455e70933f82"
@@ -151,6 +153,7 @@
     "approvals": 0,
     "runtimeBindings": 0,
     "review": false,
-    "promotion": false
+    "promotion": false,
+    "committedFilesOutsideAuthorizedScope": 0
   }
 }

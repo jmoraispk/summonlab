@@ -13,7 +13,7 @@ from typing import Any
 
 from PIL import Image, UnidentifiedImageError
 
-from contracts import CANVAS_HEIGHT, CANVAS_MIME_TYPE, CANVAS_WIDTH, ContractError, EXPERIMENT_ID, exclusive_write, sha256_file
+from contracts import CANVAS_HEIGHT, CANVAS_MIME_TYPE, CANVAS_WIDTH, ContractError, EXPERIMENT_ID, confine_relative, exclusive_write, sha256_file
 
 
 ASSIGNMENT_SCHEMA = "five-head-chibi-assignment-v1"
@@ -124,8 +124,8 @@ def persist_candidate(assignment_path: Path, source_path: Path) -> PersistedCand
     width, height = readable_png(payload)
     if (width, height) != (CANVAS_WIDTH, CANVAS_HEIGHT):
         raise ContractError(f"provider PNG must be exactly {CANVAS_WIDTH}x{CANVAS_HEIGHT}")
-    provider_path = workspace / assignment["providerSourcePath"]
-    candidate_path = workspace / assignment["candidatePath"]
+    provider_path = confine_relative(workspace, assignment["providerSourcePath"])
+    candidate_path = confine_relative(workspace, assignment["candidatePath"])
     _preflight(provider_path, payload)
     _preflight(candidate_path, payload)
     provider_status = exclusive_write(provider_path, payload)

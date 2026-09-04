@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,7 @@ from contracts import (
     EXPERIMENT_ROOT,
     LIFECYCLE,
     PRIMARY_CALL_LIMIT,
+    PRODUCTION_BASE_COMMIT,
     PROMPT_TEMPLATE_SHA256,
     PROMPT_VERSION,
     RETRY_CALL_LIMIT,
@@ -44,6 +46,12 @@ COMPLETION_SCHEMA = "five-head-chibi-completion-report-v1"
 UPSTREAM_COMPLETION_REPORT_PATH = (
     "assets/heroes/experiments/one-star-overnight-200-001/completion-report.json"
 )
+AUTHORIZED_COMMITTED_PREFIX = f"{EXPERIMENT_ROOT.as_posix()}/"
+AUTHORIZED_COMMITTED_FILES = frozenset({"docs/wiki/art/hero-identity-and-evolution.md"})
+PROMOTION_KEYS = frozenset({
+    "approved", "approval", "approvalstatus", "runtimebinding", "runtimebindings",
+    "promoted", "promotionstatus",
+})
 
 
 def _load_object(path: Path, label: str) -> dict[str, Any]:
@@ -64,6 +72,62 @@ def _workspace(root: Path) -> Path:
     if tuple(resolved.parts[-4:]) != expected_tail:
         raise ContractError("completion root is not the five-head experiment root")
     return resolved.parents[3]
+
+
+def validate_committed_scope(paths: list[str]) -> None:
+    """Reject committed changes outside this experiment and its one authorized wiki note."""
+    if any(not isinstance(path, str) or not path for path in paths):
+        raise ContractError("committed scope contains an invalid path")
+    outside = [
+        path for path in paths
+        if not path.startswith(AUTHORIZED_COMMITTED_PREFIX) and path not in AUTHORIZED_COMMITTED_FILES
+    ]
+    if outside:
+        raise ContractError(f"committed file is outside the candidate-only scope: {outside[0]}")
+
+
+def _committed_paths(workspace: Path) -> list[str]:
+    try:
+        completed = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=ACDMRTUXB", f"{PRODUCTION_BASE_COMMIT}..HEAD", "--"],
+            cwd=workspace,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ContractError(f"cannot verify committed candidate-only scope: {error}") from error
+    paths = [line for line in completed.stdout.splitlines() if line]
+    validate_committed_scope(paths)
+    return paths
+
+
+def _reject_promotion_claim(value: object, label: str) -> None:
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key.lower() in PROMOTION_KEYS and child not in (False, 0, None, "", [], {}):
+                raise ContractError(f"{label} contains an approval, promotion, or runtime-binding claim")
+            _reject_promotion_claim(child, label)
+    elif isinstance(value, list):
+        for child in value:
+            _reject_promotion_claim(child, label)
+
+
+def _validate_candidate_only_tree(root: Path) -> None:
+    allowed_top_level = {
+        ".gitignore", ".materialize-plan.lock", "README.md", "completion-report.json", "decision.json",
+        "production-plan.json", "production-report.json", "prompt-template.txt", "provenance", "scripts",
+        "source-roster.json", "tests", "waves",
+    }
+    for entry in root.iterdir():
+        if entry.name not in allowed_top_level:
+            raise ContractError(f"candidate-only experiment contains undeclared top-level path: {entry.name}")
+        if any(part.lower() in {"approved", "runtime", "promoted"} for part in entry.relative_to(root).parts):
+            raise ContractError("candidate-only experiment contains a promotion path")
+    for path in root.rglob("*.json"):
+        if path.is_symlink() or not path.is_file():
+            raise ContractError("candidate-only JSON evidence must be a regular file")
+        _reject_promotion_claim(_load_object(path, "candidate-only evidence"), path.relative_to(root).as_posix())
 
 
 def completion_report_bytes(report: dict[str, Any]) -> bytes:
@@ -130,6 +194,7 @@ def validate_completion_summary(report: dict[str, Any]) -> None:
         "runtimeBindings": 0,
         "review": False,
         "promotion": False,
+        "committedFilesOutsideAuthorizedScope": 0,
     }:
         raise ContractError("completion report claims review, approval, promotion, or runtime binding")
 
@@ -149,6 +214,7 @@ def validate_experiment(*, root: Path = DEFAULT_ROOT) -> dict[str, Any]:
         "sourceRosterPath": SOURCE_ROSTER_PATH,
         "sourceRosterSha256": SOURCE_ROSTER_SHA256,
         "upstreamCompletionReportSha256": UPSTREAM_COMPLETION_REPORT_SHA256,
+        "productionBaseCommit": PRODUCTION_BASE_COMMIT,
         "waveSizes": list(WAVE_SIZES),
         "primaryCallLimit": PRIMARY_CALL_LIMIT,
         "retryCallLimit": RETRY_CALL_LIMIT,
@@ -167,6 +233,8 @@ def validate_experiment(*, root: Path = DEFAULT_ROOT) -> dict[str, Any]:
         raise ContractError("upstream review manifest drifted")
     if sha256_file(upstream_report) != UPSTREAM_COMPLETION_REPORT_SHA256:
         raise ContractError("upstream completion report drifted")
+    committed_paths = _committed_paths(workspace)
+    _validate_candidate_only_tree(root)
 
     pairs = load_selected_pairs()
     roster = build_source_roster(pairs)
@@ -222,18 +290,20 @@ def validate_experiment(*, root: Path = DEFAULT_ROOT) -> dict[str, Any]:
             "reviewManifestSha256": SOURCE_ROSTER_SHA256,
             "upstreamCompletionReportPath": UPSTREAM_COMPLETION_REPORT_PATH,
             "upstreamCompletionReportSha256": UPSTREAM_COMPLETION_REPORT_SHA256,
+            "productionBaseCommit": PRODUCTION_BASE_COMMIT,
+            "committedFileCount": len(committed_paths),
             "sourceRosterSha256": sha256_file(roster_path),
             "productionPlanSha256": sha256_file(plan_path),
             "productionJournalSha256": sha256_file(root / "provenance/production-journal.jsonl"),
         },
         "inventory": {
             "sourceHeroes": len(materialized_roster["records"]),
-            "targets": len(target_records),
-            "assignments": len(assignment_records),
+            "targets": len(list((root / "waves").glob("wave-*/targets/*.json"))),
+            "assignments": len(list((root / "waves").glob("wave-*/assignments/*.json"))),
             "providerSources": len(list((root / "waves").glob("wave-*/provider-sources/*.png"))),
             "candidates": len(list((root / "waves").glob("wave-*/candidates/*.png"))),
             "results": len(list((root / "waves").glob("wave-*/results/*.json"))),
-            "waves": len(wave_results),
+            "waves": len([path for path in (root / "waves").glob("wave-*") if path.is_dir() and not path.is_symlink()]),
         },
         "prompt": {
             "version": PROMPT_VERSION,
@@ -266,7 +336,13 @@ def validate_experiment(*, root: Path = DEFAULT_ROOT) -> dict[str, Any]:
             }
             for result in wave_results
         ],
-        "workflow": {"approvals": 0, "runtimeBindings": 0, "review": False, "promotion": False},
+        "workflow": {
+            "approvals": 0,
+            "runtimeBindings": 0,
+            "review": False,
+            "promotion": False,
+            "committedFilesOutsideAuthorizedScope": 0,
+        },
     }
     validate_completion_summary(report)
     return report

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +20,7 @@ from write_result import CALL_KINDS, CALL_SCHEMA, RESULT_SCHEMA
 SCRIPT_PATH = Path(__file__).resolve()
 DEFAULT_ROOT = SCRIPT_PATH.parent.parent
 CALL_OUTCOMES = frozenset({"succeeded", "provider-no-output", "failed"})
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
 
 @dataclass(frozen=True)
@@ -69,9 +71,11 @@ def _timestamp(value: object, field: str) -> datetime:
     return parsed
 
 
-def _provider_metadata(value: object, label: str) -> dict[str, Any]:
+def _provider_metadata(value: object, label: str, *, succeeded: bool = False) -> dict[str, Any]:
     if not isinstance(value, dict) or not isinstance(value.get("provider"), str) or not value["provider"]:
         raise ContractError(f"{label} lacks provider metadata")
+    if succeeded and (not isinstance(value.get("externalArtifactSha256"), str) or SHA256_RE.fullmatch(value["externalArtifactSha256"]) is None):
+        raise ContractError(f"{label} lacks provider artifact digest")
     return value
 
 
@@ -154,7 +158,10 @@ def _validate_calls(records: Iterable[dict[str, Any]], assignments: Iterable[dic
         completed_at = _timestamp(record.get("completedAt"), "journal completedAt")
         if completed_at < started_at:
             raise ContractError("journal completion precedes start")
-        _provider_metadata(record.get("providerMetadata"), "journal call")
+        succeeded = record.get("outcome") == "succeeded"
+        _provider_metadata(record.get("providerMetadata"), "journal call", succeeded=succeeded)
+        if succeeded and (not isinstance(record.get("returnedProviderArtifact"), str) or not record["returnedProviderArtifact"]):
+            raise ContractError("successful journal call lacks returned provider artifact")
         grouped.setdefault(binding, []).append(record)
         retries += record["callKind"] == "provider-no-output-retry"
     if retries > RETRY_CALL_LIMIT:
@@ -180,9 +187,17 @@ def _validate_calls(records: Iterable[dict[str, Any]], assignments: Iterable[dic
 
 def _validate_declared_files(root: Path, assignments: list[dict[str, Any]]) -> None:
     declared = {path for assignment in assignments for path in (assignment["providerSourcePath"], assignment["candidatePath"], assignment["resultPath"])}
+    declared.update(
+        f"assets/heroes/experiments/{EXPERIMENT_ID}/waves/{assignment['waveId']}/{directory}/{assignment['heroId']}.json"
+        for assignment in assignments
+        for directory in ("targets", "assignments")
+    )
+    declared_waves = {assignment["waveId"] for assignment in assignments}
     workspace = _workspace(root)
     for wave_root in (root / "waves").glob("wave-*") if (root / "waves").exists() else ():
-        for directory in ("provider-sources", "candidates", "results"):
+        if wave_root.name not in declared_waves or wave_root.is_symlink() or not wave_root.is_dir():
+            raise ContractError("undeclared or invalid wave directory is present")
+        for directory in ("targets", "assignments", "provider-sources", "candidates", "results"):
             location = wave_root / directory
             if not location.exists():
                 continue
@@ -238,7 +253,9 @@ def _result_for_assignment(root: Path, assignment: dict[str, Any], target: dict[
         raise ContractError("result PNG dimensions or MIME type differs")
     if result.get("providerSourceSha256") != image_hash or result.get("candidateSha256") != image_hash:
         raise ContractError("result output hash differs")
-    _provider_metadata(result.get("providerMetadata"), "result")
+    _provider_metadata(result.get("providerMetadata"), "result", succeeded=True)
+    if result["providerMetadata"]["externalArtifactSha256"] != image_hash:
+        raise ContractError("provider artifact digest differs from retained provider source")
     result_started = _timestamp(result.get("startedAt"), "result startedAt")
     result_completed = _timestamp(result.get("completedAt"), "result completedAt")
     result_written = _timestamp(result.get("resultWrittenAt"), "resultWrittenAt")
