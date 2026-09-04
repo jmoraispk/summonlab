@@ -36,7 +36,9 @@ not authorize another reprocess attempt.
 - **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
   uncluttered, and different from adjacent family stages.
 - **Reference discipline:** each reference influenced only its declared purpose. No calibration
-  cell, parent pixels, label, watermark, UI, or reference text was copied.
+  cell, complete-skill candidate pixels, parent pixels, label, watermark, UI, or reference text was
+  copied. A complete icon that merely inherited the approved frame-sheet reference is not a
+  standalone frame authority.
 
 ## Role checks
 

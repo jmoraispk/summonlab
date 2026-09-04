@@ -27,7 +27,8 @@ Require one target JSON, its matching assignment JSON, and the Summonlab reposit
 [target-schema.md](references/target-schema.md) and run:
 
 ```bash
-python3 <skill-directory>/scripts/validate_target.py TARGET ASSIGNMENT WORKSPACE_ROOT
+python3 <skill-directory>/scripts/validate_target.py TARGET ASSIGNMENT WORKSPACE_ROOT \
+  [--catalog VERSIONED_CATALOG] [--lineage-authority OWNER_APPROVAL_AUTHORITY]
 ```
 
 Stop without writing when it fails. Do not repair inputs inside the job. Both assigned output paths
@@ -44,6 +45,12 @@ must be absent at preflight.
    calibration sheet.
    A profile-v3 frame or backing additionally requires the exact geometry-v2 guide reference
    declared by its target; use it only for provider-space registration and never as image content.
+   A revision-5-or-later rarity frame additionally requires the hash-bound Option C material
+   authority and owner-selected seven-frame shape authority. Use the sheet only as generation
+   guidance. A complete skill icon is never a frame authority, exemplar, extraction source, or
+   substitute reference—even when its prompt or lineage cites the approved frame sheet. If no
+   approved standalone frame exists, return the request to the coordinator for a dedicated
+   `rarity-frame` target rather than deriving a frame from a complete icon.
 3. Submit `target.exactPrompt` to imagegen byte-for-byte: no preface, suffix, normalization, or
    rewording. Supply every declared reference in manifest order. Request exactly one raster.
 4. If a correctable defect remains, make at most one imagegen edit and only when `retryCeiling` is
@@ -74,7 +81,8 @@ must be absent at preflight.
 
    ```bash
    python3 <skill-directory>/scripts/verify_result.py \
-     TARGET ASSIGNMENT RESULT WORKSPACE_ROOT --attempt-count ACTUAL_CALLS
+     TARGET ASSIGNMENT RESULT WORKSPACE_ROOT --attempt-count ACTUAL_CALLS \
+     [--catalog VERSIONED_CATALOG] [--lineage-authority OWNER_APPROVAL_AUTHORITY]
    ```
 
 8. Return the status, candidate path when retained, result path, and verification outcome. Stop.
@@ -94,6 +102,8 @@ must be absent at preflight.
   unattempted older packet by binding it to exact, live, higher-revision target and assignment
   bytes; this production skill cannot self-supersede.
 - Never create a composite, contact sheet, calibration crop, alternate, batch, or extra raster.
+- Never crop, mask, trace, or extract a reusable frame from a complete generated skill icon. Its
+  visual resemblance or inherited references do not make its pixels standalone frame authority.
 - Never normalize provider output manually or copy a provider source into the repository. Never
   persist its machine-local absolute path or a `caBX` payload in result JSON; normalized results
   record only pathless source media, dimensions, alpha mode, byte count, content hash, and the

@@ -103,7 +103,10 @@ export const SkillIconReferencePathSchema = SkillIconRepositoryPathSchema.refine
 		'assets/wiki/skills/rarity-frame-v1/references/',
 		'assets/wiki/skills/rarity-frame-v1/sources/'
 	].some((root) => value.startsWith(root));
-	return allowedRoot && /\.(?:png|webp|svg)$/u.test(value);
+	const approvedFrameSheet =
+		value ===
+		'assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png';
+	return (allowedRoot || approvedFrameSheet) && /\.(?:png|webp|svg)$/u.test(value);
 }, 'References must be image assets beneath an allowlisted production authority root');
 
 function pathBasenameWithoutExtension(value: string): string {
@@ -168,6 +171,18 @@ export const SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH =
 	'6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab' as const;
 export const SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH =
 	'8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e' as const;
+export const SKILL_ICON_OPTION_C_FRAME_PATH =
+	'assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png' as const;
+export const SKILL_ICON_OPTION_C_FRAME_PURPOSE =
+	'Canonical Option C rarity-frame material and ornament authority.' as const;
+export const SKILL_ICON_OPTION_C_FRAME_HASH =
+	'66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce' as const;
+export const SKILL_ICON_APPROVED_FRAME_SHEET_PATH =
+	'assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png' as const;
+export const SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE =
+	'Owner-selected seven-frame shape, proportion, ornament, and integrated-crest authority.' as const;
+export const SKILL_ICON_APPROVED_FRAME_SHEET_HASH =
+	'4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266' as const;
 
 const ExactPromptSchema = z
 	.string()
@@ -1006,6 +1021,33 @@ export const SkillIconTargetV2Schema = z
 				message:
 					'Normalized targets require their profile canonical geometry guide path, purpose, and hash'
 			});
+		}
+		if (target.role === 'rarity-frame' && target.revision >= 5) {
+			for (const authority of [
+				{
+					path: SKILL_ICON_OPTION_C_FRAME_PATH,
+					purpose: SKILL_ICON_OPTION_C_FRAME_PURPOSE,
+					contentHash: SKILL_ICON_OPTION_C_FRAME_HASH
+				},
+				{
+					path: SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+					purpose: SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
+					contentHash: SKILL_ICON_APPROVED_FRAME_SHEET_HASH
+				}
+			] as const) {
+				const reference = target.references.find(({ path }) => path === authority.path);
+				if (
+					reference?.purpose !== authority.purpose ||
+					reference.contentHash !== authority.contentHash
+				) {
+					context.addIssue({
+						code: 'custom',
+						path: ['references'],
+						message:
+							'Rarity-frame revision 5+ requires the canonical Option C material and owner-selected seven-frame shape authorities'
+					});
+				}
+			}
 		}
 	});
 export const AnySkillIconTargetSchema = z.union([SkillIconTargetSchema, SkillIconTargetV2Schema]);

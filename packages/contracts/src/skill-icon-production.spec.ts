@@ -392,6 +392,77 @@ describe('skill-icon production contracts', () => {
 		).toBe(false);
 	});
 
+	it('binds new rarity-frame revisions to the owner-selected frame-system authority', () => {
+		const optionC = {
+			path: 'assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png',
+			purpose: 'Canonical Option C rarity-frame material and ornament authority.',
+			contentHash: '66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce'
+		};
+		const approvedFrameSheet = {
+			path: 'assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png',
+			purpose:
+				'Owner-selected seven-frame shape, proportion, ornament, and integrated-crest authority.',
+			contentHash: '4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266'
+		};
+		const guide = {
+			path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+			purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+			contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+		};
+		const jobId = 'rarity-frame-a-v5';
+		const target = {
+			schemaVersion: 'skill-icon-target-v2' as const,
+			jobId,
+			logicalIdentity: 'rarity-frame-a',
+			revision: 5,
+			role: 'rarity-frame' as const,
+			skillTargetId: null,
+			motifFamily: null,
+			rarity: 'A' as const,
+			exactPrompt:
+				'Paint the A rarity frame over an opaque #00FF00 matte with no baked checkerboard.',
+			references: [optionC, approvedFrameSheet, guide],
+			canvas: { width: 1024, height: 1024, mediaType: 'image/png' as const },
+			output: ownedPaths('references', jobId),
+			normalization: {
+				profile: 'skill-icon-green-key-role-mask-v3' as const,
+				sourceContract: {
+					mediaType: 'image/png' as const,
+					width: 1254 as const,
+					height: 1254 as const,
+					alphaMode: 'rgb' as const,
+					matteColor: '#00FF00' as const
+				},
+				outputContract: {
+					mediaType: 'image/png' as const,
+					width: 1024 as const,
+					height: 1024 as const,
+					alphaMode: 'rgba' as const
+				},
+				geometry: {
+					path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+					contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+				}
+			}
+		};
+
+		expect(SkillIconReferencePathSchema.safeParse(approvedFrameSheet.path).success).toBe(true);
+		expect(SkillIconTargetV2Schema.safeParse(target).success).toBe(true);
+		expect(
+			SkillIconTargetV2Schema.safeParse({
+				...target,
+				references: target.references.filter(
+					(reference) => reference.path !== approvedFrameSheet.path
+				)
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconReferencePathSchema.safeParse(
+				'assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-void-cut.png'
+			).success
+		).toBe(false);
+	});
+
 	it('requires an explicit recognition pass for accepted skill-art review', () => {
 		expect(
 			SkillIconReviewSchema.safeParse({
@@ -1619,7 +1690,7 @@ describe('skill-icon production contracts', () => {
 			const parsingError = parsed.success ? '' : parsed.error.message;
 			expect(parsed.success, `${filename}: ${parsingError}`).toBe(true);
 		}
-		expect(structuralV2Count).toBe(24);
+		expect(structuralV2Count).toBe(25);
 	});
 
 	it('records an unattempted superseded packet only against stronger raw authority', () => {
