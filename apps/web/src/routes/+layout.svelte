@@ -85,18 +85,21 @@
 
 	.skip-link {
 		position: fixed;
-		top: 0.75rem;
+		top: -10rem;
 		left: 0.75rem;
 		z-index: 1000;
 		padding: 0.75rem 1rem;
 		background: #fff3d6;
 		color: #16100a;
 		font-weight: 800;
-		transform: translateY(-180%);
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.skip-link:focus {
-		transform: translateY(0);
+		top: 0.75rem;
+		opacity: 1;
+		pointer-events: auto;
 	}
 
 	:global(html[data-player-motion='reduced'] *) {

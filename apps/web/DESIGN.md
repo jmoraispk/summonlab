@@ -211,6 +211,14 @@ destination tile before impact and let the resolved state become readable before
   thumbnails in the feed; the name supplies identity while preserving battlefield space and keeping
   mechanical event lines easy to scan.
 
+### Opening presentation
+
+The playable opening laboratory is the deliberate exception for scene choreography. Its four states
+reuse the approved full-screen story plates while one engraved interaction surface changes at a time.
+The summoning glow becomes the equipment-selection line and then the Tower-floor marker, giving the
+sequence one continuous visual gesture. Reduced motion preserves the same state and focus order with
+near-instant transitions.
+
 ### Content and data visualization
 
 Copy is concise, literal, and written from the reader's perspective. Taxonomy language follows the
