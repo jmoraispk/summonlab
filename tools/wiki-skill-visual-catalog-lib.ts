@@ -231,6 +231,23 @@ async function formatManifest(manifest: WikiSkillVisualRuntimeManifest): Promise
 	);
 }
 
+export async function assertWikiSkillVisualDerivative(
+	data: Buffer,
+	targetId: string
+): Promise<void> {
+	const decoded = await sharp(data, { failOn: 'error' })
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	if (
+		decoded.info.width !== 512 ||
+		decoded.info.height !== 512 ||
+		decoded.info.channels !== 4 ||
+		decoded.data.byteLength !== 512 * 512 * 4
+	) {
+		throw new Error(`Invalid decoded WebP derivative geometry or alpha for ${targetId}`);
+	}
+}
+
 function outputPath(record: WikiSkillVisualRuntimeRecord): string {
 	return `${WIKI_SKILL_VISUAL_ROOT}/${record.file}`;
 }
@@ -333,20 +350,11 @@ export async function buildWikiSkillVisualCatalogFromAuthorities(
 		if (sourceMetadata.channels !== 4 || !sourceMetadata.hasAlpha) {
 			throw new Error(`Expected RGBA source with alpha: ${massRecord.finalImagePath}`);
 		}
-		const { data, info } = await sharp(sourceBytes, { failOn: 'error' })
+		const { data } = await sharp(sourceBytes, { failOn: 'error' })
 			.resize(512, 512, { fit: 'fill' })
 			.webp({ quality: 86, alphaQuality: 100, effort: 4, smartSubsample: true })
 			.toBuffer({ resolveWithObject: true });
-		const decodedOutput = await sharp(data, { failOn: 'error' }).metadata();
-		if (
-			info.width !== 512 ||
-			info.height !== 512 ||
-			decodedOutput.width !== 512 ||
-			decodedOutput.height !== 512 ||
-			!decodedOutput.hasAlpha
-		) {
-			throw new Error(`Invalid WebP derivative geometry or alpha for ${record.targetId}`);
-		}
+		await assertWikiSkillVisualDerivative(data, record.targetId);
 		if (data.byteLength > WIKI_SKILL_VISUAL_MAXIMUM_ASSET_BYTES) {
 			throw new Error(`Derivative exceeds byte budget for ${record.targetId}`);
 		}

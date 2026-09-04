@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	WIKI_SKILL_VISUAL_ROOT,
+	assertWikiSkillVisualDerivative,
 	buildWikiSkillVisualCatalogFromAuthorities,
 	checkWikiSkillVisualCatalog,
 	writeWikiSkillVisualCatalog
@@ -228,6 +229,25 @@ describe('wiki skill visual catalog exporter', () => {
 			mass.skills[0].finalImageHash = hash(await readFile(sourcePath));
 		});
 		await expect(item.build()).rejects.toThrow(/alpha/i);
+	});
+
+	it('decodes final WebP pixels before accepting its geometry and alpha', async () => {
+		const opaqueWebp = await sharp({
+			create: {
+				width: 512,
+				height: 512,
+				channels: 4,
+				background: { r: 47, g: 93, b: 147, alpha: 1 }
+			}
+		})
+			.webp()
+			.toBuffer();
+		await expect(assertWikiSkillVisualDerivative(opaqueWebp, 'opaque-webp')).rejects.toThrow(
+			/alpha/i
+		);
+		await expect(
+			assertWikiSkillVisualDerivative(Buffer.from('not an encoded image'), 'corrupt-webp')
+		).rejects.toThrow();
 	});
 
 	it('rejects a source authority reached through an escaping ancestor symlink', async () => {

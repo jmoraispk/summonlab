@@ -136,3 +136,45 @@
    corepack pnpm tsx -e "...buildWikiSkillVisualCatalog()..."
    {"skillCount":456,"assetCount":456,"totalBytes":38597676,"maximumAssetBytes":133120}
    ```
+
+## Review fix round 2 — decoded WebP pixels
+
+The prior alpha check used `sharp(data).metadata()`. That parses encoded metadata but does not force
+pixel decoding, so it was insufficient as a final derivative integrity boundary.
+
+### RED/GREEN evidence
+
+1. Added a regression that sends a real opaque 512px RGBA WebP and corrupt image bytes to the final
+   derivative validator. Before implementation it failed as intended because the validator did not
+   exist:
+
+   ```text
+   TypeError: assertWikiSkillVisualDerivative is not a function
+   ```
+
+2. The final generated buffer is now decoded using:
+
+   ```ts
+   sharp(data, { failOn: 'error' }).raw().toBuffer({ resolveWithObject: true });
+   ```
+
+   Validation requires decoded 512×512 dimensions, exactly four decoded channels, and the expected
+   1,048,576 raw RGBA bytes. An opaque WebP decodes to three channels and is rejected; corrupt bytes
+   fail Sharp's decode before an asset record can be created.
+
+3. GREEN verification:
+
+   ```text
+   corepack pnpm vitest run tools/wiki-skill-visual-catalog-lib.spec.ts
+   Test Files  1 passed (1)
+   Tests  7 passed (7)
+
+   corepack pnpm tsc -p tools/tsconfig.skill-icon-production.json --noEmit
+   exit 0
+
+   git diff --check
+   exit 0
+
+   corepack pnpm tsx -e "...buildWikiSkillVisualCatalog()..."
+   {"skillCount":456,"assetCount":456,"totalBytes":38597676,"maximumAssetBytes":133120}
+   ```
