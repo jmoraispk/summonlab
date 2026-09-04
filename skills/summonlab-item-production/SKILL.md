@@ -23,6 +23,27 @@ boundary the request reaches:
 Do not infer later-stage authorization from “make an item.” Ask the owning orchestrator before
 changing shared catalogs, contracts, or another visual domain.
 
+## Expand a minimal request into the standard campaign
+
+A short request that names an item or family is enough to begin. Unless the user narrows or expands
+the scope, treat it as authorization for a review-ready candidate campaign and apply these defaults:
+
+1. Inspect repository instructions, canonical item theory, retained ranks and materials, approved
+   visual language, current manifests, and production tooling.
+2. Define the item model, applicable material mapping, complete rank/material coverage matrix,
+   exclusions, and exact image count.
+3. Preserve supplied references with provenance and narrow visual roles. Create direction boards
+   only when they materially improve rank, material, class, or set calibration.
+4. Create collision-safe manifests, assignments, prompts, receipts, and outputs. Generate every
+   dedicated individual item required by the coverage matrix; boards never substitute for them.
+5. Produce scrollable review evidence organized by the useful comparison axes, including phone-size
+   and native-detail inspection, then validate, commit, push, and report exact outcomes.
+6. Stop at review-ready candidates. Promotion, runtime export, and shared catalog or contract changes
+   require explicit authorization appropriate to those boundaries.
+
+Proceed without asking the user to restate these defaults. Ask only when repository truth cannot
+resolve a consequential product choice or when the next action crosses an unauthorized boundary.
+
 | Situation                     | Required move                                                 |
 | ----------------------------- | ------------------------------------------------------------- |
 | New ranked form               | Cover and compare every retained rank                         |
