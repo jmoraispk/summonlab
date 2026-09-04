@@ -3,6 +3,41 @@
 Use this reference whenever item work includes visual direction, image generation, references,
 ranked materials, sets, or individual assets.
 
+## Functional-proportion gate
+
+Apply this gate before the first pixel call whenever an item is derived from recognizable physical
+construction and wrong anatomy would change how it reads or works. Typical triggers include weapon
+blade/haft/hilt relationships, armour coverage and articulation, tool head-to-handle balance,
+container openings and grips, footwear fit, and garment body proportions.
+
+### Establish evidence before prompting
+
+1. Define landmarks in words before collecting numbers: for example, a sword blade begins at the
+   functional guard plane, while exposed grip excludes the guard and pommel.
+2. Search repository evidence for an accepted, hash-bound contract. If none exists, browse
+   authoritative primary or curatorial sources. Prefer museum object records, conservation or
+   archaeology catalogs, technical standards, and manufacturer drawings over marketplace copy,
+   unsourced diagrams, or other generated imagery.
+3. Compare at least two representative measured examples when available. Record source URLs, access
+   date, raw dimensions, derived ratios, and why each example belongs to the intended form. Use the
+   evidence to define a bounded range; do not average away meaningful subtypes.
+4. Separate evidence-backed values from art-direction choices. A museum blade and overall length can
+   support a blade-to-hilt range; it does not support an invented guard-width rule unless the guard
+   was also measured.
+5. Record uncertainty and the effect of perspective. Do not claim pixel precision from an oblique
+   photograph, hidden joint, bloom, shadow, or ornament that obscures a landmark.
+
+### Bind and review the first iteration
+
+The initial target, prompt, and acceptance criteria must name the landmarks and measurable ranges.
+After generation, record per-item source measurements, derived ratios, pass/fail criteria, method,
+and reviewer uncertainty. A first-iteration direction board cannot be accepted or unlock a larger
+run until this review exists. Out-of-range work is `revise`; a deliberate exception requires an
+owner decision bound to the exact image hash and the named measured deviation.
+
+Recheck dedicated individual reconstructions against the same contract. The direction board proves
+the family envelope; it does not guarantee that a standalone generation preserved it.
+
 ## The two-axis method
 
 Large item libraries fail when they optimize only one kind of consistency. Use two complementary

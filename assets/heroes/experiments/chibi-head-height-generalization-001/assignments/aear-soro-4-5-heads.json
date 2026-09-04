@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-assignment-v1",
+  "assignmentId": "aear-soro-4-5-heads-assignment",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "aear-soro-4-5-heads",
+  "targetPath": "assets/heroes/experiments/chibi-head-height-generalization-001/targets/aear-soro-4-5-heads.json",
+  "targetSha256": "db50a7f7ef09efa863255eba79a82c86d56935f5aeacc8e67da1e082e57be032",
+  "producerId": "chibi-generalization-lane-02",
+  "assignedAt": "2026-09-04T16:38:36Z",
+  "dryRun": false,
+  "retryCeiling": 0,
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/aear-soro-4-5-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-generalization-001/results/aear-soro-4-5-heads.json"
+  },
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001",
+    "assets/heroes/experiments/chibi-head-height-calibration-001",
+    "assets/heroes/approved",
+    "assets/heroes/runtime"
+  ],
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  }
+}
+

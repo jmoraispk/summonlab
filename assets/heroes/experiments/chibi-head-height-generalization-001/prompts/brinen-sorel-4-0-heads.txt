@@ -1,0 +1,10 @@
+Edit the provided existing combat-chibi image of Brinen Sorel. Create one new full-body proportion-calibration candidate of this exact same adult hero at a target height of exactly 4.0 anatomical heads tall.
+
+MEASUREMENT RULE: one anatomical head length is the vertical distance from the top of the skull itself (ignore all hair, braids, curls, locs, bob volume, and ornaments above or beside the skull) to the bottom of the chin. From skull crown to boot soles, the standing figure should equal 4.0 repeated anatomical head lengths. Therefore the body from chin to soles should equal 3.0 head lengths. Do not count hairstyle mass as head height.
+
+CONTROL THE EDIT: retain the source anatomical head at the same relative size and reconstruct the body below the chin to achieve the requested ratio. The entire figure may be rescaled uniformly afterward only to fit safely within the canvas. Do not default to ordinary 6-to-8-head adult anatomy. Do not make the hero younger. Do not shorten by inflating the skull, face, hairstyle, torso width, shoulders, arms, hands, hips, legs, or boots.
+
+PRESERVE EXACT CHARACTER CONTINUITY: same recognizable face and adult age; same skin value, neutral closed-mouth expression, hairstyle silhouette and color, body construction and muscle/fat distribution, wardrobe construction, garment lengths and layers, palette, accessories, markings, and empty-handed ready stance. Preserve the source body's relative widths: arms and hands must stay slim or muscular only to the exact degree shown by the source, never generically thick or puffy. Preserve the cinematic semi-realistic painted-drawing register with visible brush planes; not photographic, not plastic 3D, not cel anime.
+
+COMPOSITION: exactly one complete full-body hero on a 1024 x 1536 warm pale parchment studio wash, with skull, all hair, both hands, both boots, and grounding shadow fully inside generous margins. No weapon, armor upgrade, magic, aura, affinity effect, floating, frame, star, number, text, logo, watermark, extra person, duplicated anatomy, or cropped extremity. This is a proportion study only.
+
