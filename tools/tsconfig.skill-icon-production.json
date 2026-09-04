@@ -23,6 +23,8 @@
 		"export-skill-icon-geometry.ts",
 		"export-skill-icon-geometry.spec.ts",
 		"export-skill-icon-production.ts",
+		"export-skill-icon-production-v2.ts",
+		"export-skill-icon-production-v2.spec.ts",
 		"validate-skill-icon-assets.ts",
 		"validate-skill-icon-assets.spec.ts",
 		"normalize-skill-icon-provider-source.ts",

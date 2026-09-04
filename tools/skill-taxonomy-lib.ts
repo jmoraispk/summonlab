@@ -44,6 +44,17 @@ export type SkillMigrationLedger = {
 	records: SkillMigrationRecord[];
 };
 
+export type NetNewSkillRecord = TargetSkillRow & {
+	authoredAt: string;
+	decisionPath: string;
+	rationale: string;
+};
+
+export type NetNewSkillLedger = {
+	schemaVersion: 'summonlab-net-new-skills-v1';
+	records: NetNewSkillRecord[];
+};
+
 export const LEGACY_SKILL_INVENTORY_V1_SHA256 =
 	'c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4';
 
@@ -294,7 +305,8 @@ function sortedLabels(labels: readonly SkillLabel[] | undefined): string[] {
 
 export function validateTargetTaxonomy(
 	rows: readonly TargetSkillRow[],
-	ledger: SkillMigrationLedger
+	ledger: SkillMigrationLedger,
+	netNewLedger?: NetNewSkillLedger
 ): string[] {
 	const errors: string[] = [];
 	const rowsByKey = new Map<string, TargetSkillRow>();
@@ -389,8 +401,85 @@ export function validateTargetTaxonomy(
 
 	for (const row of rows) {
 		const key = targetKey(row.domain, row.family, row.name);
-		if (!lineageKeys.has(key) && !mergeTargets.has(key))
-			errors.push(`${key} has no legacy lineage`);
+		const hasNetNewProvenance = netNewLedger?.records.some(
+			(record) => targetKey(record.domain, record.family, record.name) === key
+		);
+		if (!lineageKeys.has(key) && !mergeTargets.has(key) && !hasNetNewProvenance) {
+			errors.push(
+				netNewLedger
+					? `${key} has neither legacy nor net-new provenance`
+					: `${key} has no legacy lineage`
+			);
+		}
+	}
+
+	return errors;
+}
+
+export function validateNetNewSkillProvenance(
+	rows: readonly TargetSkillRow[],
+	legacyLedger: SkillMigrationLedger,
+	netNewLedger: NetNewSkillLedger
+): string[] {
+	const errors: string[] = [];
+	if (netNewLedger.schemaVersion !== 'summonlab-net-new-skills-v1') {
+		errors.push(`invalid net-new skill schema ${String(netNewLedger.schemaVersion)}`);
+	}
+
+	const rowsById = new Map(rows.map((row) => [row.targetId, row] as const));
+	const legacyKeys = new Set<string>();
+	for (const record of legacyLedger.records) {
+		if (record.disposition === 'delete') continue;
+		const target = record.disposition === 'merge' ? record.mergeTarget : record.target;
+		if (target && typeof target !== 'string') {
+			legacyKeys.add(targetKey(target.domain, target.family, target.skill));
+		}
+	}
+
+	const seenIds = new Set<string>();
+	const netNewKeys = new Set<string>();
+	for (const record of netNewLedger.records) {
+		if (seenIds.has(record.targetId)) {
+			errors.push(`duplicate net-new target id ${record.targetId}`);
+		}
+		seenIds.add(record.targetId);
+		const key = targetKey(record.domain, record.family, record.name);
+		netNewKeys.add(key);
+		if (legacyKeys.has(key)) {
+			errors.push(`${key} cannot have both legacy and net-new provenance`);
+		}
+		const row = rowsById.get(record.targetId);
+		if (!row) {
+			errors.push(`net-new provenance targets missing ${record.targetId}`);
+			continue;
+		}
+		if (targetKey(row.domain, row.family, row.name) !== key) {
+			errors.push(`net-new identity does not match ${record.targetId}`);
+		}
+		if (sortedLabels(row.labels).join('|') !== sortedLabels(record.labels).join('|')) {
+			errors.push(`net-new labels do not match ${record.targetId}`);
+		}
+		for (const field of ['rarity', 'type', 'requires', 'effect'] as const) {
+			if (row[field] !== record[field]) {
+				errors.push(`net-new ${field} does not match ${record.targetId}`);
+			}
+		}
+		if (!/^\d{4}-\d{2}-\d{2}$/u.test(record.authoredAt)) {
+			errors.push(`net-new authoredAt is invalid for ${record.targetId}`);
+		}
+		if (!/^docs\/decisions\/[a-z0-9][a-z0-9-]*\.md$/u.test(record.decisionPath)) {
+			errors.push(`net-new decisionPath is invalid for ${record.targetId}`);
+		}
+		if (record.rationale.trim().length === 0) {
+			errors.push(`net-new rationale is required for ${record.targetId}`);
+		}
+	}
+
+	for (const row of rows) {
+		const key = targetKey(row.domain, row.family, row.name);
+		if (!legacyKeys.has(key) && !netNewKeys.has(key)) {
+			errors.push(`${key} has neither legacy nor net-new provenance`);
+		}
 	}
 
 	return errors;

@@ -167,7 +167,8 @@ function flattenMapEntries(
 
 export function parseAcceptedMotifMap(
 	markdown: string,
-	canonicalRows: readonly TargetSkillRow[]
+	canonicalRows: readonly TargetSkillRow[],
+	options: { readonly allowUnmappedCanonicalRows?: boolean } = {}
 ): SkillIconMotifMap {
 	const tokens = motifMarkdownLexer.lexer(markdown);
 	const statuses = tokens.flatMap((token) => {
@@ -269,13 +270,18 @@ export function parseAcceptedMotifMap(
 	const missing = canonicalRows
 		.map((row) => row.targetId)
 		.filter((targetId) => !recordByTargetId.has(targetId));
-	if (missing.length > 0) throw new Error(`Missing motif assignments: ${missing.join(', ')}`);
+	if (missing.length > 0 && !options.allowUnmappedCanonicalRows) {
+		throw new Error(`Missing motif assignments: ${missing.join(', ')}`);
+	}
 	const unknown = rawRecords
 		.map((record) => record.targetId)
 		.filter((targetId) => !canonicalRows.some((row) => row.targetId === targetId));
 	if (unknown.length > 0) throw new Error(`Unknown motif assignments: ${unknown.join(', ')}`);
 
-	const records = canonicalRows.map((row) => recordByTargetId.get(row.targetId)!);
+	const records = canonicalRows.flatMap((row) => {
+		const record = recordByTargetId.get(row.targetId);
+		return record ? [record] : [];
+	});
 	validateVisualLineage(records);
 	return { schemaVersion: 'skill-icon-motif-map-v1', entries, records };
 }

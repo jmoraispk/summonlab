@@ -2461,7 +2461,7 @@ async function commitPromotions(
 			(item) => replacements.get(item.targetId as string) ?? item
 		);
 		nextVisual = Buffer.from(`${JSON.stringify(visual, null, '\t')}\n`);
-		const [rows, motifMarkdown] = await Promise.all([
+		const [canonicalRows, motifMarkdown] = await Promise.all([
 			loadCanonicalSkillRows(root),
 			readRepositoryRegular(
 				root,
@@ -2469,7 +2469,11 @@ async function commitPromotions(
 				'Skill icon motif map source'
 			).then((bytes) => bytes.toString('utf8'))
 		]);
-		const motifMap = parseAcceptedMotifMap(motifMarkdown, rows);
+		const motifMap = parseAcceptedMotifMap(motifMarkdown, canonicalRows, {
+			allowUnmappedCanonicalRows: true
+		});
+		const mappedTargetIds = new Set(motifMap.records.map((record) => record.targetId));
+		const rows = canonicalRows.filter((row) => mappedTargetIds.has(row.targetId));
 		const catalog = buildSkillIconCatalog(
 			rows,
 			motifMap,

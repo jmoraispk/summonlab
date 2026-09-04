@@ -102,5 +102,6 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 89 | **Boomerang Arc** | Dagger | D | P | Ricochet Master | Thrown weapons return to the hero's hand |
 | 90 | **Storm of Steel** | Dagger | C | A | Fan Throw Master | Sustained barrage; consumes the bandolier |
 | 91 | **Perfect Arc** | Dagger | C | P | Boomerang Arc Master | Thrown attacks ignore cover and obstruction |
+| 92 | **Reversal Cut** | Sword | A | A | Mirrored Edge Master, Riposte Master, and the deed of parrying a named foe's signature attack | After a successful parry, convert the intercepted attack's full force into an unblockable returning cut against a chosen target. |
 
 ---
