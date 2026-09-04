@@ -6,7 +6,7 @@ Wiki ID: `monster.orc-warchief`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -64,10 +64,10 @@ The totem assigns lanes to Grunts, Warriors, and Berserkers and shortens their e
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-warchief/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-warchief/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-warchief/water-v1.json` |
 
 ### Status semantics
 

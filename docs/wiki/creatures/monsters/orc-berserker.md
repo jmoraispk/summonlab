@@ -6,7 +6,7 @@ Wiki ID: `monster.orc-berserker`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -64,10 +64,10 @@ Grunts and Warriors try to hold targets inside the next marked diagonal, but the
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/orcs/orc-berserker/water-v1.json` |
 
 ### Status semantics
 
