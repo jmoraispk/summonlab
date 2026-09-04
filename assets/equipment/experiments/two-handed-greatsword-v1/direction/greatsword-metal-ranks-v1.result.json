@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-result-v1",
+  "resultId": "result-greatsword-v1-metal-rank-direction-attempt-2",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "assignmentId": "assignment-greatsword-v1-metal-rank-direction",
+  "attempt": 2,
+  "status": "candidate",
+  "recordedAt": "2026-09-04T16:16:29Z",
+  "provider": "OpenAI image generation",
+  "model": "gpt-imagegen-2.0",
+  "promptSha256": "f3e25f5d9e6af8b89073d252868baba7fe712282653f5a78c6b8f6fe7dfd7f24",
+  "references": [
+    {
+      "path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+      "sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+      "purpose": "Accepted Sword rank rhythm, camera, spacing, and presentation only; do not copy geometry."
+    },
+    {
+      "path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+      "sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+      "purpose": "Accepted painterly finish, honest material response, and studio lighting only; do not copy geometry."
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "revise",
+      "promptSha256": "f3e25f5d9e6af8b89073d252868baba7fe712282653f5a78c6b8f6fe7dfd7f24",
+      "toolOutputSourcePath": "/home/joao/.codex/generated_images/01a06d29-6dd3-7c22-b9c0-47fb9bf11209/exec-5b5a2492-862f-4256-a3e0-59c4bf7dc121.png",
+      "retainedEvidence": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v1-attempt-1-source.png",
+        "sha256": "089f3646af7dd09c4b4c3df955d0f6908fbdc978ffec3e641fbd53496f2f5259",
+        "bytes": 2042856,
+        "width": 1624,
+        "height": 969,
+        "mediaType": "image/png"
+      },
+      "inspection": "Seven complete Greatswords and the intended rank progression passed, but the canvas inherited the 1624x969 reference ratio instead of the assigned 1536x1024 contract."
+    },
+    {
+      "attempt": 2,
+      "status": "candidate",
+      "correctionAssignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v1-attempt-2.assignment.json",
+      "promptSha256": "25dfc224d5fb3d3806aea7527ea177fdcdc71c4d3dd88a21916879bb5a90ec9b",
+      "toolOutputSourcePath": "/home/joao/.codex/generated_images/01a06d29-6dd3-7c22-b9c0-47fb9bf11209/exec-07d43536-bd26-441d-b474-558bf0ab6c51.png",
+      "inspection": "Exact 3:2 framing restored with seven complete, evenly spaced weapons and preserved progression, material identity, pose, lighting, and finish."
+    }
+  ],
+  "producerAssessment": {
+    "coverage": "pass",
+    "classRecognition": "pass",
+    "twoHandReadability": "pass",
+    "rankProgression": "pass",
+    "materialDistinction": "pass",
+    "phoneThumbnail": "pass",
+    "nativeDetail": "pass",
+    "productionHygiene": "pass",
+    "humanReviewPending": true
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+    "sha256": "2a4261338b94a4d5586172fe6751928dae258f8ea1447316ea584dce2d4b34dd",
+    "bytes": 2320433,
+    "width": 1536,
+    "height": 1024,
+    "mediaType": "image/png"
+  }
+}

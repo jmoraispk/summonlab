@@ -36,6 +36,21 @@ and a Sword or Dagger grip: every weapon has exactly one rank-bearing material.
 - Two-handed and Dual Wield are properties of a loadout. Neither creates another weapon class or
   full skill ladder.
 
+## Greatsword visual family
+
+Greatsword is a two-handed visual family within **Sword**, not a seventh mechanical Weapon class.
+It uses a clearly two-hand grip, longer guard, broader blade, and heavier construction than the
+standard hand-and-a-half Sword presentation while remaining a plausible wielded weapon rather than
+an oversized slab. A Greatsword occupies the main hand and off-hand together and belongs to the
+Heavy weight class.
+
+The visual family follows the complete metal ladder from Bronze F through Sunsteel S. Rank remains
+material-led, craftsmanship does not select separate art, and Forged and Dropped instances reuse the
+same authored definition while preserving their instance provenance. Candidate visuals are being
+developed under `assets/equipment/experiments/two-handed-greatsword-v1/`; content definitions,
+runtime visuals, acquisition, balance, and skill compatibility remain deferred until an exact
+candidate selection is approved for integration.
+
 ## Skill boundary
 
 Each weapon needs one foundation and only enough signature techniques to express its identity.
