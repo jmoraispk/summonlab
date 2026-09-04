@@ -168,7 +168,7 @@ describe('orchestration legal actions', () => {
 		expect(legalActions(state, state.master.masterId)).toEqual(expected);
 	});
 
-	it('preserves complete ordered Master and active-hero arrays for Checkpoint A v1-v23', () => {
+	it('preserves complete ordered Master and active-hero arrays for Checkpoint A v1-v24', () => {
 		const actual = ENGINE_COMPATIBILITY_STATE_FIXTURES.map((fixture) => {
 			const state = EngineGameStateSchema.parse(fixture);
 			const heroId = Object.keys(state.heroes)[0]!;

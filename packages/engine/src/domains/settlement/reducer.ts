@@ -59,6 +59,7 @@ import {
 	revokeDirective
 } from './society.js';
 import type { CommunicationInput, DirectiveIssueCommand } from './society.js';
+import { equipEquipmentItem } from './equipment.js';
 
 const ChoosePayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
@@ -198,6 +199,7 @@ const ItemEquippedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	itemId: z.string().uuid(),
 	previousItemId: z.string().uuid().nullable(),
+	targetSlot: z.enum(['main-hand', 'off-hand', 'head', 'torso', 'legs', 'boots']).optional(),
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -905,6 +907,19 @@ function reduceSettlementEvent(
 	}
 	if (event.eventType === 'hero.item.equipped') {
 		const payload = ItemEquippedPayloadSchema.parse(event.payload);
+		if (state.schemaVersion === 24) {
+			const equipped = equipEquipmentItem(state, {
+				heroId: payload.heroId,
+				itemId: payload.itemId,
+				...(payload.targetSlot ? { targetSlot: payload.targetSlot } : {})
+			});
+			return parseModernState(state, {
+				...equipped,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor
+			});
+		}
 		const hero = state.heroes[payload.heroId];
 		const item = state.items[payload.itemId];
 		if (!hero || !item || item.ownerId !== hero.heroId)

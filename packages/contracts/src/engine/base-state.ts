@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+import {
+	EquipmentCraftsmanshipSchema,
+	EquipmentDefinitionIdSchema,
+	EquipmentLoadoutSlotSchema,
+	EquipmentOriginSchema,
+	EquipmentRankSchema
+} from '../equipment.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from '../shared.js';
 
 export const EngineLocationV1Schema = z.enum(['summoning-gate', 'kitchen', 'training-ground']);
@@ -211,5 +218,46 @@ export const EngineItemStateSchema = z
 		message: 'Item durability cannot exceed maxDurability'
 	});
 
+export const EngineEquipmentLoadoutV24Schema = z
+	.object({
+		mainHand: EntityIdSchema.nullable(),
+		offHand: EntityIdSchema.nullable(),
+		head: EntityIdSchema.nullable(),
+		torso: EntityIdSchema.nullable(),
+		legs: EntityIdSchema.nullable(),
+		boots: EntityIdSchema.nullable()
+	})
+	.strict()
+	.superRefine((loadout, context) => {
+		const occupied = EquipmentLoadoutSlotSchema.options
+			.map(
+				(slot) =>
+					loadout[slot === 'main-hand' ? 'mainHand' : slot === 'off-hand' ? 'offHand' : slot]
+			)
+			.filter((itemId): itemId is string => itemId !== null);
+		if (new Set(occupied).size !== occupied.length) {
+			context.addIssue({ code: 'custom', message: 'An item cannot occupy multiple loadout slots' });
+		}
+	});
+
+export const EngineEquipmentItemStateV24Schema = z
+	.object({
+		itemId: EntityIdSchema,
+		definitionId: EquipmentDefinitionIdSchema,
+		ownerId: EntityIdSchema,
+		equippedById: EntityIdSchema.nullable(),
+		craftsmanship: EquipmentCraftsmanshipSchema,
+		finalRank: EquipmentRankSchema,
+		durability: z.number().int().nonnegative(),
+		maxDurability: z.number().int().positive(),
+		origin: EquipmentOriginSchema
+	})
+	.strict()
+	.refine((value) => value.durability <= value.maxDurability, {
+		message: 'Item durability cannot exceed maxDurability'
+	});
+
 export type ActivityKind = z.infer<typeof ActivityKindSchema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
+export type EngineEquipmentLoadoutV24 = z.infer<typeof EngineEquipmentLoadoutV24Schema>;
+export type EngineEquipmentItemStateV24 = z.infer<typeof EngineEquipmentItemStateV24Schema>;

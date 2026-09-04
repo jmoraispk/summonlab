@@ -2,7 +2,6 @@ import {
 	AuthoritativeEventSchema,
 	DirectiveInfluenceRecordSchema,
 	EngineCommandSchema,
-	EngineGameStateSchema,
 	type AuthoritativeEvent,
 	type DirectiveRecord,
 	type EngineCommand,
@@ -11,7 +10,7 @@ import {
 	type LegalAction
 } from '@summonlab/contracts';
 
-import { hashParsedGameState } from '../core/state.js';
+import { hashParsedGameState, parseGameState } from '../core/state.js';
 import type { EngineApplyResult, EngineGameStateModern } from '../core/types.js';
 import {
 	settlementCommandHandler,
@@ -145,7 +144,7 @@ export function applyCommand(
 	stateInput: EngineGameState,
 	commandInput: EngineCommand
 ): EngineApplyResult {
-	const state = EngineGameStateSchema.parse(stateInput);
+	const state = parseGameState(stateInput);
 	const command = EngineCommandSchema.parse(commandInput);
 	assertCommandIsLegal(state, command);
 	const builtEvent =

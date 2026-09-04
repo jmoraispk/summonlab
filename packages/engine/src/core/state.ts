@@ -22,14 +22,18 @@ import {
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	type EngineGameState
 } from '@summonlab/contracts';
 
 import { hashCanonical } from '../hash.js';
+import { validateEquipmentStateContent } from './content-bindings.js';
 import type { EngineGameStateModern } from './types.js';
 
 export function parseGameState(value: unknown): EngineGameState {
-	return EngineGameStateSchema.parse(value);
+	const state = EngineGameStateSchema.parse(value);
+	if (state.schemaVersion === 24) validateEquipmentStateContent(state);
+	return state;
 }
 
 export function hashGameState(state: EngineGameState): string {
@@ -65,5 +69,8 @@ export function parseModernState(
 	if (state.schemaVersion === 20) return EngineGameStateV20Schema.parse(value);
 	if (state.schemaVersion === 21) return EngineGameStateV21Schema.parse(value);
 	if (state.schemaVersion === 22) return EngineGameStateV22Schema.parse(value);
-	return EngineGameStateV23Schema.parse(value);
+	if (state.schemaVersion === 23) return EngineGameStateV23Schema.parse(value);
+	const parsed = EngineGameStateV24Schema.parse(value);
+	validateEquipmentStateContent(parsed);
+	return parsed;
 }

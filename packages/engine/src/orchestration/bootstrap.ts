@@ -12,7 +12,9 @@ import {
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	EngineSnapshotSchema,
+	EquipmentMaterialIdSchema,
 	ResourceKeySchema,
 	type RewardDelta
 } from '@summonlab/contracts';
@@ -26,6 +28,7 @@ import {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
 	DEFAULT_ACTIVE_SYSTEM_IDS,
 	ENGINE_CONTENT_VERSION,
+	EQUIPMENT_ENGINE_CONTENT_VERSION,
 	ENGINE_EPOCH,
 	FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION,
 	MASTER_FALLBACK_ENGINE_CONTENT_VERSION,
@@ -49,6 +52,7 @@ import {
 } from '../domains/story/archive.js';
 import { createStoryPatchCheckpoint } from '../domains/story/runtime.js';
 import { deterministicUuid, EMPTY_STATE_HASH } from '../hash.js';
+import { adaptLegacyEquipmentItem } from '../domains/settlement/equipment.js';
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -84,6 +88,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const settlementContent = verifiedSettlementContent();
 	const buildingStates = createBuildingStates(settlementContent);
 	const developmentMissionScenario = input.developmentMissionScenario;
+	const equipmentDevelopmentScenario = input.developmentEquipmentScenario?.enabled === true;
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
 	}
@@ -142,9 +147,17 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const storyPatchDevelopmentScenario = developmentMissionScenario?.enableStoryPatch === true;
 	const synthesisDevelopmentScenario = developmentMissionScenario?.enableSynthesis === true;
 	const firstBandArchiveDevelopmentScenario =
-		developmentMissionScenario?.enableFirstBandArchive === true;
+		developmentMissionScenario?.enableFirstBandArchive === true || equipmentDevelopmentScenario;
+	const initialMaterialLots = Object.fromEntries(
+		EquipmentMaterialIdSchema.options.map((materialId) => [
+			materialId,
+			input.developmentEquipmentScenario?.materialLots?.[materialId] ?? 0
+		])
+	);
 	const stateSchema = firstBandArchiveDevelopmentScenario
-		? EngineGameStateV23Schema
+		? equipmentDevelopmentScenario
+			? EngineGameStateV24Schema
+			: EngineGameStateV23Schema
 		: synthesisDevelopmentScenario
 			? EngineGameStateV22Schema
 			: storyPatchDevelopmentScenario
@@ -165,50 +178,54 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 											? EngineGameStateV14Schema
 											: EngineGameStateV13Schema;
 	const state = stateSchema.parse({
-		schemaVersion: firstBandArchiveDevelopmentScenario
-			? 23
-			: synthesisDevelopmentScenario
-				? 22
-				: storyPatchDevelopmentScenario
-					? 21
-					: masterFallbackDevelopmentScenario
-						? 20
-						: masterTimingDevelopmentScenario
-							? 19
-							: attemptAftermathDevelopmentScenario
-								? 18
-								: masterPermadeathDevelopmentScenario
-									? 17
-									: aftermathDevelopmentScenario
-										? 16
-										: portalDevelopmentScenario
-											? 15
-											: developmentMissionScenario
-												? 14
-												: 13,
+		schemaVersion: equipmentDevelopmentScenario
+			? 24
+			: firstBandArchiveDevelopmentScenario
+				? 23
+				: synthesisDevelopmentScenario
+					? 22
+					: storyPatchDevelopmentScenario
+						? 21
+						: masterFallbackDevelopmentScenario
+							? 20
+							: masterTimingDevelopmentScenario
+								? 19
+								: attemptAftermathDevelopmentScenario
+									? 18
+									: masterPermadeathDevelopmentScenario
+										? 17
+										: aftermathDevelopmentScenario
+											? 16
+											: portalDevelopmentScenario
+												? 15
+												: developmentMissionScenario
+													? 14
+													: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: firstBandArchiveDevelopmentScenario
-			? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
-			: synthesisDevelopmentScenario
-				? SYNTHESIS_ENGINE_CONTENT_VERSION
-				: storyPatchDevelopmentScenario
-					? STORY_PATCH_ENGINE_CONTENT_VERSION
-					: masterFallbackDevelopmentScenario
-						? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
-						: masterTimingDevelopmentScenario
-							? MASTER_TIMING_ENGINE_CONTENT_VERSION
-							: attemptAftermathDevelopmentScenario
-								? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-								: masterPermadeathDevelopmentScenario
-									? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-									: aftermathDevelopmentScenario
-										? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-										: portalDevelopmentScenario
-											? PORTAL_ENGINE_CONTENT_VERSION
-											: developmentMissionScenario
-												? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-												: ENGINE_CONTENT_VERSION,
+		contentVersion: equipmentDevelopmentScenario
+			? EQUIPMENT_ENGINE_CONTENT_VERSION
+			: firstBandArchiveDevelopmentScenario
+				? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
+				: synthesisDevelopmentScenario
+					? SYNTHESIS_ENGINE_CONTENT_VERSION
+					: storyPatchDevelopmentScenario
+						? STORY_PATCH_ENGINE_CONTENT_VERSION
+						: masterFallbackDevelopmentScenario
+							? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+							: masterTimingDevelopmentScenario
+								? MASTER_TIMING_ENGINE_CONTENT_VERSION
+								: attemptAftermathDevelopmentScenario
+									? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+									: masterPermadeathDevelopmentScenario
+										? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+										: aftermathDevelopmentScenario
+											? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+											: portalDevelopmentScenario
+												? PORTAL_ENGINE_CONTENT_VERSION
+												: developmentMissionScenario
+													? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+													: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,
@@ -245,7 +262,16 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						experience: 0,
 						skills: { swordFighting: { rank: 0, experience: 0 } }
 					},
-					equipment: { mainHand: hero.bladeId },
+					equipment: equipmentDevelopmentScenario
+						? {
+								mainHand: hero.bladeId,
+								offHand: null,
+								head: null,
+								torso: null,
+								legs: null,
+								boots: null
+							}
+						: { mainHand: hero.bladeId },
 					currentActivity: null,
 					currentTravel: null,
 					assignment: null,
@@ -283,31 +309,50 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				rationale: null,
 				modifiers: [],
 				reactions: []
-			}
+			},
+			...(equipmentDevelopmentScenario ? { materialLots: initialMaterialLots } : {})
 		},
 		items: Object.assign(
 			{},
 			...bootstrapHeroes.map((hero) => ({
-				[hero.bladeId]: {
-					itemId: hero.bladeId,
-					templateId: 'practice-blade',
-					displayName: 'Gatehouse Practice Blade',
-					ownerId: hero.heroId,
-					slot: 'main-hand',
-					equippedById: hero.heroId,
-					durability: 6,
-					maxDurability: 6
-				},
-				[hero.bowId]: {
-					itemId: hero.bowId,
-					templateId: 'short-bow',
-					displayName: 'Ash Short Bow',
-					ownerId: hero.heroId,
-					slot: 'main-hand',
-					equippedById: null,
-					durability: 4,
-					maxDurability: 4
-				}
+				[hero.bladeId]: equipmentDevelopmentScenario
+					? adaptLegacyEquipmentItem({
+							itemId: hero.bladeId,
+							templateId: 'practice-blade',
+							ownerId: hero.heroId,
+							equippedById: hero.heroId,
+							durability: 6,
+							maxDurability: 6
+						})
+					: {
+							itemId: hero.bladeId,
+							templateId: 'practice-blade',
+							displayName: 'Gatehouse Practice Blade',
+							ownerId: hero.heroId,
+							slot: 'main-hand',
+							equippedById: hero.heroId,
+							durability: 6,
+							maxDurability: 6
+						},
+				[hero.bowId]: equipmentDevelopmentScenario
+					? adaptLegacyEquipmentItem({
+							itemId: hero.bowId,
+							templateId: 'short-bow',
+							ownerId: hero.heroId,
+							equippedById: null,
+							durability: 4,
+							maxDurability: 4
+						})
+					: {
+							itemId: hero.bowId,
+							templateId: 'short-bow',
+							displayName: 'Ash Short Bow',
+							ownerId: hero.heroId,
+							slot: 'main-hand',
+							equippedById: null,
+							durability: 4,
+							maxDurability: 4
+						}
 			}))
 		),
 		society:
@@ -326,7 +371,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					),
 		mission: {
 			binding: missionBinding,
-			...(developmentMissionScenario
+			...(developmentMissionScenario || equipmentDevelopmentScenario
 				? {
 						availableMissionIds,
 						evidence:

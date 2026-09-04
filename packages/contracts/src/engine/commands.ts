@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ActivityKindSchema } from './base-state.js';
+import { EquipmentLoadoutSlotSchema } from '../equipment.js';
 import { MasterFallbackPrioritySchema, MasterFallbackSafetyStopsSchema } from './master-control.js';
 import { MissionTurnChoiceSchema } from './mission-state.js';
 import {
@@ -252,7 +253,8 @@ export const StartActivityCommandSchema = EngineCommandBaseSchema.extend({
 
 export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.equip.item'),
-	itemId: EntityIdSchema
+	itemId: EntityIdSchema,
+	targetSlot: EquipmentLoadoutSlotSchema.optional()
 }).strict();
 
 export const AdvanceSimulationCommandSchema = EngineCommandBaseSchema.extend({

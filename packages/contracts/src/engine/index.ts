@@ -1,6 +1,8 @@
 export {
 	ActivityKindSchema,
 	CurrentActivitySchema,
+	EngineEquipmentItemStateV24Schema,
+	EngineEquipmentLoadoutV24Schema,
 	EngineHeroStateV1Schema,
 	EngineHeroStateV2Schema,
 	EngineItemStateSchema,
@@ -22,6 +24,8 @@ export {
 	ResourceLedgerEntrySchema,
 	SkillProgressSchema,
 	type ActivityKind,
+	type EngineEquipmentItemStateV24,
+	type EngineEquipmentLoadoutV24,
 	type EngineItemState
 } from './base-state.js';
 export {
@@ -35,10 +39,13 @@ export {
 	EngineHeroStateV3Schema,
 	EngineHeroStateV4Schema,
 	EngineHeroStateV5Schema,
+	EngineHeroStateV24Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
 	EngineSettlementStateV6Schema,
+	EngineSettlementStateV24Schema,
+	EquipmentMaterialLotsV24Schema,
 	FirstEmberFacilitySchema,
 	FirstEmberHeroReactionSchema,
 	FirstEmberModifierKeySchema,
@@ -56,6 +63,9 @@ export {
 	type FirstEmberFacility,
 	type FirstEmberRationale,
 	type FirstEmberState,
+	type EngineHeroStateV24,
+	type EngineSettlementStateV24,
+	type EquipmentMaterialLotsV24,
 	type RoutineKind
 } from './settlement-state.js';
 export {

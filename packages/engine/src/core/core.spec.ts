@@ -17,6 +17,7 @@ import {
 	COMMUNICATION_API_SUPPORTED_VERSIONS,
 	CONVERSATION_API_SUPPORTED_VERSIONS,
 	DIRECTIVES_API_SUPPORTED_VERSIONS,
+	EQUIPMENT_API_SUPPORTED_VERSIONS,
 	FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS,
 	MISSION_API_SUPPORTED_VERSIONS,
 	STORY_PATCH_API_SUPPORTED_VERSIONS,
@@ -35,6 +36,7 @@ import {
 	supportsCommunicationApi,
 	supportsConversationApi,
 	supportsDirectivesApi,
+	supportsEquipmentApi,
 	supportsFirstBandArchiveApi,
 	supportsMissionApi,
 	supportsStoryPatchApi,
@@ -49,24 +51,30 @@ const acceptedVersions = (predicate: (state: EngineGameState) => boolean): numbe
 	STATES.filter(predicate).map((state) => state.schemaVersion);
 
 describe('deterministic engine core', () => {
-	it('keeps every structural state guard exhaustive across v1-v23', () => {
+	it('keeps every structural state guard exhaustive across v1-v24', () => {
 		const structuralMemberships = [
 			[
 				hasNavigationState,
-				[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+				[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 			],
 			[
 				hasFacilityState,
-				[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+				[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 			],
-			[hasRoutineState, [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasFirstEmberState, [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasSocietyState, [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasCommunicationState, [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasConversationState, [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasDirectiveState, [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasMissionState, [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]],
-			[hasMissionTurnState, [12, 13, 14, 15, 16, 17, 18, 19, 20, 23]]
+			[
+				hasRoutineState,
+				[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+			],
+			[
+				hasFirstEmberState,
+				[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+			],
+			[hasSocietyState, [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+			[hasCommunicationState, [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+			[hasConversationState, [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+			[hasDirectiveState, [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+			[hasMissionState, [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+			[hasMissionTurnState, [12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24]]
 		] as const;
 
 		for (const [predicate, expected] of structuralMemberships) {
@@ -83,7 +91,8 @@ describe('deterministic engine core', () => {
 			[supportsMissionApi, MISSION_API_SUPPORTED_VERSIONS, [13, 15, 16, 17, 18, 19, 20]],
 			[supportsStoryPatchApi, STORY_PATCH_API_SUPPORTED_VERSIONS, [21]],
 			[supportsSynthesisApi, SYNTHESIS_API_SUPPORTED_VERSIONS, [22]],
-			[supportsFirstBandArchiveApi, FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS, [23]]
+			[supportsFirstBandArchiveApi, FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS, [23]],
+			[supportsEquipmentApi, EQUIPMENT_API_SUPPORTED_VERSIONS, [24]]
 		] as const;
 
 		for (const [predicate, declared, expected] of serviceMemberships) {

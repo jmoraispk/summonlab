@@ -13,7 +13,7 @@ import {
 } from '@summonlab/contracts';
 import { z } from 'zod';
 
-import { settlementForState } from '../../core/content-bindings.js';
+import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
 import { emptyMetadata, eventBase } from '../../core/event-metadata.js';
 import type { EngineCommandHandler, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -56,6 +56,7 @@ import {
 	heroCanHearCommunication,
 	revokeDirective
 } from './society.js';
+import { equipEquipmentItem, equipmentItemDisplayName } from './equipment.js';
 
 export const SETTLEMENT_COMMAND_TYPES = [
 	'hero.choose.destination',
@@ -382,6 +383,21 @@ function assertSettlementCommandLegal(
 	}
 	if (command.commandType === 'hero.start.routine') {
 		if (!hasRoutineState(state) || !resolveDailyRoutine(state, command.actorId)) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'hero.equip.item') {
+		if (state.schemaVersion === 24) {
+			try {
+				equipEquipmentItem(state, {
+					heroId: command.actorId,
+					itemId: command.itemId,
+					...(command.targetSlot ? { targetSlot: command.targetSlot } : {})
+				});
+			} catch {
+				throw new IllegalActionError(required, actionIds);
+			}
+		} else if (command.targetSlot !== undefined) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
@@ -1006,8 +1022,22 @@ function buildModernSettlementEvent(
 	if (command.commandType === 'hero.equip.item') {
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
+		const nextItem = state.items[command.itemId];
 		const base = eventBase(state, command, 'hero.item.equipped');
-		const previousItemId = hero.equipment.mainHand;
+		const targetSlot =
+			state.schemaVersion === 24 && nextItem && 'definitionId' in nextItem
+				? (command.targetSlot ?? verifiedEquipmentDefinition(nextItem.definitionId).slot)
+				: undefined;
+		const previousItemId =
+			state.schemaVersion === 24 && targetSlot
+				? state.heroes[command.actorId]!.equipment[
+						targetSlot === 'main-hand'
+							? 'mainHand'
+							: targetSlot === 'off-hand'
+								? 'offHand'
+								: targetSlot
+					]
+				: hero.equipment.mainHand;
 		const before = previousItemId ? 1 : 0;
 		return AuthoritativeEventSchema.parse({
 			...base,
@@ -1016,9 +1046,10 @@ function buildModernSettlementEvent(
 				heroId: command.actorId,
 				itemId: command.itemId,
 				previousItemId,
+				...(targetSlot ? { targetSlot } : {}),
 				nextVersion: state.version + 1,
 				...emptyMetadata(
-					`The hero equipped ${state.items[command.itemId]?.displayName ?? 'an item'}.`,
+					`The hero equipped ${nextItem ? equipmentItemDisplayName(nextItem) : 'an item'}.`,
 					[
 						{
 							ownerId: command.actorId,

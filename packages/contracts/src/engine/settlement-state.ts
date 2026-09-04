@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { CharacterMindSchema } from '../character.js';
+import { EquipmentMaterialIdSchema } from '../equipment.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from '../settlement.js';
 import {
 	ContentVersionSchema,
@@ -9,6 +10,7 @@ import {
 	StateHashSchema
 } from '../shared.js';
 import {
+	EngineEquipmentLoadoutV24Schema,
 	EngineHeroStateV2Schema,
 	EngineZoneSchema,
 	ResourceBalancesSchema,
@@ -420,8 +422,34 @@ export const EngineSettlementStateV6Schema = z
 	})
 	.strict();
 
+export const EngineHeroStateV24Schema = z
+	.object({
+		...EngineHeroStateV5Schema.shape,
+		equipment: EngineEquipmentLoadoutV24Schema
+	})
+	.strict();
+
+const materialLotShape = Object.fromEntries(
+	EquipmentMaterialIdSchema.options.map((materialId) => [
+		materialId,
+		z.number().int().nonnegative()
+	])
+) as Record<(typeof EquipmentMaterialIdSchema.options)[number], z.ZodNumber>;
+
+export const EquipmentMaterialLotsV24Schema = z.object(materialLotShape).strict();
+
+export const EngineSettlementStateV24Schema = z
+	.object({
+		...EngineSettlementStateV6Schema.shape,
+		materialLots: EquipmentMaterialLotsV24Schema
+	})
+	.strict();
+
 export type BuildingAssignmentRole = z.infer<typeof BuildingAssignmentRoleSchema>;
 export type FirstEmberFacility = z.infer<typeof FirstEmberFacilitySchema>;
 export type FirstEmberRationale = z.infer<typeof FirstEmberRationaleSchema>;
 export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
+export type EngineHeroStateV24 = z.infer<typeof EngineHeroStateV24Schema>;
+export type EngineSettlementStateV24 = z.infer<typeof EngineSettlementStateV24Schema>;
+export type EquipmentMaterialLotsV24 = z.infer<typeof EquipmentMaterialLotsV24Schema>;

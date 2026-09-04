@@ -2,7 +2,6 @@ import {
 	AuthoritativeEventSchema,
 	DirectiveInfluenceRecordSchema,
 	DirectiveRecordSchema,
-	EngineGameStateSchema,
 	EngineGameStateV1Schema,
 	EntropyDrawSchema,
 	type AuthoritativeEvent,
@@ -11,7 +10,7 @@ import {
 } from '@summonlab/contracts';
 import { z } from 'zod';
 
-import { parseModernState } from '../core/state.js';
+import { parseGameState, parseModernState } from '../core/state.js';
 import type { EngineGameStateModern } from '../core/types.js';
 import { missionEventReducer } from '../domains/mission/reducer.js';
 import { settlementEventReducer } from '../domains/settlement/reducer.js';
@@ -187,8 +186,5 @@ export function reduceEvent(
 	stateInput: EngineGameState,
 	eventInput: AuthoritativeEvent
 ): EngineGameState {
-	return reduceParsedEvent(
-		EngineGameStateSchema.parse(stateInput),
-		AuthoritativeEventSchema.parse(eventInput)
-	);
+	return reduceParsedEvent(parseGameState(stateInput), AuthoritativeEventSchema.parse(eventInput));
 }

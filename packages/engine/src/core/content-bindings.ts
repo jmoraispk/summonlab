@@ -1,14 +1,24 @@
 import {
 	HEARTH_01_DEFINITION,
+	EQUIPMENT_DEFINITION_CATALOG,
+	getEquipmentDefinition,
 	IRON_MOON_PACKAGE,
 	TOWER_BAND_01_RUNTIME_PACKAGES,
 	TOWER_BAND_01_STORY_ENVELOPE,
 	TOWER_FLOOR_01_PACKAGE
 } from '@summonlab/content';
-import type { EngineGameState, MissionPackage, SettlementDefinition } from '@summonlab/contracts';
+import type {
+	EngineGameState,
+	EngineGameStateV24,
+	EquipmentDefinition,
+	EquipmentLoadoutSlot,
+	EquipmentRank,
+	MissionPackage,
+	SettlementDefinition
+} from '@summonlab/contracts';
 
 import { ReplayIntegrityError } from '../errors.js';
-import { hashCanonical } from '../hash.js';
+import { hashCanonical, sha256Hex } from '../hash.js';
 
 type NavigationState = Extract<
 	EngineGameState,
@@ -34,17 +44,114 @@ type NavigationState = Extract<
 			| 20
 			| 21
 			| 22
-			| 23;
+			| 23
+			| 24;
 	}
 >;
 type MissionState = Extract<
 	EngineGameState,
-	{ schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 }
+	{ schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 }
 >;
 
 let verifiedSettlement: SettlementDefinition | undefined;
 const verifiedMissions = new Map<string, MissionPackage>();
 let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
+let verifiedEquipment = false;
+const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
+
+function verifyEquipmentCatalog(): void {
+	if (verifiedEquipment) return;
+	const { contentHash } = EQUIPMENT_DEFINITION_CATALOG;
+	const calculatedHash = sha256Hex(JSON.stringify(EQUIPMENT_DEFINITION_CATALOG.definitions));
+	if (calculatedHash !== contentHash) {
+		throw new Error(
+			`Equipment content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
+		);
+	}
+	verifiedEquipment = true;
+}
+
+export function verifiedEquipmentDefinition(definitionId: string): Readonly<EquipmentDefinition> {
+	verifyEquipmentCatalog();
+	const definition = getEquipmentDefinition(definitionId);
+	if (!definition) throw new Error(`Equipment content is unavailable: ${definitionId}`);
+	return definition;
+}
+
+export function equipmentRankWithBonus(baseRank: EquipmentRank, bonus: 0 | 1 | 2): EquipmentRank {
+	const baseIndex = EQUIPMENT_RANKS.indexOf(baseRank);
+	return EQUIPMENT_RANKS[Math.min(EQUIPMENT_RANKS.length - 1, baseIndex + bonus)]!;
+}
+
+function equipmentItemDefinition(
+	state: EngineGameStateV24,
+	itemId: string
+): Readonly<EquipmentDefinition> | undefined {
+	const item = state.items[itemId];
+	return item ? verifiedEquipmentDefinition(item.definitionId) : undefined;
+}
+
+export function equipmentSlotIsLegal(
+	state: EngineGameStateV24,
+	heroId: string,
+	definition: Readonly<EquipmentDefinition>,
+	targetSlot: EquipmentLoadoutSlot
+): boolean {
+	if (definition.handedness === 'none') return targetSlot === definition.slot;
+	if (definition.equipmentClass === 'shield') {
+		if (targetSlot !== 'off-hand') return false;
+		const mainId = state.heroes[heroId]?.equipment.mainHand;
+		const main = mainId ? equipmentItemDefinition(state, mainId) : undefined;
+		return main?.handedness !== 'two-handed';
+	}
+	if (definition.handedness === 'two-handed') return targetSlot === 'main-hand';
+	if (targetSlot === 'main-hand') {
+		const offId = state.heroes[heroId]?.equipment.offHand;
+		const off = offId ? equipmentItemDefinition(state, offId) : undefined;
+		return (
+			!off ||
+			off.equipmentClass === 'shield' ||
+			(['sword', 'dagger'].includes(definition.equipmentClass) &&
+				['sword', 'dagger'].includes(off.equipmentClass))
+		);
+	}
+	if (targetSlot !== 'off-hand' || !['sword', 'dagger'].includes(definition.equipmentClass)) {
+		return false;
+	}
+	const mainId = state.heroes[heroId]?.equipment.mainHand;
+	const main = mainId ? equipmentItemDefinition(state, mainId) : undefined;
+	return Boolean(main && ['sword', 'dagger'].includes(main.equipmentClass));
+}
+
+export function validateEquipmentStateContent(state: EngineGameStateV24): void {
+	for (const item of Object.values(state.items)) {
+		const definition = verifiedEquipmentDefinition(item.definitionId);
+		if (
+			equipmentRankWithBonus(definition.materialRank, item.craftsmanship.bonus) !== item.finalRank
+		) {
+			throw new ReplayIntegrityError(
+				'Equipment final rank diverged from content',
+				state.eventCursor
+			);
+		}
+	}
+	for (const hero of Object.values(state.heroes)) {
+		for (const [slot, itemId] of Object.entries(hero.equipment)) {
+			if (!itemId) continue;
+			const definition = equipmentItemDefinition(state, itemId);
+			const targetSlot = slot === 'mainHand' ? 'main-hand' : slot === 'offHand' ? 'off-hand' : slot;
+			if (
+				!definition ||
+				!equipmentSlotIsLegal(state, hero.heroId, definition, targetSlot as EquipmentLoadoutSlot)
+			) {
+				throw new ReplayIntegrityError(
+					'Equipment loadout diverged from content',
+					state.eventCursor
+				);
+			}
+		}
+	}
+}
 
 export function verifiedStoryEnvelope(): typeof TOWER_BAND_01_STORY_ENVELOPE {
 	if (verifiedBandStory) return verifiedBandStory;
