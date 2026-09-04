@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-result-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "lanor-beleth-4-0-heads",
+  "status": "revise",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/lanor-beleth-4-0-heads.png",
+    "sha256": "cf27c978fb948a811d8929559ee8d6d5dd96b17939c828fd4904896dc187d1e1",
+    "bytes": 2560650,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "exactSourcePath": "/home/joao/.codex/generated_images/01a06d4a-d472-7ce1-97af-22c7d23b8624/exec-543c22d8-a9c9-44ce-9ae2-0fcd1f21ab90.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/lanor-beleth-4-0-heads.txt",
+    "sha256": "7791beb9f0008212632606037c4c42f19f3223f7731799e97b97ea306cffa5db"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass",
+      "finding": "The retained PNG is 1024x1536 and shows one complete full-body figure with hair, hands, boots, and grounding shadow inside the canvas."
+    },
+    {
+      "criterion": "source hero identity and adult age remain recognizable",
+      "outcome": "pass",
+      "finding": "Lanor Beleth remains a recognizable adult through her neutral expression, warm skin value, short burgundy-purple bob, and same face and build."
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "fail",
+      "finding": "Original-detail inspection estimates the skull-crown-to-sole height at roughly five anatomical head lengths, not the requested 4.0; the body below the chin remains too long."
+    },
+    {
+      "criterion": "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+      "outcome": "pass",
+      "finding": "The head, athletic compact physique, shoulders, slim forearms, hands, hips, legs, and boots remain continuous without generic limb inflation."
+    },
+    {
+      "criterion": "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+      "outcome": "pass",
+      "finding": "The burgundy-purple bob, cream rolled-sleeve shirt, dark plum apron layers, belt, pouch, dark trousers, boots, palette, and empty-handed ready stance remain continuous."
+    },
+    {
+      "criterion": "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject",
+      "outcome": "pass",
+      "finding": "The image contains one empty-handed subject with no weapon, magic, affinity effect, text, UI, frame, star, watermark, or extra subject."
+    }
+  ]
+}

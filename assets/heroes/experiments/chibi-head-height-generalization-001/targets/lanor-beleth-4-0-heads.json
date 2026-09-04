@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-target-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "lanor-beleth-4-0-heads",
+  "heroId": "lanor-beleth",
+  "imageKind": "combat-chibi",
+  "variantId": "4-0-heads",
+  "targetHeadsTall": 4,
+  "anatomicalHeadPercent": 25,
+  "productionState": "candidate-only",
+  "canonicalPrompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/lanor-beleth-4-0-heads.txt",
+    "sha256": "7791beb9f0008212632606037c4c42f19f3223f7731799e97b97ea306cffa5db"
+  },
+  "references": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lanor-beleth/combat-chibi-v2.png",
+      "sha256": "aad10ed20ac0d698182a4a17eef4cb17818c5121d563720a1c182026ac7cb355",
+      "role": "sole-edit-target-style-identity-authority"
+    }
+  ],
+  "output": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/lanor-beleth-4-0-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-generalization-001/results/lanor-beleth-4-0-heads.json"
+  },
+  "acceptanceCriteria": [
+    "one complete 1024x1536 full-body candidate",
+    "source hero identity and adult age remain recognizable",
+    "requested anatomical head-height relationship is visibly distinct",
+    "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+    "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+    "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject"
+  ]
+}
+

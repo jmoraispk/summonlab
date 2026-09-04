@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-target-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "brinen-sorel-5-0-heads",
+  "heroId": "brinen-sorel",
+  "imageKind": "combat-chibi",
+  "variantId": "5-0-heads",
+  "targetHeadsTall": 5,
+  "anatomicalHeadPercent": 20,
+  "productionState": "candidate-only",
+  "canonicalPrompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/brinen-sorel-5-0-heads.txt",
+    "sha256": "857c834e357f3a592906981565e024d98849e4ff4c8702b117a55a716205e774"
+  },
+  "references": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/brinen-sorel/combat-chibi-v2.png",
+      "sha256": "0d6c3ca7af8d02ce9a400f732c828c10ec216a5fc6a843874741edd01bc39b3f",
+      "role": "sole-edit-target-style-identity-authority"
+    }
+  ],
+  "output": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/brinen-sorel-5-0-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-generalization-001/results/brinen-sorel-5-0-heads.json"
+  },
+  "acceptanceCriteria": [
+    "one complete 1024x1536 full-body candidate",
+    "source hero identity and adult age remain recognizable",
+    "requested anatomical head-height relationship is visibly distinct",
+    "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+    "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+    "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject"
+  ]
+}
+
