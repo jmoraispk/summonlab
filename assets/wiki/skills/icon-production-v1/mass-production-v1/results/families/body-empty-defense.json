@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "body.empty-defense",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-empty-defense.json",
+	"promptHash": "f1543baad4a5c2fe7658c1680c7de892fdf1328e00ae7d6c1f9eb91121436123",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1484,
+		"height": 1060,
+		"alphaMode": "rgb",
+		"bytes": 1937676,
+		"contentHash": "9c97db3175ee611371e7c573c6899074e4ea247e784934277cb76ab5a2531d8e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-empty-defense.png",
+		"mediaType": "image/png",
+		"width": 1484,
+		"height": 1060,
+		"alphaMode": "rgb",
+		"bytes": 1937676,
+		"contentHash": "9c97db3175ee611371e7c573c6899074e4ea247e784934277cb76ab5a2531d8e"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

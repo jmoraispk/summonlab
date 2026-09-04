@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "alchemy.volatile-delivery",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/alchemy-volatile-delivery.json",
+	"promptHash": "6186d7ae32dbec0aee37fe71a450b8f00150e4965da9fcd98198463e563eac3e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1689,
+		"height": 931,
+		"alphaMode": "rgb",
+		"bytes": 1693064,
+		"contentHash": "a1faf6da5ad001728a0364ba79d6b8f8272165de1562e49b8900d4f103d9e1a7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-volatile-delivery.png",
+		"mediaType": "image/png",
+		"width": 1689,
+		"height": 931,
+		"alphaMode": "rgb",
+		"bytes": 1693064,
+		"contentHash": "a1faf6da5ad001728a0364ba79d6b8f8272165de1562e49b8900d4f103d9e1a7"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

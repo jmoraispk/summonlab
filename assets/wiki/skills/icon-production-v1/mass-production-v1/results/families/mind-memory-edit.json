@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "mind.memory-edit",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/mind-memory-edit.json",
+	"promptHash": "68cc7f4331c67c7bc4930f4ad7faca35229d76b7b90f827ceab421d120fa1e96",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1716,
+		"height": 917,
+		"alphaMode": "rgb",
+		"bytes": 1356771,
+		"contentHash": "da246e372423e18ee670a235e3ded9d06a67bdce25f1d1bce2df2a6227333c2d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-memory-edit.png",
+		"mediaType": "image/png",
+		"width": 1716,
+		"height": 917,
+		"alphaMode": "rgb",
+		"bytes": 1356771,
+		"contentHash": "da246e372423e18ee670a235e3ded9d06a67bdce25f1d1bce2df2a6227333c2d"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

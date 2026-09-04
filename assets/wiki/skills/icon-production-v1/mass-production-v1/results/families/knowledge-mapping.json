@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "knowledge.mapping",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/knowledge-mapping.json",
+	"promptHash": "bea0ed30ce8ed9006baf7c2daa2fec7b9bd8c11a212a562d67a7c74ea12a5992",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1816,
+		"height": 866,
+		"alphaMode": "rgb",
+		"bytes": 2223246,
+		"contentHash": "015c67f4c442b4d31dcfa499b18832b2796314a1d72e49aa1bb7687bbe2bf736"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-mapping.png",
+		"mediaType": "image/png",
+		"width": 1816,
+		"height": 866,
+		"alphaMode": "rgb",
+		"bytes": 2223246,
+		"contentHash": "015c67f4c442b4d31dcfa499b18832b2796314a1d72e49aa1bb7687bbe2bf736"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "enchantment.power-weave",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/enchantment-power-weave.json",
+	"promptHash": "d19c34fb41c9168b60dbb07ef63c4df0839f622ae81576c7b383f05e80890d78",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1659,
+		"height": 948,
+		"alphaMode": "rgb",
+		"bytes": 1491482,
+		"contentHash": "3d54f937a5fe1f58a7eb65db663ffd17d5e12a48d41593cf019adba72a6ce308"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-power-weave.png",
+		"mediaType": "image/png",
+		"width": 1659,
+		"height": 948,
+		"alphaMode": "rgb",
+		"bytes": 1491482,
+		"contentHash": "3d54f937a5fe1f58a7eb65db663ffd17d5e12a48d41593cf019adba72a6ce308"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

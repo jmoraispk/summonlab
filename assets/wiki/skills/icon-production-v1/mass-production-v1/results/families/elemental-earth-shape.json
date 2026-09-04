@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "elemental.earth-shape",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-earth-shape.json",
+	"promptHash": "2a6383e1152c2fbf72000bc4a196fc06229273199fd1474aa4be1bc3aba9e406",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 2098,
+		"height": 750,
+		"alphaMode": "rgb",
+		"bytes": 1628202,
+		"contentHash": "6813ae2ec94c1e702cdac3cc1b3e9577dcc9a926d9ac4354726531d83237fd00"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-shape.png",
+		"mediaType": "image/png",
+		"width": 2098,
+		"height": 750,
+		"alphaMode": "rgb",
+		"bytes": 1628202,
+		"contentHash": "6813ae2ec94c1e702cdac3cc1b3e9577dcc9a926d9ac4354726531d83237fd00"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

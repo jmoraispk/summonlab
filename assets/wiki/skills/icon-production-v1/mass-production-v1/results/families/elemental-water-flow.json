@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "elemental.water-flow",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-water-flow.json",
+	"promptHash": "8ecc4731e23c7122529f4ccb7f26309ffca79991e99a99b48a5d31791bf1883c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1484,
+		"height": 1060,
+		"alphaMode": "rgb",
+		"bytes": 1442066,
+		"contentHash": "7c0609742bcbaf973005fd242cd2d09114c4ec43bacc06e49f5db874b1eddd16"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-flow.png",
+		"mediaType": "image/png",
+		"width": 1484,
+		"height": 1060,
+		"alphaMode": "rgb",
+		"bytes": 1442066,
+		"contentHash": "7c0609742bcbaf973005fd242cd2d09114c4ec43bacc06e49f5db874b1eddd16"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}
