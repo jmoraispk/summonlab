@@ -66,7 +66,7 @@
 	} as const;
 	const MOTION = {
 		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`,
-		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v3.json`,
+		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.json`,
 		'moss-archer': `${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v2.json`,
 		'rat-brute': `${ART_ROOT}/animation-canary-v1/rat-brute/rat-brute-motion-v1.json`,
 		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json`
@@ -520,7 +520,7 @@
 	bind:this={host}
 	data-testid="realtime-combat-pixi-host"
 	data-presentation-mode={mode}
-	data-motion-pack-versions="asha:2,iron-guardian:3,moss-archer:2,rat-brute:1,lesser-rat:2"
+	data-motion-pack-versions="asha:2,iron-guardian:4,moss-archer:2,rat-brute:1,lesser-rat:2"
 >
 	<canvas bind:this={canvas} data-testid="realtime-combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>
