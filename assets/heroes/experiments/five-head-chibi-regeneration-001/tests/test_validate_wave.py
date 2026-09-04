@@ -86,7 +86,7 @@ class ValidateWaveTests(unittest.TestCase):
         source.write_bytes(image); candidate.write_bytes(image)
         target_sha, assignment_sha, image_sha = self.fixtures.digest((self.root / "waves/wave-01/targets/hero-a.json").read_bytes()), self.fixtures.digest((self.root / "waves/wave-01/assignments/hero-a.json").read_bytes()), self.fixtures.digest(image)
         call = {"schemaVersion": "five-head-chibi-provider-call-v1", "experimentId": self.assignment["experimentId"], "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01", "callOrdinal": 1, "callKind": "primary", "startedAt": "2026-09-04T00:00:00Z", "completedAt": "2026-09-04T00:01:00Z", "outcome": "succeeded", "providerMetadata": {"provider": "imagegen"}}
-        result = {"schemaVersion": "five-head-chibi-result-v1", "experimentId": self.assignment["experimentId"], "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01", "targetSha256": target_sha, "assignmentSha256": assignment_sha, "renderedPrompt": "prompt", "renderedPromptSha256": self.target["renderedPromptSha256"], "reference": self.target["generationReferences"][0], "providerSourcePath": self.assignment["providerSourcePath"], "providerSourceSha256": image_sha, "candidatePath": self.assignment["candidatePath"], "candidateSha256": image_sha, "dimensions": {"width": 1024, "height": 1536}, "mimeType": "image/png", "providerMetadata": call["providerMetadata"], "callOrdinal": 1, "callKind": "primary", "startedAt": call["startedAt"], "completedAt": call["completedAt"], "resultWrittenAt": "2026-09-04T00:01:01Z"}
+        result = {"schemaVersion": "five-head-chibi-result-v1", "experimentId": self.assignment["experimentId"], "assignmentId": self.assignment["assignmentId"], "targetId": self.target["targetId"], "waveId": "wave-01", "targetSha256": target_sha, "assignmentSha256": assignment_sha, "renderedPrompt": "prompt", "renderedPromptSha256": self.target["renderedPromptSha256"], "reference": self.target["generationReferences"][0], "providerSourcePath": self.assignment["providerSourcePath"], "providerSourceSha256": image_sha, "candidatePath": self.assignment["candidatePath"], "candidateSha256": image_sha, "dimensions": {"width": 1024, "height": 1536}, "mimeType": "image/png", "providerMetadata": call["providerMetadata"], "callOrdinal": 1, "callKind": "primary", "startedAt": call["startedAt"], "completedAt": call["completedAt"], "resultWrittenAt": call["completedAt"]}
         self._write(self.workspace / self.assignment["resultPath"], result)
         journal = self.root / "provenance/production-journal.jsonl"
         journal.write_text(json.dumps(call, sort_keys=True) + "\n")
@@ -109,10 +109,21 @@ class ValidateWaveTests(unittest.TestCase):
         journal.write_text("\n".join(json.dumps(item) for item in (base, retry)) + "\n")
         with self.assertRaisesRegex(self.validator.ContractError, "no-output"):
             self.validator.validate_wave("wave-01", root=self.root)
+        plan = json.loads((self.root / "production-plan.json").read_text())
         records = []
         for number in range(11):
-            record = dict(retry); record.update({"assignmentId": f"a-{number}", "targetId": f"t-{number}", "heroId": f"h-{number}"})
+            wave_id, hero_id = f"wave-{number + 2:02d}", f"hero-{number}"
+            target = dict(self.target)
+            target.update({"targetId": f"target-{number}", "heroId": hero_id, "waveId": wave_id})
+            assignment = dict(self.assignment)
+            assignment.update({"assignmentId": f"assignment-{number}", "targetId": target["targetId"], "heroId": hero_id, "waveId": wave_id, "exclusiveOwner": f"assignment-{number}"})
+            for key in ("providerSourcePath", "candidatePath", "resultPath"):
+                assignment[key] = assignment[key].replace("wave-01", wave_id).replace("hero-a", hero_id)
+            plan["targets"].append(target)
+            plan["assignments"].append(assignment)
+            record = dict(retry); record.update({"assignmentId": assignment["assignmentId"], "targetId": target["targetId"], "waveId": wave_id})
             records.append(record)
+        self._write(self.root / "production-plan.json", plan)
         journal.write_text("\n".join(json.dumps(item) for item in records) + "\n")
         with self.assertRaisesRegex(self.validator.ContractError, "retry ceiling"):
             self.validator.validate_wave("wave-01", root=self.root)
@@ -126,5 +137,46 @@ class ValidateWaveTests(unittest.TestCase):
         malformed = dict(self.assignment)
         malformed["candidatePath"] = malformed["candidatePath"].replace("wave-01", "wave-02")
         self._write(self.root / "waves/wave-01/assignments/hero-a.json", malformed)
+        with self.assertRaisesRegex(self.validator.ContractError, "cross-wave"):
+            self.validator.validate_wave("wave-01", root=self.root)
+
+    def test_rejects_truncated_png_raster_and_invalid_receipt_metadata_or_timestamp(self) -> None:
+        self.test_accepts_one_journal_bound_primary_result()
+        result_path = self.workspace / self.assignment["resultPath"]
+        result = json.loads(result_path.read_text())
+        result["resultWrittenAt"] = "2026-09-04T00:01:01Z"
+        self._write(result_path, result)
+        with self.assertRaisesRegex(self.validator.ContractError, "resultWrittenAt"):
+            self.validator.validate_wave("wave-01", root=self.root)
+        result["resultWrittenAt"] = result["completedAt"]
+        result.pop("providerMetadata")
+        self._write(result_path, result)
+        journal = self.root / "provenance/production-journal.jsonl"
+        call = json.loads(journal.read_text())
+        call.pop("providerMetadata")
+        journal.write_text(json.dumps(call) + "\n")
+        with self.assertRaisesRegex(self.validator.ContractError, "provider metadata"):
+            self.validator.validate_wave("wave-01", root=self.root)
+
+    def test_rejects_undeclared_or_out_of_order_retry_calls(self) -> None:
+        journal = self.root / "provenance/production-journal.jsonl"
+        foreign_primary = {"schemaVersion": "five-head-chibi-provider-call-v1", "experimentId": self.assignment["experimentId"], "assignmentId": "foreign-assignment", "targetId": self.target["targetId"], "waveId": "wave-02", "callOrdinal": 2, "callKind": "primary", "startedAt": "2026-09-04T00:00:00Z", "completedAt": "2026-09-04T00:01:00Z", "outcome": "provider-no-output", "providerMetadata": {"provider": "imagegen"}}
+        local_retry = dict(foreign_primary)
+        local_retry.update({"assignmentId": self.assignment["assignmentId"], "waveId": "wave-01", "callOrdinal": 1, "callKind": "provider-no-output-retry", "outcome": "succeeded"})
+        journal.write_text("\n".join(json.dumps(item) for item in (foreign_primary, local_retry)) + "\n")
+        with self.assertRaisesRegex(self.validator.ContractError, "undeclared|preceding"):
+            self.validator.validate_wave("wave-01", root=self.root)
+
+    def test_rejects_plan_assignment_with_paths_in_another_wave(self) -> None:
+        plan = json.loads((self.root / "production-plan.json").read_text())
+        foreign_target = dict(self.target)
+        foreign_target.update({"targetId": "hero-b-five-head-combat-chibi-v1", "heroId": "hero-b", "waveId": "wave-02"})
+        foreign_assignment = dict(self.assignment)
+        foreign_assignment.update({"assignmentId": "assignment-hero-b-five-head-combat-chibi-v1", "targetId": foreign_target["targetId"], "heroId": "hero-b", "waveId": "wave-02", "exclusiveOwner": "assignment-hero-b-five-head-combat-chibi-v1"})
+        for key in ("providerSourcePath", "candidatePath", "resultPath"):
+            foreign_assignment[key] = foreign_assignment[key].replace("hero-a", "hero-b")
+        plan["targets"].append(foreign_target)
+        plan["assignments"].append(foreign_assignment)
+        self._write(self.root / "production-plan.json", plan)
         with self.assertRaisesRegex(self.validator.ContractError, "cross-wave"):
             self.validator.validate_wave("wave-01", root=self.root)

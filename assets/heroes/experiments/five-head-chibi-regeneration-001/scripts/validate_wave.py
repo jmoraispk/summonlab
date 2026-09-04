@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -17,6 +18,7 @@ from write_result import CALL_KINDS, CALL_SCHEMA, RESULT_SCHEMA
 
 SCRIPT_PATH = Path(__file__).resolve()
 DEFAULT_ROOT = SCRIPT_PATH.parent.parent
+CALL_OUTCOMES = frozenset({"succeeded", "provider-no-output", "failed"})
 
 
 @dataclass(frozen=True)
@@ -55,6 +57,24 @@ def _workspace(root: Path) -> Path:
     return root.parent.parent.parent.parent
 
 
+def _timestamp(value: object, field: str) -> datetime:
+    if not isinstance(value, str):
+        raise ContractError(f"{field} must be an ISO-8601 timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise ContractError(f"{field} must be an ISO-8601 timestamp") from error
+    if parsed.tzinfo is None:
+        raise ContractError(f"{field} must include a timezone")
+    return parsed
+
+
+def _provider_metadata(value: object, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict) or not isinstance(value.get("provider"), str) or not value["provider"]:
+        raise ContractError(f"{label} lacks provider metadata")
+    return value
+
+
 def _validate_plan(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
     plan = _load_object(root / "production-plan.json", "production plan")
     targets, assignments = plan.get("targets"), plan.get("assignments")
@@ -71,6 +91,22 @@ def _validate_plan(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]], li
         raise ContractError("production plan output paths are not exclusive")
     if [assignment.get("targetId") for assignment in assignments] != target_ids:
         raise ContractError("production plan assignments do not bind to targets")
+    for target, assignment in zip(targets, assignments):
+        if not isinstance(target, dict) or not isinstance(assignment, dict):
+            raise ContractError("production plan target and assignment records must be objects")
+        wave_id, hero_id = assignment.get("waveId"), assignment.get("heroId")
+        if not isinstance(wave_id, str) or not wave_id.startswith("wave-") or not isinstance(hero_id, str) or not hero_id:
+            raise ContractError("production plan assignment lacks wave or hero binding")
+        if any(target.get(key) != assignment.get(key) for key in ("experimentId", "targetId", "heroId", "waveId")):
+            raise ContractError("production plan assignment does not bind to its target")
+        expected_prefix = f"assets/heroes/experiments/{EXPERIMENT_ID}/waves/{wave_id}/"
+        expected_paths = {
+            "providerSourcePath": expected_prefix + f"provider-sources/{hero_id}.png",
+            "candidatePath": expected_prefix + f"candidates/{hero_id}.png",
+            "resultPath": expected_prefix + f"results/{hero_id}.json",
+        }
+        if any(assignment.get(key) != value for key, value in expected_paths.items()):
+            raise ContractError("production plan has undeclared or cross-wave output paths")
     return plan, targets, assignments
 
 
@@ -96,8 +132,9 @@ def _load_journal(root: Path) -> list[dict[str, Any]]:
     return records
 
 
-def _validate_calls(records: Iterable[dict[str, Any]]) -> None:
-    grouped: dict[str, list[dict[str, Any]]] = {}
+def _validate_calls(records: Iterable[dict[str, Any]], assignments: Iterable[dict[str, Any]]) -> None:
+    declared = {(assignment["assignmentId"], assignment["targetId"], assignment["waveId"]) for assignment in assignments}
+    grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     retries = 0
     for record in records:
         if record.get("schemaVersion") != CALL_SCHEMA or record.get("experimentId") != EXPERIMENT_ID:
@@ -106,23 +143,34 @@ def _validate_calls(records: Iterable[dict[str, Any]]) -> None:
             raise ContractError("journal callKind is not an allowed enum")
         if not isinstance(record.get("targetId"), str) or not isinstance(record.get("assignmentId"), str) or not isinstance(record.get("waveId"), str):
             raise ContractError("journal call lacks target assignment or wave binding")
+        binding = (record["assignmentId"], record["targetId"], record["waveId"])
+        if binding not in declared:
+            raise ContractError("journal call is undeclared by the production plan")
         if not isinstance(record.get("callOrdinal"), int) or record["callOrdinal"] < 1:
             raise ContractError("journal callOrdinal must be a positive integer")
-        if not isinstance(record.get("outcome"), str) or not isinstance(record.get("startedAt"), str) or not isinstance(record.get("completedAt"), str):
+        if record.get("outcome") not in CALL_OUTCOMES:
             raise ContractError("journal call lacks outcome or timestamps")
-        grouped.setdefault(record["targetId"], []).append(record)
+        started_at = _timestamp(record.get("startedAt"), "journal startedAt")
+        completed_at = _timestamp(record.get("completedAt"), "journal completedAt")
+        if completed_at < started_at:
+            raise ContractError("journal completion precedes start")
+        _provider_metadata(record.get("providerMetadata"), "journal call")
+        grouped.setdefault(binding, []).append(record)
         retries += record["callKind"] == "provider-no-output-retry"
     if retries > RETRY_CALL_LIMIT:
         raise ContractError("global retry ceiling exceeded")
-    for target_id, calls in grouped.items():
+    for binding, calls in grouped.items():
+        ordinals = [call["callOrdinal"] for call in calls]
+        if len(set(ordinals)) != len(ordinals) or ordinals != sorted(ordinals):
+            raise ContractError(f"assignment {binding[0]} journal ordinals must be unique and increasing")
         primary = [call for call in calls if call["callKind"] == "primary"]
         retry = [call for call in calls if call["callKind"] == "provider-no-output-retry"]
         if len(primary) > 1:
-            raise ContractError(f"target {target_id} has duplicate primary calls")
+            raise ContractError(f"assignment {binding[0]} has duplicate primary calls")
         if len(retry) > 1:
-            raise ContractError(f"target {target_id} has more than one retry")
-        if retry and (len(primary) != 1 or primary[0]["outcome"] != "provider-no-output"):
-            raise ContractError(f"target {target_id} retry lacks a preceding provider no-output primary")
+            raise ContractError(f"assignment {binding[0]} has more than one retry")
+        if retry and (len(primary) != 1 or primary[0]["outcome"] != "provider-no-output" or primary[0]["callOrdinal"] >= retry[0]["callOrdinal"]):
+            raise ContractError(f"assignment {binding[0]} retry lacks a preceding provider no-output primary")
 
 
 def _validate_declared_files(root: Path, assignments: list[dict[str, Any]]) -> None:
@@ -158,6 +206,9 @@ def _result_for_assignment(root: Path, assignment: dict[str, Any], target: dict[
     result = _load_object(result_path, "result")
     if result.get("schemaVersion") != RESULT_SCHEMA:
         raise ContractError("result has unsupported schemaVersion")
+    required = {"schemaVersion", "experimentId", "assignmentId", "targetId", "waveId", "targetSha256", "assignmentSha256", "renderedPrompt", "renderedPromptSha256", "reference", "providerSourcePath", "providerSourceSha256", "candidatePath", "candidateSha256", "dimensions", "mimeType", "providerMetadata", "callOrdinal", "callKind", "startedAt", "completedAt", "resultWrittenAt"}
+    if not required.issubset(result):
+        raise ContractError("result is missing required receipt fields")
     for key in ("experimentId", "assignmentId", "targetId", "waveId"):
         if result.get(key) != assignment.get(key):
             raise ContractError(f"result {key} does not bind to assignment")
@@ -182,6 +233,16 @@ def _result_for_assignment(root: Path, assignment: dict[str, Any], target: dict[
         raise ContractError("result PNG dimensions or MIME type differs")
     if result.get("providerSourceSha256") != image_hash or result.get("candidateSha256") != image_hash:
         raise ContractError("result output hash differs")
+    _provider_metadata(result.get("providerMetadata"), "result")
+    result_started = _timestamp(result.get("startedAt"), "result startedAt")
+    result_completed = _timestamp(result.get("completedAt"), "result completedAt")
+    result_written = _timestamp(result.get("resultWrittenAt"), "resultWrittenAt")
+    if result_completed < result_started:
+        raise ContractError("result completion precedes start")
+    if result.get("resultWrittenAt") != result.get("completedAt") or result_written != result_completed:
+        raise ContractError("resultWrittenAt must equal completedAt")
+    if not isinstance(result.get("callOrdinal"), int) or result["callOrdinal"] < 1 or result.get("callKind") not in CALL_KINDS:
+        raise ContractError("result call ordinal or call kind is invalid")
     matching = [call for call in records if call.get("assignmentId") == assignment["assignmentId"] and call.get("targetId") == assignment["targetId"] and call.get("waveId") == assignment["waveId"] and call.get("callOrdinal") == result.get("callOrdinal") and call.get("callKind") == result.get("callKind") and call.get("outcome") == "succeeded"]
     if len(matching) != 1:
         raise ContractError("result requires exactly one corresponding successful journal call")
@@ -199,7 +260,7 @@ def validate_wave(wave_id: str, *, root: Path = DEFAULT_ROOT) -> WaveValidation:
     _workspace(root)
     _, targets, assignments = _validate_plan(root)
     records = _load_journal(root)
-    _validate_calls(records)
+    _validate_calls(records, assignments)
     _validate_declared_files(root, assignments)
     pairs = [(target, assignment) for target, assignment in zip(targets, assignments) if assignment.get("waveId") == wave_id]
     if not pairs:

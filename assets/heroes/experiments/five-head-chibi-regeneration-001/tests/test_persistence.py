@@ -6,12 +6,15 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+from io import BytesIO
 import struct
 import sys
 import tempfile
 import unittest
 import zlib
 from pathlib import Path
+
+from PIL import Image
 
 
 HERE = Path(__file__).resolve().parent
@@ -21,12 +24,20 @@ WRITE_RESULT = ROOT / "scripts" / "write_result.py"
 
 
 def png(width: int = 1024, height: int = 1536, payload: bytes = b"\x00") -> bytes:
-    """Create the smallest valid RGB PNG needed by these structural tests."""
+    """Create a fully decodable RGB PNG, not merely a valid chunk envelope."""
+    image = Image.new("RGB", (width, height), color=(payload[0] if payload else 0, 20, 40))
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    return buffer.getvalue()
+
+
+def truncated_raster_png(width: int = 1024, height: int = 1536) -> bytes:
+    """Make an envelope-valid PNG whose decompressed raster has only one scanline byte."""
     signature = b"\x89PNG\r\n\x1a\n"
     ihdr = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
     def chunk(kind: bytes, value: bytes) -> bytes:
         return struct.pack(">I", len(value)) + kind + value + struct.pack(">I", zlib.crc32(kind + value) & 0xffffffff)
-    return signature + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(payload)) + chunk(b"IEND", b"")
+    return signature + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(b"\x00")) + chunk(b"IEND", b"")
 
 
 def digest(value: bytes) -> str:
@@ -111,6 +122,9 @@ class PersistenceTests(unittest.TestCase):
             self.call()
         self.source_path.write_bytes(png(1023, 1536))
         with self.assertRaisesRegex(self.persist.ContractError, "1024x1536"):
+            self.call()
+        self.source_path.write_bytes(truncated_raster_png())
+        with self.assertRaisesRegex(self.persist.ContractError, "readable PNG"):
             self.call()
 
     def test_resumes_only_when_existing_bytes_are_identical(self) -> None:
