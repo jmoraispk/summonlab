@@ -29,6 +29,7 @@
 	const visibleRecords = $derived(matchingRecords.slice(0, visibleCount));
 	const hasFilters = $derived(serializeSkillCatalogQuery(filters) !== '');
 	const remainingCount = $derived(matchingRecords.length - visibleRecords.length);
+	const nextBatchCount = $derived(Math.min(SKILL_CATALOG_PAGE_SIZE, remainingCount));
 
 	function replaceQuery(nextFilters: SkillCatalogFilters): void {
 		if (!browser) return;
@@ -148,7 +149,7 @@
 		{/if}
 	</form>
 
-	<p class="result-count" aria-live="polite">
+	<p class="result-count" role="status" aria-live="polite">
 		{matchingRecords.length}
 		{matchingRecords.length === 1 ? 'skill' : 'skills'}
 	</p>
@@ -236,7 +237,7 @@
 			class="load-more"
 			onclick={() => (visibleCount += SKILL_CATALOG_PAGE_SIZE)}
 		>
-			Load more · {remainingCount} skills remaining
+			Load {nextBatchCount} more · {remainingCount} skills remaining
 		</button>
 	{/if}
 </section>
