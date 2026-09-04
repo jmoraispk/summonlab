@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A2",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A2-01",
+      "perceivedFamilyOrCreature": "crowned skeletal knight",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "melee commander",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Readable humanoid skeleton, sword arm, and trophy-bearing off-hand."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full silhouette is centered with ample breathing room."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Cohesive bone, iron, and tattered-cloth treatment."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Bone, metal, and cloth define the body; no dominant elemental construction is present."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The exposed rib cage suggests physical fragility, while the sword clearly identifies the threat direction and melee range."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Immediately readable martial undead with restrained effects and a strong Normal-compatible material identity."
+    },
+    {
+      "token": "A2-02",
+      "perceivedFamilyOrCreature": "chained drowned wraith",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Torso and hood read, but the lower body dissolves into the water effect."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Dynamic chain arcs contain the subject effectively."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Detailed, atmospheric, and tonally cohesive."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Water and spray dominate both the creature's construction and silhouette without a clear non-elemental body."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The broad chain arcs visibly telegraph the attack path and likely control radius."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Water construction dominates the creature and obscures whether the underlying body has a stable Normal form."
+    },
+    {
+      "token": "A2-03",
+      "perceivedFamilyOrCreature": "mummified funerary scribe",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "ritual support caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Wrapped humanoid body and gesturing arms remain clear beneath the hanging bands."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full-body presentation cleanly accommodates the long ritual strips."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Strong textile, gold, and parchment differentiation."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The long inscribed bands read as physical ritual implements rather than elemental body construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Extended bands and deliberate hand gestures visibly signal a ritual windup and its likely lanes of influence."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Distinct ritualist identity; the inscribed bands read as carried implements rather than unexplained elemental anatomy."
+    },
+    {
+      "token": "A2-04",
+      "perceivedFamilyOrCreature": "mummified pharaoh or tomb sovereign",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "commander-controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Upright humanoid construction is stable and legible."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Symmetrical tablets reinforce rank without hiding the figure."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Ornate but controlled gold-and-stone detailing."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The body remains materially grounded; floating tablets and light accents are secondary ritual effects."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised ritual implements and the surrounding tablets provide a readable casting-state telegraph."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear high-rank funerary ruler whose supernatural props remain secondary to a coherent physical body."
+    },
+    {
+      "token": "A2-05",
+      "perceivedFamilyOrCreature": "colossal frozen wraith or ice lich",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign area-control caster",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Head and arms read, but the entire lower form is an indistinct elemental vortex."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Scale and central dominance are communicated strongly."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Highly polished atmospheric spectacle."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Ice and water form most of the creature and dominate the image, producing an overt unexplained elemental affinity."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised arms and the large curling wave visibly telegraph a major area attack before impact."
+      },
+      "overallVerdict": "revise",
+      "rationale": "The creature is primarily constructed from ice or water effects, making the elemental treatment dominant and insufficiently explained for Normal."
+    },
+    {
+      "token": "A2-06",
+      "perceivedFamilyOrCreature": "vampiric queen",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Seated humanoid form, wings, hands, and face are readable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Throne symmetry and banners establish authority while preserving the focal face."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Rich material separation and disciplined blood-red accents."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The figure is physically defined by flesh, garment, wings, and throne; red accents do not become elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The static sovereign pose communicates authority but shows no clear attack windup, recovery state, or vulnerable focal point."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Strong sovereign identity with physical gothic construction, but the static presentation lacks a visible counterplay cue."
+    },
+    {
+      "token": "A2-07",
+      "perceivedFamilyOrCreature": "corpse ogre or stitched revenant",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Exaggerated arms, rib cage, head, and stance remain functionally coherent."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Aggressive forward posture fills the card without harmful clipping."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Convincing flesh, bone, and grime rendering."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The creature is entirely grounded in flesh, bone, and physical mutation with no dominant elemental effect."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The forward lunge telegraphs a close-range rush, while the exposed chest and abdomen present an obvious vulnerable zone."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "A direct, readable physical threat with no effect dependency and a convincing combat silhouette."
+    },
+    {
+      "token": "A2-08",
+      "perceivedFamilyOrCreature": "multi-limbed corpse mound",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "siege tank or spawner",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Numerous arms and bodies merge into a muddy central mass with uncertain locomotion."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Broad landscape crop suits its intended immense scale."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Dense repeated detail weakens hierarchy around the head and primary limbs."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Its construction is grotesquely physical—flesh, corpses, and debris—with no dominant elemental substance."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The crowded mass does not clearly distinguish a vulnerable core, primary attack limb, or readable windup direction."
+      },
+      "overallVerdict": "revise",
+      "rationale": "The grotesque concept is strong, but clearer primary anatomy, focal separation, and counterplay signaling are needed for immediate gameplay recognition."
+    },
+    {
+      "token": "A2-09",
+      "perceivedFamilyOrCreature": "skeletal lich king",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign artillery caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Crowned skeletal humanoid and staff gesture are clear."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Circular dais and halo frame the central figure effectively."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Ornate magical detail remains organized around a readable silhouette."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Bone, armor, robes, and staff define the figure; the magical halo remains a secondary effect rather than body construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The raised staff and concentrating halo provide a clear casting windup and focal source for the impending attack."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Highly legible undead sovereign; the halo and staff magic communicate casting without becoming the creature's unexplained substance."
+    },
+    {
+      "token": "A2-10",
+      "perceivedFamilyOrCreature": "vampire duelist",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "assassin",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Slender humanoid pose, sword hand, and cape silhouette are clear."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full-body vertical composition gives the weapon and cloak room."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Crisp tailoring, facial focus, and restrained red accents."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The body and equipment are materially grounded; the small red weapon glow is subordinate and not elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The prominently lowered blade and concentrated glowing tip identify the attack source and suggest a visible charge before a thrust."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clean, immediately readable elite duelist with a grounded physical form and appropriately subordinate supernatural effects."
+    }
+  ]
+}

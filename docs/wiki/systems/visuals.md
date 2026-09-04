@@ -25,7 +25,8 @@ The [monster database](../creatures/monsters/README.md) is the canonical product
 one page per T1–T5 form, with family grammar, combat reading, and exact Normal, Fire, Earth, Wind,
 and Water ownership coordinates. The checked export validates the 30/150/750 matrix and keeps the
 earlier forty-class image evidence in a separate candidate-only reconciliation. Planned paths are
-not rendered as images, and no candidate is treated as approved or runtime art.
+not rendered as images. A provisional Normal anchor can authorize affinity candidate generation
+without claiming visual approval; no candidate is treated as approved or runtime art.
 
 ## Deferred breadth
 

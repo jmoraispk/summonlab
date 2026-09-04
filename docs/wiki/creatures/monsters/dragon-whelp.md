@@ -6,7 +6,7 @@ Wiki ID: `monster.dragon-whelp`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,15 +63,16 @@ Not applicable for this form.
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/water-v1.json` |
+| Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/normal-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-whelp/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-whelp/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/dragons/dragon-whelp/water-v1.json` |
 
 ### Status semantics
 
 - `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `planned-provisional-anchor` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
 - `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.

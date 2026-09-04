@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "enemy-normal-blind-reconciliation-v2",
+  "evidenceScope": "50 active revised canonical Normal T3/T5 anchors",
+  "policy": {
+    "identity": "Pass only when the label-hidden perceived family or creature semantically identifies the mapped family and form; ambiguous neighboring-family or wrong-family reads fail.",
+    "tier": {
+      "rationale": "The v2 blind prompt did not constrain perceivedTier to numeric T3/T5 vocabulary, so conservative semantic normalization is used instead of rejecting every review for a format mismatch.",
+      "T3AcceptedPerceptions": [
+        "common",
+        "normal",
+        "standard",
+        "mid",
+        "elite"
+      ],
+      "T5AcceptedPerceptions": [
+        "elite",
+        "high",
+        "boss"
+      ],
+      "overlapNote": "elite intentionally overlaps because it denotes upper-mid or boss presentation without numeric calibration",
+      "failureRule": "T3 perceived as boss or high fails; T5 perceived as normal, common, standard, or mid fails; any term outside the target set fails."
+    },
+    "archetype": "Pass only when the label-hidden perceived combat role semantically communicates the mapped form's primary archetype or battlefield duty.",
+    "sourceDimensions": "Anatomy, neutral affinity, visible counterplay cue, framing, and finish are preserved exactly from each reviewer-authored verdict and translated from pass/revise to pass/fail receipt rubric values.",
+    "decision": "approved-review requires all eight receipt dimensions to pass. A reviewer-authored revise is never upgraded; an otherwise-approved review is downgraded when identity, tier, or archetype reconciliation fails."
+  },
+  "source": {
+    "maps": [
+      "wave-a1-blind-map.json",
+      "wave-a2-blind-map.json",
+      "wave-a3-blind-map.json",
+      "wave-a4-blind-map.json",
+      "wave-a5-blind-map.json",
+      "wave-a6-blind-map.json"
+    ],
+    "verdicts": [
+      "wave-a1-blind-verdicts.json",
+      "wave-a2-blind-verdicts.json",
+      "wave-a3-blind-verdicts.json",
+      "wave-a4-blind-verdicts.json",
+      "wave-a5-blind-verdicts.json",
+      "wave-a6-blind-verdicts.json"
+    ],
+    "reviewers": {
+      "A1": "codex:/root/normal_revision_blind_a1",
+      "A2": "codex:/root/normal_revision_blind_a2",
+      "A3": "codex:/root/normal_revision_blind_a3",
+      "A4": "codex:/root/normal_revision_blind_a4",
+      "A5": "codex:/root/normal_revision_blind_a5",
+      "A6": "codex:/root/normal_revision_blind_a6"
+    },
+    "tokenCounts": {
+      "A1": 9,
+      "A2": 8,
+      "A3": 9,
+      "A4": 8,
+      "A5": 6,
+      "A6": 10,
+      "total": 50
+    }
+  },
+  "summary": {
+    "reviewerAuthoredApprovedCount": 19,
+    "reviewerAuthoredReviseCount": 31,
+    "tierNormalizationEvaluatedTokenCount": 50,
+    "tierNormalizationFailureTokens": [
+      "R2-A3-04",
+      "R2-A3-08",
+      "R2-A4-05",
+      "R2-A4-08",
+      "R2-A6-04",
+      "R2-A6-07"
+    ],
+    "reviewerApprovedDowngradedTokens": [
+      "R2-A1-01",
+      "R2-A1-07",
+      "R2-A3-07",
+      "R2-A4-01",
+      "R2-A4-02",
+      "R2-A4-03",
+      "R2-A4-05",
+      "R2-A4-07",
+      "R2-A6-01",
+      "R2-A6-03",
+      "R2-A6-05",
+      "R2-A6-06",
+      "R2-A6-10"
+    ],
+    "approvedCount": 6,
+    "reviseCount": 44,
+    "approvedCoordinateIds": [
+      "dragons/dragon-drake/normal",
+      "orcs/orc-overlord/normal",
+      "rotwalkers/rotwalker-plague-lord/normal",
+      "lizardfolk/lizardfolk-saurian-tyrant/normal",
+      "werebeasts/werebeast-werebeast/normal",
+      "gargoyles/gargoyle-guardian/normal"
+    ],
+    "reviseCoordinateIds": [
+      "goblins/goblin-raider/normal",
+      "goblins/goblin-king/normal",
+      "dragons/dragon-emperor/normal",
+      "giants/giant-stone-giant/normal",
+      "trolls/troll-mutant-troll/normal",
+      "trolls/troll-elder-troll/normal",
+      "giants/giant-primordial-titan/normal",
+      "skeletons/skeleton-bone-knight/normal",
+      "vampires/vampire-noble/normal",
+      "vampires/vampire-progenitor/normal",
+      "rotwalkers/rotwalker-rot-brute/normal",
+      "mummies/mummy-god-king/normal",
+      "wraiths/wraith-death-sovereign/normal",
+      "wraiths/wraith-wraith/normal",
+      "harpies/harpy-skyrender/normal",
+      "harpies/harpy-sky-queen/normal",
+      "demons/demon-prince/normal",
+      "demons/demon-hellknight/normal",
+      "celestials/celestial-seraph/normal",
+      "nagas/naga-serpent-empress/normal",
+      "minotaurs/minotaur-bull-emperor/normal",
+      "celestials/celestial-warden/normal",
+      "nagas/naga-hooded-adept/normal",
+      "golems/golem-rune-warrior/normal",
+      "golems/golem-master-golem/normal",
+      "slimes/slime-ooze-knight/normal",
+      "insectoids/insectoid-elite-drone/normal",
+      "arachnids/arachnid-weaver/normal",
+      "lizardfolk/lizardfolk-spineback/normal",
+      "slimes/slime-primordial-ooze/normal",
+      "treants/treant-oakheart/normal",
+      "fungalfolk/fungalfolk-sporeguard/normal",
+      "elementals/elemental-sovereign/normal",
+      "fungalfolk/fungalfolk-mycelial-sovereign/normal",
+      "werebeasts/werebeast-primal-beast-king/normal",
+      "fae/fae-fae-monarch/normal",
+      "void-horrors/void-horror-outer-sovereign/normal",
+      "doppelgangers/doppelganger-faceless-sovereign/normal",
+      "djinn/djinn-djinn/normal",
+      "djinn/djinn-wish-sultan/normal",
+      "gargoyles/gargoyle-stone-sovereign/normal",
+      "void-horrors/void-horror-fracture/normal",
+      "doppelgangers/doppelganger-mimic/normal",
+      "fae/fae-fae-knight/normal"
+    ]
+  }
+}

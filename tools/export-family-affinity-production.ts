@@ -24,6 +24,11 @@ import {
 	type FamilyAffinityManifest,
 	type FamilyAffinityTarget
 } from './family-affinity-production-lib.js';
+import {
+	familyAffinityGenerationFailurePath,
+	validateFamilyAffinityGenerationFailureEvidence,
+	type FamilyAffinityGenerationFailure
+} from './family-affinity-review-lib.js';
 
 async function fileExists(path: string): Promise<boolean> {
 	try {
@@ -619,6 +624,7 @@ async function loadAndValidateExistingCorpus(
 	}
 
 	const expectedAttemptPaths = new Set<string>();
+	const expectedFailurePaths = new Set<string>();
 	const activeTargets: FamilyAffinityTarget[] = [];
 	const activeAssignments: FamilyAffinityAssignment[] = [];
 	for (const coordinate of [
@@ -626,6 +632,7 @@ async function loadAndValidateExistingCorpus(
 		...manifest.bridge.activeCoordinates
 	]) {
 		let previousTarget: FamilyAffinityTarget | undefined;
+		let previousGenerationFailure: FamilyAffinityGenerationFailure | undefined;
 		for (let version = 1; version <= coordinate.activeVersion; version += 1) {
 			const targetPath = pathAtVersion(coordinate.targetPath, coordinate.activeVersion, version);
 			const assignmentPath = pathAtVersion(
@@ -673,23 +680,34 @@ async function loadAndValidateExistingCorpus(
 					if (
 						expectedTarget.affinity === 'normal' ||
 						expectedTarget.status !== 'blocked-on-anchor' ||
-						target.status !== 'planned' ||
-						target.anchor.kind !== 'normal-approved-review'
+						!(['planned', 'planned-provisional-anchor'] as const).includes(
+							target.status as 'planned' | 'planned-provisional-anchor'
+						) ||
+						(target.anchor.kind !== 'normal-approved-review' &&
+							target.anchor.kind !== 'normal-verified-candidate')
 					) {
 						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
 					}
-					const normalizedTarget = FamilyAffinityTargetSchema.parse({
-						...target,
-						status: 'blocked-on-anchor',
-						anchor: {
-							...target.anchor,
-							reviewReceiptSha256: null,
-							normalCandidatePath: null,
-							normalCandidateSha256: null,
-							normalResultPath: null,
-							normalResultSha256: null
-						}
-					});
+					const normalizedTarget = FamilyAffinityTargetSchema.parse(
+						target.anchor.kind === 'normal-approved-review'
+							? {
+									...target,
+									status: 'blocked-on-anchor',
+									anchor: {
+										...target.anchor,
+										reviewReceiptSha256: null,
+										normalCandidatePath: null,
+										normalCandidateSha256: null,
+										normalResultPath: null,
+										normalResultSha256: null
+									}
+								}
+							: {
+									...target,
+									status: 'blocked-on-anchor',
+									anchor: expectedTarget.anchor
+								}
+					);
 					if (stableFamilyAffinityJson(normalizedTarget) !== expectedTargetBytes) {
 						throw new Error(`Immutable packet-derived v1 target drift: ${targetPath}`);
 					}
@@ -701,7 +719,7 @@ async function loadAndValidateExistingCorpus(
 						targetSha256: familyAffinitySha256(expectedTarget)
 					});
 					if (
-						assignment.dispatchStatus !== 'planned' ||
+						assignment.dispatchStatus !== target.status ||
 						assignment.targetSha256 !== familyAffinitySha256(target) ||
 						stableFamilyAffinityJson(normalizedAssignment) !== expectedAssignmentBytes
 					) {
@@ -724,10 +742,36 @@ async function loadAndValidateExistingCorpus(
 				status: target.status
 			};
 			validateFamilyAffinityAttemptCrossBinding(derivedCoordinate, target, assignment);
+			const failurePath = familyAffinityGenerationFailurePath(target);
+			const generationFailure = (await fileExists(join(repositoryRoot, failurePath)))
+				? validateFamilyAffinityGenerationFailureEvidence({
+						target,
+						targetPath,
+						assignment,
+						assignmentPath,
+						evidence: JSON.parse(
+							(await readFamilyAffinityOwnedFile(repositoryRoot, failurePath)).toString('utf8')
+						)
+					})
+				: undefined;
+			if (generationFailure) expectedFailurePaths.add(failurePath);
+			if (version === coordinate.activeVersion && generationFailure) {
+				throw new Error(`Active attempt cannot be generation-failed: ${targetPath}`);
+			}
 			if (version === 1 && target.precedingAttempt !== null) {
 				throw new Error(`Initial attempt cannot link a predecessor: ${targetPath}`);
 			}
-			if (
+			if (version > 1 && previousGenerationFailure) {
+				if (
+					!previousTarget ||
+					stableFamilyAffinityJson(target.precedingAttempt) !==
+						stableFamilyAffinityJson(previousTarget.precedingAttempt)
+				) {
+					throw new Error(
+						`Generation-failed history did not preserve last retained attempt: ${targetPath}`
+					);
+				}
+			} else if (
 				version > 1 &&
 				(!previousTarget ||
 					target.precedingAttempt?.targetId !== previousTarget.targetId ||
@@ -741,6 +785,7 @@ async function loadAndValidateExistingCorpus(
 				);
 			}
 			previousTarget = target;
+			previousGenerationFailure = generationFailure;
 			if (version === coordinate.activeVersion) {
 				validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
 				activeTargets.push(target);
@@ -766,6 +811,14 @@ async function loadAndValidateExistingCorpus(
 			throw new Error(`Orphan or unreferenced immutable attempt: ${path}`);
 		}
 	}
+	const actualFailurePaths = (
+		await listFiles(join(repositoryRoot, FAMILY_AFFINITY_ROOT, 'generation-failures'))
+	).map((path) => relative(repositoryRoot, path));
+	for (const path of actualFailurePaths) {
+		if (!expectedFailurePaths.has(path)) {
+			throw new Error(`Orphan or unreferenced generation-failure evidence: ${path}`);
+		}
+	}
 
 	const canonicalTargets = activeTargets.filter(({ namespace }) => namespace === 'canonical');
 	const canonicalAssignments = activeAssignments.filter(
@@ -773,6 +826,19 @@ async function loadAndValidateExistingCorpus(
 	);
 	const reviewReceipts: Record<string, { receipt: unknown; bytes: Uint8Array }> = {};
 	for (const target of canonicalTargets) {
+		if (
+			target.affinity !== 'normal' &&
+			target.status === 'planned-provisional-anchor' &&
+			target.anchor.kind === 'normal-verified-candidate'
+		) {
+			await validateFamilyAffinityNormalAnchorEvidence({
+				repositoryRoot,
+				manifestPath,
+				targetPath: manifest.canonicalMatrix.activeCoordinates.find(
+					({ coordinateId }) => coordinateId === target.coordinateId
+				)!.targetPath
+			});
+		}
 		if (
 			target.affinity !== 'normal' &&
 			target.status === 'planned' &&

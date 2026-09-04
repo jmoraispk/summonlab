@@ -333,6 +333,7 @@ export function getMonsterVisualDatabase(): null {
 	return null;
 }
 
-export function getMonsterVisualEntry(_wikiId: string): null {
+export function getMonsterVisualEntry(wikiId: string): null {
+	void wikiId;
 	return null;
 }

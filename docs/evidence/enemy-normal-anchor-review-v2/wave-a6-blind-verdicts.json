@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A6",
+  "reviewerId": "codex:/root/normal_revision_blind_a6",
+  "reviews": [
+    {
+      "token": "R2-A6-01",
+      "perceivedFamilyOrCreature": "butterfly-winged fey queen",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "aerial support-controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Slender humanoid body, crown, and four wings read cleanly despite dense ornament."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Centered full-body silhouette with wings comfortably contained in frame."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Highly resolved materials, wing veining, and facial focal detail."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Prismatic palette suggests broad fey magic rather than one dominant element."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Exposed central body and oversized wings clearly signal a fragile airborne controller."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A6-02",
+      "perceivedFamilyOrCreature": "many-eyed void aberration",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "zone controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Amorphous tentacles, eye clusters, and portal-like crown form a coherent aberrant body."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Large silhouette is centered and fully legible against the pale ground."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Dense surface detail and controlled purple highlights feel production-ready."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Near-black body and saturated violet portal effects strongly lock it to void or shadow."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The eyes and crown attract attention, but no clear attack lane or vulnerable point is established."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A6-03",
+      "perceivedFamilyOrCreature": "multi-armed ascetic monarch",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "reach controller-summoner",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Central humanoid torso and radiating arm array remain readable as intentional anatomy."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Front-facing full figure and broad arm fan use the portrait frame effectively."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Face, bead-like appendages, cloth, and architecture are consistently refined."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Restrained bone, stone, and cloth palette carries no dominant elemental signature."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Radiating arms clearly advertise broad reach while the exposed central body supplies a focus target."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A6-04",
+      "perceivedFamilyOrCreature": "storm djinn",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "mobile ranged caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Humanoid upper body, streaming garments, and vaporous lower form read clearly as a djinn."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Dynamic diagonal pose remains centered with the main body fully visible."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Armor, cloth, smoke, and electrical effects are richly and consistently rendered."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Prominent blue-white lightning and storm clouds make the electric affinity unmistakable."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Extended casting arm and directional lightning rings clearly telegraph a ranged discharge."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A6-05",
+      "perceivedFamilyOrCreature": "levitating astral hierophant",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "ritual controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Seated humanoid upper body and deliberately spectral lower mass form a coherent floating entity."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Wide ritual scene preserves a strong central silhouette and symmetrical read."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Ornament, atmospheric depth, and geometric magic effects are highly resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Dark blue-violet reads as generalized astral magic without a concrete elemental type."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Tether lines and the floor sigil clearly imply a stationary ritual with interruptible anchors."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A6-06",
+      "perceivedFamilyOrCreature": "enthroned gargoyle sovereign",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "fortified tank-guardian",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Heavy humanoid frame, horned head, claws, and symmetrical wings are immediately legible."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Centered throne composition presents the full silhouette without harmful cropping."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Stone, metal, throne ornament, and secondary statues share a polished finish."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Monochrome stone and bronze treatment avoids an elemental effect language."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Seated posture and massive armor clearly communicate low mobility and high durability."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A6-07",
+      "perceivedFamilyOrCreature": "void-fractured colossus",
+      "perceivedTier": "high",
+      "perceivedCombatRole": "bruiser-disruptor",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Head, shoulders, fists, and legs hold a clear humanoid structure through the fragmented treatment."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Full-body stance is centered with useful breathing room for orbiting fragments."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Fragment edges, internal glow, and environmental debris are cohesively finished."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Black fragments and intense violet cores strongly assert void or shadow affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Oversized fists telegraph melee pressure and the bright chest fissure reads as a vulnerable core."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A6-08",
+      "perceivedFamilyOrCreature": "winged stone gargoyle",
+      "perceivedTier": "mid",
+      "perceivedCombatRole": "aerial ambusher-bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Crouched limbs, horned head, tail, claws, and bat wings are distinct and coherent."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Three-quarter perch pose fills the frame while keeping both wings and feet readable."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Stone texture, edge detail, and ruined architecture are consistently polished."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Natural stone coloration and absence of magic effects keep affinity neutral."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Crouched launch posture and open wings clearly foreshadow a leap or diving attack."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A6-09",
+      "perceivedFamilyOrCreature": "gothic human occultist",
+      "perceivedTier": "mid",
+      "perceivedCombatRole": "assassin or debuff caster",
+      "identityConfidence": "low",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Human anatomy and poised hand gesture are natural and clearly rendered."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Full-body figure is centered with a clean silhouette against the pale arch."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Tailoring, face, hair, and subdued environment appear fully resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Grayscale clothing and lack of effects do not imply a specific element."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "No weapon, active effect, armor profile, or readable attack telegraph clarifies how the figure fights."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A6-10",
+      "perceivedFamilyOrCreature": "butterfly-winged fey marksman",
+      "perceivedTier": "mid",
+      "perceivedCombatRole": "ranged skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Humanoid figure, layered wings, braced legs, and extended arms remain easy to parse."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Action pose and wings are fully contained with the projectile lanes given room."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Wing texture, bark-like costume, forest light, and energy streaks are polished."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Multicolor projectile streaks avoid assigning a single elemental affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Parallel projectile lines and the lateral firing stance clearly expose the ranged attack direction."
+      },
+      "overallVerdict": "approved-review"
+    }
+  ]
+}
