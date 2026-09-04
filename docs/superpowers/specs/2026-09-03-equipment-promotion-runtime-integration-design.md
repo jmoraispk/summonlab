@@ -420,4 +420,3 @@ activation, a feature gate controls the workshop Forging flow and standard-equip
 Rollback disables that feature gate and restores the previous content binding. Content-hashed
 runtime files and immutable approved sources may remain checked in because they have no behavior by
 themselves. Historical events continue to resolve against their bound content and engine versions.
-
