@@ -1,6 +1,6 @@
 # Two-handed Greatsword v1
 
-Status: **direction candidate pending owner review**.
+Status: **proportion revision pending owner review; standalone item production remains gated**.
 
 This collision-safe campaign develops Greatsword as a two-handed visual family inside the canonical
 `Sword` mechanical class. It does not add another Weapon class, change the approved Equipment v1
@@ -31,11 +31,26 @@ The campaign has seven material/rank cells and one reference-only rank board:
 7 dedicated items + 1 direction board = 8 initial pixel calls
 ```
 
-The direction board is recorded at its assigned path and no pixel call is currently dispatchable.
-Its first call produced the correct designs on the wrong reference-inherited canvas; one bounded
-correction restored the assigned 1536×1024 canvas. The seven dedicated item assignments remain
+The original direction board is retained with a `revise` decision because every blade-to-full-hilt
+ratio fell below the approved minimum. A museum-grounded proportion contract then authorized one
+fresh v2 board and one bounded correction. The correction now passes blade-to-hilt (2.54–2.70),
+blade-to-grip (3.31–3.53), blade-share (71.72–72.98%), and pommel-share (4.50–4.81%) checks across
+all seven ranks. It remains `revise` because its functional guards span only 19.53–21.93% of total
+length against the approved 24–30% range.
+
+No pixel call is currently dispatchable. The seven dedicated item assignments remain
 unmaterialized until an owner decision accepts an exact direction-board path and SHA-256. Board
 cells will never be cropped into item candidates.
+
+## Proportion review
+
+The contract defines landmarks before measuring: blade runs from functional guard plane to tip;
+full hilt runs from guard plane to pommel end; exposed grip excludes guard and pommel; guard width
+uses the functional quillon tips. The review records per-rank pixel measurements, derived ratios,
+and pass/fail criteria in `reviews/proportions/greatsword-metal-ranks-v2-measurements.json`.
+
+Open `reviews/proportions/index.html` for the v1/v2 comparison, numeric envelope, and owner decision
+evidence. The current recommendation is to preserve every v2 trait except functional guard span.
 
 ## References
 
@@ -48,7 +63,7 @@ Both inputs are repository-owned direction evidence, not output sources:
 
 ## Lifecycle
 
-`reference → direction candidate → owner decision → item assignments → item candidates → review`
+`reference → v1 revise → proportion contract → v2 revise → owner decision → item assignments → item candidates → review`
 
 Promotion, approved masters, runtime derivatives, and content definitions are explicitly outside
 this campaign boundary until separately authorized.

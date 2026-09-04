@@ -4,8 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import {
+	reviewGreatswordProportions,
 	validateGreatswordCampaign,
-	validateGreatswordCampaignFiles
+	validateGreatswordCampaignFiles,
+	validateGreatswordProportions
 } from './validate-greatsword-campaign-v1.js';
 
 const repositoryRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -18,17 +20,72 @@ function readJson(path: string): unknown {
 function fixtures() {
 	return {
 		manifest: readJson(`${campaignRoot}/manifest.json`),
-		target: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v1.target.json`),
-		assignment: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v1.assignment.json`),
+		target: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v2.target.json`),
+		assignment: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v2.assignment.json`),
 		prompt: readFileSync(
-			`${campaignRoot}/direction/greatsword-metal-ranks-v1.prompt.txt`,
+			`${campaignRoot}/direction/greatsword-metal-ranks-v2.prompt.txt`,
 			'utf8'
 		)
 	};
 }
 
 describe('Greatsword candidate campaign validation', () => {
-	it('accepts the complete seven-rank metal matrix while every item call remains gated', () => {
+	it('accepts a museum-grounded greatsword proportion envelope', () => {
+		expect(
+			validateGreatswordProportions({
+				bladePx: 620,
+				fullHiltPx: 240,
+				exposedGripPx: 180,
+				guardWidthPx: 230,
+				pommelPx: 43,
+				overallPx: 860
+			})
+		).toEqual({
+			bladeToFullHilt: 2.58,
+			bladeToExposedGrip: 3.44,
+			bladePercent: 72.09,
+			guardPercent: 26.74,
+			pommelPercent: 5
+		});
+	});
+
+	it('rejects the short-bladed v1 silhouette', () => {
+		expect(() =>
+			validateGreatswordProportions({
+				bladePx: 492,
+				fullHiltPx: 236,
+				exposedGripPx: 190,
+				guardWidthPx: 175,
+				pommelPx: 45,
+				overallPx: 728
+			})
+		).toThrow(/blade-to-full-hilt ratio/);
+	});
+
+	it('records an otherwise corrected sword as revise when its guard is too narrow', () => {
+		expect(
+			reviewGreatswordProportions({
+				bladePx: 678,
+				fullHiltPx: 251,
+				exposedGripPx: 194,
+				guardWidthPx: 194,
+				pommelPx: 43,
+				overallPx: 929
+			})
+		).toEqual({
+			ratios: {
+				bladeToFullHilt: 2.7,
+				bladeToExposedGrip: 3.49,
+				bladePercent: 72.98,
+				guardPercent: 20.88,
+				pommelPercent: 4.63
+			},
+			status: 'fail',
+			failedCriteria: ['guardPercent']
+		});
+	});
+
+	it('records the exhausted proportion revision while every item call remains gated', () => {
 		const summary = validateGreatswordCampaign(fixtures());
 
 		expect(summary).toEqual({
@@ -37,14 +94,14 @@ describe('Greatsword candidate campaign validation', () => {
 			dedicatedCandidateCount: 7,
 			initialPixelCallCount: 8,
 			currentDispatchablePixelCallCount: 0,
-			state: 'direction-candidate-pending-owner-review'
+			state: 'direction-proportion-revision-review-pending-owner'
 		});
 	});
 
-	it('verifies repository-bound prompt, reference, candidate, and result hashes', async () => {
+	it('verifies the repository-bound v2 image, receipt, and honest proportion review', async () => {
 		await expect(validateGreatswordCampaignFiles(repositoryRoot)).resolves.toMatchObject({
-			artifactState: 'direction-candidate-recorded',
-			referenceCount: 2
+			artifactState: 'direction-proportion-revision-recorded',
+			referenceCount: 0
 		});
 	});
 
