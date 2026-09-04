@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "skill-icon-promotion-receipt-v1",
+	"transactionId": "34cc4396-7b36-4d9f-a391-6a44eda51780",
+	"jobId": "blade-guard-flow-reversal-cut-v2",
+	"role": "calibration-plate",
+	"ownerReviewer": "João, Summonlab project owner",
+	"review": {
+		"path": "assets/wiki/skills/icon-production-v1/review/decisions/calibration/blade-guard-flow-reversal-cut-v2.json",
+		"contentHash": "5561dc75fa41f10801dae07d68bc242a1c68701fa3c50aa9ace20aa3ee31753c"
+	},
+	"result": {
+		"path": "assets/wiki/skills/icon-production-v1/results/calibration/blade-guard-flow-reversal-cut-v2.json",
+		"contentHash": "b8cf396a779fd9de2ba9f5de0829a8516d166b0907a3af13aeb121f1b708ad27"
+	},
+	"candidate": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/calibration/blade-guard-flow-reversal-cut-v2.png",
+		"contentHash": "e505f796d2ec174c5db35eb762ea37dd1fe51f0a08579f403847a5303d3a7d54"
+	},
+	"master": {
+		"path": "assets/wiki/skills/icon-production-v1/masters/calibration/blade-guard-flow.png",
+		"contentHash": "e505f796d2ec174c5db35eb762ea37dd1fe51f0a08579f403847a5303d3a7d54"
+	}
+}
