@@ -7,6 +7,10 @@ import argparse
 import copy
 import hashlib
 import json
+import os
+import shutil
+import tempfile
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -19,6 +23,7 @@ from contracts import (
     EXPERIMENT_ID,
     EXPERIMENT_ROOT,
     LIFECYCLE,
+    PROMPT_TEMPLATE_SHA256,
     PROMPT_SUBSTITUTIONS,
     PROMPT_VERSION,
     SOURCE_ROSTER_PATH,
@@ -40,6 +45,9 @@ TARGET_SCHEMA_VERSION = "five-head-chibi-target-v1"
 ASSIGNMENT_SCHEMA_VERSION = "five-head-chibi-assignment-v1"
 PLAN_SCHEMA_VERSION = "five-head-chibi-production-plan-v1"
 ROSTER_SCHEMA_VERSION = "five-head-chibi-source-roster-v1"
+TRANSACTION_FILE = ".materialize-plan.transaction.json"
+TRANSACTION_SCHEMA_VERSION = "five-head-chibi-materialization-transaction-v1"
+STAGING_PREFIX = ".materialize-plan-stage-"
 
 
 @dataclass
@@ -206,6 +214,15 @@ def _prompt_substitutions(facts: Mapping[str, Any]) -> dict[str, str]:
     }
 
 
+def _load_frozen_prompt_template() -> str:
+    if sha256_file(PROMPT_TEMPLATE_PATH) != PROMPT_TEMPLATE_SHA256:
+        raise ContractError("prompt template hash differs from frozen authority")
+    try:
+        return PROMPT_TEMPLATE_PATH.read_text(encoding="utf-8")
+    except OSError as error:
+        raise ContractError(f"cannot read prompt template: {error}") from error
+
+
 def _wave_for_index(index: int) -> str:
     running = 0
     for ordinal, size in enumerate(WAVE_SIZES, start=1):
@@ -222,7 +239,7 @@ def build_targets(roster: dict[str, Any]) -> list[dict[str, Any]]:
     pairs = load_selected_pairs()
     if [{key: record[key] for key in record} for record in records] != build_source_roster(pairs)["records"]:
         raise ContractError("source roster records differ from resolved immutable sources")
-    template = PROMPT_TEMPLATE_PATH.read_text(encoding="utf-8")
+    template = _load_frozen_prompt_template()
     targets: list[dict[str, Any]] = []
     for index, pair in enumerate(pairs):
         prompt = render_prompt(template, _prompt_substitutions(pair.character_facts))
@@ -312,23 +329,148 @@ def _expected_files(roster: dict[str, Any], targets: list[dict[str, Any]], assig
     return files
 
 
+def _transaction_path(root: Path) -> Path:
+    return root / TRANSACTION_FILE
+
+
+def _expected_files_sha256(expected: Sequence[tuple[str, bytes]]) -> str:
+    return hashlib.sha256(_canonical_json([
+        {"path": relative, "sha256": hashlib.sha256(payload).hexdigest()}
+        for relative, payload in expected
+    ])).hexdigest()
+
+
+def _atomic_replace(path: Path, payload: bytes) -> None:
+    """Publish one metadata file without making a partial byte sequence visible."""
+    temporary = path.parent / f".{path.name}.{uuid.uuid4().hex}.tmp"
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    except OSError as error:
+        try:
+            temporary.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise ContractError(f"cannot atomically publish transaction metadata: {error}") from error
+
+
+def _start_or_verify_transaction(root: Path, expected: Sequence[tuple[str, bytes]]) -> bool:
+    """Return whether an interrupted transaction is being resumed."""
+    path = _transaction_path(root)
+    expected_sha256 = _expected_files_sha256(expected)
+    if path.exists() or path.is_symlink():
+        if path.is_symlink() or not path.is_file():
+            raise ContractError("materialization transaction marker is not a regular file")
+        marker = _load_json(path)
+        if (
+            marker.get("schemaVersion") != TRANSACTION_SCHEMA_VERSION
+            or marker.get("expectedFilesSha256") != expected_sha256
+        ):
+            raise ContractError("incomplete materialization transaction does not match this queue")
+        return True
+    _atomic_replace(path, _canonical_json({
+        "schemaVersion": TRANSACTION_SCHEMA_VERSION,
+        "expectedFilesSha256": expected_sha256,
+    }))
+    return False
+
+
+def _remove_transaction(root: Path) -> None:
+    path = _transaction_path(root)
+    try:
+        path.unlink(missing_ok=True)
+    except OSError as error:
+        raise ContractError(f"cannot clear completed materialization transaction: {error}") from error
+
+
+def _stage_missing_files(root: Path, missing: Sequence[tuple[str, bytes]]) -> Path:
+    staging = Path(tempfile.mkdtemp(prefix=STAGING_PREFIX, dir=root))
+    try:
+        for relative, payload in missing:
+            exclusive_write(staging / relative, payload)
+        return staging
+    except Exception:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
+
+
+def _rollback_published(created: Sequence[tuple[Path, int, int]]) -> None:
+    """Unlink only exact inodes linked by this transaction; never remove a replacement."""
+    for path, device, inode in reversed(created):
+        try:
+            current = os.stat(path, follow_symlinks=False)
+            if (current.st_dev, current.st_ino) == (device, inode):
+                path.unlink()
+        except OSError:
+            continue
+
+
+def _publish_staged_files(root: Path, staging: Path, missing: Sequence[tuple[str, bytes]], outcome: dict[str, int], created: list[tuple[Path, int, int]]) -> None:
+    for relative, payload in missing:
+        staged = staging / relative
+        final = root / relative
+        final.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(staged, final, follow_symlinks=False)
+        except FileExistsError:
+            if final.is_symlink() or not final.is_file() or final.read_bytes() != payload:
+                raise ContractError(f"publication collision at {final}")
+            outcome["alreadyIdentical"] += 1
+        except OSError as error:
+            raise ContractError(f"cannot publish staged queue file {final}: {error}") from error
+        else:
+            inode = os.stat(final, follow_symlinks=False)
+            created.append((final, inode.st_dev, inode.st_ino))
+            outcome["created"] += 1
+
+
 def materialize(root: Path, roster: dict[str, Any], targets: list[dict[str, Any]], assignments: list[dict[str, Any]]) -> dict[str, int]:
     plan = build_production_plan(roster, targets, assignments)
     validate_plan(plan)
     expected = _expected_files(roster, targets, assignments)
     root = root.resolve(strict=True)
-    for relative, payload in expected:
-        path = root / relative
-        if (path.exists() or path.is_symlink()) and (path.is_symlink() or not path.is_file() or path.read_bytes() != payload):
-            raise ContractError(f"occupied path has different bytes: {path}")
+    missing: list[tuple[str, bytes]] = []
     outcome = {"created": 0, "alreadyIdentical": 0}
     for relative, payload in expected:
-        result = exclusive_write(root / relative, payload)
-        outcome["created" if result == "created" else "alreadyIdentical"] += 1
+        path = root / relative
+        if path.exists() or path.is_symlink():
+            if path.is_symlink() or not path.is_file() or path.read_bytes() != payload:
+                raise ContractError(f"occupied path has different bytes: {path}")
+            outcome["alreadyIdentical"] += 1
+        else:
+            missing.append((relative, payload))
+    resuming = _start_or_verify_transaction(root, expected)
+    if not missing:
+        _remove_transaction(root)
+        return outcome
+    staging = _stage_missing_files(root, missing)
+    created: list[tuple[Path, int, int]] = []
+    try:
+        _publish_staged_files(root, staging, missing, outcome, created)
+    except Exception:
+        _rollback_published(created)
+        if not resuming:
+            _remove_transaction(root)
+        raise
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
+    _remove_transaction(root)
     return outcome
 
 
 def check(root: Path, roster: dict[str, Any], targets: list[dict[str, Any]], assignments: list[dict[str, Any]]) -> dict[str, int]:
+    transaction = _transaction_path(root)
+    if transaction.exists() or transaction.is_symlink():
+        raise ContractError("incomplete materialization transaction is present; rerun --write to recover")
     validate_plan(build_production_plan(roster, targets, assignments))
     expected = _expected_files(roster, targets, assignments)
     missing = 0

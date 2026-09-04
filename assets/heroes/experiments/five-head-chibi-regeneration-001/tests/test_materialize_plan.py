@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parent
@@ -97,6 +98,21 @@ class MaterializerTests(unittest.TestCase):
                 self.assertNotIn("]", target["renderedPrompt"])
                 self.assertEqual(target["renderedPromptSha256"], self.materializer.sha256_text(target["renderedPrompt"]))
 
+    def test_rejects_a_syntactically_valid_but_hash_drifted_prompt_template(self) -> None:
+        original_template_path = self.materializer.PROMPT_TEMPLATE_PATH
+        with tempfile.TemporaryDirectory() as temporary:
+            drifted_template = Path(temporary) / "prompt-template.txt"
+            drifted_template.write_text(
+                original_template_path.read_text(encoding="utf-8") + "\nStill valid prose.\n",
+                encoding="utf-8",
+            )
+            self.materializer.PROMPT_TEMPLATE_PATH = drifted_template
+            try:
+                with self.assertRaisesRegex(self.materializer.ContractError, "prompt template hash"):
+                    self.materializer.build_targets(self.roster)
+            finally:
+                self.materializer.PROMPT_TEMPLATE_PATH = original_template_path
+
     def test_assignments_are_exclusive_and_chunked_in_dispatch_order(self) -> None:
         self.assertEqual(len(self.assignments), 200)
         target_ids = [target["targetId"] for target in self.targets]
@@ -133,6 +149,7 @@ class MaterializerTests(unittest.TestCase):
             self.assertEqual(generated["created"], 402)
             repeated = self.materializer.materialize(root, self.roster, self.targets, self.assignments)
             self.assertEqual(repeated["alreadyIdentical"], 402)
+            self.assertFalse((root / ".materialize-plan.transaction.json").exists())
             target_path = root / "waves" / "wave-01" / "targets" / f"{self.targets[0]['heroId']}.json"
             target_path.write_text("{}", encoding="utf-8")
             with self.assertRaisesRegex(self.materializer.ContractError, "different bytes"):
@@ -147,6 +164,39 @@ class MaterializerTests(unittest.TestCase):
             with self.assertRaisesRegex(self.materializer.ContractError, "occupied path"):
                 self.materializer.materialize(root, self.roster, self.targets, self.assignments)
             self.assertFalse((root / "source-roster.json").exists())
+
+    def test_write_rolls_back_published_paths_after_a_publication_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "experiment"
+            root.mkdir()
+            calls = 0
+
+            def fail_after_one_publish(*args, **kwargs):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected publication failure")
+                return original_os_link(*args, **kwargs)
+
+            import os
+            original_os_link = os.link
+            with patch("os.link", side_effect=fail_after_one_publish):
+                with self.assertRaisesRegex(self.materializer.ContractError, "publish"):
+                    self.materializer.materialize(root, self.roster, self.targets, self.assignments)
+            self.assertFalse((root / "source-roster.json").exists())
+            self.assertFalse((root / "production-plan.json").exists())
+            self.assertFalse((root / ".materialize-plan.transaction.json").exists())
+            with self.assertRaisesRegex(self.materializer.ContractError, "differs"):
+                self.materializer.check(root, self.roster, self.targets, self.assignments)
+
+    def test_check_rejects_an_interrupted_publication_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "experiment"
+            root.mkdir()
+            self.materializer.materialize(root, self.roster, self.targets, self.assignments)
+            (root / ".materialize-plan.transaction.json").write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(self.materializer.ContractError, "incomplete materialization"):
+                self.materializer.check(root, self.roster, self.targets, self.assignments)
 
 
 if __name__ == "__main__":
