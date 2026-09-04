@@ -5,15 +5,17 @@ from __future__ import annotations
 
 import argparse
 import copy
+import fcntl
 import hashlib
 import json
 import os
 import shutil
 import tempfile
 import uuid
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterator, Mapping, Sequence
 
 from contracts import (
     CANVAS_HEIGHT,
@@ -46,6 +48,7 @@ ASSIGNMENT_SCHEMA_VERSION = "five-head-chibi-assignment-v1"
 PLAN_SCHEMA_VERSION = "five-head-chibi-production-plan-v1"
 ROSTER_SCHEMA_VERSION = "five-head-chibi-source-roster-v1"
 TRANSACTION_FILE = ".materialize-plan.transaction.json"
+LOCK_FILE = ".materialize-plan.lock"
 TRANSACTION_SCHEMA_VERSION = "five-head-chibi-materialization-transaction-v1"
 STAGING_PREFIX = ".materialize-plan-stage-"
 
@@ -333,6 +336,26 @@ def _transaction_path(root: Path) -> Path:
     return root / TRANSACTION_FILE
 
 
+@contextmanager
+def _writer_lock(root: Path) -> Iterator[str]:
+    """Serialize all writers; an OS-released lock makes crash recovery possible."""
+    flags = os.O_RDWR | os.O_CREAT
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(root / LOCK_FILE, flags, 0o644)
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+    except OSError as error:
+        raise ContractError(f"cannot acquire materialization writer lock: {error}") from error
+    try:
+        yield f"{os.getpid()}-{uuid.uuid4().hex}"
+    finally:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+        finally:
+            os.close(descriptor)
+
+
 def _expected_files_sha256(expected: Sequence[tuple[str, bytes]]) -> str:
     return hashlib.sha256(_canonical_json([
         {"path": relative, "sha256": hashlib.sha256(payload).hexdigest()}
@@ -363,8 +386,8 @@ def _atomic_replace(path: Path, payload: bytes) -> None:
         raise ContractError(f"cannot atomically publish transaction metadata: {error}") from error
 
 
-def _start_or_verify_transaction(root: Path, expected: Sequence[tuple[str, bytes]]) -> bool:
-    """Return whether an interrupted transaction is being resumed."""
+def _start_or_verify_transaction(root: Path, expected: Sequence[tuple[str, bytes]], owner: str) -> bool:
+    """Start or claim an interrupted transaction while the exclusive writer lock is held."""
     path = _transaction_path(root)
     expected_sha256 = _expected_files_sha256(expected)
     if path.exists() or path.is_symlink():
@@ -376,16 +399,30 @@ def _start_or_verify_transaction(root: Path, expected: Sequence[tuple[str, bytes
             or marker.get("expectedFilesSha256") != expected_sha256
         ):
             raise ContractError("incomplete materialization transaction does not match this queue")
+        _atomic_replace(path, _canonical_json({
+            "schemaVersion": TRANSACTION_SCHEMA_VERSION,
+            "expectedFilesSha256": expected_sha256,
+            "owner": owner,
+        }))
         return True
     _atomic_replace(path, _canonical_json({
         "schemaVersion": TRANSACTION_SCHEMA_VERSION,
         "expectedFilesSha256": expected_sha256,
+        "owner": owner,
     }))
     return False
 
 
-def _remove_transaction(root: Path) -> None:
+def _require_transaction_owner(root: Path, owner: str) -> None:
     path = _transaction_path(root)
+    marker = _load_json(path)
+    if marker.get("owner") != owner:
+        raise ContractError("materialization transaction is owned by another writer")
+
+
+def _remove_transaction(root: Path, owner: str) -> None:
+    path = _transaction_path(root)
+    _require_transaction_owner(root, owner)
     try:
         path.unlink(missing_ok=True)
     except OSError as error:
@@ -403,8 +440,9 @@ def _stage_missing_files(root: Path, missing: Sequence[tuple[str, bytes]]) -> Pa
         raise
 
 
-def _rollback_published(created: Sequence[tuple[Path, int, int]]) -> None:
+def _rollback_published(root: Path, owner: str, created: Sequence[tuple[Path, int, int]]) -> None:
     """Unlink only exact inodes linked by this transaction; never remove a replacement."""
+    _require_transaction_owner(root, owner)
     for path, device, inode in reversed(created):
         try:
             current = os.stat(path, follow_symlinks=False)
@@ -438,33 +476,36 @@ def materialize(root: Path, roster: dict[str, Any], targets: list[dict[str, Any]
     validate_plan(plan)
     expected = _expected_files(roster, targets, assignments)
     root = root.resolve(strict=True)
-    missing: list[tuple[str, bytes]] = []
-    outcome = {"created": 0, "alreadyIdentical": 0}
-    for relative, payload in expected:
-        path = root / relative
-        if path.exists() or path.is_symlink():
-            if path.is_symlink() or not path.is_file() or path.read_bytes() != payload:
-                raise ContractError(f"occupied path has different bytes: {path}")
-            outcome["alreadyIdentical"] += 1
-        else:
-            missing.append((relative, payload))
-    resuming = _start_or_verify_transaction(root, expected)
-    if not missing:
-        _remove_transaction(root)
+    with _writer_lock(root) as owner:
+        missing: list[tuple[str, bytes]] = []
+        outcome = {"created": 0, "alreadyIdentical": 0}
+        for relative, payload in expected:
+            path = root / relative
+            if path.exists() or path.is_symlink():
+                if path.is_symlink() or not path.is_file() or path.read_bytes() != payload:
+                    raise ContractError(f"occupied path has different bytes: {path}")
+                outcome["alreadyIdentical"] += 1
+            else:
+                missing.append((relative, payload))
+        resuming = _start_or_verify_transaction(root, expected, owner)
+        if not missing:
+            _remove_transaction(root, owner)
+            return outcome
+        staging: Path | None = None
+        created: list[tuple[Path, int, int]] = []
+        try:
+            staging = _stage_missing_files(root, missing)
+            _publish_staged_files(root, staging, missing, outcome, created)
+        except Exception:
+            _rollback_published(root, owner, created)
+            if not resuming:
+                _remove_transaction(root, owner)
+            raise
+        finally:
+            if staging is not None:
+                shutil.rmtree(staging, ignore_errors=True)
+        _remove_transaction(root, owner)
         return outcome
-    staging = _stage_missing_files(root, missing)
-    created: list[tuple[Path, int, int]] = []
-    try:
-        _publish_staged_files(root, staging, missing, outcome, created)
-    except Exception:
-        _rollback_published(created)
-        if not resuming:
-            _remove_transaction(root)
-        raise
-    finally:
-        shutil.rmtree(staging, ignore_errors=True)
-    _remove_transaction(root)
-    return outcome
 
 
 def check(root: Path, roster: dict[str, Any], targets: list[dict[str, Any]], assignments: list[dict[str, Any]]) -> dict[str, int]:

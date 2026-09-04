@@ -6,6 +6,8 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import multiprocessing
+import queue
 import sys
 import tempfile
 import unittest
@@ -16,6 +18,31 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 EXPERIMENT_ROOT = HERE.parent
 SCRIPT_PATH = EXPERIMENT_ROOT / "scripts" / "materialize_plan.py"
+
+
+def _load_materializer_in_process():
+    sys.path.insert(0, str(SCRIPT_PATH.parent))
+    spec = importlib.util.spec_from_file_location("five_head_materialize_plan_process", SCRIPT_PATH)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _hold_writer_lock(root: str, ready, release) -> None:
+    materializer = _load_materializer_in_process()
+    with materializer._writer_lock(Path(root)):
+        ready.set()
+        release.wait(10)
+
+
+def _materialize_in_process(root: str, roster: dict, targets: list, assignments: list, result) -> None:
+    materializer = _load_materializer_in_process()
+    try:
+        result.put(("result", materializer.materialize(Path(root), roster, targets, assignments)))
+    except Exception as error:  # pragma: no cover - asserted through the process queue
+        result.put(("error", repr(error)))
 
 
 class MaterializerModuleExistsTests(unittest.TestCase):
@@ -197,6 +224,39 @@ class MaterializerTests(unittest.TestCase):
             (root / ".materialize-plan.transaction.json").write_text("{}", encoding="utf-8")
             with self.assertRaisesRegex(self.materializer.ContractError, "incomplete materialization"):
                 self.materializer.check(root, self.roster, self.targets, self.assignments)
+
+    def test_only_the_exclusive_writer_can_publish_or_clear_its_transaction(self) -> None:
+        context = multiprocessing.get_context("fork")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "experiment"
+            root.mkdir()
+            ready, release, result = context.Event(), context.Event(), context.Queue()
+            holder = context.Process(target=_hold_writer_lock, args=(str(root), ready, release))
+            writer = context.Process(
+                target=_materialize_in_process,
+                args=(str(root), self.roster, self.targets, self.assignments, result),
+            )
+            holder.start()
+            try:
+                self.assertTrue(ready.wait(3), "the lock holder did not acquire exclusive ownership")
+                writer.start()
+                with self.assertRaises(queue.Empty):
+                    result.get(timeout=1)
+                release.set()
+                writer.join(10)
+                self.assertFalse(writer.is_alive(), "writer did not complete after lock release")
+                kind, outcome = result.get(timeout=3)
+                self.assertEqual(kind, "result", outcome)
+                self.assertEqual(outcome["created"], 402)
+                self.assertFalse((root / ".materialize-plan.transaction.json").exists())
+                self.materializer.check(root, self.roster, self.targets, self.assignments)
+            finally:
+                release.set()
+                for process in (holder, writer):
+                    if process.pid is not None:
+                        if process.is_alive():
+                            process.terminate()
+                        process.join(3)
 
 
 if __name__ == "__main__":
