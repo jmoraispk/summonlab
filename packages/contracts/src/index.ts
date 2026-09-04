@@ -4,6 +4,7 @@ export * from './campaign.js';
 export * from './decision.js';
 export * from './decision-inspector.js';
 export * from './engine.js';
+export * from './equipment.js';
 export * from './equipment-visual.js';
 export * from './event.js';
 export * from './final-controlled-design-risk-decisions.js';
