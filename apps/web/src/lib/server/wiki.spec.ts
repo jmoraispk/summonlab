@@ -46,6 +46,20 @@ describe('online wiki registry', () => {
 		expect(getWikiPage('mechanics/skills/martial-universal')).toBeNull();
 	});
 
+	it('publishes and loads the permanent skill visual catalog', () => {
+		const page = getWikiPage('mechanics/skills/visual-catalog');
+		expect(page).toMatchObject({
+			wikiId: 'skills.visual-catalog',
+			href: '/wiki/mechanics/skills/visual-catalog'
+		});
+
+		const loaded = loadWikiPage({
+			params: { slug: 'mechanics/skills/visual-catalog' }
+		} as never);
+		expect(loaded.skillVisualCatalog).toHaveLength(456);
+		expect(loaded.monsterDatabase).toBeNull();
+	});
+
 	it('bundles the accepted affinity diagrams for local wiki rendering', () => {
 		for (const assetPath of [
 			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg',

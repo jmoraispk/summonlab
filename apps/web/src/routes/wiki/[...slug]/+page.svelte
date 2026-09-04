@@ -2,6 +2,7 @@
 	import MonsterDatabase from '$lib/components/wiki/MonsterDatabase.svelte';
 	import MonsterVisualMatrix from '$lib/components/wiki/MonsterVisualMatrix.svelte';
 	import SkillTree from '$lib/components/wiki/SkillTree.svelte';
+	import SkillVisualCatalog from '$lib/components/wiki/SkillVisualCatalog.svelte';
 
 	let { data } = $props();
 </script>
@@ -90,7 +91,11 @@
 				<i>Implementation · {data.wikiPage.implementationStatus}</i>
 				{#if !data.monsterVisual}<i>Visual · {data.wikiPage.visualStatus}</i>{/if}
 			</header>
-			{#if data.wikiPage.wikiId === 'skills.index'}
+			{#if data.wikiPage.wikiId === 'skills.visual-catalog' && data.skillVisualCatalog}
+				<SkillVisualCatalog records={data.skillVisualCatalog} />
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
+				<div class="article-body">{@html data.wikiPage.bodyHtml}</div>
+			{:else if data.wikiPage.wikiId === 'skills.index'}
 				<div class="article-body article-title"><h1 id="skills">{data.wikiPage.title}</h1></div>
 				<SkillTree />
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
