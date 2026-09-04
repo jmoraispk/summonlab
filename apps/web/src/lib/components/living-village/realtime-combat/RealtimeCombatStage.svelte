@@ -25,6 +25,7 @@
 		type ProjectedCombatPoint
 	} from './depth-projection';
 	import { layoutHealthBar } from './health-bar-layout';
+	import { motionPackVersionDiagnostic, REALTIME_COMBAT_MOTION } from './motion-pack-config';
 	import {
 		createRealtimeCombat,
 		stepRealtimeCombat,
@@ -64,14 +65,10 @@
 		'rat-brute': `${ART_ROOT}/rat-brute-ready-v1.png`,
 		'plague-rat': `${ART_ROOT}/lesser-rat-ready-v1.png`
 	} as const;
-	const MOTION = {
-		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`,
-		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.json`,
-		'moss-archer': `${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v2.json`,
-		'rat-brute': `${ART_ROOT}/animation-canary-v1/rat-brute/rat-brute-motion-v1.json`,
-		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json`
-	} as const;
-	const ART_SOURCES = [...Object.values(ART), ...Object.values(MOTION)];
+	const MOTION = REALTIME_COMBAT_MOTION;
+	const MOTION_SOURCES = Object.values(MOTION).map((motionPack) => motionPack.source);
+	const MOTION_PACK_VERSIONS = motionPackVersionDiagnostic(MOTION);
+	const ART_SOURCES = [...Object.values(ART), ...MOTION_SOURCES];
 	const CLIP_META: Record<CombatClip, { framesPerSecond: number; loop: boolean }> = {
 		idle: { framesPerSecond: 6, loop: true },
 		advance: { framesPerSecond: 10, loop: true },
@@ -111,11 +108,11 @@
 			const textureFor = (source: string): Texture => assetBySource.get(source) as Texture;
 			const sheetFor = (source: string): Spritesheet => assetBySource.get(source) as Spritesheet;
 			const motionSheets = {
-				asha: sheetFor(MOTION.asha),
-				'iron-guardian': sheetFor(MOTION['iron-guardian']),
-				'moss-archer': sheetFor(MOTION['moss-archer']),
-				'rat-brute': sheetFor(MOTION['rat-brute']),
-				'lesser-rat': sheetFor(MOTION['lesser-rat'])
+				asha: sheetFor(MOTION.asha.source),
+				'iron-guardian': sheetFor(MOTION['iron-guardian'].source),
+				'moss-archer': sheetFor(MOTION['moss-archer'].source),
+				'rat-brute': sheetFor(MOTION['rat-brute'].source),
+				'lesser-rat': sheetFor(MOTION['lesser-rat'].source)
 			};
 			app = new Application();
 			await app.init({
@@ -520,7 +517,7 @@
 	bind:this={host}
 	data-testid="realtime-combat-pixi-host"
 	data-presentation-mode={mode}
-	data-motion-pack-versions="asha:2,iron-guardian:4,moss-archer:2,rat-brute:1,lesser-rat:2"
+	data-motion-pack-versions={MOTION_PACK_VERSIONS}
 >
 	<canvas bind:this={canvas} data-testid="realtime-combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>

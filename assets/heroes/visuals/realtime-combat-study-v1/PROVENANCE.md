@@ -227,14 +227,22 @@ reproducible and do not depend on Codex-managed temporary storage.
 - Project sheet: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png`
   (`0a751496ecd72743dba97051231f5c34fb67e7dbab0637df0a6e0531399481dc`).
 - Support evidence: `animation-canary-v1/iron-guardian/iron-guardian-motion-support-v4.json`
-  (`e1f66bfd39f2dc6f3c7421b998e17de6f8c0fcd12f84a05f51079b91707d729e`).
+  (`da2c1491c6796a61919287f86e960d6a35524eac287e7ae6bd78759ec21964cf`). It binds
+  `version: 4`, `actorId: iron-guardian`, and `clip: advance` to zero-based row 1 of the 5×4 v4
+  source sheet; its five hashes are decoded RGB cell hashes in left-to-right playback order.
 - Runtime atlas: `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.png`
-  (`4a53c67d6ea9a6bb4bcb0846734a164fa92ede0f09d967db549566187ed2d36c`).
+  (`af035edbe4162062742d5b1a8dc797d92e2af71a95c16053d1d45862f8d52fec`). Runtime atlas JSON:
+  `iron-guardian-motion-v4.json`
+  (`e1374eafacc56543d12288a1149d30ef932376d2c29e9b6e4c17cc8cdb0d5641`). Runtime manifest:
+  `iron-guardian-motion-manifest-v4.json`
+  (`11b380e65128e86ee3d102817d2ed0acd1186b3c0ea18cfc03e725a3911a7fc8`).
 - Mode: built-in Codex image generation, with the five poses authored as one temporal strip from the
   v3 sheet, identity cutout, and repository action diagram, followed by bounded built-in
   precise-object edits. Final assembly applies one common source scale to all five generated cells;
-  frame 3 receives an 18-pixel white source gap and a v4-only 18-pixel upward translation inside its
-  transparent runtime cell after the standard build. Equipment is not used as a registration anchor.
+  frame 3 receives an 18-pixel source lift and a declared 18-pixel upward translation inside its
+  transparent runtime cell. The builder copies every non-advance runtime cell from the v3 atlas, so
+  source-row overlap cannot alter idle, attack, hit, or down pixels. Equipment is not used as a
+  registration anchor.
 - Exact final prompt:
 
   ```text
@@ -251,6 +259,9 @@ reproducible and do not depend on Codex-managed temporary storage.
   v4 at `dcaeac075ba2854972f2edf112e1ad6384817ba75b0c4b541fef0dfc76bc7208`; row 3 is
   identical at `68e16c62bccdd190af1f01987509bc8d8fa471474e9d0168bb6c40a3eb426762`; row 4 is
   identical at `3f35c3fd6b8504876b3189a55b3e995a098c111922cd1184a675853e38b15547`.
+- Runtime preservation after decoded RGBA extraction: all 15 non-advance v4 cells are identical to
+  their v3 counterparts, including `iron-guardian-attack-03.png`. All five v4 advance cells remain
+  pixel-identical to the visually reviewed v4 candidate; the airborne frame ends at local y=227.
 - Visual inspection: all five full bodies and both boots are unobstructed. Frames 1 and 2 visibly
   retain shield-side left support; frame 3 has neither boot planted and clear white below both soles;
   frame 4 lands on the mace-side right foot in a silhouette distinct from frame 1; frame 5 recovers
@@ -260,10 +271,47 @@ reproducible and do not depend on Codex-managed temporary storage.
   pixels, while overall alpha width changes from 168 to 180 pixels because the contact pose opens its
   stride. No scale snap, ground-dragging weapon, baked shadow, scenery, text, mirror, equipment swap,
   or extra limb was observed in the 184-pixel, three-loop review.
-- Build command/result: `node tools/build-realtime-combat-motion-pack.mjs --actor iron-guardian
-  --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png
-  --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian
-  --version 4` completed with `commonScale: 0.8472222222222222`.
+- Deterministic source assembly command:
+
+  ```bash
+  node tools/compose-realtime-combat-motion-rows.mjs \
+    --base assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v3.png \
+    --out assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png \
+    --replace 1:assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v4.png \
+    --scale-mode shared \
+    --cell-y-offset 1:2:-18
+  ```
+
+- Deterministic runtime build command (completed with `commonScale: 0.8472222222222222`):
+
+  ```bash
+  node tools/build-realtime-combat-motion-pack.mjs \
+    --actor iron-guardian \
+    --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png \
+    --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian \
+    --version 4 \
+    --preserve-from-manifest apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-manifest-v3.json \
+    --replace-clip advance \
+    --frame-y-offset advance:3:-18
+  ```
+
+- Deterministic support-evidence command:
+
+  ```bash
+  node tools/write-realtime-combat-motion-support-evidence.mjs \
+    --source-sheet assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png \
+    --source-sheet-path iron-guardian-motion-sheet-source-v4.png \
+    --out assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-support-v4.json \
+    --version 4 \
+    --actor iron-guardian \
+    --clip advance \
+    --grid 5x4@1 \
+    --action-authority classical-human-run-5 \
+    --support left,left,none,right,right
+  ```
+
+- A fresh temporary rebuild using those options matched the committed source sheet, runtime atlas,
+  atlas JSON, manifest, and support evidence byte-for-byte.
 - Validator command/result: `node tools/validate-realtime-combat-motion-pack.mjs
   apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-manifest-v4.json
   --max-advance-ground-artifact-pixels 500 --advance-support-evidence
@@ -279,8 +327,10 @@ reproducible and do not depend on Codex-managed temporary storage.
 `tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
 isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
 256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion
-manifest. `tools/validate-realtime-combat-motion-pack.mjs` validates clip presence, unique frame
-ownership, atlas dimensions, alpha, anchor data, and an optional bright-neutral locomotion-ground
-artifact ceiling. The well foreground is a lossless masked copy of the existing original environment
-plate produced by `tools/extract-realtime-combat-occluders.mjs`; it contains no new third-party
-content.
+manifest. Its preservation mode copies locked clips from a prior manifest's atlas after building the
+declared replacements, and its frame-offset option applies registration in decoded RGBA space.
+`tools/validate-realtime-combat-motion-pack.mjs` validates clip presence, unique frame ownership,
+atlas dimensions, alpha, anchor data, source-bound support evidence, and an optional bright-neutral
+locomotion-ground artifact ceiling. The well foreground is a lossless masked copy of the existing
+original environment plate produced by `tools/extract-realtime-combat-occluders.mjs`; it contains no
+new third-party content.

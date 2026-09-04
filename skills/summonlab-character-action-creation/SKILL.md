@@ -14,11 +14,15 @@ the later clip; it is not an image prompt or a pose exploration exercise.
    requested gameplay outcome. Reuse a saved known motion contract when one exists.
 2. Propose exactly one coherent five-beat action brief using
    [action-contract.md](references/action-contract.md). Resolve one action verb, acting limb or
-   delivery mechanism, contact sequence, and ending; do not offer incompatible actions as frames.
+   delivery mechanism, starting state, target direction and contact beat, support sequence,
+   center-of-mass path, identity/equipment locks, and ending; do not offer incompatible actions as
+   frames.
 3. Obtain owner approval for that brief. Do not generate raster frames or use pose variations to
    discover the action before approval.
-4. Hand the approved brief to `summonlab-character-animations`. That skill may execute its visual
-   presentation, but may not redesign the action, contact, acting limb, or terminal state.
+4. Hand every field of the approved brief to `summonlab-character-animations`, including the starting
+   state, target direction/contact beat, and identity/equipment constraints. That skill may execute
+   its visual presentation, but may not redesign the action, contact, acting limb, equipment outcome,
+   or terminal state.
 
 ## Boundary
 

@@ -2,6 +2,9 @@
 
 Codex discovers the skill directories in this folder for every task launched from this repository.
 
+Project-authored skills keep their canonical content under `skills/` and use relative directory
+symlinks here so repository discovery cannot drift from the maintained source.
+
 The `pixijs*` directories are an unmodified project-local installation of the official
 [`pixijs/pixijs-skills`](https://github.com/pixijs/pixijs-skills) collection, pinned to commit
 `6aae70d76cf410432dd144029c07a1ad4bb12793` on 2026-09-02. They target PixiJS v8 and are licensed

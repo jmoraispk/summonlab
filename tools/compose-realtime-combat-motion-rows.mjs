@@ -20,10 +20,23 @@ const valueFor = (flag) => valuesFor(flag)[0];
 const basePath = valueFor('--base');
 const outputPath = valueFor('--out');
 const replacements = valuesFor('--replace');
+const scaleMode = valueFor('--scale-mode') ?? 'per-cell';
+const cellYOffsets = new Map();
+
+if (!['per-cell', 'shared'].includes(scaleMode)) {
+	throw new Error('Scale mode must be per-cell or shared.');
+}
+for (const offset of valuesFor('--cell-y-offset')) {
+	const match = offset?.match(/^([0-3]):([0-4]):(-?\d+)$/);
+	if (!match) {
+		throw new Error('Cell Y offset must use zero-based row:column:pixels syntax.');
+	}
+	cellYOffsets.set(`${match[1]}:${match[2]}`, Number.parseInt(match[3], 10));
+}
 
 if (!basePath || !outputPath || replacements.length === 0) {
 	throw new Error(
-		'Usage: --base <sheet.png> --out <sheet.png> --replace <target-row:path[@source-row][#cell-order]> [--replace ...]'
+		'Usage: --base <sheet.png> --out <sheet.png> --replace <target-row:path[@source-row][#cell-order]> [--replace ...] [--scale-mode per-cell|shared] [--cell-y-offset <zero-based-row:column:pixels>]'
 	);
 }
 
@@ -79,7 +92,7 @@ for (const replacement of replacements) {
 		if (!stripMetadata.width || !stripMetadata.height) {
 			throw new Error(`Replacement strip has no dimensions: ${sourcePath}`);
 		}
-		const cells = [];
+		const preparedCells = [];
 		for (let column = 0; column < COLUMNS; column += 1) {
 			const sourceColumn = sourceColumns?.[column] ?? column;
 			const sourceLeft = Math.floor((sourceColumn * stripMetadata.width) / COLUMNS);
@@ -102,13 +115,38 @@ for (const replacement of replacements) {
 			if (!trimmedMetadata.width || !trimmedMetadata.height) {
 				throw new Error(`No subject found in strip cell ${column}.`);
 			}
-			const scale = Math.min(
-				(targetWidth - CELL_PADDING * 2) / trimmedMetadata.width,
-				(targetHeight - CELL_PADDING * 2) / trimmedMetadata.height
-			);
-			const width = Math.max(1, Math.round(trimmedMetadata.width * scale));
-			const height = Math.max(1, Math.round(trimmedMetadata.height * scale));
+			preparedCells.push({
+				column,
+				targetWidth,
+				trimmed,
+				width: trimmedMetadata.width,
+				height: trimmedMetadata.height
+			});
+		}
+		const sharedScale = Math.min(
+			...preparedCells.flatMap((cell) => [
+				(cell.targetWidth - CELL_PADDING * 2) / cell.width,
+				(targetHeight - CELL_PADDING * 2) / cell.height
+			])
+		);
+		const cells = [];
+		for (const cell of preparedCells) {
+			const scale =
+				scaleMode === 'shared'
+					? sharedScale
+					: Math.min(
+							(cell.targetWidth - CELL_PADDING * 2) / cell.width,
+							(targetHeight - CELL_PADDING * 2) / cell.height
+						);
+			const { column, targetWidth, trimmed } = cell;
+			const width = Math.max(1, Math.round(cell.width * scale));
+			const height = Math.max(1, Math.round(cell.height * scale));
 			const subject = await sharp(trimmed).resize(width, height, { fit: 'fill' }).png().toBuffer();
+			const top =
+				targetHeight - height - CELL_PADDING + (cellYOffsets.get(`${targetRow}:${column}`) ?? 0);
+			if (top < 0 || top + height > targetHeight) {
+				throw new Error(`Cell Y offset clips target row ${targetRow}, column ${column}.`);
+			}
 			cells.push(
 				await sharp({
 					create: {
@@ -122,7 +160,7 @@ for (const replacement of replacements) {
 						{
 							input: subject,
 							left: Math.round((targetWidth - width) / 2),
-							top: targetHeight - height - CELL_PADDING
+							top
 						}
 					])
 					.png()
@@ -146,4 +184,4 @@ for (const replacement of replacements) {
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await base.composite(composites).png().toFile(outputPath);
-console.log(JSON.stringify({ basePath, outputPath, replacements }, null, 2));
+process.stdout.write(`${JSON.stringify({ basePath, outputPath, replacements }, null, 2)}\n`);

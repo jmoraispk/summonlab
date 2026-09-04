@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
@@ -25,8 +26,27 @@ if (advanceSupportEvidenceFlag >= 0 && !advanceSupportEvidencePath) {
 	throw new Error('Advance support evidence path is required.');
 }
 
+const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+const requiredClips = ['idle', 'advance', 'attack', 'hit', 'down'];
+for (const clip of requiredClips) {
+	if (!manifest.clips?.[clip]?.frames?.length) throw new Error(`Missing ${clip} clip.`);
+	if (!(manifest.clips[clip].fps > 0)) throw new Error(`Invalid ${clip} fps.`);
+}
+if (manifest.feetAnchor?.x !== 0.5 || !(manifest.feetAnchor?.y > 0.9)) {
+	throw new Error('Motion pack feet anchor is not bottom-center.');
+}
+
 if (advanceSupportEvidencePath) {
 	const evidence = JSON.parse(await readFile(advanceSupportEvidencePath, 'utf8'));
+	if (evidence.version !== manifest.version) {
+		throw new Error('Advance support evidence version does not match the manifest.');
+	}
+	if (evidence.actorId !== manifest.actorId) {
+		throw new Error('Advance support evidence actor does not match the manifest.');
+	}
+	if (evidence.clip !== 'advance' || !manifest.clips[evidence.clip]) {
+		throw new Error('Advance support evidence clip must be advance.');
+	}
 	if (evidence.actionAuthority !== 'classical-human-run-5') {
 		throw new Error('Advance support evidence action authority is invalid.');
 	}
@@ -51,16 +71,50 @@ if (advanceSupportEvidencePath) {
 	if (evidence.status !== 'candidate') {
 		throw new Error('Advance support evidence status must be candidate.');
 	}
-}
-
-const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-const requiredClips = ['idle', 'advance', 'attack', 'hit', 'down'];
-for (const clip of requiredClips) {
-	if (!manifest.clips?.[clip]?.frames?.length) throw new Error(`Missing ${clip} clip.`);
-	if (!(manifest.clips[clip].fps > 0)) throw new Error(`Invalid ${clip} fps.`);
-}
-if (manifest.feetAnchor?.x !== 0.5 || !(manifest.feetAnchor?.y > 0.9)) {
-	throw new Error('Motion pack feet anchor is not bottom-center.');
+	if (
+		typeof evidence.sourceSheetPath !== 'string' ||
+		!evidence.sourceSheetPath ||
+		evidence.sourceGrid?.columns !== manifest.clips.advance.frames.length ||
+		evidence.sourceGrid?.rows !== 4 ||
+		evidence.sourceGrid?.row !== 1
+	) {
+		throw new Error('Advance support evidence source grid is invalid.');
+	}
+	const sourceSheetPath = path.resolve(
+		path.dirname(advanceSupportEvidencePath),
+		evidence.sourceSheetPath
+	);
+	const sourceMetadata = await sharp(sourceSheetPath).metadata();
+	if (!sourceMetadata.width || !sourceMetadata.height) {
+		throw new Error('Advance support evidence source sheet has no dimensions.');
+	}
+	const sourceTop = Math.floor(
+		(evidence.sourceGrid.row * sourceMetadata.height) / evidence.sourceGrid.rows
+	);
+	const sourceBottom = Math.floor(
+		((evidence.sourceGrid.row + 1) * sourceMetadata.height) / evidence.sourceGrid.rows
+	);
+	const computedHashes = [];
+	for (let column = 0; column < evidence.sourceGrid.columns; column += 1) {
+		const sourceLeft = Math.floor((column * sourceMetadata.width) / evidence.sourceGrid.columns);
+		const sourceRight = Math.floor(
+			((column + 1) * sourceMetadata.width) / evidence.sourceGrid.columns
+		);
+		const pixels = await sharp(sourceSheetPath)
+			.removeAlpha()
+			.extract({
+				left: sourceLeft,
+				top: sourceTop,
+				width: sourceRight - sourceLeft,
+				height: sourceBottom - sourceTop
+			})
+			.raw()
+			.toBuffer();
+		computedHashes.push(createHash('sha256').update(pixels).digest('hex'));
+	}
+	if (computedHashes.some((hash, index) => hash !== evidence.cellSha256[index])) {
+		throw new Error('Advance support evidence source cell hashes do not match the bound sheet.');
+	}
 }
 
 const atlasJsonPath = path.join(path.dirname(manifestPath), manifest.atlas);
@@ -109,6 +163,6 @@ if (maximumAdvanceGroundArtifactPixels !== undefined) {
 		}
 	}
 }
-console.log(
-	JSON.stringify({ valid: true, actorId: manifest.actorId, frames: frameNames.length, atlasPath })
+process.stdout.write(
+	`${JSON.stringify({ valid: true, actorId: manifest.actorId, frames: frameNames.length, atlasPath })}\n`
 );

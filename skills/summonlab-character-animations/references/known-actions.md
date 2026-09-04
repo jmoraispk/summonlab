@@ -12,7 +12,7 @@ motion mechanics, not costume, body proportions, or camera.
 | Beat | Name          | Support | Motion                                                                       |
 | ---- | ------------- | ------- | ---------------------------------------------------------------------------- |
 | 1    | Contact A     | left    | The left foot reaches and accepts weight while the right leg trails.         |
-| 2    | Compression A | left    | The left knee loads and the center of mass reaches its low point.            |
+| 2    | Compression A | left    | The left knee loads low and the planted foot drives into takeoff.            |
 | 3    | Airborne pass | none    | Neither foot is planted; the right knee passes forward.                      |
 | 4    | Contact B     | right   | The right foot lands clearly ahead in a silhouette distinct from Contact A.  |
 | 5    | Recovery B    | right   | Weight moves over the right foot while the left leg advances into Contact A. |

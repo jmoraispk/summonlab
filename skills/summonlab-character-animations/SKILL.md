@@ -25,16 +25,22 @@ Resolve the repository contract and write this brief before pixels:
 ```text
 Character / clip:
 Action authority:
+Gameplay intent:
+Starting pose / prerequisite state:
 Motion sentence:
 Frame beats (left to right):
+Acting limb / delivery:
+Target direction / contact beat:
 Support/contact sequence:
+Contacts / center of mass:
 Loop seam or terminal state:
 Accepted source path / version / SHA-256 / approval record:
-Identity and equipment locks:
+Equipment / identity constraints:
 Camera / anchor / scale locks:
 Directions / mirror policy / source regions:
 Allowed effects:
-Forbidden changes:
+Forbidden alternatives:
+Forbidden visual changes:
 Runtime contract:
 Output paths and next version:
 ```
@@ -48,8 +54,9 @@ undefined/ambiguous -> stop; invoke summonlab-character-action-creation; await a
 ```
 
 An undefined action must route through action creation before pixels. Do not use image generation or
-pose variations to discover an action. Copy an approved contract's beats, contacts, acting limb, and
-ending into the brief without redesigning them.
+pose variations to discover an action. Copy every approved contract field into the clip brief,
+including its starting state, five beats, contacts, acting limb, target direction/contact beat,
+identity/equipment constraints, and ending, without redesigning them.
 
 One attack clip gets one action verb and one delivery mechanism. A slash row cannot also contain a
 pounce or ground slam. A defeat clip progresses monotonically toward rest. A loop must explain the

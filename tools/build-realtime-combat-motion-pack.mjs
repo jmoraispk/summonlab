@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -86,22 +86,35 @@ const isolateSubject = (rgba, width, height, expectedCenter) => {
 	return { left, top, width: right - left + 1, height: bottom - top + 1 };
 };
 
-const args = new Map();
-for (let index = 2; index < process.argv.length; index += 2) {
-	args.set(process.argv[index], process.argv[index + 1]);
-}
+const valuesFor = (flag) => {
+	const values = [];
+	for (let index = 2; index < process.argv.length; index += 1) {
+		if (process.argv[index] === flag) values.push(process.argv[index + 1]);
+	}
+	return values;
+};
+const valueFor = (flag) => valuesFor(flag)[0];
 
-const actorId = args.get('--actor');
-const inputPath = args.get('--input');
-const outputDirectory = args.get('--out-dir');
-const version = Number.parseInt(args.get('--version') ?? '1', 10);
+const actorId = valueFor('--actor');
+const inputPath = valueFor('--input');
+const outputDirectory = valueFor('--out-dir');
+const version = Number.parseInt(valueFor('--version') ?? '1', 10);
+const preserveFromManifestPath = valueFor('--preserve-from-manifest');
+const replacementClips = new Set(valuesFor('--replace-clip'));
+const frameYOffsets = valuesFor('--frame-y-offset');
 if (!actorId || !inputPath || !outputDirectory) {
 	throw new Error(
-		'Usage: --actor <id> --input <sheet.png> --out-dir <directory> [--version <number>]'
+		'Usage: --actor <id> --input <sheet.png> --out-dir <directory> [--version <number>] [--preserve-from-manifest <manifest.json> --replace-clip <clip>] [--frame-y-offset <clip:one-based-frame:pixels>]'
 	);
 }
 if (!Number.isInteger(version) || version < 1)
 	throw new Error('Version must be a positive integer.');
+if (preserveFromManifestPath && replacementClips.size === 0) {
+	throw new Error('At least one --replace-clip is required with --preserve-from-manifest.');
+}
+if (!preserveFromManifestPath && replacementClips.size > 0) {
+	throw new Error('--replace-clip requires --preserve-from-manifest.');
+}
 
 const actorConfig = {
 	asha: { sourceActorId: 'saffron-braid', baseDisplaySize: 178, direction: 'up-field' },
@@ -119,6 +132,30 @@ const actorConfig = {
 	}
 }[actorId];
 if (!actorConfig) throw new Error(`Unsupported motion actor: ${actorId}`);
+
+const clipRows = {
+	idle: { row: 0, fps: 6, loop: true },
+	advance: { row: 1, fps: 10, loop: true },
+	attack: { row: 2, fps: 12, loop: false },
+	hit: { row: 3, start: 0, count: 2, fps: 9, loop: false },
+	down: { row: 3, start: 2, count: 3, fps: 6, loop: false }
+};
+for (const clip of replacementClips) {
+	if (!(clip in clipRows)) throw new Error(`Unknown replacement clip: ${clip}`);
+}
+
+const parsedFrameYOffsets = frameYOffsets.map((value) => {
+	const match = value?.match(/^([a-z]+):(\d+):(-?\d+)$/);
+	if (!match || !(match[1] in clipRows)) {
+		throw new Error('Frame Y offset must use clip:one-based-frame:pixels syntax.');
+	}
+	const frame = Number.parseInt(match[2], 10);
+	const count = clipRows[match[1]].count ?? COLUMNS;
+	if (frame < 1 || frame > count) {
+		throw new Error(`Frame Y offset is outside the ${match[1]} clip.`);
+	}
+	return { clip: match[1], frame, pixels: Number.parseInt(match[3], 10) };
+});
 
 const source = sharp(inputPath).removeAlpha();
 const metadata = await source.metadata();
@@ -207,10 +244,12 @@ for (const cell of keyedCells) {
 await mkdir(outputDirectory, { recursive: true });
 const atlasName = `${actorId}-motion-v${version}.png`;
 const atlasPath = path.join(outputDirectory, atlasName);
-await sharp({
+const atlasWidth = FRAME_SIZE * COLUMNS;
+const atlasHeight = FRAME_SIZE * ROWS;
+const generatedAtlas = await sharp({
 	create: {
-		width: FRAME_SIZE * COLUMNS,
-		height: FRAME_SIZE * ROWS,
+		width: atlasWidth,
+		height: atlasHeight,
 		channels: 4,
 		background: { r: 0, g: 0, b: 0, alpha: 0 }
 	}
@@ -223,15 +262,93 @@ await sharp({
 		}))
 	)
 	.png({ compressionLevel: 9, adaptiveFiltering: true })
+	.toBuffer();
+const { data: atlasPixels } = await sharp(generatedAtlas).ensureAlpha().raw().toBuffer({
+	resolveWithObject: true
+});
+
+const readFrame = (pixels, sheetWidth, frame) => {
+	const result = Buffer.alloc(frame.w * frame.h * 4);
+	for (let row = 0; row < frame.h; row += 1) {
+		const sourceStart = ((frame.y + row) * sheetWidth + frame.x) * 4;
+		pixels.copy(result, row * frame.w * 4, sourceStart, sourceStart + frame.w * 4);
+	}
+	return result;
+};
+
+const writeFrame = (pixels, sheetWidth, frame, framePixels, yOffset = 0) => {
+	for (let row = 0; row < frame.h; row += 1) {
+		const targetStart = ((frame.y + row) * sheetWidth + frame.x) * 4;
+		pixels.fill(0, targetStart, targetStart + frame.w * 4);
+	}
+	for (let sourceRow = 0; sourceRow < frame.h; sourceRow += 1) {
+		const targetRow = sourceRow + yOffset;
+		if (targetRow < 0 || targetRow >= frame.h) continue;
+		const sourceStart = sourceRow * frame.w * 4;
+		const targetStart = ((frame.y + targetRow) * sheetWidth + frame.x) * 4;
+		framePixels.copy(pixels, targetStart, sourceStart, sourceStart + frame.w * 4);
+	}
+};
+
+for (const { clip, frame, pixels } of parsedFrameYOffsets) {
+	if (preserveFromManifestPath && !replacementClips.has(clip)) {
+		throw new Error(`Frame Y offset clip must also be replaced: ${clip}`);
+	}
+	const config = clipRows[clip];
+	const column = (config.start ?? 0) + frame - 1;
+	const target = {
+		x: column * FRAME_SIZE,
+		y: config.row * FRAME_SIZE,
+		w: FRAME_SIZE,
+		h: FRAME_SIZE
+	};
+	writeFrame(atlasPixels, atlasWidth, target, readFrame(atlasPixels, atlasWidth, target), pixels);
+}
+
+if (preserveFromManifestPath) {
+	const baseManifest = JSON.parse(await readFile(preserveFromManifestPath, 'utf8'));
+	if (baseManifest.actorId !== actorConfig.sourceActorId) {
+		throw new Error('Preserved motion manifest actor does not match the output actor.');
+	}
+	const baseAtlasJsonPath = path.resolve(
+		path.dirname(preserveFromManifestPath),
+		baseManifest.atlas
+	);
+	const baseAtlas = JSON.parse(await readFile(baseAtlasJsonPath, 'utf8'));
+	const baseAtlasPath = path.resolve(path.dirname(baseAtlasJsonPath), baseAtlas.meta.image);
+	const { data: basePixels, info: baseInfo } = await sharp(baseAtlasPath)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	for (const [clip, config] of Object.entries(clipRows)) {
+		if (replacementClips.has(clip)) continue;
+		const baseFrames = baseManifest.clips?.[clip]?.frames;
+		const count = config.count ?? COLUMNS;
+		if (!Array.isArray(baseFrames) || baseFrames.length !== count) {
+			throw new Error(`Preserved motion manifest has an incompatible ${clip} clip.`);
+		}
+		for (let index = 0; index < count; index += 1) {
+			const source = baseAtlas.frames?.[baseFrames[index]]?.frame;
+			if (!source || source.w !== FRAME_SIZE || source.h !== FRAME_SIZE) {
+				throw new Error(`Preserved atlas has an incompatible ${clip} frame.`);
+			}
+			const target = {
+				x: ((config.start ?? 0) + index) * FRAME_SIZE,
+				y: config.row * FRAME_SIZE,
+				w: FRAME_SIZE,
+				h: FRAME_SIZE
+			};
+			writeFrame(atlasPixels, atlasWidth, target, readFrame(basePixels, baseInfo.width, source));
+		}
+	}
+}
+
+await sharp(atlasPixels, {
+	raw: { width: atlasWidth, height: atlasHeight, channels: 4 }
+})
+	.png({ compressionLevel: 9, adaptiveFiltering: true })
 	.toFile(atlasPath);
 
-const clipRows = {
-	idle: { row: 0, fps: 6, loop: true },
-	advance: { row: 1, fps: 10, loop: true },
-	attack: { row: 2, fps: 12, loop: false },
-	hit: { row: 3, start: 0, count: 2, fps: 9, loop: false },
-	down: { row: 3, start: 2, count: 3, fps: 6, loop: false }
-};
 const frames = {};
 const animations = {};
 for (const [clip, config] of Object.entries(clipRows)) {
@@ -290,4 +407,6 @@ await writeFile(
 	path.join(outputDirectory, `${actorId}-motion-manifest-v${version}.json`),
 	`${JSON.stringify(manifest, null, 2)}\n`
 );
-console.log(JSON.stringify({ actorId, inputPath, atlasPath, commonScale }, null, 2));
+process.stdout.write(
+	`${JSON.stringify({ actorId, inputPath, atlasPath, commonScale }, null, 2)}\n`
+);

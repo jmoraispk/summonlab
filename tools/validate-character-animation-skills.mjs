@@ -38,6 +38,31 @@ function requireText(text, pattern, message, errors) {
 	if (!pattern.test(text)) errors.push(message);
 }
 
+function validateFrontmatter(text, expectedName, label, errors) {
+	const frontmatter = text.match(/^---\n([\s\S]*?)\n---/m)?.[1] ?? '';
+	const name = frontmatter.match(/^name:\s*(.+)$/m)?.[1]?.trim();
+	const description = frontmatter.match(/^description:\s*(.+)$/m)?.[1]?.trim();
+	if (name !== expectedName) errors.push(`${label} frontmatter name must be ${expectedName}`);
+	if (!description?.startsWith('Use when ')) {
+		errors.push(`${label} frontmatter must provide a Use when trigger`);
+	}
+}
+
+function textTemplate(markdown, label, errors) {
+	const template = markdown.match(/```text\n([\s\S]*?)\n```/)?.[1];
+	if (!template) errors.push(`${label} must contain a text template`);
+	return template ?? '';
+}
+
+function requireTemplateFields(template, fields, label, errors) {
+	const lines = template.split('\n').map((line) => line.trim());
+	for (const field of fields) {
+		if (lines.filter((line) => line === field).length !== 1) {
+			errors.push(`${label} must include exactly one ${field} field`);
+		}
+	}
+}
+
 const classicalRunSupports = ['left', 'left', 'none', 'right', 'right'];
 const classicalRunLabels = [
 	'Contact A',
@@ -103,64 +128,33 @@ function main() {
 	);
 	const clipContracts = read(clipContractsPath, 'clip-contract reference', errors);
 
+	validateFrontmatter(animationSkill, 'summonlab-character-animations', 'animation skill', errors);
+	validateFrontmatter(actionSkill, 'summonlab-character-action-creation', 'action skill', errors);
 	requireText(
 		animationSkill,
-		/^---\nname: summonlab-character-animations\ndescription: Use when /m,
-		'animation skill frontmatter must declare its name and trigger',
-		errors
-	);
-	requireText(
-		animationSkill,
-		/^name: summonlab-character-animations$/m,
-		'animation skill frontmatter name must be summonlab-character-animations',
-		errors
-	);
-	requireText(
-		actionSkill,
-		/^---\nname: summonlab-character-action-creation\ndescription: Use when a Summonlab character action does not already have an explicit known motion contract and its gameplay intent, acting limb or delivery mechanism, five ordered beats, contacts, or ending must be defined before animation production\.\n---/m,
-		'action skill frontmatter must declare the approved motion-contract trigger',
-		errors
-	);
-	requireText(
-		actionSkill,
-		/exactly one coherent five-beat action brief/i,
-		'action skill must require one coherent five-beat brief',
-		errors
-	);
-	requireText(
-		actionSkill,
-		/obtain owner approval/i,
-		'action skill must require owner approval',
-		errors
-	);
-	requireText(
-		actionSkill,
-		/do not generate raster frames or use pose variations to\s+discover the action/i,
-		'action skill must forbid raster and pose-variation discovery',
-		errors
-	);
-	requireText(
-		animationSkill,
-		/Action authority:/,
-		'animation clip brief must include Action authority',
-		errors
-	);
-	requireText(
-		animationSkill,
-		/Support\/contact sequence:/i,
-		'animation clip brief must include Support/contact sequence',
-		errors
-	);
-	requireText(
-		animationSkill,
-		/known \+ referenced -> copy the saved beats into the clip brief/i,
-		'animation skill must copy known referenced beats into the brief',
-		errors
-	);
-	requireText(
-		animationSkill,
-		/undefined\/ambiguous -> stop; invoke summonlab-character-action-creation; await approved contract/i,
+		/summonlab-character-action-creation/,
 		'undefined action must route through action creation',
+		errors
+	);
+	const animationBrief = textTemplate(animationSkill, 'animation clip brief', errors);
+	requireTemplateFields(
+		animationBrief,
+		[
+			'Character / clip:',
+			'Action authority:',
+			'Gameplay intent:',
+			'Starting pose / prerequisite state:',
+			'Motion sentence:',
+			'Frame beats (left to right):',
+			'Acting limb / delivery:',
+			'Target direction / contact beat:',
+			'Support/contact sequence:',
+			'Contacts / center of mass:',
+			'Equipment / identity constraints:',
+			'Loop seam or terminal state:',
+			'Forbidden alternatives:'
+		],
+		'animation clip brief',
 		errors
 	);
 
@@ -169,28 +163,36 @@ function main() {
 		'references/action-contract.md'
 	);
 	const actionContract = read(actionContractPath, 'action-contract reference', errors);
-	for (const field of [
-		'Character / action:',
-		'Gameplay intent:',
-		'Motion sentence:',
-		'Acting limb / delivery:',
-		'Contacts / center of mass:',
-		'Loop seam or terminal state:',
-		'Forbidden alternatives:'
-	])
-		requireText(
-			actionContract,
-			new RegExp(field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
-			`action brief must include ${field}`,
-			errors
-		);
-	for (let beat = 1; beat <= 5; beat += 1)
-		requireText(
-			actionContract,
-			new RegExp(`^${beat}\\. Beat`, 'm'),
-			`action brief must include numbered beat ${beat}`,
-			errors
-		);
+	const actionBrief = textTemplate(actionContract, 'action brief', errors);
+	requireTemplateFields(
+		actionBrief,
+		[
+			'Character / action:',
+			'Gameplay intent:',
+			'Motion sentence:',
+			'Starting pose / prerequisite state:',
+			'Acting limb / delivery:',
+			'Target direction / contact beat:',
+			'Contacts / center of mass:',
+			'Equipment / identity constraints:',
+			'Loop seam or terminal state:',
+			'Forbidden alternatives:'
+		],
+		'action brief',
+		errors
+	);
+	const beatNumbers = actionBrief
+		.split('\n')
+		.map((line) => line.trim().match(/^(\d+)\.\s+[^:]+:/)?.[1])
+		.filter(Boolean)
+		.map(Number);
+	if (
+		beatNumbers.length !== 5 ||
+		new Set(beatNumbers).size !== 5 ||
+		beatNumbers.some((beat, index) => beat !== index + 1)
+	) {
+		errors.push('action brief must contain exactly five ordered unique beat fields');
+	}
 
 	requireText(
 		knownActions,

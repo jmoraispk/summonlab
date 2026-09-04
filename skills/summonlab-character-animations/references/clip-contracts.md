@@ -14,15 +14,16 @@ progression.
 For a five-frame in-place run:
 
 1. **Contact A:** one foot reaches and accepts weight; the opposite leg trails.
-2. **Compression:** the planted knee loads and the center of mass reaches its low point.
-3. **Passing/push:** the free knee passes the support leg; the planted foot pushes away.
+2. **Compression/push A:** the planted knee loads, the center of mass reaches its low point, and the
+   planted foot drives into takeoff.
+3. **Airborne pass:** neither foot is planted while the free knee passes the former support leg.
 4. **Contact B:** the opposite foot lands clearly ahead. This silhouette must not resemble frame 1.
 5. **Recovery:** weight moves over contact B while the first leg advances toward frame 1.
 
 The head and pelvis follow a purposeful vertical arc without horizontal drift or scale pulsing. Heavy
-characters use shorter strides, smaller lift, and delayed equipment overlap; agile characters may use
-one compact airborne beat. Clothing, hair, shields, bows, and weapons lag the body without changing
-design or handedness.
+characters, including Toma, use shorter strides, smaller lift, and delayed equipment overlap, but
+beat 3 remains airborne; the planted push belongs to beat 2. Agile characters may use a larger flight
+arc. Clothing, hair, shields, bows, and weapons lag the body without changing design or handedness.
 
 ## Quadruped locomotion
 
