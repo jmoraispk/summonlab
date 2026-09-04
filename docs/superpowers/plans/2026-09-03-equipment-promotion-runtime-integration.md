@@ -1,8 +1,9 @@
 # Equipment Promotion and Runtime Integration Implementation Plan
 
-> **For agentic workers:** Implement this plan task by task. Prefer subagent-driven execution for
-> independent test, audit, and UI work, but keep generated outputs collision-safe and preserve each
-> task's ownership boundary.
+> **For agentic workers:** Execute this plan continuously through the Definition of Done. Prefer
+> subagent-driven execution for independent test, audit, and UI work, but keep generated outputs
+> collision-safe and preserve each task's ownership boundary. Capture intermediate evidence without
+> waiting for human review; present the complete implementation for one final review.
 
 **Goal:** Promote the 161 accepted Equipment candidates, export 140 equippable runtime visuals,
 define the 140 material/form combinations once, and prove Standard Forging plus an uncommon-drop
@@ -38,6 +39,24 @@ schema and replay. Forging and drops call one item factory; only provenance diff
 - Implement one deterministic drop fixture, not a global chance or broad loot table.
 - Write tests first and observe the intended RED state before implementation.
 - Commit and push each task independently. Do not mix unrelated files into a batch.
+
+## Continuous execution policy
+
+- Execute Tasks 1–9 in order without pausing for intermediate approval, visual review, playtesting,
+  or commit review.
+- Treat Milestones A–C as evidence captures, not human gates. Record their outputs in the final
+  integration report and continue immediately to the next task.
+- When a test, validator, typecheck, export, or visual inspection fails, diagnose and correct the
+  failure within the task, rerun the relevant validation, and continue.
+- Keep the per-task commits and pushes so the run remains recoverable and auditable; they do not
+  create handoff points.
+- Stop early only when safe progress is impossible without new authority or external coordination,
+  including an unresolved destructive collision, incompatible concurrent changes to a shared
+  contract, unavailable required credentials or infrastructure, or a requirement that would expand
+  scope beyond this approved plan. Ordinary implementation defects and review findings are not
+  blockers.
+- Request owner review only after Task 9 passes the complete Definition of Done. Serve the final
+  galleries and report together with the runnable implementation at that time.
 
 ---
 
@@ -188,7 +207,8 @@ git commit -m "feat(equipment): promote approved visual sources"
 git push
 ```
 
-**Checkpoint A:** Approved sources are complete and inert. No runtime or engine file has changed.
+**Evidence Milestone A:** Record that approved sources are complete and inert and that no runtime or
+engine file has changed. Continue directly to Task 3 without requesting review.
 
 ---
 
@@ -240,7 +260,7 @@ the initial phone bundle and are addressed directly through manifest public path
 The gallery groups by rank, material, form, and usage and allows card/detail comparison at native
 phone display size. It links each derivative to its approved source and hash evidence.
 
-- [ ] **Step 6: Validate, commit, push, and request visual feedback**
+- [ ] **Step 6: Validate, commit, push, and capture visual evidence**
 
 ```bash
 corepack pnpm vitest run \
@@ -253,8 +273,10 @@ git commit -m "feat(equipment): export runtime visual catalog"
 git push
 ```
 
-**Checkpoint B:** Review card readability, detail quality, transparency/background behavior, and
-file budgets on a phone. This checkpoint does not reopen Equipment design approval.
+**Evidence Milestone B:** Inspect and record card readability, detail quality,
+transparency/background behavior, and file budgets at phone display size. Correct objective defects
+and continue directly to Task 4 without requesting review. This milestone does not reopen Equipment
+design approval.
 
 ---
 
@@ -327,8 +349,10 @@ git push
 
 ### Task 5: Add engine-v24 item instances, material lots, and loadout slots
 
-**Owner checkpoint:** Coordinate this task with the engine/contracts owner before editing shared
-state, command, event, compatibility, or database surfaces.
+**Shared-surface authorization:** The approved design and this plan authorize the scoped
+engine/contracts integration below. Inspect current ownership and concurrent changes before editing,
+preserve all v1–v23 contracts, and continue without waiting for an owner checkpoint. Stop only if an
+incompatible concurrent change cannot be isolated safely.
 
 **Files:**
 
@@ -511,7 +535,7 @@ At a phone viewport:
 5. equip it into the correct slot;
 6. reload and confirm persistence.
 
-- [ ] **Step 5: Validate, commit, push, and request playtest feedback**
+- [ ] **Step 5: Validate, commit, push, and capture playtest evidence**
 
 ```bash
 corepack pnpm vitest run apps/web/src/lib/server/equipment-runtime.spec.ts
@@ -523,8 +547,9 @@ git commit -m "feat(web): add workshop equipment flow"
 git push
 ```
 
-**Checkpoint C:** The owner tests material recognition, card/detail resolution, forge clarity,
-one-piece Armour semantics, inventory readability, and equip behavior on a phone.
+**Evidence Milestone C:** Exercise material recognition, card/detail resolution, forge clarity,
+one-piece Armour semantics, inventory readability, and equip behavior at phone dimensions. Capture
+the results, correct objective defects, and continue directly to Task 8 without requesting review.
 
 ---
 
@@ -589,7 +614,7 @@ git push
 - [ ] **Step 1: Build the deterministic integration report**
 
 Record exact approved/runtime/content counts, manifest hashes, engine/content versions, validation
-commands, commits, review checkpoints, deferred quality decisions, and no-image-generation evidence.
+commands, commits, evidence milestones, deferred quality decisions, and no-image-generation evidence.
 
 - [ ] **Step 2: Update current-state documentation**
 
@@ -635,4 +660,6 @@ The implementation is complete when:
 - candidate, approved, runtime, content, and item-instance states remain distinguishable;
 - no craftsmanship image variants, global drop economy, broad Gathering economy, monster-derived
   Equipment, or unrelated runtime catalogs have been added;
-- every batch is validated, committed, pushed, and linked from the final integration report.
+- every batch is validated, committed, pushed, and linked from the final integration report;
+- Tasks 1–9 have run continuously without intermediate human review gates, and the complete gallery,
+  report, and runnable implementation are ready for the owner's single final review.
