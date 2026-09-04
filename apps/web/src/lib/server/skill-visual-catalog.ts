@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 
 import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json';
 import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json?raw';
@@ -154,6 +155,20 @@ function rawContentHash(value: Uint8Array): string {
 	return createHash('sha256').update(value).digest('hex');
 }
 
+function parseRawJson(value: Uint8Array, label: string): unknown {
+	try {
+		return JSON.parse(new TextDecoder().decode(value)) as unknown;
+	} catch {
+		throw new Error(`Invalid ${label} raw bytes`);
+	}
+}
+
+function assertMatchesRawBytes(supplied: unknown, raw: unknown, label: string): void {
+	if (!isDeepStrictEqual(supplied, raw)) {
+		throw new Error(`${label} does not match its raw bytes`);
+	}
+}
+
 function unique<T>(records: readonly T[], identifier: (record: T) => string, label: string): void {
 	const seen = new Set<string>();
 	for (const record of records) {
@@ -273,8 +288,12 @@ const defaultAuthorities: SkillVisualCatalogAuthorities = {
 export function buildSkillVisualCatalog(
 	input: SkillVisualCatalogAuthorities = defaultAuthorities
 ): readonly SkillVisualCatalogRecord[] {
-	const catalog = object(input.canonicalCatalog, 'canonical catalog');
-	const mass = object(input.massProductionManifest, 'mass-production manifest');
+	const rawCatalog = parseRawJson(input.canonicalCatalogBytes, 'canonical catalog');
+	const rawMass = parseRawJson(input.massProductionManifestBytes, 'mass-production manifest');
+	assertMatchesRawBytes(input.canonicalCatalog, rawCatalog, 'Canonical catalog');
+	assertMatchesRawBytes(input.massProductionManifest, rawMass, 'Mass-production manifest');
+	const catalog = object(rawCatalog, 'canonical catalog');
+	const mass = object(rawMass, 'mass-production manifest');
 	const runtime = object(input.runtimeManifest, 'runtime manifest');
 
 	literal(catalog.schemaVersion, 'skill-icon-catalog-v1', 'canonical catalog schema');

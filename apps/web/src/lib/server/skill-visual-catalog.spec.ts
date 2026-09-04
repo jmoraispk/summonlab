@@ -123,6 +123,18 @@ describe('skill visual catalog', () => {
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*source.*hash/i);
 	});
 
+	it('rejects parsed authorities that differ from their raw source bytes', () => {
+		const input = authorities();
+		(input.canonicalCatalog.records[0] as { name: string }).name = 'Changed Swordsmanship';
+		(
+			input.massProductionManifest.skills.find(
+				(record) => record.targetId === input.canonicalCatalog.records[0]?.targetId
+			) as { name: string }
+		).name = 'Changed Swordsmanship';
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/canonical catalog.*raw bytes/i);
+	});
+
 	it('rejects rebalanced domain records even when every join and source authority matches', () => {
 		const input = authorities();
 		(input.canonicalCatalog.records[0] as { domain: string }).domain = 'Magical';
@@ -153,6 +165,7 @@ describe('skill visual catalog', () => {
 	it('rejects an unknown canonical Domain', () => {
 		const input = authorities();
 		(input.canonicalCatalog.records[0] as { domain: string }).domain = 'Unknown';
+		input.canonicalCatalogBytes = rawBytes(input.canonicalCatalog);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/domain/i);
 	});
@@ -160,6 +173,7 @@ describe('skill visual catalog', () => {
 	it('rejects an unknown canonical type', () => {
 		const input = authorities();
 		(input.canonicalCatalog.records[0] as { type: string }).type = 'Unknown';
+		input.canonicalCatalogBytes = rawBytes(input.canonicalCatalog);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/type/i);
 	});
@@ -167,6 +181,7 @@ describe('skill visual catalog', () => {
 	it('rejects an unknown canonical label namespace', () => {
 		const input = authorities();
 		(input.canonicalCatalog.records[0]!.labels[0] as { namespace: string }).namespace = 'Unknown';
+		input.canonicalCatalogBytes = rawBytes(input.canonicalCatalog);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/label namespace/i);
 	});
@@ -178,6 +193,8 @@ describe('skill visual catalog', () => {
 		(
 			input.massProductionManifest.skills[0] as { primaryVisualParent: string }
 		).primaryVisualParent = 'martial:blade:missing-parent';
+		input.canonicalCatalogBytes = rawBytes(input.canonicalCatalog);
+		synchronizeSourceAuthorityHashes(input);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/primary visual parent/i);
 	});
