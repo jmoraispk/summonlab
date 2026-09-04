@@ -38,6 +38,9 @@ if (manifest.feetAnchor?.x !== 0.5 || !(manifest.feetAnchor?.y > 0.9)) {
 
 if (advanceSupportEvidencePath) {
 	const evidence = JSON.parse(await readFile(advanceSupportEvidencePath, 'utf8'));
+	if (manifest.clips.advance.frames.length !== 5) {
+		throw new Error('Advance support evidence requires exactly five runtime advance frames.');
+	}
 	if (evidence.version !== manifest.version) {
 		throw new Error('Advance support evidence version does not match the manifest.');
 	}
@@ -52,6 +55,7 @@ if (advanceSupportEvidencePath) {
 	}
 	if (
 		!Array.isArray(evidence.support) ||
+		evidence.support.length !== 5 ||
 		!evidence.support.every((value) => typeof value === 'string') ||
 		evidence.support.join(',') !== 'left,left,none,right,right'
 	) {
@@ -74,7 +78,8 @@ if (advanceSupportEvidencePath) {
 	if (
 		typeof evidence.sourceSheetPath !== 'string' ||
 		!evidence.sourceSheetPath ||
-		evidence.sourceGrid?.columns !== manifest.clips.advance.frames.length ||
+		evidence.sourceGrid?.columns !== 5 ||
+		evidence.sourceGrid.columns !== manifest.clips.advance.frames.length ||
 		evidence.sourceGrid?.rows !== 4 ||
 		evidence.sourceGrid?.row !== 1
 	) {
@@ -111,6 +116,9 @@ if (advanceSupportEvidencePath) {
 			.raw()
 			.toBuffer();
 		computedHashes.push(createHash('sha256').update(pixels).digest('hex'));
+	}
+	if (computedHashes.length !== evidence.cellSha256.length) {
+		throw new Error('Advance support evidence source-cell cardinality does not match its hashes.');
 	}
 	if (computedHashes.some((hash, index) => hash !== evidence.cellSha256[index])) {
 		throw new Error('Advance support evidence source cell hashes do not match the bound sheet.');

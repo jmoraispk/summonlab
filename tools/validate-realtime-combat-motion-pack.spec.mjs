@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import { describe, it } from 'node:test';
 import path from 'node:path';
@@ -66,6 +67,37 @@ function validateWithEvidence(evidence, manifest = tomaV4Manifest) {
 	} finally {
 		rmSync(evidenceDirectory, { recursive: true, force: true });
 	}
+}
+
+async function sourceCellHashes(columns) {
+	const metadata = await sharp(tomaV4Source).metadata();
+	const top = Math.floor(metadata.height / 4);
+	const bottom = Math.floor((2 * metadata.height) / 4);
+	const hashes = [];
+	for (let column = 0; column < columns; column += 1) {
+		const left = Math.floor((column * metadata.width) / columns);
+		const right = Math.floor(((column + 1) * metadata.width) / columns);
+		const pixels = await sharp(tomaV4Source)
+			.removeAlpha()
+			.extract({ left, top, width: right - left, height: bottom - top })
+			.raw()
+			.toBuffer();
+		hashes.push(createHash('sha256').update(pixels).digest('hex'));
+	}
+	return hashes;
+}
+
+function fourFrameManifestFixture() {
+	const fixtureDirectory = mkdtempSync(path.join(os.tmpdir(), 'motion-four-frame-manifest-'));
+	const manifestPath = path.join(fixtureDirectory, 'iron-guardian-motion-manifest-v4.json');
+	const manifest = JSON.parse(readFileSync(tomaV4Manifest, 'utf8'));
+	manifest.atlas = path.relative(
+		fixtureDirectory,
+		path.join(path.dirname(tomaV4Manifest), 'iron-guardian-motion-v4.json')
+	);
+	manifest.clips.advance.frames = manifest.clips.advance.frames.slice(0, 4);
+	writeFileSync(manifestPath, JSON.stringify(manifest));
+	return { fixtureDirectory, manifestPath };
 }
 
 describe('realtime combat motion pack validator', () => {
@@ -215,6 +247,25 @@ describe('realtime combat motion pack validator', () => {
 		}
 	});
 
+	it('rejects a four-frame runtime advance even when a fifth evidence hash is left unused', async () => {
+		const { fixtureDirectory, manifestPath } = fourFrameManifestFixture();
+		try {
+			const fourRealHashes = await sourceCellHashes(4);
+			const result = validateWithEvidence(
+				validEvidence({
+					cellSha256: [...fourRealHashes, 'f'.repeat(64)],
+					sourceGrid: { columns: 4, rows: 4, row: 1 }
+				}),
+				manifestPath
+			);
+
+			assert.notEqual(result.status, 0);
+			assert.match(result.stderr, /exactly five.*advance.*frames/i);
+		} finally {
+			rmSync(fixtureDirectory, { recursive: true, force: true });
+		}
+	});
+
 	it('accepts evidence bound to the actual ordered v4 source cells', () => {
 		const result = spawnSync(
 			process.execPath,
@@ -230,5 +281,16 @@ describe('realtime combat motion pack validator', () => {
 
 		assert.equal(result.status, 0, result.stderr);
 		assert.equal(JSON.parse(result.stdout).actorId, 'iron-guardian');
+	});
+
+	it('does not impose the evidence-only five-frame contract on manifest-only validation', () => {
+		const { fixtureDirectory, manifestPath } = fourFrameManifestFixture();
+		try {
+			const result = spawnSync(process.execPath, [validator, manifestPath], { encoding: 'utf8' });
+
+			assert.equal(result.status, 0, result.stderr);
+		} finally {
+			rmSync(fixtureDirectory, { recursive: true, force: true });
+		}
 	});
 });

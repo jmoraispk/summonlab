@@ -63,6 +63,33 @@ function requireTemplateFields(template, fields, label, errors) {
 	}
 }
 
+function keyValueContract(markdown, language, label, errors) {
+	const escapedLanguage = language.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const block = markdown.match(new RegExp(`\`\`\`${escapedLanguage}\\n([\\s\\S]*?)\\n\`\`\``))?.[1];
+	if (!block) {
+		errors.push(`${label} must contain a ${language} contract`);
+		return new Map();
+	}
+	const contract = new Map();
+	for (const line of block.split('\n').map((value) => value.trim())) {
+		const match = line.match(/^([a-z][a-z0-9.-]*)=([a-z][a-z0-9-]*)$/);
+		if (!match || contract.has(match[1])) {
+			errors.push(`${label} contains an invalid or duplicate contract entry: ${line}`);
+			continue;
+		}
+		contract.set(match[1], match[2]);
+	}
+	return contract;
+}
+
+function requireContractValues(contract, required, label, errors) {
+	for (const [key, value] of Object.entries(required)) {
+		if (contract.get(key) !== value) {
+			errors.push(`${label} ${key} must be ${value}`);
+		}
+	}
+}
+
 const classicalRunSupports = ['left', 'left', 'none', 'right', 'right'];
 const classicalRunLabels = [
 	'Contact A',
@@ -82,20 +109,23 @@ function compareSupportSequence(actual, source, errors) {
 	}
 }
 
-function parseKnownActionTableSupports(markdown) {
-	return [...markdown.matchAll(/^\|\s*([1-5])\s*\|[^|]+\|\s*(left|right|none)\s*\|/gm)]
-		.sort((left, right) => Number(left[1]) - Number(right[1]))
-		.map((match) => match[2]);
+function parseKnownActionTableRows(markdown) {
+	return [...markdown.matchAll(/^\|\s*(\d+)\s*\|[^|]+\|\s*([^|]+)\|/gm)].map((match) => ({
+		beat: Number(match[1]),
+		support: match[2].trim()
+	}));
 }
 
 function parseRunDiagramPanels(svg) {
 	return [
 		...svg.matchAll(
-			/<g transform="translate\([^)]*\)">[\s\S]*?<text[^>]*>([1-5]) ([^<]+)<\/text><text[^>]*>support=(left|right|none)<\/text>/g
+			/<g transform="translate\([^)]*\)">[\s\S]*?<text[^>]*>(\d+) ([^<]+)<\/text><text[^>]*>support=([^<]+)<\/text>/g
 		)
-	]
-		.sort((left, right) => Number(left[1]) - Number(right[1]))
-		.map((match) => ({ label: match[2].trim(), support: match[3] }));
+	].map((match) => ({
+		beat: Number(match[1]),
+		label: match[2].trim(),
+		support: match[3].trim()
+	}));
 }
 
 function validateMarkdownLinks(path, text, errors) {
@@ -134,6 +164,25 @@ function main() {
 		animationSkill,
 		/summonlab-character-action-creation/,
 		'undefined action must route through action creation',
+		errors
+	);
+	const actionRouting = keyValueContract(
+		animationSkill,
+		'action-routing',
+		'animation action routing',
+		errors
+	);
+	requireContractValues(
+		actionRouting,
+		{
+			'known-referenced.authority': 'saved-known-action',
+			'known-referenced.action-creation': 'bypass',
+			'known-referenced.pixel-work': 'allow-after-clip-brief',
+			'undefined-ambiguous.authority': 'summonlab-character-action-creation',
+			'undefined-ambiguous.action-creation': 'invoke',
+			'undefined-ambiguous.pixel-work': 'refuse-until-approved-brief'
+		},
+		'animation action routing',
 		errors
 	);
 	const animationBrief = textTemplate(animationSkill, 'animation clip brief', errors);
@@ -212,10 +261,29 @@ function main() {
 		'known actions must preserve the classical human run beat order',
 		errors
 	);
-	compareSupportSequence(parseKnownActionTableSupports(knownActions), 'table', errors);
+	const tableRows = parseKnownActionTableRows(knownActions);
+	if (
+		tableRows.length !== 5 ||
+		new Set(tableRows.map((row) => row.beat)).size !== 5 ||
+		tableRows.some((row, index) => row.beat !== index + 1)
+	) {
+		errors.push('classical human run table must contain exactly five ordered unique beats');
+	}
+	compareSupportSequence(
+		tableRows.map((row) => row.support),
+		'table',
+		errors
+	);
 	const diagramPath = resolve(dirname(paths['known-actions']), 'classical-human-run.svg');
 	const diagram = read(diagramPath, 'classical human run diagram', errors);
 	const diagramPanels = parseRunDiagramPanels(diagram);
+	if (
+		diagramPanels.length !== 5 ||
+		new Set(diagramPanels.map((panel) => panel.beat)).size !== 5 ||
+		diagramPanels.some((panel, index) => panel.beat !== index + 1)
+	) {
+		errors.push('classical human run SVG must contain exactly five ordered unique panels');
+	}
 	compareSupportSequence(
 		diagramPanels.map((panel) => panel.support),
 		'SVG panel',

@@ -46,11 +46,15 @@ Output paths and next version:
 ```
 
 Bind the canonical identity reference and exact accepted source; never infer authority from a filename
-or timestamp. Before image generation, classify the action:
+or timestamp. Before image generation, follow this routing contract:
 
-```text
-known + referenced -> copy the saved beats into the clip brief
-undefined/ambiguous -> stop; invoke summonlab-character-action-creation; await approved contract
+```action-routing
+known-referenced.authority=saved-known-action
+known-referenced.action-creation=bypass
+known-referenced.pixel-work=allow-after-clip-brief
+undefined-ambiguous.authority=summonlab-character-action-creation
+undefined-ambiguous.action-creation=invoke
+undefined-ambiguous.pixel-work=refuse-until-approved-brief
 ```
 
 An undefined action must route through action creation before pixels. Do not use image generation or

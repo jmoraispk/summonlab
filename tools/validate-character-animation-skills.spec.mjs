@@ -133,15 +133,31 @@ test('requires undefined actions to route through action creation', () => {
 	assert.match(result.stderr, /undefined action.*action creation/i);
 });
 
+test('rejects inverted known and undefined action-routing branches', () => {
+	const animationSkill = readFileSync(animationSkillPath, 'utf8').replace(
+		/```(?:text|action-routing)\nknown[\s\S]*?\n```/,
+		`\`\`\`action-routing
+known-referenced.authority=summonlab-character-action-creation
+known-referenced.pixel-work=refuse-until-approved-brief
+undefined-ambiguous.authority=saved-known-action
+undefined-ambiguous.pixel-work=allow
+\`\`\``
+	);
+	const result = runValidatorWithAnimationSkill(animationSkill);
+
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /known-referenced.*saved-known-action/i);
+});
+
 test('accepts equivalent skill guidance without coupling validation to exact prose', () => {
 	const animationSkill = readFileSync(animationSkillPath, 'utf8')
 		.replace(
-			'known + referenced -> copy the saved beats into the clip brief',
-			'known action with a saved reference -> carry its beats into the clip brief'
+			'Before image generation, follow this routing contract:',
+			'Classify authority with these routing keys before making pixels:'
 		)
 		.replace(
-			'undefined/ambiguous -> stop; invoke summonlab-character-action-creation; await approved contract',
-			'undefined or ambiguous action -> use summonlab-character-action-creation and wait for the approved contract'
+			'An undefined action must route through action creation before pixels.',
+			'When action intent is unresolved, pixel production waits for the action-authoring handoff.'
 		);
 	const actionSkill = readFileSync(actionSkillPath, 'utf8')
 		.replace('exactly one coherent five-beat action brief', 'one coherent brief with five beats')
@@ -265,6 +281,32 @@ test('requires each classical run table row to retain its ordered support', () =
 	assert.match(result.stderr, /classical human run table.*support/i);
 });
 
+test('rejects a sixth classical run Markdown table row', () => {
+	const knownActions = readFileSync(knownActionsPath, 'utf8');
+	const result = runValidatorWithKnownActions(
+		knownActions.replace(
+			'| 5    | Recovery B',
+			'| 6    | Extra beat      | invalid | An unauthorized extra beat.                                             |\n| 5    | Recovery B'
+		)
+	);
+
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /table.*exactly five ordered unique beats/i);
+});
+
+test('rejects a duplicate classical run Markdown table beat', () => {
+	const knownActions = readFileSync(knownActionsPath, 'utf8');
+	const result = runValidatorWithKnownActions(
+		knownActions.replace(
+			'| 5    | Recovery B',
+			'| 5    | Duplicate       | right   | An unauthorized duplicate beat.                                         |\n| 5    | Recovery B'
+		)
+	);
+
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /table.*exactly five ordered unique beats/i);
+});
+
 test('requires each classical run SVG panel to retain its ordered support', () => {
 	const diagramPath = join(
 		repositoryRoot,
@@ -292,4 +334,38 @@ test('requires each classical run SVG panel to retain its ordered beat label', (
 	);
 	assert.notEqual(result.status, 0);
 	assert.match(result.stderr, /classical human run SVG.*label/i);
+});
+
+test('rejects a sixth classical run SVG panel', () => {
+	const diagramPath = join(
+		repositoryRoot,
+		'skills/summonlab-character-animations/references/classical-human-run.svg'
+	);
+	const diagram = readFileSync(diagramPath, 'utf8');
+	const result = runValidatorWithRunDiagram(
+		diagram.replace(
+			'</svg>',
+			'<g transform="translate(0 0)"><text>6 Extra beat</text><text>support=invalid</text></g></svg>'
+		)
+	);
+
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /SVG.*exactly five ordered unique panels/i);
+});
+
+test('rejects a duplicate classical run SVG panel', () => {
+	const diagramPath = join(
+		repositoryRoot,
+		'skills/summonlab-character-animations/references/classical-human-run.svg'
+	);
+	const diagram = readFileSync(diagramPath, 'utf8');
+	const result = runValidatorWithRunDiagram(
+		diagram.replace(
+			'</svg>',
+			'<g transform="translate(0 0)"><text>5 Recovery B</text><text>support=right</text></g></svg>'
+		)
+	);
+
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /SVG.*exactly five ordered unique panels/i);
 });
