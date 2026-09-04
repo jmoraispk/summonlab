@@ -6,7 +6,7 @@ Wiki ID: `monster.goblin-runt`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -64,10 +64,10 @@ Not applicable for this form.
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-runt/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/water-v1.json` |
 
 ### Status semantics
 
