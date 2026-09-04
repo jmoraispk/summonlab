@@ -9,3 +9,7 @@ under the adjacent `PIXIJS_SKILLS_LICENSE`.
 
 Keep the collection pinned and update all of its directories together. The `pixijs` entry skill
 routes agents to the narrower skills; a partial update can leave that routing inconsistent.
+
+Project-authored skills may also live beside the pinned collection in their own clearly named
+directories. `summonlab-hero-creation` owns candidate-only paired summon/chibi hero production and
+is not part of the upstream PixiJS collection.
