@@ -89,6 +89,8 @@
 		"persist:image-production-output": "tsx tools/persist-image-production-output.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
+		"export:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts",
+		"validate:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts --check",
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",
 		"validate:player-visuals": "tsx tools/export-player-visuals.ts --check",
 		"validate:phone-performance": "tsx tools/validate-phone-performance.ts",
