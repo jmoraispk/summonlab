@@ -139,17 +139,19 @@ Review direction and identity before detail polish:
 
 1. **Coverage:** every expected target exists once and no unexpected target exists.
 2. **Class recognition:** the form reads correctly at phone size.
-3. **Rank progression:** adjacent ranks and the full `F → S` ladder escalate through silhouette,
+3. **Functional proportions:** real-world-derived anatomy matches the source-bound measurable
+   contract at native resolution, with any owner exception named and hash-bound.
+4. **Rank progression:** adjacent ranks and the full `F → S` ladder escalate through silhouette,
    construction, ornament, and bounded supernatural behavior—not color alone.
-4. **Material coherence:** every retained material is represented; same-material cohorts share
+5. **Material coherence:** every retained material is represented; same-material cohorts share
    palette, finish, joinery, and construction logic across applicable forms.
-5. **Material distinction:** changing material visibly changes the item rather than recoloring a
+6. **Material distinction:** changing material visibly changes the item rather than recoloring a
    template.
-6. **Set continuity:** full-set anchor and individual pieces agree in cut, material, trim, lighting,
+7. **Set continuity:** full-set anchor and individual pieces agree in cut, material, trim, lighting,
    and construction.
-7. **Production hygiene:** complete object, stable pose/camera, safe margins, no text, watermark,
+8. **Production hygiene:** complete object, stable pose/camera, safe margins, no text, watermark,
    extra subject, accidental mannequin, or unfinished canvas.
-8. **Individual quality:** inspect accepted candidates at native resolution after the comparison
+9. **Individual quality:** inspect accepted candidates at native resolution after the comparison
    sheets pass.
 
 Group galleries by rank, material, form, and review state. Use `accept`, `revise`, `experiment`, or
