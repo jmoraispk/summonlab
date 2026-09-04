@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "equipment-greatsword-proportion-review-v2",
+  "reviewId": "greatsword-metal-ranks-v2-proportion-review",
+  "candidate": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+    "sha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8"
+  },
+  "contract": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+    "sha256": "77f0850fd947aa006b5348d69b37a1ecae5c7bd92253ea489b556dda1c2dd522"
+  },
+  "method": "Producer landmark inspection on the native 1536x1024 board. Blade and hilt are split at the functional guard plane; grip excludes pommel and guard; guard span measures functional quillon tips. Values are approximate to one pixel because painted edges are anti-aliased.",
+  "measurements": [
+    { "rank": "F", "materialId": "bronze", "bladePx": 678, "fullHiltPx": 251, "exposedGripPx": 194, "guardWidthPx": 194, "pommelPx": 43, "overallPx": 929, "bladeToFullHilt": 2.7, "bladeToExposedGrip": 3.49, "bladePercent": 72.98, "guardPercent": 20.88, "pommelPercent": 4.63, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "E", "materialId": "iron", "bladePx": 679, "fullHiltPx": 253, "exposedGripPx": 195, "guardWidthPx": 196, "pommelPx": 43, "overallPx": 932, "bladeToFullHilt": 2.68, "bladeToExposedGrip": 3.48, "bladePercent": 72.85, "guardPercent": 21.03, "pommelPercent": 4.61, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "D", "materialId": "steel", "bladePx": 676, "fullHiltPx": 254, "exposedGripPx": 195, "guardWidthPx": 183, "pommelPx": 43, "overallPx": 930, "bladeToFullHilt": 2.66, "bladeToExposedGrip": 3.47, "bladePercent": 72.69, "guardPercent": 19.68, "pommelPercent": 4.62, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "C", "materialId": "blacksteel", "bladePx": 670, "fullHiltPx": 264, "exposedGripPx": 199, "guardWidthPx": 200, "pommelPx": 42, "overallPx": 934, "bladeToFullHilt": 2.54, "bladeToExposedGrip": 3.37, "bladePercent": 71.73, "guardPercent": 21.41, "pommelPercent": 4.5, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "B", "materialId": "skyiron", "bladePx": 672, "fullHiltPx": 265, "exposedGripPx": 203, "guardWidthPx": 183, "pommelPx": 44, "overallPx": 937, "bladeToFullHilt": 2.54, "bladeToExposedGrip": 3.31, "bladePercent": 71.72, "guardPercent": 19.53, "pommelPercent": 4.7, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "A", "materialId": "starmetal", "bladePx": 674, "fullHiltPx": 262, "exposedGripPx": 192, "guardWidthPx": 201, "pommelPx": 44, "overallPx": 936, "bladeToFullHilt": 2.57, "bladeToExposedGrip": 3.51, "bladePercent": 72.01, "guardPercent": 21.47, "pommelPercent": 4.7, "status": "fail", "failedCriteria": ["guardPercent"] },
+    { "rank": "S", "materialId": "sunsteel", "bladePx": 674, "fullHiltPx": 261, "exposedGripPx": 191, "guardWidthPx": 205, "pommelPx": 45, "overallPx": 935, "bladeToFullHilt": 2.58, "bladeToExposedGrip": 3.53, "bladePercent": 72.09, "guardPercent": 21.93, "pommelPercent": 4.81, "status": "fail", "failedCriteria": ["guardPercent"] }
+  ],
+  "conclusion": "revise",
+  "finding": "The v2 correction solves the reported short-blade and undersized two-hand-grip problem. All seven functional guards remain too narrow at 19.53-21.93 percent of overall length versus the approved 24-30 percent range.",
+  "humanReviewPending": true
+}

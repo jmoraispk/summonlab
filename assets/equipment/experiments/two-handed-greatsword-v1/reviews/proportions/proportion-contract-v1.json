@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "equipment-greatsword-proportion-contract-v1",
+  "contractId": "greatsword-museum-grounded-proportions-v1",
+  "status": "owner-approved",
+  "approvedOn": "2026-09-04",
+  "measurementDefinitions": {
+    "bladePx": "Guard plane at the blade shoulders to the blade tip along the weapon axis.",
+    "fullHiltPx": "Guard plane to the furthest pommel end along the weapon axis.",
+    "exposedGripPx": "Usable wrapped grip between guard structure and pommel collar.",
+    "guardWidthPx": "Maximum functional quillon span perpendicular to the weapon axis; decorative aura does not count.",
+    "pommelPx": "Pommel and terminal cap length along the weapon axis.",
+    "overallPx": "Blade tip to pommel end; must equal bladePx plus fullHiltPx within one pixel."
+  },
+  "requiredRanges": {
+    "bladeToFullHilt": { "minimum": 2.5, "maximum": 2.8 },
+    "bladeToExposedGrip": { "minimum": 3.2, "maximum": 3.7 },
+    "bladePercent": { "minimum": 71, "maximum": 74 },
+    "guardPercent": { "minimum": 24, "maximum": 30 },
+    "pommelPercent": { "minimum": 4, "maximum": 6 }
+  },
+  "constructionRules": [
+    "The exposed grip accommodates exactly two gauntleted hands plus modest separation and is not a staff-like handle.",
+    "The grip has an oval or gently waisted section with believable wrap, collars, tang alignment, and a compact counterweight pommel.",
+    "The functional guard sits at the blade shoulders; high-rank ornament cannot move the apparent guard plane down the blade.",
+    "Blade width and mass taper toward the tip; no rectangular slab, paddle, or uniform-width bar.",
+    "Every rank uses the same numeric envelope even when material and ornament change."
+  ],
+  "museumEvidence": [
+    {
+      "institution": "The Metropolitan Museum of Art",
+      "object": "Two-Hand Sword, Venice, ca. 1570, 04.3.290",
+      "url": "https://www.metmuseum.org/art/collection/search/22002",
+      "overallCm": 160,
+      "bladeCm": 114.6,
+      "derivedBladeToNonBlade": 2.52,
+      "purpose": "Blade-to-full-hilt envelope."
+    },
+    {
+      "institution": "The Metropolitan Museum of Art",
+      "object": "Two-Handed Sword, Munich, ca. 1550, 14.25.955",
+      "url": "https://www.metmuseum.org/art/collection/search/27349",
+      "overallCm": 177.8,
+      "bladeCm": 126.3,
+      "derivedBladeToNonBlade": 2.45,
+      "purpose": "Blade-to-full-hilt envelope."
+    },
+    {
+      "institution": "The Wallace Collection",
+      "object": "Two-Handed Sword, about 1600, A470",
+      "url": "https://wallacelive.wallacecollection.org/eMP/eMuseumPlus?module=collection&objectId=60963&service=ExternalInterface",
+      "bladeCm": 127.2,
+      "gripCm": 34.5,
+      "derivedBladeToGrip": 3.69,
+      "purpose": "Blade-to-exposed-grip envelope."
+    },
+    {
+      "institution": "The Wallace Collection",
+      "object": "Two-Handed Sword, about 1500–1510, A471",
+      "url": "https://wallacelive.wallacecollection.org/eMP/eMuseumPlus?module=collection&objectId=60964&service=ExternalInterface",
+      "bladeCm": 112.8,
+      "gripCm": 37.6,
+      "derivedBladeToGrip": 3,
+      "purpose": "Blade-to-exposed-grip lower reference."
+    },
+    {
+      "institution": "The Wallace Collection",
+      "object": "Two-Handed Sword, about 1580, A469",
+      "url": "https://wallacelive.wallacecollection.org/eMP/eMuseumPlus?module=collection&objectId=60962&service=ExternalInterface&viewType=detailView",
+      "bladeCm": 149.3,
+      "gripCm": 50,
+      "derivedBladeToGrip": 2.99,
+      "purpose": "Large two-handed sword comparison."
+    }
+  ],
+  "reviewRule": "Every rank must have explicit landmark measurements, derived ratios recomputed by the campaign validator, and a pass in every required range before the board can be presented for acceptance."
+}

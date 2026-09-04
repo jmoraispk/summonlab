@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-decision-v1",
+  "decisionId": "greatsword-v1-direction-decision-v1",
+  "campaignId": "two-handed-greatsword-v1",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "decision": "revise",
+  "decidedOn": "2026-09-04",
+  "decidedBy": "owner",
+  "candidate": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+    "sha256": "2a4261338b94a4d5586172fe6751928dae258f8ea1447316ea584dce2d4b34dd"
+  },
+  "feedback": "The blades are substantially too short relative to the hilts, and the hilt construction is not proportionally convincing. Realistic proportions are a primary acceptance gate.",
+  "acceptedCorrectionContract": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+    "scope": "Museum-grounded blade, hilt, grip, guard, and pommel proportions plus a measured review before acceptance."
+  },
+  "promotionAuthorized": false,
+  "runtimeIntegrationAuthorized": false
+}

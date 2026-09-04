@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "equipment-greatsword-proportion-review-v1",
+  "reviewId": "greatsword-metal-ranks-v1-proportion-review",
+  "candidate": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+    "sha256": "2a4261338b94a4d5586172fe6751928dae258f8ea1447316ea584dce2d4b34dd"
+  },
+  "contractPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+  "method": "Bright-silhouette segmentation followed by producer landmark inspection. Values are approximate because ornate high-rank guards and dark tips make fully automatic landmark recognition unreliable.",
+  "measurements": [
+    { "rank": "F", "materialId": "bronze", "bladePx": 492, "fullHiltPx": 236, "overallPx": 728, "bladeToFullHilt": 2.08, "status": "fail" },
+    { "rank": "E", "materialId": "iron", "bladePx": 499, "fullHiltPx": 229, "overallPx": 728, "bladeToFullHilt": 2.18, "status": "fail" },
+    { "rank": "D", "materialId": "steel", "bladePx": 496, "fullHiltPx": 234, "overallPx": 730, "bladeToFullHilt": 2.12, "status": "fail" },
+    { "rank": "C", "materialId": "blacksteel", "bladePx": 494, "fullHiltPx": 241, "overallPx": 735, "bladeToFullHilt": 2.05, "status": "fail" },
+    { "rank": "B", "materialId": "skyiron", "bladePx": 501, "fullHiltPx": 244, "overallPx": 745, "bladeToFullHilt": 2.05, "status": "fail" },
+    { "rank": "A", "materialId": "starmetal", "bladePx": 505, "fullHiltPx": 241, "overallPx": 746, "bladeToFullHilt": 2.1, "status": "fail" },
+    { "rank": "S", "materialId": "sunsteel", "bladePx": 444, "fullHiltPx": 267, "overallPx": 711, "bladeToFullHilt": 1.66, "status": "fail-conservative-dark-tip-segmentation" }
+  ],
+  "conclusion": "revise",
+  "finding": "Every v1 rank falls below the approved 2.5 minimum blade-to-full-hilt ratio; the hilt dominates most strongly at S."
+}

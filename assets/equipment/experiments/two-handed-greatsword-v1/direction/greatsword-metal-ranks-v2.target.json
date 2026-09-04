@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-target-v2",
+  "targetId": "greatsword-v1-metal-rank-direction-v2",
+  "campaignId": "two-handed-greatsword-v1",
+  "artifactRole": "direction-reference",
+  "visualFamilyId": "greatsword",
+  "mechanicalClass": "sword",
+  "revisionOfTargetId": "greatsword-v1-metal-rank-direction",
+  "revisionReason": "Correct unrealistic blade, hilt, grip, guard, and pommel proportions under the owner-approved museum-grounded contract.",
+  "proportionContractPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+  "orderedRanks": ["F", "E", "D", "C", "B", "A", "S"],
+  "orderedMaterials": ["bronze", "iron", "steel", "blacksteel", "skyiron", "starmetal", "sunsteel"],
+  "width": 1536,
+  "height": 1024,
+  "mediaType": "image/png",
+  "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+  "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.result.json",
+  "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/greatsword-metal-ranks-v2-measurements.json",
+  "reviewGroup": "greatsword-rank-progression-and-proportions",
+  "acceptanceCriteria": [
+    "exactly seven complete Greatswords appear in F-to-S order",
+    "every rank passes all five numeric proportion ranges",
+    "every grip fits two hands plus modest separation without reading as a staff",
+    "guards and pommels remain functional rather than dominating blade length",
+    "adjacent ranks differ through silhouette and construction rather than color alone",
+    "all silhouettes remain readable at phone-thumbnail size",
+    "no text, labels, UI, watermark, wielder, extra object, crop, or unfinished region"
+  ]
+}
