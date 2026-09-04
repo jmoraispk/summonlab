@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Summonlab Character Animations'
+  short_description: 'Author coherent character animation clips'
+  default_prompt: 'Use $summonlab-character-animations to add or correct one character animation clip and validate its frame progression.'
