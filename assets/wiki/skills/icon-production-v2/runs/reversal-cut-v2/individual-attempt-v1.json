@@ -1,0 +1,49 @@
+{
+	"schemaVersion": "skill-icon-additive-individual-attempt-v1",
+	"runId": "reversal-cut-v2",
+	"jobId": "martial-blade-reversal-cut-v1",
+	"status": "failed-provider-envelope",
+	"attemptCount": 2,
+	"target": {
+		"path": "assets/wiki/skills/icon-production-v1/targets/icons/martial-blade-reversal-cut-v1.json",
+		"contentHash": "d10e5b42b9c61e083c9e95636703d8b67c36996ea07b2a176aba6b21b3484220"
+	},
+	"assignment": {
+		"path": "assets/wiki/skills/icon-production-v1/assignments/icons/martial-blade-reversal-cut-v1.json",
+		"contentHash": "1d5a9fa849045c5b23e6a6dd1dbd6263f3652b664af5232f0d72df7768384cf0"
+	},
+	"result": {
+		"path": "assets/wiki/skills/icon-production-v1/results/icons/martial-blade-reversal-cut-v1.json",
+		"contentHash": "04e841f6da3d5c108950aab899ec44c4b91ea61c6804921e7d3a9f24b97a8b5f"
+	},
+	"catalog": {
+		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
+		"contentHash": "aaedbac845e16c065b42885b8e695463ed57da92623a9a4cf5612a4ae059b01e"
+	},
+	"lineageAuthority": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-authority.json",
+		"contentHash": "0f23d05e2f8edd46e3495a9e029e0a5bfb4df9cfd0eff2b1625bb4f4189f4444"
+	},
+	"providerObservations": [
+		{
+			"attempt": 1,
+			"mediaType": "image/png",
+			"width": 1254,
+			"height": 1254,
+			"alphaMode": "rgb",
+			"bytes": 1772930,
+			"contentHash": "89efafe854cd767fa454207f6b8c0d1b383e53b87290e1cc9c77a93a014a7277"
+		},
+		{
+			"attempt": 2,
+			"mediaType": "image/png",
+			"width": 1254,
+			"height": 1254,
+			"alphaMode": "rgb",
+			"bytes": 1321014,
+			"contentHash": "a874473619143fdb5b2d9a4f7340fbb1cc4ecdd291fe9be517ba3b0179f63e51"
+		}
+	],
+	"candidatePath": null,
+	"ownerFeedbackRequestedOn": "corrected visual design only"
+}

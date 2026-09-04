@@ -14,7 +14,9 @@ describe('Reversal Cut icon run', () => {
 			selfPromoted: false,
 			ownerDecision: 'accepted',
 			calibrationStatus: 'approved',
-			individualStatus: 'blocked-pending-owner-authorities'
+			individualStatus: 'failed-provider-envelope',
+			individualJobId: 'martial-blade-reversal-cut-v1',
+			individualAttemptCount: 2
 		});
 	});
 });

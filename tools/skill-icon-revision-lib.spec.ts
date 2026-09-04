@@ -197,7 +197,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports seven terminal v4 failures while accepting the latest F-v5 candidate', async () => {
+	it('reports the terminal reference and Reversal Cut failures while accepting F-v5', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -212,14 +212,14 @@ describe('skill-icon revision resolution', () => {
 			'rarity-frame:C latest revision v4 is failed (validation: Corrected provider source exhausted the two-call imagegen ceiling and deterministic profile-v3 normalization still rejected a meaningful alpha component in a role-required transparent region.); create a higher revision',
 			'rarity-frame:D latest revision v4 is failed (validation: Both authorized provider attempts were rejected by profile-v3 normalization because meaningful foreground remained in a role-required transparent region; no eligible candidate was produced.); create a higher revision',
 			'rarity-frame:E latest revision v4 is failed (validation: Corrected provider source failed profile-v3 role-mask normalization: meaningful alpha component in a role-required transparent region.); create a higher revision',
-			'rarity-frame:S latest revision v4 is failed (validation: Initial provider source failed the required transparent-region gate. The one authorized correction preserved the S-frame design but the corrected provider source failed the clean #00FF00 edge-matte gate; no role-valid candidate was retained.); create a higher revision'
+			'rarity-frame:S latest revision v4 is failed (validation: Initial provider source failed the required transparent-region gate. The one authorized correction preserved the S-frame design but the corrected provider source failed the clean #00FF00 edge-matte gate; no role-valid candidate was retained.); create a higher revision',
+			'skill-art:martial:blade:reversal-cut latest revision v1 is failed (validation: Initial and corrective provider rasters were both 1254x1254 RGB PNGs with depicted checkerboard backgrounds instead of the required 1024x1024 RGBA skill-art layer with genuine transparency; the retry ceiling was exhausted without a role-valid candidate.); create a higher revision'
 		]);
-		expect(diagnostics).toHaveLength(7);
+		expect(diagnostics).toHaveLength(8);
 		expect(message).not.toMatch(/missing result inventory entry/iu);
 		expect(message).not.toMatch(/rarity-frame:F latest revision v4 is failed/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);
-		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);
 	});
 });

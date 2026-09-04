@@ -73,6 +73,8 @@ const CALIBRATION_MASTER_PATH =
 	'assets/wiki/skills/icon-production-v1/masters/calibration/blade-guard-flow.png';
 const PROMOTION_RECEIPT_PATH =
 	'assets/wiki/skills/icon-production-v1/promotion-receipts/blade-guard-flow-reversal-cut-v2.json';
+const INDIVIDUAL_ATTEMPT_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/individual-attempt-v1.json';
 
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -92,7 +94,9 @@ export interface ReversalCutIconRunReport {
 	readonly selfPromoted: false;
 	readonly ownerDecision: 'accepted';
 	readonly calibrationStatus: 'approved';
-	readonly individualStatus: 'blocked-pending-owner-authorities';
+	readonly individualStatus: 'failed-provider-envelope';
+	readonly individualJobId: 'martial-blade-reversal-cut-v1';
+	readonly individualAttemptCount: 2;
 }
 
 export async function checkReversalCutIconRun(root: string): Promise<ReversalCutIconRunReport> {
@@ -132,6 +136,58 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
 	);
 	const masterBytes = await readFile(path.join(root, CALIBRATION_MASTER_PATH));
+	const individualAttempt = z
+		.object({
+			schemaVersion: z.literal('skill-icon-additive-individual-attempt-v1'),
+			runId: z.literal('reversal-cut-v2'),
+			jobId: z.literal('martial-blade-reversal-cut-v1'),
+			status: z.literal('failed-provider-envelope'),
+			attemptCount: z.literal(2),
+			target: BoundFileSchema,
+			assignment: BoundFileSchema,
+			result: BoundFileSchema,
+			catalog: BoundFileSchema,
+			lineageAuthority: BoundFileSchema,
+			providerObservations: z
+				.array(
+					z.object({
+						attempt: z.number().int().min(1).max(2),
+						mediaType: z.literal('image/png'),
+						width: z.literal(1254),
+						height: z.literal(1254),
+						alphaMode: z.literal('rgb'),
+						bytes: z.number().int().positive(),
+						contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
+					})
+				)
+				.length(2),
+			candidatePath: z.null(),
+			ownerFeedbackRequestedOn: z.literal('corrected visual design only')
+		})
+		.strict()
+		.parse(JSON.parse(await readFile(path.join(root, INDIVIDUAL_ATTEMPT_PATH), 'utf8')));
+	const [individualTarget, individualAssignment, individualResult] = await Promise.all([
+		readBound(root, individualAttempt.target).then((bytes) =>
+			AnySkillIconTargetSchema.parse(JSON.parse(bytes.toString('utf8')))
+		),
+		readBound(root, individualAttempt.assignment).then((bytes) =>
+			AnySkillIconAssignmentSchema.parse(JSON.parse(bytes.toString('utf8')))
+		),
+		readBound(root, individualAttempt.result).then((bytes) =>
+			AnySkillIconResultSchema.parse(JSON.parse(bytes.toString('utf8')))
+		)
+	]);
+	await readBound(root, individualAttempt.catalog);
+	await readBound(root, individualAttempt.lineageAuthority);
+	if (
+		individualTarget.jobId !== individualAttempt.jobId ||
+		individualAssignment.jobId !== individualAttempt.jobId ||
+		individualResult.jobId !== individualAttempt.jobId ||
+		individualResult.status !== 'failed' ||
+		individualResult.output !== null ||
+		individualResult.failureReason?.kind !== 'validation'
+	)
+		throw new Error('Individual attempt evidence does not bind the failed provider envelope');
 
 	if (target.jobId !== assignment.jobId || target.jobId !== result.jobId)
 		throw new Error('Target, assignment, and result job identities diverge');
@@ -173,7 +229,9 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		selfPromoted: false,
 		ownerDecision: review.decision,
 		calibrationStatus: 'approved',
-		individualStatus: completion.individualStatus
+		individualStatus: individualAttempt.status,
+		individualJobId: individualAttempt.jobId,
+		individualAttemptCount: individualAttempt.attemptCount
 	};
 }
 
