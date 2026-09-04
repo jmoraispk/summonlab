@@ -12,9 +12,9 @@ Regenerate a candidate combat chibi for each of the 200 owner-approved one-star 
 preserving the selected summon portrait's identity and correcting the recurring oversized-head,
 inflated-arm, inflated-hand, widened-torso, and added-body-mass failures.
 
-The run is complete when every selected hero has one provenance-complete `1024x1536` PNG candidate,
-the complete set passes structural validation, and a ten-page comparison site allows the owner to
-review summon source, historical chibi, and five-head candidate together. Completion is not visual
+The run is complete when every selected hero has one provenance-complete `1024x1536` PNG candidate
+and the complete set passes structural validation. There is no pilot checkpoint, visual acceptance
+gate, comparison site, or owner-review workflow in this production run. Completion is not visual
 approval or runtime promotion.
 
 ## Frozen authority
@@ -92,21 +92,13 @@ or text. Not photography, plastic 3D, cel anime, caricature, toddler, mascot, or
 Do not duplicate, fuse, omit, or crop anatomy. The summon reference is the only visual authority.
 ```
 
-## Ratio and visual QA
+## Output validation
 
-Automated image checks verify format, dimensions, readable bytes, and hashes. A review worker may
-estimate the skull-crown-to-chin unit from the rendered image, but this estimate is advisory rather
-than a claim of exact computer-vision measurement.
-
-A candidate enters owner review when:
-
-- its estimated ratio is within 4.5–5.75 anatomical heads;
-- the full silhouette is visible;
-- there is no obvious broken anatomy, duplicate limb, fused hand, or missing body part;
-- identity, body mass, and wardrobe visibly agree with the summon source.
-
-Anything outside the band or failing a visible gate is labeled `revise` in producer QA. It is still
-retained as immutable evidence; the run does not spend visual-correction calls automatically.
+Automated checks verify readable PNG bytes, exact `1024x1536` dimensions, declared MIME type, prompt
+and reference bindings, collision-safe paths, and SHA-256 evidence. The five-head target lives in the
+exact prompt; this run does not use computer vision or human scoring to reject, rank, or revise
+valid provider images. A returned readable image is retained even when later visual inspection may
+find a flaw.
 
 ## Experiment layout
 
@@ -118,13 +110,12 @@ The root owns:
 
 - `README.md`, `decision.json`, `prompt-template.txt`;
 - `source-roster.json`, `production-plan.json`, and `provenance/production-journal.jsonl`;
-- `scripts/` and `tests/` for materialization, persistence, validation, and review export;
+- `scripts/` and `tests/` for materialization, persistence, and structural validation;
 - `production-report.json` and `completion-report.json`;
-- `review/review-manifest.json`, `review/index.html`, and ten paginated review pages.
 
-Thirteen wave directories own immutable targets, assignments, candidates, and results. Wave 01 is
-a 12-hero calibration pilot. Waves 02–12 contain sixteen heroes each, and wave 13 contains twelve,
-for exactly 200 targets.
+Thirteen wave directories own immutable targets, assignments, candidates, and results. Waves 01–12
+contain sixteen heroes each and wave 13 contains eight, for exactly 200 targets. Waves are dispatch
+and commit boundaries only; none is a review or approval checkpoint.
 
 ## Record contracts
 
@@ -143,59 +134,32 @@ the assignment's wave and be unique across the experiment.
 
 Each strict result contains the target and assignment hashes, rendered prompt and hash, sole
 reference path and hash, provider-source path and hash, candidate path and hash, dimensions and MIME
-type, call ordinal, call kind (`primary` or `provider-no-output-retry`), provider metadata,
-timestamps, and producer QA. Producer QA records `status`, the estimated ratio, optional landmark
-Y-coordinates for skull crown, chin, and soles, inspection method `visual-review`, and defect codes.
+type, call ordinal, call kind (`primary` or `provider-no-output-retry`), provider metadata, and
+timestamps.
 
 Every attempted provider call appends one journal record containing target, assignment, call kind,
 start and completion times, outcome, and returned provider artifact when one exists. Aggregate call
 counts are derived from the journal, never typed into a report from memory.
 
-## Deterministic pilot
+## Deterministic dispatch order
 
-The materializer selects the lowest `designOrdinal` not already selected for each of twelve strata:
-
-- one woman and one man from `healthy-slight` or `lanky`;
-- one woman and one man from `ordinary-average`;
-- one woman and one man from `soft-round` or `plus-size-heavy`;
-- one woman and one man from `athletic-conditioned` or `clearly-muscular`;
-- one woman and one man from `extreme-bodybuilder`;
-- one woman and one man with high-volume hair not already selected.
-
-The remaining heroes retain ascending `designOrdinal` order and are chunked into the later waves.
-This makes the pilot broad enough to expose proportion failures without allowing manual cherry
-picking or roster drift.
+The materializer sorts all 200 selected pairs by `designOrdinal`, then by `heroId`, and chunks them
+into twelve 16-assignment waves and one eight-assignment wave. The harness proceeds through every
+wave without asking for visual feedback or changing the prompt between heroes.
 
 ## Generation and budget contract
 
 Each target receives exactly one primary image-generation call. Up to sixteen producers may work in
 parallel, each owning only one assignment's candidate and result paths. The root coordinator alone
-writes shared manifests, plans, journals, review pages, reports, commits, and pushes.
+writes shared manifests, plans, journals, reports, commits, and pushes.
 
 Only a provider response with no usable image may receive one versioned provider retry. The whole
 experiment permits at most ten such retries, for a hard ceiling of 210 calls: 200 primary plus ten
-provider-failure retries. A visually imperfect but valid image is retained and marked for review;
-it does not trigger an automatic paid correction. More than ten no-output failures stop dispatch
-before the cap is exceeded.
+provider-failure retries. A visually imperfect but valid image is retained without automatic paid
+correction. More than ten no-output failures stop dispatch before the cap is exceeded.
 
 Persistence is exclusive-create and content-addressed. Existing valid candidates are never
 regenerated on resume. Conflicting bytes at an occupied path fail closed.
-
-## Review experience
-
-The review site shows twenty heroes per page across ten pages. Each row presents:
-
-1. selected summon source;
-2. immutable historical chibi;
-3. new five-head candidate.
-
-It includes hero identity, wave, source hashes, candidate hash, prompt version, provider-call count,
-and producer QA. The only owner decisions are `accept-five-head`, `revise-five-head`, and `hold`,
-with an optional note. Decisions persist locally and export as JSON. The interface never offers a
-hero rejection because the 200 summon identities are already approved.
-
-The server binds `0.0.0.0`. Every collaborator-facing URL uses `10.110.24.218` with the exact port,
-path, query string, and session key.
 
 ## Completion invariants
 
@@ -206,14 +170,13 @@ path, query string, and session key.
 - Every candidate is a readable `1024x1536` PNG and its hashes match the retained provider source
   and result record.
 - Primary calls equal 200; no-output retries are at most ten; all calls are journaled.
-- Review manifest contains 200 unique entries and pages contain 20 entries each.
 - Automated tests and experiment validation pass.
 - No engine contract, summon table, shared runtime catalog, approved-source catalog, or unrelated
   visual domain changes.
 
 ## Promotion boundary
 
-All outputs are candidates. Owner review can request targeted v2 chibis in a later additive run.
-Accepting a five-head candidate still does not authorize alpha cleanup, combat footprint
-normalization, runtime catalog mutation, or replacement of historical sources. Those operations
-require a separately reviewed promotion plan.
+All outputs are candidates. A later, separately requested task may inspect them or request targeted
+v2 chibis. This run does not authorize alpha cleanup, combat footprint normalization, runtime
+catalog mutation, or replacement of historical sources. Those operations require a separately
+reviewed promotion plan.

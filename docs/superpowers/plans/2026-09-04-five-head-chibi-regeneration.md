@@ -1,36 +1,95 @@
 # Five-Head Combat Chibi Regeneration Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task by task.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produce one provenance-complete, five-head combat-chibi candidate for each of the 200 approved one-star heroes and a side-by-side owner review site without promoting any image to runtime.
+**Goal:** Regenerate one provenance-complete, five-head combat-chibi candidate for each of the 200 approved one-star heroes without a pilot, visual-review checkpoint, or runtime promotion.
 
-**Architecture:** Freeze the upstream selected-pair manifest into an immutable experiment-local roster, materialize exclusive per-hero assignments, dispatch one reference-bound generation per assignment, persist exact provider bytes and strict receipts, then derive paginated review and completion evidence. Shared files remain coordinator-owned; image workers own only their assigned candidate and result paths.
+**Architecture:** Freeze the approved 200-hero selection into an experiment-local roster, materialize one immutable assignment per hero, and dispatch all assignments in thirteen bounded waves. Each image worker generates from the selected summon portrait alone and owns one candidate/result pair; the coordinator owns shared manifests, call journals, validation reports, commits, and pushes.
 
-**Tech Stack:** Python 3 standard library, Pillow, `unittest`, JSON/JSONL, HTML/CSS/JavaScript, Git LFS, built-in image generation.
+**Tech Stack:** Python 3 standard library, Pillow, `unittest`, JSON/JSONL, Git LFS, built-in image generation.
 
 **Spec:** `docs/superpowers/specs/2026-09-04-five-head-chibi-regeneration-design.md`
 
-## Global constraints
+## Global Constraints
 
-- Work only on branch `codex/five-head-chibi-regeneration`, rebased on current `origin/main` before
-  implementation begins.
-- Read and follow `imagegen`, `summonlab-image-production`, and
-  `superpowers:subagent-driven-development` before production work.
-- Keep every new artifact under
-  `assets/heroes/experiments/five-head-chibi-regeneration-001/` except the accepted Heroes wiki and
-  decision documentation named by this plan.
-- Do not edit the upstream 200-hero experiment, engine contracts, summon tables, shared runtime
-  catalogs, or unrelated visual domains.
-- Use the selected summon portrait as the only generation reference. The old chibi is review-only.
-- Dispatch at most sixteen image producers concurrently. Producers never edit shared files.
-- Permit exactly 200 primary calls and at most ten versioned no-output retries. Never retry a valid
-  image merely because it is visually imperfect.
-- Commit and push each reviewable batch. Never merge or promote without a later owner instruction.
-- If an unrelated dirty file exists, leave it unstaged and report it; do not repair or include it.
+- Read `AGENTS.md`, the linked spec, and
+  `docs/decisions/0070-combat-chibis-target-five-heads.md` completely before execution.
+- Read and follow `superpowers:subagent-driven-development`,
+  `superpowers:test-driven-development`, `imagegen`, `summonlab-image-production`, and
+  `superpowers:verification-before-completion`. Use `superpowers:systematic-debugging` for unexpected
+  failures.
+- Fetch and rebase onto current `origin/main` before implementation. Work on
+  `codex/five-head-chibi-regeneration`, or a collision-safe `codex/` successor when needed.
+- The upstream authority is
+  `assets/heroes/experiments/one-star-overnight-200-001/review/review-manifest.json` with SHA-256
+  `8ae3ee617fb200018c261cdee7b2e3fb5a2f1d807cea77df2fe75b78464c6fe5` and exactly 200
+  `selectedPairs`.
+- Keep new production artifacts under
+  `assets/heroes/experiments/five-head-chibi-regeneration-001/`. Do not edit the upstream experiment.
+- Use each selected summon portrait as the only image-generation reference. Never provide the
+  historical chibi to the image generator.
+- Every prompt uses the canonical prompt from the spec and targets 5.0 anatomical heads, measured
+  skull crown to chin and excluding hair volume.
+- Generate exactly one `1024x1536` PNG candidate for every hero. Keep the full figure, both hands,
+  all clothing, and both feet visible.
+- Preserve source face, adult age, skin, body construction, body mass, limb girth, hairstyle,
+  wardrobe, palette, footwear, accessories, tattoos, and markings. Do not add generic thick arms,
+  large hands, broad shoulders, barrel torsos, short legs, fat, or muscle.
+- No weapons, magic, affinity effects, rarity frames, stars, interface, labels, logos, watermarks, or
+  text.
+- There is no pilot, visual acceptance gate, owner-review pause, review webpage, ratio-scoring pass,
+  automatic visual correction, or approval decision in this run. Proceed through all 200 heroes.
+- Make exactly 200 primary generation calls. Only a provider response with no usable image may
+  receive one versioned retry, with at most ten retries across the run. Never retry a readable image
+  for visual quality.
+- Use at most sixteen image workers concurrently. A worker owns only its assigned target's provider
+  source, candidate, and result paths and never edits shared files.
+- The root coordinator alone writes contracts, source roster, production plan, journal, reports,
+  documentation, commits, and pushes.
+- Resume from verified artifacts. Never overwrite or regenerate an existing valid assignment.
+- Commit and push every completed wave. Explicitly stage only Heroes-domain files. Preserve and
+  report unrelated dirty files.
+- Keep the user informed at least every 60 seconds while work is running, without asking for routine
+  visual feedback.
+- Stop only for a hard safety failure, source-authority drift, provider unavailability that exhausts
+  the retry budget, or a conflict requiring new authority.
+- All outputs remain candidates. Do not alter engine contracts, summon tables, approved-source
+  catalogs, shared runtime catalogs, or unrelated visual domains. Do not merge the branch.
+
+## File Map
+
+Create the following focused units under
+`assets/heroes/experiments/five-head-chibi-regeneration-001/`:
+
+- `README.md`: scope, commands, lifecycle boundary, and resume instructions.
+- `decision.json`: frozen dimensions, prompt version/hash, source-manifest hash, wave sizes, call
+  budget, and candidate-only status.
+- `prompt-template.txt`: exact canonical generation prompt copied from the spec.
+- `source-roster.json`: immutable snapshot of the 200 selected pairs and source hashes.
+- `production-plan.json`: all wave/target/assignment mappings and declared paths.
+- `scripts/contracts.py`: schemas, constants, hashes, path confinement, and exclusive writes.
+- `scripts/materialize_plan.py`: deterministic roster verification and queue materialization.
+- `scripts/persist_candidate.py`: exact provider-PNG persistence with collision protection.
+- `scripts/write_result.py`: strict generation receipt creation.
+- `scripts/validate_wave.py`: one-wave structural and provenance validation.
+- `scripts/validate_experiment.py`: whole-run validation and deterministic completion report.
+- `tests/test_contracts.py`: frozen contract tests.
+- `tests/test_materialize_plan.py`: roster, order, reference, and path tests.
+- `tests/test_persistence.py`: exclusive-write and byte/hash tests.
+- `tests/test_validate_wave.py`: per-wave completeness and budget tests.
+- `tests/test_validate_experiment.py`: whole-run invariant tests.
+- `waves/wave-01..wave-13/targets/*.json`: immutable per-hero generation targets.
+- `waves/wave-01..wave-13/assignments/*.json`: exclusive per-hero output ownership.
+- `waves/wave-01..wave-13/provider-sources/*.png`: exact image-generator outputs.
+- `waves/wave-01..wave-13/candidates/*.png`: collision-safe retained candidates.
+- `waves/wave-01..wave-13/results/*.json`: strict prompt/reference/output receipts.
+- `provenance/production-journal.jsonl`: one append-only record per provider call.
+- `production-report.json`: resumable counts by wave and call type.
+- `completion-report.json`: deterministic final validation evidence.
 
 ---
 
-## Task 1: Scaffold the experiment contract
+### Task 1: Build the frozen experiment contract
 
 **Files:**
 
@@ -38,183 +97,206 @@
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/decision.json`
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/prompt-template.txt`
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/contracts.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_contracts.py`
+- Test: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_contracts.py`
 
-- [ ] Write failing contract tests for experiment ID, canvas `1024x1536`, target ratio `5.0`, review
-      band `4.5–5.75`, source-manifest hash, prompt version, wave sizes
-      `[12,16,16,16,16,16,16,16,16,16,16,16,12]`, primary-call limit `200`, retry limit `10`, and
-      candidate-only lifecycle.
+**Interfaces:**
+
+- Consumes: canonical prompt and constants from the linked spec.
+- Produces: `load_json(path: Path) -> dict`, `sha256_file(path: Path) -> str`,
+  `confine_relative(root: Path, value: str) -> Path`, `exclusive_write(path: Path, data: bytes) ->
+  Literal["created", "already-identical"]`, and immutable experiment constants.
+
+- [ ] Write failing tests asserting experiment ID `five-head-chibi-regeneration-001`, dimensions
+      `1024x1536`, ratio target `5.0`, prompt version `five-head-v1`, source hash, wave sizes
+      `[16,16,16,16,16,16,16,16,16,16,16,16,8]`, primary limit `200`, retry limit `10`, and
+      lifecycle `candidate`.
 - [ ] Run
       `python3 -m unittest assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_contracts.py`
-      and confirm it fails because the contract does not exist.
-- [ ] Implement immutable dataclasses, enum values, JSON readers, SHA-256 helpers, relative-path
-      confinement, and exclusive-create helpers in `contracts.py`.
-- [ ] Copy the canonical generation prompt from the spec byte-for-byte into `prompt-template.txt`.
-      Implement only bracket substitution; reject unresolved brackets after rendering.
-- [ ] Record the locked values and prompt hash in `decision.json`; explain candidates versus
-      approved/runtime state in `README.md`.
-- [ ] Re-run the contract test and confirm it passes.
-- [ ] Commit and push with `git commit -m "feat(heroes): scaffold five-head chibi production"`.
+      and verify it fails because the contract does not exist.
+- [ ] Implement the constants and helper interfaces in `contracts.py`. Reject absolute paths, `..`,
+      symlink escapes, occupied paths with different bytes, non-SHA-256 strings, and unsupported
+      schema versions.
+- [ ] Copy the canonical prompt from the spec byte-for-byte into `prompt-template.txt`. Permit only
+      the six named bracket substitutions in the spec and reject any unresolved `[` or `]` after
+      rendering.
+- [ ] Record every frozen value plus the exact prompt SHA-256 in `decision.json`. Document that the
+      run has no pilot or review workflow and produces candidates only.
+- [ ] Re-run the contract test and verify it passes.
+- [ ] Run `git diff --check`, stage only these files, commit
+      `feat(heroes): scaffold five-head chibi regeneration`, and push the branch.
 
-## Task 2: Freeze and materialize the 200-hero queue
+### Task 2: Freeze and materialize all 200 assignments
 
 **Files:**
 
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/materialize_plan.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_materialize_plan.py`
+- Test: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_materialize_plan.py`
 - Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/source-roster.json`
 - Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/production-plan.json`
 - Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01..wave-13/targets/*.json`
 - Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01..wave-13/assignments/*.json`
 
-- [ ] Write failing tests that reject the wrong upstream hash, duplicate hero IDs, missing source
-      hashes, a non-summon generation reference, nonexclusive output paths, noncanonical pilot
-      selection, incorrect wave sizes, or any queue count other than 200.
-- [ ] Run the materializer test and confirm it fails before implementation.
-- [ ] Implement `materialize_plan.py --write` and `--check`. Resolve each selected pair back to its
-      source target and exact summon PNG, verify both hashes, copy the character-specific visual
-      facts into a target, and render the shared prompt without adding the old chibi as a reference.
-- [ ] Select the deterministic twelve-hero stratified pilot defined in the spec. Sort every
-      remaining assignment by `designOrdinal` and form twelve later waves.
-- [ ] Write `source-roster.json`, `production-plan.json`, targets, and assignments atomically. In
-      `--check`, compare generated structure and hashes without rewriting files.
-- [ ] Run the tests and
-      `python3 assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/materialize_plan.py --check`;
-      confirm 200 unique heroes, 13 waves, and zero reference drift.
-- [ ] Commit and push with `git commit -m "feat(heroes): materialize five-head chibi queue"`.
+**Interfaces:**
 
-## Task 3: Implement collision-safe result persistence
+- Consumes: `contracts.py`, upstream review manifest, upstream summon targets, and selected summon
+  PNGs.
+- Produces: `load_selected_pairs() -> list[SelectedPair]`,
+  `build_source_roster(pairs: list[SelectedPair]) -> dict`,
+  `build_targets(roster: dict) -> list[dict]`, `build_assignments(targets: list[dict]) -> list[dict]`,
+  and CLI modes `--write` and `--check`.
+
+- [ ] Write failing tests that reject an upstream hash mismatch, count other than 200, duplicate hero
+      or target IDs, missing/mismatched summon hashes, historical chibis in `generationReferences`,
+      unresolved prompt brackets, nonexclusive output paths, incorrect sort order, or incorrect wave
+      sizes.
+- [ ] Run the materializer tests and verify they fail before implementation.
+- [ ] Implement immutable source resolution. For each selected pair, locate its source summon target
+      and PNG, verify its recorded hash, copy only declared character facts, and retain the historical
+      chibi path/hash as provenance metadata outside `generationReferences`.
+- [ ] Sort all records by `(designOrdinal, heroId)`. Allocate the first 192 records to waves 01–12 in
+      sixteen-record slices and the final eight to wave 13.
+- [ ] Render and hash one exact five-head prompt per hero. Declare exactly one generation reference,
+      one provider-source path, one candidate path, and one result path per assignment.
+- [ ] Implement atomic `--write` and read-only `--check`. Re-running `--write` with identical content
+      is idempotent; conflicting existing content fails closed.
+- [ ] Run all tests and
+      `python3 assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/materialize_plan.py --check`.
+      Verify 200 unique heroes, 200 targets, 200 assignments, thirteen waves, and zero source drift.
+- [ ] Run `git diff --check`, stage only the experiment scaffold and materialized queue, commit
+      `feat(heroes): materialize five-head chibi queue`, and push.
+
+### Task 3: Implement collision-safe persistence and validation
 
 **Files:**
 
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/persist_candidate.py`
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/write_result.py`
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/validate_wave.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_persistence.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_validate_wave.py`
+- Test: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_persistence.py`
+- Test: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_validate_wave.py`
 
-- [ ] Write failing tests for exclusive candidate creation, idempotent same-byte resume, conflicting
-      overwrite rejection, `1024x1536` PNG validation, exact provider-source and candidate hashes,
-      result-to-assignment binding, one primary call per target, one retry at most per failed target,
-      and the global retry ceiling.
-- [ ] Run both new test modules and confirm they fail.
-- [ ] Implement persistence from a returned provider source path to the assignment's candidate path.
-      Preserve exact provider PNG bytes; do not postprocess the production candidate.
-- [ ] Implement strict result receipts containing target, assignment, prompt, reference, provider
-      source, candidate, dimensions, SHA-256, call kind, producer QA, and timestamps.
-- [ ] Store producer-QA ratio evidence as an advisory visual estimate with optional `crownY`, `chinY`,
-      and `soleY` landmarks. Compute `(soleY - crownY) / (chinY - crownY)` when landmarks exist;
-      never label the estimate as an automatic anatomical measurement.
-- [ ] Implement `validate_wave.py --wave wave-NN` so a completed assignment requires a candidate and
-      matching strict receipt. Reject undeclared files and duplicate ownership.
-- [ ] Run all experiment tests and validate an empty wave reports planned work without claiming
+**Interfaces:**
+
+- Consumes: materialized target/assignment JSON and a returned provider PNG.
+- Produces: `persist_candidate(assignment_path: Path, source_path: Path) -> PersistedCandidate`,
+  `write_result(assignment_path: Path, call_record_path: Path) -> Path`, and
+  `validate_wave(wave_id: str) -> WaveValidation`.
+
+- [ ] Write failing tests for readable PNG enforcement, exact `1024x1536` dimensions, provider-source
+      preservation, exclusive candidate creation, idempotent same-byte resume, conflicting-byte
+      rejection, exact prompt/reference/output hashes, target/assignment binding, call-kind enum,
+      one primary call per hero, one retry at most per failed hero, and global retry ceiling ten.
+- [ ] Run both test modules and verify they fail.
+- [ ] Implement provider-source persistence and copy identical bytes to the declared candidate path.
+      Do not resize, crop, recolor, remove the background, or otherwise postprocess the candidate.
+- [ ] Implement strict result receipts with schema version, target and assignment hashes, complete
+      rendered prompt/hash, sole reference path/hash, provider-source path/hash, candidate path/hash,
+      dimensions, MIME type, provider metadata, call ordinal, call kind, and timestamps.
+- [ ] Implement `validate_wave.py --wave wave-NN`. A completed assignment requires a readable
+      provider source, byte-identical candidate, strict result, matching hashes, and a corresponding
+      journal call. Reject missing, undeclared, duplicated, or cross-wave paths.
+- [ ] Run all experiment tests and verify an ungenerated wave reports planned work without claiming
       completion.
-- [ ] Commit and push with `git commit -m "feat(heroes): add collision-safe chibi persistence"`.
+- [ ] Run `git diff --check`, stage only these scripts/tests, commit
+      `feat(heroes): add strict chibi output persistence`, and push.
 
-## Task 4: Generate and audit the twelve-hero pilot
-
-**Files:**
-
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01/candidates/*.png`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01/results/*.json`
-- Append: `assets/heroes/experiments/five-head-chibi-regeneration-001/provenance/production-journal.jsonl`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/production-report.json`
-
-- [ ] Spawn twelve image workers, one per pilot assignment. Each worker reads its target and
-      assignment, inspects the summon source at original resolution, uses the exact rendered prompt,
-      and makes one built-in image-generation call.
-- [ ] Have each worker inspect its returned image for ratio, silhouette, anatomy, identity, body
-      mass, wardrobe, crop, and prohibited content. Record `pass` or `revise` producer QA without
-      making a visual-correction call.
-- [ ] Persist each output exclusively and write its strict result receipt. Use a retry only for a
-      provider response with no usable image and journal both calls.
-- [ ] Run all experiment tests and `validate_wave.py --wave wave-01`; confirm twelve structurally
-      valid candidates and no more than twelve primary plus eligible no-output retry calls.
-- [ ] Inspect the full pilot as a group. If a systemic prompt failure affects at least three of the
-      twelve, stop and amend the prompt contract additively before bulk dispatch. Individual visual
-      misses remain review evidence and do not block the queue.
-- [ ] Update `production-report.json` with actual counts and pilot observations.
-- [ ] Commit and push with `git commit -m "feat(heroes): generate five-head chibi pilot"`.
-
-## Task 5: Generate the remaining 188 candidates in bounded waves
+### Task 4: Generate all 200 five-head chibis
 
 **Files:**
 
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-02..wave-13/candidates/*.png`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-02..wave-13/results/*.json`
-- Append: `assets/heroes/experiments/five-head-chibi-regeneration-001/provenance/production-journal.jsonl`
-- Update: `assets/heroes/experiments/five-head-chibi-regeneration-001/production-report.json`
+- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01..wave-13/provider-sources/*.png`
+- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01..wave-13/candidates/*.png`
+- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01..wave-13/results/*.json`
+- Create/append: `assets/heroes/experiments/five-head-chibi-regeneration-001/provenance/production-journal.jsonl`
+- Create/update: `assets/heroes/experiments/five-head-chibi-regeneration-001/production-report.json`
 
-- [ ] Before each wave, derive the missing queue from strict filesystem evidence. Never regenerate a
-      valid completed assignment after resume.
-- [ ] For waves 02–12 dispatch at most sixteen exclusive image workers. For wave 13 dispatch twelve.
-      Every worker follows the same one-reference, one-primary-call, inspect, persist, and receipt
-      protocol as the pilot.
-- [ ] If a provider produces no usable image, record the failure and allocate at most one versioned
-      retry. Stop dispatch before the cumulative retry count would exceed ten.
-- [ ] After each wave, run all experiment tests and `validate_wave.py --wave wave-NN`, update the
-      production report, inspect a wave contact sheet, then explicitly stage only that wave and its
-      report/journal records.
-- [ ] Commit and push every wave using
-      `feat(heroes): generate five-head chibi wave NN`.
-- [ ] After wave 13, confirm strict evidence reports exactly 200 primary calls, at most ten no-output
-      retries, 200 candidates, 200 results, and no duplicate target or output path.
+**Interfaces:**
 
-## Task 6: Build the three-way review site
+- Consumes: one target and assignment per worker plus the selected summon PNG.
+- Produces: one provider-source PNG, byte-identical candidate PNG, strict result JSON, and journal
+  record per successful primary call; an additional versioned journal record only for eligible
+  provider no-output retries.
 
-**Files:**
+- [ ] Before every wave, run the experiment tests, materializer `--check`, and
+      `validate_wave.py --wave wave-NN`. Derive unfinished assignments from strict filesystem
+      evidence rather than memory.
+- [ ] For each unfinished assignment, dispatch one image worker. The worker reads its complete target
+      and assignment, inspects the sole summon reference at original resolution, submits the exact
+      rendered prompt through the built-in image generator, and returns the provider artifact path
+      without editing shared files.
+- [ ] Dispatch no more than sixteen workers concurrently. Waves 01–12 contain sixteen assignments;
+      wave 13 contains eight. Continue from wave to wave without a pilot gate, visual feedback,
+      ratio measurement, prompt change, or owner checkpoint.
+- [ ] Immediately journal every call. If the provider returns a usable image, persist it regardless
+      of visual quality and write the strict result. Do not request a correction.
+- [ ] If the provider returns no usable image, journal `provider-no-output`, allocate one versioned
+      retry for that assignment, and retry once. Stop before the total number of retries exceeds ten
+      or before any assignment would receive a second retry.
+- [ ] After each wave, run `validate_wave.py --wave wave-NN` and all experiment tests. Update
+      `production-report.json` from journal and filesystem evidence, proving cumulative target,
+      primary-call, retry, provider-source, candidate, and result counts.
+- [ ] Explicitly stage only the completed wave, journal, and production report. Commit
+      `feat(heroes): generate five-head chibi wave NN` and push before dispatching the next wave.
+- [ ] After wave 13, verify exactly 200 primary calls, 200 provider sources, 200 candidates, and 200
+      strict results, with no more than ten eligible retries and no duplicate ownership or path.
 
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/build_review.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_build_review.py`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/review/review-manifest.json`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/review/index.html`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/review/pages/01.html..10.html`
-- Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/review/previews/**/*.{webp,png}`
-
-- [ ] Write failing tests for exactly 200 review records, twenty records per page, correct source and
-      candidate hashes, three-image ordering, allowed decisions, local persistence, JSON export,
-      producer-QA filtering, and absence of hero-rejection controls.
-- [ ] Run the review test and confirm it fails.
-- [ ] Implement review derivatives without changing source bytes. Build a responsive three-column
-      summon / historical chibi / five-head candidate comparison with `accept-five-head`,
-      `revise-five-head`, and `hold`, optional notes, progress, filters, and exported decisions.
-- [ ] Rebuild twice and prove deterministic manifests and HTML. Run all experiment tests.
-- [ ] Serve from the repository root with
-      `python3 -m http.server 4177 --bind 0.0.0.0` and verify the listening address with `ss -ltnp`.
-- [ ] Publish the exact collaborator URL
-      `http://10.110.24.218:4177/assets/heroes/experiments/five-head-chibi-regeneration-001/review/index.html`.
-- [ ] Commit and push with `git commit -m "feat(heroes): add five-head chibi review gallery"`.
-
-## Task 7: Validate, document, and hand off candidates
+### Task 5: Produce completion evidence and hand off
 
 **Files:**
 
 - Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/validate_experiment.py`
-- Create: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_validate_experiment.py`
+- Test: `assets/heroes/experiments/five-head-chibi-regeneration-001/tests/test_validate_experiment.py`
 - Generate: `assets/heroes/experiments/five-head-chibi-regeneration-001/completion-report.json`
-- Update: `assets/heroes/experiments/five-head-chibi-regeneration-001/README.md`
-- Update: `docs/wiki/art/hero-identity-and-evolution.md`
+- Modify: `assets/heroes/experiments/five-head-chibi-regeneration-001/README.md`
+- Modify: `docs/wiki/art/hero-identity-and-evolution.md`
 
-- [ ] Write failing completion tests for every invariant in the spec, including counts, dimensions,
-      hashes, source immutability, reference exclusivity, prompt version, call budget, page counts,
-      candidate-only state, and forbidden runtime/catalog changes.
-- [ ] Implement `validate_experiment.py` and a deterministic completion-report writer. The report
-      must distinguish pixel-complete, producer-QA, owner-review, approved-source, and runtime states.
-- [ ] Run
-      `python3 -m unittest discover assets/heroes/experiments/five-head-chibi-regeneration-001/tests -p 'test_*.py'`,
-      `python3 assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/validate_experiment.py`,
-      `pnpm exec prettier --check docs/decisions/0070-combat-chibis-target-five-heads.md docs/superpowers/specs/2026-09-04-five-head-chibi-regeneration-design.md docs/superpowers/plans/2026-09-04-five-head-chibi-regeneration.md docs/wiki/art/hero-identity-and-evolution.md`,
-      and `pnpm validate:wiki`.
-- [ ] Verify the upstream source-manifest and completion-report SHA-256 values remain unchanged.
-- [ ] Inspect `git diff --check`, `git status --short`, and the final review site. Stage only Heroes
-      domain files.
-- [ ] Commit and push with `git commit -m "docs(heroes): complete five-head chibi candidate run"`.
-- [ ] Report branch, every batch commit, push destination, validations, call counts, candidate and
-      QA counts, review URL, and working-tree state. Ask the owner to review the new candidates;
-      do not merge or promote them.
+**Interfaces:**
 
-## Execution handoff
+- Consumes: decision, roster, plan, targets, assignments, provider sources, candidates, results, and
+  journal.
+- Produces: `validate_experiment() -> ExperimentValidation`, CLI exit status, and deterministic
+  `completion-report.json` with source hashes, inventory counts, call counts, and lifecycle state.
 
-Use the saved goal-harness prompt at:
+- [ ] Write failing tests for every completion invariant: frozen source hash, 200 unique records at
+      every layer, wave sizes, exact prompt version/hash, one summon reference per target, readable
+      `1024x1536` PNGs, byte-identical provider/candidate hashes, strict receipts, exactly 200 primary
+      calls, at most ten eligible retries, unchanged upstream files, and lifecycle `candidate` with
+      zero approvals and zero runtime bindings.
+- [ ] Run the completion test and verify it fails before the validator exists.
+- [ ] Implement `validate_experiment.py` and deterministic completion-report generation. The command
+      exits nonzero on any missing artifact, stale hash, wrong dimension, undeclared path, call-budget
+      violation, source drift, approval claim, or runtime binding.
+- [ ] Run:
 
-`docs/agent-prompts/heroes/five-head-chibi-regeneration-goal.md`
+      ```bash
+      python3 -m unittest discover assets/heroes/experiments/five-head-chibi-regeneration-001/tests -p 'test_*.py'
+      python3 assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/materialize_plan.py --check
+      python3 assets/heroes/experiments/five-head-chibi-regeneration-001/scripts/validate_experiment.py
+      pnpm exec prettier --check assets/heroes/experiments/five-head-chibi-regeneration-001 docs/decisions/0070-combat-chibis-target-five-heads.md docs/superpowers/specs/2026-09-04-five-head-chibi-regeneration-design.md docs/superpowers/plans/2026-09-04-five-head-chibi-regeneration.md docs/wiki/art/hero-identity-and-evolution.md
+      pnpm validate:wiki
+      git diff --check
+      ```
+
+      Every command must exit zero.
+- [ ] Recompute the upstream review-manifest SHA-256 and verify it remains
+      `8ae3ee617fb200018c261cdee7b2e3fb5a2f1d807cea77df2fe75b78464c6fe5`.
+- [ ] Inspect `git status --short`. Stage only Heroes-domain completion files, commit
+      `docs(heroes): complete five-head chibi regeneration`, and push.
+- [ ] Report branch, all new commits, push destination, exact validation results, provider-call
+      counts, candidate count, completion-report path, and working-tree state. Do not create a review
+      site, request owner review, promote candidates, merge the branch, or modify runtime catalogs.
+
+## Completion Definition
+
+The plan is complete only when all of the following are true:
+
+- Exactly 200 approved source heroes are frozen without upstream mutation.
+- Exactly 200 five-head prompts reference exactly 200 corresponding summon portraits.
+- Exactly 200 primary calls produced 200 readable `1024x1536` provider PNGs and byte-identical
+  candidate PNGs.
+- No more than ten retries occurred, and every retry followed a journaled provider no-output event.
+- Exactly 200 strict result receipts validate against prompts, references, outputs, and assignments.
+- All thirteen waves, experiment tests, structural validator, formatting checks, and wiki validation
+  pass.
+- Every in-scope artifact is committed and pushed.
+- All images remain unreviewed, unapproved, unpromoted candidates, and the branch remains unmerged.

@@ -24,9 +24,6 @@ guaranteed measurement, so production needs both a canonical target and an expli
 - The selected summon portrait is the sole identity, anatomy, body-mass, wardrobe, palette,
   hairstyle, accessory, and marking authority for regeneration. The earlier chibi is
   comparison-only and must not be supplied as a generation reference.
-- The operational first-pass ratio gate is an estimated **4.5–5.75 heads**. Passing the numeric gate
-  does not excuse wider shoulders, inflated arms or hands, shortened limbs, added fat or muscle,
-  age drift, face drift, wardrobe drift, or damaged anatomy.
 - The target remains a cinematic semi-realistic painted combat chibi: compact and readable, but not
   baby-like, super-deformed, photoreal, or cel-anime.
 - Regenerated images remain versioned candidates. This decision does not approve, promote, or bind
@@ -36,7 +33,8 @@ guaranteed measurement, so production needs both a canonical target and an expli
 
 The Heroes team will regenerate all 200 combat chibis from their selected summon anchors using one
 shared prompt contract, exact source hashes, collision-safe output paths, and bounded provider use.
-Review will compare the summon source, historical chibi, and new five-head candidate side by side.
+The run has no pilot checkpoint or owner-review workflow: it produces the entire structurally
+validated candidate set continuously.
 
 The earlier chibis remain immutable evidence. A future exception may deliberately use another body
 ratio for a nonhuman or strongly stylized combatant, but it requires an explicit hero-specific

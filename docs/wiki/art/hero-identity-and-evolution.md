@@ -57,10 +57,10 @@ distribution all derive from the summon anchor. Deliberately muscular heroes rem
 slight, lanky, gangly, soft, heavy, and otherwise unusually proportioned heroes remain themselves.
 
 The accepted combat-chibi target is **5.0 anatomical heads tall**, measured from skull crown to chin
-and excluding hairstyle mass. The operational first-pass review band is an estimated 4.5–5.75
-heads because AI generation does not make the prompt's number mechanically exact. Ratio alone never
-passes a candidate: face, age, body construction, shoulder width, arm and wrist girth, torso and hip
-width, leg length, hairstyle, wardrobe, and durable marks must still agree with the summon anchor.
+and excluding hairstyle mass. AI generation does not make the prompt's number mechanically exact;
+five heads is the shared art direction rather than a computer-vision acceptance score. Face, age,
+body construction, shoulder width, arm and wrist girth, torso and hip width, leg length, hairstyle,
+wardrobe, and durable marks must agree with the summon anchor.
 Tallness and gangliness survive through narrowness, posture, hairstyle, and relative limb language.
 Hands may be simplified for readability, but they should not become disproportionately huge unless
 large hands are a deliberate source trait. The selected summon portrait is the only image reference
@@ -303,8 +303,8 @@ reference.
   default.
 - On 2026-09-04, a three-hero comparison at nominal 4.0, 4.5, and 5.0-head targets established 5.0
   anatomical heads as the combat-chibi standard. The owner selected it for the complete approved
-  200-hero roster. Regeneration remains candidate-only and uses each selected summon portrait as its
-  sole visual authority.
+  200-hero roster. The regeneration run has no pilot or owner-review checkpoint; it produces all 200
+  candidate-only images using each selected summon portrait as its sole visual authority.
 
 ## Integration boundary
 
