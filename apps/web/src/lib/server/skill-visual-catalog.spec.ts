@@ -1,7 +1,11 @@
+import { createHash } from 'node:crypto';
+
 import { describe, expect, it } from 'vitest';
 
 import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json';
+import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json?raw';
 import massProductionManifestSource from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
+import massProductionManifestRaw from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json?raw';
 import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json';
 import {
 	buildSkillVisualCatalog,
@@ -13,14 +17,41 @@ type TestAuthorities = SkillVisualCatalogAuthorities & {
 	canonicalCatalog: typeof canonicalCatalogSource;
 	massProductionManifest: typeof massProductionManifestSource;
 	runtimeManifest: typeof runtimeManifestSource;
+	canonicalCatalogBytes: Uint8Array;
+	massProductionManifestBytes: Uint8Array;
 };
+
+const encoder = new TextEncoder();
+
+function rawBytes(value: unknown): Uint8Array {
+	return encoder.encode(`${JSON.stringify(value, null, '\t')}\n`);
+}
+
+function hash(value: Uint8Array): string {
+	return createHash('sha256').update(value).digest('hex');
+}
 
 function authorities(): TestAuthorities {
 	return {
 		canonicalCatalog: structuredClone(canonicalCatalogSource),
 		massProductionManifest: structuredClone(massProductionManifestSource),
-		runtimeManifest: structuredClone(runtimeManifestSource)
+		runtimeManifest: structuredClone(runtimeManifestSource),
+		canonicalCatalogBytes: encoder.encode(canonicalCatalogRaw),
+		massProductionManifestBytes: encoder.encode(massProductionManifestRaw)
 	};
+}
+
+function synchronizeSourceAuthorityHashes(input: TestAuthorities): void {
+	(input.massProductionManifest.authorities.catalog as { contentHash: string }).contentHash = hash(
+		input.canonicalCatalogBytes
+	);
+	input.massProductionManifestBytes = rawBytes(input.massProductionManifest);
+	(input.runtimeManifest.sourceAuthorities.catalog as { contentHash: string }).contentHash = hash(
+		input.canonicalCatalogBytes
+	);
+	(
+		input.runtimeManifest.sourceAuthorities.massProductionManifest as { contentHash: string }
+	).contentHash = hash(input.massProductionManifestBytes);
 }
 
 describe('skill visual catalog', () => {
@@ -90,6 +121,33 @@ describe('skill visual catalog', () => {
 		).contentHash = '0'.repeat(64);
 
 		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*source.*hash/i);
+	});
+
+	it('rejects rebalanced domain records even when every join and source authority matches', () => {
+		const input = authorities();
+		(input.canonicalCatalog.records[0] as { domain: string }).domain = 'Magical';
+		(
+			input.massProductionManifest.skills.find(
+				(record) => record.targetId === input.canonicalCatalog.records[0]?.targetId
+			) as { domain: string }
+		).domain = 'Magical';
+		input.canonicalCatalogBytes = rawBytes(input.canonicalCatalog);
+		synchronizeSourceAuthorityHashes(input);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/domain.*count/i);
+	});
+
+	it('rejects a whitespace-only raw catalog-byte drift', () => {
+		const input = authorities();
+		input.canonicalCatalogBytes = Uint8Array.from([...input.canonicalCatalogBytes, 0x20]);
+		(input.massProductionManifest.authorities.catalog as { contentHash: string }).contentHash =
+			hash(input.canonicalCatalogBytes);
+		input.massProductionManifestBytes = rawBytes(input.massProductionManifest);
+		(
+			input.runtimeManifest.sourceAuthorities.massProductionManifest as { contentHash: string }
+		).contentHash = hash(input.massProductionManifestBytes);
+
+		expect(() => buildSkillVisualCatalog(input)).toThrow(/runtime.*catalog.*source hash/i);
 	});
 
 	it('rejects an unknown canonical Domain', () => {

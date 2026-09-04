@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
 
 import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json';
+import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json?raw';
 import massProductionManifestSource from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
+import massProductionManifestRaw from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json?raw';
 import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json';
 
 const CATALOG_PATH = 'assets/wiki/skills/icon-production-v1/catalog.json';
@@ -10,6 +12,7 @@ const MASS_ICON_ROOT = 'assets/wiki/skills/icon-production-v1/mass-production-v1
 const PUBLIC_ROOT = '/wiki-media/skills/visual-catalog-v1/';
 const PUBLIC_ICON_ROOT = `${PUBLIC_ROOT}icons/`;
 const SKILL_COUNT = 456;
+const DOMAIN_COUNTS = { Martial: 258, Magical: 124, Craft: 74 } as const;
 
 type SkillDomain = 'Martial' | 'Magical' | 'Craft';
 type SkillType = 'Active' | 'Passive' | 'Stance' | 'Craft';
@@ -36,7 +39,9 @@ export interface SkillVisualCatalogRecord {
 
 export interface SkillVisualCatalogAuthorities {
 	readonly canonicalCatalog: unknown;
+	readonly canonicalCatalogBytes: Uint8Array;
 	readonly massProductionManifest: unknown;
+	readonly massProductionManifestBytes: Uint8Array;
 	readonly runtimeManifest: unknown;
 }
 
@@ -145,10 +150,8 @@ function hash(value: unknown, label: string): string {
 	return candidate;
 }
 
-function repositoryJsonHash(value: unknown): string {
-	return createHash('sha256')
-		.update(`${JSON.stringify(value, null, '\t')}\n`)
-		.digest('hex');
+function rawContentHash(value: Uint8Array): string {
+	return createHash('sha256').update(value).digest('hex');
 }
 
 function unique<T>(records: readonly T[], identifier: (record: T) => string, label: string): void {
@@ -261,7 +264,9 @@ function freezeRecord(record: SkillVisualCatalogRecord): SkillVisualCatalogRecor
 
 const defaultAuthorities: SkillVisualCatalogAuthorities = {
 	canonicalCatalog: canonicalCatalogSource,
+	canonicalCatalogBytes: new TextEncoder().encode(canonicalCatalogRaw),
 	massProductionManifest: massProductionManifestSource,
+	massProductionManifestBytes: new TextEncoder().encode(massProductionManifestRaw),
 	runtimeManifest: runtimeManifestSource
 };
 
@@ -302,6 +307,22 @@ export function buildSkillVisualCatalog(
 	if (runtimeRecords.length !== SKILL_COUNT) {
 		throw new Error(`Expected ${SKILL_COUNT} runtime records; got ${runtimeRecords.length}`);
 	}
+	const actualDomainCounts = Object.fromEntries(
+		(Object.keys(DOMAIN_COUNTS) as SkillDomain[]).map((expectedDomain) => [
+			expectedDomain,
+			canonical.filter((record) => record.domain === expectedDomain).length
+		])
+	) as Record<SkillDomain, number>;
+	for (const [expectedDomain, expectedCount] of Object.entries(DOMAIN_COUNTS) as [
+		SkillDomain,
+		number
+	][]) {
+		if (actualDomainCounts[expectedDomain] !== expectedCount) {
+			throw new Error(
+				`Invalid canonical domain count for ${expectedDomain}: expected ${expectedCount}; got ${actualDomainCounts[expectedDomain]}`
+			);
+		}
+	}
 
 	const massAuthorities = object(mass.authorities, 'mass-production authorities');
 	const massCatalogHash = authority(
@@ -310,8 +331,8 @@ export function buildSkillVisualCatalog(
 		'mass catalog authority'
 	);
 	const runtimeAuthorities = object(runtime.sourceAuthorities, 'runtime source authorities');
-	const catalogHash = repositoryJsonHash(input.canonicalCatalog);
-	const massManifestHash = repositoryJsonHash(input.massProductionManifest);
+	const catalogHash = rawContentHash(input.canonicalCatalogBytes);
+	const massManifestHash = rawContentHash(input.massProductionManifestBytes);
 	if (massCatalogHash !== catalogHash) {
 		throw new Error('Mass-production catalog source hash mismatch');
 	}
