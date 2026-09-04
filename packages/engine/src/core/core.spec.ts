@@ -84,7 +84,7 @@ describe('deterministic engine core', () => {
 
 	it('keeps service availability distinct from structural compatibility', () => {
 		const serviceMemberships = [
-			[supportsCatchUp, CATCH_UP_SUPPORTED_VERSIONS, [5, 6, 7, 8, 9, 10, 11, 12, 13]],
+			[supportsCatchUp, CATCH_UP_SUPPORTED_VERSIONS, [5, 6, 7, 8, 9, 10, 11, 12, 13, 24]],
 			[supportsCommunicationApi, COMMUNICATION_API_SUPPORTED_VERSIONS, [8, 9, 10, 11, 12, 13]],
 			[supportsConversationApi, CONVERSATION_API_SUPPORTED_VERSIONS, [9, 10, 11, 12, 13]],
 			[supportsDirectivesApi, DIRECTIVES_API_SUPPORTED_VERSIONS, [10, 11, 12, 13, 16, 17, 18]],

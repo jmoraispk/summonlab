@@ -13,10 +13,12 @@ import {
 	type EngineGameStateV10,
 	type EngineGameStateV11,
 	type EngineGameStateV12,
-	type EngineGameStateV13
+	type EngineGameStateV13,
+	type EngineGameStateV24
 } from '@summonlab/contracts';
 import {
 	ENGINE_CONTENT_VERSION,
+	EQUIPMENT_ENGINE_CONTENT_VERSION,
 	addGameMinutes,
 	compareGameTime,
 	eventSummary,
@@ -73,13 +75,14 @@ async function loadState(
 	| EngineGameStateV11
 	| EngineGameStateV12
 	| EngineGameStateV13
+	| EngineGameStateV24
 > {
 	const snapshot = await sql.begin((transaction) =>
 		getEngineSnapshotInTransaction(transaction, runId)
 	);
 	if (!snapshot) throw new Error(`Engine snapshot not found: ${runId}`);
 	if (!supportsCatchUp(snapshot.state)) {
-		throw new Error(`Catch-up requires engine-v5 through engine-v13 state: ${runId}`);
+		throw new Error(`Catch-up requires engine-v5 through engine-v13 or engine-v24 state: ${runId}`);
 	}
 	return snapshot.state;
 }
@@ -301,7 +304,8 @@ export async function listDueCatchUpRunIds(
 				from summonlab_engine_scheduled_events schedule
 				where schedule.run_id = clock.run_id and schedule.status = 'pending'
 			) due on due.next_due_game_time is not null
-			where run.status = 'active' and run.content_version = ${ENGINE_CONTENT_VERSION}
+			where run.status = 'active'
+				and run.content_version in (${ENGINE_CONTENT_VERSION}, ${EQUIPMENT_ENGINE_CONTENT_VERSION})
 				and clock.speed > 0
 				and (clock.lease_id is null or clock.lease_expires_at <= ${wallTime})
 			order by due.next_due_game_time, clock.run_id

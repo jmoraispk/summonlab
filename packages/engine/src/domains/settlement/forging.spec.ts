@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest';
 
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
+import { applyCatchUpPolicy, nextCatchUpCommand } from '../../catch-up.js';
+import { supportsCatchUp } from '../../core/versions.js';
 import { applyCommand } from '../../orchestration/apply-command.js';
 import { createBootstrapEngine } from '../../orchestration/bootstrap.js';
 import { legalActions } from '../../orchestration/legal-actions.js';
@@ -152,6 +154,30 @@ describe('Standard Forging', () => {
 			definitionId: job.definitionId,
 			catalogContentVersion: job.catalogContentVersion,
 			catalogContentHash: job.catalogContentHash
+		});
+	});
+
+	it('surfaces and resolves the scheduled completion through v24 catch-up', () => {
+		const state = forgingState({ bronze: 1 });
+		const started = applyCommand(state, startCommand(state));
+		if (started.state.schemaVersion !== 24) throw new Error('Expected v24 start result');
+		const job = started.state.heroes[HERO_ID]!.currentForging!;
+
+		expect(supportsCatchUp(started.state)).toBe(true);
+		expect(nextCatchUpCommand(started.state, job.completesAt)).toMatchObject({
+			commandType: 'simulation.advance',
+			targetGameTime: job.completesAt
+		});
+
+		const caughtUp = applyCatchUpPolicy(started.state, job.completesAt, 1);
+		expect(caughtUp.resolvedScheduledEventIds).toEqual([job.scheduledEventId]);
+		expect(caughtUp.state.schemaVersion).toBe(24);
+		if (caughtUp.state.schemaVersion !== 24) throw new Error('Expected v24 catch-up result');
+		expect(caughtUp.state.heroes[HERO_ID]!.currentForging).toBeNull();
+		expect(caughtUp.state.items[job.itemId]).toMatchObject({
+			itemId: job.itemId,
+			definitionId: job.definitionId,
+			ownerId: HERO_ID
 		});
 	});
 

@@ -77,7 +77,9 @@ const MISSION_VERSIONS = Object.freeze([
 ] as const);
 const MISSION_TURN_VERSIONS = Object.freeze([12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24] as const);
 
-export const CATCH_UP_SUPPORTED_VERSIONS = Object.freeze([5, 6, 7, 8, 9, 10, 11, 12, 13] as const);
+export const CATCH_UP_SUPPORTED_VERSIONS = Object.freeze([
+	5, 6, 7, 8, 9, 10, 11, 12, 13, 24
+] as const);
 export const COMMUNICATION_API_SUPPORTED_VERSIONS = Object.freeze([8, 9, 10, 11, 12, 13] as const);
 export const CONVERSATION_API_SUPPORTED_VERSIONS = Object.freeze([9, 10, 11, 12, 13] as const);
 export const DIRECTIVES_API_SUPPORTED_VERSIONS = Object.freeze([
