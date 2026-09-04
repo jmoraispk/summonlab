@@ -65,6 +65,29 @@ acquisition paths, set membership, visual uses, exclusions, and deferred mechani
 definition across acquisition paths whenever the authored item is the same; origin belongs on the
 instance, not in duplicate catalogs.
 
+## Ground functional proportions before the first pixels
+
+For any real-world-derived weapon, armour, tool, garment, vessel, or other item whose recognition
+depends on functional anatomy, complete a proportion gate before the first pixel-producing call:
+
+1. Identify the functional landmarks and ratios that control class recognition, handling, fit, or
+   construction. Presentation measurements such as canvas margin do not substitute for item anatomy.
+2. Reuse accepted, source-bound measurements when the repository already has them. Otherwise browse
+   authoritative primary or curatorial sources—such as museum collections, conservation records,
+   maker specifications, or technical standards—and compare multiple representative examples rather
+   than treating one object as universal. Record URLs, measurements, derived ranges, and uncertainty.
+3. Write a measurable proportion/anatomy contract and bind it into the initial direction target,
+   prompt, and acceptance criteria. Fantasy escalation may ornament or transform the construction,
+   but it must not silently discard the contract's functional landmarks.
+4. Measure the first direction output against that contract before owner review or additional image
+   calls. Mark out-of-range work `revise` unless the owner explicitly accepts a named, measured
+   deviation. Never defer this check until individual production or wait for the owner to notice it.
+
+If authoritative browsing is unavailable and no accepted evidence exists, keep the direction
+`experiment`-only and do not launch the coverage matrix. Read the functional-proportion section in
+[visual-production-strategies.md](references/visual-production-strategies.md) for the evidence and
+review procedure.
+
 ## Use both visual axes
 
 When ranked materials are part of the item, use both axes before producing the final individual
