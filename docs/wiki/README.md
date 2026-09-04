@@ -40,8 +40,8 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
 - [Monster database](creatures/monsters/README.md) — 30 families, 150 canonical T1–T5 forms, 750
   Normal/Fire/Earth/Wind/Water production coordinates, and the exact forty-class reconciliation.
-- [Fauna family expansion](creatures/fauna-family-expansion.md) — nine accepted new
-  expedition families and 45 designed T1–T5 forms; its 225 new-only image coordinates are not yet
+- [Fauna family expansion](creatures/fauna-family-expansion.md) — eight accepted new
+  expedition families and 40 designed T1–T5 forms; its 200 new-only image coordinates are not yet
   materialized, and the original 750 images will not be regenerated.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.

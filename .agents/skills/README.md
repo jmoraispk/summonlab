@@ -9,3 +9,8 @@ under the adjacent `PIXIJS_SKILLS_LICENSE`.
 
 Keep the collection pinned and update all of its directories together. The `pixijs` entry skill
 routes agents to the narrower skills; a partial update can leave that routing inconsistent.
+
+## Summonlab project skills
+
+- `summonlab-enemy-creation` — designs or revises one enemy family, its T1–T5 forms, affinity
+  construction, legacy reconciliation, production boundary, and wiki evidence.

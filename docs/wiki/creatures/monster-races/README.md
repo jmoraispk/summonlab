@@ -15,8 +15,8 @@ families and 150 forms. It publishes family classification caveats, visual const
 combat duties, teaching goals, telegraphs, counterplay, lower-form interactions, and the complete
 750-coordinate production plan.
 
-The accepted [fauna family expansion](../fauna-family-expansion.md) adds nine separately planned
-families and 45 designed forms. Its future queue contains only 225 new coordinates; it does not
+The accepted [fauna family expansion](../fauna-family-expansion.md) adds eight separately planned
+families and 40 designed forms. Its future queue contains only 200 new coordinates; it does not
 reopen or regenerate the original 750.
 
 Family means a shared visual and encounter grammar. It does not automatically mean species,

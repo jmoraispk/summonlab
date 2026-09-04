@@ -16,13 +16,12 @@
       "great-cats",
       "serpents",
       "crocodilians",
-      "raptors",
-      "rodents"
+      "raptors"
     ],
     "affinities": ["normal", "fire", "earth", "wind", "water"],
-    "newFamilyCount": 9,
-    "newFormCount": 45,
-    "newCoordinateCount": 225
+    "newFamilyCount": 8,
+    "newFormCount": 40,
+    "newCoordinateCount": 200
   },
   "production": {
     "targetMaterializationStatus": "not-started",

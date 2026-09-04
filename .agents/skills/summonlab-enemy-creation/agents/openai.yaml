@@ -1,0 +1,7 @@
+interface:
+  display_name: 'Summonlab Enemy Creation'
+  short_description: 'Design consistent enemy families and variants'
+  default_prompt: 'Use $summonlab-enemy-creation to design a new Summonlab enemy family with five combat tiers and its affinity-production boundary.'
+
+policy:
+  allow_implicit_invocation: true

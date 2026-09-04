@@ -6,10 +6,10 @@ Design status: **accepted**
 
 Visual-production status: **brief only — no new targets or images have been created**
 
-This expansion adds nine expedition-first animal families without reopening the completed original
+This expansion adds eight expedition-first animal families without reopening the completed original
 30-family image program. The [canonical monster database](monsters/README.md) and its 750 generated
-coordinates remain unchanged. Future production is restricted to these **45 new forms × five image
-targets = 225 new image coordinates**.
+coordinates remain unchanged. Future production is restricted to these **40 new forms × five image
+targets = 200 new image coordinates**.
 
 The complete mechanics, visual escalation, affinity constraints, legacy mappings, and production
 boundary live in the
@@ -115,19 +115,6 @@ Natural birds of prey progress from a shadow dive to multi-band airspace control
 | T4 | War Eagle | Carry-Off Champion | Interrupt the lift or punish its fixed return route |
 | T5 | Roc | Airspace Sovereign | Defeat assigned birds to open safe altitude bands |
 
-### 39 · Rodents
-
-Rodents are the intended first fauna opponents. Their progression adds pack spacing, ranged denial,
-burrow routing, and hoard control without making every tier a larger rat.
-
-| Tier | Form | Primary archetype | Defining lesson |
-| --- | --- | --- | --- |
-| T1 | Field Rat | Scatter Initiate | Face the Rat to force a predictable retreat |
-| T2 | Tunnel Rat | Pack-Nibble Soldier | Break a simple opposite-side pair |
-| T3 | Quillrat | Ranged-Denial Specialist | Cross a fixed quill fan and punish the bare back |
-| T4 | Warren Matriarch | Burrow-Route Champion | Block an exit and attack the route commander |
-| T5 | Rat King | Hoard-Warren Sovereign | Destroy hoards and sever their exposed tail knots |
-
 ## Existing fauna references
 
 The following individual Normal images remain useful identity references. They are historical
@@ -145,7 +132,7 @@ secondary archetypes. Other bridge expansion work is removed from the active roa
 
 ## Affinity rule
 
-All 45 forms eventually receive separate Normal, Fire, Earth, Wind, and Water images. Affinity must
+All 40 forms eventually receive separate Normal, Fire, Earth, Wind, and Water images. Affinity must
 change at least two construction dimensions while preserving animal anatomy and combat readability:
 
 - Fire uses localized combustion, heat response, smoke direction, and cooling weak points.
@@ -157,3 +144,6 @@ change at least two construction dimensions while preserving animal anatomy and 
 - Normal preserves species-native materials and contains no unexplained elemental anatomy.
 
 Candidate, approved-review, and runtime remain separate states. This page promotes nothing.
+
+Rodents are intentionally outside this expansion. They are reserved as the first independent test
+of the repository's `summonlab-enemy-creation` skill.
