@@ -28,9 +28,13 @@ const FormTierSchema = z.enum(FORM_TIERS);
 const CurrentClassDispositionSchema = z.enum(CURRENT_CLASS_DISPOSITIONS);
 const IdSchema = z.string().regex(/^[a-z][a-z0-9-]*$/u, 'IDs must be lowercase slugs');
 const RequiredTextSchema = z.string().trim().min(1, 'Expected non-empty text');
-const ActiveSourcePathSchema = z
+const FamilyProductionSourcePathSchema = z
 	.string()
 	.regex(/^assets\/enemies\/experiments\/(?:family-affinity-v1|fauna-family-v1)\//u)
+	.refine((value) => !value.includes('..'), 'Active source paths cannot traverse directories');
+const ActiveSourcePathSchema = z
+	.string()
+	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
 	.refine((value) => !value.includes('..'), 'Active source paths cannot traverse directories');
 
 const AffinityThemeSchema = z
@@ -109,7 +113,7 @@ export const FamilyFormSchema = z
 export const FamilyPacketSchema = z
 	.object({
 		schemaVersion: z.literal('family-packet-v1'),
-		packetPath: ActiveSourcePathSchema.optional(),
+		packetPath: FamilyProductionSourcePathSchema.optional(),
 		familyId: IdSchema,
 		displayName: RequiredTextSchema,
 		sourceRaceNumber: z.number().int().positive(),
@@ -583,6 +587,44 @@ export const FamilyAffinityTargetSchema = z
 	.strict()
 	.superRefine((target, context) => {
 		const experimentId = familyProductionTargetExperimentId(target);
+		const experimentRoot = `${familyProductionRoot(experimentId)}/`;
+		const anchorPaths =
+			target.anchor.kind === 'normal-verified-candidate'
+				? [
+						target.anchor.normalTargetPath,
+						target.anchor.normalCandidatePath,
+						target.anchor.normalResultPath,
+						target.anchor.sourcePacketPath
+					]
+				: target.anchor.kind === 'normal-approved-review'
+					? [
+							target.anchor.normalTargetPath,
+							target.anchor.reviewReceiptPath,
+							target.anchor.normalCandidatePath,
+							target.anchor.normalResultPath
+						]
+					: [];
+		const precedingPaths =
+			target.precedingAttempt === null
+				? []
+				: [
+						target.precedingAttempt.candidatePath,
+						target.precedingAttempt.resultPath,
+						target.precedingAttempt.reviewPath
+					];
+		const experimentPaths = [
+			target.sources.familyPacketPath,
+			target.sources.mappingPath,
+			...Object.values(target.ownedPaths),
+			...anchorPaths,
+			...precedingPaths
+		];
+		if (experimentPaths.some((path) => path !== null && !path.startsWith(experimentRoot))) {
+			context.addIssue({
+				code: 'custom',
+				message: `Target paths must stay under the ${experimentId} root`
+			});
+		}
 		if (experimentId === 'fauna-family-v1' && target.namespace !== 'canonical') {
 			context.addIssue({
 				code: 'custom',
@@ -922,6 +964,17 @@ export const FamilyAffinityAssignmentSchema = z
 	})
 	.strict()
 	.superRefine((assignment, context) => {
+		const experimentId = assignment.experimentId ?? 'family-affinity-v1';
+		const experimentRoot = `${familyProductionRoot(experimentId)}/`;
+		if (
+			!assignment.allowedOutputs.candidate.startsWith(experimentRoot) ||
+			!assignment.allowedOutputs.result.startsWith(experimentRoot)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: `Assignment outputs must stay under the ${experimentId} root`
+			});
+		}
 		if (assignment.assignmentId !== `${assignment.targetId}/assignment`) {
 			context.addIssue({ code: 'custom', message: 'Assignment ID must bind its target ID' });
 		}
@@ -1556,6 +1609,12 @@ export const FamilyAffinityManifestSchema = z
 	})
 	.strict()
 	.superRefine((manifest, context) => {
+		if (!manifest.mappingReservations.sourcePath.startsWith(`${FAMILY_AFFINITY_ROOT}/`)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Family-affinity manifest source path must stay under its experiment root'
+			});
+		}
 		if (manifest.canonicalMatrix.activeCoordinates.length !== 750) {
 			context.addIssue({
 				code: 'custom',
@@ -1595,6 +1654,18 @@ export const FamilyAffinityManifestSchema = z
 			...manifest.canonicalMatrix.activeCoordinates,
 			...manifest.bridge.activeCoordinates
 		];
+		if (
+			allActiveCoordinates.some(
+				(coordinate) =>
+					!coordinate.targetPath.startsWith(`${FAMILY_AFFINITY_ROOT}/`) ||
+					!coordinate.assignmentPath.startsWith(`${FAMILY_AFFINITY_ROOT}/`)
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Family-affinity coordinates must stay under their experiment root'
+			});
+		}
 		for (const field of [
 			'coordinateId',
 			'targetPath',

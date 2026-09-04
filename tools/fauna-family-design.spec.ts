@@ -4,8 +4,10 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
+	FamilyAffinityActiveSourcesSchema,
 	FamilyPacketSchema,
 	FamilyAffinityAssignmentSchema,
+	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
 	FORM_TIERS,
 	PRODUCTION_AFFINITIES,
@@ -20,6 +22,110 @@ async function readJson(path: string): Promise<unknown> {
 }
 
 describe('fauna-family-v1 design', () => {
+	it('keeps legacy registries and manifests confined to the family-affinity root', async () => {
+		const activeSources = (await readJson(
+			'assets/enemies/experiments/family-affinity-v1/active-sources.json'
+		)) as Record<string, unknown>;
+		const manifest = (await readJson(
+			'assets/enemies/experiments/family-affinity-v1/manifest.json'
+		)) as {
+			canonicalMatrix: { activeCoordinates: Array<Record<string, unknown>> };
+		};
+		const crossRootRegistry = structuredClone(activeSources) as {
+			mappingPath: string;
+			familyPacketPaths: string[];
+		};
+		crossRootRegistry.mappingPath = crossRootRegistry.mappingPath.replace(
+			'family-affinity-v1',
+			'fauna-family-v1'
+		);
+		crossRootRegistry.familyPacketPaths = crossRootRegistry.familyPacketPaths.map((path) =>
+			path.replace('family-affinity-v1', 'fauna-family-v1')
+		);
+		const crossRootManifest = structuredClone(manifest);
+		crossRootManifest.canonicalMatrix.activeCoordinates[0]!.targetPath =
+			'assets/enemies/experiments/fauna-family-v1/targets/forged/target-v1.json';
+
+		expect(FamilyAffinityActiveSourcesSchema.safeParse(crossRootRegistry).success).toBe(false);
+		expect(FamilyAffinityManifestSchema.safeParse(crossRootManifest).success).toBe(false);
+	});
+
+	it('rejects target and assignment paths from the other family-production experiment', async () => {
+		const cases = [
+			{
+				root: 'assets/enemies/experiments/family-affinity-v1',
+				otherRoot: expansionRoot,
+				targetPath:
+					'assets/enemies/experiments/family-affinity-v1/targets/dragons/dragon-fledgling/fire/target-v1.json',
+				assignmentPath:
+					'assets/enemies/experiments/family-affinity-v1/assignments/dragons/dragon-fledgling/fire/assignment-v1.json'
+			},
+			{
+				root: expansionRoot,
+				otherRoot: 'assets/enemies/experiments/family-affinity-v1',
+				targetPath: `${expansionRoot}/targets/great-cats/great-cat-sabercat/fire/target-v1.json`,
+				assignmentPath: `${expansionRoot}/assignments/great-cats/great-cat-sabercat/fire/assignment-v1.json`
+			}
+		] as const;
+
+		for (const testCase of cases) {
+			const target = FamilyAffinityTargetSchema.parse(await readJson(testCase.targetPath));
+			const assignment = FamilyAffinityAssignmentSchema.parse(
+				await readJson(testCase.assignmentPath)
+			);
+			const crossRootPacket = {
+				...target,
+				sources: {
+					...target.sources,
+					familyPacketPath: target.sources.familyPacketPath.replace(
+						testCase.root,
+						testCase.otherRoot
+					)
+				}
+			};
+			const crossRootMapping = {
+				...target,
+				sources: {
+					...target.sources,
+					mappingPath: target.sources.mappingPath.replace(testCase.root, testCase.otherRoot)
+				}
+			};
+			const crossRootAnchor = {
+				...target,
+				anchor:
+					target.anchor.kind === 'normal-approved-review'
+						? {
+								...target.anchor,
+								normalTargetPath: target.anchor.normalTargetPath.replace(
+									testCase.root,
+									testCase.otherRoot
+								)
+							}
+						: target.anchor
+			};
+			const crossRootCandidate = {
+				...assignment,
+				allowedOutputs: {
+					...assignment.allowedOutputs,
+					candidate: assignment.allowedOutputs.candidate.replace(testCase.root, testCase.otherRoot)
+				}
+			};
+			const crossRootResult = {
+				...assignment,
+				allowedOutputs: {
+					...assignment.allowedOutputs,
+					result: assignment.allowedOutputs.result.replace(testCase.root, testCase.otherRoot)
+				}
+			};
+
+			expect(FamilyAffinityTargetSchema.safeParse(crossRootPacket).success).toBe(false);
+			expect(FamilyAffinityTargetSchema.safeParse(crossRootMapping).success).toBe(false);
+			expect(FamilyAffinityTargetSchema.safeParse(crossRootAnchor).success).toBe(false);
+			expect(FamilyAffinityAssignmentSchema.safeParse(crossRootCandidate).success).toBe(false);
+			expect(FamilyAffinityAssignmentSchema.safeParse(crossRootResult).success).toBe(false);
+		}
+	});
+
 	it('contains exactly eight schema-valid families and 40 unique T1-T5 forms', async () => {
 		const activeSources = (await readJson(`${expansionRoot}/active-sources.json`)) as {
 			baseProgramMutationForbidden: boolean;
