@@ -10,6 +10,9 @@
 	},
 	"include": [
 		"skill-taxonomy-lib.ts",
+		"wiki-skill-visual-catalog-lib.ts",
+		"wiki-skill-visual-catalog-lib.spec.ts",
+		"export-wiki-skill-visual-catalog.ts",
 		"skill-icon-production-lib.ts",
 		"skill-icon-production-lib.spec.ts",
 		"skill-icon-mass-production-lib.ts",
