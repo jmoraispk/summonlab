@@ -39,6 +39,13 @@ function requireText(text, pattern, message, errors) {
 }
 
 const classicalRunSupports = ['left', 'left', 'none', 'right', 'right'];
+const classicalRunLabels = [
+	'Contact A',
+	'Compression A',
+	'Airborne pass',
+	'Contact B',
+	'Recovery B'
+];
 
 function compareSupportSequence(actual, source, errors) {
 	for (const [index, expected] of classicalRunSupports.entries()) {
@@ -56,14 +63,14 @@ function parseKnownActionTableSupports(markdown) {
 		.map((match) => match[2]);
 }
 
-function parseRunDiagramSupports(svg) {
+function parseRunDiagramPanels(svg) {
 	return [
 		...svg.matchAll(
-			/<g transform="translate\([^)]*\)">[\s\S]*?<text[^>]*>([1-5]) [^<]+<\/text><text[^>]*>support=(left|right|none)<\/text>/g
+			/<g transform="translate\([^)]*\)">[\s\S]*?<text[^>]*>([1-5]) ([^<]+)<\/text><text[^>]*>support=(left|right|none)<\/text>/g
 		)
 	]
 		.sort((left, right) => Number(left[1]) - Number(right[1]))
-		.map((match) => match[2]);
+		.map((match) => ({ label: match[2].trim(), support: match[3] }));
 }
 
 function validateMarkdownLinks(path, text, errors) {
@@ -206,7 +213,20 @@ function main() {
 	compareSupportSequence(parseKnownActionTableSupports(knownActions), 'table', errors);
 	const diagramPath = resolve(dirname(paths['known-actions']), 'classical-human-run.svg');
 	const diagram = read(diagramPath, 'classical human run diagram', errors);
-	compareSupportSequence(parseRunDiagramSupports(diagram), 'SVG panel', errors);
+	const diagramPanels = parseRunDiagramPanels(diagram);
+	compareSupportSequence(
+		diagramPanels.map((panel) => panel.support),
+		'SVG panel',
+		errors
+	);
+	for (const [index, expected] of classicalRunLabels.entries()) {
+		const actual = diagramPanels[index]?.label;
+		if (actual !== expected) {
+			errors.push(
+				`classical human run SVG panel label at beat ${index + 1} must be ${expected}, got ${actual ?? 'missing'}`
+			);
+		}
+	}
 
 	for (const [path, text] of [
 		[paths['animation-skill'], animationSkill],

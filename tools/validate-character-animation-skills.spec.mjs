@@ -115,3 +115,16 @@ test('requires each classical run SVG panel to retain its ordered support', () =
 	assert.notEqual(result.status, 0);
 	assert.match(result.stderr, /classical human run SVG.*support/i);
 });
+
+test('requires each classical run SVG panel to retain its ordered beat label', () => {
+	const diagramPath = join(
+		repositoryRoot,
+		'skills/summonlab-character-animations/references/classical-human-run.svg'
+	);
+	const diagram = readFileSync(diagramPath, 'utf8');
+	const result = runValidatorWithRunDiagram(
+		diagram.replace('1 Contact A</text>', '1 Anything</text>')
+	);
+	assert.notEqual(result.status, 0);
+	assert.match(result.stderr, /classical human run SVG.*label/i);
+});
