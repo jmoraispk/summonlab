@@ -81,9 +81,16 @@ export interface MassProductionManifest {
 	readonly skills: readonly MassProductionSkillRecord[];
 	readonly evidence?: {
 		readonly providerCalls: {
-			readonly families: number;
-			readonly skills: number;
-			readonly total: number;
+			readonly retainedFamilyOutputs: number;
+			readonly retainedSkillOutputs: number;
+			readonly retainedSuccessfulTotal: number;
+			readonly correctiveOutputs: number;
+			readonly accountingBoundary: 'retained-output-evidence';
+		};
+		readonly orchestration: {
+			readonly workerInterruptions: number;
+			readonly dependencyDeferralsRecovered: number;
+			readonly unresolvedFailures: number;
 		};
 		readonly contactSheets: {
 			readonly families: readonly {

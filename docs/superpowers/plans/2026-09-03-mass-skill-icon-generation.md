@@ -61,8 +61,10 @@ All run artifacts live under:
 
 The root contains `manifest.json`, prompt packets, reference sheets and cell maps, normalized icons,
 exact provider sources, structured result records, and derived contact sheets. The manifest is the
-completion authority and records 580 initial provider calls: 124 family sheets plus 456 individual
-skills. No automatic corrective generation was consumed in `full-catalog-v1`.
+completion authority and records 580 retained successful provider outputs: 124 family sheets plus
+456 individual skills. No automatic corrective output was consumed. One coordinator-worker
+interruption and six dependency deferrals were recovered without overwriting any retained output;
+the built-in provider exposes retained output evidence rather than a separate billing-call ledger.
 
 ## Commands
 
