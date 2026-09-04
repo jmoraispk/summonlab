@@ -15,14 +15,19 @@ individual poses do not compensate for a broken sequence.
 Read [clip-contracts.md](references/clip-contracts.md) before planning idle, locomotion, attack, hit,
 or defeat frames.
 
+For a known action, also read [known-actions.md](references/known-actions.md). Its saved beats are
+motion authority, not optional pose inspiration.
+
 ## Clip brief
 
 Resolve the repository contract and write this brief before pixels:
 
 ```text
 Character / clip:
+Action authority:
 Motion sentence:
 Frame beats (left to right):
+Support/contact sequence:
 Loop seam or terminal state:
 Accepted source path / version / SHA-256 / approval record:
 Identity and equipment locks:
@@ -35,9 +40,16 @@ Output paths and next version:
 ```
 
 Bind the canonical identity reference and exact accepted source; never infer authority from a filename
-or timestamp. If the action, striking limb, gait, or equipment outcome is ambiguous and would
-materially change the result, ask for that choice. Otherwise choose the simplest physically coherent
-action and record the assumption.
+or timestamp. Before image generation, classify the action:
+
+```text
+known + referenced -> copy the saved beats into the clip brief
+undefined/ambiguous -> stop; invoke summonlab-character-action-creation; await approved contract
+```
+
+An undefined action must route through action creation before pixels. Do not use image generation or
+pose variations to discover an action. Copy an approved contract's beats, contacts, acting limb, and
+ending into the brief without redesigning them.
 
 One attack clip gets one action verb and one delivery mechanism. A slash row cannot also contain a
 pounce or ground slam. A defeat clip progresses monotonically toward rest. A loop must explain the

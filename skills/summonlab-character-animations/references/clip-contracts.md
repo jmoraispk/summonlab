@@ -5,6 +5,12 @@ mechanical order. Screen directions are viewer-relative; anatomical sides remain
 
 ## Human locomotion
 
+For a classical human run, use the saved `classical-human-run-5` authority in
+[known-actions.md](known-actions.md) and its original [support diagram](classical-human-run.svg).
+The sequence is `left, left, none, right, right`: do not keep either foot planted for more than two
+consecutive frames, omit the opposite-foot contact, or present duplicated/reordered poses as
+progression.
+
 For a five-frame in-place run:
 
 1. **Contact A:** one foot reaches and accepts weight; the opposite leg trails.
