@@ -305,6 +305,11 @@ reference.
   anatomical heads as the combat-chibi standard. The owner selected it for the complete approved
   200-hero roster. The regeneration run has no pilot or owner-review checkpoint; it produces all 200
   candidate-only images using each selected summon portrait as its sole visual authority.
+- The corresponding `five-head-chibi-regeneration-001` production run completed all thirteen waves:
+  200 summon-bound primary calls produced 200 readable `1024x1536` provider PNGs, 200 byte-identical
+  candidates, and 200 strict receipts. One journaled provider-no-output primary received the single
+  allowed versioned retry. These images remain unreviewed, unapproved, and unbound to runtime until
+  a separate comparison and promotion task explicitly advances them.
 
 ## Integration boundary
 
