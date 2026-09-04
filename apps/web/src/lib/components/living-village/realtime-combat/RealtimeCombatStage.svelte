@@ -17,6 +17,7 @@
 		type ActorAnimatorState,
 		type CombatClip
 	} from './actor-animator';
+	import { actorVisualRegistration } from './actor-visual-registration';
 	import { WELL_OBSTACLE } from './combat-spatial';
 	import {
 		projectCombatPoint,
@@ -65,7 +66,7 @@
 	} as const;
 	const MOTION = {
 		asha: `${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`,
-		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v2.json`,
+		'iron-guardian': `${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v3.json`,
 		'moss-archer': `${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v2.json`,
 		'rat-brute': `${ART_ROOT}/animation-canary-v1/rat-brute/rat-brute-motion-v1.json`,
 		'lesser-rat': `${ART_ROOT}/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json`
@@ -264,8 +265,9 @@
 
 			for (const entry of simulation.actors) {
 				const container = new Container({ label: entry.id, sortableChildren: true });
+				const registration = actorVisualRegistration(entry.id, entry.role, 'idle');
 				const shadow = new Graphics({ label: `${entry.id}-contact-shadow` })
-					.ellipse(0, 0, entry.role === 'brute' ? 72 : entry.role === 'swarm' ? 29 : 45, 14)
+					.ellipse(0, 0, registration.shadowRadiusX, registration.shadowRadiusY)
 					.fill({ color: 0x010305, alpha: 0.62 });
 				const motionSheet = motionSheetFor(entry);
 				const body = motionSheet
@@ -418,6 +420,11 @@
 					view.impact.alpha = entry.hitPulse * 0.9;
 					view.impact.scale.set(0.72 + (1 - entry.hitPulse) * 0.55);
 					view.body.tint = entry.hitPulse > 0.48 ? 0xffc8a4 : 0xffffff;
+					view.body.position.y = actorVisualRegistration(
+						entry.id,
+						entry.role,
+						view.motion?.clip ?? 'idle'
+					).bodyOffsetY;
 					view.body.scale.set(
 						view.baseWidth * (1 + pulse * 0.055),
 						view.baseHeight * (1 - pulse * 0.035)
@@ -513,7 +520,7 @@
 	bind:this={host}
 	data-testid="realtime-combat-pixi-host"
 	data-presentation-mode={mode}
-	data-motion-pack-versions="asha:2,iron-guardian:2,moss-archer:2,rat-brute:1,lesser-rat:2"
+	data-motion-pack-versions="asha:2,iron-guardian:3,moss-archer:2,rat-brute:1,lesser-rat:2"
 >
 	<canvas bind:this={canvas} data-testid="realtime-combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>

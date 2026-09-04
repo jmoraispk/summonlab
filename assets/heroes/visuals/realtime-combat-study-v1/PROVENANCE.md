@@ -186,10 +186,38 @@ reproducible and do not depend on Codex-managed temporary storage.
   in source row two; the defeat generation supplies source row four; rows one and three remain
   pixel-identical to v1. Candidate awaiting owner playtest.
 
+### Toma / iron guardian ground-shadow correction v3
+
+- Accepted source binding: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v2.png`
+  (`94544c8cf10d557993fe91313aef935758abc412dc5a4fad303c51b1b9580976`).
+- Identity binding: `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png`
+  (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`).
+- Selected generation original: `exec-15103857-158b-4b95-862b-d8c2cfc34877.png`
+  (`d4e9d58ec15a82f87acd81b0897a1ef32c79c221b046f31177b9d60badee438c`).
+- Project source: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v3.png`.
+- Source SHA-256: `b22c5390f290abf4ff3cca9540c713eb30d1045ed4f1c9573389a8d223df99d9`.
+- Runtime atlas SHA-256: `bf6aa0b71000b96330728cd33e00b7f7fde47505415e39f38b4a5a80eb3b7ad5`.
+- Mode: built-in Codex image generation precise-object edit, followed by deterministic row-two
+  assembly over the exact v2 source.
+- Final prompt: remove only the five pale gray/white horizontal floor-shadow ellipses beneath the
+  second-row advance poses and replace them with the existing uniform white matte. Add no replacement
+  shadow because the runtime owns the contact shadow. Preserve the exact identity, face, topknot,
+  beard, proportions, armor, left shield, right mace, leg positions, scale, camera, baseline, spacing,
+  lighting, cell order, other three rows, and five-by-four layout; do not redraw, mirror, crop, move,
+  resize, relight, restyle, add effects, or alter equipment.
+- Assembly validation: source rows one, three, and four are byte-identical to v2. The v3 atlas passes
+  the advance ground-artifact ceiling that intentionally rejects v2. Candidate awaiting owner
+  playtest.
+- Runtime registration: living Toma frames receive a `-3` logical-pixel body offset and a `39×13`
+  contact-shadow radius; living Nessa frames receive a `-4` logical-pixel body offset. Down clips
+  return to the shared ground line, while combat coordinates, shadows, health bars, and targeting
+  remain anchored to the original world point.
+
 `tools/build-realtime-combat-motion-pack.mjs` overlaps each nominal cell, keys the neutral background,
 isolates the center-connected subject from adjacent-cell fragments, normalizes every frame to a
 256×256 canvas with a shared bottom-center anchor, and writes Pixi-compatible atlas JSON plus a motion
 manifest. `tools/validate-realtime-combat-motion-pack.mjs` validates clip presence, unique frame
-ownership, atlas dimensions, alpha, and anchor data. The well foreground is a lossless masked copy of
-the existing original environment plate produced by `tools/extract-realtime-combat-occluders.mjs`;
-it contains no new third-party content.
+ownership, atlas dimensions, alpha, anchor data, and an optional bright-neutral locomotion-ground
+artifact ceiling. The well foreground is a lossless masked copy of the existing original environment
+plate produced by `tools/extract-realtime-combat-occluders.mjs`; it contains no new third-party
+content.
