@@ -463,10 +463,10 @@ const EXPECTATIONS = {
 	'v24-equipment-state': checkedExpectation({
 		eventTypes: ['run.initialized', 'master.gate.inspected'],
 		afterHashes: [
-			'a7fba5e0120b196e9d3a8054f13980625151141b52ae8c799e29ee428828b603',
-			'81c8b5ea2a58c7d79a551200adb1b92ac8cb3e573340e50c8375d1bf81d9a04c'
+			'62906ca15c0ae01b6197320f2e931d286383efe0218bdd702dbdf0eb21b91d7e',
+			'000ef899bceda61815053ed39434d1a6108c0430dd4647c16cbcaa238a51ad56'
 		],
-		finalStateHash: '81c8b5ea2a58c7d79a551200adb1b92ac8cb3e573340e50c8375d1bf81d9a04c',
+		finalStateHash: '000ef899bceda61815053ed39434d1a6108c0430dd4647c16cbcaa238a51ad56',
 		legalActionIds: [
 			'master.inspect.gate',
 			'simulation.damage.hero.91568a1b-76b3-4591-a7f3-60360ea322ce',

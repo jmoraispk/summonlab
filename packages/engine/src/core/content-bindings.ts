@@ -18,7 +18,7 @@ import type {
 } from '@summonlab/contracts';
 
 import { ReplayIntegrityError } from '../errors.js';
-import { hashCanonical, sha256Hex } from '../hash.js';
+import { deterministicUuid, hashCanonical, sha256Hex } from '../hash.js';
 
 type NavigationState = Extract<
 	EngineGameState,
@@ -76,6 +76,17 @@ export function verifiedEquipmentDefinition(definitionId: string): Readonly<Equi
 	const definition = getEquipmentDefinition(definitionId);
 	if (!definition) throw new Error(`Equipment content is unavailable: ${definitionId}`);
 	return definition;
+}
+
+export function verifiedEquipmentCatalogBinding(): Readonly<{
+	contentVersion: 'equipment-content-v1';
+	contentHash: string;
+}> {
+	verifyEquipmentCatalog();
+	return Object.freeze({
+		contentVersion: EQUIPMENT_DEFINITION_CATALOG.contentVersion,
+		contentHash: EQUIPMENT_DEFINITION_CATALOG.contentHash
+	});
 }
 
 export function equipmentRankWithBonus(baseRank: EquipmentRank, bonus: 0 | 1 | 2): EquipmentRank {
@@ -136,6 +147,29 @@ export function validateEquipmentStateContent(state: EngineGameStateV24): void {
 		}
 	}
 	for (const hero of Object.values(state.heroes)) {
+		const job = hero.currentForging;
+		if (job) {
+			const definition = verifiedEquipmentDefinition(job.definitionId);
+			const binding = verifiedEquipmentCatalogBinding();
+			if (
+				definition.forgeable !== true ||
+				definition.materialId !== job.materialId ||
+				job.recipe.definitionId !== definition.definitionId ||
+				job.recipe.material.materialId !== definition.materialId ||
+				job.recipe.material.lots !== 1 ||
+				job.recipe.craftsmanship.label !== 'standard' ||
+				job.recipe.craftsmanship.bonus !== 0 ||
+				job.catalogContentVersion !== binding.contentVersion ||
+				job.catalogContentHash !== binding.contentHash ||
+				job.itemId !== deterministicUuid(`${job.forgeEventId}:forged-item`) ||
+				state.items[job.itemId] !== undefined
+			) {
+				throw new ReplayIntegrityError(
+					'Forging job diverged from equipment content',
+					state.eventCursor
+				);
+			}
+		}
 		for (const [slot, itemId] of Object.entries(hero.equipment)) {
 			if (!itemId) continue;
 			const definition = equipmentItemDefinition(state, itemId);

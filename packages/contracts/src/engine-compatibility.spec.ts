@@ -100,6 +100,7 @@ describe('engine contracts compatibility', () => {
 		  "hero.plan.day",
 		  "hero.share.synthesis.rumor",
 		  "hero.start.activity",
+		  "hero.start.forging",
 		  "hero.start.routine",
 		  "hero.start.travel",
 		  "master.apply.safety-stop",
@@ -487,6 +488,13 @@ describe('engine contracts compatibility', () => {
 			},
 			{
 				...commandBase,
+				commandType: 'hero.start.forging',
+				definitionId: 'equipment-bronze-sword',
+				materialId: 'bronze',
+				craftsmanship: { label: 'standard', bonus: 0 }
+			},
+			{
+				...commandBase,
 				commandType: 'simulation.advance',
 				targetGameTime: '2000-01-01T00:01:00.000Z'
 			},
@@ -578,6 +586,7 @@ describe('engine contracts compatibility', () => {
 			'master.inspect.gate',
 			'hero.start.activity',
 			'hero.equip.item',
+			'hero.start.forging',
 			'simulation.advance',
 			'simulation.sync.clock',
 			'simulation.apply.damage',
@@ -621,7 +630,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

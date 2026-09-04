@@ -1,5 +1,6 @@
 import {
 	CommunicativeActSchema,
+	CurrentForgingSchema,
 	CurrentRoutineSchema,
 	DailyPlanSchema,
 	DirectiveRecordSchema,
@@ -60,6 +61,13 @@ import {
 } from './society.js';
 import type { CommunicationInput, DirectiveIssueCommand } from './society.js';
 import { equipEquipmentItem } from './equipment.js';
+import {
+	ForgingMaterialLotChangeSchema,
+	ForgingOutcomeSchema,
+	buildStandardForgingStart,
+	currentForgingFor,
+	forgingOutcomeMatches
+} from './forging.js';
 
 const ChoosePayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
@@ -98,6 +106,14 @@ export const ActivityStartedPayloadSchema = EmptyMetadataSchema.extend({
 	activityId: z.string().uuid(),
 	scheduledEvent: ScheduledEventSchema,
 	resourceChanges: z.array(ResourceChangeSchema),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+export const ForgingStartedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	currentForging: CurrentForgingSchema,
+	scheduledEvent: ScheduledEventSchema,
+	materialLotChange: ForgingMaterialLotChangeSchema,
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -242,6 +258,10 @@ const SimulationAdvancedPayloadV5Schema = EmptyMetadataSchema.extend({
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
+const SimulationAdvancedPayloadV24Schema = SimulationAdvancedPayloadV5Schema.extend({
+	forgingOutcomes: z.array(ForgingOutcomeSchema)
+}).strict();
+
 const SimulationClockSyncedPayloadSchema = EmptyMetadataSchema.extend({
 	targetGameTime: z.string().datetime(),
 	nextVersion: z.number().int().nonnegative()
@@ -318,6 +338,7 @@ export const SETTLEMENT_EVENT_TYPES = [
 	'hero.damaged',
 	'hero.destination.selected',
 	'hero.died',
+	'hero.forging.started',
 	'hero.item.equipped',
 	'hero.routine.started',
 	'hero.travel.started',
@@ -642,6 +663,7 @@ function reduceSettlementEvent(
 			hero.currentActivity ||
 			hero.currentTravel ||
 			hero.currentRoutine ||
+			currentForgingFor(state, payload.heroId) ||
 			payload.dailyPlan.dayIndex !== gameDayIndex(state.simulatedAt)
 		) {
 			throw new ReplayIntegrityError('Daily plan precondition failed', event.sequence);
@@ -676,6 +698,7 @@ function reduceSettlementEvent(
 			hero.currentActivity ||
 			hero.currentTravel ||
 			hero.currentRoutine ||
+			currentForgingFor(state, payload.heroId) ||
 			entry?.status !== 'pending' ||
 			entry.kind !== payload.currentRoutine.kind ||
 			hero.dailyPlan.planId !== payload.currentRoutine.planId ||
@@ -820,6 +843,7 @@ function reduceSettlementEvent(
 			!hero ||
 			hero.currentActivity ||
 			hero.currentTravel ||
+			currentForgingFor(state, payload.heroId) ||
 			hero.locationNodeId !== payload.fromNodeId ||
 			state.settlement.navigation.contentVersion !== payload.settlementContentVersion ||
 			state.settlement.navigation.contentHash !== payload.settlementContentHash
@@ -881,7 +905,12 @@ function reduceSettlementEvent(
 	if (event.eventType === 'hero.activity.started') {
 		const payload = ActivityStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
-		if (!hero || hero.currentActivity || currentTravelFor(state, payload.heroId))
+		if (
+			!hero ||
+			hero.currentActivity ||
+			currentTravelFor(state, payload.heroId) ||
+			currentForgingFor(state, payload.heroId)
+		)
 			throw new ReplayIntegrityError('Activity start is not legal', event.sequence);
 		const settlement = applyResourceChanges(state, event, payload.resourceChanges);
 		return parseModernState(state, {
@@ -902,6 +931,60 @@ function reduceSettlementEvent(
 						completesAt: payload.scheduledEvent.dueGameTime
 					}
 				}
+			}
+		});
+	}
+	if (event.eventType === 'hero.forging.started') {
+		if (state.schemaVersion !== 24 || !event.commandId) {
+			throw new ReplayIntegrityError('Forging start requires engine-v24', event.sequence);
+		}
+		const payload = ForgingStartedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		if (
+			!hero ||
+			hero.currentActivity ||
+			hero.currentTravel ||
+			hero.currentRoutine ||
+			hero.currentForging
+		) {
+			throw new ReplayIntegrityError('Forging start is not legal', event.sequence);
+		}
+		let expected;
+		try {
+			expected = buildStandardForgingStart({
+				state,
+				commandId: event.commandId,
+				forgeEventId: event.eventId,
+				heroId: payload.heroId,
+				definitionId: payload.currentForging.definitionId,
+				materialId: payload.materialLotChange.materialId,
+				craftsmanship: payload.currentForging.recipe.craftsmanship
+			});
+		} catch {
+			throw new ReplayIntegrityError('Forging start content is unavailable', event.sequence);
+		}
+		if (
+			hashCanonical(expected.currentForging) !== hashCanonical(payload.currentForging) ||
+			hashCanonical(expected.scheduledEvent) !== hashCanonical(payload.scheduledEvent) ||
+			hashCanonical(expected.materialLotChange) !== hashCanonical(payload.materialLotChange)
+		) {
+			throw new ReplayIntegrityError('Forging start payload diverged', event.sequence);
+		}
+		return parseModernState(state, {
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			settlement: {
+				...state.settlement,
+				materialLots: {
+					...state.settlement.materialLots,
+					[payload.materialLotChange.materialId]: payload.materialLotChange.after
+				}
+			},
+			heroes: {
+				...state.heroes,
+				[payload.heroId]: { ...hero, currentForging: payload.currentForging }
 			}
 		});
 	}
@@ -944,7 +1027,10 @@ function reduceSettlementEvent(
 	}
 	if (event.eventType === 'simulation.advanced') {
 		if (hasRoutineState(state)) {
-			const payload = SimulationAdvancedPayloadV5Schema.parse(event.payload);
+			const payload =
+				state.schemaVersion === 24
+					? SimulationAdvancedPayloadV24Schema.parse(event.payload)
+					: SimulationAdvancedPayloadV5Schema.parse(event.payload);
 			const heroes = { ...state.heroes };
 			const items = { ...state.items };
 			let settlement = state.settlement;
@@ -1045,6 +1131,43 @@ function reduceSettlementEvent(
 					dailyPlan,
 					currentRoutine: null
 				};
+			}
+			if (state.schemaVersion === 24) {
+				const forgingPayload = SimulationAdvancedPayloadV24Schema.parse(event.payload);
+				const dueForgingHeroIds = Object.values(state.heroes)
+					.filter(
+						(hero) =>
+							hero.currentForging &&
+							compareGameTime(hero.currentForging.completesAt, payload.targetGameTime) <= 0
+					)
+					.sort((left, right) => {
+						const time = compareGameTime(
+							left.currentForging!.completesAt,
+							right.currentForging!.completesAt
+						);
+						return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
+					})
+					.map((hero) => hero.heroId);
+				if (
+					forgingPayload.forgingOutcomes.length !== dueForgingHeroIds.length ||
+					forgingPayload.forgingOutcomes.some(
+						(outcome, index) =>
+							outcome.heroId !== dueForgingHeroIds[index] || !forgingOutcomeMatches(state, outcome)
+					)
+				) {
+					throw new ReplayIntegrityError('Scheduled forging outcomes diverged', event.sequence);
+				}
+				for (const outcome of forgingPayload.forgingOutcomes) {
+					const hero = heroes[outcome.heroId];
+					if (!hero || !('currentForging' in hero) || !hero.currentForging) {
+						throw new ReplayIntegrityError('Forging job disappeared', event.sequence);
+					}
+					if (items[outcome.item.itemId]) {
+						throw new ReplayIntegrityError('Forged item already exists', event.sequence);
+					}
+					heroes[outcome.heroId] = { ...hero, currentForging: null };
+					items[outcome.item.itemId] = outcome.item;
+				}
 			}
 			if (
 				state.schemaVersion === 10 ||
@@ -1226,6 +1349,7 @@ function reduceSettlementEvent(
 									...hero,
 									currentActivity: null,
 									...(hasNavigationState(state) ? { currentTravel: null } : {}),
+									...(state.schemaVersion === 24 ? { currentForging: null } : {}),
 									...routineState
 								}
 							];
@@ -1284,6 +1408,9 @@ function reduceSettlementEvent(
 						? { currentTravel: dead ? null : currentTravelFor(state, payload.targetId) }
 						: {}),
 					...(hasFacilityState(state) ? { assignment: dead ? null : assignment } : {}),
+					...(state.schemaVersion === 24
+						? { currentForging: dead ? null : state.heroes[payload.targetId]!.currentForging }
+						: {}),
 					...routineState
 				}
 			}

@@ -89,6 +89,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const buildingStates = createBuildingStates(settlementContent);
 	const developmentMissionScenario = input.developmentMissionScenario;
 	const equipmentDevelopmentScenario = input.developmentEquipmentScenario?.enabled === true;
+	const forgeReady = input.developmentEquipmentScenario?.forgeReady === true;
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
 	}
@@ -116,6 +117,18 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			bowId: deterministicUuid(`${input.runId}:${hero.heroId}:short-bow`)
 		};
 	});
+	const forgeReadyHeroId = forgeReady ? bootstrapHeroes[0]!.heroId : null;
+	const workshop = buildingStates.workshop;
+	if (forgeReady && (!workshop || workshop.systemId !== 'forge-system')) {
+		throw new Error('The Equipment fixture requires the authored workshop forge system');
+	}
+	const settlementBuildingStates =
+		forgeReady && workshop
+			? {
+					...buildingStates,
+					workshop: { ...workshop, assignedHeroIds: [forgeReadyHeroId!] }
+				}
+			: buildingStates;
 	const foundryRouteMemoryHeroId = developmentMissionScenario?.foundryRouteMemoryHeroId;
 	if (
 		foundryRouteMemoryHeroId &&
@@ -247,9 +260,10 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				{
 					heroId: hero.heroId,
 					lifeState: 'active',
-					location: 'summoning-gate',
-					locationNodeId: settlementContent.spawnNodeId,
-					firstArrivalCompleted: false,
+					location: forgeReadyHeroId === hero.heroId ? 'workshop' : 'summoning-gate',
+					locationNodeId:
+						forgeReadyHeroId === hero.heroId ? 'workshop-forge' : settlementContent.spawnNodeId,
+					firstArrivalCompleted: forgeReadyHeroId === hero.heroId,
 					destination: null,
 					health: 100,
 					maxHealth: 100,
@@ -274,7 +288,15 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						: { mainHand: hero.bladeId },
 					currentActivity: null,
 					currentTravel: null,
-					assignment: null,
+					assignment:
+						forgeReadyHeroId === hero.heroId
+							? {
+									buildingId: 'workshop',
+									nodeId: 'workshop-bench',
+									role: 'artisan',
+									assignedAt: simulatedAt
+								}
+							: null,
 					mind: hero.mind,
 					habit: {
 						habit: hero.mind.dailyHabit,
@@ -284,7 +306,8 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						lastTriggeredAt: null
 					},
 					dailyPlan: null,
-					currentRoutine: null
+					currentRoutine: null,
+					...(equipmentDevelopmentScenario ? { currentForging: null } : {})
 				}
 			])
 		),
@@ -298,7 +321,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				activeSystemIds: [...DEFAULT_ACTIVE_SYSTEM_IDS]
 			},
 			poweredBuildingId: null,
-			buildings: buildingStates,
+			buildings: settlementBuildingStates,
 			firstEmber: {
 				coreId: 'first-ember-core',
 				status: 'unrecovered',
@@ -310,7 +333,12 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				modifiers: [],
 				reactions: []
 			},
-			...(equipmentDevelopmentScenario ? { materialLots: initialMaterialLots } : {})
+			...(equipmentDevelopmentScenario
+				? {
+						materialLots: initialMaterialLots,
+						forgeSystemPower: forgeReady ? 'powered' : 'dormant'
+					}
+				: {})
 		},
 		items: Object.assign(
 			{},

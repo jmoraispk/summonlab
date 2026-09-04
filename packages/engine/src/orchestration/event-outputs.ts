@@ -4,6 +4,7 @@ import { metadataIds } from '../core/event-metadata.js';
 import {
 	ActivityStartedPayloadSchema,
 	DirectiveChangedPayloadSchema,
+	ForgingStartedPayloadSchema,
 	RoutineStartedPayloadSchema,
 	TravelStartedPayloadSchema
 } from '../domains/settlement/reducer.js';
@@ -11,6 +12,8 @@ import {
 export function scheduledEventsFromEvent(event: AuthoritativeEvent): readonly ScheduledEvent[] {
 	if (event.eventType === 'hero.activity.started')
 		return [ActivityStartedPayloadSchema.parse(event.payload).scheduledEvent];
+	if (event.eventType === 'hero.forging.started')
+		return [ForgingStartedPayloadSchema.parse(event.payload).scheduledEvent];
 	if (event.eventType === 'hero.travel.started')
 		return [TravelStartedPayloadSchema.parse(event.payload).scheduledEvent];
 	if (event.eventType === 'hero.routine.started')

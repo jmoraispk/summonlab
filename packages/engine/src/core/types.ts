@@ -106,6 +106,7 @@ export interface BootstrapEngineInput {
 	readonly developmentEquipmentScenario?: {
 		readonly enabled: true;
 		readonly materialLots?: Readonly<Partial<Record<EquipmentMaterialId, number>>>;
+		readonly forgeReady?: true;
 	};
 }
 

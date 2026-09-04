@@ -20,6 +20,7 @@ import {
 	type EngineGameStateV21,
 	type EngineGameStateV22,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type EntropyDraw,
 	type MissionRunState,
 	type MissionRunStateV2,
@@ -118,7 +119,7 @@ export function normalizedMissionHeroIds(heroIds: readonly string[]): string[] {
 }
 
 export function assertMissionPartyReady(
-	state: MissionEngineState,
+	state: MissionEngineState | EngineGameStateV24,
 	heroIds: readonly string[],
 	missionId = state.mission.binding.missionId
 ): void {
@@ -131,6 +132,7 @@ export function assertMissionPartyReady(
 		state.schemaVersion !== 19 &&
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 23 &&
+		state.schemaVersion !== 24 &&
 		missionId !== state.mission.binding.missionId
 	) {
 		throw new IllegalActionError('mission.party');
@@ -143,7 +145,8 @@ export function assertMissionPartyReady(
 			state.schemaVersion === 18 ||
 			state.schemaVersion === 19 ||
 			state.schemaVersion === 20 ||
-			state.schemaVersion === 23) &&
+			state.schemaVersion === 23 ||
+			state.schemaVersion === 24) &&
 		!state.mission.availableMissionIds.includes(missionId)
 	) {
 		throw new IllegalActionError('mission.party');
@@ -169,6 +172,7 @@ export function assertMissionPartyReady(
 			hero.currentActivity !== null ||
 			hero.currentTravel !== null ||
 			hero.currentRoutine !== null ||
+			('currentForging' in hero && hero.currentForging !== null) ||
 			hero.assignment !== null
 		) {
 			throw new IllegalActionError('mission.party');

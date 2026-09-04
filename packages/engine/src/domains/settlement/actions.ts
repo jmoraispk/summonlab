@@ -44,6 +44,11 @@ import {
 import { currentRoutineFor, gameDayIndex, resolveDailyRoutine } from './routines.js';
 import { heroCanHearCommunication } from './society.js';
 import { equipmentItemDisplayName } from './equipment.js';
+import {
+	availableStandardForgeDefinitions,
+	currentForgingFor,
+	heroHasForgePermission
+} from './forging.js';
 
 export function action(input: Parameters<typeof LegalActionSchema.parse>[0]): LegalAction {
 	return LegalActionSchema.parse(input);
@@ -117,6 +122,7 @@ function routeActions(state: EngineGameState, actorId: string): LegalAction[] {
 	if (!hero || hero.lifeState !== 'active') return [];
 	if (currentTravelFor(state, actorId)) return [];
 	if (hero.destination === null) {
+		if (hasNavigationState(state) && state.heroes[actorId]?.firstArrivalCompleted) return [];
 		return [
 			action({
 				actionId: 'hero.choose.kitchen',
@@ -172,7 +178,8 @@ function masterSettlementActions(
 			(hero) =>
 				hero.currentActivity ||
 				currentTravelFor(state, hero.heroId) ||
-				currentRoutineFor(state, hero.heroId)
+				currentRoutineFor(state, hero.heroId) ||
+				currentForgingFor(state, hero.heroId)
 		) ||
 		((state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
@@ -448,10 +455,33 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 		hero.lifeState !== 'active' ||
 		hero.currentActivity ||
 		currentTravelFor(state, actorId) ||
-		currentRoutineFor(state, actorId)
+		currentRoutineFor(state, actorId) ||
+		currentForgingFor(state, actorId)
 	)
 		return [];
 	const actions: LegalAction[] = [];
+	if (state.schemaVersion === 24 && heroHasForgePermission(state, actorId)) {
+		for (const definition of availableStandardForgeDefinitions(state, actorId)) {
+			actions.push(
+				action({
+					actionId: `hero.forge.${definition.definitionId}`,
+					actorId,
+					kind: 'work',
+					label: `Forge ${definition.displayName}`,
+					description: `Consume one ${definition.materialId} lot and complete one Standard item after 60 game minutes.`,
+					targetIds: [],
+					resourceCosts: { [definition.materialId]: 1 },
+					tags: [
+						'forging',
+						'equipment',
+						'standard',
+						definition.materialId,
+						definition.equipmentClass
+					]
+				})
+			);
+		}
+	}
 	if (hasRoutineState(state)) {
 		const heroV5 = state.heroes[actorId];
 		if (!heroV5) return [];
