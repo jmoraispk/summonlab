@@ -298,8 +298,12 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 		throw new Error('Dispatch target/assignment is stale or manifest-unbound');
 	}
 	validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
-	if (target.status === 'blocked-on-anchor') {
-		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	) {
+		throw new Error(`Target status is not dispatchable: ${target.status} (${target.targetId})`);
 	}
 	await validateFamilyAffinityNormalAnchorEvidence({
 		repositoryRoot,

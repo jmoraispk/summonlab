@@ -6,7 +6,7 @@ Wiki ID: `monster.goblin-warboss`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,15 +63,16 @@ Runts retain Mob Nerve across the rally zone, Cutters pin intruders at its edge,
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/water-v1.json` |
+| Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/normal-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-warboss/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-warboss/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-warboss/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-warboss/water-v1.json` |
 
 ### Status semantics
 
 - `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `planned-provisional-anchor` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
 - `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.

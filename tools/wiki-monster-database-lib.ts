@@ -15,6 +15,11 @@ import {
 	type FamilyForm,
 	type FamilyPacket
 } from './family-affinity-production-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	validateCanonicalGenerationFailureSupersessionSourceBinding,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 
 export const MONSTER_AFFINITIES = PRODUCTION_AFFINITIES;
 export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'canonical-production-plan' as const;
@@ -53,6 +58,7 @@ export type MonsterWikiBuildInput = {
 	targets: readonly FamilyAffinityTarget[];
 	reviewEvidence: readonly MonsterWikiReviewEvidence[];
 	candidateReferences: readonly LegacyCandidateReference[];
+	generationFailureSourceBindings: readonly CanonicalGenerationFailureSupersessionSourceBinding[];
 };
 
 export type MonsterWikiReviewEvidence = {
@@ -67,15 +73,11 @@ export type MonsterWikiReviewEvidence = {
 };
 
 export type MonsterWikiPresentationStatus =
-	| 'planned'
-	| 'blocked-on-anchor'
-	| 'candidate-only'
-	| 'approved-review'
-	| 'revision-required';
+	'planned' | 'blocked-on-anchor' | 'candidate-only' | 'approved-review' | 'revision-required';
 
 export type CanonicalProductionCoordinate = {
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	status: 'planned' | 'blocked-on-anchor';
+	status: 'planned' | 'planned-provisional-anchor' | 'blocked-on-anchor';
 	presentationStatus: MonsterWikiPresentationStatus;
 	coordinateId: string;
 	targetId: string;
@@ -155,6 +157,21 @@ export function buildCanonicalMonsterWikiDatabase(
 	const mapping = CurrentClassMappingFileSchema.parse(input.mapping);
 	const manifest = FamilyAffinityManifestSchema.parse(input.manifest);
 	const targets = input.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const generationFailureSourceBindings = input.generationFailureSourceBindings.map((binding) => ({
+		...binding,
+		generationFailure: FamilyAffinityGenerationFailureSchema.parse(binding.generationFailure)
+	}));
+	assertUnique(
+		generationFailureSourceBindings.map(({ generationFailure }) => generationFailure.coordinateId),
+		'generation-failure source binding coordinate'
+	);
+	const generationFailureSourceBindingByCoordinate = new Map(
+		generationFailureSourceBindings.map((binding) => [
+			binding.generationFailure.coordinateId,
+			binding
+		])
+	);
+	const usedGenerationFailureSourceBindings = new Set<string>();
 	const reviewEvidenceByCoordinate = new Map(
 		input.reviewEvidence.map((evidence) => [evidence.coordinateId, evidence])
 	);
@@ -231,9 +248,28 @@ export function buildCanonicalMonsterWikiDatabase(
 				family.familyId === coordinate.familyId && form.formId === coordinate.formId
 		);
 		if (!sourceForm) fail(`coordinate ${coordinate.coordinateId} has no canonical form`);
-		validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
-		if (coordinate.status !== 'planned' && coordinate.status !== 'blocked-on-anchor') {
-			fail(`${coordinate.coordinateId} must use planned or blocked-on-anchor status`);
+		const generationFailureSourceBinding = generationFailureSourceBindingByCoordinate.get(
+			coordinate.coordinateId
+		);
+		if (generationFailureSourceBinding) {
+			validateCanonicalGenerationFailureSupersessionSourceBinding({
+				family: sourceForm.family,
+				form: sourceForm.form,
+				supersedingTarget: target,
+				binding: generationFailureSourceBinding
+			});
+			usedGenerationFailureSourceBindings.add(coordinate.coordinateId);
+		} else {
+			validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
+		}
+		if (
+			coordinate.status !== 'planned' &&
+			coordinate.status !== 'planned-provisional-anchor' &&
+			coordinate.status !== 'blocked-on-anchor'
+		) {
+			fail(
+				`${coordinate.coordinateId} must use planned, planned-provisional-anchor, or blocked-on-anchor status`
+			);
 		}
 		const reviewEvidence = reviewEvidenceByCoordinate.get(coordinate.coordinateId);
 		if (!reviewEvidence) fail(`missing review evidence for ${coordinate.coordinateId}`);
@@ -270,7 +306,9 @@ export function buildCanonicalMonsterWikiDatabase(
 			fail(`review state requires candidate evidence for ${coordinate.coordinateId}`);
 		}
 		if (reviewEvidence.state === 'planned' && hasCandidate) {
-			fail(`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`);
+			fail(
+				`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`
+			);
 		}
 		if (
 			reviewEvidence.revisionRequired !==
@@ -312,6 +350,9 @@ export function buildCanonicalMonsterWikiDatabase(
 		const formCoordinates = coordinatesByForm.get(coordinate.formId) ?? [];
 		formCoordinates.push(production);
 		coordinatesByForm.set(coordinate.formId, formCoordinates);
+	}
+	if (usedGenerationFailureSourceBindings.size !== generationFailureSourceBindings.length) {
+		fail('orphan generation-failure source binding evidence');
 	}
 	if (targetsByCoordinate.size !== manifest.canonicalMatrix.activeCoordinates.length) {
 		fail('target records contain coordinates outside the active manifest');
@@ -576,6 +617,7 @@ ${coordinates}
 ### Status semantics
 
 - \`planned\` means the active attempt is owned and may be produced; it does not mean an image exists.
+- \`planned-provisional-anchor\` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - \`blocked-on-anchor\` means the active attempt must wait for accepted Normal anchor evidence before production.
 - \`candidate-only\` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - \`approved-review\` means the immutable review evidence accepted the candidate; it is not runtime art.
@@ -651,13 +693,22 @@ states; this export promotes nothing.
 
 ${familySections}
 
-## Current class reconciliation
+## Planned fauna expansion — separate production set
 
-The forty earlier class identities are reconciled exactly once below. Ten map or rename-map into
-the 150 canonical forms. The other thirty are useful secondary roles or expedition fauna retained
-as bridge-only identities; they are not “missing” canonical forms and do not increase the 150-form
-count. Their 160 old public images remain candidate-only reference evidence. Every reuse flag is
-false, so none is automatically accepted for a canonical coordinate.
+The completed 30-family matrix above remains frozen and will not be regenerated. Eight accepted new
+fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, and Raptors—add
+40 designed T1–T5 forms in a separate future 200-coordinate production set. No targets
+or images for that expansion have been created yet. See the
+[fauna family expansion](../fauna-family-expansion.md) for its progression and status boundaries.
+
+## Completed v1 class reconciliation
+
+The forty earlier class identities were reconciled below for the completed 30-family production
+program. This table remains immutable historical production provenance because its source bindings
+are hashed into that program. The accepted fauna expansion supersedes the future design disposition
+of Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, Burrowing Worm, Armored Brood Guard, Death Knight,
+and Cave Drake without rewriting completed targets. Their old images remain candidate-only reference
+evidence, and none is automatically accepted for a new coordinate.
 
 ### Current class reconciliation
 

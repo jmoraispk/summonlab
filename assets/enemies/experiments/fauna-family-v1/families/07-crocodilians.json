@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "crocodilians",
+  "displayName": "Crocodilians",
+  "sourceRaceNumber": 37,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural quadrupedal reptile family centered on shoreline risk, armored facing, clamping, bank drags, death rolls, and floodplain control. It remains distinct from humanoid Lizardfolk and winged Dragons.",
+  "visualConstants": [
+    "Every form retains a low four-legged crocodilian body, long tail, scuted back, belly fault, sensory pits, and a jaw-driven attack silhouette.",
+    "Tier escalation uses snout geometry, scute height, neck mobility, tail mass, scars, and waterline behavior rather than equipment or wings.",
+    "Eyes, wake direction, jaw angle, foreclaw grooves, tail curve, and exposed belly keep ambush and rotation counterplay readable."
+  ],
+  "escalationAxis": "A single waterline snap becomes a backward clamp, lateral bank-drag specialist, armored death-roll champion, and floodplain sovereign controlling multiple channels.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": ["Hide, scutes, mud, algae, teeth, claws, saliva, and water wakes remain natural and materially distinct.", "Submersion and rotation read through eye position, coherent wakes, tail curve, bank grooves, and exposed belly."],
+      "counterplaySignal": "The V wake, foreclaw grooves, tapping jaw tip, locked side scutes, or ordered channel strike remains visible before commitment.",
+      "forbidden": ["Humanoid posture, tools, clothing, or armor", "Wings, breath weapons, or draconic horns"]
+    },
+    "fire": {
+      "constructionDimensions": ["Heat collects between dorsal scutes and along jaw hinges while leathery hide remains visible and darkens near vents.", "Steam, directional smoke, and brief flame wakes mark waterline lunges, drags, rolls, and channel crossings."],
+      "counterplaySignal": "The loaded jaw hinge or side-scute seam glows before commitment and cools into a dark exposed gap afterward.",
+      "forbidden": ["Featureless lava crocodile", "Uniform orange recolor", "Steam or smoke that hides the jaw, belly, or roll direction"]
+    },
+    "earth": {
+      "constructionDimensions": ["Mineral reinforcement follows dorsal scutes, skull roof, claw roots, and tail ridges while flexible hide and belly remain biological.", "Mud banks crack, stones roll, and sediment compresses along the lunge or roll path without turning the animal into a statue."],
+      "counterplaySignal": "A pale fault opens at the jaw hinge, planted foreleg, side-scute lock, or exposed belly after commitment.",
+      "forbidden": ["Solid rock crocodilian", "Brown recolor alone", "Mineral armor that removes the vulnerable belly fault"]
+    },
+    "wind": {
+      "constructionDimensions": ["Scute edges and water spray stretch into directional pressure fins while the low opaque body stays heavy and grounded.", "Wind pushes a readable wake ahead of lunges and curls along the fixed death-roll direction."],
+      "counterplaySignal": "The pressure layer collapses at the jaw hinge, inner curve, or belly during the normal punish window.",
+      "forbidden": ["Floating crocodilian", "Transparency alone", "Turbulence that obscures shoreline or rotation direction"]
+    },
+    "water": {
+      "constructionDimensions": ["Layered wet hide, refractive scute channels, coherent body-edge currents, and controlled pressure sacs preserve solid anatomy.", "Wakes, drag lines, channel rises, and draining belly seams explain exactly how water powers each attack."],
+      "counterplaySignal": "The pressurized jaw, flank, or tail channel drains after release and exposes the same hinge or belly fault.",
+      "forbidden": ["Amorphous water reptile", "Generic blue wash", "Opaque floodwater that hides the animal or channel order"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "crocodilian-mire-caiman",
+      "displayName": "Mire Caiman",
+      "primaryArchetype": "Waterline Initiate",
+      "battlefieldDuty": "Submerge along one visible ripple and snap once at the bank.",
+      "teachingGoal": "Teach players to track an aquatic ambush by its wake instead of staring at the last visible body position.",
+      "signatureMechanic": "V-Wake Snap: the Caiman's eyes sink but its wake points continuously toward the fixed bank endpoint.",
+      "telegraph": "The eyes submerge while a narrow V-shaped wake remains visible.",
+      "counterplay": "Move parallel to the bank and punish the exposed tail after the missed snap.",
+      "visualDelta": "Small low caiman with mottled hide, narrow juvenile scutes, compact jaw, and thin tail.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "crocodilian-river-crocodile",
+      "displayName": "River Crocodile",
+      "primaryArchetype": "Clamp Soldier",
+      "battlefieldDuty": "Lunge a short distance, clamp one target, and drag backward without turning.",
+      "teachingGoal": "Teach players to escape the jaw line or attack the planted towing limbs instead of the armored back.",
+      "signatureMechanic": "Parallel-Groove Drag: the Crocodile's foreclaws cut two fixed grooves that define its backward towing path.",
+      "telegraph": "The jaw opens low and both foreclaws dig parallel grooves into the bank.",
+      "counterplay": "Sidestep the jaws or strike the planted forelegs during the backward drag.",
+      "visualDelta": "Mature broad-snout crocodile with heavy dorsal scutes, mud-worn flanks, thick tail, and powerful forequarters.",
+      "lowerFormInteraction": "Mire Caimans threaten adjacent bank points while the Crocodile commits to its straight drag.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "crocodilian-snarejaw",
+      "displayName": "Snarejaw",
+      "primaryArchetype": "Bank-Drag Specialist",
+      "battlefieldDuty": "Sweep an elongated jaw around cover, close behind a target, and drag laterally along the shoreline.",
+      "teachingGoal": "Introduce a qualitative lateral grab that rewards moving toward the hinge rather than away from the teeth.",
+      "signatureMechanic": "Crescent Snare: the far jaw tip traces a semicircle around cover before the hinge closes and drags sideways.",
+      "telegraph": "The far jaw tip taps the ground and the flexible neck bends into a visible crescent.",
+      "counterplay": "Step toward the head hinge or strike the narrow jaw side before closure.",
+      "visualDelta": "Long-snouted crocodilian with reinforced jaw hinge, unusual lateral neck flexibility, narrow body, and visible sensory pits.",
+      "lowerFormInteraction": "Caimans occupy nearby water exits while River Crocodiles threaten the straight retreat from the crescent.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "crocodilian-bastion-alligator",
+      "displayName": "Bastion Alligator",
+      "primaryArchetype": "Armored-Rotation Champion",
+      "battlefieldDuty": "Present a scute wall and commit to a fixed-direction death roll that exposes its softer belly at regular intervals.",
+      "teachingGoal": "Teach players to read rotational direction and wait for a repeating armor gap rather than attacking the back.",
+      "signatureMechanic": "Three-Beat Roll: locked side scutes protect two beats and expose the pale belly fault on the second rotation.",
+      "telegraph": "Side scutes lock together and the tail curves strongly against the coming rotation.",
+      "counterplay": "Evade away from the tail curve and strike the belly fault during the second roll.",
+      "visualDelta": "Broad armored alligator with high osteoderms, blunt skull, scarred belly seams, and an extremely powerful tail.",
+      "lowerFormInteraction": "Lower Crocodilians drive targets toward the roll lane but must also avoid its predictable rotating body.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "crocodilian-primeval-crocodile",
+      "displayName": "Primeval Crocodile",
+      "primaryArchetype": "Floodplain Sovereign",
+      "battlefieldDuty": "Open and close three water channels, route lesser Crocodilians into bank attacks, then cross the arena with a colossal roll.",
+      "teachingGoal": "Test wake tracking, clamp anchors, crescent grabs, and roll direction while the arena alternates wet and dry routes.",
+      "signatureMechanic": "Three Flood Channels: the Primeval strikes channel gates in order, raising one hunting route and drying another before its crossing roll.",
+      "telegraph": "Its tail strikes the next channel gate and the corresponding waterline rises before any lower form enters.",
+      "counterplay": "Block the lower Crocodilian assigned to that channel, then use the resulting dry bank against the crossing roll.",
+      "visualDelta": "Ancient gigantic crocodile with broken dorsal ridge, algae-dark hide, wide scarred skull, and a distinct pale belly fault.",
+      "lowerFormInteraction": "Caimans reveal active wakes, River Crocodiles drag along straight banks, Snarejaw controls bends, and the Bastion Alligator occupies the final roll channel; disabling one preserves its dry route.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

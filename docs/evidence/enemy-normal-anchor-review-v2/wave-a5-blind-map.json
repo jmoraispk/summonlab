@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v2",
+  "waveId": "a5",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map or the named owner gallery.",
+  "entries": [
+    {
+      "token": "R2-A5-01",
+      "coordinateId": "treants/treant-oakheart/normal",
+      "targetId": "canonical/treants/treant-oakheart/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/treants/treant-oakheart/normal/target-v2.json",
+      "targetSha256": "12263df5cc58589c5f99ce68e1df2b7e0d5629d9a6c67baefb1e1b89a182f70f",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v2.png",
+      "candidateSha256": "56cd7cfe3c4d4d84ed1490b0162ba714a1b3b9f455e784c16ac1b942f1f0d922",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/treants/treant-oakheart/normal-v2.json",
+      "resultSha256": "082adf26290bee42fff2e572056094ec0c5cd71711c6ac17ff6b74db8bf530a7"
+    },
+    {
+      "token": "R2-A5-02",
+      "coordinateId": "fungalfolk/fungalfolk-sporeguard/normal",
+      "targetId": "canonical/fungalfolk/fungalfolk-sporeguard/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fungalfolk/fungalfolk-sporeguard/normal/target-v2.json",
+      "targetSha256": "224690cdd292eea33acc686cd0d208c81f48ced01f1510a9e31202c9f1b3a346",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fungalfolk/fungalfolk-sporeguard/normal-v2.png",
+      "candidateSha256": "28b4671e269943e5d09111b214188cc919f796a8ee8bb1e35ae955102401c44f",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/fungalfolk/fungalfolk-sporeguard/normal-v2.json",
+      "resultSha256": "20151263bbf40198552f4080711f83811f0706db5923ead284029597eb6cb7bd"
+    },
+    {
+      "token": "R2-A5-03",
+      "coordinateId": "werebeasts/werebeast-werebeast/normal",
+      "targetId": "canonical/werebeasts/werebeast-werebeast/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/werebeasts/werebeast-werebeast/normal/target-v2.json",
+      "targetSha256": "6aeeeeea38ce72caddb42a7a7f8af00e7b4e01aa64c7971942447a6a07a67fb3",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/werebeasts/werebeast-werebeast/normal-v2.png",
+      "candidateSha256": "e195e291c42bb53a5a2b1aa7ef479a64d2447c98445ea57ea1ac476d9ea2459a",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/werebeasts/werebeast-werebeast/normal-v2.json",
+      "resultSha256": "906c56d72bdcb10b4e7b410e061ff05878e9e31a65ff8f1b1c61df4beafd07b6"
+    },
+    {
+      "token": "R2-A5-04",
+      "coordinateId": "elementals/elemental-sovereign/normal",
+      "targetId": "canonical/elementals/elemental-sovereign/normal/v3",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-sovereign/normal/target-v3.json",
+      "targetSha256": "fca626c503be93aec2511e66a17cec1b0b72c3b371a2b385e8264b5e6d2d29ae",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/elementals/elemental-sovereign/normal-v3.png",
+      "candidateSha256": "b929859972ef18cf46f4ae0d5ad423a28b566c2cdcc51aa31cd6b330ae87b3ec",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/elementals/elemental-sovereign/normal-v3.json",
+      "resultSha256": "8ba4d2813bb9c23b8f75b6d75bf870168a1506b192e52f51778807d4c3630536"
+    },
+    {
+      "token": "R2-A5-05",
+      "coordinateId": "fungalfolk/fungalfolk-mycelial-sovereign/normal",
+      "targetId": "canonical/fungalfolk/fungalfolk-mycelial-sovereign/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/fungalfolk/fungalfolk-mycelial-sovereign/normal/target-v2.json",
+      "targetSha256": "3e11f04cf18609bdd339b1e76ce83ee7500a5e4c8a1abdc93c1324a16aadcd21",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/fungalfolk/fungalfolk-mycelial-sovereign/normal-v2.png",
+      "candidateSha256": "c67a236cc004e337cd6426b30717448b41b2e38e14920b7bb187b503386211bc",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/fungalfolk/fungalfolk-mycelial-sovereign/normal-v2.json",
+      "resultSha256": "5cdf41f8e2a6244722d366964d4a23991ec00d6412c590d59dc2fd2cbfa3c68e"
+    },
+    {
+      "token": "R2-A5-06",
+      "coordinateId": "werebeasts/werebeast-primal-beast-king/normal",
+      "targetId": "canonical/werebeasts/werebeast-primal-beast-king/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/werebeasts/werebeast-primal-beast-king/normal/target-v2.json",
+      "targetSha256": "4360cad35e371fbfc6ff293636b8e65132bc1d02427027d1439a2d40aaa14078",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/werebeasts/werebeast-primal-beast-king/normal-v2.png",
+      "candidateSha256": "37794dcff4ac557f25d54474b0880525b4a9a0de09171d3e531ee2d7e1b7468d",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/werebeasts/werebeast-primal-beast-king/normal-v2.json",
+      "resultSha256": "cd883936dac8029d50b358dc5f10f65bb9979573b75bb8d3ddf8a0e7c4f35db3"
+    }
+  ]
+}

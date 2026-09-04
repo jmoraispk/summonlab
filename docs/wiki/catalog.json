@@ -778,6 +778,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "creatures.fauna-family-expansion",
+      "path": "docs/wiki/creatures/fauna-family-expansion.md",
+      "pageType": "monster-family-index",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
       "wikiId": "creatures.monster-database",
       "path": "docs/wiki/creatures/monsters/README.md",
       "pageType": "monster-database",

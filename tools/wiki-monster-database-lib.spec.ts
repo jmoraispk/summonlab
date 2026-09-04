@@ -1,14 +1,21 @@
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
 import {
+	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
 	loadFamilyAffinityActiveSources
 } from './family-affinity-production-lib.js';
 import { familyAffinitySha256 } from './family-affinity-production-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	familyAffinityGenerationFailurePath,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 import {
 	assertCandidateSafeRenderedMonsterWiki,
 	assertGeneratedMonsterWikiFreshness,
@@ -47,6 +54,41 @@ async function productionInput(): Promise<MonsterWikiBuildInput> {
 			FamilyAffinityTargetSchema.parse(await json(new URL(`../${targetPath}`, import.meta.url)))
 		)
 	);
+	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
+	async function loadGenerationFailureSourceBinding(
+		coordinate: (typeof manifest.canonicalMatrix.activeCoordinates)[number],
+		version: number
+	): Promise<CanonicalGenerationFailureSupersessionSourceBinding | undefined> {
+		if (version <= 1) return undefined;
+		const previousVersion = version - 1;
+		const targetSuffix = `v${coordinate.activeVersion}.json`;
+		const previousTargetPath = `${coordinate.targetPath.slice(0, -targetSuffix.length)}v${previousVersion}.json`;
+		const assignmentSuffix = `v${coordinate.activeVersion}.json`;
+		const previousAssignmentPath = `${coordinate.assignmentPath.slice(0, -assignmentSuffix.length)}v${previousVersion}.json`;
+		const previousTarget = FamilyAffinityTargetSchema.parse(
+			await json(new URL(`../${previousTargetPath}`, import.meta.url))
+		);
+		const failurePath = familyAffinityGenerationFailurePath(previousTarget);
+		if (!existsSync(new URL(`../${failurePath}`, import.meta.url))) return undefined;
+		const generationFailure = FamilyAffinityGenerationFailureSchema.parse(
+			await json(new URL(`../${failurePath}`, import.meta.url))
+		);
+		const previousBinding = await loadGenerationFailureSourceBinding(coordinate, previousVersion);
+		return {
+			previousTargetPath,
+			previousAssignmentPath,
+			previousTarget,
+			previousAssignment: FamilyAffinityAssignmentSchema.parse(
+				await json(new URL(`../${previousAssignmentPath}`, import.meta.url))
+			),
+			generationFailure,
+			...(previousBinding ? { previousBinding } : {})
+		};
+	}
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const binding = await loadGenerationFailureSourceBinding(coordinate, coordinate.activeVersion);
+		if (binding) generationFailureSourceBindings.push(binding);
+	}
 	const catalogPaths = [
 		new URL(
 			'../assets/enemies/experiments/affinity-workflow-v1/review/catalog.json',
@@ -95,7 +137,15 @@ async function productionInput(): Promise<MonsterWikiBuildInput> {
 			)
 		)
 	).flatMap(({ cells }) => cells);
-	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
+	return {
+		families,
+		mapping,
+		manifest,
+		targets,
+		reviewEvidence,
+		candidateReferences,
+		generationFailureSourceBindings
+	};
 }
 
 function cloneInput(input: MonsterWikiBuildInput): MonsterWikiBuildInput {
@@ -132,7 +182,10 @@ describe('canonical monster wiki database', () => {
 			]);
 			expect(
 				form.coordinates.every(
-					({ status }) => status === 'planned' || status === 'blocked-on-anchor'
+					({ status }) =>
+						status === 'planned' ||
+						status === 'planned-provisional-anchor' ||
+						status === 'blocked-on-anchor'
 				)
 			).toBe(true);
 		}
@@ -146,12 +199,20 @@ describe('canonical monster wiki database', () => {
 
 	it('reflects the current Elementals candidate and review state without claiming runtime', async () => {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
-		for (const formId of [
-			'elemental-wisp',
-			'elemental-spirit',
-			'elemental-warden',
-			'elemental-colossus'
-		]) {
+		for (const formId of ['elemental-wisp', 'elemental-spirit']) {
+			const form = database.forms.find((candidate) => candidate.formId === formId)!;
+			expect(form.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
+				'approved-review',
+				'approved-review',
+				'approved-review',
+				'approved-review',
+				'approved-review'
+			]);
+			expect(buildMonsterWikiPage(form)).toContain(
+				'Normal: approved-review; Fire: approved-review; Earth: approved-review; Wind: approved-review; Water: approved-review.'
+			);
+		}
+		for (const formId of ['elemental-warden', 'elemental-colossus']) {
 			const form = database.forms.find((candidate) => candidate.formId === formId)!;
 			expect(form.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
 				'approved-review',
@@ -170,26 +231,27 @@ describe('canonical monster wiki database', () => {
 		)!;
 		expect(sovereign.coordinates.map(({ status }) => status)).toEqual([
 			'planned',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor'
+			'planned-provisional-anchor',
+			'planned-provisional-anchor',
+			'planned-provisional-anchor',
+			'planned-provisional-anchor'
 		]);
 		expect(sovereign.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
-			'revision-required',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor',
-			'blocked-on-anchor'
+			'candidate-only',
+			'planned',
+			'planned',
+			'planned',
+			'planned'
 		]);
 		expect(sovereign.coordinates[0]).toMatchObject({
-			version: 2,
-			candidateExists: false,
-			historyAttemptCount: 1,
-			historyRevisionRequiredCount: 1
+			version: 3,
+			candidateExists: true,
+			historyAttemptCount: 2,
+			historyRevisionRequiredCount: 2
 		});
 		const page = buildMonsterWikiPage(sovereign);
-		expect(page).toContain('active v2 not generated');
+		expect(page).toContain('Normal: candidate-only');
+		expect(page).toContain('`planned-provisional-anchor` means candidate generation is authorized');
 		expect(page).toContain(
 			'Candidate and review evidence only; no coordinate on this page is runtime art.'
 		);
@@ -531,6 +593,55 @@ describe('canonical monster wiki database', () => {
 		target.telegraph += ' forged';
 		input.manifest.canonicalMatrix.activeCoordinates[0]!.targetSha256 =
 			familyAffinitySha256(target);
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('requires authenticated supersession evidence for active source overrides', async () => {
+		const input = cloneInput(await productionInput());
+		input.generationFailureSourceBindings = [];
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('requires the complete authenticated chain for repeated source overrides', async () => {
+		const input = cloneInput(await productionInput());
+		const waterBinding = input.generationFailureSourceBindings.find(
+			({ generationFailure }) =>
+				(generationFailure as { coordinateId?: string }).coordinateId ===
+				'doppelgangers/doppelganger-blank/water'
+		)!;
+		delete waterBinding.previousBinding;
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/packet.*target|source.*drift/iu
+		);
+	});
+
+	it('rejects superseding target values that differ from the authenticated override', async () => {
+		const input = cloneInput(await productionInput());
+		const target = input.targets.find(
+			({ coordinateId }) => coordinateId === 'vampires/vampire-progenitor/normal'
+		)!;
+		target.telegraph += ' forged';
+		input.manifest.canonicalMatrix.activeCoordinates.find(
+			({ coordinateId }) => coordinateId === target.coordinateId
+		)!.targetSha256 = familyAffinitySha256(target);
+		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
+			/override.*target|source.*drift/iu
+		);
+	});
+
+	it('rejects unrelated source drift despite an authenticated supersession override', async () => {
+		const input = cloneInput(await productionInput());
+		const target = input.targets.find(
+			({ coordinateId }) => coordinateId === 'vampires/vampire-progenitor/normal'
+		)!;
+		target.battlefieldDuty += ' forged';
+		input.manifest.canonicalMatrix.activeCoordinates.find(
+			({ coordinateId }) => coordinateId === target.coordinateId
+		)!.targetSha256 = familyAffinitySha256(target);
 		expect(() => buildCanonicalMonsterWikiDatabase(input)).toThrow(
 			/packet.*target|source.*drift/iu
 		);

@@ -89,11 +89,7 @@ describe('online wiki registry', () => {
 			)
 		);
 
-		expect([...statuses].sort()).toEqual([
-			'approved-review',
-			'blocked-on-anchor',
-			'candidate-only'
-		]);
+		expect([...statuses].sort()).toEqual(['approved-review', 'candidate-only']);
 	});
 
 	it('rejects invalid v2 literal values at the JSON server boundary', () => {

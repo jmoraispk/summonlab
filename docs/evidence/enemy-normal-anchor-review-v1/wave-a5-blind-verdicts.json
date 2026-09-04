@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A5",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A5-01",
+      "perceivedFamilyOrCreature": "antlered beastfolk shaman",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "summoner/controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Humanoid-beast structure and casting gesture read clearly."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Strong full-body silhouette with useful subordinate scale cues."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Detailed organic materials without dominant elemental construction."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Fur, bone, antlers, cloth, and ritual ornament remain materially grounded."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised casting hand and surrounding minions clearly signal a summoner to pressure or interrupt."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Distinct elite shaman identity, coherent anatomy, and strong encounter-ready hierarchy."
+    },
+    {
+      "token": "A5-02",
+      "perceivedFamilyOrCreature": "ancient tree giant",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "guardian/tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Trunk, arms, legs, and rooted feet form a coherent colossal body."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Centered full-body presentation communicates immense scale."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Bark, moss, and vines remain materially grounded."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Entire construction reads as wood, roots, foliage, and accumulated age rather than elemental energy."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Huge rooted feet and heavy branch arms imply slow movement, broad melee swings, and positional avoidance."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Immediately reads as a sovereign-scale forest guardian with excellent mass and presence."
+    },
+    {
+      "token": "A5-03",
+      "perceivedFamilyOrCreature": "floating arcane sigil construct",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "caster/controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Suspended blades, rings, and tendrils do not establish a stable body plan."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Central silhouette is clean and fully contained."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Spectral energy and geometric glow constitute nearly the entire creature."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "The identity is dominated by luminous arcane geometry and spectral energy."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "Its abstract appendages do not clearly distinguish projectile, melee, defensive, or interruptible behavior."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Polished but reads as unexplained elemental or magical construction rather than a Normal creature."
+    },
+    {
+      "token": "A5-04",
+      "perceivedFamilyOrCreature": "werewolf berserker",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "diver/bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Exaggerated limbs remain coherent within the lunging pose."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Dynamic diagonal action preserves a strong, readable silhouette."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Fur, leather, and flesh provide grounded material definition."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The creature is entirely grounded in fur, flesh, claws, and worn equipment."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Forward lunge, oversized claws, and exposed aggressive posture clearly telegraph a close-range diver."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Clear aggressive combat identity with convincing anatomy and no unexplained elemental dependence."
+    },
+    {
+      "token": "A5-05",
+      "perceivedFamilyOrCreature": "elder tree colossus",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign guardian/tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Humanoid trunk and root limbs remain legible despite dense foliage."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Towering vertical composition strongly sells sovereign scale."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Richly organic surface treatment stays grounded."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Bark, roots, vines, and canopy define the body without dominant magical construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Towering mass, rooted stance, and long branch arms suggest slow, wide-reaching attacks and mobility limitations."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Monumental, readable, and convincingly ancient without relying on elemental spectacle."
+    },
+    {
+      "token": "A5-06",
+      "perceivedFamilyOrCreature": "fungal hive monarch",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "summoner/area controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "The central organism's body boundaries are obscured by structures and minions."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "Multiple competing focal creatures dilute the anchor identity."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Bright energy channels and particle effects dominate the biological subject."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "The luminous ground network and energy discharge overpower the otherwise biological fungal identity."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Linked minions and radiating ground channels visibly communicate summoning and hazardous control zones."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "The encounter concept is strong, but the anchor reads more like an elementalized battlefield than one Normal creature."
+    },
+    {
+      "token": "A5-07",
+      "perceivedFamilyOrCreature": "mushroom humanoid",
+      "perceivedTier": "T2",
+      "perceivedCombatRole": "support/skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Cap, torso, arms, and heavy root-feet form a readable body."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Clean full-body isolation supports instant recognition."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Restrained bioluminescence accents rather than constructs the creature."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The body is clearly fungal and organic; glow remains a restrained accent."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The neutral stance and lack of weapon, attack gesture, or vulnerable feature leave its combat behavior unclear."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Charming and coherent Normal fungal unit, though its visual threat level feels modest."
+    },
+    {
+      "token": "A5-08",
+      "perceivedFamilyOrCreature": "abyssal cephalopod idol",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign controller/summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Central maw, mantle, and tentacle system read as intentionally monstrous."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Frontal throne-like staging gives strong boss authority."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Dense detail is dark but consistently organic and nautical."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Tentacles, shell-like mantle, teeth, and encrusted adornment dominate over the minor luminous accents."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Numerous extended tentacles and a largely stationary throne-like posture signal radial control with a central target."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "A commanding sovereign silhouette whose tentacles and ritual adornment support a clear abyssal identity."
+    },
+    {
+      "token": "A5-09",
+      "perceivedFamilyOrCreature": "floating arcane wraith or rune construct",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "ranged caster/controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Detached plates and vapor trails provide no coherent anatomy."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Isolated central shape is immediately visible."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "The subject is overwhelmingly composed of smoke, glow, and magical geometry."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Vapor, levitation, and a luminous central rune make elemental or arcane construction the whole identity."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The central aperture suggests importance, but the figure provides no reliable attack or movement telegraph."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Elegant graphic design, but it violates the Normal read through dominant unexplained elemental construction."
+    },
+    {
+      "token": "A5-10",
+      "perceivedFamilyOrCreature": "amphibious reptilian hunter",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "ranged skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Head, limbs, tail, and weapon grip are coherent."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Three-quarter full-body stance clearly presents weapon and silhouette."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Scales, armor, and restrained glow feel materially grounded."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Scales, natural spines, leather, and metal remain dominant; the small glow is incidental."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The long polearm and mobile stance clearly communicate reach, directional threat, and a skirmishing profile."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Strong creature and combat-role readability, though it presents below sovereign scale."
+    }
+  ]
+}

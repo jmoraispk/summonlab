@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "fauna-family-design-manifest-v1",
+  "experimentId": "fauna-family-v1",
+  "status": "design-complete-production-not-started",
+  "scope": {
+    "existingFamilyAction": "retain-without-regeneration",
+    "existingFamilyProgram": "assets/enemies/experiments/family-affinity-v1/manifest.json",
+    "existingFamilyCount": 30,
+    "existingFormCount": 150,
+    "existingCoordinateCount": 750,
+    "newFamilyIds": [
+      "wolves",
+      "bears",
+      "boars",
+      "burrowers",
+      "great-cats",
+      "serpents",
+      "crocodilians",
+      "raptors"
+    ],
+    "affinities": ["normal", "fire", "earth", "wind", "water"],
+    "newFamilyCount": 8,
+    "newFormCount": 40,
+    "newCoordinateCount": 200
+  },
+  "production": {
+    "targetMaterializationStatus": "not-started",
+    "targetCount": 0,
+    "assignmentCount": 0,
+    "candidateCount": 0,
+    "approvedCount": 0,
+    "runtimeCount": 0,
+    "reviewCheckpoint": "after-new-fauna-candidate-matrix-is-complete",
+    "runtimeCatalogMutationForbidden": true
+  },
+  "legacyClassMigrations": [
+    {
+      "currentClassId": "grey-wolf",
+      "disposition": "promote-identity",
+      "destinationFamilyId": "wolves",
+      "destinationFormId": "wolf-grey-wolf",
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "dire-wolf",
+      "disposition": "promote-identity",
+      "destinationFamilyId": "wolves",
+      "destinationFormId": "wolf-dire-wolf",
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "cave-bear",
+      "disposition": "promote-identity",
+      "destinationFamilyId": "bears",
+      "destinationFormId": "bear-cave-bear",
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "tunnel-boar",
+      "disposition": "promote-identity",
+      "destinationFamilyId": "boars",
+      "destinationFormId": "boar-tunnel-boar",
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "burrowing-worm",
+      "disposition": "retire-bridge-and-reframe",
+      "destinationFamilyId": "burrowers",
+      "destinationFormId": "burrower-burrowing-worm",
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "armored-brood-guard",
+      "disposition": "secondary-archetype",
+      "destinationFamilyId": "arachnids",
+      "destinationFormId": null,
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "death-knight",
+      "disposition": "secondary-archetype",
+      "destinationFamilyId": "skeletons",
+      "destinationFormId": null,
+      "candidateStatus": "reference-only"
+    },
+    {
+      "currentClassId": "cave-drake",
+      "disposition": "secondary-archetype",
+      "destinationFamilyId": "dragons",
+      "destinationFormId": null,
+      "candidateStatus": "reference-only"
+    }
+  ],
+  "ownership": {
+    "domain": "enemies-visuals",
+    "candidatesAreNotApproved": true,
+    "approvedAssetsAreNotRuntime": true,
+    "producerSelfPromotionForbidden": true
+  }
+}

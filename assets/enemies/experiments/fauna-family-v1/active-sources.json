@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "fauna-family-active-sources-v1",
+  "experimentId": "fauna-family-v1",
+  "baseProgramReference": "assets/enemies/experiments/family-affinity-v1/manifest.json",
+  "baseProgramMutationForbidden": true,
+  "familyPacketPaths": [
+    "assets/enemies/experiments/fauna-family-v1/families/01-wolves.json",
+    "assets/enemies/experiments/fauna-family-v1/families/02-bears.json",
+    "assets/enemies/experiments/fauna-family-v1/families/03-boars.json",
+    "assets/enemies/experiments/fauna-family-v1/families/04-burrowers.json",
+    "assets/enemies/experiments/fauna-family-v1/families/05-great-cats.json",
+    "assets/enemies/experiments/fauna-family-v1/families/06-serpents.json",
+    "assets/enemies/experiments/fauna-family-v1/families/07-crocodilians.json",
+    "assets/enemies/experiments/fauna-family-v1/families/08-raptors.json"
+  ]
+}

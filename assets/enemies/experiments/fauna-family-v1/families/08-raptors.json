@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "raptors",
+  "displayName": "Raptors",
+  "sourceRaceNumber": 38,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural bird-of-prey family centered on vertical tracking, attack shadows, landing windows, carry threats, and airspace control. It remains distinct from humanoid Harpies.",
+  "visualConstants": [
+    "Every form retains an avian body with two wings, two taloned legs, hooked beak, feathered tail, and species-appropriate head rather than humanoid arms or torso.",
+    "Tier escalation uses wingspan, feather structure, facial disc, talon mass, scars, and flight behavior rather than worn equipment.",
+    "Shadow shape, tail fan, primary-feather angle, talon extension, perch choice, and landing route keep aerial attacks readable."
+  ],
+  "escalationAxis": "A single shadow dive becomes alternating perch attacks, silent movement-triggered drops, carry-off pressure, and finally a sovereign that divides the arena into flight bands.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": ["Feathers, keratin, beak, talons, dust, down, scars, and cast shadows remain natural and species-specific.", "Flight direction reads through wing shape, tail fan, feather whistle, shadow speed, and displaced air or dust."],
+      "counterplaySignal": "The tightening shadow, fanned tail, narrowed facial disc, lowered legs, or lifting feather row remains visible before the attack.",
+      "forbidden": ["Humanoid face, torso, arms, hands, clothing, or weapons", "Unexplained elemental glow"]
+    },
+    "fire": {
+      "constructionDimensions": ["Selected feather shafts ember from base to tip while most plumage remains heat-darkened and individually readable.", "Flame and smoke trail in the exact dive, climb, carry, or flight-band direction and diminish during landing recovery."],
+      "counterplaySignal": "The loaded primary row or talon joint brightens before release and exposes a cooling shaft or joint after landing.",
+      "forbidden": ["Featureless phoenix replacement", "Uniform orange bird", "Flame that hides wing, talon, shadow, or landing geometry"]
+    },
+    "earth": {
+      "constructionDimensions": ["Thin mineral guards reinforce talons, beak ridge, shoulder joints, and selected primary shafts while flexible feathers remain dominant.", "Detached grit and small stones orbit only near loaded wing or talon structures and fall visibly during recovery."],
+      "counterplaySignal": "A pale mineral fault opens at the planted talon, shoulder, or loaded feather row after commitment.",
+      "forbidden": ["Solid stone bird", "Brown recolor alone", "Heavy rock wings that erase flight anatomy"]
+    },
+    "wind": {
+      "constructionDimensions": ["Outer feathers partially dissipate into directional pressure filaments while the bird's body, head, and load-bearing wing bones remain opaque.", "Compression arcs, dust spirals, and feather-edge wakes make flight bands and dive lines explicit."],
+      "counterplaySignal": "The pressure envelope collapses to a still shoulder, talon, or landing perch during the authored punish window.",
+      "forbidden": ["Transparent ghost bird", "Pale recolor alone", "Omnidirectional clouds that obscure the attack shadow"]
+    },
+    "water": {
+      "constructionDimensions": ["Streaming wet feathers retain layered vanes around a solid body while coherent droplets trace wingbeats and tail turns.", "Pressurized water gathers along talons and leading edges, then drains visibly at landing or perch recovery."],
+      "counterplaySignal": "The loaded wing or talon channel empties after release and exposes the same grounded joint or perch window.",
+      "forbidden": ["Amorphous water bird", "Generic blue wash", "Spray that hides the silhouette, shadow, or landing route"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "raptor-carrion-kite",
+      "displayName": "Carrion Kite",
+      "primaryArchetype": "Shadow-Dive Initiate",
+      "battlefieldDuty": "Circle once and dive when its shadow crosses the target.",
+      "teachingGoal": "Teach players to track an aerial threat through the ground shadow and punish the low recovery climb.",
+      "signatureMechanic": "Shadow Crossing: the Kite commits exactly when its tightening shadow touches the target's feet.",
+      "telegraph": "The shadow tightens and the wings briefly stop beating.",
+      "counterplay": "Step across the shadow and punish the Kite during its low recovery climb.",
+      "visualDelta": "Lean long-winged kite with forked tail, small hooked beak, narrow chest, and ordinary mottled plumage.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "raptor-hunting-hawk",
+      "displayName": "Hunting Hawk",
+      "primaryArchetype": "Repeated-Dive Soldier",
+      "battlefieldDuty": "Alternate two shallow dives from opposite directions and perch after the second.",
+      "teachingGoal": "Teach players to update facing between attacks and recognize a guaranteed grounded recovery.",
+      "signatureMechanic": "Paired Passes: the Hawk's tail points toward the next opposite-side pass before both attacks, followed by a fixed perch.",
+      "telegraph": "Its tail fans toward the approach and the primary feathers whistle before each pass.",
+      "counterplay": "Change facing between dives and attack the clearly selected perch after the second.",
+      "visualDelta": "Muscular hawk with banded tail, broader chest, sharp compact wings, strong brow, and larger talons.",
+      "lowerFormInteraction": "Kites cross the ground shadow while the Hawk demands alternating vertical facing.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "raptor-night-owl",
+      "displayName": "Night Owl",
+      "primaryArchetype": "Silent-Drop Specialist",
+      "battlefieldDuty": "Track movement rather than position and drop onto the last target that sprinted.",
+      "teachingGoal": "Introduce a qualitative specialist that changes safe movement cadence instead of merely adding another dive.",
+      "signatureMechanic": "Last Motion Drop: the Owl fixes on the most recent sprint and descends silently onto that endpoint.",
+      "telegraph": "Its facial disc narrows and airborne dust stops moving beneath its approach.",
+      "counterplay": "Walk or hold still until the drop commits, then punish the open talons at ground contact.",
+      "visualDelta": "Large owl with broad facial disc, fringed silent feathers, rotating head, short tail, and wide gripping feet.",
+      "lowerFormInteraction": "Kite shadows encourage premature movement and Hawk passes alternate facing before the Owl selects the last sprint.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "raptor-war-eagle",
+      "displayName": "War Eagle",
+      "primaryArchetype": "Carry-Off Champion",
+      "battlefieldDuty": "Grip and lift one target a short distance while lesser Raptors attack the exposed group below.",
+      "teachingGoal": "Teach parties to interrupt a visible lift quickly or use its predictable landing route for a coordinated punish.",
+      "signatureMechanic": "Committed Carry: lowered talons grip once, follow one shadow-marked ascent lane, and return through one fixed landing route.",
+      "telegraph": "Its legs lower, primary feathers spread, and the ascent lane lengthens in its shadow.",
+      "counterplay": "Break the grip before lift or attack the predictable landing route when the Eagle returns.",
+      "visualDelta": "Huge eagle with battered primaries, heavy golden beak, scarred talons, broad wing shoulders, and dark mantle.",
+      "lowerFormInteraction": "Lower Raptors pressure the group during the lift but must clear the Eagle's fixed return lane.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "raptor-roc",
+      "displayName": "Roc",
+      "primaryArchetype": "Airspace Sovereign",
+      "battlefieldDuty": "Create alternating high, crosswind, and ground-skimming flight bands before a full-span arena dive.",
+      "teachingGoal": "Test ground-shadow reading, alternating facing, movement restraint, and landing-route interruption across vertical space.",
+      "signatureMechanic": "Three Flight Bands: successive feather rows lift to assign a lower Raptor to one altitude band before the Roc seals the remaining band with its own dive.",
+      "telegraph": "One feather row rises and its assigned bird calls once while the matching air lane gathers debris.",
+      "counterplay": "Clear the assigned bird to create a safe vertical pocket before the Roc commits to the other bands.",
+      "visualDelta": "Vast natural raptor with mountain-eagle anatomy, weathered layered plumage, one damaged outer primary, and an unmistakable full-span silhouette.",
+      "lowerFormInteraction": "Kite controls the shadow band, Hawk the crossing band, Owl the still-air band, and War Eagle the landing band; defeating one permanently opens its altitude pocket.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

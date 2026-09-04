@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A5",
+  "reviewerId": "codex:/root/normal_revision_blind_a5",
+  "reviews": [
+    {
+      "token": "R2-A5-01",
+      "perceivedFamilyOrCreature": "ancient rootbound treant",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "slow melee controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The trunk, branch-limbs, face, and rooted legs form a coherent treant body."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full figure is centered with clear headroom and grounded feet."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Bark, moss, and hanging growth are resolved to a polished level."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The dense living bark and forest growth read strongly as nature or earth affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The heavy rooted stance and long branch weapon clearly imply slow, sweeping reach."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A5-02",
+      "perceivedFamilyOrCreature": "fungal humanoid",
+      "perceivedTier": "standard",
+      "perceivedCombatRole": "ranged spore caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Cap, torso, arms, and split root-legs read as one coherent fungal creature."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full creature and its active spore plume remain readable in frame."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Cap texture, fibrous body detail, glow, and particles are cleanly integrated."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The saturated cyan gills and magical core suggest a distinct arcane or bioluminescent affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The directional spore cloud clearly telegraphs a ranged cone or area attack."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A5-03",
+      "perceivedFamilyOrCreature": "werewolf or lycanthrope",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "melee pouncer",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The digitigrade legs, clawed arms, lupine head, and tail are coherent in motion."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The entire lunging silhouette fits comfortably and separates from the ruins."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Fur, claws, torn cloth, and facial detail are polished without losing the silhouette."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "The design reads as a physical beast with no explicit elemental coating or magic effect."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Raised claws, forward lean, and loaded rear leg clearly signal a leap or rush."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A5-04",
+      "perceivedFamilyOrCreature": "spectral sigil wraith",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "arcane caster",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The abstract head, paired arms, torso sigil, and tapering spectral body are intentionally coherent."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The vertically centered apparition has ample separation and no meaningful crop."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Layered translucency, line work, and concentric effects are controlled and refined."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The luminous spectral body and central rune strongly encode spirit or arcane affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The static symmetrical pose does not expose a distinct attack limb, weapon, or wind-up direction."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A5-05",
+      "perceivedFamilyOrCreature": "colossal fungal fortress creature",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "stationary area controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "revise",
+        "note": "The cap and armored mass read strongly, but the face, limbs, and actionable body structure are difficult to parse."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The central creature and the full radial hazard field are composed clearly."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Architecture, spores, shell texture, and energy paths are richly and consistently finished."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Cyan energy veins and luminous fungal growth imply a strong magical or fungal affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The radiating ground network clearly signals expanding zones or linked area hazards."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A5-06",
+      "perceivedFamilyOrCreature": "antlered winged demon",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "melee bruiser-controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The horned head, broad torso, paired arms, legs, and wings form a coherent demonic body."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full towering figure is centered and scaled effectively against the fortress."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Armor, hide, antlers, wings, chains, and rain receive consistent final-detail treatment."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "The menace is carried by physical demonic anatomy without a specific elemental effect."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "Chains, wings, claws, and dark appendages compete, leaving the primary attack pattern ambiguous."
+      },
+      "overallVerdict": "revise"
+    }
+  ]
+}

@@ -111,6 +111,10 @@ Read [target-schema.md](references/target-schema.md) and
   not replace, rename, or delete another job's asset.
 - For the family profile, provider or pre-candidate failures are no-output handoffs. Do not fabricate
   a compact result receipt without a retained, hash-bound candidate.
+- `planned-provisional-anchor` may produce canonical affinity candidate-only evidence when its exact
+  same-form Normal target, candidate, result, prompt, and source packet chain verifies. It records
+  `humanReviewPending: true`; the producer never treats this authorization as visual approval or
+  runtime promotion.
 - `earth-bridge-provisional` may produce candidate-only evidence, but the producer never approves
   it. A mapped-primary bridge target carries its canonical Earth coordinate only as a future
   copy-with-provenance destination; it does not write or count inside the canonical 750. A

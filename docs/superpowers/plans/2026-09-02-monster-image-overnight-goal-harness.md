@@ -1,5 +1,10 @@
 # Monster Image Overnight Goal-Harness Plan
 
+> **Superseded for current production:** The owner-approved
+> [single-checkpoint goal-harness plan](./2026-09-03-monster-image-single-checkpoint-goal-harness.md)
+> replaces this document's intermediate human review gate. This file remains historical provenance
+> for the original two-phase workflow and must not be used as the active harness instruction.
+
 **Objective:** Produce the complete enemy-owned canonical visual matrix—30 families, 150 T1–T5 forms, and 750 individual Normal/Fire/Earth/Wind/Water images—with strict provenance, bounded revisions, human review gates, and no runtime promotion.
 
 **Authoritative inputs:**

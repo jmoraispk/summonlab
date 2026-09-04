@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A1",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A1-01",
+      "perceivedFamilyOrCreature": "mountain-and-ice humanoid titan",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "siege bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Massive humanoid anatomy and weight read coherently."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full silhouette is visible with strong scale cues."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Highly resolved materials and focal detail."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "The body is dominantly constructed from mountain, forest, snow, and waterfalls without a visible explanation."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "No clear weak point, recovery state, or specific attack telegraph is visible."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Strong titan read, but the unexplained environmental-elemental construction conflicts with Normal affinity."
+    },
+    {
+      "token": "A1-02",
+      "perceivedFamilyOrCreature": "goblin or small orc shield soldier",
+      "perceivedTier": "T2",
+      "perceivedCombatRole": "frontline shield tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Compact humanoid proportions and equipment handling are readable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Shield, sword, face, and feet remain visible."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Good separation and convincing worn equipment."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Its identity is physical and equipment-driven, with no dominant elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The oversized frontal shield clearly implies protected front and punishable exposed flank or sword side."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear defensive infantry identity with grounded affinity and readable positional counterplay."
+    },
+    {
+      "token": "A1-03",
+      "perceivedFamilyOrCreature": "undead or skeletal warlord",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "banner commander bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Armored corpse anatomy and weapon-bearing stance are coherent."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Centered full-body presentation preserves the banner and hooked weapon."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Dense detail remains legible through strong silhouette and value control."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Undeath is conveyed through anatomy and equipment rather than elemental body construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The large hooked weapon and ponderous armored stance imply committed, readable melee swings."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Distinct commander with a legible physical threat and sufficiently readable attack source."
+    },
+    {
+      "token": "A1-04",
+      "perceivedFamilyOrCreature": "giant or ogre chain-flail wielder",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "heavy bruiser and area controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Powerful humanoid structure and chain action read convincingly."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Dynamic pose and weapon head remain contained in frame."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Strong material rendering and motion impact."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The concept is driven by physical mass and a conventional weapon, with no dominant elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The broad flail arc visibly communicates windup, danger zone, and likely recovery after impact."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear physical giant archetype with excellent attack-path telegraphing."
+    },
+    {
+      "token": "A1-05",
+      "perceivedFamilyOrCreature": "grounded dragon or wyvern",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "mobile aerial striker",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Wings, legs, head, and long tail form a coherent draconic silhouette."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Entire wingspan and tail are visible, with useful breathing room."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Scale texture and wing membranes are cleanly resolved."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The dragon is materially grounded and shows no dominant unexplained elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The neutral standing pose shows neither a specific attack windup nor an emphasized vulnerable region."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Readable conventional dragon, though its static presentation supplies little explicit counterplay information."
+    },
+    {
+      "token": "A1-06",
+      "perceivedFamilyOrCreature": "orc berserker",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "dual-weapon melee bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Broad humanoid anatomy, stance, and weapon grip are legible."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full figure and both weapons fit cleanly."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Armor, skin, and weapon surfaces have strong separation."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The identity is entirely physical, with no elemental body construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The separated heavy blades and wide stance make attack origin, reach, and committed swing behavior readable."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Immediate berserker read with grounded affinity and clear melee threat cues."
+    },
+    {
+      "token": "A1-07",
+      "perceivedFamilyOrCreature": "diseased troll or ogre",
+      "perceivedTier": "T2",
+      "perceivedCombatRole": "slow melee brute",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "The right hand and attached or held mass are ambiguous, while the left arm merges into the body."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full lumbering silhouette is visible at a useful scale."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Muddy limb edges and low material separation weaken readability."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Disease-like markings are secondary to a physical flesh body and do not become dominant elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The obscured hand or weapon mass prevents a clear read of attack direction, windup, or vulnerability."
+      },
+      "overallVerdict": "revise",
+      "rationale": "The brute concept reads, but anatomical ambiguity obscures both identity and counterplay."
+    },
+    {
+      "token": "A1-08",
+      "perceivedFamilyOrCreature": "stitched flesh colossus",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "damage-soaking tank",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Embedded bodies, cords, and swollen masses obscure the primary torso and right-arm structure."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "The complete figure is centered and comfortably contained."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Uniformly dense texture produces visual noise without a strong focal hierarchy."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Its construction is visibly flesh, stitching, and restraint material rather than unexplained elemental matter."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "No weak point or distinct attack mechanism emerges from the uniformly cluttered body."
+      },
+      "overallVerdict": "revise",
+      "rationale": "A grounded flesh-golem identity is present, but clutter compromises anatomy and actionable combat reading."
+    },
+    {
+      "token": "A1-09",
+      "perceivedFamilyOrCreature": "fortified war throne or shrine construct",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "stationary summoner or siege objective",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "No clear creature body, limbs, or locomotion system is visible."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "The full structure is centered with adequate margin."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Intricate mechanical and architectural detail is well resolved."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The structure is built from mundane metal, wood, and architectural components without dominant elemental matter."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "Neither an attack source nor a clearly vulnerable functional component is visually prioritized."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Polished as an objective or encounter prop, but it lacks creature anatomy and readable combat counterplay."
+    },
+    {
+      "token": "A1-10",
+      "perceivedFamilyOrCreature": "dark dragon",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "aerial boss and zone controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Head, wings, torso, legs, and tail form a coherent draconic body."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Wide composition preserves the complete wingspan and arena context."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Strong silhouette, atmospheric separation, and refined surface detail."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Dark coloration is cosmetic; the body remains conventionally biological rather than elementally constructed."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The dramatic display pose communicates scale but no specific windup, recovery state, or targetable vulnerability."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Convincing grounded high-tier dragon, though the image offers limited explicit counterplay guidance."
+    }
+  ]
+}

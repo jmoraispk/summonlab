@@ -487,6 +487,73 @@ def validate_family(
             anchor.get("normalCandidateSha256"), "anchor.normalCandidateSha256"
         ):
             fail("provisional Earth Normal candidate evidence is stale")
+    elif anchor.get("kind") == "normal-verified-candidate":
+        require_exact_keys(
+            anchor,
+            {
+                "kind", "normalCoordinateId", "normalVersion", "normalTargetPath",
+                "normalTargetSha256", "normalCandidatePath", "normalCandidateSha256",
+                "normalResultPath", "normalResultSha256", "sourcePacketPath",
+                "sourcePacketSha256", "humanReviewPending",
+                "runtimeCatalogMutationForbidden",
+            },
+            "Normal verified-candidate anchor",
+        )
+        if namespace != "canonical" or status != "planned-provisional-anchor":
+            fail("verified-candidate anchors require canonical planned-provisional-anchor dispatch")
+        normal_version = anchor.get("normalVersion")
+        if not isinstance(normal_version, int) or isinstance(normal_version, bool) or normal_version < 1:
+            fail("Normal anchor version must be a positive integer")
+        expected_normal_coordinate = f"{family_id}/{form_id}/normal"
+        expected_normal_target = (
+            f"{FAMILY_ROOT}/targets/{family_id}/{form_id}/normal/target-v{normal_version}.json"
+        )
+        expected_normal_candidate = (
+            f"{FAMILY_ROOT}/candidates/{family_id}/{form_id}/normal-v{normal_version}.png"
+        )
+        expected_normal_result = (
+            f"{FAMILY_ROOT}/results/{family_id}/{form_id}/normal-v{normal_version}.json"
+        )
+        if (
+            anchor.get("normalCoordinateId") != expected_normal_coordinate
+            or anchor.get("normalTargetPath") != expected_normal_target
+            or anchor.get("normalCandidatePath") != expected_normal_candidate
+            or anchor.get("normalResultPath") != expected_normal_result
+            or anchor.get("sourcePacketPath") != packet_path
+            or anchor.get("sourcePacketSha256") != sources.get("familyPacketSha256")
+            or anchor.get("humanReviewPending") is not True
+            or anchor.get("runtimeCatalogMutationForbidden") is not True
+        ):
+            fail("verified-candidate anchor is not bound to the exact same-form Normal chain")
+        for field in (
+            "normalTargetSha256", "normalCandidateSha256", "normalResultSha256",
+            "sourcePacketSha256",
+        ):
+            require_sha(anchor.get(field), f"anchor.{field}")
+        normal_target_absolute = absolute_project_path(workspace, expected_normal_target)
+        normal_candidate_absolute = absolute_project_path(workspace, expected_normal_candidate)
+        normal_result_absolute = absolute_project_path(workspace, expected_normal_result)
+        if not all(path.is_file() for path in (
+            normal_target_absolute, normal_candidate_absolute, normal_result_absolute
+        )):
+            fail("verified-candidate anchor has missing Normal evidence")
+        normal_target = load_json(normal_target_absolute)
+        if (
+            canonical_sha256(normal_target) != anchor["normalTargetSha256"]
+            or normal_target.get("targetId")
+            != f"canonical/{expected_normal_coordinate}/v{normal_version}"
+            or normal_target.get("coordinateId") != expected_normal_coordinate
+            or normal_target.get("familyId") != family_id
+            or normal_target.get("formId") != form_id
+            or normal_target.get("affinity") != "normal"
+            or normal_target.get("status") != "planned"
+            or normal_target.get("anchor") != {"kind": "normal-self"}
+        ):
+            fail("verified-candidate Normal target hash or identity changed")
+        if hashlib.sha256(normal_candidate_absolute.read_bytes()).hexdigest() != anchor["normalCandidateSha256"]:
+            fail("verified-candidate Normal candidate hash changed")
+        if hashlib.sha256(normal_result_absolute.read_bytes()).hexdigest() != anchor["normalResultSha256"]:
+            fail("verified-candidate Normal result hash changed")
     elif anchor.get("kind") == "normal-approved-review":
         require_exact_keys(
             anchor,

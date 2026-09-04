@@ -6,7 +6,7 @@ Wiki ID: `monster.harpy-talon`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,15 +63,16 @@ A Screecher can mark the carry lane with its cry, but breaking the Talon's plant
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/water-v1.json` |
+| Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/normal-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/water-v1.json` |
 
 ### Status semantics
 
 - `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `planned-provisional-anchor` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
 - `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.
