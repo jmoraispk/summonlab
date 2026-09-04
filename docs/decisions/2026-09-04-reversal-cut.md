@@ -30,10 +30,10 @@ explicit net-new provenance rather than a fabricated migration record.
 ## Production gate
 
 The revised `blade.guard-flow` calibration plate contains all six lineage stages. Revision 2 is
-owner-accepted but remains an unpromoted candidate: its exact provider-native 1254×1254 envelope
-does not yet satisfy the current 1024×1024 master-promotion gate. Reversal Cut's individual art
-cannot be dispatched until the plate has a compliant approved master and its immediate-parent
-Mirrored Edge master is an approved authority.
+owner-accepted and promoted byte-for-byte as the approved family master. Reversal Cut's individual
+art remains blocked until its immediate-parent Mirrored Edge standalone icon is an approved
+authority. The existing independently generated guard-flow standalone candidates require explicit
+owner review before any parent-chain promotion.
 
 ## Owner feedback
 

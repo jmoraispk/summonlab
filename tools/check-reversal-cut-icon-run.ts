@@ -11,6 +11,8 @@ import {
 } from '../packages/contracts/src/index.js';
 import { z } from 'zod';
 
+import { SkillIconPromotionReceiptSchema } from './skill-icon-promotion-contract.js';
+
 const RelativePathSchema = z
 	.string()
 	.min(1)
@@ -67,6 +69,10 @@ const COMPLETION_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/completion.json';
 const REVIEW_PATH =
 	'assets/wiki/skills/icon-production-v1/review/decisions/calibration/blade-guard-flow-reversal-cut-v2.json';
+const CALIBRATION_MASTER_PATH =
+	'assets/wiki/skills/icon-production-v1/masters/calibration/blade-guard-flow.png';
+const PROMOTION_RECEIPT_PATH =
+	'assets/wiki/skills/icon-production-v1/promotion-receipts/blade-guard-flow-reversal-cut-v2.json';
 
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -85,6 +91,7 @@ export interface ReversalCutIconRunReport {
 	readonly candidateHash: string;
 	readonly selfPromoted: false;
 	readonly ownerDecision: 'accepted';
+	readonly calibrationStatus: 'approved';
 	readonly individualStatus: 'blocked-pending-owner-authorities';
 }
 
@@ -119,9 +126,12 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	const result = AnySkillIconResultSchema.parse(
 		JSON.parse((await readBound(root, completion.result)).toString('utf8'))
 	);
-	const review = SkillIconReviewSchema.parse(
-		JSON.parse(await readFile(path.join(root, REVIEW_PATH), 'utf8'))
+	const reviewBytes = await readFile(path.join(root, REVIEW_PATH));
+	const review = SkillIconReviewSchema.parse(JSON.parse(reviewBytes.toString('utf8')));
+	const receipt = SkillIconPromotionReceiptSchema.parse(
+		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
 	);
+	const masterBytes = await readFile(path.join(root, CALIBRATION_MASTER_PATH));
 
 	if (target.jobId !== assignment.jobId || target.jobId !== result.jobId)
 		throw new Error('Target, assignment, and result job identities diverge');
@@ -142,6 +152,18 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		review.decision !== 'accepted'
 	)
 		throw new Error('Owner review does not accept the retained revision 2 candidate');
+	if (
+		receipt.jobId !== target.jobId ||
+		receipt.candidate.path !== completion.candidate.path ||
+		receipt.candidate.contentHash !== completion.candidate.contentHash ||
+		receipt.master.path !== CALIBRATION_MASTER_PATH ||
+		receipt.master.contentHash !== sha256(masterBytes) ||
+		receipt.review.path !== REVIEW_PATH ||
+		receipt.review.contentHash !== sha256(reviewBytes) ||
+		receipt.result.path !== completion.result.path ||
+		receipt.result.contentHash !== completion.result.contentHash
+	)
+		throw new Error('Calibration promotion receipt does not bind the accepted candidate');
 
 	return {
 		runId: completion.runId,
@@ -150,6 +172,7 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		candidateHash: completion.candidate.contentHash,
 		selfPromoted: false,
 		ownerDecision: review.decision,
+		calibrationStatus: 'approved',
 		individualStatus: completion.individualStatus
 	};
 }
