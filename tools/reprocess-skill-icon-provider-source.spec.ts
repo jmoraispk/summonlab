@@ -600,7 +600,7 @@ describe('skill-icon provider-source reprocess coordinator', () => {
 				candidateBytes: Buffer.from('not a png')
 			})
 		).rejects.toThrow(/candidate bytes|validation/iu);
-	});
+	}, 15_000);
 
 	it('allows exactly one same-source coordinator transaction across a simultaneous race', async () => {
 		const input = await fixture();

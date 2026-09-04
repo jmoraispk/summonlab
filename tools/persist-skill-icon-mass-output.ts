@@ -117,7 +117,7 @@ function transparentEdgeConnectedBackground(data: Buffer, width: number, height:
 	return output;
 }
 
-async function normalizeSkillSource(source: Buffer): Promise<Buffer> {
+export async function normalizeSkillSource(source: Buffer): Promise<Buffer> {
 	const decoded = await sharp(source, { failOn: 'error' })
 		.ensureAlpha()
 		.raw()

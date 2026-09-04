@@ -112,7 +112,10 @@ a `1024x1024` RGBA PNG containing:
 
 The image is generated at the provider's largest available square size and downsampled to
 `1024x1024` when necessary. A smaller source is rejected rather than enlarged. All visible frame
-and ornament pixels remain inside the canvas.
+and ornament pixels remain inside the canvas. Normalization combines the provider-derived keyed
+frame annulus with the untouched provider interior, then applies the geometry-bound outer hexagon
+and crest mask. This keeps the charcoal interior while removing depicted checkerboard or matte
+outside the complete tile; both pre-mask and final hashes remain in provenance.
 
 F through A are concrete-first: the weapon, projectile, body, element, magical operation, craft
 tool, material, ingredient, creature, document, or result that performs or embodies the skill is

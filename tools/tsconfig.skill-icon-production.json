@@ -16,6 +16,7 @@
 		"skill-icon-mass-production-lib.spec.ts",
 		"export-skill-icon-mass-production.ts",
 		"persist-skill-icon-mass-output.ts",
+		"repair-skill-icon-mass-exteriors.ts",
 		"finalize-skill-icon-mass-production.ts",
 		"skill-icon-reprocess-consumer-lib.ts",
 		"skill-icon-reprocess-consumer-lib.spec.ts",

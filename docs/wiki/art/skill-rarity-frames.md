@@ -116,6 +116,22 @@ The accepted frame system fixes one hexagonal frame language for every skill dom
 equipment, and element do not recolor rarity. The interior illustration identifies the skill;
 the frame identifies its fixed rarity.
 
+### Full-catalog framed candidate archive
+
+![First full-catalog skill-icon review page](../../../assets/wiki/skills/icon-production-v1/mass-production-v1/contact-sheets/catalog/page-01.png)
+
+The `full-catalog-v1` run contains 124 motif-family reference sheets and 456 independently generated
+framed candidates: 258 Martial, 124 Magical, and 74 Craft. Every individual is retained as a
+`1024x1024` RGBA PNG with a complete rank frame, integrated crest letter, charcoal interior, and
+transparent exterior. The [run manifest](../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json)
+binds the prompts, source authorities, exact provider rasters, normalized outputs, lineage
+references, contact sheets, and hashes.
+
+These are technically complete review candidates, not owner-approved runtime assets. Review can
+proceed through the 19 paginated catalog sheets or the 124 family sheets under
+`mass-production-v1/contact-sheets/families/`; accepted, revise, and rejected decisions remain a
+later additive review stage.
+
 ## Canonical material and ornament ladder
 
 | Tier | Name | Material | Ornament and construction |

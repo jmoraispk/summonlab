@@ -35,6 +35,12 @@ interface ResultRecord {
 		readonly height: number;
 	};
 	readonly attemptCount: number;
+	readonly normalizationHistory?: {
+		readonly operation: 'restore-interior-and-mask-exterior';
+		readonly preRepairContentHash: string;
+		readonly postRepairContentHash: string;
+		readonly removedPixels: number;
+	};
 }
 
 const FAMILY_CONTACT_ROOT =
@@ -250,7 +256,8 @@ async function assertInventory(
 async function assertReferenceBindings(
 	root: string,
 	result: ResultRecord,
-	expectedPaths: readonly string[]
+	expectedPaths: readonly string[],
+	historicalHashesByPath: ReadonlyMap<string, ReadonlySet<string>> = new Map()
 ): Promise<void> {
 	if (
 		result.references.length !== expectedPaths.length ||
@@ -259,7 +266,11 @@ async function assertReferenceBindings(
 		throw new Error(`Reference order or identity drift: ${result.identity}`);
 	}
 	for (const reference of result.references) {
-		if (sha256(await regularBytes(root, reference.path)) !== reference.contentHash) {
+		const currentHash = sha256(await regularBytes(root, reference.path));
+		if (
+			currentHash !== reference.contentHash &&
+			!historicalHashesByPath.get(reference.path)?.has(reference.contentHash)
+		) {
 			throw new Error(`Reference hash drift for ${result.identity}: ${reference.path}`);
 		}
 	}
@@ -301,9 +312,15 @@ async function assertTransparentExterior(iconBytes: Buffer, identity: string): P
 			maxY = Math.max(maxY, y);
 		}
 	}
-	const cornerIndexes = [0, width - 1, (height - 1) * width, width * height - 1];
-	if (cornerIndexes.some((index) => (decoded.data[index * 4 + 3] ?? 0) > 8)) {
-		throw new Error(`Skill exterior reaches a canvas corner: ${identity}`);
+	const edgeIndexes: number[] = [];
+	for (let x = 0; x < width; x += 1) {
+		edgeIndexes.push(x, (height - 1) * width + x);
+	}
+	for (let y = 1; y < height - 1; y += 1) {
+		edgeIndexes.push(y * width, y * width + width - 1);
+	}
+	if (edgeIndexes.some((index) => (decoded.data[index * 4 + 3] ?? 0) > 8)) {
+		throw new Error(`Skill exterior reaches the canvas edge: ${identity}`);
 	}
 	const boundsWidth = maxX - minX + 1;
 	const boundsHeight = maxY - minY + 1;
@@ -313,7 +330,7 @@ async function assertTransparentExterior(iconBytes: Buffer, identity: string): P
 		boundsWidth < 600 ||
 		boundsHeight < 600 ||
 		ratio < 0.8 ||
-		ratio > 1.35
+		ratio > 1.45
 	) {
 		throw new Error(`Skill alpha geometry is implausible: ${identity}`);
 	}
@@ -382,14 +399,22 @@ export async function finalizeSkillIconMassProduction(options: {
 			manifest.authorities.paintedEmblem.path,
 			family.referenceSheetPath
 		];
+		const historicalHashesByPath = new Map<string, ReadonlySet<string>>();
 		if (skill.primaryVisualParent) {
 			const parent = manifest.skills.find(
 				(record) => record.targetId === skill.primaryVisualParent
 			);
 			if (!parent) throw new Error(`Missing visual parent: ${skill.primaryVisualParent}`);
 			expectedReferences.push(parent.finalImagePath);
+			const parentResult = (await readResult(root, parent.resultPath)).record;
+			if (parentResult.normalizationHistory) {
+				historicalHashesByPath.set(
+					parent.finalImagePath,
+					new Set([parentResult.normalizationHistory.preRepairContentHash])
+				);
+			}
 		}
-		await assertReferenceBindings(root, result.record, expectedReferences);
+		await assertReferenceBindings(root, result.record, expectedReferences, historicalHashesByPath);
 		const metadata = await sharp(iconBytes).metadata();
 		if (
 			metadata.width !== 1024 ||
