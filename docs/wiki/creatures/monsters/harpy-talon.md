@@ -6,7 +6,7 @@ Wiki ID: `monster.harpy-talon`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -64,10 +64,10 @@ A Screecher can mark the carry lane with its cry, but breaking the Talon's plant
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/harpies/harpy-talon/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/harpies/harpy-talon/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/harpies/harpy-talon/water-v1.json` |
 
 ### Status semantics
 
