@@ -25,6 +25,8 @@
 		"export-skill-icon-production.ts",
 		"export-skill-icon-production-v2.ts",
 		"export-skill-icon-production-v2.spec.ts",
+		"approve-skill-icon-mass-ancestor-chain.ts",
+		"approve-skill-icon-mass-ancestor-chain.spec.ts",
 		"check-reversal-cut-icon-run.ts",
 		"check-reversal-cut-icon-run.spec.ts",
 		"validate-skill-icon-assets.ts",

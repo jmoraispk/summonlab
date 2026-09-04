@@ -1,0 +1,29 @@
+{
+	"schemaVersion": "skill-icon-assignment-v1",
+	"assignmentId": "assignment-martial-blade-reversal-cut-v1",
+	"jobId": "martial-blade-reversal-cut-v1",
+	"targetPath": "assets/wiki/skills/icon-production-v1/targets/icons/martial-blade-reversal-cut-v1.json",
+	"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/icons/martial-blade-reversal-cut-v1.json",
+	"skillVersion": "summonlab-skill-icon-production-v1",
+	"assignedAt": "2026-09-04T19:50:26.000Z",
+	"retryCeiling": 1,
+	"permittedOutputs": {
+		"candidatePath": "assets/wiki/skills/icon-production-v1/candidates/icons/martial-blade-reversal-cut-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/icons/martial-blade-reversal-cut-v1.json"
+	},
+	"forbiddenSharedPaths": [
+		"docs/wiki/mechanics/skills/martial-blade.md",
+		"docs/wiki/mechanics/skills/net-new-v1.json",
+		"assets/wiki/skills/icon-production-v1/catalog.json",
+		"assets/wiki/skills/icon-production-v1/visual-specs.json",
+		"assets/wiki/skills/icon-production-v2/catalog.json",
+		"assets/wiki/skills/icon-production-v2/overlay.json",
+		"assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-authority.json"
+	],
+	"completionContract": {
+		"oneTargetOneImage": true,
+		"structuredResultRequired": true,
+		"sharedFilesMustRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}
