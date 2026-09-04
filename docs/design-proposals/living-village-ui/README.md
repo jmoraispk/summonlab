@@ -85,6 +85,21 @@ this composition rather than turn the gateway into a conventional login form.
 
 ![Phone title gateway](./mockups/title-gateway-phone.png)
 
+### Vertical portal study
+
+These are review candidates, not replacements for the locked title gateway. Both reinterpret the
+opening chamber's horizontal summoning seal as a traversable upright threshold and deliberately omit
+baked-in interface panels so live controls can occupy the lower-left safe area without doubling the
+frame.
+
+![Vertical portal with a stone arch](./mockups/portal-vertical-stone-arch-v1.png)
+
+![Vertical portal with a lightweight rune frame](./mockups/portal-vertical-rune-frame-v1.png)
+
+The stone arch communicates permanence and passage most clearly. The rune frame is visually lighter
+and may better suit a tier-one Village. Generation prompts and invariants are recorded in the
+[vertical portal study notes](./portal-vertical-study.md).
+
 ### Living Village home
 
 ![Desktop Village home](./mockups/village-home-desktop.png)
