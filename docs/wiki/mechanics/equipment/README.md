@@ -2,9 +2,10 @@
 
 Wiki ID: `mechanics.equipment`
 
-Design status: **owner-revised draft**. The canonical item classes and material relationships are
-now intentionally smaller than the imported compendium. Numerical combat behavior, acquisition,
-durability, and the Living Village shipping selection remain unresolved.
+Design status: **owner-approved runtime-v1 foundation**. The canonical item classes and material
+relationships are intentionally smaller than the imported compendium. The first implementation
+ships the 140 Weapon, Armour-piece, Shield, and Staff definitions; detailed combat benefits,
+durability, Tool, Accessory, and later quality rules remain unresolved.
 
 Equipment covers materials, weapons, armour, shields, casting focuses, tools, accessories, and
 sets. It is a companion to the progression and skill systems: equipment supplements a build,
@@ -26,7 +27,8 @@ supplies base rank, while craftsmanship may add zero, one, or two ranks, capped 
 - [Sets, enchantment, and bound equipment](sets.md)
 
 These owner-revised pages supersede the imported item's breadth while preserving unresolved rules
-honestly. They should not be read as implemented behavior.
+honestly. Sections labeled runtime-v1 describe implemented behavior; remaining numerical and future
+class rules are still design material.
 
 ## Craft output streams
 
@@ -42,8 +44,8 @@ Forging is deliberately the broad durable-item craft. Alchemy recipes change wha
 without creating coating, bomb, antidote, or elixir item classes. Cooking recipes change what Food
 does without creating ration, meal, broth, or feast item classes.
 
-Gathering supplies materials and ingredients, Beast produces companion and handling outcomes, and
-Lore produces knowledge. They do not receive item classes merely for symmetry.
+Gathering supplies materials and ingredients, including animal-handling outcomes, while Knowledge
+produces information. They do not receive item classes merely for symmetry.
 
 The Equipment stream contains thirteen canonical classes:
 
@@ -56,55 +58,52 @@ equippable forms across the complete Equipment stream: six Weapons, twelve Armou
 Staff, Tool, and Accessory. The current production baseline covers Weapons, Armour, Shield, and
 Staff; Tool and Accessory remain documented for later work.
 
-## Candidate Living Village subset
+## Implemented runtime-v1 slice
 
-The complete catalog should remain available to content, mechanics, and visual workers, while the
-first playable village implements only enough equipment to prove:
+The complete catalog remains available to content, mechanics, and visual workers. Engine-v24 and
+the phone workshop now prove:
 
 ```text
-acquire or receive an item
+forge or receive an authored-drop item
 → inspect its readable properties
-→ compare it with the current loadout
 → equip it in a legal slot
-→ see it on the hero
-→ use it in deterministic combat
-→ preserve the loadout on return to training
+→ preserve the item and loadout through reload and strict replay
 ```
 
-### Minimum runtime rules
+### Current runtime rules
 
-- stable item-definition and item-instance IDs;
-- ownership, inventory, equip, unequip, and party-loadout reservation;
-- main-hand, off-hand, two-handed, armour-class, and overlapping-slot legality;
-- rarity, material, weight, scaling attribute, damage/protection tags, and explicit special
-  properties;
-- weight-tolerance penalties through the same combat calculation used by tower encounters;
-- one projection shared by roster, equipment, party assembly, combat result, and hero visuals;
-- deterministic receipts for item acquisition and loadout changes.
+- 140 stable, hash-bound item definitions and definition-backed item instances;
+- company inventory plus main-hand, off-hand, Head, Torso, Legs, and Boots equip legality;
+- one normalized rank-bearing material lot per Standard recipe;
+- deterministic, idempotent workshop start/completion and persisted loadout changes;
+- one bounded authored drop using the same definition catalog and item factory as Forging;
+- lazy card/detail visuals resolved from the separate Equipment runtime manifest.
 
-Durability, repair, enchantment, sets, monster crafting, bound items, storage magic, field tools,
-Potions, and Food are outside the minimum unless another Living Village rule depends on them.
+The engine stores durability fields, but wear, repair, detailed protection/damage effects,
+enchantment, sets, monster crafting, bound items, storage magic, field tools, Potions, and Food are
+outside this slice.
 
-### Candidate expansion pool
+### Seeded demonstration pool
 
-This Common/Uncommon pool exercises the current production baseline without adding another class.
+The catalog contains every retained rank and material. The current playable fixture deliberately
+seeds only bounded material lots and starter inventory so the workshop can demonstrate the complete
+contract without claiming a Gathering economy.
 
 | Need | Candidate items |
 | --- | --- |
 | Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
 | Defence | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
 | Magical equipment | Staff |
-| Materials sufficient for those items | Bronze, Iron, Coarse Hide, Hard Leather, Hemp Weave, Wool, Ash, Yew |
+| Seeded material lots | A bounded fixture selected from the canonical materials |
 
-The first slice should normally use Common and Uncommon instances, with a Rare item only if it is a
-deliberate milestone reward.
+The fixture emphasizes Common equipment while the content and visual catalogs retain all F–S
+definitions.
 
-### Initial runtime selection
+### Runtime catalog boundary
 
-Use at most one starter definition for each selected concrete Equipment form. A smaller runtime
-subset may omit Weapons that no starter hero can use, but every included Armour class must retain
-all four of its items. It must not replace omitted forms with additional weapon, armour, focus,
-tool, or accessory classes.
+All 140 implemented definitions resolve to approved card/detail visuals. Only the definitions
+needed by the current workshop or inventory are loaded into the phone view; this lazy presentation
+boundary does not reduce the authoritative catalog.
 
 ## Ownership and interfaces
 
@@ -114,8 +113,8 @@ tool, or accessory classes.
 - Presentation consumes equipment references and approved visual bindings.
 - Expedition consumes an exact reserved loadout and publishes wear/loss outcomes if those mechanics
   are adopted.
-- The prototype exposes a bounded Forging/Gathering loop without requiring settlement upgrades or
-  equippable Tools.
+- The prototype exposes bounded Standard Forging from seeded material lots without requiring a
+  full Gathering economy, settlement upgrades, or equippable Tools.
 - Creature content supplies monster materials and named-creature signature components.
 
 ## Visual-production sequence
@@ -182,8 +181,9 @@ monster-derived equipment. A reduced prototype Weapon selection subtracts one im
 Weapon at every included material rank; it does not reduce the five-image requirement for an
 included Armour set.
 
-All 161 entries have been produced and owner-accepted as **review candidates**, not approved or
-runtime assets. Promotion still requires a separate approved-source decision and runtime export.
+All 161 entries are owner-approved sources. The 140 isolated items each have deterministic card and
+detail runtime derivatives; the 21 full-set images remain approved continuity references and never
+become inventory items.
 
 The historical v1
 [material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
@@ -205,9 +205,10 @@ complete-set evidence images.
 The [final Armour gallery](../../../../assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html),
 [candidate closeout](../../../../assets/equipment/experiments/material-equipment-v3/runs/material-equipment-v3-run-001/candidate-closeout-v1.json),
 and [proposal-only promotion list](../../../../assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json)
-preserve the exact selected paths, hashes, attempts, and owner decisions. This completes visual
-candidate production only. Approved-source promotion, runtime derivatives, and shared catalog
-integration remain separately authorized work.
+preserve the exact selected paths, hashes, attempts, and owner decisions. The immutable candidates
+were subsequently copied byte-for-byte into the
+[approved source catalog](../../../../assets/equipment/approved/material-equipment-v1/manifest.json),
+then exported into the checked Equipment runtime catalog and bound to 140 content definitions.
 
 ### Historical V2 planning state
 

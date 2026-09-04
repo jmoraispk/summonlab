@@ -473,7 +473,7 @@ async function collectManagedFiles(
 async function assertApprovedRootLayout(workspaceRoot: string): Promise<void> {
 	const state = await equipmentRepositoryPathState(workspaceRoot, EQUIPMENT_APPROVED_ROOT);
 	if (state !== 'directory') throw new Error('Approved Equipment root must be a directory');
-	const allowedFiles = new Set(['manifest.json']);
+	const allowedFiles = new Set(['manifest.json', 'integration-report.json']);
 	const allowedDirectories = new Set(['items', 'armour-set-references', 'receipts', 'reviews']);
 	const absolute = path.join(workspaceRoot, ...EQUIPMENT_APPROVED_ROOT.split('/'));
 	for (const entry of await readdir(absolute, { withFileTypes: true })) {

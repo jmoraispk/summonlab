@@ -2,7 +2,7 @@
 
 Wiki ID: `mechanics.equipment.focuses-tools-accessories`
 
-Design status: **owner-revised draft**.
+Design status: **owner-approved taxonomy; Staff integrated, Tool and Accessory deferred**.
 
 ## Staff
 
@@ -24,12 +24,13 @@ not create a new top-level item class.
 | **Forging** | Hammer and smithing implements |
 | **Alchemy** | Mortar, vessels, and reagent implements |
 | **Cooking** | Knife, pot, and hearth implements |
-| **Gathering** | Pick, sickle, or harvesting implements |
-| **Beast** | Riding and handling gear |
-| **Lore** | Reading, writing, surveying, and appraisal implements |
+| **Gathering** | Pick, sickle, harvesting, and animal-handling implements |
+| **Knowledge** | Reading, writing, surveying, and appraisal implements |
 
 A Tool has one rank-bearing material chosen by its dominant working component. Other handles,
 bindings, containers, and fittings are required visual construction but do not add another rank.
+Tool remains a documented future Equipment class: the runtime-v1 catalog implements Staff but does
+not yet define or export Tool or Accessory items.
 
 ## Accessory
 

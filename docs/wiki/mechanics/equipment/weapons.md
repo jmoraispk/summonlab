@@ -2,9 +2,13 @@
 
 Wiki ID: `mechanics.equipment.weapons`
 
-Design status: **owner-revised draft**. Equipment uses six canonical weapon classes. Named,
-monster-derived, or visually unusual weapons still bind to one of these classes rather than
-creating another handling family.
+Design status: **owner-approved class foundation; runtime-v1 visuals and definitions integrated**.
+Equipment uses six canonical weapon classes. Named, monster-derived, or visually unusual weapons
+still bind to one of these classes rather than creating another handling family.
+
+Runtime-v1 implements one definition and lazy card/detail visual for every legal rank-bearing
+material/class pairing; current Forging produces Standard instances only. Detailed damage, handling
+tradeoffs, and skill compatibility remain later combat work.
 
 ## Canonical classes
 

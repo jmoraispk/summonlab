@@ -147,6 +147,10 @@ Captured screenshots for reviewable implementation milestones live here. They ar
   code-native hero rig and no source PNG delivery.
 - `phase-7-fin005-phone-settlement.png` — the fully arrived image-backed Hearth scene measured by
   the throttled phone browser gate, with the 296.2 KB plate, authoritative overlay, and player HUD.
+- `equipment-workshop-phone-assay-v1.png` — the 390×844/2× engine-v24 workshop assay with one
+  source-bound detail image, rank-bearing material, Standard quality, and explicit base/final rank.
+- `equipment-workshop-phone-loadout-v1.png` — the 390×844/2× persisted Equipment inventory and
+  six-slot loadout after forge completion, equip, and reload.
 - `phase-7-fin005-phone-performance.json` — the versioned 390×844/2×, simulated-4G, 4×-CPU browser
   report covering shell, JavaScript, title/settlement visuals, pause response, reconnect, frame
   cadence, and the JS-heap-plus-decoded-images working-set reference.

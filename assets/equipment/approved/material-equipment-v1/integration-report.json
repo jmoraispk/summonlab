@@ -1,0 +1,167 @@
+{
+	"schemaVersion": "equipment-runtime-integration-report-v1",
+	"reportId": "material-equipment-v1-runtime-integration",
+	"status": "complete",
+	"counts": {
+		"approvedSources": 161,
+		"equippableSources": 140,
+		"armourSetReferences": 21,
+		"runtimeBundles": 140,
+		"runtimeAssets": 280,
+		"contentDefinitions": 140
+	},
+	"manifests": {
+		"approvedSources": {
+			"path": "assets/equipment/approved/material-equipment-v1/manifest.json",
+			"byteSha256": "db1175bbc5439f54cbedf3b9da919e0136993c7dbd0899c2e304f652c6d616ca",
+			"canonicalSha256": "3874e0b589b6f61c348620e955469813b96a08cedd9aeeef0c41488324f22b81"
+		},
+		"runtimeVisuals": {
+			"path": "apps/web/static/runtime/equipment-v1/manifest.json",
+			"byteSha256": "3790f5538084228e259702a0e8b6a2d9532ed0fd816f2d423943782ee29a6cba",
+			"manifestHash": "c25e625cf569e3a626e9c6c650fa675258694a6d08d416a3758f1a4d65cd4805",
+			"catalogVersion": "equipment-v1"
+		},
+		"content": {
+			"contentVersion": "equipment-content-v1",
+			"contentHash": "42a8ffc1899ee458ca8360d33dffbeac3713864548734b7345ce489c3599035c"
+		}
+	},
+	"runtime": {
+		"engineVersion": "engine-v24",
+		"stateCompatibility": "v1-v23-preserved",
+		"itemFactory": "shared-definition-backed",
+		"forging": {
+			"status": "enabled",
+			"enabledCraftsmanship": ["standard"],
+			"materialCost": "one-normalized-rank-bearing-lot",
+			"activity": "settlement-workshop"
+		},
+		"drops": {
+			"status": "authored-fixture-enabled",
+			"frequencyModel": "not-global",
+			"definitionCatalog": "shared-with-forging"
+		},
+		"loading": "lazy-per-definition"
+	},
+	"evidence": {
+		"milestoneA": {
+			"status": "passed",
+			"claim": "approved-sources-exact-and-inert",
+			"promotionReceiptPath": "assets/equipment/approved/material-equipment-v1/receipts/promotion-v1.json"
+		},
+		"milestoneB": {
+			"status": "passed",
+			"claim": "runtime-card-detail-budget-and-lazy-loading",
+			"gallery": {
+				"path": "assets/equipment/approved/material-equipment-v1/reviews/runtime-v1/index.html",
+				"sha256": "045a7d55ece9f148c3a4c485cfb3de2dc929fb78460052276746dcb2754775e1",
+				"purpose": "All 140 card/detail runtime pairs in one review surface."
+			}
+		},
+		"milestoneC": {
+			"status": "passed",
+			"claim": "phone-forge-persist-equip-and-reload",
+			"phoneScreenshots": [
+				{
+					"path": "docs/evidence/equipment-workshop-phone-assay-v1.png",
+					"sha256": "13fda873a66b9bd48c45d212eb185954db1bd60958b5b4884c219341c3a0de3e",
+					"purpose": "390x844@2x Standard forge assay and detail-image evidence."
+				},
+				{
+					"path": "docs/evidence/equipment-workshop-phone-loadout-v1.png",
+					"sha256": "0c793dd94da9b99c7f2089bd6d0596030ee251d687a345fc079f0c26b4e6364e",
+					"purpose": "390x844@2x persisted inventory and legal loadout evidence."
+				}
+			],
+			"e2ePath": "apps/web/src/routes/equipment-forging.e2e.ts"
+		}
+	},
+	"validation": {
+		"focusedStatus": "passed",
+		"commands": [
+			"pnpm validate:equipment-approved-sources",
+			"pnpm validate:equipment-runtime-visuals",
+			"pnpm validate:equipment-content-bindings",
+			"pnpm validate:equipment-integration-report",
+			"pnpm vitest run tools/export-equipment-integration-report.spec.ts",
+			"pnpm tsc -p tools/tsconfig.equipment-promotion.json --noEmit",
+			"pnpm validate:wiki"
+		],
+		"rootCheckIncludesEquipmentValidators": true
+	},
+	"deferred": [
+		"fine-and-masterwork-thresholds-benefits-and-quality-visuals",
+		"full-gathering-economy-and-balance",
+		"monster-derived-equipment-and-visuals",
+		"broad-random-loot-frequency-and-balancing"
+	],
+	"noImageGeneration": {
+		"performedDuringIntegration": false,
+		"approvedBytesEqualSelectedCandidateBytes": true,
+		"runtimeImagesAreDeterministicDerivatives": true,
+		"evidence": "promotion-check-and-source-hash-equality"
+	},
+	"commits": {
+		"reportedThroughCommit": "057bf9235d1e92f432fcb246df4a1b293912cb0d",
+		"entries": [
+			{
+				"task": "task-1",
+				"hash": "43f0fd7475f687b15fc7104176736fb78760d451",
+				"subject": "feat(equipment): define approved source promotion"
+			},
+			{
+				"task": "task-2",
+				"hash": "48cfd6a6b0e04fddde5917af7d919d24d243eed2",
+				"subject": "feat(equipment): promote approved visual sources"
+			},
+			{
+				"task": "task-3",
+				"hash": "17ff8678ebc28d03fce38af236c402f62b35cac5",
+				"subject": "feat(equipment): export runtime visual catalog"
+			},
+			{
+				"task": "task-4",
+				"hash": "25dc9e22215032bb05b439284332de22f2394a46",
+				"subject": "feat(equipment): define material item catalog"
+			},
+			{
+				"task": "task-5",
+				"hash": "33263c4de0294c328d09b6ecf61f07833e171c29",
+				"subject": "feat(engine): add versioned equipment state"
+			},
+			{
+				"task": "task-6",
+				"hash": "d96f9c2bf5eacbf9ad97bf0b556a1d2ac1f3d493",
+				"subject": "feat(forging): create standard equipment"
+			},
+			{
+				"task": "task-6-correction",
+				"hash": "c2ae7273d598e8664faebce7e8b6a6a135da3eb2",
+				"subject": "fix(forging): support v24 catch-up"
+			},
+			{
+				"task": "task-6-correction",
+				"hash": "5be6cabefaed24290bb03534a9bdcb3b7df6c5ee",
+				"subject": "fix(engine): stop catch-up at target"
+			},
+			{
+				"task": "task-7",
+				"hash": "17897a3ab78b8a2428dd3d5633105b6de1094ad8",
+				"subject": "feat(web): add workshop equipment flow"
+			},
+			{
+				"task": "task-8",
+				"hash": "057bf9235d1e92f432fcb246df4a1b293912cb0d",
+				"subject": "feat(equipment): support authored item drops"
+			}
+		]
+	},
+	"closeout": {
+		"task": "task-9",
+		"status": "complete",
+		"commitSubject": "docs(equipment): close runtime integration",
+		"commitHash": null,
+		"hashPolicy": "omitted-to-avoid-report-commit-self-reference"
+	}
+}

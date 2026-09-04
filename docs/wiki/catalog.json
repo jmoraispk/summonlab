@@ -237,8 +237,8 @@
       "pageType": "release-matrix",
       "owner": "product",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -531,9 +531,9 @@
       "path": "docs/wiki/mechanics/equipment/README.md",
       "pageType": "equipment-index",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -542,8 +542,8 @@
       "pageType": "equipment-rules",
       "owner": "inventory",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -551,9 +551,9 @@
       "path": "docs/wiki/mechanics/equipment/materials.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -561,9 +561,9 @@
       "path": "docs/wiki/mechanics/equipment/weapons.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -571,9 +571,9 @@
       "path": "docs/wiki/mechanics/equipment/armour-and-shields.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -581,9 +581,9 @@
       "path": "docs/wiki/mechanics/equipment/focuses-tools-accessories.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {

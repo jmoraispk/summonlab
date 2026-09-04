@@ -12,6 +12,8 @@
 		"equipment-approved-source-contract.spec.ts",
 		"equipment-approved-source-promotion.ts",
 		"equipment-approved-source-promotion.spec.ts",
+		"export-equipment-integration-report.ts",
+		"export-equipment-integration-report.spec.ts",
 		"promote-equipment-approved-sources.ts"
 	]
 }
