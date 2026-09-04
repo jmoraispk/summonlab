@@ -1,8 +1,10 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** Open; non-blocking for the wiki visual catalog
+**Status:** Planned; non-blocking for the wiki visual catalog
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
+**Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
+**Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
 
 ## Problem
 
@@ -102,14 +104,15 @@ Sigil Binding, Tide Sense, Languages, Read Surface, Mental Fortress, and Ancient
 
 ### Phase 1: establish seven canonical frame layers
 
-Extract F, E, D, C, B, A, and S from
-`mass-production-v1/references/approved-seven-frame-sheet.png`, remove the baked checkerboard through
-the existing keyed normalization, register every frame to `geometry-v2.json`, and save one
-1024×1024 RGBA frame per rank. Preserve the integrated crest and letter. Validate that the central
-aperture and exterior are transparent and that each rail is continuous.
+Use the existing technically valid F revision-5 candidate and generate standalone higher-revision
+E, D, C, B, A, and S frame candidates through the normalized reference-asset pipeline. Every new
+frame target binds the selected seven-frame sheet as shape authority, Option C as material and
+ornament authority, and `geometry-v2.json` plus its provider-space guide as registration authority.
+Preserve the integrated crest and letter. Validate that the central aperture and exterior are
+transparent and that each rail is continuous.
 
-This extraction is deterministic image processing of owner-approved pixels, not a new generative
-interpretation.
+The selected sheet is generation guidance, never a crop or trace source. This follows the current
+production contract and avoids attributing extracted pixels to an independently generated frame.
 
 ### Phase 2: recompose all candidates
 
