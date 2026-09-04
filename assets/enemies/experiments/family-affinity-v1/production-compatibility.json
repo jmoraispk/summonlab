@@ -59,7 +59,7 @@
   ],
   "skillContractPath": "skills/summonlab-image-production/references/contract-v3.json",
 	"skillContractSha256": "605b34c3cedb1e0718fc2b4443f8e188768ed70a152b5d7134718df10e30298c",
-  "approvedSkillRoot": "/home/joao/.codex/worktrees/ddb0/summonlab/skills/summonlab-image-production",
+  "approvedSkillRoot": "/home/joao/Documents/summonlab/skills/summonlab-image-production",
   "executionSurface": {
     "framing": "length-prefixed-sha256-v1",
     "files": [
