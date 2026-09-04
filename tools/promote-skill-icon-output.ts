@@ -1467,7 +1467,12 @@ async function preparePromotion(
 			throw new Error(`Geometry guide hash mismatch for ${jobId}`);
 	}
 	const inspection = await inspectSkillIconAsset(candidateBytes, target.role, geometry);
-	if (inspection.width !== 1024 || inspection.height !== 1024 || inspection.violations.length > 0)
+	const expectedCanvas = target.role === 'calibration-plate' ? target.canvas : geometry.canvas;
+	if (
+		inspection.width !== expectedCanvas.width ||
+		inspection.height !== expectedCanvas.height ||
+		inspection.violations.length > 0
+	)
 		throw new Error(
 			`Candidate validation failed for ${jobId}: ${inspection.violations.join('; ')}`
 		);
