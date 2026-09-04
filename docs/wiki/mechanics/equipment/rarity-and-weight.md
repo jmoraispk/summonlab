@@ -4,6 +4,10 @@ Wiki ID: `mechanics.equipment.rarity-weight`
 
 Design status: **draft**.
 
+Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
+final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
+penalties, and the property table below remain explicit design work rather than active mechanics.
+
 ## Material rank plus craftsmanship
 
 A material supplies the item's base rank. The item design and material each contribute difficulty;

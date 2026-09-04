@@ -89,6 +89,12 @@
 		"persist:image-production-output": "tsx tools/persist-image-production-output.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
+		"export:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts",
+		"validate:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts --check",
+		"validate:equipment-approved-sources": "tsx tools/promote-equipment-approved-sources.ts --check",
+		"validate:equipment-content-bindings": "tsx tools/validate-equipment-content-bindings.ts",
+		"export:equipment-integration-report": "tsx tools/export-equipment-integration-report.ts",
+		"validate:equipment-integration-report": "tsx tools/export-equipment-integration-report.ts --check",
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",
 		"validate:player-visuals": "tsx tools/export-player-visuals.ts --check",
 		"validate:phone-performance": "tsx tools/validate-phone-performance.ts",
@@ -143,7 +149,7 @@
 		"test": "pnpm test:packaging && pnpm test:family-affinity-production && pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:wiki && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm test:family-affinity-production && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:wiki && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm test:family-affinity-production && pnpm validate:runtime-visuals && pnpm validate:equipment-approved-sources && pnpm validate:equipment-runtime-visuals && pnpm validate:equipment-content-bindings && pnpm validate:equipment-integration-report && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

@@ -19,6 +19,7 @@ import {
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	HabitStateSchema,
 	HeroProgressionSchema,
 	InjurySchema,
@@ -123,7 +124,8 @@ export function currentRoutineFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 21 ||
 		state.schemaVersion === 22 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -209,43 +211,45 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 23
-			? EngineGameStateV23Schema.parse(stateInput)
-			: stateInput.schemaVersion === 22
-				? EngineGameStateV22Schema.parse(stateInput)
-				: stateInput.schemaVersion === 21
-					? EngineGameStateV21Schema.parse(stateInput)
-					: stateInput.schemaVersion === 20
-						? EngineGameStateV20Schema.parse(stateInput)
-						: stateInput.schemaVersion === 19
-							? EngineGameStateV19Schema.parse(stateInput)
-							: stateInput.schemaVersion === 18
-								? EngineGameStateV18Schema.parse(stateInput)
-								: stateInput.schemaVersion === 17
-									? EngineGameStateV17Schema.parse(stateInput)
-									: stateInput.schemaVersion === 16
-										? EngineGameStateV16Schema.parse(stateInput)
-										: stateInput.schemaVersion === 15
-											? EngineGameStateV15Schema.parse(stateInput)
-											: stateInput.schemaVersion === 14
-												? EngineGameStateV14Schema.parse(stateInput)
-												: stateInput.schemaVersion === 13
-													? EngineGameStateV13Schema.parse(stateInput)
-													: stateInput.schemaVersion === 12
-														? EngineGameStateV12Schema.parse(stateInput)
-														: stateInput.schemaVersion === 11
-															? EngineGameStateV11Schema.parse(stateInput)
-															: stateInput.schemaVersion === 10
-																? EngineGameStateV10Schema.parse(stateInput)
-																: stateInput.schemaVersion === 9
-																	? EngineGameStateV9Schema.parse(stateInput)
-																	: stateInput.schemaVersion === 8
-																		? EngineGameStateV8Schema.parse(stateInput)
-																		: stateInput.schemaVersion === 7
-																			? EngineGameStateV7Schema.parse(stateInput)
-																			: stateInput.schemaVersion === 6
-																				? EngineGameStateV6Schema.parse(stateInput)
-																				: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 24
+			? EngineGameStateV24Schema.parse(stateInput)
+			: stateInput.schemaVersion === 23
+				? EngineGameStateV23Schema.parse(stateInput)
+				: stateInput.schemaVersion === 22
+					? EngineGameStateV22Schema.parse(stateInput)
+					: stateInput.schemaVersion === 21
+						? EngineGameStateV21Schema.parse(stateInput)
+						: stateInput.schemaVersion === 20
+							? EngineGameStateV20Schema.parse(stateInput)
+							: stateInput.schemaVersion === 19
+								? EngineGameStateV19Schema.parse(stateInput)
+								: stateInput.schemaVersion === 18
+									? EngineGameStateV18Schema.parse(stateInput)
+									: stateInput.schemaVersion === 17
+										? EngineGameStateV17Schema.parse(stateInput)
+										: stateInput.schemaVersion === 16
+											? EngineGameStateV16Schema.parse(stateInput)
+											: stateInput.schemaVersion === 15
+												? EngineGameStateV15Schema.parse(stateInput)
+												: stateInput.schemaVersion === 14
+													? EngineGameStateV14Schema.parse(stateInput)
+													: stateInput.schemaVersion === 13
+														? EngineGameStateV13Schema.parse(stateInput)
+														: stateInput.schemaVersion === 12
+															? EngineGameStateV12Schema.parse(stateInput)
+															: stateInput.schemaVersion === 11
+																? EngineGameStateV11Schema.parse(stateInput)
+																: stateInput.schemaVersion === 10
+																	? EngineGameStateV10Schema.parse(stateInput)
+																	: stateInput.schemaVersion === 9
+																		? EngineGameStateV9Schema.parse(stateInput)
+																		: stateInput.schemaVersion === 8
+																			? EngineGameStateV8Schema.parse(stateInput)
+																			: stateInput.schemaVersion === 7
+																				? EngineGameStateV7Schema.parse(stateInput)
+																				: stateInput.schemaVersion === 6
+																					? EngineGameStateV6Schema.parse(stateInput)
+																					: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -438,7 +442,7 @@ export function buildActivityOutcome(
 			deltas.push({
 				ownerId: heroId,
 				kind: 'durability',
-				key: item.templateId,
+				key: 'templateId' in item ? item.templateId : item.definitionId,
 				before: item.durability,
 				after: durabilityAfter,
 				delta: durabilityAfter - item.durability
@@ -523,7 +527,7 @@ export function buildActivityOutcome(
 		deltas.push({
 			ownerId: heroId,
 			kind: 'durability',
-			key: item.templateId,
+			key: 'templateId' in item ? item.templateId : item.definitionId,
 			before: item.durability,
 			after: durabilityAfter,
 			delta: durabilityAfter - item.durability

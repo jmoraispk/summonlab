@@ -10,6 +10,7 @@ import {
 	EngineGameStateV19Schema,
 	EngineGameStateV20Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	FirstBandArchiveStateSchema,
 	MasterControlStateSchema,
 	MasterControlStateV2Schema,
@@ -36,6 +37,7 @@ import {
 	type AuthoritativeEvent,
 	type EngineGameState,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type MissionRunStateV8,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
@@ -46,6 +48,7 @@ import type { EngineEventReducer, EngineGameStateModern } from '../../core/types
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
+import { buildMissionEquipmentDrop, MissionEquipmentDropOutcomeSchema } from './equipment-drop.js';
 import {
 	cancelMissionPreparation,
 	completeMissionExtraction,
@@ -109,8 +112,10 @@ function applyResourceChanges(
 	return { ...state.settlement, resources, resourceLedger };
 }
 
+type FirstBandMissionState = EngineGameStateV23 | EngineGameStateV24;
+
 export type ReduceFirstBandMissionConsequences = (
-	state: EngineGameStateV23,
+	state: FirstBandMissionState,
 	consequence: {
 		readonly eventId: string;
 		readonly sequence: number;
@@ -119,7 +124,7 @@ export type ReduceFirstBandMissionConsequences = (
 		readonly bandStory: EngineGameStateV23['bandStory'];
 		readonly firstBandArchive: EngineGameStateV23['firstBandArchive'];
 	}
-) => EngineGameStateV23;
+) => FirstBandMissionState;
 
 const MissionTransitionPayloadSchema = EmptyMetadataSchema.extend({
 	transition: z.enum([
@@ -327,6 +332,10 @@ const MissionTransitionPayloadV10Schema = MissionTransitionPayloadV8Schema.safeE
 const MissionTransitionPayloadV11Schema = MissionTransitionPayloadV8Schema.safeExtend({
 	bandStory: RuntimeBandStoryStateSchema,
 	firstBandArchive: FirstBandArchiveStateSchema
+}).strict();
+
+const MissionTransitionPayloadV12Schema = MissionTransitionPayloadV11Schema.safeExtend({
+	equipmentDrop: MissionEquipmentDropOutcomeSchema.nullable()
 }).strict();
 
 function reduceMissionEventInternal(
@@ -539,7 +548,7 @@ function reduceMissionEventInternal(
 		});
 	}
 	if (event.eventType === 'mission.round.resolved') {
-		if (state.schemaVersion === 23) {
+		if (state.schemaVersion === 23 || state.schemaVersion === 24) {
 			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
 				throw new ReplayIntegrityError(
 					'First-band mission round precondition failed',
@@ -560,7 +569,9 @@ function reduceMissionEventInternal(
 			) {
 				throw new ReplayIntegrityError('First-band mission round payload diverged', event.sequence);
 			}
-			return EngineGameStateV23Schema.parse({
+			const schema =
+				state.schemaVersion === 24 ? EngineGameStateV24Schema : EngineGameStateV23Schema;
+			return schema.parse({
 				...state,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
@@ -887,6 +898,107 @@ function reduceMissionEventInternal(
 			'mission.retreated'
 		].includes(event.eventType)
 	) {
+		if (state.schemaVersion === 24) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.eventType === 'mission.extraction.opened'
+			) {
+				throw new ReplayIntegrityError(
+					'Equipment mission transition precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionTransitionPayloadV12Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Equipment mission transition version diverged',
+					event.sequence
+				);
+			}
+			const eventTypes = {
+				prepare: 'mission.preparation.started',
+				'revise-party': 'mission.party.revised',
+				cancel: 'mission.preparation.canceled',
+				deploy: 'mission.deployed',
+				extract: 'mission.extracted',
+				retreat: 'mission.retreated'
+			} as const;
+			if (eventTypes[payload.transition] !== event.eventType) {
+				throw new ReplayIntegrityError('Equipment mission event type diverged', event.sequence);
+			}
+			const expectedMission =
+				payload.transition === 'prepare'
+					? prepareMissionAttempt(
+							state,
+							event.commandId,
+							payload.heroIds,
+							payload.mission.binding.missionId
+						)
+					: payload.transition === 'revise-party'
+						? reviseMissionParty(state, payload.heroIds)
+						: payload.transition === 'cancel'
+							? cancelMissionPreparation(state)
+							: payload.transition === 'deploy'
+								? deployMissionAttempt(state).mission
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
+			const storyState = reduceConsequences(state, {
+				eventId: event.eventId,
+				sequence: event.sequence,
+				transition: payload.transition,
+				mission: payload.mission,
+				bandStory: payload.bandStory,
+				firstBandArchive: payload.firstBandArchive
+			});
+			const expectedDrop =
+				payload.transition === 'extract'
+					? buildMissionEquipmentDrop(state, event.eventId, payload.mission)
+					: null;
+			if (
+				hashCanonical(expectedMission) !== hashCanonical(payload.mission) ||
+				hashCanonical(expectedDrop) !== hashCanonical(payload.equipmentDrop)
+			) {
+				throw new ReplayIntegrityError(
+					'Equipment mission transition payload diverged',
+					event.sequence
+				);
+			}
+			if (payload.transition === 'deploy') {
+				const deployment = deployMissionAttempt(state);
+				if (
+					deployment.entropyCursor !== event.seedCursor ||
+					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
+				) {
+					throw new ReplayIntegrityError(
+						'Equipment mission deployment entropy diverged',
+						event.sequence
+					);
+				}
+			} else if (event.seedCursor !== state.entropyCursor || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError(
+					'Equipment mission transition entropy diverged',
+					event.sequence
+				);
+			}
+			const equipmentDrop = payload.equipmentDrop;
+			if (equipmentDrop && state.items[equipmentDrop.item.itemId]) {
+				throw new ReplayIntegrityError('Equipment drop item already exists', event.sequence);
+			}
+			return EngineGameStateV24Schema.parse({
+				...storyState,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				bandStory: payload.bandStory,
+				firstBandArchive: payload.firstBandArchive,
+				items: equipmentDrop
+					? { ...state.items, [equipmentDrop.item.itemId]: equipmentDrop.item }
+					: state.items
+			});
+		}
 		if (state.schemaVersion === 23) {
 			if (
 				event.actorId !== state.master.masterId ||
@@ -1583,13 +1695,14 @@ export function reduceMissionEvent(
 }
 
 export function reduceFirstBandMissionTransition(
-	state: EngineGameStateV23,
+	state: EngineGameStateV23 | EngineGameStateV24,
 	event: AuthoritativeEvent,
 	reduceConsequences: ReduceFirstBandMissionConsequences
-): EngineGameStateV23 {
-	return EngineGameStateV23Schema.parse(
-		reduceMissionEventInternal(state, event, reduceConsequences)
-	);
+): EngineGameStateV23 | EngineGameStateV24 {
+	const reduced = reduceMissionEventInternal(state, event, reduceConsequences);
+	return state.schemaVersion === 24
+		? EngineGameStateV24Schema.parse(reduced)
+		: EngineGameStateV23Schema.parse(reduced);
 }
 
 export const MISSION_EVENT_TYPES = [

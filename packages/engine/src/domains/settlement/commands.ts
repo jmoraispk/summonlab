@@ -13,7 +13,7 @@ import {
 } from '@summonlab/contracts';
 import { z } from 'zod';
 
-import { settlementForState } from '../../core/content-bindings.js';
+import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
 import { emptyMetadata, eventBase } from '../../core/event-metadata.js';
 import type { EngineCommandHandler, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -56,6 +56,13 @@ import {
 	heroCanHearCommunication,
 	revokeDirective
 } from './society.js';
+import { equipEquipmentItem, equipmentItemDisplayName } from './equipment.js';
+import {
+	buildForgingOutcome,
+	buildStandardForgingStart,
+	canStartStandardForging,
+	currentForgingFor
+} from './forging.js';
 
 export const SETTLEMENT_COMMAND_TYPES = [
 	'hero.choose.destination',
@@ -75,6 +82,7 @@ export const SETTLEMENT_COMMAND_TYPES = [
 	'hero.start.routine',
 	'master.inspect.gate',
 	'hero.start.activity',
+	'hero.start.forging',
 	'hero.equip.item',
 	'simulation.advance',
 	'simulation.sync.clock',
@@ -112,6 +120,7 @@ export function requiredSettlementAction(command: SettlementCommand): string {
 	if (command.commandType === 'hero.start.routine') return 'hero.follow.plan';
 	if (command.commandType === 'master.inspect.gate') return 'master.inspect.gate';
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
+	if (command.commandType === 'hero.start.forging') return `hero.forge.${command.definitionId}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
 	if (command.commandType === 'simulation.advance') return 'simulation.advance';
 	if (command.commandType === 'simulation.sync.clock') return 'simulation.sync.clock';
@@ -126,7 +135,8 @@ export function earliestSettlementScheduledTime(state: EngineGameStateModern): s
 			...Object.values(state.heroes).flatMap((hero) => [
 				hero.currentActivity?.completesAt,
 				currentTravelFor(state, hero.heroId)?.arrivesAt,
-				currentRoutineFor(state, hero.heroId)?.completesAt
+				currentRoutineFor(state, hero.heroId)?.completesAt,
+				currentForgingFor(state, hero.heroId)?.completesAt
 			]),
 			...(state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
@@ -316,6 +326,20 @@ function assertSettlementCommandLegal(
 		const minutes = gameMinutesBetween(state.simulatedAt, command.targetGameTime);
 		if (minutes <= 0 || minutes > 7 * 24 * 60) throw new IllegalActionError(required, actionIds);
 	}
+	if (command.commandType === 'hero.start.forging') {
+		if (
+			state.schemaVersion !== 24 ||
+			!canStartStandardForging(
+				state,
+				command.actorId,
+				command.definitionId,
+				command.materialId,
+				command.craftsmanship
+			)
+		) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
 	if (command.commandType === 'hero.start.travel') {
 		if (!hasNavigationState(state)) throw new IllegalActionError(required, actionIds);
 		const hero = state.heroes[command.actorId];
@@ -376,12 +400,33 @@ function assertSettlementCommandLegal(
 	if (command.commandType === 'hero.plan.day') {
 		if (!hasRoutineState(state)) throw new IllegalActionError(required, actionIds);
 		const hero = state.heroes[command.actorId];
-		if (!hero || hero.currentRoutine || hero.currentActivity || hero.currentTravel) {
+		if (
+			!hero ||
+			hero.currentRoutine ||
+			hero.currentActivity ||
+			hero.currentTravel ||
+			currentForgingFor(state, command.actorId)
+		) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
 	if (command.commandType === 'hero.start.routine') {
 		if (!hasRoutineState(state) || !resolveDailyRoutine(state, command.actorId)) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'hero.equip.item') {
+		if (state.schemaVersion === 24) {
+			try {
+				equipEquipmentItem(state, {
+					heroId: command.actorId,
+					itemId: command.itemId,
+					...(command.targetSlot ? { targetSlot: command.targetSlot } : {})
+				});
+			} catch {
+				throw new IllegalActionError(required, actionIds);
+			}
+		} else if (command.targetSlot !== undefined) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
@@ -1003,11 +1048,62 @@ function buildModernSettlementEvent(
 			}
 		});
 	}
+	if (command.commandType === 'hero.start.forging') {
+		if (state.schemaVersion !== 24) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.forging.started');
+		const start = buildStandardForgingStart({
+			state,
+			commandId: command.commandId,
+			forgeEventId: base.eventId,
+			heroId: command.actorId,
+			definitionId: command.definitionId,
+			materialId: command.materialId,
+			craftsmanship: command.craftsmanship
+		});
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: command.actorId,
+				currentForging: start.currentForging,
+				scheduledEvent: start.scheduledEvent,
+				materialLotChange: start.materialLotChange,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero reserved one ${command.materialId} lot and began Standard Forging.`,
+					[
+						{
+							ownerId: state.master.masterId,
+							kind: 'resource',
+							key: command.materialId,
+							before: start.materialLotChange.before,
+							after: start.materialLotChange.after,
+							delta: -1
+						}
+					]
+				)
+			}
+		});
+	}
 	if (command.commandType === 'hero.equip.item') {
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
+		const nextItem = state.items[command.itemId];
 		const base = eventBase(state, command, 'hero.item.equipped');
-		const previousItemId = hero.equipment.mainHand;
+		const targetSlot =
+			state.schemaVersion === 24 && nextItem && 'definitionId' in nextItem
+				? (command.targetSlot ?? verifiedEquipmentDefinition(nextItem.definitionId).slot)
+				: undefined;
+		const previousItemId =
+			state.schemaVersion === 24 && targetSlot
+				? state.heroes[command.actorId]!.equipment[
+						targetSlot === 'main-hand'
+							? 'mainHand'
+							: targetSlot === 'off-hand'
+								? 'offHand'
+								: targetSlot
+					]
+				: hero.equipment.mainHand;
 		const before = previousItemId ? 1 : 0;
 		return AuthoritativeEventSchema.parse({
 			...base,
@@ -1016,9 +1112,10 @@ function buildModernSettlementEvent(
 				heroId: command.actorId,
 				itemId: command.itemId,
 				previousItemId,
+				...(targetSlot ? { targetSlot } : {}),
 				nextVersion: state.version + 1,
 				...emptyMetadata(
-					`The hero equipped ${state.items[command.itemId]?.displayName ?? 'an item'}.`,
+					`The hero equipped ${nextItem ? equipmentItemDisplayName(nextItem) : 'an item'}.`,
 					[
 						{
 							ownerId: command.actorId,
@@ -1111,6 +1208,26 @@ function buildModernSettlementEvent(
 					return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
 				});
 			const routineOutcomes = dueRoutines.map((hero) => buildRoutineOutcome(state, hero.heroId));
+			const dueForgings =
+				state.schemaVersion === 24
+					? Object.values(state.heroes)
+							.filter(
+								(hero) =>
+									hero.currentForging &&
+									compareGameTime(hero.currentForging.completesAt, command.targetGameTime) <= 0
+							)
+							.sort((left, right) => {
+								const time = compareGameTime(
+									left.currentForging!.completesAt,
+									right.currentForging!.completesAt
+								);
+								return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
+							})
+					: [];
+			const forgingOutcomes =
+				state.schemaVersion === 24
+					? dueForgings.map((hero) => buildForgingOutcome(state, hero.heroId))
+					: [];
 			const dueByScheduleId = new Map<string, string>();
 			for (const hero of dueHeroes)
 				dueByScheduleId.set(
@@ -1124,12 +1241,18 @@ function buildModernSettlementEvent(
 					hero.currentRoutine!.scheduledEventId,
 					hero.currentRoutine!.completesAt
 				);
+			for (const hero of dueForgings)
+				dueByScheduleId.set(
+					hero.currentForging!.scheduledEventId,
+					hero.currentForging!.completesAt
+				);
 			for (const directive of expiredDirectives)
 				dueByScheduleId.set(directive.expiryScheduledEventId!, directive.expiresAt!);
 			const resolvedScheduledEventIds = [
 				...outcomes.map((outcome) => outcome.scheduledEventId),
 				...travelOutcomes.map((outcome) => outcome.scheduledEventId),
 				...routineOutcomes.map((outcome) => outcome.scheduledEventId),
+				...forgingOutcomes.map((outcome) => outcome.scheduledEventId),
 				...expiredDirectives.map((directive) => directive.expiryScheduledEventId!)
 			].sort((left, right) => {
 				const time = compareGameTime(dueByScheduleId.get(left)!, dueByScheduleId.get(right)!);
@@ -1137,7 +1260,15 @@ function buildModernSettlementEvent(
 			});
 			const rewardDeltas = [
 				...outcomes.flatMap((outcome) => outcome.rewardDeltas),
-				...routineOutcomes.flatMap((outcome) => outcome.rewardDeltas)
+				...routineOutcomes.flatMap((outcome) => outcome.rewardDeltas),
+				...forgingOutcomes.map((outcome): RewardDelta => ({
+					ownerId: outcome.heroId,
+					kind: 'item',
+					key: outcome.definitionId,
+					before: 0,
+					after: 1,
+					delta: 1
+				}))
 			];
 			const resolutionParts = [
 				outcomes.length === 0
@@ -1155,6 +1286,11 @@ function buildModernSettlementEvent(
 					: routineOutcomes.length === 1
 						? 'one daily routine'
 						: `${routineOutcomes.length} daily routines`,
+				forgingOutcomes.length === 0
+					? null
+					: forgingOutcomes.length === 1
+						? 'one Standard Forging job'
+						: `${forgingOutcomes.length} Standard Forging jobs`,
 				expiredDirectives.length === 0
 					? null
 					: expiredDirectives.length === 1
@@ -1170,6 +1306,7 @@ function buildModernSettlementEvent(
 					activityOutcomes: outcomes,
 					travelOutcomes,
 					routineOutcomes,
+					...(state.schemaVersion === 24 ? { forgingOutcomes } : {}),
 					expiredDirectiveIds: expiredDirectives.map((directive) => directive.directiveId),
 					nextVersion: state.version + 1,
 					...emptyMetadata(
@@ -1293,7 +1430,8 @@ function buildModernSettlementEvent(
 		? [
 				targetHero.currentActivity?.scheduledEventId,
 				currentTravelFor(state, command.targetId)?.scheduledEventId,
-				currentRoutineFor(state, command.targetId)?.scheduledEventId
+				currentRoutineFor(state, command.targetId)?.scheduledEventId,
+				currentForgingFor(state, command.targetId)?.scheduledEventId
 			].filter((id): id is string => Boolean(id))
 		: [];
 	const canceledScheduledEventIds = fatal
@@ -1302,7 +1440,8 @@ function buildModernSettlementEvent(
 					.flatMap((hero) => [
 						hero.currentActivity?.scheduledEventId,
 						currentTravelFor(state, hero.heroId)?.scheduledEventId,
-						currentRoutineFor(state, hero.heroId)?.scheduledEventId
+						currentRoutineFor(state, hero.heroId)?.scheduledEventId,
+						currentForgingFor(state, hero.heroId)?.scheduledEventId
 					])
 					.filter((id): id is string => Boolean(id))
 			: targetHeroSchedules

@@ -2,7 +2,12 @@
 
 Wiki ID: `mechanics.equipment.armour-shields`
 
-Design status: **owner-revised draft**.
+Design status: **owner-approved structure; runtime-v1 visuals and item definitions integrated**.
+
+Runtime-v1 implements all four pieces for every retained Armour material and a metal Shield at every
+rank. The 21 complete-set images are approved continuity references only; the 84 individual Armour
+pieces are the equippable definitions. Protection values, weight penalties, and set convenience
+actions remain deferred.
 
 Armour uses three classes. The rank-bearing material determines the class; named cuts, cultural
 styles, coverage details, and monster-derived appearances do not create more mechanical classes.

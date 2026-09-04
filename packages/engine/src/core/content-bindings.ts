@@ -1,14 +1,26 @@
 import {
 	HEARTH_01_DEFINITION,
+	EQUIPMENT_DEFINITION_CATALOG,
+	getEquipmentDefinition,
 	IRON_MOON_PACKAGE,
+	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE,
 	TOWER_BAND_01_RUNTIME_PACKAGES,
 	TOWER_BAND_01_STORY_ENVELOPE,
 	TOWER_FLOOR_01_PACKAGE
 } from '@summonlab/content';
-import type { EngineGameState, MissionPackage, SettlementDefinition } from '@summonlab/contracts';
+import type {
+	EngineGameState,
+	EngineGameStateV24,
+	EquipmentDefinition,
+	EquipmentLoadoutSlot,
+	EquipmentRank,
+	MissionEquipmentDropFixture,
+	MissionPackage,
+	SettlementDefinition
+} from '@summonlab/contracts';
 
 import { ReplayIntegrityError } from '../errors.js';
-import { hashCanonical } from '../hash.js';
+import { deterministicUuid, hashCanonical, sha256Hex } from '../hash.js';
 
 type NavigationState = Extract<
 	EngineGameState,
@@ -34,17 +46,167 @@ type NavigationState = Extract<
 			| 20
 			| 21
 			| 22
-			| 23;
+			| 23
+			| 24;
 	}
 >;
 type MissionState = Extract<
 	EngineGameState,
-	{ schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 }
+	{ schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 }
 >;
 
 let verifiedSettlement: SettlementDefinition | undefined;
 const verifiedMissions = new Map<string, MissionPackage>();
 let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
+let verifiedEquipment = false;
+let verifiedEquipmentDropFixture: MissionEquipmentDropFixture | undefined;
+const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
+
+function verifyEquipmentCatalog(): void {
+	if (verifiedEquipment) return;
+	const { contentHash } = EQUIPMENT_DEFINITION_CATALOG;
+	const calculatedHash = sha256Hex(JSON.stringify(EQUIPMENT_DEFINITION_CATALOG.definitions));
+	if (calculatedHash !== contentHash) {
+		throw new Error(
+			`Equipment content hash drifted: expected ${contentHash}, calculated ${calculatedHash}`
+		);
+	}
+	verifiedEquipment = true;
+}
+
+export function verifiedEquipmentDefinition(definitionId: string): Readonly<EquipmentDefinition> {
+	verifyEquipmentCatalog();
+	const definition = getEquipmentDefinition(definitionId);
+	if (!definition) throw new Error(`Equipment content is unavailable: ${definitionId}`);
+	return definition;
+}
+
+export function verifiedEquipmentCatalogBinding(): Readonly<{
+	contentVersion: 'equipment-content-v1';
+	contentHash: string;
+}> {
+	verifyEquipmentCatalog();
+	return Object.freeze({
+		contentVersion: EQUIPMENT_DEFINITION_CATALOG.contentVersion,
+		contentHash: EQUIPMENT_DEFINITION_CATALOG.contentHash
+	});
+}
+
+export function verifiedMissionEquipmentDropFixture(): Readonly<MissionEquipmentDropFixture> {
+	if (verifiedEquipmentDropFixture) return verifiedEquipmentDropFixture;
+	const fixture = TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE;
+	const { contentHash, ...payload } = fixture;
+	if (hashCanonical(payload) !== contentHash) {
+		throw new Error(
+			`Equipment drop fixture hash drifted: expected ${contentHash}, calculated ${hashCanonical(payload)}`
+		);
+	}
+	const mission = verifiedMissionContent(fixture.missionId);
+	if (!mission.monsterDuties.some((duty) => duty.dutySlotId === fixture.sourceId)) {
+		throw new Error(`Equipment drop source is unavailable: ${fixture.sourceId}`);
+	}
+	verifiedEquipmentDefinition(fixture.definitionId);
+	verifiedEquipmentDropFixture = fixture;
+	return verifiedEquipmentDropFixture;
+}
+
+export function equipmentRankWithBonus(baseRank: EquipmentRank, bonus: 0 | 1 | 2): EquipmentRank {
+	const baseIndex = EQUIPMENT_RANKS.indexOf(baseRank);
+	return EQUIPMENT_RANKS[Math.min(EQUIPMENT_RANKS.length - 1, baseIndex + bonus)]!;
+}
+
+function equipmentItemDefinition(
+	state: EngineGameStateV24,
+	itemId: string
+): Readonly<EquipmentDefinition> | undefined {
+	const item = state.items[itemId];
+	return item ? verifiedEquipmentDefinition(item.definitionId) : undefined;
+}
+
+export function equipmentSlotIsLegal(
+	state: EngineGameStateV24,
+	heroId: string,
+	definition: Readonly<EquipmentDefinition>,
+	targetSlot: EquipmentLoadoutSlot
+): boolean {
+	if (definition.handedness === 'none') return targetSlot === definition.slot;
+	if (definition.equipmentClass === 'shield') {
+		if (targetSlot !== 'off-hand') return false;
+		const mainId = state.heroes[heroId]?.equipment.mainHand;
+		const main = mainId ? equipmentItemDefinition(state, mainId) : undefined;
+		return main?.handedness !== 'two-handed';
+	}
+	if (definition.handedness === 'two-handed') return targetSlot === 'main-hand';
+	if (targetSlot === 'main-hand') {
+		const offId = state.heroes[heroId]?.equipment.offHand;
+		const off = offId ? equipmentItemDefinition(state, offId) : undefined;
+		return (
+			!off ||
+			off.equipmentClass === 'shield' ||
+			(['sword', 'dagger'].includes(definition.equipmentClass) &&
+				['sword', 'dagger'].includes(off.equipmentClass))
+		);
+	}
+	if (targetSlot !== 'off-hand' || !['sword', 'dagger'].includes(definition.equipmentClass)) {
+		return false;
+	}
+	const mainId = state.heroes[heroId]?.equipment.mainHand;
+	const main = mainId ? equipmentItemDefinition(state, mainId) : undefined;
+	return Boolean(main && ['sword', 'dagger'].includes(main.equipmentClass));
+}
+
+export function validateEquipmentStateContent(state: EngineGameStateV24): void {
+	for (const item of Object.values(state.items)) {
+		const definition = verifiedEquipmentDefinition(item.definitionId);
+		if (
+			equipmentRankWithBonus(definition.materialRank, item.craftsmanship.bonus) !== item.finalRank
+		) {
+			throw new ReplayIntegrityError(
+				'Equipment final rank diverged from content',
+				state.eventCursor
+			);
+		}
+	}
+	for (const hero of Object.values(state.heroes)) {
+		const job = hero.currentForging;
+		if (job) {
+			const definition = verifiedEquipmentDefinition(job.definitionId);
+			const binding = verifiedEquipmentCatalogBinding();
+			if (
+				definition.forgeable !== true ||
+				definition.materialId !== job.materialId ||
+				job.recipe.definitionId !== definition.definitionId ||
+				job.recipe.material.materialId !== definition.materialId ||
+				job.recipe.material.lots !== 1 ||
+				job.recipe.craftsmanship.label !== 'standard' ||
+				job.recipe.craftsmanship.bonus !== 0 ||
+				job.catalogContentVersion !== binding.contentVersion ||
+				job.catalogContentHash !== binding.contentHash ||
+				job.itemId !== deterministicUuid(`${job.forgeEventId}:forged-item`) ||
+				state.items[job.itemId] !== undefined
+			) {
+				throw new ReplayIntegrityError(
+					'Forging job diverged from equipment content',
+					state.eventCursor
+				);
+			}
+		}
+		for (const [slot, itemId] of Object.entries(hero.equipment)) {
+			if (!itemId) continue;
+			const definition = equipmentItemDefinition(state, itemId);
+			const targetSlot = slot === 'mainHand' ? 'main-hand' : slot === 'offHand' ? 'off-hand' : slot;
+			if (
+				!definition ||
+				!equipmentSlotIsLegal(state, hero.heroId, definition, targetSlot as EquipmentLoadoutSlot)
+			) {
+				throw new ReplayIntegrityError(
+					'Equipment loadout diverged from content',
+					state.eventCursor
+				);
+			}
+		}
+	}
+}
 
 export function verifiedStoryEnvelope(): typeof TOWER_BAND_01_STORY_ENVELOPE {
 	if (verifiedBandStory) return verifiedBandStory;

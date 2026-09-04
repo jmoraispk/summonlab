@@ -2,8 +2,10 @@ import visualIndexJson from '../../../../../docs/wiki/creatures/monsters/visual-
 
 export type MonsterTier = 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
 export type MonsterAffinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
-export type MonsterProductionStatus = 'planned' | 'blocked-on-anchor' | 'earth-bridge-provisional';
-export type MonsterProductionPresentationStatus = 'planned-ownership';
+export type MonsterProductionStatus =
+	'planned' | 'planned-provisional-anchor' | 'blocked-on-anchor' | 'earth-bridge-provisional';
+export type MonsterProductionPresentationStatus =
+	'planned' | 'blocked-on-anchor' | 'candidate-only' | 'approved-review' | 'revision-required';
 export type MonsterCandidatePresentationStatus = 'candidate-only';
 export type MonsterCurrentClassDisposition =
 	'map' | 'rename-map' | 'secondary-archetype' | 'fauna' | 'retire';
@@ -26,6 +28,7 @@ export const MONSTER_AFFINITIES = [
 ] as const satisfies readonly MonsterAffinity[];
 export const MONSTER_PRODUCTION_STATUSES = [
 	'planned',
+	'planned-provisional-anchor',
 	'blocked-on-anchor',
 	'earth-bridge-provisional'
 ] as const satisfies readonly MonsterProductionStatus[];
@@ -220,7 +223,13 @@ export function parseMonsterVisualIndexV2(input: unknown): MonsterVisualIndexV2 
 			literal(variant.status, MONSTER_PRODUCTION_STATUSES, 'variant status');
 			literal(
 				variant.presentationStatus,
-				['planned-ownership'] as const,
+				[
+					'planned',
+					'blocked-on-anchor',
+					'candidate-only',
+					'approved-review',
+					'revision-required'
+				] as const,
 				'variant presentationStatus'
 			);
 			for (const field of [

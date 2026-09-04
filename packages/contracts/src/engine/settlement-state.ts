@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
 import { CharacterMindSchema } from '../character.js';
+import {
+	EquipmentDefinitionIdSchema,
+	EquipmentMaterialIdSchema,
+	EquipmentStandardRecipeDescriptorSchema
+} from '../equipment.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from '../settlement.js';
 import {
 	ContentVersionSchema,
@@ -9,6 +14,7 @@ import {
 	StateHashSchema
 } from '../shared.js';
 import {
+	EngineEquipmentLoadoutV24Schema,
 	EngineHeroStateV2Schema,
 	EngineZoneSchema,
 	ResourceBalancesSchema,
@@ -420,8 +426,73 @@ export const EngineSettlementStateV6Schema = z
 	})
 	.strict();
 
+export const CurrentForgingSchema = z
+	.object({
+		forgingJobId: EntityIdSchema,
+		forgeEventId: EntityIdSchema,
+		scheduledEventId: EntityIdSchema,
+		itemId: EntityIdSchema,
+		recipe: EquipmentStandardRecipeDescriptorSchema,
+		definitionId: EquipmentDefinitionIdSchema,
+		materialId: EquipmentMaterialIdSchema,
+		catalogContentVersion: z.literal('equipment-content-v1'),
+		catalogContentHash: StateHashSchema,
+		startedAt: IsoDateTimeSchema,
+		completesAt: IsoDateTimeSchema
+	})
+	.strict()
+	.superRefine((job, context) => {
+		if (
+			job.recipe.definitionId !== job.definitionId ||
+			job.recipe.material.materialId !== job.materialId
+		) {
+			context.addIssue({ code: 'custom', message: 'Forging job diverged from its recipe' });
+		}
+	});
+
+export const EngineHeroStateV24Schema = z
+	.object({
+		...EngineHeroStateV5Schema.shape,
+		equipment: EngineEquipmentLoadoutV24Schema,
+		currentForging: CurrentForgingSchema.nullable().default(null)
+	})
+	.strict()
+	.superRefine((hero, context) => {
+		if (
+			[hero.currentActivity, hero.currentTravel, hero.currentRoutine, hero.currentForging].filter(
+				Boolean
+			).length > 1
+		) {
+			context.addIssue({ code: 'custom', message: 'A hero cannot perform concurrent work' });
+		}
+		if (hero.lifeState !== 'active' && hero.currentForging !== null) {
+			context.addIssue({ code: 'custom', message: 'A terminal hero cannot forge equipment' });
+		}
+	});
+
+const materialLotShape = Object.fromEntries(
+	EquipmentMaterialIdSchema.options.map((materialId) => [
+		materialId,
+		z.number().int().nonnegative()
+	])
+) as Record<(typeof EquipmentMaterialIdSchema.options)[number], z.ZodNumber>;
+
+export const EquipmentMaterialLotsV24Schema = z.object(materialLotShape).strict();
+
+export const EngineSettlementStateV24Schema = z
+	.object({
+		...EngineSettlementStateV6Schema.shape,
+		materialLots: EquipmentMaterialLotsV24Schema,
+		forgeSystemPower: z.enum(['dormant', 'powered']).default('dormant')
+	})
+	.strict();
+
 export type BuildingAssignmentRole = z.infer<typeof BuildingAssignmentRoleSchema>;
 export type FirstEmberFacility = z.infer<typeof FirstEmberFacilitySchema>;
 export type FirstEmberRationale = z.infer<typeof FirstEmberRationaleSchema>;
 export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
+export type CurrentForging = z.infer<typeof CurrentForgingSchema>;
+export type EngineHeroStateV24 = z.infer<typeof EngineHeroStateV24Schema>;
+export type EngineSettlementStateV24 = z.infer<typeof EngineSettlementStateV24Schema>;
+export type EquipmentMaterialLotsV24 = z.infer<typeof EquipmentMaterialLotsV24Schema>;

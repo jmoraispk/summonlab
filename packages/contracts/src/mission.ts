@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { CharacterMindSchema } from './character.js';
+import { EquipmentCraftsmanshipSchema, EquipmentDefinitionIdSchema } from './equipment.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -9,6 +10,40 @@ import {
 } from './shared.js';
 
 export const MissionSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u);
+
+export const MissionEquipmentDropFixtureSchema = z
+	.object({
+		schemaVersion: z.literal('mission-equipment-drop-fixture-v1'),
+		contentVersion: ContentVersionSchema,
+		contentHash: StateHashSchema,
+		missionId: MissionSlugSchema,
+		rewardId: MissionSlugSchema,
+		sourceId: MissionSlugSchema,
+		definitionId: EquipmentDefinitionIdSchema,
+		craftsmanship: EquipmentCraftsmanshipSchema,
+		initialCondition: z
+			.object({
+				durability: z.number().int().positive().max(100),
+				maxDurability: z.number().int().positive().max(100)
+			})
+			.strict(),
+		recipientRule: z.literal('lowest-id-surviving-hero')
+	})
+	.strict()
+	.superRefine((fixture, context) => {
+		if (fixture.initialCondition.durability > fixture.initialCondition.maxDurability) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Equipment drop durability cannot exceed its maximum'
+			});
+		}
+		if (fixture.craftsmanship.label !== 'standard') {
+			context.addIssue({
+				code: 'custom',
+				message: 'The authored equipment drop fixture must remain standard craftsmanship'
+			});
+		}
+	});
 
 export const MissionPointSchema = z
 	.object({
@@ -1791,6 +1826,7 @@ export const MissionRoutePlanSchema = z
 	});
 
 export type MissionArenaEdge = z.infer<typeof MissionArenaEdgeSchema>;
+export type MissionEquipmentDropFixture = z.infer<typeof MissionEquipmentDropFixtureSchema>;
 export type MissionArenaKnowledge = z.infer<typeof MissionArenaKnowledgeSchema>;
 export type MissionArenaNode = z.infer<typeof MissionArenaNodeSchema>;
 export type MissionArenaProjection = z.infer<typeof MissionArenaProjectionSchema>;

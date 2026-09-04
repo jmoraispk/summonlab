@@ -2,11 +2,21 @@
 
 Wiki ID: `mechanics.equipment.materials`
 
-Design status: **owner-revised draft**.
+Design status: **owner-approved canonical ladder; runtime-v1 integrated**.
 
 Each material family has one canonical material at each rank. The material supplies an item's base
 rank. Item and material difficulty determine how hard the item is to make, while the smith's
 craftsmanship can raise the finished item's rank above that base.
+
+## Runtime-v1 boundary
+
+All 28 materials below are implemented in `equipment-content-v1`, producing exactly 140 legal
+material/form definitions. Standard Forging consumes one normalized lot of the definition's single
+rank-bearing material. Current runs receive bounded seeded lots; node discovery, harvesting,
+conversion, quantities, replenishment, and the broader Gathering economy remain later work.
+
+Fine and Masterwork are preserved design labels, not enabled forge outcomes. Runtime-v1 creates
+Standard (`+0`) items only, so material rank and final rank are currently equal.
 
 ## Metal line
 
