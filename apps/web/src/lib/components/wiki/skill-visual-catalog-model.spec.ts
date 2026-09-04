@@ -224,6 +224,20 @@ describe('skill visual catalog model', () => {
 		});
 	});
 
+	it('rejects non-canonical case and whitespace in URL filter values', () => {
+		expect(
+			parseSkillCatalogQuery('?domain=martial&family=blade&motif=BLADE.PRECISION-CUT', records)
+		).toEqual({ q: '', domain: '', family: '', motif: '' });
+		expect(
+			normalizeSkillCatalogFilters(records, {
+				q: '',
+				domain: ' Martial ' as 'Martial',
+				family: 'Blade ',
+				motif: ' blade.precision-cut'
+			})
+		).toEqual({ q: '', domain: '', family: '', motif: '' });
+	});
+
 	it('uses the page size for visible windows at every catalog boundary', () => {
 		const all = Array.from({ length: 456 }, (_, index) => records[index % records.length]!);
 		expect(SKILL_CATALOG_PAGE_SIZE).toBe(120);

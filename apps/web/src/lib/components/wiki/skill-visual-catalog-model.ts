@@ -42,9 +42,7 @@ function searchable(record: SkillVisualCatalogRecord): string {
 }
 
 function domain(value: string): SkillCatalogDomain | '' {
-	const candidate = DOMAINS.find(
-		(entry) => entry.toLocaleLowerCase('en') === value.trim().toLocaleLowerCase('en')
-	);
+	const candidate = DOMAINS.find((entry) => entry === value);
 	return candidate ?? '';
 }
 
@@ -64,8 +62,7 @@ function optionsFor(
 }
 
 function canonicalOption(value: string, options: readonly string[]): string {
-	const normalizedValue = value.trim().toLocaleLowerCase('en');
-	return options.find((option) => option.toLocaleLowerCase('en') === normalizedValue) ?? '';
+	return options.find((option) => option === value) ?? '';
 }
 
 function recordsForBroaderFilters(
@@ -144,9 +141,9 @@ export function serializeSkillCatalogQuery(filters: SkillCatalogFilters): string
 	const params = new URLSearchParams();
 	const values: readonly [string, string][] = [
 		['q', normalizedText(filters.q)],
-		['domain', filters.domain.trim()],
-		['family', filters.family.trim()],
-		['motif', filters.motif.trim()]
+		['domain', filters.domain],
+		['family', filters.family],
+		['motif', filters.motif]
 	];
 	for (const [key, value] of values) {
 		if (value !== '') params.set(key, value);
