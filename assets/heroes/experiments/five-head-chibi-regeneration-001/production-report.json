@@ -3,14 +3,14 @@
   "experimentId": "five-head-chibi-regeneration-001",
   "lifecycle": "candidate",
   "planned": 200,
-  "primaryCalls": 192,
+  "primaryCalls": 200,
   "retryCalls": 1,
-  "providerSources": 192,
-  "candidates": 192,
-  "results": 192,
-  "completedWaves": 12,
-  "journalSha256": "b669e06babd1dd36fa7d3acb5b507567698ff0616b8198caaccabb49350268eb",
-  "updatedAt": "2026-09-04T21:21:08Z",
+  "providerSources": 200,
+  "candidates": 200,
+  "results": 200,
+  "completedWaves": 13,
+  "journalSha256": "ee93cbb6057d03fc7d9d47c2b7cc115bc490bbf866683564f011455e70933f82",
+  "updatedAt": "2026-09-04T21:28:08Z",
   "waves": [
     {
       "waveId": "wave-01",
@@ -123,11 +123,11 @@
     {
       "waveId": "wave-13",
       "planned": 8,
-      "primaryCalls": 0,
+      "primaryCalls": 8,
       "retryCalls": 0,
-      "providerSources": 0,
-      "candidates": 0,
-      "results": 0
+      "providerSources": 8,
+      "candidates": 8,
+      "results": 8
     }
   ]
 }
