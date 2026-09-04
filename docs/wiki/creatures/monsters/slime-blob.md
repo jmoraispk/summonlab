@@ -6,7 +6,7 @@ Wiki ID: `monster.slime-blob`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: approved-review; Fire: planned; Earth: planned; Wind: planned; Water: planned. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,10 +63,10 @@ Its wake gives Droplets a faster Core Hop, but crossing behind the Blob denies b
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/normal-v1.json` |
-| Fire | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/fire-v1.json` |
-| Earth | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/earth-v1.json` |
-| Wind | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/wind-v1.json` |
-| Water | `planned` | `planned` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/water-v1.json` |
+| Fire | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/fire-v1.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/slimes/slime-blob/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/slimes/slime-blob/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/slimes/slime-blob/water-v1.json` |
 
 ### Status semantics
 
