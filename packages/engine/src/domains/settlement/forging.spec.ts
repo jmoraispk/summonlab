@@ -169,11 +169,16 @@ describe('Standard Forging', () => {
 			targetGameTime: job.completesAt
 		});
 
-		const caughtUp = applyCatchUpPolicy(started.state, job.completesAt, 1);
+		const caughtUp = applyCatchUpPolicy(started.state, job.completesAt);
 		expect(caughtUp.resolvedScheduledEventIds).toEqual([job.scheduledEventId]);
+		expect(caughtUp.commands.map((command) => command.commandType)).toEqual(['simulation.advance']);
+		expect(caughtUp.events.map((event) => event.eventType)).toEqual(['simulation.advanced']);
+		expect(caughtUp.truncated).toBe(false);
 		expect(caughtUp.state.schemaVersion).toBe(24);
 		if (caughtUp.state.schemaVersion !== 24) throw new Error('Expected v24 catch-up result');
 		expect(caughtUp.state.heroes[HERO_ID]!.currentForging).toBeNull();
+		expect(caughtUp.state.heroes[HERO_ID]!.dailyPlan).toBeNull();
+		expect(caughtUp.state.heroes[HERO_ID]!.currentRoutine).toBeNull();
 		expect(caughtUp.state.items[job.itemId]).toMatchObject({
 			itemId: job.itemId,
 			definitionId: job.definitionId,

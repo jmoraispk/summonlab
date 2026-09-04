@@ -109,6 +109,9 @@ export function nextCatchUpCommand(
 	const state = parseCatchUpState(stateInput);
 	if (state.status !== 'active') return null;
 	if (compareGameTime(state.simulatedAt, targetGameTime) > 0) return null;
+	if (state.schemaVersion === 24 && compareGameTime(state.simulatedAt, targetGameTime) === 0) {
+		return null;
+	}
 	for (const hero of Object.values(state.heroes).sort((left, right) =>
 		left.heroId.localeCompare(right.heroId)
 	)) {
