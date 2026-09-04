@@ -22,10 +22,7 @@ function fixtures() {
 		manifest: readJson(`${campaignRoot}/manifest.json`),
 		target: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v2.target.json`),
 		assignment: readJson(`${campaignRoot}/direction/greatsword-metal-ranks-v2.assignment.json`),
-		prompt: readFileSync(
-			`${campaignRoot}/direction/greatsword-metal-ranks-v2.prompt.txt`,
-			'utf8'
-		)
+		prompt: readFileSync(`${campaignRoot}/direction/greatsword-metal-ranks-v2.prompt.txt`, 'utf8')
 	};
 }
 
@@ -85,7 +82,7 @@ describe('Greatsword candidate campaign validation', () => {
 		});
 	});
 
-	it('records the exhausted proportion revision while every item call remains gated', () => {
+	it('unlocks exactly seven item calls after a hash-bound owner direction decision', () => {
 		const summary = validateGreatswordCampaign(fixtures());
 
 		expect(summary).toEqual({
@@ -94,27 +91,25 @@ describe('Greatsword candidate campaign validation', () => {
 			dedicatedCandidateCount: 7,
 			initialPixelCallCount: 8,
 			currentDispatchablePixelCallCount: 0,
-			state: 'direction-proportion-revision-review-pending-owner'
+			state: 'item-production-review-pending-owner'
 		});
 	});
 
-	it('verifies the repository-bound v2 image, receipt, and honest proportion review', async () => {
+	it('verifies seven hash-bound dedicated candidates and proportion reviews', async () => {
 		await expect(validateGreatswordCampaignFiles(repositoryRoot)).resolves.toMatchObject({
-			artifactState: 'direction-proportion-revision-recorded',
+			artifactState: 'item-candidates-recorded',
 			referenceCount: 0
 		});
 	});
 
-	it('rejects a standalone candidate that bypasses the owner direction gate', () => {
+	it('rejects a standalone candidate that bypasses its assigned production call', () => {
 		const input = fixtures();
 		const manifest = structuredClone(input.manifest) as {
 			plannedItems: Array<{ status: string }>;
 		};
 		manifest.plannedItems[0]!.status = 'assigned';
 
-		expect(() => validateGreatswordCampaign({ ...input, manifest })).toThrow(
-			/blocked-on-direction-decision/
-		);
+		expect(() => validateGreatswordCampaign({ ...input, manifest })).toThrow(/candidate/);
 	});
 
 	it('rejects a reordered or incomplete canonical metal ladder', () => {

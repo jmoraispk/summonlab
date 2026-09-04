@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "equipment-greatsword-item-assignment-v1",
+  "assignmentId": "assignment-greatsword-v1-skyiron-b",
+  "targetId": "greatsword-v1-skyiron-b",
+  "campaignId": "two-handed-greatsword-v1",
+  "identity": { "rank": "B", "materialId": "skyiron", "materialName": "Skyiron" },
+  "immutable": true,
+  "dryRun": false,
+  "retryCeiling": 1,
+  "acceptedDirection": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png", "sha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8", "decisionPath": "assets/equipment/experiments/two-handed-greatsword-v1/checkpoints/direction-decision-v2.json", "decisionSha256": "f4b52c8f91327daf4dd89dab2dea1e5b113a52da80074a9027320ca730cd66bc" },
+  "proportionProfile": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json", "sha256": "04ecd463d4e0d15a35639ae478c716d51a5e25254a8b563a800a8575fbee07d7" },
+  "promptPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/b/skyiron/greatsword-v1.prompt.txt",
+  "promptSha256": "c1743d00e1cf2184af5779e623cba7f4a30641dd6ad029f3f7f926579a2e8ba2",
+  "references": [{ "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png", "sha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8", "purpose": "Owner-accepted family direction; reconstruct only Skyiron B column 5 without cropping." }],
+  "imageSpecification": { "width": 1024, "height": 1024, "mediaType": "image/png", "targetMarginPercent": 8, "minimumMarginPercent": 5 },
+  "permittedOutputs": { "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/b/skyiron/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/b-skyiron-greatsword-v1.json" },
+  "forbiddenActions": ["crop-direction-board", "overwrite-existing-output", "write-outside-permitted-outputs", "self-promote-to-approved", "write-runtime-catalog"],
+  "selfPromotionForbidden": true
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "equipment-greatsword-item-proportion-review-v1",
+  "reviewId": "greatsword-v1-bronze-f-proportion-review",
+  "targetId": "greatsword-v1-bronze-f",
+  "candidate": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png", "sha256": "3e50a90b46bc0cb5510dd8b9fd60e238ea47f3a672fbdd523db844190d2df756" },
+  "profile": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json", "sha256": "04ecd463d4e0d15a35639ae478c716d51a5e25254a8b563a800a8575fbee07d7" },
+  "method": "Producer landmark inspection at native 1024x1024 resolution using the accepted profile definitions; painted anti-aliased edges are approximate to one pixel.",
+  "measurements": { "bladePx": 609, "fullHiltPx": 236, "exposedGripPx": 180, "guardWidthPx": 182, "pommelPx": 44, "overallPx": 845 },
+  "ratios": { "bladeToFullHilt": 2.58, "bladeToExposedGrip": 3.38, "bladePercent": 72.07, "guardPercent": 21.54, "pommelPercent": 5.21 },
+  "framing": { "topMarginPx": 86, "bottomMarginPx": 93, "minimumMarginPercent": 8.4, "status": "pass" },
+  "status": "pass",
+  "failedCriteria": [],
+  "humanReviewPending": true
+}

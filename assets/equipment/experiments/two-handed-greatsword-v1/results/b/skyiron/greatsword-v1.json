@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "equipment-greatsword-item-result-v1",
+  "resultId": "greatsword-v1-skyiron-b-attempt-1",
+  "targetId": "greatsword-v1-skyiron-b",
+  "assignmentId": "assignment-greatsword-v1-skyiron-b",
+  "attempt": 1,
+  "status": "candidate",
+  "provider": "OpenAI image generation",
+  "promptSha256": "c1743d00e1cf2184af5779e623cba7f4a30641dd6ad029f3f7f926579a2e8ba2",
+  "generationSource": {
+    "sessionArtifactId": "exec-9153330d-0bee-4683-8f46-42208905d846.png",
+    "sha256": "28fc9ff063ef5cccfc17959ae585a9a11b72185c9ef53226c9c02acb179da55a",
+    "width": 1254,
+    "height": 1254
+  },
+  "normalization": {
+    "operation": "uniform-scale-and-edge-copy",
+    "contentWidth": 900,
+    "contentHeight": 900,
+    "paddingPx": 62,
+    "purpose": "Meet the assigned safe-margin contract without altering weapon geometry."
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png",
+    "sha256": "98919de4042a6d59b98701c2630f163d8bffbbf01bce3c16764911834e94cae3",
+    "bytes": 873767,
+    "width": 1024,
+    "height": 1024,
+    "mediaType": "image/png"
+  },
+  "selfPromoted": false
+}

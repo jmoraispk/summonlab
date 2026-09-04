@@ -2,8 +2,8 @@
   "schemaVersion": "equipment-greatsword-direction-review-v2",
   "reviewId": "greatsword-v1-direction-proportion-review-v2",
   "targetId": "greatsword-v1-metal-rank-direction-v2",
-  "state": "revise",
-  "humanReviewPending": true,
+  "state": "accepted-with-measured-guard-exception",
+  "humanReviewPending": false,
   "rankOrder": [
     "F Bronze",
     "E Iron",
@@ -24,7 +24,7 @@
     "width": 1536,
     "height": 1024,
     "bytes": 2115616,
-    "decision": "revise-guard-span"
+    "decision": "accepted-with-measured-guard-exception"
   },
   "reviewDerivatives": [
     {
@@ -50,12 +50,13 @@
     "bladeGripProportions": "pass",
     "bladeShare": "pass",
     "pommelShare": "pass",
-    "guardSpan": "revise",
+    "guardSpan": "accepted-owner-exception",
     "rankProgression": "pass",
     "materialDistinction": "pass",
     "phoneThumbnail": "pass",
     "nativeDetail": "pass",
     "productionHygiene": "pass"
   },
+  "ownerDecisionPath": "assets/equipment/experiments/two-handed-greatsword-v1/checkpoints/direction-decision-v2.json",
   "allowedOwnerDecisions": ["accept", "revise", "experiment", "defer"]
 }

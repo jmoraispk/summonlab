@@ -1,6 +1,6 @@
 # Two-handed Greatsword v1
 
-Status: **proportion revision pending owner review; standalone item production remains gated**.
+Status: **seven dedicated candidates recorded; owner review pending**.
 
 This collision-safe campaign develops Greatsword as a two-handed visual family inside the canonical
 `Sword` mechanical class. It does not add another Weapon class, change the approved Equipment v1
@@ -32,25 +32,27 @@ The campaign has seven material/rank cells and one reference-only rank board:
 ```
 
 The original direction board is retained with a `revise` decision because every blade-to-full-hilt
-ratio fell below the approved minimum. A museum-grounded proportion contract then authorized one
-fresh v2 board and one bounded correction. The correction now passes blade-to-hilt (2.54–2.70),
-blade-to-grip (3.31–3.53), blade-share (71.72–72.98%), and pommel-share (4.50–4.81%) checks across
-all seven ranks. It remains `revise` because its functional guards span only 19.53–21.93% of total
-length against the approved 24–30% range.
+ratio fell below the approved minimum. A museum-grounded proportion contract then authorized a
+fresh v2 board and one bounded correction. The owner accepted v2 with a named, measured guard-span
+exception, and that exact direction hash now anchors seven dedicated standalone renders. Board
+cells were not cropped into item candidates.
 
-No pixel call is currently dispatchable. The seven dedicated item assignments remain
-unmaterialized until an owner decision accepts an exact direction-board path and SHA-256. Board
-cells will never be cropped into item candidates.
+All seven candidates pass the accepted profile at native resolution: blade-to-hilt 2.58–2.72,
+blade-to-grip 3.27–3.68, blade share 72.07–73.13%, guard share 19.16–22.94%, and pommel share
+4.41–5.60%. The source renders were uniformly packaged at 90% scale on their own extended studio
+backgrounds so every candidate also clears the 5% safe-margin requirement. No pixel call is
+currently dispatchable.
 
 ## Proportion review
 
 The contract defines landmarks before measuring: blade runs from functional guard plane to tip;
 full hilt runs from guard plane to pommel end; exposed grip excludes guard and pommel; guard width
-uses the functional quillon tips. The review records per-rank pixel measurements, derived ratios,
-and pass/fail criteria in `reviews/proportions/greatsword-metal-ranks-v2-measurements.json`.
+uses the functional quillon tips. Dedicated reviews in `reviews/proportions/items/` bind each exact
+candidate hash to the accepted profile, pixel measurements, derived ratios, framing, and pass/fail
+criteria.
 
-Open `reviews/proportions/index.html` for the v1/v2 comparison, numeric envelope, and owner decision
-evidence. The current recommendation is to preserve every v2 trait except functional guard span.
+Open `reviews/items/index.html` for the dedicated-candidate comparison and native-detail links.
+Promotion remains blocked until the owner accepts the exact seven candidate paths and hashes.
 
 ## References
 

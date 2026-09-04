@@ -2,7 +2,7 @@
   "schemaVersion": "equipment-greatsword-campaign-v1",
   "campaignId": "two-handed-greatsword-v1",
   "createdOn": "2026-09-04",
-  "lifecycleState": "direction-proportion-revision-review-pending-owner",
+  "lifecycleState": "item-production-review-pending-owner",
   "authorizedBoundary": "review-ready-candidate-campaign",
   "itemModel": {
     "stableVisualFamilyId": "greatsword",
@@ -64,12 +64,14 @@
     "math": "7 dedicated items + 1 direction board = 8 initial pixel calls"
   },
   "productionStats": {
-    "completedPixelCallCount": 4,
+    "completedPixelCallCount": 11,
     "completedInitialDirectionCalls": 1,
     "completedBoundedCorrectionCalls": 2,
     "assignedProportionRevisionCalls": 1,
     "completedProportionRevisionCalls": 2,
-    "dedicatedItemCallsRemainingAfterDirectionAcceptance": 7
+    "assignedDedicatedItemCalls": 7,
+    "completedDedicatedItemCalls": 7,
+    "dedicatedItemCallsRemainingAfterDirectionAcceptance": 0
   },
   "references": [
     {
@@ -94,6 +96,7 @@
   },
   "proportionReview": {
     "contractPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+    "acceptedProfilePath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json",
     "v1MeasurementsPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/greatsword-metal-ranks-v1-measurements.json",
     "status": "owner-approved"
   },
@@ -105,16 +108,22 @@
     "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.result.json",
     "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/greatsword-metal-ranks-v2-measurements.json",
     "decisionPath": "assets/equipment/experiments/two-handed-greatsword-v1/checkpoints/direction-decision-v2.json",
-    "status": "revise"
+    "status": "accepted-with-measured-guard-exception"
+  },
+  "itemReview": {
+    "reviewManifestPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/items/review-manifest.json",
+    "reviewPagePath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/items/index.html",
+    "contactSheetPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/items/contact-sheet-v1.png",
+    "status": "pending-owner-review"
   },
   "plannedItems": [
-    { "targetId": "greatsword-v1-bronze-f", "rank": "F", "materialId": "bronze", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-iron-e", "rank": "E", "materialId": "iron", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/e/iron/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-steel-d", "rank": "D", "materialId": "steel", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/d/steel/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-blacksteel-c", "rank": "C", "materialId": "blacksteel", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/c/blacksteel/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-skyiron-b", "rank": "B", "materialId": "skyiron", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-starmetal-a", "rank": "A", "materialId": "starmetal", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/a/starmetal/greatsword-v1.png", "status": "blocked-on-direction-decision" },
-    { "targetId": "greatsword-v1-sunsteel-s", "rank": "S", "materialId": "sunsteel", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/s/sunsteel/greatsword-v1.png", "status": "blocked-on-direction-decision" }
+    { "targetId": "greatsword-v1-bronze-f", "rank": "F", "materialId": "bronze", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/f/bronze/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/f/bronze/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/f-bronze-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-iron-e", "rank": "E", "materialId": "iron", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/e/iron/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/e/iron/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/e/iron/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/e-iron-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-steel-d", "rank": "D", "materialId": "steel", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/d/steel/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/d/steel/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/d/steel/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/d-steel-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-blacksteel-c", "rank": "C", "materialId": "blacksteel", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/c/blacksteel/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/c/blacksteel/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/c/blacksteel/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/c-blacksteel-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-skyiron-b", "rank": "B", "materialId": "skyiron", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/b/skyiron/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/b/skyiron/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/b-skyiron-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-starmetal-a", "rank": "A", "materialId": "starmetal", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/a/starmetal/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/a/starmetal/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/a/starmetal/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/a-starmetal-greatsword-v1.json", "status": "candidate" },
+    { "targetId": "greatsword-v1-sunsteel-s", "rank": "S", "materialId": "sunsteel", "assignmentPath": "assets/equipment/experiments/two-handed-greatsword-v1/assignments/s/sunsteel/greatsword-v1.json", "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/s/sunsteel/greatsword-v1.png", "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/results/s/sunsteel/greatsword-v1.json", "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/s-sunsteel-greatsword-v1.json", "status": "candidate" }
   ],
   "forbiddenWrites": [
     "assets/equipment/approved/",

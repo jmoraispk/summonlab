@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "equipment-greatsword-proportion-profile-v2",
+  "profileId": "greatsword-v1-owner-accepted-direction-profile",
+  "sourceContract": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+    "sha256": "77f0850fd947aa006b5348d69b37a1ecae5c7bd92253ea489b556dda1c2dd522"
+  },
+  "ownerDecision": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/checkpoints/direction-decision-v2.json",
+    "selectedDirectionPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+    "selectedDirectionSha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8"
+  },
+  "landmarks": {
+    "blade": "functional guard plane at blade shoulders to tip",
+    "fullHilt": "functional guard plane to pommel end",
+    "exposedGrip": "wrapped hand-contact area excluding guard and pommel",
+    "guardWidth": "functional quillon tip to functional quillon tip",
+    "pommel": "terminal counterweight and cap along the longitudinal axis",
+    "overall": "tip to pommel end"
+  },
+  "acceptedRanges": {
+    "bladeToFullHilt": [2.5, 2.8],
+    "bladeToExposedGrip": [3.2, 3.7],
+    "bladePercent": [71, 74],
+    "guardPercent": [19, 23],
+    "pommelPercent": [4, 6]
+  },
+  "guardRangeProvenance": "Owner-accepted measured v2 direction deviation; this range is visual-family direction, not museum evidence.",
+  "application": "Every dedicated Greatsword candidate must be measured against this profile before candidate review."
+}
