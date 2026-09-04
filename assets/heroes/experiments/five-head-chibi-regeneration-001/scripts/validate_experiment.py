@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -52,6 +53,7 @@ PROMOTION_KEYS = frozenset({
     "approved", "approval", "approvalstatus", "runtimebinding", "runtimebindings",
     "promoted", "promotionstatus",
 })
+PROMOTION_VALUES = frozenset({"approved", "promoted", "runtime", "runtimebound", "runtimebinding"})
 
 
 def _load_object(path: Path, label: str) -> dict[str, Any]:
@@ -102,15 +104,21 @@ def _committed_paths(workspace: Path) -> list[str]:
     return paths
 
 
-def _reject_promotion_claim(value: object, label: str) -> None:
+def _normalized_token(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", value.lower())
+
+
+def reject_promotion_claim(value: object, label: str) -> None:
     if isinstance(value, dict):
         for key, child in value.items():
-            if key.lower() in PROMOTION_KEYS and child not in (False, 0, None, "", [], {}):
+            if _normalized_token(key) in PROMOTION_KEYS and child not in (False, 0, None, "", [], {}):
                 raise ContractError(f"{label} contains an approval, promotion, or runtime-binding claim")
-            _reject_promotion_claim(child, label)
+            reject_promotion_claim(child, label)
     elif isinstance(value, list):
         for child in value:
-            _reject_promotion_claim(child, label)
+            reject_promotion_claim(child, label)
+    elif isinstance(value, str) and _normalized_token(value) in PROMOTION_VALUES:
+        raise ContractError(f"{label} contains an approval, promotion, or runtime-binding claim")
 
 
 def _validate_candidate_only_tree(root: Path) -> None:
@@ -127,7 +135,41 @@ def _validate_candidate_only_tree(root: Path) -> None:
     for path in root.rglob("*.json"):
         if path.is_symlink() or not path.is_file():
             raise ContractError("candidate-only JSON evidence must be a regular file")
-        _reject_promotion_claim(_load_object(path, "candidate-only evidence"), path.relative_to(root).as_posix())
+        reject_promotion_claim(_load_object(path, "candidate-only evidence"), path.relative_to(root).as_posix())
+
+
+def _validate_production_report(root: Path, journal: list[dict[str, Any]], wave_results: list[Any]) -> None:
+    report = _load_object(root / "production-report.json", "production report")
+    if report.get("schemaVersion") != "five-head-chibi-production-report-v1" or report.get("experimentId") != EXPERIMENT_ID or report.get("lifecycle") != LIFECYCLE:
+        raise ContractError("production report schema, experiment, or lifecycle differs")
+    expected_counts = {
+        "planned": PRIMARY_CALL_LIMIT,
+        "primaryCalls": PRIMARY_CALL_LIMIT,
+        "retryCalls": sum(result.retry_calls for result in wave_results),
+        "providerSources": PRIMARY_CALL_LIMIT,
+        "candidates": PRIMARY_CALL_LIMIT,
+        "results": PRIMARY_CALL_LIMIT,
+        "completedWaves": len(WAVE_SIZES),
+    }
+    if any(report.get(key) != value for key, value in expected_counts.items()):
+        raise ContractError("production report completion counts differ")
+    journal_path = root / "provenance/production-journal.jsonl"
+    if report.get("journalSha256") != sha256_file(journal_path):
+        raise ContractError("production report journal hash differs")
+    expected_waves = [
+        {
+            "waveId": result.wave_id,
+            "planned": result.planned,
+            "primaryCalls": result.primary_calls,
+            "retryCalls": result.retry_calls,
+            "providerSources": result.completed,
+            "candidates": result.completed,
+            "results": result.completed,
+        }
+        for result in wave_results
+    ]
+    if report.get("waves") != expected_waves:
+        raise ContractError("production report wave evidence differs")
 
 
 def completion_report_bytes(report: dict[str, Any]) -> bytes:
@@ -275,6 +317,7 @@ def validate_experiment(*, root: Path = DEFAULT_ROOT) -> dict[str, Any]:
     if not all(result.complete for result in wave_results):
         raise ContractError("one or more production waves are incomplete")
     journal = _load_journal(root)
+    _validate_production_report(root, journal, wave_results)
     primary = sum(record.get("callKind") == "primary" for record in journal)
     retries = sum(record.get("callKind") == "provider-no-output-retry" for record in journal)
     no_output = sum(record.get("callKind") == "primary" and record.get("outcome") == "provider-no-output" for record in journal)

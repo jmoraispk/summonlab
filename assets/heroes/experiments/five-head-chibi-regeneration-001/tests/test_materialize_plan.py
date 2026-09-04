@@ -192,6 +192,19 @@ class MaterializerTests(unittest.TestCase):
                 self.materializer.materialize(root, self.roster, self.targets, self.assignments)
             self.assertFalse((root / "source-roster.json").exists())
 
+    def test_write_rejects_symlinked_queue_parent_before_linking_outside_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "experiment"
+            outside = Path(temporary) / "outside"
+            root.mkdir()
+            outside.mkdir()
+            (root / "waves").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(self.materializer.ContractError, "escapes"):
+                self.materializer.materialize(root, self.roster, self.targets, self.assignments)
+            self.assertEqual(list(outside.iterdir()), [])
+            self.assertFalse((root / "source-roster.json").exists())
+            self.assertFalse((root / "production-plan.json").exists())
+
     def test_write_rolls_back_published_paths_after_a_publication_failure(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "experiment"

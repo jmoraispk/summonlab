@@ -31,6 +31,7 @@ from contracts import (
     SOURCE_ROSTER_PATH,
     SOURCE_ROSTER_SHA256,
     WAVE_SIZES,
+    confine_relative,
     exclusive_write,
     render_prompt,
     sha256_file,
@@ -455,7 +456,7 @@ def _rollback_published(root: Path, owner: str, created: Sequence[tuple[Path, in
 def _publish_staged_files(root: Path, staging: Path, missing: Sequence[tuple[str, bytes]], outcome: dict[str, int], created: list[tuple[Path, int, int]]) -> None:
     for relative, payload in missing:
         staged = staging / relative
-        final = root / relative
+        final = confine_relative(root, relative)
         final.parent.mkdir(parents=True, exist_ok=True)
         try:
             os.link(staged, final, follow_symlinks=False)

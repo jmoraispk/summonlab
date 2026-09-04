@@ -91,6 +91,15 @@ class ValidateExperimentTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden), self.assertRaises(self.validator.ContractError):
                 self.validator.validate_committed_scope([*allowed, forbidden])
 
+    def test_candidate_claim_scan_rejects_key_spelling_and_lifecycle_values(self) -> None:
+        for document in (
+            {"runtime_binding": "hero-a"},
+            {"lifecycle": "approved"},
+            {"status": "promoted"},
+        ):
+            with self.subTest(document=document), self.assertRaises(self.validator.ContractError):
+                self.validator.reject_promotion_claim(document, "fixture")
+
     def test_summary_contract_rejects_every_completion_class_when_tampered(self) -> None:
         mutations = (
             ("source hash", lambda value: value["sourceEvidence"].__setitem__("reviewManifestSha256", "0" * 64)),
