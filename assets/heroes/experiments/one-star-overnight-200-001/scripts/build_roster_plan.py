@@ -149,7 +149,7 @@ ACTIVE_QUOTAS = {
 BODY_DESCRIPTIONS = {
     "healthy-slight-lanky": "healthy slight, narrow, long-limbed construction with low mass",
     "ordinary-average": "ordinary lean-to-average construction without visible definition",
-    "soft-round": "soft rounded construction with an evident middle and gentle limb contours",
+    "soft-round": "unmistakably soft rounded construction with a clearly evident, naturally wider middle, short-to-average limbs, no cinched or flat waist, and gentle limb contours",
     "sturdy-stocky": "sturdy stocky construction with a broad frame and compact proportions",
     "plus-size-heavy": "plus-size heavy construction with substantial natural mass",
     "athletic-conditioned": "conditioned athletic construction with functional tone but no ripped definition",
@@ -297,7 +297,7 @@ PERSONAL_OBJECTS = (
 )
 ANCHOR_DETAILS = (
     "one mismatched earring", "a narrow bracelet stack", "a small throat necklace", "two plain rings",
-    "a shaped cloth clasp", "three hair rings", "a repaired cuff with bright thread", "a shallow cheek scar",
+    "a shaped cloth clasp", "one wide engraved hair cuff on one side, with no other hair or ear jewelry", "a repaired cuff with bright thread", "a shallow cheek scar",
     "a dense freckle field", "a carved belt buckle", "a wrapped keepsake cord", "one asymmetric ear cuff",
     "a patterned collar insert", "contrasting boot laces", "a hand-painted hem mark", "a tiny nose stud",
 )
@@ -577,7 +577,7 @@ def visible_anchors(hero_id: str, density: str, tattoo: str, coolness_anchor: st
         anchors.append(
             pick(
                 f"{hero_id}:hardware",
-                ("one mismatched earring", "a carved belt buckle", "three hair rings", "one shaped cloth clasp"),
+                ("one mismatched earring", "a carved belt buckle", "one wide engraved hair cuff on one side, with no other hair or ear jewelry", "one shaped cloth clasp"),
             )
         )
     anchors = list(dict.fromkeys(anchors))

@@ -547,7 +547,8 @@ def activate_reserve(
             and bool(failure_result["failedCriteria"])
             and any(
                 attempt.get("conclusion") == "provider-failure"
-                and attempt.get("failureKind") in {"malformed-output", "persistence"}
+                and attempt.get("failureKind")
+                in {"malformed-output", "no-output", "persistence"}
                 and attempt.get("sourceOutput") is None
                 and attempt.get("persistence") is None
                 for attempt in failure_result["attempts"]

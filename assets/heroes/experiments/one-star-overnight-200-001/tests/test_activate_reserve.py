@@ -379,6 +379,28 @@ class ActivateReserveTests(unittest.TestCase):
         self.assertIn("provider-output integrity", record["decisionEvidence"]["authorization"])
         self.assertEqual(record["activeSelectedCount"], 200)
 
+    def test_terminal_no_output_provider_failure_can_activate_a_reserve(self) -> None:
+        result_path = self.fixture.materialize_malformed_provider_failure("kaar-jorar")
+        result = json.loads((self.fixture.root / result_path).read_text())
+        result["attempts"][0]["failureKind"] = "no-output"
+        self.fixture.write_json(result_path, result)
+        receipt = activation.activate_reserve(
+            self.fixture.root / self.fixture.roster_relative,
+            self.fixture.root,
+            failed_active_hero_id="kaar-jorar",
+            reserve_hero_id="zelen-soror",
+            destination_wave="wave-01",
+            producer_id="image-producer-reserve",
+            assigned_at="2026-09-03T01:00:00Z",
+            created_at="2026-09-03T00:59:00Z",
+            reason="Terminal provider no-output; activate a frozen reserve.",
+            failure_result_path=self.fixture.root / result_path,
+        )
+        record = json.loads((self.fixture.root / receipt["activationPath"]).read_text())
+        self.assertEqual(record["decisionEvidence"]["failureStatus"], "failed")
+        self.assertIn("provider-output integrity", record["decisionEvidence"]["authorization"])
+        self.assertEqual(record["activeSelectedCount"], 200)
+
     def test_terminal_malformed_correction_output_can_activate_a_reserve(self) -> None:
         self.fixture.materialize_failed_candidate("kaar-jorar", status="revise")
         packet = self.fixture.packet("kaar-jorar")

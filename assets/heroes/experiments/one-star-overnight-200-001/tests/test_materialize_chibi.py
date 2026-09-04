@@ -20,6 +20,7 @@ sys.path.insert(0, str(HERE))
 
 import activate_reserve as activation  # noqa: E402
 import materialize_chibi as chibi  # noqa: E402
+import materialize_provider_retry as provider_retry  # noqa: E402
 import materialize_supplemental_reserve as supplemental  # noqa: E402
 from contracts import (  # noqa: E402
     ContractError,
@@ -321,6 +322,59 @@ class MaterializeChibiTests(unittest.TestCase):
         self.assertEqual(target["sourceSummon"]["candidatePath"], corrected_target["output"]["candidatePath"])
         self.assertEqual(target["sourceSummon"]["sha256"], sha256_bytes(corrected_bytes))
         self.assertIn(corrected_result["resultId"], target["references"][0]["purpose"])
+
+    def test_provider_retry_v2_becomes_exact_selected_authority(self) -> None:
+        failed = deepcopy(self.fixture.result)
+        failed["status"] = "failed"
+        failed["candidate"] = None
+        failed["selectedAttemptId"] = None
+        failed["failedCriteria"] = [
+            criterion["criterionId"] for criterion in self.fixture.target["acceptanceCriteria"]
+        ]
+        failed["writtenOutputPaths"] = [self.fixture.target["output"]["resultPath"]]
+        attempt = failed["attempts"][0]
+        attempt["conclusion"] = "provider-failure"
+        attempt["failureKind"] = "other"
+        attempt["sourceOutput"] = None
+        attempt["persistence"] = None
+        for finding in attempt["findings"]:
+            finding["outcome"] = "not-applicable"
+        self.fixture.write_json(self.fixture.target["output"]["resultPath"], failed)
+        (self.fixture.root / self.fixture.target["output"]["candidatePath"]).unlink()
+
+        retry = provider_retry.materialize_provider_retry(
+            self.fixture.root / self.fixture.packet["summonTargetPath"],
+            self.fixture.root / self.fixture.packet["summonAssignmentPath"],
+            self.fixture.root / self.fixture.target["output"]["resultPath"],
+            self.fixture.root,
+            assigned_at="2026-09-02T10:30:00Z",
+        )
+        retry_target = json.loads(
+            (self.fixture.root / retry["targetPath"]).read_text(encoding="utf-8")
+        )
+        retry_assignment = json.loads(
+            (self.fixture.root / retry["assignmentPath"]).read_text(encoding="utf-8")
+        )
+        retry_bytes = fake_png() + b"-provider-retry-v2"
+        retry_result = self.fixture.make_result(
+            retry_target, retry_assignment, retry_bytes
+        )
+        self.fixture.write_bytes(retry_target["output"]["candidatePath"], retry_bytes)
+        self.fixture.write_json(retry_target["output"]["resultPath"], retry_result)
+
+        report = chibi.materialize_chibi(
+            self.fixture.hero_id,
+            self.fixture.wave_id,
+            self.fixture.root,
+            summon_version=2,
+            producer_id="image-producer-chibi-test",
+            assigned_at="2026-09-02T11:00:00Z",
+        )
+        target = json.loads(
+            (self.fixture.root / report["targetPath"]).read_text(encoding="utf-8")
+        )
+        self.assertEqual(target["sourceSummon"]["targetId"], retry_target["targetId"])
+        self.assertEqual(target["sourceSummon"]["sha256"], sha256_bytes(retry_bytes))
 
     def test_rejects_revise_v1_without_explicit_selected_correction(self) -> None:
         self.fixture.result["status"] = "revise"

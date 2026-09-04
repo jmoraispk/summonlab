@@ -110,7 +110,7 @@ class SupplementalReserveTests(unittest.TestCase):
                 {key: value for key, value in record.items() if key != "contentSha256"}
             )
             fixture.write_json(receipt["path"], record)
-            with self.assertRaisesRegex(ContractError, "newly frozen woman"):
+            with self.assertRaisesRegex(ContractError, "gender quota coordinate"):
                 supplemental.load_supplemental_reserves(fixture.root, fixture.roster)
 
             fixture.write_json(receipt["path"], original)
@@ -140,6 +140,25 @@ class SupplementalReserveTests(unittest.TestCase):
             self.assertEqual((fixture.root / first["path"]).read_bytes(), first_bytes)
             loaded = supplemental.load_supplemental_reserves(fixture.root, fixture.roster)
             self.assertEqual([record["sequence"] for _path, record in loaded], [1, 2])
+        finally:
+            fixture.close()
+
+    def test_materializes_requested_man_identity(self) -> None:
+        fixture = SupplementalFixture()
+        try:
+            receipt = supplemental.materialize_supplemental_reserve(
+                fixture.root / fixture.roster_relative,
+                fixture.root,
+                created_at="2026-09-03T06:30:00Z",
+                reason="The frozen man reserve pool is exhausted; freeze one recovery identity.",
+                gender="man",
+            )
+            self.assertEqual(receipt["gender"], "man")
+            record = json.loads((fixture.root / receipt["path"]).read_text())
+            packet = record["reservePacket"]
+            self.assertEqual(packet["physicalManifest"]["genderPresentation"], "man")
+            self.assertEqual(packet["quotaCoordinates"]["gender"], "man")
+            self.assertEqual(len(supplemental.load_supplemental_reserves(fixture.root, fixture.roster)), 1)
         finally:
             fixture.close()
 

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-05",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "pera-soren",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/pera-soren/combat-chibi-v1.json",
+      "selectedResultSha256": "46703639115ecb017aa0743cbaf315536b4d869ac60c421be802c8b92c328895",
+      "verdict": "fail",
+      "blockingCriteria": [
+        "identity-continuity"
+      ],
+      "evidence": "Original-resolution inspection confirms that the chibi adds a second cheek mole, breaking the exactly-one durable facial detail and therefore identity continuity. The sole authorized v2 correction call then ended in a host SIGTRAP without returning any image payload or source path, so no verifiable retry result could be persisted. The one-correction boundary is exhausted and replacement is required rather than inventing provider evidence or making a third call."
+    }
+  ]
+}

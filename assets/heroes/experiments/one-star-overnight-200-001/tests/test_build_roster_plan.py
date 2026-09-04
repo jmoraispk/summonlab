@@ -91,7 +91,7 @@ class BuildRosterPlanTests(unittest.TestCase):
                     any(
                         token in anchor
                         for anchor in item["physicalManifest"]["personalDetails"]["visibleAnchors"]
-                        for token in ("earring", "buckle", "hair rings", "clasp")
+                        for token in ("earring", "buckle", "hair rings", "hair cuff", "clasp")
                     )
                 )
 

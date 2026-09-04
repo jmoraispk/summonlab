@@ -124,9 +124,10 @@ def _validate_packet(packet: Any, style_reference: dict[str, str]) -> dict[str, 
     quota = packet.get("quotaCoordinates")
     if not isinstance(physical, dict) or not isinstance(quota, dict):
         raise ContractError("supplemental reserve lacks physical or quota metadata")
-    if physical.get("rosterRole") != "reserve" or physical.get("genderPresentation") != "woman":
-        raise ContractError("supplemental reserve must be a newly frozen woman identity")
-    if quota.get("gender") != "woman":
+    gender = physical.get("genderPresentation")
+    if physical.get("rosterRole") != "reserve" or gender not in {"man", "woman"}:
+        raise ContractError("supplemental reserve must be a newly frozen man or woman identity")
+    if quota.get("gender") != gender:
         raise ContractError("supplemental reserve gender quota coordinate is invalid")
     target_path = packet.get("summonTargetPath")
     assignment_path = packet.get("summonAssignmentPath")
@@ -306,6 +307,7 @@ def materialize_supplemental_reserve(
     *,
     created_at: str,
     reason: str,
+    gender: str = "woman",
 ) -> dict[str, Any]:
     workspace = workspace.resolve(strict=True)
     roster_relative = workspace_relative(workspace, roster_plan_path)
@@ -318,6 +320,8 @@ def materialize_supplemental_reserve(
         raise ContractError("created-at is required")
     if not isinstance(reason, str) or not reason.strip() or len(reason) > 1000:
         raise ContractError("reason must be nonempty and at most 1000 characters")
+    if gender not in {"man", "woman"}:
+        raise ContractError("gender must be man or woman")
 
     style = roster["styleReference"]
     style_payload = anchored_read(workspace, style["path"], prefix="assets")
@@ -329,10 +333,11 @@ def materialize_supplemental_reserve(
     ids, names, signatures = _identity_exclusions(workspace, roster, supplemental)
     candidate_names = generate_names(32, ids, names)
     allocations = build_reserve_allocations()
-    woman_indices = [
-        index for index, gender in enumerate(allocations["gender"]) if gender == "woman"
+    gender_indices = [
+        index for index, allocated_gender in enumerate(allocations["gender"])
+        if allocated_gender == gender
     ]
-    allocation = _allocation_at(allocations, woman_indices[(sequence - 1) % len(woman_indices)])
+    allocation = _allocation_at(allocations, gender_indices[(sequence - 1) % len(gender_indices)])
     ordinal = ACTIVE_COUNT + RESERVE_COUNT + sequence - 1
     packet: dict[str, Any] | None = None
     for hero_id, display_name in candidate_names:
@@ -400,6 +405,7 @@ def main() -> None:
     parser.add_argument("workspace", type=Path)
     parser.add_argument("--created-at", required=True)
     parser.add_argument("--reason", required=True)
+    parser.add_argument("--gender", choices=("man", "woman"), default="woman")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -408,6 +414,7 @@ def main() -> None:
                 args.workspace,
                 created_at=args.created_at,
                 reason=args.reason,
+                gender=args.gender,
             ),
             indent=2,
         )

@@ -38,6 +38,7 @@ from contracts import (
 SCRIPT_PATH = Path(__file__).resolve()
 WORKSPACE_ROOT = SCRIPT_PATH.parents[5]
 ROSTER_PATH = f"{EXPERIMENT_ROOT}/roster-plan.json"
+NO_OUTPUT_FAILURE_KINDS = {"other", "no-output"}
 
 CHIBI_CRITERIA = (
     ("identity-continuity", "The adult face, skin, age cues, and identity remain unmistakably the summon hero."),
@@ -333,6 +334,42 @@ def _verify_correction_chain(
     _verify_correction_chain(workspace, prior_target)
 
 
+def _verify_provider_retry_chain(
+    workspace: Path,
+    target: Mapping[str, Any],
+) -> None:
+    """Verify the sole non-correction v2 shape: a true v1 provider no-output retry."""
+
+    if target["targetVersion"] != 2 or target["correctionSource"] is not None:
+        raise ContractError("provider retry must be a v2 summon without a correction source")
+    prior_target, _, prior_result = _load_summon_envelope(
+        workspace,
+        target["waveId"],
+        target["heroId"],
+        1,
+    )
+    if prior_result["status"] != "failed" or prior_result["candidate"] is not None:
+        raise ContractError("provider retry requires a failed v1 result with no retained candidate")
+    attempts = prior_result["attempts"]
+    if not attempts:
+        raise ContractError("provider retry requires at least one v1 provider attempt")
+    for attempt in attempts:
+        if (
+            attempt["conclusion"] != "provider-failure"
+            or attempt["failureKind"] not in NO_OUTPUT_FAILURE_KINDS
+            or attempt["sourceOutput"] is not None
+            or attempt["persistence"] is not None
+        ):
+            raise ContractError("provider retry v1 evidence is not a true no-output failure")
+
+    expected_target = copy.deepcopy(prior_target)
+    expected_target["targetId"] = target["targetId"]
+    expected_target["targetVersion"] = 2
+    expected_target["output"] = copy.deepcopy(target["output"])
+    if target != expected_target:
+        raise ContractError("provider retry target differs from its immutable v1 envelope")
+
+
 def _verify_summon_chain(
     workspace: Path,
     packet: Mapping[str, Any],
@@ -349,7 +386,10 @@ def _verify_summon_chain(
         if target != packet.get("summonTarget") or assignment != packet.get("summonAssignment"):
             raise ContractError("materialized summon v1 envelope differs from the frozen roster packet")
     else:
-        _verify_correction_chain(workspace, target)
+        if target["correctionSource"] is None:
+            _verify_provider_retry_chain(workspace, target)
+        else:
+            _verify_correction_chain(workspace, target)
     if result["status"] != "candidate" or result["candidate"] is None:
         raise ContractError(
             "combat chibi requires a verified candidate summon result; explicitly select a completed correction version"

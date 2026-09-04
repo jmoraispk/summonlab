@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-04",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "quinu-grelek",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/results/quinu-grelek/summon-v2.json",
+      "selectedResultSha256": "7a6a12d111d99103dc1c624d29c26c5eed6fd6b3d6a934c02a49bcbf6f004716",
+      "verdict": "fail",
+      "blockingCriteria": [
+        "manifest-fidelity"
+      ],
+      "evidence": "Original-resolution checkpoint inspection confirms multiple finger bands beyond the exact two-ring manifest, plus undeclared gold hair hardware and ear jewelry. The first provider output was unbindable and the sole provider retry remains objectively blocked; the no-third-call production policy requires replacement rather than another render."
+    }
+  ]
+}

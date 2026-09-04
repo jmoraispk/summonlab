@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-06",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "lano-corai",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/lano-corai/combat-chibi-v1.json",
+      "selectedResultSha256": "49a26b058a6ec42c2c04abb553e773c2240152f1171167349a1bdd5c59de9354",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "identity-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Both independent audits found the required three-ring count and tea-token continuity broken; the conservative audit also found softened adult identity and a clearly sub-band ratio."
+    },
+    {
+      "heroId": "daion-moran",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/daion-moran/combat-chibi-v1.json",
+      "selectedResultSha256": "dc511f3e28bc48b09d18b048e26ab790a0dc4872bc20344c9fa40ce0f989c8fd",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "Both independent audits found the source wooden thread gauge omitted from the combat chibi."
+    },
+    {
+      "heroId": "isen-amarin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/isen-amarin/combat-chibi-v1.json",
+      "selectedResultSha256": "095c0fe620d4c2713fe953d212cbd15e06e152f5de01b27ee3677f60117f4594",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity"],
+      "evidence": "The conservative independent audit found enlarged rounded eyes and a shortened lower face producing a generic young doll rather than the 31-year-old source identity."
+    },
+    {
+      "heroId": "yasen-resha",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/yasen-resha/combat-chibi-v1.json",
+      "selectedResultSha256": "61d26a901a847a686e684e99a0aa31c21f8389abb2103569138d705119b86ff3",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "manifest-fidelity", "chibi-ratio"],
+      "evidence": "Both audits found the cloth-wrapped notebook omitted; additional blockers included excess facial/ear details and a clearly sub-band ratio."
+    },
+    {
+      "heroId": "calel-vesha",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/calel-vesha/combat-chibi-v1.json",
+      "selectedResultSha256": "fc22f49827acfdd622e221bed17fe38cfec5c8a82c9284fdb4f48ff75d775029",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "body-continuity", "chibi-ratio"],
+      "evidence": "Independent audits rejected the boundary/sub-band ratio; the conservative audit also found juvenile identity and loss of the source's very-tall sturdy language."
+    },
+    {
+      "heroId": "lanan-eshan",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/lanan-eshan/summon-v1.json",
+      "selectedResultSha256": "995b6b9201050a884fa61305c04410e008540a9b4e8890e41f5b644fa7669506",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "Both audits found an undeclared hoop; the compact finger-line tattoo family also expanded into extensive forearm ink."
+    },
+    {
+      "heroId": "galyn-iverun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/galyn-iverun/summon-v1.json",
+      "selectedResultSha256": "0162db3e263769f0ecb20e1cb89253ec8e4b73fdd0962e6007fd739af184a736",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "Both audits found an undeclared wrist band beyond the frozen detail manifest; the required cheek mole is also not clearly legible."
+    },
+    {
+      "heroId": "valor-keshor",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/valor-keshor/combat-chibi-v1.json",
+      "selectedResultSha256": "8465ff98ac778d2f6cc152a3385542513447e4f3ac3dc901235fbfc1c5199949",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "wardrobe-continuity"],
+      "evidence": "Both audits found an undeclared hoop and omission of the source cloth-wrapped notebook from the chibi."
+    },
+    {
+      "heroId": "coro-lorar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/coro-lorar/combat-chibi-v2.json",
+      "selectedResultSha256": "77ae7cec1d72b2d78e6f0f8931ae08eabfcef63d35933adaff9e8b3e3cb1dcde",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "manifest-fidelity"],
+      "evidence": "Both audits found a juvenile doll-face transformation and undeclared hoop jewelry in the exhausted chibi."
+    },
+    {
+      "heroId": "talyn-sorek",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/talyn-sorek/combat-chibi-v2.json",
+      "selectedResultSha256": "c033130c577316d1333ad1ff55b636c5cdc0d47cbda278b7a061f341fa07cf64",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "chibi-ratio"],
+      "evidence": "Independent audits rejected the lower-bound ratio and/or very large eyes with a smooth short jaw that fail the mature source-specific identity."
+    },
+    {
+      "heroId": "adon-eshar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/adon-eshar/combat-chibi-v1.json",
+      "selectedResultSha256": "61eec82a4caaff6af5408359ba2c4b986c816917acc82ac8b8092503a01f0c08",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "chibi-ratio"],
+      "evidence": "Both audits found a juvenile doll face and a clearly sub-band head-plus-hair ratio."
+    },
+    {
+      "heroId": "peri-tava",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/peri-tava/summon-v1.json",
+      "selectedResultSha256": "8c4d2d83786aacb9818de9b4d81d14d9da6e333ab79d844198459fc218d2e704",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "identity-continuity", "chibi-ratio"],
+      "evidence": "Independent audits found undeclared ear jewelry; further conservative blockers include juvenile chibi identity and a lower-bound ratio."
+    },
+    {
+      "heroId": "rain-morel",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/rain-morel/combat-chibi-v1.json",
+      "selectedResultSha256": "66454dde4cd0607be7445d439cef863ed91cf957809f949825e4ab04910eba95",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio", "body-continuity"],
+      "evidence": "The conservative original-resolution audit measured approximately 37-38%, above the frozen ceiling and weakening the very-tall source read."
+    },
+    {
+      "heroId": "brini-halin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/brini-halin/summon-v2.json",
+      "selectedResultSha256": "27d4d5f2edbdf7618f46aa2d13891c9193341de422f254259984a4c62c594d3e",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "body-continuity", "wardrobe-continuity"],
+      "evidence": "Both audits found undeclared ear jewelry and loss of the required token/tattoo details; the conservative audit also found insufficient soft-round body continuity."
+    },
+    {
+      "heroId": "coro-resheth",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/coro-resheth/combat-chibi-v1.json",
+      "selectedResultSha256": "2fe5e454ffa216022880ce0266bb0a7d4803325c3c777e959ceffebd741a9a94",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "wardrobe-continuity"],
+      "evidence": "Both audits found undeclared bracelet hardware and omission of the source map roll; tattoo scope also exceeds its hand-sized manifest."
+    },
+    {
+      "heroId": "quino-falin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/quino-falin/summon-v1.json",
+      "selectedResultSha256": "5e90457506ae4a3124335ce2a78a4bff9e792d26dfb39abf97716fab015416c1",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "body-continuity", "identity-continuity"],
+      "evidence": "The conservative audit found the required soft-round evident-middle construction absent in both images and the chibi face too youthful/generic."
+    },
+    {
+      "heroId": "yason-wyrar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/yason-wyrar/combat-chibi-v2.json",
+      "selectedResultSha256": "5f747e2ef5523f1d35857318cfa475d11128605696d7cc12f082eff79c812d62",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity"],
+      "evidence": "Both audits found large eyes and a short rounded lower face that lose the mature 29-year-old source identity."
+    },
+    {
+      "heroId": "halon-pellen",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/halon-pellen/summon-v1.json",
+      "selectedResultSha256": "9952930ebd3adcb6e9ad87dfe9f4c41c2fd1f05d384140e1a31134e28465ba5a",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "Both audits found undeclared ear jewelry; the required small nape tattoo also expanded into a large lateral-neck design."
+    },
+    {
+      "heroId": "adia-zharo",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/adia-zharo/combat-chibi-v2.json",
+      "selectedResultSha256": "8ae88f06b111f7c921b249997ed45c38b3134078420dfd00381a945750518ae6",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "arm-hand-continuity", "chibi-ratio"],
+      "evidence": "Independent audits found undeclared ear jewelry and either boundary ratio or inflated forearm/hand scale; the conservative union makes the exhausted chibi ineligible."
+    }
+  ]
+}

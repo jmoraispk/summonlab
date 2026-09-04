@@ -17,8 +17,8 @@
     "activatedReserves": 37
   },
   "budget": {
-    "baseImageCallsLimit": 400,
-    "correctionCallsLimit": 60,
+    "baseImageCallsLimit": 800,
+    "correctionCallsLimit": 250,
     "baseImageCallsUsed": 187,
     "correctionCallsUsed": 51
   },
