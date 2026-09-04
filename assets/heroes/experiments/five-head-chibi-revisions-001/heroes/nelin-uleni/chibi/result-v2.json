@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "nelin-uleni",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/prompt-v2.txt",
+  "promptSha256": "ce093cefa36ef546bb2c99019cb09a2a64f2928bbda13c5eda1534197e2b9c5c",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/candidates/nelin-uleni/summon-v1.png",
+      "sha256": "cdd81ef54421f2478a6f0aa6baef48360db71c06d4d1b8efe5f5b53397d140f5"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-10/candidates/nelin-uleni.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/provider-source-v2.png",
+  "providerSourceSha256": "8eeee31fde2f0b316b3c8395329710ceba7311d33a75a26b57fa668ed67dc125",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/candidate-v2.png",
+  "candidateSha256": "8eeee31fde2f0b316b3c8395329710ceba7311d33a75a26b57fa668ed67dc125",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

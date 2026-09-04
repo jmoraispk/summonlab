@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "ulon-morun",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/prompt-v2.txt",
+  "promptSha256": "fc579eb4a0d9091ac1cd5af3b0dac2f269f040ed3e26373abee2576b3e5c066a",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/ulon-morun/summon-v1.png",
+      "sha256": "e019ee6bc09ec6063871d31f38315dd5ea5f92d5c6a2820291be0e28abfc584e"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-09/candidates/ulon-morun.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/provider-source-v2.png",
+  "providerSourceSha256": "bfb52a5ec6d525bac62c00c2e1d045dad2fd9e1d9e7d203a8ba224d19bbe4c65",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/candidate-v2.png",
+  "candidateSha256": "bfb52a5ec6d525bac62c00c2e1d045dad2fd9e1d9e7d203a8ba224d19bbe4c65",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

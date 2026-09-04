@@ -1,0 +1,9 @@
+Use case: identity-preserve
+Asset type: revised full-body Summonlab summon portrait
+Primary request: Revise only Coro Reshi's clothing coverage. Extend the existing muted teal-blue quilted outer robe and the warm neutral wrapped under-robe so her currently bare shoulder and exposed side of the upper torso are covered by coherent garment construction. The revised robe should have two covered shoulders and secure upper-torso coverage while keeping the existing layered, practical, weathered design.
+Input image: the supplied existing Coro Reshi summon portrait is the sole identity, anatomy, pose, wardrobe, and rendering authority.
+Subject: The exact same adult woman—same face, age, skin, sturdy broad physique, body mass, blonde asymmetrical hair, shaved side, facial marks, botanical tattoos, jewelry, hands, trousers, wraps, boots, pouch, stance, and controlled expression.
+Style/medium: Preserve the exact cinematic semi-realistic painted game-character register, material rendering, warm parchment studio background, and full-body vertical 1024x1536 composition.
+Clothing edit: Cover the bare shoulder and side torso with robe/under-robe fabric that matches the existing blue quilting, brown edging, beige wrap layers, closures, wear, and palette. Retain visible tattoo identity on the forearm and hand; a small neckline glimpse is acceptable, but no bare shoulder, side breast, or exposed lateral torso.
+Constraints: Change clothing coverage only. Keep the person, anatomy, face, hair, tattoos, pose, camera, lighting, background, palette, accessories, footwear, and image dimensions unchanged. Exactly one complete person; both hands and both feet fully visible.
+Avoid: redesign, beautification, slimming, added muscle, different hairstyle, different expression, armor, weapon, magic, affinity effects, stars, frame, UI, text, logo, watermark, cropped anatomy, duplicate limbs.

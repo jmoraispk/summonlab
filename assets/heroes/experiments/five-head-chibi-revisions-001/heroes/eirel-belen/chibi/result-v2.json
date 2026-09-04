@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "eirel-belen",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/prompt-v2.txt",
+  "promptSha256": "f315df6fddcbcccc4d1f241a548b362f40d5081bf5e1d4b8bbd5ea60c89a7384",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/eirel-belen/summon-v1.png",
+      "sha256": "b53e9296a0e4133f9c6309ea71d666527de93a8633f119cfd852c8688c664dfb"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/eirel-belen.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/provider-source-v2.png",
+  "providerSourceSha256": "9ddb6453a3f1082f48b018cbba4ccd15cce455da19a0c084843fe37123954a0e",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/candidate-v2.png",
+  "candidateSha256": "9ddb6453a3f1082f48b018cbba4ccd15cce455da19a0c084843fe37123954a0e",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

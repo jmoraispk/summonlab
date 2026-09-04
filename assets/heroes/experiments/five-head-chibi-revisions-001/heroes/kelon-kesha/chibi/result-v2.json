@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "kelon-kesha",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/prompt-v2.txt",
+  "promptSha256": "9e3c437f63e815d6b6ef8ce6d83439f407e430dc621eeb0786113d60ec01c831",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/kelon-kesha/summon-v1.png",
+      "sha256": "92a3ce6488f9beb840e3e87225b8094e7a76764bfd847ebd44d88c1d83fe636c"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/kelon-kesha.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/provider-source-v2.png",
+  "providerSourceSha256": "bfce6432349739c0869f8fb91f9bbde2e00ecb1e1ea4ced80959348286cc5246",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/candidate-v2.png",
+  "candidateSha256": "bfce6432349739c0869f8fb91f9bbde2e00ecb1e1ea4ced80959348286cc5246",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

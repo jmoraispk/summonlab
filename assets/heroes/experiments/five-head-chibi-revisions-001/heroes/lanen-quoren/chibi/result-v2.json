@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "lanen-quoren",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/prompt-v2.txt",
+  "promptSha256": "c3e9147d4f295bda42792c87a41316676522e873840cfbb800d5a6d836fe69d9",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/lanen-quoren/summon-v1.png",
+      "sha256": "c8724a8edf7e542f8a902b9f4da904848ba16ce9d9697b6c7336b9514626d94d"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-08/candidates/lanen-quoren.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/provider-source-v2.png",
+  "providerSourceSha256": "c28e864ec0ab25c8b51bdc759dabccd256c8c7c7a1476bfc312dd001d7b23c8f",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/candidate-v2.png",
+  "candidateSha256": "c28e864ec0ab25c8b51bdc759dabccd256c8c7c7a1476bfc312dd001d7b23c8f",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}
