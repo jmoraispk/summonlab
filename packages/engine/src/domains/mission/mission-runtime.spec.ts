@@ -1822,19 +1822,12 @@ describe('v24 authored equipment extraction drop', () => {
 				crafterId: lowerHeroId
 			}
 		});
-		const {
-			itemId: _dropId,
-			origin: _dropOrigin,
-			durability: _dropDurability,
-			...dropAuthoredFields
-		} = dropped;
-		const {
-			itemId: _forgeId,
-			origin: _forgeOrigin,
-			durability: _forgeDurability,
-			...forgeAuthoredFields
-		} = forged;
-		expect(dropAuthoredFields).toStrictEqual(forgeAuthoredFields);
+		expect({
+			...dropped,
+			itemId: forged.itemId,
+			origin: forged.origin,
+			durability: forged.durability
+		}).toStrictEqual(forged);
 		expect(dropped.durability).not.toBe(forged.durability);
 		const definition = EQUIPMENT_DEFINITION_CATALOG.definitions.find(
 			(candidate) => candidate.definitionId === dropped.definitionId
