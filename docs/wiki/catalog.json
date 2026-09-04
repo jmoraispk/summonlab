@@ -427,6 +427,16 @@
       ]
     },
     {
+      "wikiId": "skills.visual-catalog",
+      "path": "docs/wiki/mechanics/skills/visual-catalog.md",
+      "pageType": "skill-visual-catalog",
+      "owner": "skill-catalog",
+      "designStatus": "approved",
+      "implementationStatus": "implemented",
+      "visualStatus": "candidate",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "skills.framework",
       "path": "docs/wiki/mechanics/skills/framework.md",
       "pageType": "skill-framework",

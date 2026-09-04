@@ -14,7 +14,7 @@ const wikiRoot = join(repositoryRoot, 'docs/wiki');
 const catalogPath = join(wikiRoot, 'catalog.json');
 
 const allowed = {
-	designStatus: new Set(['seed', 'draft', 'accepted', 'superseded']),
+	designStatus: new Set(['seed', 'draft', 'accepted', 'approved', 'superseded']),
 	implementationStatus: new Set(['none', 'partial', 'implemented', 'verified']),
 	visualStatus: new Set(['none', 'brief', 'candidate', 'approved', 'runtime']),
 	spoilerScope: new Set(['public', 'discoverable', 'internal']),

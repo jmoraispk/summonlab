@@ -32,6 +32,8 @@ universal category. `Two Blades` is a skill in Blade, while its two-weapon loado
 
 ## Catalog navigation
 
+- [Visual catalog](visual-catalog.md)
+
 ### Martial
 
 - [Blade](martial-blade.md)

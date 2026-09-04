@@ -154,6 +154,18 @@ The approved comparison plate is not a sprite sheet. Runtime work must consume s
 transparent frame assets rather than cropping the plate or approximating its ornament with CSS or
 inline SVG.
 
+### Skill visual catalog
+
+The permanent skill visual catalog is the deliberate exception to the wiki's usual flat-ledger
+density: it may use four image-bearing cards per row above 72rem so readers can compare all 456
+canonical skill emblems. The grid steps down to three, two, and one column as available width
+narrows; family pages remain flat tables and the taxonomy root remains the three-circle tree.
+
+Each card reserves a square image well with a solid `#090805` background and contains the complete
+512×512 framed image. Never use the checkerboard review background on this public wiki surface.
+Rarity remains communicated by the integrated frame and must not be duplicated as card text.
+Cards stay square-edged and flat, separated by fine rules without glass, gradients, or shadows.
+
 ### Forms and overlays
 
 The archive search uses the established native search field. New authored overlays are not created

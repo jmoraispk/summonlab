@@ -5,6 +5,7 @@ import {
 	getMonsterVisualDatabase,
 	getMonsterVisualEntry
 } from '$lib/server/monster-database';
+import { getSkillVisualCatalog } from '$lib/server/skill-visual-catalog';
 import { getWikiAsset, getWikiPage } from '$lib/server/wiki';
 
 import type { PageServerLoad } from './$types';
@@ -38,7 +39,7 @@ const visualPacketHeroes = [
 	]
 ] as const;
 
-export const load: PageServerLoad = ({ params }) => {
+export const load = (({ params }) => {
 	const legacyMonsterId = params.slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
 	const legacyDestination = legacyMonsterId ? getLegacyMonsterWikiRedirect(legacyMonsterId) : null;
 	if (legacyDestination) redirect(308, legacyDestination);
@@ -47,6 +48,8 @@ export const load: PageServerLoad = ({ params }) => {
 
 	return {
 		wikiPage,
+		skillVisualCatalog:
+			wikiPage.wikiId === 'skills.visual-catalog' ? getSkillVisualCatalog() : null,
 		monsterDatabase:
 			wikiPage.wikiId === 'creatures.monster-database' ? getMonsterVisualDatabase() : null,
 		monsterVisual: getMonsterVisualEntry(wikiPage.wikiId),
@@ -63,4 +66,4 @@ export const load: PageServerLoad = ({ params }) => {
 					}
 				: null
 	};
-};
+}) satisfies PageServerLoad;
