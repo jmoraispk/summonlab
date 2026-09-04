@@ -18,6 +18,38 @@ if (
 ) {
 	throw new Error('Maximum advance ground artifact pixels must be a non-negative integer.');
 }
+const advanceSupportEvidenceFlag = process.argv.indexOf('--advance-support-evidence');
+const advanceSupportEvidencePath =
+	advanceSupportEvidenceFlag >= 0 ? process.argv[advanceSupportEvidenceFlag + 1] : undefined;
+if (advanceSupportEvidenceFlag >= 0 && !advanceSupportEvidencePath) {
+	throw new Error('Advance support evidence path is required.');
+}
+
+if (advanceSupportEvidencePath) {
+	const evidence = JSON.parse(await readFile(advanceSupportEvidencePath, 'utf8'));
+	if (evidence.actionAuthority !== 'classical-human-run-5') {
+		throw new Error('Advance support evidence action authority is invalid.');
+	}
+	if (
+		!Array.isArray(evidence.support) ||
+		evidence.support.join(',') !== 'left,left,none,right,right'
+	) {
+		throw new Error('Advance support evidence support sequence is invalid.');
+	}
+	if (
+		!Array.isArray(evidence.cellSha256) ||
+		evidence.cellSha256.length !== 5 ||
+		new Set(evidence.cellSha256).size !== 5
+	) {
+		throw new Error('Advance support evidence requires five unique cell hashes.');
+	}
+	if (!evidence.cellSha256.every((value) => /^[a-f0-9]{64}$/.test(value))) {
+		throw new Error('Advance support evidence cell hashes must be lowercase SHA-256 values.');
+	}
+	if (evidence.status !== 'candidate') {
+		throw new Error('Advance support evidence status must be candidate.');
+	}
+}
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const requiredClips = ['idle', 'advance', 'attack', 'hit', 'down'];
