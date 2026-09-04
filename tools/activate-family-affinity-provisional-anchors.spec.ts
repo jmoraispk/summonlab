@@ -9,10 +9,13 @@ import {
 	parseFamilyAffinityProvisionalActivationCli
 } from './activate-family-affinity-provisional-anchors.js';
 import {
+	FAUNA_FAMILY_ROOT,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
+	FaunaFamilyManifestSchema,
+	buildFaunaFamilyProductionBundle,
 	buildFamilyAffinityProductionBundle,
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
@@ -72,6 +75,60 @@ async function makeFixture() {
 		await writeOwned(root, target.ownedPaths.result, result);
 	}
 	return { root, manifestPath: `${FAMILY_AFFINITY_ROOT}/manifest.json`, bundle };
+}
+
+async function makeFaunaFixture() {
+	const root = await mkdtemp(join(tmpdir(), 'fauna-provisional-activation-'));
+	roots.push(root);
+	const activeSources = JSON.parse(
+		await readFile(join(PROJECT_ROOT, FAUNA_FAMILY_ROOT, 'active-sources.json'), 'utf8')
+	) as { familyPacketPaths: string[] };
+	const familyInputs = await Promise.all(
+		activeSources.familyPacketPaths.map(async (path) =>
+			JSON.parse(await readFile(join(PROJECT_ROOT, path), 'utf8'))
+		)
+	);
+	const currentManifest = FaunaFamilyManifestSchema.parse(
+		JSON.parse(await readFile(join(PROJECT_ROOT, FAUNA_FAMILY_ROOT, 'manifest.json'), 'utf8'))
+	);
+	const bundle = buildFaunaFamilyProductionBundle(familyInputs, {
+		schemaVersion: 'fauna-family-design-manifest-v1',
+		experimentId: 'fauna-family-v1',
+		status: 'design-complete-production-not-started',
+		scope: currentManifest.scope,
+		production: {},
+		legacyClassMigrations: currentManifest.legacyClassMigrations,
+		ownership: {}
+	});
+	for (const artifact of bundle.artifacts) await writeOwned(root, artifact.path, artifact.value);
+	for (const [index, family] of familyInputs.entries()) {
+		await writeOwned(root, activeSources.familyPacketPaths[index]!, family);
+	}
+	for (const target of bundle.targets.filter(({ affinity }) => affinity === 'normal')) {
+		const assignment = bundle.assignments.find(({ targetId }) => targetId === target.targetId)!;
+		const candidateBytes = await writeOwned(
+			root,
+			target.ownedPaths.candidate,
+			Buffer.from(`candidate:${target.coordinateId}`)
+		);
+		await writeOwned(root, target.ownedPaths.result, {
+			schemaVersion: 'family-affinity-result-v1' as const,
+			targetId: target.targetId,
+			targetSha256: familyAffinitySha256(target),
+			coordinateId: target.coordinateId,
+			candidateVersion: target.version,
+			producerId: 'fauna-fixture-producer',
+			candidatePath: target.ownedPaths.candidate,
+			candidateSha256: familyAffinityRawSha256(candidateBytes),
+			resultPath: target.ownedPaths.result,
+			sourcePath: target.sources.familyPacketPath,
+			sourceSha256: target.sources.familyPacketSha256,
+			promptSha256: familyAffinityPromptSha256(target, assignment),
+			state: 'candidate-only' as const,
+			runtimeCatalogMutationForbidden: true as const
+		});
+	}
+	return { root, manifestPath: `${FAUNA_FAMILY_ROOT}/manifest.json`, bundle };
 }
 
 afterEach(async () => {
@@ -191,6 +248,130 @@ describe('family affinity provisional Normal anchor activation', () => {
 		expect(await readFile(join(fixture.root, affinity.targetPath))).toEqual(targetBefore);
 	}, 30_000);
 
+	it('atomically opens all 160 fauna affinities from 40 verified Normal candidates', async () => {
+		const fixture = await makeFaunaFixture();
+		const report = await activateFamilyAffinityProvisionalAnchors({
+			repositoryRoot: fixture.root,
+			manifestPath: fixture.manifestPath,
+			callerRole: 'integration-controller',
+			allVerifiedNormalCandidates: true
+		});
+		expect(report).toMatchObject({
+			verifiedNormalCount: 40,
+			canonicalAffinityCount: 160,
+			activatedCount: 160,
+			skippedApprovedCount: 0,
+			alreadyProvisionalCount: 0,
+			rejectedCount: 0,
+			runtimeCatalogMutationForbidden: true
+		});
+		const manifest = FaunaFamilyManifestSchema.parse(
+			JSON.parse(await readFile(join(fixture.root, fixture.manifestPath), 'utf8'))
+		);
+		expect(
+			manifest.canonicalMatrix.activeCoordinates.filter(
+				({ affinity, status }) => affinity !== 'normal' && status === 'planned-provisional-anchor'
+			)
+		).toHaveLength(160);
+		const coordinate = manifest.canonicalMatrix.activeCoordinates.find(
+			({ coordinateId }) => coordinateId === 'wolves/wolf-grey-wolf/fire'
+		)!;
+		const target = FamilyAffinityTargetSchema.parse(
+			JSON.parse(await readFile(join(fixture.root, coordinate.targetPath), 'utf8'))
+		);
+		const assignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(await readFile(join(fixture.root, coordinate.assignmentPath), 'utf8'))
+		);
+		expect(target).toMatchObject({
+			experimentId: 'fauna-family-v1',
+			status: 'planned-provisional-anchor',
+			anchor: {
+				kind: 'normal-verified-candidate',
+				normalCoordinateId: 'wolves/wolf-grey-wolf/normal',
+				humanReviewPending: true,
+				runtimeCatalogMutationForbidden: true
+			}
+		});
+		expect(assignment).toMatchObject({
+			experimentId: 'fauna-family-v1',
+			dispatchStatus: 'planned-provisional-anchor',
+			targetSha256: familyAffinitySha256(target),
+			runtimeCatalogMutationForbidden: true
+		});
+		expect(coordinate).toMatchObject({
+			status: 'planned-provisional-anchor',
+			targetSha256: familyAffinitySha256(target),
+			assignmentSha256: familyAffinitySha256(assignment)
+		});
+		await expect(
+			validateFamilyAffinityNormalAnchorEvidence({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				targetPath: coordinate.targetPath
+			})
+		).resolves.toBeUndefined();
+
+		const compatibility = JSON.parse(
+			await readFile(join(PROJECT_ROOT, FAUNA_FAMILY_ROOT, 'production-compatibility.json'), 'utf8')
+		);
+		const contractBytes = await readFile(
+			join(PROJECT_ROOT, 'skills/summonlab-image-production/references/contract-v3.json')
+		);
+		const packetBytes = await readFile(join(fixture.root, target.sources.familyPacketPath));
+		const promptBytes = Buffer.from(
+			stableFamilyAffinityJson({
+				schemaVersion: 'family-affinity-prompt-material-v1',
+				target,
+				assignment
+			}).slice(0, -1)
+		);
+		expect(
+			preflightFamilyAffinityProductionDispatch({
+				compatibility,
+				installedContractBytes: contractBytes,
+				target,
+				assignment,
+				targetPath: coordinate.targetPath,
+				assignmentPath: coordinate.assignmentPath,
+				familyPacketBytes: packetBytes,
+				renderedPromptBytes: promptBytes
+			})
+		).toMatchObject({ dispatchable: true, status: 'planned-provisional-anchor' });
+
+		const manifestBeforeRerun = await readFile(join(fixture.root, fixture.manifestPath));
+		const rerun = await activateFamilyAffinityProvisionalAnchors({
+			repositoryRoot: fixture.root,
+			manifestPath: fixture.manifestPath,
+			callerRole: 'integration-controller',
+			allVerifiedNormalCandidates: true
+		});
+		expect(rerun).toMatchObject({ activatedCount: 0, alreadyProvisionalCount: 160 });
+		expect(await readFile(join(fixture.root, fixture.manifestPath))).toEqual(manifestBeforeRerun);
+	}, 30_000);
+
+	it('rejects a fauna affinity output collision before mutating the manifest or target', async () => {
+		const fixture = await makeFaunaFixture();
+		const coordinate = fixture.bundle.manifest.canonicalMatrix.activeCoordinates.find(
+			({ coordinateId }) => coordinateId === 'wolves/wolf-grey-wolf/fire'
+		)!;
+		const target = fixture.bundle.targets.find(
+			({ coordinateId }) => coordinateId === coordinate.coordinateId
+		)!;
+		await writeOwned(fixture.root, target.ownedPaths.candidate, Buffer.from('collision'));
+		const manifestBefore = await readFile(join(fixture.root, fixture.manifestPath));
+		const targetBefore = await readFile(join(fixture.root, coordinate.targetPath));
+		await expect(
+			activateFamilyAffinityProvisionalAnchors({
+				repositoryRoot: fixture.root,
+				manifestPath: fixture.manifestPath,
+				callerRole: 'integration-controller',
+				allVerifiedNormalCandidates: true
+			})
+		).rejects.toThrow(/collision|wolves\/wolf-grey-wolf\/normal/i);
+		expect(await readFile(join(fixture.root, fixture.manifestPath))).toEqual(manifestBefore);
+		expect(await readFile(join(fixture.root, coordinate.targetPath))).toEqual(targetBefore);
+	}, 30_000);
+
 	it('requires controller authority and an unambiguous all-candidates CLI scope', async () => {
 		expect(
 			parseFamilyAffinityProvisionalActivationCli([
@@ -199,6 +380,18 @@ describe('family affinity provisional Normal anchor activation', () => {
 				'--all-verified-normal-candidates'
 			])
 		).toEqual({ callerRole: 'integration-controller', allVerifiedNormalCandidates: true });
+		expect(
+			parseFamilyAffinityProvisionalActivationCli([
+				'--fauna',
+				'--caller-role',
+				'integration-controller',
+				'--all-verified-normal-candidates'
+			])
+		).toEqual({
+			callerRole: 'integration-controller',
+			allVerifiedNormalCandidates: true,
+			fauna: true
+		});
 		expect(() =>
 			parseFamilyAffinityProvisionalActivationCli(['--caller-role', 'integration-controller'])
 		).toThrow(/all-verified/i);
@@ -210,5 +403,14 @@ describe('family affinity provisional Normal anchor activation', () => {
 				'yes'
 			])
 		).toThrow(/invalid/i);
+		expect(() =>
+			parseFamilyAffinityProvisionalActivationCli([
+				'--fauna',
+				'--fauna',
+				'--caller-role',
+				'integration-controller',
+				'--all-verified-normal-candidates'
+			])
+		).toThrow(/repeated.*fauna/i);
 	});
 });
