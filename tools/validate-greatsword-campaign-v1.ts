@@ -60,7 +60,7 @@ const ManifestSchema = z.object({
 		assignedProportionRevisionCalls: z.literal(1),
 		assignedDedicatedItemCalls: z.number().int().optional(),
 		completedDedicatedItemCalls: z.number().int().optional(),
-			dedicatedItemCallsRemainingAfterDirectionAcceptance: z.literal(0)
+		dedicatedItemCallsRemainingAfterDirectionAcceptance: z.literal(0)
 	}),
 	references: z.array(ReferenceSchema),
 	direction: z.object({
