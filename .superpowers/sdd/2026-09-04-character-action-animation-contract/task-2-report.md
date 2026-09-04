@@ -58,3 +58,36 @@ All completed successfully. The existing manifest-only invocation emitted `{"val
 The validator verifies the evidence contract's structure and values; it intentionally does not
 create or promote real v4 evidence. Task 3 must provide evidence derived from generated cells and
 their hashes.
+
+## Fix round 1 — JSON coercion hardening
+
+### RED
+
+Command:
+
+```sh
+node --test tools/validate-realtime-combat-motion-pack.spec.mjs
+```
+
+Output before the hardening change: 9 tests ran; 7 passed and 2 failed. The two new real-validator
+fixtures supplied singleton arrays for each hash and for each support label. Both exited `0`,
+demonstrating that `RegExp.test()` and `Array#join()` coerced arrays to accepted strings.
+
+### GREEN
+
+Command:
+
+```sh
+node --test tools/validate-realtime-combat-motion-pack.spec.mjs
+```
+
+Output after the hardening change: 9 tests passed, 0 failed. The validator now requires support
+entries to be primitive strings before joining them, and requires hash entries to be primitive
+strings before SHA-256 format and uniqueness checks.
+
+Formatting and whitespace checks also passed:
+
+```sh
+pnpm exec prettier --check tools/validate-realtime-combat-motion-pack.mjs tools/validate-realtime-combat-motion-pack.spec.mjs
+git diff --check
+```

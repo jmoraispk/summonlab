@@ -81,6 +81,30 @@ describe('realtime combat motion pack validator', () => {
 		assert.match(result.stderr, /unique.*cell.*hash/i);
 	});
 
+	it('rejects array-valued cell hashes that coerce to SHA-256 strings', () => {
+		const result = validateWithEvidence({
+			actionAuthority: 'classical-human-run-5',
+			support: validSupport,
+			cellSha256: validCellSha256.map((hash) => [hash]),
+			status: 'candidate'
+		});
+
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /SHA-256/i);
+	});
+
+	it('rejects array-valued support labels that coerce to the required sequence', () => {
+		const result = validateWithEvidence({
+			actionAuthority: 'classical-human-run-5',
+			support: validSupport.map((label) => [label]),
+			cellSha256: validCellSha256,
+			status: 'candidate'
+		});
+
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /support sequence/i);
+	});
+
 	it('rejects evidence from a different action authority', () => {
 		const result = validateWithEvidence({
 			actionAuthority: 'creature-run-5',

@@ -32,19 +32,21 @@ if (advanceSupportEvidencePath) {
 	}
 	if (
 		!Array.isArray(evidence.support) ||
+		!evidence.support.every((value) => typeof value === 'string') ||
 		evidence.support.join(',') !== 'left,left,none,right,right'
 	) {
 		throw new Error('Advance support evidence support sequence is invalid.');
 	}
-	if (
-		!Array.isArray(evidence.cellSha256) ||
-		evidence.cellSha256.length !== 5 ||
-		new Set(evidence.cellSha256).size !== 5
-	) {
+	if (!Array.isArray(evidence.cellSha256) || evidence.cellSha256.length !== 5) {
 		throw new Error('Advance support evidence requires five unique cell hashes.');
 	}
-	if (!evidence.cellSha256.every((value) => /^[a-f0-9]{64}$/.test(value))) {
+	if (
+		!evidence.cellSha256.every((value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))
+	) {
 		throw new Error('Advance support evidence cell hashes must be lowercase SHA-256 values.');
+	}
+	if (new Set(evidence.cellSha256).size !== 5) {
+		throw new Error('Advance support evidence requires five unique cell hashes.');
 	}
 	if (evidence.status !== 'candidate') {
 		throw new Error('Advance support evidence status must be candidate.');
