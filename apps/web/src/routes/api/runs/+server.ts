@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import {
 	FIRST_OBSERVATION,
 	chooseFirstDestination,
-	generateCharacterDraft
+	generateSummonableCharacterDraft
 } from '@summonlab/characters';
 import { getConfig } from '@summonlab/config';
 import { ProofRunCreateRequestSchema } from '@summonlab/contracts';
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	try {
-		const draft = await generateCharacterDraft(parsed.data.recipe);
+		const draft = await generateSummonableCharacterDraft(parsed.data.recipe);
 		const shouldResolve = ['autonomous', 'random'].includes(parsed.data.controlMode);
 		const choice = shouldResolve
 			? chooseFirstDestination(draft, parsed.data.controlMode, parsed.data.directive)

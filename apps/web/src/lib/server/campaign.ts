@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { FIRST_OBSERVATION, generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
+import { FIRST_OBSERVATION, generateSummonableCompany } from '@summonlab/characters';
 import type {
 	CampaignControlMode,
 	CampaignRun,
@@ -16,14 +16,10 @@ import {
 } from '@summonlab/database';
 import { projectCampaignObjectives } from '@summonlab/engine';
 
-const HERO_SEED_ROLES = ['ember', 'vow', 'lark'] as const;
-
 export async function generateCampaignCompany(
 	campaignSeed: string
 ): Promise<readonly [CharacterDraft, CharacterDraft, CharacterDraft]> {
-	const drafts = await Promise.all(
-		HERO_SEED_ROLES.map((role) => generateCharacterDraft(recipeFromSeed(`${campaignSeed}:${role}`)))
-	);
+	const drafts = await generateSummonableCompany(campaignSeed, 3);
 	const [first, second, third] = drafts;
 	if (!first || !second || !third) throw new Error('Campaign company generation was incomplete');
 	return [first, second, third];

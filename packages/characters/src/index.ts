@@ -12,6 +12,15 @@ import {
 	type ProofControlMode
 } from '@summonlab/contracts';
 
+import { resolveCanonicalSummonableDraft } from './summonable.js';
+
+export {
+	SUMMONABLE_HERO_GENERATION_VERSION,
+	generateSummonableCharacterDraft,
+	generateSummonableCompany,
+	listSummonableHeroDrafts
+} from './summonable.js';
+
 export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';
 export const VISUAL_CHARACTER_GENERATION_VERSION = 'human-v2';
 export const CHARACTER_GENERATION_VERSION = 'human-v3';
@@ -1148,6 +1157,8 @@ export async function generateCharacterDraft(
 	input: CharacterGenerationRecipe
 ): Promise<CharacterDraft> {
 	const recipe = CharacterGenerationRecipeSchema.parse(input);
+	const approved = resolveCanonicalSummonableDraft(recipe);
+	if (approved) return approved;
 	const manifest = generateManifest(recipe);
 	const mind = generateMind(recipe);
 	return CharacterDraftSchema.parse({
