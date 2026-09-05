@@ -38,7 +38,10 @@ The defects are not one alpha-channel problem.
   packet/result bytes remain immutable. The follow-up packet-authoring slice created exactly the
   backing-v6 and E/D/C/B/A/S frame-v6 target/assignment pairs without generating images, and
   coordinator-superseded only the six output-free v5 frame jobs. Failed backing-v5 and successful
-  F-v5 evidence remain unchanged.
+  F-v5 evidence remain unchanged. E-v6 then normalized successfully but retained visible green
+  chroma fringe; its candidate and `revise` result remain immutable attempted evidence. The
+  no-spill recovery issues E/D/C/B/A/S-v7 with hard clean edge requirements and supersedes only the
+  five output-free D/C/B/A/S-v6 packets. It creates no backing-v7 or F-v6/v7 packet.
 - `repair-skill-icon-mass-exteriors.ts` correctly masks pixels outside the broad outer geometry, but
   it does not restore a canonical frame, protect the frame aperture from subject art, or understand
   semantic glyphs.
@@ -129,9 +132,10 @@ geometry, issue a new revision using the exact geometry-first/producer-v5 tuple.
 relabel the failed v5 evidence. Geometry-first retains the canonical `caBX`, assigned-sRGB,
 geometry-v2/guide-v2, and fixed-output provenance gates; it is not a manual masking exception.
 
-The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v6. The six
-unattempted E/D/C/B/A/S v5 frame packets have authority-bound `superseded` results; failed
-backing-v5 is not superseded, and no F-v6 packet exists.
+The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v7. The six
+unattempted E/D/C/B/A/S v5 frame packets and five unattempted D/C/B/A/S-v6 packets have
+authority-bound `superseded` results. Attempted E-v6 remains `revise` evidence, failed backing-v5 is
+not superseded, and no backing-v7 or F-v6/v7 packet exists.
 
 ### Phase 2: recompose all candidates
 

@@ -39,6 +39,14 @@ const revisionSixJobIds = [
 	'rarity-frame-s-v6',
 	'charcoal-forged-stone-v6'
 ] as const;
+const revisionSevenJobIds = [
+	'rarity-frame-e-v7',
+	'rarity-frame-d-v7',
+	'rarity-frame-c-v7',
+	'rarity-frame-b-v7',
+	'rarity-frame-a-v7',
+	'rarity-frame-s-v7'
+] as const;
 const frameMaterials = {
 	E: 'aged bronze with brown-gold patina and understated corner collars',
 	D: 'tempered blue steel with cool edge highlights and restrained rivets',
@@ -67,7 +75,7 @@ async function temporaryWorkspace(): Promise<string> {
 		await mkdir(path.dirname(destination), { recursive: true });
 		await copyFile(path.resolve(workspaceRoot, repositoryPath), destination);
 	}
-	for (const jobId of revisionFiveJobIds) {
+	for (const jobId of [...revisionFiveJobIds, ...revisionSixJobIds]) {
 		for (const kind of ['targets', 'assignments'] as const) {
 			const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
 			const destination = path.resolve(root, repositoryPath);
@@ -90,34 +98,38 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		).toBe(false);
 	});
 
-	it('preserves revision-five packets and adds exactly seven geometry-first revision-six pairs', async () => {
+	it('preserves revision-five and revision-six packets and adds exactly six no-spill revision-seven frame pairs', async () => {
 		const root = await temporaryWorkspace();
-		const revisionFiveBytes = new Map<string, Buffer>();
-		for (const jobId of revisionFiveJobIds) {
+		const existingPacketBytes = new Map<string, Buffer>();
+		for (const jobId of [...revisionFiveJobIds, ...revisionSixJobIds]) {
 			for (const kind of ['targets', 'assignments'] as const) {
 				const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
-				revisionFiveBytes.set(repositoryPath, await readFile(path.resolve(root, repositoryPath)));
+				existingPacketBytes.set(repositoryPath, await readFile(path.resolve(root, repositoryPath)));
 			}
 		}
 		const report = await exportCleanupReferencePackets({ root, mode: 'write' });
 
 		expect(report).toMatchObject({ mode: 'write', written: expect.any(Array), drifted: [] });
-		expect(report.written).toHaveLength(14);
-		expect(report.jobIds).toEqual([...revisionFiveJobIds, ...revisionSixJobIds]);
+		expect(report.written).toHaveLength(12);
+		expect(report.jobIds).toEqual([
+			...revisionFiveJobIds,
+			...revisionSixJobIds,
+			...revisionSevenJobIds
+		]);
 		expect(report.written).toEqual(
-			revisionSixJobIds.flatMap((jobId) => [
+			revisionSevenJobIds.flatMap((jobId) => [
 				`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
 				`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`
 			])
 		);
-		for (const [repositoryPath, before] of revisionFiveBytes) {
+		for (const [repositoryPath, before] of existingPacketBytes) {
 			expect(await readFile(path.resolve(root, repositoryPath))).toEqual(before);
 		}
 
 		const outputPaths = new Set<string>();
 		for (const rarity of frameRarities) {
 			const slug = rarity.toLowerCase();
-			const jobId = `rarity-frame-${slug}-v6`;
+			const jobId = `rarity-frame-${slug}-v7`;
 			const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
 			const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
 			const target = SkillIconTargetV2Schema.parse(await readJson(root, targetPath));
@@ -126,7 +138,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			expect(target).toMatchObject({
 				jobId,
 				logicalIdentity: `rarity-frame-${slug}`,
-				revision: 6,
+				revision: 7,
 				role: 'rarity-frame',
 				rarity,
 				normalization: {
@@ -145,6 +157,9 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			expect(target.exactPrompt).toMatch(/integrated crest\/letter/iu);
 			expect(target.exactPrompt).toMatch(/no art or backing/iu);
 			expect(target.exactPrompt).toMatch(/do not crop or trace/i);
+			expect(target.exactPrompt).toContain(
+				'Require hard clean material edges against the green matte, with no green color spill, green-tinted antialiasing, fringe, or halo on frame pixels.'
+			);
 			expect(target.references.map((reference) => reference.path)).toEqual([
 				OPTION_C_PATH,
 				SELECTED_FRAME_SHEET_PATH,
@@ -152,7 +167,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			]);
 			expect(assignment).toMatchObject({
 				jobId,
-				revision: 6,
+				revision: 7,
 				skillVersion: 'summonlab-skill-icon-production-v5',
 				normalization: { profile: 'skill-icon-geometry-role-mask-v1' },
 				retryCeiling: 1
@@ -204,14 +219,20 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		outputPaths.add(backing.output.candidatePath);
 		outputPaths.add(backing.output.resultPath);
 		expect(outputPaths.size).toBe(14);
-		await expect(
-			readFile(
-				path.resolve(
-					root,
-					'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v6.json'
+		for (const forbiddenJobId of [
+			'rarity-frame-f-v6',
+			'rarity-frame-f-v7',
+			'charcoal-forged-stone-v7'
+		]) {
+			await expect(
+				readFile(
+					path.resolve(
+						root,
+						`assets/wiki/skills/icon-production-v1/targets/references/${forbiddenJobId}.json`
+					)
 				)
-			)
-		).rejects.toMatchObject({ code: 'ENOENT' });
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
 
 		await expect(exportCleanupReferencePackets({ root, mode: 'check' })).resolves.toMatchObject({
 			mode: 'check',
@@ -222,12 +243,13 @@ describe('cleanup shared-layer reference packet exporter', () => {
 
 	it.each([
 		['revision-five target', 'targets', 'rarity-frame-e-v5'],
-		['revision-six assignment', 'assignments', 'rarity-frame-e-v6']
+		['revision-six assignment', 'assignments', 'rarity-frame-e-v6'],
+		['revision-seven assignment', 'assignments', 'rarity-frame-e-v7']
 	] as const)(
 		'refuses to replace a drifted %s packet in write mode',
 		async (_label, kind, jobId) => {
 			const root = await temporaryWorkspace();
-			if (jobId.endsWith('-v6')) {
+			if (!jobId.endsWith('-v5')) {
 				await exportCleanupReferencePackets({ root, mode: 'write' });
 			}
 			const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;

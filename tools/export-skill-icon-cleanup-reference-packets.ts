@@ -57,7 +57,7 @@ interface PacketPair {
 }
 
 interface PacketRevision {
-	readonly revision: 5 | 6;
+	readonly revision: 5 | 6 | 7;
 	readonly profile: 'skill-icon-green-key-role-mask-v3' | 'skill-icon-geometry-role-mask-v1';
 	readonly skillVersion:
 		'summonlab-skill-icon-production-v4' | 'summonlab-skill-icon-production-v5';
@@ -71,6 +71,12 @@ const REVISION_FIVE = {
 
 const REVISION_SIX = {
 	revision: 6,
+	profile: 'skill-icon-geometry-role-mask-v1',
+	skillVersion: 'summonlab-skill-icon-production-v5'
+} as const satisfies PacketRevision;
+
+const REVISION_SEVEN = {
+	revision: 7,
 	profile: 'skill-icon-geometry-role-mask-v1',
 	skillVersion: 'summonlab-skill-icon-production-v5'
 } as const satisfies PacketRevision;
@@ -104,8 +110,15 @@ function outputPaths(jobId: string): {
 	};
 }
 
-function framePrompt(rarity: keyof typeof FRAME_MATERIAL): string {
-	return `Create exactly one 1254×1254 RGB PNG provider-source raster for the tier ${rarity} rarity-frame layer. Use the supplied Option C comparison only as material and ornament authority, and use the approved seven-frame sheet only as proportional and material-ladder guidance; do not crop or trace either reference or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Render one fully visible regular point-up hexagon with every frame-material pixel confined to the guide's allowed annulus and top-center crest zone. Keep a completely empty aperture and every exterior region free of foreground. Build ${FRAME_MATERIAL[rarity]}. Include exactly one integrated crest/letter bearing only the uppercase letter ${rarity}. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Do not render guide colors, construction marks, labels, UI, shadows, fringe, texture, gradient, or marks in the empty aperture or exterior matte. No art or backing, scenery, glow, emblem, or additional symbol, number, word, label, or text. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed rarity-frame role mask. Output only this isolated provider-source raster.`;
+function framePrompt(
+	rarity: keyof typeof FRAME_MATERIAL,
+	revision: PacketRevision['revision']
+): string {
+	const noSpillInvariant =
+		revision === 7
+			? ' Require hard clean material edges against the green matte, with no green color spill, green-tinted antialiasing, fringe, or halo on frame pixels.'
+			: '';
+	return `Create exactly one 1254×1254 RGB PNG provider-source raster for the tier ${rarity} rarity-frame layer. Use the supplied Option C comparison only as material and ornament authority, and use the approved seven-frame sheet only as proportional and material-ladder guidance; do not crop or trace either reference or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Render one fully visible regular point-up hexagon with every frame-material pixel confined to the guide's allowed annulus and top-center crest zone. Keep a completely empty aperture and every exterior region free of foreground. Build ${FRAME_MATERIAL[rarity]}. Include exactly one integrated crest/letter bearing only the uppercase letter ${rarity}. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform.${noSpillInvariant} Do not render guide colors, construction marks, labels, UI, shadows, fringe, texture, gradient, or marks in the empty aperture or exterior matte. No art or backing, scenery, glow, emblem, or additional symbol, number, word, label, or text. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed rarity-frame role mask. Output only this isolated provider-source raster.`;
 }
 
 function backingPrompt(): string {
@@ -188,7 +201,7 @@ function framePacket(
 		skillTargetId: null,
 		motifFamily: null,
 		rarity,
-		exactPrompt: framePrompt(rarity),
+		exactPrompt: framePrompt(rarity, revision),
 		references: [
 			{
 				path: OPTION_C_PATH,
@@ -363,7 +376,8 @@ export async function exportCleanupReferencePackets({
 		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_FIVE)),
 		backingPacket(authorities, REVISION_FIVE),
 		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_SIX)),
-		backingPacket(authorities, REVISION_SIX)
+		backingPacket(authorities, REVISION_SIX),
+		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_SEVEN))
 	];
 	assertCollisionSafe(packets);
 	const written: string[] = [];

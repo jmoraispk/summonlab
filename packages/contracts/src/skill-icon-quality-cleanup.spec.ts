@@ -270,7 +270,7 @@ describe('skill-icon quality-cleanup contracts', () => {
 		).toBe(false);
 	});
 
-	it('binds F to revision five and every other cleanup frame to revision six', () => {
+	it('binds F to revision five and every other cleanup frame to revision seven', () => {
 		const fResult = validResult();
 		expect(SkillIconCleanupResultSchema.safeParse(fResult).success).toBe(true);
 		expect(
@@ -293,7 +293,7 @@ describe('skill-icon quality-cleanup contracts', () => {
 				...fResult.compositionAuthority,
 				frame: {
 					...fResult.compositionAuthority.frame,
-					path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v6.png'
+					path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v7.png'
 				}
 			}
 		};
@@ -305,7 +305,7 @@ describe('skill-icon quality-cleanup contracts', () => {
 					...eResult.compositionAuthority,
 					frame: {
 						...eResult.compositionAuthority.frame,
-						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v5.png'
+						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v6.png'
 					}
 				}
 			}).success

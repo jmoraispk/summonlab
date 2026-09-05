@@ -427,12 +427,29 @@ This task creates no revision-6 packet or image.
 No image is generated or promoted in this slice. Failed backing-v5 and successful F-v5 evidence
 remain byte-identical, and no F-v6 packet exists.
 
+### Task 5D: Issue no-spill revision-7 frame packets
+
+**Files:**
+
+- Modify: `tools/export-skill-icon-cleanup-reference-packets.ts` and focused tests
+- Modify: cleanup result contract and finalizer shared-layer mapping/tests
+- Generate: `rarity-frame-{e,d,c,b,a,s}-v7` target/assignment pairs
+- Generate: authority-bound `superseded` results for D/C/B/A/S revision-6 frame packets
+
+- [x] **Step 1: Add RED coverage for immutable v5/v6 bytes and exactly six v7 frame pairs**
+- [x] **Step 2: Add the hard-edge no-spill invariant only to v7 frame prompts**
+- [x] **Step 3: Point cleanup composition at backing-v6, F-v5, and E/D/C/B/A/S-v7**
+- [x] **Step 4: Coordinator-supersede only the five output-free D/C/B/A/S-v6 packets**
+
+Attempted E-v6 remains immutable `revise` evidence and is not superseded. This slice creates no
+backing-v7, F-v6, F-v7, image, promotion, or finalizer output.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v6.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v6.json`
+- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v7.png`
+- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v7.json`
 - Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
 - Preserve: the successful `rarity-frame-f-v5` candidate and result
 - Create: the `charcoal-forged-stone-v6` candidate and result using the issued revision-6 packet
@@ -442,14 +459,14 @@ remain byte-identical, and no F-v6 packet exists.
 
 **Interfaces:**
 
-- Consumes: six revision-6 frame assignments, the revision-6 backing assignment, the retained F
+- Consumes: six revision-7 frame assignments, the revision-6 backing assignment, the retained F
   revision-5 frame, and the complete cleanup manifest.
 - Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
 - [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-6 E/D/C/B/A/S frame and the revision-6
+Use `summonlab-skill-icon-production` once for each revision-7 E/D/C/B/A/S frame and the revision-6
 backing packet, each binding `skill-icon-geometry-role-mask-v1` to
 `summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or successful F-v5 evidence.
 Each worker validates its exact target and assignment, submits the exact prompt, persists through

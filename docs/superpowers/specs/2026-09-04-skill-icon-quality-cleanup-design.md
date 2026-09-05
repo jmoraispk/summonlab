@@ -71,6 +71,14 @@ The subsequent packet-authoring slice issues exactly `charcoal-forged-stone-v6` 
 the six output-free revision-5 frame packets. The failed backing-v5 result and successful F-v5
 candidate/result remain terminal evidence and are not superseded.
 
+The attempted E-v6 frame normalized successfully but retained visible green chroma fringe, so its
+candidate and `revise` result remain immutable attempted evidence. The recovery inventory issues
+exactly `rarity-frame-{e,d,c,b,a,s}-v7` with the same structural-v2 geometry-first tuple and a new
+no-spill prompt invariant requiring hard clean material edges against the green matte. Only the five
+output-free D/C/B/A/S-v6 packets receive coordinator-authenticated `superseded` results bound to
+their exact v7 target and assignment bytes. E-v6 is never superseded. Cleanup composition therefore
+uses backing-v6, F-v5, and E/D/C/B/A/S-v7.
+
 ### 2. Deterministic whole-catalog recomposition
 
 Every current mass-production image is converted into a `legacy-interior` migration layer by

@@ -112,12 +112,12 @@ function pixel(data: Buffer, x: number, y: number): readonly number[] {
 const cleanupLayerJobs = [
 	['charcoal-forged-stone-v6', 'backing', null],
 	['rarity-frame-f-v5', 'rarity-frame', 'F'],
-	['rarity-frame-e-v6', 'rarity-frame', 'E'],
-	['rarity-frame-d-v6', 'rarity-frame', 'D'],
-	['rarity-frame-c-v6', 'rarity-frame', 'C'],
-	['rarity-frame-b-v6', 'rarity-frame', 'B'],
-	['rarity-frame-a-v6', 'rarity-frame', 'A'],
-	['rarity-frame-s-v6', 'rarity-frame', 'S']
+	['rarity-frame-e-v7', 'rarity-frame', 'E'],
+	['rarity-frame-d-v7', 'rarity-frame', 'D'],
+	['rarity-frame-c-v7', 'rarity-frame', 'C'],
+	['rarity-frame-b-v7', 'rarity-frame', 'B'],
+	['rarity-frame-a-v7', 'rarity-frame', 'A'],
+	['rarity-frame-s-v7', 'rarity-frame', 'S']
 ] as const;
 
 async function seedReadyFinalizerRoot(root: string): Promise<{
@@ -677,12 +677,12 @@ describe('deterministic protected-aperture composition', () => {
 			expect(report.pendingLayerJobIds).toEqual([
 				'charcoal-forged-stone-v6',
 				'rarity-frame-f-v5',
-				'rarity-frame-e-v6',
-				'rarity-frame-d-v6',
-				'rarity-frame-c-v6',
-				'rarity-frame-b-v6',
-				'rarity-frame-a-v6',
-				'rarity-frame-s-v6'
+				'rarity-frame-e-v7',
+				'rarity-frame-d-v7',
+				'rarity-frame-c-v7',
+				'rarity-frame-b-v7',
+				'rarity-frame-a-v7',
+				'rarity-frame-s-v7'
 			]);
 			expect(report.written).toEqual([]);
 			expect(await readdir(manifestDirectory)).toEqual(['manifest.json']);
