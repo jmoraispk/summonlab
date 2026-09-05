@@ -158,7 +158,7 @@ function resolveTarget(target: string, sourcePath: string): string {
 	const assetUrl = assetsByPath.get(repositoryPath);
 	if (assetUrl) return assetUrl;
 
-	if (/^(?:apps|assets|docs|packages|tools)\//.test(repositoryPath)) {
+	if (/^(?:\.agents|apps|assets|docs|packages|skills|tools)\//.test(repositoryPath)) {
 		return `https://github.com/jmoraispk/summonlab/blob/main/${repositoryPath}${suffix}`;
 	}
 

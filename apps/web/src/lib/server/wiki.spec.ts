@@ -60,6 +60,41 @@ describe('online wiki registry', () => {
 		expect(loaded.monsterDatabase).toBeNull();
 	});
 
+	it('publishes the complete repository agentic-skill inventory', () => {
+		const page = getWikiPage('systems/agentic-skills');
+		expect(page?.wikiId).toBe('systems.agentic-skills');
+		expect(page?.html).toContain('34 skills (8 Summonlab, 26 pinned PixiJS)');
+		expect(page?.html.match(/<tr>/gu)).toHaveLength(36);
+		expect(page?.html).toContain(
+			'https://github.com/jmoraispk/summonlab/blob/main/skills/summonlab-character-animations/SKILL.md'
+		);
+		expect(page?.html).toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-character-animations"'
+		);
+		expect(page?.html).not.toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-character-animations/SKILL.md"'
+		);
+		expect(page?.html).toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-enemy-creation/SKILL.md"'
+		);
+		expect(page?.html).toContain(
+			'https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/pixijs/SKILL.md'
+		);
+		expect(getWikiNavigation()).toContainEqual(
+			expect.objectContaining({ href: '/wiki/systems/agentic-skills', section: 'Systems' })
+		);
+	});
+
+	it('publishes the pinned PixiJS source and license boundary', () => {
+		const page = getWikiPage('systems/agentic-skills');
+		expect(page?.html).toContain(
+			'https://github.com/pixijs/pixijs-skills/tree/6aae70d76cf410432dd144029c07a1ad4bb12793'
+		);
+		expect(page?.html).toContain(
+			'https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/PIXIJS_SKILLS_LICENSE'
+		);
+	});
+
 	it('bundles the accepted affinity diagrams for local wiki rendering', () => {
 		for (const assetPath of [
 			'assets/enemies/wiki/affinities/reference/element-cycle-v2.svg',

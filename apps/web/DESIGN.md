@@ -193,6 +193,27 @@ for readable controls, initiative information, public intent, responsive layout,
 Both layers consume the same authoritative combat projection; neither invents timing, legality, or
 results.
 
+The realtime combat study at `/living-village-lab/realtime-combat` is the accepted matched-comparison
+surface for deciding between flat 2D and near-3D 2.5D. Its three lenses must share one simulation,
+initial state, timing, damage, targets, and outcome. `2D` uses rectangular placement, fixed actor scale,
+and fixed team-layer priority. Classic `2.5D` preserves rectangular placement while adding depth
+scale, foot-anchored Y sorting, shadow deformation, atmospheric depth, local light, and restrained
+parallax. `2.5D V2` is the only lens allowed to apply trapezoidal lane convergence, nonlinear depth
+scale, foreground occlusion, and visible projection guides. Switching lenses never restarts the
+encounter. The owned saffron-braid lead is the identity and quality gate; supporting heroes and
+enemies match her compact adult proportions without copying her identity or costume. Motion expansion
+began with an authored Asha-and-lesser-rat canary rather than applying low-quality animation to the
+whole cast. The accepted vocabulary now covers every combatant: idle, advance, attack, hit, and
+defeat, with equipment and weight specific to each silhouette.
+
+Combat spacing is silhouette-aware. Actors use stable engagement slots while approaching, then lock
+in place while their target remains within a small exit threshold; actor-to-actor repulsion must not
+create orbiting or running-in-place. Role-aware arena margins keep full silhouettes on stage. The V2
+well has an expanded visual-clearance ellipse beyond the visible stone rim and participates in the
+same foot-anchor depth ordering as actors, so it occludes only characters actually behind it. Contact
+shadows are world siblings anchored to rendered feet rather than children inheriting attack
+transforms.
+
 Accepted phone reference: [combat direction v1](../../docs/evidence/living-village-combat-phone-direction-v1.png).
 Treat its camera, battlefield density, timeline restraint, tile alignment, live-feed hierarchy, and
 command-bar proportions as the visual baseline for the first combat slice.

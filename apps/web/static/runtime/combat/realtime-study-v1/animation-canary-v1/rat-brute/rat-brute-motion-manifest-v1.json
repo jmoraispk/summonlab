@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "actorId": "rat-brute",
+  "atlas": "rat-brute-motion-v1.json",
+  "canvas": {
+    "width": 256,
+    "height": 256
+  },
+  "feetAnchor": {
+    "x": 0.5,
+    "y": 0.9609375
+  },
+  "healthClearance": 12,
+  "baseDisplaySize": 250,
+  "direction": "down-field",
+  "clips": {
+    "idle": {
+      "frames": [
+        "rat-brute-idle-01.png",
+        "rat-brute-idle-02.png",
+        "rat-brute-idle-03.png",
+        "rat-brute-idle-04.png",
+        "rat-brute-idle-05.png"
+      ],
+      "fps": 6,
+      "loop": true
+    },
+    "advance": {
+      "frames": [
+        "rat-brute-advance-01.png",
+        "rat-brute-advance-02.png",
+        "rat-brute-advance-03.png",
+        "rat-brute-advance-04.png",
+        "rat-brute-advance-05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    "attack": {
+      "frames": [
+        "rat-brute-attack-01.png",
+        "rat-brute-attack-02.png",
+        "rat-brute-attack-03.png",
+        "rat-brute-attack-04.png",
+        "rat-brute-attack-05.png"
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    "hit": {
+      "frames": [
+        "rat-brute-hit-01.png",
+        "rat-brute-hit-02.png"
+      ],
+      "fps": 9,
+      "loop": false
+    },
+    "down": {
+      "frames": [
+        "rat-brute-down-01.png",
+        "rat-brute-down-02.png",
+        "rat-brute-down-03.png"
+      ],
+      "fps": 6,
+      "loop": false
+    }
+  }
+}

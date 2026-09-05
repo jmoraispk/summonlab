@@ -66,6 +66,8 @@ chain healthy, resilient, and legible.
 
 ## Detailed briefs
 
+- [Agentic skills](agentic-skills.md) — repository discovery, inventory boundaries, and maintenance
+  commands for project-scoped Codex skills.
 - [Story and tower campaign](../../system-architecture/systems/story-and-tower.md)
 - [Progression and skills](../../system-architecture/systems/progression-and-skills.md)
 - [Heroes and agency](../../system-architecture/systems/heroes-and-agency.md)

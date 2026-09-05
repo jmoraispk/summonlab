@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Summonlab Character Actions'
+  short_description: 'Define a coherent character action'
+  default_prompt: 'Use $summonlab-character-action-creation to define and submit one five-beat character action brief for approval.'

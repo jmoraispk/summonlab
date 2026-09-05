@@ -33,6 +33,16 @@
       "spoilerScope": "public"
     },
     {
+      "wikiId": "systems.agentic-skills",
+      "path": "docs/wiki/systems/agentic-skills.md",
+      "pageType": "engineering-system",
+      "owner": "architecture",
+      "designStatus": "accepted",
+      "implementationStatus": "verified",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
       "wikiId": "mechanics.attributes",
       "path": "docs/wiki/mechanics/attributes.md",
       "pageType": "mechanic",

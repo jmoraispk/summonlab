@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "actorId": "saffron-braid",
+  "atlas": "asha-motion-v1.json",
+  "canvas": {
+    "width": 256,
+    "height": 256
+  },
+  "feetAnchor": {
+    "x": 0.5,
+    "y": 0.9609375
+  },
+  "healthClearance": 12,
+  "baseDisplaySize": 178,
+  "direction": "up-field",
+  "clips": {
+    "idle": {
+      "frames": [
+        "asha-idle-01.png",
+        "asha-idle-02.png",
+        "asha-idle-03.png",
+        "asha-idle-04.png",
+        "asha-idle-05.png"
+      ],
+      "fps": 6,
+      "loop": true
+    },
+    "advance": {
+      "frames": [
+        "asha-advance-01.png",
+        "asha-advance-02.png",
+        "asha-advance-03.png",
+        "asha-advance-04.png",
+        "asha-advance-05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    "attack": {
+      "frames": [
+        "asha-attack-01.png",
+        "asha-attack-02.png",
+        "asha-attack-03.png",
+        "asha-attack-04.png",
+        "asha-attack-05.png"
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    "hit": {
+      "frames": [
+        "asha-hit-01.png",
+        "asha-hit-02.png"
+      ],
+      "fps": 9,
+      "loop": false
+    },
+    "down": {
+      "frames": [
+        "asha-down-01.png",
+        "asha-down-02.png",
+        "asha-down-03.png"
+      ],
+      "fps": 6,
+      "loop": false
+    }
+  }
+}
