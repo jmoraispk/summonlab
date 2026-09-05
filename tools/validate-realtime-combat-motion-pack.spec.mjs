@@ -131,6 +131,17 @@ describe('realtime combat motion pack validator', () => {
 		assert.equal(JSON.parse(result.stdout).actorId, 'moss-archer');
 	});
 
+	it('rejects Nessa v3 because the screen-right idle boot still touches the frame floor', () => {
+		const result = spawnSync(
+			process.execPath,
+			[validator, nessaV3Manifest, '--max-idle-right-half-bottom-pixels', '0'],
+			{ encoding: 'utf8' }
+		);
+
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /idle frame .* right-half bottom pixels .* exceeds 0/i);
+	});
+
 	it('rejects Toma v2 because its advance frames contain a baked ground ellipse', () => {
 		const result = spawnSync(
 			process.execPath,

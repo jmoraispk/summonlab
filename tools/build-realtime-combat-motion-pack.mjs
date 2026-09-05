@@ -101,10 +101,11 @@ const outputDirectory = valueFor('--out-dir');
 const version = Number.parseInt(valueFor('--version') ?? '1', 10);
 const preserveFromManifestPath = valueFor('--preserve-from-manifest');
 const replacementClips = new Set(valuesFor('--replace-clip'));
+const fitClips = new Set(valuesFor('--fit-clip'));
 const frameYOffsets = valuesFor('--frame-y-offset');
 if (!actorId || !inputPath || !outputDirectory) {
 	throw new Error(
-		'Usage: --actor <id> --input <sheet.png> --out-dir <directory> [--version <number>] [--preserve-from-manifest <manifest.json> --replace-clip <clip>] [--frame-y-offset <clip:one-based-frame:pixels>]'
+		'Usage: --actor <id> --input <sheet.png> --out-dir <directory> [--version <number>] [--preserve-from-manifest <manifest.json> --replace-clip <clip>] [--fit-clip <clip>] [--frame-y-offset <clip:one-based-frame:pixels>]'
 	);
 }
 if (!Number.isInteger(version) || version < 1)
@@ -142,6 +143,9 @@ const clipRows = {
 };
 for (const clip of replacementClips) {
 	if (!(clip in clipRows)) throw new Error(`Unknown replacement clip: ${clip}`);
+}
+for (const clip of fitClips) {
+	if (!(clip in clipRows)) throw new Error(`Unknown fit clip: ${clip}`);
 }
 
 const parsedFrameYOffsets = frameYOffsets.map((value) => {
@@ -202,6 +206,8 @@ for (let row = 0; row < ROWS; row += 1) {
 			y: (cellTop + cellBottom) / 2 - top
 		});
 		keyedCells.push({
+			row,
+			column,
 			rgba,
 			width: info.width,
 			height: info.height,
@@ -210,13 +216,28 @@ for (let row = 0; row < ROWS; row += 1) {
 	}
 }
 
-const maximumWidth = Math.max(...keyedCells.map((cell) => cell.bounds.width));
-const maximumHeight = Math.max(...keyedCells.map((cell) => cell.bounds.height));
+const scaleCells =
+	fitClips.size === 0
+		? keyedCells
+		: keyedCells.filter((cell) =>
+				[...fitClips].some((clip) => {
+					const config = clipRows[clip];
+					const start = config.start ?? 0;
+					const count = config.count ?? COLUMNS;
+					return cell.row === config.row && cell.column >= start && cell.column < start + count;
+				})
+			);
+const maximumWidth = Math.max(...scaleCells.map((cell) => cell.bounds.width));
+const maximumHeight = Math.max(...scaleCells.map((cell) => cell.bounds.height));
 const commonScale = Math.min(244 / maximumWidth, 238 / maximumHeight);
+const scaleCellSet = new Set(scaleCells);
 const frameBuffers = [];
 for (const cell of keyedCells) {
-	const width = Math.max(1, Math.round(cell.bounds.width * commonScale));
-	const height = Math.max(1, Math.round(cell.bounds.height * commonScale));
+	const cellScale = scaleCellSet.has(cell)
+		? commonScale
+		: Math.min(commonScale, 244 / cell.bounds.width, 238 / cell.bounds.height);
+	const width = Math.max(1, Math.round(cell.bounds.width * cellScale));
+	const height = Math.max(1, Math.round(cell.bounds.height * cellScale));
 	const subject = await sharp(cell.rgba, {
 		raw: { width: cell.width, height: cell.height, channels: 4 }
 	})

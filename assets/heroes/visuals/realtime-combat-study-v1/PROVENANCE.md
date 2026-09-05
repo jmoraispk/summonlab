@@ -542,3 +542,87 @@ new third-party content.
   it is intentionally not described as byte-identical to the generator output. Owner playback must
   still decide whether the compact heavy cadence is preferable to a more exaggerated stride.
 - Status: `candidate`; explicit owner playback approval is still required.
+
+### Nessa / moss archer lifted idle boot v4
+
+- Owner decision before production: v3 restored Nessa's complete silhouette and was a substantial
+  improvement, but the image-right boot still read as a second low contact. The owner requested that
+  single foot be raised and approved a bounded v4 correction. The action contract is recorded in
+  `../../../../docs/evidence/realtime-combat-animation-canary/nessa-idle-v4-clip-brief.md`.
+- Accepted runtime binding: v3 atlas
+  `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v3.png`
+  (`3df6e4fdd0137b5b1b452e15403837b1b2f1d5411e69e604cab7c35468d29ff0`). V3 remains
+  the temporal and passing-clip authority; v4 replaces only `idle`.
+- Mode: built-in Codex image generation precise-object edits. Two complete-strip attempts were
+  rejected because the image-right sole remained on the planted-foot line. The selected attempt used
+  the second rejected clean strip (`exec-a9570e60-fb5e-45d6-8e57-5a3b4b0b5e4a.png`,
+  `1d8e95a493c5e2b4db933fb591a1102487f328c763f67bc1b0bf6c3e5a54f41e`) as the edit target and a
+  non-production annotation guide (`2eb60ca42f76ffb7b04cc65c59a069fcaf51c232385b73b3b0db312234e26cfe`)
+  that marked the planted-foot line and airborne target. No annotation pixels are present in the
+  selected result.
+- Exact selected prompt:
+
+  ```text
+  Use case: precise-object-edit. The FIRST image is the clean edit target. The SECOND image is only a spatial annotation guide; do not reproduce any arrows, circles, lines, or text.
+
+  In each of the five panels, bend Nessa's viewer-right knee and lift/tuck the viewer-right boot into the green target area shown in the guide, clearly ABOVE the blue planted-foot line. The entire viewer-right boot must be airborne with obvious white space beneath it. Keep the viewer-left boot planted exactly where it is. Change only the viewer-right lower leg and boot; connect them naturally to the existing knee. Preserve exactly five equal panels and preserve all other pixels/identity details as closely as possible: face, copper curls, pose, body, clothing, armor, moss mantle, bow, quiver, hands, handedness, lighting, scale, spacing, painterly near-3D style, and subtle five-frame cadence. Pure opaque white background. No guide marks, text, shadow, floor, scenery, dividers, extra limbs, cropped boots, or redesign.
+  ```
+
+- Selected generation original: `exec-8c045c6b-ab21-4699-804f-6095caeef867.png`. It is preserved
+  byte-for-byte as `animation-canary-v1/moss-archer/moss-archer-idle-strip-raw-v4.png`
+  (`4ed227dd1ebfb949763b403e412a4d0abee84db410cbfbe9922afbb17333d2f2`).
+- Project strip: `animation-canary-v1/moss-archer/moss-archer-idle-strip-source-v4.png`
+  (`9a611a21ca1460b96f31f7b65344eaf5d99e28f9d3ad87052f90ad24c5d25721`). It is a
+  deterministic background-only derivation made by converting the border-connected near-neutral
+  matte to exact white with minimum channel 240 and maximum chroma 8.
+- Project source sheet: `animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v4.png`
+  (`4702897f8295c0a9ae5be1ef473b6eda868170d5b4de550aacdeffea0026423d`). The generated
+  five-pose strip replaces only row one of the v2 sheet at one shared source scale.
+- Runtime atlas:
+  `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v4.png`
+  (`33e8e9eb65e84e23d84cdb56fd8f14a633624fc5e3809ebc4853f38a92ae77f5`). Atlas JSON:
+  `moss-archer-motion-v4.json`
+  (`0f304fbca4cabf8487db72a7b8dbef9c558d615219cce5281de385a1dbb1aeab`). Manifest:
+  `moss-archer-motion-manifest-v4.json`
+  (`42acebfadb6bbd3a5128026df044bc5df1f96877c14b4b69c70cc36130b94428`).
+- Deterministic source assembly:
+
+  ```bash
+  node tools/normalize-border-connected-white-matte.mjs \
+    --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-idle-strip-raw-v4.png \
+    --output assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-idle-strip-source-v4.png \
+    --minimum-channel 240 \
+    --maximum-chroma 8
+
+  node tools/compose-realtime-combat-motion-rows.mjs \
+    --base assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v2.png \
+    --out assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v4.png \
+    --replace 0:assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-idle-strip-source-v4.png \
+    --scale-mode shared
+  ```
+
+- Deterministic runtime build completed with `commonScale: 0.875`. `--fit-clip idle` ensures that a
+  preserved wide attack silhouette cannot shrink an idle-only replacement; non-selected generated
+  frames are independently clamped before v3 pixels replace them.
+
+  ```bash
+  node tools/build-realtime-combat-motion-pack.mjs \
+    --actor moss-archer \
+    --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v4.png \
+    --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer \
+    --version 4 \
+    --preserve-from-manifest apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-manifest-v3.json \
+    --replace-clip idle \
+    --fit-clip idle
+  ```
+
+- Verification: `tools/rebuild-moss-archer-motion-v4.spec.mjs` reconstructs the normalized strip,
+  source sheet, atlas, atlas JSON, and manifest byte-for-byte. It also proves all 15 `advance`,
+  `attack`, `hit`, and `down` frames are decoded-RGBA identical to v3. The validator requires every
+  idle silhouette to remain at least 230 pixels tall and rejects any image-right alpha in the bottom
+  14-pixel contact band; v4 passes both gates while the same contact gate rejects v3.
+- Visual review: each idle frame has one clearly planted image-left boot and one tucked image-right
+  boot with visible air beneath the full sole. Nessa remains full-height with a stable bow-ready
+  silhouette, complete recurved bow, copper curls, moss mantle, quiver, and consistent five-frame
+  cadence. Final gameplay-scale approval remains with the owner.
+- Status: `candidate`; owner playback is required before approval.
