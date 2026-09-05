@@ -47,6 +47,14 @@ const PNG_CABX_MAX_DATA_BYTES = 32_768;
 const FORBIDDEN_ALPHA_MASS_LIMIT = 0.001;
 const FORBIDDEN_OPAQUE_PIXEL_LIMIT = 0.00025;
 const FORBIDDEN_COMPONENT_ALPHA_MASS_LIMIT = 64 * 255;
+const RETAINED_ROLE_STRONG_MATTE_COMPONENT_FRACTION = 0.01;
+const RETAINED_ROLE_CHECKER_WINDOW_SIZE = 288;
+const RETAINED_ROLE_CHECKER_WINDOW_STRIDE = 72;
+const RETAINED_ROLE_CHECKER_MINIMUM_COVERAGE = 0.2;
+const RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION = 0.1;
+const RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION = 0.7;
+const RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION = 0.01;
+const RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION = 0.2;
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
 	let value = index;
 	for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ (value & 1 ? 0xedb88320 : 0);
@@ -455,6 +463,193 @@ function assertNoPeriodicContrastCheckerboard(
 			verticalAlternations / Math.max(1, verticalTriplets) >= 0.35
 		)
 			throw new Error('Provider source contains a spatially periodic contrast checkerboard matte');
+	}
+}
+
+function assertNoRetainedRoleStrongMatte(
+	data: Buffer,
+	width: number,
+	height: number,
+	roleMask: Uint8Array,
+	transparentDistance: number
+): void {
+	const strongMatte = new Uint8Array(width * height);
+	let retainedPixels = 0;
+	for (let pixelIndex = 0; pixelIndex < roleMask.length; pixelIndex += 1) {
+		if (roleMask[pixelIndex] !== 1) continue;
+		retainedPixels += 1;
+		const offset = pixelIndex * 3;
+		if (
+			keyDistance(data[offset] ?? 0, data[offset + 1] ?? 0, data[offset + 2] ?? 0) <=
+			transparentDistance
+		)
+			strongMatte[pixelIndex] = 1;
+	}
+	const minimumComponentPixels = Math.max(
+		256,
+		Math.ceil(retainedPixels * RETAINED_ROLE_STRONG_MATTE_COMPONENT_FRACTION)
+	);
+	const stack: number[] = [];
+	for (let start = 0; start < strongMatte.length; start += 1) {
+		if (strongMatte[start] !== 1) continue;
+		let componentPixels = 0;
+		let touchesRoleBoundary = false;
+		stack.push(start);
+		strongMatte[start] = 2;
+		while (stack.length > 0) {
+			const pixelIndex = stack.pop()!;
+			componentPixels += 1;
+			const x = pixelIndex % width;
+			for (const neighbor of [
+				x > 0 ? pixelIndex - 1 : -1,
+				x + 1 < width ? pixelIndex + 1 : -1,
+				pixelIndex >= width ? pixelIndex - width : -1,
+				pixelIndex + width < strongMatte.length ? pixelIndex + width : -1
+			]) {
+				if (neighbor < 0 || roleMask[neighbor] !== 1) {
+					touchesRoleBoundary = true;
+					continue;
+				}
+				if (strongMatte[neighbor] !== 1) continue;
+				strongMatte[neighbor] = 2;
+				stack.push(neighbor);
+			}
+		}
+		// Geometry-first deliberately tolerates arbitrary pixels outside the role. Within
+		// the role, a large enclosed key-color island is a missing-material matte hole;
+		// boundary-connected key pixels remain available for sparse frame geometry and
+		// provider rasterization at the profile-owned edge.
+		if (!touchesRoleBoundary && componentPixels >= minimumComponentPixels)
+			throw new Error(
+				'Provider source contains strong matte contamination inside the retained role'
+			);
+	}
+}
+
+function assertNoRetainedRoleCheckerboard(
+	data: Buffer,
+	width: number,
+	height: number,
+	roleMask: Uint8Array
+): void {
+	const windowSize = Math.min(RETAINED_ROLE_CHECKER_WINDOW_SIZE, width, height);
+	const positions = (dimension: number): number[] => {
+		const last = dimension - windowSize;
+		const starts: number[] = [];
+		for (let start = 0; start <= last; start += RETAINED_ROLE_CHECKER_WINDOW_STRIDE)
+			starts.push(start);
+		if (starts.at(-1) !== last) starts.push(last);
+		return starts;
+	};
+	const xStarts = positions(width);
+	const yStarts = positions(height);
+	const colorCounts = new Uint32Array(1 << 15);
+	const touchedColors: number[] = [];
+	const quantizedColor = (pixelIndex: number): number => {
+		const offset = pixelIndex * 3;
+		return (
+			(((data[offset] ?? 0) >> 3) << 10) |
+			(((data[offset + 1] ?? 0) >> 3) << 5) |
+			((data[offset + 2] ?? 0) >> 3)
+		);
+	};
+	for (const startY of yStarts) {
+		for (const startX of xStarts) {
+			let retainedPixels = 0;
+			for (let y = startY; y < startY + windowSize; y += 1) {
+				for (let x = startX; x < startX + windowSize; x += 1) {
+					const pixelIndex = y * width + x;
+					if (roleMask[pixelIndex] !== 1) continue;
+					retainedPixels += 1;
+					const color = quantizedColor(pixelIndex);
+					if (colorCounts[color] === 0) touchedColors.push(color);
+					colorCounts[color]! += 1;
+				}
+			}
+			let firstColor = -1;
+			let firstCount = 0;
+			let secondColor = -1;
+			let secondCount = 0;
+			for (const color of touchedColors) {
+				const count = colorCounts[color] ?? 0;
+				if (count > firstCount) {
+					secondColor = firstColor;
+					secondCount = firstCount;
+					firstColor = color;
+					firstCount = count;
+				} else if (count > secondCount) {
+					secondColor = color;
+					secondCount = count;
+				}
+			}
+			for (const color of touchedColors) colorCounts[color] = 0;
+			touchedColors.length = 0;
+			if (
+				retainedPixels < windowSize ** 2 * RETAINED_ROLE_CHECKER_MINIMUM_COVERAGE ||
+				firstColor < 0 ||
+				secondColor < 0 ||
+				firstCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
+				secondCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
+				(firstCount + secondCount) / retainedPixels <
+					RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION
+			)
+				continue;
+			const firstRed = ((firstColor >>> 10) & 0x1f) * 8 + 4;
+			const firstGreen = ((firstColor >>> 5) & 0x1f) * 8 + 4;
+			const firstBlue = (firstColor & 0x1f) * 8 + 4;
+			const secondRed = ((secondColor >>> 10) & 0x1f) * 8 + 4;
+			const secondGreen = ((secondColor >>> 5) & 0x1f) * 8 + 4;
+			const secondBlue = (secondColor & 0x1f) * 8 + 4;
+			if (
+				Math.max(
+					Math.abs(firstRed - secondRed),
+					Math.abs(firstGreen - secondGreen),
+					Math.abs(firstBlue - secondBlue)
+				) < 16
+			)
+				continue;
+			const classify = (pixelIndex: number): 0 | 1 | -1 => {
+				if (roleMask[pixelIndex] !== 1) return -1;
+				const color = quantizedColor(pixelIndex);
+				return color === firstColor ? 0 : color === secondColor ? 1 : -1;
+			};
+			let horizontalPairs = 0;
+			let horizontalTransitions = 0;
+			let verticalPairs = 0;
+			let verticalTransitions = 0;
+			for (let y = startY; y < startY + windowSize; y += 1) {
+				for (let x = startX; x < startX + windowSize; x += 1) {
+					const pixelIndex = y * width + x;
+					const current = classify(pixelIndex);
+					if (current < 0) continue;
+					if (x + 1 < startX + windowSize) {
+						const right = classify(pixelIndex + 1);
+						if (right >= 0) {
+							horizontalPairs += 1;
+							if (right !== current) horizontalTransitions += 1;
+						}
+					}
+					if (y + 1 < startY + windowSize) {
+						const below = classify(pixelIndex + width);
+						if (below >= 0) {
+							verticalPairs += 1;
+							if (below !== current) verticalTransitions += 1;
+						}
+					}
+				}
+			}
+			const horizontalFraction = horizontalTransitions / Math.max(1, horizontalPairs);
+			const verticalFraction = verticalTransitions / Math.max(1, verticalPairs);
+			if (
+				(horizontalFraction >= RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION &&
+					verticalFraction >= RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION) ||
+				Math.max(horizontalFraction, verticalFraction) >=
+					RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION
+			)
+				throw new Error(
+					'Provider source contains checkerboard contamination inside the retained role'
+				);
+		}
 	}
 }
 
@@ -939,6 +1134,21 @@ export async function normalizeSkillIconProviderSource(
 		decoded.info.width,
 		decoded.info.height
 	);
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+		assertNoRetainedRoleStrongMatte(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			providerRoleMask,
+			transparentDistance
+		);
+		assertNoRetainedRoleCheckerboard(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			providerRoleMask
+		);
+	}
 	assertNoPeriodicContrastCheckerboard(
 		decoded.data,
 		decoded.info.width,

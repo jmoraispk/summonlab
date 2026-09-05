@@ -228,6 +228,58 @@ async function dirtyEdgeBackingSource(contentSvg?: string): Promise<Buffer> {
 	return declareCabx(png);
 }
 
+const literalProviderAperture =
+	'<polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#292c33"/>';
+const literalOutputAperture = [
+	[512, 80],
+	[904, 304],
+	[904, 720],
+	[512, 944],
+	[120, 720],
+	[120, 304]
+] as const;
+
+async function literalGeometryFirstBackingSource(contaminationSvg: string): Promise<Buffer> {
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+	})
+		.composite([
+			{
+				input: Buffer.from(
+					`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg">${literalProviderAperture}${contaminationSvg}</svg>`
+				)
+			}
+		])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+	return declareCabx(png);
+}
+
+async function expectGeometryFirstOutsideContaminationCleared(source: Buffer): Promise<void> {
+	const normalized = await normalizeSkillIconProviderSource(
+		source,
+		'backing',
+		geometryV2Bytes,
+		geometryRoleMaskProfile
+	);
+	expect(await inspectSkillIconAsset(normalized.bytes, 'backing', geometryV2)).toMatchObject({
+		violations: []
+	});
+	const pixels = await sharp(normalized.bytes).ensureAlpha().raw().toBuffer();
+	let nonzeroForbiddenChannels = 0;
+	for (let y = 0; y < 1024; y += 1) {
+		for (let x = 0; x < 1024; x += 1) {
+			if (pointInLiteralPolygon(x + 0.5, y + 0.5, literalOutputAperture)) continue;
+			const offset = (y * 1024 + x) * 4;
+			for (let channel = 0; channel < 4; channel += 1) {
+				if (pixels[offset + channel] !== 0) nonzeroForbiddenChannels += 1;
+			}
+		}
+	}
+	expect(nonzeroForbiddenChannels).toBe(0);
+}
+
 describe('skill-icon provider normalization', () => {
 	it('keeps the fixed green-key thresholds bright enough to preserve dark green material', () => {
 		expect(skillIconGreenKeyAlpha(0, 255, 0)).toBe(0);
@@ -506,6 +558,54 @@ describe('skill-icon provider normalization', () => {
 		}
 		expect(nonzeroForbiddenChannels).toBe(0);
 	}, 30_000);
+
+	it('geometry-first clears a literal 288px checker outside the role but rejects the same retained checker', async () => {
+		const checker = (x: number, y: number) =>
+			`<defs><pattern id="localized-checker" width="48" height="48" patternUnits="userSpaceOnUse"><rect width="48" height="48" fill="#c5cad2"/><rect width="24" height="24" fill="#727780"/><rect x="24" y="24" width="24" height="24" fill="#727780"/></pattern></defs><rect x="${x}" y="${y}" width="288" height="288" fill="url(#localized-checker)"/>`;
+		await expectGeometryFirstOutsideContaminationCleared(
+			await literalGeometryFirstBackingSource(checker(0, 0))
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(checker(483, 483)),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/checkerboard.*retained role|retained role.*checkerboard/iu);
+	}, 40_000);
+
+	it('geometry-first clears a literal 174px green patch outside the role but rejects the same retained matte', async () => {
+		const greenPatch = (x: number, y: number) =>
+			`<rect x="${x}" y="${y}" width="174" height="174" fill="#00ff00"/>`;
+		await expectGeometryFirstOutsideContaminationCleared(
+			await literalGeometryFirstBackingSource(greenPatch(0, 0))
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(greenPatch(540, 540)),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/strong.*matte.*retained role|retained role.*strong.*matte/iu);
+	}, 40_000);
+
+	it('geometry-first clears a literal two-tone alternating field outside the role but rejects the same retained field', async () => {
+		const alternatingField = (x: number, y: number) =>
+			`<defs><pattern id="alternating-field" width="2" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#454a52"/><rect x="1" width="1" height="1" fill="#9ca1aa"/></pattern></defs><rect x="${x}" y="${y}" width="288" height="288" fill="url(#alternating-field)"/>`;
+		await expectGeometryFirstOutsideContaminationCleared(
+			await literalGeometryFirstBackingSource(alternatingField(0, 0))
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(alternatingField(483, 483)),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/checkerboard.*retained role|retained role.*checkerboard/iu);
+	}, 40_000);
 
 	it('geometry-first normalization retains the exact bounded caBX envelope gate', async () => {
 		const parsed = pngChunks(await dirtyEdgeBackingSource());
