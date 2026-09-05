@@ -239,14 +239,14 @@ const literalOutputAperture = [
 	[120, 304]
 ] as const;
 
-async function literalGeometryFirstBackingSource(contaminationSvg: string): Promise<Buffer> {
+async function literalGeometryFirstSource(contentSvg: string): Promise<Buffer> {
 	const png = await sharp({
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
 	})
 		.composite([
 			{
 				input: Buffer.from(
-					`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg">${literalProviderAperture}${contaminationSvg}</svg>`
+					`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg">${contentSvg}</svg>`
 				)
 			}
 		])
@@ -254,6 +254,10 @@ async function literalGeometryFirstBackingSource(contaminationSvg: string): Prom
 		.png({ progressive: false, palette: false })
 		.toBuffer();
 	return declareCabx(png);
+}
+
+async function literalGeometryFirstBackingSource(contaminationSvg: string): Promise<Buffer> {
+	return literalGeometryFirstSource(`${literalProviderAperture}${contaminationSvg}`);
 }
 
 async function expectGeometryFirstOutsideContaminationCleared(source: Buffer): Promise<void> {
@@ -605,6 +609,72 @@ describe('skill-icon provider normalization', () => {
 				geometryRoleMaskProfile
 			)
 		).rejects.toThrow(/checkerboard.*retained role|retained role.*checkerboard/iu);
+	}, 40_000);
+
+	it('geometry-first clears a literal 112px-cell checker outside the role but rejects the centered retained checker', async () => {
+		const macroChecker = (x: number, y: number) =>
+			`<defs><pattern id="macro-checker" width="224" height="224" patternUnits="userSpaceOnUse"><rect width="224" height="224" fill="#c5cad2"/><rect width="112" height="112" fill="#727780"/><rect x="112" y="112" width="112" height="112" fill="#727780"/></pattern></defs><rect x="${x}" y="${y}" width="288" height="288" fill="url(#macro-checker)"/>`;
+		await expectGeometryFirstOutsideContaminationCleared(
+			await literalGeometryFirstBackingSource(macroChecker(0, 0))
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(macroChecker(483, 483)),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/checkerboard.*retained role|retained role.*checkerboard/iu);
+	}, 40_000);
+
+	it('geometry-first clears a literal 128px one-pixel field outside the role but rejects the centered retained field', async () => {
+		const alternatingField = (x: number, y: number) =>
+			`<defs><pattern id="small-alternating-field" width="2" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#454a52"/><rect x="1" width="1" height="1" fill="#9ca1aa"/></pattern></defs><rect x="${x}" y="${y}" width="128" height="128" fill="url(#small-alternating-field)"/>`;
+		await expectGeometryFirstOutsideContaminationCleared(
+			await literalGeometryFirstBackingSource(alternatingField(0, 0))
+		);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(alternatingField(563, 563)),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/checkerboard.*retained role|retained role.*checkerboard/iu);
+	}, 40_000);
+
+	it('geometry-first accepts a literal simple two-material split under profile v4', async () => {
+		const source = await literalGeometryFirstSource(
+			'<defs><clipPath id="split-aperture"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372"/></clipPath></defs><g clip-path="url(#split-aperture)"><rect x="147" y="98" width="480" height="1058" fill="#50545c"/><rect x="627" y="98" width="480" height="1058" fill="#747982"/></g>'
+		);
+		const normalized = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		expect(normalized.normalization.profile).toBe(geometryRoleMaskProfile);
+		expect(await inspectSkillIconAsset(normalized.bytes, 'backing', geometryV2)).toMatchObject({
+			violations: []
+		});
+	}, 40_000);
+
+	it('geometry-first accepts a literal sparse six-edge frame under profile v4', async () => {
+		const source = await literalGeometryFirstSource(
+			'<polygon points="627,59 1112,353 1112,901 627,1195 142,901 142,353" fill="none" stroke="#3a3e46" stroke-width="48" stroke-linejoin="round"/>'
+		);
+		const normalized = await normalizeSkillIconProviderSource(
+			source,
+			'rarity-frame',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		expect(normalized.normalization.profile).toBe(geometryRoleMaskProfile);
+		expect(await inspectSkillIconAsset(normalized.bytes, 'rarity-frame', geometryV2)).toMatchObject(
+			{
+				violations: []
+			}
+		);
 	}, 40_000);
 
 	it('geometry-first normalization retains the exact bounded caBX envelope gate', async () => {

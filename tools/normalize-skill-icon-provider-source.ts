@@ -48,12 +48,14 @@ const FORBIDDEN_ALPHA_MASS_LIMIT = 0.001;
 const FORBIDDEN_OPAQUE_PIXEL_LIMIT = 0.00025;
 const FORBIDDEN_COMPONENT_ALPHA_MASS_LIMIT = 64 * 255;
 const RETAINED_ROLE_STRONG_MATTE_COMPONENT_FRACTION = 0.01;
-const RETAINED_ROLE_CHECKER_WINDOW_SIZE = 288;
-const RETAINED_ROLE_CHECKER_WINDOW_STRIDE = 72;
+const RETAINED_ROLE_CHECKER_MINIMUM_WINDOW_DIVISOR = 16;
+const RETAINED_ROLE_CHECKER_MAXIMUM_WINDOW_DIVISOR = 4;
+const RETAINED_ROLE_CHECKER_WINDOW_STRIDE_DIVISOR = 4;
 const RETAINED_ROLE_CHECKER_MINIMUM_COVERAGE = 0.2;
 const RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION = 0.1;
 const RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION = 0.7;
-const RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION = 0.01;
+const RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_FRACTION = 0.8;
+const RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_SPAN_FRACTION = 0.25;
 const RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION = 0.2;
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
 	let value = index;
@@ -532,123 +534,167 @@ function assertNoRetainedRoleCheckerboard(
 	height: number,
 	roleMask: Uint8Array
 ): void {
-	const windowSize = Math.min(RETAINED_ROLE_CHECKER_WINDOW_SIZE, width, height);
-	const positions = (dimension: number): number[] => {
+	const minimumDimension = Math.min(width, height);
+	const powerOfTwoAtMost = (value: number): number => 2 ** Math.floor(Math.log2(value));
+	const minimumWindowSize = powerOfTwoAtMost(
+		minimumDimension / RETAINED_ROLE_CHECKER_MINIMUM_WINDOW_DIVISOR
+	);
+	const maximumWindowSize = powerOfTwoAtMost(
+		minimumDimension / RETAINED_ROLE_CHECKER_MAXIMUM_WINDOW_DIVISOR
+	);
+	const windowSizes: number[] = [];
+	for (let size = minimumWindowSize; size <= maximumWindowSize; size *= 2) windowSizes.push(size);
+	const quantizedColors = new Uint16Array(width * height);
+	for (let pixelIndex = 0; pixelIndex < roleMask.length; pixelIndex += 1) {
+		if (roleMask[pixelIndex] !== 1) continue;
+		const offset = pixelIndex * 3;
+		quantizedColors[pixelIndex] =
+			1 +
+			((((data[offset] ?? 0) >> 3) << 10) |
+				(((data[offset + 1] ?? 0) >> 3) << 5) |
+				((data[offset + 2] ?? 0) >> 3));
+	}
+	const colorCounts = new Uint32Array(1 << 15);
+	const touchedColors: number[] = [];
+	const positions = (dimension: number, windowSize: number): number[] => {
 		const last = dimension - windowSize;
+		const stride = Math.max(
+			1,
+			Math.floor(windowSize / RETAINED_ROLE_CHECKER_WINDOW_STRIDE_DIVISOR)
+		);
 		const starts: number[] = [];
-		for (let start = 0; start <= last; start += RETAINED_ROLE_CHECKER_WINDOW_STRIDE)
-			starts.push(start);
+		for (let start = 0; start <= last; start += stride) starts.push(start);
 		if (starts.at(-1) !== last) starts.push(last);
 		return starts;
 	};
-	const xStarts = positions(width);
-	const yStarts = positions(height);
-	const colorCounts = new Uint32Array(1 << 15);
-	const touchedColors: number[] = [];
-	const quantizedColor = (pixelIndex: number): number => {
-		const offset = pixelIndex * 3;
-		return (
-			(((data[offset] ?? 0) >> 3) << 10) |
-			(((data[offset + 1] ?? 0) >> 3) << 5) |
-			((data[offset + 2] ?? 0) >> 3)
-		);
-	};
-	for (const startY of yStarts) {
-		for (const startX of xStarts) {
-			let retainedPixels = 0;
-			for (let y = startY; y < startY + windowSize; y += 1) {
-				for (let x = startX; x < startX + windowSize; x += 1) {
-					const pixelIndex = y * width + x;
-					if (roleMask[pixelIndex] !== 1) continue;
-					retainedPixels += 1;
-					const color = quantizedColor(pixelIndex);
-					if (colorCounts[color] === 0) touchedColors.push(color);
-					colorCounts[color]! += 1;
-				}
-			}
-			let firstColor = -1;
-			let firstCount = 0;
-			let secondColor = -1;
-			let secondCount = 0;
-			for (const color of touchedColors) {
-				const count = colorCounts[color] ?? 0;
-				if (count > firstCount) {
-					secondColor = firstColor;
-					secondCount = firstCount;
-					firstColor = color;
-					firstCount = count;
-				} else if (count > secondCount) {
-					secondColor = color;
-					secondCount = count;
-				}
-			}
-			for (const color of touchedColors) colorCounts[color] = 0;
-			touchedColors.length = 0;
-			if (
-				retainedPixels < windowSize ** 2 * RETAINED_ROLE_CHECKER_MINIMUM_COVERAGE ||
-				firstColor < 0 ||
-				secondColor < 0 ||
-				firstCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
-				secondCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
-				(firstCount + secondCount) / retainedPixels <
-					RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION
-			)
-				continue;
-			const firstRed = ((firstColor >>> 10) & 0x1f) * 8 + 4;
-			const firstGreen = ((firstColor >>> 5) & 0x1f) * 8 + 4;
-			const firstBlue = (firstColor & 0x1f) * 8 + 4;
-			const secondRed = ((secondColor >>> 10) & 0x1f) * 8 + 4;
-			const secondGreen = ((secondColor >>> 5) & 0x1f) * 8 + 4;
-			const secondBlue = (secondColor & 0x1f) * 8 + 4;
-			if (
-				Math.max(
-					Math.abs(firstRed - secondRed),
-					Math.abs(firstGreen - secondGreen),
-					Math.abs(firstBlue - secondBlue)
-				) < 16
-			)
-				continue;
-			const classify = (pixelIndex: number): 0 | 1 | -1 => {
-				if (roleMask[pixelIndex] !== 1) return -1;
-				const color = quantizedColor(pixelIndex);
-				return color === firstColor ? 0 : color === secondColor ? 1 : -1;
-			};
-			let horizontalPairs = 0;
-			let horizontalTransitions = 0;
-			let verticalPairs = 0;
-			let verticalTransitions = 0;
-			for (let y = startY; y < startY + windowSize; y += 1) {
-				for (let x = startX; x < startX + windowSize; x += 1) {
-					const pixelIndex = y * width + x;
-					const current = classify(pixelIndex);
-					if (current < 0) continue;
-					if (x + 1 < startX + windowSize) {
-						const right = classify(pixelIndex + 1);
-						if (right >= 0) {
-							horizontalPairs += 1;
-							if (right !== current) horizontalTransitions += 1;
-						}
-					}
-					if (y + 1 < startY + windowSize) {
-						const below = classify(pixelIndex + width);
-						if (below >= 0) {
-							verticalPairs += 1;
-							if (below !== current) verticalTransitions += 1;
-						}
+	for (const windowSize of windowSizes) {
+		const xStarts = positions(width, windowSize);
+		const yStarts = positions(height, windowSize);
+		for (const startY of yStarts) {
+			for (const startX of xStarts) {
+				let retainedPixels = 0;
+				for (let y = startY; y < startY + windowSize; y += 1) {
+					for (let x = startX; x < startX + windowSize; x += 1) {
+						const pixelIndex = y * width + x;
+						const storedColor = quantizedColors[pixelIndex] ?? 0;
+						if (storedColor === 0) continue;
+						retainedPixels += 1;
+						const color = storedColor - 1;
+						if (colorCounts[color] === 0) touchedColors.push(color);
+						colorCounts[color]! += 1;
 					}
 				}
-			}
-			const horizontalFraction = horizontalTransitions / Math.max(1, horizontalPairs);
-			const verticalFraction = verticalTransitions / Math.max(1, verticalPairs);
-			if (
-				(horizontalFraction >= RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION &&
-					verticalFraction >= RETAINED_ROLE_CHECKER_MINIMUM_TRANSITION_FRACTION) ||
-				Math.max(horizontalFraction, verticalFraction) >=
-					RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION
-			)
-				throw new Error(
-					'Provider source contains checkerboard contamination inside the retained role'
+				let firstColor = -1;
+				let firstCount = 0;
+				let secondColor = -1;
+				let secondCount = 0;
+				for (const color of touchedColors) {
+					const count = colorCounts[color] ?? 0;
+					if (count > firstCount) {
+						secondColor = firstColor;
+						secondCount = firstCount;
+						firstColor = color;
+						firstCount = count;
+					} else if (count > secondCount) {
+						secondColor = color;
+						secondCount = count;
+					}
+				}
+				for (const color of touchedColors) colorCounts[color] = 0;
+				touchedColors.length = 0;
+				if (
+					retainedPixels < windowSize ** 2 * RETAINED_ROLE_CHECKER_MINIMUM_COVERAGE ||
+					firstColor < 0 ||
+					secondColor < 0 ||
+					firstCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
+					secondCount / retainedPixels < RETAINED_ROLE_CHECKER_MINIMUM_COLOR_FRACTION ||
+					(firstCount + secondCount) / retainedPixels <
+						RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION
+				)
+					continue;
+				const firstRed = ((firstColor >>> 10) & 0x1f) * 8 + 4;
+				const firstGreen = ((firstColor >>> 5) & 0x1f) * 8 + 4;
+				const firstBlue = (firstColor & 0x1f) * 8 + 4;
+				const secondRed = ((secondColor >>> 10) & 0x1f) * 8 + 4;
+				const secondGreen = ((secondColor >>> 5) & 0x1f) * 8 + 4;
+				const secondBlue = (secondColor & 0x1f) * 8 + 4;
+				if (
+					Math.max(
+						Math.abs(firstRed - secondRed),
+						Math.abs(firstGreen - secondGreen),
+						Math.abs(firstBlue - secondBlue)
+					) < 16
+				)
+					continue;
+				const classify = (pixelIndex: number): 0 | 1 | -1 => {
+					const storedColor = quantizedColors[pixelIndex] ?? 0;
+					if (storedColor === 0) return -1;
+					const color = storedColor - 1;
+					return color === firstColor ? 0 : color === secondColor ? 1 : -1;
+				};
+				let horizontalPairs = 0;
+				let horizontalTransitions = 0;
+				let verticalPairs = 0;
+				let verticalTransitions = 0;
+				const horizontalBoundaryPairs = new Uint32Array(windowSize - 1);
+				const horizontalBoundaryTransitions = new Uint32Array(windowSize - 1);
+				const verticalBoundaryPairs = new Uint32Array(windowSize - 1);
+				const verticalBoundaryTransitions = new Uint32Array(windowSize - 1);
+				for (let y = startY; y < startY + windowSize; y += 1) {
+					for (let x = startX; x < startX + windowSize; x += 1) {
+						const pixelIndex = y * width + x;
+						const current = classify(pixelIndex);
+						if (current < 0) continue;
+						if (x + 1 < startX + windowSize) {
+							const right = classify(pixelIndex + 1);
+							if (right >= 0) {
+								horizontalPairs += 1;
+								horizontalBoundaryPairs[x - startX]! += 1;
+								if (right !== current) {
+									horizontalTransitions += 1;
+									horizontalBoundaryTransitions[x - startX]! += 1;
+								}
+							}
+						}
+						if (y + 1 < startY + windowSize) {
+							const below = classify(pixelIndex + width);
+							if (below >= 0) {
+								verticalPairs += 1;
+								verticalBoundaryPairs[y - startY]! += 1;
+								if (below !== current) {
+									verticalTransitions += 1;
+									verticalBoundaryTransitions[y - startY]! += 1;
+								}
+							}
+						}
+					}
+				}
+				const horizontalFraction = horizontalTransitions / Math.max(1, horizontalPairs);
+				const verticalFraction = verticalTransitions / Math.max(1, verticalPairs);
+				const minimumBoundarySpan = Math.max(
+					8,
+					(retainedPixels / windowSize) * RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_SPAN_FRACTION
 				);
+				const hasCoherentBoundary = (pairs: Uint32Array, transitions: Uint32Array): boolean =>
+					pairs.some(
+						(pairCount, boundary) =>
+							pairCount >= minimumBoundarySpan &&
+							(transitions[boundary] ?? 0) / pairCount >=
+								RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_FRACTION
+					);
+				const minimumTwoAxisFraction = 1 / windowSize;
+				if (
+					(horizontalFraction >= minimumTwoAxisFraction &&
+						verticalFraction >= minimumTwoAxisFraction &&
+						hasCoherentBoundary(horizontalBoundaryPairs, horizontalBoundaryTransitions) &&
+						hasCoherentBoundary(verticalBoundaryPairs, verticalBoundaryTransitions)) ||
+					Math.max(horizontalFraction, verticalFraction) >=
+						RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION
+				)
+					throw new Error(
+						'Provider source contains checkerboard contamination inside the retained role'
+					);
+			}
 		}
 	}
 }
