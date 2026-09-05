@@ -19,6 +19,12 @@ internal bounded contexts stay separate even though the player experiences them 
 - a placeholder engagement table covering daily gems, mission benefits, and progress toward an
   occasional Special summon, with exact values still under review.
 
+Normal player summoning draws from the finite `summonable-heroes-v1` catalog: 200 approved named
+heroes, all native 1★, each with one exact summon portrait and one exact combat chibi. Campaign
+selection is deterministic from its seed and samples without replacement. Laboratory and legacy
+procedural generators remain available for authoring and compatibility, but they do not populate
+the player summon result.
+
 The release matrix decides whether the initial gem claim and Special access are active or only
 represented by a placeholder. Advanced summoning, pity, promotion, complete mastery ladders,
 merging, crafting, item sets, permanent injuries, death, and synthesis remain documented but
@@ -280,7 +286,9 @@ should carry a sword, spear, or bow based on training, temperament, injury, and 
 actual transfer and equip operations remain validated engine commands. This makes disagreement,
 trust, compromise, rescue, and later growth available as story-producing mechanics.
 
-A normal new game should summon three random heroes rather than force a canonical opening party.
+A normal new game summons three heroes from the approved 200-hero pool rather than forcing a
+canonical opening party. The campaign seed makes the selection reproducible, while selection
+without replacement prevents duplicate identity within the opening company.
 A curated trio remains useful for demos, trailers, visual validation, and deterministic tests, where
 known identities make comparison and presentation reliable. Random opening heroes still need a
 validated combination of usable starter roles and equipment; randomness must not create an

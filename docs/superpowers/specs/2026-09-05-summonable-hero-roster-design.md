@@ -58,4 +58,3 @@ campaign heroes resolve their approved art.
 6. Player campaign and standalone summon creation use only catalog heroes.
 7. Runtime lookup returns a summon portrait and combat chibi for every catalog manifest hash.
 8. Legacy procedural generation and legacy runtime portraits remain valid.
-

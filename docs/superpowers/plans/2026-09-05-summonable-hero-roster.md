@@ -38,24 +38,24 @@
 - Produces: `SummonableHeroCatalogSchema` and a catalog containing full stable drafts plus two exact
   approved source records per hero.
 
-- [ ] **Step 1: Write failing contract and promotion tests**
+- [x] **Step 1: Write failing contract and promotion tests**
 
   Test that duplicate hero IDs, character IDs, manifest hashes, or asset keys are rejected; that a
   real promotion build yields exactly 200 entries; that every input hash is verified; and that the
   nineteen correction IDs resolve to v3 while all others resolve to five-head regeneration.
 
-- [ ] **Step 2: Run the focused tests and observe the missing-schema/missing-builder failure**
+- [x] **Step 2: Run the focused tests and observe the missing-schema/missing-builder failure**
 
   Run: `pnpm vitest run packages/contracts/src/contracts.spec.ts tools/summonable-hero-roster-lib.spec.ts`
 
-- [ ] **Step 3: Implement the schemas and pure promotion builder**
+- [x] **Step 3: Implement the schemas and pure promotion builder**
 
   Define strict source-asset, approved-entry, and catalog schemas. Build stable `human-v6` drafts by
   starting from deterministic character generation and overriding the approved identity's name,
   age, presentation, height, physique, face/hair/wardrobe cues, native stars, art key, and provenance.
   Verify file bytes, dimensions, and SHA-256 before emitting any entry.
 
-- [ ] **Step 4: Run tests, write the canonical catalog, and re-run in check mode**
+- [x] **Step 4: Run tests, write the canonical catalog, and re-run in check mode**
 
   Run: `pnpm vitest run packages/contracts/src/contracts.spec.ts tools/summonable-hero-roster-lib.spec.ts`
 
@@ -63,7 +63,7 @@
 
   Run: `pnpm tsx tools/promote-summonable-hero-roster.ts --check`
 
-- [ ] **Step 5: Commit the canonical roster batch**
+- [x] **Step 5: Commit the canonical roster batch**
 
   Commit subject: `feat(heroes): promote summonable hero roster`
 
@@ -83,29 +83,29 @@
 - Produces: `listSummonableHeroDrafts()`, `generateSummonableCharacterDraft(recipe)`, and
   `generateSummonableCompany(seed, count)`.
 
-- [ ] **Step 1: Write failing character-pool tests**
+- [x] **Step 1: Write failing character-pool tests**
 
   Assert a 200-entry unique pool, 100 women/100 men, all native 1★, deterministic single selection,
   three unique company members, replay through `generateCharacterDraft(human-v6 recipe)`, and legacy
   manifest-hash stability.
 
-- [ ] **Step 2: Run tests and observe the missing pool API failure**
+- [x] **Step 2: Run tests and observe the missing pool API failure**
 
   Run: `pnpm --filter @summonlab/characters test`
 
-- [ ] **Step 3: Implement catalog-backed generation and update player entry points**
+- [x] **Step 3: Implement catalog-backed generation and update player entry points**
 
   Resolve `human-v6` canonical recipes from the approved catalog, select finite-pool entries with a
   stable SHA-256 ordering function, and select companies without replacement. Change only the
   player campaign and standalone summon endpoint to call the new API.
 
-- [ ] **Step 4: Run character and web unit tests**
+- [x] **Step 4: Run character and web unit tests**
 
   Run: `pnpm --filter @summonlab/characters test`
 
   Run: `pnpm --filter @summonlab/web test:unit`
 
-- [ ] **Step 5: Commit the summon-selection batch**
+- [x] **Step 5: Commit the summon-selection batch**
 
   Commit subject: `feat(summoning): select from approved hero pool`
 
@@ -126,36 +126,36 @@
 - Produces: a lazy two-asset bundle per hero and runtime lookup for `summon`, `dialogue`, `roster`,
   and `combat-chibi` usages.
 
-- [ ] **Step 1: Write failing exporter and resolver tests**
+- [x] **Step 1: Write failing exporter and resolver tests**
 
   Assert source-hash rejection, deterministic runtime records, 200 lazy bundles/400 assets, and both
   summon/chibi lookup for a known catalog hero while retaining a legacy portrait lookup.
 
-- [ ] **Step 2: Run focused tests and observe missing exporter/usage failures**
+- [x] **Step 2: Run focused tests and observe missing exporter/usage failures**
 
   Run: `pnpm vitest run tools/summonable-hero-runtime-lib.spec.ts apps/web/src/lib/server/runtime-portraits.spec.ts`
 
-- [ ] **Step 3: Implement and export lazy WebP bundles**
+- [x] **Step 3: Implement and export lazy WebP bundles**
 
   Add the `combat-chibi` usage, encode summon sources at width 768 and chibis at width 384 with
   stripped metadata, and keep the catalog out of the existing eight-megabyte initial payload.
 
-- [ ] **Step 4: Generate outputs and validate byte-for-byte check mode**
+- [x] **Step 4: Generate outputs and validate byte-for-byte check mode**
 
-  Run: `pnpm export:summonable-hero-runtime`
+  Run: `pnpm tsx tools/export-summonable-hero-runtime.ts`
 
-  Run: `pnpm validate:summonable-hero-runtime`
+  Run: `pnpm tsx tools/export-summonable-hero-runtime.ts --check`
 
   Run: `pnpm validate:runtime-visuals`
 
-- [ ] **Step 5: Commit the runtime visual batch**
+- [x] **Step 5: Commit the runtime visual batch**
 
   Commit subject: `feat(heroes): export bound runtime visuals`
 
 ### Task 4: Wiki decision record and final validation
 
 **Files:**
-- Create: `docs/decisions/0069-generated-heroes-are-the-summonable-roster.md`
+- Create: `docs/decisions/0071-generated-heroes-are-the-summonable-roster.md`
 - Modify: `docs/wiki/art/hero-identity-and-evolution.md`
 - Modify: `docs/wiki/systems/summoning-progression-combat.md`
 
@@ -164,12 +164,12 @@
 - Produces: durable documentation of the 200-hero pool, native-star rule, identity bindings, and
   candidate/approved/runtime lifecycle.
 
-- [ ] **Step 1: Document the accepted decision and operative paths**
+- [x] **Step 1: Document the accepted decision and operative paths**
 
   Record that these 200 identities are the finite summon pool; all start at 1★; the nineteen v3
   chibis are overrides; and legacy experiments remain provenance rather than runtime selectors.
 
-- [ ] **Step 2: Run focused and repository validation**
+- [x] **Step 2: Run focused and repository validation**
 
   Run: `pnpm format:check`
 
@@ -181,17 +181,16 @@
 
   Run: `pnpm build`
 
-  Run: `pnpm validate:summonable-hero-roster`
+  Run: `pnpm tsx tools/promote-summonable-hero-roster.ts --check`
 
-  Run: `pnpm validate:summonable-hero-runtime`
+  Run: `pnpm tsx tools/export-summonable-hero-runtime.ts --check`
 
-- [ ] **Step 3: Inspect scope and ensure the unrelated wiki image is unstaged**
+- [x] **Step 3: Inspect scope and ensure the unrelated wiki image is unstaged**
 
   Run: `git status --short && git diff --check && git diff --stat origin/main...HEAD`
 
-- [ ] **Step 4: Commit documentation and push the branch**
+- [x] **Step 4: Commit documentation and push the branch**
 
   Commit subject: `docs(heroes): record summonable roster binding`
 
   Push: `git push -u origin codex/bind-summonable-hero-roster`
-

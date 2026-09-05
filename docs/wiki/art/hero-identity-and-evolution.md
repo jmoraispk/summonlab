@@ -2,7 +2,7 @@
 
 Wiki ID: `art.hero-identity-evolution`
 
-Design status: **accepted visual-generation direction; candidate waves in review**.
+Design status: **accepted visual-generation direction; 200-hero summon roster approved and bound**.
 
 This page governs hero identity generation beyond the fixed Living Village prototype roster. It
 connects physical variation, starting capability, aptitudes, personality, wardrobe, native stars,
@@ -43,6 +43,25 @@ prompt and seed may still produce a different person or composition. Therefore:
 
 The workflow is an authored, constraint-assisted character studio. It is not a promise of a fully
 procedural human generator.
+
+## Current summonable roster
+
+The approved player pool is `summonable-heroes-v1`: exactly 200 named, native-1★ identities, split
+100 women and 100 men. These are the heroes normal player summoning selects from. Each catalog entry
+binds one stable `human-v6` character draft to its exact approved summon portrait and combat chibi;
+the pair is one identity, never two independently selectable images.
+
+The source of truth is
+`assets/heroes/approved/summonable-roster-v1/catalog.json`. It records the immutable experiment
+paths, SHA-256 hashes, dimensions, approval ID, character manifest, and stable asset keys. Nineteen
+heroes use the explicitly approved v3 chibi correction; the other 181 use their completed five-head
+regeneration. Candidate PNGs remain production evidence. Runtime WebPs are separate, reproducible
+derivatives recorded in
+`apps/web/static/runtime/summonable-heroes-v1/manifest.json`, with both images bound to the exact
+character-manifest hash and loaded in a lazy bundle for that hero.
+
+Only these base 1★ forms are approved here. Their 2★–7★ current-star art remains future evolution
+production and must preserve the identity rules below.
 
 ### Combat chibi derivative
 
@@ -308,12 +327,17 @@ reference.
 - The corresponding `five-head-chibi-regeneration-001` production run completed all thirteen waves:
   200 summon-bound primary calls produced 200 readable `1024x1536` provider PNGs, 200 byte-identical
   candidates, and 200 strict receipts. One journaled provider-no-output primary received the single
-  allowed versioned retry. These images remain unreviewed, unapproved, and unbound to runtime until
-  a separate comparison and promotion task explicitly advances them.
+  allowed versioned retry.
+- On 2026-09-05, the owner approved all 200 generated heroes as the finite summonable roster. The
+  later nineteen-entry v3 correction approval overrides those heroes' regenerated chibis; the other
+  181 regeneration results are accepted. The catalog and lazy runtime manifest now preserve the
+  exact summon/chibi pair for every hero.
 
 ## Integration boundary
 
-This page authorizes hero visual planning and candidate production. It does not modify shared engine
-contracts, policies, replay formats, runtime catalogs, or summon tables. Replacing the legacy
-four-score aptitude payload requires an integration owner to define a versioned typed schema,
+This page authorizes hero visual planning, candidate production, and maintenance of the approved
+hero catalog and its derived lazy runtime visuals. Player summon selection may consume the approved
+catalog through the character package, but combat rules, policies, replay formats, affinity tables,
+and unrelated shared catalogs remain outside this visual-production decision. Replacing the legacy
+four-score aptitude payload still requires an integration owner to define a versioned typed schema,
 migration and replay compatibility behavior, update every consumer, and validate existing histories.
