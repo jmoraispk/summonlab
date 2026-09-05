@@ -2,6 +2,8 @@ import { createHash, randomUUID } from 'node:crypto';
 import { link, lstat, mkdir, open, readFile, realpath, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
+import sharp from 'sharp';
+
 import {
 	SkillIconCatalogSchema,
 	SkillIconCleanupAuthoritySchema,
@@ -53,6 +55,54 @@ export interface CleanupExportReport {
 	readonly counts: Readonly<{ total: number; Martial: number; Magical: number; Craft: number }>;
 	readonly written: readonly string[];
 	readonly drifted: readonly string[];
+}
+
+export interface PixelBounds {
+	readonly left: number;
+	readonly top: number;
+	readonly width: number;
+	readonly height: number;
+}
+
+export interface InteriorResult {
+	readonly bytes: Buffer;
+	readonly removedPixels: number;
+	readonly removedPixelBounds: PixelBounds | null;
+}
+
+export interface CleanupInspectionInput {
+	readonly composite: Buffer;
+	readonly backing: Buffer;
+	readonly interior: Buffer;
+	readonly frame: Buffer;
+	readonly geometry: SkillIconGeometryV2;
+	readonly boundLayerHashes?: Readonly<{
+		backing: string;
+		interior: string;
+		frame: string;
+	}>;
+}
+
+export interface CleanupInspection {
+	readonly layerHashesMatch: boolean;
+	readonly exactComposite: boolean;
+	readonly protectedBandMatches: boolean;
+	readonly nearWhiteComponents: readonly {
+		readonly pixels: number;
+		readonly bounds: PixelBounds;
+	}[];
+	readonly warnings: readonly string[];
+}
+
+export interface CleanupFinalizeReport {
+	readonly mode: 'write' | 'check';
+	readonly ready: boolean;
+	readonly total: number;
+	readonly finalized: number;
+	readonly pendingLayerJobIds: readonly string[];
+	readonly written: readonly string[];
+	readonly drifted: readonly string[];
+	readonly warnings: readonly string[];
 }
 
 export function cleanupSlug(targetId: string): string {
@@ -414,4 +464,459 @@ export async function exportSkillIconQualityCleanup(options: {
 		{ total: manifest.records.length, Martial: 0, Magical: 0, Craft: 0 }
 	);
 	return { mode: options.mode, counts, written, drifted };
+}
+
+type Point = readonly [number, number];
+
+const DETERMINISTIC_PNG_OPTIONS = {
+	compressionLevel: 9,
+	adaptiveFiltering: false,
+	palette: false
+} as const;
+
+const CLEANUP_LAYER_JOBS = [
+	{ jobId: 'charcoal-forged-stone-v5', role: 'backing', rarity: null },
+	{ jobId: 'rarity-frame-f-v5', role: 'rarity-frame', rarity: 'F' },
+	{ jobId: 'rarity-frame-e-v5', role: 'rarity-frame', rarity: 'E' },
+	{ jobId: 'rarity-frame-d-v5', role: 'rarity-frame', rarity: 'D' },
+	{ jobId: 'rarity-frame-c-v5', role: 'rarity-frame', rarity: 'C' },
+	{ jobId: 'rarity-frame-b-v5', role: 'rarity-frame', rarity: 'B' },
+	{ jobId: 'rarity-frame-a-v5', role: 'rarity-frame', rarity: 'A' },
+	{ jobId: 'rarity-frame-s-v5', role: 'rarity-frame', rarity: 'S' }
+] as const;
+
+function pointInPolygon(x: number, y: number, polygon: readonly Point[]): boolean {
+	let inside = false;
+	for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
+		const [currentX, currentY] = polygon[index]!;
+		const [previousX, previousY] = polygon[previous]!;
+		if (
+			currentY !== previousY &&
+			currentY > y !== previousY > y &&
+			x < ((previousX - currentX) * (y - currentY)) / (previousY - currentY) + currentX
+		) {
+			inside = !inside;
+		}
+	}
+	return inside;
+}
+
+function scaledPolygon(points: readonly Point[], width: number, height: number): readonly Point[] {
+	return points.map(([x, y]) => [x * width, y * height] as const);
+}
+
+function cleanupPolygons(
+	geometry: SkillIconGeometryV2,
+	width: number,
+	height: number
+): {
+	readonly outer: readonly Point[];
+	readonly inner: readonly Point[];
+	readonly medallion: readonly Point[];
+} {
+	const outer = scaledPolygon(geometry.outerEnvelopePoints, width, height);
+	const center = {
+		x: (geometry.center.x * width) / geometry.canvas.width,
+		y: (geometry.center.y * height) / geometry.canvas.height
+	};
+	const inner = geometry.outerEnvelopePoints.map(
+		([x, y]) =>
+			[
+				center.x + (x * width - center.x) * geometry.innerApertureScale,
+				center.y + (y * height - center.y) * geometry.innerApertureScale
+			] as const
+	);
+	return {
+		outer,
+		inner,
+		medallion: scaledPolygon(geometry.rarityMedallionExclusion, width, height)
+	};
+}
+
+async function rgbaBytes(bytes: Buffer): Promise<{
+	readonly data: Buffer;
+	readonly width: number;
+	readonly height: number;
+}> {
+	const decoded = await sharp(bytes, { failOn: 'error' })
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	return { data: decoded.data, width: decoded.info.width, height: decoded.info.height };
+}
+
+function assertCanvas(
+	label: string,
+	actual: { readonly width: number; readonly height: number },
+	expected: { readonly width: number; readonly height: number }
+): void {
+	if (actual.width !== expected.width || actual.height !== expected.height) {
+		throw new Error(
+			`${label} dimensions must be ${expected.width}x${expected.height}; received ${actual.width}x${actual.height}`
+		);
+	}
+}
+
+async function encodeRgba(data: Buffer, width: number, height: number): Promise<Buffer> {
+	return sharp(data, { raw: { width, height, channels: 4 } })
+		.png(DETERMINISTIC_PNG_OPTIONS)
+		.toBuffer();
+}
+
+export async function extractLegacyInterior(
+	source: Buffer,
+	geometryInput: SkillIconGeometryV2
+): Promise<InteriorResult> {
+	const geometry = SkillIconGeometryV2Schema.parse(geometryInput);
+	const decoded = await rgbaBytes(source);
+	assertCanvas('Legacy source', decoded, geometry.canvas);
+	const { inner, medallion } = cleanupPolygons(geometry, decoded.width, decoded.height);
+	const output = Buffer.from(decoded.data);
+	let removedPixels = 0;
+	let left = decoded.width;
+	let top = decoded.height;
+	let right = -1;
+	let bottom = -1;
+	for (let y = 0; y < decoded.height; y += 1) {
+		for (let x = 0; x < decoded.width; x += 1) {
+			const offset = (y * decoded.width + x) * 4;
+			const allowed =
+				pointInPolygon(x + 0.5, y + 0.5, inner) && !pointInPolygon(x + 0.5, y + 0.5, medallion);
+			if (!allowed) {
+				if ((output[offset + 3] ?? 0) > 0) {
+					removedPixels += 1;
+					left = Math.min(left, x);
+					top = Math.min(top, y);
+					right = Math.max(right, x);
+					bottom = Math.max(bottom, y);
+				}
+				output.fill(0, offset, offset + 4);
+			} else if ((output[offset + 3] ?? 0) === 0) {
+				output.fill(0, offset, offset + 4);
+			}
+		}
+	}
+	return {
+		bytes: await encodeRgba(output, decoded.width, decoded.height),
+		removedPixels,
+		removedPixelBounds:
+			removedPixels === 0 ? null : { left, top, width: right - left + 1, height: bottom - top + 1 }
+	};
+}
+
+export async function composeCleanupIcon(input: {
+	readonly backing: Buffer;
+	readonly interior: Buffer;
+	readonly frame: Buffer;
+}): Promise<Buffer> {
+	const [backing, interior, frame] = await Promise.all([
+		rgbaBytes(input.backing),
+		rgbaBytes(input.interior),
+		rgbaBytes(input.frame)
+	]);
+	assertCanvas('Interior', interior, backing);
+	assertCanvas('Frame', frame, backing);
+	return sharp(backing.data, {
+		raw: { width: backing.width, height: backing.height, channels: 4 }
+	})
+		.composite([
+			{
+				input: interior.data,
+				raw: { width: backing.width, height: backing.height, channels: 4 },
+				blend: 'over'
+			},
+			{
+				input: frame.data,
+				raw: { width: backing.width, height: backing.height, channels: 4 },
+				blend: 'over'
+			}
+		])
+		.png(DETERMINISTIC_PNG_OPTIONS)
+		.toBuffer();
+}
+
+function nearWhiteComponents(
+	data: Buffer,
+	width: number,
+	height: number
+): CleanupInspection['nearWhiteComponents'] {
+	const white = new Uint8Array(width * height);
+	for (let index = 0; index < width * height; index += 1) {
+		const offset = index * 4;
+		if (
+			(data[offset + 3] ?? 0) === 255 &&
+			(data[offset] ?? 0) >= 245 &&
+			(data[offset + 1] ?? 0) >= 245 &&
+			(data[offset + 2] ?? 0) >= 245
+		) {
+			white[index] = 1;
+		}
+	}
+	const components: { pixels: number; bounds: PixelBounds }[] = [];
+	for (let start = 0; start < white.length; start += 1) {
+		if (white[start] !== 1) continue;
+		const queue = [start];
+		white[start] = 2;
+		let pixels = 0;
+		let left = width;
+		let top = height;
+		let right = -1;
+		let bottom = -1;
+		for (let cursor = 0; cursor < queue.length; cursor += 1) {
+			const current = queue[cursor]!;
+			const x = current % width;
+			const y = Math.floor(current / width);
+			pixels += 1;
+			left = Math.min(left, x);
+			top = Math.min(top, y);
+			right = Math.max(right, x);
+			bottom = Math.max(bottom, y);
+			for (const [nextX, nextY] of [
+				[x - 1, y],
+				[x + 1, y],
+				[x, y - 1],
+				[x, y + 1]
+			] as const) {
+				if (nextX < 0 || nextX >= width || nextY < 0 || nextY >= height) continue;
+				const next = nextY * width + nextX;
+				if (white[next] !== 1) continue;
+				white[next] = 2;
+				queue.push(next);
+			}
+		}
+		components.push({
+			pixels,
+			bounds: { left, top, width: right - left + 1, height: bottom - top + 1 }
+		});
+	}
+	return components;
+}
+
+export async function inspectCleanupComposite(
+	input: CleanupInspectionInput
+): Promise<CleanupInspection> {
+	const geometry = SkillIconGeometryV2Schema.parse(input.geometry);
+	const expected = await composeCleanupIcon(input);
+	const emptyInterior = await encodeRgba(
+		Buffer.alloc(geometry.canvas.width * geometry.canvas.height * 4),
+		geometry.canvas.width,
+		geometry.canvas.height
+	);
+	const protectedComposite = await composeCleanupIcon({
+		backing: input.backing,
+		interior: emptyInterior,
+		frame: input.frame
+	});
+	const [actualRgba, protectedRgba] = await Promise.all([
+		rgbaBytes(input.composite),
+		rgbaBytes(protectedComposite)
+	]);
+	assertCanvas('Cleanup composite', actualRgba, geometry.canvas);
+	assertCanvas('Protected composite', protectedRgba, geometry.canvas);
+	const { outer, inner, medallion } = cleanupPolygons(
+		geometry,
+		geometry.canvas.width,
+		geometry.canvas.height
+	);
+	let protectedBandMatches = true;
+	for (let y = 0; y < geometry.canvas.height && protectedBandMatches; y += 1) {
+		for (let x = 0; x < geometry.canvas.width; x += 1) {
+			const pixelX = x + 0.5;
+			const pixelY = y + 0.5;
+			const protectedPixel =
+				(pointInPolygon(pixelX, pixelY, outer) && !pointInPolygon(pixelX, pixelY, inner)) ||
+				pointInPolygon(pixelX, pixelY, medallion);
+			if (!protectedPixel) continue;
+			const offset = (y * geometry.canvas.width + x) * 4;
+			if (
+				!actualRgba.data
+					.subarray(offset, offset + 4)
+					.equals(protectedRgba.data.subarray(offset, offset + 4))
+			) {
+				protectedBandMatches = false;
+				break;
+			}
+		}
+	}
+	const components = nearWhiteComponents(
+		actualRgba.data,
+		geometry.canvas.width,
+		geometry.canvas.height
+	);
+	return {
+		layerHashesMatch:
+			input.boundLayerHashes === undefined ||
+			(input.boundLayerHashes.backing === sha256(input.backing) &&
+				input.boundLayerHashes.interior === sha256(input.interior) &&
+				input.boundLayerHashes.frame === sha256(input.frame)),
+		exactComposite: input.composite.equals(expected),
+		protectedBandMatches,
+		nearWhiteComponents: components,
+		warnings: components.map(
+			(component) =>
+				`Opaque near-white component: ${component.pixels} pixels at ${component.bounds.left},${component.bounds.top} ${component.bounds.width}x${component.bounds.height}`
+		)
+	};
+}
+
+function cleanupLayerPaths(jobId: string): {
+	readonly candidate: string;
+	readonly result: string;
+} {
+	return {
+		candidate: `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
+		result: `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
+	};
+}
+
+async function existingCleanupLayer(
+	root: string,
+	job: (typeof CLEANUP_LAYER_JOBS)[number]
+): Promise<null | {
+	readonly bytes: Buffer;
+	readonly contentHash: string;
+}> {
+	const paths = cleanupLayerPaths(job.jobId);
+	const [candidate, resultBytes] = await Promise.all([
+		currentBytes(root, paths.candidate),
+		currentBytes(root, paths.result)
+	]);
+	if (!candidate || !resultBytes) return null;
+	const result = JSON.parse(resultBytes.toString('utf8')) as {
+		readonly jobId?: unknown;
+		readonly role?: unknown;
+		readonly rarity?: unknown;
+		readonly status?: unknown;
+		readonly output?: { readonly path?: unknown; readonly contentHash?: unknown };
+	};
+	const contentHash = sha256(candidate);
+	if (
+		result.jobId !== job.jobId ||
+		result.role !== job.role ||
+		result.rarity !== job.rarity ||
+		result.status !== 'candidate' ||
+		result.output?.path !== paths.candidate ||
+		result.output.contentHash !== contentHash
+	) {
+		throw new Error(`Cleanup shared-layer result does not bind candidate bytes: ${job.jobId}`);
+	}
+	return { bytes: candidate, contentHash };
+}
+
+export async function finalizeSkillIconQualityCleanup(options: {
+	readonly root?: string;
+	readonly mode: 'write' | 'check';
+}): Promise<CleanupFinalizeReport> {
+	const root = path.resolve(options.root ?? process.cwd());
+	const manifestBytes = await regularBytes(root, MANIFEST_PATH);
+	const manifest = SkillIconCleanupManifestSchema.parse(
+		JSON.parse(manifestBytes.toString('utf8')) as unknown
+	);
+	const layers = await Promise.all(
+		CLEANUP_LAYER_JOBS.map(async (job) => ({ job, layer: await existingCleanupLayer(root, job) }))
+	);
+	const pendingLayerJobIds = layers
+		.filter((entry) => entry.layer === null)
+		.map((entry) => entry.job.jobId);
+	if (pendingLayerJobIds.length > 0) {
+		return {
+			mode: options.mode,
+			ready: false,
+			total: manifest.records.length,
+			finalized: 0,
+			pendingLayerJobIds,
+			written: [],
+			drifted: [],
+			warnings: []
+		};
+	}
+	const geometryBytes = await regularBytes(root, manifest.authority.geometry.path);
+	if (sha256(geometryBytes) !== manifest.authority.geometry.contentHash) {
+		throw new Error('Cleanup geometry authority hash drift');
+	}
+	const geometry = SkillIconGeometryV2Schema.parse(
+		JSON.parse(geometryBytes.toString('utf8')) as unknown
+	);
+	const backing = layers.find(({ job }) => job.role === 'backing')!.layer!;
+	const frames = new Map(
+		layers
+			.filter(({ job }) => job.role === 'rarity-frame')
+			.map(({ job, layer }) => [job.rarity, layer!] as const)
+	);
+	const written: string[] = [];
+	const drifted: string[] = [];
+	const warnings: string[] = [];
+	let finalized = 0;
+	for (const record of manifest.records) {
+		const source = await regularBytes(root, record.sourceCandidate.path);
+		if (sha256(source) !== record.sourceCandidate.contentHash) {
+			throw new Error(`Frozen cleanup source hash drift: ${record.targetId}`);
+		}
+		const frame = frames.get(record.rank);
+		if (!frame) throw new Error(`Missing cleanup frame for rank ${record.rank}`);
+		const interior = await extractLegacyInterior(source, geometry);
+		const composite = await composeCleanupIcon({
+			backing: backing.bytes,
+			interior: interior.bytes,
+			frame: frame.bytes
+		});
+		const inspection = await inspectCleanupComposite({
+			composite,
+			backing: backing.bytes,
+			interior: interior.bytes,
+			frame: frame.bytes,
+			geometry,
+			boundLayerHashes: {
+				backing: backing.contentHash,
+				interior: sha256(interior.bytes),
+				frame: frame.contentHash
+			}
+		});
+		if (
+			!inspection.layerHashesMatch ||
+			!inspection.exactComposite ||
+			!inspection.protectedBandMatches
+		) {
+			throw new Error(`Cleanup composite inspection failed: ${record.targetId}`);
+		}
+		warnings.push(...inspection.warnings.map((warning) => `${record.targetId}: ${warning}`));
+		const bindingHash = sha256(
+			jsonBytes({
+				source: record.sourceCandidate.contentHash,
+				geometry: manifest.authority.geometry.contentHash,
+				backing: backing.contentHash,
+				interior: sha256(interior.bytes),
+				frame: frame.contentHash
+			})
+		);
+		const resultBytes = jsonBytes({
+			schemaVersion: 'skill-icon-quality-cleanup-result-v1',
+			...record,
+			cleanupCompositeContentHash: sha256(composite),
+			resultContentHash: bindingHash
+		});
+		for (const output of [
+			{ path: record.cleanupCompositePath, bytes: composite },
+			{ path: record.resultPath, bytes: resultBytes }
+		]) {
+			const current = await currentBytes(root, output.path);
+			if (current?.equals(output.bytes)) continue;
+			if (options.mode === 'check') {
+				drifted.push(output.path);
+			} else if (await writeMissingAtomic(root, output.path, output.bytes)) {
+				written.push(output.path);
+			}
+		}
+		finalized += 1;
+	}
+	return {
+		mode: options.mode,
+		ready: true,
+		total: manifest.records.length,
+		finalized,
+		pendingLayerJobIds: [],
+		written,
+		drifted,
+		warnings
+	};
 }

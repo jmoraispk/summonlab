@@ -155,6 +155,8 @@
 		"export:skill-icon-quality-cleanup": "tsx tools/export-skill-icon-quality-cleanup.ts --write",
 		"export:skill-icon-cleanup-reference-packets": "tsx tools/export-skill-icon-cleanup-reference-packets.ts",
 		"check:skill-icon-quality-cleanup": "tsx tools/export-skill-icon-quality-cleanup.ts --check",
+		"finalize:skill-icon-quality-cleanup": "tsx tools/finalize-skill-icon-quality-cleanup.ts --write",
+		"validate:skill-icon-quality-cleanup": "tsx tools/finalize-skill-icon-quality-cleanup.ts --check",
 		"persist:skill-icon-mass-output": "tsx tools/persist-skill-icon-mass-output.ts",
 		"repair:skill-icon-mass-exteriors": "tsx tools/repair-skill-icon-mass-exteriors.ts",
 		"report:skill-icons": "tsx tools/report-skill-icon-readiness.ts",
