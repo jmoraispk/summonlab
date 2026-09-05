@@ -24,6 +24,8 @@ replay evidence make that claim verifiable rather than aspirational.
 ## Browse
 
 - [Game systems](systems/README.md) — every vertical subsystem and horizontal capability.
+- [Agentic skills](systems/agentic-skills.md) — repository-authored operating instructions and the
+  pinned PixiJS support collection available to Codex.
 - [Playable milestones](milestones/README.md) — integration slices beginning with the reduced
   [Living Village](milestones/living-village.md) loop.
 - [Release roadmap](roadmap/README.md) — the explicit `on`, `off`, `placeholder`, and `decision`
