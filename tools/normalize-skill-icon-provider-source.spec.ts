@@ -684,6 +684,9 @@ describe('skill-icon provider normalization', () => {
 		);
 
 		expect(profileV4Again.bytes).toEqual(profileV4.bytes);
+		expect(profileV4.normalization.outputContentHash).toBe(
+			'98d0ec1d041bddeed37c0bbc7692c823f066e005087e11ff643e95554c8143a8'
+		);
 		expect(profileV5.normalization.profile).toBe(strictGeometryRoleMaskProfile);
 		const profileV4Pixels = await sharp(profileV4.bytes).ensureAlpha().raw().toBuffer();
 		const profileV5Pixels = await sharp(profileV5.bytes).ensureAlpha().raw().toBuffer();
@@ -693,6 +696,10 @@ describe('skill-icon provider normalization', () => {
 		expect(profileV5Pixels[center]).toBe(profileV4Pixels[center]);
 		expect(profileV5Pixels[center + 2]).toBe(profileV4Pixels[center + 2]);
 		let strictAntialiasedEdgePixels = 0;
+		let strictVisiblePixels = 0;
+		let strictPartialAlphaPixels = 0;
+		let strictGreenDominantPixels = 0;
+		let strictGreenDominantPartialAlphaPixels = 0;
 		let unchangedChannelMismatches = 0;
 		for (let offset = 0; offset < profileV4Pixels.length; offset += 4) {
 			if (
@@ -711,9 +718,24 @@ describe('skill-icon provider normalization', () => {
 					Math.max(profileV5Pixels[offset] ?? 0, profileV5Pixels[offset + 2] ?? 0)
 			)
 				strictAntialiasedEdgePixels += 1;
+			const strictAlpha = profileV5Pixels[offset + 3] ?? 0;
+			if (strictAlpha === 0) continue;
+			strictVisiblePixels += 1;
+			if (strictAlpha < 255) strictPartialAlphaPixels += 1;
+			if (
+				(profileV5Pixels[offset + 1] ?? 0) >
+				Math.max(profileV5Pixels[offset] ?? 0, profileV5Pixels[offset + 2] ?? 0)
+			) {
+				strictGreenDominantPixels += 1;
+				if (strictAlpha < 255) strictGreenDominantPartialAlphaPixels += 1;
+			}
 		}
 		expect(unchangedChannelMismatches).toBe(0);
 		expect(strictAntialiasedEdgePixels).toBeGreaterThan(0);
+		expect(strictVisiblePixels).toBeGreaterThan(0);
+		expect(strictPartialAlphaPixels).toBeGreaterThan(0);
+		expect(strictGreenDominantPartialAlphaPixels).toBe(0);
+		expect(strictGreenDominantPixels).toBe(0);
 		expect(
 			(await inspectSkillIconAsset(profileV5.bytes, 'backing', geometryV2)).violations
 		).toEqual([]);

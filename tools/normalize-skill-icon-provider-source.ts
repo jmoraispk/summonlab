@@ -1286,7 +1286,14 @@ export async function normalizeSkillIconProviderSource(
 				resized[offset] = 0;
 				resized[offset + 1] = 0;
 				resized[offset + 2] = 0;
-			} else visiblePixels += 1;
+			} else {
+				visiblePixels += 1;
+				if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V5)
+					resized[offset + 1] = Math.min(
+						resized[offset + 1] ?? 0,
+						Math.max(resized[offset] ?? 0, resized[offset + 2] ?? 0)
+					);
+			}
 		}
 	}
 	if (usesGeometryFirstProfile(profile))
