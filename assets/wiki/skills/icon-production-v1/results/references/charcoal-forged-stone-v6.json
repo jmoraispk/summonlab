@@ -1,0 +1,82 @@
+{
+	"schemaVersion": "skill-icon-result-v2",
+	"resultId": "result-charcoal-forged-stone-v6",
+	"jobId": "charcoal-forged-stone-v6",
+	"logicalIdentity": "charcoal-forged-stone",
+	"revision": 6,
+	"assignmentId": "assignment-charcoal-forged-stone-v6",
+	"status": "candidate",
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the universal skill-icon backing layer. Use the supplied Option C comparison only as Option C tonal authority; do not crop or trace it or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Fill the guide's backing aperture with dark neutral charcoal forged stone, restrained shallow facets, and subtle low-contrast forged texture, carrying the material cleanly to the backing boundary. Leave every region outside that aperture as uninterrupted matte. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Do not render guide colors, construction marks, labels, UI, frame, rim, ornament, emblem, skill art, rarity cue, medallion, letter, number, word, scenery, glow, colored magic, or bright focal mark. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed backing role mask. Output only this isolated provider-source raster.",
+	"promptHash": "5bf9e3e5b88f88561653c2457e09e704d724d5eb63973854da1036741f205ded",
+	"referenceInputs": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		}
+	],
+	"normalization": {
+		"profile": "skill-icon-geometry-role-mask-v1",
+		"outcome": "completed",
+		"geometryHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab",
+		"providerSource": {
+			"mediaType": "image/png",
+			"width": 1254,
+			"height": 1254,
+			"bytes": 1945439,
+			"alphaMode": "rgb",
+			"contentHash": "67ab7a0211e281ac98af6994d2866d89536a0d521ed1ace8bcdab830621e7e91"
+		},
+		"sourceContentHash": "67ab7a0211e281ac98af6994d2866d89536a0d521ed1ace8bcdab830621e7e91",
+		"decoderInputContentHash": "6c572f490caf8e4fdafda8ac9d78126893a7e7274ca08d9a30c148aa16d0a2c6",
+		"containerBox": {
+			"chunkType": "caBX",
+			"bytes": 21783,
+			"contentHash": "f924d7efc996247c978b09b477caedc1b717dfacd193cf5eb4c2ce01ce29f202"
+		},
+		"colorSpaceDisposition": "assigned-srgb",
+		"outputContentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 976872,
+		"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+	},
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v6.json",
+	"findings": [
+		{
+			"category": "geometry",
+			"evaluator": "automated",
+			"outcome": "pass",
+			"observation": "Full-size backing dimensions, media type, alpha, aperture coverage, and geometry checks passed."
+		},
+		{
+			"category": "deterministic-normalization",
+			"evaluator": "producer",
+			"outcome": "pass",
+			"observation": "The exact provider bytes were normalized by the packet-authorized deterministic profile."
+		},
+		{
+			"category": "recognition",
+			"evaluator": "producer",
+			"outcome": "pass",
+			"observation": "At 96 pixels, the uninterrupted dark charcoal stone backing remains a clean hexagonal field with restrained facet texture and no competing frame or artwork."
+		}
+	],
+	"startedAt": "2026-09-05T18:03:49.251Z",
+	"completedAt": "2026-09-05T18:03:49.251Z",
+	"totalWallTimeMs": 0,
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+		"assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v6.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}
