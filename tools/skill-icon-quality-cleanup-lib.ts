@@ -312,7 +312,8 @@ async function currentBytes(root: string, repositoryPath: string): Promise<Buffe
 async function writeMissingAtomic(
 	root: string,
 	repositoryPath: string,
-	bytes: Buffer
+	bytes: Buffer,
+	beforePublish?: (repositoryPath: string) => void | Promise<void>
 ): Promise<boolean> {
 	const destination = path.resolve(root, repositoryPath);
 	const rootRealPath = await realpath(root);
@@ -339,6 +340,7 @@ async function writeMissingAtomic(
 		await handle.sync();
 		await handle.close();
 		handle = null;
+		await beforePublish?.(repositoryPath);
 		let published = false;
 		try {
 			await link(stage, destination);
@@ -368,6 +370,10 @@ async function writeMissingAtomic(
 export async function exportSkillIconQualityCleanup(options: {
 	readonly root?: string;
 	readonly mode: 'write' | 'check';
+	/** @internal Test-only synchronization immediately before create-only publication. */
+	readonly testHooks?: {
+		readonly beforePublish?: (repositoryPath: string) => void | Promise<void>;
+	};
 }): Promise<CleanupExportReport> {
 	const root = path.resolve(options.root ?? process.cwd());
 	const input = await loadCleanupManifestInput(root);
@@ -391,7 +397,11 @@ export async function exportSkillIconQualityCleanup(options: {
 			drifted.push(output.path);
 			continue;
 		}
-		if (await writeMissingAtomic(root, output.path, output.bytes)) written.push(output.path);
+		if (
+			await writeMissingAtomic(root, output.path, output.bytes, options.testHooks?.beforePublish)
+		) {
+			written.push(output.path);
+		}
 	}
 	const counts = manifest.records.reduce(
 		(counts, record) => {

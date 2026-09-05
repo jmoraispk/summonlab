@@ -97,11 +97,16 @@ function withSkewedDomain(input: CleanupManifestInput): CleanupManifestInput {
 	};
 }
 
+interface RaceWriter {
+	readonly child: ChildProcess;
+	readonly destinationWritten: Promise<void>;
+}
+
 async function startRaceWriter(
 	directory: string,
 	destination: string,
 	bytes: Buffer
-): Promise<ChildProcess> {
+): Promise<RaceWriter> {
 	const writer = spawn(
 		process.execPath,
 		[
@@ -123,8 +128,26 @@ async function startRaceWriter(
 		],
 		{ stdio: ['ignore', 'pipe', 'inherit'] }
 	);
-	await once(writer.stdout!, 'data');
-	return writer;
+	let output = '';
+	let ready = false;
+	let resolveReady: (() => void) | undefined;
+	let resolveDestinationWritten: (() => void) | undefined;
+	const destinationWritten = new Promise<void>((resolve) => {
+		resolveDestinationWritten = resolve;
+	});
+	writer.stdout!.on('data', (chunk: Buffer) => {
+		output += chunk.toString('utf8');
+		if (!ready && output.includes('ready\n')) {
+			ready = true;
+			resolveReady?.();
+		}
+		if (output.includes('written\n')) resolveDestinationWritten?.();
+	});
+	await new Promise<void>((resolve) => {
+		if (ready) resolve();
+		else resolveReady = resolve;
+	});
+	return { child: writer, destinationWritten };
 }
 
 async function waitForExit(child: ChildProcess): Promise<void> {
@@ -218,24 +241,38 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 		}
 	});
 
-	it('does not clobber drift that appears after the missing-file check', async () => {
+	it('does not clobber synchronized drift that appears after the missing-file check', async () => {
 		const cleanupDirectory = path.resolve(workspaceRoot, QUALITY_CLEANUP_ROOT);
 		const manifestPath = path.join(cleanupDirectory, 'manifest.json');
 		const original = await readFile(manifestPath);
 		const drift = Buffer.from('concurrent cleanup manifest drift\n');
 		await unlink(manifestPath);
-		let writer: ChildProcess | null = null;
+		let writer: RaceWriter | null = null;
+		let publicationReleased = false;
 		try {
 			writer = await startRaceWriter(cleanupDirectory, manifestPath, drift);
 			await expect(
-				exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'write' })
+				exportSkillIconQualityCleanup({
+					root: workspaceRoot,
+					mode: 'write',
+					testHooks: {
+						beforePublish: async (repositoryPath: string) => {
+							expect(repositoryPath).toBe(
+								'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json'
+							);
+							await writer!.destinationWritten;
+							publicationReleased = true;
+						}
+					}
+				})
 			).rejects.toThrow(/refusing to replace drifted cleanup artifact/i);
-			await waitForExit(writer);
+			expect(publicationReleased).toBe(true);
+			await waitForExit(writer.child);
 			expect(await readFile(manifestPath)).toEqual(drift);
 		} finally {
-			if (writer?.exitCode === null) {
-				writer.kill();
-				await waitForExit(writer);
+			if (writer?.child.exitCode === null) {
+				writer.child.kill();
+				await waitForExit(writer.child);
 			}
 			await writeFile(manifestPath, original);
 		}
