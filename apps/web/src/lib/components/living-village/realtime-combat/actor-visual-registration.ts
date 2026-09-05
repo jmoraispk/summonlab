@@ -7,17 +7,22 @@ export type ActorVisualRegistration = Readonly<{
 	shadowRadiusY: number;
 }>;
 
+function bodyOffsetY(actorId: string, clip: CombatClip): number {
+	if (clip === 'down') return 0;
+	if (actorId === 'moss-archer') return clip === 'idle' ? -10 : -4;
+	if (actorId === 'iron-guardian') return -3;
+	return 0;
+}
+
 export function actorVisualRegistration(
 	actorId: string,
 	role: RealtimeActor['role'],
 	clip: CombatClip
 ): ActorVisualRegistration {
 	const defaultShadowRadiusX = role === 'brute' ? 72 : role === 'swarm' ? 29 : 45;
-	const bodyOffsetY =
-		clip === 'down' ? 0 : actorId === 'moss-archer' ? -4 : actorId === 'iron-guardian' ? -3 : 0;
 
 	return {
-		bodyOffsetY,
+		bodyOffsetY: bodyOffsetY(actorId, clip),
 		shadowRadiusX: actorId === 'iron-guardian' ? 39 : defaultShadowRadiusX,
 		shadowRadiusY: actorId === 'iron-guardian' ? 13 : 14
 	};

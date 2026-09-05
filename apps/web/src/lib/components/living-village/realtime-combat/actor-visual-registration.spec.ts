@@ -3,9 +3,15 @@ import { describe, expect, it } from 'vitest';
 import { actorVisualRegistration } from './actor-visual-registration';
 
 describe('actor visual registration', () => {
-	it('lifts Nessa above the contact point without moving her shadow', () => {
-		expect(actorVisualRegistration('moss-archer', 'archer', 'idle')).toEqual({
-			bodyOffsetY: -4,
+	it.each([
+		['idle', -10],
+		['advance', -4],
+		['attack', -4],
+		['hit', -4],
+		['down', 0]
+	] as const)('registers Nessa %s at body offset %i', (clip, bodyOffsetY) => {
+		expect(actorVisualRegistration('moss-archer', 'archer', clip)).toEqual({
+			bodyOffsetY,
 			shadowRadiusX: 45,
 			shadowRadiusY: 14
 		});
