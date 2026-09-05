@@ -18,11 +18,13 @@ import sharp from 'sharp';
 
 import {
 	SkillIconCatalogSchema,
+	SkillIconExecutionV2Schema,
 	SkillIconCleanupAuthoritySchema,
 	SkillIconCleanupFindingSchema,
 	SkillIconCleanupManifestSchema,
 	SkillIconCleanupResultSchema,
 	SkillIconGeometryV2Schema,
+	SkillIconReprocessTargetSchema,
 	type SkillIconCatalog,
 	type SkillIconCleanupFinding,
 	type SkillIconCleanupManifest,
@@ -30,6 +32,7 @@ import {
 } from '../packages/contracts/src/index.js';
 import type { MassProductionManifest } from './skill-icon-mass-production-lib.js';
 import type { SkillIconMotifMap, SkillIconVisualSpecs } from './skill-icon-production-lib.js';
+import { assertSkillIconReprocessExecutionBytes } from './skill-icon-reprocess-consumer-lib.js';
 
 export const QUALITY_CLEANUP_ROOT =
 	'assets/wiki/skills/icon-production-v1/quality-cleanup-v1' as const;
@@ -489,14 +492,36 @@ const DETERMINISTIC_PNG_OPTIONS = {
 } as const;
 
 const CLEANUP_LAYER_JOBS = [
-	{ jobId: 'charcoal-forged-stone-v6', role: 'backing', rarity: null },
-	{ jobId: 'rarity-frame-f-v5', role: 'rarity-frame', rarity: 'F' },
-	{ jobId: 'rarity-frame-e-v9', role: 'rarity-frame', rarity: 'E' },
-	{ jobId: 'rarity-frame-d-v9', role: 'rarity-frame', rarity: 'D' },
-	{ jobId: 'rarity-frame-c-v9', role: 'rarity-frame', rarity: 'C' },
-	{ jobId: 'rarity-frame-b-v9', role: 'rarity-frame', rarity: 'B' },
-	{ jobId: 'rarity-frame-a-v9', role: 'rarity-frame', rarity: 'A' },
-	{ jobId: 'rarity-frame-s-v9', role: 'rarity-frame', rarity: 'S' }
+	{
+		kind: 'ordinary-v2',
+		jobId: 'charcoal-forged-stone-v6',
+		logicalIdentity: 'charcoal-forged-stone',
+		revision: 6,
+		role: 'backing',
+		rarity: null,
+		profile: 'skill-icon-geometry-role-mask-v1',
+		producer: 'summonlab-skill-icon-production-v5'
+	},
+	{
+		kind: 'reprocess-v1',
+		jobId: 'rarity-frame-f-v5',
+		logicalIdentity: 'rarity-frame-f',
+		revision: 5,
+		role: 'rarity-frame',
+		rarity: 'F',
+		profile: 'skill-icon-green-key-role-mask-v3',
+		producer: 'summonlab-skill-icon-reprocess-v1'
+	},
+	...(['E', 'D', 'C', 'B', 'A', 'S'] as const).map((rarity) => ({
+		kind: 'ordinary-v2' as const,
+		jobId: `rarity-frame-${rarity.toLowerCase()}-v9`,
+		logicalIdentity: `rarity-frame-${rarity.toLowerCase()}`,
+		revision: 9,
+		role: 'rarity-frame' as const,
+		rarity,
+		profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const,
+		producer: 'summonlab-skill-icon-production-v7' as const
+	}))
 ] as const;
 
 function pointInPolygon(x: number, y: number, polygon: readonly Point[]): boolean {
@@ -811,13 +836,29 @@ export async function inspectCleanupComposite(
 }
 
 function cleanupLayerPaths(jobId: string): {
+	readonly target: string;
+	readonly assignment: string;
 	readonly candidate: string;
 	readonly result: string;
 } {
 	return {
+		target: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+		assignment: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
 		candidate: `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
 		result: `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
 	};
+}
+
+async function assertBoundHash(
+	root: string,
+	binding: {
+		readonly path: string;
+		readonly contentHash: string;
+	}
+): Promise<void> {
+	if (sha256(await regularBytes(root, binding.path)) !== binding.contentHash) {
+		throw new Error(`Cleanup shared-layer authority hash drift: ${binding.path}`);
+	}
 }
 
 async function existingCleanupLayer(
@@ -829,28 +870,88 @@ async function existingCleanupLayer(
 	readonly contentHash: string;
 }> {
 	const paths = cleanupLayerPaths(job.jobId);
-	const [candidate, resultBytes] = await Promise.all([
+	const [targetBytes, assignmentBytes, candidate, resultBytes] = await Promise.all([
+		currentBytes(root, paths.target),
+		currentBytes(root, paths.assignment),
 		currentBytes(root, paths.candidate),
 		currentBytes(root, paths.result)
 	]);
-	if (!candidate || !resultBytes) return null;
-	const result = JSON.parse(resultBytes.toString('utf8')) as {
-		readonly jobId?: unknown;
-		readonly role?: unknown;
-		readonly rarity?: unknown;
-		readonly status?: unknown;
-		readonly output?: { readonly path?: unknown; readonly contentHash?: unknown };
-	};
+	if (!candidate && !resultBytes) return null;
+	if (!targetBytes || !assignmentBytes || !candidate || !resultBytes) {
+		throw new Error(`Cleanup shared-layer execution evidence is incomplete: ${job.jobId}`);
+	}
+
+	let execution:
+		| ReturnType<typeof SkillIconExecutionV2Schema.parse>
+		| ReturnType<typeof assertSkillIconReprocessExecutionBytes>;
+	let profileProducerMatches: boolean;
+	if (job.kind === 'ordinary-v2') {
+		execution = SkillIconExecutionV2Schema.parse({
+			schemaVersion: 'skill-icon-execution-v2',
+			target: JSON.parse(targetBytes.toString('utf8')) as unknown,
+			assignment: JSON.parse(assignmentBytes.toString('utf8')) as unknown,
+			result: JSON.parse(resultBytes.toString('utf8')) as unknown
+		});
+		await Promise.all([
+			...execution.target.references.map((reference) => assertBoundHash(root, reference)),
+			assertBoundHash(root, execution.target.normalization.geometry)
+		]);
+		profileProducerMatches =
+			execution.target.normalization.profile === job.profile &&
+			execution.assignment.normalization.profile === job.profile &&
+			execution.assignment.skillVersion === job.producer;
+	} else {
+		const target = SkillIconReprocessTargetSchema.parse(
+			JSON.parse(targetBytes.toString('utf8')) as unknown
+		);
+		const [originTargetBytes, originAssignmentBytes, originResultBytes] = await Promise.all([
+			regularBytes(root, target.originAuthority.target.path),
+			regularBytes(root, target.originAuthority.assignment.path),
+			regularBytes(root, target.originAuthority.result.path)
+		]);
+		const originTarget = JSON.parse(originTargetBytes.toString('utf8')) as {
+			readonly output?: { readonly candidatePath?: unknown };
+		};
+		const originCandidatePresent =
+			typeof originTarget.output?.candidatePath === 'string' &&
+			(await currentBytes(root, originTarget.output.candidatePath)) !== null;
+		execution = assertSkillIconReprocessExecutionBytes({
+			targetPath: paths.target,
+			targetBytes,
+			assignmentPath: paths.assignment,
+			assignmentBytes,
+			resultPath: paths.result,
+			resultBytes,
+			originTargetBytes,
+			originAssignmentBytes,
+			originResultBytes,
+			originCandidatePresent
+		});
+		await Promise.all([
+			assertBoundHash(root, execution.target.processingAuthority.geometry),
+			assertBoundHash(root, execution.target.processingAuthority.guide)
+		]);
+		profileProducerMatches =
+			execution.target.processingAuthority.profile === job.profile &&
+			execution.assignment.toolVersion === job.producer;
+	}
+
+	const { target, result } = execution;
 	const contentHash = sha256(candidate);
 	if (
-		result.jobId !== job.jobId ||
-		result.role !== job.role ||
-		result.rarity !== job.rarity ||
+		target.jobId !== job.jobId ||
+		target.logicalIdentity !== job.logicalIdentity ||
+		target.revision !== job.revision ||
+		target.role !== job.role ||
+		target.rarity !== job.rarity ||
+		!profileProducerMatches ||
 		result.status !== 'candidate' ||
 		result.output?.path !== paths.candidate ||
-		result.output.contentHash !== contentHash
+		result.output.contentHash !== contentHash ||
+		result.output.bytes !== candidate.byteLength ||
+		result.normalization.outputContentHash !== contentHash
 	) {
-		throw new Error(`Cleanup shared-layer result does not bind candidate bytes: ${job.jobId}`);
+		throw new Error(`Cleanup shared-layer execution does not bind candidate bytes: ${job.jobId}`);
 	}
 	return { path: paths.candidate, bytes: candidate, contentHash };
 }

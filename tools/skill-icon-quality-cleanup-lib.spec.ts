@@ -162,42 +162,26 @@ async function seedReadyFinalizerRoot(root: string): Promise<{
 	await mkdir(path.dirname(manifestPath), { recursive: true });
 	await writeFile(manifestPath, Buffer.from(`${JSON.stringify(manifest, null, '\t')}\n`));
 
-	for (const [jobId, role, rarity] of cleanupLayerJobs) {
-		const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
-		const candidate = await sparseRgbaFixture(
-			1024,
-			1024,
-			role === 'backing'
-				? [
-						[512, 512, 255, 0, 0, 255],
-						[0, 0, 255, 0, 0, 255]
-					]
-				: [
-						[150, 512, 0, 0, 255, 255],
-						[1023, 1023, 0, 0, 255, 255]
-					]
-		);
-		const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
-		await mkdir(path.dirname(path.join(root, candidatePath)), { recursive: true });
-		await mkdir(path.dirname(path.join(root, resultPath)), { recursive: true });
-		await writeFile(path.join(root, candidatePath), candidate);
-		await writeFile(
-			path.join(root, resultPath),
-			Buffer.from(
-				`${JSON.stringify(
-					{
-						schemaVersion: 'synthetic-cleanup-layer-result-v1',
-						jobId,
-						role,
-						rarity,
-						status: 'candidate',
-						output: { path: candidatePath, contentHash: sha256(candidate) }
-					},
-					null,
-					'\t'
-				)}\n`
-			)
-		);
+	for (const [jobId] of cleanupLayerJobs) {
+		for (const repositoryPath of [
+			`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+			`assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
+			`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
+		]) {
+			const destination = path.join(root, repositoryPath);
+			await mkdir(path.dirname(destination), { recursive: true });
+			await copyFile(path.join(workspaceRoot, repositoryPath), destination);
+		}
+	}
+	for (const repositoryPath of [
+		'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json',
+		'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json',
+		'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
+	]) {
+		const destination = path.join(root, repositoryPath);
+		await mkdir(path.dirname(destination), { recursive: true });
+		await copyFile(path.join(workspaceRoot, repositoryPath), destination);
 	}
 
 	const first = manifest.records[0]!;
@@ -205,6 +189,17 @@ async function seedReadyFinalizerRoot(root: string): Promise<{
 		manifest,
 		firstInteriorPath: `${QUALITY_CLEANUP_ROOT}/interiors/${cleanupSlug(first.targetId)}.png`
 	};
+}
+
+async function updateJsonArtifact(
+	root: string,
+	repositoryPath: string,
+	update: (value: Record<string, unknown>) => void
+): Promise<void> {
+	const absolutePath = path.join(root, repositoryPath);
+	const value = JSON.parse(await readFile(absolutePath, 'utf8')) as Record<string, unknown>;
+	update(value);
+	await writeFile(absolutePath, Buffer.from(`${JSON.stringify(value, null, '\t')}\n`));
 }
 
 function sha256(bytes: Buffer): string {
@@ -690,6 +685,197 @@ describe('deterministic protected-aperture composition', () => {
 			await rm(root, { recursive: true, force: true });
 		}
 	});
+
+	it('rejects unauthenticated shared-layer executions before any finalizer write', async () => {
+		// Catches accepting a result/candidate pair without its exact packet, provenance, and bytes.
+		const cases = [
+			{
+				name: 'missing assignment',
+				mutate: (root: string) =>
+					unlink(
+						path.join(
+							root,
+							'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-c-v9.json'
+						)
+					)
+			},
+			{
+				name: 'malformed result',
+				mutate: (root: string) =>
+					writeFile(
+						path.join(
+							root,
+							'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v9.json'
+						),
+						Buffer.from('{}\n')
+					)
+			},
+			{
+				name: 'stale reference hash',
+				mutate: (root: string) =>
+					writeFile(
+						path.join(
+							root,
+							'assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png'
+						),
+						Buffer.from('stale reference bytes\n')
+					)
+			},
+			{
+				name: 'reordered authority inputs',
+				mutate: (root: string) =>
+					updateJsonArtifact(
+						root,
+						'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-c-v9.json',
+						(target) => {
+							target.references = [...(target.references as unknown[])].reverse();
+						}
+					)
+			},
+			{
+				name: 'wrong role',
+				mutate: (root: string) =>
+					updateJsonArtifact(
+						root,
+						'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-c-v9.json',
+						(target) => {
+							target.role = 'backing';
+						}
+					)
+			},
+			{
+				name: 'wrong rarity',
+				mutate: (root: string) =>
+					updateJsonArtifact(
+						root,
+						'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-c-v9.json',
+						(target) => {
+							target.rarity = 'D';
+						}
+					)
+			},
+			{
+				name: 'wrong canonical packet path',
+				mutate: async (root: string) => {
+					for (const [area, extension] of [
+						['targets', 'json'],
+						['assignments', 'json'],
+						['candidates', 'png'],
+						['results', 'json']
+					] as const) {
+						await copyFile(
+							path.join(
+								workspaceRoot,
+								`assets/wiki/skills/icon-production-v1/${area}/references/rarity-frame-d-v9.${extension}`
+							),
+							path.join(
+								root,
+								`assets/wiki/skills/icon-production-v1/${area}/references/rarity-frame-c-v9.${extension}`
+							)
+						);
+					}
+				}
+			},
+			{
+				name: 'non-candidate status',
+				mutate: (root: string) =>
+					updateJsonArtifact(
+						root,
+						'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v9.json',
+						(result) => {
+							result.status = 'revise';
+							const findings = result.findings as Record<string, unknown>[];
+							findings[0]!.outcome = 'concern';
+						}
+					)
+			},
+			{
+				name: 'candidate byte mismatch',
+				mutate: async (root: string) => {
+					const candidatePath = path.join(
+						root,
+						'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png'
+					);
+					await writeFile(
+						candidatePath,
+						Buffer.concat([await readFile(candidatePath), Buffer.from([0])])
+					);
+				}
+			},
+			{
+				name: 'normalization output hash mismatch',
+				mutate: (root: string) =>
+					updateJsonArtifact(
+						root,
+						'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-c-v9.json',
+						(result) => {
+							(result.normalization as Record<string, unknown>).outputContentHash = '0'.repeat(64);
+						}
+					)
+			},
+			{
+				name: 'stale reprocess packet hash',
+				mutate: async (root: string) => {
+					const targetPath = path.join(
+						root,
+						'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v5.json'
+					);
+					await writeFile(
+						targetPath,
+						Buffer.concat([await readFile(targetPath), Buffer.from('\n')])
+					);
+				}
+			},
+			{
+				name: 'wrong profile and producer',
+				mutate: async (root: string) => {
+					const jobId = 'charcoal-forged-stone-v6';
+					await updateJsonArtifact(
+						root,
+						`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+						(target) => {
+							(target.normalization as Record<string, unknown>).profile =
+								'skill-icon-geometry-role-mask-v2';
+						}
+					);
+					await updateJsonArtifact(
+						root,
+						`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+						(assignment) => {
+							(assignment.normalization as Record<string, unknown>).profile =
+								'skill-icon-geometry-role-mask-v2';
+							assignment.skillVersion = 'summonlab-skill-icon-production-v6';
+						}
+					);
+					await updateJsonArtifact(
+						root,
+						`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`,
+						(result) => {
+							(result.normalization as Record<string, unknown>).profile =
+								'skill-icon-geometry-role-mask-v2';
+						}
+					);
+				}
+			}
+		] as const;
+
+		for (const testCase of cases) {
+			const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-binding-'));
+			try {
+				const fixture = await seedReadyFinalizerRoot(root);
+				await testCase.mutate(root);
+				await expect(
+					finalizeSkillIconQualityCleanup({ root, mode: 'write' }),
+					testCase.name
+				).rejects.toThrow();
+				await expect(readFile(path.join(root, fixture.firstInteriorPath))).rejects.toMatchObject({
+					code: 'ENOENT'
+				});
+			} finally {
+				await rm(root, { recursive: true, force: true });
+			}
+		}
+	}, 120_000);
 
 	it('persists interiors and validated loss provenance through write, check, and drift modes', async () => {
 		// Catches dropping extracted interiors/evidence or replacing an existing derived artifact.
