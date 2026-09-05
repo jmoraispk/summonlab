@@ -350,18 +350,24 @@ function packetProfileV3() {
 	return { target, assignment, candidatePath };
 }
 
-function packetGeometryRoleMask() {
+function packetGeometryRoleMask(
+	profile:
+		| 'skill-icon-geometry-role-mask-v1'
+		| 'skill-icon-geometry-role-mask-v2' = 'skill-icon-geometry-role-mask-v1'
+) {
 	const prior = packetProfileV3();
-	const jobId = 'charcoal-forged-stone-v6';
+	const strict = profile === 'skill-icon-geometry-role-mask-v2';
+	const revision = strict ? 8 : 6;
+	const jobId = `charcoal-forged-stone-v${revision}`;
 	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
 	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
 	const target: SkillIconTargetV2 = {
 		...prior.target,
 		jobId,
-		revision: 6,
+		revision,
 		output: { candidatePath, resultPath },
 		normalization: {
-			profile: 'skill-icon-geometry-role-mask-v1',
+			profile,
 			sourceContract: prior.target.normalization.sourceContract,
 			outputContract: prior.target.normalization.outputContract,
 			geometry: {
@@ -374,11 +380,13 @@ function packetGeometryRoleMask() {
 		...prior.assignment,
 		assignmentId: `assignment-${jobId}`,
 		jobId,
-		revision: 6,
+		revision,
 		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
 		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
-		skillVersion: 'summonlab-skill-icon-production-v5',
-		normalization: { profile: 'skill-icon-geometry-role-mask-v1' },
+		skillVersion: strict
+			? 'summonlab-skill-icon-production-v6'
+			: 'summonlab-skill-icon-production-v5',
+		normalization: { profile },
 		permittedOutputs: { candidatePath, resultPath }
 	};
 	return { target, assignment, candidatePath };
@@ -389,7 +397,8 @@ async function v2ProviderSource(
 		| 'skill-icon-green-key-role-mask-v1'
 		| 'skill-icon-green-key-role-mask-v2'
 		| 'skill-icon-green-key-role-mask-v3'
-		| 'skill-icon-geometry-role-mask-v1' = 'skill-icon-green-key-role-mask-v1'
+		| 'skill-icon-geometry-role-mask-v1'
+		| 'skill-icon-geometry-role-mask-v2' = 'skill-icon-green-key-role-mask-v1'
 ): Promise<Buffer> {
 	const png = await sharp({
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -406,7 +415,8 @@ async function v2ProviderSource(
 		.toBuffer();
 	return profile === 'skill-icon-green-key-role-mask-v2' ||
 		profile === 'skill-icon-green-key-role-mask-v3' ||
-		profile === 'skill-icon-geometry-role-mask-v1'
+		profile === 'skill-icon-geometry-role-mask-v1' ||
+		profile === 'skill-icon-geometry-role-mask-v2'
 		? declareCabx(withoutPngChunk(png, 'pHYs'))
 		: declareSrgb(png);
 }
@@ -757,6 +767,45 @@ describe('persistSkillIconOutput', () => {
 			outputContentHash: createHash('sha256').update(retained).digest('hex')
 		});
 	}, 20_000);
+
+	it('persists strict-despill only through the complete profile-v5 and skill-v6 tuple', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-strict-geometry-mask-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		const profile = 'skill-icon-geometry-role-mask-v2' as const;
+		const source = await v2ProviderSource(profile);
+		await writeFile(sourcePath, source);
+		const packet = packetGeometryRoleMask(profile);
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+
+		await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath: packet.candidatePath,
+			expectedRole: 'backing',
+			geometry: geometryV2,
+			geometrySourceBytes: canonicalGeometryV2SourceBytes,
+			target: packet.target,
+			assignment: packet.assignment,
+			receivedAt: '2026-09-05T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, packet.target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toMatchObject({
+			profile,
+			outcome: 'completed',
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+			providerSource: { contentHash: sourceHash },
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: { chunkType: 'caBX' },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+		});
+	}, 30_000);
 
 	it('never replaces geometry-role-mask candidate or result paths', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-geometry-collision-'));

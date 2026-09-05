@@ -444,12 +444,42 @@ remain byte-identical, and no F-v6 packet exists.
 Attempted E-v6 remains immutable `revise` evidence and is not superseded. This slice creates no
 backing-v7, F-v6, F-v7, image, promotion, or finalizer output.
 
+### Task 5F: Add strict-despill normalization and issue revision-8 frame packets
+
+**Files:**
+
+- Modify: skill-icon contracts, normalizer, persistence, validation, composition, and promotion
+  consumers with focused tests
+- Modify: repository `summonlab-skill-icon-production` docs and Python validators/verifiers
+- Modify: cleanup packet exporter, cleanup result contract, and finalizer shared-layer mapping/tests
+- Generate: `rarity-frame-{e,d,c,b,a,s}-v8` target/assignment pairs
+- Generate: authority-bound `superseded` results for D/C/B/A/S revision-7 frame packets
+
+**Interfaces:**
+
+- Adds profile `skill-icon-geometry-role-mask-v2` paired only with
+  `summonlab-skill-icon-production-v6` on structural-v2 frame/backing packets.
+- Retains profile v4's exact envelope, `caBX`/assigned-sRGB provenance, geometry-v2/guide-v2
+  authority, alpha/unmatte math, mask clearing, gates, resize, and encoder.
+- Changes only profile v5's retained-green ceiling to
+  `max(foregroundRed, foregroundBlue)`; profiles v1-v4 keep byte-identical behavior.
+
+- [x] **Step 1: Add RED coverage for the exact tuple, strict despill, and every consumer**
+- [x] **Step 2: Implement profile v5/producer v6 without changing earlier profile behavior**
+- [x] **Step 3: Export exactly six v8 frame pairs with the unchanged v7 no-spill invariant**
+- [x] **Step 4: Point cleanup composition at backing-v6, F-v5, and E/D/C/B/A/S-v8**
+- [x] **Step 5: Coordinator-supersede only output-free D/C/B/A/S-v7 packets**
+
+Attempted E-v7 and E-v6 remain immutable `revise` evidence and are not superseded. This slice
+creates no backing-v8, F-v8, candidate image, promotion, or finalizer output and does not update the
+installed personal skill.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v7.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v7.json`
+- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v8.png`
+- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v8.json`
 - Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
 - Preserve: the successful `rarity-frame-f-v5` candidate and result
 - Create: the `charcoal-forged-stone-v6` candidate and result using the issued revision-6 packet
@@ -459,15 +489,16 @@ backing-v7, F-v6, F-v7, image, promotion, or finalizer output.
 
 **Interfaces:**
 
-- Consumes: six revision-7 frame assignments, the revision-6 backing assignment, the retained F
+- Consumes: six revision-8 frame assignments, the revision-6 backing assignment, the retained F
   revision-5 frame, and the complete cleanup manifest.
 - Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
 - [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-7 E/D/C/B/A/S frame and the revision-6
-backing packet, each binding `skill-icon-geometry-role-mask-v1` to
+Use `summonlab-skill-icon-production` once for each revision-8 E/D/C/B/A/S frame, binding
+`skill-icon-geometry-role-mask-v2` to `summonlab-skill-icon-production-v6`, and once for the
+revision-6 backing packet, binding `skill-icon-geometry-role-mask-v1` to
 `summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or successful F-v5 evidence.
 Each worker validates its exact target and assignment, submits the exact prompt, persists through
 `pnpm persist:skill-icon-output`, records full-size and 96-pixel findings, and writes only its

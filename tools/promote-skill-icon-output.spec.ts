@@ -765,14 +765,23 @@ async function installOrdinaryFrameV6(root: string) {
 async function installBackingV2Packet(
 	root: string,
 	mode: 'target-only' | 'candidate' | 'failed',
-	profile: 'v1' | 'v3' | 'geometry' = 'v1'
+	profile: 'v1' | 'v3' | 'geometry' | 'strict-geometry' = 'v1'
 ): Promise<{
 	readonly jobId: string;
 	readonly candidatePath: string;
 	readonly resultPath: string;
 }> {
-	const revision = profile === 'geometry' ? 6 : profile === 'v3' ? 4 : 2;
+	const revision =
+		profile === 'strict-geometry' ? 8 : profile === 'geometry' ? 6 : profile === 'v3' ? 4 : 2;
 	const usesGeometryV2 = profile !== 'v1';
+	const normalizationProfile =
+		profile === 'strict-geometry'
+			? 'skill-icon-geometry-role-mask-v2'
+			: profile === 'geometry'
+				? 'skill-icon-geometry-role-mask-v1'
+				: profile === 'v3'
+					? 'skill-icon-green-key-role-mask-v3'
+					: 'skill-icon-green-key-role-mask-v1';
 	const jobId = `charcoal-forged-stone-v${revision}`;
 	const logicalIdentity = 'charcoal-forged-stone';
 	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
@@ -826,12 +835,7 @@ async function installBackingV2Packet(
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output: { candidatePath, resultPath },
 		normalization: {
-			profile:
-				profile === 'geometry'
-					? 'skill-icon-geometry-role-mask-v1'
-					: profile === 'v3'
-						? 'skill-icon-green-key-role-mask-v3'
-						: 'skill-icon-green-key-role-mask-v1',
+			profile: normalizationProfile,
 			sourceContract: {
 				mediaType: 'image/png',
 				width: 1254,
@@ -860,19 +864,14 @@ async function installBackingV2Packet(
 		targetPath,
 		assignmentPath,
 		skillVersion:
-			profile === 'geometry'
-				? 'summonlab-skill-icon-production-v5'
-				: profile === 'v3'
-					? 'summonlab-skill-icon-production-v4'
-					: 'summonlab-skill-icon-production-v2',
-		normalization: {
-			profile:
-				profile === 'geometry'
-					? 'skill-icon-geometry-role-mask-v1'
+			profile === 'strict-geometry'
+				? 'summonlab-skill-icon-production-v6'
+				: profile === 'geometry'
+					? 'summonlab-skill-icon-production-v5'
 					: profile === 'v3'
-						? 'skill-icon-green-key-role-mask-v3'
-						: 'skill-icon-green-key-role-mask-v1'
-		},
+						? 'summonlab-skill-icon-production-v4'
+						: 'summonlab-skill-icon-production-v2',
+		normalization: { profile: normalizationProfile },
 		assignedAt: '2026-09-02T08:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: { candidatePath, resultPath },
@@ -910,12 +909,7 @@ async function installBackingV2Packet(
 		normalization:
 			mode === 'candidate'
 				? {
-						profile:
-							profile === 'geometry'
-								? 'skill-icon-geometry-role-mask-v1'
-								: profile === 'v3'
-									? 'skill-icon-green-key-role-mask-v3'
-									: 'skill-icon-green-key-role-mask-v1',
+						profile: normalizationProfile,
 						outcome: 'completed',
 						geometryHash,
 						providerSource: {
@@ -941,12 +935,7 @@ async function installBackingV2Packet(
 						outputContentHash: outputHash
 					}
 				: {
-						profile:
-							profile === 'geometry'
-								? 'skill-icon-geometry-role-mask-v1'
-								: profile === 'v3'
-									? 'skill-icon-green-key-role-mask-v3'
-									: 'skill-icon-green-key-role-mask-v1',
+						profile: normalizationProfile,
 						outcome: 'not-run',
 						geometryHash,
 						providerSource: null,
@@ -1287,6 +1276,21 @@ describe('promoteSkillIconOutput', () => {
 		});
 		expect(record).toMatchObject({
 			jobId: 'charcoal-forged-stone-v6',
+			role: 'backing',
+			candidate: { path: item.candidatePath, contentHash: item.hash }
+		});
+	});
+
+	it('promotes strict geometry-role-mask output only through skill-v6 and profile v5', async () => {
+		const item = await fixture('charcoal-forged-stone-v8');
+		await installBackingV2Packet(item.root, 'candidate', 'strict-geometry');
+		const record = await promoteSkillIconOutput({
+			jobId: 'charcoal-forged-stone-v8',
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			jobId: 'charcoal-forged-stone-v8',
 			role: 'backing',
 			candidate: { path: item.candidatePath, contentHash: item.hash }
 		});

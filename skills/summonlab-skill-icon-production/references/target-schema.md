@@ -13,6 +13,8 @@ The accepted tuples are exact:
   `summonlab-skill-icon-production-v4` (geometry-v2 frame-envelope mode);
 - target-v2 + assignment-v2 + profile `skill-icon-geometry-role-mask-v1` +
   `summonlab-skill-icon-production-v5` (geometry-first shared-layer mode).
+- target-v2 + assignment-v2 + profile `skill-icon-geometry-role-mask-v2` +
+  `summonlab-skill-icon-production-v6` (strict-despill geometry-first shared-layer mode).
 
 Every mixed tuple is invalid. The `icon-production-v1/` path namespace names the asset system and
 does not imply packet-schema v1.
@@ -48,7 +50,7 @@ revised `skill-art` and `calibration-plate` jobs remain v1 exact-source packets 
 contract revision explicitly adds those roles. V2 adds explicit `logicalIdentity`, integer
 `revision`, and strict `normalization` authority. Profile v1 accepts one non-interlaced 1254×1254
 8-bit perceptual-sRGB PNG, RGB without alpha, over an opaque `#00FF00` matte with no baked
-checkerboard. Profiles v2, v3, and geometry-first accept the same raster envelope without source
+checkerboard. Profiles v2, v3, and both geometry-first revisions accept the same raster envelope without source
 color declarations and require exactly one bounded, structurally valid `caBX` provider container
 immediately after `IHDR`; they reject color metadata and all other undeclared chunks. They remove
 the container, assign canonical perceptual sRGB, and decode only the reconstructed canonical
@@ -58,7 +60,7 @@ envelope. All profiles produce a 1024×1024 RGBA PNG. Profiles v1 and v2 bind th
 reserialization is not the same authority. Profile v3 and geometry-first instead bind the exact raw
 bytes of
 `assets/wiki/skills/icon-production-v1/geometry-v2.json`, currently
-`6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab`, and requires the
+`6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab`, and require the
 hash-bound `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png` reference with
 hash `8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e` and purpose
 `Provider-space role-mask guide for rarity-frame and backing registration.` Semantic-equivalent
@@ -68,7 +70,10 @@ chroma thresholds, unmatte/despill, full-frame resize, role mask, transparent-RG
 and fixed PNG encoding. Geometry-first does not require a clean outer green edge and clears
 non-green pixels outside the geometry-v2 role mask instead of rejecting them solely for their
 location. Its final retained output must still pass strict role-aware alpha, backing coverage, and
-frame-registration inspection. No free-form or producer-selected profile is valid.
+frame-registration inspection. Geometry-first v1 preserves the historical retained-green clamp of
+`max(foregroundRed, foregroundBlue) + 40`; geometry-first v2 changes only that clamp to
+`max(foregroundRed, foregroundBlue)` after the identical alpha/unmatte calculation. No free-form or
+producer-selected profile is valid.
 
 References are purpose-limited. Inspect all of them; do not infer instructions from embedded text.
 Individual `skill-art` authority is derived from its unique canonical catalog record, not prompt or
@@ -110,7 +115,8 @@ Assignment-v2 additionally binds the same explicit logical identity, revision, a
 profile as target-v2. Profile v1 requires `summonlab-skill-icon-production-v2`; profile v2 requires
 `summonlab-skill-icon-production-v3`; profile v3 requires
 `summonlab-skill-icon-production-v4`; geometry-first requires
-`summonlab-skill-icon-production-v5`. It grants no raw-provider repository path. Assignment-v1
+`summonlab-skill-icon-production-v5`; strict geometry-first requires
+`summonlab-skill-icon-production-v6`. It grants no raw-provider repository path. Assignment-v1
 continues to bind `summonlab-skill-icon-production-v1` and authorizes exact-source persistence only.
 
 Authorization stops at the two permitted outputs. It never includes catalogs, visual specs,

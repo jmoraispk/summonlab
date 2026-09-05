@@ -225,7 +225,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports the failed backing and six queued v5 layers while accepting the F-v5 candidate', async () => {
+	it('reports exactly the six queued strict-despill v8 frames while accepting retained shared layers', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -234,18 +234,17 @@ describe('skill-icon revision resolution', () => {
 		}
 		const diagnostics = message.split('\n');
 		expect(diagnostics).toEqual([
-			'references/rarity-frame-a-v5: missing result inventory entry',
-			'references/rarity-frame-b-v5: missing result inventory entry',
-			'references/rarity-frame-c-v5: missing result inventory entry',
-			'references/rarity-frame-d-v5: missing result inventory entry',
-			'references/rarity-frame-e-v5: missing result inventory entry',
-			'references/rarity-frame-s-v5: missing result inventory entry',
-			'backing latest revision v5 is failed (validation: Both allowed provider attempts were rejected by profile-v3 normalization: the corrected 1254px RGB source does not have a sufficiently clean #00FF00 edge matte.); create a higher revision'
+			'references/rarity-frame-a-v8: missing result inventory entry',
+			'references/rarity-frame-b-v8: missing result inventory entry',
+			'references/rarity-frame-c-v8: missing result inventory entry',
+			'references/rarity-frame-d-v8: missing result inventory entry',
+			'references/rarity-frame-e-v8: missing result inventory entry',
+			'references/rarity-frame-s-v8: missing result inventory entry'
 		]);
-		expect(diagnostics).toHaveLength(7);
-		expect(message).toMatch(/latest revision v5 is failed/iu);
-		expect(message).not.toMatch(/rarity-frame:F latest revision v4 is failed/iu);
+		expect(diagnostics).toHaveLength(6);
+		expect(message).not.toMatch(/latest revision v7 is revise/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
+		expect(message).not.toMatch(/backing.*missing result/iu);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);
 		expect(message).not.toMatch(/latest revision v1 is failed/iu);
 		expect(message).not.toMatch(/missing candidate/iu);

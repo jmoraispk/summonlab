@@ -283,6 +283,16 @@ all final alpha, coverage, registration, dimension, channel, container, and hash
 strict. The failed `charcoal-forged-stone-v5` result and all revision-5 packets remain immutable;
 the approved geometry-first route begins only at a separately authored higher revision.
 
+The additive successor `skill-icon-geometry-role-mask-v2` pairs only with
+`summonlab-skill-icon-production-v6` on structural-v2 rarity-frame/backing packets. It retains the
+profile-v4 provider envelope, `caBX`/assigned-sRGB provenance, geometry-v2/guide-v2 authorities,
+alpha extraction, mask clearing, validation gates, resize, and deterministic encoding. Its only
+pixel change is the post-unmatte retained-green clamp: v1 preserves
+`max(foregroundRed, foregroundBlue) + 40`, while v2 uses exactly
+`max(foregroundRed, foregroundBlue)`. The successor begins at the independently authored
+E/D/C/B/A/S revision-8 packets; all prior target, assignment, candidate, and result bytes remain
+historical evidence.
+
 Result provenance records pathless provider media properties and hashes, the raw geometry-file
 hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
 v1 Task 7 failures, F revision-2 caBX rejection, F revision-3 geometry rejection, and F revision-4

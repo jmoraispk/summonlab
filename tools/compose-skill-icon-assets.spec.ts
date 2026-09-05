@@ -270,7 +270,7 @@ async function installReferenceCandidatePacketV2(
 		readonly bytes: Buffer;
 		readonly rarity?: Exclude<CandidatePacket['rarity'], null>;
 		readonly revision?: number;
-		readonly profile?: 'v1' | 'v3' | 'geometry';
+		readonly profile?: 'v1' | 'v3' | 'geometry' | 'strict-geometry';
 	}
 ): Promise<CandidatePacket> {
 	const logicalIdentity =
@@ -287,6 +287,14 @@ async function installReferenceCandidatePacketV2(
 	const sourceHash = 'd'.repeat(64);
 	const profile = input.profile ?? 'v1';
 	const usesGeometryV2 = profile !== 'v1';
+	const normalizationProfile =
+		profile === 'strict-geometry'
+			? 'skill-icon-geometry-role-mask-v2'
+			: profile === 'geometry'
+				? 'skill-icon-geometry-role-mask-v1'
+				: profile === 'v3'
+					? 'skill-icon-green-key-role-mask-v3'
+					: 'skill-icon-green-key-role-mask-v1';
 	const exactPrompt = `Paint ${logicalIdentity} over an opaque #00FF00 matte with no baked checkerboard.`;
 	const references = usesGeometryV2
 		? [
@@ -318,12 +326,7 @@ async function installReferenceCandidatePacketV2(
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output,
 		normalization: {
-			profile:
-				profile === 'geometry'
-					? 'skill-icon-geometry-role-mask-v1'
-					: profile === 'v3'
-						? 'skill-icon-green-key-role-mask-v3'
-						: 'skill-icon-green-key-role-mask-v1',
+			profile: normalizationProfile,
 			sourceContract: {
 				mediaType: 'image/png',
 				width: 1254,
@@ -356,19 +359,14 @@ async function installReferenceCandidatePacketV2(
 		targetPath,
 		assignmentPath,
 		skillVersion:
-			profile === 'geometry'
-				? 'summonlab-skill-icon-production-v5'
-				: profile === 'v3'
-					? 'summonlab-skill-icon-production-v4'
-					: 'summonlab-skill-icon-production-v2',
-		normalization: {
-			profile:
-				profile === 'geometry'
-					? 'skill-icon-geometry-role-mask-v1'
+			profile === 'strict-geometry'
+				? 'summonlab-skill-icon-production-v6'
+				: profile === 'geometry'
+					? 'summonlab-skill-icon-production-v5'
 					: profile === 'v3'
-						? 'skill-icon-green-key-role-mask-v3'
-						: 'skill-icon-green-key-role-mask-v1'
-		},
+						? 'summonlab-skill-icon-production-v4'
+						: 'summonlab-skill-icon-production-v2',
+		normalization: { profile: normalizationProfile },
 		assignedAt: '2026-09-02T08:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: output,
@@ -392,12 +390,7 @@ async function installReferenceCandidatePacketV2(
 		promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
 		referenceInputs: references.map(({ path, contentHash }) => ({ path, contentHash })),
 		normalization: {
-			profile:
-				profile === 'geometry'
-					? 'skill-icon-geometry-role-mask-v1'
-					: profile === 'v3'
-						? 'skill-icon-green-key-role-mask-v3'
-						: 'skill-icon-green-key-role-mask-v1',
+			profile: normalizationProfile,
 			outcome: 'completed',
 			geometryHash: usesGeometryV2
 				? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
@@ -1006,6 +999,33 @@ describe('exportSkillRuntimeSet', () => {
 		const geometryPath = path.join(root, SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH);
 		await writeFile(geometryPath, Buffer.concat([await readFile(geometryPath), Buffer.from('\n')]));
 		await expect(request()).rejects.toThrow(/geometry hash.*charcoal-forged-stone-v6/iu);
+	}, 30_000);
+
+	it('composes strict geometry-role-mask references only through skill-v6 and profile v5', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		const latest = await installReferenceCandidatePacketV2(root, {
+			role: 'backing',
+			bytes: await validBacking([65, 68, 75]),
+			revision: 8,
+			profile: 'strict-geometry'
+		});
+		await installAcceptedReference(root, latest, SKILL_ICON_BACKING_MASTER_PATH);
+		const artPath =
+			'assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-swordsmanship.png';
+		await mkdir(path.dirname(path.join(root, artPath)), { recursive: true });
+		await writeFile(path.join(root, artPath), await validArt('#22c55e'));
+
+		await expect(
+			exportSkillRuntimeSet(
+				{
+					targetId: 'martial:blade:swordsmanship',
+					rarity: 'F',
+					assets: { approvedMaster: { path: artPath } }
+				},
+				root
+			)
+		).rejects.toThrow(/standalone derivative writes are disabled|coordinator transaction/iu);
 	}, 30_000);
 
 	it('composes only from the latest reviewed reprocessed frame with live origin authority', async () => {

@@ -1097,6 +1097,10 @@ describe('skill-icon production contracts', () => {
 			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-geometry-role-mask-v1')
 				.success
 		).toBe(true);
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-geometry-role-mask-v2')
+				.success
+		).toBe(true);
 
 		const v2JobId = 'rarity-frame-f-v3';
 		const v2Paths = ownedPaths('references', v2JobId);
@@ -1179,7 +1183,8 @@ describe('skill-icon production contracts', () => {
 		for (const skillVersion of [
 			'summonlab-skill-icon-production-v2',
 			'summonlab-skill-icon-production-v3',
-			'summonlab-skill-icon-production-v4'
+			'summonlab-skill-icon-production-v4',
+			'summonlab-skill-icon-production-v6'
 		] as const) {
 			expect(
 				SkillIconAssignmentV2Schema.safeParse({ ...geometryFirstAssignment, skillVersion }).success
@@ -1193,6 +1198,36 @@ describe('skill-icon production contracts', () => {
 			expect(
 				SkillIconAssignmentV2Schema.safeParse({
 					...geometryFirstAssignment,
+					normalization: { profile }
+				}).success
+			).toBe(false);
+		}
+
+		const strictGeometryAssignment = {
+			...v1Assignment,
+			skillVersion: 'summonlab-skill-icon-production-v6' as const,
+			normalization: { profile: 'skill-icon-geometry-role-mask-v2' as const }
+		};
+		expect(SkillIconAssignmentV2Schema.safeParse(strictGeometryAssignment).success).toBe(true);
+		for (const skillVersion of [
+			'summonlab-skill-icon-production-v2',
+			'summonlab-skill-icon-production-v3',
+			'summonlab-skill-icon-production-v4',
+			'summonlab-skill-icon-production-v5'
+		] as const) {
+			expect(
+				SkillIconAssignmentV2Schema.safeParse({ ...strictGeometryAssignment, skillVersion }).success
+			).toBe(false);
+		}
+		for (const profile of [
+			'skill-icon-green-key-role-mask-v1',
+			'skill-icon-green-key-role-mask-v2',
+			'skill-icon-green-key-role-mask-v3',
+			'skill-icon-geometry-role-mask-v1'
+		] as const) {
+			expect(
+				SkillIconAssignmentV2Schema.safeParse({
+					...strictGeometryAssignment,
 					normalization: { profile }
 				}).success
 			).toBe(false);
@@ -1727,6 +1762,73 @@ describe('skill-icon production contracts', () => {
 				false
 			);
 		}
+
+		const strictJobId = 'rarity-frame-f-v8';
+		const strictPaths = ownedPaths('references', strictJobId);
+		const strictTarget = {
+			...geometryTarget,
+			jobId: strictJobId,
+			revision: 8,
+			output: strictPaths,
+			normalization: {
+				...geometryTarget.normalization,
+				profile: 'skill-icon-geometry-role-mask-v2' as const
+			}
+		};
+		const strictAssignment = {
+			...geometryAssignment,
+			assignmentId: `assignment-${strictJobId}`,
+			jobId: strictJobId,
+			revision: 8,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${strictJobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${strictJobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v6' as const,
+			normalization: { profile: 'skill-icon-geometry-role-mask-v2' as const },
+			permittedOutputs: strictPaths
+		};
+		const strictResult = {
+			...geometryResult,
+			resultId: `result-${strictJobId}`,
+			jobId: strictJobId,
+			revision: 8,
+			assignmentId: strictAssignment.assignmentId,
+			normalization: {
+				...geometryResult.normalization,
+				profile: 'skill-icon-geometry-role-mask-v2' as const
+			},
+			output: { ...geometryResult.output, path: strictPaths.candidatePath },
+			resultPath: strictPaths.resultPath,
+			writtenOutputPaths: [strictPaths.candidatePath, strictPaths.resultPath] as const
+		};
+		const strictExecution = {
+			schemaVersion: 'skill-icon-execution-v2' as const,
+			target: strictTarget,
+			assignment: strictAssignment,
+			result: strictResult
+		};
+
+		expect(SkillIconTargetV2Schema.safeParse(strictTarget).success).toBe(true);
+		expect(SkillIconAssignmentV2Schema.safeParse(strictAssignment).success).toBe(true);
+		expect(SkillIconResultV2Schema.safeParse(strictResult).success).toBe(true);
+		expect(SkillIconExecutionV2Schema.safeParse(strictExecution).success).toBe(true);
+		expect(
+			SkillIconAssignmentV2Schema.safeParse({
+				...strictAssignment,
+				skillVersion: 'summonlab-skill-icon-production-v5'
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...strictExecution,
+				result: {
+					...strictResult,
+					normalization: {
+						...strictResult.normalization,
+						profile: 'skill-icon-geometry-role-mask-v1'
+					}
+				}
+			}).success
+		).toBe(false);
 	});
 
 	it('continues parsing every committed structural-v2 target against its raw guide bytes', () => {
@@ -1747,7 +1849,7 @@ describe('skill-icon production contracts', () => {
 			const parsingError = parsed.success ? '' : parsed.error.message;
 			expect(parsed.success, `${filename}: ${parsingError}`).toBe(true);
 		}
-		expect(structuralV2Count).toBe(31);
+		expect(structuralV2Count).toBe(50);
 	});
 
 	it('records an unattempted superseded packet only against stronger raw authority', () => {

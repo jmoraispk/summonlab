@@ -11,7 +11,9 @@ Dispatch is packet-scoped: green-key `rarity-frame` and `backing` targets using 
 profile v1 require `summonlab-skill-icon-production-v2`; profile v2 targets require
 `summonlab-skill-icon-production-v3`; profile v3 targets require
 `summonlab-skill-icon-production-v4`; geometry-first profile
-`skill-icon-geometry-role-mask-v1` targets require `summonlab-skill-icon-production-v5`.
+`skill-icon-geometry-role-mask-v1` targets require `summonlab-skill-icon-production-v5`; strict
+geometry-first profile `skill-icon-geometry-role-mask-v2` targets require
+`summonlab-skill-icon-production-v6`.
 `skill-art` and `calibration-plate` jobs remain on
 `summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
 Exact-source packets retain exact provider bytes.
@@ -57,13 +59,16 @@ must be absent at preflight.
    resize, key, mask, recolor, copy, or otherwise normalize it. For normalized `rarity-frame` and
    `backing` packets, the helper alone validates the profile-pinned provider envelope, performs the
    role mask and resize inside its exclusive transaction, and writes the canonical candidate.
-   Profiles v2, v3, and geometry-first admit only one bounded, valid `caBX` immediately after
+   Profiles v2, v3, and both geometry-first revisions admit only one bounded, valid `caBX` immediately after
    `IHDR`, record its pathless payload evidence, remove it, construct the canonical assigned-sRGB
    decoder input, and bind both the full original-provider and decoder-input hashes. Profile v3 and
    geometry-first bind geometry v2 and its matching guide; their result provenance is otherwise
    identical to profile v2. Geometry-first alone permits imperfect green edges and non-green pixels
    outside the authorized role mask, which the helper deterministically clears. It does not relax
    the envelope, in-mask checkerboard, output alpha, backing coverage, or frame-registration gates.
+   Geometry-first v1 preserves the historical `max(red, blue) + 40` retained-green ceiling.
+   Geometry-first v2 alone clamps retained green to `max(red, blue)` after the same alpha/unmatte
+   calculation; it does not change red, blue, alpha, masking, validation, or encoder behavior.
    Exact-source `skill-art`,
    `calibration-plate`, and compatibility frame/backing packets retain exact selected provider
    bytes.

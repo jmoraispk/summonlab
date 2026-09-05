@@ -77,7 +77,19 @@ exactly `rarity-frame-{e,d,c,b,a,s}-v7` with the same structural-v2 geometry-fir
 no-spill prompt invariant requiring hard clean material edges against the green matte. Only the five
 output-free D/C/B/A/S-v6 packets receive coordinator-authenticated `superseded` results bound to
 their exact v7 target and assignment bytes. E-v6 is never superseded. Cleanup composition therefore
-uses backing-v6, F-v5, and E/D/C/B/A/S-v7.
+temporarily targeted backing-v6, F-v5, and E/D/C/B/A/S-v7.
+
+The attempted E-v7 frame also retained a thin visible green trace, so its candidate and `revise`
+result remain immutable. The additive successor route is exactly
+`skill-icon-geometry-role-mask-v2` + `summonlab-skill-icon-production-v6`. It retains profile v4's
+1254 RGB `caBX`/assigned-sRGB envelope, geometry-v2/guide-v2 authority, alpha/unmatte calculation,
+geometry-first mask clearing, contamination/checker gates, role validation, resize, and encoding.
+Only its post-unmatte green ceiling changes, from `max(foregroundRed, foregroundBlue) + 40` to
+`max(foregroundRed, foregroundBlue)`. The recovery inventory issues exactly
+`rarity-frame-{e,d,c,b,a,s}-v8` with the v7 no-spill prompt invariant unchanged. Only the five
+output-free D/C/B/A/S-v7 packets are coordinator-superseded against their matching v8 bytes;
+attempted E-v7 and E-v6 are not superseded. Cleanup composition now uses backing-v6, F-v5, and
+E/D/C/B/A/S-v8. No backing-v8 or F-v8 packet exists.
 
 ### 2. Deterministic whole-catalog recomposition
 

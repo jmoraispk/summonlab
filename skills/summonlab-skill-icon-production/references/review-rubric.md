@@ -9,7 +9,9 @@ it. Profile v3 uses only its hash-bound geometry-v2 guide for the expanded frame
 unchanged backing aperture. Geometry-first uses the same guide and mask but permits imperfect green
 edges or non-green/checker pixels wholly outside that mask; the helper clears those pixels
 deterministically and still rejects a checker inside retained role content. Then let the helper
-normalize it. V1 `skill-art` and
+normalize it. Strict geometry-first additionally removes retained green dominance by clamping green
+to the larger of retained red and blue; visible green fringe is a failure, not a manual-repair
+opportunity. V1 `skill-art` and
 `calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
 at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
 for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either

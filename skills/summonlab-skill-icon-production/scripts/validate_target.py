@@ -42,17 +42,24 @@ PROTOCOLS = {
         "skill-icon-assignment-v2",
         "summonlab-skill-icon-production-v5",
     ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v6",
+    ): "skill-icon-execution-v2",
 }
 NORMALIZATION_SKILL_VERSIONS = {
     "skill-icon-green-key-role-mask-v1": "summonlab-skill-icon-production-v2",
     "skill-icon-green-key-role-mask-v2": "summonlab-skill-icon-production-v3",
     "skill-icon-green-key-role-mask-v3": "summonlab-skill-icon-production-v4",
     "skill-icon-geometry-role-mask-v1": "summonlab-skill-icon-production-v5",
+    "skill-icon-geometry-role-mask-v2": "summonlab-skill-icon-production-v6",
 }
 PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
 PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
 PROFILE_V3 = "skill-icon-green-key-role-mask-v3"
 PROFILE_V4 = "skill-icon-geometry-role-mask-v1"
+PROFILE_V5 = "skill-icon-geometry-role-mask-v2"
 REPROCESS_PACKET_SCHEMA_VERSIONS = frozenset(
     {
         "skill-icon-reprocess-target-v1",
@@ -70,6 +77,7 @@ NORMALIZATION_GEOMETRY_AUTHORITIES = {
     PROFILE_V2: (GEOMETRY_PATH, GEOMETRY_HASH),
     PROFILE_V3: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
     PROFILE_V4: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+    PROFILE_V5: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
 }
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
@@ -519,7 +527,7 @@ def _require_geometry_v2_guide_authority(target: dict[str, Any]) -> None:
     normalization = target.get("normalization")
     if (
         not isinstance(normalization, dict)
-        or normalization.get("profile") not in {PROFILE_V3, PROFILE_V4}
+        or normalization.get("profile") not in {PROFILE_V3, PROFILE_V4, PROFILE_V5}
     ):
         return
     matches = [

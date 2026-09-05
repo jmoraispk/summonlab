@@ -21,13 +21,15 @@ export const SKILL_ICON_NORMALIZATION_PROFILE_V1 = 'skill-icon-green-key-role-ma
 export const SKILL_ICON_NORMALIZATION_PROFILE_V2 = 'skill-icon-green-key-role-mask-v2' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V3 = 'skill-icon-green-key-role-mask-v3' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V4 = 'skill-icon-geometry-role-mask-v1' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V5 = 'skill-icon-geometry-role-mask-v2' as const;
 /** Compatibility alias for the original, default profile. */
 export const SKILL_ICON_NORMALIZATION_PROFILE = SKILL_ICON_NORMALIZATION_PROFILE_V1;
 export type SkillIconNormalizationProfile =
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V1
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
-	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4;
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5;
 export const SKILL_ICON_PROVIDER_SIZE = 1254;
 export const SKILL_ICON_PROVIDER_MATTE = '#00FF00' as const;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE = 12;
@@ -107,11 +109,19 @@ export interface SkillIconNormalizationEvidenceV4 extends SkillIconNormalization
 	readonly colorSpaceDisposition: 'assigned-srgb';
 }
 
+export interface SkillIconNormalizationEvidenceV5 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V5;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: SkillIconNormalizationEvidenceV2['containerBox'];
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
 export type SkillIconNormalizationEvidence =
 	| SkillIconNormalizationEvidenceV1
 	| SkillIconNormalizationEvidenceV2
 	| SkillIconNormalizationEvidenceV3
-	| SkillIconNormalizationEvidenceV4;
+	| SkillIconNormalizationEvidenceV4
+	| SkillIconNormalizationEvidenceV5;
 
 export interface NormalizedSkillIconProviderSource<
 	Normalization extends SkillIconNormalizationEvidence = SkillIconNormalizationEvidence
@@ -179,18 +189,28 @@ function isProviderCompatibleProfile(
 ): profile is
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
-	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4 {
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5 {
 	return (
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5
 	);
 }
 
 function usesGeometryV2Profile(profile: SkillIconNormalizationProfile): boolean {
 	return (
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5
+	);
+}
+
+function usesGeometryFirstProfile(profile: SkillIconNormalizationProfile): boolean {
+	return (
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5
 	);
 }
 
@@ -1087,6 +1107,12 @@ export function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V5
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV5>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
 	profile: SkillIconNormalizationProfile
 ): Promise<NormalizedSkillIconProviderSource>;
 export async function normalizeSkillIconProviderSource(
@@ -1105,7 +1131,8 @@ export async function normalizeSkillIconProviderSource(
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V1 &&
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 &&
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V3 &&
-		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4 &&
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V5
 	)
 		throw new Error('Unsupported skill-icon normalization profile');
 	const envelope = assertCanonicalProviderPngEnvelope(sourceSnapshot, profile);
@@ -1162,7 +1189,7 @@ export async function normalizeSkillIconProviderSource(
 		.removeAlpha()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
-	if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+	if (!usesGeometryFirstProfile(profile)) {
 		assertNoBakedCheckerboard(decoded.data);
 		assertProviderMatte(
 			decoded.data,
@@ -1180,7 +1207,7 @@ export async function normalizeSkillIconProviderSource(
 		decoded.info.width,
 		decoded.info.height
 	);
-	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+	if (usesGeometryFirstProfile(profile)) {
 		assertNoRetainedRoleStrongMatte(
 			decoded.data,
 			decoded.info.width,
@@ -1216,7 +1243,9 @@ export async function normalizeSkillIconProviderSource(
 		const foregroundRed = alpha === 0 ? 0 : unmatte(red, 0);
 		const foregroundGreen = alpha === 0 ? 0 : unmatte(green, 255);
 		const foregroundBlue = alpha === 0 ? 0 : unmatte(blue, 0);
-		const spillCeiling = Math.max(foregroundRed, foregroundBlue) + 40;
+		const spillCeiling =
+			Math.max(foregroundRed, foregroundBlue) +
+			(profile === SKILL_ICON_NORMALIZATION_PROFILE_V5 ? 0 : 40);
 		rgba[outputOffset] = foregroundRed;
 		rgba[outputOffset + 1] = alpha === 0 ? 0 : Math.min(foregroundGreen, spillCeiling);
 		rgba[outputOffset + 2] = foregroundBlue;
@@ -1246,7 +1275,7 @@ export async function normalizeSkillIconProviderSource(
 		roleMask,
 		profile
 	);
-	if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4)
+	if (!usesGeometryFirstProfile(profile))
 		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	let visiblePixels = 0;
 	for (let y = 0; y < geometry.canvas.height; y += 1) {
@@ -1260,7 +1289,7 @@ export async function normalizeSkillIconProviderSource(
 			} else visiblePixels += 1;
 		}
 	}
-	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4)
+	if (usesGeometryFirstProfile(profile))
 		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	if (visiblePixels === 0) throw new Error('Provider source contains no visible role content');
 	const outputBytes = await sharp(resized, {
@@ -1274,7 +1303,7 @@ export async function normalizeSkillIconProviderSource(
 			progressive: false
 		})
 		.toBuffer();
-	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+	if (usesGeometryFirstProfile(profile)) {
 		const inspection = await inspectSkillIconAsset(outputBytes, role, geometry);
 		if (inspection.violations.length > 0)
 			throw new Error(

@@ -55,6 +55,7 @@ import {
 	SKILL_ICON_NORMALIZATION_PROFILE_V2,
 	SKILL_ICON_NORMALIZATION_PROFILE_V3,
 	SKILL_ICON_NORMALIZATION_PROFILE_V4,
+	SKILL_ICON_NORMALIZATION_PROFILE_V5,
 	type SkillIconProviderSourceEvidence
 } from './normalize-skill-icon-provider-source.js';
 import {
@@ -2255,7 +2256,8 @@ function parseGeometryForTarget(
 	const source = JSON.parse(geometrySourceBytes.toString('utf8')) as unknown;
 	return target.schemaVersion === 'skill-icon-target-v2' &&
 		(target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
-			target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V4)
+			target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
+			target.normalization.profile === SKILL_ICON_NORMALIZATION_PROFILE_V5)
 		? SkillIconGeometryV2Schema.parse(source)
 		: SkillIconGeometrySchema.parse(source);
 }
@@ -2316,7 +2318,8 @@ async function persistSkillIconOutputBoundWithAuthorities(
 			[SKILL_ICON_NORMALIZATION_PROFILE_V1]: 'summonlab-skill-icon-production-v2',
 			[SKILL_ICON_NORMALIZATION_PROFILE_V2]: 'summonlab-skill-icon-production-v3',
 			[SKILL_ICON_NORMALIZATION_PROFILE_V3]: 'summonlab-skill-icon-production-v4',
-			[SKILL_ICON_NORMALIZATION_PROFILE_V4]: 'summonlab-skill-icon-production-v5'
+			[SKILL_ICON_NORMALIZATION_PROFILE_V4]: 'summonlab-skill-icon-production-v5',
+			[SKILL_ICON_NORMALIZATION_PROFILE_V5]: 'summonlab-skill-icon-production-v6'
 		}[target.normalization.profile];
 		if (assignmentV2.skillVersion !== expectedSkillVersion)
 			throw new Error(

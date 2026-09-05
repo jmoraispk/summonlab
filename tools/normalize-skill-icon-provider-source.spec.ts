@@ -35,6 +35,7 @@ const geometryV2Bytes = await readFile('assets/wiki/skills/icon-production-v1/ge
 const geometryV2 = SkillIconGeometryV2Schema.parse(JSON.parse(geometryV2Bytes.toString('utf8')));
 const execFileAsync = promisify(execFile);
 const geometryRoleMaskProfile = 'skill-icon-geometry-role-mask-v1' as const;
+const strictGeometryRoleMaskProfile = 'skill-icon-geometry-role-mask-v2' as const;
 
 function crc32(bytes: Buffer): number {
 	let crc = 0xffffffff;
@@ -658,6 +659,129 @@ describe('skill-icon provider normalization', () => {
 			violations: []
 		});
 	}, 40_000);
+
+	it('strict geometry-role-mask removes retained green dominance without changing profile-v4 bytes', async () => {
+		const source = await literalGeometryFirstSource(
+			'<polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372" fill="#607870"/>'
+		);
+		const profileV4 = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		const profileV4Again = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		const profileV5 = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			strictGeometryRoleMaskProfile
+		);
+
+		expect(profileV4Again.bytes).toEqual(profileV4.bytes);
+		expect(profileV5.normalization.profile).toBe(strictGeometryRoleMaskProfile);
+		const profileV4Pixels = await sharp(profileV4.bytes).ensureAlpha().raw().toBuffer();
+		const profileV5Pixels = await sharp(profileV5.bytes).ensureAlpha().raw().toBuffer();
+		const center = (512 * 1024 + 512) * 4;
+		expect([...profileV4Pixels.subarray(center, center + 4)]).toEqual([96, 120, 112, 255]);
+		expect([...profileV5Pixels.subarray(center, center + 4)]).toEqual([96, 112, 112, 255]);
+		expect(profileV5Pixels[center]).toBe(profileV4Pixels[center]);
+		expect(profileV5Pixels[center + 2]).toBe(profileV4Pixels[center + 2]);
+		let strictAntialiasedEdgePixels = 0;
+		let unchangedChannelMismatches = 0;
+		for (let offset = 0; offset < profileV4Pixels.length; offset += 4) {
+			if (
+				profileV5Pixels[offset] !== profileV4Pixels[offset] ||
+				profileV5Pixels[offset + 2] !== profileV4Pixels[offset + 2] ||
+				profileV5Pixels[offset + 3] !== profileV4Pixels[offset + 3]
+			)
+				unchangedChannelMismatches += 1;
+			const alpha = profileV4Pixels[offset + 3] ?? 0;
+			if (
+				alpha > 8 &&
+				alpha < 255 &&
+				(profileV4Pixels[offset + 1] ?? 0) >
+					Math.max(profileV4Pixels[offset] ?? 0, profileV4Pixels[offset + 2] ?? 0) &&
+				(profileV5Pixels[offset + 1] ?? 0) <=
+					Math.max(profileV5Pixels[offset] ?? 0, profileV5Pixels[offset + 2] ?? 0)
+			)
+				strictAntialiasedEdgePixels += 1;
+		}
+		expect(unchangedChannelMismatches).toBe(0);
+		expect(strictAntialiasedEdgePixels).toBeGreaterThan(0);
+		expect(
+			(await inspectSkillIconAsset(profileV5.bytes, 'backing', geometryV2)).violations
+		).toEqual([]);
+	}, 40_000);
+
+	it('strict geometry-role-mask retains the approved frame-material palette', async () => {
+		const materials = [
+			['bronze', '#8f6a42', [143, 106, 66, 255]],
+			['silver', '#aeb4ba', [174, 180, 186, 255]],
+			['amethyst', '#5f477a', [95, 71, 122, 255]],
+			['electrum', '#d1b878', [209, 184, 120, 255]],
+			['gold', '#c79a42', [199, 154, 66, 255]],
+			['dark-metal', '#34383e', [52, 56, 62, 255]]
+		] as const;
+		const strips = materials
+			.map(
+				([name, color], index) =>
+					`<rect data-material="${name}" x="${147 + index * 160}" y="98" width="160" height="1058" fill="${color}"/>`
+			)
+			.join('');
+		const source = await literalGeometryFirstSource(
+			`<defs><clipPath id="palette-aperture"><polygon points="627,98 1107,372 1107,882 627,1156 147,882 147,372"/></clipPath></defs><g clip-path="url(#palette-aperture)">${strips}</g>`
+		);
+		const normalized = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			strictGeometryRoleMaskProfile
+		);
+		const pixels = await sharp(normalized.bytes).ensureAlpha().raw().toBuffer();
+		for (const [index, [name, , expected]] of materials.entries()) {
+			const x = Math.round((227 + index * 160) * (1024 / 1254));
+			const offset = (512 * 1024 + x) * 4;
+			expect([...pixels.subarray(offset, offset + 4)], name).toEqual(expected);
+		}
+		expect(
+			(await inspectSkillIconAsset(normalized.bytes, 'backing', geometryV2)).violations
+		).toEqual([]);
+	}, 40_000);
+
+	it('strict geometry-role-mask retains every geometry-first contamination and role gate', async () => {
+		await expect(
+			normalizeSkillIconProviderSource(
+				await literalGeometryFirstBackingSource(
+					'<rect x="540" y="540" width="174" height="174" fill="#00ff00"/>'
+				),
+				'backing',
+				geometryV2Bytes,
+				strictGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/strong.*matte.*retained role|retained role.*strong.*matte/iu);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await dirtyEdgeBackingSource('<circle cx="627" cy="627" r="48" fill="#292c33"/>'),
+				'backing',
+				geometryV2Bytes,
+				strictGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/backing|coverage|role/iu);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await dirtyEdgeBackingSource('<circle cx="627" cy="160" r="48" fill="#292c33"/>'),
+				'rarity-frame',
+				geometryV2Bytes,
+				strictGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/frame|registration|coverage|role/iu);
+	}, 60_000);
 
 	it('geometry-first accepts a literal sparse six-edge frame under profile v4', async () => {
 		const source = await literalGeometryFirstSource(

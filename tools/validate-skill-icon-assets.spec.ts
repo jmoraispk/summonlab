@@ -229,6 +229,20 @@ function targetGeometryRoleMask(
 	};
 }
 
+function targetStrictGeometryRoleMask(
+	revision = 8,
+	rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+) {
+	const target = targetV3(revision, rawGeometryHash);
+	return {
+		...target,
+		normalization: {
+			...target.normalization,
+			profile: 'skill-icon-geometry-role-mask-v2' as const
+		}
+	};
+}
+
 function rarityFrameTargetV2(rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S') {
 	const logicalIdentity = `rarity-frame-${rarity.toLowerCase()}`;
 	const jobId = `${logicalIdentity}-v2`;
@@ -248,6 +262,7 @@ type TestTarget =
 	| ReturnType<typeof targetV2>
 	| ReturnType<typeof targetV3>
 	| ReturnType<typeof targetGeometryRoleMask>
+	| ReturnType<typeof targetStrictGeometryRoleMask>
 	| ReturnType<typeof rarityFrameTargetV2>;
 
 function assignment(target: TestTarget) {
@@ -267,13 +282,15 @@ function assignment(target: TestTarget) {
 		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${target.jobId}.json`,
 		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`,
 		skillVersion:
-			profile === 'skill-icon-geometry-role-mask-v1'
-				? 'summonlab-skill-icon-production-v5'
-				: profile === 'skill-icon-green-key-role-mask-v3'
-					? 'summonlab-skill-icon-production-v4'
-					: v2
-						? 'summonlab-skill-icon-production-v2'
-						: 'summonlab-skill-icon-production-v1',
+			profile === 'skill-icon-geometry-role-mask-v2'
+				? 'summonlab-skill-icon-production-v6'
+				: profile === 'skill-icon-geometry-role-mask-v1'
+					? 'summonlab-skill-icon-production-v5'
+					: profile === 'skill-icon-green-key-role-mask-v3'
+						? 'summonlab-skill-icon-production-v4'
+						: v2
+							? 'summonlab-skill-icon-production-v2'
+							: 'summonlab-skill-icon-production-v1',
 		assignedAt: '2026-09-02T00:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: target.output,
@@ -325,7 +342,8 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 						},
 						sourceContentHash: 'b'.repeat(64),
 						...(profile === 'skill-icon-green-key-role-mask-v3' ||
-						profile === 'skill-icon-geometry-role-mask-v1'
+						profile === 'skill-icon-geometry-role-mask-v1' ||
+						profile === 'skill-icon-geometry-role-mask-v2'
 							? {
 									decoderInputContentHash: 'c'.repeat(64),
 									containerBox: {
@@ -388,7 +406,8 @@ function failedResult(target: TestTarget) {
 						providerSource: null,
 						sourceContentHash: null,
 						...(profile === 'skill-icon-green-key-role-mask-v3' ||
-						profile === 'skill-icon-geometry-role-mask-v1'
+						profile === 'skill-icon-geometry-role-mask-v1' ||
+						profile === 'skill-icon-geometry-role-mask-v2'
 							? {
 									decoderInputContentHash: null,
 									containerBox: null,
@@ -1023,6 +1042,27 @@ describe('validateSkillIconAssets revision authority', () => {
 		const mixed = assignment(target) as Record<string, unknown>;
 		mixed.skillVersion = 'summonlab-skill-icon-production-v4';
 		mixed.normalization = { profile: 'skill-icon-green-key-role-mask-v3' };
+		await writeFile(assignmentPath, JSON.stringify(mixed));
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/invalid assignment\/result evidence|normalization|profile/iu
+		);
+	}, 15_000);
+
+	it('validates strict geometry-role-mask only through skill-v6 and geometry-v2 authorities', async () => {
+		const root = await revisionTestRoot();
+		const target = targetStrictGeometryRoleMask();
+		const candidate = await validBacking();
+		await writeExecution(root, target, candidateResult(target, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+
+		const assignmentPath = path.join(
+			root,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`
+		);
+		const mixed = assignment(target) as Record<string, unknown>;
+		mixed.skillVersion = 'summonlab-skill-icon-production-v5';
+		mixed.normalization = { profile: 'skill-icon-geometry-role-mask-v1' };
 		await writeFile(assignmentPath, JSON.stringify(mixed));
 		await expect(validateSkillIconAssets(root)).rejects.toThrow(
 			/invalid assignment\/result evidence|normalization|profile/iu

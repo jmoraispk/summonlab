@@ -735,6 +735,7 @@ class SkillIconVerifierTests(unittest.TestCase):
             "summonlab-skill-icon-production-v2",
             "summonlab-skill-icon-production-v3",
             "summonlab-skill-icon-production-v4",
+            "summonlab-skill-icon-production-v6",
         ):
             with self.subTest(skill_version=skill_version):
                 self.packet.assignment["skillVersion"] = skill_version
@@ -764,6 +765,42 @@ class SkillIconVerifierTests(unittest.TestCase):
                 self.packet.root,
                 contract_root=REPOSITORY_ROOT,
             )
+
+    def test_strict_geometry_role_mask_accepts_only_skill_v6_geometry_v2_and_exact_guide(
+        self,
+    ) -> None:
+        profile = "skill-icon-geometry-role-mask-v2"
+        self._prepare_v2_result_only_failure(
+            profile=profile,
+            skill_version="summonlab-skill-icon-production-v6",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        normalization = self.packet.result["normalization"]
+        assert isinstance(normalization, dict)
+        self.assertEqual(normalization["profile"], profile)
+        self.assertEqual(normalization["geometryHash"], GEOMETRY_V2_HASH)
+        self.assertIsNone(normalization["decoderInputContentHash"])
+        self.assertIsNone(normalization["containerBox"])
+        self.assertIsNone(normalization["colorSpaceDisposition"])
+
+        for skill_version in (
+            "summonlab-skill-icon-production-v2",
+            "summonlab-skill-icon-production-v3",
+            "summonlab-skill-icon-production-v4",
+            "summonlab-skill-icon-production-v5",
+        ):
+            with self.subTest(skill_version=skill_version):
+                self.packet.assignment["skillVersion"] = skill_version
+                with self.assertRaisesRegex(
+                    ValueError, "contract validation failed|skill version"
+                ):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        contract_root=REPOSITORY_ROOT,
+                    )
 
     def test_rejects_extra_written_paths(self) -> None:
         written = self.packet.result["writtenOutputPaths"]
@@ -1098,7 +1135,11 @@ class SkillIconVerifierTests(unittest.TestCase):
         ).hexdigest()
         references = self.packet.target["references"]
         assert isinstance(references, list)
-        if higher_profile == "skill-icon-green-key-role-mask-v3":
+        if higher_profile in {
+            "skill-icon-green-key-role-mask-v3",
+            "skill-icon-geometry-role-mask-v1",
+            "skill-icon-geometry-role-mask-v2",
+        }:
             references.append(
                 {
                     "path": GEOMETRY_GUIDE_V2_PATH,
@@ -1123,7 +1164,12 @@ class SkillIconVerifierTests(unittest.TestCase):
         def normalization(profile: str) -> dict[str, object]:
             profile_geometry_path = (
                 GEOMETRY_V2_PATH
-                if profile == "skill-icon-green-key-role-mask-v3"
+                if profile
+                in {
+                    "skill-icon-green-key-role-mask-v3",
+                    "skill-icon-geometry-role-mask-v1",
+                    "skill-icon-geometry-role-mask-v2",
+                }
                 else GEOMETRY_PATH
             )
             profile_geometry_hash = hashlib.sha256(
@@ -1328,6 +1374,16 @@ class SkillIconVerifierTests(unittest.TestCase):
         self._prepare_superseded_packet(
             higher_profile="skill-icon-green-key-role-mask-v3",
             higher_skill_version="summonlab-skill-icon-production-v4",
+        )
+        self.assertEqual(
+            self.packet.verify(attempt_count=0, bind_input_paths=True)["status"],
+            "superseded",
+        )
+
+    def test_accepts_profile_v5_higher_superseding_authority(self) -> None:
+        self._prepare_superseded_packet(
+            higher_profile="skill-icon-geometry-role-mask-v2",
+            higher_skill_version="summonlab-skill-icon-production-v6",
         )
         self.assertEqual(
             self.packet.verify(attempt_count=0, bind_input_paths=True)["status"],
@@ -2314,6 +2370,34 @@ class SkillIconVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "pathless and exact|pathless caBX"):
             verify_result_module._validate_profile_normalization_evidence(
                 target, {"normalization": leaked}, content_hash
+            )
+
+    def test_strict_geometry_role_mask_binds_complete_pathless_v6_provenance(self) -> None:
+        content_hash = hashlib.sha256(b"strict geometry evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-geometry-role-mask-v2"}}
+        completed = {
+            "profile": "skill-icon-geometry-role-mask-v2",
+            "outcome": "completed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+            "outputContentHash": content_hash,
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": completed}, content_hash
+        )
+
+        rejected = dict(completed)
+        rejected["colorSpaceDisposition"] = "declared-srgb"
+        with self.assertRaises(ValueError):
+            verify_result_module._validate_profile_normalization_evidence(
+                target, {"normalization": rejected}, content_hash
             )
 
     def test_result_only_failure_refuses_collision(self) -> None:
