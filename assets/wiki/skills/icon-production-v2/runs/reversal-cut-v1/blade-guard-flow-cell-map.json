@@ -1,0 +1,47 @@
+{
+	"schemaVersion": "skill-icon-calibration-cell-map-v1",
+	"jobId": "blade-guard-flow-reversal-cut-v1",
+	"layout": {
+		"columns": 3,
+		"rows": 2,
+		"order": "row-major"
+	},
+	"cells": [
+		{
+			"row": 1,
+			"column": 1,
+			"targetId": "martial:blade:cross-guard",
+			"rarity": "F"
+		},
+		{
+			"row": 1,
+			"column": 2,
+			"targetId": "martial:blade:binding-cut",
+			"rarity": "E"
+		},
+		{
+			"row": 1,
+			"column": 3,
+			"targetId": "martial:blade:counter-flow",
+			"rarity": "D"
+		},
+		{
+			"row": 2,
+			"column": 1,
+			"targetId": "martial:blade:still-water-stance",
+			"rarity": "C"
+		},
+		{
+			"row": 2,
+			"column": 2,
+			"targetId": "martial:blade:mirrored-edge",
+			"rarity": "B"
+		},
+		{
+			"row": 2,
+			"column": 3,
+			"targetId": "martial:blade:reversal-cut",
+			"rarity": "A"
+		}
+	]
+}

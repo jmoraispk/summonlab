@@ -7,8 +7,10 @@ import {
 	parseTargetSkillRows,
 	findForbiddenSkillReferencesInAuthoredSources,
 	validateMigrationLedger,
+	validateNetNewSkillProvenance,
 	validateTargetTaxonomy,
 	type LegacySkillRow,
+	type NetNewSkillLedger,
 	type SkillMigrationLedger,
 	type SkillMarkdownFile
 } from './skill-taxonomy-lib.js';
@@ -25,8 +27,10 @@ if (!exportReport.inSync) throw new Error('Skill taxonomy migration ledger is no
 
 const ledgerPath = path.resolve('docs/wiki/mechanics/skills/migration-v2.json');
 const inventoryPath = path.resolve('docs/wiki/mechanics/skills/legacy-skill-inventory-v1.json');
+const netNewPath = path.resolve('docs/wiki/mechanics/skills/net-new-v1.json');
 const ledger = JSON.parse(await readFile(ledgerPath, 'utf8')) as SkillMigrationLedger;
 const inventory = JSON.parse(await readFile(inventoryPath, 'utf8')) as LegacySkillRow[];
+const netNewLedger = JSON.parse(await readFile(netNewPath, 'utf8')) as NetNewSkillLedger;
 const targetPaths = [
 	'docs/wiki/mechanics/skills/martial-blade.md',
 	'docs/wiki/mechanics/skills/martial-polearm.md',
@@ -60,7 +64,8 @@ const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(
 );
 const errors = [
 	...validateMigrationLedger(ledger, inventory),
-	...validateTargetTaxonomy(targetRows, ledger),
+	...validateTargetTaxonomy(targetRows, ledger, netNewLedger),
+	...validateNetNewSkillProvenance(targetRows, ledger, netNewLedger),
 	...findForbiddenSkillReferencesInAuthoredSources(staleReferenceFiles)
 ];
 
@@ -72,6 +77,6 @@ if (errors.length > 0) {
 		(domain) => `${targetRows.filter((row) => row.domain === domain).length} ${domain}`
 	);
 	process.stdout.write(
-		`${ledger.records.length} mapped legacy skill rows\n${targetRows.length} target skill rows reconciled (${domainCounts.join(', ')})\n`
+		`${ledger.records.length} mapped legacy skill rows and ${netNewLedger.records.length} net-new skill rows\n${targetRows.length} target skill rows reconciled (${domainCounts.join(', ')})\n`
 	);
 }

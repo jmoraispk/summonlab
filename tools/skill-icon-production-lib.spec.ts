@@ -441,12 +441,16 @@ ${closer}`;
 	});
 
 	it('materializes exact accepted-map coverage against canonical rows', async () => {
-		const rows = await loadCanonicalSkillRows();
+		const canonicalRows = await loadCanonicalSkillRows();
 		const markdown = await readFile(
 			path.resolve('docs/superpowers/specs/2026-09-01-skill-icon-motif-map.md'),
 			'utf8'
 		);
-		const lineage = parseAcceptedMotifMap(markdown, rows);
+		const lineage = parseAcceptedMotifMap(markdown, canonicalRows, {
+			allowUnmappedCanonicalRows: true
+		});
+		const mappedIds = new Set(lineage.records.map((record) => record.targetId));
+		const rows = canonicalRows.filter((row) => mappedIds.has(row.targetId));
 		const visualSpecs: SkillIconVisualSpecs = {
 			schemaVersion: 'skill-icon-visual-specs-v1',
 			records: rows.map(({ targetId }) => ({

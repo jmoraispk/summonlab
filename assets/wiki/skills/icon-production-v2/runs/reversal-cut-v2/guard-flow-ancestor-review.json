@@ -1,0 +1,51 @@
+{
+	"schemaVersion": "skill-icon-mass-ancestor-review-v1",
+	"reviewId": "guard-flow-ancestor-review-v1",
+	"reviewer": "Joao (project owner)",
+	"reviewerRole": "owner",
+	"decision": "accepted",
+	"reviewedAt": "2026-09-04T19:45:00.000Z",
+	"rationale": "The project owner approved all five displayed guard-flow ancestor candidates and asked to proceed to conclusion.",
+	"targets": [
+		{
+			"targetId": "martial:blade:cross-guard",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cross-guard.png",
+			"candidateHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-blade-cross-guard.json",
+			"resultHash": "6733861d7668e153400249dcf3ed6fdd6fbb90235ad1f06f28742a1f790fd05a",
+			"findings": ["full-size-pass", "recognition-96-pass"]
+		},
+		{
+			"targetId": "martial:blade:binding-cut",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-binding-cut.png",
+			"candidateHash": "636a3e22bf2c61fa3d6a27d97849302ccf55f66ce25f37d1e7ced8eb1b89cc78",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-blade-binding-cut.json",
+			"resultHash": "02109dc733bf731214ee420c033516fbffeca47a0b2cedd0ab455c2bed82338e",
+			"findings": ["full-size-pass", "recognition-96-pass"]
+		},
+		{
+			"targetId": "martial:blade:counter-flow",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-counter-flow.png",
+			"candidateHash": "f4d4cad9537f1ef2ab0487600b4f076adacd5e44d8854a13bfcde7041d7ea6ef",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-blade-counter-flow.json",
+			"resultHash": "f4af54faac3171f0eb4cd7a702a83829b1a7aa6347c022b05d0bde81fff48834",
+			"findings": ["full-size-pass", "recognition-96-pass"]
+		},
+		{
+			"targetId": "martial:blade:still-water-stance",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-still-water-stance.png",
+			"candidateHash": "554a5d07cbaa9627b9c8d4dce6623074e610cafeeed15e6263b70a0b9bb49bbe",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-blade-still-water-stance.json",
+			"resultHash": "16e7be6bd373b105ce18ff0ceb28691361b37ce6b1091bc09e5d3973b98460e6",
+			"findings": ["full-size-pass", "recognition-96-pass"]
+		},
+		{
+			"targetId": "martial:blade:mirrored-edge",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-mirrored-edge.png",
+			"candidateHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-blade-mirrored-edge.json",
+			"resultHash": "d6e9a632e0dc5ad221c2b4bda20299d91c7882f007b4c35177977738491d2904",
+			"findings": ["full-size-pass", "recognition-96-pass"]
+		}
+	]
+}

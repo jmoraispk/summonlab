@@ -24,6 +24,9 @@ import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+	SKILL_ICON_APPROVED_FRAME_SHEET_HASH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
@@ -326,7 +329,9 @@ async function installApprovedReferenceEvidence(
 async function fixture(
 	jobId: string,
 	decision: 'accepted' | 'rejected' = 'accepted',
-	role: 'backing' | 'calibration-plate' = 'backing'
+	role: 'backing' | 'calibration-plate' = 'backing',
+	canvasSize = 1024,
+	motifFamily = 'blade.sweeping-cut'
 ) {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-promote-'));
 	roots.push(root);
@@ -336,14 +341,26 @@ async function fixture(
 	const targetPath = `assets/wiki/skills/icon-production-v1/targets/${scope}/${jobId}.json`;
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/${scope}/${jobId}.json`;
 	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/${scope}/${jobId}.json`;
-	const bytes = await backingPng();
+	const bytes =
+		role === 'calibration-plate' && canvasSize !== 1024
+			? await sharp({
+					create: {
+						width: canvasSize,
+						height: canvasSize,
+						channels: 3,
+						background: { r: 24, g: 24, b: 24 }
+					}
+				})
+					.png()
+					.toBuffer()
+			: await backingPng();
 	const hash = createHash('sha256').update(bytes).digest('hex');
 	const target = {
 		schemaVersion: 'skill-icon-target-v1',
 		jobId,
 		role,
 		skillTargetId: null,
-		motifFamily: role === 'calibration-plate' ? 'blade.sweeping-cut' : null,
+		motifFamily: role === 'calibration-plate' ? motifFamily : null,
 		rarity: null,
 		exactPrompt: 'Paint charcoal forged stone backing.',
 		references: [
@@ -353,7 +370,7 @@ async function fixture(
 				contentHash: 'a'.repeat(64)
 			}
 		],
-		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
+		canvas: { width: canvasSize, height: canvasSize, mediaType: 'image/png' },
 		output: { candidatePath, resultPath }
 	};
 	const assignment = {
@@ -398,10 +415,10 @@ async function fixture(
 		output: {
 			path: candidatePath,
 			mediaType: 'image/png',
-			width: 1024,
-			height: 1024,
+			width: canvasSize,
+			height: canvasSize,
 			bytes: bytes.byteLength,
-			alphaMode: 'rgba',
+			alphaMode: role === 'calibration-plate' && canvasSize !== 1024 ? 'rgb' : 'rgba',
 			contentHash: hash
 		},
 		resultPath,
@@ -660,6 +677,14 @@ async function installOrdinaryFrameV6(root: string) {
 		...originalTarget,
 		jobId,
 		revision: 6,
+		references: [
+			...(originalTarget.references as Array<Record<string, unknown>>),
+			{
+				path: SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+				purpose: SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
+				contentHash: SKILL_ICON_APPROVED_FRAME_SHEET_HASH
+			}
+		],
 		output: { candidatePath, resultPath }
 	};
 	const originalAssignment = JSON.parse(
@@ -694,6 +719,10 @@ async function installOrdinaryFrameV6(root: string) {
 		revision: 6,
 		assignmentId: assignment.assignmentId,
 		status: 'candidate',
+		referenceInputs: target.references.map(({ path: referencePath, contentHash }) => ({
+			path: referencePath,
+			contentHash
+		})),
 		normalization: {
 			...originalResult.normalization,
 			outcome: 'completed',
@@ -734,6 +763,13 @@ async function installOrdinaryFrameV6(root: string) {
 		writtenOutputPaths: [candidatePath, resultPath]
 	};
 	delete (result as { failureReason?: unknown }).failureReason;
+	await mkdir(path.dirname(path.join(root, SKILL_ICON_APPROVED_FRAME_SHEET_PATH)), {
+		recursive: true
+	});
+	await copyFile(
+		path.resolve(SKILL_ICON_APPROVED_FRAME_SHEET_PATH),
+		path.join(root, SKILL_ICON_APPROVED_FRAME_SHEET_PATH)
+	);
 	const review = {
 		schemaVersion: 'skill-icon-review-v1',
 		reviewId: `review-${jobId}`,
@@ -1603,6 +1639,30 @@ describe('promoteSkillIconOutput', () => {
 			role: 'calibration-plate',
 			approvedMaster: {
 				path: 'assets/wiki/skills/icon-production-v1/masters/calibration/blade-sweeping-cut.png'
+			}
+		});
+	});
+
+	it('promotes an accepted calibration plate at its immutable declared canvas size', async () => {
+		const item = await fixture(
+			'blade-guard-flow-reversal-cut-v2',
+			'accepted',
+			'calibration-plate',
+			1254,
+			'blade.guard-flow'
+		);
+		const record = await promoteSkillIconOutput({
+			jobId: 'blade-guard-flow-reversal-cut-v2',
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			role: 'calibration-plate',
+			approvedMaster: {
+				path: 'assets/wiki/skills/icon-production-v1/masters/calibration/blade-guard-flow.png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb'
 			}
 		});
 	});

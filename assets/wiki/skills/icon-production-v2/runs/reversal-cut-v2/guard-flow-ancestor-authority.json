@@ -1,0 +1,74 @@
+{
+	"schemaVersion": "skill-icon-lineage-authority-v1",
+	"authorityId": "guard-flow-ancestors-for-reversal-cut-v1",
+	"motifFamily": "blade.guard-flow",
+	"review": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-review.json",
+		"contentHash": "babee9c6e294205ece44f957874dba627e1ae54d3eff680adf0e02663dde0eb2"
+	},
+	"massManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
+		"contentHash": "7103c8d6c7ac006dcc4c332875ac4b44213d239079219363f9056b78bd3506bf"
+	},
+	"catalog": {
+		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
+		"contentHash": "aaedbac845e16c065b42885b8e695463ed57da92623a9a4cf5612a4ae059b01e"
+	},
+	"masters": [
+		{
+			"targetId": "martial:blade:cross-guard",
+			"source": {
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cross-guard.png",
+				"contentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803"
+			},
+			"master": {
+				"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-cross-guard.png",
+				"contentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803"
+			}
+		},
+		{
+			"targetId": "martial:blade:binding-cut",
+			"source": {
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-binding-cut.png",
+				"contentHash": "636a3e22bf2c61fa3d6a27d97849302ccf55f66ce25f37d1e7ced8eb1b89cc78"
+			},
+			"master": {
+				"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-binding-cut.png",
+				"contentHash": "636a3e22bf2c61fa3d6a27d97849302ccf55f66ce25f37d1e7ced8eb1b89cc78"
+			}
+		},
+		{
+			"targetId": "martial:blade:counter-flow",
+			"source": {
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-counter-flow.png",
+				"contentHash": "f4d4cad9537f1ef2ab0487600b4f076adacd5e44d8854a13bfcde7041d7ea6ef"
+			},
+			"master": {
+				"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-counter-flow.png",
+				"contentHash": "f4d4cad9537f1ef2ab0487600b4f076adacd5e44d8854a13bfcde7041d7ea6ef"
+			}
+		},
+		{
+			"targetId": "martial:blade:still-water-stance",
+			"source": {
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-still-water-stance.png",
+				"contentHash": "554a5d07cbaa9627b9c8d4dce6623074e610cafeeed15e6263b70a0b9bb49bbe"
+			},
+			"master": {
+				"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-still-water-stance.png",
+				"contentHash": "554a5d07cbaa9627b9c8d4dce6623074e610cafeeed15e6263b70a0b9bb49bbe"
+			}
+		},
+		{
+			"targetId": "martial:blade:mirrored-edge",
+			"source": {
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-mirrored-edge.png",
+				"contentHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44"
+			},
+			"master": {
+				"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-mirrored-edge.png",
+				"contentHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44"
+			}
+		}
+	]
+}

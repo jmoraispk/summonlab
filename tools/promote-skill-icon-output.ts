@@ -1467,7 +1467,12 @@ async function preparePromotion(
 			throw new Error(`Geometry guide hash mismatch for ${jobId}`);
 	}
 	const inspection = await inspectSkillIconAsset(candidateBytes, target.role, geometry);
-	if (inspection.width !== 1024 || inspection.height !== 1024 || inspection.violations.length > 0)
+	const expectedCanvas = target.role === 'calibration-plate' ? target.canvas : geometry.canvas;
+	if (
+		inspection.width !== expectedCanvas.width ||
+		inspection.height !== expectedCanvas.height ||
+		inspection.violations.length > 0
+	)
 		throw new Error(
 			`Candidate validation failed for ${jobId}: ${inspection.violations.join('; ')}`
 		);
@@ -2461,7 +2466,7 @@ async function commitPromotions(
 			(item) => replacements.get(item.targetId as string) ?? item
 		);
 		nextVisual = Buffer.from(`${JSON.stringify(visual, null, '\t')}\n`);
-		const [rows, motifMarkdown] = await Promise.all([
+		const [canonicalRows, motifMarkdown] = await Promise.all([
 			loadCanonicalSkillRows(root),
 			readRepositoryRegular(
 				root,
@@ -2469,7 +2474,11 @@ async function commitPromotions(
 				'Skill icon motif map source'
 			).then((bytes) => bytes.toString('utf8'))
 		]);
-		const motifMap = parseAcceptedMotifMap(motifMarkdown, rows);
+		const motifMap = parseAcceptedMotifMap(motifMarkdown, canonicalRows, {
+			allowUnmappedCanonicalRows: true
+		});
+		const mappedTargetIds = new Set(motifMap.records.map((record) => record.targetId));
+		const rows = canonicalRows.filter((row) => mappedTargetIds.has(row.targetId));
 		const catalog = buildSkillIconCatalog(
 			rows,
 			motifMap,

@@ -68,6 +68,32 @@ export const SKILL_ICON_REFERENCE_CONTACT_SHEET_PATH =
 export const SKILL_ICON_PILOT_CONTACT_SHEET_PATH =
 	'assets/wiki/skills/icon-production-v1/review/pilot-icons-v1.png' as const;
 
+const APPROVED_STANDALONE_RUNTIME_ACTIVATION_PATHS = [
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json'
+] as const;
+
+const ApprovedStandaloneRuntimeAssetSchema = z
+	.object({
+		path: z.string().min(1),
+		contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+		mediaType: z.enum(['image/png', 'image/webp']),
+		width: z.number().int().positive(),
+		height: z.number().int().positive(),
+		alphaMode: z.literal('rgba'),
+		bytes: z.number().int().positive()
+	})
+	.strict();
+
+const ApprovedStandaloneRuntimeActivationSchema = z.object({
+	schemaVersion: z.literal('skill-icon-approved-frame-activation-v1'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	status: z.literal('approved-runtime'),
+	runtime: z.array(ApprovedStandaloneRuntimeAssetSchema).length(3),
+	recognition: ApprovedStandaloneRuntimeAssetSchema,
+	runtimeUpdated: z.literal(true),
+	selfPromoted: z.literal(false)
+});
+
 export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'martial:blade:horizontal-slash',
 	'martial:blade:crescent-sweep',
@@ -2356,6 +2382,72 @@ async function checkContactSheet(
 	}
 }
 
+async function approvedStandaloneRuntimePaths(root: string): Promise<string[]> {
+	const managedPaths: string[] = [];
+	for (const receiptPath of APPROVED_STANDALONE_RUNTIME_ACTIVATION_PATHS) {
+		if (!(await metadataOrNull(path.resolve(root, receiptPath)))) continue;
+		const receiptLocation = await assertRepositoryPath(
+			root,
+			receiptPath,
+			'Approved standalone runtime activation',
+			false
+		);
+		const receipt = ApprovedStandaloneRuntimeActivationSchema.parse(
+			JSON.parse(
+				(
+					await readDirectRegularFile(receiptLocation, 'Approved standalone runtime activation')
+				).toString('utf8')
+			)
+		);
+		const slug = targetSlug(receipt.targetId);
+		const expectedRuntime = [512, 256, 128] as const;
+		for (const size of expectedRuntime) {
+			const matches = receipt.runtime.filter((asset) => asset.width === size);
+			const asset = matches[0];
+			if (
+				matches.length !== 1 ||
+				!asset ||
+				asset.height !== size ||
+				asset.mediaType !== 'image/webp' ||
+				asset.path !== `apps/web/static/skill-icons/v1/${size}/${slug}.webp`
+			) {
+				throw new Error(`Approved standalone runtime activation lacks its ${size}px asset`);
+			}
+			const bytes = await readRepositoryBytes(
+				root,
+				asset.path,
+				'Approved standalone runtime asset'
+			);
+			if (bytes.byteLength !== asset.bytes || sha256(bytes) !== asset.contentHash) {
+				throw new Error(`Approved standalone runtime asset hash drift: ${asset.path}`);
+			}
+			managedPaths.push(asset.path);
+		}
+		const recognition = receipt.recognition;
+		if (
+			recognition.width !== RECOGNITION_SIZE ||
+			recognition.height !== RECOGNITION_SIZE ||
+			recognition.mediaType !== 'image/png' ||
+			recognition.path !== `assets/wiki/skills/icon-production-v1/review/recognition/${slug}.png`
+		) {
+			throw new Error('Approved standalone runtime activation lacks its recognition asset');
+		}
+		const recognitionBytes = await readRepositoryBytes(
+			root,
+			recognition.path,
+			'Approved standalone runtime recognition asset'
+		);
+		if (
+			recognitionBytes.byteLength !== recognition.bytes ||
+			sha256(recognitionBytes) !== recognition.contentHash
+		) {
+			throw new Error(`Approved standalone runtime asset hash drift: ${recognition.path}`);
+		}
+		managedPaths.push(recognition.path);
+	}
+	return managedPaths;
+}
+
 export async function exportSkillIconRuntime(options: {
 	readonly root?: string;
 	readonly mode: SkillIconRuntimeExportMode;
@@ -2418,14 +2510,15 @@ export async function exportSkillIconRuntime(options: {
 			assets
 		};
 	});
-	const expectedManagedPaths = new Set(
-		approved.flatMap((record) => [
+	const expectedManagedPaths = new Set([
+		...approved.flatMap((record) => [
 			record.assets.runtime512.path,
 			record.assets.runtime256.path,
 			record.assets.runtime128.path,
 			record.assets.recognition96.path
-		])
-	);
+		]),
+		...(await approvedStandaloneRuntimePaths(root))
+	]);
 	const orphanPaths = (await listManagedAssetFiles(root)).filter(
 		(assetPath) => !expectedManagedPaths.has(assetPath)
 	);

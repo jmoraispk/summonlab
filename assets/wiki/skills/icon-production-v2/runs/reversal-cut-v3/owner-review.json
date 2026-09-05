@@ -1,0 +1,34 @@
+{
+	"schemaVersion": "skill-icon-accepted-source-review-v1",
+	"reviewId": "reversal-cut-corrected-source-review-v1",
+	"targetId": "martial:blade:reversal-cut",
+	"reviewer": "Joao (project owner)",
+	"reviewerRole": "owner",
+	"decision": "accepted",
+	"reviewedAt": "2026-09-04T20:15:39.000Z",
+	"rationale": "The project owner accepted the displayed corrected Reversal Cut visual direction and authorized the recommended deterministic normalization and runtime publication follow-up.",
+	"acceptedProviderSource": {
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1321014,
+		"contentHash": "a874473619143fdb5b2d9a4f7340fbb1cc4ecdd291fe9be517ba3b0179f63e51"
+	},
+	"failedProducerResult": {
+		"path": "assets/wiki/skills/icon-production-v1/results/icons/martial-blade-reversal-cut-v1.json",
+		"contentHash": "04e841f6da3d5c108950aab899ec44c4b91ea61c6804921e7d3a9f24b97a8b5f"
+	},
+	"attemptEvidence": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/individual-attempt-v1.json",
+		"contentHash": "f3f4298c77aee506cae2f31b68781a2796d48f6131d26b71086ed4f6a5cf910a"
+	},
+	"catalog": {
+		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
+		"contentHash": "aaedbac845e16c065b42885b8e695463ed57da92623a9a4cf5612a4ae059b01e"
+	},
+	"lineageAuthority": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-authority.json",
+		"contentHash": "0f23d05e2f8edd46e3495a9e029e0a5bfb4df9cfd0eff2b1625bb4f4189f4444"
+	}
+}

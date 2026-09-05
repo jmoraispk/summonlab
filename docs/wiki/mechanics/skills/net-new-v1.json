@@ -1,0 +1,24 @@
+{
+	"schemaVersion": "summonlab-net-new-skills-v1",
+	"records": [
+		{
+			"targetId": "martial:blade:reversal-cut",
+			"domain": "Martial",
+			"family": "Blade",
+			"name": "Reversal Cut",
+			"labels": [
+				{
+					"namespace": "Equipment",
+					"value": "Sword"
+				}
+			],
+			"rarity": "A",
+			"type": "A",
+			"requires": "Mirrored Edge Master, Riposte Master, and the deed of parrying a named foe's signature attack",
+			"effect": "After a successful parry, convert the intercepted attack's full force into an unblockable returning cut against a chosen target.",
+			"authoredAt": "2026-09-04",
+			"decisionPath": "docs/decisions/2026-09-04-reversal-cut.md",
+			"rationale": "Owner-approved net-new skill; no legacy inventory source."
+		}
+	]
+}

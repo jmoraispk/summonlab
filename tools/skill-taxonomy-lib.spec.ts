@@ -11,8 +11,10 @@ import {
 	findForbiddenSkillReferences,
 	validateLegacyInventory,
 	validateMigrationLedger,
+	validateNetNewSkillProvenance,
 	validateTargetTaxonomy,
 	type LegacySkillRow,
+	type NetNewSkillLedger,
 	type SkillMigrationLedger
 } from './skill-taxonomy-lib.js';
 
@@ -629,9 +631,9 @@ describe('skill taxonomy migration inventory', () => {
 					!('target' in record)
 			)
 		).toBe(true);
-		expect(
-			ledger.records.some((record) => record.target && 'publication' in record.target)
-		).toBe(false);
+		expect(ledger.records.some((record) => record.target && 'publication' in record.target)).toBe(
+			false
+		);
 		expect(attunement).toMatchObject({
 			effect: "Grants an ally the hero's affinity temporarily at reduced Resonance",
 			replacementEffect: "Grants an ally the hero's affinity temporarily at reduced affinity rank."
@@ -655,10 +657,75 @@ describe('skill taxonomy migration inventory', () => {
 		});
 		expect(publishedSunfall?.effect).not.toMatch(/\b(?:Wind|Metal)-aligned\b/iu);
 	});
-
 });
 
 describe('target skill taxonomy', () => {
+	it('accepts explicit net-new provenance without fabricating a legacy source row', () => {
+		const rows = parseTargetSkillRows([
+			{
+				sourcePath: 'blade.md',
+				source: targetPage('Blade', 'Reversal Cut', 'Sword', {
+					rarity: 'A',
+					type: 'A',
+					requires:
+						"Mirrored Edge Master, Riposte Master, and the deed of parrying a named foe's signature attack",
+					effect:
+						"After a successful parry, convert the intercepted attack's full force into an unblockable returning cut against a chosen target."
+				})
+			}
+		]);
+		const legacyLedger = {
+			schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
+			sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
+			sourceRowCount: 520,
+			records: []
+		} as SkillMigrationLedger;
+		const record = {
+			targetId: 'martial:blade:reversal-cut',
+			domain: 'Martial' as const,
+			family: 'Blade',
+			name: 'Reversal Cut',
+			labels: [{ namespace: 'Equipment' as const, value: 'Sword' }],
+			rarity: 'A',
+			type: 'A',
+			requires:
+				"Mirrored Edge Master, Riposte Master, and the deed of parrying a named foe's signature attack",
+			effect:
+				"After a successful parry, convert the intercepted attack's full force into an unblockable returning cut against a chosen target.",
+			authoredAt: '2026-09-04',
+			decisionPath: 'docs/decisions/2026-09-04-reversal-cut.md',
+			rationale: 'Owner-approved net-new skill; no legacy inventory source.'
+		};
+		const provenance = {
+			schemaVersion: 'summonlab-net-new-skills-v1',
+			records: [record]
+		} satisfies NetNewSkillLedger;
+
+		expect(validateNetNewSkillProvenance(rows, legacyLedger, provenance)).toEqual([]);
+		expect(
+			validateNetNewSkillProvenance(rows, legacyLedger, {
+				...provenance,
+				records: []
+			})
+		).toContain('Martial/Blade/Reversal Cut has neither legacy nor net-new provenance');
+		expect(
+			validateNetNewSkillProvenance(rows, legacyLedger, {
+				...provenance,
+				records: [record, record]
+			})
+		).toContain('duplicate net-new target id martial:blade:reversal-cut');
+		expect(
+			validateNetNewSkillProvenance(
+				rows,
+				{
+					...legacyLedger,
+					records: [migrationRecord('Blade', 'Reversal Cut', 1, ['Sword'])]
+				},
+				provenance
+			)
+		).toContain('Martial/Blade/Reversal Cut cannot have both legacy and net-new provenance');
+	});
+
 	it('keeps the canonical Markdown aligned with the five-family migration ledger', async () => {
 		const targetPaths = [
 			'docs/wiki/mechanics/skills/martial-blade.md',
@@ -670,11 +737,13 @@ describe('target skill taxonomy', () => {
 			'docs/wiki/mechanics/skills/magical-disciplines.md',
 			'docs/wiki/mechanics/skills/craft-and-life.md'
 		];
-		const [ledgerSource, ...targetSources] = await Promise.all([
+		const [ledgerSource, netNewSource, ...targetSources] = await Promise.all([
 			readFile('docs/wiki/mechanics/skills/migration-v2.json', 'utf8'),
+			readFile('docs/wiki/mechanics/skills/net-new-v1.json', 'utf8'),
 			...targetPaths.map((sourcePath) => readFile(sourcePath, 'utf8'))
 		]);
 		const ledger = JSON.parse(ledgerSource) as SkillMigrationLedger;
+		const netNewLedger = JSON.parse(netNewSource) as NetNewSkillLedger;
 		const rows = parseTargetSkillRows(
 			targetPaths.map((sourcePath, index) => ({ sourcePath, source: targetSources[index] }))
 		);
@@ -686,7 +755,8 @@ describe('target skill taxonomy', () => {
 			'Gathering',
 			'Knowledge'
 		]);
-		expect(validateTargetTaxonomy(rows, ledger)).toEqual([]);
+		expect(validateTargetTaxonomy(rows, ledger, netNewLedger)).toEqual([]);
+		expect(validateNetNewSkillProvenance(rows, ledger, netNewLedger)).toEqual([]);
 		expect(rows.filter((row) => row.domain === 'Craft' && row.family === 'Knowledge')).toHaveLength(
 			12
 		);
@@ -695,6 +765,14 @@ describe('target skill taxonomy', () => {
 			domain: 'Martial',
 			family: 'Body',
 			requires: 'Riding Master, another Martial skill at Expert'
+		});
+		expect(rows.find((row) => row.name === 'Reversal Cut')).toMatchObject({
+			targetId: 'martial:blade:reversal-cut',
+			domain: 'Martial',
+			family: 'Blade',
+			labels: [{ namespace: 'Equipment', value: 'Sword' }],
+			rarity: 'A',
+			type: 'A'
 		});
 	});
 

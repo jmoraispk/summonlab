@@ -82,10 +82,12 @@ The legacy compendium contained 520 rows. The v2 migration ledger records the di
 row; the consolidated target count is derived by validation and may be lower because approved
 merges and deletions are intentional.
 
-Every published target row must trace to at least one legacy row. Retained definitions preserve
+Every migrated target row must trace to at least one legacy row. Retained definitions preserve
 rarity, type, requirements, and effects unless the ledger explicitly records a replacement.
-Unpublished future rewrites are not emitted as migration targets. Deleted and merged definitions
-remain recoverable through Git history and their ledger rationale.
+Owner-approved additions authored after migration instead bind their complete canonical fields and
+decision source in `net-new-v1.json`; they never fabricate legacy lineage. Unpublished future
+rewrites are not emitted as migration targets. Deleted and merged definitions remain recoverable
+through Git history and their ledger rationale.
 
 `Great Renewal` remains a Restoration skill. Its deleted legacy Elemental source row is retained
 only in migration provenance and does not publish a second current skill.

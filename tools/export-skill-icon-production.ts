@@ -147,7 +147,20 @@ export async function exportSkillIconProduction(options: {
 	readonly mode: SkillIconProductionExportMode;
 }): Promise<SkillIconProductionExportReport> {
 	const root = path.resolve(options.root ?? process.cwd());
-	const rows = await loadCanonicalSkillRows(root);
+	for (const outputPath of [
+		SKILL_ICON_MOTIF_MAP_PATH,
+		SKILL_ICON_VISUAL_SPECS_PATH,
+		SKILL_ICON_CATALOG_PATH
+	]) {
+		await assertSafeDestination(root, path.resolve(root, outputPath), false);
+	}
+	const canonicalRows = await loadCanonicalSkillRows(root);
+	const motifMarkdown = await readFile(path.resolve(root, SKILL_ICON_MOTIF_SOURCE_PATH), 'utf8');
+	const motifMap = parseAcceptedMotifMap(motifMarkdown, canonicalRows, {
+		allowUnmappedCanonicalRows: true
+	});
+	const mappedTargetIds = new Set(motifMap.records.map((record) => record.targetId));
+	const rows = canonicalRows.filter((row) => mappedTargetIds.has(row.targetId));
 	if (rows.length !== 456)
 		throw new Error(`Expected exactly 456 canonical skills, found ${rows.length}`);
 	const domainCounts = Object.fromEntries(
@@ -161,10 +174,7 @@ export async function exportSkillIconProduction(options: {
 			`Expected canonical domain counts 258/124/74, found ${domainCounts.Martial}/${domainCounts.Magical}/${domainCounts.Craft}`
 		);
 	}
-	const motifMarkdown = await readFile(path.resolve(root, SKILL_ICON_MOTIF_SOURCE_PATH), 'utf8');
-	const motifMap = parseAcceptedMotifMap(motifMarkdown, rows);
 	const visualSpecsDestination = path.resolve(root, SKILL_ICON_VISUAL_SPECS_PATH);
-	await assertSafeDestination(root, visualSpecsDestination, false);
 	const currentVisualBytes = await regularFileBytes(visualSpecsDestination);
 	const visualSpecs = currentVisualBytes
 		? (JSON.parse(currentVisualBytes.toString('utf8')) as SkillIconVisualSpecs)
