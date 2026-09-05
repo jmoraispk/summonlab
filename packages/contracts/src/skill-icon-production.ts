@@ -103,7 +103,10 @@ export const SkillIconReferencePathSchema = SkillIconRepositoryPathSchema.refine
 		'assets/wiki/skills/rarity-frame-v1/references/',
 		'assets/wiki/skills/rarity-frame-v1/sources/'
 	].some((root) => value.startsWith(root));
-	return allowedRoot && /\.(?:png|webp|svg)$/u.test(value);
+	const selectedFrameSheet =
+		value ===
+		'assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png';
+	return (allowedRoot || selectedFrameSheet) && /\.(?:png|webp|svg)$/u.test(value);
 }, 'References must be image assets beneath an allowlisted production authority root');
 
 function pathBasenameWithoutExtension(value: string): string {
