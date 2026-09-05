@@ -314,12 +314,24 @@ async function compareOrWrite(
 		throw error;
 	});
 	if (current?.equals(bytes)) return;
+	if (current) {
+		if (mode === 'check') {
+			drifted.push(repositoryPath);
+			return;
+		}
+		throw new Error(`Refusing to replace immutable reference packet: ${repositoryPath}`);
+	}
 	if (mode === 'check') {
 		drifted.push(repositoryPath);
 		return;
 	}
 	await mkdir(path.dirname(destination), { recursive: true });
-	await writeFile(destination, bytes);
+	await writeFile(destination, bytes, { flag: 'wx' }).catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'EEXIST') {
+			throw new Error(`Refusing to replace immutable reference packet: ${repositoryPath}`);
+		}
+		throw error;
+	});
 	written.push(repositoryPath);
 }
 

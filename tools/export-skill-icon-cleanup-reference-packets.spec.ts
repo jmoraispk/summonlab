@@ -1,4 +1,4 @@
-import { copyFile, mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -219,4 +219,25 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			drifted: []
 		});
 	});
+
+	it.each([
+		['revision-five target', 'targets', 'rarity-frame-e-v5'],
+		['revision-six assignment', 'assignments', 'rarity-frame-e-v6']
+	] as const)(
+		'refuses to replace a drifted %s packet in write mode',
+		async (_label, kind, jobId) => {
+			const root = await temporaryWorkspace();
+			if (jobId.endsWith('-v6')) {
+				await exportCleanupReferencePackets({ root, mode: 'write' });
+			}
+			const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
+			const tampered = Buffer.from(`tampered ${jobId}\n`);
+			await writeFile(path.resolve(root, repositoryPath), tampered);
+
+			await expect(exportCleanupReferencePackets({ root, mode: 'write' })).rejects.toThrow(
+				new RegExp(`refusing to replace.*${jobId}`, 'iu')
+			);
+			expect(await readFile(path.resolve(root, repositoryPath))).toEqual(tampered);
+		}
+	);
 });
