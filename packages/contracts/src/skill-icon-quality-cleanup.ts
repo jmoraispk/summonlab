@@ -20,6 +20,12 @@ const CleanupCompositePathSchema = z
 		new RegExp(`^${QUALITY_CLEANUP_ROOT}/composites/${CleanupSlugSchema}\\.png$`, 'u'),
 		'Expected a versioned cleanup composite path'
 	);
+const CleanupInteriorPathSchema = z
+	.string()
+	.regex(
+		new RegExp(`^${QUALITY_CLEANUP_ROOT}/interiors/${CleanupSlugSchema}\\.png$`, 'u'),
+		'Expected a versioned cleanup interior path'
+	);
 const CleanupResultPathSchema = z
 	.string()
 	.regex(
@@ -174,10 +180,76 @@ export const SkillIconCleanupManifestSchema = z
 		}
 	});
 
+const CleanupLayerAuthoritySchema = z
+	.object({ path: SkillIconRepositoryPathSchema, contentHash: StateHashSchema })
+	.strict();
+
 export const SkillIconCleanupResultSchema = SkillIconCleanupRecordSchema.safeExtend({
 	schemaVersion: z.literal('skill-icon-quality-cleanup-result-v1'),
+	cleanupInterior: z
+		.object({
+			path: CleanupInteriorPathSchema,
+			contentHash: StateHashSchema,
+			removedPixels: z.number().int().nonnegative(),
+			removedPixelBounds: z
+				.object({
+					left: z.number().int().nonnegative(),
+					top: z.number().int().nonnegative(),
+					width: z.number().int().positive(),
+					height: z.number().int().positive()
+				})
+				.strict()
+				.nullable()
+		})
+		.strict(),
+	compositionAuthority: z
+		.object({
+			geometry: CleanupLayerAuthoritySchema.safeExtend({
+				path: z.literal('assets/wiki/skills/icon-production-v1/geometry-v2.json')
+			}),
+			backing: CleanupLayerAuthoritySchema.safeExtend({
+				path: z.literal(
+					'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v5.png'
+				)
+			}),
+			frame: CleanupLayerAuthoritySchema.safeExtend({
+				path: z
+					.string()
+					.regex(
+						/^assets\/wiki\/skills\/icon-production-v1\/candidates\/references\/rarity-frame-[fedcbas]-v5\.png$/u
+					)
+			})
+		})
+		.strict(),
 	cleanupCompositeContentHash: StateHashSchema,
 	resultContentHash: StateHashSchema
+}).superRefine((result, context) => {
+	const slug = result.targetId.replaceAll(':', '-');
+	if (result.cleanupInterior.path !== `${QUALITY_CLEANUP_ROOT}/interiors/${slug}.png`) {
+		context.addIssue({
+			code: 'custom',
+			path: ['cleanupInterior', 'path'],
+			message: 'Cleanup interior path must bind the result target'
+		});
+	}
+	if (
+		(result.cleanupInterior.removedPixels === 0) !==
+		(result.cleanupInterior.removedPixelBounds === null)
+	) {
+		context.addIssue({
+			code: 'custom',
+			path: ['cleanupInterior', 'removedPixelBounds'],
+			message: 'Cleanup removal bounds must exist exactly when visible pixels were removed'
+		});
+	}
+	const expectedFramePath = `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-${result.rank.toLowerCase()}-v5.png`;
+	if (result.compositionAuthority.frame.path !== expectedFramePath) {
+		context.addIssue({
+			code: 'custom',
+			path: ['compositionAuthority', 'frame', 'path'],
+			message: 'Cleanup frame authority must bind the result rank'
+		});
+	}
 });
 
 export const SkillIconCleanupOwnerReviewSchema = z

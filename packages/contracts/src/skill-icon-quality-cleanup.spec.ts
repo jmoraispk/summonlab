@@ -72,6 +72,26 @@ function validResult() {
 	return {
 		schemaVersion: 'skill-icon-quality-cleanup-result-v1' as const,
 		...validRecord(0),
+		cleanupInterior: {
+			path: `${cleanupRoot}/interiors/martial-blade-cleanup-0.png`,
+			contentHash: hash,
+			removedPixels: 3,
+			removedPixelBounds: { left: 0, top: 2, width: 6, height: 4 }
+		},
+		compositionAuthority: {
+			geometry: {
+				path: 'assets/wiki/skills/icon-production-v1/geometry-v2.json',
+				contentHash: hash
+			},
+			backing: {
+				path: 'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v5.png',
+				contentHash: hash
+			},
+			frame: {
+				path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png',
+				contentHash: hash
+			}
+		},
 		cleanupCompositeContentHash: hash,
 		resultContentHash: hash
 	};
@@ -222,6 +242,20 @@ describe('skill-icon quality-cleanup contracts', () => {
 	it('rejects unversioned cleanup paths and non-cleanup result paths', () => {
 		const result = validResult();
 		expect(SkillIconCleanupResultSchema.safeParse(result).success).toBe(true);
+		const { cleanupInterior: _cleanupInterior, ...withoutInteriorEvidence } = result;
+		expect(SkillIconCleanupResultSchema.safeParse(withoutInteriorEvidence).success).toBe(false);
+		const { compositionAuthority: _compositionAuthority, ...withoutLayerEvidence } = result;
+		expect(SkillIconCleanupResultSchema.safeParse(withoutLayerEvidence).success).toBe(false);
+		expect(
+			SkillIconCleanupResultSchema.safeParse({
+				...result,
+				cleanupInterior: {
+					...result.cleanupInterior,
+					removedPixels: 0,
+					removedPixelBounds: result.cleanupInterior.removedPixelBounds
+				}
+			}).success
+		).toBe(false);
 		expect(
 			SkillIconCleanupResultSchema.safeParse({
 				...result,

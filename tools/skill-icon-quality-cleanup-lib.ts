@@ -1,5 +1,17 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { link, lstat, mkdir, open, readFile, realpath, unlink } from 'node:fs/promises';
+import {
+	link,
+	lstat,
+	mkdtemp,
+	mkdir,
+	open,
+	readFile,
+	realpath,
+	rm,
+	unlink,
+	writeFile
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import sharp from 'sharp';
@@ -9,6 +21,7 @@ import {
 	SkillIconCleanupAuthoritySchema,
 	SkillIconCleanupFindingSchema,
 	SkillIconCleanupManifestSchema,
+	SkillIconCleanupResultSchema,
 	SkillIconGeometryV2Schema,
 	type SkillIconCatalog,
 	type SkillIconCleanupFinding,
@@ -87,6 +100,7 @@ export interface CleanupInspection {
 	readonly layerHashesMatch: boolean;
 	readonly exactComposite: boolean;
 	readonly protectedBandMatches: boolean;
+	readonly exteriorTransparent: boolean;
 	readonly nearWhiteComponents: readonly {
 		readonly pixels: number;
 		readonly bounds: PixelBounds;
@@ -635,6 +649,25 @@ export async function composeCleanupIcon(input: {
 		.toBuffer();
 }
 
+async function clearCleanupExterior(bytes: Buffer, geometry: SkillIconGeometryV2): Promise<Buffer> {
+	const decoded = await rgbaBytes(bytes);
+	assertCanvas('Cleanup composite', decoded, geometry.canvas);
+	const { outer, medallion } = cleanupPolygons(geometry, decoded.width, decoded.height);
+	const output = Buffer.from(decoded.data);
+	for (let y = 0; y < decoded.height; y += 1) {
+		for (let x = 0; x < decoded.width; x += 1) {
+			const pixelX = x + 0.5;
+			const pixelY = y + 0.5;
+			if (pointInPolygon(pixelX, pixelY, outer) || pointInPolygon(pixelX, pixelY, medallion)) {
+				continue;
+			}
+			const offset = (y * decoded.width + x) * 4;
+			output.fill(0, offset, offset + 4);
+		}
+	}
+	return encodeRgba(output, decoded.width, decoded.height);
+}
+
 function nearWhiteComponents(
 	data: Buffer,
 	width: number,
@@ -696,17 +729,20 @@ export async function inspectCleanupComposite(
 	input: CleanupInspectionInput
 ): Promise<CleanupInspection> {
 	const geometry = SkillIconGeometryV2Schema.parse(input.geometry);
-	const expected = await composeCleanupIcon(input);
+	const expected = await clearCleanupExterior(await composeCleanupIcon(input), geometry);
 	const emptyInterior = await encodeRgba(
 		Buffer.alloc(geometry.canvas.width * geometry.canvas.height * 4),
 		geometry.canvas.width,
 		geometry.canvas.height
 	);
-	const protectedComposite = await composeCleanupIcon({
-		backing: input.backing,
-		interior: emptyInterior,
-		frame: input.frame
-	});
+	const protectedComposite = await clearCleanupExterior(
+		await composeCleanupIcon({
+			backing: input.backing,
+			interior: emptyInterior,
+			frame: input.frame
+		}),
+		geometry
+	);
 	const [actualRgba, protectedRgba] = await Promise.all([
 		rgbaBytes(input.composite),
 		rgbaBytes(protectedComposite)
@@ -719,6 +755,7 @@ export async function inspectCleanupComposite(
 		geometry.canvas.height
 	);
 	let protectedBandMatches = true;
+	let exteriorTransparent = true;
 	for (let y = 0; y < geometry.canvas.height && protectedBandMatches; y += 1) {
 		for (let x = 0; x < geometry.canvas.width; x += 1) {
 			const pixelX = x + 0.5;
@@ -738,6 +775,19 @@ export async function inspectCleanupComposite(
 			}
 		}
 	}
+	for (let y = 0; y < geometry.canvas.height && exteriorTransparent; y += 1) {
+		for (let x = 0; x < geometry.canvas.width; x += 1) {
+			const pixelX = x + 0.5;
+			const pixelY = y + 0.5;
+			if (pointInPolygon(pixelX, pixelY, outer) || pointInPolygon(pixelX, pixelY, medallion)) {
+				continue;
+			}
+			if ((actualRgba.data[(y * geometry.canvas.width + x) * 4 + 3] ?? 0) !== 0) {
+				exteriorTransparent = false;
+				break;
+			}
+		}
+	}
 	const components = nearWhiteComponents(
 		actualRgba.data,
 		geometry.canvas.width,
@@ -751,6 +801,7 @@ export async function inspectCleanupComposite(
 				input.boundLayerHashes.frame === sha256(input.frame)),
 		exactComposite: input.composite.equals(expected),
 		protectedBandMatches,
+		exteriorTransparent,
 		nearWhiteComponents: components,
 		warnings: components.map(
 			(component) =>
@@ -773,6 +824,7 @@ async function existingCleanupLayer(
 	root: string,
 	job: (typeof CLEANUP_LAYER_JOBS)[number]
 ): Promise<null | {
+	readonly path: string;
 	readonly bytes: Buffer;
 	readonly contentHash: string;
 }> {
@@ -800,7 +852,44 @@ async function existingCleanupLayer(
 	) {
 		throw new Error(`Cleanup shared-layer result does not bind candidate bytes: ${job.jobId}`);
 	}
-	return { bytes: candidate, contentHash };
+	return { path: paths.candidate, bytes: candidate, contentHash };
+}
+
+function cleanupInteriorPath(targetId: string): string {
+	return `${QUALITY_CLEANUP_ROOT}/interiors/${cleanupSlug(targetId)}.png`;
+}
+
+async function assertCleanupAuthorities(root: string, authority: CleanupAuthority): Promise<void> {
+	for (const [key, binding] of Object.entries(authority)) {
+		const bytes = await regularBytes(root, binding.path);
+		if (sha256(bytes) !== binding.contentHash) {
+			throw new Error(`Cleanup authority hash drift: ${key}`);
+		}
+	}
+}
+
+function assertFinalizePathCoverage(manifest: SkillIconCleanupManifest): void {
+	const owners = new Map<string, string>();
+	for (const record of manifest.records) {
+		for (const [kind, repositoryPath] of [
+			['interior', cleanupInteriorPath(record.targetId)],
+			['composite', record.cleanupCompositePath],
+			['result', record.resultPath]
+		] as const) {
+			const prior = owners.get(repositoryPath);
+			if (prior) {
+				throw new Error(
+					`Cleanup finalize output collision: ${repositoryPath} (${prior}, ${record.targetId}:${kind})`
+				);
+			}
+			owners.set(repositoryPath, `${record.targetId}:${kind}`);
+		}
+	}
+	for (const record of manifest.records) {
+		if (owners.has(record.sourceCandidate.path)) {
+			throw new Error(`Cleanup finalize output collides with frozen source: ${record.targetId}`);
+		}
+	}
 }
 
 export async function finalizeSkillIconQualityCleanup(options: {
@@ -830,10 +919,8 @@ export async function finalizeSkillIconQualityCleanup(options: {
 			warnings: []
 		};
 	}
+	await assertCleanupAuthorities(root, manifest.authority);
 	const geometryBytes = await regularBytes(root, manifest.authority.geometry.path);
-	if (sha256(geometryBytes) !== manifest.authority.geometry.contentHash) {
-		throw new Error('Cleanup geometry authority hash drift');
-	}
 	const geometry = SkillIconGeometryV2Schema.parse(
 		JSON.parse(geometryBytes.toString('utf8')) as unknown
 	);
@@ -843,80 +930,146 @@ export async function finalizeSkillIconQualityCleanup(options: {
 			.filter(({ job }) => job.role === 'rarity-frame')
 			.map(({ job, layer }) => [job.rarity, layer!] as const)
 	);
-	const written: string[] = [];
-	const drifted: string[] = [];
-	const warnings: string[] = [];
-	let finalized = 0;
+	assertFinalizePathCoverage(manifest);
 	for (const record of manifest.records) {
 		const source = await regularBytes(root, record.sourceCandidate.path);
 		if (sha256(source) !== record.sourceCandidate.contentHash) {
 			throw new Error(`Frozen cleanup source hash drift: ${record.targetId}`);
 		}
-		const frame = frames.get(record.rank);
-		if (!frame) throw new Error(`Missing cleanup frame for rank ${record.rank}`);
-		const interior = await extractLegacyInterior(source, geometry);
-		const composite = await composeCleanupIcon({
-			backing: backing.bytes,
-			interior: interior.bytes,
-			frame: frame.bytes
-		});
-		const inspection = await inspectCleanupComposite({
-			composite,
-			backing: backing.bytes,
-			interior: interior.bytes,
-			frame: frame.bytes,
-			geometry,
-			boundLayerHashes: {
-				backing: backing.contentHash,
-				interior: sha256(interior.bytes),
-				frame: frame.contentHash
-			}
-		});
-		if (
-			!inspection.layerHashesMatch ||
-			!inspection.exactComposite ||
-			!inspection.protectedBandMatches
-		) {
-			throw new Error(`Cleanup composite inspection failed: ${record.targetId}`);
+	}
+	const written: string[] = [];
+	const drifted: string[] = [];
+	const warnings: string[] = [];
+	let finalized = 0;
+	const stageRoot = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-finalize-'));
+	const staged: { readonly repositoryPath: string; readonly absolutePath: string }[] = [];
+	const visualCache = new Map<
+		string,
+		{
+			readonly interior: InteriorResult;
+			readonly composite: Buffer;
+			readonly inspection: CleanupInspection;
 		}
-		warnings.push(...inspection.warnings.map((warning) => `${record.targetId}: ${warning}`));
-		const bindingHash = sha256(
-			jsonBytes({
+	>();
+	const visualUseCounts = new Map<string, number>();
+	for (const record of manifest.records) {
+		const key = `${record.sourceCandidate.contentHash}:${record.rank}`;
+		visualUseCounts.set(key, (visualUseCounts.get(key) ?? 0) + 1);
+	}
+	try {
+		for (const record of manifest.records) {
+			const frame = frames.get(record.rank);
+			if (!frame) throw new Error(`Missing cleanup frame for rank ${record.rank}`);
+			const cacheKey = `${record.sourceCandidate.contentHash}:${record.rank}`;
+			let visual = visualCache.get(cacheKey);
+			if (!visual) {
+				const source = await regularBytes(root, record.sourceCandidate.path);
+				if (sha256(source) !== record.sourceCandidate.contentHash) {
+					throw new Error(`Frozen cleanup source hash drift: ${record.targetId}`);
+				}
+				const interior = await extractLegacyInterior(source, geometry);
+				const composite = await clearCleanupExterior(
+					await composeCleanupIcon({
+						backing: backing.bytes,
+						interior: interior.bytes,
+						frame: frame.bytes
+					}),
+					geometry
+				);
+				const inspection = await inspectCleanupComposite({
+					composite,
+					backing: backing.bytes,
+					interior: interior.bytes,
+					frame: frame.bytes,
+					geometry,
+					boundLayerHashes: {
+						backing: backing.contentHash,
+						interior: sha256(interior.bytes),
+						frame: frame.contentHash
+					}
+				});
+				visual = { interior, composite, inspection };
+				if ((visualUseCounts.get(cacheKey) ?? 0) > 1) visualCache.set(cacheKey, visual);
+			}
+			if (
+				!visual.inspection.layerHashesMatch ||
+				!visual.inspection.exactComposite ||
+				!visual.inspection.protectedBandMatches ||
+				!visual.inspection.exteriorTransparent
+			) {
+				throw new Error(`Cleanup composite inspection failed: ${record.targetId}`);
+			}
+			warnings.push(
+				...visual.inspection.warnings.map((warning) => `${record.targetId}: ${warning}`)
+			);
+			const interiorPath = cleanupInteriorPath(record.targetId);
+			const interiorHash = sha256(visual.interior.bytes);
+			const binding = {
 				source: record.sourceCandidate.contentHash,
 				geometry: manifest.authority.geometry.contentHash,
 				backing: backing.contentHash,
-				interior: sha256(interior.bytes),
-				frame: frame.contentHash
-			})
-		);
-		const resultBytes = jsonBytes({
-			schemaVersion: 'skill-icon-quality-cleanup-result-v1',
-			...record,
-			cleanupCompositeContentHash: sha256(composite),
-			resultContentHash: bindingHash
-		});
-		for (const output of [
-			{ path: record.cleanupCompositePath, bytes: composite },
-			{ path: record.resultPath, bytes: resultBytes }
-		]) {
-			const current = await currentBytes(root, output.path);
-			if (current?.equals(output.bytes)) continue;
-			if (options.mode === 'check') {
-				drifted.push(output.path);
-			} else if (await writeMissingAtomic(root, output.path, output.bytes)) {
-				written.push(output.path);
+				interior: interiorHash,
+				frame: frame.contentHash,
+				removedPixels: visual.interior.removedPixels,
+				removedPixelBounds: visual.interior.removedPixelBounds
+			};
+			const result = SkillIconCleanupResultSchema.parse({
+				schemaVersion: 'skill-icon-quality-cleanup-result-v1',
+				...record,
+				cleanupInterior: {
+					path: interiorPath,
+					contentHash: interiorHash,
+					removedPixels: visual.interior.removedPixels,
+					removedPixelBounds: visual.interior.removedPixelBounds
+				},
+				compositionAuthority: {
+					geometry: manifest.authority.geometry,
+					backing: { path: backing.path, contentHash: backing.contentHash },
+					frame: { path: frame.path, contentHash: frame.contentHash }
+				},
+				cleanupCompositeContentHash: sha256(visual.composite),
+				resultContentHash: sha256(jsonBytes(binding))
+			});
+			for (const output of [
+				{ path: interiorPath, bytes: visual.interior.bytes },
+				{ path: record.cleanupCompositePath, bytes: visual.composite },
+				{ path: record.resultPath, bytes: jsonBytes(result) }
+			]) {
+				const current = await currentBytes(root, output.path);
+				if (current?.equals(output.bytes)) continue;
+				if (current) {
+					drifted.push(output.path);
+					continue;
+				}
+				const absolutePath = path.join(stageRoot, `${staged.length}.artifact`);
+				await writeFile(absolutePath, output.bytes);
+				staged.push({ repositoryPath: output.path, absolutePath });
+			}
+			finalized += 1;
+		}
+		if (options.mode === 'write' && drifted.length > 0) {
+			throw new Error(`Refusing to replace drifted cleanup artifact: ${drifted[0]}`);
+		}
+		if (options.mode === 'write') {
+			for (const output of staged) {
+				if (
+					await writeMissingAtomic(root, output.repositoryPath, await readFile(output.absolutePath))
+				) {
+					written.push(output.repositoryPath);
+				}
 			}
 		}
-		finalized += 1;
+		return {
+			mode: options.mode,
+			ready: true,
+			total: manifest.records.length,
+			finalized,
+			pendingLayerJobIds: [],
+			written,
+			drifted,
+			warnings
+		};
+	} finally {
+		await rm(stageRoot, { recursive: true, force: true });
 	}
-	return {
-		mode: options.mode,
-		ready: true,
-		total: manifest.records.length,
-		finalized,
-		pendingLayerJobIds: [],
-		written,
-		drifted,
-		warnings
-	};
 }

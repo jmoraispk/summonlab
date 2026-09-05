@@ -1,7 +1,17 @@
 import { createHash } from 'node:crypto';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { once } from 'node:events';
-import { mkdtemp, mkdir, readdir, readFile, rm, unlink, writeFile } from 'node:fs/promises';
+import {
+	copyFile,
+	link,
+	mkdtemp,
+	mkdir,
+	readdir,
+	readFile,
+	rm,
+	unlink,
+	writeFile
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -10,11 +20,13 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	SkillIconCleanupManifestSchema,
+	SkillIconCleanupResultSchema,
 	type SkillIconGeometryV2
 } from '../packages/contracts/src/index.js';
 import {
 	QUALITY_CLEANUP_ROOT,
 	buildSkillIconCleanupManifest,
+	cleanupSlug,
 	composeCleanupIcon,
 	exportSkillIconQualityCleanup,
 	extractLegacyInterior,
@@ -73,6 +85,20 @@ async function rgbaFixture(
 		.toBuffer();
 }
 
+async function sparseRgbaFixture(
+	width: number,
+	height: number,
+	pixels: readonly (readonly [number, number, number, number, number, number])[]
+): Promise<Buffer> {
+	const data = Buffer.alloc(width * height * 4);
+	for (const [x, y, red, green, blue, alpha] of pixels) {
+		data.set([red, green, blue, alpha], (y * width + x) * 4);
+	}
+	return sharp(data, { raw: { width, height, channels: 4 } })
+		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
+		.toBuffer();
+}
+
 async function rawRgba(bytes: Buffer): Promise<Buffer> {
 	return (await sharp(bytes).ensureAlpha().raw().toBuffer({ resolveWithObject: true })).data;
 }
@@ -80,6 +106,104 @@ async function rawRgba(bytes: Buffer): Promise<Buffer> {
 function pixel(data: Buffer, x: number, y: number): readonly number[] {
 	const offset = (y * 10 + x) * 4;
 	return Array.from(data.subarray(offset, offset + 4));
+}
+
+const cleanupLayerJobs = [
+	['charcoal-forged-stone-v5', 'backing', null],
+	['rarity-frame-f-v5', 'rarity-frame', 'F'],
+	['rarity-frame-e-v5', 'rarity-frame', 'E'],
+	['rarity-frame-d-v5', 'rarity-frame', 'D'],
+	['rarity-frame-c-v5', 'rarity-frame', 'C'],
+	['rarity-frame-b-v5', 'rarity-frame', 'B'],
+	['rarity-frame-a-v5', 'rarity-frame', 'A'],
+	['rarity-frame-s-v5', 'rarity-frame', 'S']
+] as const;
+
+async function seedReadyFinalizerRoot(root: string): Promise<{
+	readonly manifest: ReturnType<typeof SkillIconCleanupManifestSchema.parse>;
+	readonly firstInteriorPath: string;
+}> {
+	const sourceManifest = SkillIconCleanupManifestSchema.parse(
+		JSON.parse(
+			await readFile(path.join(workspaceRoot, QUALITY_CLEANUP_ROOT, 'manifest.json'), 'utf8')
+		) as unknown
+	);
+	for (const authority of Object.values(sourceManifest.authority)) {
+		const destination = path.join(root, authority.path);
+		await mkdir(path.dirname(destination), { recursive: true });
+		await copyFile(path.join(workspaceRoot, authority.path), destination);
+	}
+	const source = await sparseRgbaFixture(1024, 1024, [
+		[512, 512, 0, 255, 0, 255],
+		[150, 512, 0, 255, 0, 255],
+		[0, 0, 0, 255, 0, 255]
+	]);
+	const sourceHash = sha256(source);
+	let firstSourcePath: string | null = null;
+	for (const record of sourceManifest.records) {
+		const destination = path.join(root, record.sourceCandidate.path);
+		await mkdir(path.dirname(destination), { recursive: true });
+		if (firstSourcePath === null) {
+			await writeFile(destination, source);
+			firstSourcePath = destination;
+		} else {
+			await link(firstSourcePath, destination);
+		}
+	}
+	const manifest = SkillIconCleanupManifestSchema.parse({
+		...sourceManifest,
+		records: sourceManifest.records.map((record) => ({
+			...record,
+			sourceCandidate: { ...record.sourceCandidate, contentHash: sourceHash }
+		}))
+	});
+	const manifestPath = path.join(root, QUALITY_CLEANUP_ROOT, 'manifest.json');
+	await mkdir(path.dirname(manifestPath), { recursive: true });
+	await writeFile(manifestPath, Buffer.from(`${JSON.stringify(manifest, null, '\t')}\n`));
+
+	for (const [jobId, role, rarity] of cleanupLayerJobs) {
+		const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+		const candidate = await sparseRgbaFixture(
+			1024,
+			1024,
+			role === 'backing'
+				? [
+						[512, 512, 255, 0, 0, 255],
+						[0, 0, 255, 0, 0, 255]
+					]
+				: [
+						[150, 512, 0, 0, 255, 255],
+						[1023, 1023, 0, 0, 255, 255]
+					]
+		);
+		const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+		await mkdir(path.dirname(path.join(root, candidatePath)), { recursive: true });
+		await mkdir(path.dirname(path.join(root, resultPath)), { recursive: true });
+		await writeFile(path.join(root, candidatePath), candidate);
+		await writeFile(
+			path.join(root, resultPath),
+			Buffer.from(
+				`${JSON.stringify(
+					{
+						schemaVersion: 'synthetic-cleanup-layer-result-v1',
+						jobId,
+						role,
+						rarity,
+						status: 'candidate',
+						output: { path: candidatePath, contentHash: sha256(candidate) }
+					},
+					null,
+					'\t'
+				)}\n`
+			)
+		);
+	}
+
+	const first = manifest.records[0]!;
+	return {
+		manifest,
+		firstInteriorPath: `${QUALITY_CLEANUP_ROOT}/interiors/${cleanupSlug(first.targetId)}.png`
+	};
 }
 
 function sha256(bytes: Buffer): string {
@@ -504,6 +628,37 @@ describe('deterministic protected-aperture composition', () => {
 		expect(contaminated.warnings).toHaveLength(1);
 	});
 
+	it('rejects stale layer hashes and detects opaque exterior pixels', async () => {
+		// Catches accepting stale provenance or treating backing/frame pixels outside geometry as valid.
+		const backing = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[0, 0, 255, 0, 0, 255],
+				[5, 5, 255, 0, 0, 255]
+			]
+		);
+		const interior = await rgbaFixture([0, 0, 0, 0], [[5, 5, 0, 255, 0, 255]]);
+		const frame = await rgbaFixture([0, 0, 0, 0], [[9, 9, 0, 0, 255, 255]]);
+		const composite = await composeCleanupIcon({ backing, interior, frame });
+
+		const inspection = await inspectCleanupComposite({
+			composite,
+			backing,
+			interior,
+			frame,
+			geometry: syntheticGeometry,
+			boundLayerHashes: {
+				backing: '0'.repeat(64),
+				interior: sha256(interior),
+				frame: sha256(frame)
+			}
+		});
+
+		expect(inspection.layerHashesMatch).toBe(false);
+		expect(inspection.exteriorTransparent).toBe(false);
+		expect(inspection.exactComposite).toBe(false);
+	});
+
 	it('reports missing canonical layers without writing partial finalization output', async () => {
 		// Catches a finalizer that begins mutating composites before all eight shared layers exist.
 		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-finalizer-'));
@@ -534,4 +689,137 @@ describe('deterministic protected-aperture composition', () => {
 			await rm(root, { recursive: true, force: true });
 		}
 	});
+
+	it('persists interiors and validated loss provenance through write, check, and drift modes', async () => {
+		// Catches dropping extracted interiors/evidence or replacing an existing derived artifact.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-ready-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const first = fixture.manifest.records[0]!;
+
+			const written = await finalizeSkillIconQualityCleanup({ root, mode: 'write' });
+			expect(written.ready).toBe(true);
+			expect(written.finalized).toBe(456);
+			expect(written.written).toHaveLength(456 * 3);
+			expect(written.written).toContain(fixture.firstInteriorPath);
+
+			const interior = await readFile(path.join(root, fixture.firstInteriorPath));
+			const interiorData = await rawRgba(interior);
+			expect(
+				Array.from(interiorData.subarray((512 * 1024 + 512) * 4, (512 * 1024 + 512) * 4 + 4))
+			).toEqual([0, 255, 0, 255]);
+			expect(
+				Array.from(interiorData.subarray((512 * 1024 + 150) * 4, (512 * 1024 + 150) * 4 + 4))
+			).toEqual([0, 0, 0, 0]);
+
+			const result = SkillIconCleanupResultSchema.parse(
+				JSON.parse(await readFile(path.join(root, first.resultPath), 'utf8')) as unknown
+			);
+			expect(result.cleanupInterior).toEqual({
+				path: fixture.firstInteriorPath,
+				contentHash: sha256(interior),
+				removedPixels: 2,
+				removedPixelBounds: { left: 0, top: 0, width: 151, height: 513 }
+			});
+
+			const composite = await rawRgba(await readFile(path.join(root, first.cleanupCompositePath)));
+			expect(Array.from(composite.subarray(0, 4))).toEqual([0, 0, 0, 0]);
+			expect(Array.from(composite.subarray((1024 * 1024 - 1) * 4))).toEqual([0, 0, 0, 0]);
+
+			const checked = await finalizeSkillIconQualityCleanup({ root, mode: 'check' });
+			expect(checked.written).toEqual([]);
+			expect(checked.drifted).toEqual([]);
+
+			const drift = Buffer.from('existing derived artifact drift\n');
+			await writeFile(path.join(root, first.cleanupCompositePath), drift);
+			const drifted = await finalizeSkillIconQualityCleanup({ root, mode: 'check' });
+			expect(drifted.drifted).toEqual([first.cleanupCompositePath]);
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/refusing to replace drifted cleanup artifact/i
+			);
+			expect(await readFile(path.join(root, first.cleanupCompositePath))).toEqual(drift);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 300_000);
+
+	it('preflights a late source hash failure before publishing the first output', async () => {
+		// Catches record-by-record verification that creates early outputs before a late source fails.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-source-drift-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const first = fixture.manifest.records[0]!;
+			const later = fixture.manifest.records[1]!;
+			await unlink(path.join(root, later.sourceCandidate.path));
+			await writeFile(
+				path.join(root, later.sourceCandidate.path),
+				Buffer.from('later source drift\n')
+			);
+
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				new RegExp(`frozen cleanup source hash drift: ${later.targetId}`, 'i')
+			);
+			await expect(readFile(path.join(root, first.cleanupCompositePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(readFile(path.join(root, fixture.firstInteriorPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 120_000);
+
+	it('preflights a late destination collision before publishing the first output', async () => {
+		// Catches create-only collision discovery after earlier records have already been published.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-output-drift-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const first = fixture.manifest.records[0]!;
+			const later = fixture.manifest.records[1]!;
+			const laterResult = path.join(root, later.resultPath);
+			await mkdir(path.dirname(laterResult), { recursive: true });
+			await writeFile(laterResult, Buffer.from('later destination drift\n'));
+
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/refusing to replace drifted cleanup artifact/i
+			);
+			await expect(readFile(path.join(root, first.cleanupCompositePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(readFile(path.join(root, fixture.firstInteriorPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 180_000);
+
+	it('preflights every frozen authority hash before finalization', async () => {
+		// Catches validating geometry alone while another manifest-bound authority has drifted.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-authority-drift-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const first = fixture.manifest.records[0]!;
+			await writeFile(
+				path.join(root, fixture.manifest.authority.visualSpecifications.path),
+				Buffer.from('drifted visual specifications\n')
+			);
+			const later = fixture.manifest.records[1]!;
+			await unlink(path.join(root, later.sourceCandidate.path));
+			await writeFile(
+				path.join(root, later.sourceCandidate.path),
+				Buffer.from('later source drift proves authority ordering\n')
+			);
+
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/cleanup authority hash drift: visualSpecifications/i
+			);
+			await expect(readFile(path.join(root, first.cleanupCompositePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	}, 120_000);
 });
