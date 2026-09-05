@@ -1,9 +1,20 @@
-import { RuntimeVisualManifestSchema, type RuntimeVisualUsage } from '@summonlab/contracts';
+import {
+	RuntimeVisualManifestSchema,
+	SummonableHeroRuntimeManifestSchema,
+	type RuntimeVisualUsage
+} from '@summonlab/contracts';
 
 import runtimeVisualManifestSource from '../../../static/runtime/visual-catalog-v1/manifest.json';
+import summonableHeroRuntimeManifestSource from '../../../static/runtime/summonable-heroes-v1/manifest.json';
 
 const runtimeVisualManifest = RuntimeVisualManifestSchema.parse(runtimeVisualManifestSource);
-const runtimePortraits = runtimeVisualManifest.bundles.flatMap((bundle) => bundle.assets);
+const summonableHeroRuntimeManifest = SummonableHeroRuntimeManifestSchema.parse(
+	summonableHeroRuntimeManifestSource
+);
+const runtimePortraits = [
+	...runtimeVisualManifest.bundles.flatMap((bundle) => bundle.assets),
+	...summonableHeroRuntimeManifest.entries.flatMap((entry) => entry.bundle.assets)
+];
 
 export interface RuntimePortrait {
 	readonly publicPath: string;
@@ -16,11 +27,18 @@ export function runtimePortraitFor(
 	artKey: string | null,
 	usage: RuntimeVisualUsage
 ): RuntimePortrait | null {
-	const asset = runtimePortraits.find(
-		(candidate) =>
-			candidate.usage === usage &&
-			(candidate.manifestHashes.includes(manifestHash) ||
-				(artKey !== null && candidate.sourceAssetKey === artKey))
+	const identityMatches = (candidate: (typeof runtimePortraits)[number]) =>
+		candidate.manifestHashes.includes(manifestHash) ||
+		(artKey !== null && candidate.sourceAssetKey === artKey);
+	const exact = runtimePortraits.find(
+		(candidate) => candidate.usage === usage && identityMatches(candidate)
 	);
+	const asset =
+		exact ??
+		(['dialogue', 'roster'].includes(usage)
+			? runtimePortraits.find(
+					(candidate) => candidate.usage === 'summon' && identityMatches(candidate)
+				)
+			: undefined);
 	return asset ? { publicPath: asset.publicPath, width: asset.width, height: asset.height } : null;
 }

@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import summonableCatalogSource from '../../../../../assets/heroes/approved/summonable-roster-v1/catalog.json';
+
 import { runtimePortraitFor } from './runtime-portraits';
 
 describe('runtime portraits', () => {
@@ -12,12 +14,31 @@ describe('runtime portraits', () => {
 			expect(runtimePortraitFor(manifestHash, null, 'summon')?.publicPath).toMatch(
 				/^\/runtime\/visual-catalog-v1\/hero-.+\/summon\.[a-f0-9]{12}\.webp$/u
 			);
-			expect(runtimePortraitFor(manifestHash, null, 'dialogue')).not.toBeNull();
-			expect(runtimePortraitFor(manifestHash, null, 'roster')).not.toBeNull();
+			expect(runtimePortraitFor(manifestHash, null, 'dialogue')?.publicPath).toContain(
+				'/dialogue.'
+			);
+			expect(runtimePortraitFor(manifestHash, null, 'roster')?.publicPath).toContain('/roster.');
 		}
 	});
 
 	it('keeps the deterministic rig fallback for unillustrated manifests', () => {
 		expect(runtimePortraitFor('f'.repeat(64), null, 'summon')).toBeNull();
+	});
+
+	it('resolves both approved summon and combat-chibi art for a summonable hero', () => {
+		const hero = summonableCatalogSource.entries[0]!;
+		const summon = runtimePortraitFor(
+			hero.draft.manifestHash,
+			hero.draft.manifest.artKey,
+			'summon'
+		);
+		const combatChibi = runtimePortraitFor(
+			hero.draft.manifestHash,
+			hero.draft.manifest.artKey,
+			'combat-chibi'
+		);
+
+		expect(summon?.publicPath).toContain(`/summonable-heroes-v1/${hero.heroId}/summon.`);
+		expect(combatChibi?.publicPath).toContain(`/summonable-heroes-v1/${hero.heroId}/combat-chibi.`);
 	});
 });

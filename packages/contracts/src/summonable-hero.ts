@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CharacterDraftSchema } from './character.js';
 import { ContentVersionSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
+import { PixiAssetManifestSchema, RuntimeVisualBundleSchema } from './visual.js';
 
 const HeroSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
 
@@ -119,6 +120,78 @@ export const SummonableHeroCatalogSchema = z
 		}
 	});
 
+export const SummonableHeroRuntimeEntrySchema = z
+	.object({
+		heroId: HeroSlugSchema,
+		characterId: z.uuid(),
+		manifestHash: StateHashSchema,
+		bundle: RuntimeVisualBundleSchema
+	})
+	.strict()
+	.superRefine((entry, context) => {
+		if (entry.bundle.name !== `hero-${entry.heroId}`) {
+			context.addIssue({
+				code: 'custom',
+				message: `Runtime bundle identity mismatch: ${entry.heroId}`
+			});
+		}
+		const usages = new Set(entry.bundle.assets.map((asset) => asset.usage));
+		if (usages.size !== 2 || !usages.has('summon') || !usages.has('combat-chibi')) {
+			context.addIssue({
+				code: 'custom',
+				message: `Runtime visual pair incomplete: ${entry.heroId}`
+			});
+		}
+		if (
+			entry.bundle.assets.some(
+				(asset) =>
+					asset.manifestHashes.length !== 1 || asset.manifestHashes[0] !== entry.manifestHash
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: `Runtime manifest binding mismatch: ${entry.heroId}`
+			});
+		}
+	});
+
+export const SummonableHeroRuntimeManifestSchema = z
+	.object({
+		schemaVersion: z.literal('summonable-hero-runtime-manifest-v1'),
+		catalogVersion: ContentVersionSchema,
+		sourceCatalogContentHash: StateHashSchema,
+		exporterVersion: z.literal('summonable-hero-runtime-exporter-v1'),
+		loading: z.literal('lazy-per-hero'),
+		totalBytes: z.number().int().positive(),
+		entries: z.array(SummonableHeroRuntimeEntrySchema).length(200),
+		pixiManifest: PixiAssetManifestSchema,
+		manifestHash: StateHashSchema
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const totalBytes = manifest.entries.reduce((total, entry) => total + entry.bundle.bytes, 0);
+		if (totalBytes !== manifest.totalBytes) {
+			context.addIssue({ code: 'custom', message: 'Summonable runtime byte total is stale' });
+		}
+		const bundleNames = new Set(manifest.entries.map((entry) => entry.bundle.name));
+		if (bundleNames.size !== 200 || manifest.pixiManifest.bundles.length !== 200) {
+			context.addIssue({ code: 'custom', message: 'Summonable runtime bundle inventory is stale' });
+		}
+		for (const entry of manifest.entries) {
+			const pixiBundle = manifest.pixiManifest.bundles.find(
+				(candidate) => candidate.name === entry.bundle.name
+			);
+			if (!pixiBundle || pixiBundle.assets.length !== 2) {
+				context.addIssue({
+					code: 'custom',
+					message: `Pixi bundle projection missing: ${entry.heroId}`
+				});
+			}
+		}
+	});
+
 export type ApprovedHeroSourceAsset = z.infer<typeof ApprovedHeroSourceAssetSchema>;
 export type SummonableHeroEntry = z.infer<typeof SummonableHeroEntrySchema>;
 export type SummonableHeroCatalog = z.infer<typeof SummonableHeroCatalogSchema>;
+export type SummonableHeroRuntimeEntry = z.infer<typeof SummonableHeroRuntimeEntrySchema>;
+export type SummonableHeroRuntimeManifest = z.infer<typeof SummonableHeroRuntimeManifestSchema>;

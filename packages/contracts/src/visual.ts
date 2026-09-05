@@ -249,7 +249,8 @@ export const RuntimeVisualUsageSchema = z.enum([
 	'roster',
 	'roster-group',
 	'settlement-preview',
-	'summon-card'
+	'summon-card',
+	'combat-chibi'
 ]);
 
 export const VisualRecognitionCueSchema = z.enum([
