@@ -121,7 +121,7 @@
 					<span>Living Village</span><i>Visual packet</i>
 				</a>
 				<a href={resolve('/wiki/creatures/monsters')}>
-					<span>Monster database</span><i>40 identities</i>
+					<span>Monster database</span><i>190 forms</i>
 				</a>
 			</nav>
 			<p class="nav-label">Library</p>

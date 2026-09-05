@@ -1,0 +1,13 @@
+Edit this exact seven-sword greatsword progression board as a bounded proportion correction. Preserve the dark studio background, exactly seven columns, left-to-right Bronze F / Iron E / Steel D / Blacksteel C / Skyiron B / Starmetal A / Sunsteel S progression, complete uncropped weapons, coherent materials, long authoritative blades, painterly realism, and all successful blade silhouettes.
+
+Correct EVERY sword's construction by moving the functional guard plane modestly downward and rebuilding the hilt:
+- Blade length from guard plane to tip divided by full hilt length from guard plane to pommel end must be 2.5–2.8.
+- Blade must occupy 71–74% of total tip-to-pommel length.
+- Exposed wrapped grip length must be 27–31% of blade length, so it visibly fits exactly two gauntleted hands plus modest separation.
+- Functional quillon span must be 24–30% of total sword length. Widen the quillons where needed while keeping them practical and inside each column.
+- Pommel and terminal cap must be 4–6% of total sword length. Keep each pommel compact.
+- Keep total sword length at 82–86% of canvas height with 7–9% safe margins.
+
+The current source has hilts and wrapped grips that are too short and guards that are too narrow. Lengthen every exposed wrapped grip substantially, approximately 35–45%, while slightly shortening the blade only as needed to retain the same overall footprint. Do not shorten blades back toward one-handed or v1 proportions. The result must unmistakably read as seven realistically proportioned two-handed greatswords, not arming swords with long blades.
+
+Keep the guard precisely at the blade shoulders. High-rank ornament must not disguise the guard plane or count as extra hilt. Use oval, gently waisted, subtly tapered grips with believable wrap and tang alignment. Preserve distal blade taper. No staff handles, swollen pommels, oversized guard hubs, slab blades, labels, text, UI, borders, hands, wielders, scenery, extra objects, cropped weapons, watermark, signature, or blank bands. Complete the entire canvas.

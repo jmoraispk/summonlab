@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:dance-of-two",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-dance-of-two.json",
+	"promptHash": "fd302e51d9889c0abd80866e091c5db05082347a455e94f871ab45344609cbe0",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-flow.png",
+			"contentHash": "d9be38f429a2c18c6e68f0927245569521b4bb2f05db257f2cd251a9454c8de0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-mirror-grip.png",
+			"contentHash": "b71ff15191d413b8ea619b0b406b93a02d9f669f0178447cec206201826f2395"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-dance-of-two-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2115467,
+		"contentHash": "d0eb9773cae7c0f2a61d916581bbd8cb466f96b2addf6acb8a6e897af75a862d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-dance-of-two.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1841449,
+		"contentHash": "57d79c614cc7f9a38b7b01e9add505d4b63ed078348770e07baaa2855400ac66"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "52756b55709c804ca24b73199cc07f7ffac8cbe411d6d4e35810dd56b34cf5ce",
+		"postRepairContentHash": "57d79c614cc7f9a38b7b01e9add505d4b63ed078348770e07baaa2855400ac66",
+		"removedPixels": 384942
+	}
+}

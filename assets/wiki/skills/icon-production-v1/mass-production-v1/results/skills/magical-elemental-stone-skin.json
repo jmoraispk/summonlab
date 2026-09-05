@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:stone-skin",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stone-skin.json",
+	"promptHash": "ee33564c12a148bc85109a38b52d1cb6265aa771338a91402d7bbe923011eee3",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-form.png",
+			"contentHash": "9833cc43c9320c9fc624d7e5eb8f8d522585ed7459678bd45354f47f9711e392"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-harden.png",
+			"contentHash": "c73f3e6a3577d5f033fb0c8bbd1f366c60d0e61686688b75bdabd60e454b64b3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-stone-skin-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2257335,
+		"contentHash": "62e73f6f9560cd765c418b98b710d9c757761128b2949e8710dfeb60caff8f8c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-stone-skin.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1987226,
+		"contentHash": "61d1d115335cb853a71e2b154c95d34b426b67ee4f37de77cadd7fd08d614949"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b9f64f2c12da5d50e289e2d459651f4e96bda41d3c4df587163f41c45760168c",
+		"postRepairContentHash": "61d1d115335cb853a71e2b154c95d34b426b67ee4f37de77cadd7fd08d614949",
+		"removedPixels": 384942
+	}
+}

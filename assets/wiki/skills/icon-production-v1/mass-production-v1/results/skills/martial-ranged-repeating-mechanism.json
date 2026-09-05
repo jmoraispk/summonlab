@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:repeating-mechanism",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-repeating-mechanism.json",
+	"promptHash": "f433b930ebd0637fe315dab7da8c8e198c5c17957e894d96011a7e302dc684d1",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-repeating-bolt.png",
+			"contentHash": "69309bd51ee5f394b0d52ebf7455fa80a4fc8e8ba693dc4c276acb915b037e85"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-bolt-craft.png",
+			"contentHash": "3d43c305f59669366ff74b22ae934d94d0a0078704ecd0791d5e5025be8f2d4c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-repeating-mechanism-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1925544,
+		"contentHash": "948743dcc68d56863197a53cde339f5c61d3bc638e1240f7041f4588dade49ab"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-repeating-mechanism.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1738117,
+		"contentHash": "de1c36a3d404448462b94e2047174c1ba85b2974ac714431f946f67ba93d92d1"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "5a2758f99eddbc57ee077b3da9125a9a0d5087f5a617ca087db66104057a7539",
+		"postRepairContentHash": "de1c36a3d404448462b94e2047174c1ba85b2974ac714431f946f67ba93d92d1",
+		"removedPixels": 384942
+	}
+}

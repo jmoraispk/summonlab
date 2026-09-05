@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:one-inch",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-one-inch.json",
+	"promptHash": "79b6c6bcb4cffadd54f1ee5948c3f4f7396b3709494d84db4d2b60ccb7a3b3ce",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-striking-form.png",
+			"contentHash": "089a5b208fe5f51a2673f1bb44b6ed55d2bfb755f393149aa17316679116eaed"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-hundred-hands.png",
+			"contentHash": "4df96034c248a3309dd6d06f379e52122d804f507fb75b9bdc13369a26622856"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-one-inch-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2133088,
+		"contentHash": "8ff1532ac35a69fb9edf8e467e38824d37c09d800f34b0c4b5675b17e1a9b630"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-one-inch.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1909136,
+		"contentHash": "45d2790961de66de8ee28134bdf94eae329ee85b6ef6ca4ef7bb52a838436c82"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e822139431b1d769d58b4fb24be7d3c925d1807d29152d5c78b42aae79233310",
+		"postRepairContentHash": "45d2790961de66de8ee28134bdf94eae329ee85b6ef6ca4ef7bb52a838436c82",
+		"removedPixels": 384942
+	}
+}

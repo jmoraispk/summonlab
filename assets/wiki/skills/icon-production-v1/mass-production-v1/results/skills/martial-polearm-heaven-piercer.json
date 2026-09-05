@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:heaven-piercer",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-heaven-piercer.json",
+	"promptHash": "37815191e7c557efa47cdd2be1cfea43a3ee86aa19629a4c1d40a2925a18b092",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-piercing-line.png",
+			"contentHash": "d9857907f0f4a0a2f6bd3fe3e5a47c4814e002922424ecdd9578d2bd13783922"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-serpent-s-tongue.png",
+			"contentHash": "608bef5db7d564784349327f1ea9623d6ec2b6f115f4ead1351dd1ef363a2f58"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-heaven-piercer-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1728712,
+		"contentHash": "fa2cec359d13c43438fc7f9cb5d5e2a2e3f6813fc138bbcfb21875007d57ab24"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-heaven-piercer.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1449379,
+		"contentHash": "1b3f550ec0bc92e1fa36cf4c2428e3617eadae39a39d2d2d42828dec1b6094e5"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e84bbe8eb22ad3130e43c94880a199a248ad95f667880f7ad2e0a42dd5f6d7ea",
+		"postRepairContentHash": "1b3f550ec0bc92e1fa36cf4c2428e3617eadae39a39d2d2d42828dec1b6094e5",
+		"removedPixels": 384942
+	}
+}

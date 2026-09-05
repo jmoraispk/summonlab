@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:armour-imbuing",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-armour-imbuing.json",
+	"promptHash": "884ba61a0b7948f5a22919aa1e013361ac456d4c9f250fe0d7a4efc971780ab9",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-imbued-object.png",
+			"contentHash": "0e8d57a24473dacba9ec32f2162926b990601aa11c3ee94dad195c1813bcdfa8"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-weapon-oil.png",
+			"contentHash": "06b67d9669a78a09778da6434a0ee2c74a47dff96884e4f541f1dddaf61368c1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-armour-imbuing-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2022290,
+		"contentHash": "5da659175fd4242d44096b54bf41c6e08504c33af1894813e0a4d08230ea2164"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armour-imbuing.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1827509,
+		"contentHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "71f7b6814f0289b4afda9e185d575348b58502bc3bd5d44dc59c12eaf6d3835e",
+		"postRepairContentHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041",
+		"removedPixels": 384942
+	}
+}

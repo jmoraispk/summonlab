@@ -1,0 +1,30 @@
+{
+  "assignedAt": "2026-09-02T00:00:00Z",
+  "assignmentId": "daiel-zharek-summon-v1-assignment",
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  },
+  "dryRun": false,
+  "experimentId": "one-star-overnight-200-001",
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001/roster-plan.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/production-report.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/provenance/production-journal.jsonl",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/index.html",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/quarantine.html"
+  ],
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/candidates/daiel-zharek/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/results/daiel-zharek/summon-v1.json"
+  },
+  "producerId": "image-producer-lane-09",
+  "retryCeiling": 1,
+  "schemaVersion": "hero-one-star-image-assignment-v1",
+  "targetId": "daiel-zharek-summon-v1",
+  "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/daiel-zharek/summon-v1.json",
+  "targetSha256": "d8ee3ae4446db314860001ddbc750c9714d7e51bc2d5530e67fe841b0bf8e48f"
+}

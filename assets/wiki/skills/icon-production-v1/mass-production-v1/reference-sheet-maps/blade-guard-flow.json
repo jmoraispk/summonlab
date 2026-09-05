@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.guard-flow",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:cross-guard",
+			"name": "Cross Guard",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:blade:binding-cut",
+			"name": "Binding Cut",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:blade:counter-flow",
+			"name": "Counter Flow",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:blade:still-water-stance",
+			"name": "Still Water Stance",
+			"rarity": "C",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:blade:mirrored-edge",
+			"name": "Mirrored Edge",
+			"rarity": "B",
+			"row": 2,
+			"column": 1
+		}
+	]
+}

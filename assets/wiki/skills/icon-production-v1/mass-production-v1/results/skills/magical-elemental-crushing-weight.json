@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:crushing-weight",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-crushing-weight.json",
+	"promptHash": "893a426f1f30839fec7baf27b82d2dcad3b5db3df810069e6e9b84b486a1ab79",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-weight.png",
+			"contentHash": "6407087172fab6f99da62df7f9d8aeac4b8098f743c4328213fc6090d8f00538"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-tremor.png",
+			"contentHash": "59a58dcdeeddb1a87ec30fa1b7e7d545679870c97bdada9a48f8c5df631036c6"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-crushing-weight-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2047591,
+		"contentHash": "c4d486508a2dfb52a4ecb518c50084ff55808f03f4633f374118e7e1f1f6b435"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-crushing-weight.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1804825,
+		"contentHash": "42a3fca058e498f97b70325c65b5fdac3815f200c23a031b52dad2d4b431cfb6"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "abadbd4cecf3df08f2a9a9cedc963ace8054b3677881431a1eea729108876a3b",
+		"postRepairContentHash": "42a3fca058e498f97b70325c65b5fdac3815f200c23a031b52dad2d4b431cfb6",
+		"removedPixels": 384942
+	}
+}

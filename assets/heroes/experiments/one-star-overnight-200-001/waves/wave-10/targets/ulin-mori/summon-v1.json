@@ -1,0 +1,129 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "0c2055eef15a6561649fb1dcd69b29da4feb9f047fa3fd594690a91928b073eb",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Ulin Mori: 42-year-old woman, 161 cm (short), sturdy stocky construction with a broad frame and compact proportions, skin value band-6-deepest. Face: square compact face; small bright eyes and fine straight brows; crooked healed nose, balanced mouth; no added facial mark. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: multicolor-split-streak, medium-loose, deliberate accent: none. Wardrobe: tunic-tabard, specifically a long tunic and split tabard over loose trousers with wrapped ankles; low-profile toggles and articulated knee folds; bounded palette plum-gray. Visible personal details: one mismatched earring; a carved belt buckle. Make one clasp, buckle, piercing, or piece of hair hardware the primary recognition device. Maintenance cue: deliberately tousled but clean. Color treatment: keeps color restrained to layered edges. Pose cue: one shoulder leads subtly and the gaze meets the viewer without a smile. Include a string-bound recipe leaf only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "ulin-mori",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "one mismatched earring",
+        "a carved belt buckle"
+      ],
+      "coolnessAnchor": "jewelry-hardware",
+      "density": 2,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": null,
+      "chibiReadability": "Preserve the front and side silhouette of medium-loose, the parting, gathered mass, shaved areas, and none; color remains multicolor-split-streak.",
+      "colorFamily": "multicolor-split-streak",
+      "silhouetteFamily": "medium-loose"
+    },
+    "identity": {
+      "age": 42,
+      "displayName": "Ulin Mori",
+      "faceDescription": "square compact face; small bright eyes and fine straight brows; crooked healed nose, balanced mouth; no added facial mark",
+      "gender": "woman",
+      "identitySignature": "0b1df24c2d769bd1d1232032459b27df6a128c8e2b706bf006bade3d7f9340ba",
+      "skinValueBand": 6
+    },
+    "kernel": {
+      "colorOrnamentTaste": "keeps color restrained to layered edges; enjoys two mismatched personal details.",
+      "counterTrait": "hates being the center of a room",
+      "culturalFragments": [
+        "prefers handloom cloth with visible slubs",
+        "folds shared cloth inward to signal trust"
+      ],
+      "dominantTrait": "proudly self-reliant",
+      "groomingAttitude": "deliberately tousled but clean",
+      "lifeEcho": "animal care",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "one shoulder leads subtly and the gaze meets the viewer without a smile",
+      "socialPresentation": "open and attentive",
+      "tension": "Appears open and attentive, yet hates being the center of a room."
+    },
+    "physique": {
+      "bodyType": "sturdy-stocky",
+      "description": "161 cm; sturdy stocky construction with a broad frame and compact proportions.",
+      "heightBand": "short"
+    },
+    "wardrobe": {
+      "condition": "deliberately tousled but clean",
+      "description": "a long tunic and split tabard over loose trousers with wrapped ankles; low-profile toggles and articulated knee folds.",
+      "family": "tunic-tabard",
+      "paletteFamily": "plum-gray"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/ulin-mori/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/results/ulin-mori/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "ulin-mori-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-10"
+}

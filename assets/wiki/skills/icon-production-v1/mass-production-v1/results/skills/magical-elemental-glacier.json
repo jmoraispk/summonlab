@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:glacier",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-glacier.json",
+	"promptHash": "9fdb2ba97f5de386f920a19a8869cbfe9a6bd6dc71152f73900c224351a1e917",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-cold.png",
+			"contentHash": "d6d8ba6be9da989e2e9eb2a1412a6f54b082c4abc974952d3bb26b6562d17aa4"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-deep-cold.png",
+			"contentHash": "53723139901814ec62865e3c7382e7d10940c23a99be140a5775a699e6f45f3b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-glacier-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2355457,
+		"contentHash": "7ad7be763d4c0da358c2a5f518ddd3071b547123f6a27a8edd973d5fa9ef0140"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-glacier.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2165570,
+		"contentHash": "68fce5f97f45c68391a8ac5536f689d0d58165a6ed5da17d538ff45d59a55d63"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e977ed1eafb760e04e898b65064a03a75f9cc3a5866960b73f2c258a47208b28",
+		"postRepairContentHash": "68fce5f97f45c68391a8ac5536f689d0d58165a6ed5da17d538ff45d59a55d63",
+		"removedPixels": 384942
+	}
+}

@@ -14,6 +14,9 @@ export const CURRENT_CLASS_DISPOSITIONS = [
 	'retire'
 ] as const;
 export const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1' as const;
+export const FAUNA_FAMILY_ROOT = 'assets/enemies/experiments/fauna-family-v1' as const;
+export const FAMILY_PRODUCTION_EXPERIMENT_IDS = ['family-affinity-v1', 'fauna-family-v1'] as const;
+export type FamilyProductionExperimentId = (typeof FAMILY_PRODUCTION_EXPERIMENT_IDS)[number];
 export const FAMILY_AFFINITY_ACTIVE_SOURCES_PATH =
 	`${FAMILY_AFFINITY_ROOT}/active-sources.json` as const;
 export const FAMILY_AFFINITY_LEGACY_MAPPING_PATH =
@@ -25,6 +28,10 @@ const FormTierSchema = z.enum(FORM_TIERS);
 const CurrentClassDispositionSchema = z.enum(CURRENT_CLASS_DISPOSITIONS);
 const IdSchema = z.string().regex(/^[a-z][a-z0-9-]*$/u, 'IDs must be lowercase slugs');
 const RequiredTextSchema = z.string().trim().min(1, 'Expected non-empty text');
+const FamilyProductionSourcePathSchema = z
+	.string()
+	.regex(/^assets\/enemies\/experiments\/(?:family-affinity-v1|fauna-family-v1)\//u)
+	.refine((value) => !value.includes('..'), 'Active source paths cannot traverse directories');
 const ActiveSourcePathSchema = z
 	.string()
 	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
@@ -106,7 +113,7 @@ export const FamilyFormSchema = z
 export const FamilyPacketSchema = z
 	.object({
 		schemaVersion: z.literal('family-packet-v1'),
-		packetPath: ActiveSourcePathSchema.optional(),
+		packetPath: FamilyProductionSourcePathSchema.optional(),
 		familyId: IdSchema,
 		displayName: RequiredTextSchema,
 		sourceRaceNumber: z.number().int().positive(),
@@ -236,7 +243,7 @@ export type CurrentClassMappingAudit = {
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u, 'Expected lowercase SHA-256');
 const OwnedPathSchema = z
 	.string()
-	.regex(/^assets\/enemies\/experiments\/family-affinity-v1\//u)
+	.regex(/^assets\/enemies\/experiments\/(?:family-affinity-v1|fauna-family-v1)\//u)
 	.refine((value) => !value.includes('..'), 'Owned paths cannot traverse directories');
 const LegacyNormalCandidatePathSchema = z
 	.string()
@@ -244,8 +251,24 @@ const LegacyNormalCandidatePathSchema = z
 		/^assets\/enemies\/experiments\/(?:affinity-workflow-v1|affinity-expansion-v1)\/candidates\/[a-z][a-z0-9-]*\/normal-v[1-9][0-9]*\.png$/u,
 		'Expected an exact retained legacy Normal candidate path'
 	);
-const AttemptStatusSchema = z.enum(['planned', 'blocked-on-anchor', 'earth-bridge-provisional']);
+const AttemptStatusSchema = z.enum([
+	'planned',
+	'planned-provisional-anchor',
+	'blocked-on-anchor',
+	'earth-bridge-provisional'
+]);
 const NamespaceSchema = z.enum(['canonical', 'bridge']);
+const FamilyProductionExperimentIdSchema = z.enum(FAMILY_PRODUCTION_EXPERIMENT_IDS);
+
+export function familyProductionRoot(experimentId: FamilyProductionExperimentId): string {
+	return experimentId === 'fauna-family-v1' ? FAUNA_FAMILY_ROOT : FAMILY_AFFINITY_ROOT;
+}
+
+export function familyProductionTargetExperimentId(target: {
+	experimentId?: FamilyProductionExperimentId | undefined;
+}): FamilyProductionExperimentId {
+	return target.experimentId ?? 'family-affinity-v1';
+}
 
 const FamilyAffinityRevisionSemanticOverridesShape = {
 	playerFacingName: RequiredTextSchema.optional(),
@@ -460,11 +483,14 @@ const BridgeIdentitySourceSchema = z
 export const FamilyAffinityTargetSchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-target-v1'),
+		experimentId: FamilyProductionExperimentIdSchema.optional(),
 		namespace: NamespaceSchema,
 		coordinateId: RequiredTextSchema,
 		targetId: RequiredTextSchema,
 		familyId: IdSchema,
+		familyDisplayName: RequiredTextSchema.optional(),
 		formId: IdSchema,
+		formDisplayName: RequiredTextSchema.optional(),
 		currentClassId: IdSchema.nullable(),
 		playerFacingName: RequiredTextSchema.optional(),
 		canonicalCoordinateId: RequiredTextSchema.optional(),
@@ -499,6 +525,23 @@ export const FamilyAffinityTargetSchema = z
 			.strict(),
 		anchor: z.discriminatedUnion('kind', [
 			z.object({ kind: z.literal('normal-self') }).strict(),
+			z
+				.object({
+					kind: z.literal('normal-verified-candidate'),
+					normalCoordinateId: RequiredTextSchema,
+					normalVersion: z.number().int().positive(),
+					normalTargetPath: OwnedPathSchema,
+					normalTargetSha256: Sha256Schema,
+					normalCandidatePath: OwnedPathSchema,
+					normalCandidateSha256: Sha256Schema,
+					normalResultPath: OwnedPathSchema,
+					normalResultSha256: Sha256Schema,
+					sourcePacketPath: OwnedPathSchema,
+					sourcePacketSha256: Sha256Schema,
+					humanReviewPending: z.literal(true),
+					runtimeCatalogMutationForbidden: z.literal(true)
+				})
+				.strict(),
 			z
 				.object({
 					kind: z.literal('normal-approved-review'),
@@ -543,6 +586,60 @@ export const FamilyAffinityTargetSchema = z
 	})
 	.strict()
 	.superRefine((target, context) => {
+		const experimentId = familyProductionTargetExperimentId(target);
+		const experimentRoot = `${familyProductionRoot(experimentId)}/`;
+		const anchorPaths =
+			target.anchor.kind === 'normal-verified-candidate'
+				? [
+						target.anchor.normalTargetPath,
+						target.anchor.normalCandidatePath,
+						target.anchor.normalResultPath,
+						target.anchor.sourcePacketPath
+					]
+				: target.anchor.kind === 'normal-approved-review'
+					? [
+							target.anchor.normalTargetPath,
+							target.anchor.reviewReceiptPath,
+							target.anchor.normalCandidatePath,
+							target.anchor.normalResultPath
+						]
+					: [];
+		const precedingPaths =
+			target.precedingAttempt === null
+				? []
+				: [
+						target.precedingAttempt.candidatePath,
+						target.precedingAttempt.resultPath,
+						target.precedingAttempt.reviewPath
+					];
+		const experimentPaths = [
+			target.sources.familyPacketPath,
+			target.sources.mappingPath,
+			...Object.values(target.ownedPaths),
+			...anchorPaths,
+			...precedingPaths
+		];
+		if (experimentPaths.some((path) => path !== null && !path.startsWith(experimentRoot))) {
+			context.addIssue({
+				code: 'custom',
+				message: `Target paths must stay under the ${experimentId} root`
+			});
+		}
+		if (experimentId === 'fauna-family-v1' && target.namespace !== 'canonical') {
+			context.addIssue({
+				code: 'custom',
+				message: 'Fauna family production supports canonical targets only'
+			});
+		}
+		if (
+			experimentId === 'fauna-family-v1' &&
+			(target.familyDisplayName === undefined || target.formDisplayName === undefined)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Fauna targets require family and form display identities'
+			});
+		}
 		const correction = target.semanticCorrection;
 		if (
 			target.playerFacingName !== undefined &&
@@ -644,7 +741,11 @@ export const FamilyAffinityTargetSchema = z
 				message: 'Target coordinate fields do not match coordinateId'
 			});
 		}
-		if (target.targetId !== `${target.namespace}/${target.coordinateId}/v${target.version}`) {
+		const expectedTargetId =
+			experimentId === 'family-affinity-v1'
+				? `${target.namespace}/${target.coordinateId}/v${target.version}`
+				: `${experimentId}/${target.namespace}/${target.coordinateId}/v${target.version}`;
+		if (target.targetId !== expectedTargetId) {
 			context.addIssue({
 				code: 'custom',
 				message: 'Target ID must bind namespace, coordinate, and version'
@@ -668,6 +769,26 @@ export const FamilyAffinityTargetSchema = z
 				target.ownedPaths.blindReview !== paths.blindReview
 			) {
 				context.addIssue({ code: 'custom', message: 'Bridge target owned paths must be exact' });
+			}
+		}
+		if (target.namespace === 'canonical') {
+			const paths = canonicalAttemptPaths(
+				target.familyId,
+				target.formId,
+				target.affinity,
+				target.version,
+				experimentId
+			);
+			if (
+				target.ownedPaths.candidate !== paths.candidate ||
+				target.ownedPaths.result !== paths.result ||
+				target.ownedPaths.decision !== paths.decision ||
+				target.ownedPaths.blindReview !== paths.blindReview
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Canonical target outputs do not match exact owned paths'
+				});
 			}
 		}
 		if (target.affinity === 'normal' && target.anchor.kind !== 'normal-self') {
@@ -708,10 +829,32 @@ export const FamilyAffinityTargetSchema = z
 					message: 'Blocked elemental targets cannot carry approval evidence'
 				});
 			}
-			if (target.status === 'earth-bridge-provisional') {
+			if (
+				target.status === 'earth-bridge-provisional' ||
+				target.status === 'planned-provisional-anchor'
+			) {
 				context.addIssue({
 					code: 'custom',
-					message: 'Ordinary Normal anchors cannot use provisional status'
+					message: 'Approved Normal anchors cannot use provisional status'
+				});
+			}
+		}
+		if (target.anchor.kind === 'normal-verified-candidate') {
+			if (
+				target.namespace !== 'canonical' ||
+				target.affinity === 'normal' ||
+				target.anchor.normalCoordinateId !== `${target.familyId}/${target.formId}/normal`
+			) {
+				context.addIssue({
+					code: 'custom',
+					message:
+						'Verified-candidate anchors require a canonical affinity target and same-form Normal coordinate'
+				});
+			}
+			if (target.status !== 'planned-provisional-anchor') {
+				context.addIssue({
+					code: 'custom',
+					message: 'Verified-candidate anchors require planned-provisional-anchor status'
 				});
 			}
 		}
@@ -805,6 +948,7 @@ export function validateFamilyAffinitySourcePacket(
 export const FamilyAffinityAssignmentSchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-assignment-v1'),
+		experimentId: FamilyProductionExperimentIdSchema.optional(),
 		assignmentId: RequiredTextSchema,
 		targetId: RequiredTextSchema,
 		targetSha256: Sha256Schema,
@@ -820,6 +964,17 @@ export const FamilyAffinityAssignmentSchema = z
 	})
 	.strict()
 	.superRefine((assignment, context) => {
+		const experimentId = assignment.experimentId ?? 'family-affinity-v1';
+		const experimentRoot = `${familyProductionRoot(experimentId)}/`;
+		if (
+			!assignment.allowedOutputs.candidate.startsWith(experimentRoot) ||
+			!assignment.allowedOutputs.result.startsWith(experimentRoot)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: `Assignment outputs must stay under the ${experimentId} root`
+			});
+		}
 		if (assignment.assignmentId !== `${assignment.targetId}/assignment`) {
 			context.addIssue({ code: 'custom', message: 'Assignment ID must bind its target ID' });
 		}
@@ -829,37 +984,39 @@ export type FamilyAffinityAssignment = z.infer<typeof FamilyAffinityAssignmentSc
 
 export const FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION = 'summonlab-image-production-v3' as const;
 export const FAMILY_AFFINITY_PRODUCTION_PROFILE = 'image-production-family-target-v1' as const;
+export const FAUNA_FAMILY_PRODUCTION_PROFILE = 'image-production-fauna-family-target-v1' as const;
 export const FAMILY_AFFINITY_SKILL_CONTRACT_PATH =
 	'skills/summonlab-image-production/references/contract-v3.json' as const;
 
-const FamilyAffinityPathTemplatesSchema = z
-	.object({
-		canonicalTarget: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/targets/{familyId}/{formId}/{affinity}/target-v{version}.json`
-		),
-		canonicalAssignment: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json`
-		),
-		canonicalCandidate: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/candidates/{familyId}/{formId}/{affinity}-v{version}.png`
-		),
-		canonicalResult: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/results/{familyId}/{formId}/{affinity}-v{version}.json`
-		),
-		bridgeTarget: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json`
-		),
-		bridgeAssignment: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json`
-		),
-		bridgeCandidate: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/bridge/candidates/{currentClassId}/{affinity}-v{version}.png`
-		),
-		bridgeResult: z.literal(
-			`${FAMILY_AFFINITY_ROOT}/bridge/results/{currentClassId}/{affinity}-v{version}.json`
-		)
-	})
-	.strict();
+function familyProductionPathTemplatesSchema(root: string) {
+	return z
+		.object({
+			canonicalTarget: z.literal(
+				`${root}/targets/{familyId}/{formId}/{affinity}/target-v{version}.json`
+			),
+			canonicalAssignment: z.literal(
+				`${root}/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json`
+			),
+			canonicalCandidate: z.literal(
+				`${root}/candidates/{familyId}/{formId}/{affinity}-v{version}.png`
+			),
+			canonicalResult: z.literal(`${root}/results/{familyId}/{formId}/{affinity}-v{version}.json`),
+			bridgeTarget: z.literal(
+				`${root}/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json`
+			),
+			bridgeAssignment: z.literal(
+				`${root}/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json`
+			),
+			bridgeCandidate: z.literal(
+				`${root}/bridge/candidates/{currentClassId}/{affinity}-v{version}.png`
+			),
+			bridgeResult: z.literal(`${root}/bridge/results/{currentClassId}/{affinity}-v{version}.json`)
+		})
+		.strict();
+}
+
+const FamilyAffinityPathTemplatesSchema = familyProductionPathTemplatesSchema(FAMILY_AFFINITY_ROOT);
+const FaunaFamilyPathTemplatesSchema = familyProductionPathTemplatesSchema(FAUNA_FAMILY_ROOT);
 
 const FamilyAffinityCompatibilityOwnershipSchema = z
 	.object({
@@ -925,7 +1082,7 @@ const FamilyAffinitySealedLauncherSchema = z
 	})
 	.strict();
 
-export const FamilyAffinityProductionCompatibilitySchema = z
+const LegacyFamilyAffinityProductionCompatibilitySchema = z
 	.object({
 		schemaVersion: z.literal('family-affinity-production-compatibility-v1'),
 		skillVersion: z.literal(FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION),
@@ -947,6 +1104,27 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 			z.literal('water')
 		]),
 		namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+		dispatchStatuses: z.tuple([
+			z.literal('planned'),
+			z.literal('planned-provisional-anchor'),
+			z.literal('earth-bridge-provisional')
+		]),
+		anchorKinds: z.tuple([
+			z.literal('normal-self'),
+			z.literal('normal-approved-review'),
+			z.literal('normal-verified-candidate'),
+			z.literal('earth-bridge-provisional')
+		]),
+		requiredBindings: z.tuple([
+			z.literal('target-assignment-cross-hash'),
+			z.literal('namespace-source-packet-canonical-json-hash'),
+			z.literal('bridge-normal-reference-raw-bytes-hash'),
+			z.literal('canonical-normal-target-candidate-result-source-hash'),
+			z.literal('candidate-raw-bytes-hash'),
+			z.literal('prompt-material-raw-bytes-hash'),
+			z.literal('source-path'),
+			z.literal('result-path')
+		]),
 		pathTemplates: FamilyAffinityPathTemplatesSchema,
 		ownership: FamilyAffinityCompatibilityOwnershipSchema,
 		forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
@@ -977,6 +1155,21 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 				approvalReference: z.literal('root-approved-task10-bridge-production-extension-2026-09-02')
 			})
 			.strict(),
+		provisionalAnchorExtension: z
+			.object({
+				schemaVersion: z.literal('normal-verified-candidate-extension-v1'),
+				planPath: z.literal(
+					'docs/superpowers/plans/2026-09-03-monster-image-single-checkpoint-goal-harness.md'
+				),
+				reviewedAt: z.string().regex(/^2026-09-03T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u),
+				approvalReference: z.literal(
+					'user-confirmed-single-checkpoint-monster-generation-2026-09-03'
+				),
+				candidateOnly: z.literal(true),
+				humanReviewPending: z.literal(true),
+				runtimeCatalogMutationForbidden: z.literal(true)
+			})
+			.strict(),
 		reviewedAt: z
 			.string()
 			.regex(
@@ -986,6 +1179,72 @@ export const FamilyAffinityProductionCompatibilitySchema = z
 		approvalReference: z.literal('user-confirmed-summonlab-image-production-v3-2026-09-02')
 	})
 	.strict();
+
+const FaunaFamilyProductionCompatibilitySchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-production-compatibility-v1'),
+		skillVersion: z.literal(FAMILY_AFFINITY_PRODUCTION_SKILL_VERSION),
+		profile: z.literal(FAUNA_FAMILY_PRODUCTION_PROFILE),
+		targetSchema: z.literal('family-affinity-target-v1'),
+		assignmentSchema: z.literal('family-affinity-assignment-v1'),
+		resultSchema: z.literal('family-affinity-result-v1'),
+		promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+		sourcePacketSchemas: z.tuple([z.literal('family-packet-v1')]),
+		experimentId: z.literal('fauna-family-v1'),
+		affinities: z.tuple([
+			z.literal('normal'),
+			z.literal('fire'),
+			z.literal('earth'),
+			z.literal('wind'),
+			z.literal('water')
+		]),
+		namespaces: z.tuple([z.literal('canonical')]),
+		dispatchStatuses: z.tuple([z.literal('planned'), z.literal('planned-provisional-anchor')]),
+		anchorKinds: z.tuple([
+			z.literal('normal-self'),
+			z.literal('normal-approved-review'),
+			z.literal('normal-verified-candidate')
+		]),
+		requiredBindings: z.tuple([
+			z.literal('target-assignment-cross-hash'),
+			z.literal('namespace-source-packet-canonical-json-hash'),
+			z.literal('canonical-normal-target-candidate-result-source-hash'),
+			z.literal('candidate-raw-bytes-hash'),
+			z.literal('prompt-material-raw-bytes-hash'),
+			z.literal('source-path'),
+			z.literal('result-path')
+		]),
+		pathTemplates: FaunaFamilyPathTemplatesSchema,
+		ownership: FamilyAffinityCompatibilityOwnershipSchema,
+		forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
+		skillContractPath: z.literal(FAMILY_AFFINITY_SKILL_CONTRACT_PATH),
+		skillContractSha256: Sha256Schema,
+		approvedSkillRoot: RequiredTextSchema,
+		executionSurface: z
+			.object({
+				framing: z.literal('length-prefixed-sha256-v1'),
+				files: z
+					.array(z.object({ path: RequiredTextSchema, sha256: Sha256Schema }).strict())
+					.length(14),
+				bundleSha256: Sha256Schema
+			})
+			.strict(),
+		repositoryDispatch: z
+			.object({
+				path: z.literal('tools/check-family-affinity-production-dispatch.ts'),
+				sha256: Sha256Schema
+			})
+			.strict(),
+		sealedLauncher: FamilyAffinitySealedLauncherSchema,
+		reviewedAt: z.string().regex(/^2026-09-04T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u),
+		approvalReference: z.literal('owner-approved-fauna-family-production-2026-09-04')
+	})
+	.strict();
+
+export const FamilyAffinityProductionCompatibilitySchema = z.discriminatedUnion('profile', [
+	LegacyFamilyAffinityProductionCompatibilitySchema,
+	FaunaFamilyProductionCompatibilitySchema
+]);
 
 export type FamilyAffinityProductionCompatibility = z.infer<
 	typeof FamilyAffinityProductionCompatibilitySchema
@@ -1045,6 +1304,17 @@ const FamilyAffinitySkillContractSchema = z
 							z.literal('water')
 						]),
 						namespaces: z.tuple([z.literal('canonical'), z.literal('bridge')]),
+						dispatchStatuses: z.tuple([
+							z.literal('planned'),
+							z.literal('planned-provisional-anchor'),
+							z.literal('earth-bridge-provisional')
+						]),
+						anchorKinds: z.tuple([
+							z.literal('normal-self'),
+							z.literal('normal-approved-review'),
+							z.literal('normal-verified-candidate'),
+							z.literal('earth-bridge-provisional')
+						]),
 						pathTemplates: FamilyAffinityPathTemplatesSchema,
 						producerRoleAllowlist: z.tuple([z.literal('image-producer')]),
 						retryCeiling: z.tuple([z.literal(0), z.literal(1)]),
@@ -1059,6 +1329,55 @@ const FamilyAffinitySkillContractSchema = z
 							z.literal('target-assignment-cross-hash'),
 							z.literal('namespace-source-packet-canonical-json-hash'),
 							z.literal('bridge-normal-reference-raw-bytes-hash'),
+							z.literal('canonical-normal-target-candidate-result-source-hash'),
+							z.literal('candidate-raw-bytes-hash'),
+							z.literal('prompt-material-raw-bytes-hash'),
+							z.literal('source-path'),
+							z.literal('result-path')
+						]),
+						forbiddenWriteClasses: FamilyAffinityForbiddenWriteClassesSchema,
+						promotionCeiling: z.literal('candidate-only')
+					})
+					.strict(),
+				'image-production-fauna-family-target-v1': z
+					.object({
+						repositoryTargetSchema: z.literal('family-affinity-target-v1'),
+						assignmentSchema: z.literal('family-affinity-assignment-v1'),
+						resultSchema: z.literal('family-affinity-result-v1'),
+						promptMaterialSchema: z.literal('family-affinity-prompt-material-v1'),
+						sourcePacketSchemas: z.tuple([z.literal('family-packet-v1')]),
+						experimentId: z.literal('fauna-family-v1'),
+						affinities: z.tuple([
+							z.literal('normal'),
+							z.literal('fire'),
+							z.literal('earth'),
+							z.literal('wind'),
+							z.literal('water')
+						]),
+						namespaces: z.tuple([z.literal('canonical')]),
+						dispatchStatuses: z.tuple([
+							z.literal('planned'),
+							z.literal('planned-provisional-anchor')
+						]),
+						anchorKinds: z.tuple([
+							z.literal('normal-self'),
+							z.literal('normal-approved-review'),
+							z.literal('normal-verified-candidate')
+						]),
+						pathTemplates: FaunaFamilyPathTemplatesSchema,
+						producerRoleAllowlist: z.tuple([z.literal('image-producer')]),
+						retryCeiling: z.tuple([z.literal(0), z.literal(1)]),
+						ownership: z
+							.object({
+								exclusiveCandidateCreate: z.literal(true),
+								immutableSingleCreateResult: z.literal(true),
+								overwriteForbidden: z.literal(true)
+							})
+							.strict(),
+						requiredBindings: z.tuple([
+							z.literal('target-assignment-cross-hash'),
+							z.literal('namespace-source-packet-canonical-json-hash'),
+							z.literal('canonical-normal-target-candidate-result-source-hash'),
 							z.literal('candidate-raw-bytes-hash'),
 							z.literal('prompt-material-raw-bytes-hash'),
 							z.literal('source-path'),
@@ -1113,7 +1432,7 @@ export function validateFamilyAffinityProductionCompatibility(
 		throw new Error(`Installed image-production skill contract is not JSON: ${String(error)}`);
 	}
 	const contract = FamilyAffinitySkillContractSchema.parse(contractInput);
-	const profile = contract.profiles[FAMILY_AFFINITY_PRODUCTION_PROFILE];
+	const profile = contract.profiles[compatibility.profile];
 	if (
 		stableJson(contract.repositoryDispatch) !== stableJson(compatibility.repositoryDispatch) ||
 		stableJson(contract.sealedLauncher) !== stableJson(compatibility.sealedLauncher) ||
@@ -1125,6 +1444,9 @@ export function validateFamilyAffinityProductionCompatibility(
 		profile.experimentId !== compatibility.experimentId ||
 		stableJson(profile.affinities) !== stableJson(compatibility.affinities) ||
 		stableJson(profile.namespaces) !== stableJson(compatibility.namespaces) ||
+		stableJson(profile.dispatchStatuses) !== stableJson(compatibility.dispatchStatuses) ||
+		stableJson(profile.anchorKinds) !== stableJson(compatibility.anchorKinds) ||
+		stableJson(profile.requiredBindings) !== stableJson(compatibility.requiredBindings) ||
 		stableJson(profile.pathTemplates) !== stableJson(compatibility.pathTemplates) ||
 		stableJson(profile.producerRoleAllowlist) !==
 			stableJson(compatibility.ownership.producerRoleAllowlist) ||
@@ -1153,18 +1475,30 @@ export function preflightFamilyAffinityProductionDispatch(input: {
 	renderedPromptBytes: Uint8Array;
 }): {
 	dispatchable: true;
-	profile: typeof FAMILY_AFFINITY_PRODUCTION_PROFILE;
+	profile: typeof FAMILY_AFFINITY_PRODUCTION_PROFILE | typeof FAUNA_FAMILY_PRODUCTION_PROFILE;
 	targetId: string;
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
 	status: z.infer<typeof AttemptStatusSchema>;
 	promotionCeiling: 'candidate-only';
 } {
-	validateFamilyAffinityProductionCompatibility(input.compatibility, input.installedContractBytes);
+	const compatibility = validateFamilyAffinityProductionCompatibility(
+		input.compatibility,
+		input.installedContractBytes
+	);
 	const target = FamilyAffinityTargetSchema.parse(input.target);
 	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
+	if (familyProductionTargetExperimentId(target) !== compatibility.experimentId) {
+		throw new Error('Dispatch target experiment does not match its compatibility profile');
+	}
 	const paths =
 		target.namespace === 'canonical'
-			? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
+			? canonicalAttemptPaths(
+					target.familyId,
+					target.formId,
+					target.affinity,
+					target.version,
+					familyProductionTargetExperimentId(target)
+				)
 			: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version);
 	if (input.targetPath !== paths.target || input.assignmentPath !== paths.assignment) {
 		throw new Error('Dispatch input paths do not match exact versioned ownership templates');
@@ -1187,8 +1521,12 @@ export function preflightFamilyAffinityProductionDispatch(input: {
 		target,
 		assignment
 	);
-	if (target.status === 'blocked-on-anchor') {
-		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	) {
+		throw new Error(`Target status is not dispatchable: ${target.status} (${target.targetId})`);
 	}
 	validateFamilyAffinitySourcePacket(target, input.familyPacketBytes);
 	if (
@@ -1199,7 +1537,7 @@ export function preflightFamilyAffinityProductionDispatch(input: {
 	}
 	return {
 		dispatchable: true,
-		profile: FAMILY_AFFINITY_PRODUCTION_PROFILE,
+		profile: compatibility.profile,
 		targetId: target.targetId,
 		affinity: target.affinity,
 		status: target.status,
@@ -1271,6 +1609,12 @@ export const FamilyAffinityManifestSchema = z
 	})
 	.strict()
 	.superRefine((manifest, context) => {
+		if (!manifest.mappingReservations.sourcePath.startsWith(`${FAMILY_AFFINITY_ROOT}/`)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Family-affinity manifest source path must stay under its experiment root'
+			});
+		}
 		if (manifest.canonicalMatrix.activeCoordinates.length !== 750) {
 			context.addIssue({
 				code: 'custom',
@@ -1310,6 +1654,18 @@ export const FamilyAffinityManifestSchema = z
 			...manifest.canonicalMatrix.activeCoordinates,
 			...manifest.bridge.activeCoordinates
 		];
+		if (
+			allActiveCoordinates.some(
+				(coordinate) =>
+					!coordinate.targetPath.startsWith(`${FAMILY_AFFINITY_ROOT}/`) ||
+					!coordinate.assignmentPath.startsWith(`${FAMILY_AFFINITY_ROOT}/`)
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Family-affinity coordinates must stay under their experiment root'
+			});
+		}
 		for (const field of [
 			'coordinateId',
 			'targetPath',
@@ -1337,6 +1693,133 @@ export const FamilyAffinityManifestSchema = z
 	});
 
 export type FamilyAffinityManifest = z.infer<typeof FamilyAffinityManifestSchema>;
+
+export const FaunaFamilyManifestSchema = z
+	.object({
+		schemaVersion: z.literal('fauna-family-production-manifest-v1'),
+		experimentId: z.literal('fauna-family-v1'),
+		status: z.enum(['production-materialized', 'candidate-matrix-complete']),
+		scope: z
+			.object({
+				existingFamilyAction: z.literal('retain-without-regeneration'),
+				existingFamilyProgram: z.literal(`${FAMILY_AFFINITY_ROOT}/manifest.json`),
+				existingFamilyCount: z.literal(30),
+				existingFormCount: z.literal(150),
+				existingCoordinateCount: z.literal(750),
+				newFamilyIds: z.array(IdSchema).length(8),
+				affinities: z.tuple([
+					z.literal('normal'),
+					z.literal('fire'),
+					z.literal('earth'),
+					z.literal('wind'),
+					z.literal('water')
+				]),
+				newFamilyCount: z.literal(8),
+				newFormCount: z.literal(40),
+				newCoordinateCount: z.literal(200)
+			})
+			.strict(),
+		canonicalMatrix: z
+			.object({
+				familyCount: z.literal(8),
+				formCount: z.literal(40),
+				affinities: z.tuple([
+					z.literal('normal'),
+					z.literal('fire'),
+					z.literal('earth'),
+					z.literal('wind'),
+					z.literal('water')
+				]),
+				targetCount: z.literal(200),
+				assignmentCount: z.literal(200),
+				activeCoordinates: z.array(ManifestCoordinateSchema).length(200)
+			})
+			.strict(),
+		production: z
+			.object({
+				targetMaterializationStatus: z.literal('materialized'),
+				targetCount: z.literal(200),
+				assignmentCount: z.literal(200),
+				candidateCount: z.union([z.literal(0), z.literal(200)]),
+				resultCount: z.literal(200).optional(),
+				provenanceRecordCount: z.literal(200).optional(),
+				unresolvedProviderFailureCount: z.literal(0).optional(),
+				approvedCount: z.literal(0),
+				runtimeCount: z.literal(0),
+				inventoryPath: z.literal(`${FAUNA_FAMILY_ROOT}/inventory.json`).optional(),
+				evidenceInventoryPath: z.literal('docs/evidence/fauna-family-v1/inventory.json').optional(),
+				reviewGalleryPath: z.literal('docs/evidence/fauna-family-v1/index.html').optional(),
+				reviewCheckpoint: z.literal('after-new-fauna-candidate-matrix-is-complete'),
+				runtimeCatalogMutationForbidden: z.literal(true)
+			})
+			.strict(),
+		legacyClassMigrations: z.array(z.record(z.string(), z.unknown())),
+		ownership: z
+			.object({
+				domain: z.literal('enemies-visuals'),
+				controllerRole: z.literal('integration-controller'),
+				candidatesAreNotApproved: z.literal(true),
+				approvedAssetsAreNotRuntime: z.literal(true),
+				producerSelfPromotionForbidden: z.literal(true),
+				runtimeCatalogMutationForbidden: z.literal(true)
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((manifest, context) => {
+		const coordinates = manifest.canonicalMatrix.activeCoordinates;
+		for (const field of ['coordinateId', 'targetPath', 'assignmentPath'] as const) {
+			const values = coordinates.map((coordinate) => coordinate[field]);
+			if (new Set(values).size !== 200) {
+				context.addIssue({
+					code: 'custom',
+					message: `Fauna manifest ${field} values must be unique`
+				});
+			}
+		}
+		if (
+			coordinates.some(
+				(coordinate) =>
+					coordinate.namespace !== 'canonical' ||
+					!coordinate.targetPath.startsWith(`${FAUNA_FAMILY_ROOT}/targets/`) ||
+					!coordinate.assignmentPath.startsWith(`${FAUNA_FAMILY_ROOT}/assignments/`)
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Fauna coordinates must use canonical fauna paths'
+			});
+		}
+		const finalFields = [
+			manifest.production.resultCount,
+			manifest.production.provenanceRecordCount,
+			manifest.production.unresolvedProviderFailureCount,
+			manifest.production.inventoryPath,
+			manifest.production.evidenceInventoryPath,
+			manifest.production.reviewGalleryPath
+		];
+		if (
+			manifest.status === 'candidate-matrix-complete' &&
+			(manifest.production.candidateCount !== 200 ||
+				finalFields.some((value) => value === undefined))
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Complete fauna handoff requires the full candidate inventory and evidence paths'
+			});
+		}
+		if (
+			manifest.status === 'production-materialized' &&
+			(manifest.production.candidateCount !== 0 || finalFields.some((value) => value !== undefined))
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Materialized fauna production cannot claim final candidate handoff evidence'
+			});
+		}
+	});
+
+export type FaunaFamilyManifest = z.infer<typeof FaunaFamilyManifestSchema>;
 
 export type FamilyAffinityProductionBundle = {
 	manifest: FamilyAffinityManifest;
@@ -1524,9 +2007,15 @@ export function validateFamilyAffinityReviewPromotion(
 	) {
 		throw new Error('Review receipt target or hash is stale or mismatched');
 	}
-	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+	if (
+		(target.anchor.kind === 'earth-bridge-provisional' ||
+			target.anchor.kind === 'normal-verified-candidate') &&
+		receipt.decision === 'approved-review'
+	) {
 		throw new Error(
-			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+			target.anchor.kind === 'earth-bridge-provisional'
+				? 'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+				: 'Provisional target cannot reach approved-review before its Normal anchor is approved'
 		);
 	}
 }
@@ -1611,14 +2100,24 @@ export function familyAffinityPromptSha256(targetInput: unknown, assignmentInput
 			activeVersion: target.version,
 			targetPath:
 				target.namespace === 'canonical'
-					? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
-							.target
+					? canonicalAttemptPaths(
+							target.familyId,
+							target.formId,
+							target.affinity,
+							target.version,
+							familyProductionTargetExperimentId(target)
+						).target
 					: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version).target,
 			targetSha256: familyAffinitySha256(target),
 			assignmentPath:
 				target.namespace === 'canonical'
-					? canonicalAttemptPaths(target.familyId, target.formId, target.affinity, target.version)
-							.assignment
+					? canonicalAttemptPaths(
+							target.familyId,
+							target.formId,
+							target.affinity,
+							target.version,
+							familyProductionTargetExperimentId(target)
+						).assignment
 					: bridgeAttemptPaths(target.currentClassId!, target.affinity, target.version).assignment,
 			assignmentSha256: familyAffinitySha256(assignment),
 			status: target.status
@@ -1710,9 +2209,15 @@ export function validateFamilyAffinityReceiptEvidence(input: {
 	) {
 		throw new Error('Review receipt evidence is stale, forged, or cross-bound');
 	}
-	if (target.anchor.kind === 'earth-bridge-provisional' && receipt.decision === 'approved-review') {
+	if (
+		(target.anchor.kind === 'earth-bridge-provisional' ||
+			target.anchor.kind === 'normal-verified-candidate') &&
+		receipt.decision === 'approved-review'
+	) {
 		throw new Error(
-			'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+			target.anchor.kind === 'earth-bridge-provisional'
+				? 'Provisional Earth target cannot reach approved-review before its canonical Normal anchor'
+				: 'Provisional target cannot reach approved-review before its Normal anchor is approved'
 		);
 	}
 	return receipt;
@@ -1908,15 +2413,17 @@ export function canonicalAttemptPaths(
 	familyId: string,
 	formId: string,
 	affinity: (typeof PRODUCTION_AFFINITIES)[number],
-	version: number
+	version: number,
+	experimentId: FamilyProductionExperimentId = 'family-affinity-v1'
 ) {
+	const root = familyProductionRoot(experimentId);
 	return {
-		target: `${FAMILY_AFFINITY_ROOT}/targets/${familyId}/${formId}/${affinity}/target-v${version}.json`,
-		assignment: `${FAMILY_AFFINITY_ROOT}/assignments/${familyId}/${formId}/${affinity}/assignment-v${version}.json`,
-		candidate: `${FAMILY_AFFINITY_ROOT}/candidates/${familyId}/${formId}/${affinity}-v${version}.png`,
-		result: `${FAMILY_AFFINITY_ROOT}/results/${familyId}/${formId}/${affinity}-v${version}.json`,
-		decision: `${FAMILY_AFFINITY_ROOT}/review/decisions/${familyId}/${formId}/${affinity}/candidate-v${version}-review-v${version}.json`,
-		blindReview: `${FAMILY_AFFINITY_ROOT}/review/blind/${familyId}/${formId}/${affinity}/candidate-v${version}-blind-v${version}.json`
+		target: `${root}/targets/${familyId}/${formId}/${affinity}/target-v${version}.json`,
+		assignment: `${root}/assignments/${familyId}/${formId}/${affinity}/assignment-v${version}.json`,
+		candidate: `${root}/candidates/${familyId}/${formId}/${affinity}-v${version}.png`,
+		result: `${root}/results/${familyId}/${formId}/${affinity}-v${version}.json`,
+		decision: `${root}/review/decisions/${familyId}/${formId}/${affinity}/candidate-v${version}-review-v${version}.json`,
+		blindReview: `${root}/review/blind/${familyId}/${formId}/${affinity}/candidate-v${version}-blind-v${version}.json`
 	};
 }
 
@@ -1967,19 +2474,34 @@ function buildCanonicalTarget(
 	form: FamilyForm,
 	affinity: (typeof PRODUCTION_AFFINITIES)[number],
 	normalTarget?: FamilyAffinityTarget,
-	mappingPath: string = FAMILY_AFFINITY_LEGACY_MAPPING_PATH
+	mappingPath: string = FAMILY_AFFINITY_LEGACY_MAPPING_PATH,
+	experimentId: FamilyProductionExperimentId = 'family-affinity-v1',
+	sourcePacketPath: string = familyPacketPath(family)
 ): FamilyAffinityTarget {
 	const coordinateId = `${family.familyId}/${form.formId}/${affinity}`;
 	const version = 1;
-	const paths = canonicalAttemptPaths(family.familyId, form.formId, affinity, version);
+	const paths = canonicalAttemptPaths(
+		family.familyId,
+		form.formId,
+		affinity,
+		version,
+		experimentId
+	);
 	const theme = family.affinityThemes[affinity];
 	const status = affinity === 'normal' ? 'planned' : 'blocked-on-anchor';
 	const target = {
 		schemaVersion: 'family-affinity-target-v1',
+		...(experimentId === 'fauna-family-v1' ? { experimentId } : {}),
 		namespace: 'canonical',
 		coordinateId,
-		targetId: `canonical/${coordinateId}/v${version}`,
+		targetId:
+			experimentId === 'family-affinity-v1'
+				? `canonical/${coordinateId}/v${version}`
+				: `${experimentId}/canonical/${coordinateId}/v${version}`,
 		familyId: family.familyId,
+		...(experimentId === 'fauna-family-v1'
+			? { familyDisplayName: family.displayName, formDisplayName: form.displayName }
+			: {}),
 		formId: form.formId,
 		currentClassId: null,
 		affinity,
@@ -1996,7 +2518,7 @@ function buildCanonicalTarget(
 		counterplay: `${formCounterplay(form)} Affinity signal: ${theme.counterplaySignal}`,
 		forbiddenTreatments: theme.forbidden,
 		sources: {
-			familyPacketPath: familyPacketPath(family),
+			familyPacketPath: sourcePacketPath,
 			familyPacketSha256: familyAffinitySha256(family),
 			sourcePage: family.sourcePage,
 			sourceReferences: form.sourceReferences,
@@ -2036,7 +2558,8 @@ function buildCanonicalTarget(
 							family.familyId,
 							form.formId,
 							'normal',
-							normalTarget!.version
+							normalTarget!.version,
+							experimentId
 						).target,
 						normalTargetSha256: familyAffinitySha256(normalTarget!),
 						reviewReceiptPath: normalTarget!.ownedPaths.decision,
@@ -2057,7 +2580,9 @@ function buildCanonicalTarget(
 
 const CANONICAL_TARGET_SOURCE_FIELDS = [
 	'familyId',
+	'familyDisplayName',
 	'formId',
+	'formDisplayName',
 	'currentClassId',
 	'affinity',
 	'tier',
@@ -2099,7 +2624,9 @@ export function validateCanonicalTargetSourceBinding(
 		form,
 		'normal',
 		undefined,
-		target.sources.mappingPath
+		target.sources.mappingPath,
+		familyProductionTargetExperimentId(target),
+		target.sources.familyPacketPath
 	);
 	const expected =
 		target.affinity === 'normal'
@@ -2109,7 +2636,9 @@ export function validateCanonicalTargetSourceBinding(
 					form,
 					target.affinity,
 					expectedNormal,
-					target.sources.mappingPath
+					target.sources.mappingPath,
+					familyProductionTargetExperimentId(target),
+					target.sources.familyPacketPath
 				);
 	for (const field of CANONICAL_TARGET_SOURCE_FIELDS) {
 		if (stableJson(target[field]) !== stableJson(expected[field])) {
@@ -2121,13 +2650,31 @@ export function validateCanonicalTargetSourceBinding(
 function buildCanonicalFormTargets(
 	family: FamilyPacket,
 	form: FamilyForm,
-	mappingPath: string
+	mappingPath: string,
+	experimentId: FamilyProductionExperimentId = 'family-affinity-v1',
+	sourcePacketPath: string = familyPacketPath(family)
 ): FamilyAffinityTarget[] {
-	const normal = buildCanonicalTarget(family, form, 'normal', undefined, mappingPath);
+	const normal = buildCanonicalTarget(
+		family,
+		form,
+		'normal',
+		undefined,
+		mappingPath,
+		experimentId,
+		sourcePacketPath
+	);
 	return [
 		normal,
 		...PRODUCTION_AFFINITIES.filter((affinity) => affinity !== 'normal').map((affinity) =>
-			buildCanonicalTarget(family, form, affinity, normal, mappingPath)
+			buildCanonicalTarget(
+				family,
+				form,
+				affinity,
+				normal,
+				mappingPath,
+				experimentId,
+				sourcePacketPath
+			)
 		)
 	];
 }
@@ -2135,6 +2682,7 @@ function buildCanonicalFormTargets(
 function buildAssignment(target: FamilyAffinityTarget): FamilyAffinityAssignment {
 	return FamilyAffinityAssignmentSchema.parse({
 		schemaVersion: 'family-affinity-assignment-v1',
+		...(target.experimentId === undefined ? {} : { experimentId: target.experimentId }),
 		assignmentId: `${target.targetId}/assignment`,
 		targetId: target.targetId,
 		targetSha256: familyAffinitySha256(target),
@@ -2268,6 +2816,189 @@ export function buildFamilyAffinityProductionBundle(
 	return bundle;
 }
 
+export type FaunaFamilyProductionBundle = {
+	manifest: FaunaFamilyManifest;
+	targets: FamilyAffinityTarget[];
+	assignments: FamilyAffinityAssignment[];
+	artifacts: Array<{ path: string; value: unknown }>;
+};
+
+export function buildFaunaFamilyProductionBundle(
+	familyInputs: unknown[],
+	designManifestInput: unknown,
+	activeSourcesPath: string = `${FAUNA_FAMILY_ROOT}/active-sources.json`
+): FaunaFamilyProductionBundle {
+	const families = familyInputs.map((input) => FamilyPacketSchema.parse(input));
+	if (families.length !== 8 || new Set(families.map(({ familyId }) => familyId)).size !== 8) {
+		throw new Error('Fauna matrix requires exactly eight unique families');
+	}
+	const sortedFamilies = [...families].sort(
+		(left, right) => left.sourceRaceNumber - right.sourceRaceNumber
+	);
+	if (sortedFamilies.some((family, index) => family.sourceRaceNumber !== index + 31)) {
+		throw new Error('Fauna families must preserve source race order 31 through 38');
+	}
+	const design = z
+		.object({
+			schemaVersion: z.literal('fauna-family-design-manifest-v1'),
+			experimentId: z.literal('fauna-family-v1'),
+			status: z.literal('design-complete-production-not-started'),
+			scope: z.unknown(),
+			production: z.unknown(),
+			legacyClassMigrations: z.array(z.record(z.string(), z.unknown())),
+			ownership: z.unknown()
+		})
+		.strict()
+		.parse(designManifestInput);
+	const packetPathByFamilyId = new Map(
+		sortedFamilies.map((family) => [
+			family.familyId,
+			`${FAUNA_FAMILY_ROOT}/families/${String(family.sourceRaceNumber - 30).padStart(2, '0')}-${family.familyId}.json`
+		])
+	);
+	const targets = sortedFamilies.flatMap((family) =>
+		[...family.forms]
+			.sort((left, right) => FORM_TIERS.indexOf(left.tier) - FORM_TIERS.indexOf(right.tier))
+			.flatMap((form) =>
+				buildCanonicalFormTargets(
+					family,
+					form,
+					activeSourcesPath,
+					'fauna-family-v1',
+					packetPathByFamilyId.get(family.familyId)!
+				)
+			)
+	);
+	const assignments = targets.map(buildAssignment);
+	const assignmentByTargetId = new Map(
+		assignments.map((assignment) => [assignment.targetId, assignment])
+	);
+	const activeCoordinates = targets.map((target) => {
+		const assignment = assignmentByTargetId.get(target.targetId)!;
+		const paths = canonicalAttemptPaths(
+			target.familyId,
+			target.formId,
+			target.affinity,
+			target.version,
+			'fauna-family-v1'
+		);
+		return {
+			namespace: 'canonical' as const,
+			coordinateId: target.coordinateId,
+			familyId: target.familyId,
+			formId: target.formId,
+			currentClassId: null,
+			affinity: target.affinity,
+			activeVersion: target.version,
+			targetPath: paths.target,
+			targetSha256: familyAffinitySha256(target),
+			assignmentPath: paths.assignment,
+			assignmentSha256: familyAffinitySha256(assignment),
+			status: target.status
+		};
+	});
+	const designRecord = design as {
+		scope: unknown;
+		legacyClassMigrations: Array<Record<string, unknown>>;
+	};
+	const manifest = FaunaFamilyManifestSchema.parse({
+		schemaVersion: 'fauna-family-production-manifest-v1',
+		experimentId: 'fauna-family-v1',
+		status: 'production-materialized',
+		scope: designRecord.scope,
+		canonicalMatrix: {
+			familyCount: 8,
+			formCount: 40,
+			affinities: PRODUCTION_AFFINITIES,
+			targetCount: 200,
+			assignmentCount: 200,
+			activeCoordinates
+		},
+		production: {
+			targetMaterializationStatus: 'materialized',
+			targetCount: 200,
+			assignmentCount: 200,
+			candidateCount: 0,
+			approvedCount: 0,
+			runtimeCount: 0,
+			reviewCheckpoint: 'after-new-fauna-candidate-matrix-is-complete',
+			runtimeCatalogMutationForbidden: true
+		},
+		legacyClassMigrations: designRecord.legacyClassMigrations,
+		ownership: {
+			domain: 'enemies-visuals',
+			controllerRole: 'integration-controller',
+			candidatesAreNotApproved: true,
+			approvedAssetsAreNotRuntime: true,
+			producerSelfPromotionForbidden: true,
+			runtimeCatalogMutationForbidden: true
+		}
+	});
+	const artifacts: Array<{ path: string; value: unknown }> = [
+		{ path: `${FAUNA_FAMILY_ROOT}/manifest.json`, value: manifest },
+		...activeCoordinates.flatMap((coordinate, index) => [
+			{ path: coordinate.targetPath, value: targets[index]! },
+			{ path: coordinate.assignmentPath, value: assignments[index]! }
+		])
+	];
+	const bundle = { manifest, targets, assignments, artifacts };
+	validateFaunaFamilyProductionBundle(bundle, families);
+	return bundle;
+}
+
+export function validateFaunaFamilyProductionBundle(
+	bundleInput: FaunaFamilyProductionBundle,
+	familyInputs: unknown[]
+): void {
+	const manifest = FaunaFamilyManifestSchema.parse(bundleInput.manifest);
+	const families = familyInputs.map((input) => FamilyPacketSchema.parse(input));
+	const familyById = new Map(families.map((family) => [family.familyId, family]));
+	const targets = bundleInput.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const assignments = bundleInput.assignments.map((assignment) =>
+		FamilyAffinityAssignmentSchema.parse(assignment)
+	);
+	if (targets.length !== 200 || assignments.length !== 200) {
+		throw new Error('Fauna bundle requires exactly 200 target and assignment pairs');
+	}
+	const targetByCoordinate = new Map(targets.map((target) => [target.coordinateId, target]));
+	const assignmentByCoordinate = new Map(
+		assignments.map((assignment) => [assignment.coordinateId, assignment])
+	);
+	if (targetByCoordinate.size !== 200 || assignmentByCoordinate.size !== 200) {
+		throw new Error('Fauna target and assignment coordinates must be unique');
+	}
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const target = targetByCoordinate.get(coordinate.coordinateId);
+		const assignment = assignmentByCoordinate.get(coordinate.coordinateId);
+		if (!target || !assignment)
+			throw new Error(`Incomplete fauna pair: ${coordinate.coordinateId}`);
+		validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+		const family = familyById.get(target.familyId);
+		const form = family?.forms.find(({ formId }) => formId === target.formId);
+		if (!family || !form) throw new Error(`Unknown fauna source: ${coordinate.coordinateId}`);
+		validateCanonicalTargetSourceBinding(target, family, form);
+	}
+	const ownedOutputs = targets.flatMap((target) => [
+		target.ownedPaths.candidate,
+		target.ownedPaths.result
+	]);
+	if (new Set(ownedOutputs).size !== 400) {
+		throw new Error('Fauna candidate and result ownership paths must be exclusive');
+	}
+	for (const family of families) {
+		const familyTargets = targets.filter((target) => target.familyId === family.familyId);
+		if (familyTargets.length !== 25) throw new Error('Each fauna family requires 25 targets');
+		for (const form of family.forms) {
+			const affinities = familyTargets
+				.filter((target) => target.formId === form.formId)
+				.map((target) => target.affinity);
+			if (stableJson(affinities) !== stableJson(PRODUCTION_AFFINITIES)) {
+				throw new Error(`Fauna affinity order drifted: ${family.familyId}/${form.formId}`);
+			}
+		}
+	}
+}
+
 type ManifestCoordinate = FamilyAffinityManifest['canonicalMatrix']['activeCoordinates'][number];
 
 export function validateFamilyAffinityAttemptCrossBinding(
@@ -2298,6 +3029,8 @@ export function validateFamilyAffinityAttemptCrossBinding(
 		throw new Error(`Manifest attempt hash cross-binding mismatch: ${coordinate.coordinateId}`);
 	}
 	if (
+		familyProductionTargetExperimentId(target) !==
+			(assignment.experimentId ?? 'family-affinity-v1') ||
 		assignment.targetId !== target.targetId ||
 		assignment.targetSha256 !== targetSha256 ||
 		assignment.namespace !== target.namespace ||
@@ -2314,7 +3047,8 @@ export function validateFamilyAffinityAttemptCrossBinding(
 			target.familyId,
 			target.formId,
 			target.affinity,
-			target.version
+			target.version,
+			familyProductionTargetExperimentId(target)
 		);
 		if (
 			coordinate.targetPath !== paths.target ||
@@ -2459,7 +3193,10 @@ export function validateFamilyAffinityProductionBundle(
 			if (target.status !== 'planned') throw new Error('Normal targets must begin planned');
 			continue;
 		}
-		if (target.anchor.kind !== 'normal-approved-review') {
+		if (
+			target.anchor.kind !== 'normal-approved-review' &&
+			target.anchor.kind !== 'normal-verified-candidate'
+		) {
 			throw new Error(
 				`Canonical elemental target requires an exact Normal anchor: ${target.targetId}`
 			);
@@ -2471,7 +3208,7 @@ export function validateFamilyAffinityProductionBundle(
 		const normalManifestCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
 			(candidate) => candidate.coordinateId === anchor.normalCoordinateId
 		);
-		if (target.status === 'planned') {
+		if (target.status === 'planned' || target.status === 'planned-provisional-anchor') {
 			if (
 				!normalTarget ||
 				!normalManifestCoordinate ||
@@ -2487,6 +3224,21 @@ export function validateFamilyAffinityProductionBundle(
 				throw new Error(
 					`Elemental target has a stale, foreign, or manifest-unbound Normal anchor: ${target.targetId}`
 				);
+			}
+			if (anchor.kind === 'normal-verified-candidate') {
+				const source = familyAffinitySourcePacketBinding(normalTarget);
+				if (
+					target.status !== 'planned-provisional-anchor' ||
+					anchor.normalCandidatePath !== normalTarget.ownedPaths.candidate ||
+					anchor.normalResultPath !== normalTarget.ownedPaths.result ||
+					anchor.sourcePacketPath !== source.path ||
+					anchor.sourcePacketSha256 !== source.sha256
+				) {
+					throw new Error(
+						`Stale or mismatched Normal verified-candidate anchor: ${target.targetId}`
+					);
+				}
+				continue;
 			}
 			if (anchor.reviewReceiptSha256 === null) {
 				throw new Error(
@@ -2539,10 +3291,11 @@ export function validateFamilyAffinityProductionBundle(
 		const receipt = FamilyAffinityReviewReceiptSchema.parse(receiptEvidence.receipt);
 		const target = targetsById.get(receipt.targetId);
 		if (
-			target?.anchor.kind === 'earth-bridge-provisional' &&
+			(target?.anchor.kind === 'earth-bridge-provisional' ||
+				target?.anchor.kind === 'normal-verified-candidate') &&
 			receipt.decision === 'approved-review'
 		) {
-			throw new Error(`Provisional Earth target cannot reach approved-review: ${path}`);
+			throw new Error(`Provisional target cannot reach approved-review: ${path}`);
 		}
 	}
 	return {
@@ -2700,16 +3453,22 @@ export type AllocateFamilyAffinityRevisionBatchInput = Pick<
 
 async function validateAllocationAnchor(
 	repositoryRoot: string,
-	manifest: FamilyAffinityManifest,
+	manifest: Pick<FamilyAffinityManifest | FaunaFamilyManifest, 'canonicalMatrix'>,
 	target: FamilyAffinityTarget,
 	manifestPath: string,
 	_manifestSha256: string
 ): Promise<void> {
-	if (target.affinity === 'normal' || target.status !== 'planned') {
+	if (
+		target.affinity === 'normal' ||
+		(target.status !== 'planned' && target.status !== 'planned-provisional-anchor')
+	) {
 		return;
 	}
-	if (target.anchor.kind !== 'normal-approved-review') {
-		throw new Error('Planned elemental allocation requires an exact Normal approved-review anchor');
+	if (
+		target.anchor.kind !== 'normal-approved-review' &&
+		target.anchor.kind !== 'normal-verified-candidate'
+	) {
+		throw new Error('Planned elemental allocation requires an exact Normal evidence anchor');
 	}
 	const anchor = target.anchor;
 	const normalCoordinate = manifest.canonicalMatrix.activeCoordinates.find(
@@ -2722,8 +3481,13 @@ async function validateAllocationAnchor(
 		normalCoordinate.targetPath !== anchor.normalTargetPath ||
 		normalCoordinate.targetSha256 !== anchor.normalTargetSha256 ||
 		normalCoordinate.assignmentPath !==
-			canonicalAttemptPaths(target.familyId, target.formId, 'normal', anchor.normalVersion)
-				.assignment
+			canonicalAttemptPaths(
+				target.familyId,
+				target.formId,
+				'normal',
+				anchor.normalVersion,
+				familyProductionTargetExperimentId(target)
+			).assignment
 	) {
 		throw new Error('Planned elemental allocation has a stale or manifest-unbound Normal anchor');
 	}
@@ -2740,16 +3504,13 @@ async function validateAllocationAnchor(
 		)
 	);
 	validateFamilyAffinityAttemptCrossBinding(normalCoordinate, normalTarget, normalAssignment);
-	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
-	const receipt = FamilyAffinityReviewReceiptSchema.parse(
-		JSON.parse(receiptBytes.toString('utf8'))
-	);
-	const candidateBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.candidatePath);
-	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, receipt.resultPath);
-	const familyPacketBytes = await readOwnedFileNoSymlinks(
+	const source = familyAffinitySourcePacketBinding(normalTarget);
+	const candidateBytes = await readOwnedFileNoSymlinks(
 		repositoryRoot,
-		familyAffinitySourcePacketBinding(normalTarget).path
+		normalTarget.ownedPaths.candidate
 	);
+	const resultBytes = await readOwnedFileNoSymlinks(repositoryRoot, normalTarget.ownedPaths.result);
+	const familyPacketBytes = await readOwnedFileNoSymlinks(repositoryRoot, source.path);
 	const evidence = validateFamilyAffinityCandidateEvidence({
 		target: normalTarget,
 		assignment: normalAssignment,
@@ -2757,6 +3518,42 @@ async function validateAllocationAnchor(
 		candidateBytes,
 		resultBytes
 	});
+	if (anchor.kind === 'normal-verified-candidate') {
+		if (
+			target.status !== 'planned-provisional-anchor' ||
+			normalTarget.coordinateId !== anchor.normalCoordinateId ||
+			normalTarget.familyId !== target.familyId ||
+			normalTarget.formId !== target.formId ||
+			normalTarget.affinity !== 'normal' ||
+			familyAffinitySha256(normalTarget) !== anchor.normalTargetSha256 ||
+			anchor.normalCandidatePath !== normalTarget.ownedPaths.candidate ||
+			anchor.normalCandidateSha256 !== evidence.result.candidateSha256 ||
+			anchor.normalResultPath !== normalTarget.ownedPaths.result ||
+			anchor.normalResultSha256 !== evidence.resultSha256 ||
+			anchor.sourcePacketPath !== source.path ||
+			anchor.sourcePacketSha256 !== source.sha256 ||
+			familyAffinityRawSha256(candidateBytes) !== anchor.normalCandidateSha256 ||
+			familyAffinityRawSha256(resultBytes) !== anchor.normalResultSha256
+		) {
+			throw new Error(
+				'Provisional elemental allocation Normal evidence is stale, foreign, or mismatched'
+			);
+		}
+		return;
+	}
+	if (target.status !== 'planned') {
+		throw new Error('Approved Normal anchors require planned status');
+	}
+	const receiptBytes = await readOwnedFileNoSymlinks(repositoryRoot, anchor.reviewReceiptPath);
+	const receipt = FamilyAffinityReviewReceiptSchema.parse(
+		JSON.parse(receiptBytes.toString('utf8'))
+	);
+	if (
+		receipt.candidatePath !== normalTarget.ownedPaths.candidate ||
+		receipt.resultPath !== normalTarget.ownedPaths.result
+	) {
+		throw new Error('Normal approval receipt points outside the active Normal attempt');
+	}
 	validateFamilyAffinityReceiptEvidence({
 		target: normalTarget,
 		result: evidence.result,
@@ -2866,12 +3663,15 @@ export async function validateFamilyAffinityNormalAnchorEvidence(input: {
 	targetPath: string;
 }): Promise<void> {
 	const manifestBytes = await readOwnedFileNoSymlinks(input.repositoryRoot, input.manifestPath);
-	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
 	const target = FamilyAffinityTargetSchema.parse(
 		JSON.parse(
 			(await readOwnedFileNoSymlinks(input.repositoryRoot, input.targetPath)).toString('utf8')
 		)
 	);
+	const manifest =
+		familyProductionTargetExperimentId(target) === 'fauna-family-v1'
+			? FaunaFamilyManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')))
+			: FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
 	if (target.anchor.kind === 'earth-bridge-provisional') {
 		const normalBytes = await readRepositoryFileNoSymlinks(
 			input.repositoryRoot,

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:sky-piercer",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-sky-piercer.json",
+	"promptHash": "54048d62cea0994dab3152cbfe809d6509bda940ac44bdeacf9ff6ff48791ec7",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-power-piercing.png",
+			"contentHash": "0d57c62e2daad33b704b8a5ccd3d0331e1b0697c7eaefab73ecf8a4400626cb4"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-piercing-shot.png",
+			"contentHash": "7f2c5fe1da6492cb684f352d44dec5f2afba04de07e173fd99b06a1014a5ac70"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-sky-piercer-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1966730,
+		"contentHash": "5a8f10aa421129cd096b9944f4135ba2b9a622921990dd8a0c2b8422dc2b1ddf"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-sky-piercer.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1637200,
+		"contentHash": "ee5b1f7ef4e6957a2d12f56ee503bdae4265f46d9bb4c3229846b50cdc10e31a"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ed9b5c57ffc57e9ccd68eb9c0235e8d2c223d2581fe0ca648fa2a112e18ccf6b",
+		"postRepairContentHash": "ee5b1f7ef4e6957a2d12f56ee503bdae4265f46d9bb4c3229846b50cdc10e31a",
+		"removedPixels": 384942
+	}
+}

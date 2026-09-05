@@ -1,0 +1,30 @@
+{
+  "assignedAt": "2026-09-02T00:00:00Z",
+  "assignmentId": "perin-keshek-summon-v1-assignment",
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  },
+  "dryRun": false,
+  "experimentId": "one-star-overnight-200-001",
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001/roster-plan.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/production-report.json",
+    "assets/heroes/experiments/one-star-overnight-200-001/provenance/production-journal.jsonl",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/index.html",
+    "assets/heroes/experiments/one-star-overnight-200-001/review/quarantine.html"
+  ],
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/perin-keshek/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/results/perin-keshek/summon-v1.json"
+  },
+  "producerId": "image-producer-lane-07",
+  "retryCeiling": 1,
+  "schemaVersion": "hero-one-star-image-assignment-v1",
+  "targetId": "perin-keshek-summon-v1",
+  "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/targets/perin-keshek/summon-v1.json",
+  "targetSha256": "eb65dbec4c149a02b42651fc52decdb86be3eda0f4924d61d91b41be48fe6380"
+}

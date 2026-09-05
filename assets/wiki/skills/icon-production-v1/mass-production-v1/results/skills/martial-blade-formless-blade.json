@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:formless-blade",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-formless-blade.json",
+	"promptHash": "75dc4401c28c31336fdc98451884084e9aef846d3340f09c289a8705949ca794",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-precision-cut.png",
+			"contentHash": "b14faef05e91195a886b272259bcdf4246fa591f3a226d60f14f01241c63103f"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severing-intent.png",
+			"contentHash": "d8b34aaf71b542d4b6d325715c2d34c279251320059bcecd131a2545447ce94b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-formless-blade-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2042992,
+		"contentHash": "74998f3fdaaab88a874679290e6de2d32958423c3f3c6b14830071fb0085a8ad"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-formless-blade.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1717051,
+		"contentHash": "9bbca49ebabbc3486cfb3104051404063d2a032212bfbf6ea277168435cf2fda"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "06f140a9d83dd82f41febea2e7bf49cd21062d980ca760282cc401ac71ddc69e",
+		"postRepairContentHash": "9bbca49ebabbc3486cfb3104051404063d2a032212bfbf6ea277168435cf2fda",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:battle-instinct",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-battle-instinct.json",
+	"promptHash": "367fc0a765203fc88c8d76e32d998d4dc4f346960f3718d2d70676b3116c3763",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-combat-reading.png",
+			"contentHash": "27bb6da5cb2827c61cbd54ae4f73ab3bac12160003faff6ef7488a6da99aaac0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-combat-reading.png",
+			"contentHash": "6cbe01ab1f06d3f152ebaf245944c7d54d8ab672b2d80c1af917b6256f188a32"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-battle-instinct-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2106206,
+		"contentHash": "6b2d7e8cbaf3a60100e6ae5560ac51f2f93d24ab066d7f318eec5ba5e7ea727e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-battle-instinct.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1738386,
+		"contentHash": "86e8851386ea1d8c5001168f7742bb2bdab4c3ef2426c9a980f0f7ba11c1dcc1"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "14d7563d74edc84dd01c152ff32af4d9050936649070e727b6ab5d65c684b66a",
+		"postRepairContentHash": "86e8851386ea1d8c5001168f7742bb2bdab4c3ef2426c9a980f0f7ba11c1dcc1",
+		"removedPixels": 384942
+	}
+}

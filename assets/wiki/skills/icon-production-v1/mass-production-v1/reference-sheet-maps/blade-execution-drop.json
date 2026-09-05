@@ -1,0 +1,16 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.execution-drop",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:executioner-s-drop",
+			"name": "Executioner's Drop",
+			"rarity": "C",
+			"row": 1,
+			"column": 1
+		}
+	]
+}

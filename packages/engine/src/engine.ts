@@ -6,6 +6,8 @@ export {
 	ENGINE_CONTENT_VERSION,
 	ENGINE_EPOCH,
 	ENGINE_INVARIANTS,
+	EQUIPMENT_API_SUPPORTED_VERSIONS,
+	EQUIPMENT_ENGINE_CONTENT_VERSION,
 	FACILITY_ENGINE_CONTENT_VERSION,
 	FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION,
 	FIRST_EMBER_ENGINE_CONTENT_VERSION,
@@ -29,6 +31,7 @@ export {
 	supportsCommunicationApi,
 	supportsConversationApi,
 	supportsDirectivesApi,
+	supportsEquipmentApi,
 	supportsFirstBandArchiveApi,
 	supportsMissionApi,
 	supportsStoryPatchApi,
@@ -45,6 +48,16 @@ export type {
 } from './core/types.js';
 export { storyPatchCastForState, validateStoryPatchForState } from './domains/story/runtime.js';
 export { resolveDailyRoutine } from './domains/settlement/routines.js';
+export {
+	LEGACY_EQUIPMENT_TEMPLATE_BINDINGS,
+	adaptLegacyEquipmentItem,
+	createEquipmentItem,
+	equipEquipmentItem,
+	equipmentItemDisplayName,
+	validateEquipmentStateContent,
+	type CreateEquipmentItemInput,
+	type EquipEquipmentItemInput
+} from './domains/settlement/equipment.js';
 export { missionTurnLegalActions } from './domains/mission/actions.js';
 export {
 	isIrreversibleMasterAction,

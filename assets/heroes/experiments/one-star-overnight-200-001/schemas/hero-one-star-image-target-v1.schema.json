@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hero-one-star-image-target-v1.schema.json",
+  "title": "Heroes one-star image target v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "targetId", "targetVersion", "experimentId", "waveId", "heroId",
+    "imageKind", "starLevel", "productionState", "heroSpec", "references", "canonicalPrompt",
+    "presentation", "acceptanceCriteria", "sourceSummon", "correctionSource", "output"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "hero-one-star-image-target-v1" },
+    "targetId": { "$ref": "#/$defs/slug" },
+    "targetVersion": { "type": "integer", "minimum": 1, "maximum": 99 },
+    "experimentId": { "const": "one-star-overnight-200-001" },
+    "waveId": { "type": "string", "pattern": "^wave-(0[1-9]|1[0-9]|20)$" },
+    "heroId": { "$ref": "#/$defs/slug" },
+    "imageKind": { "enum": ["summon", "combat-chibi"] },
+    "starLevel": { "const": 1 },
+    "productionState": { "const": "candidate-only" },
+    "heroSpec": { "$ref": "#/$defs/heroSpec" },
+    "references": {
+      "type": "array", "minItems": 1, "maxItems": 10,
+      "items": { "$ref": "#/$defs/reference" }
+    },
+    "canonicalPrompt": {
+      "type": "object", "additionalProperties": false, "required": ["text", "sha256"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1, "maxLength": 30000 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "presentation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["width", "height", "mediaType", "composition", "negativeConstraints"],
+      "properties": {
+        "width": { "const": 1024 }, "height": { "const": 1536 },
+        "mediaType": { "const": "image/png" },
+        "composition": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "negativeConstraints": {
+          "type": "array", "minItems": 1, "maxItems": 40,
+          "items": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      }
+    },
+    "acceptanceCriteria": {
+      "type": "array", "minItems": 1, "maxItems": 40,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["criterionId", "description", "required"],
+        "properties": {
+          "criterionId": { "$ref": "#/$defs/slug" },
+          "description": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "required": { "type": "boolean" }
+        }
+      }
+    },
+    "sourceSummon": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/source" }] },
+    "correctionSource": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/source" }] },
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidatePath", "resultPath"],
+      "properties": {
+        "candidatePath": { "$ref": "#/$defs/repoPath" },
+        "resultPath": { "$ref": "#/$defs/repoPath" }
+      }
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repoPath": { "type": "string", "pattern": "^assets/heroes/experiments/one-star-overnight-200-001/(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["targetId", "resultPath", "candidatePath", "sha256"],
+      "properties": {
+        "targetId": { "$ref": "#/$defs/slug" },
+        "resultPath": { "$ref": "#/$defs/repoPath" },
+        "candidatePath": { "$ref": "#/$defs/repoPath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "reference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "purpose", "role"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^assets/[^\\\\]+$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "role": { "enum": ["rendering-style", "identity-anatomy-authority", "correction-source"] }
+      }
+    },
+    "heroSpec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["identity", "physique", "hair", "wardrobe", "details", "kernel"],
+      "properties": {
+        "identity": {
+          "type": "object", "additionalProperties": false,
+          "required": ["displayName", "gender", "age", "skinValueBand", "faceDescription", "identitySignature"],
+          "properties": {
+            "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+            "gender": { "enum": ["man", "woman"] },
+            "age": { "type": "integer", "minimum": 18, "maximum": 42 },
+            "skinValueBand": { "type": "integer", "minimum": 1, "maximum": 6 },
+            "faceDescription": { "type": "string", "minLength": 1, "maxLength": 1000 },
+            "identitySignature": { "type": "string", "minLength": 1, "maxLength": 1000 }
+          }
+        },
+        "physique": {
+          "type": "object", "additionalProperties": false, "required": ["bodyType", "heightBand", "description"],
+          "properties": {
+            "bodyType": { "enum": ["healthy-slight-lanky", "ordinary-average", "soft-round", "sturdy-stocky", "plus-size-heavy", "athletic-conditioned", "clearly-muscular", "extreme-bodybuilder"] },
+            "heightBand": { "enum": ["very-short", "short", "medium", "tall", "very-tall"] },
+            "description": { "type": "string", "minLength": 1, "maxLength": 1000 }
+          }
+        },
+        "hair": {
+          "type": "object", "additionalProperties": false, "required": ["colorFamily", "silhouetteFamily", "accent", "chibiReadability"],
+          "properties": {
+            "colorFamily": { "enum": ["black", "dark-brown", "brown-chestnut", "blonde-gold", "red-copper-auburn", "gray-white-silver", "blue-teal", "violet-plum-pink", "multicolor-split-streak"] },
+            "silhouetteFamily": { "enum": ["shaved-close-cropped", "short-textured-crop", "bob-pageboy", "medium-loose", "long-loose", "braids-twists-locs", "curls-coils-halo", "bun-topknot-wrapped", "asymmetric-extreme"] },
+            "accent": { "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1, "maxLength": 300 }] },
+            "chibiReadability": { "type": "string", "minLength": 1, "maxLength": 1000 }
+          }
+        },
+        "wardrobe": {
+          "type": "object", "additionalProperties": false, "required": ["family", "paletteFamily", "description", "condition"],
+          "properties": {
+            "family": { "enum": ["layered-wrap", "short-jacket-trousers", "tailored-longcoat", "tunic-tabard", "apron-workwear-layers", "quilted-outerwear", "draped-robe", "mantle-short-cape", "fitted-vest-system", "asymmetric-patchwork"] },
+            "paletteFamily": { "enum": ["ochre-cream", "rust-charcoal", "teal-brown", "indigo-sand", "plum-gray", "moss-ivory", "marigold-green", "oxblood-navy", "lilac-smoke", "terracotta-black"] },
+            "description": { "type": "string", "minLength": 1, "maxLength": 1500 },
+            "condition": { "type": "string", "minLength": 1, "maxLength": 500 }
+          }
+        },
+        "details": {
+          "type": "object", "additionalProperties": false, "required": ["density", "tattooScope", "anchors", "coolnessAnchor"],
+          "properties": {
+            "density": { "type": "integer", "minimum": 0, "maximum": 3 },
+            "tattooScope": { "enum": ["none", "bounded", "extensive"] },
+            "anchors": { "type": "array", "minItems": 0, "maxItems": 3, "items": { "type": "string", "minLength": 1, "maxLength": 1000 } },
+            "coolnessAnchor": { "enum": ["hairstyle-construction", "garment-silhouette", "color-blocking", "textile-detail", "body-or-posture", "repairs-patina-keepsake", "jewelry-hardware", "durable-body-marking"] }
+          }
+        },
+        "kernel": {
+          "type": "object", "additionalProperties": false,
+          "required": ["dominantTrait", "counterTrait", "tension", "socialPresentation", "groomingAttitude", "colorOrnamentTaste", "culturalFragments", "lifeEcho", "poseCue", "nonInference"],
+          "properties": {
+            "dominantTrait": { "$ref": "#/$defs/kernelText" }, "counterTrait": { "$ref": "#/$defs/kernelText" },
+            "tension": { "$ref": "#/$defs/kernelText" }, "socialPresentation": { "$ref": "#/$defs/kernelText" },
+            "groomingAttitude": { "$ref": "#/$defs/kernelText" }, "colorOrnamentTaste": { "$ref": "#/$defs/kernelText" },
+            "culturalFragments": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/kernelText" } },
+            "lifeEcho": { "$ref": "#/$defs/kernelText" }, "poseCue": { "$ref": "#/$defs/kernelText" },
+            "nonInference": { "$ref": "#/$defs/kernelText" }
+          }
+        }
+      }
+    },
+    "kernelText": { "type": "string", "minLength": 1, "maxLength": 1000 }
+  }
+}

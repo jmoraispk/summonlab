@@ -62,6 +62,23 @@ async function validReceipt() {
 		experimentId: 'family-affinity-v1',
 		affinities: ['normal', 'fire', 'earth', 'wind', 'water'],
 		namespaces: ['canonical', 'bridge'],
+		dispatchStatuses: ['planned', 'planned-provisional-anchor', 'earth-bridge-provisional'],
+		anchorKinds: [
+			'normal-self',
+			'normal-approved-review',
+			'normal-verified-candidate',
+			'earth-bridge-provisional'
+		],
+		requiredBindings: [
+			'target-assignment-cross-hash',
+			'namespace-source-packet-canonical-json-hash',
+			'bridge-normal-reference-raw-bytes-hash',
+			'canonical-normal-target-candidate-result-source-hash',
+			'candidate-raw-bytes-hash',
+			'prompt-material-raw-bytes-hash',
+			'source-path',
+			'result-path'
+		],
 		pathTemplates,
 		ownership: {
 			producerRoleAllowlist: ['image-producer'],
@@ -88,6 +105,7 @@ async function validReceipt() {
 			reviewedAt: '2026-09-02T12:00:00.000Z',
 			approvalReference: 'root-approved-task10-bridge-production-extension-2026-09-02'
 		},
+		provisionalAnchorExtension: approved.provisionalAnchorExtension,
 		reviewedAt: '2026-09-02T12:00:00.000Z',
 		approvalReference: 'user-confirmed-summonlab-image-production-v3-2026-09-02'
 	};
@@ -112,6 +130,27 @@ describe('family affinity production compatibility gate', () => {
 		['Earth missing', { affinities: ['normal', 'fire', 'wind', 'water'] }],
 		['Wood admitted', { affinities: ['normal', 'fire', 'earth', 'wind', 'water', 'wood'] }],
 		['affinities reordered', { affinities: ['normal', 'earth', 'fire', 'wind', 'water'] }],
+		['provisional dispatch omitted', { dispatchStatuses: ['planned', 'earth-bridge-provisional'] }],
+		[
+			'provisional anchor omitted',
+			{
+				anchorKinds: ['normal-self', 'normal-approved-review', 'earth-bridge-provisional']
+			}
+		],
+		[
+			'provisional chain binding omitted',
+			{
+				requiredBindings: [
+					'target-assignment-cross-hash',
+					'namespace-source-packet-canonical-json-hash',
+					'bridge-normal-reference-raw-bytes-hash',
+					'candidate-raw-bytes-hash',
+					'prompt-material-raw-bytes-hash',
+					'source-path',
+					'result-path'
+				]
+			}
+		],
 		['retry expansion', { ownership: { retryCeiling: [0, 1, 2] } }]
 	])('rejects %s compatibility evidence', async (_label, mutation) => {
 		const bytes = await loadContractBytes();
@@ -288,12 +327,29 @@ describe('family affinity production compatibility gate', () => {
 			await readFile(join(repositoryRoot, earthAssignmentPath), 'utf8')
 		);
 		const familyPacketBytes = await readFile(join(repositoryRoot, earth.sources.familyPacketPath));
+		const blockedEarth = FamilyAffinityTargetSchema.parse({
+			...earth,
+			status: 'blocked-on-anchor',
+			anchor: {
+				...earth.anchor,
+				reviewReceiptSha256: null,
+				normalCandidatePath: null,
+				normalCandidateSha256: null,
+				normalResultPath: null,
+				normalResultSha256: null
+			}
+		});
+		const blockedEarthAssignment = FamilyAffinityAssignmentSchema.parse({
+			...earthAssignment,
+			targetSha256: familyAffinitySha256(blockedEarth),
+			dispatchStatus: 'blocked-on-anchor'
+		});
 		expect(() =>
 			preflightFamilyAffinityProductionDispatch({
 				compatibility: receipt,
 				installedContractBytes: bytes,
-				target: earth,
-				assignment: earthAssignment,
+				target: blockedEarth,
+				assignment: blockedEarthAssignment,
 				targetPath: earthPath,
 				assignmentPath: earthAssignmentPath,
 				familyPacketBytes,

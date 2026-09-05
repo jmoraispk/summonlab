@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:unbroken-guard",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-unbroken-guard.json",
+	"promptHash": "35842e9a48de4a8f814d4ce8f3bf018a81f27251fdeaf25176415fea55afa5bf",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-combat-foundation.png",
+			"contentHash": "82794be278d2ca7103ba34602254185ab5b5b609da84e24fe769387441b50924"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-recovery.png",
+			"contentHash": "ab50a484dcc5b62888d54a6caed5e9f096ccc61fce27bb5608b6f5be9ae3fca5"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-unbroken-guard-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2030460,
+		"contentHash": "58f06a6370c0f7b69b365c32b202d4f38ed0a7a44493c0e0c0b50717182ef730"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-unbroken-guard.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1793502,
+		"contentHash": "93623578e4f7652764937763ca516a8bec158b0a50bd42878736c4b3639656eb"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "dbdd23c2930cf5e7dec8fde5080006bc90893a6fc2b3e26b3e0c4c1d83548bae",
+		"postRepairContentHash": "93623578e4f7652764937763ca516a8bec158b0a50bd42878736c4b3639656eb",
+		"removedPixels": 384942
+	}
+}

@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`orchestration legal actions > preserves complete ordered Master and active-hero arrays for Checkpoint A v1-v23 1`] = `
+exports[`orchestration legal actions > preserves complete ordered Master and active-hero arrays for Checkpoint A v1-v24 1`] = `
 [
   {
     "hero": [
@@ -3810,6 +3810,96 @@ exports[`orchestration legal actions > preserves complete ordered Master and act
       },
     ],
     "schemaVersion": 23,
+  },
+  {
+    "hero": [
+      {
+        "actionId": "hero.choose.kitchen",
+        "actorId": "5b3a17f8-45ee-414d-948b-ad55185d16ad",
+        "description": "Open the names-before-orders branch and plan a route to the kitchen.",
+        "kind": "move",
+        "label": "Choose the kitchen",
+        "resourceCosts": {},
+        "tags": [
+          "story-branch",
+          "settlement",
+        ],
+        "targetIds": [],
+      },
+      {
+        "actionId": "hero.choose.training-ground",
+        "actorId": "5b3a17f8-45ee-414d-948b-ad55185d16ad",
+        "description": "Open the steel-before-trust branch and plan a route to training.",
+        "kind": "move",
+        "label": "Choose the training ground",
+        "resourceCosts": {},
+        "tags": [
+          "story-branch",
+          "settlement",
+        ],
+        "targetIds": [],
+      },
+    ],
+    "master": [
+      {
+        "actionId": "master.inspect.gate",
+        "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        "description": "Draw one named deterministic resonance value without advancing time.",
+        "kind": "interact",
+        "label": "Inspect the gate resonance",
+        "resourceCosts": {},
+        "tags": [
+          "deterministic",
+          "development-proof",
+        ],
+        "targetIds": [],
+      },
+      {
+        "actionId": "mission.prepare",
+        "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        "description": "Reserve the Master and up to four ready heroes at the Tower Threshold.",
+        "kind": "interact",
+        "label": "Prepare Floor 01 · The Unlit Muster party",
+        "resourceCosts": {},
+        "tags": [
+          "mission",
+          "preparation",
+          "content-bound",
+        ],
+        "targetIds": [],
+      },
+      {
+        "actionId": "simulation.damage.hero.5b3a17f8-45ee-414d-948b-ad55185d16ad",
+        "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        "description": "Development proof for injury, terminal state, and schedule cancellation.",
+        "kind": "attack",
+        "label": "Apply a controlled hero hazard",
+        "resourceCosts": {},
+        "tags": [
+          "development-proof",
+          "permadeath",
+        ],
+        "targetIds": [
+          "5b3a17f8-45ee-414d-948b-ad55185d16ad",
+        ],
+      },
+      {
+        "actionId": "simulation.damage.master",
+        "actorId": "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        "description": "Development proof that Master death atomically ends the run.",
+        "kind": "attack",
+        "label": "Apply a controlled Master hazard",
+        "resourceCosts": {},
+        "tags": [
+          "development-proof",
+          "game-over",
+        ],
+        "targetIds": [
+          "dbcdb3b5-80e6-4c8a-89f5-a313cfe420b2",
+        ],
+      },
+    ],
+    "schemaVersion": 24,
   },
 ]
 `;

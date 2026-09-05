@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hero-one-star-image-result-v1.schema.json",
+  "title": "Heroes one-star image result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "resultId", "experimentId", "targetId", "targetSha256", "assignmentId", "assignmentSha256", "producerId", "status", "attempts", "selectedAttemptId", "failedCriteria", "candidate", "startedAt", "completedAt", "totalWallTimeMs", "writtenOutputPaths", "attestations"],
+  "properties": {
+    "schemaVersion": { "const": "hero-one-star-image-result-v1" },
+    "resultId": { "$ref": "#/$defs/slug" }, "experimentId": { "const": "one-star-overnight-200-001" },
+    "targetId": { "$ref": "#/$defs/slug" }, "targetSha256": { "$ref": "#/$defs/sha256" },
+    "assignmentId": { "$ref": "#/$defs/slug" }, "assignmentSha256": { "$ref": "#/$defs/sha256" },
+    "producerId": { "$ref": "#/$defs/slug" }, "status": { "enum": ["candidate", "revise", "failed"] },
+    "attempts": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "$ref": "#/$defs/attempt" } },
+    "selectedAttemptId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/slug" }] },
+    "failedCriteria": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/slug" } },
+    "candidate": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/output" }] },
+    "startedAt": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "completedAt": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "totalWallTimeMs": { "type": "integer", "minimum": 0, "maximum": 172800000 },
+    "writtenOutputPaths": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "$ref": "#/$defs/path" } },
+    "attestations": {
+      "type": "object", "additionalProperties": false, "required": ["noSharedFilesEdited", "selfPromoted", "candidateOnly"],
+      "properties": { "noSharedFilesEdited": { "const": true }, "selfPromoted": { "const": false }, "candidateOnly": { "const": true } }
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,79}$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "pattern": "^assets/heroes/experiments/one-star-overnight-200-001/[^\\\\]+$" },
+    "sourceOutput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["outputId", "path", "mediaType", "width", "height", "bytes", "sha256"],
+      "properties": {
+        "outputId": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "path": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "mediaType": { "const": "image/png" }, "width": { "const": 1024 }, "height": { "const": 1536 },
+        "bytes": { "type": "integer", "minimum": 1 }, "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "output": {
+      "type": "object", "additionalProperties": false, "required": ["path", "mediaType", "width", "height", "bytes", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" }, "mediaType": { "const": "image/png" },
+        "width": { "const": 1024 }, "height": { "const": 1536 }, "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false, "required": ["criterionId", "evaluator", "outcome", "observation"],
+      "properties": {
+        "criterionId": { "$ref": "#/$defs/slug" }, "evaluator": { "enum": ["producer", "automated", "inspector"] },
+        "outcome": { "enum": ["pass", "concern", "fail", "not-applicable"] },
+        "observation": { "type": "string", "minLength": 1, "maxLength": 1000 }
+      }
+    },
+    "attempt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["attemptId", "attemptNumber", "precedingAttemptId", "conclusion", "failureKind", "exactPrompt", "promptSha256", "referenceInputs", "requestStartedAt", "generationCompletedAt", "inspectionCompletedAt", "generationDurationMs", "inspectionDurationMs", "totalWallTimeMs", "sourceOutput", "persistence", "findings", "retryReason"],
+      "properties": {
+        "attemptId": { "$ref": "#/$defs/slug" }, "attemptNumber": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "precedingAttemptId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/slug" }] },
+        "conclusion": { "enum": ["accepted-by-producer", "rejected-by-producer", "provider-failure"] },
+        "failureKind": { "oneOf": [{ "type": "null" }, { "enum": ["capacity", "provider-throttle", "timeout", "malformed-output", "persistence", "other"] }] },
+        "exactPrompt": { "type": "string", "minLength": 1, "maxLength": 30000 }, "promptSha256": { "$ref": "#/$defs/sha256" },
+        "referenceInputs": {
+          "type": "array", "minItems": 1, "maxItems": 10,
+          "items": { "type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": { "path": { "type": "string", "minLength": 1 }, "sha256": { "$ref": "#/$defs/sha256" } } }
+        },
+        "requestStartedAt": { "type": "string", "minLength": 1 }, "generationCompletedAt": { "type": "string", "minLength": 1 },
+        "inspectionCompletedAt": { "type": "string", "minLength": 1 },
+        "generationDurationMs": { "type": "integer", "minimum": 0 }, "inspectionDurationMs": { "type": "integer", "minimum": 0 },
+        "totalWallTimeMs": { "type": "integer", "minimum": 0 },
+        "sourceOutput": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sourceOutput" }] },
+        "persistence": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object", "additionalProperties": false, "required": ["operation", "source", "retained"],
+              "properties": { "operation": { "const": "anchored-exclusive-copy" }, "source": { "$ref": "#/$defs/sourceOutput" }, "retained": { "$ref": "#/$defs/output" } }
+            }
+          ]
+        },
+        "findings": { "type": "array", "minItems": 1, "maxItems": 100, "items": { "$ref": "#/$defs/finding" } },
+        "retryReason": { "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1, "maxLength": 1000 }] }
+      }
+    }
+  }
+}

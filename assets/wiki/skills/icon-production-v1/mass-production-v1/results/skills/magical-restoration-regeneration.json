@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:regeneration",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-regeneration.json",
+	"promptHash": "76e3b07abfe12f6aa6906661b0568116791fbf862b2bbb13edb47128369a1621",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-vital-renewal.png",
+			"contentHash": "f1380af2499df12ec6fe6193c013df7754ea15f345a5d9af54d2d49d1436c958"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-soothe.png",
+			"contentHash": "ba0ac9be42fc2be11f7614162734101476ac34a3e72add8897eba816c0a07153"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-regeneration-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1990096,
+		"contentHash": "4da85b4619d26d1b93775a329138d2cc9d64e058c8c9fa32c66dd139634b0d2f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-regeneration.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1809268,
+		"contentHash": "bf0030723b8e7ee518f90903ac21b559ef8574ec09315bcc435a4055dac457ba"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "14c5960156106c694038897ea0aec30c3ce8945e24a11f2ae02db120db2c040b",
+		"postRepairContentHash": "bf0030723b8e7ee518f90903ac21b559ef8574ec09315bcc435a4055dac457ba",
+		"removedPixels": 384942
+	}
+}

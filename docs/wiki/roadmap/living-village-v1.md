@@ -18,12 +18,12 @@ the wiki and may continue through independent design or concept-art work.
 | Visible local training | `on` | Player selects one enabled attribute or owned skill, confirms a block, and sees the hero walk to the Court and train |
 | One three-hero party | `on` | One prepared party and one active attempt |
 | Tower species hunts | `on` | Sequential Floors 1–10 expose known species hunts with a remaining-Health return threshold and material haul |
-| Material inventory | `on` | Gathered and species-drop materials persist in the shared Village inventory and expose their Forging uses |
-| Forging and Gathering loop | `on` | Gathering supplies the scoped material families; Forging turns selected materials into prototype Weapons and Armour |
+| Material inventory | `partial` | Engine-v24 persists bounded seeded material lots and exposes their Forging uses; full Gathering acquisition is not implemented |
+| Forging and Gathering loop | `partial` | Standard Forging consumes one seeded rank-bearing lot; Gathering remains the enabled source family but has no complete node/harvest economy yet |
 | Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
 | Rewards and engagement | `placeholder` | First-clear, training, repeat-hunt, material, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
-| Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, equipment icons, one Hearth, one tower backdrop |
+| Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, 140 lazy Equipment card/detail pairs, one Hearth, one tower backdrop |
 
 ## Fixed hero roster
 
@@ -58,9 +58,8 @@ The immutable legacy inventory preserves all 520 supplied definitions. The
 | Forging | `on` | One of the only two enabled Craft families; produces the scoped prototype Weapons and Armour |
 | Alchemy | `off` | No brewing, reagents, potions, poisons, Alchemy UI, or Alchemy reward |
 | Cooking | `off` | No food/upkeep loop, meals, buffs, or Cooking assignment |
-| Gathering | `on` | One of the only two enabled Craft families; supplies materials used by Forging |
-| Beast | `off` | No taming, riding, breeding, mounts, companions, or Beast assignment |
-| Lore | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
+| Gathering | `partial` | One of the only two enabled Craft families; runtime-v1 proves its material-lot contract with seeded lots while node and harvest actions remain deferred |
+| Knowledge | `off` | No appraisal, research, cartography, language, or aptitude-reveal action |
 | Skill mastery beyond initial slice | `off` | No higher mastery promotions or practice-profile bonuses |
 | Teaching and mentorship | `off` | No teacher assignment or Guidance multiplier |
 | Skill merging | `off` | Recipes stay documented; no preview, catalyst, consumption, or result generation |
@@ -79,7 +78,7 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Expedition navigation and discoveries | `off` | Mission selection leads directly to resolution/presentation |
 | Multiple parties | `off` | One party proves reservation and return |
 | Advanced and Special summon channels | `off` | The fixed six-person Normal sequence is the complete prototype roster |
-| Equipment crafting | `on` | A bounded Forging selection proves gathered material → Weapon or Armour → inventory |
+| Equipment crafting | `on` | A bounded Forging selection proves seeded material lot → Standard Weapon, Armour piece, Shield, or Staff → persisted inventory |
 | Enchanting, set bonuses, wear, and repair | `off` | The prototype proves ordinary equipment creation before adding overlays or maintenance |
 | Hero affinity awakening, affinity ranks, dual affinity, and derived affinity | `off` | Every 1★ prototype hero remains Unaligned; a base affinity may appear only in an explicitly enabled monster fixture |
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
@@ -105,8 +104,9 @@ slice by a directly useful progression, training, or equipment reward.
 ## Release gates
 
 - The executable allowlist rejects every `off` skill and capability from all entry points.
-- Forging and Gathering are the only enabled Craft families; no recipe or reward silently depends
-  on an off Craft family.
+- Forging and Gathering are the only enabled Craft families; the current proof uses bounded seeded
+  lots and does not claim a complete Gathering economy. No recipe or reward silently depends on an
+  off Craft family.
 - Summoning rejects every hero identity outside the fixed six and cannot grant one identity twice.
 - A new player completes summon → inspect/equip in Village → Court training or species hunt →
   visible return → improved retry.

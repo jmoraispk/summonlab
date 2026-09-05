@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "restoration.return-life",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:restoration:restore-limb",
+			"name": "Restore Limb",
+			"rarity": "D",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:restoration:second-life",
+			"name": "Second Life",
+			"rarity": "C",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:restoration:return",
+			"name": "Return",
+			"rarity": "B",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "magical:restoration:what-was-taken-back",
+			"name": "What Was Taken Back",
+			"rarity": "S",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

@@ -1,5 +1,11 @@
 # Monster Family Affinity Production Implementation Plan
 
+> **Superseded production gate (2026-09-03):** the approved-Normal-before-affinity dependency in
+> this historical plan is replaced for candidate generation by the hash-bound
+> `normal-verified-candidate` protocol in
+> [the single-checkpoint goal harness](2026-09-03-monster-image-single-checkpoint-goal-harness.md).
+> This does not grant visual approval or runtime promotion.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Consolidate thirty monster families into 150 authored T1–T5 forms, reconcile all forty current classes, retire Wood/Metal visual artifacts, and produce a collision-safe, reviewable 750-target Normal/Fire/Earth/Wind/Water image program without promoting anything to runtime.

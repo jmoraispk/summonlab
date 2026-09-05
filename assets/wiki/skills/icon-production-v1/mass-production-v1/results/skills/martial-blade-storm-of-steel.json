@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:storm-of-steel",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-storm-of-steel.json",
+	"promptHash": "095ac1d6ca7e7719059fe966c9691c17e94f2ec635d9b333104e93380c84518d",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-throwing-arc.png",
+			"contentHash": "2117b881f37e9bd3aca87c0c447aeae23ca98f58ab52869475554d3cbc30c9b0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-boomerang-arc.png",
+			"contentHash": "9909246b67ded09549bb4875bfa0a1a08976d1d06f4dd8ec24a7da68b7948ba9"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-storm-of-steel-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1943698,
+		"contentHash": "e01284bb1f41170f5832f77b8eb14eac8ccbd5758ffcb5ea4d824bf53c964d94"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-storm-of-steel.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1763507,
+		"contentHash": "40ce37a756557dfa6099421b5e9a2929837247868e4540861cc5ea095288d376"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8da9ceb33e0da2b8a5452b29338209dca340d3b969d3f774b91c1096449a6c3d",
+		"postRepairContentHash": "40ce37a756557dfa6099421b5e9a2929837247868e4540861cc5ea095288d376",
+		"removedPixels": 384942
+	}
+}

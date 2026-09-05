@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:ten-thousand-leaves",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-ten-thousand-leaves.json",
+	"promptHash": "aaecb7ce8452b24cb11203f455bda88b6b11804056868e738bec3fe85afe28f6",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-sweeping-cut.png",
+			"contentHash": "e2c931c7058a3c9c9750778c037dac55b6ed05e573ed7a8f4833a1888ecea3d5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rising-moon.png",
+			"contentHash": "d29d14630193717640552c16e33f7f6adf64db5f31b8a73ea06b820426865590"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-ten-thousand-leaves-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2191937,
+		"contentHash": "a025b5d0585d1b731930d0776f1a9a71ec637f99bf2a2907e8eb53899f93e3d2"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-ten-thousand-leaves.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1905654,
+		"contentHash": "9365e90e3900eea82e1a0b129633c77e5c43cda9c2c5ac37772cee1599e5956b"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8692f763393ef63ad23e8e2005b343136d35f742da99dea55f257387754fad08",
+		"postRepairContentHash": "9365e90e3900eea82e1a0b129633c77e5c43cda9c2c5ac37772cee1599e5956b",
+		"removedPixels": 384942
+	}
+}

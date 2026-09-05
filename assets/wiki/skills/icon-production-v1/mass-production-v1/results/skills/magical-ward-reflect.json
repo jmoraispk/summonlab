@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:reflect",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-reflect.json",
+	"promptHash": "6c1cda468e772229d32b7e28e90643c3e6be574f9f7ec1f316b08a26e5833ab5",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-reflection.png",
+			"contentHash": "679318aa620e29e7f4957db4ad180fd73d30aadfe00355dbee8ba1fa3a114b3c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-reflect-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2027062,
+		"contentHash": "d08712e738e42baefdeb3ccc20d1677e46e50ad8d6279d91438b6b7c75ec7a27"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-reflect.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1889820,
+		"contentHash": "5b5907b540c026e120e2582e86de38a9af32c1db13d6d54dac72fa6310c6b43b"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "8e0bcede2b15f590df89b54185465c423c3d1b55f3bd37a599959811c6bc2390",
+		"postRepairContentHash": "5b5907b540c026e120e2582e86de38a9af32c1db13d6d54dac72fa6310c6b43b",
+		"removedPixels": 384942
+	}
+}

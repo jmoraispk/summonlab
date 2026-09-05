@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "hero-rendering-style-reference-v1",
+  "styleReferenceId": "current-hero-rendering",
+  "status": "accepted-style-reference-only",
+  "acceptedAt": "2026-09-02",
+  "scope": "Hero identity anchors, summon art, and evolution art",
+  "reference": {
+    "path": "ochre-braid-progression-reference.png",
+    "width": 1790,
+    "height": 879,
+    "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+  },
+  "decision": "Use cinematic semi-realistic painted character art at this realism ceiling. Do not push future hero production into literal live-action photography or ultra-photorealism.",
+  "adopt": [
+    "believable adult anatomy, weight, skin, hair, cloth, leather, and metal",
+    "polished painterly game-key-art finish with controlled texture",
+    "recognizable faces and stable body identity across evolution",
+    "clear garment construction and dramatic but readable high-rank effects",
+    "calm identity-consistent facial affect unless a scene explicitly calls for another expression"
+  ],
+  "avoid": [
+    "literal photographed or live-action appearance",
+    "photo-specific pore, lens, and skin-detail prompting",
+    "anime simplification, cel shading, or exaggerated facial acting",
+    "plastic 3D-render surfaces",
+    "treating this style reference as an approved hero or runtime asset"
+  ],
+  "assetRole": "visual-direction reference; not a hero candidate, approved hero identity, or runtime asset",
+  "provenance": "provenance.json"
+}

@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:restore-limb",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-restore-limb.json",
+	"promptHash": "84259055b22aed527ff32607a9e4c21b6502b7d8ef7a783907e701d1ed43b400",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-return-life.png",
+			"contentHash": "e916d4bd59af878e4375271a7eec5a21536ce7a3044b6434b2af2e7b85f84ba9"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-restore-limb-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2176046,
+		"contentHash": "8ec2fd985bee60058000bc6fdda6fc79054157416b8631cec0cb0ab8bb8b0ff7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-restore-limb.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1932242,
+		"contentHash": "8c38062b314affc253856687a2f409215b4488605fd91ae8644caccacc50f951"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c8a55ea7b4dcb465c6724268a2651d9a3abb798c2e2a14222a012b1004728a4e",
+		"postRepairContentHash": "8c38062b314affc253856687a2f409215b4488605fd91ae8644caccacc50f951",
+		"removedPixels": 384942
+	}
+}

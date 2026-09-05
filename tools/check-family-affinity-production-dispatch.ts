@@ -1,19 +1,21 @@
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
 import { lstat, readFile, realpath } from 'node:fs/promises';
-import { homedir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
 	FamilyAffinityAssignmentSchema,
+	FAUNA_FAMILY_ROOT,
 	FAMILY_AFFINITY_ROOT,
+	FaunaFamilyManifestSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
 	familyAffinitySha256,
 	familyAffinitySourcePacketBinding,
+	familyProductionTargetExperimentId,
 	preflightFamilyAffinityProductionDispatch,
 	readFamilyAffinityOwnedFile,
 	stableFamilyAffinityJson,
@@ -256,36 +258,47 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 	result?: unknown;
 }) {
 	const repositoryRoot = resolve(input.repositoryRoot);
+	const productionRoot = input.targetPath.startsWith(`${FAUNA_FAMILY_ROOT}/`)
+		? FAUNA_FAMILY_ROOT
+		: FAMILY_AFFINITY_ROOT;
 	const receipt = JSON.parse(
-		await readFile(
-			join(repositoryRoot, FAMILY_AFFINITY_ROOT, 'production-compatibility.json'),
-			'utf8'
-		)
+		await readFile(join(repositoryRoot, productionRoot, 'production-compatibility.json'), 'utf8')
 	);
 	const trackedSkillRoot = join(repositoryRoot, 'skills/summonlab-image-production');
-	const installedSkillRoot =
-		input.installedSkillRoot ?? join(homedir(), '.codex/skills/summonlab-image-production');
+	const installedSkillRoot = input.installedSkillRoot ?? trackedSkillRoot;
 	const surface = await validateFamilyAffinityProductionSurface({
 		compatibility: receipt,
 		trackedSkillRoot,
 		installedSkillRoot,
 		repositoryRoot
 	});
-	const manifestPath = `${FAMILY_AFFINITY_ROOT}/manifest.json`;
+	const manifestPath = `${productionRoot}/manifest.json`;
 	const [manifestBytes, targetBytes, assignmentBytes] = await Promise.all([
 		readFamilyAffinityOwnedFile(repositoryRoot, manifestPath),
 		readFamilyAffinityOwnedFile(repositoryRoot, input.targetPath),
 		readFamilyAffinityOwnedFile(repositoryRoot, input.assignmentPath)
 	]);
-	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
 	const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+	if (
+		familyProductionTargetExperimentId(target) !== receipt.experimentId ||
+		productionRoot !==
+			(receipt.experimentId === 'fauna-family-v1' ? FAUNA_FAMILY_ROOT : FAMILY_AFFINITY_ROOT)
+	) {
+		throw new Error('Dispatch target path, target experiment, and compatibility profile disagree');
+	}
+	const manifest =
+		receipt.experimentId === 'fauna-family-v1'
+			? FaunaFamilyManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')))
+			: FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
 	const assignment = FamilyAffinityAssignmentSchema.parse(
 		JSON.parse(assignmentBytes.toString('utf8'))
 	);
 	const coordinates =
 		target.namespace === 'canonical'
 			? manifest.canonicalMatrix.activeCoordinates
-			: manifest.bridge.activeCoordinates;
+			: 'bridge' in manifest
+				? manifest.bridge.activeCoordinates
+				: [];
 	const coordinate = coordinates.find(({ coordinateId }) => coordinateId === target.coordinateId);
 	if (
 		!coordinate ||
@@ -298,8 +311,12 @@ export async function checkFamilyAffinityProductionDispatch(input: {
 		throw new Error('Dispatch target/assignment is stale or manifest-unbound');
 	}
 	validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
-	if (target.status === 'blocked-on-anchor') {
-		throw new Error(`Target is blocked-on-anchor and cannot be dispatched: ${target.targetId}`);
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	) {
+		throw new Error(`Target status is not dispatchable: ${target.status} (${target.targetId})`);
 	}
 	await validateFamilyAffinityNormalAnchorEvidence({
 		repositoryRoot,

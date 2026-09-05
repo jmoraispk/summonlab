@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:severance-ward",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-severance-ward.json",
+	"promptHash": "03edf108dc39ccf999fa06d36b308846b49ab87c99b6ca9fb606c15ef9c372c2",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-cleansing-break.png",
+			"contentHash": "0d4b78887fc4d0c3909f4ca759dc9b867ed1e85555ec17d174fb63bb5ba584dd"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-unbinding.png",
+			"contentHash": "f404a4814e72513ab42095738ea774448d8dd36dc9bd0686b3b16fa7bc603a6d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-severance-ward-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2279871,
+		"contentHash": "b489015401487ba6dba322cb9dbbc550c30060abcf456d30dd52bd17831d60a0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-severance-ward.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2099820,
+		"contentHash": "c5e8bffa3d39751af7d494a70289d702fd223299a9fa55b5ce30106ca793cd0d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a6c1c1cd91530f8183f85c6e58f6671d0f32e2b911b605fc8fbd2f99b3090f42",
+		"postRepairContentHash": "c5e8bffa3d39751af7d494a70289d702fd223299a9fa55b5ce30106ca793cd0d",
+		"removedPixels": 384942
+	}
+}

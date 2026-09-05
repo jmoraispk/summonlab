@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:grab",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-grab.json",
+	"promptHash": "28db48e46d77b6f7eee79670b083ae227ce3a843cfead60708fac79fab709721",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-grappling-control.png",
+			"contentHash": "6ffc76e1895e900667fb63453acc1f5818336949c8ec851b961e03c6737bb586"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-wrestling.png",
+			"contentHash": "b07543e011b414086e1df53f3942bc22f379cec2f84473dbd06092363daa7065"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-grab-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2264050,
+		"contentHash": "2e8f631149b96033c5521eacaf19c8a5ceae2f0a6cb51f2bc5e4b0c0761686c2"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-grab.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1876857,
+		"contentHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cd1fc097afbc6ac55b3a4ddda80f0261f7a293d9b9a9ceba69c10fe844666503",
+		"postRepairContentHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2",
+		"removedPixels": 384942
+	}
+}

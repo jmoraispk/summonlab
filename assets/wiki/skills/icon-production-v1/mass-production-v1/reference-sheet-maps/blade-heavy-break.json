@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "blade.heavy-break",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:blade:guard-break",
+			"name": "Guard Break",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:blade:pommel-strike",
+			"name": "Pommel Strike",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:blade:bulwark-swing",
+			"name": "Bulwark Swing",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-decision-v2",
+  "decisionId": "greatsword-v1-direction-decision-v2",
+  "recordedOn": "2026-09-04",
+  "decision": "accept",
+  "ownerFeedback": "Looks great. Go ahead and add these weapons.",
+  "selectedDirection": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+    "sha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8"
+  },
+  "acceptedTraits": [
+    "blade-to-full-hilt proportions",
+    "two-hand grip lengths",
+    "blade share of overall length",
+    "compact pommels",
+    "rank progression",
+    "material identities",
+    "complete framing"
+  ],
+  "acceptedMeasuredDeviation": {
+    "criterion": "guardPercent",
+    "observedRange": [19.53, 21.93],
+    "previousContractRange": [24, 30],
+    "decision": "accept-visible-v2-range-for-dedicated-reconstruction"
+  },
+  "unlocks": "seven-dedicated-item-assignments",
+  "doesNotAuthorize": [
+    "approved-source-promotion",
+    "runtime-export",
+    "content-definition",
+    "gameplay-integration"
+  ]
+}

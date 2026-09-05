@@ -1,0 +1,24 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "ranged.arrow-craft",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:ranged:fletching",
+			"name": "Fletching",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:ranged:split-arrow",
+			"name": "Split Arrow",
+			"rarity": "C",
+			"row": 1,
+			"column": 2
+		}
+	]
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:storm-of-iron",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-storm-of-iron.json",
+	"promptHash": "e9ad7bd3001c8d7a621ecddffd9bac3558f531a082248db2137d7a23d2ecc909",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-reaping-blade.png",
+			"contentHash": "cb5250ab6c16075ab0f659834c5cd4cd9f32863266dbb1b4fb85e4f7bfe78caa"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-reaping-arc.png",
+			"contentHash": "b0e2a95d64b61220dbe49a690c19d91261dc0023dc49e91463ab8d916d976351"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-storm-of-iron-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2191273,
+		"contentHash": "a1d2212b5e80282095af22ddc0c2f58992fe4ab2fb03b36d73113923459912dd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-storm-of-iron.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1859605,
+		"contentHash": "d2738c361c5195502993c31a31722c984369a013e8503c203459af450565496b"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "06f9a54993ab3901bc8981c7d9b19eda9338e4d863165647cb1ece8a6bad15dc",
+		"postRepairContentHash": "d2738c361c5195502993c31a31722c984369a013e8503c203459af450565496b",
+		"removedPixels": 384942
+	}
+}

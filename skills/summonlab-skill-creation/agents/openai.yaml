@@ -1,0 +1,7 @@
+interface:
+  display_name: 'Summonlab Skill Creation'
+  short_description: 'Create consistent Summonlab skills and families'
+  default_prompt: 'Use $summonlab-skill-creation Reversal Cut to propose and create this Summonlab skill.'
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:the-deep",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-the-deep.json",
+	"promptHash": "3e3b6c5f51d6211ff95c06f30844e24a0fd1aeac1d3695863eccf362407135e7",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-depth.png",
+			"contentHash": "16affa53f33b2432baef6f193bfc0ad3bd0c2ce16b703a6eedfc5138390878ef"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-still-depths.png",
+			"contentHash": "89801aa2b0f5bb7978cb5e85d3c03538bb9ed111887ee947e0b7e3e633ebf01a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-the-deep-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2171748,
+		"contentHash": "b7fcf42a0cf2b73c6fce7957e6a3df3920427c1b131cc5e04345ff3d797d6fa4"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-the-deep.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1893300,
+		"contentHash": "062bdbf3f45cfd7fe3b7c2578b8871ca3295f8573562932125249b8148d96a2f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "766e094b6496524c7079192672e7d799bf9daaf45b854ad333f79baa170e6ba9",
+		"postRepairContentHash": "062bdbf3f45cfd7fe3b7c2578b8871ca3295f8573562932125249b8148d96a2f",
+		"removedPixels": 384942
+	}
+}

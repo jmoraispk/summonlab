@@ -1,10 +1,7 @@
-import {
-	EngineGameStateSchema,
-	type EngineGameState,
-	type LegalAction
-} from '@summonlab/contracts';
+import { type EngineGameState, type LegalAction } from '@summonlab/contracts';
 
 import { settlementForState } from '../core/content-bindings.js';
+import { parseGameState } from '../core/state.js';
 import type { EngineGameStateModern } from '../core/types.js';
 import { hasNavigationState, isModernState } from '../core/versions.js';
 import {
@@ -240,14 +237,14 @@ export function legalActionsForParsedState(
 }
 
 export function legalActions(stateInput: EngineGameState, actorId: string): readonly LegalAction[] {
-	return legalActionsForParsedState(EngineGameStateSchema.parse(stateInput), actorId);
+	return legalActionsForParsedState(parseGameState(stateInput), actorId);
 }
 
 export function decisionLegalActions(
 	stateInput: EngineGameState,
 	actorId: string
 ): readonly LegalAction[] {
-	const state = EngineGameStateSchema.parse(stateInput);
+	const state = parseGameState(stateInput);
 	const actions = legalActionsForParsedState(state, actorId);
 	if (
 		!actions.some((candidate) => candidate.actionId === 'hero.travel') ||

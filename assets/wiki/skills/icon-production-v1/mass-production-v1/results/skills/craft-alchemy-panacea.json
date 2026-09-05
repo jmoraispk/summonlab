@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:alchemy:panacea",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-alchemy-panacea.json",
+	"promptHash": "59bbd0889078e6e90a9e879e9843e27387621f1f2ee7b615c558386b7bacc175",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-poison-remedy.png",
+			"contentHash": "fd04717367d8fd83666061a14ddd02f796aa4da83ed2f612281ab17374ee28ff"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-deathcap.png",
+			"contentHash": "2d24bfe39c2f1cbaeb814dae030fb0219cefd882627a6263dbb0ca4782e00881"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-alchemy-panacea-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2116333,
+		"contentHash": "3e786674fa892979249b41faced8d0948963d1dcb83132c47e88d9e4e7949b84"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-panacea.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1878845,
+		"contentHash": "b9e297a7dc9d1aff5e8ac93bb7a2588311302df182811fb84a8353aefe0e8f3d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4e6b690ba0d2a0b67e94824c3e7217a9993895987451037dc6d3437ab9672c4e",
+		"postRepairContentHash": "b9e297a7dc9d1aff5e8ac93bb7a2588311302df182811fb84a8353aefe0e8f3d",
+		"removedPixels": 384942
+	}
+}

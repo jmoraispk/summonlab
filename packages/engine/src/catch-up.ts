@@ -8,6 +8,7 @@ import {
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
+	EngineGameStateV24Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameStateV5,
@@ -18,7 +19,8 @@ import {
 	type EngineGameStateV10,
 	type EngineGameStateV11,
 	type EngineGameStateV12,
-	type EngineGameStateV13
+	type EngineGameStateV13,
+	type EngineGameStateV24
 } from '@summonlab/contracts';
 
 import { systemSource } from './core/event-metadata.js';
@@ -46,7 +48,8 @@ type CatchUpState =
 	| EngineGameStateV10
 	| EngineGameStateV11
 	| EngineGameStateV12
-	| EngineGameStateV13;
+	| EngineGameStateV13
+	| EngineGameStateV24;
 
 function parseCatchUpState(state: CatchUpState): CatchUpState {
 	if (state.schemaVersion === 5) return EngineGameStateV5Schema.parse(state);
@@ -57,7 +60,8 @@ function parseCatchUpState(state: CatchUpState): CatchUpState {
 	if (state.schemaVersion === 10) return EngineGameStateV10Schema.parse(state);
 	if (state.schemaVersion === 11) return EngineGameStateV11Schema.parse(state);
 	if (state.schemaVersion === 12) return EngineGameStateV12Schema.parse(state);
-	return EngineGameStateV13Schema.parse(state);
+	if (state.schemaVersion === 13) return EngineGameStateV13Schema.parse(state);
+	return EngineGameStateV24Schema.parse(state);
 }
 
 function commandBase(state: CatchUpState, key: string, actorId: string) {
@@ -72,6 +76,10 @@ function commandBase(state: CatchUpState, key: string, actorId: string) {
 }
 
 function earliestScheduledTime(state: CatchUpState): string | null {
+	const forgingCompletionTimes =
+		state.schemaVersion === 24
+			? Object.values(state.heroes).map((hero) => hero.currentForging?.completesAt)
+			: [];
 	return (
 		[
 			...Object.values(state.heroes).flatMap((hero) => [
@@ -79,6 +87,7 @@ function earliestScheduledTime(state: CatchUpState): string | null {
 				hero.currentTravel?.arrivesAt,
 				hero.currentRoutine?.completesAt
 			]),
+			...forgingCompletionTimes,
 			...(state.schemaVersion === 10 ||
 			state.schemaVersion === 11 ||
 			state.schemaVersion === 12 ||
@@ -100,6 +109,9 @@ export function nextCatchUpCommand(
 	const state = parseCatchUpState(stateInput);
 	if (state.status !== 'active') return null;
 	if (compareGameTime(state.simulatedAt, targetGameTime) > 0) return null;
+	if (state.schemaVersion === 24 && compareGameTime(state.simulatedAt, targetGameTime) === 0) {
+		return null;
+	}
 	for (const hero of Object.values(state.heroes).sort((left, right) =>
 		left.heroId.localeCompare(right.heroId)
 	)) {
@@ -170,7 +182,8 @@ export function applyCatchUpPolicy(
 			result.state.schemaVersion !== 10 &&
 			result.state.schemaVersion !== 11 &&
 			result.state.schemaVersion !== 12 &&
-			result.state.schemaVersion !== 13
+			result.state.schemaVersion !== 13 &&
+			result.state.schemaVersion !== 24
 		) {
 			throw new Error(`Catch-up changed engine schema to v${result.state.schemaVersion}`);
 		}

@@ -1,10 +1,21 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import openingArtwork from '../../../../../docs/design-proposals/living-village-ui/mockups/opening-master-connection-desktop.png';
 	import summonArtwork from '../../../../../assets/agent-summoning-concept.png';
 	import towerArtwork from '../../../../../assets/tower-prototype.png';
 	import combatArtwork from '../../../../../docs/evidence/living-village-combat-motion-storyboard-v1.png';
 
 	const screens = [
+		{
+			eyebrow: 'Playable prologue',
+			title: 'The First Three',
+			description:
+				'Connect as Master, summon the first company, answer their questions, assign three starter weapons, and learn why the Tower matters.',
+			action: 'Play Opening',
+			href: '/living-village-lab/opening' as const,
+			image: openingArtwork,
+			alt: 'An empty summoning chamber waiting for the Master'
+		},
 		{
 			eyebrow: 'Home surface',
 			title: 'The Living Village',
@@ -78,7 +89,7 @@
 	</header>
 
 	<section class="loop" aria-label="Living Village core loop">
-		<span>Summon a person</span><i>→</i><span>Prepare in Hearth</span><i>→</i><span
+		<span>Meet the first three</span><i>→</i><span>Prepare in Hearth</span><i>→</i><span
 			>Hunt the Tower</span
 		><i>→</i><span>Return with growth</span>
 	</section>

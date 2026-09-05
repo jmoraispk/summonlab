@@ -19,10 +19,13 @@ This is `summonlab-image-production-v3`. Read the machine-readable
 repository target's literal `schemaVersion`:
 
 - `family-affinity-target-v1` uses the skill-side `image-production-family-target-v1` profile.
+- A `family-affinity-target-v1` with literal `experimentId: fauna-family-v1` uses the
+  `image-production-fauna-family-target-v1` profile and collision-safe fauna path templates.
 - `image-production-target-v1` and `image-production-target-v2` retain the legacy profile and its
   immutable v1/v2 evidence. Wood and Metal exist only in that legacy mode.
 
-Never translate a target into another schema inside a job.
+Legacy family targets omit `experimentId` and remain bound to `family-affinity-v1`. Never translate
+a target into another schema or experiment inside a job.
 
 ## Inputs
 
@@ -111,6 +114,10 @@ Read [target-schema.md](references/target-schema.md) and
   not replace, rename, or delete another job's asset.
 - For the family profile, provider or pre-candidate failures are no-output handoffs. Do not fabricate
   a compact result receipt without a retained, hash-bound candidate.
+- `planned-provisional-anchor` may produce canonical affinity candidate-only evidence when its exact
+  same-form Normal target, candidate, result, prompt, and source packet chain verifies. It records
+  `humanReviewPending: true`; the producer never treats this authorization as visual approval or
+  runtime promotion.
 - `earth-bridge-provisional` may produce candidate-only evidence, but the producer never approves
   it. A mapped-primary bridge target carries its canonical Earth coordinate only as a future
   copy-with-provenance destination; it does not write or count inside the canonical 750. A

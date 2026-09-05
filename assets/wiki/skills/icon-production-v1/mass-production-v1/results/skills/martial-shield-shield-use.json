@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:shield-use",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-shield-use.json",
+	"promptHash": "771f4e997a1d94533b1fc60f7714f638a70dfea7aeb275b6a84dae7929c1d7ab",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-fortress.png",
+			"contentHash": "f3bd6b7a6a71eeb8726980868cd18889b9aeae1bcb293d0704466167b1026796"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-shield-use-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1862708,
+		"contentHash": "3f0d24b985797afa22566151eb1d4d873ed9006c0f8a9c8d34cc64d17e683db6"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-use.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1570626,
+		"contentHash": "bdc1d49bdf031853a1c32824c1f607bc2e7e1b6fb0ff84bdd6a003407a660ddd"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "93f740345f4a8bd7decb6917d7ddc37414e7faf0ad54314694c63e02b1c4840d",
+		"postRepairContentHash": "bdc1d49bdf031853a1c32824c1f607bc2e7e1b6fb0ff84bdd6a003407a660ddd",
+		"removedPixels": 384942
+	}
+}

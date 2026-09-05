@@ -1,0 +1,16 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "enchantment.light",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:enchantment:light",
+			"name": "Light",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		}
+	]
+}

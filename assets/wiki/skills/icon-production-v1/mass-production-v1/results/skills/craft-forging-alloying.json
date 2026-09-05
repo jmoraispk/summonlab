@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:forging:alloying",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-alloying.json",
+	"promptHash": "0fe8d8682d9ec0cdced10b0791ac04311af0a936a68c562e44e9c8d56b1ac180",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-metallurgy.png",
+			"contentHash": "e23895cc5fb5796297caf7506d70ea501f18ee014251e5610e37bff4a08952cf"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-fuel-craft.png",
+			"contentHash": "5ceaa21ab9c9841c96fd17e49b94ec7ac351c54ffcefa6807b3719031d4dcf9c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-alloying-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2053781,
+		"contentHash": "b1626344481b58194edf849bd0bbf283498b35dfe15eaffa4a5433d4fbfa10e3"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-alloying.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1808673,
+		"contentHash": "296ad0d7f39313a536bc99c29f5b7f89661b110c9c31404c35dc04d59e826b15"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "99d514841db085e2a784a5ff5aabd892e6095a443c48a3d2ee8e1af5dfc0a5d1",
+		"postRepairContentHash": "296ad0d7f39313a536bc99c29f5b7f89661b110c9c31404c35dc04d59e826b15",
+		"removedPixels": 384942
+	}
+}

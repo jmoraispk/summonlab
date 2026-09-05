@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:dispel",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-dispel.json",
+	"promptHash": "142dbf90792e66a793e049ee9b7723f2657b0734dd16f35477ce8604ef0411cb",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-cleansing-break.png",
+			"contentHash": "0d4b78887fc4d0c3909f4ca759dc9b867ed1e85555ec17d174fb63bb5ba584dd"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-cleanse.png",
+			"contentHash": "9901f496f4495369df68c173e72465f327248ae40ad32ada388626373005b737"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-dispel-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2308387,
+		"contentHash": "250ceee6067837e5ea8b465cdf33b022a115bf2343bd50f1a8cb276940131868"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-dispel.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2086837,
+		"contentHash": "c2cea2d4e4b81d4b74fce20a647baf00129ad69057d5e766a4121a4c22555cd3"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "7705b080db90122854fedc4d281ab226e0bc97fb102c63b47ede328c20882e59",
+		"postRepairContentHash": "c2cea2d4e4b81d4b74fce20a647baf00129ad69057d5e766a4121a4c22555cd3",
+		"removedPixels": 384942
+	}
+}

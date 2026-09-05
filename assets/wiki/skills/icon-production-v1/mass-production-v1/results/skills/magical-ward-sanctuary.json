@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:sanctuary",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-sanctuary.json",
+	"promptHash": "fc362dbbbf430da7af8409ec938945dadf9cadeba87bc6792658ad0df86c5b4f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-protected-field.png",
+			"contentHash": "a817d65e0715d9cc0fb1071d10f15d25135537a400ecd116ffc82ba5023e9434"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-null-zone.png",
+			"contentHash": "296be2bc56a8363a4e5345c0ad0fddf7dc27223f995fe332d971f9c2a90a8fd6"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-sanctuary-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2034087,
+		"contentHash": "0ef7887734184c68ec3e2c3b5ef2580bfa3c39c705feef60e32b95bc2bff023d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-sanctuary.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1868740,
+		"contentHash": "8288c69972d3dfcfb99a2af2e10862c2b69a65c910e2a4d10bf10b0ce7ff43f4"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "dc3c1e594fd8e9832bedaa9403e279d706cb236a7fc5401e23c27c6788ea0e39",
+		"postRepairContentHash": "8288c69972d3dfcfb99a2af2e10862c2b69a65c910e2a4d10bf10b0ce7ff43f4",
+		"removedPixels": 384942
+	}
+}

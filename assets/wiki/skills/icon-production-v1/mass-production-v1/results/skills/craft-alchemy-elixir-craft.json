@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:alchemy:elixir-craft",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-alchemy-elixir-craft.json",
+	"promptHash": "31470fbc7e33f068abc174545882faa90a06b832c871bcc0439c41ac73622411",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-brewing.png",
+			"contentHash": "8bf890dc06453f4a3534226a9b616773766f549224bbeec55318aa92afd39b1c"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-potion-brewing.png",
+			"contentHash": "fd71a68f237bf2a24d64a6045233b8245a25298dcaeb86403b087de63d38db19"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-alchemy-elixir-craft-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2207893,
+		"contentHash": "7d53afcb6a239374b4b0c6097a1795a679cb6dbfba8726f4ff8021e92df10036"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-elixir-craft.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2014591,
+		"contentHash": "9cfb514544c1544aa02e5b1c6e73671085fcb444b47b511cacc9661309e36f26"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "86c16696c33d6b135459a49b50c88e45e1b67dde6c5a5eb42cafff888fadf167",
+		"postRepairContentHash": "9cfb514544c1544aa02e5b1c6e73671085fcb444b47b511cacc9661309e36f26",
+		"removedPixels": 384942
+	}
+}

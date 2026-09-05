@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:restoration:return",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-return.json",
+	"promptHash": "82061c3da48df5678609e90f8d4dcfecae84f4d36d14314644033119d9c9489b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-return-life.png",
+			"contentHash": "e916d4bd59af878e4375271a7eec5a21536ce7a3044b6434b2af2e7b85f84ba9"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-second-life.png",
+			"contentHash": "b37c8961b3b1f97dda84fa727aab3811f7fb2a03ed5f2ddbcf69461a3a721653"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-return-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2104729,
+		"contentHash": "0d0d2102c89cb43c88e0ad64e1b0440a24f353a3b34cbc46ad2adb0d8bacb888"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-return.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1925533,
+		"contentHash": "7b3d6e6280e05ff266a509373d66230cf1b0771f1a24334193d4974e36404222"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d017e03943d670bb0b02b31804e3329c4726fbc132bc1c0dfe3f835c462c2f62",
+		"postRepairContentHash": "7b3d6e6280e05ff266a509373d66230cf1b0771f1a24334193d4974e36404222",
+		"removedPixels": 384942
+	}
+}

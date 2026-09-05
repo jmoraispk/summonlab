@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "polearm.hook-grip",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:polearm:hook-shield",
+			"name": "Hook Shield",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:polearm:split-grip",
+			"name": "Split Grip",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:polearm:executioner-s-grip",
+			"name": "Executioner's Grip",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

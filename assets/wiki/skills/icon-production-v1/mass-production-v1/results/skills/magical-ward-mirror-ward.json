@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:mirror-ward",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-mirror-ward.json",
+	"promptHash": "e95b437662f9af1ef8063d365dd1cff820ff9f4e4303386901e8de949bb991fb",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-reflection.png",
+			"contentHash": "679318aa620e29e7f4957db4ad180fd73d30aadfe00355dbee8ba1fa3a114b3c"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-counter-sigil.png",
+			"contentHash": "b7dfb8247249e06e0286f3c551563e27431b09b1f01f243ac389ac44a662064e"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-mirror-ward-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2259639,
+		"contentHash": "6dd812a867dc541dff0d6a6f9b0d441524f042efff5dbacd6197c3a4311d000c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-mirror-ward.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2011846,
+		"contentHash": "bfd158dd311749535b667d38877263622bf3edc7f959ac8ea9e21cc1afc3e6f9"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ed7a57d4dbcb6059126f93c174789eeac708fc8f2ab02431aea9c501e5f41fec",
+		"postRepairContentHash": "bfd158dd311749535b667d38877263622bf3edc7f959ac8ea9e21cc1afc3e6f9",
+		"removedPixels": 384942
+	}
+}

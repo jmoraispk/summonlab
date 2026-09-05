@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:half-sword",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-half-sword.json",
+	"promptHash": "be9b9bd7cfaaa4437fdceb9e5fb70bd83c33630c9819dbabdc368b614abcdf49",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-overhead-cut.png",
+			"contentHash": "3aea4333bc7554f62cb9802fc5f7e005fcbc9ae8235ea9cc15c35ff3b57f2cd2"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-overhead-chop.png",
+			"contentHash": "d510f90f86b229c1ba68780bca451e73ec85dfdaf89fc152470dbb0e22d5510f"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-half-sword-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2022018,
+		"contentHash": "54eb79219f1669fb9babecd1d5244f855635952eb0853a94bdb29c28a6c50a81"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-half-sword.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1781010,
+		"contentHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "66adf073f48950c553539df3a4878f21caa01a2ac57413a236f902c50261183e",
+		"postRepairContentHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b",
+		"removedPixels": 384942
+	}
+}

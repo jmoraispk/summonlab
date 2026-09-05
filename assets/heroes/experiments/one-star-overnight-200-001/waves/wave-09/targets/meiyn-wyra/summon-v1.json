@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "f26443b22d02608e67ee30fb3c0e467a0fe6ad32d7477945b76ed255a1aa30c5",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Meiyn Wyra: 22-year-old woman, 181 cm (tall), clearly muscular construction with readable shoulders, back, legs, and forearms, skin value band-5-medium-deep. Face: soft rectangular face; wide-set eyes and a low straight brow; small upturned nose, heavy lower lip; one brow notch. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: gray-white-silver, long-loose, deliberate accent: strong split-length construction. Wardrobe: short-jacket-trousers, specifically a shaped short jacket, practical closures, generous trousers, and low boots; a high soft collar and uneven layered hems; bounded palette marigold-green. Visible personal details: a hand-painted hem mark. Make repair, patina, customization, or a keepsake the primary recognition device. Maintenance cue: practical grooming with one carefully perfected detail. Color treatment: uses high-contrast lining visible only in motion. Pose cue: feet plant evenly while fingertips touch a small personal keepsake. Include a blunt carpenter's chalk only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "meiyn-wyra",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a hand-painted hem mark"
+      ],
+      "coolnessAnchor": "repairs-patina-keepsake",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "strong split-length construction",
+      "chibiReadability": "Preserve the front and side silhouette of long-loose, the parting, gathered mass, shaved areas, and strong split-length construction; color remains gray-white-silver.",
+      "colorFamily": "gray-white-silver",
+      "silhouetteFamily": "long-loose"
+    },
+    "identity": {
+      "age": 22,
+      "displayName": "Meiyn Wyra",
+      "faceDescription": "soft rectangular face; wide-set eyes and a low straight brow; small upturned nose, heavy lower lip; one brow notch",
+      "gender": "woman",
+      "identitySignature": "39f9a43930e5e7f4d893e2aad25e27c17088f6d1496e9d5a1d46e0c1787f6924",
+      "skinValueBand": 5
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses high-contrast lining visible only in motion; wears several deliberate anchors without looking elite.",
+      "counterTrait": "keeps one ridiculous superstition",
+      "culturalFragments": [
+        "treats patched quilting as honorable craft",
+        "offers the warmest drink to the quietest guest"
+      ],
+      "dominantTrait": "ceremoniously hospitable",
+      "groomingAttitude": "practical grooming with one carefully perfected detail",
+      "lifeEcho": "ritual practice",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "feet plant evenly while fingertips touch a small personal keepsake",
+      "socialPresentation": "precise and courteous",
+      "tension": "Appears precise and courteous, yet keeps one ridiculous superstition."
+    },
+    "physique": {
+      "bodyType": "clearly-muscular",
+      "description": "181 cm; clearly muscular construction with readable shoulders, back, legs, and forearms.",
+      "heightBand": "tall"
+    },
+    "wardrobe": {
+      "condition": "practical grooming with one carefully perfected detail",
+      "description": "a shaped short jacket, practical closures, generous trousers, and low boots; a high soft collar and uneven layered hems.",
+      "family": "short-jacket-trousers",
+      "paletteFamily": "marigold-green"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/meiyn-wyra/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/results/meiyn-wyra/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "meiyn-wyra-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-09"
+}

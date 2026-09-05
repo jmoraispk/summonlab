@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:aegis-eternal",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-aegis-eternal.json",
+	"promptHash": "200417d661c3a4bb1ca10ac1b9cad2ba217980172b837594d9b04e216a39a205",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-ally-cover.png",
+			"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-guardian-s-oath.png",
+			"contentHash": "6611be70d5d67a519e984450b5f4478ec2ee3c0e498f6da0ff042398784bd41b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-aegis-eternal-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2140746,
+		"contentHash": "20a151a618cd8dd7bea30c1bbd2ca176f6701497a98022cb346153fe79cf91e6"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-aegis-eternal.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1844212,
+		"contentHash": "30dd6265f617093cbcd45d185642c672206984642e6dde4dbf97742ef32f51bd"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "696efe7697301183b9234fd85e99e43eb11bda80d57b997257f0dc60b8326101",
+		"postRepairContentHash": "30dd6265f617093cbcd45d185642c672206984642e6dde4dbf97742ef32f51bd",
+		"removedPixels": 384942
+	}
+}

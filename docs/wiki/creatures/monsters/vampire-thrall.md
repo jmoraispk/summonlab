@@ -6,7 +6,7 @@ Wiki ID: `monster.vampire-thrall`
 
 Design status: **draft canonical form**
 
-Visual-production status: **Normal: candidate-only; Fire: blocked-on-anchor; Earth: blocked-on-anchor; Wind: blocked-on-anchor; Water: blocked-on-anchor. Candidate and review evidence only; no coordinate on this page is runtime art.**
+Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only. Candidate and review evidence only; no coordinate on this page is runtime art.**
 
 ## Identity
 
@@ -63,15 +63,16 @@ Not applicable for this form.
 
 | Affinity | Production status | Evidence status | Active version | Target definition | Assignment | Candidate ownership path | Result ownership path |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Normal | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/normal-v1.json` |
-| Fire | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/fire/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/fire/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/fire-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/fire-v1.json` |
-| Earth | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/earth-v1.json` |
-| Wind | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/wind-v1.json` |
-| Water | `blocked-on-anchor` | `blocked-on-anchor` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/water-v1.json` |
+| Normal | `planned` | `approved-review` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/normal/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/normal/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/normal-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/normal-v1.json` |
+| Fire | `planned` | `candidate-only` | v2 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/fire/target-v2.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/fire/assignment-v2.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/fire-v2.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/fire-v2.json` |
+| Earth | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/earth/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/earth/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/earth-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/earth-v1.json` |
+| Wind | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/wind/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/wind/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/wind-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/wind-v1.json` |
+| Water | `planned` | `candidate-only` | v1 | `assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-thrall/water/target-v1.json` | `assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-thrall/water/assignment-v1.json` | `assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-thrall/water-v1.png` | `assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-thrall/water-v1.json` |
 
 ### Status semantics
 
 - `planned` means the active attempt is owned and may be produced; it does not mean an image exists.
+- `planned-provisional-anchor` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - `blocked-on-anchor` means the active attempt must wait for accepted Normal anchor evidence before production.
 - `candidate-only` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - `approved-review` means the immutable review evidence accepted the candidate; it is not runtime art.

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:leyline-harvest",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-leyline-harvest.json",
+	"promptHash": "6f85c71c2f12af2f97f7a401d836c01aa6e9e8e0a176a0476082bb8ae37abd2d",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-mining.png",
+			"contentHash": "26a2900c50f477f1bcd714cf9e360c255a06e433490579223df89ec935b5de6a"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-deep-vein.png",
+			"contentHash": "41717b798adc8673d9d6911dc4a8cd9b38bd94dd6a9cf3a236e980cca12ff506"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-leyline-harvest-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2104045,
+		"contentHash": "3047f60c829105ef4c2783a10536f13b2488dae80795de7a4e0936d7ac1fb49a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-leyline-harvest.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1914290,
+		"contentHash": "6446f8b587cceaa386010b73bd46aa737b7e8ee99edbdcec05b6df7423f8a9d1"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "317e38e12aa6bda2783d7cd2f9b9c0bd009b9096f0b556066205bf3f2178a37b",
+		"postRepairContentHash": "6446f8b587cceaa386010b73bd46aa737b7e8ee99edbdcec05b6df7423f8a9d1",
+		"removedPixels": 384942
+	}
+}

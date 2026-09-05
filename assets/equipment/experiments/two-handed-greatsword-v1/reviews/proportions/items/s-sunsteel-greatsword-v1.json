@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "equipment-greatsword-item-proportion-review-v1",
+  "reviewId": "greatsword-v1-sunsteel-s-proportion-review",
+  "targetId": "greatsword-v1-sunsteel-s",
+  "candidate": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/s/sunsteel/greatsword-v1.png", "sha256": "87f8b38c9b12c6697f8c96704d3345bd66d1ea2e03ed2212b743560d6d81f748" },
+  "profile": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json", "sha256": "04ecd463d4e0d15a35639ae478c716d51a5e25254a8b563a800a8575fbee07d7" },
+  "method": "Producer landmark inspection at native 1024x1024 resolution using the accepted profile definitions; painted anti-aliased edges are approximate to one pixel.",
+  "measurements": { "bladePx": 616, "fullHiltPx": 235, "exposedGripPx": 170, "guardWidthPx": 179, "pommelPx": 45, "overallPx": 851 },
+  "ratios": { "bladeToFullHilt": 2.62, "bladeToExposedGrip": 3.62, "bladePercent": 72.39, "guardPercent": 21.03, "pommelPercent": 5.29 },
+  "framing": { "topMarginPx": 80, "bottomMarginPx": 93, "minimumMarginPercent": 7.81, "status": "pass" },
+  "status": "pass",
+  "failedCriteria": [],
+  "humanReviewPending": true
+}

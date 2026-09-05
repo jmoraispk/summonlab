@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:wind-slash",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-wind-slash.json",
+	"promptHash": "bea7a50e087a8c50fdd96874abcf587879936c52d16b37ca24600dbfbeee1573",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-sweeping-cut.png",
+			"contentHash": "e2c931c7058a3c9c9750778c037dac55b6ed05e573ed7a8f4833a1888ecea3d5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-crescent-sweep.png",
+			"contentHash": "351646f707830b40babe9aab52118979015dc001e82e2f1776b903458aa4ea42"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-wind-slash-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1919989,
+		"contentHash": "04c83b775182420cefa6fb869458bb4f84b6677d5d66aaa6d41dfdf29ce7d714"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-wind-slash.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1732025,
+		"contentHash": "850f96635920d464c431b13766eb425575729c682048b7615efabd2e11c74f38"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cb0b8cbd4fc069927fd41cbce804e3ad160d9f5686c08dc15a03eedcb0b3ac87",
+		"postRepairContentHash": "850f96635920d464c431b13766eb425575729c682048b7615efabd2e11c74f38",
+		"removedPixels": 384942
+	}
+}

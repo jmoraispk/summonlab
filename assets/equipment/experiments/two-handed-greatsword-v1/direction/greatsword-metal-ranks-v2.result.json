@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-result-v2",
+  "resultId": "result-greatsword-v1-metal-rank-direction-v2-attempt-2",
+  "targetId": "greatsword-v1-metal-rank-direction-v2",
+  "assignmentId": "assignment-greatsword-v1-metal-rank-direction-v2",
+  "attempt": 2,
+  "status": "revise",
+  "recordedAt": "2026-09-04T16:45:14Z",
+  "provider": "OpenAI image generation",
+  "model": "gpt-imagegen-2.0",
+  "promptSha256": "2050bd679404141d606ff447cd36ced59c1e6f91fd3d78f89adf472c10fd69a0",
+  "references": [],
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "revise",
+      "promptSha256": "2050bd679404141d606ff447cd36ced59c1e6f91fd3d78f89adf472c10fd69a0",
+      "toolOutputSourcePath": "/home/joao/.codex/generated_images/01a06d29-6dd3-7c22-b9c0-47fb9bf11209/exec-194f56c2-7af3-4dc5-b271-a1a773f2ac94.png",
+      "retainedEvidence": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v2-attempt-1.png",
+        "sha256": "76a0bee3a2e2c14159babf9b28e5c9ffc628208930d2e3ed6bcc8a88f50bf706",
+        "bytes": 2236010,
+        "width": 1536,
+        "height": 1024,
+        "mediaType": "image/png"
+      },
+      "inspection": "The blade-dominant silhouette corrected v1, but all seven hilts remained too short and their functional guards remained too narrow for the approved contract."
+    },
+    {
+      "attempt": 2,
+      "status": "revise",
+      "correctionPromptPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v2-attempt-2.prompt.txt",
+      "promptSha256": "9b4415a352be8a4508048d146b1dbf5d0e182ac56ba1ab52e87755d74b989731",
+      "inputImagePath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v2-attempt-1.png",
+      "inputImageSha256": "76a0bee3a2e2c14159babf9b28e5c9ffc628208930d2e3ed6bcc8a88f50bf706",
+      "toolOutputSourcePath": "/home/joao/.codex/generated_images/01a06d29-6dd3-7c22-b9c0-47fb9bf11209/exec-6b5cdd43-5ead-4ded-8dc7-b98e978a273d.png",
+      "inspection": "Every sword now passes the blade, full-hilt, exposed-grip, blade-share, and pommel ranges. Every functional guard remains below the approved 24 percent minimum, so the board is recorded as revise rather than candidate."
+    }
+  ],
+  "producerAssessment": {
+    "coverage": "pass",
+    "classRecognition": "pass",
+    "twoHandReadability": "pass",
+    "rankProgression": "pass",
+    "materialDistinction": "pass",
+    "bladeHiltProportions": "pass",
+    "guardSpan": "fail",
+    "productionHygiene": "pass",
+    "humanReviewPending": true
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+    "sha256": "fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8",
+    "bytes": 2115616,
+    "width": 1536,
+    "height": 1024,
+    "mediaType": "image/png"
+  }
+}

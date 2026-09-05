@@ -56,8 +56,9 @@ universal category. `Two Blades` is a skill in Blade, while its two-weapon loado
 - [Gathering](craft-and-life.md#gathering)
 - [Knowledge](craft-and-life.md#knowledge)
 
-See also the [minimum Living Village subset](living-village.md) and the complete
-[skill framework](framework.md).
+See also the [minimum Living Village subset](living-village.md), the complete
+[skill framework](framework.md), and the accepted
+[skill rarity-frame specification](../../art/skill-rarity-frames.md).
 
 ## Canonical taxonomy
 

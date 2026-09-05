@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "hero-chibi-head-height-calibration-result-v1",
+  "experimentId": "chibi-head-height-calibration-001",
+  "targetId": "aear-soro-3-5-heads-r2",
+  "status": "revise",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/candidates/aear-soro-3-5-heads-r2.png",
+    "sha256": "50ebdbb3a624c50021b5570b5590e50dfe9db66e5f62dd03eddf84aca4ffb91f",
+    "bytes": 2692661,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "exactSourcePath": "/home/joao/.codex/generated_images/01a06d2f-5721-79d3-89ea-f1aa149485f5/exec-2bce3318-0370-497f-bb3c-17e4c0bc7129.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/prompts/aear-soro-3-5-heads-r2.txt",
+    "sha256": "0315329bdb6f94ed4556b8bc798c70ac4d27dbe989c222c5c2b23cf1350f96af"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass",
+      "finding": "The retained PNG is 1024x1536 and shows one complete standing figure with hair, hands, and feet inside the canvas."
+    },
+    {
+      "criterion": "Aear Soro identity and adult age remain recognizable",
+      "outcome": "pass",
+      "finding": "Deep brown skin, mature unsmiling face, cheek mole, shaved right side, asymmetric red-copper loc crest, and adult presentation remain recognizable."
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "fail",
+      "finding": "Original-detail inspection finds the standing figure materially taller than 3.5 anatomical head lengths when measured from the underlying skull crown to chin and then to the soles; the requested calibration is not visibly achieved."
+    },
+    {
+      "criterion": "current head size is preserved while body length changes below the chin",
+      "outcome": "concern",
+      "finding": "The head and identity are close to the supplied reference, but the body below the chin is still too long to establish the specified 3.5-head relationship."
+    },
+    {
+      "criterion": "summon physique and non-inflated arms and hands are preserved",
+      "outcome": "pass",
+      "finding": "The athletic build, arms, wrists, and empty hands remain slender and proportionate without chibi inflation."
+    },
+    {
+      "criterion": "hair, wardrobe, palette, pouch, boots, and markings remain continuous",
+      "outcome": "pass",
+      "finding": "The red-copper locs with gold wraps, mustard mantle, cream wrap top, olive layers, pouch, wrapped boots, and cheek mole remain continuous."
+    },
+    {
+      "criterion": "no weapon, magic, text, UI, frame, star, or extra subject",
+      "outcome": "pass",
+      "finding": "The canvas contains one empty-handed subject with no weapon, magic, text, UI, frame, star, or additional figure."
+    }
+  ]
+}

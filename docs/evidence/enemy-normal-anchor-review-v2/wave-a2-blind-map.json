@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "family-affinity-normal-blind-map-v2",
+  "waveId": "a2",
+  "warning": "Controller reconciliation only. Blind reviewers record token verdicts before opening this map or the named owner gallery.",
+  "entries": [
+    {
+      "token": "R2-A2-01",
+      "coordinateId": "skeletons/skeleton-bone-knight/normal",
+      "targetId": "canonical/skeletons/skeleton-bone-knight/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/skeletons/skeleton-bone-knight/normal/target-v2.json",
+      "targetSha256": "85e98bf3c8b099a9a14a79c86563417d7ad883fd47c1219528986fe5491db25a",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/skeletons/skeleton-bone-knight/normal-v2.png",
+      "candidateSha256": "c16f5810746270cad9f975e333968818aabc309d87ae5a1ac64f86043f84fb40",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/skeletons/skeleton-bone-knight/normal-v2.json",
+      "resultSha256": "473b72d428c90d3e9a7f6b23819e536ae9edb64b3f8e7ca6b117b44f174c8cc4"
+    },
+    {
+      "token": "R2-A2-02",
+      "coordinateId": "vampires/vampire-noble/normal",
+      "targetId": "canonical/vampires/vampire-noble/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-noble/normal/target-v2.json",
+      "targetSha256": "8577c54696efedf8a2606e3f8e9ef911c3733f9c8e9199938016ab41b103b6e7",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-noble/normal-v2.png",
+      "candidateSha256": "d1eb6542c476e307f11e6cda8dca709798589e5adc0284529422e9e9130bdc8f",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-noble/normal-v2.json",
+      "resultSha256": "57b3494e4579d7b24ce5383b5d9405133fe72b5e619690126cf169f978985fe0"
+    },
+    {
+      "token": "R2-A2-03",
+      "coordinateId": "vampires/vampire-progenitor/normal",
+      "targetId": "canonical/vampires/vampire-progenitor/normal/v5",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-progenitor/normal/target-v5.json",
+      "targetSha256": "f870d7365fb8ee0e81c80a6b3aed775f5fac26b1b0eba0be98e0c4009aed7c3f",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/vampires/vampire-progenitor/normal-v5.png",
+      "candidateSha256": "c0e9f0db115c401398057229cd7677684682b02611f6f36cea24ec536739d691",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/vampires/vampire-progenitor/normal-v5.json",
+      "resultSha256": "38ebbe0a35cdd96ce183dd53e1074fe59cd3c798f3bc9f72d6921b4a04341b78"
+    },
+    {
+      "token": "R2-A2-04",
+      "coordinateId": "rotwalkers/rotwalker-plague-lord/normal",
+      "targetId": "canonical/rotwalkers/rotwalker-plague-lord/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-plague-lord/normal/target-v2.json",
+      "targetSha256": "64b8517802f457b3015185e896d96ffa88b0a8416dc9ff08c5ba184ecd48eb2d",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-plague-lord/normal-v2.png",
+      "candidateSha256": "27d17c07365571a31f5aa806e4cf3ec97391a372ac90a072f996e28ea654c6ae",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-plague-lord/normal-v2.json",
+      "resultSha256": "936768feadaab0827d935653208ff2ab4e611d42fae130594edf8dad6ca3e806"
+    },
+    {
+      "token": "R2-A2-05",
+      "coordinateId": "rotwalkers/rotwalker-rot-brute/normal",
+      "targetId": "canonical/rotwalkers/rotwalker-rot-brute/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/rotwalkers/rotwalker-rot-brute/normal/target-v2.json",
+      "targetSha256": "f9a4805d30249698c411d8668faea1bc20f8b9446b7bb6cd567b551ae5f961ec",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/rotwalkers/rotwalker-rot-brute/normal-v2.png",
+      "candidateSha256": "8d73833dd222ec5c51162045393a5226a57bcfd3c35c1d02bbd962402afa54ef",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/rotwalkers/rotwalker-rot-brute/normal-v2.json",
+      "resultSha256": "bf2de07df67470e4625f2c0070838ce2e0824b0ad19c57ee7300adcc06c5236a"
+    },
+    {
+      "token": "R2-A2-06",
+      "coordinateId": "mummies/mummy-god-king/normal",
+      "targetId": "canonical/mummies/mummy-god-king/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/mummies/mummy-god-king/normal/target-v2.json",
+      "targetSha256": "403c3bc412bf01a9dd2b44eb71944b844247048879ad8043153ba901ca46b923",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/mummies/mummy-god-king/normal-v2.png",
+      "candidateSha256": "34d944e1a401d6856284e8b5fc4fcf09dc2b860bd8ea59a2bc83a7ddc567f746",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/mummies/mummy-god-king/normal-v2.json",
+      "resultSha256": "48ad34dff41796a9a2505b71d283ab9d85434f56e5a0b792ce6b7ca6c38925a7"
+    },
+    {
+      "token": "R2-A2-07",
+      "coordinateId": "wraiths/wraith-death-sovereign/normal",
+      "targetId": "canonical/wraiths/wraith-death-sovereign/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-death-sovereign/normal/target-v2.json",
+      "targetSha256": "32ece41b76acd9164e712d69a0806bdd6f740eb6aad00ecd7c59b05872ff810e",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-death-sovereign/normal-v2.png",
+      "candidateSha256": "41591419bf43d58e05c7d80867300401bda25c0a9db8a0e99c9ffed42f1f94c4",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-death-sovereign/normal-v2.json",
+      "resultSha256": "ee1e4d03d26fe73386bfa04226ebe6e5bbc3f9c5d1de8c319ee224443c91e451"
+    },
+    {
+      "token": "R2-A2-08",
+      "coordinateId": "wraiths/wraith-wraith/normal",
+      "targetId": "canonical/wraiths/wraith-wraith/normal/v2",
+      "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/wraiths/wraith-wraith/normal/target-v2.json",
+      "targetSha256": "4f88c6a7cb70b9eb69d4b0fa5fbe9ea9874b5e74154e6b8ddad14e45f77ff651",
+      "candidatePath": "assets/enemies/experiments/family-affinity-v1/candidates/wraiths/wraith-wraith/normal-v2.png",
+      "candidateSha256": "146e3f491f8bf2e9af7b3dc3f70dcef28f3bb003793724d89cb2651eb5fc7724",
+      "resultPath": "assets/enemies/experiments/family-affinity-v1/results/wraiths/wraith-wraith/normal-v2.json",
+      "resultSha256": "f115356b03749016ec3e96caf6f1909eab1d1fa746e029a2b6b4af6e3829b42f"
+    }
+  ]
+}

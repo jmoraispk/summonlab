@@ -4,6 +4,7 @@ import {
 	FirstBandExtractionReceiptSchema,
 	RuntimeBandStoryStateSchema,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type MissionRunStateV8
 } from '@summonlab/contracts';
 import { resolveStoryExpression } from '@summonlab/content';
@@ -50,7 +51,7 @@ export function createSealedFirstBandArchive() {
 	});
 }
 
-export function completeFirstBandStory(state: EngineGameStateV23) {
+export function completeFirstBandStory(state: EngineGameStateV23 | EngineGameStateV24) {
 	const envelope = verifiedStoryEnvelope();
 	if (
 		state.bandStory.envelopeId !== envelope.envelopeId ||
@@ -69,7 +70,7 @@ export function completeFirstBandStory(state: EngineGameStateV23) {
 }
 
 export function recoverFirstBandArchive(
-	state: EngineGameStateV23,
+	state: EngineGameStateV23 | EngineGameStateV24,
 	sourceEventId: string,
 	mission: MissionRunStateV8,
 	bandStory: EngineGameStateV23['bandStory']

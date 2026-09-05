@@ -40,6 +40,11 @@ components:
     textColor: '{colors.paper}'
   ledger-divider:
     backgroundColor: '{colors.line}'
+  equipment-workshop:
+    backgroundColor: '{colors.background}'
+    textColor: '{colors.paper}'
+    accentColor: '{colors.primary}'
+    focusColor: '{colors.focus}'
 ---
 
 # Summonlab Web Design System
@@ -133,7 +138,21 @@ Links navigate and buttons change local state. The archive index owns global dis
 surfaces use domain selectors, local label filters, ledger rows, and direct canonical links. An
 optional label filters compatibility but never appears as an ownership node; unlabeled family-wide
 skills remain visible under every label filter. Circular nodes are reserved for top-level taxonomy
-roots; family and skill records remain flat ledger content.
+roots. Family records remain flat ledger content; a dedicated individual-skill visualization may
+use the accepted hexagonal rarity frame without turning the family ledger into a generic card grid.
+
+### Skill rarity frames
+
+The canonical comparison source is `assets/wiki/skills/rarity-frame-v1/`. Skill rarity uses one
+domain-independent material ladder: weathered iron F, aged bronze E, tempered blue steel D,
+moonlit silver C, blackened amethyst B, champagne electrum A, and ceremonial antique gold S.
+Ornament remains restrained through C, B relies on faceted mineral material, A adds fine spear-leaf
+accents, and S owns the crowned ceremonial apex. Frame rarity and bearer mastery remain separate;
+mastery and level appear only in the second text row beneath a skill.
+
+The approved comparison plate is not a sprite sheet. Runtime work must consume separately produced
+transparent frame assets rather than cropping the plate or approximating its ornament with CSS or
+inline SVG.
 
 ### Forms and overlays
 
@@ -231,6 +250,35 @@ destination tile before impact and let the resolved state become readable before
 - Identify character-voice messages with a concise colored name prefix. Do not repeat portrait
   thumbnails in the feed; the name supplies identity while preserving battlefield space and keeping
   mechanical event lines easy to scan.
+
+### Opening presentation
+
+The playable opening laboratory is the deliberate exception for scene choreography. Its four states
+reuse the approved full-screen story plates while one engraved interaction surface changes at a time.
+The summoning glow becomes the equipment-selection line and then the Tower-floor marker, giving the
+sequence one continuous visual gesture. Reduced motion preserves the same state and focus order with
+near-instant transitions.
+
+### Equipment workshop
+
+The in-game forge is a field-archive workbench inside the play surface, never the top-level character
+portrait `/forge`. It consumes the existing `background`, `surface`, `paper`, `muted`, `primary`,
+`focus`, and `line` roles directly; no Equipment-only theme values or parallel token source exists.
+
+- Use a stacked `material → form → assay → inventory → loadout` workflow on phone and a
+  selection/inspection split on desktop. The order is functional and remains visible in the numbered
+  ledger headings.
+- The signature surface is a square material assay plate: selected approved art, one rank stamp,
+  Standard craftsmanship, and abbreviated source/runtime provenance. The surrounding workflow stays
+  flat and quiet.
+- Material and form choices are square ledger rows separated by fine rules. Do not convert them to
+  SaaS cards, pills, glass, gradients, or ornamental containers.
+- Reserve a square image area before decode. Lists request 256px card art lazily; only the actively
+  inspected definition requests its 512px detail art.
+- Keep forging server-owned and explicit. Pending, completed, unavailable, error, and empty states
+  occupy stable space, and busy controls preserve their size.
+- Present the authoritative six slots as `main-hand`, `off-hand`, `head`, `torso`, `legs`, and
+  `boots`. Item rows retain their acquisition provenance after forging, equipping, and reload.
 
 ### Content and data visualization
 

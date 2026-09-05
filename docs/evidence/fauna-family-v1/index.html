@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="fauna-inventory-sha256" content="9c4c079b78a212538b5988826dbe24347271749451e10c510d9fb1b26b1caa42">
+  <title>Summonlab Fauna Candidate Matrix</title>
+  <style>
+    :root { color-scheme: dark; --ground:#090805; --surface:#12100c; --paper:#f1e6d4; --muted:#aa9f8d; --ember:#d4773d; --line:rgba(231,206,164,.17); font-family:Georgia,'Times New Roman',serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--ground); color:var(--paper); line-height:1.45; }
+    a { color:inherit; }
+    .shell { width:min(100% - 2rem, 104rem); margin:auto; }
+    .hero { padding:4rem 0 2rem; border-bottom:1px solid var(--line); }
+    .hero p, .family-heading p, small, .state, footer { color:var(--muted); font: .74rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.05em; text-transform:uppercase; }
+    h1 { max-width:14ch; margin:.35rem 0 1rem; font-size:clamp(2.7rem,7vw,6.5rem); font-weight:400; line-height:.95; }
+    .state { color:#ecc08a; }
+    nav { display:flex; gap:.5rem; overflow:auto; padding:1rem 0; position:sticky; top:0; z-index:5; background:rgba(9,8,5,.95); border-bottom:1px solid var(--line); }
+    nav a { padding:.45rem .65rem; border:1px solid var(--line); text-decoration:none; white-space:nowrap; font: .72rem ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .family { padding:3rem 0; border-bottom:1px solid var(--line); }
+    .family-heading { display:grid; grid-template-columns:1fr auto; align-items:end; gap:.5rem 1rem; margin-bottom:1.5rem; }
+    .family-heading p { grid-column:1 / -1; margin:0; color:var(--ember); }
+    .family-heading h2 { margin:0; font-size:clamp(2rem,4vw,4rem); font-weight:400; }
+    .family-heading span { color:var(--muted); }
+    .form { display:grid; grid-template-columns:minmax(10rem,15rem) 1fr; gap:1rem; padding:1.2rem 0; border-top:1px solid var(--line); }
+    .form-heading span { color:var(--ember); font: .75rem ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .form-heading h3 { margin:.3rem 0; font-size:1.45rem; font-weight:400; }
+    .candidate-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+    .candidate-card { min-width:0; background:var(--surface); text-decoration:none; }
+    .candidate-card img { display:block; width:100%; aspect-ratio:5/4; object-fit:cover; background:#050504; }
+    .candidate-card > span { display:block; padding:.65rem; }
+    .candidate-card strong, .candidate-card small { display:block; overflow:hidden; text-overflow:ellipsis; }
+    .candidate-card:hover { outline:1px solid var(--ember); outline-offset:-1px; }
+    footer { padding:2rem 0 5rem; text-transform:none; overflow-wrap:anywhere; }
+    @media (max-width:72rem) { .candidate-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+    @media (max-width:48rem) { .form { grid-template-columns:1fr; } .candidate-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:28rem) { .candidate-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <p>Summonlab · Enemies visual production</p>
+      <h1>Eight-family fauna matrix</h1>
+      <p class="state">Candidate-only · 0 approved · 0 runtime</p>
+      <p>200 individual images · 8 families · 40 T1–T5 forms · Normal, Fire, Earth, Wind, Water</p>
+    </header>
+    <nav aria-label="Family index"><a href="#family-wolves">Wolves</a><a href="#family-bears">Bears</a><a href="#family-boars">Boars</a><a href="#family-burrowers">Burrowers</a><a href="#family-great-cats">Great Cats</a><a href="#family-serpents">Serpents</a><a href="#family-crocodilians">Crocodilians</a><a href="#family-raptors">Raptors</a></nav>
+    <main><section class="family" id="family-wolves">
+  <header class="family-heading"><p>31 · fauna family</p><h2>Wolves</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="wolf-grey-wolf">
+  <div class="form-heading"><span>T1</span><h3>Grey Wolf</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png" alt="Grey Wolf, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/fire-v1.png" alt="Grey Wolf, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/earth-v1.png" alt="Grey Wolf, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/wind-v1.png" alt="Grey Wolf, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/water-v1.png" alt="Grey Wolf, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="wolf-dire-wolf">
+  <div class="form-heading"><span>T2</span><h3>Dire Wolf</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/normal-v1.png" alt="Dire Wolf, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/fire-v1.png" alt="Dire Wolf, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/earth-v1.png" alt="Dire Wolf, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/wind-v1.png" alt="Dire Wolf, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-dire-wolf/water-v1.png" alt="Dire Wolf, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="wolf-howler">
+  <div class="form-heading"><span>T3</span><h3>Howler</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/normal-v1.png" alt="Howler, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/fire-v1.png" alt="Howler, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/earth-v1.png" alt="Howler, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/wind-v1.png" alt="Howler, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-howler/water-v1.png" alt="Howler, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="wolf-pack-alpha">
+  <div class="form-heading"><span>T4</span><h3>Pack Alpha</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/normal-v1.png" alt="Pack Alpha, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/fire-v1.png" alt="Pack Alpha, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/earth-v1.png" alt="Pack Alpha, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/wind-v1.png" alt="Pack Alpha, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-pack-alpha/water-v1.png" alt="Pack Alpha, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="wolf-greatwolf">
+  <div class="form-heading"><span>T5</span><h3>Greatwolf</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/normal-v1.png" alt="Greatwolf, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/fire-v1.png" alt="Greatwolf, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/earth-v1.png" alt="Greatwolf, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/wind-v1.png" alt="Greatwolf, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-greatwolf/water-v1.png" alt="Greatwolf, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-bears">
+  <header class="family-heading"><p>32 · fauna family</p><h2>Bears</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="bear-scrub-bear">
+  <div class="form-heading"><span>T1</span><h3>Scrub Bear</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/normal-v1.png" alt="Scrub Bear, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/fire-v1.png" alt="Scrub Bear, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/earth-v1.png" alt="Scrub Bear, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/wind-v1.png" alt="Scrub Bear, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scrub-bear/water-v1.png" alt="Scrub Bear, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="bear-cave-bear">
+  <div class="form-heading"><span>T2</span><h3>Cave Bear</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/normal-v1.png" alt="Cave Bear, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/fire-v1.png" alt="Cave Bear, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/earth-v1.png" alt="Cave Bear, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/wind-v1.png" alt="Cave Bear, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-cave-bear/water-v1.png" alt="Cave Bear, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="bear-hookclaw">
+  <div class="form-heading"><span>T3</span><h3>Hookclaw</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/normal-v1.png" alt="Hookclaw, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/fire-v1.png" alt="Hookclaw, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/earth-v1.png" alt="Hookclaw, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/wind-v1.png" alt="Hookclaw, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-hookclaw/water-v1.png" alt="Hookclaw, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="bear-scarback">
+  <div class="form-heading"><span>T4</span><h3>Scarback</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/normal-v1.png" alt="Scarback, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/fire-v1.png" alt="Scarback, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/earth-v1.png" alt="Scarback, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/wind-v1.png" alt="Scarback, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-scarback/water-v1.png" alt="Scarback, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="bear-ancient-ursine">
+  <div class="form-heading"><span>T5</span><h3>Ancient Ursine</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/normal-v1.png" alt="Ancient Ursine, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/fire-v1.png" alt="Ancient Ursine, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/earth-v1.png" alt="Ancient Ursine, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/wind-v1.png" alt="Ancient Ursine, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/bears/bear-ancient-ursine/water-v1.png" alt="Ancient Ursine, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-boars">
+  <header class="family-heading"><p>33 · fauna family</p><h2>Boars</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="boar-bristle-hog">
+  <div class="form-heading"><span>T1</span><h3>Bristle Hog</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/normal-v1.png" alt="Bristle Hog, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/fire-v1.png" alt="Bristle Hog, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/earth-v1.png" alt="Bristle Hog, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/wind-v1.png" alt="Bristle Hog, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-bristle-hog/water-v1.png" alt="Bristle Hog, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="boar-tunnel-boar">
+  <div class="form-heading"><span>T2</span><h3>Tunnel Boar</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/normal-v1.png" alt="Tunnel Boar, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/fire-v1.png" alt="Tunnel Boar, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/earth-v1.png" alt="Tunnel Boar, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/wind-v1.png" alt="Tunnel Boar, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-tunnel-boar/water-v1.png" alt="Tunnel Boar, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="boar-razorback">
+  <div class="form-heading"><span>T3</span><h3>Razorback</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/normal-v1.png" alt="Razorback, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/fire-v1.png" alt="Razorback, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/earth-v1.png" alt="Razorback, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/wind-v1.png" alt="Razorback, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-razorback/water-v1.png" alt="Razorback, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="boar-war-tusker">
+  <div class="form-heading"><span>T4</span><h3>War Tusker</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/normal-v1.png" alt="War Tusker, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/fire-v1.png" alt="War Tusker, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/earth-v1.png" alt="War Tusker, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/wind-v1.png" alt="War Tusker, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-war-tusker/water-v1.png" alt="War Tusker, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="boar-old-tusk">
+  <div class="form-heading"><span>T5</span><h3>Old Tusk</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/normal-v1.png" alt="Old Tusk, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/fire-v1.png" alt="Old Tusk, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/earth-v1.png" alt="Old Tusk, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/wind-v1.png" alt="Old Tusk, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/boars/boar-old-tusk/water-v1.png" alt="Old Tusk, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-burrowers">
+  <header class="family-heading"><p>34 · fauna family</p><h2>Burrowers</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="burrower-soil-grub">
+  <div class="form-heading"><span>T1</span><h3>Soil Grub</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/normal-v1.png" alt="Soil Grub, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/fire-v1.png" alt="Soil Grub, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/earth-v1.png" alt="Soil Grub, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/wind-v1.png" alt="Soil Grub, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-soil-grub/water-v1.png" alt="Soil Grub, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="burrower-burrowing-worm">
+  <div class="form-heading"><span>T2</span><h3>Burrowing Worm</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/normal-v1.png" alt="Burrowing Worm, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/fire-v1.png" alt="Burrowing Worm, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/earth-v1.png" alt="Burrowing Worm, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/wind-v1.png" alt="Burrowing Worm, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-burrowing-worm/water-v1.png" alt="Burrowing Worm, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="burrower-hookjaw">
+  <div class="form-heading"><span>T3</span><h3>Hookjaw Burrower</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/normal-v1.png" alt="Hookjaw Burrower, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/fire-v1.png" alt="Hookjaw Burrower, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/earth-v1.png" alt="Hookjaw Burrower, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/wind-v1.png" alt="Hookjaw Burrower, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-hookjaw/water-v1.png" alt="Hookjaw Burrower, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="burrower-tremor-worm">
+  <div class="form-heading"><span>T4</span><h3>Tremor Worm</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/normal-v1.png" alt="Tremor Worm, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/fire-v1.png" alt="Tremor Worm, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/earth-v1.png" alt="Tremor Worm, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/wind-v1.png" alt="Tremor Worm, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-tremor-worm/water-v1.png" alt="Tremor Worm, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="burrower-deep-maw">
+  <div class="form-heading"><span>T5</span><h3>Deep Maw</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/normal-v1.png" alt="Deep Maw, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/fire-v1.png" alt="Deep Maw, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/earth-v1.png" alt="Deep Maw, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/wind-v1.png" alt="Deep Maw, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/burrowers/burrower-deep-maw/water-v1.png" alt="Deep Maw, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-great-cats">
+  <header class="family-heading"><p>35 · fauna family</p><h2>Great Cats</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="great-cat-wildcat">
+  <div class="form-heading"><span>T1</span><h3>Wildcat</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/normal-v1.png" alt="Wildcat, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/fire-v1.png" alt="Wildcat, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/earth-v1.png" alt="Wildcat, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/wind-v1.png" alt="Wildcat, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-wildcat/water-v1.png" alt="Wildcat, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="great-cat-lynx">
+  <div class="form-heading"><span>T2</span><h3>Lynx</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/normal-v1.png" alt="Lynx, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/fire-v1.png" alt="Lynx, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/earth-v1.png" alt="Lynx, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/wind-v1.png" alt="Lynx, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-lynx/water-v1.png" alt="Lynx, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="great-cat-panther">
+  <div class="form-heading"><span>T3</span><h3>Panther</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/normal-v1.png" alt="Panther, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/fire-v1.png" alt="Panther, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/earth-v1.png" alt="Panther, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/wind-v1.png" alt="Panther, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-panther/water-v1.png" alt="Panther, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="great-cat-sabercat">
+  <div class="form-heading"><span>T4</span><h3>Sabercat</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/normal-v1.png" alt="Sabercat, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/fire-v1.png" alt="Sabercat, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/earth-v1.png" alt="Sabercat, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/wind-v1.png" alt="Sabercat, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-sabercat/water-v1.png" alt="Sabercat, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="great-cat-pride-sovereign">
+  <div class="form-heading"><span>T5</span><h3>Pride Sovereign</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/normal-v1.png" alt="Pride Sovereign, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/fire-v1.png" alt="Pride Sovereign, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/earth-v1.png" alt="Pride Sovereign, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/wind-v1.png" alt="Pride Sovereign, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/great-cats/great-cat-pride-sovereign/water-v1.png" alt="Pride Sovereign, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-serpents">
+  <header class="family-heading"><p>36 · fauna family</p><h2>Serpents</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="serpent-adder">
+  <div class="form-heading"><span>T1</span><h3>Adder</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/normal-v1.png" alt="Adder, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/fire-v1.png" alt="Adder, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/earth-v1.png" alt="Adder, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/wind-v1.png" alt="Adder, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-adder/water-v1.png" alt="Adder, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="serpent-constrictor">
+  <div class="form-heading"><span>T2</span><h3>Constrictor</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/normal-v1.png" alt="Constrictor, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/fire-v1.png" alt="Constrictor, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/earth-v1.png" alt="Constrictor, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/wind-v1.png" alt="Constrictor, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-constrictor/water-v1.png" alt="Constrictor, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="serpent-spitting-cobra">
+  <div class="form-heading"><span>T3</span><h3>Spitting Cobra</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/normal-v1.png" alt="Spitting Cobra, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/fire-v1.png" alt="Spitting Cobra, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/earth-v1.png" alt="Spitting Cobra, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/wind-v1.png" alt="Spitting Cobra, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-spitting-cobra/water-v1.png" alt="Spitting Cobra, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="serpent-horned-viper">
+  <div class="form-heading"><span>T4</span><h3>Horned Viper</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/normal-v1.png" alt="Horned Viper, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/fire-v1.png" alt="Horned Viper, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/earth-v1.png" alt="Horned Viper, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/wind-v1.png" alt="Horned Viper, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-horned-viper/water-v1.png" alt="Horned Viper, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="serpent-crown-serpent">
+  <div class="form-heading"><span>T5</span><h3>Crown Serpent</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/normal-v1.png" alt="Crown Serpent, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/fire-v1.png" alt="Crown Serpent, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/earth-v1.png" alt="Crown Serpent, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/wind-v1.png" alt="Crown Serpent, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/serpents/serpent-crown-serpent/water-v1.png" alt="Crown Serpent, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-crocodilians">
+  <header class="family-heading"><p>37 · fauna family</p><h2>Crocodilians</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="crocodilian-mire-caiman">
+  <div class="form-heading"><span>T1</span><h3>Mire Caiman</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/normal-v1.png" alt="Mire Caiman, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/fire-v1.png" alt="Mire Caiman, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/earth-v1.png" alt="Mire Caiman, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/wind-v1.png" alt="Mire Caiman, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-mire-caiman/water-v1.png" alt="Mire Caiman, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="crocodilian-river-crocodile">
+  <div class="form-heading"><span>T2</span><h3>River Crocodile</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/normal-v1.png" alt="River Crocodile, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/fire-v1.png" alt="River Crocodile, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/earth-v1.png" alt="River Crocodile, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/wind-v1.png" alt="River Crocodile, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-river-crocodile/water-v1.png" alt="River Crocodile, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="crocodilian-snarejaw">
+  <div class="form-heading"><span>T3</span><h3>Snarejaw</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/normal-v1.png" alt="Snarejaw, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/fire-v1.png" alt="Snarejaw, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/earth-v1.png" alt="Snarejaw, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/wind-v1.png" alt="Snarejaw, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-snarejaw/water-v1.png" alt="Snarejaw, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="crocodilian-bastion-alligator">
+  <div class="form-heading"><span>T4</span><h3>Bastion Alligator</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/normal-v1.png" alt="Bastion Alligator, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/fire-v1.png" alt="Bastion Alligator, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/earth-v1.png" alt="Bastion Alligator, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/wind-v1.png" alt="Bastion Alligator, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-bastion-alligator/water-v1.png" alt="Bastion Alligator, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="crocodilian-primeval-crocodile">
+  <div class="form-heading"><span>T5</span><h3>Primeval Crocodile</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/normal-v1.png" alt="Primeval Crocodile, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/fire-v1.png" alt="Primeval Crocodile, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/earth-v1.png" alt="Primeval Crocodile, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/wind-v1.png" alt="Primeval Crocodile, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/crocodilians/crocodilian-primeval-crocodile/water-v1.png" alt="Primeval Crocodile, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section>
+<section class="family" id="family-raptors">
+  <header class="family-heading"><p>38 · fauna family</p><h2>Raptors</h2><span>5 forms · 25 candidates</span></header>
+  <section class="form" id="raptor-carrion-kite">
+  <div class="form-heading"><span>T1</span><h3>Carrion Kite</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/normal-v1.png" alt="Carrion Kite, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/fire-v1.png" alt="Carrion Kite, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/earth-v1.png" alt="Carrion Kite, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/wind-v1.png" alt="Carrion Kite, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-carrion-kite/water-v1.png" alt="Carrion Kite, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="raptor-hunting-hawk">
+  <div class="form-heading"><span>T2</span><h3>Hunting Hawk</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/normal-v1.png" alt="Hunting Hawk, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/fire-v1.png" alt="Hunting Hawk, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/earth-v1.png" alt="Hunting Hawk, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/wind-v1.png" alt="Hunting Hawk, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-hunting-hawk/water-v1.png" alt="Hunting Hawk, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="raptor-night-owl">
+  <div class="form-heading"><span>T3</span><h3>Night Owl</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/normal-v1.png" alt="Night Owl, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/fire-v1.png" alt="Night Owl, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/earth-v1.png" alt="Night Owl, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/wind-v1.png" alt="Night Owl, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-night-owl/water-v1.png" alt="Night Owl, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="raptor-war-eagle">
+  <div class="form-heading"><span>T4</span><h3>War Eagle</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/normal-v1.png" alt="War Eagle, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/fire-v1.png" alt="War Eagle, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/earth-v1.png" alt="War Eagle, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/wind-v1.png" alt="War Eagle, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-war-eagle/water-v1.png" alt="War Eagle, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+<section class="form" id="raptor-roc">
+  <div class="form-heading"><span>T5</span><h3>Roc</h3></div>
+  <div class="candidate-grid"><a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/normal-v1.png" target="_blank" rel="noopener" data-affinity="normal">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/normal-v1.png" alt="Roc, normal candidate" loading="lazy" decoding="async">
+  <span><strong>Normal</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/fire-v1.png" target="_blank" rel="noopener" data-affinity="fire">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/fire-v1.png" alt="Roc, fire candidate" loading="lazy" decoding="async">
+  <span><strong>Fire</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/earth-v1.png" target="_blank" rel="noopener" data-affinity="earth">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/earth-v1.png" alt="Roc, earth candidate" loading="lazy" decoding="async">
+  <span><strong>Earth</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/wind-v1.png" target="_blank" rel="noopener" data-affinity="wind">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/wind-v1.png" alt="Roc, wind candidate" loading="lazy" decoding="async">
+  <span><strong>Wind</strong><small>v1 · candidate-only</small></span>
+</a>
+<a class="candidate-card" href="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/water-v1.png" target="_blank" rel="noopener" data-affinity="water">
+  <img src="../../../assets/enemies/experiments/fauna-family-v1/candidates/raptors/raptor-roc/water-v1.png" alt="Roc, water candidate" loading="lazy" decoding="async">
+  <span><strong>Water</strong><small>v1 · candidate-only</small></span>
+</a></div>
+</section>
+</section></main>
+    <footer>Inventory SHA-256: 9c4c079b78a212538b5988826dbe24347271749451e10c510d9fb1b26b1caa42. Select any image to open the original full-resolution candidate in a new tab.</footer>
+  </div>
+</body>
+</html>

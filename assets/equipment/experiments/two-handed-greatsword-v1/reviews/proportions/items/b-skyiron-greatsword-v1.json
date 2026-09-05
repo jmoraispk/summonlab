@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "equipment-greatsword-item-proportion-review-v1",
+  "reviewId": "greatsword-v1-skyiron-b-proportion-review",
+  "targetId": "greatsword-v1-skyiron-b",
+  "candidate": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png", "sha256": "98919de4042a6d59b98701c2630f163d8bffbbf01bce3c16764911834e94cae3" },
+  "profile": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json", "sha256": "04ecd463d4e0d15a35639ae478c716d51a5e25254a8b563a800a8575fbee07d7" },
+  "method": "Producer landmark inspection at native 1024x1024 resolution using the accepted profile definitions; painted anti-aliased edges are approximate to one pixel.",
+  "measurements": { "bladePx": 608, "fullHiltPx": 231, "exposedGripPx": 186, "guardWidthPx": 167, "pommelPx": 41, "overallPx": 839 },
+  "ratios": { "bladeToFullHilt": 2.63, "bladeToExposedGrip": 3.27, "bladePercent": 72.47, "guardPercent": 19.9, "pommelPercent": 4.89 },
+  "framing": { "topMarginPx": 86, "bottomMarginPx": 99, "minimumMarginPercent": 8.4, "status": "pass" },
+  "status": "pass",
+  "failedCriteria": [],
+  "humanReviewPending": true
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:cultivation",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-cultivation.json",
+	"promptHash": "e02c376e7b2f2eec835bc88414a507ec8c03a2fba8dd67087f65b7a57d99db9f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-foraging.png",
+			"contentHash": "65ae11379cdf59756448a9a8f658719a37df43697e5b32882ba7ef46138c5d9f"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-foraging.png",
+			"contentHash": "da757b7b4875235841f3a559642ea9277a0b47f9577f2a0c46685f2b329d46ab"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-cultivation-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2172298,
+		"contentHash": "6c1c0b68f50e33d38f29e46cf009a5feeea8ce72696f6c0d3827b690aa2d1b6b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-cultivation.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1828567,
+		"contentHash": "a4d34e65b2f2326a286ec8062e8ad78a5f683fc03ca878e68cddc5af7c1ceaa9"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "036bf3f24c1b7eab35034b8b3213b43e0ad127fe3ff4b8d4663524de14746e20",
+		"postRepairContentHash": "a4d34e65b2f2326a286ec8062e8ad78a5f683fc03ca878e68cddc5af7c1ceaa9",
+		"removedPixels": 384942
+	}
+}

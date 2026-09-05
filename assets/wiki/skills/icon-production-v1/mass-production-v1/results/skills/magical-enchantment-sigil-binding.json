@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:sigil-binding",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-sigil-binding.json",
+	"promptHash": "8a51bd60a79357eabc7b9b06164f09a6fe15b39b8752ec3d81e34112347dfd32",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-bound-sigil.png",
+			"contentHash": "3e9577bb0edcf571d414806e041597cf982bc078226bd1ec2432801f0202ad44"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-component-craft.png",
+			"contentHash": "9440a5abee7e6a887c692e28b6fc51385f6fd78b95953b3393731ff3509ad25d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-sigil-binding-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2183161,
+		"contentHash": "b9e13795a11f4450ab6d8052e2680b43f038623de0fe176a19227fcbf59e8e23"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-sigil-binding.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1983553,
+		"contentHash": "4d388929022cc1c4908bab8cdf1f326ca78ef08c1795bf989092cc30d6fd7902"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "7d17e6df797649a6d90590b56aa07b9d627a54ef958792ea136fa986cfca46aa",
+		"postRepairContentHash": "4d388929022cc1c4908bab8cdf1f326ca78ef08c1795bf989092cc30d6fd7902",
+		"removedPixels": 384942
+	}
+}

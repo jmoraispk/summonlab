@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "hero-one-star-reserve-analysis-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "recordedAt": "2026-09-03T04:15:00Z",
+  "forcedQuarantineHeroIds": [
+    "fenel-esho",
+    "yasu-coro"
+  ],
+  "frozenReserveSearch": {
+    "quotaDimensions": [
+      "gender",
+      "gender-scoped body",
+      "gender-scoped height",
+      "gender-scoped age",
+      "skin value",
+      "hair color",
+      "hair silhouette",
+      "hair accent",
+      "wardrobe",
+      "palette",
+      "detail density",
+      "tattoo",
+      "coolness anchor"
+    ],
+    "reserveSubsetSizesExhaustivelyChecked": "2-14",
+    "exactSolutions": 0,
+    "finding": "Any unchanged-packet solution, if one exists, replaces at least 15 otherwise-valid active heroes and is disproportionate to two failed chibis."
+  },
+  "quotaSlotActivationDecision": [
+    {
+      "failedActiveHeroId": "fenel-esho",
+      "reserveIdentityHeroId": "wenyn-amarun",
+      "rule": "Preserve Wenyn's unique identity/name/kernel while rebuilding the production packet against Fenel's complete quota-coordinate vector."
+    },
+    {
+      "failedActiveHeroId": "yasu-coro",
+      "reserveIdentityHeroId": "rao-esheth",
+      "rule": "Preserve Rao's unique identity/name/kernel while rebuilding the production packet against Yasu's complete quota-coordinate vector."
+    }
+  ],
+  "requiredPostcondition": "The selected active roster remains exactly 200 and its recomputed quota summary is byte-equivalent to the frozen activeQuotaSummary. Frozen packets and failed candidate evidence remain immutable."
+}

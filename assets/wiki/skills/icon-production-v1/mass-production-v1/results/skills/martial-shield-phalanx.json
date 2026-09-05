@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:phalanx",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-phalanx.json",
+	"promptHash": "b3ceb845dd220713df1bbdd0397b7e8bb478e676d72a51687ff4c5e33afc15ef",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-ally-cover.png",
+			"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-aegis.png",
+			"contentHash": "bea8b7fbfdb139a6895250cc3f82aa73eaf92fc683c7ee4a9a3eef875598a7f3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-phalanx-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2074969,
+		"contentHash": "596a55b1190a20c9fb64724bfa07f2bdc129e765f18304457f9290f38402ac79"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-phalanx.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1812412,
+		"contentHash": "c74e4ba60d1f78c2174fb9dd4bc4f9b68a6321846087ccfc802b48d37b6db04d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "57e613f70f92d844620dda59bbd65477459fbab6fadb78465653fabebd924560",
+		"postRepairContentHash": "c74e4ba60d1f78c2174fb9dd4bc4f9b68a6321846087ccfc802b48d37b6db04d",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:greater-taming",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-greater-taming.json",
+	"promptHash": "89f380b482ee427d560d94cc7666d5c8d4a6782a159d3618e096d93f20facff3",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-beast-bond.png",
+			"contentHash": "ca90badc7b6319518ae207dad63593505d86fdbb6e9fa72d034033a5aa949c71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-taming.png",
+			"contentHash": "94b73d6a1f0c9219313984c5166a1dc324f1f7f0523b3dabac6470a59a1578f4"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-greater-taming-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2190797,
+		"contentHash": "9062613b1fbc707dc2734370b793f48c583159b10a8b67e9984fe78614648fc0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-greater-taming.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1890554,
+		"contentHash": "59017a88c42e7948b32bf568c231d6554cc871c6d800f702512547a7612ae37b"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a2fad329dbc307bfed464836feed2c5c25e913f58fc927fa458d74eac1e4a87b",
+		"postRepairContentHash": "59017a88c42e7948b32bf568c231d6554cc871c6d800f702512547a7612ae37b",
+		"removedPixels": 384942
+	}
+}

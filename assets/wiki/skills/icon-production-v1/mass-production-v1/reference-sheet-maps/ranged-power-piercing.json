@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "ranged.power-piercing",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:ranged:power-draw",
+			"name": "Power Draw",
+			"rarity": "E",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:ranged:pinning-shot",
+			"name": "Pinning Shot",
+			"rarity": "E",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:ranged:piercing-shot",
+			"name": "Piercing Shot",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:ranged:sky-piercer",
+			"name": "Sky Piercer",
+			"rarity": "B",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:ranged:world-s-edge-shot",
+			"name": "World's Edge Shot",
+			"rarity": "S",
+			"row": 2,
+			"column": 1
+		}
+	]
+}

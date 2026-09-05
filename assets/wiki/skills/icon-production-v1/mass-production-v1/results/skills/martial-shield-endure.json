@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:endure",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-endure.json",
+	"promptHash": "d4c8f14cd3bdf27766f9f776356b08a53c19f484d002ebcd7037d0fda5f8ce2b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-fortress.png",
+			"contentHash": "f3bd6b7a6a71eeb8726980868cd18889b9aeae1bcb293d0704466167b1026796"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-immovable.png",
+			"contentHash": "78d89f463c3b1cc1eefe5e487081c63eaf6035a0e25aa6065c7e95000c14462d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-endure-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2084736,
+		"contentHash": "ff184815b664cec3e5106d3c33eabc0c215c018fd9a98e9e41fbc4beaa54da66"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-endure.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1742589,
+		"contentHash": "25260405098b0d7612bc09944281a8750c29880fcfd7a74d563476d9996692ee"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "adccc25042931e37a0a39ce7b09a031c88b823aa5dfd6fa2222a86f22b44dd43",
+		"postRepairContentHash": "25260405098b0d7612bc09944281a8750c29880fcfd7a74d563476d9996692ee",
+		"removedPixels": 384942
+	}
+}

@@ -15,6 +15,7 @@ import {
 	type EngineGameStateV20,
 	type EngineGameStateV21,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type LegalAction,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
@@ -51,7 +52,8 @@ export type MissionTurnEngineState =
 	| EngineGameStateV19
 	| EngineGameStateV20
 	| EngineGameStateV21
-	| EngineGameStateV23;
+	| EngineGameStateV23
+	| EngineGameStateV24;
 
 export function missionToolTagsForActor(
 	state: MissionTurnEngineState,
@@ -65,7 +67,8 @@ export function missionToolTagsForActor(
 		state.schemaVersion !== 19 &&
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 21 &&
-		state.schemaVersion !== 23
+		state.schemaVersion !== 23 &&
+		state.schemaVersion !== 24
 	)
 		return new Set();
 	return new Set(
@@ -236,7 +239,8 @@ export function missionTurnActionsForState(
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 	) {
 		const combatAttempt = state.mission.attempt!;
 		for (const monster of Object.values(combatAttempt.turnState.monsters)
@@ -264,7 +268,8 @@ export function missionTurnActionsForState(
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 			? state.mission.attempt!.turnState.arena
 			: null;
 	if (
@@ -317,7 +322,8 @@ export function missionTurnLegalActions(
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
-		state.schemaVersion === 23
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24
 		? missionTurnActionsForState(state, actorId)
 		: [];
 }
@@ -371,10 +377,11 @@ type MissionActionState =
 	| EngineGameStateV18
 	| EngineGameStateV19
 	| EngineGameStateV20
-	| EngineGameStateV23;
+	| EngineGameStateV23
+	| EngineGameStateV24;
 
 export function supportsMissionActions(state: EngineGameState): state is MissionActionState {
-	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23].includes(state.schemaVersion);
+	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24].includes(state.schemaVersion);
 }
 
 export function missionLegalActions(

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "equipment-greatsword-item-result-v1",
+  "resultId": "greatsword-v1-bronze-f-attempt-1",
+  "targetId": "greatsword-v1-bronze-f",
+  "assignmentId": "assignment-greatsword-v1-bronze-f",
+  "attempt": 1,
+  "status": "candidate",
+  "provider": "OpenAI image generation",
+  "promptSha256": "b24bcb8aed5b049ab2a5937dd735addf47b7140806cbfbfa3af26c7b26e26f87",
+  "generationSource": {
+    "sessionArtifactId": "exec-aaaf188c-288a-40cf-960a-daa081f15f18.png",
+    "sha256": "3bd3166e5424f2ed74dc0051bd88a6987d3154002ff8e64b93cc8a2a88f3ea8c",
+    "width": 1254,
+    "height": 1254
+  },
+  "normalization": {
+    "operation": "uniform-scale-and-edge-copy",
+    "contentWidth": 900,
+    "contentHeight": 900,
+    "paddingPx": 62,
+    "purpose": "Meet the assigned safe-margin contract without altering weapon geometry."
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png",
+    "sha256": "3e50a90b46bc0cb5510dd8b9fd60e238ea47f3a672fbdd523db844190d2df756",
+    "bytes": 825568,
+    "width": 1024,
+    "height": 1024,
+    "mediaType": "image/png"
+  },
+  "selfPromoted": false
+}

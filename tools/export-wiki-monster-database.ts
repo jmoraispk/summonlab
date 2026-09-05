@@ -5,12 +5,18 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
 	loadFamilyAffinityActiveSources,
 	type FamilyAffinityManifest
 } from './family-affinity-production-lib.js';
-import { buildFamilyAffinityReviewArtifacts } from './family-affinity-review-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	buildFamilyAffinityReviewArtifacts,
+	familyAffinityGenerationFailurePath,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 import {
 	assertGeneratedMonsterWikiFreshness,
 	assertManagedMonsterCatalogEntries,
@@ -26,6 +32,7 @@ import {
 	type LegacyCandidateReference,
 	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
+import { loadIntegratedMonsterWikiDatabase } from './wiki-fauna-integration.js';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const productionRoot = resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1');
@@ -57,6 +64,12 @@ async function readJson<T>(path: string): Promise<T> {
 	return JSON.parse(await readFile(path, 'utf8')) as T;
 }
 
+function pathAtVersion(path: string, activeVersion: number, version: number): string {
+	const suffix = `v${activeVersion}.json`;
+	if (!path.endsWith(suffix)) throw new Error(`Versioned attempt path is malformed: ${path}`);
+	return `${path.slice(0, -suffix.length)}v${version}.json`;
+}
+
 function versionFrom(entry: LegacyCatalogEntry): number {
 	return Number(
 		entry.selectedVersion?.match(/v(\d+)/u)?.[1] ??
@@ -76,6 +89,48 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 			FamilyAffinityTargetSchema.parse(await readJson(resolve(repositoryRoot, targetPath)))
 		)
 	);
+	async function loadGenerationFailureSourceBinding(
+		coordinate: (typeof manifest.canonicalMatrix.activeCoordinates)[number],
+		version: number
+	): Promise<CanonicalGenerationFailureSupersessionSourceBinding | undefined> {
+		if (version <= 1) return undefined;
+		const previousVersion = version - 1;
+		const previousTargetPath = pathAtVersion(
+			coordinate.targetPath,
+			coordinate.activeVersion,
+			previousVersion
+		);
+		const previousAssignmentPath = pathAtVersion(
+			coordinate.assignmentPath,
+			coordinate.activeVersion,
+			previousVersion
+		);
+		const previousTarget = FamilyAffinityTargetSchema.parse(
+			await readJson(resolve(repositoryRoot, previousTargetPath))
+		);
+		const failurePath = familyAffinityGenerationFailurePath(previousTarget);
+		if (!existsSync(resolve(repositoryRoot, failurePath))) return undefined;
+		const generationFailure = FamilyAffinityGenerationFailureSchema.parse(
+			await readJson(resolve(repositoryRoot, failurePath))
+		);
+		const previousBinding = await loadGenerationFailureSourceBinding(coordinate, previousVersion);
+		return {
+			previousTargetPath,
+			previousAssignmentPath,
+			previousTarget,
+			previousAssignment: FamilyAffinityAssignmentSchema.parse(
+				await readJson(resolve(repositoryRoot, previousAssignmentPath))
+			),
+			generationFailure,
+			...(previousBinding ? { previousBinding } : {})
+		};
+	}
+
+	const generationFailureSourceBindings: CanonicalGenerationFailureSupersessionSourceBinding[] = [];
+	for (const coordinate of manifest.canonicalMatrix.activeCoordinates) {
+		const binding = await loadGenerationFailureSourceBinding(coordinate, coordinate.activeVersion);
+		if (binding) generationFailureSourceBindings.push(binding);
+	}
 	const candidateReferences: LegacyCandidateReference[] = [];
 	for (const catalogPath of legacyCatalogPaths) {
 		const catalog = await readJson<{ entries: LegacyCatalogEntry[] }>(catalogPath);
@@ -94,7 +149,15 @@ async function loadBuildInput(): Promise<MonsterWikiBuildInput> {
 		}
 	}
 	const reviewEvidence = reviewArtifacts.families.flatMap(({ summary }) => summary.cells);
-	return { families, mapping, manifest, targets, reviewEvidence, candidateReferences };
+	return {
+		families,
+		mapping,
+		manifest,
+		targets,
+		reviewEvidence,
+		candidateReferences,
+		generationFailureSourceBindings
+	};
 }
 
 function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDatabase): WikiCatalog {
@@ -108,7 +171,7 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 	const retained = current.entries.filter((entry) => !replaceableWikiIds.has(entry.wikiId));
 	return {
 		...current,
-		lastReviewed: '2026-09-01',
+		lastReviewed: '2026-09-04',
 		entries: [
 			...retained,
 			{
@@ -121,14 +184,26 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 				visualStatus: 'brief',
 				spoilerScope: 'discoverable'
 			},
-			...database.forms.map(({ formId }) => ({
+			...database.forms.map(({ formId, coordinates }) => ({
 				wikiId: `monster.${formId}`,
 				path: `docs/wiki/creatures/monsters/${formId}.md`,
 				pageType: 'monster-entry',
 				owner: 'visuals-content',
-				designStatus: 'draft',
-				implementationStatus: 'none',
-				visualStatus: 'brief',
+				designStatus: coordinates.every(
+					({ presentationStatus }) => presentationStatus === 'runtime'
+				)
+					? 'accepted'
+					: 'draft',
+				implementationStatus: coordinates.every(
+					({ presentationStatus }) => presentationStatus === 'runtime'
+				)
+					? 'partial'
+					: 'none',
+				visualStatus: coordinates.every(
+					({ presentationStatus }) => presentationStatus === 'runtime'
+				)
+					? 'runtime'
+					: 'brief',
 				spoilerScope: 'discoverable'
 			}))
 		]
@@ -169,10 +244,8 @@ async function validateSourcePages(manifest: FamilyAffinityManifest): Promise<vo
 	}
 }
 
-async function writeOutputs(input: MonsterWikiBuildInput): Promise<number> {
-	const database = buildCanonicalMonsterWikiDatabase(input);
+async function writeOutputs(database: CanonicalMonsterWikiDatabase): Promise<number> {
 	await validateReferenceAssets(database.reconciliation);
-	await validateSourcePages(input.manifest);
 	await mkdir(monsterWikiRoot, { recursive: true });
 	const existingFileNames = await readdir(monsterWikiRoot);
 	const unmanagedPages = unmanagedMonsterPageCollisions(database, existingFileNames);
@@ -199,10 +272,8 @@ async function writeOutputs(input: MonsterWikiBuildInput): Promise<number> {
 	return obsoletePages.length;
 }
 
-async function checkOutputs(input: MonsterWikiBuildInput): Promise<void> {
-	const database = buildCanonicalMonsterWikiDatabase(input);
+async function checkOutputs(database: CanonicalMonsterWikiDatabase): Promise<void> {
 	await validateReferenceAssets(database.reconciliation);
-	await validateSourcePages(input.manifest);
 	const existingFileNames = await readdir(monsterWikiRoot);
 	const pages = new Map<string, string>();
 	for (const fileName of generatedMonsterPageFileNames(database)) {
@@ -227,15 +298,15 @@ const write = process.argv.includes('--write');
 const check = process.argv.includes('--check');
 if (write === check) throw new Error('Pass exactly one of --write or --check');
 
-const input = await loadBuildInput();
+const database = await loadIntegratedMonsterWikiDatabase(repositoryRoot);
 if (write) {
-	const deleted = await writeOutputs(input);
+	const deleted = await writeOutputs(database);
 	console.log(
-		`Exported 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
+		`Exported 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
 	);
 } else {
-	await checkOutputs(input);
+	await checkOutputs(database);
 	console.log(
-		'Validated 30 families, 150 canonical forms, 750 production coordinates, and 40 reconciliations.'
+		'Validated 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations.'
 	);
 }

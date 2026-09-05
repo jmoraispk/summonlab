@@ -1,0 +1,41 @@
+{
+  "assignmentId": "assignment-rarity-frame-a-v1",
+  "completedAt": "2026-09-02T16:34:48.951-07:00",
+  "exactPrompt": "Create exactly one standalone 1024\u00d71024 RGBA PNG rarity-frame layer for tier A (Fabled). Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration. Build a champagne-electrum frame with a gentle pearl-metal highlight, doubled inner rim, six spear-leaf accents, and a refined crest; keep the shine controlled rather than pale or blown out. Include one small integrated top-center medallion bearing only the uppercase letter A. Keep every visible frame pixel inside the outer aperture envelope, keep the entire interior inside the 78%-scale inner hexagon fully transparent, and keep the canvas outside the common aperture fully transparent. The frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels. No skill icon, emblem, backing, background, scenery, bloom, or any other symbol, number, word, label, or text. Output only the isolated frame layer.",
+  "failureReason": {
+    "kind": "malformed-output",
+    "message": "Both permitted built-in image-generation outputs were 1254x1254 RGB PNGs with a baked checkerboard rather than the required 1024x1024 RGBA frame layer with genuine transparency; no role-valid raster was retained."
+  },
+  "findings": [
+    {
+      "category": "other",
+      "evaluator": "producer",
+      "observation": "Both permitted built-in image-generation outputs were 1254x1254 RGB PNGs with a baked checkerboard rather than the required 1024x1024 RGBA frame layer with genuine transparency; no role-valid raster was retained.",
+      "outcome": "fail"
+    }
+  ],
+  "jobId": "rarity-frame-a-v1",
+  "noSharedFilesEdited": true,
+  "output": null,
+  "promptHash": "d9063d71bdbb67367a48683b5796bcbecd729b62704b3b765029bd836e5396f8",
+  "referenceInputs": [
+    {
+      "contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce",
+      "path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png"
+    },
+    {
+      "contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4",
+      "path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
+    }
+  ],
+  "resultId": "result-rarity-frame-a-v1",
+  "resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-a-v1.json",
+  "schemaVersion": "skill-icon-result-v1",
+  "selfPromoted": false,
+  "startedAt": "2026-09-02T16:33:43.847-07:00",
+  "status": "failed",
+  "totalWallTimeMs": 65104,
+  "writtenOutputPaths": [
+    "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-a-v1.json"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:dragon-tail",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-dragon-tail.json",
+	"promptHash": "f4e57eeed5620863ee3c881a8fe17925230f0b95d6da6749480e97a85ea9e96c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-sweep-hook.png",
+			"contentHash": "0b81d334bacc97350496cec4ea28fb86014513401a5f70741c65fc859c9f8057"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-hook-and-pull.png",
+			"contentHash": "f98bcd8a42c3b3162db15e538006db32f91ce5259b7377654f01a79d9c55a8eb"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-dragon-tail-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2025912,
+		"contentHash": "82df9c67eab64882d18254422d33418c69cfd64c35147f3fd8f1af1ff5d59d7c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-dragon-tail.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1760556,
+		"contentHash": "ebf925cd4ea459e7fd5faa6d92b37e89f6204b7d85abf3a65416fd0bfe180bab"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "49ec1b0fbc4a40809fc5f5d5cac40e7266cb2972960f9de9c118ecd4f36d4fb3",
+		"postRepairContentHash": "ebf925cd4ea459e7fd5faa6d92b37e89f6204b7d85abf3a65416fd0bfe180bab",
+		"removedPixels": 384942
+	}
+}

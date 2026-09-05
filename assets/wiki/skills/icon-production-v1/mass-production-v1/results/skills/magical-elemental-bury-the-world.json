@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:bury-the-world",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-bury-the-world.json",
+	"promptHash": "b1e5800ac84c5c4720ffcfcca4076f20da39dfa86c79a431f920aafb3432fe5c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-fracture.png",
+			"contentHash": "d432e71f8a64a692cedc42cd0a882f5a57ea48bbcc0972de9415f775584e7329"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-avalanche.png",
+			"contentHash": "ff15fac5c9df9b34a7e15e578107a56e08f4ced746b3b380e40c9f024bcccb6b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-bury-the-world-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2344863,
+		"contentHash": "69dd4562b7beb0a231153408c3333c90af84ec50396209bca1950017aa9ddf1f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-bury-the-world.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2015744,
+		"contentHash": "44e0655f379b1307fb5b8708014ab5290086996de13bbcbeb70601b63e88d527"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b69343bf5ae23d3c5161b9d814bbc3162356dbe1803742d48c65bebc9eb91654",
+		"postRepairContentHash": "44e0655f379b1307fb5b8708014ab5290086996de13bbcbeb70601b63e88d527",
+		"removedPixels": 384942
+	}
+}

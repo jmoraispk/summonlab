@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "equipment-greatsword-item-result-v1",
+  "resultId": "greatsword-v1-sunsteel-s-attempt-1",
+  "targetId": "greatsword-v1-sunsteel-s",
+  "assignmentId": "assignment-greatsword-v1-sunsteel-s",
+  "attempt": 1,
+  "status": "candidate",
+  "provider": "OpenAI image generation",
+  "promptSha256": "e1bd39010608e7f668443e40e27e840e9000ae82f1b603760bb13e2093b394fb",
+  "generationSource": {
+    "sessionArtifactId": "exec-5d1b770a-3c15-4e9b-87da-62a93682135a.png",
+    "sha256": "876406f08f26282d331cb8d5bd562b7c73480e5d6a349b6e6edd868546ce1ddd",
+    "width": 1254,
+    "height": 1254
+  },
+  "normalization": {
+    "operation": "uniform-scale-and-edge-copy",
+    "contentWidth": 900,
+    "contentHeight": 900,
+    "paddingPx": 62,
+    "purpose": "Meet the assigned safe-margin contract without altering weapon geometry."
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/s/sunsteel/greatsword-v1.png",
+    "sha256": "87f8b38c9b12c6697f8c96704d3345bd66d1ea2e03ed2212b743560d6d81f748",
+    "bytes": 757415,
+    "width": 1024,
+    "height": 1024,
+    "mediaType": "image/png"
+  },
+  "selfPromoted": false
+}

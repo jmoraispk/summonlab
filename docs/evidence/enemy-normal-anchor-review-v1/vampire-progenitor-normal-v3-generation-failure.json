@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "family-affinity-generation-failure-v1",
+  "experimentId": "family-affinity-v1",
+  "namespace": "canonical",
+  "coordinateId": "vampires/vampire-progenitor/normal",
+  "targetId": "canonical/vampires/vampire-progenitor/normal/v3",
+  "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-progenitor/normal/target-v3.json",
+  "targetSha256": "5d2193539b8a3f69b95b952ebfb4d419c3b1d187e2bd699af5bb4dc5c23d7881",
+  "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-progenitor/normal/assignment-v3.json",
+  "assignmentSha256": "03cab10850d8c8aff031be7a0f77485a3fde95ad73d1485b3077b7e7dbf3be1b",
+  "candidateVersion": 3,
+  "failureKind": "exhausted-nonretained-generation",
+  "producerRuns": [
+    {
+      "runOrdinal": 1,
+      "producerId": "codex:/root/rev_vampire_progenitor_v3",
+      "canonicalPromptSha256": "29f53d085b91919ada19683bc8c43bcb49504a45937f9e4671a566e983afb74f",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "29f53d085b91919ada19683bc8c43bcb49504a45937f9e4671a566e983afb74f",
+          "providerRunId": "cc46151e-de50-432e-bce6-72c1eaa10492",
+          "sourcePath": null,
+          "sourceSha256": null,
+          "outcomeCode": "provider-moderation-blocked",
+          "reasons": [
+            "The provider returned no source after blocking the request for violence-related content."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": null,
+          "providerRunId": null,
+          "sourcePath": null,
+          "sourceSha256": null,
+          "outcomeCode": "provider-output-unavailable",
+          "reasons": [
+            "The non-graphic regeneration returned no surfaced bindable source."
+          ]
+        }
+      ]
+    },
+    {
+      "runOrdinal": 2,
+      "producerId": "codex:/root/rev_vampire_progenitor_v3_retry",
+      "canonicalPromptSha256": "29f53d085b91919ada19683bc8c43bcb49504a45937f9e4671a566e983afb74f",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "29f53d085b91919ada19683bc8c43bcb49504a45937f9e4671a566e983afb74f",
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a06893-0558-70a2-a471-f05d24db186b/exec-ad86cbef-2eb7-4b51-9233-4ac537b5fc66.png",
+          "sourceSha256": "a778ff144dc9f7b22b695b50f6bc71e9b33cf2b1199f4fc82fa4a9ca2f2a2267",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Multiple background vampires violated the single featured-subject contract.",
+            "Only two broad wings were visible instead of exactly three segmented wings."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": null,
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a06893-0558-70a2-a471-f05d24db186b/exec-7f7d6746-76db-4567-bbbf-e3f4c2453987.png",
+          "sourceSha256": "8a51c480f1e42ae8b84edebaf7ac32555453538f87fc375cc92a8e8b304c9357",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "The extra subjects were removed, but four wing sections appeared instead of exactly three vessel-aligned segmented wings."
+          ]
+        }
+      ]
+    }
+  ],
+  "retainedCandidateCreated": false,
+  "resultReceiptCreated": false,
+  "reviewReceiptsCreated": false,
+  "supersessionTargetVersion": 4,
+  "supersessionAuthorizedBy": "root-orchestrator-enemy-domain-authorization-2026-09-03",
+  "runtimeCatalogMutationForbidden": true
+}

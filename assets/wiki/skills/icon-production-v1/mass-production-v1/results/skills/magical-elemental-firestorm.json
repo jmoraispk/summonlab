@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:firestorm",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-firestorm.json",
+	"promptHash": "5806f49f1aa687c50cf043b35cae0356cf41c9081eaafb2246e1c80da593d104",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-field.png",
+			"contentHash": "8690006c98f155c74570dfd459b9b171d695927f3a76f2c24f838bfd50247c65"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-detonation.png",
+			"contentHash": "09beaee3e49e954f711fe4b2a4b86c22b5aade6b7c28b2e650a11abcd623b0bd"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-firestorm-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2047756,
+		"contentHash": "22ec7cb4babab615fa7146823e45eea20fc058780a7e433b244c913112677917"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-firestorm.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1912638,
+		"contentHash": "1c1c4b72d8cb8ae6ce2ea12ba77605b3e808037dc9b5d3b40155d697ea45dd98"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d0811862d60c49bc101a1c9f01f2492cd205d949538bc7a7b1750728f2351653",
+		"postRepairContentHash": "1c1c4b72d8cb8ae6ce2ea12ba77605b3e808037dc9b5d3b40155d697ea45dd98",
+		"removedPixels": 384942
+	}
+}

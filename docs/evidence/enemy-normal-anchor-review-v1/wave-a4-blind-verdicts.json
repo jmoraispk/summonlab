@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A4",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A4-01",
+      "perceivedFamilyOrCreature": "four-armed mantis-like insectoid",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "assassin/skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Four arms, digitigrade legs, and chitin plates read coherently."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Complete centered silhouette with useful breathing room."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Crisp material hierarchy and strong focal face."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Chitin and metal define the body; gold strands are secondary environmental accents."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Lean stance, hooked upper limbs, and exposed narrow torso clearly suggest fast reach attacks and low durability."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Immediately readable elite insect duelist; surrounding gold strands remain secondary rather than elemental construction."
+    },
+    {
+      "token": "A4-02",
+      "perceivedFamilyOrCreature": "reptilian tribal shaman/chieftain",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "support/controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "pass",
+        "note": "Squat reptilian body, tail, staff, and raised casting hand are legible."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Large ritual standard fills the frame without losing the body."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Convincing hide, bone, and feather textures."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Hide, bone, wood, and feathers dominate without a visible elemental body treatment."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Staff, raised hand, and ritual standard visibly cue a back-line caster or buffer worth prioritizing."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Reads as a ritual leader with a strong non-elemental material language; the oversized standard supports rank and role."
+    },
+    {
+      "token": "A4-03",
+      "perceivedFamilyOrCreature": "arachnid queen",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "controller/trapper",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Humanoid torso, abdomen, and spider limbs form a coherent hybrid."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Broad low silhouette is fully contained and web lines reinforce control."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Polished focal lighting and detailed carapace."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Organic carapace, flesh, and physical webbing establish a neutral creature identity."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Converging web strands, poised hands, and a heavy abdomen cue trapping attacks and limited repositioning."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear spider sovereign identity and battlefield-control role with no dominant elemental construction."
+    },
+    {
+      "token": "A4-04",
+      "perceivedFamilyOrCreature": "rune-carved stone golem",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "tank/bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Block-built humanoid proportions and joints are immediately understandable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full body is centered with ample separation from the ruins."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Stone wear and carved runes are cleanly resolved."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Its construction is plainly physical stone; restrained runes do not imply a dominant affinity."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Huge fists, thick armor blocks, and lumbering proportions cue slow, heavy frontal attacks."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Simple, highly readable construct tank; localized runes do not overpower its stone identity."
+    },
+    {
+      "token": "A4-05",
+      "perceivedFamilyOrCreature": "multi-orb colossus or living gate",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "summoner/artillery sovereign",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Arms read, but the central cage-like torso and head relationship is ambiguous."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Monumental scale and arena presence are communicated clearly."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Many bright colored nodes and ground effects compete for attention."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Large blue, green, and gold energy nodes dominate the body and suggest multiple unexplained affinities."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "Numerous equal-weight glowing nodes and floor effects obscure which node, summon, or opening is actionable."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Impressive sovereign scale, but the multicolored energy system dominates the design while anatomy and actionable priorities remain unclear."
+    },
+    {
+      "token": "A4-06",
+      "perceivedFamilyOrCreature": "broodmother spider",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "summoner/controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Dense overlapping legs remain coherent for a giant arachnid."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Towering body, brood, and webbed lair fit within the portrait."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Restrained palette preserves the central face and hanging brood detail."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Web, carapace, flesh, and brood sacs remain entirely organic and non-elemental."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Visible brood, cocoons, and webbed ground cue summoning and area denial before engagement."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Strong brood sovereign with unmistakable arachnid identity, visible control cues, and no unexplained elemental composition."
+    },
+    {
+      "token": "A4-07",
+      "perceivedFamilyOrCreature": "arcane stone sentinel",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "guardian/bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Massive humanoid construction and fists read cleanly."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Complete silhouette with the halo ring fully visible."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Disciplined stone detail, rune accents, and focal core glow."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Stone remains the dominant construction; the ring and chest core are localized magical mechanisms."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The singular bright chest core supplies a clear focal weak-point cue while oversized fists telegraph melee threat."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "A convincing high-tier construct; the ring and core are localized power markers rather than dominant elemental anatomy."
+    },
+    {
+      "token": "A4-08",
+      "perceivedFamilyOrCreature": "water or arcane elemental guardian",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "defender/skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Humanoid pose and asymmetrical rocky shield arm remain readable."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full figure is isolated clearly against the ruins."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Polished translucency, glow, and surface effects."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Luminous blue liquid or energy visibly constitutes most of the creature's body."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The armored shield side, exposed fluid side, and bright central core suggest a readable defensive orientation and target."
+      },
+      "overallVerdict": "revise",
+      "rationale": "Visually accomplished with useful combat cues, but its overwhelmingly liquid-energy construction directly conflicts with a Normal anchor."
+    },
+    {
+      "token": "A4-09",
+      "perceivedFamilyOrCreature": "spined swamp lizard warrior",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "bruiser/duelist",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Head, torso, arms, blades, and dorsal spikes are distinct."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Full stance is visible and the palisade echoes its silhouette."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Cohesive scales, mud, armor, and restrained accent color."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Scales, horn, wood, mud, and metal establish a grounded neutral material palette."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Twin blades, low forward stance, and heavy dorsal armor cue an aggressive melee fighter best approached away from its front."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Clear reptilian melee identity with grounded natural materials and strong role readability."
+    },
+    {
+      "token": "A4-10",
+      "perceivedFamilyOrCreature": "armored insect brood empress",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "sovereign/summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Crowned torso, multiple arms, and segmented abdomen read as an intentional insect hybrid."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Throne-like lateral structures and huge body are strongly staged."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Dense ornament remains controlled by a clear central focal line."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Carapace, engraved membranes, and nest-like structures read as organic ornament rather than elemental matter."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised appendages and exposed central segmented body cue frontal barrages or summoning with a clear central target."
+      },
+      "overallVerdict": "approved-review",
+      "rationale": "Commanding non-elemental sovereign whose organic structures reinforce brood, rulership, and a visible central engagement target."
+    }
+  ]
+}

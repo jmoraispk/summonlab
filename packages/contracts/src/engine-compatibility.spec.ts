@@ -100,6 +100,7 @@ describe('engine contracts compatibility', () => {
 		  "hero.plan.day",
 		  "hero.share.synthesis.rumor",
 		  "hero.start.activity",
+		  "hero.start.forging",
 		  "hero.start.routine",
 		  "hero.start.travel",
 		  "master.apply.safety-stop",
@@ -166,7 +167,7 @@ describe('engine contracts compatibility', () => {
 
 	it('parses the checked-in replay and development-bootstrap states', () => {
 		expect(ENGINE_COMPATIBILITY_STATE_FIXTURES.map((fixture) => fixture.schemaVersion)).toEqual([
-			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
 		]);
 		for (const fixture of ENGINE_COMPATIBILITY_STATE_FIXTURES) {
 			expect(EngineGameStateSchema.parse(fixture).schemaVersion).toBe(fixture.schemaVersion);
@@ -174,7 +175,7 @@ describe('engine contracts compatibility', () => {
 		expect(
 			EngineGameStateSchema.safeParse({
 				...ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!,
-				schemaVersion: 24
+				schemaVersion: 25
 			}).success
 		).toBe(false);
 	});
@@ -295,32 +296,37 @@ describe('engine contracts compatibility', () => {
 				schemaVersion: 23,
 				direct: gameStateContracts.EngineGameStateV23Schema,
 				publicSchema: engineContracts.EngineGameStateV23Schema
+			},
+			{
+				schemaVersion: 24,
+				direct: gameStateContracts.EngineGameStateV24Schema,
+				publicSchema: engineContracts.EngineGameStateV24Schema
 			}
 		] as const;
 
 		expect(cases.map(({ schemaVersion }) => schemaVersion)).toStrictEqual([
-			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
 		]);
 		for (const stateCase of cases) {
 			const fixture = ENGINE_COMPATIBILITY_STATE_FIXTURES[stateCase.schemaVersion - 1];
 			expect(stateCase.direct.parse(fixture)).toStrictEqual(stateCase.publicSchema.parse(fixture));
-			const invalid = { ...fixture, schemaVersion: 24 };
+			const invalid = { ...fixture, schemaVersion: 25 };
 			expect(stateCase.direct.safeParse(invalid)).toStrictEqual(
 				stateCase.publicSchema.safeParse(invalid)
 			);
 		}
 
 		const unsupported = {
-			...ENGINE_COMPATIBILITY_STATE_FIXTURES[22],
-			schemaVersion: 24
+			...ENGINE_COMPATIBILITY_STATE_FIXTURES[23],
+			schemaVersion: 25
 		};
-		const directVersionResult = gameStateContracts.EngineGameStateV23Schema.safeParse(unsupported);
+		const directVersionResult = gameStateContracts.EngineGameStateV24Schema.safeParse(unsupported);
 		expect(directVersionResult).toStrictEqual(
-			engineContracts.EngineGameStateV23Schema.safeParse(unsupported)
+			engineContracts.EngineGameStateV24Schema.safeParse(unsupported)
 		);
 		expect(directVersionResult.success).toBe(false);
 		if (directVersionResult.success) {
-			throw new Error('Version 23 state schema unexpectedly accepted schema version 24');
+			throw new Error('Version 24 state schema unexpectedly accepted schema version 25');
 		}
 		expect(
 			directVersionResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
@@ -328,7 +334,7 @@ describe('engine contracts compatibility', () => {
 			{
 				code: 'invalid_value',
 				path: ['schemaVersion'],
-				message: 'Invalid input: expected 23'
+				message: 'Invalid input: expected 24'
 			}
 		]);
 
@@ -338,7 +344,7 @@ describe('engine contracts compatibility', () => {
 		);
 		expect(directUnionResult.success).toBe(false);
 		if (directUnionResult.success) {
-			throw new Error('Engine state union unexpectedly accepted schema version 24');
+			throw new Error('Engine state union unexpectedly accepted schema version 25');
 		}
 		expect(
 			directUnionResult.error.issues.map(({ code, path, message }) => ({ code, path, message }))
@@ -347,7 +353,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['schemaVersion'],
 				message:
-					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23'"
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24'"
 			}
 		]);
 	});
@@ -482,6 +488,13 @@ describe('engine contracts compatibility', () => {
 			},
 			{
 				...commandBase,
+				commandType: 'hero.start.forging',
+				definitionId: 'equipment-bronze-sword',
+				materialId: 'bronze',
+				craftsmanship: { label: 'standard', bonus: 0 }
+			},
+			{
+				...commandBase,
 				commandType: 'simulation.advance',
 				targetGameTime: '2000-01-01T00:01:00.000Z'
 			},
@@ -573,6 +586,7 @@ describe('engine contracts compatibility', () => {
 			'master.inspect.gate',
 			'hero.start.activity',
 			'hero.equip.item',
+			'hero.start.forging',
 			'simulation.advance',
 			'simulation.sync.clock',
 			'simulation.apply.damage',
@@ -616,7 +630,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

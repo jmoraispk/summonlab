@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "hero-chibi-head-height-calibration-result-v1",
+  "experimentId": "chibi-head-height-calibration-001",
+  "targetId": "aear-soro-4-5-heads",
+  "status": "candidate",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/candidates/aear-soro-4-5-heads.png",
+    "sha256": "82190479553a91c20390a4fdf9b28c77119e6749cf017410033cd969a58c43cb",
+    "bytes": 2550076,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "sourcePath": "/home/joao/.codex/generated_images/01a06d26-f991-72e0-b5b1-3a27e862a0d3/exec-03a51ad9-1e97-4525-9149-ccea315dcbe0.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/prompts/aear-soro-4-5-heads.txt",
+    "sha256": "a5f8f59921ad48ef5e6d3ed03c366279f3bc21a457ca100a27b17b2642e832fb"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "Aear Soro identity and adult age remain recognizable",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "summon physique and non-inflated arms and hands are preserved",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "hair, wardrobe, palette, pouch, boots, and markings remain continuous",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "no weapon, magic, text, UI, frame, star, or extra subject",
+      "outcome": "pass"
+    }
+  ]
+}

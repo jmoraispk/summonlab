@@ -7,6 +7,7 @@ import {
 	type ClockSpeed,
 	type DecisionSource,
 	type EngineCommand,
+	type EquipmentMaterialId,
 	type FirstDestination,
 	type ProofControlMode,
 	type ProofEvent,
@@ -90,6 +91,11 @@ export interface CreateProofRunInput {
 			readonly mind?: CharacterDraft['mind'];
 		}[];
 		readonly foundryRouteMemoryHeroId?: string;
+	};
+	readonly developmentEquipmentScenario?: {
+		readonly enabled: true;
+		readonly materialLots?: Readonly<Partial<Record<EquipmentMaterialId, number>>>;
+		readonly forgeReady?: true;
 	};
 }
 
@@ -332,6 +338,9 @@ export async function createProofRun(
 				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 				...(input.developmentMissionScenario
 					? { developmentMissionScenario: input.developmentMissionScenario }
+					: {}),
+				...(input.developmentEquipmentScenario
+					? { developmentEquipmentScenario: input.developmentEquipmentScenario }
 					: {}),
 				...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
 			});

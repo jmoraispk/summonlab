@@ -1,0 +1,88 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "body.ground-movement",
+	"columns": 4,
+	"rows": 3,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:body:footwork",
+			"name": "Footwork",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:body:dash",
+			"name": "Dash",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:body:roll",
+			"name": "Roll",
+			"rarity": "F",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:body:sure-step",
+			"name": "Sure Step",
+			"rarity": "F",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:body:weave",
+			"name": "Weave",
+			"rarity": "E",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:body:dive",
+			"name": "Dive",
+			"rarity": "E",
+			"row": 2,
+			"column": 2
+		},
+		{
+			"index": 7,
+			"targetId": "martial:body:hundred-steps",
+			"name": "Hundred Steps",
+			"rarity": "C",
+			"row": 2,
+			"column": 3
+		},
+		{
+			"index": 8,
+			"targetId": "martial:body:untouchable",
+			"name": "Untouchable",
+			"rarity": "B",
+			"row": 2,
+			"column": 4
+		},
+		{
+			"index": 9,
+			"targetId": "martial:body:never-where-struck",
+			"name": "Never Where Struck",
+			"rarity": "A",
+			"row": 3,
+			"column": 1
+		},
+		{
+			"index": 10,
+			"targetId": "martial:body:the-road-has-no-end",
+			"name": "The Road Has No End",
+			"rarity": "S",
+			"row": 3,
+			"column": 2
+		}
+	]
+}

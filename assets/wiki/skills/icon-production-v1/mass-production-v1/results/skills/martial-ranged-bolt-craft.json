@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:bolt-craft",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-bolt-craft.json",
+	"promptHash": "83fbc5ec9f0b24853ef8e0ed4408f993eaf22bf2f43e2c0c12ad34f390371336",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-repeating-bolt.png",
+			"contentHash": "69309bd51ee5f394b0d52ebf7455fa80a4fc8e8ba693dc4c276acb915b037e85"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-bolt-craft-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1956494,
+		"contentHash": "f92005beb2b455595065d8133d99366598c77a8902c3f9808a2913b20d5596f3"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-bolt-craft.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1705790,
+		"contentHash": "db820568566b6f808ee49ffc1e69aa75d20e4fe4a1e45aff44ec7a508a0d8d56"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3d43c305f59669366ff74b22ae934d94d0a0078704ecd0791d5e5025be8f2d4c",
+		"postRepairContentHash": "db820568566b6f808ee49ffc1e69aa75d20e4fe4a1e45aff44ec7a508a0d8d56",
+		"removedPixels": 384942
+	}
+}

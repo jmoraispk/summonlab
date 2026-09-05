@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:kindling",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-kindling.json",
+	"promptHash": "1beb1d634f2a6d1846533194bd9f6df1e6285ab7374af467188834b7806540fe",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-kindling.png",
+			"contentHash": "53f54dda6d13cbff8608ec09ce8632d7348d49a16640c0060040578bbab8d141"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ignite.png",
+			"contentHash": "fd7bb48970471ace3c347584a9ea33691074a0da536db1bbc63578b85802287a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-kindling-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2125097,
+		"contentHash": "6c37c016efa730b0732fdfea0e4ca65ec86470c2c4eafecdf0d96cee2694bd10"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-kindling.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1905270,
+		"contentHash": "e30e5d0df3bd325eeb0614f2765e352791675d371868053f9170b98eaa9441ca"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c7a457835d19fd060ba667b747e91aafa104f47cda1b865e15beb4db6d64c599",
+		"postRepairContentHash": "e30e5d0df3bd325eeb0614f2765e352791675d371868053f9170b98eaa9441ca",
+		"removedPixels": 384942
+	}
+}

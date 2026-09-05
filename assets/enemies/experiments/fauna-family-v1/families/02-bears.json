@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "bears",
+  "displayName": "Bears",
+  "sourceRaceNumber": 32,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural ursine expedition family built around mass, committed attacks, grappling, and territorial control.",
+  "visualConstants": [
+    "Every form retains a four-legged ursine body, plantigrade paws, compact tail, broad muzzle, dense coat, and weight-bearing shoulder hump.",
+    "Escalation uses coat condition, scars, claw specialization, posture, and environmental interaction rather than humanoid equipment.",
+    "Raised shoulders, planted hind legs, open chest, and exposed inner wrists preserve readable commitment and recovery windows."
+  ],
+  "escalationAxis": "A simple committed swipe becomes frontal maul pressure, an asymmetric hook-and-drag specialist, terrain-breaking dominance, and finally den-scale territorial command.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": ["Dense fur, hide, claws, breath, mud, splinters, and scars remain mundane and tactile.", "Weight reads through shoulder compression, paw spread, disturbed ground, and slow recovery rather than supernatural mass."],
+      "counterplaySignal": "The raised shoulder, open inner wrist, planted hind leg, stretched back scar, or marked den shoulder remains visible before commitment.",
+      "forbidden": ["Elemental glow or unexplained magical anatomy", "Humanoid weapons, clothing, or plate armor"]
+    },
+    "fire": {
+      "constructionDimensions": ["Heat-blackened guard hairs part around ember seams at the shoulders, palms, and chest without consuming the coat.", "Smoke rolls with body mass and brief flame fronts follow swipes, drags, and falling terrain in the committed direction."],
+      "counterplaySignal": "The loaded joint brightens, then exposes a cooling dark-red seam during the ordinary recovery window.",
+      "forbidden": ["Uniform orange bear", "Featureless full-body flame", "Combustion that hides paws, claws, or shoulder motion"]
+    },
+    "earth": {
+      "constructionDimensions": ["Stone and packed soil reinforce shoulder humps, paw backs, claw roots, and old scars while broad areas of fur remain visible.", "Ground compression, rolling pebbles, and detached slabs emphasize weight without turning the animal into a golem."],
+      "counterplaySignal": "A load-bearing mineral seam opens across the planted paw, inner wrist, or shoulder after the heavy action.",
+      "forbidden": ["Complete rock-statue bear", "Brown recolor without load changes", "Mineral growth that conceals the hook claw or recovery joints"]
+    },
+    "wind": {
+      "constructionDimensions": ["Long guard hairs stream into layered directional sheets while the dense opaque body and heavy paws remain grounded.", "Pressure rolls outward from swipes and roars, with leaves and dust marking the exact cone or fall lane."],
+      "counterplaySignal": "The active pressure sheet collapses into a still pocket at the planted paw or open chest after release.",
+      "forbidden": ["Weightless floating bear", "Transparency alone", "Diffuse wind that conceals the committed lane"]
+    },
+    "water": {
+      "constructionDimensions": ["Heavy saturated fur hangs in coherent locks over a solid body while runoff exposes scars and joint direction.", "Swipes and roars drive readable sheets or pressure rings, and displaced water emphasizes the bear's mass."],
+      "counterplaySignal": "A loaded water layer drains from the inner wrist, hind leg, or chest during recovery, exposing the physical weak point.",
+      "forbidden": ["Amorphous water bear", "Generic blue wash", "Spray that obscures the body, claws, or terrain lane"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "bear-scrub-bear",
+      "displayName": "Scrub Bear",
+      "primaryArchetype": "Swipe-Commit Initiate",
+      "battlefieldDuty": "Deliver one broad forepaw swipe after standing, then drop heavily onto all fours.",
+      "teachingGoal": "Teach the family's basic promise that enormous commitment produces a generous recovery window.",
+      "signatureMechanic": "Standing Swipe: the Bear rises, loads one shoulder, and sweeps once before an unavoidable heavy landing.",
+      "telegraph": "Its hips settle and the striking shoulder rises above the other forepaw.",
+      "counterplay": "Move under the raised side and punish the landing recovery from the rear quarter.",
+      "visualDelta": "Small shaggy bear with a long muzzle, uneven seasonal coat, ordinary claws, and slightly underfed flanks.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "bear-cave-bear",
+      "displayName": "Cave Bear",
+      "primaryArchetype": "Maul-Line Soldier",
+      "battlefieldDuty": "Advance behind crossed forelegs, absorb frontal pressure, then open into a two-paw maul.",
+      "teachingGoal": "Teach players to disengage from guarded frontal mass and seek a rear-quarter angle.",
+      "signatureMechanic": "Crossed Maul: protected advance ends when both forearms open into a fixed two-swipe sequence.",
+      "telegraph": "The forearms cross, claws scrape, and its chest expands before opening.",
+      "counterplay": "Attack from the rear quarter or disengage until the second swipe exhausts and exposes the chest.",
+      "visualDelta": "Massive cave-adapted bear with high shoulders, dense dark coat, worn claws, and pale muzzle scars.",
+      "lowerFormInteraction": "Scrub Bears pressure the exposed side while the Cave Bear's crossed advance fixes attention.",
+      "sourceReferences": ["cave-bear", "Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "bear-hookclaw",
+      "displayName": "Hookclaw",
+      "primaryArchetype": "Grapple Specialist",
+      "battlefieldDuty": "Hook a limb, shield, or obstacle and drag it sideways to break defensive formations.",
+      "teachingGoal": "Introduce an asymmetric specialist whose dangerous side and planted recovery side must be read separately.",
+      "signatureMechanic": "Hook and Haul: one enlarged curved claw catches the target while the opposite hind foot becomes a visible towing anchor.",
+      "telegraph": "The hooked forepaw turns palm-up and the opposite hind foot digs deeply into the ground.",
+      "counterplay": "Dodge toward the planted foot or strike the exposed inner wrist before the sideways drag begins.",
+      "visualDelta": "Asymmetric bear with one enlarged hook claw, thickened wrist, lower pulling stance, and matching shoulder overdevelopment.",
+      "lowerFormInteraction": "Cave Bears block the obvious retreat while Scrub Bears harry targets displaced by the drag.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "bear-scarback",
+      "displayName": "Scarback",
+      "primaryArchetype": "Terrain-Breaker Champion",
+      "battlefieldDuty": "Bring down a tree, pillar, or boulder as moving cover before charging through the debris.",
+      "teachingGoal": "Teach players to read the environment as part of the Bear's commitment and escape before the route closes.",
+      "signatureMechanic": "Falling Territory: Scarback tests one structure, topples it into a fixed lane, then follows through the debris.",
+      "telegraph": "Its broad back scars stretch while both forepaws test the chosen structure.",
+      "counterplay": "Leave the fall lane or attack the planted hind legs before the structure gives way.",
+      "visualDelta": "Huge scarred bear with splintered debris caught in its coat and a recognizable pale scar across the back.",
+      "lowerFormInteraction": "Lower Bears use the fallen structure as flank cover, but lose that advantage if the collapse is interrupted.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "bear-ancient-ursine",
+      "displayName": "Ancient Ursine",
+      "primaryArchetype": "Den-Territory Sovereign",
+      "battlefieldDuty": "Claim three den landmarks and alternate roar, upheaval, and maul phases while commanding lesser Bears around the active landmark.",
+      "teachingGoal": "Test committed-swipe windows, guarded fronts, grapple anchors, and terrain collapse as one territorial encounter.",
+      "signatureMechanic": "Three Den Marks: the Ancient rubs one shoulder against a landmark to empower the matching lower-form behavior until that mark is broken.",
+      "telegraph": "The marked shoulder sheds fur and pigment onto one landmark before the corresponding phase begins.",
+      "counterplay": "Break the active mark or draw the pack to an unclaimed zone, then punish the Ancient's exposed rubbed shoulder.",
+      "visualDelta": "Old broad-skulled apex bear with silvered mantle, broken claws, landmark pigments in its fur, and immense grounded weight.",
+      "lowerFormInteraction": "Scrub Bears guard the roar landmark, Cave Bears hold the maul landmark, Hookclaw displaces intruders, and Scarback reshapes the route to the active mark.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

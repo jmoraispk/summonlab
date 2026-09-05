@@ -2,6 +2,7 @@ import {
 	AppliedStoryPatchSchema,
 	EngineGameStateV21Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	FirstBandArchiveRevealSchema,
 	FirstBandArchiveStateSchema,
 	RuntimeBandStoryStateSchema,
@@ -10,6 +11,7 @@ import {
 	type AuthoritativeEvent,
 	type EngineGameState,
 	type EngineGameStateV23,
+	type EngineGameStateV24,
 	type MissionRunStateV8
 } from '@summonlab/contracts';
 import { z } from 'zod';
@@ -134,10 +136,13 @@ function reduceStoryEvent(state: EngineGameState, event: AuthoritativeEvent): En
 }
 
 export function reduceFirstBandMissionConsequences(
-	stateInput: EngineGameStateV23,
+	stateInput: EngineGameStateV23 | EngineGameStateV24,
 	consequence: FirstBandMissionConsequenceView
-): EngineGameStateV23 {
-	const state = EngineGameStateV23Schema.parse(stateInput);
+): EngineGameStateV23 | EngineGameStateV24 {
+	const state =
+		stateInput.schemaVersion === 24
+			? EngineGameStateV24Schema.parse(stateInput)
+			: EngineGameStateV23Schema.parse(stateInput);
 	const expectedBandStory =
 		consequence.transition === 'extract' ? completeFirstBandStory(state) : state.bandStory;
 	const expectedArchive = recoverFirstBandArchive(
@@ -155,7 +160,8 @@ export function reduceFirstBandMissionConsequences(
 			consequence.sequence
 		);
 	}
-	return EngineGameStateV23Schema.parse({
+	const schema = state.schemaVersion === 24 ? EngineGameStateV24Schema : EngineGameStateV23Schema;
+	return schema.parse({
 		...state,
 		bandStory: consequence.bandStory,
 		firstBandArchive: consequence.firstBandArchive

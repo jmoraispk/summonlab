@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:aegis-field",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-aegis-field.json",
+	"promptHash": "86eb559fc4dd258da930454a183b0bddc61602cffdffa7c19cadef5d96118ccf",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-protected-field.png",
+			"contentHash": "a817d65e0715d9cc0fb1071d10f15d25135537a400ecd116ffc82ba5023e9434"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-aegis-field-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2076160,
+		"contentHash": "2fa4ac25e7462ad2cfc75295a0802e68ff85e11a22d07007f726332010c38d3b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-aegis-field.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1936744,
+		"contentHash": "c284437b9bc2083ee60f4d0d65591dcdbecf49c3b33ad25f21dbd6fc1105fe88"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a4ad4a45565b3cea6e27484d4f016e0ae232beb6163a89fc19933039654f6676",
+		"postRepairContentHash": "c284437b9bc2083ee60f4d0d65591dcdbecf49c3b33ad25f21dbd6fc1105fe88",
+		"removedPixels": 384942
+	}
+}

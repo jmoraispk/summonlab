@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:fletching",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-fletching.json",
+	"promptHash": "a7c8f51f13ad74e16b475e39c3f7fa61c803e37f6a1a129ba88d0a7e6c1133c7",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-arrow-craft.png",
+			"contentHash": "31c9fb4fc46dca5c1938c02896f04dc125692213822b8315a56b919cdad87d6c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-fletching-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1800402,
+		"contentHash": "6b8b2053b36305c71937e59fa47d6c61cb6894ff2614eb6c4006dd03a4d131a9"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-fletching.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1469065,
+		"contentHash": "317f341b2118ac862b353a3dae0a6fa8a9d3256bbb40975609caf354fc82cd96"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6506257893c620b23c65dd8ee1eff7dad291270326ed66c6e37052f385c3cc67",
+		"postRepairContentHash": "317f341b2118ac862b353a3dae0a6fa8a9d3256bbb40975609caf354fc82cd96",
+		"removedPixels": 384942
+	}
+}

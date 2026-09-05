@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:wall-stance",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-wall-stance.json",
+	"promptHash": "8ef8865f8575a0efeb56867abd6ea0593cb1777aef9378d16c9b330f35d3e4be",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-fortress.png",
+			"contentHash": "f3bd6b7a6a71eeb8726980868cd18889b9aeae1bcb293d0704466167b1026796"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-brace.png",
+			"contentHash": "babed84497e2e61fff17a16682850c038d7d3f7d87079c9f7849cea9dcae521d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-wall-stance-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2007875,
+		"contentHash": "2345b3fa6253263fc1c42a6b9f72797432316b2a983ffc9d3b9ab72abecab5b5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-wall-stance.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1740397,
+		"contentHash": "9426db0298e18e99a06f506513cacaad12a70095b6c215a163beba697be1ad4f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4f5a822ef86dca8ce3d29655e01074361e3c243da847c0af5e13d1f3f3ddf263",
+		"postRepairContentHash": "9426db0298e18e99a06f506513cacaad12a70095b6c215a163beba697be1ad4f",
+		"removedPixels": 384942
+	}
+}

@@ -1,14 +1,18 @@
+import { createHash } from 'node:crypto';
+
 import type { MissionArenaKnowledge } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { monsterPolicy } from './monster-policies.js';
 import {
+	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE,
 	TOWER_BAND_01_PACKAGES,
 	TOWER_BAND_01_RUNTIME_PACKAGES,
 	loadTowerBand01,
 	loadTowerBand01Runtime,
 	loadTowerFloor
 } from './tower-band-01.js';
+import { EQUIPMENT_DEFINITION_CATALOG } from './equipment.js';
 import {
 	applyMissionDiscoveryAffordance,
 	calculateMissionContentHash,
@@ -22,6 +26,34 @@ function entryKnowledge(): MissionArenaKnowledge {
 }
 
 describe('Tower Band 01 mission catalog', () => {
+	it('binds the separately versioned equipment drop fixture without mutating mission packages', () => {
+		const fixture = TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE;
+		const mission = TOWER_BAND_01_RUNTIME_PACKAGES.find(
+			(candidate) => candidate.missionId === fixture.missionId
+		)!;
+		const { contentHash, ...payload } = fixture;
+		const canonical = (value: unknown): string => {
+			if (value === null || typeof value !== 'object') return JSON.stringify(value);
+			if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+			const record = value as Record<string, unknown>;
+			return `{${Object.keys(record)
+				.sort((left, right) => left.localeCompare(right))
+				.map((key) => `${JSON.stringify(key)}:${canonical(record[key])}`)
+				.join(',')}}`;
+		};
+
+		expect(createHash('sha256').update(canonical(payload)).digest('hex')).toBe(contentHash);
+		expect(Object.isFrozen(fixture)).toBe(true);
+		expect(fixture.contentVersion).toBe('tower-band-01-equipment-drop-v1');
+		expect(mission.monsterDuties.map((duty) => duty.dutySlotId)).toContain(fixture.sourceId);
+		expect(
+			EQUIPMENT_DEFINITION_CATALOG.definitions.some(
+				(definition) => definition.definitionId === fixture.definitionId
+			)
+		).toBe(true);
+		expect(TOWER_BAND_01_RUNTIME_PACKAGES).not.toContain(fixture);
+	});
+
 	it('loads five consecutive immutable floors with verified unique hashes', async () => {
 		const missions = await loadTowerBand01();
 

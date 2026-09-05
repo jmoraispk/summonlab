@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:water-bullet",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-water-bullet.json",
+	"promptHash": "24503b92560626eabdbc6590aa6146050dbc3d95b261daaa9cfe4fd7161f84b6",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-projectile.png",
+			"contentHash": "f349c6f13390f83e3dab9e46e08796130cf9b9a4e6cddb638c28ac7e5777d0ea"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-draw-water.png",
+			"contentHash": "a079d91bea5263fea106c5e071b8019c926a147e3733fd28ef58e673b93e0942"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-water-bullet-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1906523,
+		"contentHash": "27639c29f526c21353c87b8728d70263dd835ba348756ddf96eb42576b23ca1c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-water-bullet.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1651708,
+		"contentHash": "002eaed510a427f34e23df48a1efa096c766685d4d9dd0ef7be0775bb71617d7"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "969835162cc0862c4ee9cf01e23a474de931390e30616f91f64a52c31d1c0983",
+		"postRepairContentHash": "002eaed510a427f34e23df48a1efa096c766685d4d9dd0ef7be0775bb71617d7",
+		"removedPixels": 384942
+	}
+}

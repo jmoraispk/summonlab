@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:undying",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-undying.json",
+	"promptHash": "11a5534609fdeabeab9edbfd13b33479553bc134695ec00c797f52707d4f72a8",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-endurance.png",
+			"contentHash": "5b3dcc0e46465761edaad933b7a76248da2170e523c6d11a462939bab7584559"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-set-jaw.png",
+			"contentHash": "509124e607d47f8862f1565a6e4884b38a61d8d549782869002b37940256ed03"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-undying-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2184133,
+		"contentHash": "e627f1a64d0aa6cb68714409363153f8217bafdefa448bf9903daafd856b451a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-undying.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1837612,
+		"contentHash": "b5762793888dfc674bd5d38c80189e18ff5d6c65992d2d545ff3f7eb87789366"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "782f2a76f343dbe811547e7213b90b8edddf803587fc5017b7a5581efd698d52",
+		"postRepairContentHash": "b5762793888dfc674bd5d38c80189e18ff5d6c65992d2d545ff3f7eb87789366",
+		"removedPixels": 384942
+	}
+}

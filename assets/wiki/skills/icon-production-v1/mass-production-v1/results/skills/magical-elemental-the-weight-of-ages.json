@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:the-weight-of-ages",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-the-weight-of-ages.json",
+	"promptHash": "85188a0802b8fba54dfdafcd806d2fa7cdef34798da37d8a546b22a779fc033c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-weight.png",
+			"contentHash": "6407087172fab6f99da62df7f9d8aeac4b8098f743c4328213fc6090d8f00538"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-crushing-weight.png",
+			"contentHash": "abadbd4cecf3df08f2a9a9cedc963ace8054b3677881431a1eea729108876a3b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-the-weight-of-ages-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2271159,
+		"contentHash": "b8016fa0032debcb73776c3c58fb7f65926eaee47233c69b2b09363df14615ed"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-the-weight-of-ages.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1942442,
+		"contentHash": "e865781cdcd94db173770440509eb59e67b6bf2c28616f4ee5fb68f5034e198c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "60d5154753a611f5d1f5672a46add68e27be10dd4f8aebea6acd931440ab05f3",
+		"postRepairContentHash": "e865781cdcd94db173770440509eb59e67b6bf2c28616f4ee5fb68f5034e198c",
+		"removedPixels": 384942
+	}
+}

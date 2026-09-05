@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:alternating-strike",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-alternating-strike.json",
+	"promptHash": "255f59def371c2619d0602909ff398d52662f4ca63773fb21fb1e75a9b0b536f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-offense.png",
+			"contentHash": "d5c7eed25a51a482cac53dde01c890e20dd99ad9ee222a21ce7284f823a9f68e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-two-blades.png",
+			"contentHash": "c668899d6471df96597f87f8ea76f02a641ce5d474e79fe0bbef896c3ae39464"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-alternating-strike-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2044869,
+		"contentHash": "6b0964b8fdda7b61afce5347e1f177049fbd5e6836823237f566a22967a7a540"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-alternating-strike.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1785907,
+		"contentHash": "348a44329406231c12aebc2123b2756c3c00279aceee66be4013693a82d736e2"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c5bb0dda32c9eb498c146637b060cae00f9d65da8d3a600bd82adfaefe37d124",
+		"postRepairContentHash": "348a44329406231c12aebc2123b2756c3c00279aceee66be4013693a82d736e2",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "shield.ally-cover",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/shield-ally-cover.json",
+	"promptHash": "adad3b5b9697c49ca2520065523a9af12b8adebc73faae17b7c9e2272f60e694",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1483,
+		"height": 1061,
+		"alphaMode": "rgb",
+		"bytes": 1615233,
+		"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-ally-cover.png",
+		"mediaType": "image/png",
+		"width": 1483,
+		"height": 1061,
+		"alphaMode": "rgb",
+		"bytes": 1615233,
+		"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

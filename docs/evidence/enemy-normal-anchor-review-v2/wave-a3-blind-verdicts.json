@@ -1,0 +1,259 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A3",
+  "reviewerId": "codex:/root/normal_revision_blind_a3",
+  "reviews": [
+    {
+      "token": "R2-A3-01",
+      "perceivedFamilyOrCreature": "avian harpy or raptor humanoid",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "aerial skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Wing, torso, and talon structure reads as a coherent predatory flyer."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Full airborne silhouette is clear with useful space around the extremities."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Feather, armor, and environment detail feel polished and resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Strong cyan and violet luminous feathers imply elemental or arcane affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Extended talons and diving posture clearly advertise a swooping melee threat."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-02",
+      "perceivedFamilyOrCreature": "winged avian humanoid or dark angel",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "aerial controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Humanoid body, layered wings, and birdlike legs remain anatomically legible."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Broad wingspan and hovering body are fully contained and strongly silhouetted."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Materials and feather layering are detailed with a cohesive final treatment."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Muted natural tones dominate without a decisive elemental effect."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The commanding gesture suggests power but does not reveal a specific attack or vulnerability."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-03",
+      "perceivedFamilyOrCreature": "armored infernal demon lord",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "fortified artillery tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Horns, wings, armored torso, and seated limbs form a coherent demonic figure."
+      },
+      "framing": {
+        "verdict": "revise",
+        "note": "The dark body merges into the throne and dense machinery, weakening combat silhouette clarity."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Surface detail and molten accents are consistently rendered to a high finish."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Pervasive lava-orange channels and embers read unmistakably as fire affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The static throne presentation offers no cleanly readable attack windup or exposed weak point."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-04",
+      "perceivedFamilyOrCreature": "horned winged demon",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "dual-blade melee duelist",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Bipedal form, wings, horns, tail, and weapon-bearing arms read cleanly."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Centered full-body stance keeps the wings, tail, and paired weapons visible."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Armor, skin, weapons, and background lighting feel cohesive and production-ready."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Flaming orange weapons and the ember-lit body strongly signal fire affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Two extended blades and a squared stance clearly forecast close-range sweeping attacks."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-05",
+      "perceivedFamilyOrCreature": "many-winged celestial seraph",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "radiant support caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The central humanoid and symmetrical wing array read as an intentionally supernatural anatomy."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Wide composition preserves the complete wing array and central figure."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Gold ornament, feathers, and architectural light are consistently refined."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "White-gold radiance and halo geometry unmistakably communicate holy or light affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The icon-like pose conveys authority but gives no distinct attack vector or timing cue."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-06",
+      "perceivedFamilyOrCreature": "multi-armed naga queen",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "ritual controller caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Human upper body, multiple arms, and coiled serpent base are clearly organized."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The tall centered framing contains the crown, hands, and full coil structure."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Scale, jewelry, textile, and sigil detailing are highly resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Teal glow, floating sigils, and ornate ritual machinery imply strong arcane affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Raised hands and discrete floating sigils expose spellcasting sources that can telegraph attacks."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-07",
+      "perceivedFamilyOrCreature": "armored minotaur warlord",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "frontline bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Bull head, horns, powerful humanoid frame, and arms are proportionally coherent."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full standing silhouette and broad horn span are clearly contained."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Armor, fur, cloak, and arena detail receive a consistent polished treatment."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Earthy metal and leather tones read as physical equipment rather than elemental power."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Massive build, horns, and forward-pointing gesture clearly signal charges and heavy melee pressure."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A3-08",
+      "perceivedFamilyOrCreature": "multi-armed winged celestial",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "support and zone-control caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Humanoid core, multiple arms, and paired wings form a controlled supernatural silhouette."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The whole figure and its extended wings are centered with adequate clearance."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Fabric, feather, gold, and reflected-light rendering are clean and cohesive."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "White-gold beams, wings, and halo rings strongly imply holy or light affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Extended arms and the central ring focus provide readable spell-emission points."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A3-09",
+      "perceivedFamilyOrCreature": "multi-armed cobra naga",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "rune controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "Cobra hood, humanoid arms, torso, and coiled tail are clearly separated and coherent."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The centered vertical framing contains the hood, all hands, and the full grounded coil."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Scales, robes, architecture, and rune props share a consistent finished style."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Bright cyan glyphs and matching accents read as explicit arcane affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Raised rune discs and a row of held symbols provide discrete, visible casting cues."
+      },
+      "overallVerdict": "revise"
+    }
+  ]
+}

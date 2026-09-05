@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:bracing",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-bracing.json",
+	"promptHash": "c830ac89f83869d5afba695078607fc8de7a155e362b166a1981e0f0e5e6338a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-held-line.png",
+			"contentHash": "c263764fa90f4fefced547ecaab8a2878ab6cb79df5d755ae78e965e346396a3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-bracing-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2024353,
+		"contentHash": "9636fe8527b7850a92b639d3745f54bb7fbc025240c8ca6213c1e987ff5b6e86"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-bracing.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1669875,
+		"contentHash": "2474dda89b8ce07d48b05644250aad8424d77983f6366057a6289e76d425b507"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e315cce53a5219461fa36380393390a8c370b44dd1cf9da18a9f28159ce1d498",
+		"postRepairContentHash": "2474dda89b8ce07d48b05644250aad8424d77983f6366057a6289e76d425b507",
+		"removedPixels": 384942
+	}
+}

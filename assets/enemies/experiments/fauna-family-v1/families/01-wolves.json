@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "wolves",
+  "displayName": "Wolves",
+  "sourceRaceNumber": 31,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural lupine expedition family built around pack geometry, pursuit, and coordinated prey selection. It remains distinct from transformed humanoid Werebeasts.",
+  "visualConstants": [
+    "Every form retains a four-legged lupine skeleton, long muzzle, visible paws, expressive ears, and a readable tail; no form becomes humanoid or wears manufactured armor.",
+    "Rank is communicated through chest mass, coat mantle, scars, posture, and pack behavior rather than arbitrary glow or simple scale.",
+    "Pack attack direction remains readable through gaze, ear position, tail line, paw placement, and the spacing of companion Wolves."
+  ],
+  "escalationAxis": "Opportunistic flanking becomes alternating pursuit, directional pack timing, marked-prey command, and finally an arena-scale hunt circle controlled by an apex Greatwolf.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": [
+        "Coat, hide, claws, breath, saliva, scars, and dust remain physically ordinary and retain species-specific coloration.",
+        "Pack motion is expressed through compressed shoulders, paw placement, tail alignment, and disturbed terrain without supernatural residue."
+      ],
+      "counterplaySignal": "The committed shoulder, crossed forepaw, expanded throat ruff, scent line, or rising hackles remain fully visible before the associated attack.",
+      "forbidden": ["Elemental glow or unexplained magical anatomy", "Humanoid posture, hands, clothing, saddles, or manufactured armor"]
+    },
+    "fire": {
+      "constructionDimensions": [
+        "Localized ember seams follow the chest, throat ruff, and working joints while heat-darkened guard hairs preserve the coat silhouette.",
+        "Directional smoke, sparking paw prints, and short flame tongues intensify only during lunges, howls, and pack signals."
+      ],
+      "counterplaySignal": "The active shoulder or throat vent brightens through parted fur, then dims into a vulnerable cooling seam after commitment.",
+      "forbidden": ["Uniform orange recolor", "A wolf made entirely of featureless flame", "Fire effects that hide pack direction or anatomy"]
+    },
+    "earth": {
+      "constructionDimensions": [
+        "Mineral accretion stays localized to load-bearing shoulders, paws, brow, and scar ridges while most fur and hide remain visible.",
+        "Weighted steps compress dust and lift detached stones around the animal rather than replacing its body with rock."
+      ],
+      "counterplaySignal": "A pale fracture line opens across the loaded paw or shoulder after a planted lunge or command stance.",
+      "forbidden": ["Brown recolor without structural change", "Complete rock-statue anatomy", "Pasted rocks that conceal joints or fur direction"]
+    },
+    "wind": {
+      "constructionDimensions": [
+        "Guard hairs, ear tufts, and tail edges stretch into directional filaments while the core lupine body stays opaque and anatomical.",
+        "Pressure wakes, dust ribbons, and brief edge dissipation reveal the exact pack lane and acceleration direction."
+      ],
+      "counterplaySignal": "The pressure wake collapses to a still center at the committed shoulder or throat immediately after the attack.",
+      "forbidden": ["Pale recolor or transparency alone", "Fully vaporous anatomy", "Omnidirectional effects that erase the pursuit lane"]
+    },
+    "water": {
+      "constructionDimensions": [
+        "Saturated streaming fur, reflective hide, coherent droplets, and visible currents along the legs preserve the solid wolf beneath.",
+        "Throat, paw, and scent-mark actions drive narrow pressure flows whose direction matches the family mechanic."
+      ],
+      "counterplaySignal": "Water drains from the committed shoulder or throat channel after release, exposing the same physical punish window as Normal.",
+      "forbidden": ["Generic blue recolor", "Amorphous liquid wolf without a structural core", "Opaque spray that hides limbs, gaze, or tail alignment"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "wolf-grey-wolf",
+      "displayName": "Grey Wolf",
+      "primaryArchetype": "Flank-Probe Initiate",
+      "battlefieldDuty": "Circle toward an exposed side and commit to one tripping bite when the target turns away.",
+      "teachingGoal": "Teach players to track facing and deny a simple flank before learning full pack coordination.",
+      "signatureMechanic": "Cross-Step Trip: the Grey Wolf crosses its outside forepaw inward before lunging at the target's rear leg.",
+      "telegraph": "Its shoulders drop and the outside forepaw crosses inward while its gaze fixes on the exposed leg.",
+      "counterplay": "Face the Wolf or step across its approach, then punish the missed bite during the low recovery.",
+      "visualDelta": "Lean ordinary wolf with a grey coat, long legs, intact ears, light rib visibility, and no equipment.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["grey-wolf", "Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "wolf-dire-wolf",
+      "displayName": "Dire Wolf",
+      "primaryArchetype": "Hamstring Pursuer",
+      "battlefieldDuty": "Alternate pursuit with a packmate and slow isolated prey with a committed rear-leg bite.",
+      "teachingGoal": "Teach players to break two-sided pursuit geometry instead of retreating in a straight line.",
+      "signatureMechanic": "Alternating Hamstring: only the Wolf on the prey's rear quarter attacks while its partner widens for the next exchange.",
+      "telegraph": "Its head flattens beside the shoulder as the partner visibly widens formation.",
+      "counterplay": "Break their angle with terrain or stagger the committed biter before the partner completes the swap.",
+      "visualDelta": "Heavier chest and jaws, darker coarse coat, old flank scars, and a lower pursuit posture while remaining fully lupine.",
+      "lowerFormInteraction": "Grey Wolves probe the opposite flank and create the turn that lets the Dire Wolf claim the rear quarter.",
+      "sourceReferences": ["dire-wolf", "Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "wolf-howler",
+      "displayName": "Howler",
+      "primaryArchetype": "Pack-Tempo Specialist",
+      "battlefieldDuty": "Change the pack's attack rhythm by advancing allies on one side while the opposite wing holds position.",
+      "teachingGoal": "Introduce a qualitative pack-command pivot in which throat direction, not proximity alone, determines the next attack wing.",
+      "signatureMechanic": "Directed Howl: one directional howl releases the indicated wing while every Wolf on the opposite side pauses and braces.",
+      "telegraph": "Its pale throat ruff expands and its muzzle points directly toward the wing that will advance.",
+      "counterplay": "Interrupt the inhale or cross through the temporarily stationary wing before the advancing side closes.",
+      "visualDelta": "Tall narrow-chested wolf with a large pale throat ruff, deep rib cage, long muzzle, and a visibly working throat cavity.",
+      "lowerFormInteraction": "Grey Wolves gain longer flank probes and Dire Wolves immediately swap pursuit sides when their wing is called.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "wolf-pack-alpha",
+      "displayName": "Pack Alpha",
+      "primaryArchetype": "Prey-Marking Champion",
+      "battlefieldDuty": "Mark one target, intercept attacks aimed at lesser Wolves, and swap the active pursuit wing after every lunge.",
+      "teachingGoal": "Teach players to separate a protective commander from the pack rather than tunneling into its guarded target.",
+      "signatureMechanic": "Marked Quarry: a visible scent trail binds the Alpha's intercept to one target until terrain or distance breaks the line.",
+      "telegraph": "Its tail locks level, nose paints a visible scent line, and one foreleg braces toward the marked target.",
+      "counterplay": "Cross strong terrain to break the scent line or bait the intercept away before attacking the lesser Wolves.",
+      "visualDelta": "Broad mature wolf with a torn ear, deep neck mantle, dominant upright posture, and accumulated scars rather than armor.",
+      "lowerFormInteraction": "It intercepts for Grey Wolves, completes Dire Wolf pursuit swaps, and changes wings on the Howler's cue.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "wolf-greatwolf",
+      "displayName": "Greatwolf",
+      "primaryArchetype": "Hunt-Circle Sovereign",
+      "battlefieldDuty": "Tighten an arena-scale hunt circle and assign every lower Wolf form to a readable breach point.",
+      "teachingGoal": "Test facing, pursuit swaps, howl direction, and commander separation as one coordinated pack encounter.",
+      "signatureMechanic": "Closing Hunt: four breach points contract in sequence while the Greatwolf assigns Grey Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit.",
+      "telegraph": "Hackles rise in sequence around the circle and the Greatwolf's broken upper canine points toward the next closing breach.",
+      "counterplay": "Defeat or displace the assigned lower form and escape through its opening before the Greatwolf commits to that breach.",
+      "visualDelta": "Monumental but anatomical wolf with a deep mane, long scarred muzzle, distinctive broken upper canine, and arena-command posture.",
+      "lowerFormInteraction": "Each lower form owns one hunt-circle function; removing it keeps that breach open and permanently weakens the corresponding boss phase.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:storm-of-a-thousand",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-storm-of-a-thousand.json",
+	"promptHash": "e815560d6ccb8729bcdf1fa65f62fa078b453939767ada650a5f1fcafdcd65a4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-arrow-volley.png",
+			"contentHash": "ff10ab2b719a746e57a1ab1a5e4c2f599ee072b8fffc374ddb89351367e4d0f1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-rain-of-arrows.png",
+			"contentHash": "1494bac3e3af0315b4fee3c90a33b2586309b67328cba9737aadae6558c9b16d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-storm-of-a-thousand-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2233150,
+		"contentHash": "ad86b7225a62d6d303d8b430bef31c98e3c24ea97531487c9ca7eaa5916f58a1"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-storm-of-a-thousand.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1958674,
+		"contentHash": "6891a6604b2eef2d2ae915405ed18bcbf5695c650d30c77f072e49437d3c74e6"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "37a19c0e2efae006fbab8f796d8e14f5ed1d4e65a74ed4ec997f2da71da5cde8",
+		"postRepairContentHash": "6891a6604b2eef2d2ae915405ed18bcbf5695c650d30c77f072e49437d3c74e6",
+		"removedPixels": 384942
+	}
+}

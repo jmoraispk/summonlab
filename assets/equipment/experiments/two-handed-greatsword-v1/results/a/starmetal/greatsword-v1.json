@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "equipment-greatsword-item-result-v1",
+  "resultId": "greatsword-v1-starmetal-a-attempt-1",
+  "targetId": "greatsword-v1-starmetal-a",
+  "assignmentId": "assignment-greatsword-v1-starmetal-a",
+  "attempt": 1,
+  "status": "candidate",
+  "provider": "OpenAI image generation",
+  "promptSha256": "fe09a8aa73a7498546853f4c2ada1101441a6d519e623c80d1bc5e2458b81e45",
+  "generationSource": {
+    "sessionArtifactId": "exec-cd222b86-36f5-4266-8cdd-be2b3bc47f59.png",
+    "sha256": "5d21aa91408520d78173c613f2aed85d417eff7b2b700de9aaf79921c05d9973",
+    "width": 1254,
+    "height": 1254
+  },
+  "normalization": {
+    "operation": "uniform-scale-and-edge-copy",
+    "contentWidth": 900,
+    "contentHeight": 900,
+    "paddingPx": 62,
+    "purpose": "Meet the assigned safe-margin contract without altering weapon geometry."
+  },
+  "output": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/a/starmetal/greatsword-v1.png",
+    "sha256": "51373d4d9bce76fc3f632a7100d48aa9e9866c887fdca7aebbff98dc7158ec34",
+    "bytes": 873158,
+    "width": 1024,
+    "height": 1024,
+    "mediaType": "image/png"
+  },
+  "selfPromoted": false
+}

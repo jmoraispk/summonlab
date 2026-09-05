@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A3",
+  "reviewerId": "codex-independent-blind-reviewer",
+  "reviews": [
+    {
+      "token": "A3-01",
+      "perceivedFamilyOrCreature": "armored horned demon",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "melee sovereign / executioner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Clear bipedal demon silhouette with readable horns, wings, tail, and weapon."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Dominant centered full-body subject."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Cohesive dark-metal and ember treatment with strong focal contrast."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The creature is materially embodied; fire is confined to the weapon, armor seams, and environmental accents rather than forming the body."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The oversized glowing greatsword and planted frontal stance telegraph a heavy, directional melee threat with implied slow commitment."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Immediately reads as a top-tier demonic melee threat; fire supports the physical creature rather than replacing it."
+    },
+    {
+      "token": "A3-02",
+      "perceivedFamilyOrCreature": "radiant angelic sovereign",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "support-controller / divine caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Central humanoid body and primary wing structure remain legible despite ornate halos."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Strong centered hierarchy and clean vertical presentation."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Polished ivory-gold rendering with controlled luminosity."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Radiance dominates the lighting but does not replace the clearly physical humanoid, garments, wings, and ornament."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The open-handed casting pose suggests magic, but no specific attack direction, recovery state, or vulnerable feature is clearly exposed."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Clear celestial authority, readable humanoid anchor, and convincing high-tier support identity, though its counterplay telegraph could be more explicit."
+    },
+    {
+      "token": "A3-03",
+      "perceivedFamilyOrCreature": "armored minotaur",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "tank / shield bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Horns, bovine head, heavy torso, legs, weapon, and shield read cleanly."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Close heroic crop emphasizes mass without losing the body."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Grounded material rendering and strong silhouette separation."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Entirely physical hide, armor, stone, and weapon construction with no dominant elemental effect."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The enormous directional shield and raised blunt weapon clearly imply frontal defense, slow attacks, and vulnerable flanks."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "A highly legible physical tank with strong positional counterplay and no distracting construction effect."
+    },
+    {
+      "token": "A3-04",
+      "perceivedFamilyOrCreature": "harpy queen with attendants",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "aerial commander / summoner",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "pass",
+        "note": "Central avian-humanoid form is readable."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "Four secondary figures compete with the intended unit and make the token read as an encounter group."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Coherent storm palette and detailed feather treatment."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The storm is environmental; the sovereign and attendants remain visibly feathered, armored physical creatures."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The command tableau implies summons or coordination, but it shows neither a distinct attack telegraph nor an obvious vulnerable or recovery state."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "The sovereign is visually strong, but the entourage dilutes single-unit identity and does not establish actionable counterplay."
+    },
+    {
+      "token": "A3-05",
+      "perceivedFamilyOrCreature": "multi-armed cobra naga",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "ritual controller / arcane caster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Cobra hood, four arms, torso, and coiled tail are clearly organized."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Centered full-body composition with balanced spell props."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Refined teal-bronze materials and restrained magical accents."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Floating glyphs are discrete magical tools around a clearly physical cobra-humanoid body."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised glyphs and the horizontally held ritual focus clearly signal channeling, while the grounded coils imply limited mobility during the cast."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Distinct naga caster silhouette with strong role signaling, a physical body, and readable channeling cues."
+    },
+    {
+      "token": "A3-06",
+      "perceivedFamilyOrCreature": "serpentine empress / naga oracle",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "ritual sovereign / support-controller",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Lower coils merge with the dais and the ornate arm-and-apparatus cluster is difficult to parse."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Imposing centered throne-like presentation."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Rich jewel-metal finish with consistent ceremonial detail."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "The magical rings and suspended objects remain accessories to a materially rendered serpentine figure."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "Raised implements suggest interruptible ritual channeling, and the massive fixed coils communicate low mobility."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "The regal identity and ritual behavior are convincing, but anatomy and apparatus blend into one over-dense structure."
+    },
+    {
+      "token": "A3-07",
+      "perceivedFamilyOrCreature": "many-winged celestial apparition",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "divine area controller / support",
+      "identityConfidence": "low",
+      "anatomy": {
+        "status": "revise",
+        "note": "The central body is lost inside overlapping wings, rings, and luminous fragments."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "Broad wing mass fills the panel without a stable creature focal point."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Near-white energy and filigree flatten depth and obscure material form."
+      },
+      "neutralAffinity": {
+        "status": "revise",
+        "note": "Radiant energy, halos, and luminous wing-like structures dominate so completely that the creature appears constructed from unexplained light."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The dense radial spectacle obscures attack direction, vulnerable anatomy, and any readable charge or recovery state."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Reads primarily as radiant construction rather than a clearly embodied creature and provides no actionable combat telegraph."
+    },
+    {
+      "token": "A3-08",
+      "perceivedFamilyOrCreature": "minotaur warlord",
+      "perceivedTier": "T4",
+      "perceivedCombatRole": "heavy bruiser / frontline tank",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Massive bovine humanoid structure and weapon grip are clear."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Centered full-body view strongly communicates scale and weight."
+      },
+      "finish": {
+        "status": "pass",
+        "note": "Cohesive armor, hide, and cloth rendering with excellent value separation."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Fully physical hide, armor, cloth, and weapon presentation with no elemental construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "pass",
+        "note": "The huge axe, forward weight, and cumbersome build signal slow committed swings and exploitable recovery."
+      },
+      "overallVerdict": "approved-review",
+      "conciseRationale": "Exceptionally clear physical warlord identity with immediate frontline role and heavy-attack counterplay readability."
+    },
+    {
+      "token": "A3-09",
+      "perceivedFamilyOrCreature": "dark harpy / avian humanoid",
+      "perceivedTier": "T3",
+      "perceivedCombatRole": "aerial skirmisher / assassin",
+      "identityConfidence": "medium",
+      "anatomy": {
+        "status": "revise",
+        "note": "Torso, arms, legs, and trailing feathers overlap into an uncertain body structure."
+      },
+      "framing": {
+        "status": "pass",
+        "note": "Isolated airborne subject is centered and fully contained."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Dark values become muddy against the storm background, while cyan and violet accents feel disconnected."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Cyan and violet appear to be feather highlights; the creature remains physical rather than elementally constructed."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The airborne posture indicates mobility, but obscured limbs and weapon details leave attack direction and recovery behavior unclear."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "The aerial role reads, but body construction, low contrast, and weak attack telegraph keep the creature from resolving cleanly."
+    },
+    {
+      "token": "A3-10",
+      "perceivedFamilyOrCreature": "enthroned horned demon",
+      "perceivedTier": "T5",
+      "perceivedCombatRole": "defensive sovereign / boss bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "status": "pass",
+        "note": "Horned winged demon form is recognizable despite the dark rendering."
+      },
+      "framing": {
+        "status": "revise",
+        "note": "The stepped rune platform occupies too much of the image and reduces the creature's presence."
+      },
+      "finish": {
+        "status": "revise",
+        "note": "Crushed shadows hide body and armor detail; ember lines overpower quieter forms."
+      },
+      "neutralAffinity": {
+        "status": "pass",
+        "note": "Embers and runes accent a physical demon and platform without becoming the creature's primary construction."
+      },
+      "visibleCounterplayCue": {
+        "status": "revise",
+        "note": "The static throne-like pose communicates authority but shows no clear weapon action, exposed weakness, charge, or recovery window."
+      },
+      "overallVerdict": "revise",
+      "conciseRationale": "Strong demon identity, but the oversized base, underexposed figure, and absent combat telegraph weaken usable unit readability."
+    }
+  ]
+}

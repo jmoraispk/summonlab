@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:tower-form",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-tower-form.json",
+	"promptHash": "ba35b06fc8896600a0f5b2da31279a1e3ec0ddaad1333f6a0ba4c7dcb641635c",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-fortress.png",
+			"contentHash": "f3bd6b7a6a71eeb8726980868cd18889b9aeae1bcb293d0704466167b1026796"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-wall-stance.png",
+			"contentHash": "4f5a822ef86dca8ce3d29655e01074361e3c243da847c0af5e13d1f3f3ddf263"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-tower-form-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1982812,
+		"contentHash": "a87bb3d7329ff7945dd9c85d21c48587dd827441aafb626f9d90c35ce03fb8f2"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-tower-form.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1752013,
+		"contentHash": "67ac016477ca12ace824e0ad3236a910b6c7cce2836157d733a1d0a70a141a9c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e9cbc8ad41c010576649376be3a7cc23bb0357ca686a905da8b2d45fc34c357f",
+		"postRepairContentHash": "67ac016477ca12ace824e0ad3236a910b6c7cce2836157d733a1d0a70a141a9c",
+		"removedPixels": 384942
+	}
+}

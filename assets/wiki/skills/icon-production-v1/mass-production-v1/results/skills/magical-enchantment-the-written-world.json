@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:the-written-world",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-the-written-world.json",
+	"promptHash": "98d2bd9b74f2c158b185da912d6fac5618583fa0e6fef3946b27e17c475337d6",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-bound-sigil.png",
+			"contentHash": "3e9577bb0edcf571d414806e041597cf982bc078226bd1ec2432801f0202ad44"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-soul-sigil.png",
+			"contentHash": "ca0e22b0f842cfe86422d2a61c3e94403c65e0005f10baefefe5528f92074cad"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-the-written-world-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2274610,
+		"contentHash": "19a94d5fe3b072593260a6bc453c669936da71221e798d3e7ffb83c130fdf451"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-the-written-world.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2086641,
+		"contentHash": "626e0e8ef57ca5f1c27a87ac6a990a4f8a798f678f0f9b4aeb9d24d94299889a"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "56d0b127eb282429846507a9c9b8d8c8146f3d0d69c9adac1880ab514957a8d8",
+		"postRepairContentHash": "626e0e8ef57ca5f1c27a87ac6a990a4f8a798f678f0f9b4aeb9d24d94299889a",
+		"removedPixels": 384942
+	}
+}

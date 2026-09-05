@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "cooking.monster-meat",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "craft:cooking:butchery",
+			"name": "Butchery",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "craft:cooking:monster-cuisine",
+			"name": "Monster Cuisine",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "craft:cooking:banquet-of-the-five",
+			"name": "Banquet of the Five",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

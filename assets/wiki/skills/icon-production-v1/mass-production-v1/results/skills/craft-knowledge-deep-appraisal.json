@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:deep-appraisal",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-deep-appraisal.json",
+	"promptHash": "52e51fa461a2595c10f5e95127ca7c1454f07c1107c025c5c27c05b23aaf4862",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-appraisal.png",
+			"contentHash": "e2589258004765bb0dfd487a23b132f8e2493d526289dc43c7055f0f98c18452"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-read-the-body.png",
+			"contentHash": "230ae53032508d45035751ae82127893410ee2aaacff016007b2de7c0ad8baf0"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-deep-appraisal-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2341932,
+		"contentHash": "9581383c276e992171e2cbd93f5e32c3f62c1d96673c3d785972f941a1af657e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-deep-appraisal.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2040378,
+		"contentHash": "7a82701176f85f43c8dcb22ceadd34a76e9ed9b0f7643b307d433853881e06de"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6f9d1ce30858a6549a8025855f9b595f5a724085beb7c7c5cb8905c6cde92538",
+		"postRepairContentHash": "7a82701176f85f43c8dcb22ceadd34a76e9ed9b0f7643b307d433853881e06de",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-assignment-v1",
+  "assignmentId": "assignment-greatsword-v1-metal-rank-direction",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "immutable": true,
+  "dryRun": false,
+  "retryCeiling": 1,
+  "promptPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.prompt.txt",
+  "promptSha256": "f3e25f5d9e6af8b89073d252868baba7fe712282653f5a78c6b8f6fe7dfd7f24",
+  "references": [
+    {
+      "path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",
+      "sha256": "63835048580050dfae01d4195d26a1a0dc9b8d66546ca2af8540aa5565338f43",
+      "purpose": "Accepted Sword rank rhythm, camera, spacing, and presentation only; do not copy geometry."
+    },
+    {
+      "path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+      "sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+      "purpose": "Accepted painterly finish, honest material response, and studio lighting only; do not copy geometry."
+    }
+  ],
+  "permittedOutputs": {
+    "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+    "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.result.json"
+  },
+  "forbiddenOutputs": [
+    "assets/equipment/approved/",
+    "apps/web/static/runtime/",
+    "packages/contracts/",
+    "packages/content/",
+    "packages/engine/"
+  ],
+  "selfPromotionForbidden": true
+}

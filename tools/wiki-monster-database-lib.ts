@@ -15,6 +15,11 @@ import {
 	type FamilyForm,
 	type FamilyPacket
 } from './family-affinity-production-lib.js';
+import {
+	FamilyAffinityGenerationFailureSchema,
+	validateCanonicalGenerationFailureSupersessionSourceBinding,
+	type CanonicalGenerationFailureSupersessionSourceBinding
+} from './family-affinity-review-lib.js';
 
 export const MONSTER_AFFINITIES = PRODUCTION_AFFINITIES;
 export const MONSTER_VISUAL_INDEX_SOURCE_STATUS = 'canonical-production-plan' as const;
@@ -53,6 +58,7 @@ export type MonsterWikiBuildInput = {
 	targets: readonly FamilyAffinityTarget[];
 	reviewEvidence: readonly MonsterWikiReviewEvidence[];
 	candidateReferences: readonly LegacyCandidateReference[];
+	generationFailureSourceBindings: readonly CanonicalGenerationFailureSupersessionSourceBinding[];
 };
 
 export type MonsterWikiReviewEvidence = {
@@ -71,11 +77,12 @@ export type MonsterWikiPresentationStatus =
 	| 'blocked-on-anchor'
 	| 'candidate-only'
 	| 'approved-review'
-	| 'revision-required';
+	| 'revision-required'
+	| 'runtime';
 
 export type CanonicalProductionCoordinate = {
 	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	status: 'planned' | 'blocked-on-anchor';
+	status: 'planned' | 'planned-provisional-anchor' | 'blocked-on-anchor';
 	presentationStatus: MonsterWikiPresentationStatus;
 	coordinateId: string;
 	targetId: string;
@@ -87,6 +94,10 @@ export type CanonicalProductionCoordinate = {
 	candidateExists: boolean;
 	historyAttemptCount: number;
 	historyRevisionRequiredCount: number;
+	approvedPath?: string;
+	runtimePath?: string;
+	runtimePublicUrl?: string;
+	contentHash?: string;
 };
 
 export type CanonicalMonsterForm = FamilyForm & {
@@ -117,10 +128,10 @@ export type CanonicalMonsterWikiDatabase = {
 	forms: readonly CanonicalMonsterForm[];
 	reconciliation: readonly ReconciliationEntry[];
 	counts: {
-		families: 30;
-		forms: 150;
-		coordinates: 750;
-		currentClasses: 40;
+		families: number;
+		forms: number;
+		coordinates: number;
+		currentClasses: number;
 		canonicalMappings: number;
 		bridgeOnly: number;
 		legacyCandidateReferences: number;
@@ -155,6 +166,21 @@ export function buildCanonicalMonsterWikiDatabase(
 	const mapping = CurrentClassMappingFileSchema.parse(input.mapping);
 	const manifest = FamilyAffinityManifestSchema.parse(input.manifest);
 	const targets = input.targets.map((target) => FamilyAffinityTargetSchema.parse(target));
+	const generationFailureSourceBindings = input.generationFailureSourceBindings.map((binding) => ({
+		...binding,
+		generationFailure: FamilyAffinityGenerationFailureSchema.parse(binding.generationFailure)
+	}));
+	assertUnique(
+		generationFailureSourceBindings.map(({ generationFailure }) => generationFailure.coordinateId),
+		'generation-failure source binding coordinate'
+	);
+	const generationFailureSourceBindingByCoordinate = new Map(
+		generationFailureSourceBindings.map((binding) => [
+			binding.generationFailure.coordinateId,
+			binding
+		])
+	);
+	const usedGenerationFailureSourceBindings = new Set<string>();
 	const reviewEvidenceByCoordinate = new Map(
 		input.reviewEvidence.map((evidence) => [evidence.coordinateId, evidence])
 	);
@@ -231,9 +257,28 @@ export function buildCanonicalMonsterWikiDatabase(
 				family.familyId === coordinate.familyId && form.formId === coordinate.formId
 		);
 		if (!sourceForm) fail(`coordinate ${coordinate.coordinateId} has no canonical form`);
-		validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
-		if (coordinate.status !== 'planned' && coordinate.status !== 'blocked-on-anchor') {
-			fail(`${coordinate.coordinateId} must use planned or blocked-on-anchor status`);
+		const generationFailureSourceBinding = generationFailureSourceBindingByCoordinate.get(
+			coordinate.coordinateId
+		);
+		if (generationFailureSourceBinding) {
+			validateCanonicalGenerationFailureSupersessionSourceBinding({
+				family: sourceForm.family,
+				form: sourceForm.form,
+				supersedingTarget: target,
+				binding: generationFailureSourceBinding
+			});
+			usedGenerationFailureSourceBindings.add(coordinate.coordinateId);
+		} else {
+			validateCanonicalTargetSourceBinding(target, sourceForm.family, sourceForm.form);
+		}
+		if (
+			coordinate.status !== 'planned' &&
+			coordinate.status !== 'planned-provisional-anchor' &&
+			coordinate.status !== 'blocked-on-anchor'
+		) {
+			fail(
+				`${coordinate.coordinateId} must use planned, planned-provisional-anchor, or blocked-on-anchor status`
+			);
 		}
 		const reviewEvidence = reviewEvidenceByCoordinate.get(coordinate.coordinateId);
 		if (!reviewEvidence) fail(`missing review evidence for ${coordinate.coordinateId}`);
@@ -270,7 +315,9 @@ export function buildCanonicalMonsterWikiDatabase(
 			fail(`review state requires candidate evidence for ${coordinate.coordinateId}`);
 		}
 		if (reviewEvidence.state === 'planned' && hasCandidate) {
-			fail(`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`);
+			fail(
+				`planned review state cannot carry active candidate evidence: ${coordinate.coordinateId}`
+			);
 		}
 		if (
 			reviewEvidence.revisionRequired !==
@@ -312,6 +359,9 @@ export function buildCanonicalMonsterWikiDatabase(
 		const formCoordinates = coordinatesByForm.get(coordinate.formId) ?? [];
 		formCoordinates.push(production);
 		coordinatesByForm.set(coordinate.formId, formCoordinates);
+	}
+	if (usedGenerationFailureSourceBindings.size !== generationFailureSourceBindings.length) {
+		fail('orphan generation-failure source binding evidence');
 	}
 	if (targetsByCoordinate.size !== manifest.canonicalMatrix.activeCoordinates.length) {
 		fail('target records contain coordinates outside the active manifest');
@@ -470,7 +520,19 @@ export function buildCanonicalMonsterWikiDatabase(
 }
 
 function sourceLink(sourcePage: string): string {
-	return `../monster-races/${sourcePage.split('/').at(-1)}`;
+	if (sourcePage.startsWith('docs/wiki/creatures/monster-races/')) {
+		return `../monster-races/${sourcePage.split('/').at(-1)}`;
+	}
+	if (sourcePage.startsWith('docs/superpowers/specs/')) {
+		return `../../../superpowers/specs/${sourcePage.split('/').at(-1)}`;
+	}
+	return `../../../${sourcePage.replace(/^docs\//u, '')}`;
+}
+
+function sourceLabel(sourcePage: string): string {
+	return sourcePage.startsWith('docs/superpowers/specs/')
+		? 'Accepted fauna design'
+		: 'Generator bestiary';
 }
 
 function textOrNotApplicable(value: string | null): string {
@@ -491,6 +553,9 @@ function coordinateEvidenceLabel(coordinate: CanonicalProductionCoordinate): str
 }
 
 function formVisualProductionStatus(form: CanonicalMonsterForm): string {
+	if (form.coordinates.every(({ presentationStatus }) => presentationStatus === 'runtime')) {
+		return 'Owner approved — one Normal image plus four affinity-variant images are published as approved sources and wiki-runtime assets.';
+	}
 	const states = form.coordinates
 		.map(
 			(coordinate) =>
@@ -501,6 +566,9 @@ function formVisualProductionStatus(form: CanonicalMonsterForm): string {
 }
 
 export function buildMonsterWikiPage(form: CanonicalMonsterForm): string {
+	if (form.coordinates.every(({ presentationStatus }) => presentationStatus === 'runtime')) {
+		return buildRuntimeMonsterWikiPage(form);
+	}
 	const coordinates = form.coordinates
 		.map(
 			(coordinate) =>
@@ -576,12 +644,95 @@ ${coordinates}
 ### Status semantics
 
 - \`planned\` means the active attempt is owned and may be produced; it does not mean an image exists.
+- \`planned-provisional-anchor\` means candidate generation is authorized by the exact verified Normal candidate/result chain while human review remains pending. It implies neither approval nor runtime promotion.
 - \`blocked-on-anchor\` means the active attempt must wait for accepted Normal anchor evidence before production.
 - \`candidate-only\` means immutable candidate and result evidence exists; review approval has not occurred, and the image is not runtime art.
 - \`approved-review\` means the immutable review evidence accepted the candidate; it is not runtime art.
 - \`revision-required\` means review evidence requires another attempt. Where the active version has not been generated, the label reports the prior failed-attempt count.
 - Candidate and result paths reserve collision-safe ownership. They are intentionally plain code paths, not links to nonexistent pixels.
 - Runtime promotion is a separate integration decision and is never performed by this wiki export.
+`;
+}
+
+function buildRuntimeMonsterWikiPage(form: CanonicalMonsterForm): string {
+	const coordinates = form.coordinates
+		.map(
+			(coordinate) =>
+				`| ${affinityLabel(coordinate.affinity)} | \`runtime\` | v${coordinate.version} | \`${coordinate.targetPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.approvedPath}\` | \`${coordinate.runtimePath}\` | \`${coordinate.contentHash}\` |`
+		)
+		.join('\n');
+	const constants = form.visualConstants
+		.map((constant) => `- ${sanitizeRenderedCopy(constant)}`)
+		.join('\n');
+	return `# ${form.displayName}
+
+Wiki ID: \`monster.${form.formId}\`
+
+[← Canonical monster database](README.md)
+
+Design status: **accepted canonical form**
+
+Visual-production status: **${formVisualProductionStatus(form)}**
+
+## Identity
+
+| Field | Canonical definition |
+| --- | --- |
+| Family | ${form.familyName} (family ${String(form.sourceRaceNumber).padStart(2, '0')}) |
+| Canonical form ID | \`${form.formId}\` |
+| Tier | ${form.tier} — ${TIER_TITLES[form.tier]} |
+| Primary archetype | ${sanitizeRenderedCopy(form.primaryArchetype)} |
+| Floor assignment | Unassigned |
+| Source | [Accepted fauna design](${sourceLink(form.sourcePage)}) — ${form.sourceReferences.map(sanitizeRenderedCopy).join('; ')} |
+
+${form.classificationNotes}
+
+## Family visual grammar
+
+${constants}
+
+**Escalation axis:** ${form.escalationAxis}
+
+**This form's visual delta:** ${sanitizeRenderedCopy(form.visualDelta)}
+
+## Combat reading
+
+### Battlefield duty
+
+${sanitizeRenderedCopy(form.battlefieldDuty)}
+
+### Teaching goal
+
+${sanitizeRenderedCopy(form.teachingGoal)}
+
+### Signature mechanic
+
+${textOrNotApplicable(form.signatureMechanic)}
+
+### Telegraph
+
+${textOrNotApplicable(form.telegraph)}
+
+### Counterplay
+
+${textOrNotApplicable(form.counterplay)}
+
+### Lower-form interaction
+
+${textOrNotApplicable(form.lowerFormInteraction)}
+
+## Five-coordinate approved runtime matrix
+
+| Affinity | State | Version | Target evidence | Candidate provenance | Approved source | Wiki-runtime asset | Source SHA-256 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+${coordinates}
+
+### State semantics
+
+- \`runtime\` means the exact owner-approved PNG source has a hash-bound WebP derivative in the enemy-only wiki-runtime catalog.
+- Candidate provenance remains immutable under \`assets/enemies/experiments/fauna-family-v1\`.
+- Approved sources live separately under \`assets/enemies/approved/fauna-family-v1\` and are byte-identical to the selected candidates.
+- Wiki-runtime derivatives are presentation assets only; this promotion does not assign floors or change combat engine contracts.
 `;
 }
 
@@ -601,7 +752,7 @@ function renderFamilySection(family: CanonicalMonsterFamily): string {
 | Floor assignment | Unassigned |
 | Classification caveat | ${family.classificationNotes} |
 | Escalation axis | ${family.escalationAxis} |
-| Source | [Generator bestiary](${sourceLink(family.sourcePage)}) |
+| Source | [${sourceLabel(family.sourcePage)}](${sourceLink(family.sourcePage)}) |
 
 **Visual constants**
 
@@ -637,7 +788,7 @@ export function buildMonsterDatabaseIndex(database: CanonicalMonsterWikiDatabase
 
 Wiki ID: \`creatures.monster-database\`
 
-This database publishes **30 production families**, **150 canonical T1–T5 forms**, and **750
+This database publishes **${database.counts.families} production families**, **${database.counts.forms} canonical T1–T5 forms**, and **${database.counts.coordinates}
 Normal/Fire/Earth/Wind/Water image coordinates**. Family is a production and encounter grouping;
 it does not by itself establish biology, ancestry, personhood, culture, morality, or universal
 hostility. Read the [creature taxonomy](../taxonomy.md) before turning a family label into lore.
@@ -646,18 +797,26 @@ No floor order or difficulty value is assigned here. Every \`floorSlot\` remains
 separate authored combat integration chooses it.
 
 Production statuses describe target availability. Evidence statuses are derived from validated,
-immutable candidate/result/review records. Candidate, approved-review, and runtime remain separate
-states; this export promotes nothing.
+immutable candidate/result/review records and the separate fauna approval/runtime catalogs.
+Candidate, approved-review, approved-source, and runtime remain distinct states.
 
 ${familySections}
 
-## Current class reconciliation
+## Fauna expansion — approved and wired
 
-The forty earlier class identities are reconciled exactly once below. Ten map or rename-map into
-the 150 canonical forms. The other thirty are useful secondary roles or expedition fauna retained
-as bridge-only identities; they are not “missing” canonical forms and do not increase the 150-form
-count. Their 160 old public images remain candidate-only reference evidence. Every reuse flag is
-false, so none is automatically accepted for a canonical coordinate.
+The original 30-family, 750-coordinate matrix remains frozen and will not be regenerated. Eight
+accepted fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, and
+Raptors—add 40 T1–T5 forms and 200 coordinates. All 200 have immutable candidate provenance,
+byte-identical approved PNG sources, and hash-addressed wiki-runtime WebP derivatives. See the
+[fauna family expansion](../fauna-family-expansion.md) for progression and promotion evidence.
+
+## Completed v1 class reconciliation
+
+The forty earlier class identities remain preserved as historical production provenance. The fauna
+integration redirects Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm to their new
+canonical forms without rewriting the original program. Armored Brood Guard, Death Knight, and Cave
+Drake remain secondary archetypes in Arachnids, Skeletons, and Dragons. Old images remain
+candidate-only reference evidence and are not substituted for the approved fauna coordinates.
 
 ### Current class reconciliation
 
@@ -667,10 +826,10 @@ ${reconciliationRows}
 
 ## Production synchronization
 
-Run \`pnpm export:wiki-monsters\` after packet or manifest changes. The exporter reads the validated
-family packets, current-class mapping, and 750-coordinate manifest; it never derives canonical
-identity from the old visual index. Generated pages and the JSON index remain deterministic, while
-candidate and result paths stay collision-safe ownership declarations until pixels are produced.
+Run \`pnpm export:wiki-monsters\` after source or catalog changes. The exporter reads the validated
+30-family production program plus the separate approved eight-family fauna program. Generated pages
+and the JSON index remain deterministic; approval and runtime bindings come only from the enemy-owned
+fauna catalogs.
 `;
 }
 
@@ -711,7 +870,15 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 				version: coordinate.version,
 				candidateExists: coordinate.candidateExists,
 				historyAttemptCount: coordinate.historyAttemptCount,
-				historyRevisionRequiredCount: coordinate.historyRevisionRequiredCount
+				historyRevisionRequiredCount: coordinate.historyRevisionRequiredCount,
+				...(coordinate.approvedPath
+					? {
+							approvedPath: coordinate.approvedPath,
+							runtimePath: coordinate.runtimePath,
+							runtimePublicUrl: coordinate.runtimePublicUrl,
+							contentHash: coordinate.contentHash
+						}
+					: {})
 			}))
 		})),
 		legacyRoutes: legacyMonsterRouteMap(database),
@@ -865,9 +1032,7 @@ export function assertCandidateSafeRenderedMonsterWiki(
 			/\bcandidate\s+(?:is|are|becomes?|status\s*:)\s*(?:approved|runtime)\b/iu.test(
 				withoutFixedNegativeLanguage
 			) ||
-			/\b(?:approved|runtime)\s+(?:candidate|art|asset|image)\b/iu.test(
-				withoutFixedNegativeLanguage
-			)
+			/\b(?:approved|runtime)\s+candidate\b/iu.test(withoutFixedNegativeLanguage)
 		) {
 			fail(`affirmative candidate-as-approved/runtime wording in ${fileName}`);
 		}

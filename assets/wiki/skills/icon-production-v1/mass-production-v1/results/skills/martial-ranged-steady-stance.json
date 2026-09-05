@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:ranged:steady-stance",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-steady-stance.json",
+	"promptHash": "296cc670ecf488d67e324ad3b1bcb2d25a5f9d49f613e547b3ed2c2db5b763de",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-precision-arrow.png",
+			"contentHash": "d0a5e2f6a1e55a43d7b4921e1ccd8ce96a4b0a689423f198644136714e3fee8b"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-aimed-shot.png",
+			"contentHash": "9fc448a52b5fdd494e8f0cc591885d66dcd9c7053cad61876760d0b9f8ca31d2"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-ranged-steady-stance-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1933068,
+		"contentHash": "5112ce363293d7821f92631c4c80f04fe3970453872507335b2a93fff4c9a2e7"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-steady-stance.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1582222,
+		"contentHash": "d32c4ec09d3f6d34ab948b208e6c39a541a6ce2d002e266491dceac23b379f54"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d897348e5eb7e93fcee95a4e4221c8a84ccffc2d063a71289f9903b281eecac4",
+		"postRepairContentHash": "d32c4ec09d3f6d34ab948b208e6c39a541a6ce2d002e266491dceac23b379f54",
+		"removedPixels": 384942
+	}
+}

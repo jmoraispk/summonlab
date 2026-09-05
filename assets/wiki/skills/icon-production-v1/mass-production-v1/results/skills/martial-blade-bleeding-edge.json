@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:bleeding-edge",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-bleeding-edge.json",
+	"promptHash": "2a4ce43862fc0e10f6bf5fda900b5e483862ed3242569b1a1555f4333d419312",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dagger-strike.png",
+			"contentHash": "b573f30649907e8139355abcbe978ffafa994c5444248625822badf5effe65a0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-vital-nick.png",
+			"contentHash": "dba55c1dc4cf5e62bf0f87691e156c4168b964f27c1796eb9bbf8eac240f4dbb"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-bleeding-edge-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2123887,
+		"contentHash": "358a9bfd2aa714f0e4ca7707ff69f5843a0d20bcae0ac15ee325d22e22e69c3a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-bleeding-edge.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1807825,
+		"contentHash": "706611f9a26f1d47209a063627de70d692e0c62d19db5a0a92a6ce954ccb6e7a"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "abd66090aad3a2afa6079427b28c1c5187daad06530a4e4f78229ed4eb1f5c57",
+		"postRepairContentHash": "706611f9a26f1d47209a063627de70d692e0c62d19db5a0a92a6ce954ccb6e7a",
+		"removedPixels": 384942
+	}
+}

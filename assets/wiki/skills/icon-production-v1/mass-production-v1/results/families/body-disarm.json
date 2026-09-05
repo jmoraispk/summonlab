@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "body.disarm",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-disarm.json",
+	"promptHash": "fbadab159b59a2ebce29b8f1d6758f7d4fe36c0462094391e9051d594a755c54",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1774,
+		"height": 887,
+		"alphaMode": "rgb",
+		"bytes": 1219964,
+		"contentHash": "28f08f3b341c2f5fbcbbfa4fa41e9bcf0025fe3f302267ef92dd26bacff07ec3"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-disarm.png",
+		"mediaType": "image/png",
+		"width": 1774,
+		"height": 887,
+		"alphaMode": "rgb",
+		"bytes": 1219964,
+		"contentHash": "28f08f3b341c2f5fbcbbfa4fa41e9bcf0025fe3f302267ef92dd26bacff07ec3"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

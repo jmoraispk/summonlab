@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "serpents",
+  "displayName": "Serpents",
+  "sourceRaceNumber": 36,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural limbless snake family centered on fixed strike range, constriction, venom lanes, buried reach, and living coil control. It remains distinct from sapient humanoid Nagas.",
+  "visualConstants": [
+    "Every form remains limbless with a continuous scaled body, snake skull, jaw hinge, belly scutes, forked tongue, and species-appropriate tail.",
+    "Tier escalation uses body proportion, hood, fangs, horns, crown scales, muscle distribution, and coil behavior rather than arms or equipment.",
+    "Strike range, head anchor, venom direction, emergence point, and loosened coil remain visually traceable."
+  ],
+  "escalationAxis": "A fixed one-length strike becomes anchored constriction, a two-lane venom specialist, buried alternating reach, and finally a sovereign whose body coils become arena terrain.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": ["Scales, belly scutes, fangs, venom, shed skin, dust, saliva, and muscle remain ordinary and species-specific.", "Coils and attack lines read through body tension, scale overlap, head position, and terrain contact."],
+      "counterplaySignal": "The neck S, anchored head, hood alignment, surface horn, or lifting crown scale remains visible before commitment.",
+      "forbidden": ["Humanoid torso, arms, clothing, or weapons", "Unexplained elemental glow"]
+    },
+    "fire": {
+      "constructionDimensions": ["Ember seams appear between selected throat and belly scales while dorsal scales remain dark biological keratin.", "Heat shimmer and narrow smoke lines follow the strike, venom lane, buried route, or tightening coil."],
+      "counterplaySignal": "The loaded throat or anchor scale flares before release and exposes a cooling gap after the strike or constriction.",
+      "forbidden": ["Featureless fire snake", "Uniform orange recolor", "Flame that obscures coil boundaries or head position"]
+    },
+    "earth": {
+      "constructionDimensions": ["Mineral scutes reinforce the brow, belly anchor, horn, and selected crown plates while flexible scale bands stay visible.", "Coils compress sediment and lift detached chips along their exact load path rather than becoming solid stone."],
+      "counterplaySignal": "A pale fracture line opens at the neck, belly anchor, buried emergence plate, or loosened crown scale.",
+      "forbidden": ["Solid stone serpent", "Brown recolor alone", "Mineral plates that fuse separate coils into an unreadable mass"]
+    },
+    "wind": {
+      "constructionDimensions": ["Scale edges and shed-skin fringes trail into directional filaments while the muscular body stays opaque.", "Pressure lines trace exact strike reach, spit lanes, surface emergence, and constriction direction."],
+      "counterplaySignal": "The pressure sheath collapses at the head anchor or extended neck during the ordinary punish window.",
+      "forbidden": ["Transparent air snake", "Pale recolor alone", "Diffuse turbulence that hides head, tail, or coil order"]
+    },
+    "water": {
+      "constructionDimensions": ["Glossy wet scales, translucent pressure membranes, coherent venom-water channels, and streaming body edges preserve segmentation.", "Ripples trace body tension and attack lanes while drainage reveals the anchor or extended neck."],
+      "counterplaySignal": "The loaded throat sac, anchor scute, or crown channel drains after release and exposes the same physical weak point.",
+      "forbidden": ["Amorphous water snake", "Generic blue wash", "Opaque water that conceals coil boundaries or fangs"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "serpent-adder",
+      "displayName": "Adder",
+      "primaryArchetype": "Range-Probe Initiate",
+      "battlefieldDuty": "Coil once and strike exactly one body length.",
+      "teachingGoal": "Teach players to estimate a fixed biological strike range from the visible coil.",
+      "signatureMechanic": "One-Length Strike: the Adder's extension never exceeds the length stored in its single tight coil.",
+      "telegraph": "Its neck forms a tight S and the forked tongue stops flicking.",
+      "counterplay": "Step beyond the fixed reach and punish the fully extended neck.",
+      "visualDelta": "Small thick-bodied viper with zigzag markings, short fangs, keeled scales, and a compact tail.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "serpent-constrictor",
+      "displayName": "Constrictor",
+      "primaryArchetype": "Space-Hold Soldier",
+      "battlefieldDuty": "Loop around one obstacle or target and tighten only while its head remains anchored.",
+      "teachingGoal": "Teach players to distinguish the dangerous body loop from the vulnerable head anchor.",
+      "signatureMechanic": "Anchored Coil: a completed tail loop tightens while the jaws maintain one visible anchor point.",
+      "telegraph": "The tail completes a circle and the jaw clamps firmly onto its anchor.",
+      "counterplay": "Break the loop or stagger the anchored head to release all constriction pressure.",
+      "visualDelta": "Long muscular snake with broad gripping belly scales, blunt wedge head, small teeth, and powerful midbody.",
+      "lowerFormInteraction": "Adders threaten the predictable outside edge while the Constrictor holds the central loop.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "serpent-spitting-cobra",
+      "displayName": "Spitting Cobra",
+      "primaryArchetype": "Venom-Lane Specialist",
+      "battlefieldDuty": "Paint two visible venom lanes and threaten a conventional strike through the remaining gap.",
+      "teachingGoal": "Introduce a ranged specialist that edits escape geometry while preserving a physical throat and hood tell.",
+      "signatureMechanic": "Two-Fang Fan: each fang projects one narrow venom line, leaving a deliberate central or outer gap for the follow-up strike.",
+      "telegraph": "Hood spots align with the two lanes and venom gathers separately at both fangs.",
+      "counterplay": "Close behind the hood or bait both spits away from the escape route before crossing.",
+      "visualDelta": "Upright forebody, broad patterned hood, compact rear coil, and visibly distinct paired venom glands.",
+      "lowerFormInteraction": "Adders guard the chosen gap while Constrictors anchor obstacles that narrow the available lanes.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "serpent-horned-viper",
+      "displayName": "Horned Viper",
+      "primaryArchetype": "Buried-Reach Champion",
+      "battlefieldDuty": "Attack through alternating horn-marked emergence points while its exposed tail controls the safe route.",
+      "teachingGoal": "Teach players to infer the true buried head position from the deliberately misleading tail direction.",
+      "signatureMechanic": "Horn Gates: paired eye horns surface at alternating points while the tail indicates the gap opposite the real opening.",
+      "telegraph": "One horn breaks the surface before each head strike and the exposed tail points away from it.",
+      "counterplay": "Follow the tail direction to locate the real opening and punish the emerging neck after evading.",
+      "visualDelta": "Massive sand-adapted viper with paired eye horns, heavy keeled scales, thick tail, and multiple old shed scars.",
+      "lowerFormInteraction": "Adders occupy abandoned horn points, Constrictors hold the center, and the Cobra paints lanes toward the false opening.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "serpent-crown-serpent",
+      "displayName": "Crown Serpent",
+      "primaryArchetype": "Living-Coil Sovereign",
+      "battlefieldDuty": "Encircle the arena in layered body coils and assign lower Serpents to the gaps between them.",
+      "teachingGoal": "Test fixed reach, head-anchor disruption, venom lanes, and buried emergence while treating the boss body as readable terrain.",
+      "signatureMechanic": "Crown Coil: one crown scale lifts for each tightening body ring; the lower Serpent guarding that gap defines how it closes.",
+      "telegraph": "Crown scales lift in the order of the next constriction and the corresponding lower Serpent becomes still.",
+      "counterplay": "Remove or displace the still guard, cross the loosened coil, and strike the lifted crown scale before tightening resumes.",
+      "visualDelta": "Colossal plausible snake with crown-like occipital scales, long patterned body, four recognizable scar bands, and no humanoid torso.",
+      "lowerFormInteraction": "Adder supplies the fixed strike gap, Constrictor the anchored ring, Cobra the venom lane, and Horned Viper the buried opening; losing one permanently loosens its coil.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

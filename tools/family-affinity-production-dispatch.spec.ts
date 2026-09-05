@@ -9,17 +9,47 @@ import {
 	validateFamilyAffinityProductionSurface
 } from './check-family-affinity-production-dispatch.js';
 import {
+	buildFamilyAffinityProductionBundle,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityTargetSchema,
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
 	familyAffinitySha256,
+	loadFamilyAffinityActiveSources,
 	stableFamilyAffinityJson
 } from './family-affinity-production-lib.js';
 
 const repositoryRoot = process.cwd();
 const receiptPath = 'assets/enemies/experiments/family-affinity-v1/production-compatibility.json';
 const trackedSkillRoot = resolve('skills/summonlab-image-production');
+
+async function stageCleanDispatchCorpus(): Promise<{
+	repositoryRoot: string;
+	installedSkillRoot: string;
+}> {
+	const temporary = await mkdtemp(join(tmpdir(), 'family-dispatch-clean-'));
+	const { registry, families, mapping } = await loadFamilyAffinityActiveSources(repositoryRoot);
+	const bundle = buildFamilyAffinityProductionBundle(families, mapping);
+	for (const { path, value } of bundle.artifacts) {
+		await mkdir(dirname(join(temporary, path)), { recursive: true });
+		await writeFile(join(temporary, path), stableFamilyAffinityJson(value));
+	}
+	for (const path of [...registry.familyPacketPaths, registry.mappingPath]) {
+		await mkdir(dirname(join(temporary, path)), { recursive: true });
+		await writeFile(join(temporary, path), await readFile(join(repositoryRoot, path)));
+	}
+	const installedSkillRoot = join(temporary, 'skills/summonlab-image-production');
+	await cp(trackedSkillRoot, installedSkillRoot, { recursive: true });
+	const receipt = JSON.parse(await readFile(join(repositoryRoot, receiptPath), 'utf8'));
+	for (const source of receipt.sealedLauncher.sources as Array<{ path: string }>) {
+		await mkdir(dirname(join(temporary, source.path)), { recursive: true });
+		await cp(join(repositoryRoot, source.path), join(temporary, source.path));
+	}
+	receipt.approvedSkillRoot = installedSkillRoot;
+	await mkdir(dirname(join(temporary, receiptPath)), { recursive: true });
+	await writeFile(join(temporary, receiptPath), stableFamilyAffinityJson(receipt));
+	return { repositoryRoot: temporary, installedSkillRoot };
+}
 
 describe('mandatory family affinity production dispatch gate', () => {
 	it('binds the approved tracked and installed full v3 execution surface', async () => {
@@ -162,63 +192,53 @@ describe('mandatory family affinity production dispatch gate', () => {
 	});
 
 	it('dispatches the active canonical Normal only through receipt, bundle, manifest, packet, prompt, and absence gates', async () => {
+		const clean = await stageCleanDispatchCorpus();
 		const targetPath =
 			'assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-bog-troll/normal/target-v1.json';
 		const assignmentPath = targetPath
 			.replace('/targets/', '/assignments/')
 			.replace('target-v1.json', 'assignment-v1.json');
-		await expect(
-			checkFamilyAffinityProductionDispatch({
-				repositoryRoot,
-				targetPath,
-				assignmentPath,
-				installedSkillRoot: trackedSkillRoot
-			})
-		).resolves.toMatchObject({ dispatchable: true, affinity: 'normal', state: 'candidate-only' });
+		try {
+			await expect(
+				checkFamilyAffinityProductionDispatch({
+					repositoryRoot: clean.repositoryRoot,
+					targetPath,
+					assignmentPath,
+					installedSkillRoot: clean.installedSkillRoot
+				})
+			).resolves.toMatchObject({ dispatchable: true, affinity: 'normal', state: 'candidate-only' });
+		} finally {
+			await rm(clean.repositoryRoot, { recursive: true, force: true });
+		}
 	});
 
 	it('rejects the active canonical Earth while its exact Normal chain is blocked', async () => {
+		const clean = await stageCleanDispatchCorpus();
 		const targetPath =
 			'assets/enemies/experiments/family-affinity-v1/targets/trolls/troll-bog-troll/earth/target-v1.json';
 		const assignmentPath = targetPath
 			.replace('/targets/', '/assignments/')
 			.replace('target-v1.json', 'assignment-v1.json');
-		await expect(
-			checkFamilyAffinityProductionDispatch({
-				repositoryRoot,
-				targetPath,
-				assignmentPath,
-				installedSkillRoot: trackedSkillRoot
-			})
-		).rejects.toThrow(/blocked-on-anchor/i);
+		try {
+			await expect(
+				checkFamilyAffinityProductionDispatch({
+					repositoryRoot: clean.repositoryRoot,
+					targetPath,
+					assignmentPath,
+					installedSkillRoot: clean.installedSkillRoot
+				})
+			).rejects.toThrow(/blocked-on-anchor/i);
+		} finally {
+			await rm(clean.repositoryRoot, { recursive: true, force: true });
+		}
 	});
 
 	it('separates candidate and result persistence phases with exact candidate/result binding', async () => {
-		const temporary = await mkdtemp(join(tmpdir(), 'family-dispatch-phases-'));
+		const clean = await stageCleanDispatchCorpus();
+		const temporary = clean.repositoryRoot;
 		try {
 			const familyRoot = 'assets/enemies/experiments/family-affinity-v1';
-			await cp(join(repositoryRoot, familyRoot), join(temporary, familyRoot), { recursive: true });
-			const copiedSkill = join(temporary, 'skills/summonlab-image-production');
-			await cp(trackedSkillRoot, copiedSkill, { recursive: true });
-			const copiedEntrypoint = join(
-				temporary,
-				'tools/check-family-affinity-production-dispatch.ts'
-			);
-			await mkdir(dirname(copiedEntrypoint), { recursive: true });
-			await cp(
-				join(repositoryRoot, 'tools/check-family-affinity-production-dispatch.ts'),
-				copiedEntrypoint
-			);
-			await cp(
-				join(repositoryRoot, 'tools/family-affinity-production-lib.ts'),
-				join(temporary, 'tools/family-affinity-production-lib.ts')
-			);
-			await cp(join(repositoryRoot, 'package.json'), join(temporary, 'package.json'));
-			await cp(join(repositoryRoot, 'pnpm-lock.yaml'), join(temporary, 'pnpm-lock.yaml'));
-			const copiedReceiptPath = join(temporary, receiptPath);
-			const receipt = JSON.parse(await readFile(copiedReceiptPath, 'utf8'));
-			receipt.approvedSkillRoot = copiedSkill;
-			await writeFile(copiedReceiptPath, stableFamilyAffinityJson(receipt));
+			const copiedSkill = clean.installedSkillRoot;
 			const targetPath = `${familyRoot}/targets/trolls/troll-bog-troll/normal/target-v1.json`;
 			const assignmentPath = targetPath
 				.replace('/targets/', '/assignments/')

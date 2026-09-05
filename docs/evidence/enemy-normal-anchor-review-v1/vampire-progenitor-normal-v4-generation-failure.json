@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "family-affinity-generation-failure-v1",
+  "experimentId": "family-affinity-v1",
+  "namespace": "canonical",
+  "coordinateId": "vampires/vampire-progenitor/normal",
+  "targetId": "canonical/vampires/vampire-progenitor/normal/v4",
+  "targetPath": "assets/enemies/experiments/family-affinity-v1/targets/vampires/vampire-progenitor/normal/target-v4.json",
+  "targetSha256": "a1465e1cdd515ab7b4fb1bfd1cf8a1f1a89e3d2cb4662376e2ff69d1af095c7f",
+  "assignmentPath": "assets/enemies/experiments/family-affinity-v1/assignments/vampires/vampire-progenitor/normal/assignment-v4.json",
+  "assignmentSha256": "0042f05225779aa7d9c28422e299152f6f6d0ea03c4d3c1bc3fac3ee91c71eb5",
+  "candidateVersion": 4,
+  "failureKind": "exhausted-nonretained-generation",
+  "producerRuns": [
+    {
+      "runOrdinal": 1,
+      "producerId": "codex:/root/rev_vampire_progenitor_v4",
+      "canonicalPromptSha256": "088676fe94a129fbefac4fa79eaa17118e12957e159cb3e47a4233b650f71f9b",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "088676fe94a129fbefac4fa79eaa17118e12957e159cb3e47a4233b650f71f9b",
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a06899-8237-7ae0-9399-fb525375dc42/exec-069c9d4c-75d7-4181-ac45-8347e52c27a4.png",
+          "sourceSha256": "6f5fc49daebe00e06b4c97bd6255e88db358591de2df68d02ee64afd4098f21d",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Multiple background vampires violated the single featured-subject contract.",
+            "Only two wings were visible."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": null,
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a06899-8237-7ae0-9399-fb525375dc42/exec-79c83fbe-2c17-4136-90b1-9fe6d3c6234c.png",
+          "sourceSha256": "8166e054403e9f24433d2b237de1b9f2f9d898928d015f076180ccf742a3ff27",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "The subject, vessels, and counterplay improved, but only two obvious lateral wings remained."
+          ]
+        }
+      ]
+    },
+    {
+      "runOrdinal": 2,
+      "producerId": "codex:/root/rev_vampire_progenitor_v4_retry",
+      "canonicalPromptSha256": "088676fe94a129fbefac4fa79eaa17118e12957e159cb3e47a4233b650f71f9b",
+      "calls": [
+        {
+          "callOrdinal": 1,
+          "kind": "initial",
+          "promptSha256": "088676fe94a129fbefac4fa79eaa17118e12957e159cb3e47a4233b650f71f9b",
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a0689c-be13-7a53-a108-9c98dda864d7/exec-fdbd3c90-f6b7-4096-91b9-98aed35ddc49.png",
+          "sourceSha256": "9ab85c3af8cdecfa30218962d7aff689d71b8d09196d1703558c0252569cb6c3",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Multiple background vampires violated the single featured-subject contract.",
+            "The wing design remained a bilateral pair."
+          ]
+        },
+        {
+          "callOrdinal": 2,
+          "kind": "correction",
+          "promptSha256": null,
+          "providerRunId": null,
+          "sourcePath": "/home/joao/.codex/generated_images/01a0689c-be13-7a53-a108-9c98dda864d7/exec-fa22d03c-57c7-4046-afa8-e826d818a8cb.png",
+          "sourceSha256": "8ca01c3974ab76547881c79534aa68eece2c4c599e8958469dc3903b1af52162",
+          "outcomeCode": "visual-contract-rejected",
+          "reasons": [
+            "Exactly two black membrane wing arrays appeared between the three vessels."
+          ]
+        }
+      ]
+    }
+  ],
+  "retainedCandidateCreated": false,
+  "resultReceiptCreated": false,
+  "reviewReceiptsCreated": false,
+  "supersessionTargetVersion": 5,
+  "supersessionOverrides": {
+    "anatomyInvariants": [
+      "An inhumanly beautiful corpse-pale sovereign seated on a blood-glass throne, wearing a crown fine enough to seem grown and dressed in ageless black couture. Behind the throne stands one triptych shadow-wing canopy divided into exactly THREE separate vertical segmented wing-panels or sections, one rooted to each of exactly three crest vessels. These are throne-canopy panels, not anatomical wings on the body; no conventional bilateral bat wings.",
+      "Signature mechanic: First Blood Court: exactly three tall blood-glass crest vessels rise behind the throne beneath the grown-looking crown. The Hunt vessel marks wounds and sends Thralls that surviving Bloodkin can pull into circles; the Courtesy vessel appoints a Noble whose shattered crest opens a strike on the throne; the Salon vessel lets an Ancient divide the arena with cloak panels. The Progenitor extends the vessel-aligned panel of the single triptych shadow-wing canopy and feeds it through a visible glass vein. Breaking that vein during the lower-form phase shatters the vessel, dismisses its command, and tears away the corresponding one of three canopy sections. Once two vessels fall, the Progenitor leaves the throne, using only the remaining crest while each canopy-panel recovery exposes the crown root."
+    ],
+    "telegraph": "The impossibly still face turns toward one of exactly three crest vessels, a fine crown branch aligns with its glass vein, and the corresponding one of exactly THREE separate vertical segmented panels in the single triptych shadow-wing canopy unfolds behind the throne. The three panels remain vessel-aligned throne architecture, never a conventional bilateral pair of body wings, while every lower Vampire adopts that phase's learned posture.",
+    "acceptanceCriteria": [
+      "Recognizably belongs to the Vampires family and preserves every identity invariant.",
+      "Reads specifically as Progenitor, T5, rather than another family form.",
+      "Communicates the First-Crest Blood Court Sovereign (Sovereign) archetype and its battlefield duty.",
+      "Preserves coherent load-bearing anatomy, complete limbs, and believable ground contact.",
+      "Uses at least two normal construction dimensions without a palette-only or glow-only treatment.",
+      "Keeps the attack telegraph and counterplay signal visible at gameplay scale.",
+      "Frames one complete featured subject with no crop, labels, UI text, watermark, or background vampires.",
+      "Shows one throne-mounted triptych shadow-wing canopy divided into exactly THREE separate vertical segmented vessel-aligned panels, with no conventional bilateral bat-wing pair on the body.",
+      "Keeps exactly three crest vessels plus their visible glass veins and exposed crown-root counterplay legible.",
+      "Output remains a candidate until independent approved-review evidence exists; it is never a runtime asset."
+    ]
+  },
+  "supersessionAuthorizedBy": "root-orchestrator-enemy-domain-authorization-2026-09-03",
+  "runtimeCatalogMutationForbidden": true
+}

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import {
 	EngineHeroStateV1Schema,
 	EngineHeroStateV2Schema,
+	EngineEquipmentItemStateV24Schema,
 	EngineItemStateSchema,
 	EngineMasterStateV1Schema,
 	EngineMasterStateV2Schema,
@@ -24,10 +25,12 @@ import {
 	EngineHeroStateV3Schema,
 	EngineHeroStateV4Schema,
 	EngineHeroStateV5Schema,
+	EngineHeroStateV24Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
-	EngineSettlementStateV6Schema
+	EngineSettlementStateV6Schema,
+	EngineSettlementStateV24Schema
 } from './settlement-state.js';
 import { RunStatusSchema } from '../run.js';
 import {
@@ -351,7 +354,6 @@ export const EngineGameStateV5Schema = z
 			}
 		}
 	});
-
 
 export const EngineGameStateV6Schema = z
 	.object({
@@ -716,7 +718,6 @@ const EngineGameStateV10BaseSchema = z
 	})
 	.strict();
 
-
 const EngineGameStateV11BaseSchema = z
 	.object({
 		...EngineGameStateV10BaseSchema.shape,
@@ -781,7 +782,6 @@ const EngineGameStateV18BaseSchema = z
 	})
 	.strict();
 
-
 const EngineGameStateV19BaseSchema = z
 	.object({
 		...EngineGameStateV18BaseSchema.shape,
@@ -789,7 +789,6 @@ const EngineGameStateV19BaseSchema = z
 		masterControl: MasterControlStateSchema
 	})
 	.strict();
-
 
 const EngineGameStateV20BaseSchema = z
 	.object({
@@ -821,6 +820,16 @@ const EngineGameStateV23BaseSchema = z
 		...EngineGameStateV22BaseSchema.shape,
 		schemaVersion: z.literal(23),
 		firstBandArchive: FirstBandArchiveStateSchema
+	})
+	.strict();
+
+const EngineGameStateV24BaseSchema = z
+	.object({
+		...EngineGameStateV23BaseSchema.shape,
+		schemaVersion: z.literal(24),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV24Schema),
+		settlement: EngineSettlementStateV24Schema,
+		items: z.record(EntityIdSchema, EngineEquipmentItemStateV24Schema)
 	})
 	.strict();
 
@@ -1497,62 +1506,117 @@ export const EngineGameStateV22Schema = EngineGameStateV22BaseSchema.superRefine
 	}
 );
 
-export const EngineGameStateV23Schema = EngineGameStateV23BaseSchema.superRefine(
-	(state, context) => {
-		validateMissionEngineState(state, context);
-		const activeAttempt = state.mission.attempt;
-		const canAwaitDecision =
-			state.status === 'active' &&
-			state.master.lifeState === 'alive' &&
-			activeAttempt !== null &&
-			['deployed', 'resolving'].includes(activeAttempt.status);
-		if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+function validateFirstBandArchiveEngineState(
+	state: z.infer<typeof EngineGameStateV23BaseSchema>,
+	context: z.RefinementCtx
+): void {
+	validateMissionEngineState(state, context);
+	const activeAttempt = state.mission.attempt;
+	const canAwaitDecision =
+		state.status === 'active' &&
+		state.master.lifeState === 'alive' &&
+		activeAttempt !== null &&
+		['deployed', 'resolving'].includes(activeAttempt.status);
+	if (state.masterControl.activeDecision !== null && !canAwaitDecision) {
+		context.addIssue({
+			code: 'custom',
+			message: 'Only an active resolving mission may hold a Master decision window'
+		});
+	}
+	for (const patch of state.bandStory.appliedPatches) {
+		if (
+			patch.candidate.roleBindings.some((binding) => !state.heroes[binding.heroId]) ||
+			patch.appliedAt > state.simulatedAt
+		) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Only an active resolving mission may hold a Master decision window'
+				message: 'Applied story patch cast and time must exist in the run'
 			});
 		}
-		for (const patch of state.bandStory.appliedPatches) {
-			if (
-				patch.candidate.roleBindings.some((binding) => !state.heroes[binding.heroId]) ||
-				patch.appliedAt > state.simulatedAt
-			) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Applied story patch cast and time must exist in the run'
-				});
-			}
-		}
-		for (const receipt of Object.values(state.synthesis.receipts)) {
-			const source = state.heroes[receipt.sourceHeroId];
-			const recipient = state.heroes[receipt.recipientHeroId];
-			if (
-				receipt.masterId !== state.master.masterId ||
-				!source ||
-				source.lifeState !== 'synthesized' ||
-				!recipient ||
-				receipt.committedAt > state.simulatedAt
-			) {
-				context.addIssue({
-					code: 'custom',
-					message: 'Synthesis receipt diverged from roster state'
-				});
-			}
-		}
-		const recovery = state.firstBandArchive.recovery;
-		const reveal = state.firstBandArchive.reveal;
+	}
+	for (const receipt of Object.values(state.synthesis.receipts)) {
+		const source = state.heroes[receipt.sourceHeroId];
+		const recipient = state.heroes[receipt.recipientHeroId];
 		if (
-			state.firstBandArchive.envelopeId !== state.bandStory.envelopeId ||
-			state.firstBandArchive.envelopeContentHash !== state.bandStory.envelopeContentHash ||
-			(recovery !== null &&
-				(recovery.recoveredAt > state.simulatedAt ||
-					recovery.survivingHeroIds.some((heroId) => !state.heroes[heroId]))) ||
-			(reveal !== null &&
-				(reveal.revealedAt > state.simulatedAt ||
-					!state.heroes[reveal.readerHeroId] ||
-					reveal.knowledge.some((record) => !state.heroes[record.heroId])))
+			receipt.masterId !== state.master.masterId ||
+			!source ||
+			source.lifeState !== 'synthesized' ||
+			!recipient ||
+			receipt.committedAt > state.simulatedAt
 		) {
-			context.addIssue({ code: 'custom', message: 'First-band archive diverged from run state' });
+			context.addIssue({
+				code: 'custom',
+				message: 'Synthesis receipt diverged from roster state'
+			});
+		}
+	}
+	const recovery = state.firstBandArchive.recovery;
+	const reveal = state.firstBandArchive.reveal;
+	if (
+		state.firstBandArchive.envelopeId !== state.bandStory.envelopeId ||
+		state.firstBandArchive.envelopeContentHash !== state.bandStory.envelopeContentHash ||
+		(recovery !== null &&
+			(recovery.recoveredAt > state.simulatedAt ||
+				recovery.survivingHeroIds.some((heroId) => !state.heroes[heroId]))) ||
+		(reveal !== null &&
+			(reveal.revealedAt > state.simulatedAt ||
+				!state.heroes[reveal.readerHeroId] ||
+				reveal.knowledge.some((record) => !state.heroes[record.heroId])))
+	) {
+		context.addIssue({ code: 'custom', message: 'First-band archive diverged from run state' });
+	}
+}
+
+export const EngineGameStateV23Schema = EngineGameStateV23BaseSchema.superRefine(
+	validateFirstBandArchiveEngineState
+);
+
+export const EngineGameStateV24Schema = EngineGameStateV24BaseSchema.superRefine(
+	(state, context) => {
+		const mainHandItemIds = new Set(
+			Object.values(state.heroes)
+				.map((hero) => hero.equipment.mainHand)
+				.filter((itemId): itemId is string => itemId !== null)
+		);
+		validateFirstBandArchiveEngineState(
+			{
+				...state,
+				heroes: Object.fromEntries(
+					Object.entries(state.heroes).map(([heroId, hero]) => [
+						heroId,
+						{ ...hero, equipment: { mainHand: hero.equipment.mainHand } }
+					])
+				),
+				items: Object.fromEntries(
+					Object.entries(state.items).map(([itemId, item]) => [
+						itemId,
+						{ ...item, equippedById: mainHandItemIds.has(itemId) ? item.equippedById : null }
+					])
+				)
+			} as unknown as z.infer<typeof EngineGameStateV23BaseSchema>,
+			context
+		);
+		const equippedItemIds = new Set<string>();
+		for (const hero of Object.values(state.heroes)) {
+			for (const itemId of Object.values(hero.equipment)) {
+				if (itemId === null) continue;
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned v24 item'
+					});
+				}
+				equippedItemIds.add(itemId);
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (item.equippedById !== null && !equippedItemIds.has(item.itemId)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Equipped v24 item must be linked by its hero loadout'
+				});
+			}
 		}
 	}
 );
@@ -1580,7 +1644,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV20Schema,
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
-	EngineGameStateV23Schema
+	EngineGameStateV23Schema,
+	EngineGameStateV24Schema
 ]);
 
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
@@ -1607,3 +1672,4 @@ export type EngineGameStateV20 = z.infer<typeof EngineGameStateV20Schema>;
 export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
 export type EngineGameStateV22 = z.infer<typeof EngineGameStateV22Schema>;
 export type EngineGameStateV23 = z.infer<typeof EngineGameStateV23Schema>;
+export type EngineGameStateV24 = z.infer<typeof EngineGameStateV24Schema>;

@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:elemental-guard",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-elemental-guard.json",
+	"promptHash": "af5d731c515665f86276d9996b3b7469dfa709ccd9ea04960f0a353393375a89",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-elemental-guard.png",
+			"contentHash": "7d3d673ca2fc83d8c583d8da045e09dc0f866a45e64f442b5fb0938ddc11c733"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-elemental-guard-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2376577,
+		"contentHash": "d6e2457c2aa800de621b30c7391296da3e8ac426cc19e49f2af24baebb23bb4e"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-elemental-guard.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2058835,
+		"contentHash": "9d6f1d1dda19181c83879f7ffd54c06c93b702ba3f5429e62d46bbe8b3991dd2"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "43feac7b164d87e8a71138bc7bd36e07a3eb2bb1bce802bee9e1399859fac070",
+		"postRepairContentHash": "9d6f1d1dda19181c83879f7ffd54c06c93b702ba3f5429e62d46bbe8b3991dd2",
+		"removedPixels": 384942
+	}
+}

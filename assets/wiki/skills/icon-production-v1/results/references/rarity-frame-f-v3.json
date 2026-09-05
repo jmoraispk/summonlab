@@ -1,0 +1,61 @@
+{
+  "assignmentId": "assignment-rarity-frame-f-v3",
+  "completedAt": "2026-09-03T05:31:59.828Z",
+  "exactPrompt": "Create exactly one 1254\u00d71254 RGB PNG provider-source raster for the tier F (Common) rarity-frame layer. Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration after the pipeline's full-canvas resize to 1024\u00d71024. Build a weathered iron frame with a narrow undecorated rim, hammered wear, and nearly hidden rivets. Include one small integrated top-center medallion bearing only the uppercase letter F. Keep the intended central aperture and the entire area outside the hard frame boundary as the perfectly uniform chroma field; the frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels after normalization. Render the asset on a perfectly uniform opaque #00FF00 matte with no baked checkerboard. The matte field must contain no simulated transparency, shadows, texture, gradient, color variation, or other marks. Use no green-colored material, green reflections, green oxidation, or green patina anywhere in the frame. Do not add a cast shadow, ambient-occlusion halo, or dark fringe in the central aperture or outside the hard frame boundary; the chroma field must meet every asset edge cleanly. The pipeline will remove the source matte, resize the raster, and apply the fixed rarity-frame role mask. No skill icon, emblem, backing, scenery, glow, or any other symbol, number, word, label, or text. Output only this isolated provider-source raster.",
+  "failureReason": {
+    "kind": "validation",
+    "message": "Both the initial provider raster and the one permitted medallion-only corrective edit were rejected by deterministic normalization: meaningful foreground remained in a rarity-frame role-required transparent region. No candidate was retained."
+  },
+  "findings": [
+    {
+      "category": "other",
+      "evaluator": "producer",
+      "observation": "Both the initial provider raster and the one permitted medallion-only corrective edit were rejected by deterministic normalization: meaningful foreground remained in a rarity-frame role-required transparent region. No candidate was retained.",
+      "outcome": "fail"
+    }
+  ],
+  "jobId": "rarity-frame-f-v3",
+  "logicalIdentity": "rarity-frame-f",
+  "noSharedFilesEdited": true,
+  "normalization": {
+    "colorSpaceDisposition": null,
+    "containerBox": null,
+    "decoderInputContentHash": null,
+    "geometryHash": "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7",
+    "outcome": "failed",
+    "outputContentHash": null,
+    "profile": "skill-icon-green-key-role-mask-v2",
+    "providerSource": {
+      "alphaMode": "rgb",
+      "bytes": 1452253,
+      "contentHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073",
+      "height": 1254,
+      "mediaType": "image/png",
+      "width": 1254
+    },
+    "sourceContentHash": "c9e3d8d2d482ab9e08ab598de2fe10189d0390477ec5a5a1b98d505bc4106073"
+  },
+  "output": null,
+  "promptHash": "6f5ab9851f2fd72a84b038ff780bbffa9469d8f40dae61de7659690826b5a695",
+  "referenceInputs": [
+    {
+      "contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce",
+      "path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png"
+    },
+    {
+      "contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4",
+      "path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png"
+    }
+  ],
+  "resultId": "result-rarity-frame-f-v3",
+  "resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json",
+  "revision": 3,
+  "schemaVersion": "skill-icon-result-v2",
+  "selfPromoted": false,
+  "startedAt": "2026-09-03T05:29:14.000Z",
+  "status": "failed",
+  "totalWallTimeMs": 165828,
+  "writtenOutputPaths": [
+    "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json"
+  ]
+}

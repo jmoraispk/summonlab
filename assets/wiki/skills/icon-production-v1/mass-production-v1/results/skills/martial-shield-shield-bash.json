@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:shield-bash",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-shield-bash.json",
+	"promptHash": "6025149b32ef9d15755f8868d16d1729ac046b2761af633ac6a2761562aee716",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-impact.png",
+			"contentHash": "9d47244c95efb431c19d15b4201bc6d374f05b364ef159fa59184925ded8119d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-shield-bash-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2278757,
+		"contentHash": "9915f7b0db013a5033b1f0ce6829ae86331312ef5684c8fc8b70a6aef0e41cde"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-bash.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1828216,
+		"contentHash": "afb878e53b4690089fd9cad2b4b3fd39f8d4eb84d2cf13f5946c00b77b1b9383"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1fe2079e73361381502d38443b72aa1c88ab8e41d5c5f096a9fe1c62aaeaa64b",
+		"postRepairContentHash": "afb878e53b4690089fd9cad2b4b3fd39f8d4eb84d2cf13f5946c00b77b1b9383",
+		"removedPixels": 384942
+	}
+}

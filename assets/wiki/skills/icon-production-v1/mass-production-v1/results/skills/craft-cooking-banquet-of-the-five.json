@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:cooking:banquet-of-the-five",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-cooking-banquet-of-the-five.json",
+	"promptHash": "2e6bf4ae068266e746ce0b78207cca2f1915964d953a60d5cf8a8c16bc043314",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-monster-meat.png",
+			"contentHash": "fa332ec16855be5308ea3f3b12872327ccb2ff42e20b33334669915d42095ea7"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-monster-cuisine.png",
+			"contentHash": "b7a772bd6f43f7fbfd339c793e102afbd020dd421306397e57890f20f044fb9c"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-cooking-banquet-of-the-five-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2325862,
+		"contentHash": "e2c8207ecc66499b2119d100419f4f715a37aab2dc3e010164125b9068a5fc11"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-banquet-of-the-five.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1985700,
+		"contentHash": "3fcee7123eeacbc056ab20089df3c5fa98ca681f03a04051ba9b2d03b073b6a8"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "dedd1b8c599d34c3a12aca8604d6e3c4ed9611751e63d88d2e0115e292284f28",
+		"postRepairContentHash": "3fcee7123eeacbc056ab20089df3c5fa98ca681f03a04051ba9b2d03b073b6a8",
+		"removedPixels": 384942
+	}
+}

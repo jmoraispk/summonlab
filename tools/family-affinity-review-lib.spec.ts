@@ -30,6 +30,7 @@ import {
 } from './family-affinity-review-lib.js';
 import {
 	allocateFamilyAffinityRevision,
+	buildFamilyAffinityProductionBundle,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
@@ -41,6 +42,7 @@ import {
 	familyAffinityReviewAssignmentPath,
 	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinitySha256,
+	loadFamilyAffinityActiveSources,
 	stableFamilyAffinityJson,
 	type FamilyAffinityAssignment,
 	type FamilyAffinityReviewAssignment,
@@ -50,6 +52,8 @@ import { exportFamilyAffinityReview } from './export-family-affinity-review.js';
 
 const temporaryRoots: string[] = [];
 const sha = (character: string) => character.repeat(64);
+const familyAffinityRoot = 'assets/enemies/experiments/family-affinity-v1';
+const familyAffinityManifestPath = `${familyAffinityRoot}/manifest.json`;
 
 function target(tier: 'T1' | 'T3' | 'T5' = 'T1'): FamilyAffinityTarget {
 	const formId = tier === 'T1' ? 'goblin-runt' : tier === 'T3' ? 'goblin-raider' : 'goblin-king';
@@ -96,19 +100,7 @@ function packetBytesFor(activeTarget: FamilyAffinityTarget): Buffer {
 	return Buffer.from(requireRead(join(process.cwd(), activeTarget.sources.familyPacketPath)));
 }
 
-async function stageLiveAttempt(
-	tier: 'T1' | 'T3' = 'T1',
-	captureBaseline = false
-) {
-	const root = await mkdtemp(join(tmpdir(), 'family-review-live-'));
-	temporaryRoots.push(root);
-	const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
-	const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-	await cp(source, destination, { recursive: true });
-	await stripBridgeFixture(root);
-	const baselineCatalog = captureBaseline
-		? (await buildFamilyAffinityReviewArtifacts(root)).catalog
-		: undefined;
+async function stageLiveAttempt(tier: 'T1' | 'T3' = 'T1', captureBaseline = false) {
 	const activeTarget = target(tier);
 	const paths = canonicalAttemptPaths(
 		activeTarget.familyId,
@@ -116,6 +108,12 @@ async function stageLiveAttempt(
 		activeTarget.affinity,
 		activeTarget.version
 	);
+	const root = await mkdtemp(join(tmpdir(), 'family-review-live-'));
+	temporaryRoots.push(root);
+	await materializeCleanProductionCorpus(root);
+	const baselineCatalog = captureBaseline
+		? (await buildFamilyAffinityReviewArtifacts(root)).catalog
+		: undefined;
 	const candidateBytes = await sharp({
 		create: { width: 8, height: 8, channels: 3, background: '#497a53' }
 	})
@@ -132,17 +130,31 @@ async function stageLiveAttempt(
 	return { root, activeTarget, paths, candidateBytes, result, baselineCatalog };
 }
 
-const familyAffinityRoot = 'assets/enemies/experiments/family-affinity-v1';
-const familyAffinityManifestPath = `${familyAffinityRoot}/manifest.json`;
+async function materializeCleanProductionCorpus(root: string): Promise<void> {
+	const { registry, families, mapping } = await loadFamilyAffinityActiveSources(process.cwd());
+	const bundle = buildFamilyAffinityProductionBundle(families, mapping);
+	for (const { path, value } of bundle.artifacts) {
+		await mkdir(dirname(join(root, path)), { recursive: true });
+		await writeFile(join(root, path), stableFamilyAffinityJson(value));
+	}
+	for (const path of [...registry.familyPacketPaths, registry.mappingPath]) {
+		await mkdir(dirname(join(root, path)), { recursive: true });
+		await writeFile(join(root, path), await readFile(join(process.cwd(), path)));
+	}
+}
 
-async function stripBridgeFixture(root: string): Promise<void> {
-	const manifest = FamilyAffinityManifestSchema.parse(
+async function attachCurrentBridgeFixture(root: string): Promise<void> {
+	const source = join(process.cwd(), familyAffinityRoot, 'bridge');
+	const destination = join(root, familyAffinityRoot, 'bridge');
+	await cp(source, destination, { recursive: true });
+	const currentManifest = FamilyAffinityManifestSchema.parse(
+		JSON.parse(await readFile(join(process.cwd(), familyAffinityManifestPath), 'utf8'))
+	);
+	const cleanManifest = FamilyAffinityManifestSchema.parse(
 		JSON.parse(await readFile(join(root, familyAffinityManifestPath), 'utf8'))
 	);
-	manifest.bridge = { targetCount: 0, assignmentCount: 0, activeCoordinates: [] };
-	await writeFile(join(root, familyAffinityManifestPath), stableFamilyAffinityJson(manifest));
-	await rm(join(root, familyAffinityRoot, 'bridge'), { recursive: true, force: true });
-	await rm(join(root, familyAffinityRoot, 'review/bridge'), { recursive: true, force: true });
+	cleanManifest.bridge = currentManifest.bridge;
+	await writeFile(join(root, familyAffinityManifestPath), stableFamilyAffinityJson(cleanManifest));
 }
 
 async function retainOnlyPlannedBridgeControls(root: string): Promise<number> {
@@ -862,7 +874,7 @@ describe('family-affinity review receipt contract', () => {
 			generatedCount: live.baselineCatalog!.generatedCount + 1,
 			approvedReviewCount: live.baselineCatalog!.approvedReviewCount + 1
 		});
-	}, 15_000);
+	}, 45_000);
 
 	it('aggregates a valid independently assigned T3 disagreement as revision-required', async () => {
 		const live = await stageLiveAttempt('T3', true);
@@ -943,8 +955,7 @@ describe('family-affinity review receipt contract', () => {
 			generatedCount: live.baselineCatalog!.generatedCount,
 			approvedReviewCount: live.baselineCatalog!.approvedReviewCount,
 			historicalAttemptCount: live.baselineCatalog!.historicalAttemptCount + 1,
-			historicalRevisionRequiredCount:
-				live.baselineCatalog!.historicalRevisionRequiredCount + 1
+			historicalRevisionRequiredCount: live.baselineCatalog!.historicalRevisionRequiredCount + 1
 		});
 		await exportFamilyAffinityReview(live.root, 'write');
 		await exportFamilyAffinityReview(live.root, 'check');
@@ -1135,15 +1146,13 @@ describe('initial family review evidence', () => {
 				height: 1200
 			});
 		}
-	}, 15_000);
+	}, 120_000);
 
 	it('fails closed when an owned candidate path traverses a symlinked directory', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-corpus-'));
 		temporaryRoots.push(root);
-		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, { recursive: true });
-		await stripBridgeFixture(root);
+		await materializeCleanProductionCorpus(root);
 		const external = join(root, 'outside');
 		await mkdir(join(destination, 'candidates'), { recursive: true });
 		await mkdir(external);
@@ -1154,10 +1163,8 @@ describe('initial family review evidence', () => {
 	it('fails closed on malformed or extraneous files inside review-owned paths', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-corpus-'));
 		temporaryRoots.push(root);
-		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, { recursive: true });
-		await stripBridgeFixture(root);
+		await materializeCleanProductionCorpus(root);
 		await mkdir(join(destination, 'review/decisions'), { recursive: true });
 		await writeFile(join(destination, 'review/decisions/not-a-receipt.json'), '{}');
 		await expect(buildFamilyAffinityReviewArtifacts(root)).rejects.toThrow(/extraneous/i);
@@ -1166,10 +1173,7 @@ describe('initial family review evidence', () => {
 	it('reports provisional Earth bridge candidates separately from the canonical 750', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-bridge-'));
 		temporaryRoots.push(root);
-		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
-		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, { recursive: true });
-		await stripBridgeFixture(root);
+		await materializeCleanProductionCorpus(root);
 		const canonicalBaseline = (await buildFamilyAffinityReviewArtifacts(root)).catalog;
 		const canonicalPaths = canonicalAttemptPaths('goblins', 'goblin-runt', 'earth', 1);
 		const canonicalTarget = FamilyAffinityTargetSchema.parse(
@@ -1310,8 +1314,7 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
 			historicalAttemptCount: canonicalBaseline.historicalAttemptCount + 1,
-			historicalRevisionRequiredCount:
-				canonicalBaseline.historicalRevisionRequiredCount + 1
+			historicalRevisionRequiredCount: canonicalBaseline.historicalRevisionRequiredCount + 1
 		});
 		expect(await Promise.all(historyPaths.map((path) => readFile(join(root, path))))).toEqual(
 			before
@@ -1321,9 +1324,9 @@ describe('initial family review evidence', () => {
 	it('tracks planned no-candidate bridge controls without changing canonical review totals', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-planned-bridge-'));
 		temporaryRoots.push(root);
-		const source = join(process.cwd(), 'assets/enemies/experiments/family-affinity-v1');
 		const destination = join(root, 'assets/enemies/experiments/family-affinity-v1');
-		await cp(source, destination, { recursive: true });
+		await materializeCleanProductionCorpus(root);
+		await attachCurrentBridgeFixture(root);
 		const bridgeCoordinateCount = await retainOnlyPlannedBridgeControls(root);
 
 		const materialized = await buildFamilyAffinityReviewArtifacts(root);

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-target-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "aear-soro-4-0-heads",
+  "heroId": "aear-soro",
+  "imageKind": "combat-chibi",
+  "variantId": "4-0-heads",
+  "targetHeadsTall": 4,
+  "anatomicalHeadPercent": 25,
+  "productionState": "candidate-only",
+  "canonicalPrompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/aear-soro-4-0-heads.txt",
+    "sha256": "a14b71996c10a12bb62be45facb73a0c667a87d146619c4026dd6be9e35a3809"
+  },
+  "references": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/combat-chibi-v1.png",
+      "sha256": "e668682f79fec0aa21fbf8515609983f7b5b42b68fb64f5e5a25c2b1665b6172",
+      "role": "sole-edit-target-style-identity-authority"
+    }
+  ],
+  "output": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/aear-soro-4-0-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-generalization-001/results/aear-soro-4-0-heads.json"
+  },
+  "acceptanceCriteria": [
+    "one complete 1024x1536 full-body candidate",
+    "source hero identity and adult age remain recognizable",
+    "requested anatomical head-height relationship is visibly distinct",
+    "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+    "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+    "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject"
+  ]
+}
+

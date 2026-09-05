@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Greatsword v2 · direction review</title>
+		<style>
+			:root {
+				color-scheme: dark;
+				font-family:
+					Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+				background: #0b0c0e;
+				color: #ebe7dc;
+			}
+			* { box-sizing: border-box; }
+			body { margin: 0; background: radial-gradient(circle at 50% 0, #1d2025, #0b0c0e 42rem); }
+			main { width: min(100% - 1.5rem, 76rem); margin: 0 auto; padding: 2rem 0 4rem; }
+			header, section { background: rgba(18, 20, 24, .94); border: 1px solid #30343a; border-radius: 1rem; }
+			header { padding: clamp(1.1rem, 4vw, 2.2rem); }
+			h1 { margin: 0 0 .5rem; font-family: Georgia, serif; font-size: clamp(1.8rem, 6vw, 3.4rem); font-weight: 500; }
+			p { color: #bfc1c4; line-height: 1.55; }
+			.status { display: inline-block; margin-top: .6rem; padding: .4rem .7rem; border: 1px solid #8a7144; border-radius: 999px; color: #e8c886; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+			section { margin-top: 1rem; padding: clamp(.75rem, 3vw, 1.4rem); }
+			figure { margin: 0; }
+			img { display: block; width: 100%; height: auto; border-radius: .65rem; background: #111; }
+			figcaption { margin-top: .75rem; color: #9ca0a6; font-size: .9rem; }
+			.rank-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: .35rem; margin: .9rem 0 0; padding: 0; list-style: none; }
+			.rank-strip li { padding: .5rem .2rem; border-top: 2px solid #6c5f48; text-align: center; color: #ddd7ca; font-size: clamp(.62rem, 2.3vw, .83rem); }
+			.rank-strip small { display: block; margin-top: .15rem; color: #8f9399; }
+			.actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+			a { color: #f0ce89; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+			.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .55rem; padding: 0; list-style: none; }
+			.checks li { padding: .75rem; border: 1px solid #34383e; border-radius: .6rem; color: #c9ccd0; }
+			.checks li::before { content: "✓"; margin-right: .5rem; color: #a9d3a0; }
+			.checks li.revise::before { content: "△"; color: #e8c886; }
+			code { overflow-wrap: anywhere; color: #c9ad76; }
+			@media (max-width: 520px) {
+				main { width: min(100% - 1rem, 76rem); padding-top: .5rem; }
+				header, section { border-radius: .75rem; }
+				.rank-strip small { display: none; }
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<header>
+				<h1>Two-handed Greatsword · F→S</h1>
+				<p>Accepted proportion direction for a heavy visual family inside the canonical Sword class. The owner accepted the corrected blade and hilt proportions with the measured v2 guard-span exception.</p>
+				<span class="status">Accepted · item candidates produced</span>
+			</header>
+			<section>
+				<figure>
+					<a href="../../direction/greatsword-metal-ranks-v2.png">
+						<img
+							src="thumbnails/greatsword-metal-ranks-v2-tablet-768.webp"
+							srcset="thumbnails/greatsword-metal-ranks-v2-phone-390.webp 390w, thumbnails/greatsword-metal-ranks-v2-tablet-768.webp 768w, ../../direction/greatsword-metal-ranks-v2.png 1536w"
+							sizes="(max-width: 520px) calc(100vw - 2.5rem), min(72rem, calc(100vw - 4rem))"
+							width="1536"
+							height="1024"
+							alt="Seven two-handed Greatswords progressing from Bronze F to Sunsteel S"
+						/>
+					</a>
+					<figcaption>Tap the board for native 1536×1024 detail. Phone review intentionally displays all seven silhouettes together.</figcaption>
+				</figure>
+				<ol class="rank-strip">
+					<li>F<small>Bronze</small></li><li>E<small>Iron</small></li><li>D<small>Steel</small></li><li>C<small>Blacksteel</small></li><li>B<small>Skyiron</small></li><li>A<small>Starmetal</small></li><li>S<small>Sunsteel</small></li>
+				</ol>
+			</section>
+			<section>
+				<h2>Producer inspection</h2>
+				<ul class="checks">
+					<li>Seven complete silhouettes</li><li>Two-hand grips pass</li><li>Blade:hilt ratios pass</li><li>Adjacent ranks escalate</li><li>Materials remain distinct</li><li>Guard exception recorded</li>
+				</ul>
+				<p>Revision SHA-256: <code>fbd563ff6bff5325cf34663a066e79067e957d8e9888b25718ea51d242d769c8</code></p>
+				<div class="actions"><a href="../../direction/greatsword-metal-ranks-v2.result.json">Provenance receipt</a><a href="../proportions/index.html">Proportion review</a><a href="../../checkpoints/direction-decision-v2.json">Owner decision</a><a href="../items/index.html">Dedicated candidates</a><a href="review-manifest.json">Review manifest</a></div>
+			</section>
+		</main>
+	</body>
+</html>

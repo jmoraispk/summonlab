@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:footing",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-footing.json",
+	"promptHash": "2c1e031146fe4cee25af2fd36380af2e04f645e587ca94013aa5a436e47b52fb",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-combat-foundation.png",
+			"contentHash": "82794be278d2ca7103ba34602254185ab5b5b609da84e24fe769387441b50924"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-footing-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2135200,
+		"contentHash": "fa844fef43afc21b111ddc31a7ff5f3221f824a4f650a8919d9749e1fb7cb0a8"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-footing.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1846578,
+		"contentHash": "381ae55af2a411007ac2dfc0551c7a1e595a3134a300dba2f1c9e96026614195"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "eefc8e1216a2e0f6c1fff8d2284f466623a2dd129a27e0a01eafaec0aefe3482",
+		"postRepairContentHash": "381ae55af2a411007ac2dfc0551c7a1e595a3134a300dba2f1c9e96026614195",
+		"removedPixels": 384942
+	}
+}

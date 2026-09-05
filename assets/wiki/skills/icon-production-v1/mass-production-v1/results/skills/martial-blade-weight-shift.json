@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:weight-shift",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-weight-shift.json",
+	"promptHash": "fd4cc1943da2a8a708f132473759aaec74330ad4364a311198fe3b30df19bad5",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-heavy-momentum.png",
+			"contentHash": "15b3d8e3b63a46e6c0b54c4ec2ffc226d91cb768b53c73e8007b4078101109ad"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-shoulder-set.png",
+			"contentHash": "0b42000e26bab4299b3ecf356a936d52b653bf64cefc86bbe3ac80041e8529ad"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-weight-shift-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2160494,
+		"contentHash": "5cd11af1c921d9ba9d816cc5e84ce5f2a7aaaac8ba19df5d22217f3dc785317d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-weight-shift.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1840892,
+		"contentHash": "5a9370ad87a49c433fa12c3e9878f5fe2064f7bf3f4eb86018eb0e005fd24ffa"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "9435795a96ff581050a8aea83ee0a27b95e9373c6de127a52c6894cc0d81b8f6",
+		"postRepairContentHash": "5a9370ad87a49c433fa12c3e9878f5fe2064f7bf3f4eb86018eb0e005fd24ffa",
+		"removedPixels": 384942
+	}
+}

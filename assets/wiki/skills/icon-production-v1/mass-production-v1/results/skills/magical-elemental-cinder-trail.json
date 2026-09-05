@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:cinder-trail",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-cinder-trail.json",
+	"promptHash": "aad627902efe6a306681eafe686c6fb9c70c56a444386c0702ca3f5536bf9223",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-trail.png",
+			"contentHash": "d4e35790a78a071b1a42168c1944145bbb64ec916af53651127ebbb791ced231"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-cinder-trail-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2139777,
+		"contentHash": "8787e7af14707c96a325828eabd613ebb6ece955796e9bddb21dd5eab2032c7d"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-cinder-trail.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1934580,
+		"contentHash": "21e9d42e48d743bf2cc5444dcdeae7a688ee987edd087677b9682eeb3c41aad0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e5c42e1f98db96b1379ee90b6e1e01a49c98dd7035a127024480bb679b5ae59f",
+		"postRepairContentHash": "21e9d42e48d743bf2cc5444dcdeae7a688ee987edd087677b9682eeb3c41aad0",
+		"removedPixels": 384942
+	}
+}

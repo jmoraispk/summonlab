@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-revision-assignment-v1",
+  "assignmentId": "assignment-greatsword-v1-metal-rank-direction-attempt-2",
+  "targetId": "greatsword-v1-metal-rank-direction",
+  "attempt": 2,
+  "immutable": true,
+  "correctionType": "edit",
+  "failedProperty": "attempt 1 inherited a 1624x969 reference canvas instead of the assigned 1536x1024 canvas",
+  "preserve": "all seven designs, order, silhouettes, materials, pose, spacing, lighting, and finish",
+  "source": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v1-attempt-1-source.png",
+    "sha256": "089f3646af7dd09c4b4c3df955d0f6908fbdc978ffec3e641fbd53496f2f5259",
+    "width": 1624,
+    "height": 969
+  },
+  "promptPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v1-attempt-2.prompt.txt",
+  "promptSha256": "25dfc224d5fb3d3806aea7527ea177fdcdc71c4d3dd88a21916879bb5a90ec9b",
+  "permittedOutput": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png",
+  "selfPromotionForbidden": true
+}

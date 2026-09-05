@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:interpose",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-interpose.json",
+	"promptHash": "ec1832c62779c898afcc51206942c33803267c3ac27adb6cfa7c861527bd6805",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-ally-cover.png",
+			"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-cover.png",
+			"contentHash": "add83ce3881e563b2443ba28a00260156de622136f4d2db1df13bb010672a827"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-interpose-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1937866,
+		"contentHash": "564ac2d3b4224b7862b8fafc74e4bdd472da6e3c0bd7ea5e029aea49f328dcc6"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-interpose.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1641588,
+		"contentHash": "6dfad5ca355934c968a82d950ae98e2c3ef87bac94d9d617cb09a8e5ebe92b48"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "3d0243352d7a400d4f918a0a92da0f36af42737b9477b6e803f097d19920fd6d",
+		"postRepairContentHash": "6dfad5ca355934c968a82d950ae98e2c3ef87bac94d9d617cb09a8e5ebe92b48",
+		"removedPixels": 384942
+	}
+}

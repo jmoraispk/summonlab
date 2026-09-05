@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:whirlwind",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-whirlwind.json",
+	"promptHash": "4ee54e897d924b26a7fa84bf062af847bd6510ae5ba34b39cfa15574c7355f1a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dual-flow.png",
+			"contentHash": "d9be38f429a2c18c6e68f0927245569521b4bb2f05db257f2cd251a9454c8de0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-dance-of-two.png",
+			"contentHash": "52756b55709c804ca24b73199cc07f7ffac8cbe411d6d4e35810dd56b34cf5ce"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-whirlwind-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2229703,
+		"contentHash": "fa50e7d86af4dca9a4b4f804541f44f5ae69733282a09c0c4157d887293f25c2"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-whirlwind.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1951315,
+		"contentHash": "fbe3fab1eeb817ebff489bfa38c077fbe6df5ea77a9f07a5e07cb89006d01485"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4956460c5621b9e76ec92cc3271653bfcc51f1fabf0b16a7ba48bfa6ac250ad7",
+		"postRepairContentHash": "fbe3fab1eeb817ebff489bfa38c077fbe6df5ea77a9f07a5e07cb89006d01485",
+		"removedPixels": 384942
+	}
+}

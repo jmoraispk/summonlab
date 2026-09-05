@@ -1,6 +1,5 @@
 import {
 	EngineCommandSchema,
-	EngineGameStateSchema,
 	HeroDecisionPacketSchema,
 	HeroPolicyResultSchema,
 	type EngineCommand,
@@ -9,7 +8,7 @@ import {
 	type HeroPolicyResult
 } from '@summonlab/contracts';
 
-import { hashParsedGameState } from '../core/state.js';
+import { hashParsedGameState, parseGameState } from '../core/state.js';
 import { IllegalActionError } from '../errors.js';
 import { deterministicUuid, hashCanonical } from '../hash.js';
 import { decisionLegalActions } from './legal-actions.js';
@@ -25,7 +24,7 @@ export function commandFromHeroPolicyResult(input: {
 	readonly result: HeroPolicyResult;
 	readonly decisionJobId: string;
 }): EngineCommand {
-	const state = EngineGameStateSchema.parse(input.state);
+	const state = parseGameState(input.state);
 	const packet = HeroDecisionPacketSchema.parse(input.packet);
 	const result = HeroPolicyResultSchema.parse(input.result);
 	const unsignedPacket = { ...packet } as Partial<HeroDecisionPacket>;

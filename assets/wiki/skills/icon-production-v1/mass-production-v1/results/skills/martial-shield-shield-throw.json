@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:shield-throw",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-shield-throw.json",
+	"promptHash": "2c844795d0967f6bd60a647db8507f8a48f409397fe350069c59bfc4e0b80d4f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-throw.png",
+			"contentHash": "9cb2ddcaf551c46f36ab689b5e9ce0947eb212c5b892692199fefffd38b4056b"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-shield-throw-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1950088,
+		"contentHash": "72583d0941a6ba86a47557d17cec49f415dbce060e2f383940576e3e7eab4968"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-throw.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1680181,
+		"contentHash": "834f46797abc62d5b495a4ce7e56dbdd45ec856c9fa37b1670a3f752c3c4c5d7"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "95dd4f83870add670f8410f72cae951520cdc486657f0edf2106199b170787e4",
+		"postRepairContentHash": "834f46797abc62d5b495a4ce7e56dbdd45ec856c9fa37b1670a3f752c3c4c5d7",
+		"removedPixels": 384942
+	}
+}

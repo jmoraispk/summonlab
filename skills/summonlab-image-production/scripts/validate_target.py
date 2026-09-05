@@ -18,7 +18,9 @@ ASSIGNMENT_VERSION = "image-production-assignment-v1"
 FAMILY_TARGET_VERSION = "family-affinity-target-v1"
 FAMILY_ASSIGNMENT_VERSION = "family-affinity-assignment-v1"
 FAMILY_PROFILE = "image-production-family-target-v1"
+FAUNA_FAMILY_PROFILE = "image-production-fauna-family-target-v1"
 FAMILY_ROOT = "assets/enemies/experiments/family-affinity-v1"
+FAUNA_FAMILY_ROOT = "assets/enemies/experiments/fauna-family-v1"
 FAMILY_AFFINITIES = ("normal", "fire", "earth", "wind", "water")
 ID_PATTERN = re.compile(r"^[a-z][a-z0-9-]{1,79}$")
 SHA_PATTERN = re.compile(r"^[a-f0-9]{64}$")
@@ -196,39 +198,49 @@ def ensure_owned_path_has_no_symlink(workspace: Path, raw: str) -> Path:
     return absolute_project_path(workspace, raw)
 
 
+def family_experiment(target: dict[str, Any]) -> tuple[str, str]:
+    experiment_id = target.get("experimentId", "family-affinity-v1")
+    if experiment_id == "family-affinity-v1":
+        return experiment_id, FAMILY_ROOT
+    if experiment_id == "fauna-family-v1":
+        return experiment_id, FAUNA_FAMILY_ROOT
+    fail("unsupported family production experimentId")
+
+
 def family_paths(target: dict[str, Any]) -> dict[str, str]:
+    _, family_root = family_experiment(target)
     version = target["version"]
     affinity = target["affinity"]
     if target["namespace"] == "canonical":
         stem = f'{target["familyId"]}/{target["formId"]}/{affinity}'
         review_stem = stem
         return {
-            "target": f"{FAMILY_ROOT}/targets/{stem}/target-v{version}.json",
-            "assignment": f"{FAMILY_ROOT}/assignments/{stem}/assignment-v{version}.json",
-            "candidate": f"{FAMILY_ROOT}/candidates/{stem}-v{version}.png",
-            "result": f"{FAMILY_ROOT}/results/{stem}-v{version}.json",
+            "target": f"{family_root}/targets/{stem}/target-v{version}.json",
+            "assignment": f"{family_root}/assignments/{stem}/assignment-v{version}.json",
+            "candidate": f"{family_root}/candidates/{stem}-v{version}.png",
+            "result": f"{family_root}/results/{stem}-v{version}.json",
             "decision": (
-                f"{FAMILY_ROOT}/review/decisions/{review_stem}/"
+                f"{family_root}/review/decisions/{review_stem}/"
                 f"candidate-v{version}-review-v{version}.json"
             ),
             "blindReview": (
-                f"{FAMILY_ROOT}/review/blind/{review_stem}/"
+                f"{family_root}/review/blind/{review_stem}/"
                 f"candidate-v{version}-blind-v{version}.json"
             ),
         }
     current_class = target["currentClassId"]
     stem = f"{current_class}/{affinity}"
     return {
-        "target": f"{FAMILY_ROOT}/bridge/targets/{stem}/target-v{version}.json",
-        "assignment": f"{FAMILY_ROOT}/bridge/assignments/{stem}/assignment-v{version}.json",
-        "candidate": f"{FAMILY_ROOT}/bridge/candidates/{stem}-v{version}.png",
-        "result": f"{FAMILY_ROOT}/bridge/results/{stem}-v{version}.json",
+        "target": f"{family_root}/bridge/targets/{stem}/target-v{version}.json",
+        "assignment": f"{family_root}/bridge/assignments/{stem}/assignment-v{version}.json",
+        "candidate": f"{family_root}/bridge/candidates/{stem}-v{version}.png",
+        "result": f"{family_root}/bridge/results/{stem}-v{version}.json",
         "decision": (
-            f"{FAMILY_ROOT}/review/bridge/decisions/{stem}/"
+            f"{family_root}/review/bridge/decisions/{stem}/"
             f"candidate-v{version}-review-v{version}.json"
         ),
         "blindReview": (
-            f"{FAMILY_ROOT}/review/bridge/blind/{stem}/"
+            f"{family_root}/review/bridge/blind/{stem}/"
             f"candidate-v{version}-blind-v{version}.json"
         ),
     }
@@ -257,23 +269,37 @@ def validate_family(
         target_keys.add("playerFacingName")
     if "semanticCorrection" in target:
         target_keys.add("semanticCorrection")
+    if "experimentId" in target:
+        target_keys.add("experimentId")
+    if "familyDisplayName" in target:
+        target_keys.add("familyDisplayName")
+    if "formDisplayName" in target:
+        target_keys.add("formDisplayName")
+    experiment_id, family_root = family_experiment(target)
     require_exact_keys(target, target_keys, "family target")
     require_exact_keys(
         assignment,
-        {
+        ({
             "schemaVersion", "assignmentId", "targetId", "targetSha256", "coordinateId",
             "namespace", "version", "producerRole", "allowedOutputs", "retryCeiling",
             "dispatchStatus", "selfPromotionForbidden", "runtimeCatalogMutationForbidden",
-        },
+        } | ({"experimentId"} if "experimentId" in assignment else set())),
         "family assignment",
     )
     if target.get("schemaVersion") != FAMILY_TARGET_VERSION:
         fail("unsupported family target schemaVersion")
     if assignment.get("schemaVersion") != FAMILY_ASSIGNMENT_VERSION:
         fail("unsupported family assignment schemaVersion")
+    if assignment.get("experimentId", "family-affinity-v1") != experiment_id:
+        fail("family target and assignment experimentId values disagree")
     namespace = target.get("namespace")
     if namespace not in {"canonical", "bridge"}:
         fail("family namespace must be canonical or bridge")
+    if experiment_id == "fauna-family-v1" and namespace != "canonical":
+        fail("fauna family production supports canonical targets only")
+    if experiment_id == "fauna-family-v1":
+        require_string(target, "familyDisplayName")
+        require_string(target, "formDisplayName")
     affinity = target.get("affinity")
     if affinity not in FAMILY_AFFINITIES:
         fail("family affinity must be exactly normal, fire, earth, wind, or water")
@@ -295,7 +321,11 @@ def validate_family(
     )
     if target.get("coordinateId") != coordinate:
         fail("family target coordinate fields do not match coordinateId")
-    target_id = f"{namespace}/{coordinate}/v{version}"
+    target_id = (
+        f"{namespace}/{coordinate}/v{version}"
+        if experiment_id == "family-affinity-v1"
+        else f"{experiment_id}/{namespace}/{coordinate}/v{version}"
+    )
     if target.get("targetId") != target_id:
         fail("family targetId must bind namespace, coordinate, and version")
     tier = target.get("tier")
@@ -373,11 +403,11 @@ def validate_family(
         fail("bridge-only targets require bridge identity sources")
     packet_path = sources.get("familyPacketPath")
     legacy_canonical_packet = re.fullmatch(
-        rf"{re.escape(FAMILY_ROOT)}/families/[0-9]{{2}}-{re.escape(family_id)}\.json",
+        rf"{re.escape(family_root)}/families/[0-9]{{2}}-{re.escape(family_id)}\.json",
         packet_path if isinstance(packet_path, str) else "",
     )
     expected_bridge_packet = (
-        f"{FAMILY_ROOT}/bridge/identities/{current_class}.json"
+        f"{family_root}/bridge/identities/{current_class}.json"
         if namespace == "bridge" else None
     )
     if packet_kind == "bridge-identity" and packet_path != expected_bridge_packet:
@@ -395,7 +425,7 @@ def validate_family(
                 fail("canonical family packet path does not match the target family")
         elif (
             not isinstance(self_bound_packet_path, str)
-            or not self_bound_packet_path.startswith(f"{FAMILY_ROOT}/")
+            or not self_bound_packet_path.startswith(f"{family_root}/")
             or str(project_path(self_bound_packet_path)) != packet_path
         ):
             fail("canonical family packet replacement is not self-bound")
@@ -414,16 +444,19 @@ def validate_family(
     ):
         fail("family packet source hash changed")
     mapping_path = sources.get("mappingPath")
-    if not isinstance(mapping_path, str) or not mapping_path.startswith(f"{FAMILY_ROOT}/"):
+    if not isinstance(mapping_path, str) or not mapping_path.startswith(f"{family_root}/"):
         fail("family mapping path is invalid")
     mapping_absolute = absolute_project_path(workspace, mapping_path)
     if not mapping_absolute.is_file():
         fail("family mapping source is missing")
     mapping = load_json(mapping_absolute)
     self_bound_mapping_path = mapping.get("mappingPath")
-    legacy_mapping_path = f"{FAMILY_ROOT}/current-class-mapping.json"
+    legacy_mapping_path = f"{family_root}/current-class-mapping.json"
     if self_bound_mapping_path is None:
-        if mapping_path != legacy_mapping_path:
+        if experiment_id == "fauna-family-v1":
+            if mapping_path != f"{family_root}/active-sources.json" or mapping.get("experimentId") != experiment_id:
+                fail("fauna family active-source binding is invalid")
+        elif mapping_path != legacy_mapping_path:
             fail("family mapping replacement is not self-bound")
     elif (
         not isinstance(self_bound_mapping_path, str)
@@ -487,6 +520,77 @@ def validate_family(
             anchor.get("normalCandidateSha256"), "anchor.normalCandidateSha256"
         ):
             fail("provisional Earth Normal candidate evidence is stale")
+    elif anchor.get("kind") == "normal-verified-candidate":
+        require_exact_keys(
+            anchor,
+            {
+                "kind", "normalCoordinateId", "normalVersion", "normalTargetPath",
+                "normalTargetSha256", "normalCandidatePath", "normalCandidateSha256",
+                "normalResultPath", "normalResultSha256", "sourcePacketPath",
+                "sourcePacketSha256", "humanReviewPending",
+                "runtimeCatalogMutationForbidden",
+            },
+            "Normal verified-candidate anchor",
+        )
+        if namespace != "canonical" or status != "planned-provisional-anchor":
+            fail("verified-candidate anchors require canonical planned-provisional-anchor dispatch")
+        normal_version = anchor.get("normalVersion")
+        if not isinstance(normal_version, int) or isinstance(normal_version, bool) or normal_version < 1:
+            fail("Normal anchor version must be a positive integer")
+        expected_normal_coordinate = f"{family_id}/{form_id}/normal"
+        expected_normal_target = (
+            f"{family_root}/targets/{family_id}/{form_id}/normal/target-v{normal_version}.json"
+        )
+        expected_normal_candidate = (
+            f"{family_root}/candidates/{family_id}/{form_id}/normal-v{normal_version}.png"
+        )
+        expected_normal_result = (
+            f"{family_root}/results/{family_id}/{form_id}/normal-v{normal_version}.json"
+        )
+        if (
+            anchor.get("normalCoordinateId") != expected_normal_coordinate
+            or anchor.get("normalTargetPath") != expected_normal_target
+            or anchor.get("normalCandidatePath") != expected_normal_candidate
+            or anchor.get("normalResultPath") != expected_normal_result
+            or anchor.get("sourcePacketPath") != packet_path
+            or anchor.get("sourcePacketSha256") != sources.get("familyPacketSha256")
+            or anchor.get("humanReviewPending") is not True
+            or anchor.get("runtimeCatalogMutationForbidden") is not True
+        ):
+            fail("verified-candidate anchor is not bound to the exact same-form Normal chain")
+        for field in (
+            "normalTargetSha256", "normalCandidateSha256", "normalResultSha256",
+            "sourcePacketSha256",
+        ):
+            require_sha(anchor.get(field), f"anchor.{field}")
+        normal_target_absolute = absolute_project_path(workspace, expected_normal_target)
+        normal_candidate_absolute = absolute_project_path(workspace, expected_normal_candidate)
+        normal_result_absolute = absolute_project_path(workspace, expected_normal_result)
+        if not all(path.is_file() for path in (
+            normal_target_absolute, normal_candidate_absolute, normal_result_absolute
+        )):
+            fail("verified-candidate anchor has missing Normal evidence")
+        normal_target = load_json(normal_target_absolute)
+        if (
+            canonical_sha256(normal_target) != anchor["normalTargetSha256"]
+            or normal_target.get("targetId")
+            != (
+                f"canonical/{expected_normal_coordinate}/v{normal_version}"
+                if experiment_id == "family-affinity-v1"
+                else f"{experiment_id}/canonical/{expected_normal_coordinate}/v{normal_version}"
+            )
+            or normal_target.get("coordinateId") != expected_normal_coordinate
+            or normal_target.get("familyId") != family_id
+            or normal_target.get("formId") != form_id
+            or normal_target.get("affinity") != "normal"
+            or normal_target.get("status") != "planned"
+            or normal_target.get("anchor") != {"kind": "normal-self"}
+        ):
+            fail("verified-candidate Normal target hash or identity changed")
+        if hashlib.sha256(normal_candidate_absolute.read_bytes()).hexdigest() != anchor["normalCandidateSha256"]:
+            fail("verified-candidate Normal candidate hash changed")
+        if hashlib.sha256(normal_result_absolute.read_bytes()).hexdigest() != anchor["normalResultSha256"]:
+            fail("verified-candidate Normal result hash changed")
     elif anchor.get("kind") == "normal-approved-review":
         require_exact_keys(
             anchor,
@@ -505,16 +609,16 @@ def validate_family(
             fail("Normal anchor version must be a positive integer")
         expected_normal_coordinate = f"{family_id}/{form_id}/normal"
         expected_normal_target = (
-            f"{FAMILY_ROOT}/targets/{family_id}/{form_id}/normal/target-v{normal_version}.json"
+            f"{family_root}/targets/{family_id}/{form_id}/normal/target-v{normal_version}.json"
         )
         expected_normal_candidate = (
-            f"{FAMILY_ROOT}/candidates/{family_id}/{form_id}/normal-v{normal_version}.png"
+            f"{family_root}/candidates/{family_id}/{form_id}/normal-v{normal_version}.png"
         )
         expected_normal_result = (
-            f"{FAMILY_ROOT}/results/{family_id}/{form_id}/normal-v{normal_version}.json"
+            f"{family_root}/results/{family_id}/{form_id}/normal-v{normal_version}.json"
         )
         expected_normal_review = (
-            f"{FAMILY_ROOT}/review/decisions/{family_id}/{form_id}/normal/"
+            f"{family_root}/review/decisions/{family_id}/{form_id}/normal/"
             f"candidate-v{normal_version}-review-v{normal_version}.json"
         )
         if (
@@ -555,7 +659,11 @@ def validate_family(
         if (
             canonical_sha256(normal_target) != anchor["normalTargetSha256"]
             or normal_target.get("targetId")
-            != f"canonical/{expected_normal_coordinate}/v{normal_version}"
+            != (
+                f"canonical/{expected_normal_coordinate}/v{normal_version}"
+                if experiment_id == "family-affinity-v1"
+                else f"{experiment_id}/canonical/{expected_normal_coordinate}/v{normal_version}"
+            )
             or normal_target.get("coordinateId") != expected_normal_coordinate
             or normal_target.get("familyId") != family_id
             or normal_target.get("formId") != form_id
@@ -606,7 +714,11 @@ def validate_family(
         fail("family assignment must forbid runtime mutation")
 
     return {
-        "profile": FAMILY_PROFILE,
+        "profile": (
+            FAUNA_FAMILY_PROFILE
+            if experiment_id == "fauna-family-v1"
+            else FAMILY_PROFILE
+        ),
         "targetId": target_id,
         "assignmentId": assignment["assignmentId"],
         "candidatePath": owned["candidate"],
@@ -811,10 +923,12 @@ def run_mandatory_family_dispatch_gate(
         raise ValueError("installed v3 contract is not a real regular file")
     contract_bytes = contract_path.read_bytes()
     contract = json.loads(contract_bytes)
-    receipt_path = workspace / FAMILY_ROOT / "production-compatibility.json"
+    target = load_json(target_path)
+    _, family_root = family_experiment(target)
+    receipt_path = workspace / family_root / "production-compatibility.json"
     cursor = workspace
     for part in PurePosixPath(
-        f"{FAMILY_ROOT}/production-compatibility.json"
+        f"{family_root}/production-compatibility.json"
     ).parts:
         cursor /= part
         metadata = cursor.lstat()

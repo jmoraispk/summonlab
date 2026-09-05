@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:enchantment:light",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-light.json",
+	"promptHash": "d8337ea2ed53cbc92d09a0593b02b8fec9e30c3d7f718f4c75f5a152f7380d60",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-light.png",
+			"contentHash": "c9cfaed0a4fdea290ca4e861c0c7322c1831e047aff035333ba2479481d961f4"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-light-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2075827,
+		"contentHash": "96e59959ad24212ca5bf1de156613b46097f86dc1688ff0f55fcbe6aa0b69b97"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-light.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1886186,
+		"contentHash": "f1ae7ca32a3a57d707114124581dabd267e70654b3f63e55f3cfd9c2d7d37b91"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "98aea2b83a474666b9ead6be3dce53df08cf8ff7a6f5e02d8593052f244ecffd",
+		"postRepairContentHash": "f1ae7ca32a3a57d707114124581dabd267e70654b3f63e55f3cfd9c2d7d37b91",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:cooking:feast",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-cooking-feast.json",
+	"promptHash": "51197bb6cd6e1be9feb5642fc52ea86087dd0322549be3889a1b3469b001fb8e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-shared-meal.png",
+			"contentHash": "278b6aaedd16b8df6d773598497f72a03f35f2ed267d11888f2a2b5417711842"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-hearth-meal.png",
+			"contentHash": "09b912363b5e74b5889b312e5022791163981ca7bfa32baef047dbac9dc32af3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-cooking-feast-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2204214,
+		"contentHash": "9c0c1d4368a9ff16bce9ae97d35592ff9c36970fd9f3fb2aa7bf882c9f2e6b08"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-feast.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1989797,
+		"contentHash": "cf4cd4051513021090fe94328ff59037ebd5fea153db8228352fd4fffddbf92f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "1fd05857f9e7b001cf55ba33dff48508e01769eb8d8a2fff466e437fb95717b9",
+		"postRepairContentHash": "cf4cd4051513021090fe94328ff59037ebd5fea153db8228352fd4fffddbf92f",
+		"removedPixels": 384942
+	}
+}

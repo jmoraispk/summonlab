@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:gathering:animal-handling",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-gathering-animal-handling.json",
+	"promptHash": "296dbece3eeef79db0cef16197d7e8e98609ad812ab0d5acea47b5990f827bd1",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-beast-bond.png",
+			"contentHash": "ca90badc7b6319518ae207dad63593505d86fdbb6e9fa72d034033a5aa949c71"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-animal-handling-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1998949,
+		"contentHash": "71f5e0a8adbf87137ea3b7ef8ce271355b44ce1a88b767fd490b770cdaf3cfe8"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-animal-handling.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1792122,
+		"contentHash": "489ad271086d2b13bfe651b40a8bc6f110d4992ac48f7dedc3f3ab1de68fa0d7"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "c365817ecfde9f8e9f37480c61c029df9344145e1eab69eaf5ff743a76a06d5b",
+		"postRepairContentHash": "489ad271086d2b13bfe651b40a8bc6f110d4992ac48f7dedc3f3ab1de68fa0d7",
+		"removedPixels": 384942
+	}
+}

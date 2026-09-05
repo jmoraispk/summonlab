@@ -1,0 +1,80 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "shield.fortress",
+	"columns": 4,
+	"rows": 3,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:shield:shield-use",
+			"name": "Shield Use",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:shield:raise-shield",
+			"name": "Raise Shield",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:shield:brace",
+			"name": "Brace",
+			"rarity": "F",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:shield:wall-stance",
+			"name": "Wall Stance",
+			"rarity": "D",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:shield:tower-form",
+			"name": "Tower Form",
+			"rarity": "D",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:shield:unyielding",
+			"name": "Unyielding",
+			"rarity": "C",
+			"row": 2,
+			"column": 2
+		},
+		{
+			"index": 7,
+			"targetId": "martial:shield:immovable",
+			"name": "Immovable",
+			"rarity": "B",
+			"row": 2,
+			"column": 3
+		},
+		{
+			"index": 8,
+			"targetId": "martial:shield:endure",
+			"name": "Endure",
+			"rarity": "F",
+			"row": 2,
+			"column": 4
+		},
+		{
+			"index": 9,
+			"targetId": "martial:shield:the-last-wall",
+			"name": "The Last Wall",
+			"rarity": "S",
+			"row": 3,
+			"column": 1
+		}
+	]
+}

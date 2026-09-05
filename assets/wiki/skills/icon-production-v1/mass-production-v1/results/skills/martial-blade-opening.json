@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:opening",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-opening.json",
+	"promptHash": "9da196eafcb5e1c6b327e19ae3d6853c9cf0c8ef52ca87eab9423353fa2d06d4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dagger-strike.png",
+			"contentHash": "b573f30649907e8139355abcbe978ffafa994c5444248625822badf5effe65a0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-slash-across.png",
+			"contentHash": "98d33bb97a2d8c5fdc1765b7a5843ae729720663522c42f87961dd9cbcbda0df"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-opening-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2210282,
+		"contentHash": "61be40348a91d655594debc399638b78e7875a1280885c0f9c1e1fc66fdc1510"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-opening.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1884285,
+		"contentHash": "ab767592d939a3fa4d408c4cbd367d4ac0d54dfe49ac1bce6b26ca45cdc81bc3"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e5e9498e97dc9f6e825b6b6ae7acc99336d9ccd2815479e7303c4507db469f5a",
+		"postRepairContentHash": "ab767592d939a3fa4d408c4cbd367d4ac0d54dfe49ac1bce6b26ca45cdc81bc3",
+		"removedPixels": 384942
+	}
+}

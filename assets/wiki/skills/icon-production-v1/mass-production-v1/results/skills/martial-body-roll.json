@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:roll",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-roll.json",
+	"promptHash": "ff4500c705eb877bdeff54209f08d2c0ee66bbab2b3427d937f3490b7edfbc6f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-ground-movement.png",
+			"contentHash": "1860690f77d22a99db61e049c917e3f66b384eeeddcdf7c76f35249fc4552d77"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-dash.png",
+			"contentHash": "1508d00088adc5d9f269d3a237f67f811e5ad8a00af04ee60b1f0da14590babe"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-roll-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1955204,
+		"contentHash": "60235bffc1e762a5e50bf4c6321209a29d01dfb240ed33bcb3c21da311f0f3b5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-roll.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1771718,
+		"contentHash": "bf13c25717a7601e50e18008adf77fa0350576ba9515f8230affd6d9fa8e1159"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "10441c4568e385963abad2cb62fdcbf177b8af08bb1006075f1673854f43a63b",
+		"postRepairContentHash": "bf13c25717a7601e50e18008adf77fa0350576ba9515f8230affd6d9fa8e1159",
+		"removedPixels": 384942
+	}
+}

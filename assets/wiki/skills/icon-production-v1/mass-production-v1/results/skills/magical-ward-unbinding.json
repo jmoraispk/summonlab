@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:ward:unbinding",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-ward-unbinding.json",
+	"promptHash": "d8613972fe98efb3f964d2dca331cec5400b7bab40db612f86066a1584c2fa25",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-cleansing-break.png",
+			"contentHash": "0d4b78887fc4d0c3909f4ca759dc9b867ed1e85555ec17d174fb63bb5ba584dd"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-dispel.png",
+			"contentHash": "7705b080db90122854fedc4d281ab226e0bc97fb102c63b47ede328c20882e59"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-ward-unbinding-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2392867,
+		"contentHash": "e60c38d2aac0ec68c5c0758282653bba21f9aab0a9b7dea3049a9c7eb19c122a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-unbinding.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2171547,
+		"contentHash": "0e9eb67c560107c74f5c050336f05cad89fd511eec059e17a6db38270c2587b0"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f404a4814e72513ab42095738ea774448d8dd36dc9bd0686b3b16fa7bc603a6d",
+		"postRepairContentHash": "0e9eb67c560107c74f5c050336f05cad89fd511eec059e17a6db38270c2587b0",
+		"removedPixels": 384942
+	}
+}

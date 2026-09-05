@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-03",
+  "inspectedAt": "2026-09-03T09:41:08Z",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "calon-sorin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-03/results/calon-sorin/combat-chibi-v1.json",
+      "selectedResultSha256": "59a91406767ff267b086c356181135c8c307fcf2cf2a760fe9dc5df285e31807",
+      "verdict": "fail",
+      "blockingCriteria": [
+        "identity-continuity"
+      ],
+      "evidence": "Two independent full-resolution inspections found that the mature 37-year-old summon face becomes a markedly younger doll-like face: small eyes become oversized glossy eyes, fine straight brows become thick arches, the aquiline nose becomes short and rounded, and mature cheek planes become smooth and tapered. Hair, wardrobe, body, containment, ratio, and one-star ceiling pass."
+    },
+    {
+      "heroId": "kelor-reshel",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-03/results/kelor-reshel/combat-chibi-v1.json",
+      "selectedResultSha256": "fdc09b9789a43b1b6aa4fe7acfa9b34a804b40fcd100233a3f36122809f39355",
+      "verdict": "fail",
+      "blockingCriteria": [
+        "body-continuity"
+      ],
+      "evidence": "Two independent full-resolution inspections found that neither selected image satisfies the required soft-round construction with an evident middle: the summon reads broad-shouldered and athletic-slight with a tightly cinched narrow waist, and the chibi preserves that narrow middle. Identity, hair, wardrobe, containment, ratio, and one-star ceiling pass."
+    }
+  ]
+}

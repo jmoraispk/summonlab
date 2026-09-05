@@ -1,0 +1,7 @@
+interface:
+  display_name: 'Summonlab Hero Creation'
+  short_description: 'Create paired summon and combat hero art'
+  default_prompt: 'Use $summonlab-hero-creation to create one new Summonlab hero and a matching combat chibi.'
+
+policy:
+  allow_implicit_invocation: true

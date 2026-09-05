@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Summonlab · Painted pair review</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1b1915;
+        --ink-soft: #5e5549;
+        --night: #1d2526;
+        --night-2: #2b3435;
+        --paper: #eee5d5;
+        --paper-light: #fbf7ef;
+        --line: #b7a78e;
+        --ochre: #b27823;
+        --rust: #91493d;
+        --keep: #2f6848;
+        --pass: #8f3f34;
+        --focus: #0d728a;
+        font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scrollbar-color: #756a5c #e5dbc8;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(circle at 50% -10rem, #fffaf0 0, var(--paper) 42rem);
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 3px;
+      }
+      header {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+        gap: 3rem;
+        padding: clamp(2.2rem, 6vw, 5rem) clamp(1rem, 5vw, 5.5rem) 3rem;
+        background: var(--night);
+        color: var(--paper-light);
+      }
+      .eyebrow {
+        margin: 0 0 0.8rem;
+        color: #e0b66e;
+        font: 800 0.76rem/1.2 ui-monospace, "SFMono-Regular", monospace;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+      h1 {
+        max-width: 13ch;
+        margin: 0;
+        font: 500 clamp(3rem, 7vw, 6.5rem) / 0.88 "Iowan Old Style", Palatino, Georgia, serif;
+        letter-spacing: -0.045em;
+      }
+      .intro {
+        align-self: end;
+        max-width: 46rem;
+      }
+      .intro p {
+        margin: 0;
+        color: #d8cfbf;
+        font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+        line-height: 1.6;
+      }
+      .intro strong {
+        color: #fff7e8;
+      }
+      .warning {
+        margin-top: 1.1rem !important;
+        padding-left: 1rem;
+        border-left: 3px solid #d49a47;
+        color: #ead8b7 !important;
+        font-size: 0.88rem !important;
+      }
+      .ledger {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.78rem clamp(1rem, 4vw, 4.5rem);
+        border-bottom: 1px solid #384243;
+        background: rgb(29 37 38 / 96%);
+        color: #f9f2e6;
+        backdrop-filter: blur(14px);
+      }
+      .counts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-right: auto;
+        font: 750 0.79rem/1 ui-monospace, "SFMono-Regular", monospace;
+      }
+      .counts span {
+        white-space: nowrap;
+      }
+      .keep-count {
+        color: #a7d8b8;
+      }
+      .pass-count {
+        color: #efa99d;
+      }
+      button {
+        border: 1px solid #637070;
+        border-radius: 0.25rem;
+        padding: 0.62rem 0.76rem;
+        background: var(--night-2);
+        color: #f9f2e6;
+        font: 750 0.76rem/1 ui-monospace, "SFMono-Regular", monospace;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: #e0b66e;
+        background: #354042;
+      }
+      button[aria-pressed="true"] {
+        border-color: #e0b66e;
+        background: #f4e6c8;
+        color: #191c1c;
+      }
+      main {
+        padding: 2.3rem clamp(0.75rem, 3vw, 3rem) 6rem;
+      }
+      .section-note {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        max-width: 112rem;
+        margin: 0 auto 1rem;
+        color: var(--ink-soft);
+        font-size: 0.84rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+        max-width: 112rem;
+        margin: 0 auto;
+      }
+      article {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 0.45rem;
+        background: var(--paper-light);
+        box-shadow: 0 0.8rem 2rem #594d3920;
+        transition:
+          opacity 0.16s ease,
+          border-color 0.16s ease;
+      }
+      article[data-decision="keep"] {
+        border-color: var(--keep);
+        box-shadow:
+          inset 0 0 0 2px #31694a26,
+          0 0.8rem 2rem #594d3920;
+      }
+      article[data-decision="pass"] {
+        border-color: var(--pass);
+        opacity: 0.53;
+      }
+      article[hidden] {
+        display: none;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+        height: clamp(31rem, 42vw, 42rem);
+        background: #e6dcc9;
+      }
+      .art {
+        position: relative;
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        background: #e7ddca;
+      }
+      .art + .art {
+        border-left: 1px solid var(--line);
+      }
+      .art::after {
+        position: absolute;
+        top: 0.65rem;
+        left: 0.65rem;
+        padding: 0.35rem 0.5rem;
+        border: 1px solid #d2c5ad;
+        background: rgb(28 25 21 / 84%);
+        color: #fff9ec;
+        font: 800 0.69rem/1 ui-monospace, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        content: attr(data-view);
+      }
+      .art img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center center;
+      }
+      .art.chibi {
+        background: #f8f4eb;
+      }
+      .body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: end;
+        padding: 1rem 1rem 1.15rem;
+        border-top: 1px solid var(--line);
+      }
+      .name-line {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.55rem;
+      }
+      h2 {
+        margin: 0;
+        font: 600 1.55rem/1 "Iowan Old Style", Palatino, Georgia, serif;
+      }
+      .rank {
+        color: var(--ochre);
+        font-weight: 900;
+      }
+      .badge {
+        padding: 0.22rem 0.4rem;
+        border: 1px solid #a98c5c;
+        border-radius: 999px;
+        color: #6d4b18;
+        font: 800 0.64rem/1 ui-monospace, monospace;
+        text-transform: uppercase;
+      }
+      .badge.new {
+        border-color: #748a8d;
+        color: #355b61;
+      }
+      .signature {
+        max-width: 56rem;
+        margin: 0.55rem 0 0;
+        color: var(--ink-soft);
+        font-size: 0.84rem;
+        line-height: 1.35;
+      }
+      .choices {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(4.25rem, 1fr));
+        gap: 0.35rem;
+      }
+      .choices .keep[aria-pressed="true"] {
+        border-color: var(--keep);
+        background: var(--keep);
+        color: white;
+      }
+      .choices .pass[aria-pressed="true"] {
+        border-color: var(--pass);
+        background: var(--pass);
+        color: white;
+      }
+      .footer-note {
+        max-width: 78rem;
+        margin: 3rem auto 0;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+        color: var(--ink-soft);
+        line-height: 1.55;
+      }
+      #status {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        max-width: 24rem;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e0b66e;
+        border-radius: 0.3rem;
+        background: var(--night);
+        color: #fff9ec;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(0.5rem);
+        transition:
+          opacity 0.18s ease,
+          transform 0.18s ease;
+      }
+      #status.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (max-width: 1120px) {
+        header {
+          grid-template-columns: 1fr;
+        }
+        .intro {
+          max-width: 60rem;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .pair {
+          height: min(78vw, 46rem);
+        }
+      }
+      @media (max-width: 660px) {
+        .pair {
+          height: auto;
+          grid-template-columns: 1fr;
+        }
+        .art {
+          height: 35rem;
+        }
+        .art + .art {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+        .body {
+          grid-template-columns: 1fr;
+        }
+        .choices {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .counts {
+          width: 100%;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <p class="eyebrow">Candidate wave 002 · always judge the pair</p>
+        <h1>Same body. Two scales.</h1>
+      </div>
+      <div class="intro">
+        <p>
+          <strong>The summon and chibi stay together.</strong> First ask whether the new human is
+          memorable and visibly painted. Then ask whether the chibi keeps the same body—not merely
+          the same clothes. Cuteness should come from the larger head and simpler shapes, never
+          thicker arms by default.
+        </p>
+        <p class="warning">
+          Candidate art only. Survivor decisions from wave 001 start preselected. Chibi
+          checkerboards are baked RGB pixels; cleanup follows selection, before runtime promotion.
+        </p>
+      </div>
+    </header>
+    <nav class="ledger" aria-label="Candidate review controls">
+      <div class="counts" aria-live="polite">
+        <span class="keep-count"><b id="kept">0</b> kept</span>
+        <span class="pass-count"><b id="passed">0</b> passed</span>
+        <span><b id="open">16</b> undecided</span>
+      </div>
+      <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" class="filter" data-filter="keep" aria-pressed="false">Kept</button>
+      <button type="button" class="filter" data-filter="pass" aria-pressed="false">Passed</button>
+      <button type="button" class="filter" data-filter="undecided" aria-pressed="false">
+        Undecided
+      </button>
+      <button type="button" id="download">Download decisions</button>
+      <button type="button" id="reset">Reset new wave</button>
+    </nav>
+    <main>
+      <div class="section-note">
+        <span>Four wave-001 survivors first; twelve completely new identities follow.</span>
+        <span>Click either side to inspect the full-resolution source.</span>
+      </div>
+      <section class="grid" id="grid" aria-label="One-star summon and combat candidate pairs"></section>
+      <p class="footer-note">
+        A Keep means “develop this identity further.” It does not approve these pixels for runtime,
+        assign an affinity, or authorize a star progression. The source portrait remains the body
+        authority; selected chibis still need transparent alpha, normalized canvases and a combat-size
+        readability test.
+      </p>
+    </main>
+    <div id="status" role="status" aria-live="polite"></div>
+    <script>
+      const heroes = [
+        ["ochre-braid", "Ochre Braid", "Monumental side braid, shaved temple mark, ochre wrap layers, hoops and brass bracelets", "survivor · unchanged"],
+        ["nera-voss", "Nera Voss", "Broad older silhouette, silver curls, red shortcoat, plaid shoulder cloth and forearm ink", "survivor · unchanged"],
+        ["oren-dae", "Oren Dae", "Tall slight build, high twists, ivory long vest, wood pendant and deliberately narrow arms", "survivor · chibi corrected"],
+        ["zuri-pell", "Zuri Pell", "Very tall lean fighter, asymmetric microbraids, ivory cutwork vest, ear chain and tattoo language", "survivor · summon corrected"],
+        ["kaya-serr", "Kaya Serr", "Very tall bodybuilder mass, braided crown, shaved geometry, moss sleeveless coat and bold arm bands", "new human"],
+        ["daro-miri", "Daro Miri", "Short slight elder, silver pageboy, burnt-orange scholar wrap, reading lenses and inked fingers", "new human"],
+        ["senna-vale", "Senna Vale", "Very tall plus-size silhouette, enormous crimson curl halo, plum scalloped coat and moon jewelry", "new human"],
+        ["kes-aro", "Kes Aro", "Wiry long-limbed build, extreme high topknot, cropped charcoal layers, rings and hand ink", "new human"],
+        ["hana-vey", "Hana Vey", "Compact runner build, sharp black bob with copper streak, teal wrap and botanical forearm tattoo", "new human"],
+        ["rem-orin", "Rem Orin", "Heavy older barrel torso, forked white moustache, quilted blue robe, rings and knuckle ink", "new human"],
+        ["sal-terek", "Sal Terek", "Exceptionally tall lean silhouette, waist-length loc ponytail, oxblood longcoat and fine gold harness", "new human"],
+        ["bea-nahl", "Bea Nahl", "Very short and extremely muscular, asymmetric close curls, cream-indigo mantle and dense arm tattoos", "new human"],
+        ["niko-resh", "Niko Resh", "Lanky narrow frame, copper-red shoulder braid, lilac patchwork, large hands and ear cuffs", "new human"],
+        ["mira-kest", "Mira Kest", "Curvy soft-waisted build, sculptural braided bun, terracotta workdress and sternum tattoo", "new human"],
+        ["tor-venn", "Tor Venn", "Extremely tall gangly elder, cloud-white hair, scarf coat, large earrings and constellation hand tattoos", "new human"],
+        ["ilya-sorel", "Ilya Sorel", "Compact sturdy frame, long black hair with hidden undercut, marigold-green workdress and tattoo cuffs", "new human"]
+      ];
+
+      const grid = document.querySelector("#grid");
+      for (const [id, name, signature, cohort] of heroes) {
+        const card = document.createElement("article");
+        card.dataset.id = id;
+        const badgeClass = cohort === "new human" ? "badge new" : "badge";
+        card.innerHTML = `<div class="pair"><a class="art summon" data-view="summon" href="../summon/${id}.png"><img src="../summon/${id}.png" alt="Full-body one-star summon portrait of ${name}" /></a><a class="art chibi" data-view="combat chibi" href="../combat-chibi/${id}.png"><img src="../combat-chibi/${id}.png" alt="Identity-matched one-star combat chibi of ${name}" /></a></div><div class="body"><div><div class="name-line"><h2>${name}</h2><span class="rank">1★</span><span class="${badgeClass}">${cohort}</span></div><p class="signature">${signature}</p></div><div class="choices"></div></div>`;
+        grid.append(card);
+      }
+
+      const key = "summonlab:one-star-mass-wave-002";
+      const cards = [...document.querySelectorAll("article[data-id]")];
+      const initialSurvivors = {
+        "ochre-braid": "keep",
+        "nera-voss": "keep",
+        "oren-dae": "keep",
+        "zuri-pell": "keep"
+      };
+      const stored = localStorage.getItem(key);
+      const saved = stored ? JSON.parse(stored) : { ...initialSurvivors };
+      let filter = "all";
+      let resetArmed = false;
+      let resetTimer;
+      let statusTimer;
+
+      const announce = (message) => {
+        const status = document.querySelector("#status");
+        status.textContent = message;
+        status.classList.add("visible");
+        clearTimeout(statusTimer);
+        statusTimer = setTimeout(() => status.classList.remove("visible"), 1800);
+      };
+      const persist = () => localStorage.setItem(key, JSON.stringify(saved));
+      const decisionFor = (id) => saved[id] || "undecided";
+      const render = () => {
+        let keep = 0;
+        let pass = 0;
+        for (const card of cards) {
+          const decision = decisionFor(card.dataset.id);
+          card.dataset.decision = decision;
+          card.hidden = filter !== "all" && decision !== filter;
+          keep += decision === "keep" ? 1 : 0;
+          pass += decision === "pass" ? 1 : 0;
+          for (const button of card.querySelectorAll(".choices button")) {
+            button.setAttribute("aria-pressed", String(button.dataset.decision === decision));
+          }
+        }
+        document.querySelector("#kept").textContent = keep;
+        document.querySelector("#passed").textContent = pass;
+        document.querySelector("#open").textContent = cards.length - keep - pass;
+      };
+
+      for (const card of cards) {
+        const choices = card.querySelector(".choices");
+        for (const decision of ["keep", "pass", "undecided"]) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = decision;
+          button.dataset.decision = decision;
+          button.textContent = decision[0].toUpperCase() + decision.slice(1);
+          button.setAttribute("aria-label", `${button.textContent} ${card.querySelector("h2").textContent}`);
+          button.addEventListener("click", () => {
+            if (decision === "undecided") delete saved[card.dataset.id];
+            else saved[card.dataset.id] = decision;
+            persist();
+            render();
+          });
+          choices.append(button);
+        }
+      }
+      for (const button of document.querySelectorAll(".filter")) {
+        button.addEventListener("click", () => {
+          filter = button.dataset.filter;
+          for (const peer of document.querySelectorAll(".filter")) {
+            peer.setAttribute("aria-pressed", String(peer === button));
+          }
+          render();
+        });
+      }
+      document.querySelector("#download").addEventListener("click", () => {
+        const payload = {
+          experimentId: "one-star-mass-wave-002",
+          exportedAt: new Date().toISOString(),
+          decisions: Object.fromEntries(cards.map((card) => [card.dataset.id, decisionFor(card.dataset.id)]))
+        };
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+        link.download = "one-star-mass-wave-002-decisions.json";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        announce("Decisions downloaded.");
+      });
+      const reset = document.querySelector("#reset");
+      reset.addEventListener("click", () => {
+        if (!resetArmed) {
+          resetArmed = true;
+          reset.textContent = "Confirm reset";
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(() => {
+            resetArmed = false;
+            reset.textContent = "Reset new wave";
+          }, 5000);
+          return;
+        }
+        for (const id of Object.keys(saved)) delete saved[id];
+        Object.assign(saved, initialSurvivors);
+        persist();
+        filter = "all";
+        for (const peer of document.querySelectorAll(".filter")) {
+          peer.setAttribute("aria-pressed", String(peer.dataset.filter === "all"));
+        }
+        resetArmed = false;
+        reset.textContent = "Reset new wave";
+        render();
+        announce("New wave reset; four survivor keeps restored.");
+      });
+      persist();
+      render();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+	"schemaVersion": "skill-icon-reprocess-assignment-v1",
+	"assignmentId": "assignment-rarity-frame-f-v5",
+	"jobId": "rarity-frame-f-v5",
+	"logicalIdentity": "rarity-frame-f",
+	"revision": 5,
+	"role": "rarity-frame",
+	"rarity": "F",
+	"targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v5.json",
+	"targetContentHash": "376eba4c55fbcd7e9f07098f09ce56a5b4d580bd76f3a8de38cef2185cf2a162",
+	"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v5.json",
+	"toolVersion": "summonlab-skill-icon-reprocess-v1",
+	"sourceMode": "reuse-prior-provider-source",
+	"generationAttemptLimit": 0,
+	"normalizationTransactionLimit": 1,
+	"permittedOutputs": {
+		"candidatePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v5.json"
+	},
+	"completionContract": {
+		"coordinatorOnly": true,
+		"structuredResultRequired": true,
+		"sharedFilesMustRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

@@ -2,6 +2,10 @@
 
 > **Presentation update:** ADR 0065 retires the procedural character renderer described in this
 > completed plan. Candidate and approved authored art remain; missing art is shown as pending.
+>
+> **Rendering-language clarification:** the later hero identity authority defines “realistic” as
+> anatomically and materially believable cinematic painted art, not literal live-action photography
+> or ultra-photorealism. See [Hero identity, capability cues, and evolution art](wiki/art/hero-identity-and-evolution.md).
 
 > Variation revision: the accepted face/clothing feedback and the grade 1–10 monster extension are
 > implemented in [Character Pack 2 variation and monster-grade revision](character-pack-2-variation-revision.md).

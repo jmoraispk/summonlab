@@ -469,6 +469,31 @@ export async function getEngineSnapshot(
 	}
 }
 
+export async function getStoredEngineCommand(
+	databaseUrl: string,
+	runId: string,
+	commandId: string
+): Promise<EngineCommand | null> {
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		const rows = await sql<{ command: unknown }[]>`
+			select command
+			from summonlab_engine_commands
+			where run_id = ${runId} and command_id = ${commandId}
+			limit 1
+		`;
+		const row = rows[0];
+		if (!row) return null;
+		const parsed = EngineCommandSchema.safeParse(row.command);
+		if (!parsed.success) {
+			throw new Error(`Stored engine command is invalid: ${commandId}`);
+		}
+		return parsed.data;
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function getEngineReplay(
 	databaseUrl: string,
 	runId: string

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-04",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "fenia-cori",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/results/fenia-cori/summon-v2.json",
+      "selectedResultSha256": "79a33202ec4499ea24899b44f62a6b3366e8e2e4dea109d0b97131490ba5aebf",
+      "verdict": "fail",
+      "blockingCriteria": [
+        "manifest-fidelity"
+      ],
+      "evidence": "Original-resolution checkpoint inspection confirms skin remains lighter than frozen band-6 deepest and ink extends onto the cheek and neck instead of remaining on the declared arms and upper back. The first provider output was unbindable and the sole provider retry remains objectively blocked; the no-third-call production policy requires replacement rather than another render."
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "af8e54c6f2b8443a92fa4a26745776209357382e45817bccb04816e107b6341b",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Yaso Dreno: 27-year-old woman, 164 cm (medium), soft rounded construction with an evident middle and gentle limb contours, skin value band-5-medium-deep. Face: broad oval face; high cheekbones and softly lidded eyes; crooked healed nose, balanced mouth; no added facial mark. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: blue-teal, medium-loose, deliberate accent: contrasting clipped section. Wardrobe: apron-workwear-layers, specifically a work shirt, asymmetrical apron layers, reinforced trousers, and sturdy shoes; a high soft collar and uneven layered hems; bounded palette plum-gray. Visible personal details: a repaired cuff with bright thread. Make repair, patina, customization, or a keepsake the primary recognition device. Maintenance cue: severe grooming softened by one unruly feature. Color treatment: uses small rhythmic repeats of the palette. Pose cue: weight settles into one heel, shoulders square, hands relaxed and completely visible. Include a blunt carpenter's chalk only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "yaso-dreno",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "a repaired cuff with bright thread"
+      ],
+      "coolnessAnchor": "repairs-patina-keepsake",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "contrasting clipped section",
+      "chibiReadability": "Preserve the front and side silhouette of medium-loose, the parting, gathered mass, shaved areas, and contrasting clipped section; color remains blue-teal.",
+      "colorFamily": "blue-teal",
+      "silhouetteFamily": "medium-loose"
+    },
+    "identity": {
+      "age": 27,
+      "displayName": "Yaso Dreno",
+      "faceDescription": "broad oval face; high cheekbones and softly lidded eyes; crooked healed nose, balanced mouth; no added facial mark",
+      "gender": "woman",
+      "identitySignature": "8ea86fb0c8e07ffa0f2d2a43d2124a4a2ff244e3db36cd24a34c8757221cc480",
+      "skinValueBand": 5
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses small rhythmic repeats of the palette; wears several deliberate anchors without looking elite.",
+      "counterTrait": "cannot resist correcting a crooked seam",
+      "culturalFragments": [
+        "uses folded cloth as a formal greeting token",
+        "wears travel dust until the first shared meal"
+      ],
+      "dominantTrait": "dryly perceptive",
+      "groomingAttitude": "severe grooming softened by one unruly feature",
+      "lifeEcho": "study",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "weight settles into one heel, shoulders square, hands relaxed and completely visible",
+      "socialPresentation": "earnest and intense",
+      "tension": "Appears earnest and intense, yet cannot resist correcting a crooked seam."
+    },
+    "physique": {
+      "bodyType": "soft-round",
+      "description": "164 cm; soft rounded construction with an evident middle and gentle limb contours.",
+      "heightBand": "medium"
+    },
+    "wardrobe": {
+      "condition": "severe grooming softened by one unruly feature",
+      "description": "a work shirt, asymmetrical apron layers, reinforced trousers, and sturdy shoes; a high soft collar and uneven layered hems.",
+      "family": "apron-workwear-layers",
+      "paletteFamily": "plum-gray"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/yaso-dreno/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/results/yaso-dreno/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "yaso-dreno-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-07"
+}

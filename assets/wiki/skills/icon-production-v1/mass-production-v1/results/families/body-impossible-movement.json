@@ -1,0 +1,38 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "family",
+	"identity": "body.impossible-movement",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-impossible-movement.json",
+	"promptHash": "f1ce072d72e99322b06a3c4327000d1466735ca2b546cace366c3f73c87ab443",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		}
+	],
+	"providerSource": {
+		"path": null,
+		"mediaType": "image/png",
+		"width": 1536,
+		"height": 1024,
+		"alphaMode": "rgb",
+		"bytes": 1401468,
+		"contentHash": "7ca7d47240b45b98dbd232c3491539126f536effb2a51d03d6d310a00daac0cd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-impossible-movement.png",
+		"mediaType": "image/png",
+		"width": 1536,
+		"height": 1024,
+		"alphaMode": "rgb",
+		"bytes": 1401468,
+		"contentHash": "7ca7d47240b45b98dbd232c3491539126f536effb2a51d03d6d310a00daac0cd"
+	},
+	"processing": "exact-provider-bytes",
+	"attemptCount": 1
+}

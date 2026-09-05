@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:mountain-s-weight",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-mountain-s-weight.json",
+	"promptHash": "e627ddff4f8394e44a85f1a7def9132e1ea0b417d7b93bb0ca7783eda7234f25",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-seismic-weight.png",
+			"contentHash": "74d148edbb0b05e9323d3ac1b9ba94c2adf92b129473dae539cc1ac5fb7b40b1"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-tremor-field.png",
+			"contentHash": "21c8084256d95afd4c6a0dcd046dcfb312b7790867668544b207373f84198994"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-mountain-s-weight-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2380262,
+		"contentHash": "21a4dbbdfd4ae1d256b45d41e2673005d0eb863629ce3dc59752302cdca9fe9b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-mountain-s-weight.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2044856,
+		"contentHash": "4e2ff5c1b24dc49e1d599734f9b759f128fe83aa50f7da697442335947dc4b75"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f52338580e075d4b39ccb419653791fb7a61c31e84413a16a80582ca1b872e4c",
+		"postRepairContentHash": "4e2ff5c1b24dc49e1d599734f9b759f128fe83aa50f7da697442335947dc4b75",
+		"removedPixels": 384942
+	}
+}

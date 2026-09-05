@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "family-packet-v1",
+  "familyId": "great-cats",
+  "displayName": "Great Cats",
+  "sourceRaceNumber": 35,
+  "sourcePage": "docs/superpowers/specs/2026-09-04-fauna-family-expansion-design.md",
+  "classificationNotes": "A natural feline expedition family centered on concealment, facing, isolation, explosive pounces, and hunting-territory control.",
+  "visualConstants": [
+    "Every form retains a four-legged feline body, flexible spine, retractile claws, whiskered muzzle, mobile ears, and expressive tail.",
+    "Species variation remains feline and is communicated by coat pattern, limb proportion, mane, canine length, and hunting posture rather than equipment.",
+    "Eye line, tail stillness, shoulder compression, cover disturbance, and landing posture preserve readable attack direction."
+  ],
+  "escalationAxis": "A simple cover pounce becomes high-ground hunting, sightline isolation, saber-tooth pinning, and finally an apex territory hunt that assigns every lower form a role.",
+  "floorSlot": null,
+  "affinityThemes": {
+    "normal": {
+      "constructionDimensions": ["Fur, rosettes, whiskers, claws, teeth, breath, scars, and disturbed foliage remain natural and species-specific.", "Concealment relies on posture, cover, shadow, elevation, and stillness rather than supernatural invisibility."],
+      "counterplaySignal": "Tail stop, ear flattening, visible eye line, open saber pin, or traced territory edge remains readable before commitment.",
+      "forbidden": ["Unexplained magical invisibility", "Humanoid posture, clothing, saddles, or armor"]
+    },
+    "fire": {
+      "constructionDimensions": ["Heat-darkened rosettes and ember seams follow shoulders, spine, claw roots, and mane while most fur remains materially visible.", "Short flame wakes and directional smoke intensify along pounces, sightlines, pins, and territory crossings."],
+      "counterplaySignal": "The loaded shoulder or canine root glows through parted fur, then becomes a cooling seam after landing.",
+      "forbidden": ["Uniform orange cat", "Featureless flame body", "Fire that exposes a concealed Cat before its authored tell or hides the landing"]
+    },
+    "earth": {
+      "constructionDimensions": ["Thin mineral guards reinforce paws, shoulders, brow, and saber roots while flexible furred anatomy remains dominant.", "Compressed footprints, dislodged stones, and dust arcs reveal the pounce route and landing weight."],
+      "counterplaySignal": "A pale fracture opens at the planted paw, shoulder plate, or canine root during the post-pounce recovery.",
+      "forbidden": ["Rock-statue feline", "Brown recolor alone", "Heavy plating that erases spinal flexibility or stealth posture"]
+    },
+    "wind": {
+      "constructionDimensions": ["Fur, mane, ear tufts, and tail edges stretch into directional filaments while the core body remains opaque.", "Pressure wakes and cover movement trace leaps, silent lanes, and territory boundaries with precise direction."],
+      "counterplaySignal": "The moving pressure sheath collapses at the still eye line, landing shoulder, or planted canine after commitment.",
+      "forbidden": ["Transparent ghost cat", "Pale recolor alone", "Omnidirectional turbulence that hides pounce or sightline geometry"]
+    },
+    "water": {
+      "constructionDimensions": ["Streaming wet fur, reflective whiskers, coherent droplets, and visible muscle beneath saturated coat preserve the feline body.", "Narrow water wakes follow pounces and territory lanes, with pressure gathering at paws and jaw before release."],
+      "counterplaySignal": "The loaded paw or jaw channel drains after the attack and reveals the ordinary landing or pin window.",
+      "forbidden": ["Amorphous blue feline", "Generic wet recolor", "Splash that obscures eye line, claws, or tail direction"]
+    }
+  },
+  "forms": [
+    {
+      "tier": "T1",
+      "formId": "great-cat-wildcat",
+      "displayName": "Wildcat",
+      "primaryArchetype": "Brush-Pounce Initiate",
+      "battlefieldDuty": "Break line of sight once and pounce from the nearest low cover.",
+      "teachingGoal": "Teach players to watch cover disturbance and challenge a predictable first ambush.",
+      "signatureMechanic": "Nearest-Cover Pounce: the Wildcat always uses the closest valid low cover after breaking sight.",
+      "telegraph": "Its tail tip stops and the chosen cover edge parts immediately before launch.",
+      "counterplay": "Face the opening or step toward it to force an early short pounce, then punish the landing.",
+      "visualDelta": "Lean tawny wildcat with long tail, tufted ears, light spotting, and small but readable claws.",
+      "lowerFormInteraction": null,
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T2",
+      "formId": "great-cat-lynx",
+      "displayName": "Lynx",
+      "primaryArchetype": "High-Ground Soldier",
+      "battlefieldDuty": "Bound between raised perches and attack whichever target presents the longest exposed back.",
+      "teachingGoal": "Teach players to rotate facing vertically and contest predictable landing cones.",
+      "signatureMechanic": "Perch Exchange: the Lynx uses two visible perches and must complete one grounded pause after each attack.",
+      "telegraph": "Ear tufts flatten and the selected perch sheds dust toward its landing cone.",
+      "counterplay": "Rotate toward the perch or vacate the cone, then punish the grounded pause.",
+      "visualDelta": "Larger compact cat with long hind legs, short tail, broad facial ruff, and oversized snowshoe paws.",
+      "lowerFormInteraction": "Wildcats pressure low cover while the Lynx controls the high angle, but both share punishable landings.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T3",
+      "formId": "great-cat-panther",
+      "displayName": "Panther",
+      "primaryArchetype": "Sightline Specialist",
+      "battlefieldDuty": "Move through connected dark cover and isolate one target by threatening allies who cross its marked line.",
+      "teachingGoal": "Introduce a positioning specialist whose still eye line controls movement without magical disappearance.",
+      "signatureMechanic": "Unbroken Gaze: the Panther marks a line between its visible eyes and prey, then strikes the first other target to cross it.",
+      "telegraph": "Shoulder rosettes vanish sequentially into cover while the reflective eyes remain fixed and visible.",
+      "counterplay": "Flood the line with a deliberate feint or attack the still eye position before moving the isolated target.",
+      "visualDelta": "Long low black cat with faint rosettes, reflective eyes, flexible shoulders, and an uninterrupted predatory silhouette.",
+      "lowerFormInteraction": "Wildcats occupy nearby low cover and Lynxes threaten the elevated route around the marked line.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T4",
+      "formId": "great-cat-sabercat",
+      "displayName": "Sabercat",
+      "primaryArchetype": "Pinning Champion",
+      "battlefieldDuty": "Commit both long canines to a ground pin that gives lesser Cats safer approach angles.",
+      "teachingGoal": "Teach players to exploit a champion's strongest weapon as a temporary anchor and weak point.",
+      "signatureMechanic": "Twin-Canine Pin: both sabers plant beside the target and cannot withdraw until the Sabercat resets its forequarters.",
+      "telegraph": "Its jaws open fully, forepaws widen, and heavy shoulders rise before the leap.",
+      "counterplay": "Dodge inside the leap and punish the planted canines or exposed ribs before withdrawal.",
+      "visualDelta": "Heavy forequarters, paired saber canines, short powerful tail, scarred shoulders, and a low spring-loaded stance.",
+      "lowerFormInteraction": "Wildcats and Lynxes use the pin's open sides while the Panther holds the direct rescue line.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    },
+    {
+      "tier": "T5",
+      "formId": "great-cat-pride-sovereign",
+      "displayName": "Pride Sovereign",
+      "primaryArchetype": "Hunting-Territory Sovereign",
+      "battlefieldDuty": "Divide the arena into stalking, pursuit, sightline, and pinning territories before leading a final crossing hunt.",
+      "teachingGoal": "Test cover reading, vertical facing, eye-line control, and pin recovery in a staged apex hunt.",
+      "signatureMechanic": "Four Hunting Grounds: the Sovereign traces a territory edge and assigns one lower Cat's rule to it before personally crossing the last open boundary.",
+      "telegraph": "Its asymmetric mane and tail trace the next boundary while the assigned lower Cat takes a visible position.",
+      "counterplay": "Disrupt the assigned Cat to open that boundary, then move through it before the Sovereign crosses.",
+      "visualDelta": "Apex lion-like cat with asymmetric mane, long athletic body, scarred nose, and crown-shaped ear silhouette formed by natural tufts.",
+      "lowerFormInteraction": "Wildcat defines stalking cover, Lynx defines high ground, Panther defines the sightline, and Sabercat defines the pin territory; removing one permanently opens its ground.",
+      "sourceReferences": ["Owner-approved fauna expansion"]
+    }
+  ]
+}

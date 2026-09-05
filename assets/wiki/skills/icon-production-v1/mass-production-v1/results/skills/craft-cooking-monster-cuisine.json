@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:cooking:monster-cuisine",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-cooking-monster-cuisine.json",
+	"promptHash": "803353edbf5b78bdea8851d03d7fb9a3fc686be03c7d0aaa8310dd28fb6f32e4",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-monster-meat.png",
+			"contentHash": "fa332ec16855be5308ea3f3b12872327ccb2ff42e20b33334669915d42095ea7"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-butchery.png",
+			"contentHash": "c0f1f735259d1fa7233f58b802b8124bd0cb6067dbc25c777a1309b9a55fa03a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-cooking-monster-cuisine-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2326744,
+		"contentHash": "042b5fa0e095b869c8a91d2d16aa86d0edc7e916e7f55b833b3d0e9c9f409047"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-monster-cuisine.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1975210,
+		"contentHash": "43643edc7b8004da25325791896d2adcb39adbdd9975c89911fffb17ca746e96"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "b7a772bd6f43f7fbfd339c793e102afbd020dd421306397e57890f20f044fb9c",
+		"postRepairContentHash": "43643edc7b8004da25325791896d2adcb39adbdd9975c89911fffb17ca746e96",
+		"removedPixels": 384942
+	}
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-09-01",
+  "lastReviewed": "2026-09-04",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -237,8 +237,8 @@
       "pageType": "release-matrix",
       "owner": "product",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -531,9 +531,9 @@
       "path": "docs/wiki/mechanics/equipment/README.md",
       "pageType": "equipment-index",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -542,8 +542,8 @@
       "pageType": "equipment-rules",
       "owner": "inventory",
       "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "public"
     },
     {
@@ -551,9 +551,9 @@
       "path": "docs/wiki/mechanics/equipment/materials.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -561,9 +561,9 @@
       "path": "docs/wiki/mechanics/equipment/weapons.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -571,9 +571,9 @@
       "path": "docs/wiki/mechanics/equipment/armour-and-shields.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -581,9 +581,9 @@
       "path": "docs/wiki/mechanics/equipment/focuses-tools-accessories.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
-      "designStatus": "draft",
-      "implementationStatus": "none",
-      "visualStatus": "brief",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     },
     {
@@ -677,6 +677,25 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "art.skill-rarity-frames",
+      "path": "docs/wiki/art/skill-rarity-frames.md",
+      "pageType": "visual-brief",
+      "owner": "skill-catalog",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "approved",
+      "spoilerScope": "public",
+      "assets": [
+        {
+          "assetKey": "skill-rarity-option-c-v1",
+          "file": "assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp",
+          "status": "approved",
+          "generationMode": "built-in-imagegen",
+          "provenanceFile": "assets/wiki/skills/rarity-frame-v1/catalog.json"
+        }
+      ]
+    },
+    {
       "wikiId": "art.hero-rarity-frames",
       "path": "docs/wiki/art/hero-rarity-frames.md",
       "pageType": "visual-brief",
@@ -685,6 +704,16 @@
       "implementationStatus": "partial",
       "visualStatus": "approved",
       "spoilerScope": "public"
+    },
+    {
+      "wikiId": "art.hero-identity-evolution",
+      "path": "docs/wiki/art/hero-identity-and-evolution.md",
+      "pageType": "visual-brief",
+      "owner": "visuals",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "brief",
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "art.living-village-heroes",
@@ -747,6 +776,16 @@
       "implementationStatus": "partial",
       "visualStatus": "none",
       "spoilerScope": "public"
+    },
+    {
+      "wikiId": "creatures.fauna-family-expansion",
+      "path": "docs/wiki/creatures/fauna-family-expansion.md",
+      "pageType": "monster-family-index",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "candidate",
+      "spoilerScope": "discoverable"
     },
     {
       "wikiId": "creatures.monster-database",
@@ -2256,6 +2295,406 @@
       "designStatus": "draft",
       "implementationStatus": "none",
       "visualStatus": "brief",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.wolf-grey-wolf",
+      "path": "docs/wiki/creatures/monsters/wolf-grey-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.wolf-dire-wolf",
+      "path": "docs/wiki/creatures/monsters/wolf-dire-wolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.wolf-howler",
+      "path": "docs/wiki/creatures/monsters/wolf-howler.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.wolf-pack-alpha",
+      "path": "docs/wiki/creatures/monsters/wolf-pack-alpha.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.wolf-greatwolf",
+      "path": "docs/wiki/creatures/monsters/wolf-greatwolf.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bear-scrub-bear",
+      "path": "docs/wiki/creatures/monsters/bear-scrub-bear.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bear-cave-bear",
+      "path": "docs/wiki/creatures/monsters/bear-cave-bear.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bear-hookclaw",
+      "path": "docs/wiki/creatures/monsters/bear-hookclaw.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bear-scarback",
+      "path": "docs/wiki/creatures/monsters/bear-scarback.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.bear-ancient-ursine",
+      "path": "docs/wiki/creatures/monsters/bear-ancient-ursine.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.boar-bristle-hog",
+      "path": "docs/wiki/creatures/monsters/boar-bristle-hog.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.boar-tunnel-boar",
+      "path": "docs/wiki/creatures/monsters/boar-tunnel-boar.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.boar-razorback",
+      "path": "docs/wiki/creatures/monsters/boar-razorback.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.boar-war-tusker",
+      "path": "docs/wiki/creatures/monsters/boar-war-tusker.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.boar-old-tusk",
+      "path": "docs/wiki/creatures/monsters/boar-old-tusk.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrower-soil-grub",
+      "path": "docs/wiki/creatures/monsters/burrower-soil-grub.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrower-burrowing-worm",
+      "path": "docs/wiki/creatures/monsters/burrower-burrowing-worm.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrower-hookjaw",
+      "path": "docs/wiki/creatures/monsters/burrower-hookjaw.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrower-tremor-worm",
+      "path": "docs/wiki/creatures/monsters/burrower-tremor-worm.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.burrower-deep-maw",
+      "path": "docs/wiki/creatures/monsters/burrower-deep-maw.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.great-cat-wildcat",
+      "path": "docs/wiki/creatures/monsters/great-cat-wildcat.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.great-cat-lynx",
+      "path": "docs/wiki/creatures/monsters/great-cat-lynx.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.great-cat-panther",
+      "path": "docs/wiki/creatures/monsters/great-cat-panther.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.great-cat-sabercat",
+      "path": "docs/wiki/creatures/monsters/great-cat-sabercat.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.great-cat-pride-sovereign",
+      "path": "docs/wiki/creatures/monsters/great-cat-pride-sovereign.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.serpent-adder",
+      "path": "docs/wiki/creatures/monsters/serpent-adder.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.serpent-constrictor",
+      "path": "docs/wiki/creatures/monsters/serpent-constrictor.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.serpent-spitting-cobra",
+      "path": "docs/wiki/creatures/monsters/serpent-spitting-cobra.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.serpent-horned-viper",
+      "path": "docs/wiki/creatures/monsters/serpent-horned-viper.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.serpent-crown-serpent",
+      "path": "docs/wiki/creatures/monsters/serpent-crown-serpent.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crocodilian-mire-caiman",
+      "path": "docs/wiki/creatures/monsters/crocodilian-mire-caiman.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crocodilian-river-crocodile",
+      "path": "docs/wiki/creatures/monsters/crocodilian-river-crocodile.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crocodilian-snarejaw",
+      "path": "docs/wiki/creatures/monsters/crocodilian-snarejaw.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crocodilian-bastion-alligator",
+      "path": "docs/wiki/creatures/monsters/crocodilian-bastion-alligator.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.crocodilian-primeval-crocodile",
+      "path": "docs/wiki/creatures/monsters/crocodilian-primeval-crocodile.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.raptor-carrion-kite",
+      "path": "docs/wiki/creatures/monsters/raptor-carrion-kite.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.raptor-hunting-hawk",
+      "path": "docs/wiki/creatures/monsters/raptor-hunting-hawk.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.raptor-night-owl",
+      "path": "docs/wiki/creatures/monsters/raptor-night-owl.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.raptor-war-eagle",
+      "path": "docs/wiki/creatures/monsters/raptor-war-eagle.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
+      "spoilerScope": "discoverable"
+    },
+    {
+      "wikiId": "monster.raptor-roc",
+      "path": "docs/wiki/creatures/monsters/raptor-roc.md",
+      "pageType": "monster-entry",
+      "owner": "visuals-content",
+      "designStatus": "accepted",
+      "implementationStatus": "partial",
+      "visualStatus": "runtime",
       "spoilerScope": "discoverable"
     }
   ]

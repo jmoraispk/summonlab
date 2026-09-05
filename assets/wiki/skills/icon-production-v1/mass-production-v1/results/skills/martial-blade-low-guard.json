@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:low-guard",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-low-guard.json",
+	"promptHash": "e2ed65b4f8b16fe99cfcc48b6be9577fb55b27ae9d9fcb53654eded1a8695278",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-assassin-angle.png",
+			"contentHash": "0d1d2b483ba85dc9c6151b6bf5be9e7ae51ba9ee7e16e84030781760ba147bc1"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-low-guard-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1975249,
+		"contentHash": "225c0aa4c3bddff1e249f2f6ed082cd0d810e14299d15181bc33b74cb8ae815a"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-low-guard.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1669795,
+		"contentHash": "06e1190a299c98da96455bbfaf57b7df6748a3258c3fd1dd0021409fc791c6f7"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "39e2073b2516029b9030c59a2061f761b2c6edcdb27491d3b6cabfc18502490d",
+		"postRepairContentHash": "06e1190a299c98da96455bbfaf57b7df6748a3258c3fd1dd0021409fc791c6f7",
+		"removedPixels": 384942
+	}
+}

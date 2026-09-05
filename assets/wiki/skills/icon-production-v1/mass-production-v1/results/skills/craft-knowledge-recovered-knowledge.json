@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "craft:knowledge:recovered-knowledge",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-knowledge-recovered-knowledge.json",
+	"promptHash": "591363c8150973e4fce72f79b1333048c508782d60d0e187fc546778ee23d4cc",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-script.png",
+			"contentHash": "c5d10668872bb924ea1bbe0bf49b1c73e122a37989fbb4646cfbd2e781481e67"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-ancient-script.png",
+			"contentHash": "a463d7b0cb7322bb7e2f389d442ec12323fd715a0999b69d7e3244f3b9eebd6f"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-knowledge-recovered-knowledge-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2022920,
+		"contentHash": "5c0fcd4d765dafcb3fca101088baa72b4a6b8854d95b7509ae1bd1b505076c37"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-recovered-knowledge.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1776775,
+		"contentHash": "b41261a56b69fd4e46190dae7621368d5692e48409ed03880d925606c162ba1f"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "87fd49afd30c38c03b20d4d9843b488afbd033e2b48ddf5394c9747cb309c502",
+		"postRepairContentHash": "b41261a56b69fd4e46190dae7621368d5692e48409ed03880d925606c162ba1f",
+		"removedPixels": 384942
+	}
+}

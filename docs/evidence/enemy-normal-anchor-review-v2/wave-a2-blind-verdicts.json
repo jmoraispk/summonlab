@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "enemy-normal-blind-verdicts-v1",
+  "wave": "A2",
+  "reviewerId": "codex:/root/normal_revision_blind_a2",
+  "reviews": [
+    {
+      "token": "R2-A2-01",
+      "perceivedFamilyOrCreature": "skeletal knight or undead warlord",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "armored melee duelist",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "revise",
+        "note": "The stacked rib structures and skull-like shoulder mass make the upper torso and right arm attachment hard to parse."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Full silhouette, sword, and grounded stance read clearly with useful breathing room."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Armor, bone, and cloth surfaces are crisp and consistently rendered."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "The restrained bone, iron, and gold palette avoids a dominant elemental read."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Heavy armor and a single long blade clearly advertise a deliberate close-range threat."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-02",
+      "perceivedFamilyOrCreature": "vampire noble",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "mobile blood-blade skirmisher",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The humanoid pose, hands, face, and clothing layers remain coherent despite the dark values."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full figure and weapon are centered cleanly and separated from the cathedral interior."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Material definition and focal contrast feel presentation-ready."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The glowing blood blade, red pool, and saturated crimson accents create a strong blood-affinity read."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "The slim sword, forward lean, and exposed lightly armored body suggest a fast but punishable melee attacker."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-03",
+      "perceivedFamilyOrCreature": "vampire monarch or blood sorcerer",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "ranged controller or summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The seated humanoid figure and gesture are readable and proportionally coherent."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The throne and three tall standards produce a strong, symmetrical boss composition."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Ornament, fabrics, and blood effects have a cohesive high-detail finish."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The pervasive red liquid, sigils, and crimson throne effects read unmistakably as blood magic."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The regal seated pose conveys command but does not expose a specific attack pattern, weapon, or vulnerable opening."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-04",
+      "perceivedFamilyOrCreature": "stitched flesh mound or broodmother",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "stationary tank and minion spawner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The intentionally aberrant body is coherent: central head, radial stitched limbs, and occupied brood cavities are all legible."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The wide crop suits the radial mass and keeps every major appendage inside frame."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Stitches, folds, cavities, and embedded figures are detailed without losing the main silhouette."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Muted flesh and earth colors imply physical corruption rather than a specific element."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Its immobile bulk, radial reach, and visible cavity occupants clearly suggest spacing around a spawning tank."
+      },
+      "overallVerdict": "approved-review"
+    },
+    {
+      "token": "R2-A2-05",
+      "perceivedFamilyOrCreature": "corpse brute or stitched ogre",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "slow melee bruiser",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "revise",
+        "note": "The dangling central tissue merges into the ground trail, obscuring the pelvis and making the lower-body structure ambiguous."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The full towering body and extreme arm reach are clearly presented against an uncluttered field."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Skin, exposed ribs, wounds, and ground debris are rendered with a consistent grim finish."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "The image reads as a physical flesh-and-bone monster without elemental energy."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Massive dragging arms and a top-heavy stance advertise slow, wide-reaching melee swings."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-06",
+      "perceivedFamilyOrCreature": "mummified pharaoh-priest",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "ritual caster and summoner",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The tall humanoid body, crown, hands, and staff-like vertical silhouette remain coherent within the ornament."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "Strong axial symmetry and surrounding attendants establish scale without clipping the figure."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Carved symbols, wrappings, metallic details, and architecture share a polished visual language."
+      },
+      "neutralAffinity": {
+        "verdict": "pass",
+        "note": "Gold and stone communicate rank and culture more than a discrete elemental affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "revise",
+        "note": "The ceremonial pose strongly sells authority, but no distinct spell source, attack motion, or vulnerable feature is apparent."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-07",
+      "perceivedFamilyOrCreature": "frost lich",
+      "perceivedTier": "boss",
+      "perceivedCombatRole": "area-control spellcaster",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The robed skeletal figure, crown, raised arms, and circular chest ornaments form a readable body."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The figure is fully shown with spell arcs and supporting crowd elements contained in frame."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Ice-light effects, armor, robes, and cathedral detail are cohesive and sharply resolved."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "Blue-white lightning, frozen vapor, and icy architecture create an overwhelmingly cold or storm affinity."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Raised casting arms, arcing energy, and an unarmored flowing lower body clearly telegraph a ranged area caster."
+      },
+      "overallVerdict": "revise"
+    },
+    {
+      "token": "R2-A2-08",
+      "perceivedFamilyOrCreature": "chained wraith or spectral jailer",
+      "perceivedTier": "elite",
+      "perceivedCombatRole": "mid-range hook controller",
+      "identityConfidence": "high",
+      "anatomy": {
+        "verdict": "pass",
+        "note": "The spectral torso, armored head, arms, and tapering lower body are clear, with chains reading as external weapons."
+      },
+      "framing": {
+        "verdict": "pass",
+        "note": "The narrow vertical crop captures the full apparition and looping chain paths without crowding."
+      },
+      "finish": {
+        "verdict": "pass",
+        "note": "Metal, ragged cloth, smoke, and spectral highlights have a cohesive subdued finish."
+      },
+      "neutralAffinity": {
+        "verdict": "revise",
+        "note": "The bright blue-white chain energy reads as an ice or lightning enchantment rather than neutral force."
+      },
+      "visibleCounterplayCue": {
+        "verdict": "pass",
+        "note": "Wide looping chains visibly establish the attack radius and a control-oriented ranged threat."
+      },
+      "overallVerdict": "revise"
+    }
+  ]
+}

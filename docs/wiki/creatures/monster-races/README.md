@@ -3,17 +3,22 @@
 Wiki ID: `creatures.monster-families`
 
 This is the textual source and taxonomy index for the monster-family program. The canonical
-production database now contains 30 families, exactly five T1–T5 forms per family, and five planned
-image coordinates per form: Normal, Fire, Earth, Wind, and Water.
+production database now contains 38 families, exactly five T1–T5 forms per family, and five image
+coordinates per form: Normal, Fire, Earth, Wind, and Water.
 
 Read the [creature taxonomy](../taxonomy.md) before treating every family as a “race.”
 
 ## Canonical family/form database
 
-The [canonical monster database](../monsters/README.md) is the generated review surface for all 30
-families and 150 forms. It publishes family classification caveats, visual constants, escalation,
+The [canonical monster database](../monsters/README.md) is the generated review surface for all 38
+families and 190 forms. It publishes family classification caveats, visual constants, escalation,
 combat duties, teaching goals, telegraphs, counterplay, lower-form interactions, and the complete
-750-coordinate production plan.
+950-coordinate production plan.
+
+The accepted [fauna family expansion](../fauna-family-expansion.md) adds eight separately produced
+families and 40 designed forms. Its 200 coordinates are owner-approved and wired into the wiki
+runtime through separate approval and runtime catalogs; it does not reopen or regenerate the
+original 750.
 
 Family means a shared visual and encounter grammar. It does not automatically mean species,
 ancestry, faction, personhood, culture, morality, or universal hostility. The individual family
@@ -38,18 +43,27 @@ These remain **source briefs**, not accepted species canon or runtime statistics
 positions have now been consolidated into explicit Initiate, Soldier, Specialist, Champion, and
 Sovereign forms without rewriting the source volumes in place.
 
-The five production coordinates are ownership plans, not finished images. Normal begins as
-`planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor` until the form's Normal identity
-anchor passes review. Candidate, approved-review, and runtime are separate states. This wiki export
-does not promote assets.
+For the original 30-family database, the five production coordinates began as ownership plans.
+Normal begins as
+`planned`; Fire, Earth, Wind, and Water begin as `blocked-on-anchor`. The current single-checkpoint
+production run may open a blocked coordinate as `planned-provisional-anchor` when the exact Normal
+target, candidate, result, prompt, and source chain verifies. That status authorizes candidate
+generation while human review remains pending; it is neither approval nor runtime promotion.
+Candidate, approved-review, approved-source, and runtime remain separate states. The fauna
+experiment remains immutable candidate evidence, while its exact 200 accepted images are promoted
+through separate approved-source and wiki-runtime layers.
 
 ## Earlier forty-class reconciliation
 
 The prior forty-class visual database is an input, not an additional family roster. Ten identities
-map or rename-map into canonical forms. Thirty remain useful secondary archetypes or expedition
-fauna outside the 150-form count. Their earlier public images remain candidate-only references, and
-none is automatically eligible for canonical reuse. The exact forty-row ledger appears in the
-[canonical monster database](../monsters/README.md#current-class-reconciliation).
+map or rename-map into canonical forms. Twenty-five remain useful secondary archetypes or
+expedition-fauna references outside the 190-form count. Their earlier public images remain
+candidate-only references, and
+none is automatically eligible for canonical reuse. The completed program's exact forty-row ledger
+appears in the
+[canonical monster database](../monsters/README.md#completed-v1-class-reconciliation). The fauna
+expansion supersedes the future treatment of its five animal identities plus Armored Brood Guard,
+Death Knight, and Cave Drake without rewriting that historical production mapping.
 
 ## Required entry depth
 

@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "enchantment.power-weave",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:enchantment:empowerment",
+			"name": "Empowerment",
+			"rarity": "D",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:enchantment:sustained-weave",
+			"name": "Sustained Weave",
+			"rarity": "D",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:enchantment:transference",
+			"name": "Transference",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		}
+	]
+}

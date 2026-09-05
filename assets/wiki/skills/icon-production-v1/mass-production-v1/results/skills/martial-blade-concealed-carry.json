@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:concealed-carry",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-concealed-carry.json",
+	"promptHash": "78a235c9c28cfab29596ce18e2d1932a82a1b045f35220b224391eb279d73e8b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-concealed-kill.png",
+			"contentHash": "8e11d612845e6f74ea0cc0f6bf13333623464cb3db7376f1ccabd7879c180d17"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-concealed-carry-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1851402,
+		"contentHash": "63cc24c82eded4eced0e9088d033b2c9f7373fa3b27ece4fbf1162071889ffae"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-concealed-carry.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1554100,
+		"contentHash": "bfd95142170b041d898c9b38d2b02f94d75824d8f27d43ed3c7cd07a43edee7e"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "4b155cb3acec3eacc814c479f22852358cd2f0347209088b7b175114da341634",
+		"postRepairContentHash": "bfd95142170b041d898c9b38d2b02f94d75824d8f27d43ed3c7cd07a43edee7e",
+		"removedPixels": 384942
+	}
+}

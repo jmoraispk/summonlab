@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:vital-nick",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-vital-nick.json",
+	"promptHash": "0fb5b466d4a198ab194c6fcbb255e506acfe427e187f72c612c20daabea56901",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dagger-strike.png",
+			"contentHash": "b573f30649907e8139355abcbe978ffafa994c5444248625822badf5effe65a0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-hamstring.png",
+			"contentHash": "67236066fd96e198dbcb6314d5a3ce58d3a8e8ff41d245532688c5a33896abe0"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-vital-nick-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2128210,
+		"contentHash": "e9478568d55b4537c81a587e67c44b4c065f1d91edc4f7ac9884a493e3ffedd1"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-vital-nick.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1874789,
+		"contentHash": "d1c2d116a388592344248aeae868a2001b1d42ff1681b10f06b598eb2f62365c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "dba55c1dc4cf5e62bf0f87691e156c4168b964f27c1796eb9bbf8eac240f4dbb",
+		"postRepairContentHash": "d1c2d116a388592344248aeae868a2001b1d42ff1681b10f06b598eb2f62365c",
+		"removedPixels": 384942
+	}
+}

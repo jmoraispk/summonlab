@@ -14,6 +14,7 @@ import {
 import { dirname, join, relative, resolve, sep } from 'node:path';
 
 import sharp from 'sharp';
+import { z } from 'zod';
 
 import {
 	FAMILY_AFFINITY_ROOT,
@@ -29,6 +30,7 @@ import {
 	bridgeAttemptPaths,
 	canonicalAttemptPaths,
 	familyAffinityProducerIdentitySha256,
+	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
 	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinityReviewAssignmentPath,
@@ -38,14 +40,38 @@ import {
 	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityReceiptEvidence,
 	validateFamilyAffinityReviewAssignmentEvidence,
+	validateCanonicalTargetSourceBinding,
 	type FamilyAffinityAssignment,
 	type FamilyAffinityBlindReviewReceipt,
 	type FamilyAffinityManifest,
 	type FamilyAffinityResult,
 	type FamilyAffinityReviewAssignment,
 	type FamilyAffinityReviewReceipt,
-	type FamilyAffinityTarget
+	type FamilyAffinityTarget,
+	type FamilyForm,
+	type FamilyPacket
 } from './family-affinity-production-lib.js';
+
+const CANONICAL_TARGET_SOURCE_FIELDS = [
+	'familyId',
+	'formId',
+	'currentClassId',
+	'affinity',
+	'tier',
+	'primaryArchetype',
+	'battlefieldDuty',
+	'identityInvariants',
+	'anatomyInvariants',
+	'constructionDimensions',
+	'telegraph',
+	'counterplay',
+	'forbiddenTreatments',
+	'sources',
+	'presentationContract',
+	'acceptanceCriteria',
+	'promotionCeiling',
+	'runtimeCatalogMutationForbidden'
+] as const;
 
 export {
 	FamilyAffinityBlindReviewReceiptSchema as BlindReviewReceiptSchema,
@@ -59,6 +85,180 @@ export const FAMILY_AFFINITY_REVIEW_CATALOG_PATH =
 	`${FAMILY_AFFINITY_REVIEW_ROOT}/catalog.json` as const;
 export const FAMILY_CONTACT_SHEET_WIDTH = 1600 as const;
 export const FAMILY_CONTACT_SHEET_HEIGHT = 1200 as const;
+
+const FailureHashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
+const GenerationFailureCallSchema = z
+	.object({
+		callOrdinal: z.number().int().positive(),
+		kind: z.enum(['initial', 'correction']),
+		promptSha256: FailureHashSchema.nullable(),
+		providerRunId: z.string().min(1).nullable(),
+		sourcePath: z.string().min(1).nullable(),
+		sourceSha256: FailureHashSchema.nullable(),
+		outcomeCode: z.enum([
+			'provider-output-unavailable',
+			'provider-moderation-blocked',
+			'visual-contract-rejected'
+		]),
+		reasons: z.array(z.string().min(1)).min(1)
+	})
+	.strict();
+const GenerationFailureRunSchema = z
+	.object({
+		runOrdinal: z.number().int().positive(),
+		producerId: z.string().min(1),
+		canonicalPromptSha256: FailureHashSchema,
+		calls: z.array(GenerationFailureCallSchema).min(1).max(2)
+	})
+	.strict();
+const GenerationFailureSupersessionOverridesSchema = z
+	.object({
+		anatomyInvariants: z.array(z.string().min(1)).min(1).optional(),
+		telegraph: z.string().min(1).optional(),
+		acceptanceCriteria: z.array(z.string().min(1)).min(8).optional()
+	})
+	.strict()
+	.refine((value) => Object.keys(value).length > 0, {
+		message: 'Generation-failure supersession overrides cannot be empty'
+	});
+export const FamilyAffinityGenerationFailureSchema = z
+	.object({
+		schemaVersion: z.literal('family-affinity-generation-failure-v1'),
+		experimentId: z.literal('family-affinity-v1'),
+		namespace: z.literal('canonical'),
+		coordinateId: z.string().min(1),
+		targetId: z.string().min(1),
+		targetPath: z.string().min(1),
+		targetSha256: FailureHashSchema,
+		assignmentPath: z.string().min(1),
+		assignmentSha256: FailureHashSchema,
+		candidateVersion: z.number().int().positive(),
+		failureKind: z.literal('exhausted-nonretained-generation'),
+		producerRuns: z.array(GenerationFailureRunSchema).length(2),
+		retainedCandidateCreated: z.literal(false),
+		resultReceiptCreated: z.literal(false),
+		reviewReceiptsCreated: z.literal(false),
+		supersessionTargetVersion: z.number().int().positive(),
+		supersessionOverrides: GenerationFailureSupersessionOverridesSchema.optional(),
+		supersessionAuthorizedBy: z.string().min(1),
+		runtimeCatalogMutationForbidden: z.literal(true)
+	})
+	.strict();
+export type FamilyAffinityGenerationFailure = z.infer<typeof FamilyAffinityGenerationFailureSchema>;
+
+export type CanonicalGenerationFailureSupersessionSourceBinding = {
+	previousTargetPath: string;
+	previousAssignmentPath: string;
+	previousTarget: unknown;
+	previousAssignment: unknown;
+	generationFailure: unknown;
+	previousBinding?: CanonicalGenerationFailureSupersessionSourceBinding;
+};
+
+export function familyAffinityGenerationFailurePath(target: FamilyAffinityTarget): string {
+	return target.namespace === 'canonical'
+		? `${FAMILY_AFFINITY_ROOT}/generation-failures/${target.familyId}/${target.formId}/${target.affinity}/attempt-v${target.version}.json`
+		: `${FAMILY_AFFINITY_ROOT}/generation-failures/bridge/${target.currentClassId}/${target.affinity}/attempt-v${target.version}.json`;
+}
+
+export function validateFamilyAffinityGenerationFailureEvidence(input: {
+	target: FamilyAffinityTarget;
+	targetPath: string;
+	assignment: FamilyAffinityAssignment;
+	assignmentPath: string;
+	evidence: unknown;
+}): FamilyAffinityGenerationFailure {
+	const evidence = FamilyAffinityGenerationFailureSchema.parse(input.evidence);
+	const promptSha256 = familyAffinityPromptSha256(input.target, input.assignment);
+	if (
+		evidence.coordinateId !== input.target.coordinateId ||
+		evidence.targetId !== input.target.targetId ||
+		evidence.targetPath !== input.targetPath ||
+		evidence.targetSha256 !== familyAffinitySha256(input.target) ||
+		evidence.assignmentPath !== input.assignmentPath ||
+		evidence.assignmentSha256 !== familyAffinitySha256(input.assignment) ||
+		evidence.candidateVersion !== input.target.version ||
+		evidence.supersessionTargetVersion !== input.target.version + 1 ||
+		evidence.producerRuns.some((run) => run.canonicalPromptSha256 !== promptSha256) ||
+		new Set(evidence.producerRuns.map(({ producerId }) => producerId)).size !== 2 ||
+		evidence.producerRuns.some(
+			(run) =>
+				run.calls.length !== input.assignment.retryCeiling + 1 ||
+				run.calls[0]?.kind !== 'initial' ||
+				run.calls[0]?.promptSha256 !== promptSha256 ||
+				run.calls[1]?.kind !== 'correction'
+		)
+	) {
+		throw new Error('Generation-failure evidence is stale, incomplete, or cross-bound');
+	}
+	return evidence;
+}
+
+/**
+ * Preserves strict packet binding for a canonical target whose immediately preceding
+ * generation-failure receipt explicitly authorized a small, schema-allowlisted source override.
+ * The ordinary packet validator remains unchanged and cannot be bypassed without authenticated
+ * predecessor evidence.
+ */
+export function validateCanonicalGenerationFailureSupersessionSourceBinding(input: {
+	family: FamilyPacket;
+	form: FamilyForm;
+	supersedingTarget: unknown;
+	binding: CanonicalGenerationFailureSupersessionSourceBinding;
+}): void {
+	const previousTarget = FamilyAffinityTargetSchema.parse(input.binding.previousTarget);
+	const previousAssignment = FamilyAffinityAssignmentSchema.parse(input.binding.previousAssignment);
+	const supersedingTarget = FamilyAffinityTargetSchema.parse(input.supersedingTarget);
+	if (input.binding.previousBinding) {
+		validateCanonicalGenerationFailureSupersessionSourceBinding({
+			family: input.family,
+			form: input.form,
+			supersedingTarget: previousTarget,
+			binding: input.binding.previousBinding
+		});
+	} else {
+		validateCanonicalTargetSourceBinding(previousTarget, input.family, input.form);
+	}
+	const failure = validateFamilyAffinityGenerationFailureEvidence({
+		target: previousTarget,
+		targetPath: input.binding.previousTargetPath,
+		assignment: previousAssignment,
+		assignmentPath: input.binding.previousAssignmentPath,
+		evidence: input.binding.generationFailure
+	});
+	const overrides = failure.supersessionOverrides ?? {};
+	if (
+		supersedingTarget.namespace !== 'canonical' ||
+		previousTarget.coordinateId !== supersedingTarget.coordinateId ||
+		previousTarget.version + 1 !== supersedingTarget.version ||
+		failure.supersessionTargetVersion !== supersedingTarget.version
+	) {
+		throw new Error('Generation-failure source binding is not an immediate canonical supersession');
+	}
+	for (const field of ['anatomyInvariants', 'telegraph', 'acceptanceCriteria'] as const) {
+		const override = overrides[field];
+		if (
+			override !== undefined &&
+			stableFamilyAffinityJson(supersedingTarget[field]) !== stableFamilyAffinityJson(override)
+		) {
+			throw new Error(
+				`Generation-failure source override does not match superseding target: ${field}`
+			);
+		}
+	}
+	for (const field of CANONICAL_TARGET_SOURCE_FIELDS) {
+		const override =
+			field === 'anatomyInvariants' || field === 'telegraph' || field === 'acceptanceCriteria'
+				? overrides[field]
+				: undefined;
+		const expected = override === undefined ? previousTarget[field] : override;
+		if (stableFamilyAffinityJson(supersedingTarget[field]) !== stableFamilyAffinityJson(expected)) {
+			throw new Error(
+				`Generation-failure source drift changed an unauthenticated target field: ${field}`
+			);
+		}
+	}
+}
 
 export type FamilyAffinityCandidateResult = FamilyAffinityResult;
 export type OrdinaryReviewReceipt = FamilyAffinityReviewReceipt;
@@ -110,7 +310,11 @@ export function evaluateFamilyAffinityReviewAttempt(input: {
 	}
 	if (!input.resultBytes) throw new Error('Candidate requires an immutable result receipt');
 	if (!input.candidateBytes) throw new Error('Result receipt requires candidate bytes');
-	if (target.status !== 'planned' && target.status !== 'earth-bridge-provisional')
+	if (
+		target.status !== 'planned' &&
+		target.status !== 'planned-provisional-anchor' &&
+		target.status !== 'earth-bridge-provisional'
+	)
 		throw new Error('Only a planned production target may enter candidate state');
 	validateReviewTransition('planned', 'candidate');
 
@@ -768,6 +972,9 @@ type ReviewCell = {
 	coordinateId: string;
 	activeVersion: number;
 	state: ReviewState;
+	dispatchStatus: FamilyAffinityTarget['status'];
+	anchorKind: FamilyAffinityTarget['anchor']['kind'];
+	humanReviewPending: boolean;
 	label: string;
 	candidatePath: string | null;
 	candidateSha256: string | null;
@@ -901,6 +1108,7 @@ type ValidatedReviewAttempt = {
 	assignment: FamilyAffinityAssignment;
 	coordinate: FamilyAffinityManifest['canonicalMatrix']['activeCoordinates'][number];
 	active: boolean;
+	generationFailure?: FamilyAffinityGenerationFailure;
 };
 
 async function loadValidatedReviewAttemptHistory(
@@ -917,6 +1125,7 @@ async function loadValidatedReviewAttemptHistory(
 		...manifest.bridge.activeCoordinates
 	]) {
 		let previousTarget: FamilyAffinityTarget | undefined;
+		let previousGenerationFailure: FamilyAffinityGenerationFailure | undefined;
 		for (let version = 1; version <= activeCoordinate.activeVersion; version += 1) {
 			const paths =
 				activeCoordinate.namespace === 'canonical'
@@ -952,6 +1161,22 @@ async function loadValidatedReviewAttemptHistory(
 			};
 			validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
 			const active = version === activeCoordinate.activeVersion;
+			const failureBytes = await optionalRealFile(
+				repositoryRoot,
+				familyAffinityGenerationFailurePath(target)
+			);
+			const generationFailure = failureBytes
+				? validateFamilyAffinityGenerationFailureEvidence({
+						target,
+						targetPath: paths.target,
+						assignment,
+						assignmentPath: paths.assignment,
+						evidence: JSON.parse(failureBytes.toString('utf8'))
+					})
+				: undefined;
+			if (active && generationFailure) {
+				throw new Error(`Active attempt cannot be generation-failed: ${target.targetId}`);
+			}
 			if (
 				active &&
 				(coordinate.targetSha256 !== activeCoordinate.targetSha256 ||
@@ -965,32 +1190,51 @@ async function loadValidatedReviewAttemptHistory(
 			}
 			if (version > 1) {
 				const preceding = target.precedingAttempt;
-				if (
-					!previousTarget ||
-					!preceding ||
-					preceding.targetId !== previousTarget.targetId ||
-					preceding.targetSha256 !== familyAffinitySha256(previousTarget) ||
-					preceding.candidatePath !== previousTarget.ownedPaths.candidate ||
-					preceding.resultPath !== previousTarget.ownedPaths.result ||
-					preceding.reviewPath !== previousTarget.ownedPaths.decision
-				) {
-					throw new Error(`Review attempt history is skipped or unbound: ${target.targetId}`);
-				}
-				const [candidateBytes, resultBytes, receiptBytes] = await Promise.all([
-					requiredRealFile(repositoryRoot, preceding.candidatePath),
-					requiredRealFile(repositoryRoot, preceding.resultPath),
-					requiredRealFile(repositoryRoot, preceding.reviewPath)
-				]);
-				if (
-					familyAffinityRawSha256(candidateBytes) !== preceding.candidateSha256 ||
-					familyAffinityRawSha256(resultBytes) !== preceding.resultSha256 ||
-					familyAffinityRawSha256(receiptBytes) !== preceding.reviewSha256
-				) {
-					throw new Error(`Review attempt predecessor bytes are stale: ${target.targetId}`);
+				if (previousGenerationFailure) {
+					if (
+						!previousTarget ||
+						stableFamilyAffinityJson(preceding) !==
+							stableFamilyAffinityJson(previousTarget.precedingAttempt)
+					) {
+						throw new Error(
+							`Generation-failed history did not preserve last retained attempt: ${target.targetId}`
+						);
+					}
+				} else {
+					if (
+						!previousTarget ||
+						!preceding ||
+						preceding.targetId !== previousTarget.targetId ||
+						preceding.targetSha256 !== familyAffinitySha256(previousTarget) ||
+						preceding.candidatePath !== previousTarget.ownedPaths.candidate ||
+						preceding.resultPath !== previousTarget.ownedPaths.result ||
+						preceding.reviewPath !== previousTarget.ownedPaths.decision
+					) {
+						throw new Error(`Review attempt history is skipped or unbound: ${target.targetId}`);
+					}
+					const [candidateBytes, resultBytes, receiptBytes] = await Promise.all([
+						requiredRealFile(repositoryRoot, preceding.candidatePath),
+						requiredRealFile(repositoryRoot, preceding.resultPath),
+						requiredRealFile(repositoryRoot, preceding.reviewPath)
+					]);
+					if (
+						familyAffinityRawSha256(candidateBytes) !== preceding.candidateSha256 ||
+						familyAffinityRawSha256(resultBytes) !== preceding.resultSha256 ||
+						familyAffinityRawSha256(receiptBytes) !== preceding.reviewSha256
+					) {
+						throw new Error(`Review attempt predecessor bytes are stale: ${target.targetId}`);
+					}
 				}
 			}
-			attempts.push({ target, assignment, coordinate, active });
+			attempts.push({
+				target,
+				assignment,
+				coordinate,
+				active,
+				...(generationFailure ? { generationFailure } : {})
+			});
 			previousTarget = target;
+			previousGenerationFailure = generationFailure;
 		}
 	}
 	const actualTargetPaths = [
@@ -1009,6 +1253,15 @@ async function loadValidatedReviewAttemptHistory(
 		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/results`)),
 		...(await walkFilesNoSymlinks(repositoryRoot, `${FAMILY_AFFINITY_ROOT}/bridge/results`))
 	];
+	const expectedFailurePaths = new Set(
+		attempts
+			.filter(({ generationFailure }) => generationFailure !== undefined)
+			.map(({ target }) => familyAffinityGenerationFailurePath(target))
+	);
+	const actualFailurePaths = await walkFilesNoSymlinks(
+		repositoryRoot,
+		`${FAMILY_AFFINITY_ROOT}/generation-failures`
+	);
 	for (const path of actualTargetPaths) {
 		if (!expectedTargetPaths.has(path)) throw new Error(`Orphan or unbound review target: ${path}`);
 	}
@@ -1024,6 +1277,11 @@ async function loadValidatedReviewAttemptHistory(
 	}
 	for (const path of actualResultPaths) {
 		if (!expectedResultPaths.has(path)) throw new Error(`Orphan or unbound review result: ${path}`);
+	}
+	for (const path of actualFailurePaths) {
+		if (!expectedFailurePaths.has(path)) {
+			throw new Error(`Orphan or unbound generation-failure evidence: ${path}`);
+		}
 	}
 	return attempts;
 }
@@ -1074,7 +1332,7 @@ async function renderFamilyContactSheet(
 			const row = Math.floor(index / 5);
 			const x = rowLabelWidth + column * cellWidth;
 			const y = headerHeight + row * cellHeight;
-			return `<g><rect x="${x + 3}" y="${y + 3}" width="${cellWidth - 6}" height="${cellHeight - 6}" rx="8" fill="${cell.label === 'NOT GENERATED' ? '#121821' : 'none'}" stroke="#4f5e70" stroke-width="2"/><text x="${x + cellWidth / 2}" y="${y + cellHeight / 2}" text-anchor="middle" fill="#e7edf4" font-size="20" font-weight="700" font-family="sans-serif">${xml(cell.label)}</text><text x="${x + 12}" y="${y + cellHeight - 15}" fill="#9cabb9" font-size="13" font-family="sans-serif">${xml(cell.formId)}</text></g>`;
+			return `<g><rect x="${x + 3}" y="${y + 3}" width="${cellWidth - 6}" height="${cellHeight - 6}" rx="8" fill="${cell.label === 'NOT GENERATED' ? '#121821' : 'none'}" stroke="#4f5e70" stroke-width="2"/><text x="${x + cellWidth / 2}" y="${y + cellHeight / 2}" text-anchor="middle" fill="#e7edf4" font-size="20" font-weight="700" font-family="sans-serif">${xml(cell.label)}</text>${cell.humanReviewPending ? `<text x="${x + cellWidth / 2}" y="${y + cellHeight / 2 + 24}" text-anchor="middle" fill="#d8a85b" font-size="11" font-weight="700" font-family="sans-serif">PROVISIONAL NORMAL · REVIEW PENDING</text>` : ''}<text x="${x + 12}" y="${y + cellHeight - 15}" fill="#9cabb9" font-size="13" font-family="sans-serif">${xml(cell.formId)}</text></g>`;
 		})
 		.join('');
 	const columnLabels = PRODUCTION_AFFINITIES.map(
@@ -1234,7 +1492,7 @@ export async function buildFamilyAffinityReviewArtifacts(
 	const candidateBytesByCoordinate = new Map<string, Buffer>();
 	const cellByCoordinate = new Map<string, ReviewCell>();
 	const historicalCountsByCoordinate = new Map<string, { attempts: number; revisions: number }>();
-	for (const { target, assignment, coordinate, active } of attempts) {
+	for (const { target, assignment, coordinate, active, generationFailure } of attempts) {
 		const candidateBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.candidate);
 		const resultBytes = await optionalRealFile(repositoryRoot, target.ownedPaths.result);
 		const key = `${target.coordinateId}/v${target.version}`;
@@ -1243,8 +1501,13 @@ export async function buildFamilyAffinityReviewArtifacts(
 		if (!candidateBytes && !resultBytes && (ordinaryRecord || blindRecord)) {
 			throw new Error(`Review receipt exists without candidate/result for ${target.coordinateId}`);
 		}
-		if (!active && !ordinaryRecord) {
+		if (!active && !ordinaryRecord && !generationFailure) {
 			throw new Error(`Historical attempt lacks its immutable review receipt: ${target.targetId}`);
+		}
+		if (generationFailure && (candidateBytes || resultBytes || ordinaryRecord || blindRecord)) {
+			throw new Error(
+				`Generation-failed attempt cannot carry candidate/result/review evidence: ${target.targetId}`
+			);
 		}
 		for (const record of [ordinaryRecord, blindRecord].filter(
 			(value): value is NonNullable<typeof value> => Boolean(value)
@@ -1284,15 +1547,17 @@ export async function buildFamilyAffinityReviewArtifacts(
 			candidateBytes || resultBytes
 				? await requiredRealFile(repositoryRoot, familyAffinitySourcePacketBinding(target).path)
 				: undefined;
-		const evaluated = evaluateFamilyAffinityReviewAttempt({
-			target,
-			assignment,
-			...(familyPacketBytes ? { familyPacketBytes } : {}),
-			...(candidateBytes ? { candidateBytes } : {}),
-			...(resultBytes ? { resultBytes } : {}),
-			...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
-			...(blindRecord ? { blind: blindRecord.receipt } : {})
-		});
+		const evaluated = generationFailure
+			? { state: 'revise' as const, revisionRequired: true, approved: false }
+			: evaluateFamilyAffinityReviewAttempt({
+					target,
+					assignment,
+					...(familyPacketBytes ? { familyPacketBytes } : {}),
+					...(candidateBytes ? { candidateBytes } : {}),
+					...(resultBytes ? { resultBytes } : {}),
+					...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
+					...(blindRecord ? { blind: blindRecord.receipt } : {})
+				});
 		if (!active) {
 			if (!evaluated.revisionRequired || evaluated.approved) {
 				throw new Error(
@@ -1320,6 +1585,9 @@ export async function buildFamilyAffinityReviewArtifacts(
 			coordinateId: target.coordinateId,
 			activeVersion: target.version,
 			state: evaluated.state,
+			dispatchStatus: target.status,
+			anchorKind: target.anchor.kind,
+			humanReviewPending: target.anchor.kind === 'normal-verified-candidate',
 			label:
 				evaluated.state === 'planned'
 					? 'NOT GENERATED'

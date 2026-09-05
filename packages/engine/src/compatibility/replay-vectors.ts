@@ -12,6 +12,7 @@ import {
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
+	EngineGameStateV24Schema,
 	StoryPatchCandidateSchema,
 	type ActionSource,
 	type AuthoritativeEvent,
@@ -454,6 +455,22 @@ const EXPECTATIONS = {
 			'simulation.damage.hero.bf31ada7-a8be-41ed-af1b-1061ce964568',
 			'simulation.damage.hero.0c2a5107-13b5-490f-bd43-0789c312ddba',
 			'simulation.damage.hero.9dae563a-da09-4543-930f-4b6d2a3ef87b',
+			'simulation.damage.master'
+		],
+		scheduledEventIds: [],
+		resolvedScheduledEventIds: []
+	}),
+	'v24-equipment-state': checkedExpectation({
+		eventTypes: ['run.initialized', 'master.gate.inspected'],
+		afterHashes: [
+			'62906ca15c0ae01b6197320f2e931d286383efe0218bdd702dbdf0eb21b91d7e',
+			'000ef899bceda61815053ed39434d1a6108c0430dd4647c16cbcaa238a51ad56'
+		],
+		finalStateHash: '000ef899bceda61815053ed39434d1a6108c0430dd4647c16cbcaa238a51ad56',
+		legalActionIds: [
+			'master.inspect.gate',
+			'mission.prepare',
+			'simulation.damage.hero.91568a1b-76b3-4591-a7f3-60360ea322ce',
 			'simulation.damage.master'
 		],
 		scheduledEventIds: [],
@@ -1591,6 +1608,22 @@ function v23FirstBandArchiveVector(): EngineReplayVectorCase {
 	return finishVector('v23-first-band-archive', 23, run, EXPECTATIONS['v23-first-band-archive']);
 }
 
+function v24EquipmentStateVector(): EngineReplayVectorCase {
+	const bootstrap = createBootstrapEngine({
+		runId: deterministicUuid('replay-vector-v24-run'),
+		seed: 'replay-vector-v24-seed',
+		heroId: deterministicUuid('replay-vector-v24-hero'),
+		manifestHash: sha256Hex('replay-vector-v24-manifest'),
+		developmentEquipmentScenario: { enabled: true, materialLots: { bronze: 2, ash: 1 } }
+	});
+	const run = new VectorRun(
+		EngineGameStateV24Schema.parse(bootstrap.snapshot.state),
+		bootstrap.event
+	);
+	run.commit(run.state.master.masterId, 'v24-inspect', { commandType: 'master.inspect.gate' });
+	return finishVector('v24-equipment-state', 24, run, EXPECTATIONS['v24-equipment-state']);
+}
+
 export const ENGINE_REPLAY_VECTOR_CASES = [
 	v5RoutineAndActivityVector(),
 	v8CommunicationVector(),
@@ -1603,7 +1636,8 @@ export const ENGINE_REPLAY_VECTOR_CASES = [
 	v20MasterFallbackVector(),
 	v21StoryPatchVector(),
 	v22SynthesisVector(),
-	v23FirstBandArchiveVector()
+	v23FirstBandArchiveVector(),
+	v24EquipmentStateVector()
 ] as const;
 
 // Replay vectors intentionally use the Master-scoped public legal-actions boundary because the

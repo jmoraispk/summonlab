@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "hero-chibi-head-height-calibration-target-v1",
+  "experimentId": "chibi-head-height-calibration-001",
+  "targetId": "aear-soro-3-0-heads",
+  "heroId": "aear-soro",
+  "imageKind": "combat-chibi",
+  "variantId": "3-0-heads",
+  "targetHeadsTall": 3.0,
+  "anatomicalHeadPercent": 33.3,
+  "productionState": "candidate-only",
+  "canonicalPrompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-calibration-001/prompts/aear-soro-3-0-heads.txt",
+    "sha256": "30a6734379bc2e1ec56a6595c400c6a2e53013ff9ba9d914cccaa8689f7fdc06"
+  },
+  "references": [
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/summon-v2.png",
+      "sha256": "b3d4dda24fc189ec7bbf2585127c3f886c7de41f76ca9266d6f2ea86abb059cd",
+      "role": "identity-anatomy-authority"
+    },
+    {
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/combat-chibi-v1.png",
+      "sha256": "e668682f79fec0aa21fbf8515609983f7b5b42b68fb64f5e5a25c2b1665b6172",
+      "role": "style-continuity-reference"
+    }
+  ],
+  "output": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-calibration-001/candidates/aear-soro-3-0-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-calibration-001/results/aear-soro-3-0-heads.json"
+  },
+  "acceptanceCriteria": [
+    "one complete 1024x1536 full-body candidate",
+    "Aear Soro identity and adult age remain recognizable",
+    "requested anatomical head-height relationship is visibly distinct",
+    "summon physique and non-inflated arms and hands are preserved",
+    "hair, wardrobe, palette, pouch, boots, and markings remain continuous",
+    "no weapon, magic, text, UI, frame, star, or extra subject"
+  ]
+}

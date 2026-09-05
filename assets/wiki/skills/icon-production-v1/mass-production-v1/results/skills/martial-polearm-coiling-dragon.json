@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:coiling-dragon",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-coiling-dragon.json",
+	"promptHash": "0d9d1fc7fe667b01a80657cbcaaa77e14b5e4309747cc2a66d116ec2d65f11ce",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-sweep-hook.png",
+			"contentHash": "0b81d334bacc97350496cec4ea28fb86014513401a5f70741c65fc859c9f8057"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-dragon-tail.png",
+			"contentHash": "49ec1b0fbc4a40809fc5f5d5cac40e7266cb2972960f9de9c118ecd4f36d4fb3"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-coiling-dragon-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2062030,
+		"contentHash": "138a89bb4f5f13c3ea8ac8f921bb7e9a7fa451a857dfa502564f08e54e158893"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-coiling-dragon.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1780853,
+		"contentHash": "894697834ab3ca98e3016e5d14035d6fd611a26f6c4c1ccfe5eb62eed8783aa3"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "2c02603988588e2ac85646d8c42c45d0c79a2900b772817226bd0ecd4d513d6f",
+		"postRepairContentHash": "894697834ab3ca98e3016e5d14035d6fd611a26f6c4c1ccfe5eb62eed8783aa3",
+		"removedPixels": 384942
+	}
+}

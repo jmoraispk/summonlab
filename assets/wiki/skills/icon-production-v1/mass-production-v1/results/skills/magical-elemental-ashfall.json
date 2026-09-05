@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:ashfall",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-ashfall.json",
+	"promptHash": "a50daefc0344678807ae0597623a07aeecac6248e97336f9c459a97ca5ba7322",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-field.png",
+			"contentHash": "8690006c98f155c74570dfd459b9b171d695927f3a76f2c24f838bfd50247c65"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-firestorm.png",
+			"contentHash": "d0811862d60c49bc101a1c9f01f2492cd205d949538bc7a7b1750728f2351653"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-ashfall-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2048878,
+		"contentHash": "76ba7eca939b789a8723d927acc91090f51e5157da28e5e0dbd67b7a8ef24875"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ashfall.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1908366,
+		"contentHash": "de84441fde9249b4418a88bcb85b532e8906ec077417256a16cb48fc165fcc96"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cda147a2c794ccb401e916ccbaf081ce780d4f4f30a3d9123b559651ab68c678",
+		"postRepairContentHash": "de84441fde9249b4418a88bcb85b532e8906ec077417256a16cb48fc165fcc96",
+		"removedPixels": 384942
+	}
+}

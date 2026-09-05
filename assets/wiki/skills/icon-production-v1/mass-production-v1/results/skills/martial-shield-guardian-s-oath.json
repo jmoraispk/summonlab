@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:guardian-s-oath",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-guardian-s-oath.json",
+	"promptHash": "4d28056c2f55fd4d9e4fe7fe63da60fed512f56a0a7c2e13184cc0434598014d",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-ally-cover.png",
+			"contentHash": "254a8711b1874993085c9f4bc731bb7592fddc80c34494de94200004e9248f71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-phalanx.png",
+			"contentHash": "57e613f70f92d844620dda59bbd65477459fbab6fadb78465653fabebd924560"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-guardian-s-oath-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2057214,
+		"contentHash": "85548127484b2a5d5212df1a2062afa59084e15feee1daca92e60ebb88b95716"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-guardian-s-oath.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1785843,
+		"contentHash": "7544bf310d45d4f27b3b31f292fbe8393a4cdd0352d40b1e307109889f0c9834"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "6611be70d5d67a519e984450b5f4478ec2ee3c0e498f6da0ff042398784bd41b",
+		"postRepairContentHash": "7544bf310d45d4f27b3b31f292fbe8393a4cdd0352d40b1e307109889f0c9834",
+		"removedPixels": 384942
+	}
+}

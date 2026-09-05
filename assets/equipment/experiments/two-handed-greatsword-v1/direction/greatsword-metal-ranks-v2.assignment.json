@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "equipment-greatsword-direction-assignment-v2",
+  "assignmentId": "assignment-greatsword-v1-metal-rank-direction-v2",
+  "targetId": "greatsword-v1-metal-rank-direction-v2",
+  "immutable": true,
+  "dryRun": false,
+  "retryCeiling": 1,
+  "promptPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.prompt.txt",
+  "promptSha256": "2050bd679404141d606ff447cd36ced59c1e6f91fd3d78f89adf472c10fd69a0",
+  "references": [],
+  "proportionContract": {
+    "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-contract-v1.json",
+    "sha256": "77f0850fd947aa006b5348d69b37a1ecae5c7bd92253ea489b556dda1c2dd522"
+  },
+  "permittedOutputs": {
+    "candidatePath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.png",
+    "resultPath": "assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v2.result.json",
+    "measurementPath": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/greatsword-metal-ranks-v2-measurements.json"
+  },
+  "forbiddenOutputs": ["assets/equipment/approved/", "apps/web/static/runtime/", "packages/contracts/", "packages/content/", "packages/engine/"],
+  "selfPromotionForbidden": true
+}

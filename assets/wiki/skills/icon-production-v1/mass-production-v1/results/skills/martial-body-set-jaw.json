@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:set-jaw",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-set-jaw.json",
+	"promptHash": "b530cd0ffe3f1010cc7fcb511418385922b5368798b4aa942559375e60638622",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-endurance.png",
+			"contentHash": "5b3dcc0e46465761edaad933b7a76248da2170e523c6d11a462939bab7584559"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-set-jaw-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2043845,
+		"contentHash": "495af9198e29ce8c30e2df8cc2772aca1b6c265709916f2e5610b34033d8fbf0"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-set-jaw.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1846317,
+		"contentHash": "e19c81889efb21ccc214d6f012b08d9d2c52f6ecfe6b39f4c86676a23a0b30f8"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "509124e607d47f8862f1565a6e4884b38a61d8d549782869002b37940256ed03",
+		"postRepairContentHash": "e19c81889efb21ccc214d6f012b08d9d2c52f6ecfe6b39f4c86676a23a0b30f8",
+		"removedPixels": 384942
+	}
+}

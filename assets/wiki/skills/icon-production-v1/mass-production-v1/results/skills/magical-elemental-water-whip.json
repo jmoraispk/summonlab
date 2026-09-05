@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:water-whip",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-water-whip.json",
+	"promptHash": "162951005486597c29a909fbd60898ec2a1b335941dfe4a3ba87555cf72f0d4f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-flow.png",
+			"contentHash": "7c0609742bcbaf973005fd242cd2d09114c4ec43bacc06e49f5db874b1eddd16"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-flow.png",
+			"contentHash": "bf53a1feb84d9b8e42d91d491453c6cb4192d5a8f7a36bbba39f592a1504d1da"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-water-whip-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1920178,
+		"contentHash": "626ee82e436ed709716e4073055e0b9ed7a92d7bd4005f8e5a3362040170e8a6"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-water-whip.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1772759,
+		"contentHash": "b946feda8d2999a47c586adcbf850c93d6913031c1b31377a87ac9cd06db4cd8"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "ba20220850e64f4f75266249e2fbde7d226b80f35f76be577518b3bb67ccc3ac",
+		"postRepairContentHash": "b946feda8d2999a47c586adcbf850c93d6913031c1b31377a87ac9cd06db4cd8",
+		"removedPixels": 384942
+	}
+}

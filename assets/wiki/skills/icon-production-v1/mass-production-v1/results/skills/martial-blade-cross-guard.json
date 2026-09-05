@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:cross-guard",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-cross-guard.json",
+	"promptHash": "dbc9bce6ac4a130e2ea59da1518f07308139c9846d659d19eef7eed5ca12e416",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-guard-flow.png",
+			"contentHash": "7965198fed452244fbad42e5f1279f1cdd2ca9fbfcabc5d6fa79f2b9a0684e32"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-cross-guard-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 1922696,
+		"contentHash": "444633117c5e73cf2de9cd85179023309ce38eca6a326ebe0e5e6d87e3a985a5"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cross-guard.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1589001,
+		"contentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "efa87b4f200dce704ffe1492bf664db104bf4e5aa792d967a885be0bd635e8b4",
+		"postRepairContentHash": "37d045c67e0aed84076b11d8b93833f7800d34b1bbb439e878fd22931964c803",
+		"removedPixels": 384942
+	}
+}

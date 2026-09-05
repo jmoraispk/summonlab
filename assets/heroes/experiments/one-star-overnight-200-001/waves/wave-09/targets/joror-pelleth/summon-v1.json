@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "798a9f7d42edff378aad63d06550a76f1f41e2d588899855ed9931dce5af4b80",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Joror Pelleth: 30-year-old man, 153 cm (very-short), ordinary lean-to-average construction without visible definition, skin value band-4-medium. Face: wide triangular face; wide-set eyes and a low straight brow; prominent bridge, compact mouth; faint freckles. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: dark-brown, asymmetric-extreme, deliberate accent: sculptural diagonal fringe. Wardrobe: fitted-vest-system, specifically a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; offset closures and narrow reinforced cuffs; bounded palette plum-gray. Visible personal details: one hand-sized botanical shoulder tattoo. Make body construction and habitual posture the primary recognition device. Maintenance cue: meticulous daily maintenance. Color treatment: balances one confident color field against quiet neutrals. Pose cue: posture is upright but not military, with wrists loose and hands readable. Include a palm-sized map roll only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "joror-pelleth",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "one hand-sized botanical shoulder tattoo"
+      ],
+      "coolnessAnchor": "body-or-posture",
+      "density": 1,
+      "tattooScope": "bounded"
+    },
+    "hair": {
+      "accent": "sculptural diagonal fringe",
+      "chibiReadability": "Preserve the front and side silhouette of asymmetric-extreme, the parting, gathered mass, shaved areas, and sculptural diagonal fringe; color remains dark-brown.",
+      "colorFamily": "dark-brown",
+      "silhouetteFamily": "asymmetric-extreme"
+    },
+    "identity": {
+      "age": 30,
+      "displayName": "Joror Pelleth",
+      "faceDescription": "wide triangular face; wide-set eyes and a low straight brow; prominent bridge, compact mouth; faint freckles",
+      "gender": "man",
+      "identitySignature": "d0d0257ef71b177be30d13d758ebca8f13fae1ffd4ce5ebefebd7a0739be3356",
+      "skinValueBand": 4
+    },
+    "kernel": {
+      "colorOrnamentTaste": "balances one confident color field against quiet neutrals; accepts one cherished personal detail.",
+      "counterTrait": "softens around nervous strangers",
+      "culturalFragments": [
+        "uses folded cloth as a formal greeting token",
+        "leaves one closure deliberately unmatched for luck"
+      ],
+      "dominantTrait": "bluntly candid",
+      "groomingAttitude": "meticulous daily maintenance",
+      "lifeEcho": "cartography",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "posture is upright but not military, with wrists loose and hands readable",
+      "socialPresentation": "ceremonial with a teasing edge",
+      "tension": "Appears ceremonial with a teasing edge, yet softens around nervous strangers."
+    },
+    "physique": {
+      "bodyType": "ordinary-average",
+      "description": "153 cm; ordinary lean-to-average construction without visible definition.",
+      "heightBand": "very-short"
+    },
+    "wardrobe": {
+      "condition": "meticulous daily maintenance",
+      "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; offset closures and narrow reinforced cuffs.",
+      "family": "fitted-vest-system",
+      "paletteFamily": "plum-gray"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/joror-pelleth/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/results/joror-pelleth/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "joror-pelleth-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-09"
+}

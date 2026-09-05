@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:windmill",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-windmill.json",
+	"promptHash": "ed302c952a737b37f5a211e7fa5929150150ad6d85012e70e6ed255eab41e92f",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-twin-dagger.png",
+			"contentHash": "e708d3949c7d0c5448631f6953554c0abdd50d17bc0788d52d0255ccd3afd8c3"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-twin-fangs.png",
+			"contentHash": "a9706fbc38ae7cfe029056dcb789f8b32fc54c677ccd6c3126ea3f3b09ecfb28"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-windmill-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2005368,
+		"contentHash": "2d2e9c590d0daaf5488b005a19d589b555d129e735e16de9ec2434427352e512"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-windmill.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1808318,
+		"contentHash": "a88335aaeb4d613f2e887a7b01ece31b8137405294ca08df6354683c0adfff98"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "db9fd330bd68db4b82eb0ad7c961dad81e947d17076883ce2f61458aa1a0cbec",
+		"postRepairContentHash": "a88335aaeb4d613f2e887a7b01ece31b8137405294ca08df6354683c0adfff98",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:severed-thread",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-severed-thread.json",
+	"promptHash": "86efdf0f6741375240017551bb8cfe02541a4e708da0d203c31d838395e7be73",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-dagger-strike.png",
+			"contentHash": "b573f30649907e8139355abcbe978ffafa994c5444248625822badf5effe65a0"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-arterial-strike.png",
+			"contentHash": "b0af3ae59642deffaa7ebbbfe527cc5f4d166097020e77c4f899618b1606731a"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-severed-thread-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2263247,
+		"contentHash": "5a78173c50ec6464d08fd3dd5e1b998faf7de7f1b492fe25c4aba131b84b450b"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severed-thread.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1981412,
+		"contentHash": "3d9ccdb65d21f87e42c6585f81aa5bbef7f8b3a220115aad788558e616b9545c"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cc275179d2c25cb3d14824fe7199ab6643e171a0b49d4669cae6700b9e424980",
+		"postRepairContentHash": "3d9ccdb65d21f87e42c6585f81aa5bbef7f8b3a220115aad788558e616b9545c",
+		"removedPixels": 384942
+	}
+}

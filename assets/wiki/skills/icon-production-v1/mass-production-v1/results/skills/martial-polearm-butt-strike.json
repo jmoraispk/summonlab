@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:polearm:butt-strike",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-butt-strike.json",
+	"promptHash": "f4cec3134c45db6e09494ec356c6cf3b5ca2f0ebdeac498d9b5a4ecc8509800e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-butt-strike.png",
+			"contentHash": "67b63f415a1979afd5ca84f4be8d7161b6a16e18ea13c2bd7608916cff39a598"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-butt-strike-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2056381,
+		"contentHash": "2a1549e3f9895ff1940aac200045b72d305611706b6c126e0dd504c2783ee3f4"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-butt-strike.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1775720,
+		"contentHash": "541892ccb610c36c2174874886c347280aefc531fa98a1a3fd825ade39f9dbb8"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "e04c851c0baacb4c6896b17b58599030283ce5cafbe9db3a73fbcb9b2fc082e5",
+		"postRepairContentHash": "541892ccb610c36c2174874886c347280aefc531fa98a1a3fd825ade39f9dbb8",
+		"removedPixels": 384942
+	}
+}

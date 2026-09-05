@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:body:dive",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-dive.json",
+	"promptHash": "b7a495dd10f58a3ff666480a60d8e14f0a75e59f52299bf3980a2eb6a2d81892",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-ground-movement.png",
+			"contentHash": "1860690f77d22a99db61e049c917e3f66b384eeeddcdf7c76f35249fc4552d77"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-weave.png",
+			"contentHash": "2e4b72a6e02e6f2b2fecb561ba510d93866a0714b2c8b43b02455bde8eb08cd7"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-dive-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2120466,
+		"contentHash": "d00a0a6943933412089c9b4780925037a106154cd58b6874aea6362c1bc3d67f"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-dive.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1838733,
+		"contentHash": "396652e9ebd282c5c16214a294799e0a05a583913a16825b6febefe9d387e6a6"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "f13e7903dfd1b0dd1ee9a43fc4957ccc6db375a89820d37e855d607683102403",
+		"postRepairContentHash": "396652e9ebd282c5c16214a294799e0a05a583913a16825b6febefe9d387e6a6",
+		"removedPixels": 384942
+	}
+}

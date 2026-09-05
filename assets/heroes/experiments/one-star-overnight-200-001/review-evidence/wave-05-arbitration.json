@@ -1,0 +1,240 @@
+{
+  "schemaVersion": "hero-one-star-checkpoint-arbitration-v1",
+  "experimentId": "one-star-overnight-200-001",
+  "waveId": "wave-05",
+  "candidateBoundary": "candidate-only; objective authoring review, not human approval",
+  "findings": [
+    {
+      "heroId": "eirar-ulenin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/eirar-ulenin/combat-chibi-v1.json",
+      "selectedResultSha256": "1ea888024b289a066d9687f20511dde1ee9f1fa4c1e6315e8e00439aa35ebaa1",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "Independent original-resolution checkpoint inspection measured approximately 29-30% head-and-hair height, below the frozen 32% minimum."
+    },
+    {
+      "heroId": "loror-veshar",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/loror-veshar/combat-chibi-v2.json",
+      "selectedResultSha256": "a1325897e060aebeeedfb773e58f0ad6a049df531118eb6ab815acafb7bc68cd",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "Independent final checkpoint inspection measured approximately 37-38% head-and-hair height on the corrected chibi, above the frozen 36% maximum."
+    },
+    {
+      "heroId": "isan-eshan",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/isan-eshan/combat-chibi-v2.json",
+      "selectedResultSha256": "e61e4012ed9c4e9415505623ad0b25968c0ed2b918f02c13e3139dd65dd8d3ec",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "Independent final checkpoint inspection measured approximately 37-38% head-and-hair height on the corrected chibi, above the frozen 36% maximum."
+    },
+    {
+      "heroId": "kelen-eshen",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/kelen-eshen/summon-v1.json",
+      "selectedResultSha256": "d13f286eaabff34e89b132410cafb40315d7b05219d0aba46bbf03ee862387d5",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "wardrobe-continuity"],
+      "evidence": "Independent final checkpoint inspection found an undeclared lower-lobe hoop in both originals beyond the specified clasp, throat necklace, and exactly three hair rings."
+    },
+    {
+      "heroId": "brinen-sorel",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/brinen-sorel/combat-chibi-v2.json",
+      "selectedResultSha256": "81403accf4af207fbf846ebdbf346ee1474ed2595f173d2c20b0559863697e56",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "Independent final checkpoint inspection measured approximately 40% head-and-hair height on the corrected chibi, materially above the frozen 36% maximum."
+    },
+    {
+      "heroId": "wenia-moran",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/wenia-moran/combat-chibi-v2.json",
+      "selectedResultSha256": "9110c134381a31029c384dbfd633d473b5b38a217904bf8685874f5d3150e2af",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "Independent checkpoint inspection found the summon-bound tiny cloth-wrapped notebook absent rather than visibly stowed on the corrected chibi."
+    },
+    {
+      "heroId": "ulin-pellun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/ulin-pellun/combat-chibi-v1.json",
+      "selectedResultSha256": "421bab2f2a792c6634f1f0f2136f6acb6e186ac68982dbf72ad8412f778c3fd6",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-and-wardrobe-continuity"],
+      "evidence": "Independent checkpoint inspection found approximately six temple rings instead of exactly three and the summon-bound clay tea token absent rather than visibly stowed."
+    },
+    {
+      "heroId": "galen-netha",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/galen-netha/combat-chibi-v1.json",
+      "selectedResultSha256": "d2edb01a4623362d0dbee4ff3f38e8a7d1620187add202b9f2cfdcc059bf07b9",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "Independent checkpoint inspection could not unambiguously locate the summon-bound carpenter's chalk as a stowed object while both hands remained empty."
+    },
+    {
+      "heroId": "rayn-grelin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/rayn-grelin/combat-chibi-v1.json",
+      "selectedResultSha256": "fa33f33839ba3b6c8c3304bd801a7e6f21a51cba7e0871ca06657c7e94def065",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity"],
+      "evidence": "Independent final checkpoint inspection found the summon-bound palm-sized map roll absent from the chibi."
+    },
+    {
+      "heroId": "lani-esha",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/lani-esha/summon-v1.json",
+      "selectedResultSha256": "d7bbe60cc3560799b0ebb20aac1b270e61950a70917e02df142ca722d55be9ce",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity", "wardrobe-continuity"],
+      "evidence": "Independent final checkpoint inspection found two distinct right-ear ornaments in both originals where the manifest permits one asymmetric ear cuff."
+    },
+    {
+      "heroId": "oryn-soro",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/oryn-soro/combat-chibi-v1.json",
+      "selectedResultSha256": "fc557280357ad607d8cd8787e320ea0a757302f8a32efa9ba67b049c470cf844",
+      "verdict": "fail",
+      "blockingCriteria": ["arm-hand-continuity", "hair-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution production inspection found the chibi at approximately 38.2% head-and-hair height, six hair rings instead of three, the source wooden comb absent, and arm/hand continuity lost. Multiple independent blockers make the pair ineligible for a single correction."
+    },
+    {
+      "heroId": "delyn-belan",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/delyn-belan/combat-chibi-v1.json",
+      "selectedResultSha256": "4460c93b410049d086e4855bd27344241b708b14ca35a0700a51888f6e5ba180",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "body-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution production inspection found a juvenile face, loss of the exact soft-round evident-middle body, and approximately 37-38% head-and-hair height. Multiple independent blockers make the pair ineligible for a single correction."
+    },
+    {
+      "heroId": "joris-oror",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/joris-oror/combat-chibi-v1.json",
+      "selectedResultSha256": "df12d7583e130e87b1f989130d2f219aa23166c8881504e2356880be3cc36e2d",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "wardrobe-continuity"],
+      "evidence": "Original-resolution production inspection found a youthful generic doll face instead of the mature source identity and four visible hair rings instead of exactly three."
+    },
+    {
+      "heroId": "brina-drenun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/brina-drenun/combat-chibi-v1.json",
+      "selectedResultSha256": "3bb0b3742c3215efc06cad546cc7d931c30392b91c6d86773019991072e90a3e",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution production inspection found a childlike doll face, omitted summon-bound carpenter's chalk, and approximately 37-38% head-and-hair height. Multiple independent blockers make the pair ineligible for a single correction."
+    },
+    {
+      "heroId": "talan-amarai",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/talan-amarai/combat-chibi-v1.json",
+      "selectedResultSha256": "6d8658c5c79463f9371a27eb4e45ea630b57cba2aec493f317d34c78ee7de1fc",
+      "verdict": "fail",
+      "blockingCriteria": ["hair-continuity", "wardrobe-continuity"],
+      "evidence": "Original-resolution production inspection found only two hair rings instead of exactly three and omitted the summon-bound cloth-wrapped notebook rather than visibly stowing it."
+    },
+    {
+      "heroId": "quinon-ulenek",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/quinon-ulenek/combat-chibi-v2.json",
+      "selectedResultSha256": "8a597f0e86c59c4e6d9c9c272bc6a16c5389efdfb2f529041e44033af1ca7bc7",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "The source-bound v2 correction increased head-and-hair height to approximately 39%, remaining outside the frozen 32-36% band. The exhausted correction is ineligible."
+    },
+    {
+      "heroId": "meio-wyror",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/meio-wyror/combat-chibi-v2.json",
+      "selectedResultSha256": "3dd609dea9d7ed3d71c3b5b263a8d4853e75060745ba89d3d47a2ca6635a4b6f",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "The immutable v2 correction receipt records failure to meet its explicit ratio correction target. Under the one-correction ceiling it cannot be revised again and is replaced without rewriting evidence."
+    },
+    {
+      "heroId": "isyn-drenin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/isyn-drenin/summon-v1.json",
+      "selectedResultSha256": "345547961dfaea0f15039a2c914bca4d450dbd6b42c6bd06ccbf51883909cc2e",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output", "manifest-fidelity"],
+      "evidence": "Provider output was malformed at 1023x1537 instead of 1024x1536 and also introduced undeclared nose and ear jewelry. No candidate was retained."
+    },
+    {
+      "heroId": "wenis-ulenun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/wenis-ulenun/summon-v1.json",
+      "selectedResultSha256": "aedfad3a72dd76df29898c50b74be6319066dec9f8ed55cdbf7d0b083d1b2e7b",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output"],
+      "evidence": "Provider output was malformed at 1023x1537 instead of the immutable 1024x1536 canvas. No candidate was retained and the terminal integrity failure requires replacement."
+    },
+    {
+      "heroId": "aeia-pellun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/aeia-pellun/summon-v2.json",
+      "selectedResultSha256": "fe16f89027766a3ef9b7c6964bcfa7000afab85f58a18de87d13eadfce6886ae",
+      "verdict": "fail",
+      "blockingCriteria": ["one-star-ceiling"],
+      "evidence": "The source-bound v2 correction introduced visible writing-like text on the recipe leaf, violating the frozen no-text constraint. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "isia-vesho",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/isia-vesho/combat-chibi-v1.json",
+      "selectedResultSha256": "77cd09bc140d9a1430be210e297ef0abe539e917e85bc0df01f8c5002a272330",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution production inspection found two hair rings instead of three, omitted the stowed handkerchief, and measured approximately 30% head-and-hair height below the frozen 32% minimum."
+    },
+    {
+      "heroId": "brinen-jorai",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/brinen-jorai/combat-chibi-v1.json",
+      "selectedResultSha256": "1ae381f6a80331abfc9f81c220f2d09ba85014bc625ad83587bfb46495ea60c3",
+      "verdict": "fail",
+      "blockingCriteria": ["wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution production inspection found the cloth-wrapped notebook absent and measured approximately 45% head-and-hair height above the frozen 36% maximum."
+    },
+    {
+      "heroId": "adar-corek",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/adar-corek/combat-chibi-v2.json",
+      "selectedResultSha256": "e50ac21ea038693bc276bd411a44492489cd411df34d333a0fd878817627bab1",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "chibi-ratio"],
+      "evidence": "The source-bound v2 correction regressed to a youthful doll-face and approximately 36.5-37% head-and-hair height. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "gali-uleneth",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/gali-uleneth/summon-v2.json",
+      "selectedResultSha256": "7ed6c8b209de4740c31c41f3052d31b66cf89cb68f528d5557ea6e390a8edfb4",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 correction retained four visible hair-ring cuffs instead of exactly three. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "cala-amara",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/cala-amara/combat-chibi-v1.json",
+      "selectedResultSha256": "95c22b53e2aafa1eed0057da12079bd22690a178b6e1faafd5be844c9d24673b",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "wardrobe-continuity"],
+      "evidence": "Original-resolution inspection found a childlike generic-doll face replacing the mature source geometry and omitted the source map roll rather than visibly stowing it. Multiple blockers make the initial chibi ineligible for a single correction."
+    },
+    {
+      "heroId": "ianar-eshun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/ianar-eshun/combat-chibi-v2.json",
+      "selectedResultSha256": "1d26f98f0897af701562fde00929b410b36608820ab9b1ff746ef790100d2a81",
+      "verdict": "fail",
+      "blockingCriteria": ["chibi-ratio"],
+      "evidence": "The source-bound v2 correction reduced the head-and-hair ratio but remained approximately 38-39%, above the frozen 36% maximum. The exhausted correction remains ineligible."
+    },
+    {
+      "heroId": "isis-veshun",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/isis-veshun/summon-v1.json",
+      "selectedResultSha256": "4b49baa33726d948b204054f4de99aab8c01104ab14e243871ed13b803f74653",
+      "verdict": "fail",
+      "blockingCriteria": ["malformed-output", "manifest-fidelity"],
+      "evidence": "The provider returned 1023x1537 rather than the mandatory 1024x1536 canvas and the draft carried about six wrist cuffs instead of exactly two. No candidate was retained."
+    },
+    {
+      "heroId": "lorel-amarin",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/lorel-amarin/combat-chibi-v1.json",
+      "selectedResultSha256": "745a607692d605a73a7c68a89347e329aaf8a7f828326aab51ceb0978da1f7c3",
+      "verdict": "fail",
+      "blockingCriteria": ["identity-continuity", "wardrobe-continuity", "chibi-ratio"],
+      "evidence": "Original-resolution inspection found a youthful generic face, two rather than three declared hair rings, omitted carpenter's chalk, and a head-plus-hair ratio outside the frozen band. Multiple blockers make the initial chibi ineligible for correction."
+    },
+    {
+      "heroId": "zelel-pelli",
+      "selectedResultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/results/zelel-pelli/summon-v2.json",
+      "selectedResultSha256": "06eb974fc246c0b7816659ac3941036493fef5ed4990a4fa6d3d637160f901a3",
+      "verdict": "fail",
+      "blockingCriteria": ["manifest-fidelity"],
+      "evidence": "The source-bound v2 correction retained four visible hair rings instead of exactly three. The exhausted correction remains ineligible."
+    }
+  ]
+}

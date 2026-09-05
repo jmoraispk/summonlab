@@ -1,0 +1,40 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "elemental.fire-field",
+	"columns": 4,
+	"rows": 1,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "magical:elemental:detonation",
+			"name": "Detonation",
+			"rarity": "D",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "magical:elemental:firestorm",
+			"name": "Firestorm",
+			"rarity": "C",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "magical:elemental:ashfall",
+			"name": "Ashfall",
+			"rarity": "C",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "magical:elemental:sea-of-flame",
+			"name": "Sea of Flame",
+			"rarity": "A",
+			"row": 1,
+			"column": 4
+		}
+	]
+}

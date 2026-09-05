@@ -1,0 +1,64 @@
+{
+	"schemaVersion": "skill-icon-family-cell-map-v1",
+	"familyId": "polearm.reaping-blade",
+	"columns": 4,
+	"rows": 2,
+	"cells": [
+		{
+			"index": 1,
+			"targetId": "martial:polearm:halberd-handling",
+			"name": "Halberd Handling",
+			"rarity": "F",
+			"row": 1,
+			"column": 1
+		},
+		{
+			"index": 2,
+			"targetId": "martial:polearm:chop",
+			"name": "Chop",
+			"rarity": "F",
+			"row": 1,
+			"column": 2
+		},
+		{
+			"index": 3,
+			"targetId": "martial:polearm:berserk-swing",
+			"name": "Berserk Swing",
+			"rarity": "D",
+			"row": 1,
+			"column": 3
+		},
+		{
+			"index": 4,
+			"targetId": "martial:polearm:reaping-arc",
+			"name": "Reaping Arc",
+			"rarity": "D",
+			"row": 1,
+			"column": 4
+		},
+		{
+			"index": 5,
+			"targetId": "martial:polearm:storm-of-iron",
+			"name": "Storm of Iron",
+			"rarity": "C",
+			"row": 2,
+			"column": 1
+		},
+		{
+			"index": 6,
+			"targetId": "martial:polearm:red-harvest",
+			"name": "Red Harvest",
+			"rarity": "B",
+			"row": 2,
+			"column": 2
+		},
+		{
+			"index": 7,
+			"targetId": "martial:polearm:the-last-harvest",
+			"name": "The Last Harvest",
+			"rarity": "A",
+			"row": 2,
+			"column": 3
+		}
+	]
+}

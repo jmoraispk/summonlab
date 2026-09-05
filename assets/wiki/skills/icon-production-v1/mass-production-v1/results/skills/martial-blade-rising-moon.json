@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:blade:rising-moon",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-rising-moon.json",
+	"promptHash": "f9bd79b187cf69b96020ed805b7aa41bb2a75b3d97da363ab06ac98403f87dba",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-sweeping-cut.png",
+			"contentHash": "e2c931c7058a3c9c9750778c037dac55b6ed05e573ed7a8f4833a1888ecea3d5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-wind-slash.png",
+			"contentHash": "cb0b8cbd4fc069927fd41cbce804e3ad160d9f5686c08dc15a03eedcb0b3ac87"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-blade-rising-moon-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2058887,
+		"contentHash": "d3648084bc750c1a803d56183d09dc8ae5d52ab0997efb5c10fffdb0f2b64588"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rising-moon.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1846522,
+		"contentHash": "5068e51a2db14fe8598a846c6a060f4523ada6cfd0cbcc0da668701b5111f91d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "d29d14630193717640552c16e33f7f6adf64db5f31b8a73ea06b820426865590",
+		"postRepairContentHash": "5068e51a2db14fe8598a846c6a060f4523ada6cfd0cbcc0da668701b5111f91d",
+		"removedPixels": 384942
+	}
+}

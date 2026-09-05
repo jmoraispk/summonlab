@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:elemental:maelstrom",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-maelstrom.json",
+	"promptHash": "f878b14ae7899993780067b5419c7239dabb3953e63323b56b9054bfd204bbb9",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-flow.png",
+			"contentHash": "7c0609742bcbaf973005fd242cd2d09114c4ec43bacc06e49f5db874b1eddd16"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-torrent.png",
+			"contentHash": "dffac3c7e1737bd763b0cbceb4b4672ec9211eaf4b3cb3d6aed6762c8ef34294"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-maelstrom-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2396791,
+		"contentHash": "2402942136d358b2bbe8f90d96c10f75dc606dc940a4d42c23f20ece346df4bd"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-maelstrom.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 2135405,
+		"contentHash": "0dee47a89809a17e82673cd6dcebd2ae225095502e3c333c8601c86c674a7f21"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "17180d63ab134c9cedcd4269dccbb93e383391383bf8e500a40fd9578b5ddbd2",
+		"postRepairContentHash": "0dee47a89809a17e82673cd6dcebd2ae225095502e3c333c8601c86c674a7f21",
+		"removedPixels": 384942
+	}
+}

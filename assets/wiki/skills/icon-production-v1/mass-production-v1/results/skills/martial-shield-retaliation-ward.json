@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:retaliation-ward",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-retaliation-ward.json",
+	"promptHash": "2af10d001ce94827fded3938935c2936c472f5abb9fd26304fe43df1a671661e",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-deflection.png",
+			"contentHash": "0c8d12d92b1a32d40fe05a817611d07ff66dcf7674bcf28528798a7cf28c863a"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-deflect.png",
+			"contentHash": "a86dcc795c5811d2c11763ed561a6b65a8a728db739a11e5e545885bc0cc2897"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-retaliation-ward-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2064230,
+		"contentHash": "872fec95dcc92d761404de7f271445cfa749ab06930c5b32facf97e259329311"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-retaliation-ward.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1844314,
+		"contentHash": "754d45a7619e9f3780aa1b69195b27eeab546a79c838b7d1ae93f367c103d7a5"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "924025e37f9f9936da4828008e26393e8b7c546ad846c00e9a2d9140c1cff709",
+		"postRepairContentHash": "754d45a7619e9f3780aa1b69195b27eeab546a79c838b7d1ae93f367c103d7a5",
+		"removedPixels": 384942
+	}
+}

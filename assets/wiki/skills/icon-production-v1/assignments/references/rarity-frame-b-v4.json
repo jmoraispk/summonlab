@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "skill-icon-assignment-v2",
+  "assignmentId": "assignment-rarity-frame-b-v4",
+  "jobId": "rarity-frame-b-v4",
+  "logicalIdentity": "rarity-frame-b",
+  "revision": 4,
+  "targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-b-v4.json",
+  "assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-b-v4.json",
+  "skillVersion": "summonlab-skill-icon-production-v4",
+  "normalization": {
+    "profile": "skill-icon-green-key-role-mask-v3"
+  },
+  "assignedAt": "2026-09-04T00:00:00.000Z",
+  "retryCeiling": 1,
+  "permittedOutputs": {
+    "candidatePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v4.png",
+    "resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-b-v4.json"
+  },
+  "forbiddenSharedPaths": [
+    "assets/wiki/skills/icon-production-v1/catalog.json",
+    "assets/wiki/skills/icon-production-v1/visual-specs.json",
+    "assets/wiki/skills/icon-production-v1/masters",
+    "assets/wiki/skills/icon-production-v1/review",
+    "apps/web/static/skill-icons/v1",
+    "docs/wiki/art/skill-rarity-frames.md",
+    "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+    "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+    "assets/wiki/skills/icon-production-v1/geometry-v2.json"
+  ],
+  "completionContract": {
+    "oneTargetOneImage": true,
+    "structuredResultRequired": true,
+    "sharedFilesMustRemainUntouched": true,
+    "selfPromotionForbidden": true
+  }
+}

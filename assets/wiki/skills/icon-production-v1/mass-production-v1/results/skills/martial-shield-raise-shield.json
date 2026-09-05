@@ -1,0 +1,52 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "martial:shield:raise-shield",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-shield-raise-shield.json",
+	"promptHash": "743749e3d658bb8b6c657daf7fef30c05bc4225215a121df07ce0ea448d1351b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-fortress.png",
+			"contentHash": "f3bd6b7a6a71eeb8726980868cd18889b9aeae1bcb293d0704466167b1026796"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-use.png",
+			"contentHash": "93f740345f4a8bd7decb6917d7ddc37414e7faf0ad54314694c63e02b1c4840d"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-shield-raise-shield-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2005749,
+		"contentHash": "e64093778a60156bc6d0ef875c8a22a6222d6804b19742364910b600351eb26c"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-raise-shield.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1588980,
+		"contentHash": "9daedad3bb66682cc062cf0f0fa8fc4066cc8635c87706d9d7683ec8e76d8e7e"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "a6ae12b4200e9492d1f76d657b2c475ed47d7c751ad2cb51fabf8512d1bd6458",
+		"postRepairContentHash": "9daedad3bb66682cc062cf0f0fa8fc4066cc8635c87706d9d7683ec8e76d8e7e",
+		"removedPixels": 384942
+	}
+}

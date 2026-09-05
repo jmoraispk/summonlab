@@ -1,0 +1,53 @@
+{
+	"schemaVersion": "skill-icon-result-v2",
+	"resultId": "result-rarity-frame-b-v2",
+	"jobId": "rarity-frame-b-v2",
+	"logicalIdentity": "rarity-frame-b",
+	"revision": 2,
+	"role": "rarity-frame",
+	"assignmentId": "assignment-rarity-frame-b-v2",
+	"status": "superseded",
+	"attemptCount": 0,
+	"supersessionReason": "unattempted-packet-superseded-by-higher-revision",
+	"supersedingAuthority": {
+		"targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-b-v3.json",
+		"targetContentHash": "93cb965f1a4413d7a6efe59335ada6418c4d5829557d56639b8cb64f0e96d78a",
+		"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-b-v3.json",
+		"assignmentContentHash": "870633e6cf560682d050bc3d3f9bfcb2f9662db50a9c26832dbc5a2b62149260",
+		"jobId": "rarity-frame-b-v3",
+		"logicalIdentity": "rarity-frame-b",
+		"revision": 3,
+		"role": "rarity-frame"
+	},
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the tier B (Mythic) rarity-frame layer. Use the supplied Option C comparison only as visual authority and the supplied geometry guide as registration authority; do not crop, trace, or reuse source pixels. Preserve the shared point-up hexagonal geometry and exact registration after the pipeline's full-canvas resize to 1024×1024. Build a blackened-metal frame with a faceted amethyst mineral inset; the supernatural purple material itself replaces outward filigree. Include one small integrated top-center medallion bearing only the uppercase letter B. Keep the intended central aperture and the entire area outside the frame empty of asset pixels so the pipeline can make them transparent; the frame must form a substantial continuous rim along all six sides and remain legible at 96 pixels after normalization. Render the asset on a perfectly uniform opaque #00FF00 matte with no baked checkerboard. The matte field must contain no simulated transparency, shadows, texture, gradient, color variation, or other marks. Use no green-colored material, green reflections, green oxidation, or green patina anywhere in the frame. The pipeline will remove the source matte, resize the raster, and apply the fixed rarity-frame role mask. No skill icon, emblem, backing, scenery, glow, outward filigree, or any other symbol, number, word, label, or text. Output only this isolated provider-source raster; do not attempt final transparency.",
+	"promptHash": "a3127c062f3431fb47b314de0bcb98b031baf019e6dcbc6a37feb57eb03d3d9e",
+	"referenceInputs": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide.png",
+			"contentHash": "8a7d80f9f3c6be40aab510bc9e1f01e2c3a402888f10c2903b9a730cb9e463f4"
+		}
+	],
+	"normalization": {
+		"profile": "skill-icon-green-key-role-mask-v1",
+		"outcome": "not-run",
+		"geometryHash": "4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7",
+		"providerSource": null,
+		"sourceContentHash": null,
+		"outputContentHash": null
+	},
+	"output": null,
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-b-v2.json",
+	"findings": [],
+	"startedAt": "2026-09-03T05:14:34.934Z",
+	"completedAt": "2026-09-03T05:14:34.934Z",
+	"totalWallTimeMs": 0,
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/results/references/rarity-frame-b-v2.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

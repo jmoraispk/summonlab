@@ -1,0 +1,128 @@
+{
+  "acceptanceCriteria": [
+    {
+      "criterionId": "one-adult",
+      "description": "Exactly one adult hero; no duplicated body or anatomy.",
+      "required": true
+    },
+    {
+      "criterionId": "complete-full-body",
+      "description": "Full head, both hands, and both feet are visible with safe margin.",
+      "required": true
+    },
+    {
+      "criterionId": "painted-register",
+      "description": "Cinematic semi-realistic painted drawing, visibly painterly and not photographic or cel-anime.",
+      "required": true
+    },
+    {
+      "criterionId": "manifest-fidelity",
+      "description": "Body, height, age, skin, hair, clothing, palette, and detail manifest remain legible.",
+      "required": true
+    },
+    {
+      "criterionId": "neutral-expression",
+      "description": "Calm neutral expression without smile, grin, or theatrical acting.",
+      "required": true
+    },
+    {
+      "criterionId": "one-star-ceiling",
+      "description": "Ordinary mortal presentation with no weapon, magic, affinity cue, elite armor, frame, star, UI, or text.",
+      "required": true
+    },
+    {
+      "criterionId": "original-identity",
+      "description": "Does not reproduce a declared style reference's face, body, hair, or outfit.",
+      "required": true
+    }
+  ],
+  "canonicalPrompt": {
+    "sha256": "efa0883f74619a44ce63e7ea0223bc54114fbf83e221c83ec154d965fed01575",
+    "text": "Create one original Summonlab candidate summon portrait as a cinematic semi-realistic painted drawing. Use visible brush planes and controlled illustrative detail: not a photograph, not photoreal skin, not plastic 3D, and not cel anime. Portrait canvas 1024 x 1536. Exactly one weaponless adult, full body, three-quarter standing pose, with the entire head, both hands, both feet, hair, clothing, and all accessories fully inside a generous safe margin. Warm pale parchment studio wash, restrained warm color response, soft grounding shadow, no environmental story.\n\nNew identity Galar Drena: 29-year-old man, 160 cm (short), soft rounded construction with an evident middle and gentle limb contours, skin value band-4-medium. Face: wide triangular face; full cheeks and sharply defined brows; prominent bridge, compact mouth; one brow notch. Calm closed-mouth neutral expression with no smile, grin, or theatrical acting.\n\nHair: brown-chestnut, curls-coils-halo, deliberate accent: high gathered coil mass. Wardrobe: asymmetric-patchwork, specifically intentional patchwork layers with an uneven hem, visible repairs, and practical trousers; a divided hem and broad folded collar; bounded palette teal-brown. Visible personal details: one mismatched earring. Make one clasp, buckle, piercing, or piece of hair hardware the primary recognition device. Maintenance cue: meticulous daily maintenance. Color treatment: uses the palette boldly in large blocks. Pose cue: chin remains level while one hand lightly checks a cuff seam. Include a palm-sized map roll only as a quiet personal object, never as a weapon.\n\nThis is ordinary but intentionally designed 1-star mortal clothing. No weapon, armor, crown, magic, aura, or glow. No affinity cue, elemental gem, floating, frame, printed star, number, UI, logo, watermark, text, extra person, duplicated anatomy, cropped extremity, or published-character resemblance. Fantasy hair colors are matte dye or pigment, never supernatural emission. Preserve plausible anatomy while allowing the declared body construction to be extreme. Do not copy the reference's person, braid, clothes, pose, palette, progression, identity, body, hair, garments, ornaments, or markings."
+  },
+  "correctionSource": null,
+  "experimentId": "one-star-overnight-200-001",
+  "heroId": "galar-drena",
+  "heroSpec": {
+    "details": {
+      "anchors": [
+        "one mismatched earring"
+      ],
+      "coolnessAnchor": "jewelry-hardware",
+      "density": 1,
+      "tattooScope": "none"
+    },
+    "hair": {
+      "accent": "high gathered coil mass",
+      "chibiReadability": "Preserve the front and side silhouette of curls-coils-halo, the parting, gathered mass, shaved areas, and high gathered coil mass; color remains brown-chestnut.",
+      "colorFamily": "brown-chestnut",
+      "silhouetteFamily": "curls-coils-halo"
+    },
+    "identity": {
+      "age": 29,
+      "displayName": "Galar Drena",
+      "faceDescription": "wide triangular face; full cheeks and sharply defined brows; prominent bridge, compact mouth; one brow notch",
+      "gender": "man",
+      "identitySignature": "3f3ece5631c1ad5d7d4d0c3263d827f499564cbcfdc8058d8e4f628c666a6f9f",
+      "skinValueBand": 4
+    },
+    "kernel": {
+      "colorOrnamentTaste": "uses the palette boldly in large blocks; accepts one cherished personal detail.",
+      "counterTrait": "abandons plans for a worthy surprise",
+      "culturalFragments": [
+        "prefers basket-woven panels for durable pockets",
+        "taps a cup once before serious conversation"
+      ],
+      "dominantTrait": "fiercely attentive",
+      "groomingAttitude": "meticulous daily maintenance",
+      "lifeEcho": "food preparation",
+      "nonInference": "Do not infer aptitude, intelligence, spirit, morality, combat role, rarity, or biography from body, face, gender, skin, age, or phenotype.",
+      "poseCue": "chin remains level while one hand lightly checks a cuff seam",
+      "socialPresentation": "aloof until engaged",
+      "tension": "Appears aloof until engaged, yet abandons plans for a worthy surprise."
+    },
+    "physique": {
+      "bodyType": "soft-round",
+      "description": "160 cm; soft rounded construction with an evident middle and gentle limb contours.",
+      "heightBand": "short"
+    },
+    "wardrobe": {
+      "condition": "meticulous daily maintenance",
+      "description": "intentional patchwork layers with an uneven hem, visible repairs, and practical trousers; a divided hem and broad folded collar.",
+      "family": "asymmetric-patchwork",
+      "paletteFamily": "teal-brown"
+    }
+  },
+  "imageKind": "summon",
+  "output": {
+    "candidatePath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/galar-drena/summon-v1.png",
+    "resultPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/results/galar-drena/summon-v1.json"
+  },
+  "presentation": {
+    "composition": "Exactly one weaponless adult, full body in a grounded three-quarter standing pose; all extremities inside a generous safe margin on a warm parchment studio wash.",
+    "height": 1536,
+    "mediaType": "image/png",
+    "negativeConstraints": [
+      "no weapon, armor, crown, magic, aura, affinity cue, elemental gem, or floating",
+      "no frame, printed star, number, UI, logo, watermark, or text",
+      "no extra person, duplicate anatomy, crop, smile, grin, or theatrical expression",
+      "no photographic pores, lens treatment, plastic 3D, cel-anime finish, or published-character resemblance"
+    ],
+    "width": 1024
+  },
+  "productionState": "candidate-only",
+  "references": [
+    {
+      "path": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
+      "purpose": "Rendering-register reference only: painterly realism ceiling, full-body parchment composition, and warm color handling. Do not transfer its person, braid, clothes, pose, palette, progression, identity, phenotype, anatomy, hair, wardrobe, or accessories.",
+      "role": "rendering-style",
+      "sha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946"
+    }
+  ],
+  "schemaVersion": "hero-one-star-image-target-v1",
+  "sourceSummon": null,
+  "starLevel": 1,
+  "targetId": "galar-drena-summon-v1",
+  "targetVersion": 1,
+  "waveId": "wave-02"
+}

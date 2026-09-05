@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "skill-icon-mass-result-v1",
+	"kind": "skill",
+	"identity": "magical:mind:read-surface",
+	"status": "candidate",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-mind-read-surface.json",
+	"promptHash": "602993033def516dc72a4cb79c983ff76cfb6f970e8e4ce1e55db8459e61c083",
+	"references": [
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-surface-sight.png",
+			"contentHash": "a238d11b9caae8df1118c3de25171af9b6bb278ab0f50f09784e9e27842406c9"
+		}
+	],
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-mind-read-surface-v1.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb",
+		"bytes": 2107021,
+		"contentHash": "bb0dbcc876215ad7d4b543620541872af93222e75aedc1ea2aa67c8904c4f069"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-read-surface.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 1870305,
+		"contentHash": "d7f85088bacc52a7d8425ef580b3480daf6867d551563a39a01cf4e640e15a0d"
+	},
+	"processing": "keyed-frame-plus-restored-interior-and-exterior-mask",
+	"attemptCount": 1,
+	"normalizationHistory": {
+		"operation": "restore-interior-and-mask-exterior",
+		"preRepairContentHash": "cb50ee3a09e29f34fd60ec17cf627c7f459051f236e281ac477e9d39b19f0d89",
+		"postRepairContentHash": "d7f85088bacc52a7d8425ef580b3480daf6867d551563a39a01cf4e640e15a0d",
+		"removedPixels": 384942
+	}
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "equipment-greatsword-item-proportion-review-v1",
+  "reviewId": "greatsword-v1-starmetal-a-proportion-review",
+  "targetId": "greatsword-v1-starmetal-a",
+  "candidate": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/a/starmetal/greatsword-v1.png", "sha256": "51373d4d9bce76fc3f632a7100d48aa9e9866c887fdca7aebbff98dc7158ec34" },
+  "profile": { "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/proportion-profile-v2.json", "sha256": "04ecd463d4e0d15a35639ae478c716d51a5e25254a8b563a800a8575fbee07d7" },
+  "method": "Producer landmark inspection at native 1024x1024 resolution using the accepted profile definitions; painted anti-aliased edges are approximate to one pixel.",
+  "measurements": { "bladePx": 608, "fullHiltPx": 232, "exposedGripPx": 171, "guardWidthPx": 183, "pommelPx": 47, "overallPx": 840 },
+  "ratios": { "bladeToFullHilt": 2.62, "bladeToExposedGrip": 3.56, "bladePercent": 72.38, "guardPercent": 21.79, "pommelPercent": 5.6 },
+  "framing": { "topMarginPx": 84, "bottomMarginPx": 100, "minimumMarginPercent": 8.2, "status": "pass" },
+  "status": "pass",
+  "failedCriteria": [],
+  "humanReviewPending": true
+}
