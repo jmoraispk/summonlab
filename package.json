@@ -152,6 +152,8 @@
 		"export:skill-icon-mass-production": "tsx tools/export-skill-icon-mass-production.ts",
 		"finalize:skill-icon-mass-production": "tsx tools/finalize-skill-icon-mass-production.ts --write",
 		"check:skill-icon-mass-production": "tsx tools/export-skill-icon-mass-production.ts --check && tsx tools/finalize-skill-icon-mass-production.ts --check",
+		"export:skill-icon-quality-cleanup": "tsx tools/export-skill-icon-quality-cleanup.ts --write",
+		"check:skill-icon-quality-cleanup": "tsx tools/export-skill-icon-quality-cleanup.ts --check",
 		"persist:skill-icon-mass-output": "tsx tools/persist-skill-icon-mass-output.ts",
 		"repair:skill-icon-mass-exteriors": "tsx tools/repair-skill-icon-mass-exteriors.ts",
 		"report:skill-icons": "tsx tools/report-skill-icon-readiness.ts",

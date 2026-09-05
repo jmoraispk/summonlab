@@ -44,6 +44,9 @@
 		"compose-empty-rarity-frame-v6.ts",
 		"extract-rarity-frame-v6.ts",
 		"report-skill-icon-readiness.ts",
-		"report-skill-icon-readiness.spec.ts"
+		"report-skill-icon-readiness.spec.ts",
+		"skill-icon-quality-cleanup-lib.ts",
+		"skill-icon-quality-cleanup-lib.spec.ts",
+		"export-skill-icon-quality-cleanup.ts"
 	]
 }
