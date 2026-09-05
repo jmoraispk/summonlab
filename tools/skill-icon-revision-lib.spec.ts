@@ -83,8 +83,15 @@ function targetV3(revision = 4): AnySkillIconTarget {
 			}
 		],
 		normalization: {
-			...base.normalization,
 			profile: 'skill-icon-green-key-role-mask-v3',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: base.normalization.outputContract,
 			geometry: {
 				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
@@ -102,7 +109,13 @@ function targetGeometryRoleMask(revision = 6): AnySkillIconTarget {
 		...profileV3,
 		normalization: {
 			profile: 'skill-icon-geometry-role-mask-v1',
-			sourceContract: profileV3.normalization.sourceContract,
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
 			outputContract: profileV3.normalization.outputContract,
 			geometry: {
 				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
@@ -225,7 +238,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports exactly the six queued strict-despill v8 frames while accepting retained shared layers', async () => {
+	it('reports exactly the six queued black-matte v9 frames while accepting retained shared layers', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -234,14 +247,15 @@ describe('skill-icon revision resolution', () => {
 		}
 		const diagnostics = message.split('\n');
 		expect(diagnostics).toEqual([
-			'references/rarity-frame-a-v8: missing result inventory entry',
-			'references/rarity-frame-b-v8: missing result inventory entry',
-			'references/rarity-frame-c-v8: missing result inventory entry',
-			'references/rarity-frame-d-v8: missing result inventory entry',
-			'references/rarity-frame-e-v8: missing result inventory entry',
-			'references/rarity-frame-s-v8: missing result inventory entry'
+			'references/rarity-frame-a-v9: missing result inventory entry',
+			'references/rarity-frame-b-v9: missing result inventory entry',
+			'references/rarity-frame-c-v9: missing result inventory entry',
+			'references/rarity-frame-d-v9: missing result inventory entry',
+			'references/rarity-frame-e-v9: missing result inventory entry',
+			'references/rarity-frame-s-v9: missing result inventory entry'
 		]);
 		expect(diagnostics).toHaveLength(6);
+		expect(message).not.toMatch(/latest revision v8 is revise/iu);
 		expect(message).not.toMatch(/latest revision v7 is revise/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
 		expect(message).not.toMatch(/backing.*missing result/iu);

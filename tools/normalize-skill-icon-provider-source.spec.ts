@@ -18,9 +18,13 @@ import {
 	SKILL_ICON_NORMALIZATION_PROFILE_V1,
 	SKILL_ICON_NORMALIZATION_PROFILE_V2,
 	SKILL_ICON_NORMALIZATION_PROFILE_V3,
+	SKILL_ICON_NORMALIZATION_PROFILE_V6,
 	SKILL_ICON_PROVIDER_MAX_BYTES,
+	skillIconBlackMatteAlpha,
+	skillIconBlackMatteUnmatteChannel,
 	skillIconGreenKeyAlpha,
-	skillIconGreenKeyAlphaForProfile
+	skillIconGreenKeyAlphaForProfile,
+	skillIconInwardRoleCoverageAt
 } from './normalize-skill-icon-provider-source.js';
 import { inspectSkillIconAsset } from './validate-skill-icon-assets.js';
 
@@ -36,6 +40,7 @@ const geometryV2 = SkillIconGeometryV2Schema.parse(JSON.parse(geometryV2Bytes.to
 const execFileAsync = promisify(execFile);
 const geometryRoleMaskProfile = 'skill-icon-geometry-role-mask-v1' as const;
 const strictGeometryRoleMaskProfile = 'skill-icon-geometry-role-mask-v2' as const;
+const blackMatteGeometryRoleMaskProfile = 'skill-icon-black-matte-geometry-role-mask-v1' as const;
 
 function crc32(bytes: Buffer): number {
 	let crc = 0xffffffff;
@@ -187,6 +192,40 @@ async function profileV3FrameSource(extraSvg = ''): Promise<Buffer> {
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
 	})
 		.composite([{ input: svg }])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+	return declareCabx(png);
+}
+
+function profileV6FramePath(): string {
+	const center = [627, 627] as const;
+	const outer = scaledPoints(geometryV2.outerEnvelopePoints);
+	const aperture = scaledPoints(geometryV2.aperturePoints);
+	const inner = aperture.map(
+		([x, y]) =>
+			[
+				center[0] + (x - center[0]) * geometryV2.innerApertureScale,
+				center[1] + (y - center[1]) * geometryV2.innerApertureScale
+			] as const
+	);
+	return `${outer.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x} ${y}`).join(' ')} Z ${inner.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x} ${y}`).join(' ')} Z`;
+}
+
+async function blackMatteFrameSource(frameSvg?: string): Promise<Buffer> {
+	const content =
+		frameSvg ??
+		`<path d="${profileV6FramePath()}" fill="#3a3a42" fill-rule="evenodd"/><rect x="520" y="0" width="214" height="250" rx="35" fill="#3a3a42"/>`;
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#000000' }
+	})
+		.composite([
+			{
+				input: Buffer.from(
+					`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg">${content}</svg>`
+				)
+			}
+		])
 		.removeAlpha()
 		.png({ progressive: false, palette: false })
 		.toBuffer();
@@ -775,6 +814,191 @@ describe('skill-icon provider normalization', () => {
 			(await inspectSkillIconAsset(normalized.bytes, 'backing', geometryV2)).violations
 		).toEqual([]);
 	}, 40_000);
+
+	it('fixes the black-matte threshold and unmatte arithmetic exactly', () => {
+		for (let value = 0; value <= 255; value += 1) {
+			const expectedAlpha =
+				value <= 4 ? 0 : value >= 16 ? 255 : Math.round((255 * (value - 4)) / 12);
+			expect(skillIconBlackMatteAlpha(value, value, value), `q=${value}`).toBe(expectedAlpha);
+		}
+		expect(skillIconBlackMatteAlpha(2, 10, 4)).toBe(128);
+		expect(skillIconBlackMatteUnmatteChannel(0, 0)).toBe(0);
+		expect(skillIconBlackMatteUnmatteChannel(5, 21)).toBe(61);
+		expect(skillIconBlackMatteUnmatteChannel(2, 128)).toBe(4);
+		expect(skillIconBlackMatteUnmatteChannel(10, 128)).toBe(20);
+		expect(skillIconBlackMatteUnmatteChannel(255, 21)).toBe(255);
+		for (let q = 5; q <= 15; q += 1) {
+			const alpha = Math.round((255 * (q - 4)) / 12);
+			for (let channel = 0; channel <= q; channel += 1)
+				expect(
+					skillIconBlackMatteUnmatteChannel(channel, alpha),
+					`q=${q}, channel=${channel}`
+				).toBe(Math.max(0, Math.min(255, Math.round((channel * 255) / alpha))));
+		}
+	});
+
+	it('uses exact inward-only 4x4 coverage for center-inside frame pixels', () => {
+		const scale = (points: readonly (readonly [number, number])[]) => scaledPoints(points, 1024);
+		const outer = scale(geometryV2.outerEnvelopePoints);
+		const aperture = scale(geometryV2.aperturePoints);
+		const medallion = scale(geometryV2.rarityMedallionExclusion);
+		const center = [geometryV2.center.x, geometryV2.center.y] as const;
+		const inner = aperture.map(
+			([x, y]) =>
+				[
+					center[0] + (x - center[0]) * geometryV2.innerApertureScale,
+					center[1] + (y - center[1]) * geometryV2.innerApertureScale
+				] as const
+		);
+		const allows = (x: number, y: number): boolean =>
+			(pointInLiteralPolygon(x, y, outer) && !pointInLiteralPolygon(x, y, inner)) ||
+			pointInLiteralPolygon(x, y, medallion);
+		let partial:
+			{ readonly x: number; readonly y: number; readonly sampleCount: number } | undefined;
+		for (let y = 0; y < 1024 && partial === undefined; y += 1) {
+			for (let x = 0; x < 1024; x += 1) {
+				if (!allows(x + 0.5, y + 0.5)) continue;
+				let sampleCount = 0;
+				for (let sampleY = 0; sampleY < 4; sampleY += 1) {
+					for (let sampleX = 0; sampleX < 4; sampleX += 1) {
+						if (allows(x + (sampleX + 0.5) / 4, y + (sampleY + 0.5) / 4)) sampleCount += 1;
+					}
+				}
+				if (sampleCount > 0 && sampleCount < 16) {
+					partial = { x, y, sampleCount };
+					break;
+				}
+			}
+		}
+		expect(partial).toBeDefined();
+		expect(
+			skillIconInwardRoleCoverageAt(partial!.x, partial!.y, geometryV2),
+			`${partial!.x},${partial!.y}`
+		).toBe(Math.round((255 * partial!.sampleCount) / 16));
+		let outsidePixel: readonly [number, number] | undefined;
+		for (let y = Math.max(0, partial!.y - 2); y <= partial!.y + 2 && !outsidePixel; y += 1) {
+			for (let x = Math.max(0, partial!.x - 2); x <= partial!.x + 2; x += 1) {
+				if (!allows(x + 0.5, y + 0.5)) {
+					outsidePixel = [x, y];
+					break;
+				}
+			}
+		}
+		expect(outsidePixel).toBeDefined();
+		expect(skillIconInwardRoleCoverageAt(outsidePixel![0], outsidePixel![1], geometryV2)).toBe(0);
+	});
+
+	it('normalizes black-matte frame material without halos and preserves its approved palette', async () => {
+		const materials = [
+			['bronze', '#8f6a42', [143, 106, 66]],
+			['silver', '#aeb4ba', [174, 180, 186]],
+			['blue-steel', '#526b82', [82, 107, 130]],
+			['amethyst', '#5f477a', [95, 71, 122]],
+			['electrum', '#d1b878', [209, 184, 120]],
+			['gold', '#c79a42', [199, 154, 66]]
+		] as const;
+		const strips = materials
+			.map(
+				([name, color], index) =>
+					`<rect data-material="${name}" x="${100 + index * 176}" y="0" width="176" height="1254" fill="${color}"/>`
+			)
+			.join('');
+		const framePath = profileV6FramePath();
+		const source = await blackMatteFrameSource(
+			`<defs><clipPath id="frame"><path d="${framePath}" fill-rule="evenodd" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#frame)">${strips}</g><rect x="520" y="0" width="214" height="250" rx="35" fill="#8f6a42"/>`
+		);
+		const first = await normalizeSkillIconProviderSource(
+			source,
+			'rarity-frame',
+			geometryV2Bytes,
+			SKILL_ICON_NORMALIZATION_PROFILE_V6
+		);
+		const second = await normalizeSkillIconProviderSource(
+			source,
+			'rarity-frame',
+			geometryV2Bytes,
+			blackMatteGeometryRoleMaskProfile
+		);
+		expect(first.bytes).toEqual(second.bytes);
+		expect(first.normalization).toMatchObject({
+			profile: blackMatteGeometryRoleMaskProfile,
+			geometryHash: createHash('sha256').update(geometryV2Bytes).digest('hex'),
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: { chunkType: 'caBX', bytes: expect.any(Number) },
+			colorSpaceDisposition: 'assigned-srgb'
+		});
+		expect(await inspectSkillIconAsset(first.bytes, 'rarity-frame', geometryV2)).toMatchObject({
+			violations: []
+		});
+
+		const pixels = await sharp(first.bytes).ensureAlpha().raw().toBuffer();
+		let partialAlphaPixels = 0;
+		const exactOpaqueColors = new Set<string>();
+		for (let pixelIndex = 0; pixelIndex < 1024 * 1024; pixelIndex += 1) {
+			const offset = pixelIndex * 4;
+			const alpha = pixels[offset + 3] ?? 0;
+			if (alpha === 0) {
+				expect([...pixels.subarray(offset, offset + 3)]).toEqual([0, 0, 0]);
+			} else if (alpha < 255) {
+				partialAlphaPixels += 1;
+			} else {
+				exactOpaqueColors.add(
+					`${pixels[offset] ?? 0},${pixels[offset + 1] ?? 0},${pixels[offset + 2] ?? 0}`
+				);
+			}
+			const x = pixelIndex % 1024;
+			const y = Math.floor(pixelIndex / 1024);
+			if (skillIconInwardRoleCoverageAt(x, y, geometryV2) === 0)
+				expect([...pixels.subarray(offset, offset + 4)]).toEqual([0, 0, 0, 0]);
+		}
+		expect(partialAlphaPixels).toBeGreaterThan(0);
+		for (const [name, , expected] of materials)
+			expect(exactOpaqueColors.has(expected.join(',')), name).toBe(true);
+	}, 60_000);
+
+	it('rejects non-black and structured contamination in black-matte transparent regions', async () => {
+		const frame = `<path d="${profileV6FramePath()}" fill="#3a3a42" fill-rule="evenodd"/><rect x="520" y="0" width="214" height="250" rx="35" fill="#3a3a42"/>`;
+		await expect(
+			normalizeSkillIconProviderSource(
+				await blackMatteFrameSource(
+					`${frame}<rect x="0" y="0" width="120" height="1254" fill="#777777"/>`
+				),
+				'rarity-frame',
+				geometryV2Bytes,
+				blackMatteGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/black.*matte|required transparent/iu);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await blackMatteFrameSource(
+					`<defs><pattern id="checker" width="64" height="64" patternUnits="userSpaceOnUse"><rect width="64" height="64" fill="#000000"/><rect width="32" height="32" fill="#777777"/><rect x="32" y="32" width="32" height="32" fill="#777777"/></pattern></defs><rect width="1254" height="1254" fill="url(#checker)"/>${frame}`
+				),
+				'rarity-frame',
+				geometryV2Bytes,
+				blackMatteGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/checkerboard|black.*matte|required transparent/iu);
+	}, 60_000);
+
+	it('restricts black-matte normalization to registered rarity frames', async () => {
+		const valid = await blackMatteFrameSource();
+		await expect(
+			normalizeSkillIconProviderSource(
+				valid,
+				'backing',
+				geometryV2Bytes,
+				blackMatteGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/black-matte.*rarity-frame|rarity-frame.*black-matte/iu);
+		await expect(
+			normalizeSkillIconProviderSource(
+				await blackMatteFrameSource('<circle cx="627" cy="160" r="48" fill="#3a3a42"/>'),
+				'rarity-frame',
+				geometryV2Bytes,
+				blackMatteGeometryRoleMaskProfile
+			)
+		).rejects.toThrow(/frame|registration|coverage|role/iu);
+	}, 60_000);
 
 	it('strict geometry-role-mask retains every geometry-first contamination and role gate', async () => {
 		await expect(

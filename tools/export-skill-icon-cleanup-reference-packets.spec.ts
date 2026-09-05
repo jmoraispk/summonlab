@@ -55,6 +55,14 @@ const revisionEightJobIds = [
 	'rarity-frame-a-v8',
 	'rarity-frame-s-v8'
 ] as const;
+const revisionNineJobIds = [
+	'rarity-frame-e-v9',
+	'rarity-frame-d-v9',
+	'rarity-frame-c-v9',
+	'rarity-frame-b-v9',
+	'rarity-frame-a-v9',
+	'rarity-frame-s-v9'
+] as const;
 const frameMaterials = {
 	E: 'aged bronze with brown-gold patina and understated corner collars',
 	D: 'tempered blue steel with cool edge highlights and restrained rivets',
@@ -83,7 +91,12 @@ async function temporaryWorkspace(): Promise<string> {
 		await mkdir(path.dirname(destination), { recursive: true });
 		await copyFile(path.resolve(workspaceRoot, repositoryPath), destination);
 	}
-	for (const jobId of [...revisionFiveJobIds, ...revisionSixJobIds, ...revisionSevenJobIds]) {
+	for (const jobId of [
+		...revisionFiveJobIds,
+		...revisionSixJobIds,
+		...revisionSevenJobIds,
+		...revisionEightJobIds
+	]) {
 		for (const kind of ['targets', 'assignments'] as const) {
 			const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
 			const destination = path.resolve(root, repositoryPath);
@@ -106,10 +119,15 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		).toBe(false);
 	});
 
-	it('preserves revisions five through seven and adds exactly six strict-despill revision-eight frame pairs', async () => {
+	it('preserves revisions five through eight and adds exactly six black-matte revision-nine frame pairs', async () => {
 		const root = await temporaryWorkspace();
 		const existingPacketBytes = new Map<string, Buffer>();
-		for (const jobId of [...revisionFiveJobIds, ...revisionSixJobIds, ...revisionSevenJobIds]) {
+		for (const jobId of [
+			...revisionFiveJobIds,
+			...revisionSixJobIds,
+			...revisionSevenJobIds,
+			...revisionEightJobIds
+		]) {
 			for (const kind of ['targets', 'assignments'] as const) {
 				const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
 				existingPacketBytes.set(repositoryPath, await readFile(path.resolve(root, repositoryPath)));
@@ -123,10 +141,11 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			...revisionFiveJobIds,
 			...revisionSixJobIds,
 			...revisionSevenJobIds,
-			...revisionEightJobIds
+			...revisionEightJobIds,
+			...revisionNineJobIds
 		]);
 		expect(report.written).toEqual(
-			revisionEightJobIds.flatMap((jobId) => [
+			revisionNineJobIds.flatMap((jobId) => [
 				`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
 				`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`
 			])
@@ -138,7 +157,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		const outputPaths = new Set<string>();
 		for (const rarity of frameRarities) {
 			const slug = rarity.toLowerCase();
-			const jobId = `rarity-frame-${slug}-v8`;
+			const jobId = `rarity-frame-${slug}-v9`;
 			const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
 			const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
 			const target = SkillIconTargetV2Schema.parse(await readJson(root, targetPath));
@@ -147,11 +166,18 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			expect(target).toMatchObject({
 				jobId,
 				logicalIdentity: `rarity-frame-${slug}`,
-				revision: 8,
+				revision: 9,
 				role: 'rarity-frame',
 				rarity,
 				normalization: {
-					profile: 'skill-icon-geometry-role-mask-v2',
+					profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+					sourceContract: {
+						mediaType: 'image/png',
+						width: 1254,
+						height: 1254,
+						alphaMode: 'rgb',
+						matteColor: '#000000'
+					},
 					geometry: {
 						path: GEOMETRY_PATH,
 						contentHash: '6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab'
@@ -159,16 +185,16 @@ describe('cleanup shared-layer reference packet exporter', () => {
 				}
 			});
 			expect(target.exactPrompt).toContain(frameMaterials[rarity]);
-			expect(target.exactPrompt).toMatch(/uniform opaque #00FF00 matte/iu);
+			expect(target.exactPrompt).toMatch(/uniform opaque #000000 matte/iu);
 			expect(target.exactPrompt).toMatch(/provider matte/iu);
 			expect(target.exactPrompt).toMatch(/completely empty aperture/iu);
 			expect(target.exactPrompt).toMatch(/fully visible regular point-up hexagon/iu);
 			expect(target.exactPrompt).toMatch(/integrated crest\/letter/iu);
 			expect(target.exactPrompt).toMatch(/no art or backing/iu);
 			expect(target.exactPrompt).toMatch(/do not crop or trace/i);
-			expect(target.exactPrompt).toContain(
-				'Require hard clean material edges against the green matte, with no green color spill, green-tinted antialiasing, fringe, or halo on frame pixels.'
-			);
+			expect(target.exactPrompt).toMatch(/black-matte extraction/iu);
+			expect(target.exactPrompt).toMatch(/inward-only 4×4 subpixel coverage/iu);
+			expect(target.exactPrompt).not.toMatch(/#00FF00|green matte|green color spill/iu);
 			expect(target.references.map((reference) => reference.path)).toEqual([
 				OPTION_C_PATH,
 				SELECTED_FRAME_SHEET_PATH,
@@ -176,9 +202,9 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			]);
 			expect(assignment).toMatchObject({
 				jobId,
-				revision: 8,
-				skillVersion: 'summonlab-skill-icon-production-v6',
-				normalization: { profile: 'skill-icon-geometry-role-mask-v2' },
+				revision: 9,
+				skillVersion: 'summonlab-skill-icon-production-v7',
+				normalization: { profile: 'skill-icon-black-matte-geometry-role-mask-v1' },
 				retryCeiling: 1
 			});
 			expect(assignment.targetPath).toBe(targetPath);
@@ -232,8 +258,10 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			'rarity-frame-f-v6',
 			'rarity-frame-f-v7',
 			'rarity-frame-f-v8',
+			'rarity-frame-f-v9',
 			'charcoal-forged-stone-v7',
-			'charcoal-forged-stone-v8'
+			'charcoal-forged-stone-v8',
+			'charcoal-forged-stone-v9'
 		]) {
 			await expect(
 				readFile(
@@ -256,7 +284,8 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		['revision-five target', 'targets', 'rarity-frame-e-v5'],
 		['revision-six assignment', 'assignments', 'rarity-frame-e-v6'],
 		['revision-seven assignment', 'assignments', 'rarity-frame-e-v7'],
-		['revision-eight assignment', 'assignments', 'rarity-frame-e-v8']
+		['revision-eight assignment', 'assignments', 'rarity-frame-e-v8'],
+		['revision-nine assignment', 'assignments', 'rarity-frame-e-v9']
 	] as const)(
 		'refuses to replace a drifted %s packet in write mode',
 		async (_label, kind, jobId) => {

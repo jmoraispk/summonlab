@@ -869,7 +869,8 @@ async function loadGeometrySecure(root: string, target?: SkillIconReferenceTarge
 		const expectedGuidePath =
 			target.normalization.profile === 'skill-icon-green-key-role-mask-v3' ||
 			target.normalization.profile === 'skill-icon-geometry-role-mask-v1' ||
-			target.normalization.profile === 'skill-icon-geometry-role-mask-v2'
+			target.normalization.profile === 'skill-icon-geometry-role-mask-v2' ||
+			target.normalization.profile === 'skill-icon-black-matte-geometry-role-mask-v1'
 				? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
 				: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
 		const guide = target.references.find((reference) => reference.path === expectedGuidePath);
@@ -888,7 +889,8 @@ async function loadGeometrySecure(root: string, target?: SkillIconReferenceTarge
 		if (
 			target.normalization.profile === 'skill-icon-green-key-role-mask-v3' ||
 			target.normalization.profile === 'skill-icon-geometry-role-mask-v1' ||
-			target.normalization.profile === 'skill-icon-geometry-role-mask-v2'
+			target.normalization.profile === 'skill-icon-geometry-role-mask-v2' ||
+			target.normalization.profile === 'skill-icon-black-matte-geometry-role-mask-v1'
 		)
 			return SkillIconGeometryV2Schema.parse(JSON.parse(bytes.toString('utf8')) as unknown);
 	}

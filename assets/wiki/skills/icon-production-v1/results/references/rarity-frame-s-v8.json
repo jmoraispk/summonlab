@@ -1,0 +1,60 @@
+{
+	"schemaVersion": "skill-icon-result-v2",
+	"resultId": "result-rarity-frame-s-v8",
+	"jobId": "rarity-frame-s-v8",
+	"logicalIdentity": "rarity-frame-s",
+	"revision": 8,
+	"role": "rarity-frame",
+	"assignmentId": "assignment-rarity-frame-s-v8",
+	"status": "superseded",
+	"attemptCount": 0,
+	"supersessionReason": "unattempted-packet-superseded-by-higher-revision",
+	"supersedingAuthority": {
+		"targetPath": "assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-s-v9.json",
+		"targetContentHash": "31eace005538ab5d01716570abaa88041ff0aecc4450228d9e63bffa29423e7e",
+		"assignmentPath": "assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-s-v9.json",
+		"assignmentContentHash": "d3c2565394719f4f1d40bf1ef4b42982fc68b99eb6d1382f27dd9376a716b153",
+		"jobId": "rarity-frame-s-v9",
+		"logicalIdentity": "rarity-frame-s",
+		"revision": 9,
+		"role": "rarity-frame"
+	},
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the tier S rarity-frame layer. Use the supplied Option C comparison only as material and ornament authority, and use the approved seven-frame sheet only as proportional and material-ladder guidance; do not crop or trace either reference or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Render one fully visible regular point-up hexagon with every frame-material pixel confined to the guide's allowed annulus and top-center crest zone. Keep a completely empty aperture and every exterior region free of foreground. Build ceremonial antique gold with the approved thorned crown ornament. Include exactly one integrated crest/letter bearing only the uppercase letter S. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Require hard clean material edges against the green matte, with no green color spill, green-tinted antialiasing, fringe, or halo on frame pixels. Do not render guide colors, construction marks, labels, UI, shadows, fringe, texture, gradient, or marks in the empty aperture or exterior matte. No art or backing, scenery, glow, emblem, or additional symbol, number, word, label, or text. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed rarity-frame role mask. Output only this isolated provider-source raster.",
+	"promptHash": "42b327bf548ee25e4215d26cf665c3de5fcbec668622777b10962218e72293d7",
+	"referenceInputs": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		}
+	],
+	"normalization": {
+		"profile": "skill-icon-geometry-role-mask-v2",
+		"outcome": "not-run",
+		"geometryHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab",
+		"providerSource": null,
+		"sourceContentHash": null,
+		"decoderInputContentHash": null,
+		"containerBox": null,
+		"colorSpaceDisposition": null,
+		"outputContentHash": null
+	},
+	"output": null,
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-s-v8.json",
+	"findings": [],
+	"startedAt": "2026-09-05T19:17:08.000Z",
+	"completedAt": "2026-09-05T19:17:08.000Z",
+	"totalWallTimeMs": 0,
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/results/references/rarity-frame-s-v8.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

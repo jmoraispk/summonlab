@@ -100,6 +100,14 @@ const aperturePoints = [
 	[120, 720],
 	[120, 304]
 ] as const;
+const geometryV2 = JSON.parse(
+	await readFile(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH, 'utf8')
+) as {
+	readonly outerEnvelopePoints: readonly (readonly [number, number])[];
+	readonly aperturePoints: readonly (readonly [number, number])[];
+	readonly rarityMedallionExclusion: readonly (readonly [number, number])[];
+	readonly innerApertureScale: number;
+};
 
 function inPolygon(x: number, y: number, points: readonly (readonly [number, number])[]): boolean {
 	let inside = false;
@@ -122,6 +130,27 @@ async function validFrame(color: readonly [number, number, number]): Promise<Buf
 	return pngLayer(
 		color,
 		(x, y) => inPolygon(x + 0.5, y + 0.5, aperturePoints) && !inPolygon(x + 0.5, y + 0.5, inner)
+	);
+}
+
+async function validFrameV2(color: readonly [number, number, number]): Promise<Buffer> {
+	const scale = (points: readonly (readonly [number, number])[]) =>
+		points.map(([x, y]) => [x * 1024, y * 1024] as const);
+	const outer = scale(geometryV2.outerEnvelopePoints);
+	const aperture = scale(geometryV2.aperturePoints);
+	const medallion = scale(geometryV2.rarityMedallionExclusion);
+	const inner = aperture.map(
+		([x, y]) =>
+			[
+				512 + (x - 512) * geometryV2.innerApertureScale,
+				512 + (y - 512) * geometryV2.innerApertureScale
+			] as const
+	);
+	return pngLayer(
+		color,
+		(x, y) =>
+			(inPolygon(x + 0.5, y + 0.5, outer) && !inPolygon(x + 0.5, y + 0.5, inner)) ||
+			inPolygon(x + 0.5, y + 0.5, medallion)
 	);
 }
 
@@ -270,7 +299,7 @@ async function installReferenceCandidatePacketV2(
 		readonly bytes: Buffer;
 		readonly rarity?: Exclude<CandidatePacket['rarity'], null>;
 		readonly revision?: number;
-		readonly profile?: 'v1' | 'v3' | 'geometry' | 'strict-geometry';
+		readonly profile?: 'v1' | 'v3' | 'geometry' | 'strict-geometry' | 'black-matte';
 	}
 ): Promise<CandidatePacket> {
 	const logicalIdentity =
@@ -288,14 +317,16 @@ async function installReferenceCandidatePacketV2(
 	const profile = input.profile ?? 'v1';
 	const usesGeometryV2 = profile !== 'v1';
 	const normalizationProfile =
-		profile === 'strict-geometry'
-			? 'skill-icon-geometry-role-mask-v2'
-			: profile === 'geometry'
-				? 'skill-icon-geometry-role-mask-v1'
-				: profile === 'v3'
-					? 'skill-icon-green-key-role-mask-v3'
-					: 'skill-icon-green-key-role-mask-v1';
-	const exactPrompt = `Paint ${logicalIdentity} over an opaque #00FF00 matte with no baked checkerboard.`;
+		profile === 'black-matte'
+			? 'skill-icon-black-matte-geometry-role-mask-v1'
+			: profile === 'strict-geometry'
+				? 'skill-icon-geometry-role-mask-v2'
+				: profile === 'geometry'
+					? 'skill-icon-geometry-role-mask-v1'
+					: profile === 'v3'
+						? 'skill-icon-green-key-role-mask-v3'
+						: 'skill-icon-green-key-role-mask-v1';
+	const exactPrompt = `Paint ${logicalIdentity} over an opaque ${profile === 'black-matte' ? '#000000' : '#00FF00'} matte with no baked checkerboard.`;
 	const references = usesGeometryV2
 		? [
 				{
@@ -332,7 +363,7 @@ async function installReferenceCandidatePacketV2(
 				width: 1254,
 				height: 1254,
 				alphaMode: 'rgb',
-				matteColor: '#00FF00'
+				matteColor: profile === 'black-matte' ? '#000000' : '#00FF00'
 			},
 			outputContract: {
 				mediaType: 'image/png',
@@ -359,13 +390,15 @@ async function installReferenceCandidatePacketV2(
 		targetPath,
 		assignmentPath,
 		skillVersion:
-			profile === 'strict-geometry'
-				? 'summonlab-skill-icon-production-v6'
-				: profile === 'geometry'
-					? 'summonlab-skill-icon-production-v5'
-					: profile === 'v3'
-						? 'summonlab-skill-icon-production-v4'
-						: 'summonlab-skill-icon-production-v2',
+			profile === 'black-matte'
+				? 'summonlab-skill-icon-production-v7'
+				: profile === 'strict-geometry'
+					? 'summonlab-skill-icon-production-v6'
+					: profile === 'geometry'
+						? 'summonlab-skill-icon-production-v5'
+						: profile === 'v3'
+							? 'summonlab-skill-icon-production-v4'
+							: 'summonlab-skill-icon-production-v2',
 		normalization: { profile: normalizationProfile },
 		assignedAt: '2026-09-02T08:00:00.000Z',
 		retryCeiling: 1,
@@ -1021,6 +1054,38 @@ describe('exportSkillRuntimeSet', () => {
 				{
 					targetId: 'martial:blade:swordsmanship',
 					rarity: 'F',
+					assets: { approvedMaster: { path: artPath } }
+				},
+				root
+			)
+		).rejects.toThrow(/standalone derivative writes are disabled|coordinator transaction/iu);
+	}, 30_000);
+
+	it('composes black-matte frames only through skill-v7 and profile v6', async () => {
+		const root = await productionFixtureRoot();
+		await installReferencePackets(root, true);
+		const latest = await installReferenceCandidatePacketV2(root, {
+			role: 'rarity-frame',
+			rarity: 'E',
+			bytes: await validFrameV2([143, 106, 66]),
+			revision: 9,
+			profile: 'black-matte'
+		});
+		await installAcceptedReference(
+			root,
+			latest,
+			'assets/wiki/skills/icon-production-v1/masters/frames/e.png'
+		);
+		const artPath =
+			'assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-swordsmanship.png';
+		await mkdir(path.dirname(path.join(root, artPath)), { recursive: true });
+		await writeFile(path.join(root, artPath), await validArt('#22c55e'));
+
+		await expect(
+			exportSkillRuntimeSet(
+				{
+					targetId: 'martial:blade:swordsmanship',
+					rarity: 'E',
 					assets: { approvedMaster: { path: artPath } }
 				},
 				root

@@ -474,12 +474,43 @@ Attempted E-v7 and E-v6 remain immutable `revise` evidence and are not supersede
 creates no backing-v8, F-v8, candidate image, promotion, or finalizer output and does not update the
 installed personal skill.
 
+### Task 5H: Add black-matte frame normalization and issue revision-9 frame packets
+
+**Files:**
+
+- Modify: skill-icon contracts, normalizer, persistence, validation, composition, and promotion
+  consumers with focused tests
+- Modify: repository `summonlab-skill-icon-production` docs and Python validators/verifier
+- Modify: cleanup packet exporter, cleanup result contract, and finalizer shared-layer mapping/tests
+- Generate: `rarity-frame-{e,d,c,b,a,s}-v9` target/assignment pairs
+- Generate: authority-bound `superseded` results for D/C/B/A/S revision-8 frame packets
+
+**Interfaces:**
+
+- Adds frame-only profile `skill-icon-black-matte-geometry-role-mask-v1` paired only with
+  `summonlab-skill-icon-production-v7` on structural-v2 rarity-frame packets.
+- Retains the exact 1254 RGB `caBX`/assigned-sRGB envelope, geometry-v2/guide-v2 authorities,
+  Lanczos3 resize, role validation, transparent-RGB canonicalization, and fixed encoder.
+- Replaces chroma extraction only for this additive profile with the exact black-matte 4–16 alpha
+  transfer, black unmatting, and inward-only 4×4 subpixel coverage after resize. Profiles v1–v5 keep
+  byte-identical behavior.
+
+- [x] **Step 1: Add RED coverage for the exact tuple, 4–16 transfer, and every consumer**
+- [x] **Step 2: Implement black-matte profile v6/producer v7 without changing earlier profiles**
+- [x] **Step 3: Export exactly six v9 frame pairs with black-matte wording and preserved art authority**
+- [x] **Step 4: Point cleanup composition at backing-v6, F-v5, and E/D/C/B/A/S-v9**
+- [x] **Step 5: Coordinator-supersede only output-free D/C/B/A/S-v8 packets**
+
+Attempted E-v8, E-v7, and E-v6 remain immutable `revise` evidence and are not superseded. This
+slice creates no backing-v9, F-v9, candidate image, promotion, or finalizer output and does not
+update the installed personal skill.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v8.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v8.json`
+- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v9.png`
+- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v9.json`
 - Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
 - Preserve: the successful `rarity-frame-f-v5` candidate and result
 - Create: the `charcoal-forged-stone-v6` candidate and result using the issued revision-6 packet
@@ -489,15 +520,15 @@ installed personal skill.
 
 **Interfaces:**
 
-- Consumes: six revision-8 frame assignments, the revision-6 backing assignment, the retained F
+- Consumes: six revision-9 frame assignments, the revision-6 backing assignment, the retained F
   revision-5 frame, and the complete cleanup manifest.
 - Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
 - [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-8 E/D/C/B/A/S frame, binding
-`skill-icon-geometry-role-mask-v2` to `summonlab-skill-icon-production-v6`, and once for the
+Use `summonlab-skill-icon-production` once for each revision-9 E/D/C/B/A/S frame, binding
+`skill-icon-black-matte-geometry-role-mask-v1` to `summonlab-skill-icon-production-v7`, and once for the
 revision-6 backing packet, binding `skill-icon-geometry-role-mask-v1` to
 `summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or successful F-v5 evidence.
 Each worker validates its exact target and assignment, submits the exact prompt, persists through

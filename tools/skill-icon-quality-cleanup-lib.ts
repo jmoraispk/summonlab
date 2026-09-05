@@ -491,12 +491,12 @@ const DETERMINISTIC_PNG_OPTIONS = {
 const CLEANUP_LAYER_JOBS = [
 	{ jobId: 'charcoal-forged-stone-v6', role: 'backing', rarity: null },
 	{ jobId: 'rarity-frame-f-v5', role: 'rarity-frame', rarity: 'F' },
-	{ jobId: 'rarity-frame-e-v8', role: 'rarity-frame', rarity: 'E' },
-	{ jobId: 'rarity-frame-d-v8', role: 'rarity-frame', rarity: 'D' },
-	{ jobId: 'rarity-frame-c-v8', role: 'rarity-frame', rarity: 'C' },
-	{ jobId: 'rarity-frame-b-v8', role: 'rarity-frame', rarity: 'B' },
-	{ jobId: 'rarity-frame-a-v8', role: 'rarity-frame', rarity: 'A' },
-	{ jobId: 'rarity-frame-s-v8', role: 'rarity-frame', rarity: 'S' }
+	{ jobId: 'rarity-frame-e-v9', role: 'rarity-frame', rarity: 'E' },
+	{ jobId: 'rarity-frame-d-v9', role: 'rarity-frame', rarity: 'D' },
+	{ jobId: 'rarity-frame-c-v9', role: 'rarity-frame', rarity: 'C' },
+	{ jobId: 'rarity-frame-b-v9', role: 'rarity-frame', rarity: 'B' },
+	{ jobId: 'rarity-frame-a-v9', role: 'rarity-frame', rarity: 'A' },
+	{ jobId: 'rarity-frame-s-v9', role: 'rarity-frame', rarity: 'S' }
 ] as const;
 
 function pointInPolygon(x: number, y: number, polygon: readonly Point[]): boolean {

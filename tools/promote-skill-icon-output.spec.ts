@@ -762,6 +762,132 @@ async function installOrdinaryFrameV6(root: string) {
 	return { jobId, reviewPath };
 }
 
+async function installBlackMatteFrameV9(root: string) {
+	const jobId = 'rarity-frame-e-v9';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
+	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
+	const reviewPath = `assets/wiki/skills/icon-production-v1/review/decisions/references/${jobId}.json`;
+	const [originalTarget, originalAssignment, originalResult] = await Promise.all([
+		readFile(
+			'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-e-v8.json',
+			'utf8'
+		).then(
+			(bytes) =>
+				JSON.parse(bytes) as Record<string, unknown> & {
+					normalization: Record<string, unknown>;
+					references: { path: string; contentHash: string }[];
+				}
+		),
+		readFile(
+			'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-e-v8.json',
+			'utf8'
+		).then((bytes) => JSON.parse(bytes) as Record<string, unknown>),
+		readFile(
+			'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-e-v8.json',
+			'utf8'
+		).then(
+			(bytes) =>
+				JSON.parse(bytes) as Record<string, unknown> & { normalization: Record<string, unknown> }
+		)
+	]);
+	const exactPrompt =
+		'Paint the E rarity frame over a perfectly uniform opaque #000000 matte with no baked checkerboard.';
+	const target = {
+		...originalTarget,
+		jobId,
+		revision: 9,
+		exactPrompt,
+		output: { candidatePath, resultPath },
+		normalization: {
+			...originalTarget.normalization,
+			profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#000000'
+			}
+		}
+	};
+	const assignment = {
+		...originalAssignment,
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		revision: 9,
+		targetPath,
+		assignmentPath,
+		skillVersion: 'summonlab-skill-icon-production-v7',
+		normalization: { profile: 'skill-icon-black-matte-geometry-role-mask-v1' },
+		permittedOutputs: { candidatePath, resultPath }
+	};
+	const candidate = await frameV2Png();
+	const candidateHash = createHash('sha256').update(candidate).digest('hex');
+	const result = {
+		...originalResult,
+		resultId: `result-${jobId}`,
+		jobId,
+		revision: 9,
+		assignmentId: assignment.assignmentId,
+		exactPrompt,
+		promptHash: createHash('sha256').update(exactPrompt).digest('hex'),
+		referenceInputs: (target.references as { path: string; contentHash: string }[]).map(
+			({ path: referencePath, contentHash }) => ({ path: referencePath, contentHash })
+		),
+		normalization: {
+			...originalResult.normalization,
+			profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+			outputContentHash: candidateHash
+		},
+		output: {
+			path: candidatePath,
+			mediaType: 'image/png',
+			width: 1024,
+			height: 1024,
+			bytes: candidate.byteLength,
+			alphaMode: 'rgba',
+			contentHash: candidateHash
+		},
+		resultPath,
+		writtenOutputPaths: [candidatePath, resultPath]
+	};
+	const review = {
+		schemaVersion: 'skill-icon-review-v1',
+		reviewId: `review-${jobId}`,
+		jobId,
+		role: 'rarity-frame',
+		skillTargetId: null,
+		candidatePath,
+		candidateHash,
+		reviewer: 'Skills visual owner',
+		reviewerRole: 'owner',
+		decision: 'accepted',
+		rationale: 'Accepted black-matte frame.',
+		findings: [{ criterion: 'geometry', outcome: 'pass', observation: 'Valid.' }],
+		reviewedAt: '2026-09-05T13:01:00.000Z'
+	};
+	for (const authorityPath of [
+		SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+		SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
+	]) {
+		await mkdir(path.dirname(path.join(root, authorityPath)), { recursive: true });
+		await copyFile(path.resolve(authorityPath), path.join(root, authorityPath));
+	}
+	for (const [relativePath, bytes] of [
+		[targetPath, Buffer.from(JSON.stringify(target))],
+		[assignmentPath, Buffer.from(JSON.stringify(assignment))],
+		[resultPath, Buffer.from(JSON.stringify(result))],
+		[candidatePath, candidate],
+		[reviewPath, Buffer.from(JSON.stringify(review))]
+	] as const) {
+		await mkdir(path.dirname(path.join(root, relativePath)), { recursive: true });
+		await writeFile(path.join(root, relativePath), bytes);
+	}
+	return { jobId, reviewPath, candidateHash };
+}
+
 async function installBackingV2Packet(
 	root: string,
 	mode: 'target-only' | 'candidate' | 'failed',
@@ -1293,6 +1419,25 @@ describe('promoteSkillIconOutput', () => {
 			jobId: 'charcoal-forged-stone-v8',
 			role: 'backing',
 			candidate: { path: item.candidatePath, contentHash: item.hash }
+		});
+	});
+
+	it('promotes black-matte frames only through skill-v7 and profile v6', async () => {
+		const item = await fixture('rarity-frame-e-v9');
+		const packet = await installBlackMatteFrameV9(item.root);
+		const record = await promoteSkillIconOutput({
+			jobId: packet.jobId,
+			reviewPath: packet.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			jobId: 'rarity-frame-e-v9',
+			role: 'rarity-frame',
+			candidate: { contentHash: packet.candidateHash },
+			approvedMaster: {
+				path: 'assets/wiki/skills/icon-production-v1/masters/frames/e.png',
+				contentHash: packet.candidateHash
+			}
 		});
 	});
 

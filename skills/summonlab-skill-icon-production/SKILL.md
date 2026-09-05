@@ -13,7 +13,9 @@ profile v1 require `summonlab-skill-icon-production-v2`; profile v2 targets requ
 `summonlab-skill-icon-production-v4`; geometry-first profile
 `skill-icon-geometry-role-mask-v1` targets require `summonlab-skill-icon-production-v5`; strict
 geometry-first profile `skill-icon-geometry-role-mask-v2` targets require
-`summonlab-skill-icon-production-v6`.
+`summonlab-skill-icon-production-v6`; frame-only profile
+`skill-icon-black-matte-geometry-role-mask-v1` targets require
+`summonlab-skill-icon-production-v7`.
 `skill-art` and `calibration-plate` jobs remain on
 `summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
 Exact-source packets retain exact provider bytes.
@@ -46,9 +48,9 @@ must be absent at preflight.
    parent master when the canonical catalog record requires them. These are distinct path-bound
    authorities; one reference cannot fill multiple roles. Never crop an individual icon from a
    calibration sheet.
-   A profile-v3 or geometry-first frame/backing additionally requires the exact geometry-v2 guide
-   reference declared by its target; use it only for provider-space registration and never as image
-   content.
+   A profile-v3, geometry-first, or black-matte frame additionally requires the exact geometry-v2
+   guide reference declared by its target; use it only for provider-space registration and never
+   as image content.
 3. Submit `target.exactPrompt` to imagegen byte-for-byte: no preface, suffix, normalization, or
    rewording. Supply every declared reference in manifest order. Request exactly one raster.
 4. If a correctable defect remains, make at most one imagegen edit and only when `retryCeiling` is
@@ -59,16 +61,26 @@ must be absent at preflight.
    resize, key, mask, recolor, copy, or otherwise normalize it. For normalized `rarity-frame` and
    `backing` packets, the helper alone validates the profile-pinned provider envelope, performs the
    role mask and resize inside its exclusive transaction, and writes the canonical candidate.
-   Profiles v2, v3, and both geometry-first revisions admit only one bounded, valid `caBX` immediately after
-   `IHDR`, record its pathless payload evidence, remove it, construct the canonical assigned-sRGB
-   decoder input, and bind both the full original-provider and decoder-input hashes. Profile v3 and
-   geometry-first bind geometry v2 and its matching guide; their result provenance is otherwise
-   identical to profile v2. Geometry-first alone permits imperfect green edges and non-green pixels
-   outside the authorized role mask, which the helper deterministically clears. It does not relax
-   the envelope, in-mask checkerboard, output alpha, backing coverage, or frame-registration gates.
+   Profiles v2, v3, both geometry-first revisions, and black-matte admit only one bounded, valid
+   `caBX` immediately after `IHDR`, record its pathless payload evidence, remove it, construct the
+   canonical assigned-sRGB decoder input, and bind both the full original-provider and decoder-input
+   hashes. Profile v3, geometry-first, and black-matte bind geometry v2 and its matching guide; their
+   result provenance is otherwise identical to profile v2. Geometry-first alone permits imperfect
+   green edges and non-green pixels outside the authorized role mask, which the helper
+   deterministically clears. It does not relax the envelope, in-mask checkerboard, output alpha,
+   backing coverage, or frame-registration gates.
    Geometry-first v1 preserves the historical `max(red, blue) + 40` retained-green ceiling.
    Geometry-first v2 alone clamps retained green to `max(red, blue)` after the same alpha/unmatte
    calculation; it does not change red, blue, alpha, masking, validation, or encoder behavior.
+   Black-matte is `rarity-frame`-only and requires an opaque `#000000` source matte. For source
+   `q = max(red, green, blue)`, it sets alpha to zero at `q <= 4`, to 255 at `q >= 16`, and otherwise
+   to `round(255 * (q - 4) / 12)`; each transition-channel value is black-unmatted as
+   `clamp(round(channel * 255 / alpha))`. The helper Lanczos3-resizes the extracted RGBA, then
+   intersects it with geometry-v2 rarity-frame coverage measured only inward from center-inside
+   pixels on the exact 4×4 subpixel grid. Pixels outside the frame or inside its aperture are exactly
+   transparent, and every alpha-zero RGB triplet is canonical zero. The source must still provide a
+   clean black matte in role-required transparent regions and must not contain checker or structured
+   contamination.
    Exact-source `skill-art`,
    `calibration-plate`, and compatibility frame/backing packets retain exact selected provider
    bytes.

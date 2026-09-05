@@ -149,19 +149,24 @@ export const SkillIconProviderNormalizationProfileV4Schema = z.literal(
 export const SkillIconProviderNormalizationProfileV5Schema = z.literal(
 	'skill-icon-geometry-role-mask-v2'
 );
+export const SkillIconProviderNormalizationProfileV6Schema = z.literal(
+	'skill-icon-black-matte-geometry-role-mask-v1'
+);
 export const SkillIconProviderNormalizationProfileSchema = z.union([
 	SkillIconProviderNormalizationProfileV1Schema,
 	SkillIconProviderNormalizationProfileV2Schema,
 	SkillIconProviderNormalizationProfileV3Schema,
 	SkillIconProviderNormalizationProfileV4Schema,
-	SkillIconProviderNormalizationProfileV5Schema
+	SkillIconProviderNormalizationProfileV5Schema,
+	SkillIconProviderNormalizationProfileV6Schema
 ]);
 export const SkillIconProductionSkillVersionSchema = z.union([
 	z.literal('summonlab-skill-icon-production-v2'),
 	z.literal('summonlab-skill-icon-production-v3'),
 	z.literal('summonlab-skill-icon-production-v4'),
 	z.literal('summonlab-skill-icon-production-v5'),
-	z.literal('summonlab-skill-icon-production-v6')
+	z.literal('summonlab-skill-icon-production-v6'),
+	z.literal('summonlab-skill-icon-production-v7')
 ]);
 export const SKILL_ICON_NORMALIZATION_GEOMETRY_HASH =
 	'4a8645adb0f820011b2bf9383710e0161a36905b8e99f1e8d6797b4104d4f7d7' as const;
@@ -770,6 +775,16 @@ const SkillIconProviderSourceContractSchema = z
 	})
 	.strict();
 
+const SkillIconBlackMatteProviderSourceContractSchema = z
+	.object({
+		mediaType: z.literal('image/png'),
+		width: z.literal(1254),
+		height: z.literal(1254),
+		alphaMode: z.literal('rgb'),
+		matteColor: z.literal('#000000')
+	})
+	.strict();
+
 const SkillIconProviderOutputContractSchema = z
 	.object({
 		mediaType: z.literal('image/png'),
@@ -839,6 +854,19 @@ export const SkillIconTargetNormalizationSchema = z.union([
 		.object({
 			profile: SkillIconProviderNormalizationProfileV5Schema,
 			sourceContract: SkillIconProviderSourceContractSchema,
+			outputContract: SkillIconProviderOutputContractSchema,
+			geometry: z
+				.object({
+					path: z.literal(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH),
+					contentHash: z.literal(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH)
+				})
+				.strict()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV6Schema,
+			sourceContract: SkillIconBlackMatteProviderSourceContractSchema,
 			outputContract: SkillIconProviderOutputContractSchema,
 			geometry: z
 				.object({
@@ -1010,20 +1038,33 @@ export const SkillIconTargetV2Schema = z
 				message: 'V2 job ID must be the explicit logical identity plus revision'
 			});
 		}
+		const blackMatteProfile =
+			target.normalization.profile === 'skill-icon-black-matte-geometry-role-mask-v1';
+		const requiredMattePattern = blackMatteProfile
+			? /opaque\s+#000000\s+matte/iu
+			: /opaque\s+#00ff00\s+matte/iu;
 		if (
-			!/opaque\s+#00ff00\s+matte/iu.test(target.exactPrompt) ||
+			!requiredMattePattern.test(target.exactPrompt) ||
 			!/no\s+(?:baked\s+)?checkerboard/iu.test(target.exactPrompt)
 		) {
 			context.addIssue({
 				code: 'custom',
 				path: ['exactPrompt'],
-				message: 'V2 prompts must require an opaque #00FF00 matte and no baked checkerboard'
+				message: `V2 prompts must require an opaque ${blackMatteProfile ? '#000000' : '#00FF00'} matte and no baked checkerboard`
+			});
+		}
+		if (blackMatteProfile && target.role !== 'rarity-frame') {
+			context.addIssue({
+				code: 'custom',
+				path: ['role'],
+				message: 'The black-matte geometry profile is restricted to rarity-frame targets'
 			});
 		}
 		const canonicalGuide =
 			target.normalization.profile === 'skill-icon-green-key-role-mask-v3' ||
 			target.normalization.profile === 'skill-icon-geometry-role-mask-v1' ||
-			target.normalization.profile === 'skill-icon-geometry-role-mask-v2'
+			target.normalization.profile === 'skill-icon-geometry-role-mask-v2' ||
+			target.normalization.profile === 'skill-icon-black-matte-geometry-role-mask-v1'
 				? {
 						path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 						purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
@@ -1141,7 +1182,8 @@ export const SkillIconAssignmentV2Schema = z
 			'skill-icon-green-key-role-mask-v2': 'summonlab-skill-icon-production-v3',
 			'skill-icon-green-key-role-mask-v3': 'summonlab-skill-icon-production-v4',
 			'skill-icon-geometry-role-mask-v1': 'summonlab-skill-icon-production-v5',
-			'skill-icon-geometry-role-mask-v2': 'summonlab-skill-icon-production-v6'
+			'skill-icon-geometry-role-mask-v2': 'summonlab-skill-icon-production-v6',
+			'skill-icon-black-matte-geometry-role-mask-v1': 'summonlab-skill-icon-production-v7'
 		}[assignment.normalization.profile];
 		if (assignment.skillVersion !== expectedSkillVersion) {
 			context.addIssue({
@@ -1640,12 +1682,68 @@ export const SkillIconNormalizationEvidenceV5Schema = z.union([
 		.strict()
 ]);
 
+export const SkillIconNormalizationEvidenceV6Schema = z.union([
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV6Schema,
+			outcome: z.literal('not-run'),
+			geometryHash: StateHashSchema,
+			providerSource: z.null(),
+			sourceContentHash: z.null(),
+			decoderInputContentHash: z.null(),
+			containerBox: z.null(),
+			colorSpaceDisposition: z.null(),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV6Schema,
+			outcome: z.literal('failed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: z.null(),
+			containerBox: z.null(),
+			colorSpaceDisposition: z.null(),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV6Schema,
+			outcome: z.literal('failed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconObservedProviderSourceEvidenceSchema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: StateHashSchema,
+			containerBox: SkillIconContainerBoxEvidenceSchema,
+			colorSpaceDisposition: z.literal('assigned-srgb'),
+			outputContentHash: z.null()
+		})
+		.strict(),
+	z
+		.object({
+			profile: SkillIconProviderNormalizationProfileV6Schema,
+			outcome: z.literal('completed'),
+			geometryHash: StateHashSchema,
+			providerSource: SkillIconProviderSourceEvidenceV2Schema,
+			sourceContentHash: StateHashSchema,
+			decoderInputContentHash: StateHashSchema,
+			containerBox: SkillIconContainerBoxEvidenceSchema,
+			colorSpaceDisposition: z.literal('assigned-srgb'),
+			outputContentHash: StateHashSchema
+		})
+		.strict()
+]);
+
 export const SkillIconNormalizationEvidenceSchema = z.union([
 	SkillIconNormalizationEvidenceV1Schema,
 	SkillIconNormalizationEvidenceV2Schema,
 	SkillIconNormalizationEvidenceV3Schema,
 	SkillIconNormalizationEvidenceV4Schema,
-	SkillIconNormalizationEvidenceV5Schema
+	SkillIconNormalizationEvidenceV5Schema,
+	SkillIconNormalizationEvidenceV6Schema
 ]);
 
 export const SkillIconAttemptResultV2Schema = z
@@ -2532,6 +2630,9 @@ export type SkillIconProviderNormalizationProfileV4 = z.infer<
 export type SkillIconProviderNormalizationProfileV5 = z.infer<
 	typeof SkillIconProviderNormalizationProfileV5Schema
 >;
+export type SkillIconProviderNormalizationProfileV6 = z.infer<
+	typeof SkillIconProviderNormalizationProfileV6Schema
+>;
 export type SkillIconProviderNormalizationProfile = z.infer<
 	typeof SkillIconProviderNormalizationProfileSchema
 >;
@@ -2595,6 +2696,9 @@ export type SkillIconNormalizationEvidenceV4 = z.infer<
 >;
 export type SkillIconNormalizationEvidenceV5 = z.infer<
 	typeof SkillIconNormalizationEvidenceV5Schema
+>;
+export type SkillIconNormalizationEvidenceV6 = z.infer<
+	typeof SkillIconNormalizationEvidenceV6Schema
 >;
 export type SkillIconAttemptResultV2 = z.infer<typeof SkillIconAttemptResultV2Schema>;
 export type SkillIconSupersedingAuthority = z.infer<typeof SkillIconSupersedingAuthoritySchema>;

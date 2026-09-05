@@ -22,6 +22,8 @@ export const SKILL_ICON_NORMALIZATION_PROFILE_V2 = 'skill-icon-green-key-role-ma
 export const SKILL_ICON_NORMALIZATION_PROFILE_V3 = 'skill-icon-green-key-role-mask-v3' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V4 = 'skill-icon-geometry-role-mask-v1' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V5 = 'skill-icon-geometry-role-mask-v2' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V6 =
+	'skill-icon-black-matte-geometry-role-mask-v1' as const;
 /** Compatibility alias for the original, default profile. */
 export const SKILL_ICON_NORMALIZATION_PROFILE = SKILL_ICON_NORMALIZATION_PROFILE_V1;
 export type SkillIconNormalizationProfile =
@@ -29,9 +31,13 @@ export type SkillIconNormalizationProfile =
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4
-	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5;
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V6;
 export const SKILL_ICON_PROVIDER_SIZE = 1254;
 export const SKILL_ICON_PROVIDER_MATTE = '#00FF00' as const;
+export const SKILL_ICON_PROVIDER_BLACK_MATTE = '#000000' as const;
+export const SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX = 4;
+export const SKILL_ICON_PROVIDER_BLACK_OPAQUE_MIN = 16;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE = 12;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2 = 24;
 export const SKILL_ICON_PROVIDER_OPAQUE_DISTANCE = 96;
@@ -59,6 +65,10 @@ const RETAINED_ROLE_CHECKER_MINIMUM_DOMINANT_FRACTION = 0.7;
 const RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_FRACTION = 0.8;
 const RETAINED_ROLE_CHECKER_COHERENT_BOUNDARY_SPAN_FRACTION = 0.25;
 const RETAINED_ROLE_CHECKER_DENSE_ONE_AXIS_FRACTION = 0.2;
+const BLACK_MATTE_REQUIRED_STRONG_FRACTION = 0.96;
+const BLACK_MATTE_REQUIRED_KEYABLE_FRACTION = 0.97;
+const BLACK_MATTE_PERIMETER_STRONG_FRACTION = 0.94;
+const BLACK_MATTE_PERIMETER_KEYABLE_FRACTION = 0.95;
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
 	let value = index;
 	for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ (value & 1 ? 0xedb88320 : 0);
@@ -116,12 +126,20 @@ export interface SkillIconNormalizationEvidenceV5 extends SkillIconNormalization
 	readonly colorSpaceDisposition: 'assigned-srgb';
 }
 
+export interface SkillIconNormalizationEvidenceV6 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V6;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: SkillIconNormalizationEvidenceV2['containerBox'];
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
 export type SkillIconNormalizationEvidence =
 	| SkillIconNormalizationEvidenceV1
 	| SkillIconNormalizationEvidenceV2
 	| SkillIconNormalizationEvidenceV3
 	| SkillIconNormalizationEvidenceV4
-	| SkillIconNormalizationEvidenceV5;
+	| SkillIconNormalizationEvidenceV5
+	| SkillIconNormalizationEvidenceV6;
 
 export interface NormalizedSkillIconProviderSource<
 	Normalization extends SkillIconNormalizationEvidence = SkillIconNormalizationEvidence
@@ -190,12 +208,14 @@ function isProviderCompatibleProfile(
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4
-	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5 {
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V5
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V6 {
 	return (
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V6
 	);
 }
 
@@ -203,8 +223,17 @@ function usesGeometryV2Profile(profile: SkillIconNormalizationProfile): boolean 
 	return (
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4 ||
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V5 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V6
 	);
+}
+
+function usesBlackMatteProfile(profile: SkillIconNormalizationProfile): boolean {
+	return profile === SKILL_ICON_NORMALIZATION_PROFILE_V6;
+}
+
+function usesGeometryClippingProfile(profile: SkillIconNormalizationProfile): boolean {
+	return usesGeometryFirstProfile(profile) || usesBlackMatteProfile(profile);
 }
 
 function usesGeometryFirstProfile(profile: SkillIconNormalizationProfile): boolean {
@@ -786,6 +815,60 @@ function assertProviderMatte(
 		);
 }
 
+function invertRoleMask(roleMask: Uint8Array): Uint8Array {
+	const inverse = new Uint8Array(roleMask.length);
+	for (let index = 0; index < roleMask.length; index += 1)
+		inverse[index] = roleMask[index] === 1 ? 0 : 1;
+	return inverse;
+}
+
+function assertBlackProviderMatte(
+	data: Buffer,
+	width: number,
+	height: number,
+	providerRoleMask: Uint8Array
+): Uint8Array {
+	const transparentRoleMask = invertRoleMask(providerRoleMask);
+	const border = Math.max(8, Math.round(Math.min(width, height) * 0.025));
+	let requiredPixels = 0;
+	let requiredStrong = 0;
+	let requiredKeyable = 0;
+	let perimeterPixels = 0;
+	let perimeterStrong = 0;
+	let perimeterKeyable = 0;
+	for (let y = 0; y < height; y += 1) {
+		for (let x = 0; x < width; x += 1) {
+			const pixelIndex = y * width + x;
+			const offset = pixelIndex * 3;
+			const q = Math.max(data[offset] ?? 0, data[offset + 1] ?? 0, data[offset + 2] ?? 0);
+			if (transparentRoleMask[pixelIndex] === 1) {
+				requiredPixels += 1;
+				if (q <= SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX) requiredStrong += 1;
+				if (q <= SKILL_ICON_PROVIDER_BLACK_OPAQUE_MIN) requiredKeyable += 1;
+			}
+			if (x < border || x >= width - border || y < border || y >= height - border) {
+				perimeterPixels += 1;
+				if (q <= SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX) perimeterStrong += 1;
+				if (q <= SKILL_ICON_PROVIDER_BLACK_OPAQUE_MIN) perimeterKeyable += 1;
+			}
+		}
+	}
+	const requiredStrongFraction = requiredStrong / Math.max(1, requiredPixels);
+	const requiredKeyableFraction = requiredKeyable / Math.max(1, requiredPixels);
+	const perimeterStrongFraction = perimeterStrong / Math.max(1, perimeterPixels);
+	const perimeterKeyableFraction = perimeterKeyable / Math.max(1, perimeterPixels);
+	if (
+		requiredStrongFraction < BLACK_MATTE_REQUIRED_STRONG_FRACTION ||
+		requiredKeyableFraction < BLACK_MATTE_REQUIRED_KEYABLE_FRACTION ||
+		perimeterStrongFraction < BLACK_MATTE_PERIMETER_STRONG_FRACTION ||
+		perimeterKeyableFraction < BLACK_MATTE_PERIMETER_KEYABLE_FRACTION
+	)
+		throw new Error(
+			`Provider source does not have a sufficiently clean #000000 black matte in role-required transparent regions (${requiredStrongFraction.toFixed(6)} strong, ${requiredKeyableFraction.toFixed(6)} keyable)`
+		);
+	return transparentRoleMask;
+}
+
 function assertForbiddenRegionAlpha(
 	rgba: Buffer,
 	width: number,
@@ -1001,6 +1084,8 @@ export function skillIconGreenKeyAlphaForProfile(
 	blue: number,
 	profile: SkillIconNormalizationProfile
 ): number {
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V6)
+		return skillIconBlackMatteAlpha(red, green, blue);
 	const distance = keyDistance(red, green, blue);
 	const transparentDistance = isProviderCompatibleProfile(profile)
 		? SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE_V2
@@ -1013,7 +1098,87 @@ export function skillIconGreenKeyAlphaForProfile(
 	);
 }
 
+/** Exact max-channel alpha ramp owned by the black-matte profile. */
+export function skillIconBlackMatteAlpha(red: number, green: number, blue: number): number {
+	const q = Math.max(red, green, blue);
+	if (q <= SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX) return 0;
+	if (q >= SKILL_ICON_PROVIDER_BLACK_OPAQUE_MIN) return 255;
+	return Math.round(
+		(255 * (q - SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX)) /
+			(SKILL_ICON_PROVIDER_BLACK_OPAQUE_MIN - SKILL_ICON_PROVIDER_BLACK_TRANSPARENT_MAX)
+	);
+}
+
+/** Remove an opaque-black matte contribution from one straight-alpha channel. */
+export function skillIconBlackMatteUnmatteChannel(channel: number, alpha: number): number {
+	if (alpha === 0) return 0;
+	return Math.max(0, Math.min(255, Math.round((channel * 255) / alpha)));
+}
+
 type SkillIconGeometryAuthority = SkillIconGeometry | SkillIconGeometryV2;
+
+type AllowsPoint = (x: number, y: number) => boolean;
+const inwardRolePredicateCache = new WeakMap<SkillIconGeometryV2, AllowsPoint>();
+
+function rarityFrameGeometryV2Predicate(geometry: SkillIconGeometryV2): AllowsPoint {
+	const cached = inwardRolePredicateCache.get(geometry);
+	if (cached) return cached;
+	const width = geometry.canvas.width;
+	const height = geometry.canvas.height;
+	const aperture = scaledPolygon(geometry.aperturePoints, width, height);
+	const outerEnvelope = scaledPolygon(geometry.outerEnvelopePoints, width, height);
+	const medallion = scaledPolygon(geometry.rarityMedallionExclusion, width, height);
+	const inner = insetPolygon(
+		aperture,
+		[geometry.center.x, geometry.center.y],
+		geometry.innerApertureScale
+	);
+	const predicate = (x: number, y: number): boolean =>
+		(pointInPolygon(x, y, outerEnvelope) && !pointInPolygon(x, y, inner)) ||
+		pointInPolygon(x, y, medallion);
+	inwardRolePredicateCache.set(geometry, predicate);
+	return predicate;
+}
+
+function inwardRoleCoverageAt(x: number, y: number, allows: AllowsPoint): number {
+	if (!allows(x + 0.5, y + 0.5)) return 0;
+	let coveredSamples = 0;
+	for (let sampleY = 0; sampleY < 4; sampleY += 1) {
+		for (let sampleX = 0; sampleX < 4; sampleX += 1) {
+			if (allows(x + (sampleX + 0.5) / 4, y + (sampleY + 0.5) / 4)) coveredSamples += 1;
+		}
+	}
+	return Math.round((255 * coveredSamples) / 16);
+}
+
+/** Exact inward-only 4×4 role coverage used after the pinned resize. */
+export function skillIconInwardRoleCoverageAt(
+	x: number,
+	y: number,
+	geometry: SkillIconGeometryV2
+): number {
+	if (
+		!Number.isInteger(x) ||
+		!Number.isInteger(y) ||
+		x < 0 ||
+		y < 0 ||
+		x >= geometry.canvas.width ||
+		y >= geometry.canvas.height
+	)
+		return 0;
+	return inwardRoleCoverageAt(x, y, rarityFrameGeometryV2Predicate(geometry));
+}
+
+function buildInwardRoleCoverage(geometry: SkillIconGeometryV2): Uint8Array {
+	const width = geometry.canvas.width;
+	const height = geometry.canvas.height;
+	const allows = rarityFrameGeometryV2Predicate(geometry);
+	const coverage = new Uint8Array(width * height);
+	for (let y = 0; y < height; y += 1) {
+		for (let x = 0; x < width; x += 1) coverage[y * width + x] = inwardRoleCoverageAt(x, y, allows);
+	}
+	return coverage;
+}
 
 function buildRoleMask(
 	role: SkillIconRole,
@@ -1113,6 +1278,12 @@ export function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V6
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV6>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
 	profile: SkillIconNormalizationProfile
 ): Promise<NormalizedSkillIconProviderSource>;
 export async function normalizeSkillIconProviderSource(
@@ -1132,11 +1303,14 @@ export async function normalizeSkillIconProviderSource(
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 &&
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V3 &&
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4 &&
-		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V5
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V5 &&
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V6
 	)
 		throw new Error('Unsupported skill-icon normalization profile');
 	const envelope = assertCanonicalProviderPngEnvelope(sourceSnapshot, profile);
 	const role = SkillIconRoleSchema.parse(roleInput);
+	if (usesBlackMatteProfile(profile) && role !== 'rarity-frame')
+		throw new Error('Black-matte normalization is authorized only for rarity-frame jobs');
 	if (role !== 'rarity-frame' && role !== 'backing')
 		throw new Error('Green-key normalization is authorized only for rarity-frame and backing jobs');
 	let rawGeometry: unknown;
@@ -1189,7 +1363,7 @@ export async function normalizeSkillIconProviderSource(
 		.removeAlpha()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
-	if (!usesGeometryFirstProfile(profile)) {
+	if (!usesGeometryClippingProfile(profile)) {
 		assertNoBakedCheckerboard(decoded.data);
 		assertProviderMatte(
 			decoded.data,
@@ -1207,6 +1381,26 @@ export async function normalizeSkillIconProviderSource(
 		decoded.info.width,
 		decoded.info.height
 	);
+	if (usesBlackMatteProfile(profile)) {
+		const transparentRoleMask = assertBlackProviderMatte(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			providerRoleMask
+		);
+		assertNoRetainedRoleCheckerboard(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			transparentRoleMask
+		);
+		assertNoPeriodicContrastCheckerboard(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			transparentRoleMask
+		);
+	}
 	if (usesGeometryFirstProfile(profile)) {
 		assertNoRetainedRoleStrongMatte(
 			decoded.data,
@@ -1237,6 +1431,13 @@ export async function normalizeSkillIconProviderSource(
 		const green = decoded.data[sourceOffset + 1] ?? 0;
 		const blue = decoded.data[sourceOffset + 2] ?? 0;
 		const alpha = skillIconGreenKeyAlphaForProfile(red, green, blue, profile);
+		if (usesBlackMatteProfile(profile)) {
+			rgba[outputOffset] = skillIconBlackMatteUnmatteChannel(red, alpha);
+			rgba[outputOffset + 1] = skillIconBlackMatteUnmatteChannel(green, alpha);
+			rgba[outputOffset + 2] = skillIconBlackMatteUnmatteChannel(blue, alpha);
+			rgba[outputOffset + 3] = alpha;
+			continue;
+		}
 		const amount = alpha / 255;
 		const unmatte = (channel: number, matte: number): number =>
 			Math.max(0, Math.min(255, Math.round((channel - (1 - amount) * matte) / amount)));
@@ -1275,13 +1476,21 @@ export async function normalizeSkillIconProviderSource(
 		roleMask,
 		profile
 	);
-	if (!usesGeometryFirstProfile(profile))
+	if (!usesGeometryClippingProfile(profile))
 		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
+	const inwardRoleCoverage = usesBlackMatteProfile(profile)
+		? buildInwardRoleCoverage(geometry as SkillIconGeometryV2)
+		: undefined;
 	let visiblePixels = 0;
 	for (let y = 0; y < geometry.canvas.height; y += 1) {
 		for (let x = 0; x < geometry.canvas.width; x += 1) {
 			const offset = (y * geometry.canvas.width + x) * 4;
 			if (!allowsPixel(x, y)) resized[offset + 3] = 0;
+			else if (inwardRoleCoverage)
+				resized[offset + 3] = Math.round(
+					((resized[offset + 3] ?? 0) * (inwardRoleCoverage[y * geometry.canvas.width + x] ?? 0)) /
+						255
+				);
 			if ((resized[offset + 3] ?? 0) === 0) {
 				resized[offset] = 0;
 				resized[offset + 1] = 0;
@@ -1296,7 +1505,7 @@ export async function normalizeSkillIconProviderSource(
 			}
 		}
 	}
-	if (usesGeometryFirstProfile(profile))
+	if (usesGeometryClippingProfile(profile))
 		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	if (visiblePixels === 0) throw new Error('Provider source contains no visible role content');
 	const outputBytes = await sharp(resized, {
@@ -1310,7 +1519,7 @@ export async function normalizeSkillIconProviderSource(
 			progressive: false
 		})
 		.toBuffer();
-	if (usesGeometryFirstProfile(profile)) {
+	if (usesGeometryClippingProfile(profile)) {
 		const inspection = await inspectSkillIconAsset(outputBytes, role, geometry);
 		if (inspection.violations.length > 0)
 			throw new Error(

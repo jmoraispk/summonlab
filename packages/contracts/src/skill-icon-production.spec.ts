@@ -1101,6 +1101,11 @@ describe('skill-icon production contracts', () => {
 			SkillIconProviderNormalizationProfileSchema.safeParse('skill-icon-geometry-role-mask-v2')
 				.success
 		).toBe(true);
+		expect(
+			SkillIconProviderNormalizationProfileSchema.safeParse(
+				'skill-icon-black-matte-geometry-role-mask-v1'
+			).success
+		).toBe(true);
 
 		const v2JobId = 'rarity-frame-f-v3';
 		const v2Paths = ownedPaths('references', v2JobId);
@@ -1228,6 +1233,38 @@ describe('skill-icon production contracts', () => {
 			expect(
 				SkillIconAssignmentV2Schema.safeParse({
 					...strictGeometryAssignment,
+					normalization: { profile }
+				}).success
+			).toBe(false);
+		}
+
+		const blackMatteAssignment = {
+			...v1Assignment,
+			skillVersion: 'summonlab-skill-icon-production-v7' as const,
+			normalization: { profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const }
+		};
+		expect(SkillIconAssignmentV2Schema.safeParse(blackMatteAssignment).success).toBe(true);
+		for (const skillVersion of [
+			'summonlab-skill-icon-production-v2',
+			'summonlab-skill-icon-production-v3',
+			'summonlab-skill-icon-production-v4',
+			'summonlab-skill-icon-production-v5',
+			'summonlab-skill-icon-production-v6'
+		] as const) {
+			expect(
+				SkillIconAssignmentV2Schema.safeParse({ ...blackMatteAssignment, skillVersion }).success
+			).toBe(false);
+		}
+		for (const profile of [
+			'skill-icon-green-key-role-mask-v1',
+			'skill-icon-green-key-role-mask-v2',
+			'skill-icon-green-key-role-mask-v3',
+			'skill-icon-geometry-role-mask-v1',
+			'skill-icon-geometry-role-mask-v2'
+		] as const) {
+			expect(
+				SkillIconAssignmentV2Schema.safeParse({
+					...blackMatteAssignment,
 					normalization: { profile }
 				}).success
 			).toBe(false);
@@ -1829,6 +1866,105 @@ describe('skill-icon production contracts', () => {
 				}
 			}).success
 		).toBe(false);
+
+		const blackMatteJobId = 'rarity-frame-f-v9';
+		const blackMattePaths = ownedPaths('references', blackMatteJobId);
+		const blackMattePrompt =
+			'Paint the F rarity frame over a perfectly uniform opaque #000000 matte with no baked checkerboard.';
+		const blackMatteTarget = {
+			...geometryTarget,
+			jobId: blackMatteJobId,
+			revision: 9,
+			exactPrompt: blackMattePrompt,
+			output: blackMattePaths,
+			normalization: {
+				...geometryTarget.normalization,
+				profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const,
+				sourceContract: {
+					...geometryTarget.normalization.sourceContract,
+					matteColor: '#000000' as const
+				}
+			}
+		};
+		const blackMatteAssignment = {
+			...geometryAssignment,
+			assignmentId: `assignment-${blackMatteJobId}`,
+			jobId: blackMatteJobId,
+			revision: 9,
+			targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${blackMatteJobId}.json`,
+			assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${blackMatteJobId}.json`,
+			skillVersion: 'summonlab-skill-icon-production-v7' as const,
+			normalization: { profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const },
+			permittedOutputs: blackMattePaths
+		};
+		const blackMatteResult = {
+			...geometryResult,
+			resultId: `result-${blackMatteJobId}`,
+			jobId: blackMatteJobId,
+			revision: 9,
+			assignmentId: blackMatteAssignment.assignmentId,
+			exactPrompt: blackMattePrompt,
+			promptHash: createHash('sha256').update(blackMattePrompt).digest('hex'),
+			normalization: {
+				...geometryResult.normalization,
+				profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const
+			},
+			output: { ...geometryResult.output, path: blackMattePaths.candidatePath },
+			resultPath: blackMattePaths.resultPath,
+			writtenOutputPaths: [blackMattePaths.candidatePath, blackMattePaths.resultPath] as const
+		};
+		const blackMatteExecution = {
+			schemaVersion: 'skill-icon-execution-v2' as const,
+			target: blackMatteTarget,
+			assignment: blackMatteAssignment,
+			result: blackMatteResult
+		};
+
+		expect(SkillIconTargetV2Schema.safeParse(blackMatteTarget).success).toBe(true);
+		expect(SkillIconAssignmentV2Schema.safeParse(blackMatteAssignment).success).toBe(true);
+		expect(SkillIconResultV2Schema.safeParse(blackMatteResult).success).toBe(true);
+		expect(SkillIconExecutionV2Schema.safeParse(blackMatteExecution).success).toBe(true);
+		expect(
+			SkillIconTargetV2Schema.safeParse({
+				...blackMatteTarget,
+				exactPrompt:
+					'Paint the F rarity frame over a perfectly uniform opaque #00FF00 matte with no baked checkerboard.'
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetV2Schema.safeParse({
+				...blackMatteTarget,
+				role: 'backing',
+				rarity: null,
+				jobId: 'charcoal-forged-stone-v9',
+				logicalIdentity: 'charcoal-forged-stone',
+				output: ownedPaths('references', 'charcoal-forged-stone-v9')
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconTargetV2Schema.safeParse({
+				...blackMatteTarget,
+				normalization: {
+					...blackMatteTarget.normalization,
+					sourceContract: {
+						...blackMatteTarget.normalization.sourceContract,
+						matteColor: '#00FF00'
+					}
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconExecutionV2Schema.safeParse({
+				...blackMatteExecution,
+				result: {
+					...blackMatteResult,
+					normalization: {
+						...blackMatteResult.normalization,
+						profile: 'skill-icon-geometry-role-mask-v2'
+					}
+				}
+			}).success
+		).toBe(false);
 	});
 
 	it('continues parsing every committed structural-v2 target against its raw guide bytes', () => {
@@ -1849,7 +1985,7 @@ describe('skill-icon production contracts', () => {
 			const parsingError = parsed.success ? '' : parsed.error.message;
 			expect(parsed.success, `${filename}: ${parsingError}`).toBe(true);
 		}
-		expect(structuralV2Count).toBe(50);
+		expect(structuralV2Count).toBe(56);
 	});
 
 	it('records an unattempted superseded packet only against stronger raw authority', () => {

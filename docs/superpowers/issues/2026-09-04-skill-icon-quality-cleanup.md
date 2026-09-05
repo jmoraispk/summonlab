@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** In progress; strict-despill revision-8 frame route queued
+**Status:** In progress; black-matte revision-9 frame route queued
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
 **Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
 **Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
@@ -49,6 +49,14 @@ The defects are not one alpha-channel problem.
   calculation. Six E/D/C/B/A/S-v8 packets retain the v7 no-spill prompt language. Only the five
   unattempted D/C/B/A/S-v7 packets are superseded; attempted E-v7 and E-v6 remain immutable
   `revise` evidence. There is no backing-v8 or F-v8 packet.
+- E-v8 exposed a different artifact: strict green despill turned low-alpha frame-edge pixels bright
+  magenta. Its candidate and `revise` result remain immutable. The additive frame-only profile
+  `skill-icon-black-matte-geometry-role-mask-v1` pairs only with
+  `summonlab-skill-icon-production-v7`, requires an opaque `#000000` matte, and applies the tested
+  4–16 alpha/black-unmatte transfer before Lanczos3 resize and inward-only 4×4 geometry-v2 coverage.
+  Exactly six E/D/C/B/A/S-v9 packets preserve each rank's material, proportion, crest, geometry, and
+  exclusions while changing the matte contract. Only unattempted D/C/B/A/S-v8 are superseded;
+  attempted E-v8, E-v7, and E-v6 remain `revise` evidence. There is no backing-v9 or F-v9 packet.
 - `repair-skill-icon-mass-exteriors.ts` correctly masks pixels outside the broad outer geometry, but
   it does not restore a canonical frame, protect the frame aperture from subject art, or understand
   semantic glyphs.
@@ -139,11 +147,12 @@ geometry, issue a new revision using the exact geometry-first/producer-v5 tuple.
 relabel the failed v5 evidence. Geometry-first retains the canonical `caBX`, assigned-sRGB,
 geometry-v2/guide-v2, and fixed-output provenance gates; it is not a manual masking exception.
 
-The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v8. The six
-unattempted E/D/C/B/A/S v5 frame packets, five unattempted D/C/B/A/S-v6 packets, and five
-unattempted D/C/B/A/S-v7 packets have authority-bound `superseded` results. Attempted E-v6 and E-v7
-remain `revise` evidence, failed backing-v5 is not superseded, and no backing-v7/v8 or F-v6/v7/v8
-packet exists.
+The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v9. The six
+unattempted E/D/C/B/A/S v5 frame packets and the five unattempted D/C/B/A/S packets at each of v6,
+v7, and v8 have authority-bound `superseded` results. Attempted E-v6, E-v7, and E-v8 remain
+`revise` evidence, failed backing-v5 is not superseded, and no backing-v7/v8/v9 or F-v6/v7/v8/v9
+packet exists. Revision 9 uses the exact frame-only black-matte profile/producer-v7 tuple; prior
+profiles and evidence remain immutable.
 
 ### Phase 2: recompose all candidates
 

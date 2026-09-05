@@ -802,6 +802,54 @@ class SkillIconVerifierTests(unittest.TestCase):
                         contract_root=REPOSITORY_ROOT,
                     )
 
+    def test_black_matte_frame_profile_accepts_only_skill_v7_geometry_v2_and_exact_guide(
+        self,
+    ) -> None:
+        profile = "skill-icon-black-matte-geometry-role-mask-v1"
+        self._prepare_v2_result_only_failure(
+            profile=profile,
+            skill_version="summonlab-skill-icon-production-v7",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        normalization = self.packet.result["normalization"]
+        assert isinstance(normalization, dict)
+        self.assertEqual(normalization["profile"], profile)
+        self.assertEqual(normalization["geometryHash"], GEOMETRY_V2_HASH)
+        self.assertIsNone(normalization["decoderInputContentHash"])
+        self.assertIsNone(normalization["containerBox"])
+        self.assertIsNone(normalization["colorSpaceDisposition"])
+
+        for skill_version in (
+            "summonlab-skill-icon-production-v2",
+            "summonlab-skill-icon-production-v3",
+            "summonlab-skill-icon-production-v4",
+            "summonlab-skill-icon-production-v5",
+            "summonlab-skill-icon-production-v6",
+        ):
+            with self.subTest(skill_version=skill_version):
+                self.packet.assignment["skillVersion"] = skill_version
+                with self.assertRaisesRegex(
+                    ValueError, "contract validation failed|skill version"
+                ):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+
+        self.packet.assignment["skillVersion"] = "summonlab-skill-icon-production-v7"
+        self.packet.target["role"] = "backing"
+        self.packet.target["rarity"] = None
+        with self.assertRaisesRegex(ValueError, "contract validation failed|rarity-frame"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
     def test_rejects_extra_written_paths(self) -> None:
         written = self.packet.result["writtenOutputPaths"]
         assert isinstance(written, list)
@@ -1018,14 +1066,19 @@ class SkillIconVerifierTests(unittest.TestCase):
         include_v2_guide: bool = False,
         persist_result: bool = True,
     ) -> None:
-        job_id = "charcoal-forged-stone-v2"
-        self.packet.rebind_role("backing", job_id)
+        black_matte = profile == "skill-icon-black-matte-geometry-role-mask-v1"
+        job_id = "rarity-frame-f-v7" if black_matte else "charcoal-forged-stone-v2"
+        logical_identity = "rarity-frame-f" if black_matte else "charcoal-forged-stone"
+        revision = 7 if black_matte else 2
+        self.packet.rebind_role("rarity-frame" if black_matte else "backing", job_id)
         self.packet.candidate_file.unlink()
         self.packet.result_file.unlink()
         self.packet.target_file.unlink()
         self.packet.assignment_file.unlink()
         exact_prompt = (
-            "Paint the backing over an opaque #00FF00 matte with no baked checkerboard."
+            "Paint the frame over an opaque #000000 matte with no baked checkerboard."
+            if black_matte
+            else "Paint the backing over an opaque #00FF00 matte with no baked checkerboard."
         )
         geometry_hash = hashlib.sha256(
             (self.packet.root / geometry_path).read_bytes()
@@ -1043,8 +1096,8 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.packet.target.update(
             {
                 "schemaVersion": "skill-icon-target-v2",
-                "logicalIdentity": "charcoal-forged-stone",
-                "revision": 2,
+                "logicalIdentity": logical_identity,
+                "revision": revision,
                 "exactPrompt": exact_prompt,
                 "normalization": {
                     "profile": profile,
@@ -1053,7 +1106,7 @@ class SkillIconVerifierTests(unittest.TestCase):
                         "width": 1254,
                         "height": 1254,
                         "alphaMode": "rgb",
-                        "matteColor": "#00FF00",
+                        "matteColor": "#000000" if black_matte else "#00FF00",
                     },
                     "outputContract": {
                         "mediaType": "image/png",
@@ -1071,8 +1124,8 @@ class SkillIconVerifierTests(unittest.TestCase):
         self.packet.assignment.update(
             {
                 "schemaVersion": "skill-icon-assignment-v2",
-                "logicalIdentity": "charcoal-forged-stone",
-                "revision": 2,
+                "logicalIdentity": logical_identity,
+                "revision": revision,
                 "skillVersion": skill_version,
                 "normalization": {"profile": profile},
             }
@@ -2399,6 +2452,39 @@ class SkillIconVerifierTests(unittest.TestCase):
             verify_result_module._validate_profile_normalization_evidence(
                 target, {"normalization": rejected}, content_hash
             )
+
+    def test_black_matte_frame_profile_binds_complete_pathless_v7_provenance(self) -> None:
+        content_hash = hashlib.sha256(b"black matte geometry evidence").hexdigest()
+        profile = "skill-icon-black-matte-geometry-role-mask-v1"
+        target = {"normalization": {"profile": profile}}
+        completed = {
+            "profile": profile,
+            "outcome": "completed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+            "outputContentHash": content_hash,
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": completed}, content_hash
+        )
+
+        for mutation in (
+            {**completed, "decoderInputContentHash": None},
+            {**completed, "containerBox": {**completed["containerBox"], "path": "raw.png"}},
+            {**completed, "colorSpaceDisposition": "declared-srgb"},
+        ):
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(ValueError):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, {"normalization": mutation}, content_hash
+                    )
 
     def test_result_only_failure_refuses_collision(self) -> None:
         self.packet.candidate_file.unlink()

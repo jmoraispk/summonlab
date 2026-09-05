@@ -293,6 +293,25 @@ pixel change is the post-unmatte retained-green clamp: v1 preserves
 E/D/C/B/A/S revision-8 packets; all prior target, assignment, candidate, and result bytes remain
 historical evidence.
 
+The attempted E revision-8 source revealed that green despill could transform low-alpha edge pixels
+into bright magenta, so its candidate and `revise` result remain immutable evidence. The additive
+`skill-icon-black-matte-geometry-role-mask-v1` profile pairs only with
+`summonlab-skill-icon-production-v7` and only on structural-v2 `rarity-frame` packets. It retains the
+1254×1254 RGB8 `caBX`/assigned-sRGB envelope, geometry-v2/guide-v2 authorities, Lanczos3 resize,
+fixed encoder, pathless provenance, and strict frame gates, but requires an opaque `#000000` matte.
+For source `q=max(R,G,B)`, values through 4 become alpha-zero canonical black, values from 16 remain
+opaque source RGB, and values 5–15 use `round(255*(q-4)/12)` alpha plus per-channel
+`clamp(round(channel*255/alpha))` black unmatting. After resize, the geometry-v2 frame union is
+anti-aliased on an exact 4×4 subpixel grid only for center-inside pixels, so coverage extends inward
+only; the aperture and exterior remain exactly transparent. Required-transparent source regions
+must contain a clean black matte without checker or structured contamination.
+
+The six E/D/C/B/A/S revision-9 packets use this tuple and black-matte wording while preserving each
+rank's approved material, proportions, integrated crest/letter, geometry, and exclusions. Only the
+unattempted D/C/B/A/S revision-8 packets are coordinator-superseded against their exact revision-9
+authorities. Attempted E revisions 6, 7, and 8 remain `revise` evidence. Cleanup composition now
+resolves backing-v6, F-v5, and E/D/C/B/A/S-v9; no backing-v9 or F-v9 packet exists.
+
 Result provenance records pathless provider media properties and hashes, the raw geometry-file
 hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
 v1 Task 7 failures, F revision-2 caBX rejection, F revision-3 geometry rejection, and F revision-4

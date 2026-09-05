@@ -91,6 +91,24 @@ output-free D/C/B/A/S-v7 packets are coordinator-superseded against their matchi
 attempted E-v7 and E-v6 are not superseded. Cleanup composition now uses backing-v6, F-v5, and
 E/D/C/B/A/S-v8. No backing-v8 or F-v8 packet exists.
 
+The attempted E-v8 source proved that strict green despill is not a safe extraction route for this
+frame family: low-alpha edge pixels became bright magenta. Its candidate and `revise` result remain
+immutable. The additive replacement is exactly
+`skill-icon-black-matte-geometry-role-mask-v1` + `summonlab-skill-icon-production-v7`, valid only for
+structural-v2 rarity frames. It retains the 1254 RGB `caBX`/assigned-sRGB envelope and
+geometry-v2/guide-v2 authority, but requires an opaque `#000000` matte. For each source pixel,
+`q=max(R,G,B)`: values through 4 become transparent black, values from 16 stay opaque source RGB,
+and values 5–15 use `round(255*(q-4)/12)` alpha with per-channel black unmatting. After Lanczos3
+resize, the frame union uses inward-only 4×4 coverage for center-inside pixels; the aperture and
+exterior remain exactly transparent. Black-matte validation rejects contaminated required-transparent
+regions and structured/checker content while retaining the strict frame gates and fixed encoder.
+The recovery inventory issues exactly `rarity-frame-{e,d,c,b,a,s}-v9` with prompt wording that
+changes only the matte while preserving material, proportion, crest, geometry, and exclusions.
+Only output-free D/C/B/A/S-v8 are coordinator-superseded against their exact v9 authorities;
+attempted E-v8, E-v7, and E-v6 are not superseded. Cleanup composition now uses backing-v6, F-v5,
+and E/D/C/B/A/S-v9. No backing-v9 or F-v9 packet exists, and every earlier profile remains
+byte-stable.
+
 ### 2. Deterministic whole-catalog recomposition
 
 Every current mass-production image is converted into a `legacy-interior` migration layer by

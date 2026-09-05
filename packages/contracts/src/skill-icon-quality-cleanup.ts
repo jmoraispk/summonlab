@@ -216,7 +216,7 @@ export const SkillIconCleanupResultSchema = SkillIconCleanupRecordSchema.safeExt
 				path: z
 					.string()
 					.regex(
-						/^assets\/wiki\/skills\/icon-production-v1\/candidates\/references\/(?:rarity-frame-f-v5|rarity-frame-[edcbas]-v8)\.png$/u
+						/^assets\/wiki\/skills\/icon-production-v1\/candidates\/references\/(?:rarity-frame-f-v5|rarity-frame-[edcbas]-v9)\.png$/u
 					)
 			})
 		})
@@ -242,7 +242,7 @@ export const SkillIconCleanupResultSchema = SkillIconCleanupRecordSchema.safeExt
 			message: 'Cleanup removal bounds must exist exactly when visible pixels were removed'
 		});
 	}
-	const frameRevision = result.rank === 'F' ? 5 : 8;
+	const frameRevision = result.rank === 'F' ? 5 : 9;
 	const expectedFramePath = `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-${result.rank.toLowerCase()}-v${frameRevision}.png`;
 	if (result.compositionAuthority.frame.path !== expectedFramePath) {
 		context.addIssue({
