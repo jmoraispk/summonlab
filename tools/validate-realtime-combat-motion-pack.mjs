@@ -19,6 +19,17 @@ if (
 ) {
 	throw new Error('Maximum advance ground artifact pixels must be a non-negative integer.');
 }
+const idleSubjectHeightFlag = process.argv.indexOf('--min-idle-subject-height');
+const minimumIdleSubjectHeight =
+	idleSubjectHeightFlag >= 0
+		? Number.parseInt(process.argv[idleSubjectHeightFlag + 1] ?? '', 10)
+		: undefined;
+if (
+	minimumIdleSubjectHeight !== undefined &&
+	(!Number.isInteger(minimumIdleSubjectHeight) || minimumIdleSubjectHeight < 1)
+) {
+	throw new Error('Minimum idle subject height must be a positive integer.');
+}
 const advanceSupportEvidenceFlag = process.argv.indexOf('--advance-support-evidence');
 const advanceSupportEvidencePath =
 	advanceSupportEvidenceFlag >= 0 ? process.argv[advanceSupportEvidenceFlag + 1] : undefined;
@@ -142,6 +153,31 @@ if (
 	metadata.height !== atlas.meta.size.h
 ) {
 	throw new Error('Atlas dimensions or alpha do not match metadata.');
+}
+if (minimumIdleSubjectHeight !== undefined) {
+	const { data, info } = await sharp(atlasPath)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	for (const frameName of manifest.clips.idle.frames) {
+		const frame = atlas.frames[frameName].frame;
+		let top = frame.h;
+		let bottom = -1;
+		for (let y = 0; y < frame.h; y += 1) {
+			for (let x = 0; x < frame.w; x += 1) {
+				const alpha = data[((frame.y + y) * info.width + frame.x + x) * info.channels + 3];
+				if (alpha <= 18) continue;
+				top = Math.min(top, y);
+				bottom = Math.max(bottom, y);
+			}
+		}
+		const subjectHeight = bottom >= top ? bottom - top + 1 : 0;
+		if (subjectHeight < minimumIdleSubjectHeight) {
+			throw new Error(
+				`Idle frame ${frameName} subject height ${subjectHeight} is below ${minimumIdleSubjectHeight}.`
+			);
+		}
+	}
 }
 if (maximumAdvanceGroundArtifactPixels !== undefined) {
 	const { data, info } = await sharp(atlasPath)
