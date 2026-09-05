@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
-import { readdir, readFile } from 'node:fs/promises';
+import { spawn, type ChildProcess } from 'node:child_process';
+import { once } from 'node:events';
+import { readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -9,7 +11,8 @@ import {
 	QUALITY_CLEANUP_ROOT,
 	buildSkillIconCleanupManifest,
 	exportSkillIconQualityCleanup,
-	loadCleanupManifestInput
+	loadCleanupManifestInput,
+	type CleanupManifestInput
 } from './skill-icon-quality-cleanup-lib.js';
 
 const workspaceRoot = path.resolve(import.meta.dirname, '..');
@@ -27,6 +30,106 @@ async function snapshot(directory: string): Promise<readonly [string, string][]>
 		else files.push([path.relative(workspaceRoot, entryPath), sha256(await readFile(entryPath))]);
 	}
 	return files.sort(([left], [right]) => left.localeCompare(right));
+}
+
+function retarget(targetId: string, from: string, to: string): string {
+	return targetId === from ? to : targetId;
+}
+
+function withSkewedDomain(input: CleanupManifestInput): CleanupManifestInput {
+	const from = 'martial:blade:swordsmanship';
+	const to = 'magical:blade:swordsmanship';
+	const sourceHashesByTargetId = new Map(input.sourceHashesByTargetId);
+	const sourceHash = sourceHashesByTargetId.get(from);
+	if (!sourceHash) throw new Error('Expected the martial swordsmanship source hash.');
+	sourceHashesByTargetId.delete(from);
+	sourceHashesByTargetId.set(to, sourceHash);
+	return {
+		...input,
+		catalog: {
+			...input.catalog,
+			records: input.catalog.records.map((record) => ({
+				...record,
+				targetId: retarget(record.targetId, from, to),
+				domain: record.targetId === from ? 'Magical' : record.domain,
+				primaryVisualParent: record.primaryVisualParent
+					? retarget(record.primaryVisualParent, from, to)
+					: null
+			}))
+		},
+		massProductionManifest: {
+			...input.massProductionManifest,
+			skills: input.massProductionManifest.skills.map((record) => ({
+				...record,
+				targetId: retarget(record.targetId, from, to),
+				domain: record.targetId === from ? 'Magical' : record.domain,
+				finalImagePath:
+					record.targetId === from
+						? 'assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-blade-swordsmanship.png'
+						: record.finalImagePath,
+				primaryVisualParent: record.primaryVisualParent
+					? retarget(record.primaryVisualParent, from, to)
+					: null
+			}))
+		},
+		motifMap: {
+			...input.motifMap,
+			entries: input.motifMap.entries.map((entry) => ({
+				...entry,
+				memberTargetIds: entry.memberTargetIds.map((targetId) => retarget(targetId, from, to))
+			})),
+			records: input.motifMap.records.map((record) => ({
+				...record,
+				targetId: retarget(record.targetId, from, to),
+				primaryVisualParent: record.primaryVisualParent
+					? retarget(record.primaryVisualParent, from, to)
+					: null
+			}))
+		},
+		visualSpecifications: {
+			...input.visualSpecifications,
+			records: input.visualSpecifications.records.map((record) => ({
+				...record,
+				targetId: retarget(record.targetId, from, to)
+			}))
+		},
+		sourceHashesByTargetId
+	};
+}
+
+async function startRaceWriter(
+	directory: string,
+	destination: string,
+	bytes: Buffer
+): Promise<ChildProcess> {
+	const writer = spawn(
+		process.execPath,
+		[
+			'-e',
+			[
+				"const fs = require('node:fs');",
+				'const [directory, destination, encoded] = process.argv.slice(1);',
+				'const watch = fs.watch(directory, () => {',
+				"  if (!fs.readdirSync(directory).some((name) => name.includes('.stage-'))) return;",
+				"  fs.writeFileSync(destination, Buffer.from(encoded, 'base64'));",
+				'  watch.close();',
+				"  process.stdout.write('written\\n', () => process.exit(0));",
+				'});',
+				"process.stdout.write('ready\\n');"
+			].join('\n'),
+			directory,
+			destination,
+			bytes.toString('base64')
+		],
+		{ stdio: ['ignore', 'pipe', 'inherit'] }
+	);
+	await once(writer.stdout!, 'data');
+	return writer;
+}
+
+async function waitForExit(child: ChildProcess): Promise<void> {
+	if (child.exitCode !== null) return;
+	await once(child, 'exit');
 }
 
 describe('skill-icon quality-cleanup manifest exporter', () => {
@@ -87,5 +190,54 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 		expect(report.counts).toEqual({ total: 456, Martial: 258, Magical: 124, Craft: 74 });
 		expect(report.written).toEqual([]);
 		expect(afterSnapshot).toEqual(beforeSnapshot);
+	});
+
+	it('rejects a consistently skewed 456-record authority input', async () => {
+		const input = withSkewedDomain(await loadCleanupManifestInput(workspaceRoot));
+
+		expect(() => buildSkillIconCleanupManifest(input)).toThrow(/actual domain counts/i);
+	});
+
+	it('reports output drift in check mode and refuses to replace it in write mode', async () => {
+		const manifestPath = path.resolve(workspaceRoot, QUALITY_CLEANUP_ROOT, 'manifest.json');
+		const original = await readFile(manifestPath);
+		const drift = Buffer.from('intentionally drifted cleanup manifest\n');
+		await writeFile(manifestPath, drift);
+		try {
+			const checked = await exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'check' });
+			expect(checked.written).toEqual([]);
+			expect(checked.drifted).toEqual([
+				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json'
+			]);
+			await expect(
+				exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'write' })
+			).rejects.toThrow(/refusing to replace drifted cleanup artifact/i);
+			expect(await readFile(manifestPath)).toEqual(drift);
+		} finally {
+			await writeFile(manifestPath, original);
+		}
+	});
+
+	it('does not clobber drift that appears after the missing-file check', async () => {
+		const cleanupDirectory = path.resolve(workspaceRoot, QUALITY_CLEANUP_ROOT);
+		const manifestPath = path.join(cleanupDirectory, 'manifest.json');
+		const original = await readFile(manifestPath);
+		const drift = Buffer.from('concurrent cleanup manifest drift\n');
+		await unlink(manifestPath);
+		let writer: ChildProcess | null = null;
+		try {
+			writer = await startRaceWriter(cleanupDirectory, manifestPath, drift);
+			await expect(
+				exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'write' })
+			).rejects.toThrow(/refusing to replace drifted cleanup artifact/i);
+			await waitForExit(writer);
+			expect(await readFile(manifestPath)).toEqual(drift);
+		} finally {
+			if (writer?.exitCode === null) {
+				writer.kill();
+				await waitForExit(writer);
+			}
+			await writeFile(manifestPath, original);
+		}
 	});
 });

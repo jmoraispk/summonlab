@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { lstat, mkdir, open, readFile, realpath, rename, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, readFile, realpath, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
@@ -271,6 +271,24 @@ export function buildSkillIconCleanupManifest(
 			resultPath: `${QUALITY_CLEANUP_ROOT}/results/${slug}.json`
 		};
 	});
+	const counts = records.reduce(
+		(counts, record) => {
+			const domain = record.targetId.split(':', 1)[0];
+			if (domain === 'martial') counts.Martial += 1;
+			else if (domain === 'magical') counts.Magical += 1;
+			else if (domain === 'craft') counts.Craft += 1;
+			return counts;
+		},
+		{ total: records.length, Martial: 0, Magical: 0, Craft: 0 }
+	);
+	if (
+		counts.total !== 456 ||
+		counts.Martial !== 258 ||
+		counts.Magical !== 124 ||
+		counts.Craft !== 74
+	) {
+		throw new Error('Cleanup manifest actual domain counts do not match the frozen inventory');
+	}
 	return SkillIconCleanupManifestSchema.parse({
 		schemaVersion: 'skill-icon-quality-cleanup-manifest-v1',
 		authority,
@@ -321,8 +339,25 @@ async function writeMissingAtomic(
 		await handle.sync();
 		await handle.close();
 		handle = null;
-		await rename(stage, destination);
-		return true;
+		let published = false;
+		try {
+			await link(stage, destination);
+			published = true;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+			const concurrent = await currentBytes(root, repositoryPath);
+			if (!concurrent?.equals(bytes)) {
+				throw new Error(`Refusing to replace drifted cleanup artifact: ${repositoryPath}`, {
+					cause: error
+				});
+			}
+		}
+		const current = await currentBytes(root, repositoryPath);
+		if (!current?.equals(bytes)) {
+			throw new Error(`Refusing to replace drifted cleanup artifact: ${repositoryPath}`);
+		}
+		await unlink(stage);
+		return published;
 	} catch (error) {
 		await handle?.close().catch(() => undefined);
 		await unlink(stage).catch(() => undefined);
