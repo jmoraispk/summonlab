@@ -334,3 +334,112 @@ atlas dimensions, alpha, anchor data, source-bound support evidence, and an opti
 locomotion-ground artifact ceiling. The well foreground is a lossless masked copy of the existing
 original environment plate produced by `tools/extract-realtime-combat-occluders.mjs`; it contains no
 new third-party content.
+
+### Toma / iron guardian compact heavy run v5
+
+- Owner decision before v5 production: v4 is immutable and mechanically valid, but owner-rejected
+  for run motion. Its high front kick, deep squat, oversized flight, and mismatched stride shapes do
+  not read as one coherent heavy run. No v4 file is replaced or deleted; v5 is a new candidate.
+- Accepted source binding: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png`
+  (`0a751496ecd72743dba97051231f5c34fb67e7dbab0637df0a6e0531399481dc`). Identity
+  binding: `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png`
+  (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`). Motion
+  authority: `skills/summonlab-character-animations/references/classical-human-run.svg`
+  (`02412a2e6e0821f3a2d126560594f617223435d0542107ff712d9a2146818771`).
+- Mode: built-in Codex image generation with the v4 sheet as camera/style/equipment context, the
+  ready cutout as identity anchor, and the repository run diagram as motion authority. The complete
+  strip was generated as one temporal unit, then bounded identity-preserving edits corrected only
+  failed support, scale, background, crown, and stride gates.
+- Exact initial production prompt:
+
+  ```text
+  Use case: identity-preserve
+  Asset type: production source strip for a five-frame game-character run animation
+  Input images: Image 1 is Toma's accepted v4 motion-sheet camera, style, equipment, and scale reference; use its second row as rejected motion context, not as poses to copy. Image 2 is Toma's canonical identity reference. Image 3 is the classical-human-run-5 spatial/support authority only; do not copy its diagram graphics, labels, colors, or style.
+  Primary request: Create one horizontal five-cell temporal animation strip for Toma's compact armored run, shown in playback order from the same steep three-quarter up-field camera. Beat 1: short anatomical-left boot contact, right leg trailing, shield leading. Beat 2: modest left-leg compression and push, hips only slightly lower. Beat 3: low airborne passing pose, neither boot planted, right knee below the belt. Beat 4: short anatomical-right boot contact, visibly opposite beat 1, with matching stride and torso height. Beat 5: right-supported recovery returning toward beat 1. Preserve exact gray topknot, beard, face, stocky adult proportions, navy-and-teal armor, bronze shield on left arm, compact mace in right hand, constant scale, common lighting, full-body clearance, and painterly 2.5D finish. Pure uniform white matte only. No shadow, scenery, text, dividers, crop, mirror, equipment swap, high front kick, knee above belt, deep crouch, frog legs, split leap, foot aimed at camera, wild mace, duplicate pose, hidden boot, or extra limb.
+  Motion invariant: one coherent left,left,none,right,right sequence across exactly five cells, with a low continuous center-of-mass arc and a plausible frame-5-to-frame-1 seam.
+  Output intent: one clean landscape raster strip containing exactly five evenly spaced full-body poses and no other elements.
+  ```
+
+- Selected generated original: `/home/joao/.codex/generated_images/01a06fda-5187-71a3-9846-2c8f5d8dcd98/exec-63275e93-eae9-4057-807b-e602a76ccd12.png`.
+  Project strip: `animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v5.png`
+  (`5d49f9204da47e46eb18b3857a1ec1b1099cfc000c508df1c3bc997fc92de38a`). Exact
+  final selected correction prompt:
+
+  ```text
+  Use case: precise-object-edit
+  Asset type: final production source strip for a five-frame game-character run animation
+  Input images: Image 1 is the clean edit target. Its FIRST CELL establishes the required compact boot-to-boot stride width for the opposite contact. Image 2 is Toma's canonical identity anchor.
+  Primary request: Change only the FOURTH CELL's lifted trailing leg and boot. Keep the current planted boot on the screen-right side fixed exactly where it is. Extend the bent, lifted trailing leg toward screen-left by a small amount—about 8% of that cell's width—so the horizontal distance between the two boot centers matches cell 1. Keep the trailing boot fully above the contact line with a clear white gap below it. Preserve the fourth-cell hips, torso, planted leg, upper body, and equipment exactly. Preserve cells 1, 2, 3, and 5 exactly.
+  Motion invariant: left,left,none,right,right remains unchanged; frames 1 and 4 are opposite planted sides with matching compact stride width and torso height; frame 5 flows into frame 1.
+  Preserve: exact face, topknot, beard, stocky proportions, navy-and-teal armor, bronze shield, compact mace, camera, scale, lighting, spacing, full-body clearance, painterly 2.5D finish, and pure uniform #FFFFFF matte.
+  Avoid: moving the planted right-side boot; grounding the trailing boot; changing any upper body or other frame; long or split stride; high kick; background texture or speckles; shadow; ground mark; scenery; text; divider; crop; mirror; equipment swap; wild mace; or extra limb.
+  ```
+
+- Generation review: early strips were rejected for repeated same-side support; later corrections
+  were rejected for an oversized center pose that clipped the declared lift, a 25-pixel crown spread,
+  same-side or doubled frame-4 contact, off-white background speckling visible after keying, or a
+  frame-4 stride visibly narrower than frame 1. The selected original was the first clean strip to
+  retain the opposite frame-4/5 support while keeping the 5-to-1 seam, equipment, and compact scale.
+- Project source sheet: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v5.png`
+  (`86cac065e35e97e844b31eb6c25ee5319524947608ac82311a46f32023fa6008`). Support
+  evidence: `animation-canary-v1/iron-guardian/iron-guardian-motion-support-v5.json`
+  (`aca0bfdb15cb4f8fc81df59673982adcc23e665b6fde6e668744de35be0c86c1`). Runtime
+  atlas: `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.png`
+  (`2b8c8993cb675b759cb7b117570d55bc8878208e229d0efdf724b7f701311209`). Runtime
+  atlas JSON: `iron-guardian-motion-v5.json`
+  (`8d949316d0e09b4f87965bf772dace215b1a194e647befe47f857d56f34a717f`). Runtime
+  manifest: `iron-guardian-motion-manifest-v5.json`
+  (`0bc04baed1ab9795ea36a7ec070373e8bd9399bbe75db98c9ab306c6cf9491ba`).
+- Actual 256-pixel runtime measurements, using outer vertical shield-rim diameter, horizontal
+  boot-center stride span, and upper armored-shoulder torso top: frame 1
+  `left:15:245:76:70:52`; frame 2 `left:21:245:75:62:50`; frame 3
+  `none:24:238:77:68:51`; frame 4 `right:16:245:75:67:50`; frame 5
+  `right:16:245:76:58:49`. Crown spread is 9 pixels; frame 3 has an 8-pixel gap above
+  contact line y=246; shield relative range is 2/77; contact strides differ by 3/70; contact torso
+  tops differ by 2 pixels.
+- Deterministic source assembly command:
+
+  ```bash
+  node tools/compose-realtime-combat-motion-rows.mjs \
+    --base assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png \
+    --out assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v5.png \
+    --replace 1:assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v5.png \
+    --scale-mode shared \
+    --cell-y-offset 1:2:-7
+  ```
+
+- Deterministic runtime build command completed with `commonScale: 0.8472222222222222`:
+
+  ```bash
+  node tools/build-realtime-combat-motion-pack.mjs \
+    --actor iron-guardian \
+    --input assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v5.png \
+    --out-dir apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian \
+    --version 5 \
+    --preserve-from-manifest apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-manifest-v4.json \
+    --replace-clip advance \
+    --frame-y-offset advance:3:-7
+  ```
+
+- Evidence was written with the five measurements above, `classical-human-run-5`, source grid
+  `5x4@1`, and support `left,left,none,right,right`. Its bound decoded RGB cell hashes are
+  `dba386868ebecde780c82f771c9eb9740e8f414cb973757dcd3ac0875f4d5a31`,
+  `66f4528a47a42b13b5dc620cb880df9b5f3846be531bed64b41375b5be3305f0`,
+  `1118dbb098815921c56ed19b32a15c6b6c70ab05593e3c411ab3225c3e58cdf0`,
+  `7e1fe2febc6862769fb89cee532fd1db666b3c25625e24b7c2cad0c841c37d7f`, and
+  `19b8ae133ac87fde6b8f18150cd5cd52f5b398f59c913b130ab945742ba26553`.
+- Validator result: `{"valid":true,"actorId":"iron-guardian","advanceFrames":5,"preservedFrames":15}`.
+  The validator/rebuild suite passed 19/19 tests with zero skips. A fresh temporary rebuild matched
+  the committed v5 source sheet, atlas PNG, atlas JSON, manifest, and evidence byte-for-byte, and all
+  15 decoded idle, attack, hit, and down cells are RGBA-identical to v4.
+- Visual review: all full bodies, boots, shield, and mace remain clear at source resolution. The
+  built row reads contact, compact compression, low passing flight, visibly opposite contact, and
+  recovery; equipment remains on the same side, shield size is stable, the mace stays below the
+  waist, and no shadow, scenery, text, matte noise, crop, or extra limb is visible. A 15-frame
+  184-pixel animated review artifact was encoded as three loops at 100 ms per frame (10 FPS) to check
+  the compact weight and 5-to-1 seam.
+- Limitation: frame 4's lifted trailing boot remains partially under the coat at gameplay size, so
+  owner playback—not evidence labels—must decide whether the opposite contact is sufficiently clear.
+  Runtime activation is intentionally deferred to the next task.
+- Status: `candidate`; explicit owner playback approval is still required.
