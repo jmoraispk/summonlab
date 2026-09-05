@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "galon-keshar",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/prompt-v2.txt",
+  "promptSha256": "7aab153a822ab9fa74791838b37fdf78f89f73ab12871a93f43d7044370d9d1f",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/galon-keshar/summon-v2.png",
+      "sha256": "e542255304001919294890e307afd0d460571045a6c957f17624049fc7b1528e"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/galon-keshar.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/provider-source-v2.png",
+  "providerSourceSha256": "98483d4cf5b0d28d77ea70218d1a4be09c56453a122e2f27cee14595d13d2066",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/candidate-v2.png",
+  "candidateSha256": "98483d4cf5b0d28d77ea70218d1a4be09c56453a122e2f27cee14595d13d2066",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

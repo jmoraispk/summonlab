@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "wenyn-amarun",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/prompt-v2.txt",
+  "promptSha256": "8cf096b3e7e574819532ffa9ac8594887a334154d3eefa3f8d4214cfc2a290ff",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/wenyn-amarun/summon-v1.png",
+      "sha256": "b0db1bb3c6968b0bc511d2e6ec55d173b6c8ff3c27a7dbbb81cb1ca9cdf34752"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01/candidates/wenyn-amarun.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/provider-source-v2.png",
+  "providerSourceSha256": "15f302c5dad9c7ec02adc4c2dbf8450701efb16c1fd2c1f7873663d1eedcb4cd",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/candidate-v2.png",
+  "candidateSha256": "15f302c5dad9c7ec02adc4c2dbf8450701efb16c1fd2c1f7873663d1eedcb4cd",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

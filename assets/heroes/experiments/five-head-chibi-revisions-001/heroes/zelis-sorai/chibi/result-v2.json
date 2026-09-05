@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "zelis-sorai",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/prompt-v2.txt",
+  "promptSha256": "1fa9ec73b1cfdee8e213b9a8410c57f3e537fadc7a92a9159deb20513f615cd4",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/zelis-sorai/summon-v1.png",
+      "sha256": "6237baf2c66e7bdd5ccdfc8087bb4f40c60ca3f06ab39bf71e8eba356c0b7643"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-13/candidates/zelis-sorai.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/provider-source-v2.png",
+  "providerSourceSha256": "aac98bc5135bac81674487bb53ca7c10d56d822ef59d813f36955c73614fee26",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/candidate-v2.png",
+  "candidateSha256": "aac98bc5135bac81674487bb53ca7c10d56d822ef59d813f36955c73614fee26",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

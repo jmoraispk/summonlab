@@ -1,0 +1,21 @@
+Create a new full-body combat chibi of the adult hero in the single supplied summon reference.
+This is the same person, not a reinterpretation. Preserve exactly the reference hero's Yasan Belek, age 37, man, skin-value band 2; broad oval face; full cheeks and sharply defined brows; aquiline nose, softly full mouth; one cheek mole, healthy-slight-lanky, medium; 170 cm; healthy slight, narrow, long-limbed construction with low mass., blonde-gold braids-twists-locs; accent: None, apron-workwear-layers in terracotta-black; a work shirt, asymmetrical apron layers, reinforced trousers, and sturdy shoes; a divided hem and broad folded collar., the source-faithful visible footwear,
+and no accessory; tattoo scope: none.
+
+Proportion contract: render the complete standing figure at a target of 5.0 anatomical heads tall,
+measured from the top of the skull to the chin and repeated to the soles of the feet. Do not count
+hair volume, hats, horns, or ornaments as part of the head unit. Use a moderately enlarged stylized
+head, a clearly developed adult torso, naturally long limbs, source-faithful shoulders and hips,
+and source-faithful arm, wrist, hand, thigh, and calf girth. Do not make the hero baby-like,
+super-deformed, fatter, more muscular, broader, shorter-limbed, or puffier than the reference.
+
+Keep the accepted cinematic semi-realistic painted game-character style: warm cohesive color,
+believable anatomy and materials, controlled expression, and clean combat-readable silhouette.
+Show the entire hairstyle, both hands, all clothing, and both feet with a small grounding shadow on
+a plain warm parchment studio field. Vertical 1024x1536 composition.
+
+Weaponless. No magic, affinity effects, aura, rarity frame, stars, interface, label, logo, watermark,
+or text. Not photography, plastic 3D, cel anime, caricature, toddler, mascot, or bobble-head art.
+Do not duplicate, fuse, omit, or crop anatomy. The summon reference is the only visual authority.
+
+CORRECTION PRIORITY — HEAD SCALE: This hero was selected because a previous derivative rendered the head too large. The target remains exactly 5.0 anatomical heads tall from skull crown to soles, excluding hair volume. Make the skull-crown-to-chin unit visually no more than one fifth of the standing figure. Use a smaller, restrained adult-stylized head than a conventional chibi, with a developed neck and torso and naturally long limbs. The result must not read as three-head or four-head super-deformation. Preserve the source hero's actual body mass and do not compensate by widening the torso, shoulders, arms, hands, hips, or legs.

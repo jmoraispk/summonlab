@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "five-head-combat-chibi-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "belu-uleno",
+  "imageKind": "combat-chibi",
+  "version": 3,
+  "lifecycle": "candidate",
+  "generationStrategy": "chibi-base-then-bounded-proportion-edit",
+  "providerStagesUsed": 2,
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/prompt-v3.txt",
+  "promptSha256": "14d567f851918cef04be004710a04051f978ccf6f0e158465b31efe7d2fa5e6f",
+  "generationReferences": [
+    {
+      "role": "proportion-edit-target",
+      "path": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/edit-source-v3.png",
+      "sha256": "b7cf172fbc165cc4a021157c37e006eb5a9df55249f7885e6d6a48b9e75e8368"
+    },
+    {
+      "role": "summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/belu-uleno/summon-v1.png",
+      "sha256": "b63e16b02e779f89ae33320be18d31df10ab77bd268c6218a3dd3eb73e590adf"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/candidate-v2.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/provider-source-v3.png",
+  "providerSourceSha256": "b944b17ddf89566bca6516352326a6ed7482c42b2fb56eb22b9ad0dcd2532780",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/candidate-v3.png",
+  "candidateSha256": "b944b17ddf89566bca6516352326a6ed7482c42b2fb56eb22b9ad0dcd2532780",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "inspection": {
+    "method": "manual-contact-sheet-and-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "unmistakableCombatChibi": true,
+    "approximatelyFiveHeads": true,
+    "targetHeadRatio": "approximately 20% crown-to-chin of crown-to-sole, excluding hair volume",
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

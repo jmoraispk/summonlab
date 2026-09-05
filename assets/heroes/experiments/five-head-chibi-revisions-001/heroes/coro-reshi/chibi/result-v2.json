@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "coro-reshi",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large-and-summon-needs-fuller-robe",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/prompt-v2.txt",
+  "promptSha256": "4695564b44b689fd12895112fa546c25efdae639658a682009d6f7aa5f30a0d3",
+  "generationReferences": [
+    {
+      "role": "revised-summon-identity-authority",
+      "path": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/summon/provider-source-v2.png",
+      "sha256": "8dc3fea2e9183d2cc93710f2e800f508560b9339ee134c981adc85e2b556b1f0"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/coro-reshi.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/provider-source-v2.png",
+  "providerSourceSha256": "2875bb291558a1310478af26b3452760a8c76d477e9fa9c22c5eb033ca91b12f",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/candidate-v2.png",
+  "candidateSha256": "2875bb291558a1310478af26b3452760a8c76d477e9fa9c22c5eb033ca91b12f",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "five-head-chibi-revision-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "ianin-nethai",
+  "imageKind": "combat-chibi",
+  "version": 2,
+  "lifecycle": "candidate",
+  "reason": "head-too-large",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/prompt-v2.txt",
+  "promptSha256": "5999f980b22669daa794e1ed842b354e45e9be71f225affc7c64d5f6a1985d55",
+  "generationReferences": [
+    {
+      "role": "sole-summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/ianin-nethai/summon-v1.png",
+      "sha256": "24b5bdcba0480245e38aea8455efbbe10f58fe541db363b71f9a330b0a011625"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/ianin-nethai.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/provider-source-v2.png",
+  "providerSourceSha256": "b04503e4017f2a6f4c8e5e54bf2f4bda2c817a61bf0ad52a9b2bcecc5b823ea2",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/candidate-v2.png",
+  "candidateSha256": "b04503e4017f2a6f4c8e5e54bf2f4bda2c817a61bf0ad52a9b2bcecc5b823ea2",
+  "inspection": {
+    "method": "manual-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "reducedHeadScale": true,
+    "adultTorsoAndLimbs": true,
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

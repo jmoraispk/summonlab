@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "five-head-chibi-revision-batch-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "lifecycle": "candidate",
+  "createdDate": "2026-09-04",
+  "targetStandard": "5.0 anatomical heads tall, skull crown to soles, excluding hair volume",
+  "count": 19,
+  "revisionPolicy": "Versioned additive outputs only. Previous summon and chibi candidates remain immutable review evidence.",
+  "entries": [
+    {
+      "heroId": "wenyn-amarun",
+      "displayName": "Wenyn Amarun",
+      "designOrdinal": 3,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/wenyn-amarun/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-01/candidates/wenyn-amarun.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/wenyn-amarun/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "galen-nethel",
+      "displayName": "Galen Nethel",
+      "designOrdinal": 24,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/galen-nethel/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-02/candidates/galen-nethel.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galen-nethel/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galen-nethel/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galen-nethel/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galen-nethel/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "yasan-belek",
+      "displayName": "Yasan Belek",
+      "designOrdinal": 30,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/yasan-belek/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-02/candidates/yasan-belek.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/yasan-belek/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/yasan-belek/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/yasan-belek/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/yasan-belek/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "aei-quoran",
+      "displayName": "Aei Quoran",
+      "designOrdinal": 35,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/candidates/aei-quoran/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-03/candidates/aei-quoran.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/aei-quoran/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/aei-quoran/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/aei-quoran/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/aei-quoran/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "oren-tavan",
+      "displayName": "Oren Tavan",
+      "designOrdinal": 65,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/oren-tavan/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/oren-tavan.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oren-tavan/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oren-tavan/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oren-tavan/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oren-tavan/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "zelyn-eshun",
+      "displayName": "Zelyn Eshun",
+      "designOrdinal": 66,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/zelyn-eshun/summon-v2.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/zelyn-eshun.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelyn-eshun/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelyn-eshun/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelyn-eshun/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelyn-eshun/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "belu-uleno",
+      "displayName": "Belu Uleno",
+      "designOrdinal": 73,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/belu-uleno/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/belu-uleno.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/belu-uleno/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "coro-reshi",
+      "displayName": "Coro Reshi",
+      "designOrdinal": 75,
+      "reason": "head-too-large-and-summon-needs-fuller-robe",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/coro-reshi/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/coro-reshi.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/prompt-v2.txt",
+        "referenceRole": "revised-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/result-v2.json"
+      },
+      "summonRevision": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/summon/prompt-v2.txt",
+        "referenceRole": "identity-preserve-edit-target",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/summon/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/summon/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/summon/result-v2.json"
+      }
+    },
+    {
+      "heroId": "eirel-belen",
+      "displayName": "Eirel Belen",
+      "designOrdinal": 77,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/eirel-belen/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-05/candidates/eirel-belen.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/eirel-belen/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "ianin-nethai",
+      "displayName": "Ianin Nethai",
+      "designOrdinal": 88,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/ianin-nethai/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/ianin-nethai.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ianin-nethai/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "kelon-kesha",
+      "displayName": "Kelon Kesha",
+      "designOrdinal": 90,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/kelon-kesha/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/kelon-kesha.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/kelon-kesha/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "galon-keshar",
+      "displayName": "Galon Keshar",
+      "designOrdinal": 95,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/galon-keshar/summon-v2.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-06/candidates/galon-keshar.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "quinar-reshar",
+      "displayName": "Quinar Reshar",
+      "designOrdinal": 101,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/candidates/quinar-reshar/summon-v2.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-07/candidates/quinar-reshar.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/quinar-reshar/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/quinar-reshar/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/quinar-reshar/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/quinar-reshar/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "lanen-quoren",
+      "displayName": "Lanen Quoren",
+      "designOrdinal": 124,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/lanen-quoren/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-08/candidates/lanen-quoren.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/lanen-quoren/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "meian-belin",
+      "displayName": "Meian Belin",
+      "designOrdinal": 127,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/meian-belin/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-08/candidates/meian-belin.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "ulon-morun",
+      "displayName": "Ulon Morun",
+      "designOrdinal": 139,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/ulon-morun/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-09/candidates/ulon-morun.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/ulon-morun/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "nelin-uleni",
+      "displayName": "Nelin Uleni",
+      "designOrdinal": 153,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/candidates/nelin-uleni/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-10/candidates/nelin-uleni.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/nelin-uleni/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "oryn-lorek",
+      "displayName": "Oryn Lorek",
+      "designOrdinal": 199,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/oryn-lorek/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-13/candidates/oryn-lorek.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oryn-lorek/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oryn-lorek/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oryn-lorek/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/oryn-lorek/chibi/result-v2.json"
+      }
+    },
+    {
+      "heroId": "zelis-sorai",
+      "displayName": "Zelis Sorai",
+      "designOrdinal": 200,
+      "reason": "head-too-large",
+      "sourceSummonPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/candidates/zelis-sorai/summon-v1.png",
+      "previousChibiPath": "assets/heroes/experiments/five-head-chibi-regeneration-001/waves/wave-13/candidates/zelis-sorai.png",
+      "chibi": {
+        "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/prompt-v2.txt",
+        "referenceRole": "sole-summon-identity-authority",
+        "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/provider-source-v2.png",
+        "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/candidate-v2.png",
+        "resultPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/zelis-sorai/chibi/result-v2.json"
+      }
+    }
+  ]
+}
