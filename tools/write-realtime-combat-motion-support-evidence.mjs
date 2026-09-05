@@ -1,22 +1,27 @@
+import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import sharp from 'sharp';
 
-const values = new Map();
-for (let index = 2; index < process.argv.length; index += 2) {
-	values.set(process.argv[index], process.argv[index + 1]);
-}
+const valuesFor = (flag) => {
+	const values = [];
+	for (let index = 2; index < process.argv.length; index += 1) {
+		if (process.argv[index] === flag) values.push(process.argv[index + 1]);
+	}
+	return values;
+};
+const valueFor = (flag) => valuesFor(flag)[0];
 
-const sourceSheet = values.get('--source-sheet');
-const outputPath = values.get('--out');
-const version = Number.parseInt(values.get('--version') ?? '', 10);
-const actorId = values.get('--actor');
-const clip = values.get('--clip');
-const actionAuthority = values.get('--action-authority');
-const support = values.get('--support')?.split(',');
-const gridMatch = values.get('--grid')?.match(/^(\d+)x(\d+)@(\d+)$/);
+const sourceSheet = valueFor('--source-sheet');
+const outputPath = valueFor('--out');
+const version = Number.parseInt(valueFor('--version') ?? '', 10);
+const actorId = valueFor('--actor');
+const clip = valueFor('--clip');
+const actionAuthority = valueFor('--action-authority');
+const support = valueFor('--support')?.split(',');
+const gridMatch = valueFor('--grid')?.match(/^(\d+)x(\d+)@(\d+)$/);
 if (
 	!sourceSheet ||
 	!outputPath ||
@@ -29,7 +34,38 @@ if (
 	!gridMatch
 ) {
 	throw new Error(
-		'Usage: --source-sheet <sheet.png> --out <evidence.json> --version <number> --actor <id> --clip <clip> --grid <columns>x<rows>@<zero-based-row> --action-authority <id> --support <comma-separated-labels> [--source-sheet-path <path-relative-to-evidence>]'
+		'Usage: --source-sheet <sheet.png> --out <evidence.json> --version <number> --actor <id> --clip <clip> --grid <columns>x<rows>@<zero-based-row> --action-authority <id> --support <comma-separated-labels> [--source-sheet-path <path-relative-to-evidence>] [--measurement <frame:support:crownY:lowestOpaqueY:shieldDiameter:strideWidth:torsoTop>]'
+	);
+}
+
+const measurementPattern = /^(\d+):(left|none|right):(\d+):(\d+):(\d+):(\d+):(\d+)$/;
+const measurements = valuesFor('--measurement').map((value) => {
+	const match = value?.match(measurementPattern);
+	if (!match) {
+		throw new Error(
+			'Measurement must use frame:support:crownY:lowestOpaqueY:shieldDiameter:strideWidth:torsoTop syntax.'
+		);
+	}
+	return {
+		frame: Number.parseInt(match[1], 10),
+		support: match[2],
+		crownY: Number.parseInt(match[3], 10),
+		lowestOpaqueY: Number.parseInt(match[4], 10),
+		shieldDiameter: Number.parseInt(match[5], 10),
+		strideWidth: Number.parseInt(match[6], 10),
+		torsoTop: Number.parseInt(match[7], 10)
+	};
+});
+if (measurements.length > 0) {
+	assert.deepEqual(
+		measurements.map(({ frame }) => frame),
+		[1, 2, 3, 4, 5],
+		'Measurement frames must appear exactly once in order 1,2,3,4,5.'
+	);
+	assert.deepEqual(
+		measurements.map(({ support: measurementSupport }) => measurementSupport),
+		support,
+		'Measurement support labels must match the declared support sequence.'
 	);
 }
 
@@ -49,7 +85,7 @@ if (
 }
 
 const recordedSourcePath =
-	values.get('--source-sheet-path') ?? path.relative(path.dirname(outputPath), sourceSheet);
+	valueFor('--source-sheet-path') ?? path.relative(path.dirname(outputPath), sourceSheet);
 if (path.resolve(path.dirname(outputPath), recordedSourcePath) !== path.resolve(sourceSheet)) {
 	throw new Error('Recorded source-sheet path must resolve to the hashed source sheet.');
 }
@@ -80,6 +116,7 @@ const evidence = {
 	actionAuthority,
 	support,
 	cellSha256,
+	...(measurements.length > 0 ? { measurements } : {}),
 	status: 'candidate',
 	sourceSheetPath: recordedSourcePath,
 	sourceGrid
