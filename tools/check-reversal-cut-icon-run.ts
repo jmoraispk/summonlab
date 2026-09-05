@@ -85,6 +85,10 @@ const FRAME_FEEDBACK_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json';
 const APPROVED_FRAME_COMPLETION_PATH =
 	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/completion.json';
+const APPROVED_FRAME_OWNER_REVIEW_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/owner-review.json';
+const APPROVED_FRAME_ACTIVATION_PATH =
+	'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json';
 
 const ActivationAssetSchema = BoundFileSchema.extend({
 	mediaType: z.enum(['image/png', 'image/webp']),
@@ -203,6 +207,41 @@ const ApprovedFrameVisualReviewSchema = z.object({
 	})
 });
 
+const ApprovedFrameOwnerReviewSchema = z.object({
+	schemaVersion: z.literal('skill-icon-composite-owner-review-v1'),
+	reviewId: z.literal('reversal-cut-framed-composite-review-v1'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	reviewerRole: z.literal('owner'),
+	decision: z.literal('accepted'),
+	reviewedCompletion: BoundFileSchema,
+	visualApproval: BoundFileSchema,
+	approvedFrame: BoundFileSchema,
+	approvedCandidate: BoundFileSchema,
+	approvedRecognition: BoundFileSchema,
+	promotionScope: z.tuple([
+		z.literal('composite-master'),
+		z.literal('runtime-size-ladder'),
+		z.literal('recognition-master')
+	])
+});
+
+const ApprovedFrameActivationSchema = z.object({
+	schemaVersion: z.literal('skill-icon-approved-frame-activation-v1'),
+	activationId: z.literal('martial-blade-reversal-cut-activation-v3'),
+	targetId: z.literal('martial:blade:reversal-cut'),
+	status: z.literal('approved-runtime'),
+	ownerReview: BoundFileSchema,
+	approvedFrameReview: BoundFileSchema,
+	supersededActivation: BoundFileSchema,
+	approvedArtMaster: BoundFileSchema,
+	frameLayer: ActivationAssetSchema,
+	compositeMaster: ActivationAssetSchema,
+	runtime: z.tuple([ActivationAssetSchema, ActivationAssetSchema, ActivationAssetSchema]),
+	recognition: ActivationAssetSchema,
+	runtimeUpdated: z.literal(true),
+	selfPromoted: z.literal(false)
+});
+
 function sha256(bytes: Buffer | string): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -224,15 +263,18 @@ export interface ReversalCutIconRunReport {
 	readonly individualStatus: 'failed-provider-envelope';
 	readonly individualJobId: 'martial-blade-reversal-cut-v1';
 	readonly individualAttemptCount: 2;
-	readonly activationStatus: 'rejected-frame';
-	readonly activationId: 'martial-blade-reversal-cut-activation-v2';
+	readonly previousActivationStatus: 'rejected-frame';
+	readonly previousActivationId: 'martial-blade-reversal-cut-activation-v2';
+	readonly activationStatus: 'approved-runtime';
+	readonly activationId: 'martial-blade-reversal-cut-activation-v3';
 	readonly correctionStatus: 'superseded';
 	readonly correctionId: 'martial-blade-reversal-cut-frame-correction-v1';
-	readonly approvedFrameStatus: 'candidate';
-	readonly approvedFrameRunId: 'reversal-cut-v6';
+	readonly frameCandidateStatus: 'candidate';
+	readonly frameCandidateRunId: 'reversal-cut-v6';
 	readonly frameVisualDecision: 'accepted';
-	readonly framePromotionStatus: 'pending-owner-review';
+	readonly framePromotionStatus: 'approved-runtime';
 	readonly approvedFrameHash: string;
+	readonly runtimeUpdated: true;
 	readonly runtimeSizes: readonly [512, 256, 128];
 }
 
@@ -274,8 +316,13 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	const correction = FrameCorrectionSchema.parse(
 		JSON.parse(await readFile(path.join(root, FRAME_CORRECTION_PATH), 'utf8'))
 	);
+	const approvedFrameBytes = await readFile(path.join(root, APPROVED_FRAME_COMPLETION_PATH));
 	const approvedFrame = ApprovedFrameCompletionSchema.parse(
-		JSON.parse(await readFile(path.join(root, APPROVED_FRAME_COMPLETION_PATH), 'utf8'))
+		JSON.parse(approvedFrameBytes.toString('utf8'))
+	);
+	const approvedActivationBytes = await readFile(path.join(root, APPROVED_FRAME_ACTIVATION_PATH));
+	const approvedActivation = ApprovedFrameActivationSchema.parse(
+		JSON.parse(approvedActivationBytes.toString('utf8'))
 	);
 	const receipt = SkillIconPromotionReceiptSchema.parse(
 		JSON.parse(await readFile(path.join(root, PROMOTION_RECEIPT_PATH), 'utf8'))
@@ -328,10 +375,7 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		readBound(root, activation.review),
 		readBound(root, activation.providerSource),
 		readBound(root, activation.candidate),
-		readBound(root, activation.approvedArtMaster),
-		readBound(root, activation.compositeMaster),
-		...activation.runtime.map((runtime) => readBound(root, runtime)),
-		readBound(root, activation.recognition)
+		readBound(root, activation.approvedArtMaster)
 	]);
 	if (
 		activation.review.path !== OWNER_REVIEW_PATH ||
@@ -368,6 +412,19 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	const approvedFrameReview = ApprovedFrameVisualReviewSchema.parse(
 		JSON.parse(approvedFrameReviewBytes.toString('utf8'))
 	);
+	const [approvedOwnerReviewBytes] = await Promise.all([
+		readBound(root, approvedActivation.ownerReview),
+		readBound(root, approvedActivation.approvedFrameReview),
+		readBound(root, approvedActivation.supersededActivation),
+		readBound(root, approvedActivation.approvedArtMaster),
+		readBound(root, approvedActivation.frameLayer),
+		readBound(root, approvedActivation.compositeMaster),
+		...approvedActivation.runtime.map((runtime) => readBound(root, runtime)),
+		readBound(root, approvedActivation.recognition)
+	]);
+	const approvedOwnerReview = ApprovedFrameOwnerReviewSchema.parse(
+		JSON.parse(approvedOwnerReviewBytes.toString('utf8'))
+	);
 	if (
 		approvedFrameReview.targetId !== approvedFrame.targetId ||
 		approvedFrameReview.acceptedSource.path !== approvedFrame.authorities.source.path ||
@@ -378,6 +435,25 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 	) {
 		throw new Error(
 			'Approved A-frame review does not bind its source, output, and superseded correction'
+		);
+	}
+	if (
+		approvedActivation.ownerReview.path !== APPROVED_FRAME_OWNER_REVIEW_PATH ||
+		approvedActivation.approvedFrameReview.path !== APPROVED_FRAME_COMPLETION_PATH ||
+		approvedActivation.approvedFrameReview.contentHash !== sha256(approvedFrameBytes) ||
+		approvedActivation.supersededActivation.path !== ACTIVATION_PATH ||
+		approvedActivation.supersededActivation.contentHash !== sha256(activationBytes) ||
+		approvedActivation.frameLayer.contentHash !== approvedFrame.outputs.frame.contentHash ||
+		approvedOwnerReview.reviewedCompletion.contentHash !== sha256(approvedFrameBytes) ||
+		approvedOwnerReview.approvedCandidate.contentHash !==
+			approvedActivation.compositeMaster.contentHash ||
+		approvedOwnerReview.approvedFrame.contentHash !== approvedActivation.frameLayer.contentHash ||
+		approvedOwnerReview.approvedRecognition.contentHash !==
+			approvedActivation.recognition.contentHash ||
+		approvedActivation.runtime.map(({ width }) => width).join(',') !== '512,256,128'
+	) {
+		throw new Error(
+			'Approved A-frame activation does not bind the owner review and runtime outputs'
 		);
 	}
 	if (
@@ -447,15 +523,18 @@ export async function checkReversalCutIconRun(root: string): Promise<ReversalCut
 		individualStatus: individualAttempt.status,
 		individualJobId: individualAttempt.jobId,
 		individualAttemptCount: individualAttempt.attemptCount,
-		activationStatus: 'rejected-frame',
-		activationId: activation.activationId,
+		previousActivationStatus: 'rejected-frame',
+		previousActivationId: activation.activationId,
+		activationStatus: approvedActivation.status,
+		activationId: approvedActivation.activationId,
 		correctionStatus: 'superseded',
 		correctionId: correction.correctionId,
-		approvedFrameStatus: approvedFrame.status,
-		approvedFrameRunId: approvedFrame.runId,
+		frameCandidateStatus: approvedFrame.status,
+		frameCandidateRunId: approvedFrame.runId,
 		frameVisualDecision: approvedFrameReview.decision,
-		framePromotionStatus: approvedFrame.promotionStatus,
+		framePromotionStatus: approvedActivation.status,
 		approvedFrameHash: approvedFrame.outputs.frame.contentHash,
+		runtimeUpdated: approvedActivation.runtimeUpdated,
 		runtimeSizes: [512, 256, 128]
 	};
 }

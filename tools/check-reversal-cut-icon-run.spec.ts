@@ -17,15 +17,18 @@ describe('Reversal Cut icon run', () => {
 			individualStatus: 'failed-provider-envelope',
 			individualJobId: 'martial-blade-reversal-cut-v1',
 			individualAttemptCount: 2,
-			activationStatus: 'rejected-frame',
-			activationId: 'martial-blade-reversal-cut-activation-v2',
+			previousActivationStatus: 'rejected-frame',
+			previousActivationId: 'martial-blade-reversal-cut-activation-v2',
+			activationStatus: 'approved-runtime',
+			activationId: 'martial-blade-reversal-cut-activation-v3',
 			correctionStatus: 'superseded',
 			correctionId: 'martial-blade-reversal-cut-frame-correction-v1',
-			approvedFrameStatus: 'candidate',
-			approvedFrameRunId: 'reversal-cut-v6',
+			frameCandidateStatus: 'candidate',
+			frameCandidateRunId: 'reversal-cut-v6',
 			frameVisualDecision: 'accepted',
-			framePromotionStatus: 'pending-owner-review',
+			framePromotionStatus: 'approved-runtime',
 			approvedFrameHash: '3e5b368c8953bd9eec50044e61ae12c2966451450e6721776c713fd4db2e47d1',
+			runtimeUpdated: true,
 			runtimeSizes: [512, 256, 128]
 		});
 	});

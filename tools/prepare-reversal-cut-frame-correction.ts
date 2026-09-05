@@ -142,10 +142,10 @@ export async function prepareReversalCutFrameCorrection(options: {
 	) {
 		throw new Error('Owner frame feedback does not bind the rejected output and current authority');
 	}
-	await Promise.all([
-		readBound(root, feedback.rejectedComposite),
-		readBound(root, feedback.requiredFrameAuthority)
-	]);
+	// The rejected composite path is a mutable live master destination. Its historical hash is
+	// authenticated by the bound prior activation above, but a later owner-approved activation is
+	// expected to replace those bytes. Only immutable frame authority remains readable in place.
+	await readBound(root, feedback.requiredFrameAuthority);
 	const exemplar = manifest.skills.find((skill) => skill.targetId === 'martial:blade:void-cut');
 	if (
 		!exemplar ||

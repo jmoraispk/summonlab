@@ -1,0 +1,35 @@
+{
+	"schemaVersion": "skill-icon-composite-owner-review-v1",
+	"reviewId": "reversal-cut-framed-composite-review-v1",
+	"targetId": "martial:blade:reversal-cut",
+	"reviewer": "project-owner",
+	"reviewerRole": "owner",
+	"decision": "accepted",
+	"reviewedAt": "2026-09-05T02:01:55.000Z",
+	"observation": "approved",
+	"reviewedCompletion": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/completion.json",
+		"contentHash": "8d6151c1d196d2df0e3652225921c865236db69e368c2d3bfd71482f0f856c2d"
+	},
+	"visualApproval": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/owner-selected/visual-approval.json",
+		"contentHash": "10ad637aa06f6c98bc37ffe7f8f5c0c4ae85f3a04d3a72755acce798def746a0"
+	},
+	"approvedFrame": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/presentation/rarity-frame-a.png",
+		"contentHash": "3e5b368c8953bd9eec50044e61ae12c2966451450e6721776c713fd4db2e47d1"
+	},
+	"approvedCandidate": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/candidates/martial-blade-reversal-cut-framed-v2.png",
+		"contentHash": "55eb26a96784fe0a873a54c1d5b8ae49558f6462b14a45a0066cec64e92e3b94"
+	},
+	"approvedRecognition": {
+		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v6/review/martial-blade-reversal-cut-framed-96.png",
+		"contentHash": "ba03ea5e88a1aa09333511c508f85c23a314783837d344931c0248837bd3e78c"
+	},
+	"promotionScope": [
+		"composite-master",
+		"runtime-size-ladder",
+		"recognition-master"
+	]
+}

@@ -29,6 +29,8 @@
 		"approve-skill-icon-mass-ancestor-chain.spec.ts",
 		"activate-reversal-cut-runtime-icon.ts",
 		"activate-reversal-cut-runtime-icon.spec.ts",
+		"promote-reversal-cut-approved-frame.ts",
+		"promote-reversal-cut-approved-frame.spec.ts",
 		"prepare-reversal-cut-frame-correction.ts",
 		"materialize-reversal-cut-approved-frame.ts",
 		"materialize-reversal-cut-approved-frame.spec.ts",
