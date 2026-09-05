@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const combatUrl = '/living-village-lab/realtime-combat';
-const motionPackVersions = 'asha:2,iron-guardian:5,moss-archer:2,rat-brute:1,lesser-rat:2';
+const motionPackVersions = 'asha:2,iron-guardian:5,moss-archer:4,rat-brute:1,lesser-rat:2';
 
 test('switches presentation without restarting the autonomous fight', async ({ page }) => {
 	await page.goto(combatUrl);

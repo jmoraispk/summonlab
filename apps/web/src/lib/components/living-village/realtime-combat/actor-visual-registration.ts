@@ -9,7 +9,7 @@ export type ActorVisualRegistration = Readonly<{
 
 function bodyOffsetY(actorId: string, clip: CombatClip): number {
 	if (clip === 'down') return 0;
-	if (actorId === 'moss-archer') return clip === 'idle' ? -10 : -4;
+	if (actorId === 'moss-archer') return -4;
 	if (actorId === 'iron-guardian') return -3;
 	return 0;
 }

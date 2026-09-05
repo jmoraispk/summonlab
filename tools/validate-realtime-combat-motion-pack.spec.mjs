@@ -27,6 +27,14 @@ const tomaV4Evidence = path.join(
 	repositoryRoot,
 	'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-support-v4.json'
 );
+const nessaV2Manifest = path.join(
+	repositoryRoot,
+	'apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-manifest-v2.json'
+);
+const nessaV3Manifest = path.join(
+	repositoryRoot,
+	'apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-manifest-v3.json'
+);
 
 const validSupport = ['left', 'left', 'none', 'right', 'right'];
 const validCellSha256 = [
@@ -101,6 +109,39 @@ function fourFrameManifestFixture() {
 }
 
 describe('realtime combat motion pack validator', () => {
+	it('rejects Nessa v2 because cropped idle frames lose the complete standing silhouette', () => {
+		const result = spawnSync(
+			process.execPath,
+			[validator, nessaV2Manifest, '--min-idle-subject-height', '230'],
+			{ encoding: 'utf8' }
+		);
+
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /idle frame .* subject height .* below 230/i);
+	});
+
+	it('accepts Nessa v3 complete idle silhouettes', () => {
+		const result = spawnSync(
+			process.execPath,
+			[validator, nessaV3Manifest, '--min-idle-subject-height', '230'],
+			{ encoding: 'utf8' }
+		);
+
+		assert.equal(result.status, 0, result.stderr);
+		assert.equal(JSON.parse(result.stdout).actorId, 'moss-archer');
+	});
+
+	it('rejects Nessa v3 because the screen-right idle boot still touches the frame floor', () => {
+		const result = spawnSync(
+			process.execPath,
+			[validator, nessaV3Manifest, '--max-idle-right-half-bottom-pixels', '0'],
+			{ encoding: 'utf8' }
+		);
+
+		assert.notEqual(result.status, 0);
+		assert.match(result.stderr, /idle frame .* right-half bottom pixels .* exceeds 0/i);
+	});
+
 	it('rejects Toma v2 because its advance frames contain a baked ground ellipse', () => {
 		const result = spawnSync(
 			process.execPath,

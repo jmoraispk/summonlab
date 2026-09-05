@@ -4,7 +4,7 @@ import { actorVisualRegistration } from './actor-visual-registration';
 
 describe('actor visual registration', () => {
 	it.each([
-		['idle', -10],
+		['idle', -4],
 		['advance', -4],
 		['attack', -4],
 		['hit', -4],

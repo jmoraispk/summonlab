@@ -12,7 +12,7 @@ export const REALTIME_COMBAT_MOTION = {
 		`${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.json`
 	),
 	'moss-archer': createMotionPack(
-		`${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v2.json`
+		`${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v4.json`
 	),
 	'rat-brute': createMotionPack(
 		`${ART_ROOT}/animation-canary-v1/rat-brute/rat-brute-motion-v1.json`
