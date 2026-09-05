@@ -7,13 +7,14 @@ perceptual-sRGB declaration. Profiles v2 and v3 instead require exactly one boun
 valid `caBX` provider container and assign perceptual sRGB after removing it; neither rule relaxes
 the matte, role-mask, or forbidden-region gates. Profile v3 uses only its hash-bound geometry-v2
 guide for the expanded frame envelope and unchanged backing aperture. Then let the helper normalize
-it. V1 `skill-art` and
-`calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
-at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
-for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either
-required view. A candidate explicitly passes both views and has no concern or failure; unrelated
-role-inapplicable criteria may remain `not-applicable`. This is informed producer inspection, not
-owner acceptance or blind recognition.
+it. Inspect the provider boundary at full resolution: exact `#00FF00` is not enough when darker,
+desaturated, or spatially connected green contamination remains around the subject. V1 `skill-art`
+and `calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical
+raster at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail`
+findings for both retained-candidate views, including `revise`; `not-applicable` does not satisfy
+either required view. A candidate explicitly passes both views and has no concern or failure;
+unrelated role-inapplicable criteria may remain `not-applicable`. This is informed producer
+inspection, not owner acceptance or blind recognition.
 
 Do not use this producer rubric to execute a coordinator reprocess packet. Reprocess success may
 later enter the same owner visual review as any other retained candidate, but its deterministic
@@ -31,7 +32,9 @@ not authorize another reprocess attempt.
   and satisfy their role-specific transparency or coverage rules. A `calibration-plate` may be RGB
   or RGBA when its declared canvas and the role-aware inspector permit it.
 - **Normalization:** v2 frame/backing candidates contain no green matte or fringe, obey the exact
-  role mask, and carry source/geometry/output hash evidence. Provider eligibility is not candidate
+  role mask, and carry source/geometry/output hash evidence. Inspect normalized alpha edges against
+  both light and dark viewer backgrounds without persisting an extra raster; reject green-dominant
+  edge residue, including residue revealed only after resize. Provider eligibility is not candidate
   acceptance; never repair an ineligible provider source by hand.
 - **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
   uncluttered, and different from adjacent family stages.
@@ -46,7 +49,10 @@ not authorize another reprocess attempt.
   rarity frame, backing, badge, text, or scenery. Preserve calibrated family progression and change
   only what distinguishes the child from an approved parent.
 - `rarity-frame`: transparent central aperture, correct six-edge registration, no embedded art or
-  backing, and readable rank material at small size.
+  backing, and readable rank material at small size. For revision 5 or later, compare the isolated
+  candidate with the matching-rank cell in the declared seven-frame authority. Explicitly assess
+  crest scale and placement, rail weight, aperture footprint, side ornaments, and bottom
+  termination. Geometry success does not override a failed family comparison.
 - `backing`: continuous aperture coverage without frame-like pixels or subject artwork.
 - `calibration-plate`: all requested stages at equal scale and clearly useful as reference only;
   never extract a cell as an individual deliverable.
@@ -55,3 +61,8 @@ Use the one allowed corrective edit only for a bounded visible defect whose corr
 passing traits. If no correction is authorized or one edit does not resolve it, stop with honest
 `revise`/`failed` evidence. A visually attractive image does not override geometry, provenance,
 ownership, or recognition failures.
+
+Owner praise for provider pixels is not producer acceptance evidence. Report the failed result and
+hand the exact source decision back to the coordinator. An owner-selected deterministic derivative
+requires a fresh layer review, then a separate composed-icon review; only the latter can authorize
+coordinator promotion.

@@ -1,6 +1,6 @@
 ---
 name: summonlab-skill-icon-production
-description: Produce one manifest-bound Summonlab skill-icon raster with exact prompt, role-scoped versioned persistence, bounded correction, and no promotion. Use for an assigned generative SkillIconTarget and SkillIconAssignment, not coordinator-only reprocessing, catalog coordination, calibration-sheet cropping, or general image ideation.
+description: Use when producing one assigned Summonlab skill-icon raster from a generative SkillIconTarget and SkillIconAssignment; excludes coordinator reprocessing, catalog coordination, calibration-sheet cropping, promotion, and general image ideation.
 ---
 
 # Summonlab skill-icon production
@@ -47,8 +47,12 @@ must be absent at preflight.
    declared by its target; use it only for provider-space registration and never as image content.
    A revision-5-or-later rarity frame additionally requires the hash-bound Option C material
    authority and owner-selected seven-frame shape authority. Use the sheet only as generation
-   guidance. A complete skill icon is never a frame authority, exemplar, extraction source, or
-   substitute reference—even when its prompt or lineage cites the approved frame sheet. If no
+   guidance. For the candidate review, compare the standalone frame with the matching-rank cell in
+   that declared sheet: crest scale and placement, rail weight, aperture footprint, side ornaments,
+   and bottom termination must read as the same frame family. An automated geometry pass is
+   necessary but does not establish visual consistency. A complete skill icon is never a frame
+   authority, exemplar, extraction source, or substitute reference—even when its prompt or lineage
+   cites the approved frame sheet. If no
    approved standalone frame exists, return the request to the coordinator for a dedicated
    `rarity-frame` target rather than deriving a frame from a complete icon.
 3. Submit `target.exactPrompt` to imagegen byte-for-byte: no preface, suffix, normalization, or
@@ -71,6 +75,9 @@ must be absent at preflight.
 6. Inspect the retained candidate both full-size and at 96 pixels using
    [review-rubric.md](references/review-rubric.md). Record both findings for every retained image,
    including `revise`. A candidate permits no concern or failure.
+   Retain a rarity-frame candidate only when the role-aware inspector passes, the declared
+   matching-rank authority comparison passes, and the 96-pixel view passes. A technically valid but
+   visibly mismatched crest, rail, aperture, or ornament is `revise` or `failed`, not `candidate`.
    If the provider fails or returns no eligible image, create no candidate and use the result-only
    failure command in [result-schema.md](references/result-schema.md). For a v2 source rejected by
    normalization, supply its exact provider path with `--normalization-source`; omit that flag when
@@ -85,8 +92,27 @@ must be absent at preflight.
      [--catalog VERSIONED_CATALOG] [--lineage-authority OWNER_APPROVAL_AUTHORITY]
    ```
 
-8. Return the status, candidate path when retained, result path, and verification outcome. Stop.
-   Candidate means awaiting owner review, never approved.
+8. Return the status, candidate path when retained, result path, verification outcome, and the next
+   required owner decision. Stop. Candidate means awaiting isolated-layer review, never approved.
+
+## Review states and coordinator handoff
+
+Keep these states distinct in every response:
+
+| State | Required evidence | Permission granted |
+| --- | --- | --- |
+| `candidate` | Producer retained one role-valid layer | Owner may review the isolated layer |
+| `layer accepted` | Owner accepted the isolated art, frame, or backing | Coordinator may compose; no runtime writes |
+| `composite accepted` | Owner accepted the full-size and recognition views | Coordinator may promote that exact composite |
+| `approved-runtime` | Promotion record binds the verified master and complete size ladder | Runtime asset is live |
+
+If the owner likes exact provider pixels that normalization rejected, finish the producer result as
+`failed` and stop. The coordinator may separately bind those exact bytes and their hash in an owner
+review, then use an already-authorized deterministic registration route. That later artifact is not
+a recovered producer candidate. It must still pass role geometry, matching-rank visual comparison,
+full-size composition review, and recognition review before runtime promotion. If no authorized
+route exists, the coordinator must create or revise one rather than asking this producer to crop,
+mask, copy, or relabel the source.
 
 ## Hard boundaries
 
@@ -94,7 +120,9 @@ must be absent at preflight.
   review or promotion record, application file, approved master, shared reference, plan, or another
   job path.
 - Never invoke `promote:skill-icon-output`, create a master, update runtime assets, or claim owner
-  acceptance. Promotion is a later coordinator action.
+  acceptance. Layer acceptance and composite acceptance are separate later coordinator gates;
+  neither may be inferred from praise for a provider source. Promotion is a later coordinator
+  action.
 - Never accept, verify, persist, or execute a reprocess packet, reuse a prior provider source, or
   perform the coordinator's deterministic reprocess transaction. Reprocessing has no prompt and no
   generation call; treating it as a producer job would create false generation provenance.
