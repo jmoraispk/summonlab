@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "five-head-combat-chibi-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "meian-belin",
+  "imageKind": "combat-chibi",
+  "version": 3,
+  "lifecycle": "candidate",
+  "generationStrategy": "chibi-base-then-bounded-proportion-edit",
+  "providerStagesUsed": 3,
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/prompt-v3.txt",
+  "promptSha256": "65d366bc055a02c7c1238691934eb722f743f79b4fb15a7b07d26ed0e76a5ea1",
+  "generationReferences": [
+    {
+      "role": "proportion-edit-target",
+      "path": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/edit-source-v3.png",
+      "sha256": "f1139b2b5443abbf50f95fa558dd7603a4a470fcd45573fa778e7966d865d0c9"
+    },
+    {
+      "role": "summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/meian-belin/summon-v1.png",
+      "sha256": "a93c7fb2a9cddfcb7802011b0c7779353c77d3168581f8800f2272ba5ef02854"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/candidate-v2.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/provider-source-v3.png",
+  "providerSourceSha256": "4a0c9a4d069b691af6c23b4bcd74015b195a3795c11c869f094939e47db027df",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/meian-belin/chibi/candidate-v3.png",
+  "candidateSha256": "4a0c9a4d069b691af6c23b4bcd74015b195a3795c11c869f094939e47db027df",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "inspection": {
+    "method": "manual-contact-sheet-and-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "unmistakableCombatChibi": true,
+    "approximatelyFiveHeads": true,
+    "targetHeadRatio": "approximately 20% crown-to-chin of crown-to-sole, excluding hair volume",
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}

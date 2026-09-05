@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "five-head-combat-chibi-result-v1",
+  "batchId": "five-head-chibi-revisions-001",
+  "heroId": "galon-keshar",
+  "imageKind": "combat-chibi",
+  "version": 3,
+  "lifecycle": "candidate",
+  "generationStrategy": "chibi-base-then-bounded-proportion-edit",
+  "providerStagesUsed": 2,
+  "promptPath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/prompt-v3.txt",
+  "promptSha256": "14d567f851918cef04be004710a04051f978ccf6f0e158465b31efe7d2fa5e6f",
+  "generationReferences": [
+    {
+      "role": "proportion-edit-target",
+      "path": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/edit-source-v3.png",
+      "sha256": "b5e9b350a80f21e4f4db5c606fc09135af107e843c76b1a9c0466366be20fe04"
+    },
+    {
+      "role": "summon-identity-authority",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/galon-keshar/summon-v2.png",
+      "sha256": "e542255304001919294890e307afd0d460571045a6c957f17624049fc7b1528e"
+    }
+  ],
+  "comparisonEvidencePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/candidate-v2.png",
+  "providerSourcePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/provider-source-v3.png",
+  "providerSourceSha256": "dc414d0c46a190d18bba13c2356250d2e3e7c4278763e6cb14f4eb742b8bff07",
+  "candidatePath": "assets/heroes/experiments/five-head-chibi-revisions-001/heroes/galon-keshar/chibi/candidate-v3.png",
+  "candidateSha256": "dc414d0c46a190d18bba13c2356250d2e3e7c4278763e6cb14f4eb742b8bff07",
+  "width": 1024,
+  "height": 1536,
+  "mimeType": "image/png",
+  "inspection": {
+    "method": "manual-contact-sheet-and-high-detail",
+    "completeFigure": true,
+    "readablePng": true,
+    "unmistakableCombatChibi": true,
+    "approximatelyFiveHeads": true,
+    "targetHeadRatio": "approximately 20% crown-to-chin of crown-to-sole, excluding hair volume",
+    "sourceBodyMassPreserved": true,
+    "sourceIdentityAndWardrobePreserved": true,
+    "humanReviewPending": true
+  }
+}
