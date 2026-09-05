@@ -99,7 +99,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			expect(target.exactPrompt).toMatch(/uniform opaque #00FF00 matte/iu);
 			expect(target.exactPrompt).toMatch(/provider matte/iu);
 			expect(target.exactPrompt).toMatch(/completely empty aperture/iu);
-			expect(target.exactPrompt).toMatch(/fully visible regular hexagon/iu);
+			expect(target.exactPrompt).toMatch(/fully visible regular point-up hexagon/iu);
 			expect(target.exactPrompt).toMatch(/integrated crest\/letter/iu);
 			expect(target.exactPrompt).toMatch(/no art or backing/iu);
 			expect(target.exactPrompt).toMatch(/do not crop or trace/i);
