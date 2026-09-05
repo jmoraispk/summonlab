@@ -8,9 +8,15 @@ The skill-side profile ID is `image-production-family-target-v1`; it natively ac
 repository literal `family-affinity-target-v1` paired with `family-affinity-assignment-v1`. Do not
 rename, translate, or regenerate those repository schemas.
 
-This profile supports only `normal`, `fire`, `earth`, `wind`, and `water`, in canonical and bridge
-namespaces beneath `assets/enemies/experiments/family-affinity-v1`. Target, assignment, candidate,
-and result paths must match the exact versioned templates in [contract-v3.json](contract-v3.json).
+The family profiles support only `normal`, `fire`, `earth`, `wind`, and `water`.
+`image-production-family-target-v1` retains canonical and bridge namespaces beneath
+`assets/enemies/experiments/family-affinity-v1`; its immutable targets omit `experimentId`.
+`image-production-fauna-family-target-v1` requires literal `experimentId: fauna-family-v1`, uses
+only the canonical namespace, and owns paths beneath `assets/enemies/experiments/fauna-family-v1`.
+Its targets also bind the packet-authored `familyDisplayName` and `formDisplayName` so the exact
+prompt material carries human-readable identity rather than relying on slugs.
+Target, assignment, candidate, and result paths must match the selected profile's exact versioned
+templates in [contract-v3.json](contract-v3.json).
 The assignment's `targetSha256` is SHA-256 of the target's recursively key-sorted compact JSON, not
 the pretty-printed file bytes. It must cross-bind target ID, coordinate, namespace, version, status,
 and both output paths.

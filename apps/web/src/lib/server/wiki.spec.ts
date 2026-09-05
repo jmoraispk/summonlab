@@ -65,7 +65,7 @@ describe('online wiki registry', () => {
 		const typedAffinity: MonsterAffinity = monsters[0]!.variants[0]!.affinity;
 		const typedStatus: MonsterProductionStatus = monsters[0]!.variants[0]!.status;
 
-		expect(monsters).toHaveLength(150);
+		expect(monsters).toHaveLength(190);
 		expect([typedTier, typedAffinity, typedStatus]).toEqual(['T1', 'normal', 'planned']);
 		expect(monsters.every((monster) => monster.variants.length === 5)).toBe(true);
 		expect(monsters.every((monster) => monster.variants[0]?.affinity === 'normal')).toBe(true);
@@ -76,6 +76,10 @@ describe('online wiki registry', () => {
 		).toEqual(['normal', 'fire', 'earth', 'wind', 'water']);
 		expect(getMonsterVisualDatabase()).toBeNull();
 		expect(getMonsterVisualEntry('monster.goblin-runt')).toBeNull();
+		expect(getMonsterVisualEntry('monster.wolf-grey-wolf')).toMatchObject({
+			id: 'wolf-grey-wolf',
+			familyId: 'wolves'
+		});
 		expect(
 			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/goblin-runt')
 		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });
@@ -89,7 +93,7 @@ describe('online wiki registry', () => {
 			)
 		);
 
-		expect([...statuses].sort()).toEqual(['approved-review', 'candidate-only']);
+		expect([...statuses].sort()).toEqual(['approved-review', 'candidate-only', 'runtime']);
 	});
 
 	it('rejects invalid v2 literal values at the JSON server boundary', () => {
@@ -127,7 +131,7 @@ describe('online wiki registry', () => {
 		['hill-giant', '/wiki/creatures/monsters/giant-hill-giant'],
 		['goblin-chieftain', '/wiki/creatures/monsters/goblin-warboss'],
 		['death-knight', '/wiki/creatures/monsters#current-class-reconciliation'],
-		['grey-wolf', '/wiki/creatures/monsters#current-class-reconciliation']
+		['grey-wolf', '/wiki/creatures/monsters/wolf-grey-wolf']
 	])('returns a permanent redirect for legacy %s', (currentClassId, destination) => {
 		expect(thrownRouteResult(`creatures/monsters/${currentClassId}`)).toMatchObject({
 			status: 308,

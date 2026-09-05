@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-assignment-v1",
+  "assignmentId": "lanor-beleth-5-0-heads-assignment",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "lanor-beleth-5-0-heads",
+  "targetPath": "assets/heroes/experiments/chibi-head-height-generalization-001/targets/lanor-beleth-5-0-heads.json",
+  "targetSha256": "01572ccd109cacaea12fdc256edab2f4c8684891e865a180520b85458abf2c95",
+  "producerId": "chibi-generalization-lane-09",
+  "assignedAt": "2026-09-04T16:38:36Z",
+  "dryRun": false,
+  "retryCeiling": 0,
+  "permittedOutputs": {
+    "candidatePath": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/lanor-beleth-5-0-heads.png",
+    "resultPath": "assets/heroes/experiments/chibi-head-height-generalization-001/results/lanor-beleth-5-0-heads.json"
+  },
+  "forbiddenSharedPaths": [
+    "assets/heroes/experiments/one-star-overnight-200-001",
+    "assets/heroes/experiments/chibi-head-height-calibration-001",
+    "assets/heroes/approved",
+    "assets/heroes/runtime"
+  ],
+  "completionContract": {
+    "candidateOnly": true,
+    "oneTargetOneImage": true,
+    "selfPromotionForbidden": true,
+    "sharedFilesMustRemainUntouched": true,
+    "structuredResultRequired": true
+  }
+}
+

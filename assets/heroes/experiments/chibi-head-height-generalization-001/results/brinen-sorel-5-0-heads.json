@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-result-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "brinen-sorel-5-0-heads",
+  "status": "revise",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/brinen-sorel-5-0-heads.png",
+    "sha256": "59d957ab84de8721c287cd951c0bc67233826db958bf6f30369f10eb7b3ae328",
+    "bytes": 2342777,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "exactSourcePath": "/home/joao/.codex/generated_images/01a06d4b-cc09-7170-b280-102e5b54c8a1/exec-6e303d33-38cb-4938-9234-c9598b59acb6.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/brinen-sorel-5-0-heads.txt",
+    "sha256": "857c834e357f3a592906981565e024d98849e4ff4c8702b117a55a716205e774"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass",
+      "finding": "Original-detail inspection confirms a complete 1024x1536 standing figure with hair, both hands, both boots, and grounding shadow inside the canvas."
+    },
+    {
+      "criterion": "source hero identity and adult age remain recognizable",
+      "outcome": "pass",
+      "finding": "Brinen Sorel remains recognizable as an adult through his deep brown skin, mature stern closed-mouth face, close-shaved sides, and dense curled topknot."
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "fail",
+      "finding": "Original-detail inspection estimates the skull-crown-to-boot-sole height at about 5.5 repeated anatomical head lengths, rather than the requested 5.0; the body below the chin remains too long."
+    },
+    {
+      "criterion": "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+      "outcome": "pass",
+      "finding": "The source head scale, compact muscular physique, body mass, shoulders, arms, wrists, hands, legs, and boots remain continuous without generic limb inflation."
+    },
+    {
+      "criterion": "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+      "outcome": "pass",
+      "finding": "The curled topknot and shaved sides, patchwork purple-charcoal tunic, rolled sleeves, waist pouch, tied boots, muted palette, and empty-handed ready stance remain continuous."
+    },
+    {
+      "criterion": "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject",
+      "outcome": "pass",
+      "finding": "The image contains one empty-handed hero with no weapon, magic, affinity effect, text, UI, frame, star, logo, watermark, or additional subject."
+    }
+  ]
+}

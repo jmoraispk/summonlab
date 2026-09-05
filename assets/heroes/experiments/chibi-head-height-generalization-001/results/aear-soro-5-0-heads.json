@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-result-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "targetId": "aear-soro-5-0-heads",
+  "status": "candidate",
+  "candidate": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/candidates/aear-soro-5-0-heads.png",
+    "sha256": "1a7c79d3ec04a77150ab309903e35b327e35706bbe8f81b342c808e01598e7c1",
+    "bytes": 2436351,
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "sourcePath": "/home/joao/.codex/generated_images/01a06d4a-9ec5-7e23-a94e-3d059bf7809e/exec-50f3c956-0a93-48b0-a6b5-8eb459f272c4.png"
+  },
+  "prompt": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/prompts/aear-soro-5-0-heads.txt",
+    "sha256": "5be6ee355668c9614f5948ab4616c8b3daaedb37610fafbb1a955a009a12e64a"
+  },
+  "toolCallCount": 1,
+  "criterionOutcomes": [
+    {
+      "criterion": "one complete 1024x1536 full-body candidate",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "source hero identity and adult age remain recognizable",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "requested anatomical head-height relationship is visibly distinct",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "source head, physique, body-mass distribution, and non-inflated limbs remain continuous",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "hair, wardrobe, palette, accessories, pose, and markings remain continuous",
+      "outcome": "pass"
+    },
+    {
+      "criterion": "no weapon, magic, affinity effect, text, UI, frame, star, or extra subject",
+      "outcome": "pass"
+    }
+  ]
+}

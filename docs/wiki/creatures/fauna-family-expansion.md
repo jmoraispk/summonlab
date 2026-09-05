@@ -4,18 +4,24 @@ Wiki ID: `creatures.fauna-family-expansion`
 
 Design status: **accepted**
 
-Visual-production status: **brief only — no new targets or images have been created**
+Visual-production status: **owner approved and wiki-runtime integrated — 200/200**
 
-This expansion adds eight expedition-first animal families without reopening the completed original
-30-family image program. The [canonical monster database](monsters/README.md) and its 750 generated
-coordinates remain unchanged. Future production is restricted to these **40 new forms × five image
-targets = 200 new image coordinates**.
+This expansion adds eight expedition-first animal families without regenerating the completed
+original 30-family image program. The [canonical monster database](monsters/README.md) now combines
+the original 750 coordinates with **40 new forms × one Normal image plus four affinity variants = 200 approved fauna
+coordinates**, for 38 families, 190 forms, and 950 total coordinates.
 
 The complete mechanics, visual escalation, affinity constraints, legacy mappings, and production
 boundary live in the
 [approved fauna design](../../superpowers/specs/2026-09-04-fauna-family-expansion-design.md).
 Machine-readable family packets live under
 [`assets/enemies/experiments/fauna-family-v1`](../../../assets/enemies/experiments/fauna-family-v1/active-sources.json).
+The immutable candidate matrix remains available in the
+[visual review gallery](../../evidence/fauna-family-v1/index.html) and
+[machine-readable inventory](../../../assets/enemies/experiments/fauna-family-v1/inventory.json).
+The owner's [blanket acceptance](../../evidence/fauna-family-v1/owner-acceptance.md) is bound to the
+[approved-source manifest](../../../assets/enemies/approved/fauna-family-v1/manifest.json) and the
+[enemy-only runtime catalog](../../../assets/enemies/runtime/fauna-family-v1/catalog.json).
 
 ## Progression overview
 
@@ -130,9 +136,27 @@ The legacy Burrowing Worm bridge coordinate is retired in favor of the new Burro
 Armored Brood Guard is assigned to Arachnids, Death Knight to Skeletons, and Cave Drake to Dragons as
 secondary archetypes. Other bridge expansion work is removed from the active roadmap.
 
+## Approval and runtime handoff
+
+Every one of the 200 active coordinates retains its hash-bound target, exclusive assignment,
+individual PNG candidate, and immutable `family-affinity-result-v1` provenance receipt. The
+[evidence inventory](../../evidence/fauna-family-v1/inventory.json) remains candidate-only history.
+Promotion copies the exact accepted bytes into the approved-source namespace, then derives one
+hash-addressed WebP for the wiki runtime. The promotion does not mutate candidate evidence.
+
+| Measure | Count |
+| --- | ---: |
+| Families | 8 |
+| T1–T5 forms | 40 |
+| Targets and assignments | 200 each |
+| Individual candidates and provenance receipts | 200 each |
+| Unresolved provider failures | 0 |
+| Approved PNG sources | 200 |
+| Wiki-runtime WebP derivatives | 200 |
+
 ## Affinity rule
 
-All 40 forms eventually receive separate Normal, Fire, Earth, Wind, and Water images. Affinity must
+All 40 forms have separate Normal, Fire, Earth, Wind, and Water candidate images. Affinity must
 change at least two construction dimensions while preserving animal anatomy and combat readability:
 
 - Fire uses localized combustion, heat response, smoke direction, and cooling weak points.
@@ -143,7 +167,9 @@ change at least two construction dimensions while preserving animal anatomy and 
 - Water uses coherent wet anatomy, pressure paths, droplets, wakes, and a solid readable core.
 - Normal preserves species-native materials and contains no unexplained elemental anatomy.
 
-Candidate, approved-review, and runtime remain separate states. This page promotes nothing.
+Candidate, approved-source, and runtime remain separate states even though all 200 coordinates now
+have a record in each layer. Runtime here means the wiki presentation catalog; it does not assign
+floors or alter combat engine contracts.
 
 Rodents are intentionally outside this expansion. They are reserved as the first independent test
 of the repository's `summonlab-enemy-creation` skill.

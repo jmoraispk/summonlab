@@ -14,3 +14,5 @@ routes agents to the narrower skills; a partial update can leave that routing in
 
 - `summonlab-enemy-creation` — designs or revises one enemy family, its T1–T5 forms, affinity
   construction, legacy reconciliation, production boundary, and wiki evidence.
+- `summonlab-hero-creation` — owns candidate-only paired summon/chibi hero production and is not
+  part of the upstream PixiJS collection.

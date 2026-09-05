@@ -20,24 +20,24 @@
 			"scripts/write_family_result.py"
 		],
 		"expectedNonContractSha256": {
-			"SKILL.md": "c400acd681b4a9e1eef38344ef51ea7e3f362432c36f9fb82b8f11b1aa291ee0",
+			"SKILL.md": "838200a1eb92563dddcf501656d9c49fd1296c9062aa8414d1614aa9f8223fc6",
 			"references/affinity-grammar.md": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda",
 			"references/result-schema.md": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce",
 			"references/review-rubric.md": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3",
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
-			"references/target-schema.md": "8eac2cb7d83e8ff6835e95b93d11ed8a44ed55ac9e29b3208b6323833b18654e",
+			"references/target-schema.md": "ebd0afd360e83eda95d374f2145c9ea2a302aae017302d43434cccec44ed7494",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70",
-			"scripts/persist_family_candidate.py": "0c87b4d1c82b1659f1e8c4ba6df2f9d0b06735b730a3e68e17ae4abd1b5a23ce",
+			"scripts/family_dispatch_gate.mjs": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58",
+			"scripts/persist_family_candidate.py": "5d1872e4c4a79d014867bff6138026b27d960237bbb749e2d764b825c68b143b",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
-			"scripts/validate_target.py": "a7c31a1d300d7ed5faf3cc56192ac49fc179dcf310ec688ae34e77c8663ff284",
+			"scripts/validate_target.py": "aee4d51b3c33e9a80fafeff57c81cdbc6f2cb2879531edcbf7c31841383d4ba1",
 			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
 			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
 		}
 	},
 	"repositoryDispatch": {
 		"path": "tools/check-family-affinity-production-dispatch.ts",
-		"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
+		"sha256": "0e68ecb137c3a988d0f7c1f9c559f8c1dc2144065e5686088a6338169da4d20a"
 	},
 	"sealedLauncher": {
 		"node": {
@@ -46,20 +46,20 @@
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "b22724e080235f8b8936bfada9a5090648b905fe239aa964146e7e9b79ce5d70"
+			"sha256": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58"
 		},
 		"sources": [
 			{
 				"path": "tools/check-family-affinity-production-dispatch.ts",
-				"sha256": "65cb956f9e87e89d73a2c69891bbd373f4e16b83adf4683baeb36f9dfbff7cc7"
+				"sha256": "0e68ecb137c3a988d0f7c1f9c559f8c1dc2144065e5686088a6338169da4d20a"
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "033f719516a4653ea36c04f1681759508b4965746d7b0a540793473700b63484"
+				"sha256": "bc9a43d16737823102a5841c8a8d5a3eb78348d978ade1896bc3f74a70e30b80"
 			},
 			{
 				"path": "package.json",
-				"sha256": "ba1c1e9ac474102994e2bf917a585354f91caa2fe023284819a8d6821b1a93b9"
+				"sha256": "ab89f664496018190ee3d20859c731acc1cc420d033024b6bd40ac9bdcc40ad5"
 			},
 			{
 				"path": "pnpm-lock.yaml",
@@ -110,6 +110,53 @@
 				"target-assignment-cross-hash",
 				"namespace-source-packet-canonical-json-hash",
 				"bridge-normal-reference-raw-bytes-hash",
+				"canonical-normal-target-candidate-result-source-hash",
+				"candidate-raw-bytes-hash",
+				"prompt-material-raw-bytes-hash",
+				"source-path",
+				"result-path"
+			],
+			"forbiddenWriteClasses": [
+				"review",
+				"catalog",
+				"contact-sheet",
+				"wiki",
+				"runtime",
+				"manifest"
+			],
+			"promotionCeiling": "candidate-only"
+		},
+		"image-production-fauna-family-target-v1": {
+			"repositoryTargetSchema": "family-affinity-target-v1",
+			"assignmentSchema": "family-affinity-assignment-v1",
+			"resultSchema": "family-affinity-result-v1",
+			"promptMaterialSchema": "family-affinity-prompt-material-v1",
+			"sourcePacketSchemas": ["family-packet-v1"],
+			"experimentId": "fauna-family-v1",
+			"affinities": ["normal", "fire", "earth", "wind", "water"],
+			"namespaces": ["canonical"],
+			"dispatchStatuses": ["planned", "planned-provisional-anchor"],
+			"anchorKinds": ["normal-self", "normal-approved-review", "normal-verified-candidate"],
+			"pathTemplates": {
+				"canonicalTarget": "assets/enemies/experiments/fauna-family-v1/targets/{familyId}/{formId}/{affinity}/target-v{version}.json",
+				"canonicalAssignment": "assets/enemies/experiments/fauna-family-v1/assignments/{familyId}/{formId}/{affinity}/assignment-v{version}.json",
+				"canonicalCandidate": "assets/enemies/experiments/fauna-family-v1/candidates/{familyId}/{formId}/{affinity}-v{version}.png",
+				"canonicalResult": "assets/enemies/experiments/fauna-family-v1/results/{familyId}/{formId}/{affinity}-v{version}.json",
+				"bridgeTarget": "assets/enemies/experiments/fauna-family-v1/bridge/targets/{currentClassId}/{affinity}/target-v{version}.json",
+				"bridgeAssignment": "assets/enemies/experiments/fauna-family-v1/bridge/assignments/{currentClassId}/{affinity}/assignment-v{version}.json",
+				"bridgeCandidate": "assets/enemies/experiments/fauna-family-v1/bridge/candidates/{currentClassId}/{affinity}-v{version}.png",
+				"bridgeResult": "assets/enemies/experiments/fauna-family-v1/bridge/results/{currentClassId}/{affinity}-v{version}.json"
+			},
+			"producerRoleAllowlist": ["image-producer"],
+			"retryCeiling": [0, 1],
+			"ownership": {
+				"exclusiveCandidateCreate": true,
+				"immutableSingleCreateResult": true,
+				"overwriteForbidden": true
+			},
+			"requiredBindings": [
+				"target-assignment-cross-hash",
+				"namespace-source-packet-canonical-json-hash",
 				"canonical-normal-target-candidate-result-source-hash",
 				"candidate-raw-bytes-hash",
 				"prompt-material-raw-bytes-hash",

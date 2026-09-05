@@ -56,10 +56,16 @@ shoulder width, arm girth, wrist size, torso and hip width, leg length, body fat
 distribution all derive from the summon anchor. Deliberately muscular heroes remain muscular;
 slight, lanky, gangly, soft, heavy, and otherwise unusually proportioned heroes remain themselves.
 
-The standard review chibi is approximately 2.75–3.1 heads tall. Tallness and gangliness survive
-through narrowness, posture, hairstyle, and relative limb language, but not by shrinking the head
-until the result reads as a tall miniature. Hands may be simplified and emphasized for readability,
-but they should not become disproportionately huge unless large hands are a deliberate source trait.
+The accepted combat-chibi target is **5.0 anatomical heads tall**, measured from skull crown to chin
+and excluding hairstyle mass. AI generation does not make the prompt's number mechanically exact;
+five heads is the shared art direction rather than a computer-vision acceptance score. Face, age,
+body construction, shoulder width, arm and wrist girth, torso and hip width, leg length, hairstyle,
+wardrobe, and durable marks must agree with the summon anchor.
+Tallness and gangliness survive through narrowness, posture, hairstyle, and relative limb language.
+Hands may be simplified for readability, but they should not become disproportionately huge unless
+large hands are a deliberate source trait. The selected summon portrait is the only image reference
+for regeneration; the historical chibi remains comparison evidence and is not fed back into the
+model.
 
 Warm color cohesion is a useful strength of the chibi treatment. It may inform a summon-art
 correction when the result stays inside the hero's established palette, but it does not authorize
@@ -295,6 +301,15 @@ reference.
   hairstyle that changed gender expression at chibi scale. The next mass run therefore binds hair
   silhouette and gender-expression cues explicitly and makes ripped bodies rare rather than the
   default.
+- On 2026-09-04, a three-hero comparison at nominal 4.0, 4.5, and 5.0-head targets established 5.0
+  anatomical heads as the combat-chibi standard. The owner selected it for the complete approved
+  200-hero roster. The regeneration run has no pilot or owner-review checkpoint; it produces all 200
+  candidate-only images using each selected summon portrait as its sole visual authority.
+- The corresponding `five-head-chibi-regeneration-001` production run completed all thirteen waves:
+  200 summon-bound primary calls produced 200 readable `1024x1536` provider PNGs, 200 byte-identical
+  candidates, and 200 strict receipts. One journaled provider-no-output primary received the single
+  allowed versioned retry. These images remain unreviewed, unapproved, and unbound to runtime until
+  a separate comparison and promotion task explicitly advances them.
 
 ## Integration boundary
 

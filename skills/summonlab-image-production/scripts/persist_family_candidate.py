@@ -39,7 +39,10 @@ def persist_family_candidate(
         target_path=target_path,
         assignment_path=assignment_path,
     )
-    if report.get("profile") != "image-production-family-target-v1":
+    if report.get("profile") not in {
+        "image-production-family-target-v1",
+        "image-production-fauna-family-target-v1",
+    }:
         raise ValueError("family candidate persistence requires the v3 family profile")
     source_bytes = read_regular_source_no_follow(source_path)
     if not source_bytes:

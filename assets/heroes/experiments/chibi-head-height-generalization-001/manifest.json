@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "hero-chibi-head-height-generalization-manifest-v1",
+  "experimentId": "chibi-head-height-generalization-001",
+  "productionState": "candidate-only",
+  "selectionState": "awaiting-visual-review",
+  "measurementDefinition": "anatomical skull crown to chin, excluding hairstyle, repeated to soles",
+  "promptTargets": [
+    4,
+    4.5,
+    5
+  ],
+  "sources": [
+    {
+      "heroId": "aear-soro",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/aear-soro/combat-chibi-v1.png",
+      "sha256": "e668682f79fec0aa21fbf8515609983f7b5b42b68fb64f5e5a25c2b1665b6172"
+    },
+    {
+      "heroId": "lanor-beleth",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/candidates/lanor-beleth/combat-chibi-v2.png",
+      "sha256": "aad10ed20ac0d698182a4a17eef4cb17818c5121d563720a1c182026ac7cb355"
+    },
+    {
+      "heroId": "brinen-sorel",
+      "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/brinen-sorel/combat-chibi-v2.png",
+      "sha256": "0d6c3ca7af8d02ce9a400f732c828c10ec216a5fc6a843874741edd01bc39b3f"
+    }
+  ],
+  "records": [
+    {
+      "targetId": "aear-soro-4-0-heads",
+      "targetHeadsTall": 4,
+      "producerStatus": "revise",
+      "promptSha256": "a14b71996c10a12bb62be45facb73a0c667a87d146619c4026dd6be9e35a3809",
+      "targetSha256": "05929f3a9f31f993475cad91a753de8f051b69ca61277d1ca0b092a8372d455c",
+      "assignmentSha256": "956a0b4b868edc4a331e45a72ba145bd744f5b9fbd3c4fde487d730d81545e76",
+      "candidateSha256": "13539f290765952b2716a21153229d340d82cae559186971e4f1ed744dddfac2",
+      "resultSha256": "76cfbf76acdcb08b27369355662d20dbc940f80eecc9f1f45aea38223e64c448"
+    },
+    {
+      "targetId": "aear-soro-4-5-heads",
+      "targetHeadsTall": 4.5,
+      "producerStatus": "revise",
+      "promptSha256": "37b5b51d6b802e3135dd66ffef67194ddbad7ebe2c2c35bad925da0f544a548c",
+      "targetSha256": "db50a7f7ef09efa863255eba79a82c86d56935f5aeacc8e67da1e082e57be032",
+      "assignmentSha256": "2caaa46d34272927ffe4ea57d175b8cee0056d3362ecc3944742b8c82b6e4e05",
+      "candidateSha256": "a06100ca940853f8007228ff0850012059f4b77161026fd012a246fb8beaf788",
+      "resultSha256": "07a2d556f5bcb7180f472fb2c2cbefa99530da2ab206154c5daf42b7ce249cf2"
+    },
+    {
+      "targetId": "aear-soro-5-0-heads",
+      "targetHeadsTall": 5,
+      "producerStatus": "candidate",
+      "promptSha256": "5be6ee355668c9614f5948ab4616c8b3daaedb37610fafbb1a955a009a12e64a",
+      "targetSha256": "ac06a3ea945c4ab3017e16ed2f963487a6485742e8f90d77417d33c0d849f78e",
+      "assignmentSha256": "206ec4269dc758bbc2277ccb2e0f9b7588f804c2cef13858c2054fc26f96923e",
+      "candidateSha256": "1a7c79d3ec04a77150ab309903e35b327e35706bbe8f81b342c808e01598e7c1",
+      "resultSha256": "fa6ecacd8a2871465f2cdcc705cb7a1a0d7f88207e1247f19f2e9c864aa83f96"
+    },
+    {
+      "targetId": "lanor-beleth-4-0-heads",
+      "targetHeadsTall": 4,
+      "producerStatus": "revise",
+      "promptSha256": "7791beb9f0008212632606037c4c42f19f3223f7731799e97b97ea306cffa5db",
+      "targetSha256": "26422c14f8a5905fabbd30d775a91b52fa18769c9f0666559e46b20ea58ebdbb",
+      "assignmentSha256": "20e5360a0780b590257c9fda0df371335e99d79705b3b9a7f713a25e0b9200f6",
+      "candidateSha256": "cf27c978fb948a811d8929559ee8d6d5dd96b17939c828fd4904896dc187d1e1",
+      "resultSha256": "ea6e081d2cc773abf0c12456f9fcdac26aea42156d0b9b7d66edf11aaff1a5a6"
+    },
+    {
+      "targetId": "lanor-beleth-4-5-heads",
+      "targetHeadsTall": 4.5,
+      "producerStatus": "revise",
+      "promptSha256": "b75454a9a694413f5c46fa3864db7f934ec2a456a6bf7448a97e9c02a4066992",
+      "targetSha256": "ff7cc4e32b3553003ae75dec2f45925e2de22da7146159f42c383e3dd33d4de2",
+      "assignmentSha256": "74e6324668dda533aa82d10d05f01d76c8a24c7ea5b0ba7d1d0007d96cfea4d6",
+      "candidateSha256": "363173493c69be432586b43c80494ea7241cf7837479fe35812fee8fe402eda0",
+      "resultSha256": "8024500c6a139569f300c3feea54873a9e1dd54f5be0d01623777c600d61d46b"
+    },
+    {
+      "targetId": "lanor-beleth-5-0-heads",
+      "targetHeadsTall": 5,
+      "producerStatus": "revise",
+      "promptSha256": "795a503ca28868ca3d2a10a5864a58c43059b27daf352ad0631aea8481e02649",
+      "targetSha256": "01572ccd109cacaea12fdc256edab2f4c8684891e865a180520b85458abf2c95",
+      "assignmentSha256": "b729d9a3f1e5df4e8fd52e6af163418d4ca54f58497e28eb490c46649899e57a",
+      "candidateSha256": "ea8821092378a551f3f3401194ed36db0bd0840291999d97053d6364aa12c1fa",
+      "resultSha256": "8146f569b4ff7ad629940bf0b6d44b3af2c256436bf1781acb884b7b2bb44e61"
+    },
+    {
+      "targetId": "brinen-sorel-4-0-heads",
+      "targetHeadsTall": 4,
+      "producerStatus": "revise",
+      "promptSha256": "85e8d728a028028575df4204e08e63d5fcda32fe96f9e26bed2b72936eedc2d7",
+      "targetSha256": "21641765fbba7481bda287973656c9c1e4d71eeab9faab12fdb0f599838cc91e",
+      "assignmentSha256": "85fa13a99c3082849aa0e25c1ae4bc83476eecd6993e53479b7857e136e9b019",
+      "candidateSha256": "528b39b63219d66d5e23b58e0808a8223d8d3efca6830dc6bfb3c11e32d7e0e7",
+      "resultSha256": "c06ea613a1147abc62806d6d24fe9b8a7271976fc833bfaef8002ef832ae870f"
+    },
+    {
+      "targetId": "brinen-sorel-4-5-heads",
+      "targetHeadsTall": 4.5,
+      "producerStatus": "candidate",
+      "promptSha256": "ff2d99f6e5ce4a9588dcaf13f309f99488fcf3101855e107c7e5718c931db63a",
+      "targetSha256": "93ea6181dd987464ba0b7989a3a0df5d2a2d6a32e0ba1587ac8ed46221da45a7",
+      "assignmentSha256": "da7a324e84dc130a880c5678107387e53ce1b51cdedac5eecd94a3c72d3da7b2",
+      "candidateSha256": "9c35624c3dc7992866f2571d9cbabdc349e76622548883f7ab85b758ce670ee0",
+      "resultSha256": "8fb1cb3a1c639131946ca53428a2274b598f940563a11fe7c27ca98e25ab9171"
+    },
+    {
+      "targetId": "brinen-sorel-5-0-heads",
+      "targetHeadsTall": 5,
+      "producerStatus": "revise",
+      "promptSha256": "857c834e357f3a592906981565e024d98849e4ff4c8702b117a55a716205e774",
+      "targetSha256": "3fd79d0f8be6b6724cfe5c7ca012ad73bd3cf4bc69ba1ab25860fda07bbd12a2",
+      "assignmentSha256": "c21a772119e95c2cef725b5e6ca2c08195068d62b522caed7df3a94e792ce5e9",
+      "candidateSha256": "59d957ab84de8721c287cd951c0bc67233826db958bf6f30369f10eb7b3ae328",
+      "resultSha256": "c4b46f59f41eae7e3fb550a4d8ae5c4368fab9d1a21d5e0fde0da6da76b1a9c9"
+    }
+  ],
+  "review": {
+    "path": "assets/heroes/experiments/chibi-head-height-generalization-001/review/index.html",
+    "sha256": "d1ca6126ed9f5eacd74348292846517f28652a9e7a876d41e1c3b69c14db20e0"
+  },
+  "notes": [
+    "prompt targets are not asserted as measured output ratios",
+    "all nine outputs use one generation call and zero visual retries",
+    "producer status records target fidelity, not aesthetic rejection",
+    "no approved or runtime catalog was modified"
+  ]
+}
+

@@ -38,11 +38,11 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
-- [Monster database](creatures/monsters/README.md) — 30 families, 150 canonical T1–T5 forms, 750
-  Normal/Fire/Earth/Wind/Water production coordinates, and the exact forty-class reconciliation.
-- [Fauna family expansion](creatures/fauna-family-expansion.md) — eight accepted new
-  expedition families and 40 designed T1–T5 forms; its 200 new-only image coordinates are not yet
-  materialized, and the original 750 images will not be regenerated.
+- [Monster database](creatures/monsters/README.md) — 38 families, 190 canonical T1–T5 forms, 950
+  Normal/Fire/Earth/Wind/Water coordinates, including the approved fauna runtime set.
+- [Fauna family expansion](creatures/fauna-family-expansion.md) — eight accepted expedition
+  families and 40 T1–T5 forms; all 200 images are approved and wired to the wiki runtime, while the
+  original 750 images remain untouched.
 - [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
 - [Skill rarity frames](art/skill-rarity-frames.md) — the accepted F–S material and ornament
@@ -101,9 +101,9 @@ is not canon merely because it was generated. Promotion still requires identity/
 provenance, human review, and the relevant runtime validation.
 
 The gallery contains the repository's monster-family plates, while the
-[monster database](creatures/monsters/README.md) publishes 150 canonical form pages and 750 planned
-production coordinates. The earlier forty classes are reconciled separately: ten map into canonical
-forms, while thirty remain bridge-only secondary roles or expedition fauna. Their old images remain
+[monster database](creatures/monsters/README.md) publishes 190 canonical form pages and 950
+production coordinates. The earlier forty classes are reconciled separately: fifteen map into
+canonical forms, while twenty-five remain bridge-only secondary roles. Their old images remain
 candidate-only references and are not automatic canonical anchors.
 
 The generator bestiary's thirty source families remain taxonomy-aware draft briefs even though

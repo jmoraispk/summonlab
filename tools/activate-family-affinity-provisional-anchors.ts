@@ -3,16 +3,20 @@ import { relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	FAUNA_FAMILY_ROOT,
 	FAMILY_AFFINITY_ROOT,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityManifestSchema,
 	FamilyAffinityTargetSchema,
+	FaunaFamilyManifestSchema,
 	PRODUCTION_AFFINITIES,
 	canonicalAttemptPaths,
 	familyAffinityRawSha256,
 	familyAffinityReviewAssignmentPath,
 	familyAffinitySha256,
 	familyAffinitySourcePacketBinding,
+	familyProductionRoot,
+	familyProductionTargetExperimentId,
 	readFamilyAffinityOwnedFile,
 	stableFamilyAffinityJson,
 	validateFamilyAffinityAttemptCrossBinding,
@@ -125,18 +129,36 @@ async function assertNoAffinityEvidenceCollision(
 	repositoryRoot: string,
 	target: FamilyAffinityTarget
 ): Promise<void> {
+	const reviewAssignmentPath = (kind: 'ordinary' | 'blind') => {
+		if (familyProductionTargetExperimentId(target) === 'family-affinity-v1') {
+			return familyAffinityReviewAssignmentPath(kind, target, target.version);
+		}
+		const bucket = kind === 'ordinary' ? 'decisions' : 'blind';
+		return `${FAUNA_FAMILY_ROOT}/review/assignments/${bucket}/${target.familyId}/${target.formId}/${target.affinity}/candidate-v${target.version}-${kind}-v${target.version}-assignment.json`;
+	};
 	for (const path of [
 		target.ownedPaths.candidate,
 		target.ownedPaths.result,
 		target.ownedPaths.decision,
 		target.ownedPaths.blindReview,
-		familyAffinityReviewAssignmentPath('ordinary', target, target.version),
-		familyAffinityReviewAssignmentPath('blind', target, target.version)
+		reviewAssignmentPath('ordinary'),
+		reviewAssignmentPath('blind')
 	]) {
 		if (await existsNoFollow(repositoryRoot, path)) {
 			throw new Error(`Affinity output or review collision blocks provisional activation: ${path}`);
 		}
 	}
+}
+
+function parseProductionManifest(bytes: Buffer) {
+	const input = JSON.parse(bytes.toString('utf8')) as { experimentId?: unknown };
+	if (input.experimentId === 'family-affinity-v1') {
+		return FamilyAffinityManifestSchema.parse(input);
+	}
+	if (input.experimentId === 'fauna-family-v1') {
+		return FaunaFamilyManifestSchema.parse(input);
+	}
+	throw new Error('Unsupported provisional-anchor activation experiment');
 }
 
 function emptyReport(input: {
@@ -167,7 +189,11 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 	const protectedBytes = new Map<string, Buffer>();
 	const manifestBytes = await readTracked(input.repositoryRoot, input.manifestPath, protectedBytes);
 	const manifestBeforeSha256 = familyAffinityRawSha256(manifestBytes);
-	const manifest = FamilyAffinityManifestSchema.parse(JSON.parse(manifestBytes.toString('utf8')));
+	const manifest = parseProductionManifest(manifestBytes);
+	const experimentId = manifest.experimentId;
+	if (input.manifestPath !== `${familyProductionRoot(experimentId)}/manifest.json`) {
+		throw new Error(`Provisional activation manifest path does not match ${experimentId}`);
+	}
 	const nextManifest = structuredClone(manifest);
 	const report = emptyReport({ manifestPath: input.manifestPath, manifestBeforeSha256 });
 	const replacements: Replacement[] = [];
@@ -175,8 +201,11 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 	const normals = manifest.canonicalMatrix.activeCoordinates
 		.filter(({ affinity }) => affinity === 'normal')
 		.sort((left, right) => left.coordinateId.localeCompare(right.coordinateId));
-	if (normals.length !== 150)
-		throw new Error(`Expected 150 active Normal coordinates, found ${normals.length}`);
+	if (normals.length !== manifest.canonicalMatrix.formCount) {
+		throw new Error(
+			`Expected ${manifest.canonicalMatrix.formCount} active Normal coordinates, found ${normals.length}`
+		);
+	}
 
 	for (const normalCoordinate of normals) {
 		try {
@@ -192,6 +221,8 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 			);
 			validateFamilyAffinityAttemptCrossBinding(normalCoordinate, normalTarget, normalAssignment);
 			if (
+				familyProductionTargetExperimentId(normalTarget) !== experimentId ||
+				(normalAssignment.experimentId ?? 'family-affinity-v1') !== experimentId ||
 				normalTarget.namespace !== 'canonical' ||
 				normalTarget.affinity !== 'normal' ||
 				normalTarget.anchor.kind !== 'normal-self' ||
@@ -233,6 +264,12 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 					JSON.parse(assignmentBytes.toString('utf8'))
 				);
 				validateFamilyAffinityAttemptCrossBinding(coordinate, target, assignment);
+				if (
+					familyProductionTargetExperimentId(target) !== experimentId ||
+					(assignment.experimentId ?? 'family-affinity-v1') !== experimentId
+				) {
+					throw new Error(`Affinity target belongs to another experiment: ${coordinateId}`);
+				}
 				validateFamilyAffinitySourcePacket(
 					target,
 					await readTracked(
@@ -283,7 +320,8 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 					target.familyId,
 					target.formId,
 					'normal',
-					blockedAnchor.normalVersion
+					blockedAnchor.normalVersion,
+					experimentId
 				);
 				if (blockedAnchor.normalTargetPath !== historicalNormalPaths.target) {
 					throw new Error(`Blocked affinity target has a foreign Normal path: ${coordinateId}`);
@@ -297,6 +335,7 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 					JSON.parse(historicalNormalBytes.toString('utf8'))
 				);
 				if (
+					familyProductionTargetExperimentId(historicalNormalTarget) !== experimentId ||
 					historicalNormalTarget.coordinateId !== blockedAnchor.normalCoordinateId ||
 					historicalNormalTarget.affinity !== 'normal' ||
 					historicalNormalTarget.familyId !== target.familyId ||
@@ -377,7 +416,8 @@ async function prepareActivation(input: ActivateFamilyAffinityProvisionalAnchors
 	if (report.rejectedCount > 0) {
 		throw new Error(stableFamilyAffinityJson(report).trimEnd());
 	}
-	FamilyAffinityManifestSchema.parse(nextManifest);
+	if (experimentId === 'fauna-family-v1') FaunaFamilyManifestSchema.parse(nextManifest);
+	else FamilyAffinityManifestSchema.parse(nextManifest);
 	const nextManifestBytes = Buffer.from(stableFamilyAffinityJson(nextManifest));
 	report.manifestAfterSha256 = familyAffinityRawSha256(nextManifestBytes);
 	return {
@@ -463,9 +503,11 @@ export async function activateFamilyAffinityProvisionalAnchors(
 export function parseFamilyAffinityProvisionalActivationCli(argv: readonly string[]): {
 	callerRole: string;
 	allVerifiedNormalCandidates: true;
+	fauna?: true;
 } {
 	let callerRole: string | undefined;
 	let allVerifiedNormalCandidates = false;
+	let fauna = false;
 	for (let index = 0; index < argv.length; index += 1) {
 		const flag = argv[index];
 		if (flag === '--caller-role') {
@@ -484,21 +526,31 @@ export function parseFamilyAffinityProvisionalActivationCli(argv: readonly strin
 			allVerifiedNormalCandidates = true;
 			continue;
 		}
+		if (flag === '--fauna') {
+			if (fauna) throw new Error('Repeated --fauna');
+			fauna = true;
+			continue;
+		}
 		throw new Error(`Invalid provisional activation argument: ${flag ?? '<missing>'}`);
 	}
 	if (!callerRole) throw new Error('Missing required argument --caller-role');
 	if (!allVerifiedNormalCandidates) {
 		throw new Error('Missing required argument --all-verified-normal-candidates');
 	}
-	return { callerRole, allVerifiedNormalCandidates: true };
+	return {
+		callerRole,
+		allVerifiedNormalCandidates: true,
+		...(fauna ? { fauna: true as const } : {})
+	};
 }
 
 export async function runFamilyAffinityProvisionalActivationCli(argv: readonly string[]) {
 	const parsed = parseFamilyAffinityProvisionalActivationCli(argv);
 	const report = await activateFamilyAffinityProvisionalAnchors({
 		repositoryRoot: process.cwd(),
-		manifestPath: `${FAMILY_AFFINITY_ROOT}/manifest.json`,
-		...parsed
+		manifestPath: `${parsed.fauna ? FAUNA_FAMILY_ROOT : FAMILY_AFFINITY_ROOT}/manifest.json`,
+		callerRole: parsed.callerRole,
+		allVerifiedNormalCandidates: parsed.allVerifiedNormalCandidates
 	});
 	return stableFamilyAffinityJson(report);
 }
