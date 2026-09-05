@@ -713,6 +713,58 @@ class SkillIconVerifierTests(unittest.TestCase):
                 guide["purpose"] = GEOMETRY_GUIDE_V2_PURPOSE
                 guide["contentHash"] = GEOMETRY_GUIDE_V2_HASH
 
+    def test_geometry_role_mask_accepts_only_skill_v5_geometry_v2_and_exact_guide(
+        self,
+    ) -> None:
+        profile = "skill-icon-geometry-role-mask-v1"
+        self._prepare_v2_result_only_failure(
+            profile=profile,
+            skill_version="summonlab-skill-icon-production-v5",
+            geometry_path=GEOMETRY_V2_PATH,
+            include_v2_guide=True,
+        )
+        normalization = self.packet.result["normalization"]
+        assert isinstance(normalization, dict)
+        self.assertEqual(normalization["profile"], profile)
+        self.assertEqual(normalization["geometryHash"], GEOMETRY_V2_HASH)
+        self.assertIsNone(normalization["decoderInputContentHash"])
+        self.assertIsNone(normalization["containerBox"])
+        self.assertIsNone(normalization["colorSpaceDisposition"])
+
+        for skill_version in (
+            "summonlab-skill-icon-production-v2",
+            "summonlab-skill-icon-production-v3",
+            "summonlab-skill-icon-production-v4",
+        ):
+            with self.subTest(skill_version=skill_version):
+                self.packet.assignment["skillVersion"] = skill_version
+                with self.assertRaisesRegex(
+                    ValueError, "contract validation failed|skill version"
+                ):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+        self.packet.assignment["skillVersion"] = "summonlab-skill-icon-production-v5"
+
+        references = self.packet.target["references"]
+        assert isinstance(references, list)
+        guide = next(
+            item for item in references if item.get("path") == GEOMETRY_GUIDE_V2_PATH
+        )
+        references.remove(guide)
+        with self.assertRaisesRegex(
+            ValueError, "contract validation failed|geometry guide"
+        ):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                contract_root=REPOSITORY_ROOT,
+            )
+
     def test_rejects_extra_written_paths(self) -> None:
         written = self.packet.result["writtenOutputPaths"]
         assert isinstance(written, list)
@@ -2221,6 +2273,40 @@ class SkillIconVerifierTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "all null or all present"):
                     verify_result_module._validate_profile_normalization_evidence(
                         target, {"normalization": partial}, None
+                    )
+
+    def test_geometry_role_mask_binds_complete_pathless_v5_provenance(self) -> None:
+        content_hash = hashlib.sha256(b"geometry-first evidence").hexdigest()
+        target = {"normalization": {"profile": "skill-icon-geometry-role-mask-v1"}}
+        completed = {
+            "profile": "skill-icon-geometry-role-mask-v1",
+            "outcome": "completed",
+            "providerSource": {"contentHash": content_hash},
+            "sourceContentHash": content_hash,
+            "decoderInputContentHash": content_hash,
+            "containerBox": {
+                "chunkType": "caBX",
+                "bytes": 21,
+                "contentHash": content_hash,
+            },
+            "colorSpaceDisposition": "assigned-srgb",
+            "outputContentHash": content_hash,
+        }
+        verify_result_module._validate_profile_normalization_evidence(
+            target, {"normalization": completed}, content_hash
+        )
+
+        for mutation in (
+            {**completed, "sourceContentHash": "0" * 64},
+            {**completed, "decoderInputContentHash": None},
+            {**completed, "containerBox": {**completed["containerBox"], "path": "raw.png"}},
+            {**completed, "colorSpaceDisposition": "declared-srgb"},
+            {**completed, "outputContentHash": "0" * 64},
+        ):
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(ValueError):
+                    verify_result_module._validate_profile_normalization_evidence(
+                        target, {"normalization": mutation}, content_hash
                     )
 
         leaked = dict(completed)

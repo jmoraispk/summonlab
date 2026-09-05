@@ -37,15 +37,22 @@ PROTOCOLS = {
         "skill-icon-assignment-v2",
         "summonlab-skill-icon-production-v4",
     ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v5",
+    ): "skill-icon-execution-v2",
 }
 NORMALIZATION_SKILL_VERSIONS = {
     "skill-icon-green-key-role-mask-v1": "summonlab-skill-icon-production-v2",
     "skill-icon-green-key-role-mask-v2": "summonlab-skill-icon-production-v3",
     "skill-icon-green-key-role-mask-v3": "summonlab-skill-icon-production-v4",
+    "skill-icon-geometry-role-mask-v1": "summonlab-skill-icon-production-v5",
 }
 PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
 PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
 PROFILE_V3 = "skill-icon-green-key-role-mask-v3"
+PROFILE_V4 = "skill-icon-geometry-role-mask-v1"
 REPROCESS_PACKET_SCHEMA_VERSIONS = frozenset(
     {
         "skill-icon-reprocess-target-v1",
@@ -62,6 +69,7 @@ NORMALIZATION_GEOMETRY_AUTHORITIES = {
     PROFILE_V1: (GEOMETRY_PATH, GEOMETRY_HASH),
     PROFILE_V2: (GEOMETRY_PATH, GEOMETRY_HASH),
     PROFILE_V3: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+    PROFILE_V4: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
 }
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
@@ -507,11 +515,11 @@ def _require_individual_authorities(
             fail("primary-parent reference hash does not match the canonical approved master")
 
 
-def _require_profile_v3_guide_authority(target: dict[str, Any]) -> None:
+def _require_geometry_v2_guide_authority(target: dict[str, Any]) -> None:
     normalization = target.get("normalization")
     if (
         not isinstance(normalization, dict)
-        or normalization.get("profile") != PROFILE_V3
+        or normalization.get("profile") not in {PROFILE_V3, PROFILE_V4}
     ):
         return
     matches = [
@@ -520,12 +528,12 @@ def _require_profile_v3_guide_authority(target: dict[str, Any]) -> None:
         if reference.get("path") == GEOMETRY_GUIDE_V2_PATH
     ]
     if len(matches) != 1:
-        fail("profile-v3 target requires exactly one canonical geometry-v2 guide")
+        fail("geometry-v2 profile target requires exactly one canonical geometry-v2 guide")
     guide = matches[0]
     if guide.get("purpose") != GEOMETRY_GUIDE_V2_PURPOSE:
-        fail("profile-v3 geometry guide must use its exact canonical purpose")
+        fail("geometry-v2 profile guide must use its exact canonical purpose")
     if guide.get("contentHash") != GEOMETRY_GUIDE_V2_HASH:
-        fail("profile-v3 geometry guide hash does not match its canonical authority")
+        fail("geometry-v2 profile guide hash does not match its canonical authority")
 
 
 def validate(
@@ -640,7 +648,7 @@ def validate(
             fail(f"reference hash changed: {raw}")
         reference_snapshots.append((absolute, snapshot, raw))
     _require_individual_authorities(target, catalog)
-    _require_profile_v3_guide_authority(target)
+    _require_geometry_v2_guide_authority(target)
 
     for absolute, snapshot, raw in reference_snapshots:
         reassert_stable_regular_file(absolute, snapshot, label=f"reference {raw}")

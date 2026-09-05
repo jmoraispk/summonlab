@@ -93,6 +93,25 @@ function targetV3(revision = 4): AnySkillIconTarget {
 	};
 }
 
+function targetGeometryRoleMask(revision = 6): AnySkillIconTarget {
+	const profileV3 = targetV3(revision) as Extract<
+		AnySkillIconTarget,
+		{ schemaVersion: 'skill-icon-target-v2' }
+	>;
+	return {
+		...profileV3,
+		normalization: {
+			profile: 'skill-icon-geometry-role-mask-v1',
+			sourceContract: profileV3.normalization.sourceContract,
+			outputContract: profileV3.normalization.outputContract,
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+			}
+		}
+	};
+}
+
 describe('skill-icon revision resolution', () => {
 	it('selects one higher reprocess revision and rejects a second reprocess for the identity', () => {
 		const ordinary = {
@@ -141,6 +160,15 @@ describe('skill-icon revision resolution', () => {
 		const current = targetV3(4);
 		expect(resolveLatestSkillIconTargets([prior, current])).toEqual([
 			{ target: current, logicalKey: 'backing', revision: 4 }
+		]);
+		expect(() => assertSkillIconSupersedingRevision(prior, current)).not.toThrow();
+	});
+
+	it('selects a higher geometry-first revision without confusing profile and logical revision', () => {
+		const prior = targetV3(5);
+		const current = targetGeometryRoleMask(6);
+		expect(resolveLatestSkillIconTargets([prior, current])).toEqual([
+			{ target: current, logicalKey: 'backing', revision: 6 }
 		]);
 		expect(() => assertSkillIconSupersedingRevision(prior, current)).not.toThrow();
 	});
@@ -197,7 +225,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports the seven queued v5 layers while accepting the existing F-v5 candidate', async () => {
+	it('reports the failed backing and six queued v5 layers while accepting the F-v5 candidate', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -206,16 +234,16 @@ describe('skill-icon revision resolution', () => {
 		}
 		const diagnostics = message.split('\n');
 		expect(diagnostics).toEqual([
-			'references/charcoal-forged-stone-v5: missing result inventory entry',
 			'references/rarity-frame-a-v5: missing result inventory entry',
 			'references/rarity-frame-b-v5: missing result inventory entry',
 			'references/rarity-frame-c-v5: missing result inventory entry',
 			'references/rarity-frame-d-v5: missing result inventory entry',
 			'references/rarity-frame-e-v5: missing result inventory entry',
-			'references/rarity-frame-s-v5: missing result inventory entry'
+			'references/rarity-frame-s-v5: missing result inventory entry',
+			'backing latest revision v5 is failed (validation: Both allowed provider attempts were rejected by profile-v3 normalization: the corrected 1254px RGB source does not have a sufficiently clean #00FF00 edge matte.); create a higher revision'
 		]);
 		expect(diagnostics).toHaveLength(7);
-		expect(message).toMatch(/missing result inventory entry/iu);
+		expect(message).toMatch(/latest revision v5 is failed/iu);
 		expect(message).not.toMatch(/rarity-frame:F latest revision v4 is failed/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
 		expect(message).not.toMatch(/latest revision v2 is failed/iu);

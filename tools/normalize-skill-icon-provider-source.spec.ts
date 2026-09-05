@@ -34,6 +34,7 @@ const geometry = SkillIconGeometrySchema.parse(JSON.parse(geometryBytes.toString
 const geometryV2Bytes = await readFile('assets/wiki/skills/icon-production-v1/geometry-v2.json');
 const geometryV2 = SkillIconGeometryV2Schema.parse(JSON.parse(geometryV2Bytes.toString('utf8')));
 const execFileAsync = promisify(execFile);
+const geometryRoleMaskProfile = 'skill-icon-geometry-role-mask-v1' as const;
 
 function crc32(bytes: Buffer): number {
 	let crc = 0xffffffff;
@@ -185,6 +186,42 @@ async function profileV3FrameSource(extraSvg = ''): Promise<Buffer> {
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
 	})
 		.composite([{ input: svg }])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+	return declareCabx(png);
+}
+
+function pointInLiteralPolygon(
+	x: number,
+	y: number,
+	points: readonly (readonly [number, number])[]
+): boolean {
+	let inside = false;
+	for (let index = 0, previous = points.length - 1; index < points.length; previous = index++) {
+		const [xi, yi] = points[index]!;
+		const [xj, yj] = points[previous]!;
+		if (yi !== yj && yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)
+			inside = !inside;
+	}
+	return inside;
+}
+
+async function dirtyEdgeBackingSource(contentSvg?: string): Promise<Buffer> {
+	const aperture = pointsAttribute(scaledPoints(geometryV2.aperturePoints));
+	const content = contentSvg ?? `<polygon points="${aperture}" fill="#292c33"/>`;
+	const dirtyForbiddenEdge =
+		'<path d="M0 0H1254V64H0ZM0 1190H1254V1254H0ZM0 64H64V1190H0ZM1190 64H1254V1190H1190Z" fill="#777b82"/>';
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
+	})
+		.composite([
+			{
+				input: Buffer.from(
+					`<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg">${content}${dirtyForbiddenEdge}</svg>`
+				)
+			}
+		])
 		.removeAlpha()
 		.png({ progressive: false, palette: false })
 		.toBuffer();
@@ -411,6 +448,135 @@ describe('skill-icon provider normalization', () => {
 		expect(v3.normalization.outputContentHash).toBe(v2.normalization.outputContentHash);
 		expect(v3.normalization.geometryHash).not.toBe(v2.normalization.geometryHash);
 	});
+
+	it('keeps profile-v3 rejection of dirty edge and forbidden-region provider pixels', async () => {
+		await expect(
+			normalizeSkillIconProviderSource(
+				await dirtyEdgeBackingSource(),
+				'backing',
+				geometryV2Bytes,
+				SKILL_ICON_NORMALIZATION_PROFILE_V3
+			)
+		).rejects.toThrow(/clean #00FF00 edge matte|required transparent/u);
+	}, 20_000);
+
+	it('geometry-first normalization clears dirty forbidden pixels into a deterministic role-valid backing', async () => {
+		const source = await dirtyEdgeBackingSource();
+		const first = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		const second = await normalizeSkillIconProviderSource(
+			source,
+			'backing',
+			geometryV2Bytes,
+			geometryRoleMaskProfile
+		);
+		expect(first.bytes).toEqual(second.bytes);
+		expect(first.normalization).toMatchObject({
+			profile: geometryRoleMaskProfile,
+			geometryHash: createHash('sha256').update(geometryV2Bytes).digest('hex'),
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: {
+				chunkType: 'caBX',
+				bytes: expect.any(Number),
+				contentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+			},
+			colorSpaceDisposition: 'assigned-srgb'
+		});
+		expect(await inspectSkillIconAsset(first.bytes, 'backing', geometryV2)).toMatchObject({
+			width: 1024,
+			height: 1024,
+			alphaMode: 'rgba',
+			violations: []
+		});
+		const pixels = await sharp(first.bytes).ensureAlpha().raw().toBuffer();
+		const aperture = geometryV2.aperturePoints.map(([x, y]) => [x * 1024, y * 1024] as const);
+		let nonzeroForbiddenChannels = 0;
+		for (let y = 0; y < 1024; y += 1) {
+			for (let x = 0; x < 1024; x += 1) {
+				if (pointInLiteralPolygon(x + 0.5, y + 0.5, aperture)) continue;
+				const offset = (y * 1024 + x) * 4;
+				for (let channel = 0; channel < 4; channel += 1) {
+					if (pixels[offset + channel] !== 0) nonzeroForbiddenChannels += 1;
+				}
+			}
+		}
+		expect(nonzeroForbiddenChannels).toBe(0);
+	}, 30_000);
+
+	it('geometry-first normalization retains the exact bounded caBX envelope gate', async () => {
+		const parsed = pngChunks(await dirtyEdgeBackingSource());
+		const ihdr = parsed[0]!.bytes;
+		const cabx = parsed[1]!.bytes;
+		const idats = parsed.filter(({ type }) => type === 'IDAT').map(({ bytes }) => bytes);
+		const iend = parsed.at(-1)!.bytes;
+		const normalize = (source: Buffer) =>
+			normalizeSkillIconProviderSource(source, 'backing', geometryV2Bytes, geometryRoleMaskProfile);
+		const malformed = cabxData();
+		malformed.writeUInt32BE(malformed.length - 1, 0);
+
+		await expect(normalize(encodePngChunks([ihdr, ...idats, iend]))).rejects.toThrow(/caBX/u);
+		await expect(normalize(encodePngChunks([ihdr, ...idats, cabx, iend]))).rejects.toThrow(
+			/caBX immediately after IHDR/u
+		);
+		await expect(
+			normalize(encodePngChunks([ihdr, pngChunk('caBX', malformed), ...idats, iend]))
+		).rejects.toThrow(/embedded length/u);
+	}, 20_000);
+
+	it('geometry-first normalization rejects legacy geometry and provider alpha', async () => {
+		const source = await dirtyEdgeBackingSource();
+		await expect(
+			normalizeSkillIconProviderSource(
+				source,
+				'skill-art',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/authorized only/iu);
+		await expect(
+			normalizeSkillIconProviderSource(source, 'backing', geometryBytes, geometryRoleMaskProfile)
+		).rejects.toThrow(/geometry|schema/iu);
+
+		const alpha = await sharp({
+			create: { width: 1254, height: 1254, channels: 4, background: '#00ff00' }
+		})
+			.png({ progressive: false, palette: false })
+			.toBuffer();
+		await expect(
+			normalizeSkillIconProviderSource(
+				declareCabx(alpha),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/RGB|alpha/u);
+	}, 20_000);
+
+	it('geometry-first normalization rejects a retained backing with insufficient role coverage', async () => {
+		await expect(
+			normalizeSkillIconProviderSource(
+				await dirtyEdgeBackingSource('<circle cx="627" cy="627" r="48" fill="#292c33"/>'),
+				'backing',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/backing|coverage|role/iu);
+	}, 20_000);
+
+	it('geometry-first normalization rejects a retained frame without six-edge registration', async () => {
+		await expect(
+			normalizeSkillIconProviderSource(
+				await dirtyEdgeBackingSource('<circle cx="627" cy="160" r="48" fill="#292c33"/>'),
+				'rarity-frame',
+				geometryV2Bytes,
+				geometryRoleMaskProfile
+			)
+		).rejects.toThrow(/frame|registration|coverage|role/iu);
+	}, 20_000);
 
 	it('applies the complete bounded profile-v2 PNG envelope to profile v3', async () => {
 		const base = await providerSource('backing');

@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** Planned; non-blocking for the wiki visual catalog
+**Status:** In progress; geometry-first shared-layer route approved
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
 **Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
 **Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
@@ -29,6 +29,14 @@ The defects are not one alpha-channel problem.
 - The seven individually attempted v4 rarity-frame jobs failed normalization; only an F v5
   candidate survives as a standalone frame. The approved seven-frame sheet is a visual authority,
   not seven production-ready transparent layers.
+- The profile-v3 `charcoal-forged-stone-v5` retry exhausted both provider calls. Its corrected RGB
+  source was visually usable but failed the clean-green exterior heuristic, while a direct-alpha
+  spike returned painted checker pixels rather than transparency. The owner approved an additive
+  revision-6 route: `skill-icon-geometry-role-mask-v1` with
+  `summonlab-skill-icon-production-v5`. The new route clears pixels outside geometry-v2 instead of
+  rejecting them solely for their color; strict retained-role validation remains mandatory. All v5
+  packet/result bytes remain immutable, and this contract task creates no revision-6 production
+  packet or image.
 - `repair-skill-icon-mass-exteriors.ts` correctly masks pixels outside the broad outer geometry, but
   it does not restore a canonical frame, protect the frame aperture from subject art, or understand
   semantic glyphs.
@@ -113,6 +121,11 @@ transparent and that each rail is continuous.
 
 The selected sheet is generation guidance, never a crop or trace source. This follows the current
 production contract and avoids attributing extracted pixels to an independently generated frame.
+
+When a profile-v3 revision is terminally blocked only by dirty pixels outside the authorized role
+geometry, issue a new revision using the exact geometry-first/producer-v5 tuple. Do not rewrite or
+relabel the failed v5 evidence. Geometry-first retains the canonical `caBX`, assigned-sRGB,
+geometry-v2/guide-v2, and fixed-output provenance gates; it is not a manual masking exception.
 
 ### Phase 2: recompose all candidates
 

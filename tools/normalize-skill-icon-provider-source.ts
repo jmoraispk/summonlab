@@ -12,17 +12,22 @@ import {
 	type SkillIconGeometryV2,
 	type SkillIconRole
 } from '../packages/contracts/src/index.js';
-import { SKILL_ICON_FRAME_INNER_APERTURE_SCALE } from './validate-skill-icon-assets.js';
+import {
+	inspectSkillIconAsset,
+	SKILL_ICON_FRAME_INNER_APERTURE_SCALE
+} from './validate-skill-icon-assets.js';
 
 export const SKILL_ICON_NORMALIZATION_PROFILE_V1 = 'skill-icon-green-key-role-mask-v1' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V2 = 'skill-icon-green-key-role-mask-v2' as const;
 export const SKILL_ICON_NORMALIZATION_PROFILE_V3 = 'skill-icon-green-key-role-mask-v3' as const;
+export const SKILL_ICON_NORMALIZATION_PROFILE_V4 = 'skill-icon-geometry-role-mask-v1' as const;
 /** Compatibility alias for the original, default profile. */
 export const SKILL_ICON_NORMALIZATION_PROFILE = SKILL_ICON_NORMALIZATION_PROFILE_V1;
 export type SkillIconNormalizationProfile =
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V1
 	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
-	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3;
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4;
 export const SKILL_ICON_PROVIDER_SIZE = 1254;
 export const SKILL_ICON_PROVIDER_MATTE = '#00FF00' as const;
 export const SKILL_ICON_PROVIDER_TRANSPARENT_DISTANCE = 12;
@@ -85,10 +90,18 @@ export interface SkillIconNormalizationEvidenceV3 extends SkillIconNormalization
 	readonly colorSpaceDisposition: 'assigned-srgb';
 }
 
+export interface SkillIconNormalizationEvidenceV4 extends SkillIconNormalizationEvidenceBase {
+	readonly profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V4;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: SkillIconNormalizationEvidenceV2['containerBox'];
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
 export type SkillIconNormalizationEvidence =
 	| SkillIconNormalizationEvidenceV1
 	| SkillIconNormalizationEvidenceV2
-	| SkillIconNormalizationEvidenceV3;
+	| SkillIconNormalizationEvidenceV3
+	| SkillIconNormalizationEvidenceV4;
 
 export interface NormalizedSkillIconProviderSource<
 	Normalization extends SkillIconNormalizationEvidence = SkillIconNormalizationEvidence
@@ -154,10 +167,20 @@ interface ProviderPngEnvelope {
 function isProviderCompatibleProfile(
 	profile: SkillIconNormalizationProfile
 ): profile is
-	typeof SKILL_ICON_NORMALIZATION_PROFILE_V2 | typeof SKILL_ICON_NORMALIZATION_PROFILE_V3 {
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V2
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V3
+	| typeof SKILL_ICON_NORMALIZATION_PROFILE_V4 {
 	return (
 		profile === SKILL_ICON_NORMALIZATION_PROFILE_V2 ||
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4
+	);
+}
+
+function usesGeometryV2Profile(profile: SkillIconNormalizationProfile): boolean {
+	return (
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3 ||
+		profile === SKILL_ICON_NORMALIZATION_PROFILE_V4
 	);
 }
 
@@ -613,10 +636,11 @@ function assertNoSpatialAlphaCheckerboard(
 		const alphaBin = Math.min(15, (rgba[pixelIndex * 4 + 3] ?? 0) >> 4);
 		return alphaBin === firstBin ? 0 : alphaBin === secondBin ? 1 : -1;
 	};
-	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V3) {
+	if (usesGeometryV2Profile(profile)) {
 		// A transition-only heuristic mistakes textured, partially transparent forged
-		// material for a checker. V3 requires periodic A-B-A recurrence on both axes
-		// while scanning every supported macro lag; v1/v2 retain their historical gate.
+		// material for a checker. Geometry-v2 profiles require periodic A-B-A recurrence
+		// on both axes while scanning every supported macro lag; v1/v2 retain their
+		// historical gate.
 		const minimumDimension = Math.min(width, height);
 		const maximumMacroLag = Math.floor(minimumDimension / 6);
 		const sampleStride = Math.max(2, Math.floor(minimumDimension / 180));
@@ -757,7 +781,7 @@ function buildRoleMask(
 			const insideInnerAperture = pointInPolygon(pixelX, pixelY, inner);
 			const allowed =
 				role === 'rarity-frame'
-					? profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
+					? usesGeometryV2Profile(profile)
 						? // The medallion is a union authority, not part of the inset aperture ring.
 							(pointInPolygon(pixelX, pixelY, outerEnvelope) && !insideInnerAperture) ||
 							pointInPolygon(pixelX, pixelY, medallion)
@@ -816,6 +840,12 @@ export function normalizeSkillIconProviderSource(
 	sourceBytes: Buffer,
 	roleInput: SkillIconRole,
 	geometrySourceBytes: Buffer,
+	profile: typeof SKILL_ICON_NORMALIZATION_PROFILE_V4
+): Promise<NormalizedSkillIconProviderSource<SkillIconNormalizationEvidenceV4>>;
+export function normalizeSkillIconProviderSource(
+	sourceBytes: Buffer,
+	roleInput: SkillIconRole,
+	geometrySourceBytes: Buffer,
 	profile: SkillIconNormalizationProfile
 ): Promise<NormalizedSkillIconProviderSource>;
 export async function normalizeSkillIconProviderSource(
@@ -833,7 +863,8 @@ export async function normalizeSkillIconProviderSource(
 	if (
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V1 &&
 		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V2 &&
-		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V3
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V3 &&
+		profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4
 	)
 		throw new Error('Unsupported skill-icon normalization profile');
 	const envelope = assertCanonicalProviderPngEnvelope(sourceSnapshot, profile);
@@ -846,10 +877,9 @@ export async function normalizeSkillIconProviderSource(
 	} catch {
 		throw new Error('Geometry authority is not valid JSON');
 	}
-	const geometry: SkillIconGeometryAuthority =
-		profile === SKILL_ICON_NORMALIZATION_PROFILE_V3
-			? SkillIconGeometryV2Schema.parse(rawGeometry)
-			: SkillIconGeometrySchema.parse(rawGeometry);
+	const geometry: SkillIconGeometryAuthority = usesGeometryV2Profile(profile)
+		? SkillIconGeometryV2Schema.parse(rawGeometry)
+		: SkillIconGeometrySchema.parse(rawGeometry);
 	const roleMask = buildRoleMask(role, geometry, profile);
 	const allowsPixel = (x: number, y: number): boolean =>
 		roleMask[y * geometry.canvas.width + x] === 1;
@@ -891,15 +921,17 @@ export async function normalizeSkillIconProviderSource(
 		.removeAlpha()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
-	assertNoBakedCheckerboard(decoded.data);
-	assertProviderMatte(
-		decoded.data,
-		decoded.info.width,
-		decoded.info.height,
-		geometry,
-		allowsPixel,
-		transparentDistance
-	);
+	if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+		assertNoBakedCheckerboard(decoded.data);
+		assertProviderMatte(
+			decoded.data,
+			decoded.info.width,
+			decoded.info.height,
+			geometry,
+			allowsPixel,
+			transparentDistance
+		);
+	}
 	const providerRoleMask = scaleRoleMask(
 		roleMask,
 		geometry.canvas.width,
@@ -958,7 +990,8 @@ export async function normalizeSkillIconProviderSource(
 		roleMask,
 		profile
 	);
-	assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
+	if (profile !== SKILL_ICON_NORMALIZATION_PROFILE_V4)
+		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	let visiblePixels = 0;
 	for (let y = 0; y < geometry.canvas.height; y += 1) {
 		for (let x = 0; x < geometry.canvas.width; x += 1) {
@@ -971,6 +1004,8 @@ export async function normalizeSkillIconProviderSource(
 			} else visiblePixels += 1;
 		}
 	}
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4)
+		assertForbiddenRegionAlpha(resized, geometry.canvas.width, geometry.canvas.height, roleMask);
 	if (visiblePixels === 0) throw new Error('Provider source contains no visible role content');
 	const outputBytes = await sharp(resized, {
 		raw: { width: geometry.canvas.width, height: geometry.canvas.height, channels: 4 }
@@ -983,6 +1018,13 @@ export async function normalizeSkillIconProviderSource(
 			progressive: false
 		})
 		.toBuffer();
+	if (profile === SKILL_ICON_NORMALIZATION_PROFILE_V4) {
+		const inspection = await inspectSkillIconAsset(outputBytes, role, geometry);
+		if (inspection.violations.length > 0)
+			throw new Error(
+				`Retained role output validation failed: ${inspection.violations.join('; ')}`
+			);
+	}
 	const sourceHash = sha256(sourceSnapshot);
 	const outputHash = sha256(outputBytes);
 	const normalizationBase = {

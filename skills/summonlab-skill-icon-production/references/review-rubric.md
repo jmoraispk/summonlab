@@ -1,13 +1,15 @@
 # Producer review rubric
 
 For a normalized `rarity-frame` or `backing` retry, first inspect the provider raster only for
-visible fidelity and eligibility: it must be a non-interlaced 8-bit 1254×1254 RGB PNG over an
-opaque `#00FF00` matte, never a depicted checkerboard. Profile v1 requires an explicit
-perceptual-sRGB declaration. Profiles v2 and v3 instead require exactly one bounded, structurally
-valid `caBX` provider container and assign perceptual sRGB after removing it; neither rule relaxes
-the matte, role-mask, or forbidden-region gates. Profile v3 uses only its hash-bound geometry-v2
-guide for the expanded frame envelope and unchanged backing aperture. Then let the helper normalize
-it. V1 `skill-art` and
+visible fidelity and eligibility: it must be a non-interlaced 8-bit 1254×1254 RGB PNG. Profiles v1,
+v2, and v3 require an opaque `#00FF00` matte and reject a depicted checkerboard. Profile v1 requires
+an explicit perceptual-sRGB declaration. Profiles v2, v3, and geometry-first instead require exactly
+one bounded, structurally valid `caBX` provider container and assign perceptual sRGB after removing
+it. Profile v3 uses only its hash-bound geometry-v2 guide for the expanded frame envelope and
+unchanged backing aperture. Geometry-first uses the same guide and mask but permits imperfect green
+edges or non-green/checker pixels wholly outside that mask; the helper clears those pixels
+deterministically and still rejects a checker inside retained role content. Then let the helper
+normalize it. V1 `skill-art` and
 `calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
 at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
 for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either
@@ -31,8 +33,9 @@ not authorize another reprocess attempt.
   and satisfy their role-specific transparency or coverage rules. A `calibration-plate` may be RGB
   or RGBA when its declared canvas and the role-aware inspector permit it.
 - **Normalization:** v2 frame/backing candidates contain no green matte or fringe, obey the exact
-  role mask, and carry source/geometry/output hash evidence. Provider eligibility is not candidate
-  acceptance; never repair an ineligible provider source by hand.
+  role mask, and carry source/geometry/output hash evidence. Geometry-first candidates additionally
+  pass strict role-aware output inspection after mask clearing. Provider eligibility is not
+  candidate acceptance; never repair an ineligible provider source by hand.
 - **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
   uncluttered, and different from adjacent family stages.
 - **Reference discipline:** each reference influenced only its declared purpose. No calibration

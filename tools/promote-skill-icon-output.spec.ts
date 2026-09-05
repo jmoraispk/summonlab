@@ -765,13 +765,14 @@ async function installOrdinaryFrameV6(root: string) {
 async function installBackingV2Packet(
 	root: string,
 	mode: 'target-only' | 'candidate' | 'failed',
-	profile: 'v1' | 'v3' = 'v1'
+	profile: 'v1' | 'v3' | 'geometry' = 'v1'
 ): Promise<{
 	readonly jobId: string;
 	readonly candidatePath: string;
 	readonly resultPath: string;
 }> {
-	const revision = profile === 'v3' ? 4 : 2;
+	const revision = profile === 'geometry' ? 6 : profile === 'v3' ? 4 : 2;
+	const usesGeometryV2 = profile !== 'v1';
 	const jobId = `charcoal-forged-stone-v${revision}`;
 	const logicalIdentity = 'charcoal-forged-stone';
 	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
@@ -780,19 +781,17 @@ async function installBackingV2Packet(
 	const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
 	const exactPrompt =
 		'Paint charcoal forged stone over an opaque #00FF00 matte with no baked checkerboard.';
-	const geometryAuthorityPath =
-		profile === 'v3'
-			? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH
-			: 'assets/wiki/skills/icon-production-v1/geometry.json';
+	const geometryAuthorityPath = usesGeometryV2
+		? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH
+		: 'assets/wiki/skills/icon-production-v1/geometry.json';
 	const geometryPath = path.join(root, geometryAuthorityPath);
 	const geometryBytes = await readFile(path.resolve(geometryAuthorityPath));
 	await mkdir(path.dirname(geometryPath), { recursive: true });
 	await writeFile(geometryPath, geometryBytes);
 	const geometryHash = createHash('sha256').update(geometryBytes).digest('hex');
-	const guidePath =
-		profile === 'v3'
-			? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
-			: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
+	const guidePath = usesGeometryV2
+		? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
+		: 'assets/wiki/skills/icon-production-v1/references/geometry-guide.png';
 	const guideBytes = await readFile(path.resolve(guidePath));
 	await mkdir(path.dirname(path.join(root, guidePath)), {
 		recursive: true
@@ -809,29 +808,30 @@ async function installBackingV2Packet(
 		motifFamily: null,
 		rarity: null,
 		exactPrompt,
-		references:
-			profile === 'v3'
-				? [
-						{
-							path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
-							purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
-							contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
-						}
-					]
-				: [
-						{
-							path: guidePath,
-							purpose: 'Geometry guide for registration and safe zones.',
-							contentHash: guideHash
-						}
-					],
+		references: usesGeometryV2
+			? [
+					{
+						path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+						purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+						contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+					}
+				]
+			: [
+					{
+						path: guidePath,
+						purpose: 'Geometry guide for registration and safe zones.',
+						contentHash: guideHash
+					}
+				],
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output: { candidatePath, resultPath },
 		normalization: {
 			profile:
-				profile === 'v3'
-					? 'skill-icon-green-key-role-mask-v3'
-					: 'skill-icon-green-key-role-mask-v1',
+				profile === 'geometry'
+					? 'skill-icon-geometry-role-mask-v1'
+					: profile === 'v3'
+						? 'skill-icon-green-key-role-mask-v3'
+						: 'skill-icon-green-key-role-mask-v1',
 			sourceContract: {
 				mediaType: 'image/png',
 				width: 1254,
@@ -847,7 +847,7 @@ async function installBackingV2Packet(
 			},
 			geometry: {
 				path: geometryAuthorityPath,
-				contentHash: profile === 'v3' ? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH : geometryHash
+				contentHash: usesGeometryV2 ? SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH : geometryHash
 			}
 		}
 	};
@@ -860,12 +860,18 @@ async function installBackingV2Packet(
 		targetPath,
 		assignmentPath,
 		skillVersion:
-			profile === 'v3'
-				? 'summonlab-skill-icon-production-v4'
-				: 'summonlab-skill-icon-production-v2',
+			profile === 'geometry'
+				? 'summonlab-skill-icon-production-v5'
+				: profile === 'v3'
+					? 'summonlab-skill-icon-production-v4'
+					: 'summonlab-skill-icon-production-v2',
 		normalization: {
 			profile:
-				profile === 'v3' ? 'skill-icon-green-key-role-mask-v3' : 'skill-icon-green-key-role-mask-v1'
+				profile === 'geometry'
+					? 'skill-icon-geometry-role-mask-v1'
+					: profile === 'v3'
+						? 'skill-icon-green-key-role-mask-v3'
+						: 'skill-icon-green-key-role-mask-v1'
 		},
 		assignedAt: '2026-09-02T08:00:00.000Z',
 		retryCeiling: 1,
@@ -905,9 +911,11 @@ async function installBackingV2Packet(
 			mode === 'candidate'
 				? {
 						profile:
-							profile === 'v3'
-								? 'skill-icon-green-key-role-mask-v3'
-								: 'skill-icon-green-key-role-mask-v1',
+							profile === 'geometry'
+								? 'skill-icon-geometry-role-mask-v1'
+								: profile === 'v3'
+									? 'skill-icon-green-key-role-mask-v3'
+									: 'skill-icon-green-key-role-mask-v1',
 						outcome: 'completed',
 						geometryHash,
 						providerSource: {
@@ -919,7 +927,7 @@ async function installBackingV2Packet(
 							contentHash: sourceHash
 						},
 						sourceContentHash: sourceHash,
-						...(profile === 'v3'
+						...(usesGeometryV2
 							? {
 									decoderInputContentHash: 'c'.repeat(64),
 									containerBox: {
@@ -934,14 +942,16 @@ async function installBackingV2Packet(
 					}
 				: {
 						profile:
-							profile === 'v3'
-								? 'skill-icon-green-key-role-mask-v3'
-								: 'skill-icon-green-key-role-mask-v1',
+							profile === 'geometry'
+								? 'skill-icon-geometry-role-mask-v1'
+								: profile === 'v3'
+									? 'skill-icon-green-key-role-mask-v3'
+									: 'skill-icon-green-key-role-mask-v1',
 						outcome: 'not-run',
 						geometryHash,
 						providerSource: null,
 						sourceContentHash: null,
-						...(profile === 'v3'
+						...(usesGeometryV2
 							? {
 									decoderInputContentHash: null,
 									containerBox: null,
@@ -1262,6 +1272,21 @@ describe('promoteSkillIconOutput', () => {
 		});
 		expect(record).toMatchObject({
 			jobId: 'charcoal-forged-stone-v4',
+			role: 'backing',
+			candidate: { path: item.candidatePath, contentHash: item.hash }
+		});
+	});
+
+	it('promotes geometry-first output only through skill-v5, geometry-v2, and guide-v2 authorities', async () => {
+		const item = await fixture('charcoal-forged-stone-v6');
+		await installBackingV2Packet(item.root, 'candidate', 'geometry');
+		const record = await promoteSkillIconOutput({
+			jobId: 'charcoal-forged-stone-v6',
+			reviewPath: item.reviewPath,
+			root: item.root
+		});
+		expect(record).toMatchObject({
+			jobId: 'charcoal-forged-stone-v6',
 			role: 'backing',
 			candidate: { path: item.candidatePath, contentHash: item.hash }
 		});

@@ -509,12 +509,14 @@ export async function validateSkillIconAssets(root = process.cwd()): Promise<voi
 				if (normalizationAuthority.geometry.contentHash !== geometryHash)
 					throw new Error('current raw geometry authority hash does not match target');
 				geometry =
-					normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3'
+					normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3' ||
+					normalizationAuthority.profile === 'skill-icon-geometry-role-mask-v1'
 						? SkillIconGeometryV2Schema.parse(JSON.parse(geometrySourceBytes.toString('utf8')))
 						: SkillIconGeometrySchema.parse(JSON.parse(geometrySourceBytes.toString('utf8')));
 				{
 					const expectedGuidePath =
-						normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3'
+						normalizationAuthority.profile === 'skill-icon-green-key-role-mask-v3' ||
+						normalizationAuthority.profile === 'skill-icon-geometry-role-mask-v1'
 							? SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH
 							: SKILL_ICON_NORMALIZATION_GUIDE_V1_PATH;
 					const guide = isSkillIconReprocessTarget(target)

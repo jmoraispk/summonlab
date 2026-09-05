@@ -273,6 +273,16 @@ The mandatory guide reference has the canonical purpose
 `Provider-space role-mask guide for rarity-frame and backing registration.` and is production
 authority, not optional illustration.
 
+The additive `skill-icon-geometry-role-mask-v1` profile pairs only with
+`summonlab-skill-icon-production-v5` on structural-v2 rarity-frame/backing packets. It preserves
+profile v3's provider envelope, exact geometry-v2/guide-v2 authorities, chroma and despill math,
+full-frame resize, fixed encoder, and complete pathless provenance. Its sole eligibility change is
+that a clean green outer edge and green-only forbidden region are not prerequisites: pixels outside
+the role mask are deterministically cleared. Periodic checker content inside the retained role and
+all final alpha, coverage, registration, dimension, channel, container, and hash gates remain
+strict. The failed `charcoal-forged-stone-v5` result and all revision-5 packets remain immutable;
+the approved geometry-first route begins only at a separately authored higher revision.
+
 Result provenance records pathless provider media properties and hashes, the raw geometry-file
 hash, and the normalized output hash; it never retains a machine-local provider pathname. The eight
 v1 Task 7 failures, F revision-2 caBX rejection, F revision-3 geometry rejection, and F revision-4

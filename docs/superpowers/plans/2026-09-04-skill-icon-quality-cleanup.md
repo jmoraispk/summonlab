@@ -22,6 +22,8 @@ contracts and promotion tooling, SvelteKit wiki exporter.
 ## Global Constraints
 
 - Preserve every file under `mass-production-v1` byte-for-byte.
+- Preserve every revision-5 shared-layer target, assignment, candidate, and result byte-for-byte;
+  new normalization authority requires a higher revision.
 - Bind the frozen input hashes listed in the spec; fail closed on drift.
 - Preserve the integrated crest and uppercase rank letter as part of every frame.
 - Produce only regular point-up hexagons on `1024×1024` RGBA canvases with transparent exteriors.
@@ -366,28 +368,74 @@ git commit -m "feat(skills): add protected icon recomposition"
 
 Expected: focused tests and typecheck PASS.
 
+### Task 5A: Add the approved geometry-first shared-layer normalization route
+
+**Files:**
+
+- Modify: `packages/contracts/src/skill-icon-production.ts`
+- Modify: `tools/normalize-skill-icon-provider-source.ts`
+- Modify: persistence, validation, composition, promotion, and revision consumers/tests
+- Modify: `skills/summonlab-skill-icon-production/**`
+- Modify: cleanup design, plan, and issue documents
+
+**Interfaces:**
+
+- Adds profile `skill-icon-geometry-role-mask-v1` paired only with
+  `summonlab-skill-icon-production-v5` on structural-v2 frame/backing packets.
+- Reuses the exact profile-v3 `caBX`, assigned-sRGB, geometry-v2/guide-v2, chroma, resize, and fixed
+  encoder authorities.
+- Clears non-green provider pixels outside the geometry-v2 role mask without weakening strict
+  retained-output alpha, backing-coverage, or frame-registration inspection.
+
+- [x] **Step 1: Add focused RED regressions across every tuple consumer**
+
+Cover exact and mixed tuples, dirty-edge profile-v3 rejection, geometry-first mask clearing,
+container/alpha/geometry/guide rejection, complete result provenance, no-replace persistence, and
+validation/composition/promotion recognition.
+
+- [x] **Step 2: Implement the additive contract and deterministic normalizer behavior**
+
+Keep profile v1/v2/v3 branches unchanged. Geometry-first skips only the clean-edge and forbidden
+provider-color eligibility checks, clears forbidden output pixels, canonicalizes transparent RGB,
+and invokes the role-aware inspector before returning bytes.
+
+- [x] **Step 3: Update repository skill preflight/result verification and durable docs**
+
+The Python and TypeScript validators bind the new profile to producer v5 and the exact geometry-v2
+and guide-v2 authorities. Reprocess v1 remains pinned to profile v3.
+
+- [x] **Step 4: Verify code while preserving production evidence**
+
+Run focused TypeScript and Python suites, typecheck, the full skill-icon suite, formatting, and
+`git diff --check`; compare pre/post hashes for `mass-production-v1` and every v5 packet/result.
+This task creates no revision-6 packet or image.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
 - Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v5.png`
 - Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v5.json`
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v5.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
+- Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
+- Create in a later packet-authoring slice: revision-6 target, assignment, candidate, and result for
+  `charcoal-forged-stone-v6` using the geometry-first/producer-v5 tuple
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/*.png`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/*.png`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/*.json`
 
 **Interfaces:**
 
-- Consumes: seven frame/backing assignments plus the complete cleanup manifest.
-- Produces: seven normalized reference candidates/results and 456 deterministic cleanup
+- Consumes: six pending revision-5 frame assignments, one future revision-6 backing assignment, the
+  retained F revision-5 frame, and the complete cleanup manifest.
+- Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
 - [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-5 E–S frame and the revision-5 backing.
-Each worker validates its exact target and assignment, submits the exact prompt, persists through
+Use `summonlab-skill-icon-production` once for each revision-5 E–S frame. Author and review a
+separate revision-6 backing packet before dispatch, binding `skill-icon-geometry-role-mask-v1` to
+`summonlab-skill-icon-production-v5`; never alter the failed v5 packet/result. Each worker validates
+its exact target and assignment, submits the exact prompt, persists through
 `pnpm persist:skill-icon-output`, records full-size and 96-pixel findings, and writes only its
 candidate/result pair. Do not ask for per-job owner approval and do not promote.
 
@@ -399,7 +447,7 @@ corepack pnpm finalize:skill-icon-quality-cleanup
 corepack pnpm validate:skill-icon-quality-cleanup
 ```
 
-Expected: F revision 5 plus the seven new candidates are role-valid; the reference contact sheet is
+Expected: F revision 5 plus six new frames and the revision-6 backing are role-valid; the reference contact sheet is
 current in the cleanup namespace. If a job is terminally failed after its allowed correction, stop
 the batch honestly and issue a higher revision in a new plan rather than weakening normalization.
 

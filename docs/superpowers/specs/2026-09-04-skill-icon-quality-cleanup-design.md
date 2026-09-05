@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup Design
 
 **Date:** 2026-09-04
-**Status:** Planned from accepted visual direction
+**Status:** In implementation; geometry-first shared-layer route approved
 **Issue:** [Skill Icon Quality Cleanup](../issues/2026-09-04-skill-icon-quality-cleanup.md)
 
 ## Goal
@@ -57,6 +57,15 @@ pipeline. New frame targets bind both the selected shape sheet and Option C mate
 The seven frames and backing are generated as one batch. The cleanup run may use their exact hashes
 to build review candidates, but they remain candidates and are not called approved masters before
 the final owner decision.
+
+The failed `charcoal-forged-stone-v5` profile-v3 result and every revision-5 packet remain immutable
+evidence. Higher-revision frame/backing retries may use the additive
+`skill-icon-geometry-role-mask-v1` + `summonlab-skill-icon-production-v5` tuple. It retains the
+profile-v3 `caBX`, assigned-sRGB, geometry-v2, chroma, resize, and encoder authorities, but treats
+provider pixels outside the authorized role mask as disposable input instead of requiring a clean
+green exterior. The mask clears those pixels deterministically, then the retained 1024×1024 RGBA
+layer must still pass strict role-aware alpha, backing-coverage, or frame-registration inspection.
+No revision-6 packet or image is part of the profile implementation itself.
 
 ### 2. Deterministic whole-catalog recomposition
 
@@ -146,7 +155,9 @@ Automated validation requires:
 12. every symbolic-language finding resolved by an explicit `keep` or `remove` decision;
 13. zero-write `--check` runs for the cleanup manifest, review evidence, wiki derivatives, and wiki
     catalog;
-14. unchanged historical mass-production bytes and hashes.
+14. unchanged historical mass-production bytes and hashes;
+15. unchanged revision-5 targets, assignments, candidates, and results when the geometry-first
+    contract is introduced.
 
 Shape heuristics do not claim to prove that an image contains no semantic glyph. Human-readable
 findings and final owner decisions remain required for that category.

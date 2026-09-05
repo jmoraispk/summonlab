@@ -10,7 +10,9 @@ assignment defines ownership. Require the built-in `imagegen` skill/tool for ras
 Dispatch is packet-scoped: green-key `rarity-frame` and `backing` targets using normalization
 profile v1 require `summonlab-skill-icon-production-v2`; profile v2 targets require
 `summonlab-skill-icon-production-v3`; profile v3 targets require
-`summonlab-skill-icon-production-v4`. `skill-art` and `calibration-plate` jobs remain on
+`summonlab-skill-icon-production-v4`; geometry-first profile
+`skill-icon-geometry-role-mask-v1` targets require `summonlab-skill-icon-production-v5`.
+`skill-art` and `calibration-plate` jobs remain on
 `summonlab-skill-icon-production-v1` unless a future contract revision explicitly adds those roles.
 Exact-source packets retain exact provider bytes.
 
@@ -42,8 +44,9 @@ must be absent at preflight.
    parent master when the canonical catalog record requires them. These are distinct path-bound
    authorities; one reference cannot fill multiple roles. Never crop an individual icon from a
    calibration sheet.
-   A profile-v3 frame or backing additionally requires the exact geometry-v2 guide reference
-   declared by its target; use it only for provider-space registration and never as image content.
+   A profile-v3 or geometry-first frame/backing additionally requires the exact geometry-v2 guide
+   reference declared by its target; use it only for provider-space registration and never as image
+   content.
 3. Submit `target.exactPrompt` to imagegen byte-for-byte: no preface, suffix, normalization, or
    rewording. Supply every declared reference in manifest order. Request exactly one raster.
 4. If a correctable defect remains, make at most one imagegen edit and only when `retryCeiling` is
@@ -54,10 +57,13 @@ must be absent at preflight.
    resize, key, mask, recolor, copy, or otherwise normalize it. For normalized `rarity-frame` and
    `backing` packets, the helper alone validates the profile-pinned provider envelope, performs the
    role mask and resize inside its exclusive transaction, and writes the canonical candidate.
-   Profiles v2 and v3 admit only one bounded, valid `caBX` immediately after `IHDR`, record its
-   pathless payload evidence, remove it, construct the canonical assigned-sRGB decoder input, and
-   bind both the full original-provider and decoder-input hashes. Profile v3 alone binds geometry
-   v2 and its matching guide; its result provenance is otherwise identical to profile v2.
+   Profiles v2, v3, and geometry-first admit only one bounded, valid `caBX` immediately after
+   `IHDR`, record its pathless payload evidence, remove it, construct the canonical assigned-sRGB
+   decoder input, and bind both the full original-provider and decoder-input hashes. Profile v3 and
+   geometry-first bind geometry v2 and its matching guide; their result provenance is otherwise
+   identical to profile v2. Geometry-first alone permits imperfect green edges and non-green pixels
+   outside the authorized role mask, which the helper deterministically clears. It does not relax
+   the envelope, in-mask checkerboard, output alpha, backing coverage, or frame-registration gates.
    Exact-source `skill-art`,
    `calibration-plate`, and compatibility frame/backing packets retain exact selected provider
    bytes.
