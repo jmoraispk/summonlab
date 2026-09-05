@@ -1,16 +1,28 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import { buildFaunaFamilyHandoff } from './export-fauna-family-handoff.js';
 import { FaunaFamilyManifestSchema } from './family-affinity-production-lib.js';
 
 const repositoryRoot = resolve(import.meta.dirname, '..');
+let handoff: Awaited<ReturnType<typeof buildFaunaFamilyHandoff>>;
+let originalManifestBefore: Buffer;
+let originalManifestAfter: Buffer;
 
 describe('fauna-family-v1 candidate handoff', () => {
+	beforeAll(async () => {
+		const originalManifestPath = resolve(
+			repositoryRoot,
+			'assets/enemies/experiments/family-affinity-v1/manifest.json'
+		);
+		originalManifestBefore = await readFile(originalManifestPath);
+		handoff = await buildFaunaFamilyHandoff(repositoryRoot);
+		originalManifestAfter = await readFile(originalManifestPath);
+	}, 120_000);
+
 	it('publishes the complete 200-coordinate matrix without promoting any candidate', async () => {
-		const handoff = await buildFaunaFamilyHandoff(repositoryRoot);
 		const inventory = JSON.parse(handoff.inventoryBytes.toString('utf8')) as {
 			schemaVersion: string;
 			stateCeiling: string;
@@ -124,14 +136,6 @@ describe('fauna-family-v1 candidate handoff', () => {
 	});
 
 	it('does not depend on the completed original 750-coordinate manifest', async () => {
-		const before = await readFile(
-			resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1/manifest.json')
-		);
-		await buildFaunaFamilyHandoff(repositoryRoot);
-		const after = await readFile(
-			resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1/manifest.json')
-		);
-
-		expect(after.equals(before)).toBe(true);
+		expect(originalManifestAfter.equals(originalManifestBefore)).toBe(true);
 	});
 });

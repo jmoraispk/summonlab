@@ -13,3 +13,7 @@ docs
 README.md
 AGENTS.md
 assets
+.agents/skills
+apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1
+packages/contracts/src/engine-compatibility-states.snapshot.ts
+skills/summonlab-image-production/scripts/family_dispatch_gate.mjs

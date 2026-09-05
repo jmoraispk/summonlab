@@ -27,10 +27,10 @@
 			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
 			"references/target-schema.md": "ebd0afd360e83eda95d374f2145c9ea2a302aae017302d43434cccec44ed7494",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58",
+			"scripts/family_dispatch_gate.mjs": "9dd8399999d3f8bb1b5c2387888e773cb59d5faa669500b0abb529f684a4c8a4",
 			"scripts/persist_family_candidate.py": "5d1872e4c4a79d014867bff6138026b27d960237bbb749e2d764b825c68b143b",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
-			"scripts/validate_target.py": "aee4d51b3c33e9a80fafeff57c81cdbc6f2cb2879531edcbf7c31841383d4ba1",
+			"scripts/validate_target.py": "6934a01efbb18fcf9b1188ce105fa9d8414f1358505f899778e71e7f8d7c07c0",
 			"scripts/verify_result.py": "305e1c79b1c0c02e007b2f990aa2f34fea18a105e720dd681f5dc00c664a3dfa",
 			"scripts/write_family_result.py": "5dc0a49200acab5f36b68e587f48f394ce79b900a79408d25681f72ad2129ed3"
 		}
@@ -41,12 +41,12 @@
 	},
 	"sealedLauncher": {
 		"node": {
-			"path": "/home/joao/.nvm/versions/node/v24.14.1/bin/node",
-			"sha256": "bf9112eb83a827dc9f9c8d19bb7bddcbf00f7b2fedae18fdcaee05406981f20a"
+			"path": "/home/joao/.nvm/versions/node/v24.19.0/bin/node",
+			"sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12"
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "32429a3badd7e26706345a6a45835b95b57cc994719f607e36ec73853bc21d58"
+			"sha256": "9dd8399999d3f8bb1b5c2387888e773cb59d5faa669500b0abb529f684a4c8a4"
 		},
 		"sources": [
 			{
@@ -55,7 +55,7 @@
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "bc9a43d16737823102a5841c8a8d5a3eb78348d978ade1896bc3f74a70e30b80"
+				"sha256": "aa1441ce539ddc92af377ffc96abffd7bc2a574fede999f4ff9c1d8d408d5251"
 			},
 			{
 				"path": "package.json",

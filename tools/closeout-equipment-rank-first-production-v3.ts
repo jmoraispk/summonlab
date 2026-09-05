@@ -27,10 +27,8 @@ import { validateEquipmentRankFirstTerminalEvidenceV3 } from './validate-equipme
 
 const execFileAsync = promisify(execFile);
 
-export const EQUIPMENT_V3_PROMOTION_PROPOSAL_PATH =
-	`${EQUIPMENT_V3_ROOT}/reviews/proposed-promotions/candidate-promotion-v1.json`;
-export const EQUIPMENT_V3_CLOSEOUT_PATH =
-	`${EQUIPMENT_V3_ROOT}/runs/material-equipment-v3-run-001/candidate-closeout-v1.json`;
+export const EQUIPMENT_V3_PROMOTION_PROPOSAL_PATH = `${EQUIPMENT_V3_ROOT}/reviews/proposed-promotions/candidate-promotion-v1.json`;
+export const EQUIPMENT_V3_CLOSEOUT_PATH = `${EQUIPMENT_V3_ROOT}/runs/material-equipment-v3-run-001/candidate-closeout-v1.json`;
 
 const CHECKPOINT_PATHS = [
 	`${EQUIPMENT_V3_ROOT}/checkpoints/checkpoint-1-directions.json`,
@@ -65,12 +63,7 @@ export async function closeoutEquipmentRankFirstProductionV3(input: {
 	const [branch, basisCommit, commitLog] = await Promise.all([
 		git(input.workspaceRoot, ['branch', '--show-current']),
 		git(input.workspaceRoot, ['rev-parse', 'HEAD']),
-		git(input.workspaceRoot, [
-			'log',
-			'--reverse',
-			'--format=%H%x09%s',
-			`${input.baseCommit}..HEAD`
-		])
+		git(input.workspaceRoot, ['log', '--reverse', '--format=%H%x09%s', `${input.baseCommit}..HEAD`])
 	]);
 	const commits = commitLog
 		.split('\n')
@@ -110,9 +103,7 @@ export async function closeoutEquipmentRankFirstProductionV3(input: {
 			entries.push({
 				targetId: target.targetId,
 				candidatePath,
-				candidateSha256: fileSha256(
-					path.join(input.workspaceRoot, ...candidatePath.split('/'))
-				),
+				candidateSha256: fileSha256(path.join(input.workspaceRoot, ...candidatePath.split('/'))),
 				ownerDecision: 'accept' as const
 			});
 		} else if (decision.decision === 'revise') excludedRevise += 1;

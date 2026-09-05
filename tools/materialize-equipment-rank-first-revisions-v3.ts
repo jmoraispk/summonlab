@@ -20,8 +20,7 @@ import {
 	readEquipmentRepositoryJson
 } from './equipment-repository-io.js';
 
-export const EQUIPMENT_V3_ROOT_SELECTION_PATH =
-	`${EQUIPMENT_V3_ROOT}/reviews/selections/root-audit-v1.json`;
+export const EQUIPMENT_V3_ROOT_SELECTION_PATH = `${EQUIPMENT_V3_ROOT}/reviews/selections/root-audit-v1.json`;
 
 export function equipmentRevisionPaths(targetId: string, attempt: number) {
 	const prefix = `${EQUIPMENT_V3_ROOT}/revisions/${targetId}/attempt-${attempt}`;
@@ -42,7 +41,9 @@ export async function materializeEquipmentRankFirstRevisionsV3(input: {
 	for (const auditPath of [...plan.classAuditBasis, ...plan.materialAuditBasis]) {
 		fileSha256(path.join(input.workspaceRoot, ...auditPath.split('/')));
 	}
-	const targets = new Map(buildEquipmentCandidateTargetsV3().map((target) => [target.targetId, target]));
+	const targets = new Map(
+		buildEquipmentCandidateTargetsV3().map((target) => [target.targetId, target])
+	);
 	const packets = [];
 	for (const revision of plan.revisions) {
 		const target = targets.get(revision.targetId);
@@ -56,9 +57,7 @@ export async function materializeEquipmentRankFirstRevisionsV3(input: {
 		const baseAssignment = EquipmentCandidateAssignmentV3Schema.parse(baseAssignmentValue);
 		const revisionSource = {
 			path: target.output.candidatePath,
-			sha256: fileSha256(
-				path.join(input.workspaceRoot, ...target.output.candidatePath.split('/'))
-			),
+			sha256: fileSha256(path.join(input.workspaceRoot, ...target.output.candidatePath.split('/'))),
 			purpose:
 				'First-pass candidate retained as immutable evidence; correct only the stated audit issue.'
 		};

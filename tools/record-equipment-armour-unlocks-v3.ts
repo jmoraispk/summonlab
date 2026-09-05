@@ -45,7 +45,9 @@ export async function recordEquipmentArmourUnlocksV3(input: {
 	const expectedIds = sources.map(({ targetId }) => targetId);
 	if (
 		checks.checks.length !== expectedIds.length ||
-		expectedIds.some((targetId) => !checks.checks.some((check) => check.sourceTargetId === targetId))
+		expectedIds.some(
+			(targetId) => !checks.checks.some((check) => check.sourceTargetId === targetId)
+		)
 	) {
 		throw new Error('Armour checks do not cover the exact 21 full-set sources');
 	}
@@ -70,14 +72,15 @@ export async function recordEquipmentArmourUnlocksV3(input: {
 		const children = targets
 			.filter(({ dependsOnTargetId }) => dependsOnTargetId === source.targetId)
 			.sort(
-				(a, b) =>
-					EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) - EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
+				(a, b) => EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) - EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
 			);
 		if (
 			children.length !== 4 ||
 			children.some(({ slot }, index) => slot !== EQUIPMENT_ARMOUR_SLOTS[index])
 		) {
-			throw new Error(`Full-set source does not own the exact four ordered slots: ${source.targetId}`);
+			throw new Error(
+				`Full-set source does not own the exact four ordered slots: ${source.targetId}`
+			);
 		}
 		const receipt = EquipmentArmourSetUnlockReceiptV3Schema.parse({
 			schemaVersion: 'equipment-armour-set-unlock-receipt-v3',

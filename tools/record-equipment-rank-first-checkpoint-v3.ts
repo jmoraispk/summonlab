@@ -73,9 +73,7 @@ export async function resolveEquipmentCheckpointImagePathsV3(
 		);
 	}
 	const targets = buildEquipmentCandidateTargetsV3().filter((target) =>
-		checkpoint === '2'
-			? target.dependsOnTargetId === null
-			: target.artifactRole === 'armour-piece'
+		checkpoint === '2' ? target.dependsOnTargetId === null : target.artifactRole === 'armour-piece'
 	);
 	if (checkpoint === '3') {
 		return (await resolveEquipmentArmourPieceCandidatesV3(workspaceRoot)).candidatePaths;

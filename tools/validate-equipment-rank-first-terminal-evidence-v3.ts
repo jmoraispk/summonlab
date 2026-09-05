@@ -22,8 +22,7 @@ import {
 	readEquipmentRepositoryJson
 } from './equipment-repository-io.js';
 
-export const EQUIPMENT_V3_WITHHELD_CALL_AUDIT_PATH =
-	`${EQUIPMENT_V3_ROOT}/reviews/armour-piece-withheld-calls-v1.json`;
+export const EQUIPMENT_V3_WITHHELD_CALL_AUDIT_PATH = `${EQUIPMENT_V3_ROOT}/reviews/armour-piece-withheld-calls-v1.json`;
 
 async function revisionAssignmentPaths(workspaceRoot: string): Promise<string[]> {
 	const root = equipmentRepositoryAbsolute(workspaceRoot, `${EQUIPMENT_V3_ROOT}/revisions`);
@@ -84,7 +83,11 @@ export async function validateEquipmentRankFirstTerminalEvidenceV3(workspaceRoot
 				? EquipmentCandidateAssignmentV3Schema.parse(assignmentValue)
 				: EquipmentCandidateRevisionAssignmentV3Schema.parse(assignmentValue);
 		const target = targetMap.get(assignment.targetId);
-		if (!target || (packet.attempt > 1 && assignment.schemaVersion !== 'equipment-rank-first-revision-assignment-v3')) {
+		if (
+			!target ||
+			(packet.attempt > 1 &&
+				assignment.schemaVersion !== 'equipment-rank-first-revision-assignment-v3')
+		) {
 			throw new Error(`Terminal assignment target mismatch: ${packet.assignmentPath}`);
 		}
 		const result = EquipmentProvenanceResultV3Schema.parse(
@@ -108,16 +111,18 @@ export async function validateEquipmentRankFirstTerminalEvidenceV3(workspaceRoot
 			throw new Error(`Terminal assignment/result mismatch: ${packet.resultPath}`);
 		}
 		for (const reference of result.references) {
-			if (
-				fileSha256(path.join(workspaceRoot, ...reference.path.split('/'))) !== reference.sha256
-			) {
+			if (fileSha256(path.join(workspaceRoot, ...reference.path.split('/'))) !== reference.sha256) {
 				throw new Error(`Terminal reference hash mismatch: ${reference.path}`);
 			}
 		}
 		const candidateState = await equipmentRepositoryPathState(workspaceRoot, packet.candidatePath);
 		const callKey = `${assignment.targetId}:${packet.attempt}`;
 		if (result.status === 'succeeded') {
-			if (!result.output || candidateState !== 'file' || result.output.path !== packet.candidatePath) {
+			if (
+				!result.output ||
+				candidateState !== 'file' ||
+				result.output.path !== packet.candidatePath
+			) {
 				throw new Error(`Successful terminal result has no candidate: ${packet.resultPath}`);
 			}
 			const absolute = equipmentRepositoryAbsolute(workspaceRoot, packet.candidatePath);
@@ -134,7 +139,9 @@ export async function validateEquipmentRankFirstTerminalEvidenceV3(workspaceRoot
 			succeeded += 1;
 		} else {
 			if (candidateState !== 'absent' || !callGroups.has(callKey)) {
-				throw new Error(`Failed terminal result lacks withheld-call evidence: ${packet.resultPath}`);
+				throw new Error(
+					`Failed terminal result lacks withheld-call evidence: ${packet.resultPath}`
+				);
 			}
 			failed += 1;
 		}

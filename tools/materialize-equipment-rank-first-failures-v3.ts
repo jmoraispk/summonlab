@@ -71,8 +71,7 @@ export async function materializeEquipmentRankFirstFailuresV3(input: {
 			attempt === 1
 				? EquipmentCandidateAssignmentV3Schema.parse(assignmentValue)
 				: EquipmentCandidateRevisionAssignmentV3Schema.parse(assignmentValue);
-		const isRevision =
-			assignment.schemaVersion === 'equipment-rank-first-revision-assignment-v3';
+		const isRevision = assignment.schemaVersion === 'equipment-rank-first-revision-assignment-v3';
 		if (
 			assignment.targetId !== targetId ||
 			(isRevision && assignment.attempt !== attempt) ||

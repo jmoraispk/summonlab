@@ -195,22 +195,14 @@ async function checkpoint2Cards(workspaceRoot: string, edition: Edition): Promis
 				label: `${target.rank} · ${target.materialName}`,
 				imagePath: selectedImagePath(target)
 			}));
-		await auditSheet(
-			workspaceRoot,
-			outputPath,
-			entries
-		);
+		await auditSheet(workspaceRoot, outputPath, entries);
 	}
 	for (const brief of EQUIPMENT_MATERIAL_BRIEFS_V3) {
 		const outputPath = `${EQUIPMENT_V3_ROOT}/reviews/material-audits${edition === 'final' ? '/final' : ''}/${brief.rank.toLowerCase()}-${brief.materialId}-v3.png`;
 		const entries = roots
 			.filter(({ materialId }) => materialId === brief.materialId)
 			.map((target) => ({ label: title(target.classId), imagePath: selectedImagePath(target) }));
-		await auditSheet(
-			workspaceRoot,
-			outputPath,
-			entries
-		);
+		await auditSheet(workspaceRoot, outputPath, entries);
 	}
 	const checkpointDirectory = edition === 'final' ? '2-final' : '2';
 	const classAuditCards = await Promise.all(

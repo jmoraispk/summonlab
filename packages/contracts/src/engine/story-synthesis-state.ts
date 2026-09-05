@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
-import {
-	MissionSlugSchema,
-	StoryExpressionResolutionSchema
-} from '../mission.js';
+import { MissionSlugSchema, StoryExpressionResolutionSchema } from '../mission.js';
 import { RelationshipDimensionsSchema } from '../social.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from '../shared.js';
 import { HeroProgressionSchema } from './base-state.js';

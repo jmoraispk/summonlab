@@ -971,7 +971,7 @@ def run_mandatory_family_dispatch_gate(
         raise ValueError("installed v3 contract has no valid sealed launcher")
     node_path = Path(node["path"])
     if not node_path.is_absolute() or node_path != Path(
-        "/home/joao/.nvm/versions/node/v24.14.1/bin/node"
+        "/home/joao/.nvm/versions/node/v24.19.0/bin/node"
     ):
         raise ValueError("approved Node runtime path is invalid for this production host")
     node_cursor = Path(node_path.anchor)

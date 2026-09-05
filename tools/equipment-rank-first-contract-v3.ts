@@ -162,9 +162,7 @@ export const EquipmentCandidateRevisionAssignmentV3Schema = z
 		schemaVersion: z.literal('equipment-rank-first-revision-assignment-v3'),
 		assignmentId: z
 			.string()
-			.regex(
-				/^revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*$/u
-			),
+			.regex(/^revision-assignment-material-equipment-v3-[a-z0-9-]+-v3-attempt-[2-9][0-9]*$/u),
 		targetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-v3$/u),
 		attempt: z.number().int().min(2),
 		immutable: z.literal(true),
@@ -326,9 +324,7 @@ export const EquipmentCandidatePromotionProposalV3Schema = z
 		createdAt: z.string().datetime({ offset: true }),
 		createdBy: NonEmptySchema,
 		status: z.literal('proposal-only'),
-		checkpoint3: z
-			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
-			.strict(),
+		checkpoint3: z.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema }).strict(),
 		entries: z.array(
 			z
 				.object({
@@ -425,9 +421,7 @@ export const EquipmentRootCandidateSelectionManifestV3Schema = z
 		createdAt: z.string().datetime({ offset: true }),
 		createdBy: NonEmptySchema,
 		approvalStatus: z.literal('candidate-only'),
-		revisionPlan: z
-			.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema })
-			.strict(),
+		revisionPlan: z.object({ path: RepositoryPathSchema, canonicalSha256: Sha256Schema }).strict(),
 		selections: z
 			.array(
 				z
@@ -549,15 +543,9 @@ export const EquipmentArmourSetUnlockReceiptV3Schema = z
 		sourceTargetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
 		sourceCandidatePath: RepositoryPathSchema,
 		sourceCandidateSha256: Sha256Schema,
-		checkpoint2Receipt: z
-			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
-			.strict(),
-		classAudit: z
-			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
-			.strict(),
-		materialAudit: z
-			.object({ path: RepositoryPathSchema, sha256: Sha256Schema })
-			.strict(),
+		checkpoint2Receipt: z.object({ path: RepositoryPathSchema, sha256: Sha256Schema }).strict(),
+		classAudit: z.object({ path: RepositoryPathSchema, sha256: Sha256Schema }).strict(),
+		materialAudit: z.object({ path: RepositoryPathSchema, sha256: Sha256Schema }).strict(),
 		classAuditDecision: z.literal('accept'),
 		materialAuditDecision: z.literal('accept'),
 		emptySetCheck: z.literal('pass'),
@@ -579,9 +567,7 @@ export const EquipmentArmourSourceChecksV3Schema = z
 			.array(
 				z
 					.object({
-						sourceTargetId: z
-							.string()
-							.regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
+						sourceTargetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
 						emptySetCheck: z.literal('pass'),
 						fourComponentCheck: z.literal('pass'),
 						notes: NonEmptySchema
@@ -683,7 +669,10 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['withheld-call-audit.schema.json', EquipmentWithheldCallAuditV1Schema],
 	['candidate-promotion-proposal.schema.json', EquipmentCandidatePromotionProposalV3Schema],
 	['candidate-closeout.schema.json', EquipmentCandidateCloseoutV3Schema],
-	['root-candidate-selection-manifest.schema.json', EquipmentRootCandidateSelectionManifestV3Schema],
+	[
+		'root-candidate-selection-manifest.schema.json',
+		EquipmentRootCandidateSelectionManifestV3Schema
+	],
 	[
 		'armour-piece-candidate-selection-manifest.schema.json',
 		EquipmentArmourPieceCandidateSelectionManifestV3Schema

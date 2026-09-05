@@ -51,9 +51,7 @@ async function fixture(hasBaseCandidate: boolean) {
 	const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'summonlab-equipment-piece-revision-'));
 	temporaryDirectories.push(workspaceRoot);
 	const targets = buildEquipmentCandidateTargetsV3();
-	const target = targets.find(
-		({ artifactRole }) => artifactRole === 'armour-piece'
-	)!;
+	const target = targets.find(({ artifactRole }) => artifactRole === 'armour-piece')!;
 	const sourceTarget = targets.find(({ targetId }) => targetId === target.dependsOnTargetId)!;
 	const referenceBytes = {
 		classDirection: Buffer.from('accepted class direction'),

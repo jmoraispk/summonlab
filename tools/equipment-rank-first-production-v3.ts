@@ -1048,7 +1048,9 @@ export function buildEquipmentV3AllocationPlan() {
 				resultPath: target.output.provenanceResultPath
 			}
 		}));
-	const sourceTargets = manifest.targets.filter(({ artifactRole }) => artifactRole === 'set-source');
+	const sourceTargets = manifest.targets.filter(
+		({ artifactRole }) => artifactRole === 'set-source'
+	);
 	const armourPieceWaves = Array.from(
 		{ length: Math.ceil(sourceTargets.length / 4) },
 		(_, waveIndex) => {
@@ -1058,8 +1060,7 @@ export function buildEquipmentV3AllocationPlan() {
 					.filter(({ dependsOnTargetId }) => dependsOnTargetId === source.targetId)
 					.sort(
 						(a, b) =>
-							EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) -
-							EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
+							EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) - EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
 					)
 					.map(({ targetId }) => targetId)
 			);

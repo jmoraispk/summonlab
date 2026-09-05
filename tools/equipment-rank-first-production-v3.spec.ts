@@ -160,12 +160,7 @@ describe('Equipment rank-first production v3', () => {
 
 	it('records producer checks for the exact 21 empty four-slot Armour sources', () => {
 		const checks = EquipmentArmourSourceChecksV3Schema.parse(
-			JSON.parse(
-				readFileSync(
-					`${EQUIPMENT_V3_ROOT}/reviews/armour-source-checks-v1.json`,
-					'utf8'
-				)
-			)
+			JSON.parse(readFileSync(`${EQUIPMENT_V3_ROOT}/reviews/armour-source-checks-v1.json`, 'utf8'))
 		);
 		const sourceIds = buildEquipmentCandidateTargetsV3()
 			.filter(({ artifactRole }) => artifactRole === 'set-source')

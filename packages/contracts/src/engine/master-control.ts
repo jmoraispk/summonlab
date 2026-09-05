@@ -1,10 +1,6 @@
 import { z } from 'zod';
 
-import {
-	ActionSourceSchema,
-	DecisionTimingSchema,
-	FallbackPolicySchema
-} from '../event.js';
+import { ActionSourceSchema, DecisionTimingSchema, FallbackPolicySchema } from '../event.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from '../shared.js';
 
 export const MasterDecisionExpiryOutcomeSchema = z.enum([

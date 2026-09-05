@@ -99,12 +99,12 @@ must be absent at preflight.
 
 Keep these states distinct in every response:
 
-| State | Required evidence | Permission granted |
-| --- | --- | --- |
-| `candidate` | Producer retained one role-valid layer | Owner may review the isolated layer |
-| `layer accepted` | Owner accepted the isolated art, frame, or backing | Coordinator may compose; no runtime writes |
-| `composite accepted` | Owner accepted the full-size and recognition views | Coordinator may promote that exact composite |
-| `approved-runtime` | Promotion record binds the verified master and complete size ladder | Runtime asset is live |
+| State                | Required evidence                                                   | Permission granted                           |
+| -------------------- | ------------------------------------------------------------------- | -------------------------------------------- |
+| `candidate`          | Producer retained one role-valid layer                              | Owner may review the isolated layer          |
+| `layer accepted`     | Owner accepted the isolated art, frame, or backing                  | Coordinator may compose; no runtime writes   |
+| `composite accepted` | Owner accepted the full-size and recognition views                  | Coordinator may promote that exact composite |
+| `approved-runtime`   | Promotion record binds the verified master and complete size ladder | Runtime asset is live                        |
 
 If the owner likes exact provider pixels that normalization rejected, finish the producer result as
 `failed` and stop. The coordinator may separately bind those exact bytes and their hash in an owner

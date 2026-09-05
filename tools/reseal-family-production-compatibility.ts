@@ -208,11 +208,12 @@ export function parseFamilyProductionResealApprovalMetadata(
 async function readExistingApprovalMetadata(
 	repositoryRoot: string
 ): Promise<FamilyProductionResealApprovalMetadata> {
-	const [legacy, fauna] = await Promise.all(
-		[LEGACY_RECEIPT_PATH, FAUNA_RECEIPT_PATH].map(async (path) =>
-			record(JSON.parse(await readFile(join(repositoryRoot, path), 'utf8')), path)
-		)
-	);
+	const readApproval = async (path: string) =>
+		record(JSON.parse(await readFile(join(repositoryRoot, path), 'utf8')), path);
+	const [legacy, fauna] = await Promise.all([
+		readApproval(LEGACY_RECEIPT_PATH),
+		readApproval(FAUNA_RECEIPT_PATH)
+	]);
 	return parseFamilyProductionResealApprovalMetadata({
 		schemaVersion: 'family-production-reseal-approval-v1',
 		profiles: {
@@ -355,7 +356,7 @@ if (entrypoint && import.meta.url === pathToFileURL(entrypoint).href) {
 			return resealFamilyProductionCompatibility({
 				repositoryRoot: process.cwd(),
 				write,
-				approvalMetadata
+				...(approvalMetadata === undefined ? {} : { approvalMetadata })
 			});
 		})
 		.then((report) => console.log(JSON.stringify(report, null, 2)))

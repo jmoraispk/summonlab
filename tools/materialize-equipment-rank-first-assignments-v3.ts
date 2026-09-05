@@ -116,11 +116,7 @@ export async function materializeEquipmentArmourPieceAssignmentsV3(input: {
 		unlock.sourceCandidateSha256
 	)
 		throw new Error('Unlock source path/hash mismatch');
-	for (const evidence of [
-		unlock.checkpoint2Receipt,
-		unlock.classAudit,
-		unlock.materialAudit
-	]) {
+	for (const evidence of [unlock.checkpoint2Receipt, unlock.classAudit, unlock.materialAudit]) {
 		if (
 			fileSha256(path.join(input.workspaceRoot, ...evidence.path.split('/'))) !== evidence.sha256
 		) {
@@ -188,10 +184,8 @@ if (isCli) {
 					})
 				: command === 'armour-all'
 					? await materializeAllEquipmentArmourPieceAssignmentsV3(process.cwd())
-				: (() => {
-							throw new Error(
-								'Usage: ... (roots|armour-set --unlock-receipt PATH|armour-all)'
-							);
-					})();
+					: (() => {
+							throw new Error('Usage: ... (roots|armour-set --unlock-receipt PATH|armour-all)');
+						})();
 	process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
 }
