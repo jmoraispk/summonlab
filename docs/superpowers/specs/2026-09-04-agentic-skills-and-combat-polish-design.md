@@ -1,6 +1,6 @@
 # Agentic Skills Wiki and Combat Animation Polish Design
 
-**Status:** Approved in conversation; awaiting review of this written specification
+**Status:** Approved
 
 **Date:** 2026-09-04
 
