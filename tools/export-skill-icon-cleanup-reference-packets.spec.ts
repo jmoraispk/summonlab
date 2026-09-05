@@ -21,6 +21,24 @@ const GEOMETRY_PATH = 'assets/wiki/skills/icon-production-v1/geometry-v2.json';
 const PROVIDER_GUIDE_PATH =
 	'assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png';
 const frameRarities = ['E', 'D', 'C', 'B', 'A', 'S'] as const;
+const revisionFiveJobIds = [
+	'rarity-frame-e-v5',
+	'rarity-frame-d-v5',
+	'rarity-frame-c-v5',
+	'rarity-frame-b-v5',
+	'rarity-frame-a-v5',
+	'rarity-frame-s-v5',
+	'charcoal-forged-stone-v5'
+] as const;
+const revisionSixJobIds = [
+	'rarity-frame-e-v6',
+	'rarity-frame-d-v6',
+	'rarity-frame-c-v6',
+	'rarity-frame-b-v6',
+	'rarity-frame-a-v6',
+	'rarity-frame-s-v6',
+	'charcoal-forged-stone-v6'
+] as const;
 const frameMaterials = {
 	E: 'aged bronze with brown-gold patina and understated corner collars',
 	D: 'tempered blue steel with cool edge highlights and restrained rivets',
@@ -31,7 +49,9 @@ const frameMaterials = {
 } as const;
 
 afterEach(async () => {
-	await Promise.all(temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
+	await Promise.all(
+		temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true }))
+	);
 });
 
 async function temporaryWorkspace(): Promise<string> {
@@ -46,6 +66,14 @@ async function temporaryWorkspace(): Promise<string> {
 		const destination = path.resolve(root, repositoryPath);
 		await mkdir(path.dirname(destination), { recursive: true });
 		await copyFile(path.resolve(workspaceRoot, repositoryPath), destination);
+	}
+	for (const jobId of revisionFiveJobIds) {
+		for (const kind of ['targets', 'assignments'] as const) {
+			const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
+			const destination = path.resolve(root, repositoryPath);
+			await mkdir(path.dirname(destination), { recursive: true });
+			await copyFile(path.resolve(workspaceRoot, repositoryPath), destination);
+		}
 	}
 	return root;
 }
@@ -62,26 +90,34 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		).toBe(false);
 	});
 
-	it('exports six frame and one backing revision-five packet pairs with bounded authority', async () => {
+	it('preserves revision-five packets and adds exactly seven geometry-first revision-six pairs', async () => {
 		const root = await temporaryWorkspace();
+		const revisionFiveBytes = new Map<string, Buffer>();
+		for (const jobId of revisionFiveJobIds) {
+			for (const kind of ['targets', 'assignments'] as const) {
+				const repositoryPath = `assets/wiki/skills/icon-production-v1/${kind}/references/${jobId}.json`;
+				revisionFiveBytes.set(repositoryPath, await readFile(path.resolve(root, repositoryPath)));
+			}
+		}
 		const report = await exportCleanupReferencePackets({ root, mode: 'write' });
 
 		expect(report).toMatchObject({ mode: 'write', written: expect.any(Array), drifted: [] });
 		expect(report.written).toHaveLength(14);
-		expect(report.jobIds).toEqual([
-			'rarity-frame-e-v5',
-			'rarity-frame-d-v5',
-			'rarity-frame-c-v5',
-			'rarity-frame-b-v5',
-			'rarity-frame-a-v5',
-			'rarity-frame-s-v5',
-			'charcoal-forged-stone-v5'
-		]);
+		expect(report.jobIds).toEqual([...revisionFiveJobIds, ...revisionSixJobIds]);
+		expect(report.written).toEqual(
+			revisionSixJobIds.flatMap((jobId) => [
+				`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+				`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`
+			])
+		);
+		for (const [repositoryPath, before] of revisionFiveBytes) {
+			expect(await readFile(path.resolve(root, repositoryPath))).toEqual(before);
+		}
 
 		const outputPaths = new Set<string>();
 		for (const rarity of frameRarities) {
 			const slug = rarity.toLowerCase();
-			const jobId = `rarity-frame-${slug}-v5`;
+			const jobId = `rarity-frame-${slug}-v6`;
 			const targetPath = `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`;
 			const assignmentPath = `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`;
 			const target = SkillIconTargetV2Schema.parse(await readJson(root, targetPath));
@@ -90,10 +126,16 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			expect(target).toMatchObject({
 				jobId,
 				logicalIdentity: `rarity-frame-${slug}`,
-				revision: 5,
+				revision: 6,
 				role: 'rarity-frame',
 				rarity,
-				normalization: { profile: 'skill-icon-green-key-role-mask-v3' }
+				normalization: {
+					profile: 'skill-icon-geometry-role-mask-v1',
+					geometry: {
+						path: GEOMETRY_PATH,
+						contentHash: '6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab'
+					}
+				}
 			});
 			expect(target.exactPrompt).toContain(frameMaterials[rarity]);
 			expect(target.exactPrompt).toMatch(/uniform opaque #00FF00 matte/iu);
@@ -110,9 +152,9 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			]);
 			expect(assignment).toMatchObject({
 				jobId,
-				revision: 5,
-				skillVersion: 'summonlab-skill-icon-production-v4',
-				normalization: { profile: 'skill-icon-green-key-role-mask-v3' },
+				revision: 6,
+				skillVersion: 'summonlab-skill-icon-production-v5',
+				normalization: { profile: 'skill-icon-geometry-role-mask-v1' },
 				retryCeiling: 1
 			});
 			expect(assignment.targetPath).toBe(targetPath);
@@ -121,11 +163,11 @@ describe('cleanup shared-layer reference packet exporter', () => {
 			outputPaths.add(target.output.resultPath);
 		}
 
-		const backingJobId = 'charcoal-forged-stone-v5';
+		const backingJobId = 'charcoal-forged-stone-v6';
 		const backingTargetPath =
-			'assets/wiki/skills/icon-production-v1/targets/references/charcoal-forged-stone-v5.json';
+			'assets/wiki/skills/icon-production-v1/targets/references/charcoal-forged-stone-v6.json';
 		const backingAssignmentPath =
-			'assets/wiki/skills/icon-production-v1/assignments/references/charcoal-forged-stone-v5.json';
+			'assets/wiki/skills/icon-production-v1/assignments/references/charcoal-forged-stone-v6.json';
 		const backing = SkillIconTargetV2Schema.parse(await readJson(root, backingTargetPath));
 		const backingAssignment = SkillIconAssignmentV2Schema.parse(
 			await readJson(root, backingAssignmentPath)
@@ -133,10 +175,16 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		expect(backing).toMatchObject({
 			jobId: backingJobId,
 			logicalIdentity: 'charcoal-forged-stone',
-			revision: 5,
+			revision: 6,
 			role: 'backing',
 			rarity: null,
-			normalization: { profile: 'skill-icon-green-key-role-mask-v3' }
+			normalization: {
+				profile: 'skill-icon-geometry-role-mask-v1',
+				geometry: {
+					path: GEOMETRY_PATH,
+					contentHash: '6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab'
+				}
+			}
 		});
 		expect(backing.references.map((reference) => reference.path)).toEqual([
 			OPTION_C_PATH,
@@ -146,9 +194,9 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		expect(backing.exactPrompt).toMatch(/geometry guide/iu);
 		expect(backingAssignment).toMatchObject({
 			jobId: backingJobId,
-			revision: 5,
-			skillVersion: 'summonlab-skill-icon-production-v4',
-			normalization: { profile: 'skill-icon-green-key-role-mask-v3' },
+			revision: 6,
+			skillVersion: 'summonlab-skill-icon-production-v5',
+			normalization: { profile: 'skill-icon-geometry-role-mask-v1' },
 			retryCeiling: 1
 		});
 		expect(backingAssignment.targetPath).toBe(backingTargetPath);
@@ -156,6 +204,14 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		outputPaths.add(backing.output.candidatePath);
 		outputPaths.add(backing.output.resultPath);
 		expect(outputPaths.size).toBe(14);
+		await expect(
+			readFile(
+				path.resolve(
+					root,
+					'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v6.json'
+				)
+			)
+		).rejects.toMatchObject({ code: 'ENOENT' });
 
 		await expect(exportCleanupReferencePackets({ root, mode: 'check' })).resolves.toMatchObject({
 			mode: 'check',

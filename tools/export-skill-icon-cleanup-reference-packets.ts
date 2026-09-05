@@ -56,6 +56,25 @@ interface PacketPair {
 	readonly assignment: ReturnType<typeof SkillIconAssignmentV2Schema.parse>;
 }
 
+interface PacketRevision {
+	readonly revision: 5 | 6;
+	readonly profile: 'skill-icon-green-key-role-mask-v3' | 'skill-icon-geometry-role-mask-v1';
+	readonly skillVersion:
+		'summonlab-skill-icon-production-v4' | 'summonlab-skill-icon-production-v5';
+}
+
+const REVISION_FIVE = {
+	revision: 5,
+	profile: 'skill-icon-green-key-role-mask-v3',
+	skillVersion: 'summonlab-skill-icon-production-v4'
+} as const satisfies PacketRevision;
+
+const REVISION_SIX = {
+	revision: 6,
+	profile: 'skill-icon-geometry-role-mask-v1',
+	skillVersion: 'summonlab-skill-icon-production-v5'
+} as const satisfies PacketRevision;
+
 export interface ReferencePacketExportReport {
 	readonly mode: 'write' | 'check';
 	readonly jobIds: readonly string[];
@@ -90,12 +109,12 @@ function framePrompt(rarity: keyof typeof FRAME_MATERIAL): string {
 }
 
 function backingPrompt(): string {
-	return 'Create exactly one 1254×1254 RGB PNG provider-source raster for the universal skill-icon backing layer. Use the supplied Option C comparison only as Option C tonal authority; do not crop or trace it or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Fill the guide\'s backing aperture with dark neutral charcoal forged stone, restrained shallow facets, and subtle low-contrast forged texture, carrying the material cleanly to the backing boundary. Leave every region outside that aperture as uninterrupted matte. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Do not render guide colors, construction marks, labels, UI, frame, rim, ornament, emblem, skill art, rarity cue, medallion, letter, number, word, scenery, glow, colored magic, or bright focal mark. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed backing role mask. Output only this isolated provider-source raster.';
+	return "Create exactly one 1254×1254 RGB PNG provider-source raster for the universal skill-icon backing layer. Use the supplied Option C comparison only as Option C tonal authority; do not crop or trace it or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Fill the guide's backing aperture with dark neutral charcoal forged stone, restrained shallow facets, and subtle low-contrast forged texture, carrying the material cleanly to the backing boundary. Leave every region outside that aperture as uninterrupted matte. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Do not render guide colors, construction marks, labels, UI, frame, rim, ornament, emblem, skill art, rarity cue, medallion, letter, number, word, scenery, glow, colored magic, or bright focal mark. The pipeline removes the matte, resizes to 1024×1024, and applies the fixed backing role mask. Output only this isolated provider-source raster.";
 }
 
-function normalization() {
+function normalization(profile: PacketRevision['profile']) {
 	return {
-		profile: 'skill-icon-green-key-role-mask-v3' as const,
+		profile,
 		sourceContract: {
 			mediaType: 'image/png' as const,
 			width: 1254 as const,
@@ -120,6 +139,7 @@ function assignmentFor(
 	jobId: string,
 	logicalIdentity: string,
 	revision: number,
+	packetRevision: PacketRevision,
 	targetPath: string,
 	assignmentPath: string,
 	permittedOutputs: ReturnType<typeof outputPaths>
@@ -132,8 +152,8 @@ function assignmentFor(
 		revision,
 		targetPath,
 		assignmentPath,
-		skillVersion: 'summonlab-skill-icon-production-v4',
-		normalization: { profile: 'skill-icon-green-key-role-mask-v3' },
+		skillVersion: packetRevision.skillVersion,
+		normalization: { profile: packetRevision.profile },
 		assignedAt: ASSIGNED_AT,
 		retryCeiling: 1,
 		permittedOutputs,
@@ -147,10 +167,14 @@ function assignmentFor(
 	});
 }
 
-function framePacket(rarity: SkillIconRarity, authorities: Readonly<Record<string, AuthorityFile>>): PacketPair {
+function framePacket(
+	rarity: SkillIconRarity,
+	authorities: Readonly<Record<string, AuthorityFile>>,
+	packetRevision: PacketRevision
+): PacketPair {
 	const slug = rarity.toLowerCase();
 	const logicalIdentity = `rarity-frame-${slug}`;
-	const revision = 5;
+	const { revision } = packetRevision;
 	const jobId = `${logicalIdentity}-v${revision}`;
 	const targetPath = repositoryPathFor('targets', jobId);
 	const assignmentPath = repositoryPathFor('assignments', jobId);
@@ -185,20 +209,31 @@ function framePacket(rarity: SkillIconRarity, authorities: Readonly<Record<strin
 		],
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output,
-		normalization: normalization()
+		normalization: normalization(packetRevision.profile)
 	});
 	return {
 		jobId,
 		targetPath,
 		assignmentPath,
 		target,
-		assignment: assignmentFor(jobId, logicalIdentity, revision, targetPath, assignmentPath, output)
+		assignment: assignmentFor(
+			jobId,
+			logicalIdentity,
+			revision,
+			packetRevision,
+			targetPath,
+			assignmentPath,
+			output
+		)
 	};
 }
 
-function backingPacket(authorities: Readonly<Record<string, AuthorityFile>>): PacketPair {
+function backingPacket(
+	authorities: Readonly<Record<string, AuthorityFile>>,
+	packetRevision: PacketRevision
+): PacketPair {
 	const logicalIdentity = 'charcoal-forged-stone';
-	const revision = 5;
+	const { revision } = packetRevision;
 	const jobId = `${logicalIdentity}-v${revision}`;
 	const targetPath = repositoryPathFor('targets', jobId);
 	const assignmentPath = repositoryPathFor('assignments', jobId);
@@ -227,14 +262,22 @@ function backingPacket(authorities: Readonly<Record<string, AuthorityFile>>): Pa
 		],
 		canvas: { width: 1024, height: 1024, mediaType: 'image/png' },
 		output,
-		normalization: normalization()
+		normalization: normalization(packetRevision.profile)
 	});
 	return {
 		jobId,
 		targetPath,
 		assignmentPath,
 		target,
-		assignment: assignmentFor(jobId, logicalIdentity, revision, targetPath, assignmentPath, output)
+		assignment: assignmentFor(
+			jobId,
+			logicalIdentity,
+			revision,
+			packetRevision,
+			targetPath,
+			assignmentPath,
+			output
+		)
 	};
 }
 
@@ -253,7 +296,8 @@ function assertCollisionSafe(packets: readonly PacketPair[]): void {
 		packet.target.output.candidatePath,
 		packet.target.output.resultPath
 	]);
-	if (new Set(paths).size !== paths.length) throw new Error('Reference packet paths must be collision-safe');
+	if (new Set(paths).size !== paths.length)
+		throw new Error('Reference packet paths must be collision-safe');
 }
 
 async function compareOrWrite(
@@ -289,7 +333,8 @@ export async function exportCleanupReferencePackets({
 	const authorities = Object.fromEntries(
 		await Promise.all(
 			[OPTION_C_PATH, SELECTED_FRAME_SHEET_PATH, SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH].map(
-				async (repositoryPath) => [repositoryPath, await loadAuthority(root, repositoryPath)] as const
+				async (repositoryPath) =>
+					[repositoryPath, await loadAuthority(root, repositoryPath)] as const
 			)
 		)
 	) as Readonly<Record<string, AuthorityFile>>;
@@ -303,8 +348,10 @@ export async function exportCleanupReferencePackets({
 		throw new Error('Provider-space guide authority hash drifted');
 
 	const packets = [
-		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities)),
-		backingPacket(authorities)
+		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_FIVE)),
+		backingPacket(authorities, REVISION_FIVE),
+		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_SIX)),
+		backingPacket(authorities, REVISION_SIX)
 	];
 	assertCollisionSafe(packets);
 	const written: string[] = [];
@@ -326,7 +373,9 @@ export async function exportCleanupReferencePackets({
 function parseMode(args: readonly string[]): 'write' | 'check' {
 	const normalized = args[0] === '--' ? args.slice(1) : args;
 	if (normalized.length !== 1 || !['--write', '--check'].includes(normalized[0] ?? ''))
-		throw new Error('Usage: tsx tools/export-skill-icon-cleanup-reference-packets.ts --write|--check');
+		throw new Error(
+			'Usage: tsx tools/export-skill-icon-cleanup-reference-packets.ts --write|--check'
+		);
 	return normalized[0] === '--write' ? 'write' : 'check';
 }
 

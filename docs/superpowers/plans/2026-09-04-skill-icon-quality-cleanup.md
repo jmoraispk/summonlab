@@ -410,32 +410,49 @@ Run focused TypeScript and Python suites, typecheck, the full skill-icon suite, 
 `git diff --check`; compare pre/post hashes for `mass-production-v1` and every v5 packet/result.
 This task creates no revision-6 packet or image.
 
+### Task 5B: Issue geometry-first revision-6 shared-layer packets
+
+**Files:**
+
+- Modify: `tools/export-skill-icon-cleanup-reference-packets.ts` and focused tests
+- Modify: cleanup result contract and finalizer shared-layer mapping/tests
+- Generate: `charcoal-forged-stone-v6` and `rarity-frame-{e,d,c,b,a,s}-v6` target/assignment pairs
+- Generate: authority-bound `superseded` results for E/D/C/B/A/S revision-5 frame packets
+
+- [x] **Step 1: Add RED coverage for immutable v5 bytes and the exact v6 tuple inventory**
+- [x] **Step 2: Export seven structural-v2 revision-6 packet pairs using geometry-first/producer-v5**
+- [x] **Step 3: Point cleanup composition at backing-v6, F-v5, and E/D/C/B/A/S-v6**
+- [x] **Step 4: Coordinator-supersede only the six output-free revision-5 frame packets**
+
+No image is generated or promoted in this slice. Failed backing-v5 and successful F-v5 evidence
+remain byte-identical, and no F-v6 packet exists.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v5.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v5.json`
+- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v6.png`
+- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v6.json`
 - Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
-- Create in a later packet-authoring slice: revision-6 target, assignment, candidate, and result for
-  `charcoal-forged-stone-v6` using the geometry-first/producer-v5 tuple
+- Preserve: the successful `rarity-frame-f-v5` candidate and result
+- Create: the `charcoal-forged-stone-v6` candidate and result using the issued revision-6 packet
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/*.png`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/*.png`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/*.json`
 
 **Interfaces:**
 
-- Consumes: six pending revision-5 frame assignments, one future revision-6 backing assignment, the
-  retained F revision-5 frame, and the complete cleanup manifest.
+- Consumes: six revision-6 frame assignments, the revision-6 backing assignment, the retained F
+  revision-5 frame, and the complete cleanup manifest.
 - Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
 - [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-5 E–S frame. Author and review a
-separate revision-6 backing packet before dispatch, binding `skill-icon-geometry-role-mask-v1` to
-`summonlab-skill-icon-production-v5`; never alter the failed v5 packet/result. Each worker validates
-its exact target and assignment, submits the exact prompt, persists through
+Use `summonlab-skill-icon-production` once for each revision-6 E/D/C/B/A/S frame and the revision-6
+backing packet, each binding `skill-icon-geometry-role-mask-v1` to
+`summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or successful F-v5 evidence.
+Each worker validates its exact target and assignment, submits the exact prompt, persists through
 `pnpm persist:skill-icon-output`, records full-size and 96-pixel findings, and writes only its
 candidate/result pair. Do not ask for per-job owner approval and do not promote.
 

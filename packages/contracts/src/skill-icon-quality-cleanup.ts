@@ -209,14 +209,14 @@ export const SkillIconCleanupResultSchema = SkillIconCleanupRecordSchema.safeExt
 			}),
 			backing: CleanupLayerAuthoritySchema.safeExtend({
 				path: z.literal(
-					'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v5.png'
+					'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png'
 				)
 			}),
 			frame: CleanupLayerAuthoritySchema.safeExtend({
 				path: z
 					.string()
 					.regex(
-						/^assets\/wiki\/skills\/icon-production-v1\/candidates\/references\/rarity-frame-[fedcbas]-v5\.png$/u
+						/^assets\/wiki\/skills\/icon-production-v1\/candidates\/references\/(?:rarity-frame-f-v5|rarity-frame-[edcbas]-v6)\.png$/u
 					)
 			})
 		})
@@ -242,7 +242,8 @@ export const SkillIconCleanupResultSchema = SkillIconCleanupRecordSchema.safeExt
 			message: 'Cleanup removal bounds must exist exactly when visible pixels were removed'
 		});
 	}
-	const expectedFramePath = `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-${result.rank.toLowerCase()}-v5.png`;
+	const frameRevision = result.rank === 'F' ? 5 : 6;
+	const expectedFramePath = `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-${result.rank.toLowerCase()}-v${frameRevision}.png`;
 	if (result.compositionAuthority.frame.path !== expectedFramePath) {
 		context.addIssue({
 			code: 'custom',

@@ -84,7 +84,7 @@ function validResult() {
 				contentHash: hash
 			},
 			backing: {
-				path: 'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v5.png',
+				path: 'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png',
 				contentHash: hash
 			},
 			frame: {
@@ -266,6 +266,48 @@ describe('skill-icon quality-cleanup contracts', () => {
 			SkillIconCleanupResultSchema.safeParse({
 				...result,
 				resultPath: 'assets/wiki/skills/icon-production-v1/results/icons/not-cleanup.json'
+			}).success
+		).toBe(false);
+	});
+
+	it('binds F to revision five and every other cleanup frame to revision six', () => {
+		const fResult = validResult();
+		expect(SkillIconCleanupResultSchema.safeParse(fResult).success).toBe(true);
+		expect(
+			SkillIconCleanupResultSchema.safeParse({
+				...fResult,
+				compositionAuthority: {
+					...fResult.compositionAuthority,
+					frame: {
+						...fResult.compositionAuthority.frame,
+						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v6.png'
+					}
+				}
+			}).success
+		).toBe(false);
+
+		const eResult = {
+			...fResult,
+			rank: 'E' as const,
+			compositionAuthority: {
+				...fResult.compositionAuthority,
+				frame: {
+					...fResult.compositionAuthority.frame,
+					path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v6.png'
+				}
+			}
+		};
+		expect(SkillIconCleanupResultSchema.safeParse(eResult).success).toBe(true);
+		expect(
+			SkillIconCleanupResultSchema.safeParse({
+				...eResult,
+				compositionAuthority: {
+					...eResult.compositionAuthority,
+					frame: {
+						...eResult.compositionAuthority.frame,
+						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v5.png'
+					}
+				}
 			}).success
 		).toBe(false);
 	});

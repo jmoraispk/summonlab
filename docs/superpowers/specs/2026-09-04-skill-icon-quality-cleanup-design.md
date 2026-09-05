@@ -50,9 +50,9 @@ content.
 ### 1. Canonical shared layers
 
 The approved seven-frame sheet is generation guidance, not a crop source. The cleanup reuses the
-technically valid F revision-5 frame candidate and creates higher-revision standalone candidates
-for E, D, C, B, A, S, and the charcoal backing through the existing normalized reference-asset
-pipeline. New frame targets bind both the selected shape sheet and Option C material authority.
+technically valid F revision-5 frame candidate and creates revision-6 standalone candidates for E,
+D, C, B, A, S, and the charcoal backing through the existing normalized reference-asset pipeline.
+New frame targets bind both the selected shape sheet and Option C material authority.
 
 The seven frames and backing are generated as one batch. The cleanup run may use their exact hashes
 to build review candidates, but they remain candidates and are not called approved masters before
@@ -66,6 +66,10 @@ provider pixels outside the authorized role mask as disposable input instead of 
 green exterior. The mask clears those pixels deterministically, then the retained 1024×1024 RGBA
 layer must still pass strict role-aware alpha, backing-coverage, or frame-registration inspection.
 No revision-6 packet or image is part of the profile implementation itself.
+The subsequent packet-authoring slice issues exactly `charcoal-forged-stone-v6` and
+`rarity-frame-{e,d,c,b,a,s}-v6`. It records coordinator-authenticated `superseded` results for only
+the six output-free revision-5 frame packets. The failed backing-v5 result and successful F-v5
+candidate/result remain terminal evidence and are not superseded.
 
 ### 2. Deterministic whole-catalog recomposition
 

@@ -35,8 +35,10 @@ The defects are not one alpha-channel problem.
   revision-6 route: `skill-icon-geometry-role-mask-v1` with
   `summonlab-skill-icon-production-v5`. The new route clears pixels outside geometry-v2 instead of
   rejecting them solely for their color; strict retained-role validation remains mandatory. All v5
-  packet/result bytes remain immutable, and this contract task creates no revision-6 production
-  packet or image.
+  packet/result bytes remain immutable. The follow-up packet-authoring slice created exactly the
+  backing-v6 and E/D/C/B/A/S frame-v6 target/assignment pairs without generating images, and
+  coordinator-superseded only the six output-free v5 frame jobs. Failed backing-v5 and successful
+  F-v5 evidence remain unchanged.
 - `repair-skill-icon-mass-exteriors.ts` correctly masks pixels outside the broad outer geometry, but
   it does not restore a canonical frame, protect the frame aperture from subject art, or understand
   semantic glyphs.
@@ -126,6 +128,10 @@ When a profile-v3 revision is terminally blocked only by dirty pixels outside th
 geometry, issue a new revision using the exact geometry-first/producer-v5 tuple. Do not rewrite or
 relabel the failed v5 evidence. Geometry-first retains the canonical `caBX`, assigned-sRGB,
 geometry-v2/guide-v2, and fixed-output provenance gates; it is not a manual masking exception.
+
+The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v6. The six
+unattempted E/D/C/B/A/S v5 frame packets have authority-bound `superseded` results; failed
+backing-v5 is not superseded, and no F-v6 packet exists.
 
 ### Phase 2: recompose all candidates
 
