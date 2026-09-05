@@ -97,6 +97,8 @@
 		"persist:image-production-output": "tsx tools/persist-image-production-output.ts",
 		"export:runtime-visuals": "tsx tools/export-runtime-visuals.ts",
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
+		"promote:summonable-hero-roster": "tsx tools/promote-summonable-hero-roster.ts --write",
+		"validate:summonable-hero-roster": "tsx tools/promote-summonable-hero-roster.ts --check",
 		"export:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts",
 		"validate:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts --check",
 		"validate:equipment-approved-sources": "tsx tools/promote-equipment-approved-sources.ts --check",

@@ -22,4 +22,5 @@ export * from './settlement-scene.js';
 export * from './skill-icon-production.js';
 export * from './social.js';
 export * from './story-workshop.js';
+export * from './summonable-hero.js';
 export * from './visual.js';

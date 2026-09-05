@@ -227,7 +227,11 @@ export const CharacterManifestSchema = z
 			})
 			.strict(),
 		artKey: z.string().min(1).max(80).nullable(),
-		assetProvenance: z.enum(['procedural', 'original-generated-anchor'])
+		assetProvenance: z.enum([
+			'procedural',
+			'original-generated-anchor',
+			'approved-generated-roster'
+		])
 	})
 	.strict();
 
