@@ -1,6 +1,6 @@
 # Five-head chibi revisions 001
 
-Lifecycle: **candidate only**.
+Lifecycle: **owner-approved visual selection; not runtime-bound**.
 
 This batch contains nineteen owner-requested chibi proportion revisions. Each chibi is regenerated
 from its selected summon portrait as the identity authority. The rejected v2 derivative is retained
@@ -15,4 +15,6 @@ records are preserved for all nineteen heroes.
 
 Coro Reshi additionally receives a versioned summon edit with fuller shoulder and upper-torso robe
 coverage. Her revised chibi derives from that revised summon source. No original candidate is
-overwritten, and every v3 image remains a review candidate rather than an approved or runtime asset.
+overwritten. `approval-v1.json` records the owner's approval of all nineteen immutable v3 candidate
+files while keeping approval distinct from runtime promotion; no engine contract or shared runtime
+catalog is changed here.
