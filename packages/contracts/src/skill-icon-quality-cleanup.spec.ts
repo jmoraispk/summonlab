@@ -16,7 +16,7 @@ function validRecord(index: number) {
 	return {
 		targetId,
 		sourceCandidate: {
-			path: `assets/wiki/skills/icon-production-v1/mass-production-v1/candidates/${slug}.png`,
+			path: `assets/wiki/skills/icon-production-v1/mass-production-v1/icons/${slug}.png`,
 			contentHash: hash
 		},
 		rank: 'F' as const,
@@ -173,6 +173,45 @@ describe('skill-icon quality-cleanup contracts', () => {
 					{
 						...firstRecord,
 						cleanupCompositePath: firstRecord.sourceCandidate.path
+					},
+					...manifest.records.slice(1)
+				]
+			}).success
+		).toBe(false);
+	});
+
+	it('rejects cleanup-owned sources and cross-record source/composite collisions', () => {
+		const manifest = validManifest();
+		const [firstRecord, secondRecord] = manifest.records;
+		if (!firstRecord || !secondRecord) {
+			throw new Error('Expected the valid manifest fixture to contain multiple records.');
+		}
+		expect(
+			SkillIconCleanupManifestSchema.safeParse({
+				...manifest,
+				records: [
+					firstRecord,
+					{
+						...secondRecord,
+						sourceCandidate: {
+							...secondRecord.sourceCandidate,
+							path: firstRecord.cleanupCompositePath
+						}
+					},
+					...manifest.records.slice(2)
+				]
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconCleanupManifestSchema.safeParse({
+				...manifest,
+				records: [
+					{
+						...firstRecord,
+						sourceCandidate: {
+							...firstRecord.sourceCandidate,
+							path: `${cleanupRoot}/revisions/martial-blade-cleanup-source.png`
+						}
 					},
 					...manifest.records.slice(1)
 				]

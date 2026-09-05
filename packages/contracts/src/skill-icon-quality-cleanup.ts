@@ -27,8 +27,13 @@ const CleanupResultPathSchema = z
 		'Expected a versioned cleanup result path'
 	);
 const CleanupSourceCandidatePathSchema = SkillIconRepositoryPathSchema.refine(
-	(path) => path.endsWith('.png'),
-	'Expected a PNG cleanup source candidate path'
+	(path) =>
+		new RegExp(
+			'^assets/wiki/skills/icon-production-v1/mass-production-v1/icons/' +
+				`${CleanupSlugSchema}\\.png$`,
+			'u'
+		).test(path),
+	'Expected a frozen mass-production icon source candidate path'
 );
 
 const FixedAuthoritySchema = (path: string, contentHash: string) =>
@@ -150,6 +155,22 @@ export const SkillIconCleanupManifestSchema = z
 					message: `Duplicate cleanup ${key} path`
 				});
 			}
+		}
+		const sourcePaths = new Set(
+			manifest.records.map(({ sourceCandidate }) => sourceCandidate.path)
+		);
+		const outputPaths = new Set(
+			manifest.records.flatMap(({ cleanupCompositePath, resultPath }) => [
+				cleanupCompositePath,
+				resultPath
+			])
+		);
+		if (Array.from(sourcePaths).some((path) => outputPaths.has(path))) {
+			context.addIssue({
+				code: 'custom',
+				path: ['records'],
+				message: 'Cleanup source and output paths must not collide across records'
+			});
 		}
 	});
 
