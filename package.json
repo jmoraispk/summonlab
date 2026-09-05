@@ -143,6 +143,8 @@
 		"validate:mission-content": "tsx tools/validate-mission-content.ts",
 		"export:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --write",
 		"validate:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --check",
+		"export:wiki-agentic-skills": "node tools/agentic-skill-inventory.mjs --write",
+		"validate:wiki-agentic-skills": "node tools/agentic-skill-inventory.mjs --check",
 		"validate:wiki-affinities": "tsx tools/affinity-wiki-contract.ts",
 		"validate:skill-taxonomy": "tsx tools/validate-skill-taxonomy.ts",
 		"export:skill-icons": "tsx tools/export-skill-icon-production.ts --write",
