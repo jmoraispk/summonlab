@@ -9,6 +9,7 @@ import {
 	readdir,
 	readFile,
 	rm,
+	symlink,
 	unlink,
 	writeFile
 } from 'node:fs/promises';
@@ -730,6 +731,19 @@ describe('deterministic protected-aperture composition', () => {
 			expect(checked.written).toEqual([]);
 			expect(checked.drifted).toEqual([]);
 
+			const second = fixture.manifest.records[1]!;
+			const third = fixture.manifest.records[2]!;
+			const missingPaths = [
+				fixture.firstInteriorPath,
+				second.cleanupCompositePath,
+				third.resultPath
+			];
+			for (const missingPath of missingPaths) await unlink(path.join(root, missingPath));
+			const missing = await finalizeSkillIconQualityCleanup({ root, mode: 'check' });
+			expect(missing.drifted).toEqual(missingPaths);
+			const restored = await finalizeSkillIconQualityCleanup({ root, mode: 'write' });
+			expect(restored.written).toEqual(missingPaths);
+
 			const drift = Buffer.from('existing derived artifact drift\n');
 			await writeFile(path.join(root, first.cleanupCompositePath), drift);
 			const drifted = await finalizeSkillIconQualityCleanup({ root, mode: 'check' });
@@ -794,6 +808,32 @@ describe('deterministic protected-aperture composition', () => {
 			await rm(root, { recursive: true, force: true });
 		}
 	}, 180_000);
+
+	it('preflights an escaping destination-parent symlink before publishing any output', async () => {
+		// Catches parent resolution being deferred until record-by-record publication.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-parent-symlink-'));
+		const outside = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-outside-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const first = fixture.manifest.records[0]!;
+			const resultsDirectory = path.join(root, QUALITY_CLEANUP_ROOT, 'results');
+			await symlink(outside, resultsDirectory, 'dir');
+
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/cleanup artifact parent.*symbolic link|outside the repository root/i
+			);
+			await expect(readFile(path.join(root, fixture.firstInteriorPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			await expect(readFile(path.join(root, first.cleanupCompositePath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+			expect(await readdir(outside)).toEqual([]);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+			await rm(outside, { recursive: true, force: true });
+		}
+	}, 120_000);
 
 	it('preflights every frozen authority hash before finalization', async () => {
 		// Catches validating geometry alone while another manifest-bound authority has drifted.

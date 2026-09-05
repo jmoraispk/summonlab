@@ -868,7 +868,7 @@ async function assertCleanupAuthorities(root: string, authority: CleanupAuthorit
 	}
 }
 
-function assertFinalizePathCoverage(manifest: SkillIconCleanupManifest): void {
+function assertFinalizePathCoverage(manifest: SkillIconCleanupManifest): readonly string[] {
 	const owners = new Map<string, string>();
 	for (const record of manifest.records) {
 		for (const [kind, repositoryPath] of [
@@ -888,6 +888,57 @@ function assertFinalizePathCoverage(manifest: SkillIconCleanupManifest): void {
 	for (const record of manifest.records) {
 		if (owners.has(record.sourceCandidate.path)) {
 			throw new Error(`Cleanup finalize output collides with frozen source: ${record.targetId}`);
+		}
+	}
+	return Array.from(owners.keys());
+}
+
+async function assertSafeFinalizeDestinations(
+	root: string,
+	repositoryPaths: readonly string[]
+): Promise<void> {
+	const rootRealPath = await realpath(root);
+	const parentPaths = new Set<string>();
+	for (const repositoryPath of repositoryPaths) {
+		const absolutePath = path.resolve(root, repositoryPath);
+		if (!isInside(rootRealPath, absolutePath)) {
+			throw new Error(
+				`Cleanup artifact path resolves outside the repository root: ${repositoryPath}`
+			);
+		}
+		parentPaths.add(path.dirname(absolutePath));
+		const leaf = await lstat(absolutePath).catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return null;
+			throw error;
+		});
+		if (leaf && (!leaf.isFile() || leaf.isSymbolicLink())) {
+			throw new Error(`Refusing symbolic-link or non-regular cleanup artifact: ${repositoryPath}`);
+		}
+	}
+	for (const parentPath of parentPaths) {
+		let current = parentPath;
+		while (current !== rootRealPath) {
+			if (!isInside(rootRealPath, current)) {
+				throw new Error('Cleanup artifact parent resolves outside the repository root');
+			}
+			const metadata = await lstat(current).catch((error: NodeJS.ErrnoException) => {
+				if (error.code === 'ENOENT') return null;
+				throw error;
+			});
+			if (metadata?.isSymbolicLink()) {
+				throw new Error(`Cleanup artifact parent contains symbolic link: ${current}`);
+			}
+			if (metadata && !metadata.isDirectory()) {
+				throw new Error(`Cleanup artifact parent is not a directory: ${current}`);
+			}
+			if (metadata && !isInside(rootRealPath, await realpath(current))) {
+				throw new Error(`Cleanup artifact parent resolves outside the repository root: ${current}`);
+			}
+			const next = path.dirname(current);
+			if (next === current) {
+				throw new Error('Cleanup artifact parent traversal escaped the repository root');
+			}
+			current = next;
 		}
 	}
 }
@@ -930,7 +981,8 @@ export async function finalizeSkillIconQualityCleanup(options: {
 			.filter(({ job }) => job.role === 'rarity-frame')
 			.map(({ job, layer }) => [job.rarity, layer!] as const)
 	);
-	assertFinalizePathCoverage(manifest);
+	const finalizePaths = assertFinalizePathCoverage(manifest);
+	await assertSafeFinalizeDestinations(root, finalizePaths);
 	for (const record of manifest.records) {
 		const source = await regularBytes(root, record.sourceCandidate.path);
 		if (sha256(source) !== record.sourceCandidate.contentHash) {
@@ -1038,6 +1090,10 @@ export async function finalizeSkillIconQualityCleanup(options: {
 				const current = await currentBytes(root, output.path);
 				if (current?.equals(output.bytes)) continue;
 				if (current) {
+					drifted.push(output.path);
+					continue;
+				}
+				if (options.mode === 'check') {
 					drifted.push(output.path);
 					continue;
 				}
