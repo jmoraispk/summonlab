@@ -877,6 +877,50 @@ describe('deterministic protected-aperture composition', () => {
 		}
 	}, 120_000);
 
+	it('rejects a coherent wrong-reference substitution before any finalizer write', async () => {
+		// Catches trusting target/result agreement when both name an allowed but unauthorized authority.
+		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-reference-substitution-'));
+		try {
+			const fixture = await seedReadyFinalizerRoot(root);
+			const jobId = 'charcoal-forged-stone-v6';
+			const wrongReference = fixture.manifest.authority.selectedFrameSheet;
+			await updateJsonArtifact(
+				root,
+				`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+				(target) => {
+					const references = target.references as Record<string, unknown>[];
+					references[0] = {
+						...wrongReference,
+						purpose: 'Allowed repository image substituted for the required Option C authority.'
+					};
+				}
+			);
+			await updateJsonArtifact(
+				root,
+				`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`,
+				(result) => {
+					const referenceInputs = result.referenceInputs as Record<string, unknown>[];
+					referenceInputs[0] = wrongReference;
+				}
+			);
+			for (const repositoryPath of [
+				'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-s-v9.png',
+				'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-s-v9.json'
+			]) {
+				await unlink(path.join(root, repositoryPath));
+			}
+
+			await expect(finalizeSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/canonical ordered references/i
+			);
+			await expect(readFile(path.join(root, fixture.firstInteriorPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
 	it('persists interiors and validated loss provenance through write, check, and drift modes', async () => {
 		// Catches dropping extracted interiors/evidence or replacing an existing derived artifact.
 		const root = await mkdtemp(path.join(tmpdir(), 'summonlab-cleanup-ready-'));

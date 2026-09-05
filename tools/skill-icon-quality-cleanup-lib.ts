@@ -17,6 +17,9 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 import {
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
 	SkillIconCatalogSchema,
 	SkillIconExecutionV2Schema,
 	SkillIconCleanupAuthoritySchema,
@@ -491,6 +494,38 @@ const DETERMINISTIC_PNG_OPTIONS = {
 	palette: false
 } as const;
 
+const CLEANUP_BACKING_REFERENCES = [
+	{
+		path: AUTHORITY_PATHS.optionCMaterial,
+		purpose: 'Canonical Option C material and tonal authority.',
+		contentHash: '66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce'
+	},
+	{
+		path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+		purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+		contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+	}
+] as const;
+
+const CLEANUP_FRAME_REFERENCES = [
+	{
+		path: AUTHORITY_PATHS.optionCMaterial,
+		purpose: 'Canonical Option C rarity-frame material and ornament authority.',
+		contentHash: '66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce'
+	},
+	{
+		path: AUTHORITY_PATHS.selectedFrameSheet,
+		purpose:
+			'Approved seven-frame sheet for proportional and material-ladder guidance only; never crop or trace it.',
+		contentHash: '4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266'
+	},
+	{
+		path: SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
+		purpose: SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+		contentHash: SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH
+	}
+] as const;
+
 const CLEANUP_LAYER_JOBS = [
 	{
 		kind: 'ordinary-v2',
@@ -500,7 +535,8 @@ const CLEANUP_LAYER_JOBS = [
 		role: 'backing',
 		rarity: null,
 		profile: 'skill-icon-geometry-role-mask-v1',
-		producer: 'summonlab-skill-icon-production-v5'
+		producer: 'summonlab-skill-icon-production-v5',
+		references: CLEANUP_BACKING_REFERENCES
 	},
 	{
 		kind: 'reprocess-v1',
@@ -520,7 +556,8 @@ const CLEANUP_LAYER_JOBS = [
 		role: 'rarity-frame' as const,
 		rarity,
 		profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const,
-		producer: 'summonlab-skill-icon-production-v7' as const
+		producer: 'summonlab-skill-icon-production-v7' as const,
+		references: CLEANUP_FRAME_REFERENCES
 	}))
 ] as const;
 
@@ -892,6 +929,18 @@ async function existingCleanupLayer(
 			assignment: JSON.parse(assignmentBytes.toString('utf8')) as unknown,
 			result: JSON.parse(resultBytes.toString('utf8')) as unknown
 		});
+		const expectedResultReferences = job.references.map(({ path, contentHash }) => ({
+			path,
+			contentHash
+		}));
+		if (
+			JSON.stringify(execution.target.references) !== JSON.stringify(job.references) ||
+			JSON.stringify(execution.result.referenceInputs) !== JSON.stringify(expectedResultReferences)
+		) {
+			throw new Error(
+				`Cleanup shared-layer execution does not match canonical ordered references: ${job.jobId}`
+			);
+		}
 		await Promise.all([
 			...execution.target.references.map((reference) => assertBoundHash(root, reference)),
 			assertBoundHash(root, execution.target.normalization.geometry)
