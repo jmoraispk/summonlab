@@ -361,41 +361,71 @@ new third-party content.
   Output intent: one clean landscape raster strip containing exactly five evenly spaced full-body poses and no other elements.
   ```
 
-- Selected generated original: `/home/joao/.codex/generated_images/01a06fda-5187-71a3-9846-2c8f5d8dcd98/exec-63275e93-eae9-4057-807b-e602a76ccd12.png`.
-  Project strip: `animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v5.png`
-  (`5d49f9204da47e46eb18b3857a1ec1b1099cfc000c508df1c3bc997fc92de38a`). Exact
-  final selected correction prompt:
+- Portable final-edit input bindings: Image 1 was generation identifier
+  `exec-bbc44a04-6ba2-4a74-affb-83e27a8f5a95.png`
+  (`4f9feb95042d3c50fec9e63f9aa9d9b570b4f60feaf403f7e693785c286d8acf`); Image 2 was
+  `../../../../apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png`
+  (`66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114`); Image 3 was
+  repository authority `skills/summonlab-character-animations/references/classical-human-run.svg`
+  (`02412a2e6e0821f3a2d126560594f617223435d0542107ff712d9a2146818771`), rasterized
+  without semantic change as prompt-input identifier `classical-human-run.png`
+  (`d721873a27505ced14a0bb600e9bdd196c32193824fa10d1b45f4ef37fe28f81`). No canonical
+  record depends on a machine-local generated-image path.
+- The full-strip correction output was generation identifier
+  `exec-6282fe81-538f-4fd1-b558-09586ffe276c.png`
+  (`bbf1d8afa47a8251f9046727dc92e3b991f6b766c318aa008b3506ec02bf3403`). It was
+  rejected because its actual visible contacts still began on the mace side and its middle pose was
+  not airborne. Its exact prompt was:
 
   ```text
-  Use case: precise-object-edit
-  Asset type: final production source strip for a five-frame game-character run animation
-  Input images: Image 1 is the clean edit target. Its FIRST CELL establishes the required compact boot-to-boot stride width for the opposite contact. Image 2 is Toma's canonical identity anchor.
-  Primary request: Change only the FOURTH CELL's lifted trailing leg and boot. Keep the current planted boot on the screen-right side fixed exactly where it is. Extend the bent, lifted trailing leg toward screen-left by a small amount—about 8% of that cell's width—so the horizontal distance between the two boot centers matches cell 1. Keep the trailing boot fully above the contact line with a clear white gap below it. Preserve the fourth-cell hips, torso, planted leg, upper body, and equipment exactly. Preserve cells 1, 2, 3, and 5 exactly.
-  Motion invariant: left,left,none,right,right remains unchanged; frames 1 and 4 are opposite planted sides with matching compact stride width and torso height; frame 5 flows into frame 1.
-  Preserve: exact face, topknot, beard, stocky proportions, navy-and-teal armor, bronze shield, compact mace, camera, scale, lighting, spacing, full-body clearance, painterly 2.5D finish, and pure uniform #FFFFFF matte.
-  Avoid: moving the planted right-side boot; grounding the trailing boot; changing any upper body or other frame; long or split stride; high kick; background texture or speckles; shadow; ground mark; scenery; text; divider; crop; mirror; equipment swap; wild mace; or extra limb.
+  Use case: identity-preserve precise temporal-unit edit.
+  Asset type: final production source strip for a five-frame game-character run animation.
+  Input roles: Image 1 is the named final edit target and supplies the exact five-cell layout, Toma rendering, camera, equipment, scale, and lighting. Image 2 is Toma's canonical identity anchor. Image 3 is the classical-human-run-5 motion authority only; do not reproduce its diagram graphics, labels, colors, or style.
+  Primary request: Redraw all five poses together as one coherent compact heavy-run temporal unit, keeping the same cell order and steep three-quarter up-field view. Toma's bronze shield is permanently on his anatomical LEFT, visible on SCREEN-RIGHT. His compact mace is permanently in his anatomical RIGHT hand, visible on SCREEN-LEFT. Beat 1: the shield-side/anatomical-left boot is visibly planted under the screen-right hip; the mace-side/right boot is lifted or trailing. Beat 2: the same shield-side/anatomical-left boot remains visibly planted and compresses into push; the mace-side/right leg advances. Beat 3: neither boot touches the contact line; the mace-side/anatomical-right leg and knee advance toward screen-left, below belt height, in a low airborne pass. Beat 4: the mace-side/anatomical-right boot is visibly planted under the screen-left hip; the shield-side/left boot is lifted or trailing. Beat 5: the same mace-side/anatomical-right boot remains visibly planted as recovery returns toward beat 1. The visible support must therefore be shield-side, shield-side, none, mace-side, mace-side—anatomical left,left,none,right,right.
+  Preserve exactly: older East Asian face, gray topknot, short beard, stocky adult proportions, navy-and-muted-teal layered armor, bronze shield on anatomical-left/screen-right, compact mace in anatomical-right/screen-left, constant body and shield scale, common lighting, full-body clearance, stable contact line, and premium painterly 2.5D finish.
+  Motion invariant: five unique compact poses; low continuous center-of-mass arc; frames 1 and 4 are opposite planted sides with comparable stride and torso height; plausible frame-5-to-frame-1 seam. Do not relabel frames, mirror the body, swap equipment, duplicate a pose, hide either boot, or leave a planted-side ambiguity.
+  Avoid: high front kick, knee above belt, deep squat, frog legs, split leap, foot aimed at camera, wild or elongated mace, shield-size pulse, extra limb, baked shadow, ground mark, scenery, text, divider, crop, or background texture.
+  Background: clean uniform white matte; do not add shadows or other elements.
+  Output intent: one clean landscape raster strip containing exactly five evenly spaced full-body Toma poses and nothing else.
   ```
 
+- Selected pixel sources remain non-destructive generation originals: identifier
+  `exec-63275e93-eae9-4057-807b-e602a76ccd12.png`
+  (`5d49f9204da47e46eb18b3857a1ec1b1099cfc000c508df1c3bc997fc92de38a`) supplied
+  shield-side contact cells 4–5 and mace-side contact cells 1–2; identifier
+  `exec-a7e7696a-b92f-4eb4-9086-0d39cc61d446.png`
+  (`573c7f5e6ac054617e2a41bd84fe11afc6b899bb66a2095280c8f7fae90149e8`) supplied the
+  genuinely airborne middle pose with the mace-side leg advancing. The latter edit used the prior
+  project strip (`5d49f9204da47e46eb18b3857a1ec1b1099cfc000c508df1c3bc997fc92de38a`)
+  as edit target plus the same identity and motion-authority bindings.
+- Deterministic temporal assembly placed source poses `632:4,632:5,a7e:3,632:1,632:2` into frames
+  1–5. This changes actual visible pose order rather than relabeling evidence, mirroring pixels, or
+  swapping equipment. Per cell, the center-connected subject was retained and every other pixel was
+  replaced by exact `#FFFFFF`; a final deterministic neutral-matte rule also replaced pixels where
+  `min(R,G,B) >= 225` and `max(R,G,B) - min(R,G,B) <= 32` with exact `#FFFFFF`. The generators did
+  not themselves supply an exact white matte. Generation originals remain unmodified.
+- Project strip: `animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v5.png`
+  (`50c96975df5069b416f652067d2e174d5ce0f4f0cf3155bd82108e6da4f89d3a`).
 - Generation review: early strips were rejected for repeated same-side support; later corrections
-  were rejected for an oversized center pose that clipped the declared lift, a 25-pixel crown spread,
-  same-side or doubled frame-4 contact, off-white background speckling visible after keying, or a
-  frame-4 stride visibly narrower than frame 1. The selected original was the first clean strip to
-  retain the opposite frame-4/5 support while keeping the 5-to-1 seam, equipment, and compact scale.
+  were rejected for an oversized center pose that clipped the declared lift, excessive crown spread,
+  ambiguous/reversed anatomical support, off-white background speckling visible after keying, or a
+  frame-4 stride visibly narrower than frame 1. The selected assembly is the first source whose
+  visible anatomy, not its labels, reads shield-side, shield-side, airborne, mace-side, mace-side.
 - Project source sheet: `animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v5.png`
-  (`86cac065e35e97e844b31eb6c25ee5319524947608ac82311a46f32023fa6008`). Support
+  (`cb323115ab568f8c92c8562fb8b2b8b7ac62a5c770bfd633914f990df4bdcddf`). Support
   evidence: `animation-canary-v1/iron-guardian/iron-guardian-motion-support-v5.json`
-  (`aca0bfdb15cb4f8fc81df59673982adcc23e665b6fde6e668744de35be0c86c1`). Runtime
+  (`53c3574555f26d202724ba7bc4927d0bd1dbd8c81b597137a6f362faa6e7d0e1`). Runtime
   atlas: `../../../../apps/web/static/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.png`
-  (`2b8c8993cb675b759cb7b117570d55bc8878208e229d0efdf724b7f701311209`). Runtime
+  (`6de72fb3d2a4bec502bb226a107273ac52c93b4b5d5c3aea4c8400cd39ed6f0c`). Runtime
   atlas JSON: `iron-guardian-motion-v5.json`
   (`8d949316d0e09b4f87965bf772dace215b1a194e647befe47f857d56f34a717f`). Runtime
   manifest: `iron-guardian-motion-manifest-v5.json`
   (`0bc04baed1ab9795ea36a7ec070373e8bd9399bbe75db98c9ab306c6cf9491ba`).
 - Actual 256-pixel runtime measurements, using outer vertical shield-rim diameter, horizontal
   boot-center stride span, and upper armored-shoulder torso top: frame 1
-  `left:15:245:76:70:52`; frame 2 `left:21:245:75:62:50`; frame 3
-  `none:24:238:77:68:51`; frame 4 `right:16:245:75:67:50`; frame 5
-  `right:16:245:76:58:49`. Crown spread is 9 pixels; frame 3 has an 8-pixel gap above
+  `left:17:245:75:67:50`; frame 2 `left:16:245:76:58:49`; frame 3
+  `none:30:238:77:68:51`; frame 4 `right:15:245:76:70:52`; frame 5
+  `right:21:245:75:62:50`. Crown spread is 15 pixels; frame 3 has an 8-pixel gap above
   contact line y=246; shield relative range is 2/77; contact strides differ by 3/70; contact torso
   tops differ by 2 pixels.
 - Deterministic source assembly command:
@@ -424,22 +454,26 @@ new third-party content.
 
 - Evidence was written with the five measurements above, `classical-human-run-5`, source grid
   `5x4@1`, and support `left,left,none,right,right`. Its bound decoded RGB cell hashes are
-  `dba386868ebecde780c82f771c9eb9740e8f414cb973757dcd3ac0875f4d5a31`,
-  `66f4528a47a42b13b5dc620cb880df9b5f3846be531bed64b41375b5be3305f0`,
-  `1118dbb098815921c56ed19b32a15c6b6c70ab05593e3c411ab3225c3e58cdf0`,
-  `7e1fe2febc6862769fb89cee532fd1db666b3c25625e24b7c2cad0c841c37d7f`, and
-  `19b8ae133ac87fde6b8f18150cd5cd52f5b398f59c913b130ab945742ba26553`.
+  `b033a89cf8cb565e471830ca90eb661a3297334a5a88ee275e37243a76fcebb8`,
+  `4af66b9107148f2f214c5b0ac16cc3451b2a1777afdc7eca890f0dac3e9e5f39`,
+  `3659b175c7fb7d3d19c4bb483b19e0b691c0e610406c8ff6055e44882d4f81da`,
+  `0af42c6035c022919c27a532e5ec704ecf7a4cec08b6298883318dfa608fc261`, and
+  `42dfee041893840d624cacab2836b422f7af273512648c946870a22ff91f5a93`.
 - Validator result: `{"valid":true,"actorId":"iron-guardian","advanceFrames":5,"preservedFrames":15}`.
   The validator/rebuild suite passed 19/19 tests with zero skips. A fresh temporary rebuild matched
   the committed v5 source sheet, atlas PNG, atlas JSON, manifest, and evidence byte-for-byte, and all
   15 decoded idle, attack, hit, and down cells are RGBA-identical to v4.
 - Visual review: all full bodies, boots, shield, and mace remain clear at source resolution. The
-  built row reads contact, compact compression, low passing flight, visibly opposite contact, and
-  recovery; equipment remains on the same side, shield size is stable, the mace stays below the
-  waist, and no shadow, scenery, text, matte noise, crop, or extra limb is visible. A 15-frame
+  built row visibly plants the shield-side/anatomical-left boot in frames 1–2, clears both boots in
+  frame 3 while the mace-side/anatomical-right leg advances, and plants the mace-side/right boot in
+  frames 4–5. Equipment remains on the same side, shield size is stable, the mace stays below the
+  waist, and no shadow, scenery, text, matte noise, crop, or extra limb is visible. Every cell edge
+  has zero non-white pixels and the source contains zero non-white pixels matching the neutral-matte
+  key range, while the built runtime retains clean alpha. A 15-frame
   184-pixel animated review artifact was encoded as three loops at 100 ms per frame (10 FPS) to check
   the compact weight and 5-to-1 seam.
-- Limitation: frame 4's lifted trailing boot remains partially under the coat at gameplay size, so
-  owner playback—not evidence labels—must decide whether the opposite contact is sufficiently clear.
-  Runtime activation is intentionally deferred to the next task.
+- Limitation: deterministic matte normalization keys neutral-light highlights by the same threshold
+  used by the runtime builder. The visible silhouette and equipment survive at 184 pixels, but owner
+  playback must still decide whether the compact heavy cadence is preferable to a more exaggerated
+  stride. Runtime activation is intentionally deferred to the next task.
 - Status: `candidate`; explicit owner playback approval is still required.
