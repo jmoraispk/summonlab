@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -18,6 +19,7 @@ const runtimeDirectory = path.join(
 );
 const v4Source = path.join(actorDirectory, 'iron-guardian-motion-sheet-source-v4.png');
 const v4Manifest = path.join(runtimeDirectory, 'iron-guardian-motion-manifest-v4.json');
+const v5RawStrip = path.join(actorDirectory, 'iron-guardian-run-strip-raw-v5.png');
 const v5Strip = path.join(actorDirectory, 'iron-guardian-run-strip-source-v5.png');
 const committedV5Source = path.join(actorDirectory, 'iron-guardian-motion-sheet-source-v5.png');
 const committedV5Evidence = path.join(actorDirectory, 'iron-guardian-motion-support-v5.json');
@@ -25,6 +27,7 @@ const committedV5Atlas = path.join(runtimeDirectory, 'iron-guardian-motion-v5.pn
 const committedV5AtlasJson = path.join(runtimeDirectory, 'iron-guardian-motion-v5.json');
 const committedV5Manifest = path.join(runtimeDirectory, 'iron-guardian-motion-manifest-v5.json');
 const requiredV5Artifacts = [
+	v5RawStrip,
 	v5Strip,
 	committedV5Source,
 	committedV5Evidence,
@@ -67,6 +70,29 @@ test(
 	() => {
 		const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'iron-guardian-v5-rebuild-'));
 		try {
+			assert.equal(
+				createHash('sha256').update(readFileSync(v5RawStrip)).digest('hex'),
+				'5be7f46d9cabf927984233f18606263404de2d8dd0317cf7d15397eb26f457ea',
+				'The immutable complete-strip generation changed'
+			);
+			const rebuiltStrip = path.join(temporaryRoot, 'iron-guardian-run-strip-source-v5.png');
+			const normalize = run('normalize-border-connected-white-matte.mjs', [
+				'--input',
+				v5RawStrip,
+				'--output',
+				rebuiltStrip,
+				'--minimum-channel',
+				'240',
+				'--maximum-chroma',
+				'8'
+			]);
+			assert.equal(normalize.status, 0, normalize.stderr);
+			assert.equal(
+				readFileSync(rebuiltStrip).equals(readFileSync(v5Strip)),
+				true,
+				'The normalized v5 source strip is not reproducible from its raw generation'
+			);
+
 			const rebuiltSource = path.join(temporaryRoot, 'iron-guardian-motion-sheet-source-v5.png');
 			const rebuiltRuntimeDirectory = path.join(temporaryRoot, 'runtime');
 			const rebuiltEvidence = path.join(temporaryRoot, 'iron-guardian-motion-support-v5.json');
@@ -76,7 +102,7 @@ test(
 				'--out',
 				rebuiltSource,
 				'--replace',
-				`1:${v5Strip}`,
+				`1:${rebuiltStrip}`,
 				'--scale-mode',
 				'shared',
 				'--cell-y-offset',
