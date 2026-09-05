@@ -9,7 +9,7 @@ import {
 describe('realtime combat motion-pack configuration', () => {
 	it('derives the diagnostic versions from the same URLs loaded by Pixi', () => {
 		expect(motionPackVersionDiagnostic(REALTIME_COMBAT_MOTION)).toBe(
-			'asha:2,iron-guardian:4,moss-archer:2,rat-brute:1,lesser-rat:2'
+			'asha:2,iron-guardian:5,moss-archer:2,rat-brute:1,lesser-rat:2'
 		);
 
 		const changed = {

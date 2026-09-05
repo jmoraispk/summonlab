@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const combatUrl = '/living-village-lab/realtime-combat';
+const motionPackVersions = 'asha:2,iron-guardian:5,moss-archer:2,rat-brute:1,lesser-rat:2';
 
 test('switches presentation without restarting the autonomous fight', async ({ page }) => {
 	await page.goto(combatUrl);
@@ -19,7 +20,7 @@ test('switches presentation without restarting the autonomous fight', async ({ p
 	);
 	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
 		'data-motion-pack-versions',
-		'asha:2,iron-guardian:4,moss-archer:2,rat-brute:1,lesser-rat:2'
+		motionPackVersions
 	);
 	await expect(page.getByTestId('presentation-evidence')).toContainText(
 		'Trapezoidal lane convergence is on'
@@ -27,29 +28,29 @@ test('switches presentation without restarting the autonomous fight', async ({ p
 
 	await page.getByRole('button', { name: 'Pause agents' }).click();
 	const pausedTime = await page.getByTestId('combat-phase').locator('small').textContent();
+	for (const { button, mode } of [
+		{ button: '2D Fixed scale', mode: '2d' },
+		{ button: '2.5D Depth staged', mode: '2.5d' },
+		{ button: '2.5D V2 Trapezoid on', mode: '2.5d-v2' }
+	] as const) {
+		await page.getByRole('button', { name: button }).click();
+		await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+			'data-applied-presentation-mode',
+			mode
+		);
+		await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
+			'data-motion-pack-versions',
+			motionPackVersions
+		);
+	}
+
 	await page.getByRole('button', { name: '2.5D Depth staged' }).click();
-	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
-		'data-presentation-mode',
-		'2.5d'
-	);
-	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
-		'data-applied-presentation-mode',
-		'2.5d'
-	);
 	await expect(page.getByTestId('presentation-evidence')).toContainText(
 		'Rectangular coordinates remain intact'
 	);
 	await expect(page.getByTestId('combat-phase').locator('small')).toHaveText(pausedTime!);
 
 	await page.getByRole('button', { name: '2D Fixed scale' }).click();
-	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
-		'data-presentation-mode',
-		'2d'
-	);
-	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
-		'data-applied-presentation-mode',
-		'2d'
-	);
 	await expect(page.getByTestId('presentation-evidence')).toContainText(
 		'Every actor keeps one scale'
 	);

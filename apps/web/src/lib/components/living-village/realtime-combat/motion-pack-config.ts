@@ -9,7 +9,7 @@ export function createMotionPack(source: string) {
 export const REALTIME_COMBAT_MOTION = {
 	asha: createMotionPack(`${ART_ROOT}/animation-canary-v1/asha/asha-motion-v2.json`),
 	'iron-guardian': createMotionPack(
-		`${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v4.json`
+		`${ART_ROOT}/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.json`
 	),
 	'moss-archer': createMotionPack(
 		`${ART_ROOT}/animation-canary-v1/moss-archer/moss-archer-motion-v2.json`
