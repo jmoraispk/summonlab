@@ -146,6 +146,18 @@ test('rejects discovered skills outside the supported inventory boundary', async
 	await assert.rejects(() => discoverAgenticSkills(fixtureRoot), /unsupported.*skill/i);
 });
 
+test('rejects an unsupported canonical skill even when discovery aliases it', async (context) => {
+	const fixtureRoot = createTemporaryRoot();
+	context.after(() => rmSync(fixtureRoot, { recursive: true, force: true }));
+	writeSkill(fixtureRoot, 'skills/general-purpose', {
+		name: 'general-purpose',
+		description: 'Use when testing an unsupported canonical alias.'
+	});
+	addRelativeAlias(fixtureRoot, 'general-purpose');
+
+	await assert.rejects(() => discoverAgenticSkills(fixtureRoot), /unsupported.*skill/i);
+});
+
 test('deduplicates a canonical skill and its matching discovery alias', async (context) => {
 	const fixtureRoot = createHappyFixture();
 	context.after(() => rmSync(fixtureRoot, { recursive: true, force: true }));
@@ -191,6 +203,19 @@ test('reads descriptions from YAML frontmatter instead of heading text', async (
 	assert.equal(entry.description, 'Use the frontmatter description.');
 });
 
+for (const blockScalar of ['>', '|']) {
+	test(`rejects the YAML ${blockScalar} block scalar for skill descriptions`, async (context) => {
+		const fixtureRoot = createTemporaryRoot();
+		context.after(() => rmSync(fixtureRoot, { recursive: true, force: true }));
+		writeSkill(fixtureRoot, '.agents/skills/pixijs', {
+			name: 'pixijs',
+			description: blockScalar
+		});
+
+		await assert.rejects(() => discoverAgenticSkills(fixtureRoot), /block scalar.*description/i);
+	});
+}
+
 test('renders deterministic ownership sections and repository-relative links', () => {
 	assert.equal(
 		renderAgenticSkillInventory([
@@ -209,8 +234,23 @@ test('renders deterministic ownership sections and repository-relative links', (
 				discoveryPath: '.agents/skills/pixijs/SKILL.md'
 			}
 		]),
-		`${INVENTORY_START}\n\n_Inventory: 2 skills (1 Summonlab, 1 pinned PixiJS)._\n\n## Summonlab-authored skills\n\n| Skill | Description | Discovery |\n| --- | --- | --- |\n| [\`summonlab-alpha\`](../../../skills/summonlab-alpha/SKILL.md) | Use when testing a first-party skill. | [\`.agents/skills/summonlab-alpha/SKILL.md\`](../../../.agents/skills/summonlab-alpha/SKILL.md) |\n\n## Pinned external PixiJS skills\n\n| Skill | Description | Discovery |\n| --- | --- | --- |\n| [\`pixijs\`](../../../.agents/skills/pixijs/SKILL.md) | Use when routing PixiJS work. | [\`.agents/skills/pixijs/SKILL.md\`](../../../.agents/skills/pixijs/SKILL.md) |\n\n${INVENTORY_END}`
+		`${INVENTORY_START}\n\n_Inventory: 2 skills (1 Summonlab, 1 pinned PixiJS)._\n\n## Summonlab-authored skills\n\n| Skill | Description | Discovery |\n| --- | --- | --- |\n| [\`summonlab-alpha\`](../../../skills/summonlab-alpha/SKILL.md) | Use when testing a first-party skill. | [\`.agents/skills/summonlab-alpha/SKILL.md\`](../../../.agents/skills/summonlab-alpha) |\n\n## Pinned external PixiJS skills\n\n| Skill | Description | Discovery |\n| --- | --- | --- |\n| [\`pixijs\`](../../../.agents/skills/pixijs/SKILL.md) | Use when routing PixiJS work. | [\`.agents/skills/pixijs/SKILL.md\`](../../../.agents/skills/pixijs/SKILL.md) |\n\n${INVENTORY_END}`
 	);
+});
+
+test('escapes table delimiters and collapses description newlines', () => {
+	const rendered = renderAgenticSkillInventory([
+		{
+			name: 'pixijs',
+			description: 'First line | alternative\n  continued line',
+			ownership: 'external-pixijs',
+			canonicalPath: '.agents/skills/pixijs/SKILL.md',
+			discoveryPath: '.agents/skills/pixijs/SKILL.md'
+		}
+	]);
+
+	assert.match(rendered, /First line \\\| alternative continued line/);
+	assert.doesNotMatch(rendered, /alternative\n/);
 });
 
 test('write preserves prose around exactly one generated region and check detects drift', (context) => {

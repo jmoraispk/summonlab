@@ -58,7 +58,14 @@ function parseFrontmatter(contents, path) {
 	const values = new Map();
 	for (const line of match[1].split(/\r?\n/)) {
 		const field = line.match(/^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
-		if (field) values.set(field[1], parseYamlScalar(field[2]));
+		if (!field) continue;
+		if (
+			field[1] === 'description' &&
+			/^[>|](?:[1-9](?:[+-])?|[+-](?:[1-9])?)?(?:\s+#.*)?$/u.test(field[2].trim())
+		) {
+			throw new Error(`Unsupported YAML block scalar description in ${path}`);
+		}
+		values.set(field[1], parseYamlScalar(field[2]));
 	}
 	const name = values.get('name');
 	const description = values.get('description');
@@ -130,6 +137,7 @@ export async function discoverAgenticSkills(repositoryRoot) {
 	const canonicalByRealPath = await indexCandidates(repositoryRoot, canonicalCandidates);
 	const discoveryByRealPath = await indexCandidates(repositoryRoot, discoveryCandidates);
 	const entriesByName = new Map();
+	for (const discovery of discoveryByRealPath.values()) ownershipFor(discovery.name);
 	for (const [realSkillPath, canonical] of canonicalByRealPath) {
 		if (!canonical.name.startsWith('summonlab-')) continue;
 		const discovery = discoveryByRealPath.get(realSkillPath);
@@ -143,6 +151,16 @@ export async function discoverAgenticSkills(repositoryRoot) {
 	return [...entriesByName.values()].sort(compareOwnershipThenName);
 }
 
+function renderTableCell(value) {
+	return value.replace(/\s*(?:\r\n|\r|\n)\s*/gu, ' ').replaceAll('|', '\\|');
+}
+
+function discoveryLinkTarget({ canonicalPath, discoveryPath }) {
+	const repositoryPath =
+		canonicalPath === discoveryPath ? discoveryPath : discoveryPath.replace(/\/SKILL\.md$/u, '');
+	return `../../../${repositoryPath}`;
+}
+
 export function renderAgenticSkillInventory(entries) {
 	const summonlab = entries.filter(({ ownership }) => ownership === 'summonlab');
 	const pixijs = entries.filter(({ ownership }) => ownership === 'external-pixijs');
@@ -151,8 +169,8 @@ export function renderAgenticSkillInventory(entries) {
 			'| Skill | Description | Discovery |',
 			'| --- | --- | --- |',
 			...rows.map(
-				({ name, description, canonicalPath, discoveryPath }) =>
-					`| [\`${name}\`](../../../${canonicalPath}) | ${description} | [\`${discoveryPath}\`](../../../${discoveryPath}) |`
+				(entry) =>
+					`| [\`${renderTableCell(entry.name)}\`](../../../${entry.canonicalPath}) | ${renderTableCell(entry.description)} | [\`${renderTableCell(entry.discoveryPath)}\`](${discoveryLinkTarget(entry)}) |`
 			)
 		].join('\n');
 	return [

@@ -55,10 +55,29 @@ describe('online wiki registry', () => {
 			'https://github.com/jmoraispk/summonlab/blob/main/skills/summonlab-character-animations/SKILL.md'
 		);
 		expect(page?.html).toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-character-animations"'
+		);
+		expect(page?.html).not.toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-character-animations/SKILL.md"'
+		);
+		expect(page?.html).toContain(
+			'href="https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/summonlab-enemy-creation/SKILL.md"'
+		);
+		expect(page?.html).toContain(
 			'https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/pixijs/SKILL.md'
 		);
 		expect(getWikiNavigation()).toContainEqual(
 			expect.objectContaining({ href: '/wiki/systems/agentic-skills', section: 'Systems' })
+		);
+	});
+
+	it('publishes the pinned PixiJS source and license boundary', () => {
+		const page = getWikiPage('systems/agentic-skills');
+		expect(page?.html).toContain(
+			'https://github.com/pixijs/pixijs-skills/tree/6aae70d76cf410432dd144029c07a1ad4bb12793'
+		);
+		expect(page?.html).toContain(
+			'https://github.com/jmoraispk/summonlab/blob/main/.agents/skills/PIXIJS_SKILLS_LICENSE'
 		);
 	});
 
