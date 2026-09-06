@@ -10,6 +10,7 @@ describe('summonable hero roster promotion', () => {
 	it('promotes all 200 selected identities and applies exactly nineteen v3 chibi overrides', async () => {
 		const catalog = await buildSummonableHeroCatalog(workspaceRoot);
 
+		expect(catalog.schemaVersion).toBe('summonable-hero-catalog-v2');
 		expect(catalog.entries).toHaveLength(200);
 		expect(new Set(catalog.entries.map((entry) => entry.heroId)).size).toBe(200);
 		expect(new Set(catalog.entries.map((entry) => entry.displayName)).size).toBe(200);

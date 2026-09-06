@@ -545,7 +545,7 @@ export async function buildSummonableHeroCatalog(
 	);
 
 	return SummonableHeroCatalogSchema.parse({
-		schemaVersion: 'summonable-hero-catalog-v1',
+		schemaVersion: 'summonable-hero-catalog-v2',
 		catalogVersion: 'summonable-heroes-v1',
 		status: 'approved',
 		approvedOn: '2026-09-05',
