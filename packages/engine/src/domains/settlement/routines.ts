@@ -28,9 +28,7 @@ import {
 	NeedStateSchema,
 	RoutineResolutionSchema,
 	type ActivityKind,
-	type CombatAttributeName,
 	type EngineGameState,
-	type EngineHeroStateV25,
 	type EntropyDraw,
 	type RewardDelta,
 	type RoutineKind
@@ -376,17 +374,6 @@ export function attributePointsForLevelTransition(
 		throw new Error('Attribute point grants require a nondecreasing integer level transition');
 	}
 	return unspentAttributePoints + (levelAfter - levelBefore);
-}
-
-export function intrinsicAttributeValue(
-	hero: EngineHeroStateV25,
-	attribute: CombatAttributeName
-): number {
-	let value = hero.capabilityProfile.attributes[attribute];
-	for (const receipt of hero.progression.attributeGrowthReceipts) {
-		if (receipt.attribute === attribute) value = receipt.afterIntrinsicValue;
-	}
-	return value;
 }
 
 export function buildActivityOutcome(

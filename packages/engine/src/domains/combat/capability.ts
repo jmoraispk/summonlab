@@ -4,7 +4,6 @@ import {
 	LearningContextSchema,
 	LearningEvidenceSchema,
 	LearningGainReceiptSchema,
-	PermanentAttributeReceiptSchema,
 	RegenerationContextSchema,
 	ResistanceGrantReceiptSchema,
 	type AttributeModifier,
@@ -17,10 +16,11 @@ import {
 	type LearningContext,
 	type LearningEvidence,
 	type LearningGainReceipt,
-	type PermanentAttributeReceipt,
 	type RegenerationContext,
 	type ResistanceGrantReceipt
 } from '@summonlab/contracts';
+
+export { intrinsicAttributes, maximumHealth, maximumMana } from '../../core/capability.js';
 
 const BASIS_POINTS = 10_000;
 
@@ -58,24 +58,6 @@ function scaleByBasisPoints(value: number, basisPoints: number): number {
 
 function interpolateFactor(score: number, minimum: number, maximum: number): number {
 	return minimum + divideHalfUp(BigInt(score) * BigInt(maximum - minimum), 100n);
-}
-
-export function intrinsicAttributes(
-	profileInput: CharacterCapabilityProfileV1,
-	permanentReceiptInputs: readonly PermanentAttributeReceipt[],
-	rules: CombatRulesV1
-): CombatAttributes {
-	const profile = CharacterCapabilityProfileV1Schema.parse(profileInput);
-	const attributes = { ...profile.attributes };
-	for (const receiptInput of permanentReceiptInputs) {
-		const receipt = PermanentAttributeReceiptSchema.parse(receiptInput);
-		attributes[receipt.attribute] = clamp(
-			attributes[receipt.attribute] + receipt.points,
-			rules.attributes.intrinsicMinimum,
-			rules.attributes.intrinsicMaximum
-		);
-	}
-	return attributes;
 }
 
 export function effectiveAttribute(
@@ -124,11 +106,6 @@ export function attributeScaledMagnitude(
 	return scaleByBasisPoints(baseMagnitude, BASIS_POINTS + contribution);
 }
 
-export function maximumHealth(vitality: number, rules: CombatRulesV1): number {
-	assertNonnegativeInteger(vitality, 'Vitality');
-	return rules.health.baseMaximum + vitality * rules.health.perVitality;
-}
-
 export function healthRegeneration(
 	vitality: number,
 	contextInput: RegenerationContext,
@@ -150,11 +127,6 @@ export function healthRegeneration(
 	return context.mode === 'combat'
 		? scaleByBasisPoints(safeRestRecovery, rules.health.combatRecoveryBasisPoints)
 		: safeRestRecovery;
-}
-
-export function maximumMana(spirit: number, rules: CombatRulesV1): number {
-	assertNonnegativeInteger(spirit, 'Spirit');
-	return rules.mana.baseMaximum + spirit * rules.mana.perSpirit;
 }
 
 export function manaRegeneration(

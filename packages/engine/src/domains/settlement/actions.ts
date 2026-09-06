@@ -30,6 +30,7 @@ import {
 import { COMBAT_RULES_V1 } from '@summonlab/content';
 
 import { settlementForState } from '../../core/content-bindings.js';
+import { intrinsicAttributes } from '../../core/capability.js';
 import { parseGameState } from '../../core/state.js';
 import type { EngineGameStateModern } from '../../core/types.js';
 import {
@@ -44,12 +45,7 @@ import {
 	settlementRouteFor,
 	zoneForNode
 } from './navigation.js';
-import {
-	currentRoutineFor,
-	gameDayIndex,
-	intrinsicAttributeValue,
-	resolveDailyRoutine
-} from './routines.js';
+import { currentRoutineFor, gameDayIndex, resolveDailyRoutine } from './routines.js';
 import { heroCanHearCommunication } from './society.js';
 import { equipmentItemDisplayName } from './equipment.js';
 import {
@@ -464,12 +460,13 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 			capabilityHero?.lifeState === 'active' &&
 			capabilityHero.progression.unspentAttributePoints > 0
 		) {
+			const intrinsic = intrinsicAttributes(
+				capabilityHero.capabilityProfile,
+				capabilityHero.progression.attributeGrowthReceipts,
+				COMBAT_RULES_V1
+			);
 			allocationActions = CombatAttributeNameSchema.options
-				.filter(
-					(attribute) =>
-						intrinsicAttributeValue(capabilityHero, attribute) <
-						COMBAT_RULES_V1.attributes.intrinsicMaximum
-				)
+				.filter((attribute) => intrinsic[attribute] < COMBAT_RULES_V1.attributes.intrinsicMaximum)
 				.map((attribute) =>
 					action({
 						actionId: `hero.allocate.attribute.${attribute}`,

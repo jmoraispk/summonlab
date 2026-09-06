@@ -30,6 +30,7 @@ import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { EmptyMetadataSchema } from '../../core/event-metadata.js';
+import { intrinsicAttributes, maximumHealth, maximumMana } from '../../core/capability.js';
 import { parseModernState } from '../../core/state.js';
 import type { EngineEventReducer, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -51,7 +52,6 @@ import {
 	buildRoutineOutcome,
 	createDailyPlan,
 	gameDayIndex,
-	intrinsicAttributeValue,
 	resolveDailyRoutine,
 	skipUnfinishedPlan
 } from './routines.js';
@@ -1062,7 +1062,12 @@ function reduceSettlementEvent(
 			payload.nextVersion !== state.version + 1 ||
 			hero.progression.unspentAttributePoints < receipt.spentPoints ||
 			receipt.heroId !== hero.heroId ||
-			receipt.beforeIntrinsicValue !== intrinsicAttributeValue(hero, receipt.attribute) ||
+			receipt.beforeIntrinsicValue !==
+				intrinsicAttributes(
+					hero.capabilityProfile,
+					hero.progression.attributeGrowthReceipts,
+					COMBAT_RULES_V1
+				)[receipt.attribute] ||
 			receipt.afterIntrinsicValue > COMBAT_RULES_V1.attributes.intrinsicMaximum ||
 			receipt.sourceLevel !== hero.progression.level ||
 			receipt.rulesVersion !== COMBAT_RULES_V1.rulesVersion ||
@@ -1074,13 +1079,11 @@ function reduceSettlementEvent(
 		}
 		const maxHealth =
 			receipt.attribute === 'vitality'
-				? COMBAT_RULES_V1.health.baseMaximum +
-					receipt.afterIntrinsicValue * COMBAT_RULES_V1.health.perVitality
+				? maximumHealth(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
 				: hero.maxHealth;
 		const maxMana =
 			receipt.attribute === 'spirit'
-				? COMBAT_RULES_V1.mana.baseMaximum +
-					receipt.afterIntrinsicValue * COMBAT_RULES_V1.mana.perSpirit
+				? maximumMana(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
 				: hero.maxMana;
 		return parseModernState(state, {
 			...state,

@@ -12,7 +12,7 @@ import {
 import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
-import { effectiveAttribute } from '../combat/capability.js';
+import { effectiveAttribute, intrinsicAttributes } from '../combat/capability.js';
 import { IllegalActionError, StaleStateVersionError } from '../../errors.js';
 import { deterministicUuid, sha256Hex } from '../../hash.js';
 import { applyCommand } from '../../orchestration/apply-command.js';
@@ -261,6 +261,33 @@ describe('engine-v25 intrinsic attribute progression', () => {
 			mana: 140,
 			maxMana: 140
 		});
+	});
+
+	it('feeds an emitted allocation receipt into canonical intrinsic combat attributes', async () => {
+		const fixture = await capabilityState('canonical-intrinsic');
+		const ready = withProgression(fixture.state, fixture.heroId, {
+			level: 2,
+			experience: 10,
+			unspentAttributePoints: 1,
+			attributeGrowthReceipts: []
+		});
+		const allocated = applyCommand(
+			ready,
+			command(ready, fixture.heroId, 'canonical-might', {
+				commandType: 'hero.allocate.attribute',
+				attribute: 'might'
+			})
+		);
+		if (allocated.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		const hero = allocated.state.heroes[fixture.heroId]!;
+
+		expect(
+			intrinsicAttributes(
+				hero.capabilityProfile,
+				hero.progression.attributeGrowthReceipts,
+				COMBAT_RULES_V1
+			)
+		).toStrictEqual({ might: 21, vitality: 30, agility: 40, spirit: 50 });
 	});
 
 	it('rejects stale, insufficient, terminal, capped, and invalid allocations', async () => {

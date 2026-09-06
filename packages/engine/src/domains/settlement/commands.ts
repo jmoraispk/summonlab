@@ -16,6 +16,7 @@ import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
+import { intrinsicAttributes } from '../../core/capability.js';
 import { emptyMetadata, eventBase } from '../../core/event-metadata.js';
 import type { EngineCommandHandler, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -44,7 +45,6 @@ import {
 	buildRoutineOutcome,
 	createDailyPlan,
 	currentRoutineFor,
-	intrinsicAttributeValue,
 	resolveDailyRoutine,
 	resourceChange,
 	routineDuration,
@@ -442,8 +442,11 @@ function assertSettlementCommandLegal(
 			state.schemaVersion !== 25 ||
 			state.heroes[command.actorId]?.lifeState !== 'active' ||
 			state.heroes[command.actorId]!.progression.unspentAttributePoints < 1 ||
-			intrinsicAttributeValue(state.heroes[command.actorId]!, command.attribute) >=
-				COMBAT_RULES_V1.attributes.intrinsicMaximum
+			intrinsicAttributes(
+				state.heroes[command.actorId]!.capabilityProfile,
+				state.heroes[command.actorId]!.progression.attributeGrowthReceipts,
+				COMBAT_RULES_V1
+			)[command.attribute] >= COMBAT_RULES_V1.attributes.intrinsicMaximum
 		) {
 			throw new IllegalActionError(required, actionIds);
 		}
@@ -1155,7 +1158,11 @@ function buildModernSettlementEvent(
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'hero.attribute.allocated');
-		const beforeIntrinsicValue = intrinsicAttributeValue(hero, command.attribute);
+		const beforeIntrinsicValue = intrinsicAttributes(
+			hero.capabilityProfile,
+			hero.progression.attributeGrowthReceipts,
+			COMBAT_RULES_V1
+		)[command.attribute];
 		const attributeGrowthReceipt = AttributeGrowthReceiptSchema.parse({
 			receiptId: deterministicUuid(`${base.eventId}:attribute-growth`),
 			heroId: hero.heroId,
