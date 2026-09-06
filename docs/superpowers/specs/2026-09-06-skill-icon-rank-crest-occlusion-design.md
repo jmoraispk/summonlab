@@ -24,6 +24,13 @@ freshly extracted/masked artwork, then the complete repaired S frame as the fina
 review independently verifies exact recomposition and protected-band equality. No geometry-v3,
 second runtime mask, or new normalization tuple is authorized by this rejected document.
 
+Owner review subsequently established that the V6 add-only repair itself retained the original
+cutoff edge and that splicing only the lower triangle from the generated source produced a visibly
+incoherent badge. The complete generated S frame is therefore the visual authority: V8 adopts that
+frame as one indivisible asset and composites it last. No v9 frame pixels are merged into the V8
+frame. Other ranks remain unchanged, and cleanup of earlier-frame traces inside accepted frames is
+still deferred.
+
 The result must preserve the accepted frame pixels while making layer ownership explicit: visual
 alpha describes how the frame looks, while an independent semantic occlusion mask describes where
 skill artwork is forbidden.

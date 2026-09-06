@@ -20,14 +20,15 @@ type Point = readonly [number, number];
 
 const ROOT = 'assets/wiki/skills/icon-production-v1' as const;
 const CLEANUP_ROOT = `${ROOT}/quality-cleanup-v1` as const;
-const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v6-badge-tip-fix` as const;
-const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v7-frame-recomposition` as const;
+const PATCH_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v6-badge-tip-fix` as const;
+const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v7-frame-recomposition` as const;
+const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v8-complete-s-frame` as const;
 const SOURCE_ROOT = `${ROOT}/mass-production-v1/icons` as const;
 const SOURCE_PATH =
 	`${CLEANUP_ROOT}/provider-sources/rarity-frame-s-v10-badge-tip-source.png` as const;
 const FRAME_PATH = `${ROOT}/candidates/references/rarity-frame-s-v9.png` as const;
-const REPAIRED_FRAME_PATH =
-	`${PRIOR_REVIEW_ROOT}/frames/rarity-frame-s-v10-review.png` as const;
+const REPAIRED_FRAME_PATH = `${PATCH_REVIEW_ROOT}/frames/rarity-frame-s-v10-review.png` as const;
+const COMPLETE_FRAME_PATH = `${REVIEW_ROOT}/frames/rarity-frame-s-v11-review.png` as const;
 const BACKING_PATH = `${ROOT}/candidates/references/charcoal-forged-stone-v6.png` as const;
 const GEOMETRY_PATH = `${ROOT}/geometry-v2.json` as const;
 const ART_PATH = `${SOURCE_ROOT}/magical-elemental-where-all-rivers-end.png` as const;
@@ -55,6 +56,11 @@ export interface BadgeTipRepairAudit {
 	readonly changedOutsidePatch: number;
 	readonly addedVisiblePixels: number;
 	readonly addedBounds: Bounds | null;
+}
+
+export interface CompleteSFrameAdoptionAudit {
+	readonly visiblePixels: number;
+	readonly visibleBounds: Bounds | null;
 }
 
 function sha256(bytes: Buffer): string {
@@ -200,6 +206,48 @@ export async function repairSFrameBadgeTipForReview(input: {
 	};
 }
 
+export async function adoptCompleteSFrameForReview(input: {
+	readonly providerSource: Buffer;
+}): Promise<{ readonly bytes: Buffer; readonly audit: CompleteSFrameAdoptionAudit }> {
+	const providerMetadata = await sharp(input.providerSource).metadata();
+	if (
+		providerMetadata.width !== 1254 ||
+		providerMetadata.height !== 1254 ||
+		providerMetadata.hasAlpha ||
+		providerMetadata.channels !== 3
+	)
+		throw new Error('Complete S frame source must be the frozen 1254×1254 RGB imagegen output');
+	const providerDecoded = await sharp(input.providerSource)
+		.resize(1024, 1024, { fit: 'fill', kernel: 'lanczos3', fastShrinkOnLoad: false })
+		.removeAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	const output = Buffer.alloc(1024 * 1024 * 4);
+	const visibleIndices: number[] = [];
+	for (let index = 0; index < 1024 * 1024; index += 1) {
+		const sourceOffset = index * 3;
+		const outputOffset = index * 4;
+		const red = providerDecoded.data[sourceOffset]!;
+		const green = providerDecoded.data[sourceOffset + 1]!;
+		const blue = providerDecoded.data[sourceOffset + 2]!;
+		const alpha = skillIconBlackMatteAlpha(red, green, blue);
+		output[outputOffset] = skillIconBlackMatteUnmatteChannel(red, alpha);
+		output[outputOffset + 1] = skillIconBlackMatteUnmatteChannel(green, alpha);
+		output[outputOffset + 2] = skillIconBlackMatteUnmatteChannel(blue, alpha);
+		output[outputOffset + 3] = alpha;
+		if (alpha > 0) visibleIndices.push(index);
+	}
+	return {
+		bytes: await sharp(output, { raw: { width: 1024, height: 1024, channels: 4 } })
+			.png(PNG_OPTIONS)
+			.toBuffer(),
+		audit: {
+			visiblePixels: visibleIndices.length,
+			visibleBounds: boundsOf(visibleIndices, 1024)
+		}
+	};
+}
+
 async function regularBytes(repositoryRoot: string, repositoryPath: string): Promise<Buffer> {
 	const absolutePath = path.resolve(repositoryRoot, repositoryPath);
 	const relative = path.relative(repositoryRoot, absolutePath);
@@ -283,7 +331,7 @@ async function comparisonSheet(input: {
 			input: textLayer(
 				width,
 				header,
-				input.size === 384 ? ['PATCHED · V6', 'RECOMPOSED · V7'] : ['V6', 'V7'],
+				input.size === 384 ? ['RECOMPOSED · V7', 'COMPLETE FRAME · V8'] : ['V7', 'V8'],
 				input.size === 384 ? 20 : 12
 			),
 			left: 0,
@@ -313,7 +361,10 @@ async function boundaryAudit(frame: Buffer): Promise<{
 	readonly visiblePixelsOnNextRow: number;
 	readonly status: 'boundary-contact' | 'clear';
 }> {
-	const { data, info } = await sharp(frame).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+	const { data, info } = await sharp(frame)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
 	const count = (y: number): number => {
 		let total = 0;
 		// The shoulder ornaments also cross y=220 on B/S. This centered corridor
@@ -338,32 +389,28 @@ export async function renderSkillIconBadgeTipReview(options: {
 }): Promise<{ readonly written: readonly string[]; readonly reviewFiles: readonly string[] }> {
 	const repositoryRoot = path.resolve(options.root ?? process.cwd());
 	const sourceRoot = path.resolve(options.sourceRoot ?? path.join(repositoryRoot, SOURCE_ROOT));
-	const [frame, providerSource, repairedFrame, backing, geometryBytes, current, art] =
-		await Promise.all([
+	const [frame, providerSource, backing, geometryBytes, current, art] = await Promise.all([
 		regularBytes(repositoryRoot, FRAME_PATH),
 		regularBytes(repositoryRoot, SOURCE_PATH),
-		regularBytes(repositoryRoot, REPAIRED_FRAME_PATH),
 		regularBytes(repositoryRoot, BACKING_PATH),
 		regularBytes(repositoryRoot, GEOMETRY_PATH),
 		regularBytes(repositoryRoot, CURRENT_PATH),
 		readFile(path.join(sourceRoot, path.basename(ART_PATH)))
 	]);
 	if (sha256(art) !== ART_HASH) throw new Error('Frozen artwork source hash mismatch');
-	const repaired = await repairSFrameBadgeTipForReview({ frame, providerSource });
-	if (repaired.audit.changedOutsidePatch !== 0 || repaired.audit.addedVisiblePixels === 0)
-		throw new Error('Badge-tip bounded-pixel audit failed');
-	if (!repaired.bytes.equals(repairedFrame))
-		throw new Error('Stored repaired S frame does not match its deterministic derivation');
+	const adopted = await adoptCompleteSFrameForReview({ providerSource });
+	if (adopted.audit.visiblePixels === 0 || adopted.audit.visibleBounds === null)
+		throw new Error('Complete S frame adoption produced no visible frame');
 	const geometry = JSON.parse(geometryBytes.toString('utf8'));
 	const interior = await extractLegacyInterior(art, geometry, {
-		frame: repairedFrame,
+		frame: adopted.bytes,
 		artworkScale: 1.15
 	});
 	const candidate = await clearCleanupExterior(
 		await composeCleanupIcon({
 			backing,
 			interior: interior.bytes,
-			frame: repairedFrame,
+			frame: adopted.bytes,
 			compositionProfile: 'frame-opening-v3'
 		}),
 		geometry
@@ -372,13 +419,13 @@ export async function renderSkillIconBadgeTipReview(options: {
 		composite: candidate,
 		backing,
 		interior: interior.bytes,
-		frame: repairedFrame,
+		frame: adopted.bytes,
 		geometry,
 		compositionProfile: 'frame-opening-v3',
 		boundLayerHashes: {
 			backing: sha256(backing),
 			interior: sha256(interior.bytes),
-			frame: sha256(repairedFrame)
+			frame: sha256(adopted.bytes)
 		}
 	});
 	if (
@@ -407,19 +454,21 @@ export async function renderSkillIconBadgeTipReview(options: {
 	const reviewFiles = [
 		`${REVIEW_ROOT}/comparison-384.png`,
 		`${REVIEW_ROOT}/comparison-96.png`,
+		COMPLETE_FRAME_PATH,
 		candidateOutputPath,
 		reportPath
 	];
 	const report = Buffer.from(
 		`${JSON.stringify(
 			{
-				schemaVersion: 'skill-icon-frame-recomposition-review-v1',
+				schemaVersion: 'skill-icon-complete-frame-adoption-review-v1',
 				status: 'review-only-not-promoted',
-				decision: 'recompose-canonical-layers-with-complete-repaired-s-frame-last',
+				decision: 'adopt-complete-generated-s-frame-as-final-layer',
 				deferred: ['traces-of-previous-frame-inside-accepted-frame'],
 				assembly: {
-					mode: 'canonical-backing-masked-interior-repaired-frame',
-					frameIsFinalLayer: true
+					mode: 'canonical-backing-masked-interior-complete-generated-frame',
+					frameIsFinalLayer: true,
+					v9PixelsMergedIntoFrame: false
 				},
 				artworkSource: { path: ART_PATH, contentHash: sha256(art), artworkScale: 1.15 },
 				backing: { path: BACKING_PATH, contentHash: sha256(backing) },
@@ -432,10 +481,13 @@ export async function renderSkillIconBadgeTipReview(options: {
 					exactPrompt: IMAGEGEN_EXACT_PROMPT,
 					productionEligibility: 'review-only; not an ordinary v2 production packet'
 				},
-				baseFrame: { path: FRAME_PATH, contentHash: sha256(frame) },
-				patchPolygon: PATCH_POLYGON,
-				repairAudit: repaired.audit,
-				repairedFrame: { path: REPAIRED_FRAME_PATH, contentHash: sha256(repairedFrame) },
+				rejectedBaseFrame: { path: FRAME_PATH, contentHash: sha256(frame) },
+				rejectedPatchedFrame: {
+					path: REPAIRED_FRAME_PATH,
+					disposition: 'rejected-visible-splice-and-retained-cutoff-edge'
+				},
+				completeFrameAudit: adopted.audit,
+				completeFrame: { path: COMPLETE_FRAME_PATH, contentHash: sha256(adopted.bytes) },
 				interior: { contentHash: sha256(interior.bytes), removedPixels: interior.removedPixels },
 				candidate: { path: candidateOutputPath, contentHash: sha256(candidate) },
 				inspection: {
@@ -453,6 +505,7 @@ export async function renderSkillIconBadgeTipReview(options: {
 		)}\n`
 	);
 	const outputs = [
+		{ path: COMPLETE_FRAME_PATH, bytes: adopted.bytes },
 		{ path: candidateOutputPath, bytes: candidate },
 		{ path: `${REVIEW_ROOT}/comparison-384.png`, bytes: comparison384 },
 		{ path: `${REVIEW_ROOT}/comparison-96.png`, bytes: comparison96 },
@@ -485,6 +538,7 @@ if (
 ) {
 	const request = parseArgs(process.argv.slice(2));
 	const result = await renderSkillIconBadgeTipReview(request);
+	// eslint-disable-next-line no-console
 	console.log(
 		`${request.mode}: ${result.reviewFiles.length} review files; ${result.written.length} written`
 	);
