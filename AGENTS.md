@@ -1,5 +1,17 @@
 # Repository instructions
 
+## Language
+
+- Use conventional American English for all new or modified repository-owned prose, UI copy, code
+  symbols, schema literals, IDs, filenames, and directory names—for example, `armor`, `color`,
+  `gray`, and `behavior`.
+- Do not introduce British or Commonwealth spelling variants as precedent for new work.
+- Preserve character names, other proper names, and required third-party package or API identifiers
+  verbatim.
+- Do not casually rename legacy identifiers. Normalize them only in an explicitly scoped migration
+  that updates every reference, generated artifact, compatibility boundary, and hash or checksum
+  binding together.
+
 ## End-of-turn delivery
 
 - Whenever a turn changes repository files, validate the completed work, commit all in-scope changes, and push the current branch to its configured remote before handing back to the user.
