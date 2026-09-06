@@ -945,7 +945,10 @@ async function currentBytes(root: string, repositoryPath: string): Promise<Buffe
 	let handle: Awaited<ReturnType<typeof open>> | null = null;
 	try {
 		try {
-			handle = await open(heldPath, constants.O_RDONLY | constants.O_NOFOLLOW);
+			handle = await open(
+				heldPath,
+				constants.O_RDONLY | constants.O_NONBLOCK | constants.O_NOFOLLOW
+			);
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
 				await assertCleanupOutputParentNamed(parent);

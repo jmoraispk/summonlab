@@ -7,6 +7,7 @@ import {
 	lstat,
 	mkdtemp,
 	mkdir,
+	open,
 	readdir,
 	readFile,
 	rename,
@@ -469,6 +470,16 @@ async function waitForExit(child: ChildProcess): Promise<void> {
 	await once(child, 'exit');
 }
 
+async function makeFifo(filePath: string): Promise<void> {
+	const child = spawn('mkfifo', ['--', filePath], { stdio: 'inherit' });
+	const [exitCode, signal] = await once(child, 'exit');
+	if (exitCode !== 0) {
+		throw new Error(
+			`mkfifo failed with exit code ${String(exitCode)} and signal ${String(signal)}`
+		);
+	}
+}
+
 describe('skill-icon quality-cleanup manifest exporter', { timeout: 60_000 }, () => {
 	it('freezes every canonical mass-production source with attached findings', async () => {
 		const input = await loadCleanupManifestInput(workspaceRoot);
@@ -605,6 +616,47 @@ describe('skill-icon quality-cleanup manifest exporter', { timeout: 60_000 }, ()
 			}
 		}
 	);
+
+	it('rejects a FIFO artifact without waiting for a writer', async () => {
+		// Catches opening a preflight leaf in blocking mode before authenticating its file type.
+		const root = await seedExporterRoot();
+		const packetPath = path.join(
+			root,
+			QUALITY_CLEANUP_ROOT,
+			'prompts/revisions/martial-blade-blade-dance-v1.json'
+		);
+		await unlink(packetPath);
+		await makeFifo(packetPath);
+		const attempt = exportSkillIconQualityCleanup({ root, mode: 'check' }).then(
+			(value) => ({ status: 'resolved' as const, value }),
+			(error: unknown) => ({ status: 'rejected' as const, error })
+		);
+		let timeout: ReturnType<typeof setTimeout> | undefined;
+		try {
+			const outcome = await Promise.race([
+				attempt,
+				new Promise<{ readonly status: 'timeout' }>((resolve) => {
+					timeout = setTimeout(() => resolve({ status: 'timeout' }), 15_000);
+				})
+			]);
+			if (timeout) clearTimeout(timeout);
+			if (outcome.status === 'timeout') {
+				// Release the intentionally blocked implementation so the RED test can exit cleanly.
+				const writer = await open(packetPath, 'w');
+				await writer.close();
+				await attempt;
+			}
+			expect(outcome.status).toBe('rejected');
+			if (outcome.status === 'rejected') {
+				expect(outcome.error).toMatchObject({
+					message: expect.stringMatching(/non-regular cleanup artifact/i)
+				});
+			}
+		} finally {
+			if (timeout) clearTimeout(timeout);
+			await rm(root, { recursive: true });
+		}
+	});
 
 	it('does not clobber synchronized drift that appears after the missing-file check', async () => {
 		const root = await seedExporterRoot();
