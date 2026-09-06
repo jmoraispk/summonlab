@@ -1,4 +1,4 @@
-# Hero-pair artifact contract
+# Hero visual-trio artifact contract
 
 ## Batch location
 
@@ -12,14 +12,18 @@ Choose the lowest unused three-digit suffix. Never reuse an existing directory, 
 ```text
 batch-root/
 ├── manifest.json
-└── pairs/
+└── trios/
     └── <hero-id>/
         ├── brief.json
         ├── summon/
         │   ├── provider-source-v1.png
         │   ├── candidate-v1.png
         │   └── result-v1.json
-        └── chibi/
+        ├── chibi/
+        │   ├── provider-source-v1.png
+        │   ├── candidate-v1.png
+        │   └── result-v1.json
+        └── village-cutout/
             ├── provider-source-v1.png
             ├── candidate-v1.png
             └── result-v1.json
@@ -29,11 +33,11 @@ Version numbers are additive. A correction uses `v2`; it never replaces `v1`.
 
 ## Batch manifest
 
-`manifest.json` uses `summonlab-hero-pair-batch-v1`:
+New `manifest.json` files use `summonlab-hero-visual-trio-batch-v2`:
 
 ```json
 {
-	"schemaVersion": "summonlab-hero-pair-batch-v1",
+	"schemaVersion": "summonlab-hero-visual-trio-batch-v2",
 	"batchId": "hero-creation-YYYYMMDD-descriptive-slug-NNN",
 	"status": "candidate",
 	"count": 1,
@@ -41,9 +45,10 @@ Version numbers are additive. A correction uses `v2`; it never replaces `v1`.
 		{
 			"heroId": "lowercase-hero-id",
 			"displayName": "Display Name",
-			"briefPath": "assets/heroes/experiments/.../pairs/lowercase-hero-id/brief.json",
-			"summonResultPath": "assets/heroes/experiments/.../pairs/lowercase-hero-id/summon/result-v1.json",
-			"chibiResultPath": "assets/heroes/experiments/.../pairs/lowercase-hero-id/chibi/result-v1.json"
+			"briefPath": "assets/heroes/experiments/.../trios/lowercase-hero-id/brief.json",
+			"summonResultPath": "assets/heroes/experiments/.../trios/lowercase-hero-id/summon/result-v1.json",
+			"chibiResultPath": "assets/heroes/experiments/.../trios/lowercase-hero-id/chibi/result-v1.json",
+			"villageCutoutResultPath": "assets/heroes/experiments/.../trios/lowercase-hero-id/village-cutout/result-v1.json"
 		}
 	]
 }
@@ -116,6 +121,21 @@ For `imageKind: "chibi"`, `references` contains exactly one object:
 }
 ```
 
+For `imageKind: "village-cutout"`, `references` contains exactly one object with the same summon
+provider path and hash:
+
+```json
+{
+	"role": "identity-pixel-authority",
+	"path": "the matching summon provider-source-v1.png path",
+	"sha256": "its exact lowercase SHA-256"
+}
+```
+
+The cutout is a normal-proportion transparent derivative of the summon portrait, not a chibi and not
+a newly posed rendering. Its background and grounding shadow are removed. It must retain true alpha,
+leave every canvas edge transparent, and contain a visible figure comfortably inside the canvas.
+
 The summon result has zero generation references unless the user supplied a declared style or
 identity reference. Any supplied reference records `role`, `path`, `sha256`, and a narrow `purpose`.
 The summon result's prompt and prompt hash must exactly equal the corresponding brief fields.
@@ -128,14 +148,21 @@ Resolve scripts relative to this skill directory:
 python3 scripts/persist_image.py \
   --workspace-root /absolute/path/to/summonlab \
   --source /absolute/path/to/provider-output.png \
-  --provider-destination assets/heroes/experiments/<batch>/pairs/<hero>/summon/provider-source-v1.png \
-  --candidate-destination assets/heroes/experiments/<batch>/pairs/<hero>/summon/candidate-v1.png
+  --provider-destination assets/heroes/experiments/<batch>/trios/<hero>/summon/provider-source-v1.png \
+  --candidate-destination assets/heroes/experiments/<batch>/trios/<hero>/summon/candidate-v1.png
 ```
 
 The command verifies PNG dimensions, exclusively creates both destinations, preserves identical
 bytes, and prints their SHA-256. Use the printed digest in the result record.
 
-After both sides of every pair have results:
+Validate each cutout before completing the batch:
+
+```bash
+python3 scripts/validate_village_cutout.py \
+  --source assets/heroes/experiments/<batch>/trios/<hero>/village-cutout/candidate-v1.png
+```
+
+After every visual trio has results:
 
 ```bash
 python3 scripts/validate_batch.py \
@@ -144,3 +171,6 @@ python3 scripts/validate_batch.py \
 ```
 
 Validation proves structure and provenance, not visual approval.
+
+Historical `summonlab-hero-pair-batch-v1` manifests remain validator-compatible, but all newly
+created batches use the v2 visual-trio contract.

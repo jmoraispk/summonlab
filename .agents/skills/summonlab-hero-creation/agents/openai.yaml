@@ -1,7 +1,7 @@
 interface:
   display_name: 'Summonlab Hero Creation'
-  short_description: 'Create paired summon and combat hero art'
-  default_prompt: 'Use $summonlab-hero-creation to create one new Summonlab hero and a matching combat chibi.'
+  short_description: 'Create a summon, combat chibi, and Village cutout'
+  default_prompt: 'Use $summonlab-hero-creation to create one new Summonlab hero as a complete visual trio for summon, combat, and the Village.'
 
 policy:
   allow_implicit_invocation: true

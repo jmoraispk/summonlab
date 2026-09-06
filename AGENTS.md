@@ -30,7 +30,9 @@
 - Player-facing characters must always use approved raster image assets. Never draw or approximate
   characters with CSS geometry, inline SVG, canvas vectors, emoji, typography, or other procedural
   stand-ins.
-- Prefer the approved combat chibi for world and combat scale. Prefer the approved realistic summon,
-  dialogue, or roster image for portraits and detail views.
+- Use the approved transparent `village-cutout`, derived from the normal-proportion summon portrait,
+  for heroes standing in the Village. Use the approved combat chibi for combat scale. Prefer the
+  approved realistic summon, dialogue, or roster image for portraits and detail views. Never place
+  an opaque rectangular portrait into a world scene.
 - When no approved character image exists, show a clearly labeled non-character missing-art state;
   do not invent a character depiction.

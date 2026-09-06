@@ -1,8 +1,9 @@
-# Hero-pair visual contract
+# Hero visual-trio contract
 
 ## Shared identity
 
-Every pair depicts one original adult person. Before generation, author a visual brief containing:
+Every visual trio depicts one original adult person. Before generation, author a visual brief
+containing:
 
 - display name, adult age, gender presentation, skin, face structure, and controlled expression;
 - height language, frame breadth, shoulder and hip relationship, torso and limb proportions, body
@@ -102,4 +103,30 @@ Weaponless. No magic, affinity effects, aura, rarity frame, stars, interface, la
 or text unless the source itself contains an explicitly requested affinity cue. Not photography,
 plastic 3D, cel anime, caricature, toddler, mascot, or bobble-head art. Do not duplicate, fuse, omit,
 or crop anatomy. The supplied summon reference is the only visual authority.
+```
+
+## Village-cutout identity lock
+
+The Village uses the hero at normal proportions, never the combat chibi and never an opaque portrait
+card. The summon provider source is the cutout's sole `identity-pixel-authority`. Background removal
+is the only intended visual change: preserve the existing pose, face, body construction, hairstyle,
+clothes, palette, accessories, silhouette, and crop. Remove the parchment studio field and grounding
+shadow to true alpha. Do not repaint, restyle, redraw, add scenery, add an outline, or invent hidden
+anatomy.
+
+## Village-cutout prompt shape
+
+```text
+Create a transparent-background cutout from the single supplied summon portrait. Keep the exact same
+normal-proportion adult hero in the exact same pose and crop. Preserve the face, apparent age, skin,
+body construction, hairstyle, wardrobe, palette, footwear, accessories, markings, silhouette, and
+painted rendering. The supplied summon portrait is the sole identity-pixel-authority.
+
+Remove only the warm parchment studio field and the grounding shadow. Outside the complete character,
+use true transparent alpha to every canvas edge. Keep the entire hairstyle, both hands, all clothing,
+and both feet visible with comfortable transparent margins. Vertical 1024x1536 PNG.
+
+No new pose, chibi proportions, repainting, restyling, scenery, floor, pedestal, portrait plate,
+outline, glow, aura, frame, UI, label, logo, watermark, text, added or omitted anatomy, or opaque
+background. Do not invent pixels behind overlapping parts of the existing character.
 ```

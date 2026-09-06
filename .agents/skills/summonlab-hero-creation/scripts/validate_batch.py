@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate one candidate-only Summonlab hero-pair creation batch."""
+"""Validate a candidate-only Summonlab hero visual creation batch."""
 
 from __future__ import annotations
 
@@ -10,6 +10,8 @@ import re
 import struct
 from pathlib import Path, PurePosixPath
 from typing import Any
+
+from validate_village_cutout import validate_village_cutout
 
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
@@ -88,11 +90,18 @@ def validate_result(
         or result["batchId"] != batch_id
         or result["heroId"] != hero_id
         or result["imageKind"] != expected_kind
-        or result["version"] != 1
         or result["status"] != "candidate"
         or (result["width"], result["height"]) != (1024, 1536)
     ):
         raise ValidationError(f"result identity or image contract failed: {result_path}")
+    version = result["version"]
+    if (
+        isinstance(version, bool)
+        or not isinstance(version, int)
+        or version < 1
+        or not result_path.endswith(f"/result-v{version}.json")
+    ):
+        raise ValidationError(f"result version does not match its path: {result_path}")
     prompt = result["prompt"]
     if not isinstance(prompt, str) or not prompt.strip():
         raise ValidationError(f"result prompt is empty: {result_path}")
@@ -103,16 +112,26 @@ def validate_result(
 
     provider_path = resolve_repo_path(workspace, result["providerSourcePath"], batch_prefix)
     candidate_path = resolve_repo_path(workspace, result["candidatePath"], batch_prefix)
+    if not result["providerSourcePath"].endswith(f"/provider-source-v{version}.png") or not result[
+        "candidatePath"
+    ].endswith(f"/candidate-v{version}.png"):
+        raise ValidationError(f"image version does not match its paths: {result_path}")
     provider_hash = hash_file(provider_path)
     candidate_hash = hash_file(candidate_path)
     for digest in (result["providerSourceSha256"], result["candidateSha256"]):
         if not isinstance(digest, str) or not SHA256.fullmatch(digest):
             raise ValidationError(f"invalid output hash: {result_path}")
-    if provider_hash != result["providerSourceSha256"] or candidate_hash != result["candidateSha256"]:
+    if (
+        provider_hash != result["providerSourceSha256"]
+        or candidate_hash != result["candidateSha256"]
+    ):
         raise ValidationError(f"output hash mismatch: {result_path}")
     if provider_hash != candidate_hash or provider_path.read_bytes() != candidate_path.read_bytes():
         raise ValidationError(f"provider and candidate bytes differ: {result_path}")
-    if png_dimensions(provider_path) != (1024, 1536) or png_dimensions(candidate_path) != (1024, 1536):
+    if png_dimensions(provider_path) != (1024, 1536) or png_dimensions(candidate_path) != (
+        1024,
+        1536,
+    ):
         raise ValidationError(f"output dimensions differ from contract: {result_path}")
 
     references = result["references"]
@@ -121,16 +140,34 @@ def validate_result(
             raise ValidationError(f"summon references must be a list: {result_path}")
     else:
         if not isinstance(references, list) or len(references) != 1 or summon_source is None:
-            raise ValidationError(f"chibi must contain exactly one summon reference: {result_path}")
+            raise ValidationError(
+                f"{expected_kind} must contain exactly one summon reference: {result_path}"
+            )
         reference = references[0]
         if not isinstance(reference, dict) or set(reference) != {"role", "path", "sha256"}:
-            raise ValidationError(f"chibi reference fields differ from contract: {result_path}")
+            raise ValidationError(
+                f"{expected_kind} reference fields differ from contract: {result_path}"
+            )
+        expected_role = (
+            "identity-anatomy-authority"
+            if expected_kind == "chibi"
+            else "identity-pixel-authority"
+        )
         if (
-            reference["role"] != "identity-anatomy-authority"
+            reference["role"] != expected_role
             or reference["path"] != summon_source[0]
             or reference["sha256"] != summon_source[1]
         ):
-            raise ValidationError(f"chibi does not bind its summon source: {result_path}")
+            raise ValidationError(
+                f"{expected_kind} does not bind its summon source: {result_path}"
+            )
+    if expected_kind == "village-cutout":
+        try:
+            validate_village_cutout(candidate_path)
+        except ValueError as error:
+            raise ValidationError(
+                f"Village cutout failed alpha validation: {result_path}: {error}"
+            ) from error
     return result["providerSourcePath"], provider_hash
 
 
@@ -150,8 +187,13 @@ def main() -> int:
         raise ValidationError("batch root must remain under assets/heroes/experiments")
     batch_prefix = pure_batch.as_posix()
     manifest = read_json(workspace.joinpath(*pure_batch.parts, "manifest.json"))
-    if manifest.get("schemaVersion") != "summonlab-hero-pair-batch-v1":
+    schema_version = manifest.get("schemaVersion")
+    if schema_version not in {
+        "summonlab-hero-pair-batch-v1",
+        "summonlab-hero-visual-trio-batch-v2",
+    }:
         raise ValidationError("unsupported batch schema")
+    is_visual_trio = schema_version == "summonlab-hero-visual-trio-batch-v2"
     if manifest.get("status") != "candidate":
         raise ValidationError("batch must remain candidate-only")
     batch_id = manifest.get("batchId")
@@ -162,18 +204,25 @@ def main() -> int:
         or batch_id != pure_batch.name
     ):
         raise ValidationError("batchId must equal the batch directory name")
-    if not isinstance(heroes, list) or not 1 <= len(heroes) <= 10 or manifest.get("count") != len(heroes):
+    if (
+        not isinstance(heroes, list)
+        or not 1 <= len(heroes) <= 10
+        or manifest.get("count") != len(heroes)
+    ):
         raise ValidationError("batch must contain 1 through 10 heroes and an exact count")
 
     seen: set[str] = set()
     for hero in heroes:
-        if not isinstance(hero, dict) or set(hero) != {
+        required_hero_fields = {
             "heroId",
             "displayName",
             "briefPath",
             "summonResultPath",
             "chibiResultPath",
-        }:
+        }
+        if is_visual_trio:
+            required_hero_fields.add("villageCutoutResultPath")
+        if not isinstance(hero, dict) or set(hero) != required_hero_fields:
             raise ValidationError("hero manifest fields differ from contract")
         hero_id = hero["heroId"]
         if not isinstance(hero_id, str) or not HERO_ID.fullmatch(hero_id) or hero_id in seen:
@@ -216,7 +265,14 @@ def main() -> int:
             or brief.get("affinity") not in {"neutral", "fire", "water", "earth", "wind"}
         ):
             raise ValidationError(f"brief star or affinity contract failed: {hero_id}")
-        for field in ("identity", "physique", "hair", "wardrobe", "personalDetails", "characterKernel"):
+        for field in (
+            "identity",
+            "physique",
+            "hair",
+            "wardrobe",
+            "personalDetails",
+            "characterKernel",
+        ):
             if not isinstance(brief.get(field), dict) or not brief[field]:
                 raise ValidationError(f"brief {field} must be a nonempty object: {hero_id}")
         if not isinstance(brief.get("exclusions"), list) or not all(
@@ -250,8 +306,23 @@ def main() -> int:
             "chibi",
             summon_source,
         )
+        if is_visual_trio:
+            validate_result(
+                workspace,
+                batch_prefix,
+                batch_id,
+                hero_id,
+                hero["villageCutoutResultPath"],
+                "village-cutout",
+                summon_source,
+            )
 
-    print(json.dumps({"batchId": batch_id, "heroes": len(heroes), "pairs": len(heroes), "status": "valid"}))
+    unit = "trios" if is_visual_trio else "pairs"
+    print(
+        json.dumps(
+            {"batchId": batch_id, "heroes": len(heroes), unit: len(heroes), "status": "valid"}
+        )
+    )
     return 0
 
 

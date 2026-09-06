@@ -181,11 +181,13 @@ taxonomy name. Decorative arrows are hidden from assistive technology.
 
 ### Character artwork
 
-Every player-facing character depiction uses approved raster artwork. World and combat scale prefer
-the hero's combat chibi; portrait and detail surfaces prefer approved realistic summon, dialogue, or
-roster art. CSS geometry, inline SVG, canvas vectors, emoji, typography, and other procedural character
-stand-ins are forbidden. If no approved image exists, render a labeled non-character missing-art state
-instead of approximating the character.
+Every player-facing character depiction uses approved raster artwork. Heroes standing in the Village
+use an approved transparent `village-cutout` derived from the normal-proportion summon portrait;
+combat uses the hero's approved combat chibi; portrait and detail surfaces use approved realistic
+summon, dialogue, or roster art. Opaque portrait plates in world scenes, CSS geometry, inline SVG,
+canvas vectors, emoji, typography, and other procedural character stand-ins are forbidden. If no
+approved image exists, render a labeled non-character missing-art state instead of approximating the
+character.
 
 ### Motion
 

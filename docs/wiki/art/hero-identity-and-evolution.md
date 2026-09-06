@@ -96,6 +96,25 @@ switch modes to compare bodies. They do not become runtime assets at the same mo
 art: selected fighters still require clean alpha, consistent canvas and footprint normalization,
 small-scale recognition review, and explicit promotion.
 
+### Village-cutout derivative
+
+Every newly created hero visual identity also includes a `village-cutout`: a normal-proportion,
+transparent PNG derived from the selected summon portrait. It is the same painted hero in the same
+pose and crop, with only the parchment studio field and grounding shadow removed. The summon provider
+source remains its sole `identity-pixel-authority`. It is not a combat chibi, a new pose, a repaint, or
+an opaque portrait card placed over the scene.
+
+The hero-creation candidate unit is therefore a visual trio: summon portrait, combat chibi, and
+Village cutout. A cutout must contain true alpha, leave all canvas edges transparent, and preserve
+comfortable margins around the entire character before the candidate batch can validate. Approval
+and runtime promotion remain separate lifecycle steps.
+
+The approved 200-hero `summonable-heroes-v1` catalog predates this three-artifact rule and currently
+binds only summon/chibi pairs. Those heroes require an explicit cutout backfill and approval pass
+before persistent Village scenes may render them as character overlays. Until then, the player UI
+uses a labeled non-character missing-art marker rather than a chibi, opaque portrait, or invented
+vector substitute.
+
 ## Generation order
 
 ```text
