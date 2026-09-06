@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+import { CharacterCapabilityProfileV1Schema, CombatAttributesSchema } from './capability.js';
 import {
 	CharacterGenerationRecipeSchema,
 	CharacterManifestSchema,
-	CharacterMindSchema
+	CharacterMindSchema,
+	CharacterMindV2Schema
 } from './character.js';
 import { DecisionSourceSchema } from './event.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
@@ -61,9 +63,42 @@ export const ProofRunSnapshotSchema = z
 	})
 	.strict();
 
+export const ProofRunSnapshotV2Schema = z
+	.object({
+		runId: EntityIdSchema,
+		characterSchemaVersion: z.literal('character-v2'),
+		storyEnvelopeId: z.literal('first-ember-v1'),
+		controlMode: ProofControlModeSchema,
+		directive: z.string(),
+		recipe: CharacterGenerationRecipeSchema,
+		manifest: CharacterManifestSchema,
+		mind: CharacterMindV2Schema,
+		capabilityProfile: CharacterCapabilityProfileV1Schema,
+		manifestHash: StateHashSchema,
+		firstObservation: z.string().min(1),
+		firstLine: z.string().min(1).nullable(),
+		destination: FirstDestinationSchema.nullable(),
+		storyBranch: z.string().min(1).nullable(),
+		arrived: z.boolean(),
+		events: z.array(ProofEventSchema),
+		createdAt: IsoDateTimeSchema
+	})
+	.strict();
+
+export const PublicProofRunSnapshotV2Schema = ProofRunSnapshotV2Schema.extend({
+	capabilityProfile: z
+		.object({
+			profileVersion: z.literal('character-capability-v1'),
+			attributes: CombatAttributesSchema
+		})
+		.strict()
+}).strict();
+
 export type FirstDestination = z.infer<typeof FirstDestinationSchema>;
 export type ProofControlMode = z.infer<typeof ProofControlModeSchema>;
 export type ProofDecisionRequest = z.infer<typeof ProofDecisionRequestSchema>;
 export type ProofEvent = z.infer<typeof ProofEventSchema>;
 export type ProofRunCreateRequest = z.infer<typeof ProofRunCreateRequestSchema>;
 export type ProofRunSnapshot = z.infer<typeof ProofRunSnapshotSchema>;
+export type ProofRunSnapshotV2 = z.infer<typeof ProofRunSnapshotV2Schema>;
+export type PublicProofRunSnapshotV2 = z.infer<typeof PublicProofRunSnapshotV2Schema>;

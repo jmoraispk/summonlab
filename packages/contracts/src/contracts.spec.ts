@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	CharacterManifestSchema,
+	CombatAttributesSchema,
 	EquipmentRuntimeVisualAssetSchema,
 	EquipmentRuntimeVisualManifestSchema,
 	HealthResponseSchema,
@@ -68,6 +69,12 @@ function validCharacterManifest(adultAge = 25) {
 }
 
 describe('foundation contracts', () => {
+	it('exports the four canonical combat attributes from the root contract entry point', () => {
+		expect(
+			CombatAttributesSchema.safeParse({ might: 1, vitality: 1, agility: 1, spirit: 1 }).success
+		).toBe(true);
+	});
+
 	it('keeps playtest consent affirmative and analytics free of arbitrary text', () => {
 		expect(
 			PlaytestConsentGrantRequestSchema.safeParse({

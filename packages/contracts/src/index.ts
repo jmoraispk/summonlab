@@ -1,4 +1,5 @@
 export * from './affinity-review.js';
+export * from './capability.js';
 export * from './character.js';
 export * from './campaign.js';
 export * from './decision.js';
