@@ -15,6 +15,10 @@
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
+	import VillageInventoryPanel from '$lib/components/village-shell/VillageInventoryPanel.svelte';
+	import VillageMissionsPanel from '$lib/components/village-shell/VillageMissionsPanel.svelte';
+	import VillageModeNav from '$lib/components/village-shell/VillageModeNav.svelte';
+	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
@@ -92,6 +96,11 @@
 		snapshot.destination === 'kitchen'
 			? 'Voices, warm grain, and the chance to learn names before accepting orders.'
 			: 'Cold iron, straw targets, and a private answer to what this summoned body remembers.'
+	);
+	const pageTitle = $derived(
+		data.campaignView && data.mode !== 'village'
+			? `${data.mode[0].toUpperCase()}${data.mode.slice(1)} · Hearth 01 · summonlab`
+			: `${snapshot.manifest.displayName} walks to ${destinationLabel} · summonlab`
 	);
 
 	onMount(() => {
@@ -214,7 +223,7 @@
 </script>
 
 <svelte:head>
-	<title>{snapshot.manifest.displayName} walks to {destinationLabel} · summonlab</title>
+	<title>{pageTitle}</title>
 	<meta
 		name="description"
 		content={`Follow ${snapshot.manifest.displayName}'s first autonomous settlement choice.`}
@@ -224,6 +233,7 @@
 <main
 	class:kitchen={snapshot.destination === 'kitchen'}
 	class:training={snapshot.destination === 'training-ground'}
+	class:has-village-nav={Boolean(data.campaignView)}
 >
 	<header>
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
@@ -232,7 +242,7 @@
 			<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
 			<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
 		</div>
-		<nav>
+		<nav aria-label="Campaign utilities">
 			<button
 				type="button"
 				onclick={() => (journalOpen = !journalOpen)}
@@ -245,6 +255,9 @@
 			<a href={resolve('/forge')}>New seed</a>
 		</nav>
 	</header>
+	{#if data.campaignView}
+		<VillageModeNav runId={snapshot.runId} current={data.mode} />
+	{/if}
 	<RunConnection
 		runId={snapshot.runId}
 		initialCursor={data.eventHead.eventCursor}
@@ -252,7 +265,21 @@
 		onEvent={showEventCue}
 	/>
 
-	{#if equipment}
+	{#if data.campaignView && data.mode === 'residents'}
+		<VillageResidentsPanel residents={data.residents} />
+	{:else if data.campaignView && data.mode === 'missions'}
+		<VillageMissionsPanel objectives={data.campaignView.objectives} />
+	{:else if data.campaignView && data.mode === 'inventory'}
+		{#if equipment}
+			<EquipmentWorkshop
+				runId={snapshot.runId}
+				initialProjection={equipment}
+				onChanged={refreshProjection}
+			/>
+		{:else}
+			<VillageInventoryPanel />
+		{/if}
+	{:else if equipment}
 		<EquipmentWorkshop
 			runId={snapshot.runId}
 			initialProjection={equipment}
@@ -547,7 +574,12 @@
 </main>
 
 {#if data.campaignView}
-	<PlayerMenu runId={snapshot.runId} initialObjectives={data.campaignView.objectives} />
+	<PlayerMenu
+		runId={snapshot.runId}
+		initialObjectives={data.campaignView.objectives}
+		villageNavigation
+		compact={data.mode !== 'village'}
+	/>
 {/if}
 
 <style>
@@ -559,6 +591,12 @@
 	main {
 		min-height: 100vh;
 		background: #080a0e;
+	}
+
+	@media (max-width: 650px) {
+		main.has-village-nav {
+			padding-bottom: calc(4.7rem + env(safe-area-inset-bottom));
+		}
 	}
 
 	header {

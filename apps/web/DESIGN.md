@@ -294,6 +294,25 @@ portrait `/forge`. It consumes the existing `background`, `surface`, `paper`, `m
 - Present the authoritative six slots as `main-hand`, `off-hand`, `head`, `torso`, `legs`, and
   `boots`. Item rows retain their acquisition provenance after forging, equipping, and reload.
 
+### Persistent Village shell
+
+The persistent campaign route at `/play/[runId]` owns four player-facing modes in this order:
+`Village`, `Residents`, `Inventory`, and `Missions`. Desktop presents them as a slim top navigation;
+phone presents the same destinations as a fixed bottom bar with distinct engraved icons and visible
+labels. Phone targets are at least 44px high, account for the device safe area, and leave the active
+objective control fully above the bar.
+
+- Village preserves the authoritative settlement scene and its current campaign actions.
+- Residents is the real three-person campaign roster. Names, portraits, locations, activities,
+  beliefs, relationships, authority, and first replies come from the current campaign projection.
+- Missions is the authoritative campaign-objective ledger. The player shell does not route into the
+  Tower visual-development lab as if it were persistent play.
+- Inventory remains a named destination but must state when the shared campaign custody projection
+  does not exist. The schema-v24 equipment workshop is a separate history and must not be presented
+  as shared Village supplies until custody, packing, and mission-return rules are established.
+- Routes under `/living-village-lab` remain visual-development surfaces and are never substituted
+  for persistent player state.
+
 ### Content and data visualization
 
 Copy is concise, literal, and written from the reader's perspective. Taxonomy language follows the

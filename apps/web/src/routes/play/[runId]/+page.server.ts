@@ -13,10 +13,11 @@ import { error } from '@sveltejs/kit';
 import { campaignExperienceView } from '$lib/server/campaign';
 import { projectEquipmentWorkshop } from '$lib/server/equipment-runtime';
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+import { parseVillageMode, type VillageResident } from '$lib/village-shell';
 
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, url }) => {
 	const config = getConfig();
 	const snapshot = await getProofRun(config.databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) error(404, 'This proof run could not be found. Is the local database running?');
@@ -55,6 +56,28 @@ export const load: PageServerLoad = async ({ params }) => {
 		snapshot.manifest.artKey,
 		'dialogue'
 	);
+	const residents: readonly VillageResident[] =
+		campaignView?.heroes.map((hero) => {
+			const heroId = hero.draft.manifest.characterId;
+			const occupant = presentation?.occupants.find((entry) => entry.heroId === heroId);
+			const social = presentation?.social.find((entry) => entry.heroId === heroId);
+			return {
+				heroId,
+				ordinal: hero.ordinal,
+				name: hero.draft.manifest.displayName,
+				rarityStars: hero.draft.manifest.rarityStars,
+				pronouns: hero.draft.manifest.pronouns,
+				role: hero.draft.manifest.visualRole ?? 'resident',
+				activity: occupant?.activityLabel ?? 'State unavailable',
+				location: (occupant?.buildingId ?? occupant?.nodeId ?? 'Hearth 01').replaceAll('-', ' '),
+				relationship: social?.relationshipToMaster.tone ?? 'unknown',
+				authority: social?.authority.standing ?? 'unknown',
+				beliefCount: social?.beliefCount ?? 0,
+				latestObservation: social?.latestObservation?.summary ?? null,
+				firstReply: hero.firstReply?.exactText ?? null,
+				portrait: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster')
+			};
+		}) ?? [];
 	return {
 		snapshot,
 		clock,
@@ -62,6 +85,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		presentation,
 		equipment,
 		campaignView,
+		mode: parseVillageMode(url.searchParams.get('mode')),
+		residents,
 		heroPortrait,
 		scene: await loadHearth01Scene()
 	};

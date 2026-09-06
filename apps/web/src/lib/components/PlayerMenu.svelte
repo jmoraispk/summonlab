@@ -10,8 +10,15 @@
 
 	let {
 		runId,
-		initialObjectives
-	}: { runId: string; initialObjectives: CampaignObjectiveProjection } = $props();
+		initialObjectives,
+		villageNavigation = false,
+		compact = false
+	}: {
+		runId: string;
+		initialObjectives: CampaignObjectiveProjection;
+		villageNavigation?: boolean;
+		compact?: boolean;
+	} = $props();
 	let objectives = $derived(initialObjectives);
 	let open = $state(false);
 	let tab = $state<'objectives' | 'settings'>('objectives');
@@ -102,7 +109,12 @@
 	}
 </script>
 
-<div class="objective-chip" data-testid="active-objective">
+<div
+	class="objective-chip"
+	class:village-navigation={villageNavigation}
+	class:compact
+	data-testid="active-objective"
+>
 	<button type="button" onclick={() => openMenu('objectives')}>
 		<span>{activeObjective?.chapter ?? 'Campaign record'}</span>
 		<strong>{activeObjective?.title ?? 'All current objectives complete'}</strong>
@@ -223,6 +235,14 @@
 		color: #f4e9d5;
 		text-align: left;
 		cursor: pointer;
+	}
+
+	.objective-chip.compact {
+		grid-template-columns: 3.6rem;
+	}
+
+	.objective-chip.compact > button:first-child {
+		display: none;
 	}
 
 	.objective-chip button:first-child {
@@ -424,6 +444,14 @@
 			bottom: 0.55rem;
 			left: 0.55rem;
 			grid-template-columns: 1fr 2.9rem;
+		}
+		.objective-chip.village-navigation {
+			bottom: calc(5.25rem + env(safe-area-inset-bottom));
+		}
+		.objective-chip.compact {
+			right: 0.65rem;
+			left: auto;
+			grid-template-columns: 3rem;
 		}
 		.objective-chip button:first-child {
 			padding: 0.62rem 0.75rem;
