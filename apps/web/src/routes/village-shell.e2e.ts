@@ -99,10 +99,20 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
 	await expect(phoneLinks).toHaveCount(4);
-	for (const link of await phoneLinks.all()) {
+	const approvedIconPaths = [
+		'/ui/village-nav/village.png',
+		'/ui/village-nav/residents.png',
+		'/ui/village-nav/inventory.png',
+		'/ui/village-nav/missions.png'
+	];
+	for (const [index, link] of (await phoneLinks.all()).entries()) {
 		const box = await link.boundingBox();
 		expect(box?.height).toBeGreaterThanOrEqual(44);
 		expect(box?.width).toBeGreaterThanOrEqual(44);
+		await expect(link.getByTestId('plan-nav-icon')).toHaveAttribute(
+			'src',
+			approvedIconPaths[index]!
+		);
 	}
 	const navBox = await phoneNav.boundingBox();
 	const objectiveBox = await page.getByTestId('active-objective').boundingBox();

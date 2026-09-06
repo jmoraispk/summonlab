@@ -595,7 +595,7 @@
 
 	@media (max-width: 650px) {
 		main.has-village-nav {
-			padding-bottom: calc(4.7rem + env(safe-area-inset-bottom));
+			padding-bottom: calc(5.65rem + env(safe-area-inset-bottom));
 		}
 	}
 

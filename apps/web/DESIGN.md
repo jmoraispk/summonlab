@@ -302,6 +302,13 @@ phone presents the same destinations as a fixed bottom bar with distinct engrave
 labels. Phone targets are at least 44px high, account for the device safe area, and leave the active
 objective control fully above the bar.
 
+The canonical phone icon artwork is the four-mode set embedded in
+`docs/design-proposals/living-village-ui/mockups/village-inventory-phone.png`: the settlement for
+Village, paired hooded residents for Residents, leather pack for Inventory, and hanging mission
+banner for Missions. Runtime assets are exact crops from that approved reference, not substitute
+outline glyphs. The active cell uses the reference's cyan hairline frame and top diamond while the
+illustrated icon remains gold-toned.
+
 - Village preserves the authoritative settlement scene and its current campaign actions.
 - Residents is the real three-person campaign roster. Names, portraits, locations, activities,
   beliefs, relationships, authority, and first replies come from the current campaign projection.

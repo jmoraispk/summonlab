@@ -446,7 +446,7 @@
 			grid-template-columns: 1fr 2.9rem;
 		}
 		.objective-chip.village-navigation {
-			bottom: calc(5.25rem + env(safe-area-inset-bottom));
+			bottom: calc(6.2rem + env(safe-area-inset-bottom));
 		}
 		.objective-chip.compact {
 			right: 0.65rem;
