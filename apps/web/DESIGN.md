@@ -313,6 +313,12 @@ when present; roster members without a settlement projection use stable courtyar
 their honest unavailable activity/location copy. Residents sharing one authoritative node spread around
 that node so each remains identifiable without inventing a different location.
 
+Every player-facing character depiction uses approved raster artwork. World and combat scale prefer the
+hero's combat chibi; portrait and detail surfaces prefer approved realistic summon, dialogue, or roster
+art. CSS geometry, inline SVG, canvas vectors, emoji, typography, and other procedural character
+stand-ins are forbidden. If no approved image exists, render a labeled non-character missing-art state
+instead of approximating the character.
+
 Facility names are live overlays for `Portal Tower`, `Kitchen`, `Forge`, `Residence`, and `Training
 Grounds`. They use scene hotspot anchors, fine cyan leader lines, resize-aware label placement, and
 priority suppression when labels would collide. Connection hashes, event cursors, occupancy counters,

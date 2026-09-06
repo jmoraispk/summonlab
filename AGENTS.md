@@ -24,3 +24,13 @@
   `10.110.24.218` instead of `localhost` or `127.0.0.1`.
 - Preserve the full port, path, query string, and session key when rewriting a preview URL for the
   collaborator. Verify the listening interface before sharing the link.
+
+## Character artwork
+
+- Player-facing characters must always use approved raster image assets. Never draw or approximate
+  characters with CSS geometry, inline SVG, canvas vectors, emoji, typography, or other procedural
+  stand-ins.
+- Prefer the approved combat chibi for world and combat scale. Prefer the approved realistic summon,
+  dialogue, or roster image for portraits and detail views.
+- When no approved character image exists, show a clearly labeled non-character missing-art state;
+  do not invent a character depiction.

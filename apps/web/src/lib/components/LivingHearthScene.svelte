@@ -124,7 +124,8 @@
 							name: manifest.displayName,
 							activity: primaryOccupant.activityLabel,
 							location: primaryOccupant.buildingId ?? primaryOccupant.nodeId,
-							portrait: null
+							portrait: null,
+							sceneArt: null
 						},
 						projected: primaryOccupant,
 						point: pointAlongRoute(primaryOccupant)
@@ -274,7 +275,16 @@
 				{#if sceneResident.projected?.pose === 'train'}<i class="arc"></i>{/if}
 			</div>
 			<div class="presence-marker" aria-hidden="true">
-				<span class="resident-silhouette"><i></i></span>
+				{#if sceneResident.resident.sceneArt}
+					<img
+						class="resident-art"
+						src={sceneResident.resident.sceneArt.publicPath}
+						width={sceneResident.resident.sceneArt.width}
+						height={sceneResident.resident.sceneArt.height}
+						decoding="async"
+						alt=""
+					/>
+				{/if}
 				<b></b>
 			</div>
 			<div class="activity-tag">
@@ -475,36 +485,19 @@
 		position: relative;
 		display: grid;
 		place-items: center;
-		width: clamp(2.2rem, 4.8vw, 3.8rem);
-		height: clamp(3.2rem, 7.4vw, 5.8rem);
+		width: clamp(3.2rem, 6.5vw, 5.4rem);
+		height: clamp(4.2rem, 8.8vw, 7.4rem);
 		margin: 0 auto;
 		color: #69dce8;
-		filter: drop-shadow(0 0 0.5rem rgba(70, 207, 223, 0.82));
-		animation: marker-pulse 2.5s ease-in-out infinite;
 	}
-	.resident-silhouette {
+	.resident-art {
 		position: absolute;
-		top: 4%;
-		left: 50%;
-		width: 34%;
-		height: 24%;
-		border: 1px solid rgba(210, 240, 237, 0.82);
-		border-radius: 50%;
-		background: #16272b;
-		box-shadow: inset 0 0 0.5rem rgba(98, 220, 231, 0.28);
-		transform: translateX(-50%);
-	}
-	.resident-silhouette i {
-		position: absolute;
-		top: 78%;
-		left: 50%;
-		width: 190%;
-		height: 270%;
-		border: 1px solid rgba(210, 240, 237, 0.78);
-		border-top-color: #62dce7;
-		background: linear-gradient(90deg, #0d171b, #213238 52%, #0a1216);
-		clip-path: polygon(30% 0, 70% 0, 100% 34%, 78% 100%, 22% 100%, 0 34%);
-		transform: translateX(-50%);
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center bottom;
+		filter: drop-shadow(0 0.35rem 0.4rem rgba(0, 0, 0, 0.72));
 	}
 	.presence-marker b {
 		position: absolute;
@@ -645,11 +638,6 @@
 	@keyframes lamp {
 		to {
 			filter: brightness(1.35);
-		}
-	}
-	@keyframes marker-pulse {
-		50% {
-			filter: drop-shadow(0 0 0.8rem rgba(70, 207, 223, 0.95));
 		}
 	}
 	@keyframes rise {

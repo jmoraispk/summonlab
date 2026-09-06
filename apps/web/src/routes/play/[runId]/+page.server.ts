@@ -61,6 +61,11 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			const heroId = hero.draft.manifest.characterId;
 			const occupant = presentation?.occupants.find((entry) => entry.heroId === heroId);
 			const social = presentation?.social.find((entry) => entry.heroId === heroId);
+			const portrait = runtimePortraitFor(
+				hero.draft.manifestHash,
+				hero.draft.manifest.artKey,
+				'roster'
+			);
 			return {
 				heroId,
 				ordinal: hero.ordinal,
@@ -75,7 +80,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
 				beliefCount: social?.beliefCount ?? 0,
 				latestObservation: social?.latestObservation?.summary ?? null,
 				firstReply: hero.firstReply?.exactText ?? null,
-				portrait: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster')
+				portrait,
+				sceneArt:
+					runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'combat-chibi') ??
+					portrait
 			};
 		}) ?? [];
 	return {

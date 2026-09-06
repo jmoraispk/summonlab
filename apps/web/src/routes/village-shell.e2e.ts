@@ -73,6 +73,12 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 		'aria-current',
 		'page'
 	);
+	if (process.env.CAPTURE_VILLAGE_SHELL_DIR) {
+		await page.screenshot({
+			path: `${process.env.CAPTURE_VILLAGE_SHELL_DIR}/village-desktop.png`,
+			fullPage: true
+		});
+	}
 
 	await desktopNav.getByRole('link', { name: 'Residents', exact: true }).click();
 	await expect(page).toHaveURL(new RegExp(`/play/${runId}\\?mode=residents$`, 'u'));
@@ -104,8 +110,15 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	const sceneResidents = scene.getByTestId('village-scene-resident');
 	await expect(sceneResidents).toHaveCount(3);
 	for (const heroName of heroNames) {
-		await expect(sceneResidents.filter({ hasText: heroName })).toBeVisible();
+		const resident = sceneResidents.filter({ hasText: heroName });
+		await expect(resident).toBeVisible();
+		await expect(resident.locator('img')).toHaveCount(1);
+		await expect(resident.locator('img')).toHaveAttribute(
+			'src',
+			/\/(?:combat-chibi|roster)\.[a-f0-9]{12}\.webp$/u
+		);
 	}
+	await expect(scene.locator('.resident-silhouette')).toHaveCount(0);
 	const residentBoxes = await Promise.all(
 		(await sceneResidents.all()).map((resident) => resident.boundingBox())
 	);
