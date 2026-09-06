@@ -154,15 +154,17 @@ interface BootstrapHero {
 	readonly capabilityProfile?: CharacterCapabilityProfileV1;
 }
 
+type BootstrapHeroInput =
+	| { readonly draft: CharacterDraft | CharacterDraftV2 }
+	| {
+			readonly heroId: string;
+			readonly manifestHash: string;
+			readonly rarityStars?: number;
+			readonly mind?: CharacterMind;
+	  };
+
 function normalizeBootstrapHero(
-	input:
-		| { readonly draft: CharacterDraft | CharacterDraftV2 }
-		| {
-				readonly heroId: string;
-				readonly manifestHash: string;
-				readonly rarityStars?: number;
-				readonly mind?: CharacterMind;
-		  },
+	input: BootstrapHeroInput,
 	capabilityEngineState: boolean
 ): BootstrapHero {
 	if ('draft' in input) {
@@ -231,15 +233,17 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
 	}
-	const bootstrapHeroInputs = [
-		'draft' in input
+	const primaryHeroInput: BootstrapHeroInput =
+		input.draft !== undefined
 			? { draft: input.draft }
 			: {
 					heroId: input.heroId,
 					manifestHash: input.manifestHash,
 					...(input.rarityStars === undefined ? {} : { rarityStars: input.rarityStars }),
 					...(input.mind === undefined ? {} : { mind: input.mind })
-				},
+				};
+	const bootstrapHeroInputs: readonly BootstrapHeroInput[] = [
+		primaryHeroInput,
 		...(input.additionalHeroes ?? developmentMissionScenario?.additionalHeroes ?? [])
 	];
 	const normalizedBootstrapHeroes = bootstrapHeroInputs.map((hero) =>
@@ -592,7 +596,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			attemptAftermathDevelopmentScenario
 				? {
 						aftermath: {
-							aftermathVersion: 'mission-aftermath-v3',
+							aftermathVersion: capabilityEngineState
+								? 'mission-aftermath-v4'
+								: 'mission-aftermath-v3',
 							activeAttemptId: null,
 							consequences: [],
 							archives: []

@@ -18,6 +18,7 @@ import {
 import {
 	IllegalActionError,
 	assembleHeroDecisionPacket,
+	createCombatModeBinding,
 	hashCanonical,
 	masterFallbackActionSource,
 	masterFallbackMissionChoice,
@@ -191,6 +192,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
 				source: manualSource,
 				commandType: 'mission.prepare',
 				heroIds: parsed.data.heroIds,
+				...(snapshot.state.schemaVersion === 25
+					? {
+							combatModeBinding: createCombatModeBinding(
+								config.combatMode,
+								snapshot.state.simulatedAt
+							)
+						}
+					: {}),
 				...(parsed.data.missionId ? { missionId: parsed.data.missionId } : {})
 			};
 		} else if (parsed.data.action === 'revise-party') {
@@ -204,7 +213,19 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			command = { ...base, source: manualSource, commandType: 'mission.cancel' };
 		} else if (parsed.data.action === 'deploy') {
 			command = { ...base, source: manualSource, commandType: 'mission.deploy' };
+		} else if (parsed.data.action === 'advance-automatic-combat') {
+			if (snapshot.state.schemaVersion !== 25) {
+				throw new IllegalActionError('mission.advance.automatic');
+			}
+			command = {
+				...base,
+				source: manualSource,
+				commandType: 'mission.advance.automatic'
+			};
 		} else if (parsed.data.action === 'resolve-turn' || parsed.data.action === 'resolve-fallback') {
+			if (snapshot.state.schemaVersion === 25) {
+				throw new IllegalActionError('mission.resolve.turn');
+			}
 			const fallback = parsed.data.action === 'resolve-fallback';
 			const resolvedAt = new Date().toISOString();
 			const safetySelection =
@@ -268,7 +289,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			committed.snapshot.state.schemaVersion !== 17 &&
 			committed.snapshot.state.schemaVersion !== 18 &&
 			committed.snapshot.state.schemaVersion !== 19 &&
-			committed.snapshot.state.schemaVersion !== 20
+			committed.snapshot.state.schemaVersion !== 20 &&
+			committed.snapshot.state.schemaVersion !== 23 &&
+			committed.snapshot.state.schemaVersion !== 24 &&
+			committed.snapshot.state.schemaVersion !== 25
 		) {
 			throw new Error('Mission commit changed the engine schema.');
 		}

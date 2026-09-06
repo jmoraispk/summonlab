@@ -35,6 +35,7 @@ export function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'mission.cancel') return 'mission.cancel';
 	if (command.commandType === 'mission.deploy') return 'mission.deploy';
 	if (command.commandType === 'mission.resolve.turn') return 'mission.resolve.turn';
+	if (command.commandType === 'mission.advance.automatic') return 'mission.advance.automatic';
 	if (command.commandType === 'mission.open.extraction') return 'mission.open.extraction';
 	if (command.commandType === 'mission.extract') return 'mission.extract';
 	if (command.commandType === 'mission.retreat') return 'mission.retreat';

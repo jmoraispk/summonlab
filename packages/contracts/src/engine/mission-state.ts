@@ -37,6 +37,17 @@ export const MissionContentBindingSchema = z
 	})
 	.strict();
 
+export const CombatModeIdSchema = z.enum(['legacy-auto-v1', 'agent-readiness-v1']);
+
+export const CombatModeBindingSchema = z
+	.object({
+		modeId: CombatModeIdSchema,
+		rulesVersion: ContentVersionSchema,
+		contentHash: StateHashSchema,
+		boundAt: IsoDateTimeSchema
+	})
+	.strict();
+
 export const MissionPartySchema = z
 	.object({
 		masterId: EntityIdSchema,
@@ -1019,12 +1030,25 @@ export const MissionHarmRecordV2Schema = MissionHarmRecordSchema.safeExtend({
 	sourceAttemptId: EntityIdSchema
 });
 
+const CapabilityHealthSchema = z.number().int().nonnegative().max(10_000);
+
+export const MissionHarmRecordV3Schema = MissionHarmRecordV2Schema.safeExtend({
+	healthBefore: CapabilityHealthSchema.positive(),
+	healthAfter: CapabilityHealthSchema,
+	damage: CapabilityHealthSchema.positive()
+});
+
 export const MissionMasterHarmRecordV2Schema = MissionMasterHarmRecordSchema.safeExtend({
 	sourceAttemptId: EntityIdSchema
 });
 
 export const MissionConsequenceRecordV3Schema = z.union([
 	MissionHarmRecordV2Schema,
+	MissionMasterHarmRecordV2Schema
+]);
+
+export const MissionConsequenceRecordV4Schema = z.union([
+	MissionHarmRecordV3Schema,
 	MissionMasterHarmRecordV2Schema
 ]);
 
@@ -1224,6 +1248,153 @@ export const MissionRunStateV8Schema = z
 		}
 	});
 
+export const MissionAttemptV9Schema = z
+	.object({
+		...MissionAttemptSchema.shape,
+		turnState: MissionTurnStateV2Schema,
+		combatModeBinding: CombatModeBindingSchema
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		const legacyAttempt = Object.fromEntries(
+			Object.entries(attempt).filter(([key]) => key !== 'turnState' && key !== 'combatModeBinding')
+		);
+		if (!MissionAttemptSchema.safeParse(legacyAttempt).success) {
+			context.addIssue({ code: 'custom', message: 'Mission combat lifecycle is inconsistent' });
+		}
+		if (attempt.combatModeBinding.boundAt !== attempt.preparedAt) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Combat mode must bind exactly when mission preparation begins'
+			});
+		}
+		if (
+			attempt.completedObjectiveIds.includes(attempt.turnState.objective.objectiveId) !==
+			(attempt.turnState.objective.status === 'delivered')
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission combat objective delivery diverged' });
+		}
+		const members = [...attempt.party.memberIds].sort().join('|');
+		if (Object.keys(attempt.turnState.partyGuard).sort().join('|') !== members) {
+			context.addIssue({ code: 'custom', message: 'Mission guard must match the complete party' });
+		}
+	});
+
+export const MissionAttemptAftermathArchiveV2Schema = z
+	.object({
+		attemptId: EntityIdSchema,
+		ordinal: z.number().int().positive(),
+		binding: MissionContentBindingSchema,
+		combatModeBinding: CombatModeBindingSchema,
+		outcome: MissionAttemptOutcomeSchema,
+		preparedAt: IsoDateTimeSchema,
+		deployedAt: IsoDateTimeSchema.nullable(),
+		endedAt: IsoDateTimeSchema,
+		finalRoundNumber: z.number().int().nonnegative().max(48),
+		consequences: z.array(MissionConsequenceRecordV4Schema).max(1_000)
+	})
+	.strict()
+	.superRefine((archive, context) => {
+		if (archive.combatModeBinding.boundAt !== archive.preparedAt) {
+			context.addIssue({ code: 'custom', message: 'Archived combat mode binding time diverged' });
+		}
+		for (const consequence of archive.consequences) {
+			if (
+				consequence.sourceAttemptId !== archive.attemptId ||
+				consequence.roundNumber > archive.finalRoundNumber
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Archived mission consequence exceeds its source attempt'
+				});
+			}
+		}
+	});
+
+export const MissionAftermathStateV4Schema = z
+	.object({
+		aftermathVersion: z.literal('mission-aftermath-v4'),
+		activeAttemptId: EntityIdSchema.nullable(),
+		consequences: z.array(MissionConsequenceRecordV4Schema).max(1_000),
+		archives: z.array(MissionAttemptAftermathArchiveV2Schema).max(100)
+	})
+	.strict()
+	.superRefine((aftermath, context) => {
+		const allConsequences = [
+			...aftermath.consequences,
+			...aftermath.archives.flatMap((archive) => archive.consequences)
+		];
+		if (
+			new Set(allConsequences.map((consequence) => consequence.consequenceId)).size !==
+			allConsequences.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission consequences must be unique' });
+		}
+		if (allConsequences.length > 1_000) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission consequence history exceeds its bound'
+			});
+		}
+		if (
+			new Set(aftermath.archives.map((archive) => archive.attemptId)).size !==
+			aftermath.archives.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission aftermath archives must be unique' });
+		}
+		if (
+			aftermath.activeAttemptId !== null &&
+			aftermath.archives.some((archive) => archive.attemptId === aftermath.activeAttemptId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Active attempt cannot already be archived' });
+		}
+	});
+
+export const MissionRunStateV9Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		aftermath: MissionAftermathStateV4Schema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV9Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if (
+			(mission.attempt === null) !== (mission.attemptCount === 0) ||
+			(mission.attempt !== null && mission.attempt.ordinal !== mission.attemptCount)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission attempt count is inconsistent' });
+		}
+		if (
+			new Set(mission.availableMissionIds).size !== mission.availableMissionIds.length ||
+			!mission.availableMissionIds.includes(mission.binding.missionId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission availability binding is inconsistent' });
+		}
+		for (const [evidenceId, evidence] of Object.entries(mission.evidence)) {
+			if (evidence.evidenceId !== evidenceId) {
+				context.addIssue({ code: 'custom', message: 'Mission evidence key must match its id' });
+			}
+		}
+		if ((mission.attempt?.attemptId ?? null) !== mission.aftermath.activeAttemptId) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission aftermath must identify active attempt'
+			});
+		}
+		for (const consequence of mission.aftermath.consequences) {
+			if (
+				!mission.attempt ||
+				consequence.sourceAttemptId !== mission.attempt.attemptId ||
+				consequence.roundNumber > mission.attempt.turnState.roundNumber
+			) {
+				context.addIssue({ code: 'custom', message: 'Mission consequence exceeds active attempt' });
+			}
+		}
+	});
+
 export type MissionAttempt = z.infer<typeof MissionAttemptSchema>;
 export type MissionAttemptStatus = z.infer<typeof MissionAttemptStatusSchema>;
 export type MissionRound = z.infer<typeof MissionRoundSchema>;
@@ -1240,12 +1411,18 @@ export type MissionRunStateV5 = z.infer<typeof MissionRunStateV5Schema>;
 export type MissionRunStateV6 = z.infer<typeof MissionRunStateV6Schema>;
 export type MissionRunStateV7 = z.infer<typeof MissionRunStateV7Schema>;
 export type MissionRunStateV8 = z.infer<typeof MissionRunStateV8Schema>;
+export type CombatModeId = z.infer<typeof CombatModeIdSchema>;
+export type CombatModeBinding = z.infer<typeof CombatModeBindingSchema>;
+export type MissionAttemptV9 = z.infer<typeof MissionAttemptV9Schema>;
+export type MissionRunStateV9 = z.infer<typeof MissionRunStateV9Schema>;
 export type MissionHarmRecord = z.infer<typeof MissionHarmRecordSchema>;
 export type MissionHarmRecordV2 = z.infer<typeof MissionHarmRecordV2Schema>;
+export type MissionHarmRecordV3 = z.infer<typeof MissionHarmRecordV3Schema>;
 export type MissionMasterHarmRecord = z.infer<typeof MissionMasterHarmRecordSchema>;
 export type MissionMasterHarmRecordV2 = z.infer<typeof MissionMasterHarmRecordV2Schema>;
 export type MissionConsequenceRecordV2 = z.infer<typeof MissionConsequenceRecordV2Schema>;
 export type MissionConsequenceRecordV3 = z.infer<typeof MissionConsequenceRecordV3Schema>;
+export type MissionConsequenceRecordV4 = z.infer<typeof MissionConsequenceRecordV4Schema>;
 export type MissionEvidenceRecord = z.infer<typeof MissionEvidenceRecordSchema>;
 export type MissionRoundV3 = z.infer<typeof MissionRoundV3Schema>;
 export type PortalMissionState = z.infer<typeof PortalMissionStateSchema>;

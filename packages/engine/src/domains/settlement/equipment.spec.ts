@@ -66,6 +66,13 @@ function equipmentStateV25(): EngineGameStateV25 {
 		...state,
 		schemaVersion: 25,
 		contentVersion: 'engine-v25',
+		mission: {
+			...state.mission,
+			aftermath: {
+				...state.mission.aftermath,
+				aftermathVersion: 'mission-aftermath-v4'
+			}
+		},
 		heroes: {
 			...state.heroes,
 			[heroId]: {

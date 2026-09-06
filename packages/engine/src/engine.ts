@@ -61,6 +61,10 @@ export {
 } from './domains/settlement/equipment.js';
 export { missionTurnLegalActions } from './domains/mission/actions.js';
 export {
+	LEGACY_AUTO_RULES_VERSION,
+	createCombatModeBinding
+} from './domains/mission/combat-mode.js';
+export {
 	isIrreversibleMasterAction,
 	masterFallbackActionSource,
 	masterFallbackMissionChoice,

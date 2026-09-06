@@ -27,7 +27,10 @@ export const load: PageServerLoad = async ({ params }) => {
 	const isPortal = report.snapshot.state.schemaVersion === 15;
 	const isMasterTiming =
 		report.snapshot.state.schemaVersion === 19 || report.snapshot.state.schemaVersion === 20;
-	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18 || isMasterTiming;
+	const isAttemptAftermath =
+		report.snapshot.state.schemaVersion === 18 ||
+		report.snapshot.state.schemaVersion === 25 ||
+		isMasterTiming;
 	const isAftermath = report.snapshot.state.schemaVersion === 16 || isAttemptAftermath;
 	const isMasterRisk = report.snapshot.state.schemaVersion === 17 || isAttemptAftermath;
 	const missionBindingId = report.snapshot.state.mission.binding.missionId;

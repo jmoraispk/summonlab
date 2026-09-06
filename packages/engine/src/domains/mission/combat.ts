@@ -2,6 +2,7 @@ import {
 	DailyPlanSchema,
 	InjurySchema,
 	MissionConsequenceRecordV3Schema,
+	MissionConsequenceRecordV4Schema,
 	MissionHarmRecordSchema,
 	MissionMasterHarmRecordSchema,
 	MissionResolvedEffectSchema,
@@ -13,6 +14,7 @@ import {
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
+	MissionRunStateV9Schema,
 	SocietyStateV4Schema,
 	SocietyStateV5Schema,
 	type EngineGameStateV12,
@@ -26,8 +28,10 @@ import {
 	type EngineGameStateV21,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
 	type EntropyDraw,
 	type MissionConsequenceRecordV3,
+	type MissionConsequenceRecordV4,
 	type MissionHarmRecord,
 	type MissionMasterHarmRecord,
 	type MissionResolvedEffect,
@@ -39,6 +43,7 @@ import {
 	type MissionRunStateV6,
 	type MissionRunStateV7,
 	type MissionRunStateV8,
+	type MissionRunStateV9,
 	type MissionTurnChoice,
 	type SocietyStateV4,
 	type SocietyStateV5
@@ -54,6 +59,7 @@ import { missionContentForState } from '../../core/content-bindings.js';
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import { legacyCapabilityProjection } from './legacy-auto.js';
 import {
 	missionToolTagsForActor,
 	normalizedMissionTurnChoices,
@@ -79,7 +85,10 @@ function clampSocial(value: number): number {
 	return Math.min(100, Math.max(-100, value));
 }
 
-function skipUnfinishedPlan(hero: EngineGameStateV18['heroes'][string], resolvedAt: string) {
+function skipUnfinishedPlan(
+	hero: EngineGameStateV18['heroes'][string] | EngineGameStateV25['heroes'][string],
+	resolvedAt: string
+) {
 	if (!hero.dailyPlan) return null;
 	return DailyPlanSchema.parse({
 		...hero.dailyPlan,
@@ -93,10 +102,12 @@ function skipUnfinishedPlan(hero: EngineGameStateV18['heroes'][string], resolved
 
 export function missionInitiativeBase(state: MissionTurnEngineState, actorId: string): number {
 	if (actorId === state.master.masterId) return 50;
-	const hero = state.heroes[actorId]!;
-	return (
-		20 + hero.mind.aptitudes.finesse * 5 + hero.mind.aptitudes.resolve * 3 + hero.progression.level
-	);
+	const aptitudes =
+		state.schemaVersion === 25
+			? legacyCapabilityProjection(state.heroes[actorId]!.capabilityProfile.attributes)
+			: state.heroes[actorId]!.mind.aptitudes;
+	const level = state.heroes[actorId]!.progression.level;
+	return 20 + aptitudes.finesse * 5 + aptitudes.resolve * 3 + level;
 }
 
 export function activeMissionEnvironmentEvents(
@@ -304,7 +315,8 @@ export type MissionCombatTurnResolution = {
 		| MissionRunStateV4
 		| MissionRunStateV6
 		| MissionRunStateV7
-		| MissionRunStateV8;
+		| MissionRunStateV8
+		| MissionRunStateV9;
 	readonly round: MissionRoundV2;
 	readonly choices: MissionTurnChoice[];
 	readonly entropyCursor: number;
@@ -312,7 +324,7 @@ export type MissionCombatTurnResolution = {
 	readonly consequences: (
 		MissionHarmRecord | MissionMasterHarmRecord | MissionConsequenceRecordV3
 	)[];
-	readonly heroes: EngineGameStateV18['heroes'];
+	readonly heroes: EngineGameStateV18['heroes'] | EngineGameStateV25['heroes'];
 	readonly items: EngineGameStateV18['items'];
 	readonly society: SocietyStateV4 | SocietyStateV5;
 	readonly master: EngineGameStateV18['master'];
@@ -330,16 +342,17 @@ function missionAttackPower(
 		| EngineGameStateV20
 		| EngineGameStateV21
 		| EngineGameStateV23
-		| EngineGameStateV24,
+		| EngineGameStateV24
+		| EngineGameStateV25,
 	actorId: string
 ): number {
 	if (actorId === state.master.masterId) return 1;
-	const hero = state.heroes[actorId]!;
-	return (
-		1 +
-		Math.floor(hero.mind.aptitudes.might / 8) +
-		Math.floor(hero.progression.skills.swordFighting.rank / 5)
-	);
+	const might =
+		state.schemaVersion === 25
+			? legacyCapabilityProjection(state.heroes[actorId]!.capabilityProfile.attributes).might
+			: state.heroes[actorId]!.mind.aptitudes.might;
+	const rank = state.heroes[actorId]!.progression.skills.swordFighting.rank;
+	return 1 + Math.floor(might / 8) + Math.floor(rank / 5);
 }
 
 export function resolveMissionCombatTurn(
@@ -353,7 +366,8 @@ export function resolveMissionCombatTurn(
 		| EngineGameStateV20
 		| EngineGameStateV21
 		| EngineGameStateV23
-		| EngineGameStateV24,
+		| EngineGameStateV24
+		| EngineGameStateV25,
 	choicesInput: readonly MissionTurnChoice[],
 	sourceEventId: string | null = null
 ): MissionCombatTurnResolution {
@@ -423,21 +437,27 @@ export function resolveMissionCombatTurn(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? { ...state.mission.evidence }
 			: null;
 	const monsters = structuredClone(currentAttempt.turnState.monsters);
 	const partyGuard = structuredClone(currentAttempt.turnState.partyGuard);
-	const heroes = structuredClone(state.heroes) as EngineGameStateV18['heroes'];
+	const heroes = structuredClone(state.heroes) as
+		EngineGameStateV18['heroes'] | EngineGameStateV25['heroes'];
 	const items = structuredClone(state.items) as EngineGameStateV18['items'];
 	let master = structuredClone(state.master) as EngineGameStateV18['master'];
 	const parseMissionSociety = (value: unknown): SocietyStateV4 | SocietyStateV5 =>
-		state.schemaVersion === 23 || state.schemaVersion === 24
+		state.schemaVersion === 23 || state.schemaVersion === 24 || state.schemaVersion === 25
 			? SocietyStateV5Schema.parse(value)
 			: SocietyStateV4Schema.parse(value);
 	let society = parseMissionSociety(structuredClone(state.society));
-	const consequences: (MissionHarmRecord | MissionMasterHarmRecord | MissionConsequenceRecordV3)[] =
-		[];
+	const consequences: (
+		| MissionHarmRecord
+		| MissionMasterHarmRecord
+		| MissionConsequenceRecordV3
+		| MissionConsequenceRecordV4
+	)[] = [];
 	const environmentEventIds = activeMissionEnvironmentEvents(state, roundNumber);
 	const effects: MissionResolvedEffect[] = [];
 	const resolvedPartyActions: MissionRoundV2['actions'] = [];
@@ -463,7 +483,8 @@ export function resolveMissionCombatTurn(
 				state.schemaVersion !== 19 &&
 				state.schemaVersion !== 20 &&
 				state.schemaVersion !== 23 &&
-				state.schemaVersion !== 24) ||
+				state.schemaVersion !== 24 &&
+				state.schemaVersion !== 25) ||
 			amount <= 0
 		)
 			return;
@@ -476,7 +497,8 @@ export function resolveMissionCombatTurn(
 				state.schemaVersion === 19 ||
 				state.schemaVersion === 20 ||
 				state.schemaVersion === 23 ||
-				state.schemaVersion === 24) &&
+				state.schemaVersion === 24 ||
+				state.schemaVersion === 25) &&
 			targetId === master.masterId
 		) {
 			if (master.lifeState !== 'alive') return;
@@ -575,13 +597,15 @@ export function resolveMissionCombatTurn(
 				return { heroId, observationId, relationshipId };
 			});
 			consequences.push(
-				(state.schemaVersion === 18 ||
-				state.schemaVersion === 19 ||
-				state.schemaVersion === 20 ||
-				state.schemaVersion === 23 ||
-				state.schemaVersion === 24
-					? MissionConsequenceRecordV3Schema
-					: MissionMasterHarmRecordSchema
+				(state.schemaVersion === 25
+					? MissionConsequenceRecordV4Schema
+					: state.schemaVersion === 18 ||
+						  state.schemaVersion === 19 ||
+						  state.schemaVersion === 20 ||
+						  state.schemaVersion === 23 ||
+						  state.schemaVersion === 24
+						? MissionConsequenceRecordV3Schema
+						: MissionMasterHarmRecordSchema
 				).parse({
 					consequenceKind: 'master-harm',
 					consequenceId,
@@ -590,7 +614,8 @@ export function resolveMissionCombatTurn(
 					state.schemaVersion === 19 ||
 					state.schemaVersion === 20 ||
 					state.schemaVersion === 23 ||
-					state.schemaVersion === 24
+					state.schemaVersion === 24 ||
+					state.schemaVersion === 25
 						? { sourceAttemptId: currentAttempt.attemptId }
 						: {}),
 					sourceKind,
@@ -729,13 +754,15 @@ export function resolveMissionCombatTurn(
 			return { heroId, observationId, relationshipId };
 		});
 		consequences.push(
-			(state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23 ||
-			state.schemaVersion === 24
-				? MissionConsequenceRecordV3Schema
-				: MissionHarmRecordSchema
+			(state.schemaVersion === 25
+				? MissionConsequenceRecordV4Schema
+				: state.schemaVersion === 18 ||
+					  state.schemaVersion === 19 ||
+					  state.schemaVersion === 20 ||
+					  state.schemaVersion === 23 ||
+					  state.schemaVersion === 24
+					? MissionConsequenceRecordV3Schema
+					: MissionHarmRecordSchema
 			).parse({
 				consequenceId,
 				sourceEventId,
@@ -743,7 +770,8 @@ export function resolveMissionCombatTurn(
 				state.schemaVersion === 19 ||
 				state.schemaVersion === 20 ||
 				state.schemaVersion === 23 ||
-				state.schemaVersion === 24
+				state.schemaVersion === 24 ||
+				state.schemaVersion === 25
 					? { sourceAttemptId: currentAttempt.attemptId }
 					: {}),
 				sourceKind,
@@ -871,7 +899,8 @@ export function resolveMissionCombatTurn(
 							state.schemaVersion === 19 ||
 							state.schemaVersion === 20 ||
 							state.schemaVersion === 23 ||
-							state.schemaVersion === 24) &&
+							state.schemaVersion === 24 ||
+							state.schemaVersion === 25) &&
 						missionContent.missionId === 'tower-floor-04' &&
 						discoveryIds.includes('foundry-maintenance-route')
 					) {
@@ -895,7 +924,8 @@ export function resolveMissionCombatTurn(
 							state.schemaVersion === 19 ||
 							state.schemaVersion === 20 ||
 							state.schemaVersion === 23 ||
-							state.schemaVersion === 24) &&
+							state.schemaVersion === 24 ||
+							state.schemaVersion === 25) &&
 						missionContent.missionId === 'tower-floor-05' &&
 						discoveryIds.includes('foundry-maintenance-route')
 					) {
@@ -931,7 +961,8 @@ export function resolveMissionCombatTurn(
 						state.schemaVersion !== 19 &&
 						state.schemaVersion !== 20 &&
 						state.schemaVersion !== 23 &&
-						state.schemaVersion !== 24) ||
+						state.schemaVersion !== 24 &&
+						state.schemaVersion !== 25) ||
 					fromNodeId !== arena.coolingControlNodeId ||
 					!knowledge.discoveryIds.includes('cooling-control-weakness') ||
 					after === before
@@ -1117,7 +1148,8 @@ export function resolveMissionCombatTurn(
 					state.schemaVersion === 19 ||
 					state.schemaVersion === 20 ||
 					state.schemaVersion === 23 ||
-					state.schemaVersion === 24) &&
+					state.schemaVersion === 24 ||
+					state.schemaVersion === 25) &&
 					((targetId === master.masterId && master.lifeState === 'dead') ||
 						heroes[targetId]?.lifeState === 'dead'))
 			) {
@@ -1129,7 +1161,8 @@ export function resolveMissionCombatTurn(
 						state.schemaVersion === 19 ||
 						state.schemaVersion === 20 ||
 						state.schemaVersion === 23 ||
-						state.schemaVersion === 24) &&
+						state.schemaVersion === 24 ||
+						state.schemaVersion === 25) &&
 					((targetId === master.masterId && master.lifeState === 'dead') ||
 						heroes[targetId]?.lifeState === 'dead')
 						? `${monster.label}'s target had already fallen before impact.`
@@ -1185,7 +1218,8 @@ export function resolveMissionCombatTurn(
 			state.schemaVersion === 19 ||
 			state.schemaVersion === 20 ||
 			state.schemaVersion === 23 ||
-			state.schemaVersion === 24) &&
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25) &&
 		environmentEventIds.includes('red-slag-fall')
 	) {
 		for (const actorId of currentAttempt.party.memberIds) {
@@ -1255,19 +1289,21 @@ export function resolveMissionCombatTurn(
 			? deriveMonsterIntents(missionContent, currentAttempt, monsters, positions, objective, arena)
 			: [];
 	const missionSchema =
-		state.schemaVersion === 18 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
-			? MissionRunStateV8Schema
-			: state.schemaVersion === 17
-				? MissionRunStateV7Schema
-				: state.schemaVersion === 16
-					? MissionRunStateV6Schema
-					: state.schemaVersion === 14
-						? MissionRunStateV4Schema
-						: MissionRunStateV3Schema;
+		state.schemaVersion === 25
+			? MissionRunStateV9Schema
+			: state.schemaVersion === 18 ||
+				  state.schemaVersion === 19 ||
+				  state.schemaVersion === 20 ||
+				  state.schemaVersion === 23 ||
+				  state.schemaVersion === 24
+				? MissionRunStateV8Schema
+				: state.schemaVersion === 17
+					? MissionRunStateV7Schema
+					: state.schemaVersion === 16
+						? MissionRunStateV6Schema
+						: state.schemaVersion === 14
+							? MissionRunStateV4Schema
+							: MissionRunStateV3Schema;
 	const mission = missionSchema.parse({
 		...state.mission,
 		...(state.schemaVersion === 14 ||
@@ -1277,7 +1313,8 @@ export function resolveMissionCombatTurn(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? { evidence: missionEvidence }
 			: {}),
 		...(state.schemaVersion === 16 ||
@@ -1286,7 +1323,8 @@ export function resolveMissionCombatTurn(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? {
 					aftermath: {
 						...state.mission.aftermath,

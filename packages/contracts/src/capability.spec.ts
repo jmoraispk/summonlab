@@ -227,6 +227,13 @@ describe('character capability contracts', () => {
 				learning: capabilityProfile().learning
 			}).success
 		).toBe(false);
+		expect(
+			ProofRunCreateRequestSchema.safeParse({
+				recipe: legacySnapshot.recipe,
+				controlMode: legacySnapshot.controlMode,
+				combatMode: 'legacy-auto-v1'
+			}).success
+		).toBe(false);
 	});
 
 	it('serializes only visible attributes in public v2 proof records', () => {

@@ -16,6 +16,7 @@ import {
 	type EngineGameStateV21,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
 	type LegalAction,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
@@ -53,7 +54,8 @@ export type MissionTurnEngineState =
 	| EngineGameStateV20
 	| EngineGameStateV21
 	| EngineGameStateV23
-	| EngineGameStateV24;
+	| EngineGameStateV24
+	| EngineGameStateV25;
 
 export function missionToolTagsForActor(
 	state: MissionTurnEngineState,
@@ -68,7 +70,8 @@ export function missionToolTagsForActor(
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 21 &&
 		state.schemaVersion !== 23 &&
-		state.schemaVersion !== 24
+		state.schemaVersion !== 24 &&
+		state.schemaVersion !== 25
 	)
 		return new Set();
 	return new Set(
@@ -240,7 +243,8 @@ export function missionTurnActionsForState(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 	) {
 		const combatAttempt = state.mission.attempt!;
 		for (const monster of Object.values(combatAttempt.turnState.monsters)
@@ -269,7 +273,8 @@ export function missionTurnActionsForState(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? state.mission.attempt!.turnState.arena
 			: null;
 	if (
@@ -323,7 +328,8 @@ export function missionTurnLegalActions(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 		? missionTurnActionsForState(state, actorId)
 		: [];
 }
@@ -354,8 +360,10 @@ export function normalizedMissionTurnChoices(
 			(choice.actorId === attempt.party.masterId &&
 				state.schemaVersion !== 19 &&
 				state.schemaVersion !== 20 &&
+				state.schemaVersion !== 25 &&
 				choice.source !== 'manual') ||
 			(choice.actorId !== attempt.party.masterId && choice.source === 'manual') ||
+			(state.schemaVersion === 25 && choice.source !== 'random') ||
 			!missionTurnActionsForState(state, choice.actorId).some(
 				(candidate) => candidate.actionId === choice.actionId
 			)
@@ -378,10 +386,11 @@ type MissionActionState =
 	| EngineGameStateV19
 	| EngineGameStateV20
 	| EngineGameStateV23
-	| EngineGameStateV24;
+	| EngineGameStateV24
+	| EngineGameStateV25;
 
 export function supportsMissionActions(state: EngineGameState): state is MissionActionState {
-	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24].includes(state.schemaVersion);
+	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25].includes(state.schemaVersion);
 }
 
 export function missionLegalActions(
@@ -429,6 +438,21 @@ export function missionLegalActions(
 		];
 	}
 	if (attempt?.status === 'deployed' || attempt?.status === 'resolving') {
+		if (state.schemaVersion === 25) {
+			return [
+				missionAction({
+					actionId: 'mission.advance.automatic',
+					actorId,
+					kind: 'interact',
+					label: 'Continue battle',
+					description:
+						'Advance one bounded automatic combat round under the attempt’s stored operator mode.',
+					targetIds: [],
+					resourceCosts: {},
+					tags: ['mission', 'combat', 'automatic', 'mode-bound']
+				})
+			];
+		}
 		const turnActions = state.schemaVersion === 11 ? [] : missionTurnLegalActions(state, actorId);
 		return allPartyAtNode(state, missionContentForState(state).retreat.nodeIds)
 			? [

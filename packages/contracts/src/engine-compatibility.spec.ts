@@ -28,6 +28,7 @@ import {
 	MissionRunStateV6Schema as PublicMissionRunStateV6Schema,
 	MissionRunStateV7Schema as PublicMissionRunStateV7Schema,
 	MissionRunStateV8Schema as PublicMissionRunStateV8Schema,
+	MissionRunStateV9Schema as PublicMissionRunStateV9Schema,
 	MODEL_POLICY_VERSION,
 	StoryPatchCandidateSchema as PublicStoryPatchCandidateSchema,
 	SynthesisReceiptSchema as PublicSynthesisReceiptSchema,
@@ -65,7 +66,8 @@ import {
 	MissionRunStateV5Schema,
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
-	MissionRunStateV8Schema
+	MissionRunStateV8Schema,
+	MissionRunStateV9Schema
 } from './engine/mission-state.js';
 import {
 	FirstBandArchiveStateSchema,
@@ -239,6 +241,24 @@ function v25StateFromV24Fixture() {
 		...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE,
 		schemaVersion: 25,
 		contentVersion: 'engine-v25',
+		mission: {
+			...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission,
+			aftermath: {
+				...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.aftermath,
+				aftermathVersion: 'mission-aftermath-v4'
+			},
+			attempt: V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt
+				? {
+						...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt,
+						combatModeBinding: {
+							modeId: 'legacy-auto-v1',
+							rulesVersion: 'legacy-auto-rules-v1',
+							contentHash: '1'.repeat(64),
+							boundAt: V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt.preparedAt
+						}
+					}
+				: null
+		},
 		heroes
 	};
 }
@@ -303,6 +323,9 @@ describe('engine contracts compatibility', () => {
 		const state = v25StateFromV24Fixture();
 		const parsed = gameStateContracts.EngineGameStateV25Schema.parse(state);
 		expect(parsed).toStrictEqual(engineContracts.EngineGameStateV25Schema.parse(state));
+		expect(MissionRunStateV9Schema.parse(parsed.mission)).toStrictEqual(
+			PublicMissionRunStateV9Schema.parse(parsed.mission)
+		);
 		expect(Object.values(parsed.heroes)).toHaveLength(2);
 		expect(Object.values(parsed.heroes)[0]).toMatchObject({
 			maxHealth: 308,
@@ -354,6 +377,7 @@ describe('engine contracts compatibility', () => {
 		  "master.open.decision",
 		  "master.replace.directive",
 		  "master.revoke.directive",
+		  "mission.advance.automatic",
 		  "mission.cancel",
 		  "mission.deploy",
 		  "mission.extract",
@@ -779,6 +803,7 @@ describe('engine contracts compatibility', () => {
 				decisionId: '50000000-0000-4000-8000-000000000011',
 				resolvedAt: '2000-01-01T00:01:00.000Z'
 			},
+			{ ...commandBase, commandType: 'mission.advance.automatic' },
 			{
 				...commandBase,
 				commandType: 'mission.open.extraction',
@@ -838,6 +863,7 @@ describe('engine contracts compatibility', () => {
 			'mission.cancel',
 			'mission.deploy',
 			'mission.resolve.turn',
+			'mission.advance.automatic',
 			'mission.open.extraction',
 			'mission.extract',
 			'mission.retreat',
@@ -873,7 +899,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.advance.automatic' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

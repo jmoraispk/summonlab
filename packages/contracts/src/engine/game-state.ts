@@ -19,7 +19,8 @@ import {
 	MissionRunStateV5Schema,
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
-	MissionRunStateV8Schema
+	MissionRunStateV8Schema,
+	MissionRunStateV9Schema
 } from './mission-state.js';
 import {
 	EngineHeroStateV3Schema,
@@ -838,7 +839,8 @@ const EngineGameStateV25BaseSchema = z
 	.object({
 		...EngineGameStateV24BaseSchema.shape,
 		schemaVersion: z.literal(25),
-		heroes: z.record(EntityIdSchema, EngineHeroStateV25Schema)
+		heroes: z.record(EntityIdSchema, EngineHeroStateV25Schema),
+		mission: MissionRunStateV9Schema
 	})
 	.strict();
 
@@ -1640,6 +1642,30 @@ export const EngineGameStateV25Schema = EngineGameStateV25BaseSchema.superRefine
 		validateFirstBandArchiveEngineState(
 			{
 				...state,
+				mission: {
+					...state.mission,
+					aftermath: {
+						aftermathVersion: 'mission-aftermath-v3',
+						activeAttemptId: state.mission.aftermath.activeAttemptId,
+						consequences: state.mission.aftermath.consequences,
+						archives: state.mission.aftermath.archives.map((archive) => ({
+							attemptId: archive.attemptId,
+							ordinal: archive.ordinal,
+							binding: archive.binding,
+							outcome: archive.outcome,
+							preparedAt: archive.preparedAt,
+							deployedAt: archive.deployedAt,
+							endedAt: archive.endedAt,
+							finalRoundNumber: archive.finalRoundNumber,
+							consequences: archive.consequences
+						}))
+					},
+					attempt: state.mission.attempt
+						? Object.fromEntries(
+								Object.entries(state.mission.attempt).filter(([key]) => key !== 'combatModeBinding')
+							)
+						: null
+				},
 				heroes: Object.fromEntries(
 					Object.entries(state.heroes).map(([heroId, hero]) => [
 						heroId,

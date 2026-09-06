@@ -7,6 +7,8 @@ import {
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
+	MissionRunStateV9Schema,
+	type CombatModeBinding,
 	type EngineGameStateV11,
 	type EngineGameStateV12,
 	type EngineGameStateV13,
@@ -21,6 +23,7 @@ import {
 	type EngineGameStateV22,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
 	type EntropyDraw,
 	type MissionRunState,
 	type MissionRunStateV2,
@@ -29,7 +32,8 @@ import {
 	type MissionRunStateV5,
 	type MissionRunStateV6,
 	type MissionRunStateV7,
-	type MissionRunStateV8
+	type MissionRunStateV8,
+	type MissionRunStateV9
 } from '@summonlab/contracts';
 import { IRON_MOON_PACKAGE, MONSTER_POLICY_CATALOG } from '@summonlab/content';
 
@@ -42,6 +46,7 @@ import {
 	verifiedMissionContent
 } from '../../core/content-bindings.js';
 import { spawnMissionCombatants } from './monster-policy.js';
+import { assertLegacyAutoBinding } from './combat-mode.js';
 
 type PortalAttempt = NonNullable<EngineGameStateV15['mission']['attempt']>;
 type PortalRuntime = PortalAttempt['turnState']['portal'];
@@ -69,7 +74,8 @@ export type MissionEngineState =
 	| EngineGameStateV21
 	| EngineGameStateV22
 	| EngineGameStateV23
-	| EngineGameStateV24;
+	| EngineGameStateV24
+	| EngineGameStateV25;
 export type MissionEngineRunState =
 	| MissionRunState
 	| MissionRunStateV2
@@ -78,33 +84,36 @@ export type MissionEngineRunState =
 	| MissionRunStateV5
 	| MissionRunStateV6
 	| MissionRunStateV7
-	| MissionRunStateV8;
+	| MissionRunStateV8
+	| MissionRunStateV9;
 
 export function parseMissionRunState(
 	state: MissionEngineState,
 	value: unknown
 ): MissionEngineRunState {
-	return state.schemaVersion === 24 ||
-		state.schemaVersion === 23 ||
-		state.schemaVersion === 22 ||
-		state.schemaVersion === 21 ||
-		state.schemaVersion === 20 ||
-		state.schemaVersion === 19 ||
-		state.schemaVersion === 18
-		? MissionRunStateV8Schema.parse(value)
-		: state.schemaVersion === 17
-			? MissionRunStateV7Schema.parse(value)
-			: state.schemaVersion === 16
-				? MissionRunStateV6Schema.parse(value)
-				: state.schemaVersion === 15
-					? MissionRunStateV5Schema.parse(value)
-					: state.schemaVersion === 14
-						? MissionRunStateV4Schema.parse(value)
-						: state.schemaVersion === 13
-							? MissionRunStateV3Schema.parse(value)
-							: state.schemaVersion === 12
-								? MissionRunStateV2Schema.parse(value)
-								: MissionRunStateSchema.parse(value);
+	return state.schemaVersion === 25
+		? MissionRunStateV9Schema.parse(value)
+		: state.schemaVersion === 24 ||
+			  state.schemaVersion === 23 ||
+			  state.schemaVersion === 22 ||
+			  state.schemaVersion === 21 ||
+			  state.schemaVersion === 20 ||
+			  state.schemaVersion === 19 ||
+			  state.schemaVersion === 18
+			? MissionRunStateV8Schema.parse(value)
+			: state.schemaVersion === 17
+				? MissionRunStateV7Schema.parse(value)
+				: state.schemaVersion === 16
+					? MissionRunStateV6Schema.parse(value)
+					: state.schemaVersion === 15
+						? MissionRunStateV5Schema.parse(value)
+						: state.schemaVersion === 14
+							? MissionRunStateV4Schema.parse(value)
+							: state.schemaVersion === 13
+								? MissionRunStateV3Schema.parse(value)
+								: state.schemaVersion === 12
+									? MissionRunStateV2Schema.parse(value)
+									: MissionRunStateSchema.parse(value);
 }
 
 export function missionPartyIsReserved(state: MissionEngineState, actorId: string): boolean {
@@ -121,7 +130,7 @@ export function normalizedMissionHeroIds(heroIds: readonly string[]): string[] {
 }
 
 export function assertMissionPartyReady(
-	state: MissionEngineState | EngineGameStateV24,
+	state: MissionEngineState,
 	heroIds: readonly string[],
 	missionId = state.mission.binding.missionId
 ): void {
@@ -135,6 +144,7 @@ export function assertMissionPartyReady(
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 23 &&
 		state.schemaVersion !== 24 &&
+		state.schemaVersion !== 25 &&
 		missionId !== state.mission.binding.missionId
 	) {
 		throw new IllegalActionError('mission.party');
@@ -148,7 +158,8 @@ export function assertMissionPartyReady(
 			state.schemaVersion === 19 ||
 			state.schemaVersion === 20 ||
 			state.schemaVersion === 23 ||
-			state.schemaVersion === 24) &&
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25) &&
 		!state.mission.availableMissionIds.includes(missionId)
 	) {
 		throw new IllegalActionError('mission.party');
@@ -186,8 +197,17 @@ export function prepareMissionAttempt(
 	state: MissionEngineState,
 	commandId: string,
 	heroIds: readonly string[],
-	missionId = state.mission.binding.missionId
+	missionId = state.mission.binding.missionId,
+	combatModeBinding?: CombatModeBinding
 ): MissionEngineRunState {
+	if (state.schemaVersion === 25) {
+		if (!combatModeBinding || combatModeBinding.boundAt !== state.simulatedAt) {
+			throw new IllegalActionError('mission.prepare');
+		}
+		assertLegacyAutoBinding(combatModeBinding);
+	} else if (combatModeBinding) {
+		throw new IllegalActionError('mission.prepare');
+	}
 	assertMissionPartyReady(state, heroIds, missionId);
 	const prior = state.mission.attempt;
 	if (
@@ -198,7 +218,8 @@ export function prepareMissionAttempt(
 				state.schemaVersion === 19 ||
 				state.schemaVersion === 20 ||
 				state.schemaVersion === 23 ||
-				state.schemaVersion === 24) &&
+				state.schemaVersion === 24 ||
+				state.schemaVersion === 25) &&
 			prior.status === 'success'
 		)
 	) {
@@ -215,7 +236,8 @@ export function prepareMissionAttempt(
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? {
 					aftermath: {
 						...state.mission.aftermath,
@@ -228,6 +250,11 @@ export function prepareMissionAttempt(
 										attemptId: prior.attemptId,
 										ordinal: prior.ordinal,
 										binding: state.mission.binding,
+										...(state.schemaVersion === 25
+											? {
+													combatModeBinding: state.mission.attempt!.combatModeBinding
+												}
+											: {}),
 										outcome: prior.outcome!,
 										preparedAt: prior.preparedAt,
 										deployedAt: prior.deployedAt,
@@ -260,6 +287,7 @@ export function prepareMissionAttempt(
 			extractionOpenedAt: null,
 			endedAt: null,
 			outcome: null,
+			...(state.schemaVersion === 25 ? { combatModeBinding } : {}),
 			...(state.schemaVersion === 15
 				? {
 						turnState: {
@@ -359,7 +387,8 @@ export function prepareMissionAttempt(
 						  state.schemaVersion === 19 ||
 						  state.schemaVersion === 20 ||
 						  state.schemaVersion === 23 ||
-						  state.schemaVersion === 24
+						  state.schemaVersion === 24 ||
+						  state.schemaVersion === 25
 						? {
 								turnState: {
 									turnVersion: 'mission-turn-v2',
@@ -431,7 +460,8 @@ export function reviseMissionParty(
 			state.schemaVersion === 19 ||
 			state.schemaVersion === 20 ||
 			state.schemaVersion === 23 ||
-			state.schemaVersion === 24
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25
 				? {
 						turnState: {
 							...state.mission.attempt!.turnState,
@@ -504,7 +534,8 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25
 			? spawnMissionCombatants(state, state.mission.attempt!, positions, entropy)
 			: null;
 	if (combat) entropy = combat.entropy;
@@ -528,7 +559,8 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 							state.schemaVersion === 19 ||
 							state.schemaVersion === 20 ||
 							state.schemaVersion === 23 ||
-							state.schemaVersion === 24
+							state.schemaVersion === 24 ||
+							state.schemaVersion === 25
 								? state.mission.attempt!.turnState
 								: {}),
 							monsters: combat.monsters,

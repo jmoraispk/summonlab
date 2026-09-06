@@ -44,9 +44,12 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
+	const isLegacyAutomatic = $derived(engineState.schemaVersion === 25);
 	const isMasterFallback = $derived(engineState.schemaVersion === 20);
 	const isMasterTiming = $derived(engineState.schemaVersion === 19 || isMasterFallback);
-	const isAttemptAftermath = $derived(engineState.schemaVersion === 18 || isMasterTiming);
+	const isAttemptAftermath = $derived(
+		engineState.schemaVersion === 18 || isLegacyAutomatic || isMasterTiming
+	);
 	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
 	const isAftermath = $derived(
 		engineState.schemaVersion === 16 || engineState.schemaVersion === 17 || isAttemptAftermath
@@ -77,7 +80,8 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25
 			? engineState.mission
 			: null
 	);
@@ -92,7 +96,8 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
@@ -101,7 +106,8 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25
 			? engineState.mission.aftermath
 			: null
 	);
@@ -370,6 +376,13 @@
 		selectedMasterActionId = '';
 	}
 
+	async function advanceAutomaticCombat() {
+		await act(
+			{ action: 'advance-automatic-combat' },
+			'The heroes resolved one automatic combat round.'
+		);
+	}
+
 	function actorName(actorId: string) {
 		const monster = turnState?.monsters[actorId];
 		if (monster) return monster.label;
@@ -390,7 +403,8 @@
 			engineState.schemaVersion !== 17 &&
 			engineState.schemaVersion !== 18 &&
 			engineState.schemaVersion !== 19 &&
-			engineState.schemaVersion !== 20
+			engineState.schemaVersion !== 20 &&
+			engineState.schemaVersion !== 25
 		)
 			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
@@ -889,7 +903,11 @@
 							>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
 								.objectiveTitle}</strong
 						>
-						<small>Choose only the Master. Every summoned hero chooses independently.</small>
+						<small
+							>{isLegacyAutomatic
+								? 'The heroes choose from legal actions when you continue.'
+								: 'Choose only the Master. Every summoned hero chooses independently.'}</small
+						>
 					</div>
 					{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
 						<div class="threat-ledger" data-testid="threat-intents">
@@ -910,29 +928,40 @@
 							{/each}
 						</div>
 					{/if}
-					<div class="turn-choices" data-testid="master-turn-actions">
-						{#each masterTurnActions as choice (choice.actionId)}
-							<button
-								type="button"
-								class:selected={choice.actionId === selectedMasterActionId}
-								disabled={busy || !manualDecisionOpen || (isMasterTiming && !masterDecision)}
-								onclick={() => (selectedMasterActionId = choice.actionId)}
-							>
-								<strong>{choice.label}</strong><small>{choice.description}</small>
-							</button>
-						{/each}
-					</div>
-					<button
-						class="primary resolve"
-						disabled={busy ||
-							!selectedMasterActionId ||
-							!manualDecisionOpen ||
-							(isMasterTiming && !masterDecision)}
-						onclick={resolveTurn}
-						data-testid="resolve-turn"
-						><span>Commit round</span><small>hero policy → seeded initiative → engine</small
-						></button
-					>
+					{#if isLegacyAutomatic}
+						<button
+							class="primary resolve"
+							disabled={busy}
+							onclick={advanceAutomaticCombat}
+							data-testid="continue-battle"
+							><span>Continue battle</span><small>heroes choose → seeded initiative → engine</small
+							></button
+						>
+					{:else}
+						<div class="turn-choices" data-testid="master-turn-actions">
+							{#each masterTurnActions as choice (choice.actionId)}
+								<button
+									type="button"
+									class:selected={choice.actionId === selectedMasterActionId}
+									disabled={busy || !manualDecisionOpen || (isMasterTiming && !masterDecision)}
+									onclick={() => (selectedMasterActionId = choice.actionId)}
+								>
+									<strong>{choice.label}</strong><small>{choice.description}</small>
+								</button>
+							{/each}
+						</div>
+						<button
+							class="primary resolve"
+							disabled={busy ||
+								!selectedMasterActionId ||
+								!manualDecisionOpen ||
+								(isMasterTiming && !masterDecision)}
+							onclick={resolveTurn}
+							data-testid="resolve-turn"
+							><span>Commit round</span><small>hero policy → seeded initiative → engine</small
+							></button
+						>
+					{/if}
 					{#if retreatAvailable}
 						<button
 							class="quiet"

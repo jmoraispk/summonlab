@@ -9,7 +9,7 @@ import {
 	EquipmentMaterialIdSchema
 } from '../equipment.js';
 import { MasterFallbackPrioritySchema, MasterFallbackSafetyStopsSchema } from './master-control.js';
-import { MissionTurnChoiceSchema } from './mission-state.js';
+import { CombatModeBindingSchema, MissionTurnChoiceSchema } from './mission-state.js';
 import {
 	BuildingAssignmentRoleSchema,
 	FirstEmberFacilitySchema,
@@ -295,7 +295,8 @@ export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 export const PrepareMissionCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.prepare'),
 	heroIds: z.array(EntityIdSchema).max(7),
-	missionId: MissionSlugSchema.optional()
+	missionId: MissionSlugSchema.optional(),
+	combatModeBinding: CombatModeBindingSchema.optional()
 }).strict();
 
 export const ReviseMissionPartyCommandSchema = EngineCommandBaseSchema.extend({
@@ -316,6 +317,10 @@ export const ResolveMissionTurnCommandSchema = EngineCommandBaseSchema.extend({
 	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
 	decisionId: EntityIdSchema.optional(),
 	resolvedAt: IsoDateTimeSchema.optional()
+}).strict();
+
+export const AdvanceAutomaticCombatCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.advance.automatic')
 }).strict();
 
 export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
@@ -419,6 +424,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	CancelMissionCommandSchema,
 	DeployMissionCommandSchema,
 	ResolveMissionTurnCommandSchema,
+	AdvanceAutomaticCombatCommandSchema,
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
@@ -446,6 +452,7 @@ export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
 		})
 		.strict(),
 	z.object({ action: z.literal('resolve-fallback') }).strict(),
+	z.object({ action: z.literal('advance-automatic-combat') }).strict(),
 	z.object({ action: z.literal('extract') }).strict(),
 	z.object({ action: z.literal('retreat') }).strict()
 ]);

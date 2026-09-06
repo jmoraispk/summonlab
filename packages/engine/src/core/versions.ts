@@ -74,9 +74,11 @@ const DIRECTIVE_VERSIONS = Object.freeze([
 	10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const MISSION_VERSIONS = Object.freeze([
-	11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
-const MISSION_TURN_VERSIONS = Object.freeze([12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24] as const);
+const MISSION_TURN_VERSIONS = Object.freeze([
+	12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25
+] as const);
 
 export const CATCH_UP_SUPPORTED_VERSIONS = Object.freeze([
 	5, 6, 7, 8, 9, 10, 11, 12, 13, 24
@@ -86,7 +88,9 @@ export const CONVERSATION_API_SUPPORTED_VERSIONS = Object.freeze([9, 10, 11, 12,
 export const DIRECTIVES_API_SUPPORTED_VERSIONS = Object.freeze([
 	10, 11, 12, 13, 16, 17, 18
 ] as const);
-export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([13, 15, 16, 17, 18, 19, 20] as const);
+export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([
+	13, 15, 16, 17, 18, 19, 20, 25
+] as const);
 export const STORY_PATCH_API_SUPPORTED_VERSIONS = Object.freeze([21] as const);
 export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22] as const);
 export const FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS = Object.freeze([23] as const);

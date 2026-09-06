@@ -9,6 +9,7 @@ import {
 	EngineGameStateV20Schema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
@@ -18,6 +19,7 @@ import {
 	type EngineGameStateV17,
 	type EntropyDraw
 } from '@summonlab/contracts';
+import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import {
 	EQUIPMENT_DEFINITION_CATALOG,
 	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE
@@ -37,6 +39,7 @@ import {
 import { MISSION_COMMAND_TYPES, missionCommandHandler } from './commands.js';
 import { createEquipmentItem, equipEquipmentItem } from '../settlement/equipment.js';
 import { retreatMissionAttempt } from './lifecycle.js';
+import { createCombatModeBinding } from './combat-mode.js';
 import { masterFallbackSafetySource } from './master-control.js';
 
 import {
@@ -163,6 +166,7 @@ describe('mission runtime ownership', () => {
 			'mission.cancel',
 			'mission.deploy',
 			'mission.resolve.turn',
+			'mission.advance.automatic',
 			'mission.open.extraction',
 			'mission.extract',
 			'mission.retreat'
@@ -258,7 +262,7 @@ describe('mission runtime ownership', () => {
 		});
 	});
 
-	it('maps every owned command to its fixed event discriminator', () => {
+	it('maps every owned command to its fixed event discriminator', async () => {
 		const initialV13 = missionVersionFixture(13);
 		const heroV13 = Object.keys(initialV13.heroes)[0]!;
 		const prepareV13 = missionTestCommand(initialV13, 'mapping-prepare', {
@@ -270,6 +274,33 @@ describe('mission runtime ownership', () => {
 			commandType: 'mission.deploy'
 		});
 		const deployedV13 = directlyApplyMissionCommand(preparedV13, deployV13).state;
+		const draftV25 = await generateSummonableCharacterDraft({
+			seed: 'mapping-v25-character',
+			generationVersion: 'human-v6',
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		});
+		const initialV25 = EngineGameStateV25Schema.parse(
+			createBootstrapEngine({
+				runId: deterministicUuid('mapping-v25-run'),
+				seed: 'mapping-v25-engine',
+				draft: draftV25
+			}).snapshot.state
+		);
+		const heroV25 = Object.keys(initialV25.heroes)[0]!;
+		const preparedV25 = directlyApplyMissionCommand(
+			initialV25,
+			missionTestCommand(initialV25, 'mapping-v25-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroV25],
+				combatModeBinding: createCombatModeBinding('legacy-auto-v1', initialV25.simulatedAt)
+			})
+		).state;
+		const deployedV25 = directlyApplyMissionCommand(
+			preparedV25,
+			missionTestCommand(preparedV25, 'mapping-v25-deploy', {
+				commandType: 'mission.deploy'
+			})
+		).state;
 
 		const initialV12 = missionVersionFixture(12);
 		const heroV12 = Object.keys(initialV12.heroes)[0]!;
@@ -446,6 +477,14 @@ describe('mission runtime ownership', () => {
 				})
 			},
 			{
+				commandType: 'mission.advance.automatic',
+				eventType: 'mission.round.resolved',
+				state: deployedV25,
+				command: missionTestCommand(deployedV25, 'mapping-v25-advance', {
+					commandType: 'mission.advance.automatic'
+				})
+			},
+			{
 				commandType: 'mission.open.extraction',
 				eventType: 'mission.extraction.opened',
 				state: deployedV11,
@@ -521,6 +560,11 @@ describe('mission runtime ownership', () => {
 				commandType: 'mission.resolve.turn',
 				eventType: 'mission.round.resolved',
 				eventHash: '94ed1a6d7127a14f36e440729af8b52131e59789d3273a0e6227332cc988d579'
+			},
+			{
+				commandType: 'mission.advance.automatic',
+				eventType: 'mission.round.resolved',
+				eventHash: '9994fc615be60d141d372ce27b59a977ca800a9072a0ff58c30d3ed345c22a54'
 			},
 			{
 				commandType: 'mission.open.extraction',
