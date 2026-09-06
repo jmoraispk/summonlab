@@ -1,9 +1,12 @@
 import {
+	CombatEquipmentProfileSchema,
 	EquipmentDefinitionCatalogSchema,
 	EquipmentStandardRecipeDescriptorSchema,
 	type EquipmentArmourSlot,
 	type EquipmentClass,
+	type CombatEquipmentProfile,
 	type EquipmentDefinition,
+	type EquipmentFamilyTag,
 	type EquipmentHandedness,
 	type EquipmentMaterialFamily,
 	type EquipmentMaterialId,
@@ -18,6 +21,14 @@ type MaterialDefinition = Readonly<{
 	family: EquipmentMaterialFamily;
 	rank: EquipmentRank;
 }>;
+
+function deepFreeze<T>(value: T): T {
+	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+		for (const child of Object.values(value)) deepFreeze(child);
+		Object.freeze(value);
+	}
+	return value;
+}
 
 export const EQUIPMENT_MATERIALS = Object.freeze([
 	{ materialId: 'bronze', displayName: 'Bronze', family: 'metal', rank: 'F' },
@@ -222,6 +233,88 @@ export const EQUIPMENT_DEFINITIONS_BY_ID = Object.freeze(
 	Object.fromEntries(
 		EQUIPMENT_DEFINITIONS.map((definition) => [definition.definitionId, definition])
 	) as Readonly<Record<string, Readonly<EquipmentDefinition>>>
+);
+
+const EQUIPMENT_LOAD_BY_CLASS = Object.freeze({
+	sword: 12,
+	dagger: 6,
+	spear: 16,
+	bow: 14,
+	axe: 20,
+	mace: 20,
+	shield: 16,
+	staff: 14,
+	'heavy-armour': 0,
+	'light-armour': 0,
+	robes: 0
+} satisfies Readonly<Record<EquipmentClass, number>>);
+
+const ARMOUR_LOAD_BY_CLASS_AND_SLOT = Object.freeze({
+	'heavy-armour': Object.freeze({ head: 12, torso: 28, legs: 22, boots: 10 }),
+	'light-armour': Object.freeze({ head: 6, torso: 14, legs: 11, boots: 5 }),
+	robes: Object.freeze({ head: 2, torso: 4, legs: 3, boots: 2 })
+} as const);
+
+function combatFamilyTags(definition: EquipmentDefinition): readonly EquipmentFamilyTag[] {
+	if (definition.equipmentClass === 'sword' || definition.equipmentClass === 'dagger') {
+		return ['one-handed-blade'];
+	}
+	if (definition.equipmentClass === 'bow') return ['bow'];
+	if (definition.equipmentClass === 'staff') return ['staff-focus'];
+	if (definition.equipmentClass === 'shield') return ['shield'];
+	return [];
+}
+
+function equipmentLoad(definition: EquipmentDefinition): number {
+	if (
+		definition.equipmentClass === 'heavy-armour' ||
+		definition.equipmentClass === 'light-armour' ||
+		definition.equipmentClass === 'robes'
+	) {
+		return ARMOUR_LOAD_BY_CLASS_AND_SLOT[definition.equipmentClass][
+			definition.slot as EquipmentArmourSlot
+		];
+	}
+	return EQUIPMENT_LOAD_BY_CLASS[definition.equipmentClass];
+}
+
+function createCombatEquipmentProfile(
+	definition: EquipmentDefinition
+): Readonly<CombatEquipmentProfile> {
+	const heavyArmour = definition.equipmentClass === 'heavy-armour';
+	const resistanceGrants = heavyArmour
+		? [
+				{ tag: 'cut' as const, basisPoints: 800 },
+				{ tag: 'impact' as const, basisPoints: 600 }
+			]
+		: definition.equipmentClass === 'light-armour'
+			? [{ tag: 'pierce' as const, basisPoints: 400 }]
+			: definition.equipmentClass === 'robes'
+				? [{ tag: 'arcane' as const, basisPoints: 300 }]
+				: [];
+	return deepFreeze(
+		CombatEquipmentProfileSchema.parse({
+			schemaVersion: 'combat-equipment-profile-v1',
+			definitionId: definition.definitionId,
+			familyTags: combatFamilyTags(definition),
+			load: equipmentLoad(definition),
+			requirements: {
+				minimumMight: heavyArmour ? 45 : definition.weightClass === 'heavy' ? 35 : null,
+				proficiencyTags: heavyArmour ? ['armour-training'] : []
+			},
+			resistanceGrants
+		})
+	);
+}
+
+export const COMBAT_EQUIPMENT_PROFILES = Object.freeze(
+	EQUIPMENT_DEFINITIONS.map(createCombatEquipmentProfile)
+);
+
+export const COMBAT_EQUIPMENT_PROFILES_BY_ID = Object.freeze(
+	Object.fromEntries(
+		COMBAT_EQUIPMENT_PROFILES.map((profile) => [profile.definitionId, profile])
+	) as Readonly<Record<string, Readonly<CombatEquipmentProfile>>>
 );
 
 export const EQUIPMENT_DEFINITION_CATALOG = Object.freeze(

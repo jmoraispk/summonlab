@@ -2,6 +2,7 @@ export * from './affinity-review.js';
 export * from './capability.js';
 export * from './character.js';
 export * from './combat-rules.js';
+export * from './combat-skill.js';
 export * from './campaign.js';
 export * from './decision.js';
 export * from './decision-inspector.js';

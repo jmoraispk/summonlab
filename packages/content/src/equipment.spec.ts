@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
 import {
+	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	EQUIPMENT_DEFINITIONS,
 	EQUIPMENT_DEFINITIONS_BY_ID,
 	EQUIPMENT_DEFINITION_CATALOG,
@@ -12,8 +13,64 @@ import {
 	getEquipmentDefinitionsForMaterial,
 	isEquipmentMaterialCompatible
 } from './equipment.js';
+import { BASIC_BOW_SHOT, BASIC_SWORD_STRIKE, COMBAT_SKILLS_BY_ID } from './combat-skills.js';
 
 describe('equipment content catalog', () => {
+	it('keeps starter sword and bow IDs stable while adding combat-family tags', () => {
+		expect(COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-sword']).toMatchObject({
+			definitionId: 'equipment-bronze-sword',
+			familyTags: ['one-handed-blade'],
+			load: 12
+		});
+		expect(COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-ash-bow']).toMatchObject({
+			definitionId: 'equipment-ash-bow',
+			familyTags: ['bow'],
+			load: 14
+		});
+		expect(COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-spear']?.familyTags).toStrictEqual([]);
+		expect(BASIC_SWORD_STRIKE).toMatchObject({
+			skillId: 'combat-skill-basic-sword-strike',
+			deliveryTags: ['one-handed-blade']
+		});
+		expect(BASIC_BOW_SHOT).toMatchObject({
+			skillId: 'combat-skill-basic-bow-shot',
+			deliveryTags: ['bow']
+		});
+		expect(Object.keys(COMBAT_SKILLS_BY_ID).sort()).toStrictEqual([
+			'combat-skill-basic-bow-shot',
+			'combat-skill-basic-sword-strike'
+		]);
+	});
+
+	it('authors load, heavy Might requirements, armour training, and named resistance grants', () => {
+		const heavyWeapon = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-axe'];
+		const heavyArmour = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armour-torso'];
+		expect(heavyWeapon).toMatchObject({
+			load: 20,
+			requirements: { minimumMight: 35, proficiencyTags: [] }
+		});
+		expect(heavyArmour).toMatchObject({
+			load: 28,
+			requirements: { minimumMight: 45, proficiencyTags: ['armour-training'] }
+		});
+		expect(heavyArmour?.resistanceGrants).toEqual(
+			expect.arrayContaining([
+				{ tag: 'cut', basisPoints: 800 },
+				{ tag: 'impact', basisPoints: 600 }
+			])
+		);
+		expect(JSON.stringify(COMBAT_EQUIPMENT_PROFILES_BY_ID)).not.toMatch(/vitality|poise/iu);
+	});
+
+	it('deeply freezes versioned skill and equipment mechanics', () => {
+		const sword = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-sword']!;
+		expect(Object.isFrozen(sword)).toBe(true);
+		expect(Object.isFrozen(sword.familyTags)).toBe(true);
+		expect(Object.isFrozen(sword.requirements)).toBe(true);
+		expect(Object.isFrozen(sword.requirements.proficiencyTags)).toBe(true);
+		expect(Object.isFrozen(BASIC_SWORD_STRIKE.masteryProgression)).toBe(true);
+		expect(Object.isFrozen(BASIC_SWORD_STRIKE.masteryProgression[0])).toBe(true);
+	});
 	it('expands the four material families into exactly 140 frozen definitions', () => {
 		expect(EQUIPMENT_MATERIALS).toHaveLength(28);
 		expect(EQUIPMENT_DEFINITIONS).toHaveLength(140);
