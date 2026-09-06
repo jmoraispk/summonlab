@@ -90,6 +90,20 @@ describe('engine contracts compatibility', () => {
 		expect(Object.keys(engineContracts).sort()).toEqual(ENGINE_CONTRACT_RUNTIME_EXPORTS);
 	});
 
+	it('keeps frozen public engine schema coverage at v24', () => {
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV24Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).not.toContain('EngineGameStateV25Schema');
+		expect(
+			EngineGameStateSchema.parse(ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!).schemaVersion
+		).toBe(24);
+		expect(
+			EngineGameStateSchema.safeParse({
+				...ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!,
+				schemaVersion: 25
+			}).success
+		).toBe(false);
+	});
+
 	it('keeps command discriminators and public version constants stable', () => {
 		expect(EngineCommandSchema.options.map((option) => option.shape.commandType.value).sort())
 			.toMatchInlineSnapshot(`

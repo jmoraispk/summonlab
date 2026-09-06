@@ -475,6 +475,32 @@ const EXPECTATIONS = {
 		],
 		scheduledEventIds: [],
 		resolvedScheduledEventIds: []
+	}),
+	'v24-equipment-mission-resolution': checkedExpectation({
+		eventTypes: [
+			'run.initialized',
+			'mission.preparation.started',
+			'mission.deployed',
+			'mission.round.resolved',
+			'mission.round.resolved'
+		],
+		afterHashes: [
+			'2f6397320a421dc62bc658e356105ea62b0bee4c906e7c488aba98dd3ece1785',
+			'9a7c0b4bd7b20ed13f5a9b45b671564d7d701a164d8f6a32e46b7d62b6ce0658',
+			'23abcd0e6b6c7a7dd37876151f435216a009be976d97d821f051264c8ccf7108',
+			'bc93a8266d588348438a5d59960c42c65899cf52b25c45fc70fc0fcd7326a3f6',
+			'be17653a611538c5820f595dd04b61265e94896c399dca7d05e02d5d19491d20'
+		],
+		finalStateHash: 'be17653a611538c5820f595dd04b61265e94896c399dca7d05e02d5d19491d20',
+		legalActionIds: [
+			'mission.hold',
+			'mission.inspect.inspect-soot-seam',
+			'mission.inspect.read-muster-tablet',
+			'mission.move.oath-hall-to-gallery',
+			'mission.move.threshold-to-oath-hall'
+		],
+		scheduledEventIds: [],
+		resolvedScheduledEventIds: []
 	})
 } as const;
 
@@ -1624,6 +1650,42 @@ function v24EquipmentStateVector(): EngineReplayVectorCase {
 	return finishVector('v24-equipment-state', 24, run, EXPECTATIONS['v24-equipment-state']);
 }
 
+function v24EquipmentMissionResolutionVector(): EngineReplayVectorCase {
+	const heroId = deterministicUuid('replay-vector-v24-combat-hero');
+	const bootstrap = createBootstrapEngine({
+		runId: deterministicUuid('replay-vector-v24-combat-run'),
+		seed: 'replay-vector-v24-combat-seed',
+		heroId,
+		manifestHash: sha256Hex('replay-vector-v24-combat-manifest'),
+		developmentEquipmentScenario: { enabled: true, materialLots: { bronze: 2, ash: 1 } }
+	});
+	const run = new VectorRun(
+		EngineGameStateV24Schema.parse(bootstrap.snapshot.state),
+		bootstrap.event
+	);
+	const masterId = run.state.master.masterId;
+	run.commit(masterId, 'v24-combat-prepare', {
+		commandType: 'mission.prepare',
+		heroIds: [heroId],
+		missionId: 'tower-floor-01'
+	});
+	run.commit(masterId, 'v24-combat-deploy', { commandType: 'mission.deploy' });
+	missionTurn(
+		run,
+		'v24-combat-round-one',
+		'mission.move.threshold-to-oath-hall',
+		heroId,
+		'mission.move.threshold-to-oath-hall'
+	);
+	missionTurn(run, 'v24-combat-round-two', 'mission.hold', heroId, 'mission.hold');
+	return finishVector(
+		'v24-equipment-mission-resolution',
+		24,
+		run,
+		EXPECTATIONS['v24-equipment-mission-resolution']
+	);
+}
+
 export const ENGINE_REPLAY_VECTOR_CASES = [
 	v5RoutineAndActivityVector(),
 	v8CommunicationVector(),
@@ -1637,7 +1699,8 @@ export const ENGINE_REPLAY_VECTOR_CASES = [
 	v21StoryPatchVector(),
 	v22SynthesisVector(),
 	v23FirstBandArchiveVector(),
-	v24EquipmentStateVector()
+	v24EquipmentStateVector(),
+	v24EquipmentMissionResolutionVector()
 ] as const;
 
 // Replay vectors intentionally use the Master-scoped public legal-actions boundary because the

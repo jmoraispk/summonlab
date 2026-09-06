@@ -28,6 +28,7 @@ import { createEntropyCursor } from '../../entropy.js';
 import { applyCommand, createBootstrapEngine } from '../../engine.js';
 import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
+import { missionContentForState } from '../../core/content-bindings.js';
 import {
 	FIRST_BAND_MISSION_EVENT_TYPES,
 	firstBandMissionCommandHandler,
@@ -39,6 +40,7 @@ import { retreatMissionAttempt } from './lifecycle.js';
 import { masterFallbackSafetySource } from './master-control.js';
 
 import {
+	deriveMonsterIntents,
 	monsterArmorReduction,
 	resolveMonsterPolicyIntent,
 	spawnMissionCombatants
@@ -121,6 +123,32 @@ function directlyApplyMissionCommand(state: EngineGameState, command: EngineComm
 		? firstBandMissionEventReducer
 		: missionEventReducer;
 	return { event, state: reducer.reduce(state, event) };
+}
+
+function deployedV24EquipmentMissionState(): EngineGameStateV24 {
+	const heroId = deterministicUuid('v24-conflict-hero');
+	const initial = EngineGameStateV24Schema.parse(
+		createBootstrapEngine({
+			runId: deterministicUuid('v24-conflict-run'),
+			seed: 'v24-conflict-seed',
+			heroId,
+			manifestHash: sha256Hex('v24-conflict-manifest'),
+			developmentEquipmentScenario: { enabled: true, materialLots: { bronze: 2, ash: 1 } }
+		}).snapshot.state
+	);
+	const prepared = directlyApplyMissionCommand(
+		initial,
+		missionTestCommand(initial, 'v24-conflict-prepare', {
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			missionId: 'tower-floor-01'
+		})
+	);
+	const deployed = directlyApplyMissionCommand(
+		prepared.state,
+		missionTestCommand(prepared.state, 'v24-conflict-deploy', { commandType: 'mission.deploy' })
+	);
+	return EngineGameStateV24Schema.parse(deployed.state);
 }
 
 describe('mission runtime ownership', () => {
@@ -960,6 +988,96 @@ describe('mission runtime ownership', () => {
 		]);
 		expect(tied.round.actions.map((action) => action.initiative)).toStrictEqual([135, 135]);
 		expect(tied.round.initiativeOrder).toStrictEqual([heroId, masterId]);
+	});
+
+	it('freezes same-round v24 recovery as applied for the first actor and superseded for the second', () => {
+		const state = deployedV24EquipmentMissionState();
+		const masterId = state.master.masterId;
+		const heroId = Object.keys(state.heroes)[0]!;
+		const attempt = structuredClone(state.mission.attempt!);
+		attempt.positions = { [masterId]: 'ember-vault', [heroId]: 'ember-vault' };
+		attempt.turnState.currentThreatIntents = deriveMonsterIntents(
+			missionContentForState(state),
+			attempt,
+			attempt.turnState.monsters,
+			attempt.positions
+		);
+		const input = deepFreeze(
+			EngineGameStateV24Schema.parse({ ...state, mission: { ...state.mission, attempt } })
+		);
+		const receipt = resolveMissionCombatTurn(
+			input,
+			[
+				manualChoice(masterId, 'mission.recover.recover-first-ember'),
+				scriptedChoice(heroId, 'mission.recover.recover-first-ember')
+			],
+			deterministicUuid('v24-same-objective-conflict')
+		);
+		expect(
+			receipt.round.actions.map(({ actorId, actionId, outcome, objectiveTransition }) => ({
+				actorId,
+				actionId,
+				outcome,
+				objectiveTransition
+			}))
+		).toStrictEqual([
+			{
+				actorId: masterId,
+				actionId: 'mission.recover.recover-first-ember',
+				outcome: 'applied',
+				objectiveTransition: 'recovered'
+			},
+			{
+				actorId: heroId,
+				actionId: 'mission.recover.recover-first-ember',
+				outcome: 'superseded',
+				objectiveTransition: null
+			}
+		]);
+		expect(receipt.mission.attempt!.turnState.objective).toMatchObject({
+			status: 'carried',
+			carrierId: masterId,
+			recoveredOnRound: 1
+		});
+	});
+
+	it('freezes same-round v24 movement through one edge as applied for both actors', () => {
+		const state = deepFreeze(deployedV24EquipmentMissionState());
+		const masterId = state.master.masterId;
+		const heroId = Object.keys(state.heroes)[0]!;
+		const receipt = resolveMissionCombatTurn(
+			state,
+			[
+				manualChoice(masterId, 'mission.move.threshold-to-oath-hall'),
+				scriptedChoice(heroId, 'mission.move.threshold-to-oath-hall')
+			],
+			deterministicUuid('v24-same-edge-conflict')
+		);
+		expect(
+			receipt.round.actions.map(({ actorId, outcome, fromNodeId, toNodeId }) => ({
+				actorId,
+				outcome,
+				fromNodeId,
+				toNodeId
+			}))
+		).toStrictEqual([
+			{
+				actorId: masterId,
+				outcome: 'applied',
+				fromNodeId: 'tower-threshold',
+				toNodeId: 'oath-hall'
+			},
+			{
+				actorId: heroId,
+				outcome: 'applied',
+				fromNodeId: 'tower-threshold',
+				toNodeId: 'oath-hall'
+			}
+		]);
+		expect(receipt.mission.attempt!.positions).toMatchObject({
+			[masterId]: 'oath-hall',
+			[heroId]: 'oath-hall'
+		});
 	});
 
 	it('freezes portal pressure boundaries and the complete first-round receipt', () => {
