@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { CombatAttributeNameSchema } from '../capability.js';
 import { ActivityKindSchema } from './base-state.js';
 import {
 	EquipmentCraftsmanshipSchema,
@@ -262,6 +263,11 @@ export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
 	targetSlot: EquipmentLoadoutSlotSchema.optional()
 }).strict();
 
+export const AllocateHeroAttributeCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.allocate.attribute'),
+	attribute: CombatAttributeNameSchema
+}).strict();
+
 export const StartForgingCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.start.forging'),
 	definitionId: EquipmentDefinitionIdSchema,
@@ -403,6 +409,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
+	AllocateHeroAttributeCommandSchema,
 	StartForgingCommandSchema,
 	AdvanceSimulationCommandSchema,
 	SyncSimulationClockCommandSchema,

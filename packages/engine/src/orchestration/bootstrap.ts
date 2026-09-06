@@ -436,6 +436,9 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 							stars: hero.rarityStars ?? 1,
 							level: 1,
 							experience: 0,
+							...(capabilityEngineState
+								? { unspentAttributePoints: 0, attributeGrowthReceipts: [] }
+								: {}),
 							skills: { swordFighting: { rank: 0, experience: 0 } }
 						},
 						equipment: equipmentState

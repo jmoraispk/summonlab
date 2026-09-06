@@ -210,6 +210,11 @@ function v25StateFromV24Fixture() {
 					maxHealth: 308,
 					mana: 188,
 					maxMana: 188,
+					progression: {
+						...(hero.progression as object),
+						unspentAttributePoints: 0,
+						attributeGrowthReceipts: []
+					},
 					capabilityProfile: V25_CAPABILITY_PROFILE
 				}
 			];
@@ -329,6 +334,7 @@ describe('engine contracts compatibility', () => {
 		expect(EngineCommandSchema.options.map((option) => option.shape.commandType.value).sort())
 			.toMatchInlineSnapshot(`
 		[
+		  "hero.allocate.attribute",
 		  "hero.arrive",
 		  "hero.choose.destination",
 		  "hero.equip.item",
@@ -721,6 +727,7 @@ describe('engine contracts compatibility', () => {
 				commandType: 'hero.equip.item',
 				itemId: '50000000-0000-4000-8000-000000000010'
 			},
+			{ ...commandBase, commandType: 'hero.allocate.attribute', attribute: 'might' },
 			{
 				...commandBase,
 				commandType: 'hero.start.forging',
@@ -821,6 +828,7 @@ describe('engine contracts compatibility', () => {
 			'master.inspect.gate',
 			'hero.start.activity',
 			'hero.equip.item',
+			'hero.allocate.attribute',
 			'hero.start.forging',
 			'simulation.advance',
 			'simulation.sync.clock',
@@ -865,7 +873,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

@@ -1,4 +1,5 @@
 import {
+	AttributeGrowthReceiptSchema,
 	AuthoritativeEventSchema,
 	CurrentRoutineSchema,
 	FirstEmberStateSchema,
@@ -11,6 +12,7 @@ import {
 	type EntropyDraw,
 	type RewardDelta
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
@@ -36,11 +38,13 @@ import {
 } from './navigation.js';
 import {
 	ActivityOutcomeSchema,
+	ActivityOutcomeV25Schema,
 	activityDuration,
 	buildActivityOutcome,
 	buildRoutineOutcome,
 	createDailyPlan,
 	currentRoutineFor,
+	intrinsicAttributeValue,
 	resolveDailyRoutine,
 	resourceChange,
 	routineDuration,
@@ -86,7 +90,8 @@ export const SETTLEMENT_COMMAND_TYPES = [
 	'hero.equip.item',
 	'simulation.advance',
 	'simulation.sync.clock',
-	'simulation.apply.damage'
+	'simulation.apply.damage',
+	'hero.allocate.attribute'
 ] as const;
 
 export type SettlementCommand = Extract<
@@ -122,6 +127,8 @@ export function requiredSettlementAction(command: SettlementCommand): string {
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
 	if (command.commandType === 'hero.start.forging') return `hero.forge.${command.definitionId}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
+	if (command.commandType === 'hero.allocate.attribute')
+		return `hero.allocate.attribute.${command.attribute}`;
 	if (command.commandType === 'simulation.advance') return 'simulation.advance';
 	if (command.commandType === 'simulation.sync.clock') return 'simulation.sync.clock';
 	return command.targetId === command.actorId
@@ -427,6 +434,17 @@ function assertSettlementCommandLegal(
 				throw new IllegalActionError(required, actionIds);
 			}
 		} else if (command.targetSlot !== undefined) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'hero.allocate.attribute') {
+		if (
+			state.schemaVersion !== 25 ||
+			state.heroes[command.actorId]?.lifeState !== 'active' ||
+			state.heroes[command.actorId]!.progression.unspentAttributePoints < 1 ||
+			intrinsicAttributeValue(state.heroes[command.actorId]!, command.attribute) >=
+				COMBAT_RULES_V1.attributes.intrinsicMaximum
+		) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
@@ -1132,6 +1150,37 @@ function buildModernSettlementEvent(
 			}
 		});
 	}
+	if (command.commandType === 'hero.allocate.attribute') {
+		if (state.schemaVersion !== 25) throw new IllegalActionError(command.commandType);
+		const hero = state.heroes[command.actorId];
+		if (!hero) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.attribute.allocated');
+		const beforeIntrinsicValue = intrinsicAttributeValue(hero, command.attribute);
+		const attributeGrowthReceipt = AttributeGrowthReceiptSchema.parse({
+			receiptId: deterministicUuid(`${base.eventId}:attribute-growth`),
+			heroId: hero.heroId,
+			attribute: command.attribute,
+			beforeIntrinsicValue,
+			afterIntrinsicValue: beforeIntrinsicValue + 1,
+			spentPoints: 1,
+			sourceLevel: hero.progression.level,
+			rulesVersion: COMBAT_RULES_V1.rulesVersion,
+			commandId: command.commandId,
+			gameTime: state.simulatedAt
+		});
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: hero.heroId,
+				attributeGrowthReceipt,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero permanently increased intrinsic ${command.attribute} by one point.`
+				)
+			}
+		});
+	}
 	if (command.commandType === 'simulation.advance') {
 		const base = eventBase(state, command, 'simulation.advanced');
 		const dueHeroes = Object.values(state.heroes)
@@ -1148,7 +1197,9 @@ function buildModernSettlementEvent(
 				return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
 			});
 		let entropy = createEntropyCursor(state.seed, state.entropyCursor);
-		const outcomes: z.infer<typeof ActivityOutcomeSchema>[] = [];
+		const outcomes: (
+			z.infer<typeof ActivityOutcomeSchema> | z.infer<typeof ActivityOutcomeV25Schema>
+		)[] = [];
 		const draws: EntropyDraw[] = [];
 		for (const hero of dueHeroes) {
 			const result = buildActivityOutcome(state, hero.heroId, base.eventId, entropy);

@@ -15,6 +15,7 @@ export {
 	EquipmentSlotSchema,
 	HeroLifeStateSchema,
 	HeroProgressionSchema,
+	HeroProgressionV25Schema,
 	InjuryKindSchema,
 	InjurySchema,
 	MasterLifeStateSchema,
@@ -26,7 +27,8 @@ export {
 	type ActivityKind,
 	type EngineEquipmentItemStateV24,
 	type EngineEquipmentLoadoutV24,
-	type EngineItemState
+	type EngineItemState,
+	type HeroProgressionV25
 } from './base-state.js';
 export {
 	BuildingAssignmentRoleSchema,

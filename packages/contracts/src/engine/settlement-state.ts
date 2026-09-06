@@ -18,6 +18,7 @@ import {
 	EngineEquipmentLoadoutV24Schema,
 	EngineHeroStateV2Schema,
 	EngineZoneSchema,
+	HeroProgressionV25Schema,
 	ResourceBalancesSchema,
 	ResourceLedgerEntrySchema
 } from './base-state.js';
@@ -481,7 +482,8 @@ export const EngineHeroStateV25Schema = z
 		mana: CapabilityResourceSchema,
 		maxMana: CapabilityResourceSchema.positive(),
 		mind: CharacterMindV2Schema,
-		capabilityProfile: CharacterCapabilityProfileV1Schema
+		capabilityProfile: CharacterCapabilityProfileV1Schema,
+		progression: HeroProgressionV25Schema
 	})
 	.strict()
 	.superRefine((hero, context) => {
@@ -524,6 +526,20 @@ export const EngineHeroStateV25Schema = z
 		}
 		if (hero.lifeState !== 'active' && hero.currentForging !== null) {
 			context.addIssue({ code: 'custom', message: 'A terminal hero cannot forge equipment' });
+		}
+		const intrinsic = { ...hero.capabilityProfile.attributes };
+		for (const receipt of hero.progression.attributeGrowthReceipts) {
+			if (
+				receipt.heroId !== hero.heroId ||
+				receipt.beforeIntrinsicValue !== intrinsic[receipt.attribute]
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Attribute growth receipt chain diverged from intrinsic capability'
+				});
+				break;
+			}
+			intrinsic[receipt.attribute] = receipt.afterIntrinsicValue;
 		}
 		const activeEntries =
 			hero.dailyPlan?.entries.filter((entry) => entry.status === 'active') ?? [];

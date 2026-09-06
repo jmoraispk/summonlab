@@ -23,11 +23,14 @@ import {
 	EngineGameStateV25Schema,
 	HabitStateSchema,
 	HeroProgressionSchema,
+	HeroProgressionV25Schema,
 	InjurySchema,
 	NeedStateSchema,
 	RoutineResolutionSchema,
 	type ActivityKind,
+	type CombatAttributeName,
 	type EngineGameState,
+	type EngineHeroStateV25,
 	type EntropyDraw,
 	type RewardDelta,
 	type RoutineKind
@@ -63,6 +66,13 @@ export const ActivityOutcomeSchema = z
 	})
 	.strict();
 
+const CapabilityHealthSchema = z.number().int().nonnegative().max(10_000);
+
+export const ActivityOutcomeV25Schema = ActivityOutcomeSchema.extend({
+	healthAfter: CapabilityHealthSchema,
+	progressionAfter: HeroProgressionV25Schema
+}).strict();
+
 export const RoutineOutcomeSchema = z
 	.object({
 		scheduledEventId: z.string().uuid(),
@@ -87,6 +97,10 @@ export const RoutineOutcomeSchema = z
 		rewardDeltas: RewardDeltasSchema
 	})
 	.strict();
+
+export const RoutineOutcomeV25Schema = RoutineOutcomeSchema.extend({
+	healthAfter: CapabilityHealthSchema
+}).strict();
 
 export function clamp(value: number, minimum = 0, maximum = 100): number {
 	return Math.min(maximum, Math.max(minimum, value));
@@ -348,13 +362,40 @@ export function levelFor(experience: number, stars: number): number {
 	return Math.min(stars * 10, 1 + Math.floor(experience / 10));
 }
 
+export function attributePointsForLevelTransition(
+	unspentAttributePoints: number,
+	levelBefore: number,
+	levelAfter: number
+): number {
+	if (
+		![unspentAttributePoints, levelBefore, levelAfter].every(Number.isInteger) ||
+		unspentAttributePoints < 0 ||
+		levelBefore < 1 ||
+		levelAfter < levelBefore
+	) {
+		throw new Error('Attribute point grants require a nondecreasing integer level transition');
+	}
+	return unspentAttributePoints + (levelAfter - levelBefore);
+}
+
+export function intrinsicAttributeValue(
+	hero: EngineHeroStateV25,
+	attribute: CombatAttributeName
+): number {
+	let value = hero.capabilityProfile.attributes[attribute];
+	for (const receipt of hero.progression.attributeGrowthReceipts) {
+		if (receipt.attribute === attribute) value = receipt.afterIntrinsicValue;
+	}
+	return value;
+}
+
 export function buildActivityOutcome(
 	state: EngineGameStateModern,
 	heroId: string,
 	eventId: string,
 	entropyCursor: { seed: string; cursor: number }
 ): {
-	outcome: z.infer<typeof ActivityOutcomeSchema>;
+	outcome: z.infer<typeof ActivityOutcomeSchema> | z.infer<typeof ActivityOutcomeV25Schema>;
 	entropy: typeof entropyCursor;
 	draws: EntropyDraw[];
 } {
@@ -379,10 +420,23 @@ export function buildActivityOutcome(
 		const skillBefore = hero.progression.skills.swordFighting.experience;
 		const skillAfter = skillBefore + 6 + skillBonus;
 		const experienceAfter = experienceBefore + 8 + experienceBonus;
+		const levelAfter = levelFor(experienceAfter, hero.progression.stars);
+		const capabilityProgression =
+			state.schemaVersion === 25 ? state.heroes[heroId]!.progression : null;
 		progressionAfter = {
 			...hero.progression,
 			experience: experienceAfter,
-			level: levelFor(experienceAfter, hero.progression.stars),
+			level: levelAfter,
+			...(capabilityProgression
+				? {
+						unspentAttributePoints: attributePointsForLevelTransition(
+							capabilityProgression.unspentAttributePoints,
+							levelBefore,
+							levelAfter
+						),
+						attributeGrowthReceipts: capabilityProgression.attributeGrowthReceipts
+					}
+				: {}),
 			skills: {
 				swordFighting: {
 					experience: skillAfter,
@@ -539,7 +593,7 @@ export function buildActivityOutcome(
 	}
 
 	return {
-		outcome: ActivityOutcomeSchema.parse({
+		outcome: (state.schemaVersion === 25 ? ActivityOutcomeV25Schema : ActivityOutcomeSchema).parse({
 			scheduledEventId: activity.scheduledEventId,
 			heroId,
 			activity: activity.kind,
@@ -637,7 +691,7 @@ export function buildRoutineOutcome(state: EngineRoutineState, heroId: string) {
 		}
 	}
 
-	return RoutineOutcomeSchema.parse({
+	return (state.schemaVersion === 25 ? RoutineOutcomeV25Schema : RoutineOutcomeSchema).parse({
 		scheduledEventId: routine.scheduledEventId,
 		heroId,
 		planId: routine.planId,

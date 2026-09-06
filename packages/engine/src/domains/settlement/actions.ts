@@ -1,4 +1,5 @@
 import {
+	CombatAttributeNameSchema,
 	LegalActionSchema,
 	type EngineGameState,
 	type EngineGameStateV3,
@@ -26,6 +27,7 @@ import {
 	type EngineGameStateV25,
 	type LegalAction
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 
 import { settlementForState } from '../../core/content-bindings.js';
 import { parseGameState } from '../../core/state.js';
@@ -42,7 +44,12 @@ import {
 	settlementRouteFor,
 	zoneForNode
 } from './navigation.js';
-import { currentRoutineFor, gameDayIndex, resolveDailyRoutine } from './routines.js';
+import {
+	currentRoutineFor,
+	gameDayIndex,
+	intrinsicAttributeValue,
+	resolveDailyRoutine
+} from './routines.js';
 import { heroCanHearCommunication } from './society.js';
 import { equipmentItemDisplayName } from './equipment.js';
 import {
@@ -449,9 +456,36 @@ function masterSettlementActions(
 }
 
 function heroSettlementActions(state: EngineGameStateModern, actorId: string): LegalAction[] {
-	const route = routeActions(state, actorId);
-	if (route.length > 0) return route;
 	const hero = state.heroes[actorId];
+	let allocationActions: LegalAction[] = [];
+	if (state.schemaVersion === 25) {
+		const capabilityHero = state.heroes[actorId];
+		if (
+			capabilityHero?.lifeState === 'active' &&
+			capabilityHero.progression.unspentAttributePoints > 0
+		) {
+			allocationActions = CombatAttributeNameSchema.options
+				.filter(
+					(attribute) =>
+						intrinsicAttributeValue(capabilityHero, attribute) <
+						COMBAT_RULES_V1.attributes.intrinsicMaximum
+				)
+				.map((attribute) =>
+					action({
+						actionId: `hero.allocate.attribute.${attribute}`,
+						actorId,
+						kind: 'train',
+						label: `Increase ${attribute}`,
+						description: `Spend one unallocated level point to permanently increase intrinsic ${attribute}.`,
+						targetIds: [],
+						resourceCosts: {},
+						tags: ['progression', 'attribute', 'intrinsic', attribute]
+					})
+				);
+		}
+	}
+	const route = routeActions(state, actorId);
+	if (route.length > 0) return [...allocationActions, ...route];
 	if (
 		!hero ||
 		hero.lifeState !== 'active' ||
@@ -460,8 +494,8 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 		currentRoutineFor(state, actorId) ||
 		currentForgingFor(state, actorId)
 	)
-		return [];
-	const actions: LegalAction[] = [];
+		return allocationActions;
+	const actions: LegalAction[] = [...allocationActions];
 	if (state.schemaVersion === 24 && heroHasForgePermission(state, actorId)) {
 		for (const definition of availableStandardForgeDefinitions(state, actorId)) {
 			actions.push(

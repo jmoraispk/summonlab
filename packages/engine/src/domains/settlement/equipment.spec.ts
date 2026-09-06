@@ -70,6 +70,11 @@ function equipmentStateV25(): EngineGameStateV25 {
 			...state.heroes,
 			[heroId]: {
 				...hero,
+				progression: {
+					...hero.progression,
+					unspentAttributePoints: 0,
+					attributeGrowthReceipts: []
+				},
 				health: 260,
 				maxHealth: 260,
 				mana: 100,

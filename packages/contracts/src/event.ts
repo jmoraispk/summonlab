@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { CombatAttributeNameSchema } from './capability.js';
+import { CombatRulesVersionSchema } from './combat-rules.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -110,6 +112,25 @@ export const ActionSourceSchema = z
 		decisionJobId: EntityIdSchema.nullable()
 	})
 	.strict();
+
+export const AttributeGrowthReceiptSchema = z
+	.object({
+		receiptId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		attribute: CombatAttributeNameSchema,
+		beforeIntrinsicValue: z.number().int().min(1).max(100),
+		afterIntrinsicValue: z.number().int().min(1).max(100),
+		spentPoints: z.literal(1),
+		sourceLevel: z.number().int().min(2).max(70),
+		rulesVersion: CombatRulesVersionSchema,
+		commandId: EntityIdSchema,
+		gameTime: IsoDateTimeSchema
+	})
+	.strict()
+	.refine(
+		(receipt) => receipt.afterIntrinsicValue - receipt.beforeIntrinsicValue === receipt.spentPoints,
+		{ message: 'Attribute growth receipt must record exactly the points spent' }
+	);
 
 export const RewardDeltaSchema = z
 	.object({
@@ -450,6 +471,7 @@ export const ReturnRecapSchema = z
 	});
 
 export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type AttributeGrowthReceipt = z.infer<typeof AttributeGrowthReceiptSchema>;
 export type AuthoritativeEvent = z.infer<typeof AuthoritativeEventSchema>;
 export type DecisionSource = z.infer<typeof DecisionSourceSchema>;
 export type DecisionTiming = z.infer<typeof DecisionTimingSchema>;
