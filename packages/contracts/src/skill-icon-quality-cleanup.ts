@@ -341,7 +341,38 @@ const CleanupRevisionV2OutputSchema = z
 	})
 	.strict();
 
-const CleanupRevisionV2TransformSchema = z.discriminatedUnion('kind', [
+const CleanupRevisionPacketSchemaVersion = z
+	.string()
+	.regex(/^skill-icon-quality-cleanup-revision-packet-v(?:[2-9]|[1-9][0-9]+)$/u);
+const CleanupRevisionResultSchemaVersion = z
+	.string()
+	.regex(/^skill-icon-quality-cleanup-revision-result-v(?:[2-9]|[1-9][0-9]+)$/u);
+
+function cleanupRevisionOutputPaths(targetId: string, revision: number) {
+	const slug = targetId.replaceAll(':', '-');
+	return {
+		providerSourcePath: `${QUALITY_CLEANUP_ROOT}/provider-sources/${slug}-v${revision}.png`,
+		revisedInteriorPath: `${QUALITY_CLEANUP_ROOT}/revisions/${slug}-v${revision}.png`,
+		compositePath: `${QUALITY_CLEANUP_ROOT}/composites/${slug}-v${revision}.png`,
+		resultPath: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v${revision}.json`
+	};
+}
+
+function cleanupRevisionPredecessorPaths(targetId: string, revision: number) {
+	const slug = targetId.replaceAll(':', '-');
+	if (revision === 2) {
+		return {
+			packet: `${QUALITY_CLEANUP_ROOT}/prompts/revisions/${slug}-v1.json`,
+			result: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v1.json`
+		};
+	}
+	return {
+		packet: `${QUALITY_CLEANUP_ROOT}/prompts/revisions-v${revision - 1}/${slug}-v${revision - 1}.json`,
+		result: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v${revision - 1}.json`
+	};
+}
+
+const CleanupRevisionV2TransformSchema = z.union([
 	z
 		.object({
 			kind: z.literal('inset-87-of-128-v1'),
@@ -361,10 +392,10 @@ const CleanupRevisionV2TransformSchema = z.discriminatedUnion('kind', [
 		.strict(),
 	z
 		.object({
-			kind: z.literal('identity-adoption-v1'),
+			kind: z.string().regex(/^identity-adoption-v[1-9][0-9]*$/u),
 			revisedInterior: CleanupRevisionV2BindingSchema,
 			composite: CleanupRevisionV2BindingSchema,
-			mask: z.literal('v1-approved-composition-retained-byte-for-byte')
+			mask: z.string().regex(/^v[1-9][0-9]*-approved-composition-retained-byte-for-byte$/u)
 		})
 		.strict()
 ]);
@@ -409,8 +440,8 @@ const CleanupRevisionV2ProviderEnvelopeSchema = z
 
 export const SkillIconCleanupRevisionV2PacketSchema = z
 	.object({
-		schemaVersion: z.literal('skill-icon-quality-cleanup-revision-packet-v2'),
-		revision: z.literal(2),
+		schemaVersion: CleanupRevisionPacketSchemaVersion,
+		revision: z.number().int().min(2),
 		targetId: SkillIconCleanupTargetIdSchema,
 		name: z.string().trim().min(1),
 		domain: z.string().trim().min(1),
@@ -443,39 +474,61 @@ export const SkillIconCleanupRevisionV2PacketSchema = z
 	})
 	.strict()
 	.superRefine((packet, context) => {
-		const slug = packet.targetId.replaceAll(':', '-');
-		const expectedOutput = {
-			providerSourcePath: `${QUALITY_CLEANUP_ROOT}/provider-sources/${slug}-v2.png`,
-			revisedInteriorPath: `${QUALITY_CLEANUP_ROOT}/revisions/${slug}-v2.png`,
-			compositePath: `${QUALITY_CLEANUP_ROOT}/composites/${slug}-v2.png`,
-			resultPath: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v2.json`
-		};
+		const expectedOutput = cleanupRevisionOutputPaths(packet.targetId, packet.revision);
+		const predecessorPaths = cleanupRevisionPredecessorPaths(packet.targetId, packet.revision);
+		if (packet.schemaVersion !== `skill-icon-quality-cleanup-revision-packet-v${packet.revision}`) {
+			context.addIssue({
+				code: 'custom',
+				path: ['schemaVersion'],
+				message: 'Revision packet schema version must bind its numeric revision'
+			});
+		}
 		if (JSON.stringify(packet.output) !== JSON.stringify(expectedOutput)) {
 			context.addIssue({
 				code: 'custom',
 				path: ['output'],
-				message: 'V2 output paths must bind the target and revision two'
+				message: 'Revision output paths must bind the target and revision'
 			});
 		}
 		if (
 			(packet.sourceMode === 'identity-adoption') !==
-			(packet.transform.kind === 'identity-adoption-v1')
+			packet.transform.kind.startsWith('identity-adoption-v')
 		) {
 			context.addIssue({
 				code: 'custom',
 				path: ['transform'],
-				message: 'V2 source mode must use its exact transform authority'
+				message: 'Revision source mode must use its exact transform authority'
 			});
 		}
 		if (
-			packet.predecessor.packet.path !==
-				`${QUALITY_CLEANUP_ROOT}/prompts/revisions/${slug}-v1.json` ||
-			packet.predecessor.result.path !== `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v1.json`
+			packet.sourceMode === 'identity-adoption' &&
+			packet.transform.kind !== `identity-adoption-v${packet.revision - 1}`
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform', 'kind'],
+				message: 'Identity adoption must bind the immediate predecessor revision'
+			});
+		}
+		if (
+			packet.sourceMode === 'identity-adoption' &&
+			packet.transform.mask !==
+				`v${packet.revision - 1}-approved-composition-retained-byte-for-byte`
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform', 'mask'],
+				message: 'Identity adoption must bind the immediate predecessor composition authority'
+			});
+		}
+		if (
+			packet.predecessor.packet.path !== predecessorPaths.packet ||
+			packet.predecessor.result.path !== predecessorPaths.result
 		) {
 			context.addIssue({
 				code: 'custom',
 				path: ['predecessor'],
-				message: 'V2 predecessor must bind this target’s immutable v1 packet and result'
+				message: 'Revision predecessor must bind this target’s immediate packet and result'
 			});
 		}
 	});
@@ -511,7 +564,8 @@ const CleanupRevisionV2ExecutionSchema = z
 		generation: z
 			.object({
 				attemptCount: z.number().int().min(0).max(2),
-				callIdentifiers: z.array(z.string().trim().min(1)).max(2)
+				callIdentifiers: z.array(z.string().trim().min(1)).max(2),
+				callContentHashes: z.array(StateHashSchema).max(2).optional()
 			})
 			.strict(),
 		normalizationTransactionCount: z.number().int().nonnegative(),
@@ -541,12 +595,22 @@ const CleanupRevisionV2ExecutionSchema = z
 				message: 'V2 generation calls require one identifier per actual call'
 			});
 		}
+		if (
+			execution.generation.callContentHashes !== undefined &&
+			execution.generation.attemptCount !== execution.generation.callContentHashes.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['generation'],
+				message: 'V2 generation calls require one content hash per actual call'
+			});
+		}
 	});
 
 export const SkillIconCleanupRevisionV2ResultSchema = z
 	.object({
-		schemaVersion: z.literal('skill-icon-quality-cleanup-revision-result-v2'),
-		revision: z.literal(2),
+		schemaVersion: CleanupRevisionResultSchemaVersion,
+		revision: z.number().int().min(2),
 		status: z.enum(['candidate', 'revise', 'failed']),
 		targetId: SkillIconCleanupTargetIdSchema,
 		name: z.string().trim().min(1),
@@ -595,20 +659,22 @@ export const SkillIconCleanupRevisionV2ResultSchema = z
 	.strict()
 	.superRefine((result, context) => {
 		const slug = result.targetId.replaceAll(':', '-');
-		const expectedPacketPath = `${QUALITY_CLEANUP_ROOT}/prompts/revisions-v2/${slug}-v2.json`;
-		const expectedOutput = {
-			providerSourcePath: `${QUALITY_CLEANUP_ROOT}/provider-sources/${slug}-v2.png`,
-			revisedInteriorPath: `${QUALITY_CLEANUP_ROOT}/revisions/${slug}-v2.png`,
-			compositePath: `${QUALITY_CLEANUP_ROOT}/composites/${slug}-v2.png`,
-			resultPath: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v2.json`
-		};
+		const expectedPacketPath = `${QUALITY_CLEANUP_ROOT}/prompts/revisions-v${result.revision}/${slug}-v${result.revision}.json`;
+		const expectedOutput = cleanupRevisionOutputPaths(result.targetId, result.revision);
+		if (result.schemaVersion !== `skill-icon-quality-cleanup-revision-result-v${result.revision}`) {
+			context.addIssue({
+				code: 'custom',
+				path: ['schemaVersion'],
+				message: 'Revision result schema version must bind its numeric revision'
+			});
+		}
 		if (
 			result.revisionPacket.path !== expectedPacketPath ||
 			result.resultPath !== expectedOutput.resultPath
 		) {
 			context.addIssue({
 				code: 'custom',
-				message: 'V2 result paths must bind its target and packet'
+				message: 'Revision result paths must bind its target and packet'
 			});
 		}
 		if (
@@ -619,20 +685,49 @@ export const SkillIconCleanupRevisionV2ResultSchema = z
 		) {
 			context.addIssue({
 				code: 'custom',
-				message: 'V2 result outputs must be exact append-only paths'
+				message: 'Revision result outputs must be exact append-only paths'
 			});
 		}
 		if (
 			(result.sourceMode === 'identity-adoption') !==
-			(result.transform.kind === 'identity-adoption-v1')
+			result.transform.kind.startsWith('identity-adoption-v')
 		) {
-			context.addIssue({ code: 'custom', message: 'V2 result source mode and transform disagree' });
+			context.addIssue({
+				code: 'custom',
+				message: 'Revision result source mode and transform disagree'
+			});
 		}
-		if (result.sourceMode !== 'generation-v2' && result.execution.generation.attemptCount !== 0) {
+		if (
+			result.sourceMode === 'identity-adoption' &&
+			result.transform.kind !== `identity-adoption-v${result.revision - 1}`
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform', 'kind'],
+				message: 'Identity-adoption result must bind the immediate predecessor revision'
+			});
+		}
+		if (
+			result.sourceMode !== 'generation-v2' &&
+			(result.execution.generation.attemptCount !== 0 ||
+				(result.execution.generation.callContentHashes?.length ?? 0) !== 0)
+		) {
 			context.addIssue({
 				code: 'custom',
 				path: ['execution', 'generation'],
 				message: 'Deterministic V2 lanes cannot claim generation calls'
+			});
+		}
+		if (
+			result.sourceMode === 'generation-v2' &&
+			(result.execution.generation.attemptCount === 0 ||
+				result.execution.generation.callContentHashes === undefined ||
+				result.execution.generation.callContentHashes.length === 0)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['execution', 'generation'],
+				message: 'Generated V2 lanes require actual call identifiers and hashes'
 			});
 		}
 		if (
@@ -648,6 +743,78 @@ export const SkillIconCleanupRevisionV2ResultSchema = z
 		}
 	});
 
+const CleanupRevisionCompletionAuditArtifactsSchema = z
+	.object({
+		providerSource: CleanupRevisionV2BindingSchema,
+		revisedInterior: CleanupRevisionV2BindingSchema,
+		composite: CleanupRevisionV2BindingSchema,
+		result: CleanupRevisionV2BindingSchema
+	})
+	.strict();
+
+/**
+ * This file is intentionally published only after the four core artifacts.  It
+ * attests to the completed core transaction, not to the completion time of its
+ * own publication, which would be a circular and unverifiable claim.
+ */
+export const SkillIconCleanupRevisionCompletionAuditSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-quality-cleanup-revision-completion-audit-v1'),
+		revision: z.number().int().min(2),
+		targetId: SkillIconCleanupTargetIdSchema,
+		revisionPacket: CleanupRevisionV2BindingSchema,
+		result: CleanupRevisionV2BindingSchema,
+		status: z.enum(['candidate', 'revise', 'failed']),
+		corePublication: z
+			.object({
+				startedAt: IsoDateTimeSchema,
+				completedAt: IsoDateTimeSchema,
+				durationMs: z.number().int().nonnegative(),
+				artifacts: CleanupRevisionCompletionAuditArtifactsSchema
+			})
+			.strict()
+	})
+	.strict()
+	.superRefine((audit, context) => {
+		const expectedPacketPath = `${QUALITY_CLEANUP_ROOT}/prompts/revisions-v${audit.revision}/${audit.targetId.replaceAll(':', '-')}-v${audit.revision}.json`;
+		const expectedOutput = cleanupRevisionOutputPaths(audit.targetId, audit.revision);
+		if (audit.revisionPacket.path !== expectedPacketPath) {
+			context.addIssue({
+				code: 'custom',
+				path: ['revisionPacket', 'path'],
+				message: 'Completion audit must bind its exact revision packet path'
+			});
+		}
+		if (audit.result.path !== expectedOutput.resultPath) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'path'],
+				message: 'Completion audit must bind its exact revision result path'
+			});
+		}
+		if (
+			audit.corePublication.artifacts.providerSource.path !== expectedOutput.providerSourcePath ||
+			audit.corePublication.artifacts.revisedInterior.path !== expectedOutput.revisedInteriorPath ||
+			audit.corePublication.artifacts.composite.path !== expectedOutput.compositePath ||
+			audit.corePublication.artifacts.result.path !== expectedOutput.resultPath
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['corePublication', 'artifacts'],
+				message: 'Completion audit artifacts must bind exact append-only output paths'
+			});
+		}
+		if (
+			Date.parse(audit.corePublication.completedAt) < Date.parse(audit.corePublication.startedAt)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['corePublication', 'completedAt'],
+				message: 'Core publication cannot complete before it starts'
+			});
+		}
+	});
+
 export type SkillIconCleanupManifest = z.infer<typeof SkillIconCleanupManifestSchema>;
 export type SkillIconCleanupFinding = z.infer<typeof SkillIconCleanupFindingSchema>;
 export type SkillIconCleanupResult = z.infer<typeof SkillIconCleanupResultSchema>;
@@ -658,4 +825,7 @@ export type SkillIconCleanupRevisionV2Packet = z.infer<
 >;
 export type SkillIconCleanupRevisionV2Result = z.infer<
 	typeof SkillIconCleanupRevisionV2ResultSchema
+>;
+export type SkillIconCleanupRevisionCompletionAudit = z.infer<
+	typeof SkillIconCleanupRevisionCompletionAuditSchema
 >;

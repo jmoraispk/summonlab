@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:polearm:berserk-swing",
+	"name": "Berserk Swing",
+	"rank": "D",
+	"motifFamily": "polearm.reaping-blade",
+	"finding": {
+		"targetId": "martial:polearm:berserk-swing",
+		"kind": "stray-ui-glyph",
+		"detail": "Lower-left circular gauge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-polearm-berserk-swing-v3.json",
+		"contentHash": "7c9b0abd4fa06b5c6dbc4baa47527668f77211175971aac75346ae15d280317c"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-berserk-swing-v2.json",
+			"contentHash": "7b1b95aa7ec1ef3006b3ec8198e10721834604faeaeca5d9037de2e9cd360d0b"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v2.json",
+			"contentHash": "276f2c6cc9c4bae0be6ef7a57f0ef900c0db4e70ce7baf8d8493531caeff0dbc"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-berserk-swing-v2.png",
+			"contentHash": "0413baa2c50922122fbf88136b0effc588d0223e52c4b2052617f49d9b870ee4"
+		},
+		"transactionContentHash": "fc9da55eebe201920756a220b7c0a782b932efb78d794e9e69688ba8193f8c18",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-berserk-swing-v2.png",
+			"contentHash": "dc116e0e49f935dc0c1682e5268e3dbc71ec10e940e36174c11335e2b9896ff1"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-berserk-swing-v2.png",
+			"contentHash": "c16c08f23e5676e3703eebf40acbb55dac0fb4d7da5316468c9aceb1d6b7c35e"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-berserk-swing-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1358575,
+		"contentHash": "0413baa2c50922122fbf88136b0effc588d0223e52c4b2052617f49d9b870ee4",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-berserk-swing-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 473401,
+		"contentHash": "dc116e0e49f935dc0c1682e5268e3dbc71ec10e940e36174c11335e2b9896ff1"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-berserk-swing-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1097657,
+		"contentHash": "c16c08f23e5676e3703eebf40acbb55dac0fb4d7da5316468c9aceb1d6b7c35e"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 166756,
+		"contentHash": "286fd65e5afea149ff70481254d0cfb796e1e9256dcf72bc168a3ed258c275c0"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Lower-left circular gauge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:26.681Z",
+		"finishedAt": "2026-09-06T11:05:28.945Z",
+		"durationMs": 2263,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:26.681Z",
+				"finishedAt": "2026-09-06T11:05:26.737Z",
+				"durationMs": 56
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:26.744Z",
+				"finishedAt": "2026-09-06T11:05:27.321Z",
+				"durationMs": 577
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:27.321Z",
+				"finishedAt": "2026-09-06T11:05:27.774Z",
+				"durationMs": 452
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:27.774Z",
+				"finishedAt": "2026-09-06T11:05:28.932Z",
+				"durationMs": 1157
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "11dc9c0dc78eaee7b047df0a1542cfbc44babaa7c4e59b999f64390ad6518aa8",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-berserk-swing-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-berserk-swing-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-berserk-swing-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

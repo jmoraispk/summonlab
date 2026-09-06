@@ -176,22 +176,37 @@ review renderer could substitute a terminal `revise` receipt. The historical v1 
 revision, composite, result, and review bytes remain untouched. Its missing per-call/timing telemetry
 is not invented after the fact.
 
-Every v2 packet binds its exact v1 packet/result/provider/interior/composite predecessor hashes and
-uses a collision-free v2 path. Twenty-one reviewer-rejected candidate sources take one exact,
-authenticated transform: remove only the bounded `caBX` container payload, assign sRGB, single-pass
-Lanczos3 resize from the `1254×1254` RGB provider to `696×696`, place it at `(164,192)` on a
-transparent-black `1024×1024` canvas, then use the existing geometry mask, backing, and frame.
-Still Depths, Warmth, and Red Harvest instead bind an identity/adoption transform and reproduce their
-approved v1 interior and composite bytes exactly. Both deterministic lanes record zero generation
-calls and current-run timing/tool/provenance in their v2 receipts.
+Every revision packet/result after v1 has an integer revision `>=2`, a matching versioned schema and
+path, and an exact immediate-predecessor packet/result/provider/interior/composite/transaction
+chain. The historical v2 bytes are preserved, but their receipts predate the completion-audit
+protocol. They are valid predecessor evidence only: they are not selectable proof of core
+publication order or completion.
+
+Twenty-one reviewer-rejected candidate sources receive the exact authenticated inset transform:
+remove only the bounded `caBX` container payload, assign sRGB, single-pass Lanczos3 resize from the
+`1254×1254` RGB provider to `696×696`, place it at `(164,192)` on a transparent-black `1024×1024`
+canvas, then use the existing geometry mask, backing, and frame. Still Depths, Warmth, and Red
+Harvest use explicit identity adoption. Append-only v3 recovers all 24 deterministic v2 candidates:
+the inset lanes repeat the bound deterministic derivation from their v2 provider, and the three
+identity lanes retain the approved v2 interior/composite bytes with an `identity-adoption-v2`
+transform. Both lanes record zero generation calls.
+
+Each new receipt publishes its provider, interior, composite, and result first through the held-parent
+create-only transaction. Only after all four are re-read does a separate completion audit bind their
+hashes and truthful core-publication start/completion timestamps. The audit deliberately makes no
+claim about when its own publication finishes. Selection and review require this audit, independently
+re-derive the source, interior, composite, and 384px render, recompute the transaction digest, and
+check predecessor/source/tool/geometry/backing/frame/findings/status bindings.
 
 Exactly four v2 packets remain generation lanes: Taming, Rend Armour, Living Metal, and Ore Sense.
 Their prompt retains the named-glyph removal while explicitly keeping the complete subject, all
-visible limbs, equipment, and companion content inside a generous safe area. They are not generated
-in the deterministic recovery slice. A semantic finalizer/review resolver considers only each
-target's highest receipt and accepts it only when it is a valid `candidate`; `revise`, `failed`, and
-missing highest receipts are unresolved. A final review requires all 28 candidate-v2 outputs and
-cannot fall back to a lower v1 candidate.
+visible limbs, equipment, and companion content inside a generous safe area. The persistence lane is
+ready to accept only a native `1254×1254` RGB caBX provider, its exact source hash, every actual
+attempt/call identifier/hash, and independent full-size/384px findings; no raster was generated in
+this recovery. A semantic finalizer/review resolver considers only a target's highest declared
+terminal receipt and accepts it only when it is an audited valid `candidate`; a higher `revise`,
+`failed`, or missing receipt is unresolved and cannot fall back to an older candidate. The batch is
+therefore deliberately `24/28`, not complete.
 
 The ten symbolic-language skills remain in a separate decision lane because their symbols may be
 the central magical or knowledge subject. They are displayed at full size in the final review with
@@ -226,16 +241,24 @@ The namespace contains:
 - `findings.json`: machine-readable confirmed and review-required defects;
 - `prompts/revisions/`: 28 immutable, authority-bound semantic-revision packets;
 - `prompts/revisions-v2/`: 28 append-only revision-v2 packets with exact v1 predecessor bindings;
+- `prompts/revisions-v3/`: 24 append-only deterministic recovery packets with exact v2 predecessors;
 - `interiors/`: deterministic legacy-interior migration layers;
 - `provider-sources/`: exact sources for targeted semantic revisions;
 - `revisions/`: normalized revised interior candidates and receipts;
 - `composites/`: final cleanup candidates, one per canonical skill;
 - `results/`: source/output/provenance records;
+- `results/completion-audits/`: post-core-publication, hash-bound completion audits for selectable
+  revision receipts;
 - `review/`: shared-layer, before/after, focused-defect, and symbolic-decision sheets.
 
 The v2 deterministic recovery adds versioned `*-v2` provider/revision/composite/result outputs for
-24 targets and a `review/v2-recovery/` inspection package. The final review renderer uses the
-separate `review/v2/` namespace only after all 28 highest-valid candidate-v2 receipts exist.
+24 targets, but it remains predecessor-only evidence because it has no post-core completion audit.
+V3 adds audited `*-v3` provider/revision/composite/result outputs for those same 24 targets and a
+`review/v3-recovery/` package: six 2048px pages containing literal four-cell `1024×1024` originals,
+plus a separately versioned 384px display sheet. The legacy v2 sheet named `deterministic-v2-1024`
+actually uses 512px cells and is explicitly historical scaled evidence, not original-size V3 review.
+The final review renderer uses the separate `review/v2/` namespace only after all 28 highest-valid
+audited candidates exist.
 
 The active wiki continues to consume `mass-production-v1` until an accepted cleanup selection
 record points the derivative exporter at `quality-cleanup-v1`.

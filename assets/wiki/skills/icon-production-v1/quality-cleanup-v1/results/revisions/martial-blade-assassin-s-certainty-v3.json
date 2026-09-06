@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:blade:assassin-s-certainty",
+	"name": "Assassin's Certainty",
+	"rank": "A",
+	"motifFamily": "blade.assassin-angle",
+	"finding": {
+		"targetId": "martial:blade:assassin-s-certainty",
+		"kind": "stray-ui-glyph",
+		"detail": "Broken-heart badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-assassin-s-certainty-v3.json",
+		"contentHash": "1cdc962909fcbb09b39e63a47ee4220152dd20ae718a3afd8c4920dc8ed22f5f"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-assassin-s-certainty-v2.json",
+			"contentHash": "c0f1147898576946d465a00fe57cff2526ca3b62e9560c94b8bc1329931fc62c"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-assassin-s-certainty-v2.json",
+			"contentHash": "b506664247564cd71b006ae56dbe15a2cf3290e2c75e6b93ec3ff58818357cae"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-assassin-s-certainty-v2.png",
+			"contentHash": "29d2f3c4a27844ff184b7b81c8ba206b02a5b1d71d480c1e34e7213c2b67efc9"
+		},
+		"transactionContentHash": "bbf7402ac970b3bdbe1c8e6a9dbd988c693ca62a81aa44ef6c0da4b25ea9a651",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-assassin-s-certainty-v2.png",
+			"contentHash": "5ab8aef769aa1b85de5708f168d7cd3969d26fae3563e144c7f12e512ae2cd76"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-assassin-s-certainty-v2.png",
+			"contentHash": "f2c16c221f3b80ce6c49db8139e9afac76b954a3caca8fe2058d083dd0fedd26"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-assassin-s-certainty-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1184933,
+		"contentHash": "29d2f3c4a27844ff184b7b81c8ba206b02a5b1d71d480c1e34e7213c2b67efc9",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-assassin-s-certainty-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 374858,
+		"contentHash": "5ab8aef769aa1b85de5708f168d7cd3969d26fae3563e144c7f12e512ae2cd76"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-assassin-s-certainty-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1062911,
+		"contentHash": "f2c16c221f3b80ce6c49db8139e9afac76b954a3caca8fe2058d083dd0fedd26"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 160485,
+		"contentHash": "ab8792e700d5f460b17f23035f483fdfa975ee3a21b19a48e56c4766fe6ac45a"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Broken-heart badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:10.059Z",
+		"finishedAt": "2026-09-06T11:05:12.540Z",
+		"durationMs": 2480,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:10.059Z",
+				"finishedAt": "2026-09-06T11:05:10.093Z",
+				"durationMs": 34
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:10.100Z",
+				"finishedAt": "2026-09-06T11:05:10.802Z",
+				"durationMs": 702
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:10.802Z",
+				"finishedAt": "2026-09-06T11:05:11.334Z",
+				"durationMs": 531
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:11.334Z",
+				"finishedAt": "2026-09-06T11:05:12.528Z",
+				"durationMs": 1194
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "7e63041ba7d249370f5c42dc427b0fed12ff93ff84c54958a855eb35a65fdd9a",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-assassin-s-certainty-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-assassin-s-certainty-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-assassin-s-certainty-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-assassin-s-certainty-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-assassin-s-certainty-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

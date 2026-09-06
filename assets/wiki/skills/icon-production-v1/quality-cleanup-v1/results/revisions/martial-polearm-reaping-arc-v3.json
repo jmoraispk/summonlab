@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:polearm:reaping-arc",
+	"name": "Reaping Arc",
+	"rank": "D",
+	"motifFamily": "polearm.reaping-blade",
+	"finding": {
+		"targetId": "martial:polearm:reaping-arc",
+		"kind": "stray-ui-glyph",
+		"detail": "Lower-left circular gauge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-polearm-reaping-arc-v3.json",
+		"contentHash": "9f3cd1a1de1338bddbac5bf210f9fe103e59cd3a75d441e149cd4133cf7d30c6"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-reaping-arc-v2.json",
+			"contentHash": "1c33d98c3599dc120918c55b98878fc0c47c8068122ff8c7be062a1909dc75a4"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v2.json",
+			"contentHash": "4fee97c4cca57b265694aa199a6486bf0edfc9ecd8919195bdec1d8bb23e707c"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v2.png",
+			"contentHash": "c60aca23d5b88a74fab37a256d07fdae3bfcbf6b66008bf77708ae8fff0158b0"
+		},
+		"transactionContentHash": "ada9b52ffa663a2a120e622ae6a2a2cddf68fad877aaf88db70b3c83cea77163",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v2.png",
+			"contentHash": "16142e68e992caabd8f45ca845899565d42723f914ed9fe443439e89eda891b1"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc-v2.png",
+			"contentHash": "5e4782ac0cd38951362fde6b1c6fd9b3bef245b694aefe45eeef64c03eae2008"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1800758,
+		"contentHash": "c60aca23d5b88a74fab37a256d07fdae3bfcbf6b66008bf77708ae8fff0158b0",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 606086,
+		"contentHash": "16142e68e992caabd8f45ca845899565d42723f914ed9fe443439e89eda891b1"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1233821,
+		"contentHash": "5e4782ac0cd38951362fde6b1c6fd9b3bef245b694aefe45eeef64c03eae2008"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 184648,
+		"contentHash": "d34567e6d5a9c57931c921b036c65ed868edc5b30a7f1c6934b044e3162aced6"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Lower-left circular gauge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:29.082Z",
+		"finishedAt": "2026-09-06T11:05:31.968Z",
+		"durationMs": 2886,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:29.082Z",
+				"finishedAt": "2026-09-06T11:05:29.136Z",
+				"durationMs": 54
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:29.144Z",
+				"finishedAt": "2026-09-06T11:05:30.155Z",
+				"durationMs": 1011
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:30.155Z",
+				"finishedAt": "2026-09-06T11:05:30.641Z",
+				"durationMs": 486
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:30.641Z",
+				"finishedAt": "2026-09-06T11:05:31.951Z",
+				"durationMs": 1310
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "b78bb2f3a4bd4871c295102ae5490ad472a00287163c6625d2da3ba367efef13",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

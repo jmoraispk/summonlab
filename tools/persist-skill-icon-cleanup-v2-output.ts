@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 
 import {
+	SkillIconCleanupRevisionCompletionAuditSchema,
 	SkillIconCleanupRevisionV2PacketSchema,
 	SkillIconCleanupRevisionV2ResultSchema,
 	type SkillIconCleanupRevisionV2Result
@@ -22,6 +23,7 @@ import {
 	cleanupTransaction,
 	heldChild,
 	publishStaged,
+	readSafeAbsoluteFile,
 	readSafeRepositoryFile,
 	removeOwnedPath,
 	stageOutput,
@@ -29,15 +31,18 @@ import {
 	type StagedOutput
 } from './persist-skill-icon-cleanup-output.js';
 import {
+	cleanupRevisionCompletionAuditPath,
+	cleanupRevisionPacketPath,
 	cleanupRevisionV2JsonBytes,
+	computeCleanupRevisionTransactionContentHash,
 	deriveCleanupRevisionV2,
 	type CleanupRevisionV2AuthorityBytes,
 	type CleanupRevisionV2DerivationPhase,
 	type CleanupRevisionV2Packet
 } from './skill-icon-quality-cleanup-v2-lib.js';
 
-const CLEANUP_V2_PACKET_PATH =
-	/^assets\/wiki\/skills\/icon-production-v1\/quality-cleanup-v1\/prompts\/revisions-v2\/[a-z0-9]+(?:-[a-z0-9]+)*-v2\.json$/u;
+const CLEANUP_REVISION_PACKET_PATH =
+	/^assets\/wiki\/skills\/icon-production-v1\/quality-cleanup-v1\/prompts\/revisions-v(?:[2-9]|[1-9][0-9]+)\/[a-z0-9]+(?:-[a-z0-9]+)*-v(?:[2-9]|[1-9][0-9]+)\.json$/u;
 const SHA256 = /^[a-f0-9]{64}$/u;
 
 export interface PersistCleanupRevisionV2CliRequest {
@@ -46,6 +51,12 @@ export interface PersistCleanupRevisionV2CliRequest {
 	readonly fullSizeObservation: string;
 	readonly display384Outcome: 'pass' | 'fail';
 	readonly display384Observation: string;
+	/** Required only by the generation-v2 lane. */
+	readonly sourcePath?: string;
+	readonly sourceHash?: string;
+	readonly attemptCount?: 1 | 2;
+	readonly generationCallIdentifiers?: readonly string[];
+	readonly generationCallContentHashes?: readonly string[];
 }
 
 export interface PersistCleanupRevisionV2TestHooks {
@@ -109,26 +120,47 @@ export function parsePersistCleanupRevisionV2CliRequest(
 	}
 	const allowed = new Set([
 		'--packet',
+		'--source',
+		'--source-hash',
+		'--attempt-count',
+		'--generation-call-id',
+		'--generation-call-hash',
 		'--full-size-outcome',
 		'--full-size-observation',
 		'--display-384-outcome',
 		'--display-384-observation'
 	]);
 	const values = new Map<string, string>();
+	const generationCallIdentifiers: string[] = [];
+	const generationCallContentHashes: string[] = [];
 	for (let index = 0; index < normalizedArgs.length; index += 2) {
 		const flag = normalizedArgs[index];
 		const value = normalizedArgs[index + 1];
 		if (!flag || !allowed.has(flag) || !value) {
 			throw new Error(`Unknown or incomplete argument: ${flag ?? '<missing>'}`);
 		}
+		if (flag === '--generation-call-id') {
+			generationCallIdentifiers.push(value);
+			continue;
+		}
+		if (flag === '--generation-call-hash') {
+			generationCallContentHashes.push(value);
+			continue;
+		}
 		if (values.has(flag)) throw new Error(`Duplicate argument: ${flag}`);
 		values.set(flag, value);
 	}
 	const packetPath = required(values, '--packet');
-	if (!CLEANUP_V2_PACKET_PATH.test(packetPath)) {
-		throw new Error('--packet must be a canonical cleanup revision-v2 packet path');
+	if (!CLEANUP_REVISION_PACKET_PATH.test(packetPath)) {
+		throw new Error('--packet must be a canonical cleanup revision packet path');
 	}
-	return {
+	const hasGenerationArguments =
+		values.has('--source') ||
+		values.has('--source-hash') ||
+		values.has('--attempt-count') ||
+		generationCallIdentifiers.length > 0 ||
+		generationCallContentHashes.length > 0;
+	const request: PersistCleanupRevisionV2CliRequest = {
 		packetPath,
 		fullSizeOutcome: outcome(required(values, '--full-size-outcome'), '--full-size-outcome'),
 		fullSizeObservation: observation(
@@ -140,6 +172,40 @@ export function parsePersistCleanupRevisionV2CliRequest(
 			required(values, '--display-384-observation'),
 			'--display-384-observation'
 		)
+	};
+	if (!hasGenerationArguments) return request;
+	const sourcePath = required(values, '--source');
+	if (!path.isAbsolute(sourcePath)) throw new Error('--source must be an absolute path');
+	const sourceHash = required(values, '--source-hash');
+	if (!SHA256.test(sourceHash)) throw new Error('--source-hash must be a lowercase SHA-256 hash');
+	const attemptCountValue = required(values, '--attempt-count');
+	if (attemptCountValue !== '1' && attemptCountValue !== '2') {
+		throw new Error('--attempt-count must be one or two');
+	}
+	const attemptCount = Number(attemptCountValue) as 1 | 2;
+	if (
+		generationCallIdentifiers.length !== attemptCount ||
+		generationCallContentHashes.length !== attemptCount
+	) {
+		throw new Error(
+			'Generation persistence requires one call identifier and hash per actual attempt'
+		);
+	}
+	if (
+		generationCallIdentifiers.some((value) => value.trim().length === 0) ||
+		generationCallContentHashes.some((value) => !SHA256.test(value))
+	) {
+		throw new Error(
+			'Generation call identifiers must be nonempty and call hashes must be lowercase SHA-256'
+		);
+	}
+	return {
+		...request,
+		sourcePath,
+		sourceHash,
+		attemptCount,
+		generationCallIdentifiers,
+		generationCallContentHashes
 	};
 }
 
@@ -191,23 +257,26 @@ function bindingRequests(packet: CleanupRevisionV2Packet): readonly {
 		description: string
 	) => ({ repositoryPath: binding.path, contentHash: binding.contentHash, description });
 	const requests = [
-		request(packet.predecessor.packet, 'Immutable v1 revision packet'),
-		request(packet.predecessor.result, 'Immutable v1 revision result'),
-		request(packet.predecessor.providerSource, 'Immutable v1 provider source'),
-		request(packet.predecessor.revisedInterior, 'Immutable v1 revised interior'),
-		request(packet.predecessor.composite, 'Immutable v1 composite'),
+		request(packet.predecessor.packet, 'Immutable immediate predecessor revision packet'),
+		request(packet.predecessor.result, 'Immutable immediate predecessor revision result'),
+		request(packet.predecessor.providerSource, 'Immutable immediate predecessor provider source'),
+		request(packet.predecessor.revisedInterior, 'Immutable immediate predecessor revised interior'),
+		request(packet.predecessor.composite, 'Immutable immediate predecessor composite'),
 		...Object.entries(packet.compositionAuthority).map(([name, binding]) => ({
 			repositoryPath: binding.path,
 			contentHash: binding.contentHash,
-			description: `V2 composition ${name} authority`
+			description: `Revision composition ${name} authority`
 		})),
 		...packet.references.map((reference, index) => ({
 			repositoryPath: reference.path,
 			contentHash: reference.contentHash,
-			description: `V2 ordered reference ${index + 1}`
+			description: `Revision ordered reference ${index + 1}`
 		}))
 	];
-	if (packet.transform.kind === 'identity-adoption-v1') {
+	if (packet.sourceMode === 'identity-adoption') {
+		if (!('revisedInterior' in packet.transform) || !('composite' in packet.transform)) {
+			throw new Error(`Identity-adoption transform is malformed: ${packet.targetId}`);
+		}
 		requests.push(
 			request(packet.transform.revisedInterior, 'V1 identity-adoption interior'),
 			request(packet.transform.composite, 'V1 identity-adoption composite')
@@ -237,7 +306,7 @@ async function bindAuthorities(
 	}
 	const bindings: AuthorityBinding[] = [
 		{
-			description: 'Cleanup v2 revision packet',
+			description: 'Cleanup revision packet',
 			repositoryPath: packetSnapshot.path,
 			snapshot: packetSnapshot
 		}
@@ -246,7 +315,7 @@ async function bindAuthorities(
 		const description = request.descriptions.join(' / ');
 		const snapshot = await readSafeRepositoryFile(root, repositoryPath, description);
 		if (sha256(snapshot.bytes) !== request.contentHash) {
-			throw new Error(`${description} hash changed before v2 persistence: ${repositoryPath}`);
+			throw new Error(`${description} hash changed before revision persistence: ${repositoryPath}`);
 		}
 		bindings.push({ description, repositoryPath, snapshot });
 	}
@@ -268,21 +337,16 @@ async function assertAuthoritiesUnchanged(bindings: readonly AuthorityBinding[])
 }
 
 function assertPacketPath(packetPath: string, packet: CleanupRevisionV2Packet): void {
-	const expected = `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/${packet.targetId.replaceAll(':', '-')}-v2.json`;
+	const expected = cleanupRevisionPacketPath(packet.targetId, packet.revision);
 	if (packetPath !== expected) {
-		throw new Error('Cleanup v2 revision packet path does not bind its target identity');
+		throw new Error('Cleanup revision packet path does not bind its target and revision identity');
 	}
-}
-
-function makePublicationPlaceholder(): ExecutionPhase {
-	const timestamp = new Date().toISOString();
-	return { name: 'publication', startedAt: timestamp, finishedAt: timestamp, durationMs: 0 };
 }
 
 export async function persistCleanupRevisionV2(
 	input: PersistCleanupRevisionV2Input
 ): Promise<SkillIconCleanupRevisionV2Result> {
-	const request = parsePersistCleanupRevisionV2CliRequest([
+	const requestArguments = [
 		'--packet',
 		input.packetPath,
 		'--full-size-outcome',
@@ -293,7 +357,18 @@ export async function persistCleanupRevisionV2(
 		input.display384Outcome,
 		'--display-384-observation',
 		input.display384Observation
-	]);
+	];
+	if (input.sourcePath !== undefined) requestArguments.push('--source', input.sourcePath);
+	if (input.sourceHash !== undefined) requestArguments.push('--source-hash', input.sourceHash);
+	if (input.attemptCount !== undefined)
+		requestArguments.push('--attempt-count', String(input.attemptCount));
+	for (const callIdentifier of input.generationCallIdentifiers ?? []) {
+		requestArguments.push('--generation-call-id', callIdentifier);
+	}
+	for (const callContentHash of input.generationCallContentHashes ?? []) {
+		requestArguments.push('--generation-call-hash', callContentHash);
+	}
+	const request = parsePersistCleanupRevisionV2CliRequest(requestArguments);
 	const root = path.resolve(input.root ?? process.cwd());
 	const testHooks = input.testHooks ? { ...input.testHooks } : undefined;
 	const executionStartedAt = new Date().toISOString();
@@ -302,24 +377,66 @@ export async function persistCleanupRevisionV2(
 		const packetSnapshot = await readSafeRepositoryFile(
 			root,
 			request.packetPath,
-			'Cleanup v2 revision packet'
+			'Cleanup revision packet'
 		);
 		const packet = SkillIconCleanupRevisionV2PacketSchema.parse(
 			JSON.parse(packetSnapshot.bytes.toString('utf8')) as unknown
 		);
 		assertPacketPath(request.packetPath, packet);
+		const bindings = [...(await bindAuthorities(root, packetSnapshot, packet))];
+		let generationSource: SafeSnapshot | undefined;
 		if (packet.sourceMode === 'generation-v2') {
+			if (
+				!request.sourcePath ||
+				!request.sourceHash ||
+				request.attemptCount === undefined ||
+				!request.generationCallIdentifiers ||
+				!request.generationCallContentHashes
+			) {
+				throw new Error(
+					`Cleanup generation-v2 persistence requires authenticated source/call provenance: ${packet.targetId}`
+				);
+			}
+			generationSource = await readSafeAbsoluteFile(
+				request.sourcePath,
+				'Cleanup generation-v2 native provider source'
+			);
+			if (sha256(generationSource.bytes) !== request.sourceHash) {
+				throw new Error(`Cleanup generation-v2 source hash drift: ${packet.targetId}`);
+			}
+			const provider = prepareSkillIconProviderSourceV3(generationSource.bytes).source;
+			if (provider.contentHash !== request.sourceHash) {
+				throw new Error(`Cleanup generation-v2 provider envelope hash drift: ${packet.targetId}`);
+			}
+			if (request.generationCallContentHashes.at(-1) !== request.sourceHash) {
+				throw new Error(
+					`Cleanup generation-v2 final provider must bind the final call content hash: ${packet.targetId}`
+				);
+			}
+			bindings.push({
+				description: 'Cleanup generation-v2 native provider source',
+				repositoryPath: generationSource.path,
+				snapshot: generationSource
+			});
+		} else if (
+			request.sourcePath !== undefined ||
+			request.sourceHash !== undefined ||
+			request.attemptCount !== undefined ||
+			(request.generationCallIdentifiers?.length ?? 0) !== 0 ||
+			(request.generationCallContentHashes?.length ?? 0) !== 0
+		) {
 			throw new Error(
-				`Cleanup v2 generation lane cannot be persisted without an authenticated generation result: ${packet.targetId}`
+				`Deterministic cleanup lane cannot claim generation provenance: ${packet.targetId}`
 			);
 		}
 		return {
 			packetSnapshot,
 			packet,
-			bindings: await bindAuthorities(root, packetSnapshot, packet)
+			bindings,
+			generationSource
 		};
 	});
-	const { packetSnapshot, packet, bindings } = sourceRead.value;
+	const { packetSnapshot, packet, bindings, generationSource } = sourceRead.value;
 	for (const repositoryPath of Object.values(packet.output)) {
 		if (bindings.some(({ snapshot }) => snapshot.path === path.resolve(root, repositoryPath))) {
 			throw new Error('Cleanup v2 authority cannot also be a destination');
@@ -330,12 +447,19 @@ export async function persistCleanupRevisionV2(
 	const derived = await deriveCleanupRevisionV2({
 		root,
 		packet,
-		authorityBytes: authorityByteMap(bindings)
+		authorityBytes: authorityByteMap(bindings),
+		...(generationSource ? { generationSourceBytes: generationSource.bytes } : {})
 	});
 	await testHooks?.afterDerivation?.();
 	const provider = prepareSkillIconProviderSourceV3(derived.sourceBytes).source;
-	if (provider.contentHash !== packet.predecessor.providerSource.contentHash) {
-		throw new Error(`Cleanup v2 provider identity drift: ${packet.targetId}`);
+	if (
+		packet.sourceMode !== 'generation-v2' &&
+		provider.contentHash !== packet.predecessor.providerSource.contentHash
+	) {
+		throw new Error(`Cleanup revision provider identity drift: ${packet.targetId}`);
+	}
+	if (packet.sourceMode === 'generation-v2' && provider.contentHash !== request.sourceHash) {
+		throw new Error(`Cleanup generation-v2 persisted provider hash drift: ${packet.targetId}`);
 	}
 	const packetHash = sha256(packetSnapshot.bytes);
 	const providerEvidence = { path: packet.output.providerSourcePath, ...provider };
@@ -366,15 +490,25 @@ export async function persistCleanupRevisionV2(
 	const executionDurationMs = Number((process.hrtime.bigint() - executionStarted) / 1_000_000n);
 	const phases: readonly ExecutionPhase[] = [
 		sourceRead.phase,
-		...derived.phases.map(phaseFromDerivation),
-		makePublicationPlaceholder()
+		...derived.phases.map(phaseFromDerivation)
 	];
 	const execution = {
 		startedAt: executionStartedAt,
 		finishedAt: executionFinishedAt,
 		durationMs: executionDurationMs,
 		phases,
-		generation: { attemptCount: 0, callIdentifiers: [] as string[] },
+		generation:
+			packet.sourceMode === 'generation-v2'
+				? {
+						attemptCount: request.attemptCount!,
+						callIdentifiers: [...request.generationCallIdentifiers!],
+						callContentHashes: [...request.generationCallContentHashes!]
+					}
+				: {
+						attemptCount: 0 as const,
+						callIdentifiers: [] as string[],
+						callContentHashes: [] as string[]
+					},
 		normalizationTransactionCount: derived.normalizationTransactionCount,
 		invocation: {
 			tool: 'tools/persist-skill-icon-cleanup-v2-output.ts' as const,
@@ -384,25 +518,23 @@ export async function persistCleanupRevisionV2(
 			vipsVersion: sharp.versions.vips
 		}
 	};
-	const transactionContentHash = sha256(
-		cleanupRevisionV2JsonBytes({
-			packet: packetHash,
-			predecessor: packet.predecessor,
-			sourceMode: packet.sourceMode,
-			transform: packet.transform,
-			providerSource: providerEvidence.contentHash,
-			revisedInterior: interiorEvidence.contentHash,
-			compositionAuthority: packet.compositionAuthority,
-			composite: compositeEvidence.contentHash,
-			display384: display384Evidence.contentHash,
-			inspection,
-			execution,
-			output: packet.output
-		})
-	);
+	const transactionContentHash = computeCleanupRevisionTransactionContentHash({
+		packetContentHash: packetHash,
+		predecessor: packet.predecessor,
+		sourceMode: packet.sourceMode,
+		transform: packet.transform,
+		providerSourceContentHash: providerEvidence.contentHash,
+		revisedInteriorContentHash: interiorEvidence.contentHash,
+		compositionAuthority: packet.compositionAuthority,
+		compositeContentHash: compositeEvidence.contentHash,
+		display384ContentHash: display384Evidence.contentHash,
+		inspection,
+		execution,
+		output: packet.output
+	});
 	const result = SkillIconCleanupRevisionV2ResultSchema.parse({
-		schemaVersion: 'skill-icon-quality-cleanup-revision-result-v2',
-		revision: 2,
+		schemaVersion: `skill-icon-quality-cleanup-revision-result-v${packet.revision}`,
+		revision: packet.revision,
 		status:
 			request.fullSizeOutcome === 'pass' && request.display384Outcome === 'pass'
 				? 'candidate'
@@ -441,6 +573,8 @@ export async function persistCleanupRevisionV2(
 		}
 		await testHooks?.afterStage?.();
 		await assertAuthoritiesUnchanged(bindings);
+		const corePublicationStartedAt = new Date().toISOString();
+		const corePublicationStarted = process.hrtime.bigint();
 		for (const [index, output] of staged.entries()) {
 			await publishStaged(output);
 			await testHooks?.afterPublish?.(index, output.repositoryPath);
@@ -455,7 +589,62 @@ export async function persistCleanupRevisionV2(
 				throw new Error(`Cleanup v2 revision output bytes changed: ${output.repositoryPath}`);
 			}
 		}
+		const corePublicationCompletedAt = new Date().toISOString();
+		const corePublicationDurationMs = Number(
+			(process.hrtime.bigint() - corePublicationStarted) / 1_000_000n
+		);
+		const resultBytes = outputBytes[3].bytes;
+		const completionAudit = SkillIconCleanupRevisionCompletionAuditSchema.parse({
+			schemaVersion: 'skill-icon-quality-cleanup-revision-completion-audit-v1',
+			revision: packet.revision,
+			targetId: packet.targetId,
+			revisionPacket: { path: request.packetPath, contentHash: packetHash },
+			result: { path: packet.output.resultPath, contentHash: sha256(resultBytes) },
+			status: result.status,
+			corePublication: {
+				startedAt: corePublicationStartedAt,
+				completedAt: corePublicationCompletedAt,
+				durationMs: corePublicationDurationMs,
+				artifacts: {
+					providerSource: {
+						path: providerEvidence.path,
+						contentHash: providerEvidence.contentHash
+					},
+					revisedInterior: {
+						path: interiorEvidence.path,
+						contentHash: interiorEvidence.contentHash
+					},
+					composite: {
+						path: compositeEvidence.path,
+						contentHash: compositeEvidence.contentHash
+					},
+					result: { path: packet.output.resultPath, contentHash: sha256(resultBytes) }
+				}
+			}
+		});
 		for (const output of staged) await removeOwnedPath(output.temporaryPath, output);
+		await assertAllHeldParentsNamed(staged);
+
+		// The audit is staged only after all four core files were published and
+		// re-read through their held parents. It intentionally has no claim about
+		// when its own create-only publication finishes.
+		const auditPath = cleanupRevisionCompletionAuditPath(packet.targetId, packet.revision);
+		const auditStaged = await stageOutput(
+			root,
+			auditPath,
+			cleanupRevisionV2JsonBytes(completionAudit)
+		);
+		staged.push(auditStaged);
+		await assertAuthoritiesUnchanged(bindings);
+		await publishStaged(auditStaged);
+		await testHooks?.afterPublish?.(4, auditPath);
+		await assertAllHeldParentsNamed(staged);
+		const auditFinalPath = heldChild(auditStaged.parent, path.basename(auditStaged.destination));
+		await assertOwnedPath(auditFinalPath, auditStaged, 'Cleanup revision completion audit');
+		if (!(await readFile(auditFinalPath)).equals(auditStaged.bytes)) {
+			throw new Error(`Cleanup revision completion audit bytes changed: ${auditPath}`);
+		}
+		await removeOwnedPath(auditStaged.temporaryPath, auditStaged);
 		await assertAllHeldParentsNamed(staged);
 		return result;
 	} catch (error) {

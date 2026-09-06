@@ -706,7 +706,8 @@ ordinary `pnpm test` CI path.
 > **Task 7 v1 status: retracted.** Independent review found that its full-canvas v1 normalization
 > clipped 23 candidate compositions and that its renderer could substitute a `revise` receipt. The
 > v1 packets, rasters, receipts, and review sheets remain immutable historical evidence; their
-> timing/call telemetry is not retroactively reconstructed. Task 7A adds append-only v2 authority.
+> timing/call telemetry is not retroactively reconstructed. Task 7A preserves v2 and adds audited,
+> append-only v3 recovery authority for the 24 deterministic targets.
 
 **Files:**
 
@@ -727,12 +728,15 @@ ordinary `pnpm test` CI path.
 
 - [~] **Step 1: Dispatch all confirmed semantic jobs without intermediate checkpoints**
 
-The v1 generation batch is not completion evidence. Task 7A materializes 28 immutable v2 packets in
-sorted path order: 21 rejected v1 candidates use the exact `1254 -> 696` single-pass Lanczos3 inset
-at `(164,192)` before the existing mask/backing/frame; Still Depths, Warmth, and Red Harvest use
-byte-for-byte identity adoption; Taming, Rend Armour, Living Metal, and Ore Sense are explicit
-generation-v2 packets. The first 24 are current-run candidate receipts with zero generation calls;
-the four generation-v2 packets remain pending and may not be silently replaced by v1 candidates.
+The v1 generation batch is not completion evidence. Task 7A first materialized 28 immutable v2
+packets in sorted path order: 21 rejected v1 candidates use the exact `1254 -> 696` single-pass
+Lanczos3 inset at `(164,192)` before the existing mask/backing/frame; Still Depths, Warmth, and Red
+Harvest use byte-for-byte identity adoption; Taming, Rend Armour, Living Metal, and Ore Sense are
+explicit generation-v2 packets. V2 bytes remain immutable but cannot prove core-publication order.
+Round 2 appends 24 v3 deterministic packets/results/audits with exact v2 predecessor chains. Each
+audit is written only after the provider/interior/composite/result core transaction succeeds; the
+24 audited candidates record zero generation calls. The four generation-v2 packets remain pending
+and may not be silently replaced by v1 or v2 evidence.
 
 - [~] **Step 2: Re-finalize the catalog with revised interiors selected**
 
@@ -741,18 +745,20 @@ corepack pnpm finalize:skill-icon-quality-cleanup
 corepack pnpm validate:skill-icon-quality-cleanup
 ```
 
-The legacy 456-composite finalizer remains separate from semantic review and does not promote v2
-artwork. `finalize:skill-icon-cleanup-v2` selects only the highest revision for each semantic target,
-and only when that receipt is `candidate`; a higher `revise`, `failed`, or missing receipt makes the
-target unresolved. It is deliberately `24/28` and `ready: false` until the four generation-v2
-candidate receipts exist.
+The legacy 456-composite finalizer remains separate from semantic review and does not promote
+artwork. `finalize:skill-icon-cleanup-v2` independently authenticates every revision packet/result,
+re-derives all artifacts, recomputes the transaction digest, and selects only the highest audited
+revision for each semantic target when it is `candidate`; a higher `revise`, `failed`, or missing
+receipt makes the target unresolved. It is deliberately `24/28` and `ready: false` until the four
+generation-v2 candidate receipts exist.
 
 - [~] **Step 3: Render the review package**
 
-The historical v1 review remains unchanged. Task 7A renders immutable v2-recovery contact sheets for
-the 24 deterministic candidates at source-composite and 384px display scale. The final v2 review
-renderer writes only under `review/v2/`, refuses to render while any of the required 28 highest v2
-receipts is unresolved, and never substitutes a `revise` or `failed` composite.
+The historical v1/v2 review remains unchanged. Round 2 writes immutable V3 evidence under
+`review/v3-recovery/`: six pages made from literal `1024×1024` composite cells (four per `2048px`
+page) and a separately versioned `display-384-v3-r2.png` sheet. The former v2 file whose name said
+`1024` is labelled as legacy 512px evidence. Review consumes resolver-selected audited candidates,
+never a raw receipt list, so it cannot substitute a `revise`, `failed`, or older candidate.
 
 - [~] **Step 4: Run complete technical validation**
 
@@ -760,26 +766,30 @@ receipts is unresolved, and never substitutes a `revise` or `failed` composite.
 corepack pnpm check:skill-icon-quality-cleanup
 corepack pnpm validate:skill-icon-quality-cleanup
 corepack pnpm check:skill-icon-mass-production
+corepack pnpm check:skill-icon-cleanup-v2-packets
+corepack pnpm check:skill-icon-cleanup-v3-packets
+corepack pnpm check:skill-icon-cleanup-v3
+corepack pnpm render:skill-icon-cleanup-v3-recovery-inspection
 corepack pnpm validate:skill-icons
 corepack pnpm typecheck:skill-icons
 corepack pnpm test:skill-icons
 ```
 
-The v2 packet/recovery checker, focused contract/persistence/selector tests, and immutable-input audit
-must pass. The final-v2 review and `--require-complete` gate are expected to fail closed during Task
-7A with exactly the four generation-v2 targets listed above; that is a valid partial-recovery state,
-not completion.
+The packet/recovery checkers, focused contract/persistence/selector/authentication tests, and
+immutable-input audit must pass. The complete semantic-review and `--require-complete` gates are
+expected to fail closed during Task 7A with exactly the four generation-v2 targets listed above;
+that is a valid partial-recovery state, not completion.
 
-- [~] **Step 5: Commit the append-only v2 recovery slice**
+- [~] **Step 5: Commit the append-only audited recovery slice**
 
 ```bash
 git add assets/wiki/skills/icon-production-v1/quality-cleanup-v1
-git commit -m "fix(skills): recover semantic revisions with v2 authority"
+git commit -m "fix(skills): harden semantic revision authority"
 ```
 
 Task 7 remains incomplete after this commit. The later bounded generation task must produce and
-inspect candidate-v2 receipts for the four explicitly pending targets before the final review can be
-rendered or any owner decision can be requested.
+inspect audited candidate-v2 receipts for the four explicitly pending targets before the final review
+can be rendered or any owner decision can be requested.
 
 ### Task 8: Record one owner decision, select the cleanup set, and refresh the wiki
 

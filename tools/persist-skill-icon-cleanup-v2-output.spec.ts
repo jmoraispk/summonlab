@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { copyFile, link, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -5,8 +6,10 @@ import path from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 
 import {
+	authenticateCleanupRevisionReceipt,
 	buildCleanupRevisionV2Packets,
-	cleanupRevisionV2JsonBytes
+	cleanupRevisionV2JsonBytes,
+	computeCleanupRevisionTransactionContentHash
 } from './skill-icon-quality-cleanup-v2-lib.js';
 import { persistCleanupRevisionV2 } from './persist-skill-icon-cleanup-v2-output.js';
 
@@ -85,9 +88,61 @@ describe('cleanup semantic-revision v2 persistence', () => {
 			'source-read',
 			'normalization',
 			'composition',
-			'inspection',
-			'publication'
+			'inspection'
 		]);
+		const auditPath =
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/martial-blade-blade-dance-v2.json';
+		const audit = JSON.parse(
+			(await readFile(path.join(fixture.root, auditPath))).toString('utf8')
+		) as {
+			readonly corePublication: {
+				readonly startedAt: string;
+				readonly completedAt: string;
+				readonly artifacts: { readonly result: { readonly path: string } };
+			};
+		};
+		expect(Date.parse(audit.corePublication.completedAt)).toBeGreaterThanOrEqual(
+			Date.parse(audit.corePublication.startedAt)
+		);
+		expect(audit.corePublication.artifacts.result.path).toBe(result.resultPath);
+		await expect(
+			authenticateCleanupRevisionReceipt({ root: fixture.root, packetPath: fixture.packet.path })
+		).resolves.toMatchObject({ result: { transactionContentHash: result.transactionContentHash } });
+
+		// A receipt and audit can be edited together in a temporary fixture, but
+		// the finalizer still independently pins the tool identity and rejects it.
+		const resultPath = path.join(fixture.root, result.resultPath);
+		const tampered = JSON.parse((await readFile(resultPath)).toString('utf8')) as Record<
+			string,
+			any
+		>;
+		tampered.execution.invocation.nodeVersion = 'v0.0.0-tampered';
+		tampered.transactionContentHash = computeCleanupRevisionTransactionContentHash({
+			packetContentHash: tampered.revisionPacket.contentHash,
+			predecessor: tampered.predecessor,
+			sourceMode: tampered.sourceMode,
+			transform: tampered.transform,
+			providerSourceContentHash: tampered.providerSource.contentHash,
+			revisedInteriorContentHash: tampered.revisedInterior.contentHash,
+			compositionAuthority: tampered.compositionAuthority,
+			compositeContentHash: tampered.composite.contentHash,
+			display384ContentHash: tampered.display384.contentHash,
+			inspection: tampered.inspection,
+			execution: tampered.execution,
+			output: fixture.packet.packet.output
+		});
+		const tamperedResultBytes = cleanupRevisionV2JsonBytes(tampered);
+		await writeFile(resultPath, tamperedResultBytes);
+		const tamperedAudit = JSON.parse(
+			(await readFile(path.join(fixture.root, auditPath))).toString('utf8')
+		) as Record<string, any>;
+		const tamperedResultHash = createHash('sha256').update(tamperedResultBytes).digest('hex');
+		tamperedAudit.result.contentHash = tamperedResultHash;
+		tamperedAudit.corePublication.artifacts.result.contentHash = tamperedResultHash;
+		await writeFile(path.join(fixture.root, auditPath), cleanupRevisionV2JsonBytes(tamperedAudit));
+		await expect(
+			authenticateCleanupRevisionReceipt({ root: fixture.root, packetPath: fixture.packet.path })
+		).rejects.toThrow(/invocation provenance drift/i);
 		for (const phase of result.execution.phases) {
 			expect(Date.parse(phase.finishedAt)).toBeGreaterThanOrEqual(Date.parse(phase.startedAt));
 			expect(phase.durationMs).toBeGreaterThanOrEqual(0);

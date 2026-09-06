@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "craft:forging:tempering",
+	"name": "Tempering",
+	"rank": "D",
+	"motifFamily": "forging.metallurgy",
+	"finding": {
+		"targetId": "craft:forging:tempering",
+		"kind": "stray-ui-glyph",
+		"detail": "Curved upgrade arrow.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-forging-tempering-v3.json",
+		"contentHash": "8c1d16394c60c6c99de111609fcb593cdcafc44166efb615304aff7e3187318b"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-tempering-v2.json",
+			"contentHash": "05a652c569354e1a0c515c164bd059916411c240cf53ba218c28181f1ef893ed"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v2.json",
+			"contentHash": "a0e17894c6025f25031d4ecdff5e43c80fd66be2eb52a1c503cc8fcaa2885f2e"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v2.png",
+			"contentHash": "a3dac1821102edca008e49ff98176867b57a38d864861b91cc4adb2da957edf7"
+		},
+		"transactionContentHash": "c0685628a2181120870217e26dbf499b8525b6a6a6d258315bae7fa14a0a36a8",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v2.png",
+			"contentHash": "dfbb8e853213746cf94b69ce4de92bb9fba77ceb6c9e9e9d9861d807acc152ef"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering-v2.png",
+			"contentHash": "886be6895850b91ff8bae05a7fc3fea213b40bebdd5dd7308015cc5bbf68cf61"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1447367,
+		"contentHash": "a3dac1821102edca008e49ff98176867b57a38d864861b91cc4adb2da957edf7",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 526121,
+		"contentHash": "dfbb8e853213746cf94b69ce4de92bb9fba77ceb6c9e9e9d9861d807acc152ef"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1149573,
+		"contentHash": "886be6895850b91ff8bae05a7fc3fea213b40bebdd5dd7308015cc5bbf68cf61"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 172900,
+		"contentHash": "eded75301b35467f134ed3d516708c5b463957836d09cf74bdc29f6870e667f4"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Curved upgrade arrow."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:04:52.447Z",
+		"finishedAt": "2026-09-06T11:04:54.658Z",
+		"durationMs": 2210,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:04:52.447Z",
+				"finishedAt": "2026-09-06T11:04:52.504Z",
+				"durationMs": 57
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:04:52.512Z",
+				"finishedAt": "2026-09-06T11:04:53.100Z",
+				"durationMs": 587
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:04:53.100Z",
+				"finishedAt": "2026-09-06T11:04:53.528Z",
+				"durationMs": 428
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:04:53.528Z",
+				"finishedAt": "2026-09-06T11:04:54.644Z",
+				"durationMs": 1115
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "d30d02d9e8d8740117046a625326dc23d6db3904f7263fc948f85f824de96058",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

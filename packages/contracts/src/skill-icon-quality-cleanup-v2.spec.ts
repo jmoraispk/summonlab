@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	SkillIconCleanupRevisionCompletionAuditSchema,
 	SkillIconCleanupRevisionV2PacketSchema,
 	SkillIconCleanupRevisionV2ResultSchema
 } from './index.js';
@@ -181,6 +182,33 @@ function validResult() {
 	};
 }
 
+function validPacketAtRevision(revision: number) {
+	const packet = validPacket();
+	const version = `v${revision}`;
+	const predecessorVersion = `v${revision - 1}`;
+	return {
+		...packet,
+		schemaVersion: `skill-icon-quality-cleanup-revision-packet-${version}`,
+		revision,
+		predecessor: {
+			...packet.predecessor,
+			packet: binding(
+				`${root}/prompts/revisions-${predecessorVersion}/${slug}-${predecessorVersion}.json`
+			),
+			result: binding(`${root}/results/revisions/${slug}-${predecessorVersion}.json`),
+			providerSource: binding(`${root}/provider-sources/${slug}-${predecessorVersion}.png`),
+			revisedInterior: binding(`${root}/revisions/${slug}-${predecessorVersion}.png`),
+			composite: binding(`${root}/composites/${slug}-${predecessorVersion}.png`)
+		},
+		output: {
+			providerSourcePath: `${root}/provider-sources/${slug}-${version}.png`,
+			revisedInteriorPath: `${root}/revisions/${slug}-${version}.png`,
+			compositePath: `${root}/composites/${slug}-${version}.png`,
+			resultPath: `${root}/results/revisions/${slug}-${version}.json`
+		}
+	};
+}
+
 describe('skill-icon quality-cleanup v2 contracts', () => {
 	it('requires append-only v2 paths and a complete recovery transform', () => {
 		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(validPacket()).success).toBe(true);
@@ -194,6 +222,63 @@ describe('skill-icon quality-cleanup v2 contracts', () => {
 			SkillIconCleanupRevisionV2PacketSchema.safeParse({
 				...validPacket(),
 				transform: { ...validPacket().transform, placement: { left: 163, top: 192 } }
+			}).success
+		).toBe(false);
+	});
+
+	it('accepts arbitrary integer v2+ revisions only when schema, outputs, and immediate predecessor paths agree', () => {
+		const v3 = validPacketAtRevision(3);
+		const v17 = validPacketAtRevision(17);
+		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(v3).success).toBe(true);
+		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(v17).success).toBe(true);
+		expect(
+			SkillIconCleanupRevisionV2PacketSchema.safeParse({
+				...v17,
+				schemaVersion: 'skill-icon-quality-cleanup-revision-packet-v16'
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconCleanupRevisionV2PacketSchema.safeParse({
+				...v3,
+				predecessor: {
+					...v3.predecessor,
+					packet: binding(`${root}/prompts/revisions-v1/${slug}-v1.json`)
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('requires a post-core-publication audit with exact revision-bound core paths', () => {
+		const audit = {
+			schemaVersion: 'skill-icon-quality-cleanup-revision-completion-audit-v1' as const,
+			revision: 3,
+			targetId,
+			revisionPacket: binding(`${root}/prompts/revisions-v3/${slug}-v3.json`),
+			result: binding(`${root}/results/revisions/${slug}-v3.json`),
+			status: 'candidate' as const,
+			corePublication: {
+				startedAt: '2026-09-06T00:00:01.000Z',
+				completedAt: '2026-09-06T00:00:02.000Z',
+				durationMs: 1000,
+				artifacts: {
+					providerSource: binding(`${root}/provider-sources/${slug}-v3.png`),
+					revisedInterior: binding(`${root}/revisions/${slug}-v3.png`),
+					composite: binding(`${root}/composites/${slug}-v3.png`),
+					result: binding(`${root}/results/revisions/${slug}-v3.json`)
+				}
+			}
+		};
+		expect(SkillIconCleanupRevisionCompletionAuditSchema.safeParse(audit).success).toBe(true);
+		expect(
+			SkillIconCleanupRevisionCompletionAuditSchema.safeParse({
+				...audit,
+				corePublication: {
+					...audit.corePublication,
+					artifacts: {
+						...audit.corePublication.artifacts,
+						composite: binding(`${root}/composites/${slug}-v2.png`)
+					}
+				}
 			}).success
 		).toBe(false);
 	});

@@ -1,0 +1,120 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v3",
+	"revision": 3,
+	"targetId": "craft:forging:tempering",
+	"name": "Tempering",
+	"domain": "Craft",
+	"family": "Forging",
+	"rank": "D",
+	"motifFamily": "forging.metallurgy",
+	"finding": {
+		"targetId": "craft:forging:tempering",
+		"kind": "stray-ui-glyph",
+		"detail": "Curved upgrade arrow.",
+		"requiredAction": "revise-art"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-tempering-v2.json",
+			"contentHash": "05a652c569354e1a0c515c164bd059916411c240cf53ba218c28181f1ef893ed"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v2.json",
+			"contentHash": "a0e17894c6025f25031d4ecdff5e43c80fd66be2eb52a1c503cc8fcaa2885f2e"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v2.png",
+			"contentHash": "a3dac1821102edca008e49ff98176867b57a38d864861b91cc4adb2da957edf7"
+		},
+		"transactionContentHash": "c0685628a2181120870217e26dbf499b8525b6a6a6d258315bae7fa14a0a36a8",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v2.png",
+			"contentHash": "dfbb8e853213746cf94b69ce4de92bb9fba77ceb6c9e9e9d9861d807acc152ef"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering-v2.png",
+			"contentHash": "886be6895850b91ff8bae05a7fc3fea213b40bebdd5dd7308015cc5bbf68cf61"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Tempering in the Craft / Forging taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Tempering\nSupporting cue: one restrained secondary cue communicating this effect: Raises the quality roll on any forged item\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Curved upgrade arrow.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and D-rank frame.",
+	"exactPromptHash": "e2a83f2ae128ebcb2c745aee95070390fe4452835e05c2d99a2becf24fb48f8b",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-metallurgy.png",
+			"purpose": "Exact forging.metallurgy motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "e23895cc5fb5796297caf7506d70ea501f18ee014251e5610e37bff4a08952cf"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-tempering-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "0b0bf69476ab009f928ce675752c70c220c2c8656a46711114e2f8d3f9cf941a"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "90cd1e266b28aec6fd6b93dc774ae7bd7f94eca64ebf8df6f6949dea99688903"
+		}
+	],
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v3.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v3.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-tempering-v3.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v3.json"
+	}
+}

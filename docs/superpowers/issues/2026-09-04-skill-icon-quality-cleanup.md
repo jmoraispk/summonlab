@@ -214,6 +214,30 @@ Ore Sense are deliberately unresolved generation-v2 packets; their strengthened 
 complete limbs/equipment inside the safe area. The semantic finalizer and final review renderer
 accept only the highest valid `candidate` per target and fail closed until all 28 are present.
 
+#### Semantic revision correction (Task 7A round 2)
+
+The preceding v2 recovery statement is retained as historical progress, not current selection
+authority. V2 receipts are immutable but lack a separately published post-core completion audit, so
+they cannot independently establish core-publication order. Their review sheet named
+`deterministic-v2-1024.png` contains 512px cells; it is now explicitly labelled scaled legacy
+evidence rather than an original-size inspection artifact.
+
+Round 2 preserves every v1/v2 byte and appends 24 V3 deterministic recoveries. The 21 inset lanes
+repeat the exact bound transform from the V2 provider and the three passed lanes use explicit V2
+identity adoption. Every V3 candidate has a result plus an append-only completion audit created only
+after the provider, interior, composite, and result are published and re-read. The audit records
+truthful core start/completion timestamps and all core hashes without claiming its own publication
+completion. No image-generation call occurred.
+
+The protocol now accepts any integer revision `>=2` with exact immediate-predecessor chaining and
+versioned paths. The finalizer independently re-derives artifacts and the 384px render, recomputes
+the transaction digest, validates packet/result/audit/source/tool/geometry/backing/frame/findings,
+and chooses only the highest audited terminal receipt. A newer missing, `revise`, or `failed` receipt
+blocks fallback. The V3 review uses six true-original `1024×1024` cell pages and a separately
+versioned compact-caption 384px sheet. The four V2 generation packets remain intentionally pending;
+their hardened persistence path accepts native RGB caBX source bytes only with exact source/call
+hashes and attempt records, but it was not invoked to generate a raster in this task.
+
 ### Phase 4: add missing automated gates
 
 - Pixel-compare the protected frame band of every composed candidate to its rank frame.

@@ -168,15 +168,19 @@ describe('cleanup semantic-revision v2 authority', () => {
 		);
 	}, 30_000);
 
-	it('accepts only the 24 materialized candidate-v2 receipts and leaves four generation lanes unresolved', async () => {
+	it('selects only audited candidate-v3 recoveries and leaves the four declared generation-v2 lanes unresolved', async () => {
 		const finalization = await finalizeCleanupRevisionV2({ root: workspaceRoot });
 		expect(finalization.ready).toBe(false);
 		expect(finalization.candidateCount).toBe(24);
+		expect(finalization.receipts).toHaveLength(24);
+		expect(finalization.receipts.every((receipt) => receipt.revision === 3)).toBe(true);
+		expect(finalization.selection.selected).toHaveLength(24);
+		expect(finalization.selection.selected.every((receipt) => receipt.revision === 3)).toBe(true);
 		expect(finalization.selection.unresolved).toEqual([
-			{ targetId: 'craft:forging:living-metal', revision: 0, status: 'missing' },
-			{ targetId: 'craft:forging:ore-sense', revision: 0, status: 'missing' },
-			{ targetId: 'craft:gathering:taming', revision: 0, status: 'missing' },
-			{ targetId: 'martial:polearm:rend-armour', revision: 0, status: 'missing' }
+			{ targetId: 'craft:forging:living-metal', revision: 2, status: 'missing' },
+			{ targetId: 'craft:forging:ore-sense', revision: 2, status: 'missing' },
+			{ targetId: 'craft:gathering:taming', revision: 2, status: 'missing' },
+			{ targetId: 'martial:polearm:rend-armour', revision: 2, status: 'missing' }
 		]);
-	}, 30_000);
+	}, 120_000);
 });
