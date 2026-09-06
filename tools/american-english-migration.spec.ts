@@ -1,6 +1,8 @@
 import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
 	chmod,
+	lstat,
 	mkdtemp,
 	mkdir,
 	readFile,
@@ -42,6 +44,33 @@ function titleCase(value: string): string {
 
 function git(repositoryRoot: string, arguments_: readonly string[]): string {
 	return execFileSync('git', arguments_, { cwd: repositoryRoot, encoding: 'utf8' }).trim();
+}
+
+function commitAll(repositoryRoot: string, message: string): string {
+	git(repositoryRoot, ['add', '--all']);
+	git(repositoryRoot, [
+		'-c',
+		'user.name=Test',
+		'-c',
+		'user.email=test@example.com',
+		'commit',
+		'--quiet',
+		'-m',
+		message
+	]);
+	return git(repositoryRoot, ['rev-parse', 'HEAD']);
+}
+
+function pathHash(repositoryPath: string): string {
+	return createHash('sha256').update(repositoryPath).digest('hex');
+}
+
+function journalPath(repositoryRoot: string): string {
+	return path.resolve(
+		repositoryRoot,
+		git(repositoryRoot, ['rev-parse', '--git-dir']),
+		'american-english-migration'
+	);
 }
 
 async function makeRepository(files: Readonly<Record<string, FixtureValue>>): Promise<{
@@ -95,6 +124,111 @@ function planPaths(plan: Awaited<ReturnType<typeof planAmericanEnglishMigration>
 }
 
 describe('American English migration planning', () => {
+	it('chains validated prior receipts across sequential filtered migrations', async () => {
+		const gray = retired('gray');
+		const armor = retired('armor');
+		const color = retired('color');
+		const repository = await makeRepository({
+			[`docs/${gray}/${armor}.txt`]: `${armor}\n`,
+			[`other/${gray}/safe.txt`]: `${color}\n`
+		});
+		const firstReceiptPath = path.join(tmpdir(), `chain-first-${process.pid}.json`);
+		const firstPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['gray']
+		});
+		await applyAmericanEnglishMigration(firstPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: firstReceiptPath
+		});
+		commitAll(repository.root, 'first spelling slice');
+		const identityReceiptPath = path.join(tmpdir(), `chain-identity-${process.pid}.json`);
+		const validReceipt = JSON.parse(await readFile(firstReceiptPath, 'utf8'));
+		await writeFile(
+			identityReceiptPath,
+			`${JSON.stringify({ ...validReceipt, baselineCommit: 'f'.repeat(40) })}\n`
+		);
+		await expect(
+			planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['armor'],
+				previousReceiptPath: identityReceiptPath
+			})
+		).rejects.toThrow(/receipt baseline/i);
+		await writeFile(
+			identityReceiptPath,
+			`${JSON.stringify({ ...validReceipt, policyVersion: 2 })}\n`
+		);
+		await expect(
+			planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['armor'],
+				previousReceiptPath: identityReceiptPath
+			})
+		).rejects.toThrow(/receipt policy version/i);
+		const tamperedReceiptPath = path.join(tmpdir(), `chain-tampered-${process.pid}.json`);
+		const firstReceipt = JSON.parse(await readFile(firstReceiptPath, 'utf8'));
+		const tamperedBinding = firstReceipt.files.find(
+			(file: { successorPathHash: string }) =>
+				file.successorPathHash === pathHash(`docs/gray/${armor}.txt`)
+		);
+		if (tamperedBinding === undefined) throw new Error('Missing receipt fixture binding');
+		tamperedBinding.successorBlobId = '0'.repeat(40);
+		await writeFile(tamperedReceiptPath, `${JSON.stringify(firstReceipt)}\n`);
+		await expect(
+			planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['armor'],
+				previousReceiptPath: tamperedReceiptPath
+			})
+		).rejects.toThrow(/receipt successor blob/i);
+
+		const secondPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['armor'],
+			roots: ['docs'],
+			previousReceiptPath: firstReceiptPath
+		});
+		expect(secondPlan.pathMoves).toEqual([
+			expect.objectContaining({
+				source: `docs/gray/${armor}.txt`,
+				destination: 'docs/gray/armor.txt'
+			})
+		]);
+		const secondReceiptPath = path.join(tmpdir(), `chain-second-${process.pid}.json`);
+		await applyAmericanEnglishMigration(secondPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: secondReceiptPath,
+			previousReceiptPath: firstReceiptPath
+		});
+		expect(await readFile(path.join(repository.root, 'docs/gray/armor.txt'), 'utf8')).toBe(
+			'armor\n'
+		);
+		commitAll(repository.root, 'second spelling slice');
+
+		const thirdPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color'],
+			roots: ['other'],
+			previousReceiptPath: secondReceiptPath
+		});
+		const thirdReceiptPath = path.join(tmpdir(), `chain-third-${process.pid}.json`);
+		await applyAmericanEnglishMigration(thirdPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: thirdReceiptPath,
+			previousReceiptPath: secondReceiptPath
+		});
+		expect(await readFile(path.join(repository.root, 'other/gray/safe.txt'), 'utf8')).toBe(
+			'color\n'
+		);
+	});
+
 	it('accepts the package-manager argument separator at the CLI boundary', async () => {
 		const repository = await makeRepository({ 'safe.txt': 'safe\n' });
 		const command = spawnSync(
@@ -265,6 +399,94 @@ describe('American English migration planning', () => {
 });
 
 describe('American English transactional application', () => {
+	it('recomputes the full preflight and rejects collision or integrity drift before journaling', async () => {
+		const gray = retired('gray');
+		const behavior = retired('behavior');
+		const collisionRepository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const collisionPlan = await planAmericanEnglishMigration({
+			repositoryRoot: collisionRepository.root,
+			baselineCommit: collisionRepository.baseline
+		});
+		await writeFile(path.join(collisionRepository.root, 'docs/gray.txt'), 'new destination\n');
+		commitAll(collisionRepository.root, 'introduce destination collision');
+		const collisionBefore = await trackedSnapshot(collisionRepository.root);
+		await expect(
+			applyAmericanEnglishMigration(collisionPlan, {
+				repositoryRoot: collisionRepository.root,
+				receiptPath: path.join(tmpdir(), `fresh-collision-${process.pid}.json`)
+			})
+		).rejects.toThrow(/preflight.*changed/i);
+		expect(await trackedSnapshot(collisionRepository.root)).toEqual(collisionBefore);
+		await expect(lstat(journalPath(collisionRepository.root))).rejects.toThrow();
+
+		const integrityRepository = await makeRepository({
+			'record.json': `{"${behavior}":true}\n`
+		});
+		const integrityPlan = await planAmericanEnglishMigration({
+			repositoryRoot: integrityRepository.root,
+			baselineCommit: integrityRepository.baseline
+		});
+		await writeFile(
+			path.join(integrityRepository.root, 'record.json'),
+			`{"${behavior}":true,"contentHash":"${'c'.repeat(64)}"}\n`
+		);
+		commitAll(integrityRepository.root, 'introduce integrity binding');
+		const integrityBefore = await trackedSnapshot(integrityRepository.root);
+		await expect(
+			applyAmericanEnglishMigration(integrityPlan, {
+				repositoryRoot: integrityRepository.root,
+				receiptPath: path.join(tmpdir(), `fresh-integrity-${process.pid}.json`)
+			})
+		).rejects.toThrow(/preflight.*changed/i);
+		expect(await trackedSnapshot(integrityRepository.root)).toEqual(integrityBefore);
+		await expect(lstat(journalPath(integrityRepository.root))).rejects.toThrow();
+
+		const inventoryRepository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const inventoryPlan = await planAmericanEnglishMigration({
+			repositoryRoot: inventoryRepository.root,
+			baselineCommit: inventoryRepository.baseline
+		});
+		await writeFile(path.join(inventoryRepository.root, 'unrelated-safe.txt'), 'safe\n');
+		commitAll(inventoryRepository.root, 'change tracked inventory');
+		const inventoryBefore = await trackedSnapshot(inventoryRepository.root);
+		await expect(
+			applyAmericanEnglishMigration(inventoryPlan, {
+				repositoryRoot: inventoryRepository.root,
+				receiptPath: path.join(tmpdir(), `fresh-inventory-${process.pid}.json`)
+			})
+		).rejects.toThrow(/preflight.*changed/i);
+		expect(await trackedSnapshot(inventoryRepository.root)).toEqual(inventoryBefore);
+		await expect(lstat(journalPath(inventoryRepository.root))).rejects.toThrow();
+	});
+
+	it('hashes a partial-rule successor path that still contains a deferred form', async () => {
+		const gray = retired('gray');
+		const armor = retired('armor');
+		const repository = await makeRepository({ [`docs/${gray}/${armor}.txt`]: 'safe\n' });
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['gray']
+		});
+		const receiptPath = path.join(tmpdir(), `partial-private-${process.pid}.json`);
+
+		const receipt = await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+
+		expect(receipt.files).toEqual([
+			expect.objectContaining({
+				successorPathHash: pathHash(`docs/gray/${armor}.txt`)
+			})
+		]);
+		const serialized = JSON.stringify(receipt);
+		expect(serialized).not.toContain(gray);
+		expect(serialized).not.toContain(armor);
+		expect(serialized).not.toContain('docs/');
+		expect(serialized).not.toContain('successorPath"');
+	});
+
 	it('does not overwrite an existing receipt or start repository changes', async () => {
 		const gray = retired('gray');
 		const repository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
@@ -392,7 +614,7 @@ describe('American English transactional application', () => {
 				repositoryRoot: repository.root,
 				receiptPath: path.join(tmpdir(), `drift-${process.pid}.json`)
 			})
-		).rejects.toThrow(/source blob/i);
+		).rejects.toThrow(/preflight.*changed/i);
 		expect(await trackedSnapshot(repository.root)).toEqual(before);
 		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
 	});
@@ -422,6 +644,13 @@ describe('American English transactional application', () => {
 		expect(await trackedSnapshot(repository.root)).toEqual(before);
 		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
 		await expect(readFile(receiptPath)).rejects.toThrow();
+		await expect(lstat(journalPath(repository.root))).rejects.toThrow();
+
+		const retryReceipt = await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+		expect(retryReceipt.files).toHaveLength(2);
 	});
 
 	it('preserves representation and mode while producing a hash-only receipt', async () => {
@@ -483,7 +712,9 @@ describe('American English transactional application', () => {
 		expect(receipt.ownerCounts).toEqual({ 'migration-planner': 3 });
 		expect(receipt.files).toHaveLength(3);
 		expect(
-			receipt.files.find(({ successorPath }) => successorPath === 'assets/gray.bin')
+			receipt.files.find(
+				({ successorPathHash }) => successorPathHash === pathHash('assets/gray.bin')
+			)
 		).toMatchObject({ unchangedBinary: true });
 		const serialized = JSON.stringify(receipt);
 		for (const value of [gray, armor, behavior, color]) expect(serialized).not.toContain(value);

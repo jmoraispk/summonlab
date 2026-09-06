@@ -38,7 +38,9 @@ export interface AmericanEnglishPathMove {
 
 export interface AmericanEnglishMigrationPlan {
 	readonly baselineCommit: string;
+	readonly headCommit: string;
 	readonly ruleIds: readonly AmericanEnglishRuleId[];
+	readonly roots: readonly string[];
 	readonly textEdits: readonly { readonly path: string; readonly violationCount: number }[];
 	readonly pathMoves: readonly AmericanEnglishPathMove[];
 	readonly collisions: readonly {
@@ -46,6 +48,8 @@ export interface AmericanEnglishMigrationPlan {
 		readonly sources: readonly string[];
 	}[];
 	readonly unownedIntegrityBindings: readonly IntegrityBindingProblem[];
+	readonly previousReceiptHash: string | null;
+	readonly inventoryFingerprint: string;
 }
 
 export interface PlanAmericanEnglishMigrationOptions {
@@ -53,11 +57,12 @@ export interface PlanAmericanEnglishMigrationOptions {
 	readonly baselineCommit: string;
 	readonly ruleIds?: readonly AmericanEnglishRuleId[];
 	readonly roots?: readonly string[];
+	readonly previousReceiptPath?: string;
 }
 
 export interface AmericanEnglishMigrationReceiptFile {
 	readonly sourceBlobId: string;
-	readonly successorPath: string;
+	readonly successorPathHash: string;
 	readonly successorBlobId: string;
 	readonly unchangedBinary: boolean;
 }
@@ -99,6 +104,12 @@ interface PlannedFile {
 	readonly binary: boolean;
 }
 
+interface ValidatedReceipt {
+	readonly receipt: AmericanEnglishMigrationReceipt;
+	readonly successorBlobsByPathHash: ReadonlyMap<string, string>;
+	readonly receiptHash: string;
+}
+
 const POLICY_VERSION = 1 as const;
 const integrityMarkers = [
 	'canonicalHash',
@@ -112,6 +123,16 @@ const integrityMarkers = [
 
 function compareCodepoints(left: string, right: string): number {
 	return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function hashRepositoryPath(repositoryPath: string): string {
+	return sha256(Buffer.from(repositoryPath, 'utf8'));
+}
+
+function fingerprintPlanMaterial(
+	plan: Omit<AmericanEnglishMigrationPlan, 'inventoryFingerprint'>
+): string {
+	return sha256(Buffer.from(JSON.stringify(plan), 'utf8'));
 }
 
 function runGitResult(
@@ -384,6 +405,10 @@ export async function planAmericanEnglishMigration(
 	)
 		.toString('utf8')
 		.trim();
+	const headCommit = (await runGit(repositoryRoot, ['rev-parse', '--verify', 'HEAD^{commit}']))
+		.toString('utf8')
+		.trim();
+	const previousReceipt = await readPreviousReceipt(options.previousReceiptPath, baselineCommit);
 	const requestedRuleIds = options.ruleIds ?? AMERICAN_ENGLISH_RULE_IDS;
 	const knownRuleIds = new Set<AmericanEnglishRuleId>(AMERICAN_ENGLISH_RULE_IDS);
 	for (const ruleId of requestedRuleIds) {
@@ -406,6 +431,20 @@ export async function planAmericanEnglishMigration(
 	const collisions = collectCollisions(trackedPaths, untrackedDestinationOccupants, pathViolations);
 	const blobs = await baselineBlobMap(repositoryRoot, baselineCommit);
 	const binary = await trackedBinaryMap(repositoryRoot, trackedPaths);
+	const index = await currentIndexEntries(repositoryRoot);
+	const resolveSourceBlob = (source: string): string => {
+		const receiptBlob = previousReceipt?.successorBlobsByPathHash.get(hashRepositoryPath(source));
+		if (receiptBlob !== undefined && index.get(source)?.blobId !== receiptBlob) {
+			throw new Error(`Prior receipt successor blob does not match the tracked source: ${source}`);
+		}
+		const sourceBlobId = receiptBlob ?? blobs.get(source);
+		if (sourceBlobId === undefined) {
+			throw new Error(
+				`Tracked migration source is absent from baseline and prior receipt: ${source}`
+			);
+		}
+		return sourceBlobId;
+	};
 
 	const pathMoves: AmericanEnglishPathMove[] = [];
 	for (const source of trackedPaths) {
@@ -416,10 +455,7 @@ export async function planAmericanEnglishMigration(
 		if (selected.length === 0) continue;
 		const destination = replacePathViolations(source, selected);
 		if (destination === source) continue;
-		const sourceBlobId = blobs.get(source);
-		if (sourceBlobId === undefined) {
-			throw new Error(`Tracked migration source is absent from baseline: ${source}`);
-		}
+		const sourceBlobId = resolveSourceBlob(source);
 		pathMoves.push({ source, destination, sourceBlobId, binary: binary.get(source) ?? false });
 	}
 
@@ -431,6 +467,7 @@ export async function planAmericanEnglishMigration(
 		}))
 		.filter(({ violationCount }) => violationCount > 0)
 		.sort((left, right) => compareCodepoints(left.path, right.path));
+	for (const { path: source } of textEdits) resolveSourceBlob(source);
 	const affectedTextPaths = [
 		...new Set([
 			...textEdits.map(({ path: repositoryPath }) => repositoryPath),
@@ -438,17 +475,21 @@ export async function planAmericanEnglishMigration(
 		])
 	].sort(compareCodepoints);
 
-	return {
+	const planMaterial: Omit<AmericanEnglishMigrationPlan, 'inventoryFingerprint'> = {
 		baselineCommit,
+		headCommit,
 		ruleIds,
+		roots,
 		textEdits,
 		pathMoves: pathMoves.sort((left, right) => compareCodepoints(left.source, right.source)),
 		collisions,
 		unownedIntegrityBindings: await collectUnownedIntegrityBindings(
 			repositoryRoot,
 			affectedTextPaths
-		)
+		),
+		previousReceiptHash: previousReceipt?.receiptHash ?? null
 	};
+	return { ...planMaterial, inventoryFingerprint: fingerprintPlanMaterial(planMaterial) };
 }
 
 function violationOffset(source: string, violation: AmericanEnglishViolation): number {
@@ -600,13 +641,53 @@ async function currentIndexEntries(
 	return parseIndexEntries(await runGit(repositoryRoot, ['ls-files', '-sz']));
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isObjectId(value: unknown): value is string {
+	return typeof value === 'string' && /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u.test(value);
+}
+
 async function readPreviousReceipt(
-	receiptPath: string | undefined
-): Promise<AmericanEnglishMigrationReceipt | null> {
+	receiptPath: string | undefined,
+	expectedBaselineCommit: string
+): Promise<ValidatedReceipt | null> {
 	if (receiptPath === undefined) return null;
-	return JSON.parse(
-		await readFile(path.resolve(receiptPath), 'utf8')
-	) as AmericanEnglishMigrationReceipt;
+	const bytes = await readFile(path.resolve(receiptPath));
+	const value: unknown = JSON.parse(bytes.toString('utf8'));
+	if (!isRecord(value)) throw new Error('Prior migration receipt must be a JSON object');
+	if (value.baselineCommit !== expectedBaselineCommit) {
+		throw new Error('Prior migration receipt baseline does not match the requested baseline');
+	}
+	if (value.policyVersion !== POLICY_VERSION) {
+		throw new Error('Prior migration receipt policy version does not match');
+	}
+	if (!Array.isArray(value.files)) throw new Error('Prior migration receipt files are invalid');
+	const successorBlobsByPathHash = new Map<string, string>();
+	for (const file of value.files) {
+		if (
+			!isRecord(file) ||
+			!isObjectId(file.sourceBlobId) ||
+			!isObjectId(file.successorBlobId) ||
+			typeof file.successorPathHash !== 'string' ||
+			!/^[0-9a-f]{64}$/u.test(file.successorPathHash) ||
+			typeof file.unchangedBinary !== 'boolean' ||
+			'successorPath' in file
+		) {
+			throw new Error('Prior migration receipt contains an invalid file binding');
+		}
+		if (successorBlobsByPathHash.has(file.successorPathHash)) {
+			throw new Error('Prior migration receipt contains a duplicate successor path hash');
+		}
+		successorBlobsByPathHash.set(file.successorPathHash, file.successorBlobId);
+	}
+	const receipt = value as unknown as AmericanEnglishMigrationReceipt;
+	return {
+		receipt,
+		successorBlobsByPathHash,
+		receiptHash: sha256(Buffer.from(JSON.stringify(receipt), 'utf8'))
+	};
 }
 
 async function writeReceipt(
@@ -667,6 +748,31 @@ export async function applyAmericanEnglishMigration(
 		'HEAD'
 	]);
 	if (ancestor.exitCode !== 0) throw new Error('Migration baseline is not an ancestor of HEAD');
+	const { inventoryFingerprint: embeddedFingerprint, ...embeddedMaterial } = plan;
+	if (fingerprintPlanMaterial(embeddedMaterial) !== embeddedFingerprint) {
+		throw new Error('Migration plan material does not match its inventory fingerprint');
+	}
+	let freshPlan: AmericanEnglishMigrationPlan;
+	try {
+		freshPlan = await planAmericanEnglishMigration({
+			repositoryRoot,
+			baselineCommit: plan.baselineCommit,
+			ruleIds: plan.ruleIds,
+			roots: plan.roots,
+			...(options.previousReceiptPath === undefined
+				? {}
+				: { previousReceiptPath: options.previousReceiptPath })
+		});
+	} catch (error) {
+		throw new Error(
+			`Migration preflight changed since planning: ${
+				error instanceof Error ? error.message : String(error)
+			}`
+		);
+	}
+	if (freshPlan.inventoryFingerprint !== plan.inventoryFingerprint) {
+		throw new Error('Migration preflight changed since planning');
+	}
 
 	const moveBySource = new Map(plan.pathMoves.map((move) => [move.source, move]));
 	const affectedSources = [
@@ -677,16 +783,22 @@ export async function applyAmericanEnglishMigration(
 	].sort(compareCodepoints);
 	const baselineBlobs = await baselineBlobMap(repositoryRoot, plan.baselineCommit);
 	const indexBefore = await currentIndexEntries(repositoryRoot);
-	const previousReceipt = await readPreviousReceipt(options.previousReceiptPath);
+	const previousReceipt = await readPreviousReceipt(
+		options.previousReceiptPath,
+		plan.baselineCommit
+	);
 	for (const source of affectedSources) {
 		const current = indexBefore.get(source)?.blobId;
-		const planned = moveBySource.get(source)?.sourceBlobId ?? baselineBlobs.get(source);
-		if (planned === undefined)
-			throw new Error(`Migration source is absent from baseline: ${source}`);
-		const previous = previousReceipt?.files.find(
-			({ successorPath }) => successorPath === source
-		)?.successorBlobId;
-		if (current !== planned && current !== previous) {
+		const previous = previousReceipt?.successorBlobsByPathHash.get(hashRepositoryPath(source));
+		const expected = new Set(
+			[previous, moveBySource.get(source)?.sourceBlobId, baselineBlobs.get(source)].filter(
+				(value): value is string => value !== undefined
+			)
+		);
+		if (expected.size === 0) {
+			throw new Error(`Migration source is absent from baseline and prior receipt: ${source}`);
+		}
+		if (current === undefined || !expected.has(current)) {
 			throw new Error(
 				`Migration source blob does not match its baseline or earlier receipt: ${source}`
 			);
@@ -790,7 +902,10 @@ export async function applyAmericanEnglishMigration(
 		const indexAfter = await currentIndexEntries(repositoryRoot);
 		const pathViolations = groupViolationsByPath(currentViolations, 'path');
 		const ruleCounts = Object.fromEntries(
-			AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => [ruleId, 0])
+			AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => [
+				ruleId,
+				previousReceipt?.receipt.ruleCounts[ruleId] ?? 0
+			])
 		) as Record<AmericanEnglishRuleId, number>;
 		for (const move of plan.pathMoves) {
 			for (const violation of pathViolations.get(move.source) ?? []) {
@@ -803,34 +918,51 @@ export async function applyAmericanEnglishMigration(
 		const plannedFiles: PlannedFile[] = affectedSources.map((source) => ({
 			source,
 			destination: moveBySource.get(source)?.destination ?? source,
-			sourceBlobId: moveBySource.get(source)?.sourceBlobId ?? baselineBlobs.get(source)!,
+			sourceBlobId:
+				moveBySource.get(source)?.sourceBlobId ??
+				previousReceipt?.successorBlobsByPathHash.get(hashRepositoryPath(source)) ??
+				baselineBlobs.get(source)!,
 			binary: moveBySource.get(source)?.binary ?? false
 		}));
+		const successorFiles = new Map<string, AmericanEnglishMigrationReceiptFile>(
+			previousReceipt?.receipt.files.map((file) => [file.successorPathHash, file]) ?? []
+		);
+		for (const { source, destination, sourceBlobId, binary } of plannedFiles) {
+			const successorBlobId = indexAfter.get(destination)?.blobId;
+			if (successorBlobId === undefined) {
+				throw new Error(`Missing staged migration successor: ${destination}`);
+			}
+			successorFiles.delete(hashRepositoryPath(source));
+			const successorPathHash = hashRepositoryPath(destination);
+			successorFiles.set(successorPathHash, {
+				sourceBlobId,
+				successorPathHash,
+				successorBlobId,
+				unchangedBinary: binary && indexBefore.get(source)?.blobId === successorBlobId
+			});
+		}
 		const receipt: AmericanEnglishMigrationReceipt = {
 			baselineCommit: plan.baselineCommit,
 			policyVersion: POLICY_VERSION,
 			ruleCounts,
-			ownerCounts: { 'migration-planner': plannedFiles.length },
-			files: plannedFiles
-				.map(({ source, destination, sourceBlobId, binary }) => {
-					const successorBlobId = indexAfter.get(destination)?.blobId;
-					if (successorBlobId === undefined) {
-						throw new Error(`Missing staged migration successor: ${destination}`);
-					}
-					return {
-						sourceBlobId,
-						successorPath: destination,
-						successorBlobId,
-						unchangedBinary: binary && indexBefore.get(source)?.blobId === successorBlobId
-					};
-				})
-				.sort((left, right) => compareCodepoints(left.successorPath, right.successorPath))
+			ownerCounts: { 'migration-planner': successorFiles.size },
+			files: [...successorFiles.values()].sort((left, right) =>
+				compareCodepoints(left.successorPathHash, right.successorPathHash)
+			)
 		};
 		await writeReceipt(receiptPath, receipt);
 		await rm(journalPath, { recursive: true, force: true });
 		return receipt;
 	} catch (error) {
-		if (repositoryChangesStarted) await restoreSnapshots(repositoryRoot, snapshots);
+		try {
+			if (repositoryChangesStarted) await restoreSnapshots(repositoryRoot, snapshots);
+			await rm(journalPath, { recursive: true, force: true });
+		} catch (rollbackError) {
+			throw new AggregateError(
+				[error, rollbackError],
+				'Migration failed and its rollback did not complete'
+			);
+		}
 		throw error;
 	}
 }
@@ -923,7 +1055,10 @@ async function main(): Promise<void> {
 		baselineCommit: options.baselineCommit,
 		...(options.repositoryRoot === undefined ? {} : { repositoryRoot: options.repositoryRoot }),
 		...(options.ruleIds === undefined ? {} : { ruleIds: options.ruleIds }),
-		...(options.roots === undefined ? {} : { roots: options.roots })
+		...(options.roots === undefined ? {} : { roots: options.roots }),
+		...(options.previousReceiptPath === undefined
+			? {}
+			: { previousReceiptPath: options.previousReceiptPath })
 	});
 	const output = options.write
 		? await applyAmericanEnglishMigration(plan, {
