@@ -580,6 +580,18 @@ function splitNul(buffer: Buffer): string[] {
 	return values;
 }
 
+function hasExactExceptionTokenBoundaries(source: string, start: number, token: string): boolean {
+	const previous = source[start - 1];
+	const next = source[start + token.length];
+	const packageToken = token.startsWith('@');
+	const extendsOnLeft = packageToken ? /[A-Za-z0-9_.@/-]/u : /[A-Za-z0-9_$]/u;
+	const extendsOnRight = packageToken ? /[A-Za-z0-9_./-]/u : /[A-Za-z0-9_$]/u;
+	return (
+		(previous === undefined || !extendsOnLeft.test(previous)) &&
+		(next === undefined || !extendsOnRight.test(next))
+	);
+}
+
 function isException(
 	repositoryPath: string,
 	source: string,
@@ -593,7 +605,11 @@ function isException(
 			const tokenStart = source.indexOf(exception.token, from);
 			if (tokenStart === -1) break;
 			const tokenEnd = tokenStart + exception.token.length;
-			if (match.index >= tokenStart && match.index + match.length <= tokenEnd) {
+			if (
+				hasExactExceptionTokenBoundaries(source, tokenStart, exception.token) &&
+				match.index >= tokenStart &&
+				match.index + match.length <= tokenEnd
+			) {
 				usage.set(exception.id, (usage.get(exception.id) ?? 0) + 1);
 				return true;
 			}
@@ -632,25 +648,11 @@ function compareViolations(
 	);
 }
 
-async function audit(repositoryRoot: string): Promise<{
-	readonly violations: readonly AmericanEnglishViolation[];
-	readonly usage: ReadonlyMap<string, number>;
-}> {
-	const trackedPaths = splitNul(await runGit(repositoryRoot, ['ls-files', '-z']));
-	const pathInput = Buffer.from(`${trackedPaths.join('\0')}\0`);
-	const attributeFields = splitNul(
-		await runGit(repositoryRoot, ['check-attr', '-z', '--stdin', 'text'], pathInput)
-	);
-	if (attributeFields.length !== trackedPaths.length * 3) {
-		throw new Error('Unexpected output from git check-attr');
-	}
-	const textAttributes = new Map<string, string>();
-	for (let index = 0; index < attributeFields.length; index += 3) {
-		textAttributes.set(attributeFields[index]!, attributeFields[index + 2]!);
-	}
-
+function collectTrackedPathViolations(
+	trackedPaths: readonly string[],
+	usage: Map<string, number>
+): AmericanEnglishViolation[] {
 	const violations: AmericanEnglishViolation[] = [];
-	const usage = new Map<string, number>();
 	for (const repositoryPath of trackedPaths) {
 		for (const match of findMatches(repositoryPath)) {
 			if (isException(repositoryPath, repositoryPath, match, usage)) continue;
@@ -664,7 +666,37 @@ async function audit(repositoryRoot: string): Promise<{
 				column: null
 			});
 		}
+	}
+	return violations;
+}
 
+export function auditTrackedPaths(
+	trackedPaths: readonly string[]
+): readonly AmericanEnglishViolation[] {
+	return collectTrackedPathViolations(trackedPaths, new Map()).sort(compareViolations);
+}
+
+async function audit(repositoryRoot: string): Promise<{
+	readonly violations: readonly AmericanEnglishViolation[];
+	readonly usage: ReadonlyMap<string, number>;
+}> {
+	const trackedPaths = splitNul(await runGit(repositoryRoot, ['ls-files', '-z']));
+	const usage = new Map<string, number>();
+	const violations = collectTrackedPathViolations(trackedPaths, usage);
+
+	const pathInput = Buffer.from(`${trackedPaths.join('\0')}\0`);
+	const attributeFields = splitNul(
+		await runGit(repositoryRoot, ['check-attr', '-z', '--stdin', 'text'], pathInput)
+	);
+	if (attributeFields.length !== trackedPaths.length * 3) {
+		throw new Error('Unexpected output from git check-attr');
+	}
+	const textAttributes = new Map<string, string>();
+	for (let index = 0; index < attributeFields.length; index += 3) {
+		textAttributes.set(attributeFields[index]!, attributeFields[index + 2]!);
+	}
+
+	for (const repositoryPath of trackedPaths) {
 		const bytes = await readTrackedBytes(path.join(repositoryRoot, ...repositoryPath.split('/')));
 		if (bytes === null) continue;
 		const attribute = textAttributes.get(repositoryPath);

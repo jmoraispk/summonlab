@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	AMERICAN_ENGLISH_RULE_IDS,
+	auditTrackedPaths,
 	auditTrackedTree,
 	deriveRetiredForms,
 	replaceRetiredForms
@@ -62,6 +63,21 @@ function titleCase(value: string): string {
 }
 
 describe('American English finite policy', () => {
+	it('builds the complete tracked-path inventory independently of content', () => {
+		const form = retired('gray');
+		expect(auditTrackedPaths(['a-safe.txt', `z-${form}-wolf/notes.txt`])).toEqual([
+			{
+				kind: 'path',
+				ruleId: 'gray',
+				found: form,
+				recommended: 'gray',
+				path: `z-${form}-wolf/notes.txt`,
+				line: null,
+				column: null
+			}
+		]);
+	});
+
 	it('recommends American case conventions in prose and identifiers', () => {
 		const root = retired('behavior');
 		const plural = retired('behavior', 1);
@@ -197,8 +213,8 @@ describe('American English finite policy', () => {
 		const packageToken = `@img/${retired('color')}`;
 		const methodToken = `to${titleCase(retired('color'))}space`;
 		const repository = await makeRepository({
-			'pnpm-lock.yaml': `'${packageToken}@1.1.0'\n`,
-			'tools/normalize-skill-icon-provider-source.ts': `image.${methodToken}('srgb')\n`,
+			'pnpm-lock.yaml': `'${packageToken}@1.1.0'\n'${packageToken}Extra'\n`,
+			'tools/normalize-skill-icon-provider-source.ts': `image.${methodToken}('srgb')\nimage.${methodToken}Extra('srgb')\n`,
 			'notes/pnpm-lock.yaml': `'${packageToken}@1.1.0'\n`,
 			'tools/copied-provider-source.ts': `image.${methodToken}('srgb')\n`
 		});
@@ -206,7 +222,9 @@ describe('American English finite policy', () => {
 		const violations = await auditTrackedTree(repository);
 		expect(violations.map(({ path: repositoryPath }) => repositoryPath)).toEqual([
 			'notes/pnpm-lock.yaml',
-			'tools/copied-provider-source.ts'
+			'pnpm-lock.yaml',
+			'tools/copied-provider-source.ts',
+			'tools/normalize-skill-icon-provider-source.ts'
 		]);
 	});
 });
