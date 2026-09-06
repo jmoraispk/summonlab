@@ -7,8 +7,14 @@ import {
 	CharacterLearningProfileSchema,
 	CombatAttributesSchema
 } from './capability.js';
-import { CharacterMindSchema, CharacterMindV2Schema } from './character.js';
 import {
+	CharacterDraftSchema,
+	CharacterDraftV2Schema,
+	CharacterMindSchema,
+	CharacterMindV2Schema
+} from './character.js';
+import {
+	ProofRunCreateRequestSchema,
 	ProofRunSnapshotSchema,
 	ProofRunSnapshotV2Schema,
 	PublicProofRunSnapshotV2Schema
@@ -112,12 +118,34 @@ function legacyProofRunSnapshot() {
 	};
 }
 
+function v2Mind() {
+	const { aptitudes: _aptitudes, ...mind } = legacyMind();
+	return mind;
+}
+
+function v2ProofRunSnapshot() {
+	return {
+		...legacyProofRunSnapshot(),
+		characterSchemaVersion: 'character-v2' as const,
+		mind: v2Mind(),
+		capabilityProfile: capabilityProfile()
+	};
+}
+
 describe('character capability contracts', () => {
 	it('requires exactly four bounded integer combat attributes', () => {
 		expect(CombatAttributesSchema.safeParse(capabilityProfile().attributes).success).toBe(true);
 		expect(
+			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, might: 0 }).success
+		).toBe(false);
+		expect(
 			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, spirit: 101 }).success
 		).toBe(false);
+		expect(
+			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, agility: 1.5 }).success
+		).toBe(false);
+		const { vitality: _vitality, ...missingVitality } = capabilityProfile().attributes;
+		expect(CombatAttributesSchema.safeParse(missingVitality).success).toBe(false);
 		expect(
 			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, morale: 1 }).success
 		).toBe(false);
@@ -136,29 +164,75 @@ describe('character capability contracts', () => {
 		expect(
 			CharacterLearningProfileSchema.safeParse({
 				...capabilityProfile().learning,
+				cognitiveLearningScore: 101
+			}).success
+		).toBe(false);
+		expect(
+			CharacterLearningProfileSchema.safeParse({
+				...capabilityProfile().learning,
+				domainAptitudes: { ...capabilityProfile().learning.domainAptitudes, martial: 1.5 }
+			}).success
+		).toBe(false);
+		const { social: _social, ...missingSocialDomain } =
+			capabilityProfile().learning.domainAptitudes;
+		expect(
+			CharacterLearningProfileSchema.safeParse({
+				...capabilityProfile().learning,
+				domainAptitudes: missingSocialDomain
+			}).success
+		).toBe(false);
+		expect(
+			CharacterLearningProfileSchema.safeParse({
+				...capabilityProfile().learning,
 				domainAptitudes: { ...capabilityProfile().learning.domainAptitudes, morale: 1 }
 			}).success
 		).toBe(false);
 	});
 
-	it('keeps legacy minds and proof rows parseable while v2 minds exclude legacy aptitudes', () => {
+	it('keeps legacy drafts and proof rows parseable while v2 minds exclude legacy aptitudes', () => {
 		const legacySnapshot = legacyProofRunSnapshot();
+		const v2Snapshot = v2ProofRunSnapshot();
 
 		expect(CharacterMindSchema.safeParse(legacySnapshot.mind).success).toBe(true);
 		expect(CharacterMindV2Schema.safeParse(legacySnapshot.mind).success).toBe(false);
+		expect(
+			CharacterDraftSchema.safeParse({
+				recipe: legacySnapshot.recipe,
+				manifest: legacySnapshot.manifest,
+				mind: legacySnapshot.mind,
+				manifestHash: legacySnapshot.manifestHash
+			}).success
+		).toBe(true);
+		expect(
+			CharacterDraftV2Schema.safeParse({
+				recipe: v2Snapshot.recipe,
+				manifest: v2Snapshot.manifest,
+				mind: v2Snapshot.mind,
+				capabilityProfile: v2Snapshot.capabilityProfile,
+				manifestHash: v2Snapshot.manifestHash
+			}).success
+		).toBe(true);
 		expect(ProofRunSnapshotSchema.safeParse(legacySnapshot).success).toBe(true);
+		expect(
+			ProofRunCreateRequestSchema.safeParse({
+				recipe: legacySnapshot.recipe,
+				controlMode: legacySnapshot.controlMode,
+				attributes: capabilityProfile().attributes
+			}).success
+		).toBe(false);
+		expect(
+			ProofRunCreateRequestSchema.safeParse({
+				recipe: legacySnapshot.recipe,
+				controlMode: legacySnapshot.controlMode,
+				learning: capabilityProfile().learning
+			}).success
+		).toBe(false);
 	});
 
 	it('serializes only visible attributes in public v2 proof records', () => {
-		const legacySnapshot = legacyProofRunSnapshot();
-		const { aptitudes: _aptitudes, ...mind } = legacySnapshot.mind;
-		const internalSnapshot = {
-			...legacySnapshot,
-			characterSchemaVersion: 'character-v2' as const,
-			mind,
-			capabilityProfile: capabilityProfile()
-		};
-		const internal = ProofRunSnapshotV2Schema.parse(internalSnapshot);
+		const internal = ProofRunSnapshotV2Schema.parse(v2ProofRunSnapshot());
+
+		expect(PublicProofRunSnapshotV2Schema.safeParse(internal).success).toBe(false);
 		const publicSnapshot = PublicProofRunSnapshotV2Schema.parse({
 			...internal,
 			capabilityProfile: {
