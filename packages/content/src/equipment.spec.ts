@@ -3,17 +3,32 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
 import {
+	COMBAT_EQUIPMENT_PROFILE_CATALOG,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	EQUIPMENT_DEFINITIONS,
 	EQUIPMENT_DEFINITIONS_BY_ID,
 	EQUIPMENT_DEFINITION_CATALOG,
 	EQUIPMENT_MATERIALS,
+	calculateCombatEquipmentProfileContentHash,
 	deriveStandardEquipmentRecipe,
 	getEquipmentDefinition,
 	getEquipmentDefinitionsForMaterial,
-	isEquipmentMaterialCompatible
+	isEquipmentMaterialCompatible,
+	verifyCombatEquipmentProfileCatalog
 } from './equipment.js';
-import { BASIC_BOW_SHOT, BASIC_SWORD_STRIKE, COMBAT_SKILLS_BY_ID } from './combat-skills.js';
+import {
+	BASIC_BOW_SHOT,
+	BASIC_SWORD_STRIKE,
+	COMBAT_SKILL_CATALOG,
+	COMBAT_SKILLS_BY_ID,
+	calculateCombatSkillContentHash,
+	verifyCombatSkillCatalog
+} from './combat-skills.js';
+import {
+	COMBAT_CONTENT_BINDING,
+	calculateCombatContentAggregateHash,
+	loadCombatContentBinding
+} from './combat-content-binding.js';
 
 describe('equipment content catalog', () => {
 	it('keeps starter sword and bow IDs stable while adding combat-family tags', () => {
@@ -55,8 +70,8 @@ describe('equipment content catalog', () => {
 		});
 		expect(heavyArmour?.resistanceGrants).toEqual(
 			expect.arrayContaining([
-				{ tag: 'cut', basisPoints: 800 },
-				{ tag: 'impact', basisPoints: 600 }
+				{ tag: 'cut', basisPoints: 800, capBasisPoints: 1_500 },
+				{ tag: 'impact', basisPoints: 600, capBasisPoints: 1_200 }
 			])
 		);
 		expect(JSON.stringify(COMBAT_EQUIPMENT_PROFILES_BY_ID)).not.toMatch(/vitality|poise/iu);
@@ -70,6 +85,108 @@ describe('equipment content catalog', () => {
 		expect(Object.isFrozen(sword.requirements.proficiencyTags)).toBe(true);
 		expect(Object.isFrozen(BASIC_SWORD_STRIKE.masteryProgression)).toBe(true);
 		expect(Object.isFrozen(BASIC_SWORD_STRIKE.masteryProgression[0])).toBe(true);
+	});
+
+	it('rejects independent combat skill and equipment catalog hash drift', async () => {
+		expect(await calculateCombatSkillContentHash(COMBAT_SKILL_CATALOG)).toBe(
+			COMBAT_SKILL_CATALOG.contentHash
+		);
+		expect(await calculateCombatEquipmentProfileContentHash(COMBAT_EQUIPMENT_PROFILE_CATALOG)).toBe(
+			COMBAT_EQUIPMENT_PROFILE_CATALOG.contentHash
+		);
+		expect(Object.isFrozen(COMBAT_SKILL_CATALOG.skills)).toBe(true);
+		expect(Object.isFrozen(COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles)).toBe(true);
+
+		const skillDrifts = [
+			COMBAT_SKILL_CATALOG.skills.map((skill, index) =>
+				index === 0
+					? { ...skill, deliveryTags: COMBAT_SKILL_CATALOG.skills[1]!.deliveryTags }
+					: skill
+			),
+			COMBAT_SKILL_CATALOG.skills.map((skill, index) =>
+				index === 0
+					? {
+							...skill,
+							masteryProgression: skill.masteryProgression.map((step, stepIndex) =>
+								stepIndex === 0 ? { ...step, accuracyBasisPoints: 6_751 } : step
+							)
+						}
+					: skill
+			)
+		];
+		for (const skills of skillDrifts) {
+			await expect(verifyCombatSkillCatalog({ ...COMBAT_SKILL_CATALOG, skills })).rejects.toThrow(
+				/combat skill content hash drifted/iu
+			);
+		}
+
+		const heavyArmourId = 'equipment-iron-heavy-armour-torso';
+		const equipmentDrifts = [
+			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile, index) =>
+				index === 0 ? { ...profile, load: profile.load + 1 } : profile
+			),
+			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile) =>
+				profile.definitionId === heavyArmourId
+					? {
+							...profile,
+							requirements: {
+								...profile.requirements,
+								minimumMight: profile.requirements.minimumMight! + 1
+							}
+						}
+					: profile
+			),
+			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile) =>
+				profile.definitionId === heavyArmourId
+					? {
+							...profile,
+							resistanceGrants: profile.resistanceGrants.map((grant, index) =>
+								index === 0 ? { ...grant, basisPoints: grant.basisPoints + 1 } : grant
+							)
+						}
+					: profile
+			)
+		];
+		for (const profiles of equipmentDrifts) {
+			await expect(
+				verifyCombatEquipmentProfileCatalog({
+					...COMBAT_EQUIPMENT_PROFILE_CATALOG,
+					profiles
+				})
+			).rejects.toThrow(/combat equipment profile content hash drifted/iu);
+		}
+	});
+
+	it('builds an immutable order-independent aggregate from only component version/hash pairs', async () => {
+		expect(await calculateCombatContentAggregateHash(COMBAT_CONTENT_BINDING.components)).toBe(
+			COMBAT_CONTENT_BINDING.contentHash
+		);
+		expect(
+			await calculateCombatContentAggregateHash([...COMBAT_CONTENT_BINDING.components].reverse())
+		).toBe(COMBAT_CONTENT_BINDING.contentHash);
+		expect(
+			await calculateCombatContentAggregateHash(
+				COMBAT_CONTENT_BINDING.components.map((component) => ({
+					...component,
+					ignoredRuntimeDetail: 'not-authoritative'
+				}))
+			)
+		).toBe(COMBAT_CONTENT_BINDING.contentHash);
+		expect(
+			await calculateCombatContentAggregateHash(
+				COMBAT_CONTENT_BINDING.components.map((component, index) =>
+					index === 0
+						? { ...component, contentHash: `${component.contentHash.slice(0, -1)}0` }
+						: component
+				)
+			)
+		).not.toBe(COMBAT_CONTENT_BINDING.contentHash);
+		expect(Object.isFrozen(COMBAT_CONTENT_BINDING)).toBe(true);
+		expect(Object.isFrozen(COMBAT_CONTENT_BINDING.components)).toBe(true);
+		expect(await loadCombatContentBinding()).toBe(COMBAT_CONTENT_BINDING);
+		expect(EQUIPMENT_DEFINITION_CATALOG.contentHash).toBe(
+			'42a8ffc1899ee458ca8360d33dffbeac3713864548734b7345ce489c3599035c'
+		);
 	});
 	it('expands the four material families into exactly 140 frozen definitions', () => {
 		expect(EQUIPMENT_MATERIALS).toHaveLength(28);

@@ -1,15 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	CombatSkillCatalogSchema,
 	CombatSkillDefinitionSchema,
 	LearnedCombatSkillStateSchema,
 	NamedResistanceSourceSchema
 } from './combat-skill.js';
 import {
+	CombatEquipmentProfileCatalogSchema,
 	CombatEquipmentProfileSchema,
 	EquipmentFamilyTagSchema,
 	EquipmentProficiencyTagSchema
 } from './equipment.js';
+import { ResistanceGrantReceiptSchema } from './combat-rules.js';
 
 const swordProfile = {
 	schemaVersion: 'combat-equipment-profile-v1',
@@ -49,7 +52,7 @@ describe('combat loadout contracts', () => {
 			familyTags: [],
 			load: 28,
 			requirements: { minimumMight: 45, proficiencyTags: ['armour-training'] },
-			resistanceGrants: [{ tag: 'cut', basisPoints: 800 }]
+			resistanceGrants: [{ tag: 'cut', basisPoints: 800, capBasisPoints: 1_500 }]
 		} as const;
 		expect(CombatEquipmentProfileSchema.parse(heavyArmour)).toStrictEqual(heavyArmour);
 		expect(
@@ -106,7 +109,8 @@ describe('combat loadout contracts', () => {
 				sourceId: `source-${sourceKind}`,
 				grants: tags.map((tag, tagIndex) => ({
 					tag,
-					basisPoints: 100 + index * 10 + tagIndex
+					basisPoints: 100 + index * 10 + tagIndex,
+					capBasisPoints: 1_000
 				}))
 			});
 			expect(parsed.grants.map((grant) => grant.tag)).toStrictEqual(tags);
@@ -124,7 +128,7 @@ describe('combat loadout contracts', () => {
 			masteryProgression: [
 				{ minimumMastery: 0, accuracyBasisPoints: 10_000, reliabilityBasisPoints: 9_000 }
 			],
-			resistanceGrants: [{ tag: 'impact', basisPoints: 500 }],
+			resistanceGrants: [{ tag: 'impact', basisPoints: 500, capBasisPoints: 1_000 }],
 			breakMeter: { maximum: 20, recoveryPerTick: 1 }
 		} as const;
 		expect(CombatSkillDefinitionSchema.safeParse(shieldStance).success).toBe(true);
@@ -139,5 +143,78 @@ describe('combat loadout contracts', () => {
 		} as const;
 		expect(CombatEquipmentProfileSchema.safeParse(shield).success).toBe(true);
 		expect(CombatEquipmentProfileSchema.safeParse({ ...shield, poise: 30 }).success).toBe(false);
+	});
+
+	it('binds combat skill and equipment profiles in separate strict catalogs', () => {
+		const skill = {
+			schemaVersion: 'combat-skill-v1',
+			skillId: 'combat-skill-basic-cut',
+			displayName: 'Basic Cut',
+			kind: 'attack',
+			deliveryTags: ['one-handed-blade'],
+			damageTags: ['physical', 'cut'],
+			masteryProgression: [
+				{ minimumMastery: 0, accuracyBasisPoints: 6_750, reliabilityBasisPoints: 9_000 }
+			],
+			resistanceGrants: []
+		} as const;
+		expect(
+			CombatSkillCatalogSchema.safeParse({
+				schemaVersion: 'combat-skill-catalog-v1',
+				contentVersion: 'combat-skills-v1',
+				contentHash: 'a'.repeat(64),
+				skills: [skill]
+			}).success
+		).toBe(true);
+		expect(
+			CombatSkillCatalogSchema.safeParse({
+				schemaVersion: 'combat-skill-catalog-v1',
+				contentVersion: 'combat-skills-v1',
+				contentHash: 'a'.repeat(64),
+				skills: [skill, skill]
+			}).success
+		).toBe(false);
+
+		const profiles = Array.from({ length: 140 }, (_, index) => ({
+			...swordProfile,
+			definitionId: `equipment-bronze-sword-${index}`
+		}));
+		expect(
+			CombatEquipmentProfileCatalogSchema.safeParse({
+				schemaVersion: 'combat-equipment-profile-catalog-v1',
+				contentVersion: 'combat-equipment-profiles-v1',
+				contentHash: 'b'.repeat(64),
+				profiles
+			}).success
+		).toBe(true);
+		expect(
+			CombatEquipmentProfileCatalogSchema.safeParse({
+				schemaVersion: 'combat-equipment-profile-catalog-v1',
+				contentVersion: 'combat-equipment-profiles-v1',
+				contentHash: 'b'.repeat(64),
+				profiles: profiles.map((profile) => ({
+					...profile,
+					definitionId: 'equipment-duplicate-profile'
+				}))
+			}).success
+		).toBe(false);
+	});
+
+	it('allows physiology to own typed resistance receipt sources', () => {
+		expect(
+			ResistanceGrantReceiptSchema.safeParse({
+				grantId: 'f50cf127-9702-46b5-a97d-1a31497ec3a7',
+				tag: 'frost',
+				basisPoints: 300,
+				stackingRule: 'additive',
+				capBasisPoints: 1_000,
+				source: {
+					receiptId: 'c36fc468-d048-4aa0-a710-dc3f15bed80c',
+					sourceKind: 'physiology',
+					sourceId: 'physiology-stone-hide@hero-1'
+				},
+				rulesVersion: 'combat-rules-v1'
+			}).success
+		).toBe(true);
 	});
 });

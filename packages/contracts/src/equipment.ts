@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ResistanceTagSchema } from './combat-rules.js';
+import { StateHashSchema } from './shared.js';
 
 export const EquipmentRankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S']);
 
@@ -83,9 +84,19 @@ export const EquipmentProficiencyTagSchema = z.enum(['armour-training']);
 export const NamedResistanceGrantSchema = z
 	.object({
 		tag: ResistanceTagSchema,
-		basisPoints: z.number().int().positive().max(10_000)
+		basisPoints: z.number().int().positive().max(10_000),
+		capBasisPoints: z.number().int().positive().max(10_000)
 	})
-	.strict();
+	.strict()
+	.superRefine((grant, context) => {
+		if (grant.basisPoints > grant.capBasisPoints) {
+			context.addIssue({
+				code: 'custom',
+				path: ['basisPoints'],
+				message: 'Authored resistance cannot exceed its authored cap'
+			});
+		}
+	});
 
 export const AuthoredBreakMeterSchema = z
 	.object({
@@ -140,6 +151,25 @@ export const CombatEquipmentProfileSchema = z
 				code: 'custom',
 				path: ['resistanceGrants'],
 				message: 'Equipment resistance tags must be unique'
+			});
+		}
+	});
+
+export const CombatEquipmentProfileCatalogSchema = z
+	.object({
+		schemaVersion: z.literal('combat-equipment-profile-catalog-v1'),
+		contentVersion: z.literal('combat-equipment-profiles-v1'),
+		contentHash: StateHashSchema,
+		profiles: z.array(CombatEquipmentProfileSchema).length(140)
+	})
+	.strict()
+	.superRefine((catalog, context) => {
+		const definitionIds = catalog.profiles.map((profile) => profile.definitionId);
+		if (new Set(definitionIds).size !== definitionIds.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['profiles'],
+				message: 'Combat equipment profile definition IDs must be unique'
 			});
 		}
 	});
@@ -363,6 +393,7 @@ export type EquipmentFamilyTag = z.infer<typeof EquipmentFamilyTagSchema>;
 export type EquipmentProficiencyTag = z.infer<typeof EquipmentProficiencyTagSchema>;
 export type NamedResistanceGrant = z.infer<typeof NamedResistanceGrantSchema>;
 export type CombatEquipmentProfile = z.infer<typeof CombatEquipmentProfileSchema>;
+export type CombatEquipmentProfileCatalog = z.infer<typeof CombatEquipmentProfileCatalogSchema>;
 export type EquipmentDefinition = z.infer<typeof EquipmentDefinitionSchema>;
 export type EquipmentDefinitionCatalog = z.infer<typeof EquipmentDefinitionCatalogSchema>;
 export type EquipmentCraftsmanship = z.infer<typeof EquipmentCraftsmanshipSchema>;

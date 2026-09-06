@@ -1,10 +1,12 @@
 import {
 	CombatEquipmentProfileSchema,
+	CombatEquipmentProfileCatalogSchema,
 	EquipmentDefinitionCatalogSchema,
 	EquipmentStandardRecipeDescriptorSchema,
 	type EquipmentArmourSlot,
 	type EquipmentClass,
 	type CombatEquipmentProfile,
+	type CombatEquipmentProfileCatalog,
 	type EquipmentDefinition,
 	type EquipmentFamilyTag,
 	type EquipmentHandedness,
@@ -284,13 +286,13 @@ function createCombatEquipmentProfile(
 	const heavyArmour = definition.equipmentClass === 'heavy-armour';
 	const resistanceGrants = heavyArmour
 		? [
-				{ tag: 'cut' as const, basisPoints: 800 },
-				{ tag: 'impact' as const, basisPoints: 600 }
+				{ tag: 'cut' as const, basisPoints: 800, capBasisPoints: 1_500 },
+				{ tag: 'impact' as const, basisPoints: 600, capBasisPoints: 1_200 }
 			]
 		: definition.equipmentClass === 'light-armour'
-			? [{ tag: 'pierce' as const, basisPoints: 400 }]
+			? [{ tag: 'pierce' as const, basisPoints: 400, capBasisPoints: 1_000 }]
 			: definition.equipmentClass === 'robes'
-				? [{ tag: 'arcane' as const, basisPoints: 300 }]
+				? [{ tag: 'arcane' as const, basisPoints: 300, capBasisPoints: 900 }]
 				: [];
 	return deepFreeze(
 		CombatEquipmentProfileSchema.parse({
@@ -307,15 +309,66 @@ function createCombatEquipmentProfile(
 	);
 }
 
-export const COMBAT_EQUIPMENT_PROFILES = Object.freeze(
-	EQUIPMENT_DEFINITIONS.map(createCombatEquipmentProfile)
+export const COMBAT_EQUIPMENT_PROFILE_CATALOG = deepFreeze(
+	CombatEquipmentProfileCatalogSchema.parse({
+		schemaVersion: 'combat-equipment-profile-catalog-v1',
+		contentVersion: 'combat-equipment-profiles-v1',
+		contentHash: 'df6ac2281db7759528d4fb32d21e4446a4747df4e94cf7d9e8ca85263acdd9fd',
+		profiles: EQUIPMENT_DEFINITIONS.map(createCombatEquipmentProfile)
+	})
 );
+
+export const COMBAT_EQUIPMENT_PROFILES = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles;
 
 export const COMBAT_EQUIPMENT_PROFILES_BY_ID = Object.freeze(
 	Object.fromEntries(
 		COMBAT_EQUIPMENT_PROFILES.map((profile) => [profile.definitionId, profile])
 	) as Readonly<Record<string, Readonly<CombatEquipmentProfile>>>
 );
+
+function canonicalJson(value: unknown): string {
+	if (value === null || typeof value !== 'object') return JSON.stringify(value);
+	if (Array.isArray(value)) return `[${value.map((item) => canonicalJson(item)).join(',')}]`;
+	const object = value as Record<string, unknown>;
+	return `{${Object.keys(object)
+		.sort((left, right) => left.localeCompare(right))
+		.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
+		.join(',')}}`;
+}
+
+export async function calculateCombatEquipmentProfileContentHash(
+	catalog: CombatEquipmentProfileCatalog
+): Promise<string> {
+	const payload: Partial<CombatEquipmentProfileCatalog> = { ...catalog };
+	delete payload.contentHash;
+	const digest = await globalThis.crypto.subtle.digest(
+		'SHA-256',
+		new TextEncoder().encode(canonicalJson(payload))
+	);
+	return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export async function verifyCombatEquipmentProfileCatalog(
+	catalogInput: CombatEquipmentProfileCatalog
+): Promise<CombatEquipmentProfileCatalog> {
+	const catalog = CombatEquipmentProfileCatalogSchema.parse(catalogInput);
+	const calculated = await calculateCombatEquipmentProfileContentHash(catalog);
+	if (calculated !== catalog.contentHash) {
+		throw new Error(
+			`Combat equipment profile content hash drifted: expected ${catalog.contentHash}, calculated ${calculated}`
+		);
+	}
+	return catalog;
+}
+
+let verifiedCombatEquipmentCatalog: Promise<CombatEquipmentProfileCatalog> | undefined;
+
+export function loadCombatEquipmentProfileCatalog(): Promise<CombatEquipmentProfileCatalog> {
+	verifiedCombatEquipmentCatalog ??= verifyCombatEquipmentProfileCatalog(
+		COMBAT_EQUIPMENT_PROFILE_CATALOG
+	);
+	return verifiedCombatEquipmentCatalog;
+}
 
 export const EQUIPMENT_DEFINITION_CATALOG = Object.freeze(
 	EquipmentDefinitionCatalogSchema.parse({

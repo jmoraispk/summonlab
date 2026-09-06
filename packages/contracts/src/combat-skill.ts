@@ -6,6 +6,7 @@ import {
 	EquipmentFamilyTagSchema,
 	NamedResistanceGrantSchema
 } from './equipment.js';
+import { StateHashSchema } from './shared.js';
 
 export const CombatSkillIdSchema = z.string().regex(/^combat-skill-[a-z0-9]+(?:-[a-z0-9]+)*$/u);
 
@@ -77,6 +78,25 @@ export const CombatSkillDefinitionSchema = z
 		}
 	});
 
+export const CombatSkillCatalogSchema = z
+	.object({
+		schemaVersion: z.literal('combat-skill-catalog-v1'),
+		contentVersion: z.literal('combat-skills-v1'),
+		contentHash: StateHashSchema,
+		skills: z.array(CombatSkillDefinitionSchema).min(1)
+	})
+	.strict()
+	.superRefine((catalog, context) => {
+		const skillIds = catalog.skills.map((skill) => skill.skillId);
+		if (new Set(skillIds).size !== skillIds.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['skills'],
+				message: 'Combat skill IDs must be unique'
+			});
+		}
+	});
+
 export const LearnedCombatSkillStateSchema = z
 	.object({
 		schemaVersion: z.literal('learned-combat-skill-v1'),
@@ -117,6 +137,7 @@ export const NamedResistanceSourceSchema = z
 	});
 
 export type CombatSkillDefinition = z.infer<typeof CombatSkillDefinitionSchema>;
+export type CombatSkillCatalog = z.infer<typeof CombatSkillCatalogSchema>;
 export type CombatSkillId = z.infer<typeof CombatSkillIdSchema>;
 export type CombatSkillKind = z.infer<typeof CombatSkillKindSchema>;
 export type CombatSkillMasteryStep = z.infer<typeof CombatSkillMasteryStepSchema>;

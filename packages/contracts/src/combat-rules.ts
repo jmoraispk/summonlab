@@ -25,7 +25,15 @@ export const AttributeModifierScopeSchema = z.enum([
 export const AttributeModifierSourceReceiptSchema = z
 	.object({
 		receiptId: EntityIdSchema,
-		sourceKind: z.enum(['equipment', 'enchantment', 'food', 'condition', 'status', 'skill']),
+		sourceKind: z.enum([
+			'equipment',
+			'enchantment',
+			'food',
+			'condition',
+			'status',
+			'skill',
+			'physiology'
+		]),
 		sourceId: z.string().min(1).max(120)
 	})
 	.strict();
