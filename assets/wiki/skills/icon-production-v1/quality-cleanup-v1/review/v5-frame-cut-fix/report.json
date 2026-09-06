@@ -1,0 +1,217 @@
+{
+	"schemaVersion": "skill-icon-frame-cut-fix-review-v1",
+	"strategy": {
+		"aperture": "center-connected-transparent-opening-of-accepted-v9-frame",
+		"backing": "large-detached-backing-regions-removed",
+		"frameSeams": "radius-one-enclosed-frame-alpha-gaps-retain-backing-support; detached-backing-remains-transparent",
+		"legacyArtworkScale": 1.08,
+		"sRankArtworkScale": 1.15,
+		"revisionProviderBackground": "opaque-black-preserved-through-the-frame-opening"
+	},
+	"deferred": [
+		{
+			"finding": "traces-of-previous-frame-inside-accepted-frame",
+			"status": "deferred-by-owner",
+			"note": "Intentionally unchanged in this review."
+		}
+	],
+	"records": [
+		{
+			"targetId": "craft:forging:fuel-craft",
+			"slug": "craft-forging-fuel-craft",
+			"name": "Fuel Craft",
+			"rank": "E",
+			"artworkScale": 1,
+			"sourceMode": "revision-provider",
+			"sourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v3.png",
+			"sourceHash": "e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/craft-forging-fuel-craft.png",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"frameHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/craft-forging-fuel-craft.png",
+			"candidateHash": "c95f3954e92f171393a2f8591e2b65014b39570e9de57d2b5a419309ef2219cb",
+			"removedPixels": 672352,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 834,
+				"largestNearWhiteComponent": {
+					"pixels": 10,
+					"bounds": {
+						"left": 558,
+						"top": 626,
+						"width": 10,
+						"height": 1
+					}
+				}
+			}
+		},
+		{
+			"targetId": "craft:alchemy:concentration",
+			"slug": "craft-alchemy-concentration",
+			"name": "Concentration",
+			"rank": "D",
+			"artworkScale": 1.08,
+			"sourceMode": "mass-production",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/craft-alchemy-concentration.png",
+			"sourceHash": "4e49f5de8e0b44b7abad8d263fcd6a76b5c42bff6c01608f4ddd2b66b7ad692b",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"frameHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/craft-alchemy-concentration.png",
+			"candidateHash": "b64350cc526a0901a96ba7c8c3460ac61a21e9a782c4453fe94913a14754f74b",
+			"removedPixels": 219340,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 1348,
+				"largestNearWhiteComponent": {
+					"pixels": 212,
+					"bounds": {
+						"left": 281,
+						"top": 476,
+						"width": 19,
+						"height": 22
+					}
+				}
+			}
+		},
+		{
+			"targetId": "craft:alchemy:antidotes",
+			"slug": "craft-alchemy-antidotes",
+			"name": "Antidotes",
+			"rank": "E",
+			"artworkScale": 1.08,
+			"sourceMode": "mass-production",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/craft-alchemy-antidotes.png",
+			"sourceHash": "b86655d529a01c874df0d54abe03c6e0d7250652db7919bfbbb529381e2e17ad",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"frameHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/craft-alchemy-antidotes.png",
+			"candidateHash": "1c1c3f266625648baeb99e945dfd97d0fdf48eb101851bb1417a79f21f2c8163",
+			"removedPixels": 240416,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 843,
+				"largestNearWhiteComponent": {
+					"pixels": 14,
+					"bounds": {
+						"left": 406,
+						"top": 428,
+						"width": 4,
+						"height": 6
+					}
+				}
+			}
+		},
+		{
+			"targetId": "magical:elemental:spike-field",
+			"slug": "magical-elemental-spike-field",
+			"name": "Spike Field",
+			"rank": "E",
+			"artworkScale": 1.08,
+			"sourceMode": "mass-production",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/magical-elemental-spike-field.png",
+			"sourceHash": "9a52f9a590d72e20cad25a866fc183dc2d4c81134844a633c065586fa30a50a8",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"frameHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/magical-elemental-spike-field.png",
+			"candidateHash": "03eb3b567e58af765bc3b62bda2954c3c4d073ddd460cd6dbcccbf53c598c8f9",
+			"removedPixels": 163964,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 882,
+				"largestNearWhiteComponent": {
+					"pixels": 7,
+					"bounds": {
+						"left": 400,
+						"top": 278,
+						"width": 1,
+						"height": 7
+					}
+				}
+			}
+		},
+		{
+			"targetId": "magical:elemental:where-all-rivers-end",
+			"slug": "magical-elemental-where-all-rivers-end",
+			"name": "Where All Rivers End",
+			"rank": "S",
+			"artworkScale": 1.15,
+			"sourceMode": "mass-production",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/magical-elemental-where-all-rivers-end.png",
+			"sourceHash": "9f0ad37fb6b98a80faffc7d2f731547daff8436f8418b97e236282137326a59a",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-s-v9.png",
+			"frameHash": "3c2c189312b312d8415852c9222a6018c3dbac31a3784f7d74e2f80bc01f090e",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/magical-elemental-where-all-rivers-end.png",
+			"candidateHash": "974a9e782ee16ba4961133a957c18c2336b6db06e6f9e17fffe492f7ef7a881e",
+			"removedPixels": 251523,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 2850,
+				"largestNearWhiteComponent": {
+					"pixels": 114,
+					"bounds": {
+						"left": 523,
+						"top": 262,
+						"width": 22,
+						"height": 22
+					}
+				}
+			}
+		},
+		{
+			"targetId": "magical:elemental:the-deep",
+			"slug": "magical-elemental-the-deep",
+			"name": "The Deep",
+			"rank": "A",
+			"artworkScale": 1.08,
+			"sourceMode": "mass-production",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v4-outline-fix/candidates/magical-elemental-the-deep.png",
+			"sourceHash": "062bdbf3f45cfd7fe3b7c2578b8871ca3295f8573562932125249b8148d96a2f",
+			"framePath": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"frameHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7",
+			"candidatePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/candidates/magical-elemental-the-deep.png",
+			"candidateHash": "fee28675be3036be743cedb3bfee94693817ecb961fcfbd9244eed64d402d902",
+			"removedPixels": 194467,
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": [],
+				"nearWhiteComponentCount": 2507,
+				"largestNearWhiteComponent": {
+					"pixels": 273,
+					"bounds": {
+						"left": 675,
+						"top": 780,
+						"width": 73,
+						"height": 44
+					}
+				}
+			}
+		}
+	],
+	"reviewFiles": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/comparison-384.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v5-frame-cut-fix/comparison-96.png"
+	]
+}

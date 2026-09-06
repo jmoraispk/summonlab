@@ -8,14 +8,16 @@ import {
 	clearCleanupExterior,
 	composeCleanupIcon,
 	extractLegacyInterior,
-	inspectCleanupComposite
+	inspectCleanupComposite,
+	type CleanupInspection
 } from './skill-icon-quality-cleanup-lib.js';
 
 type Mode = 'write' | 'check';
 
 const ROOT = 'assets/wiki/skills/icon-production-v1' as const;
 const CLEANUP_ROOT = `${ROOT}/quality-cleanup-v1` as const;
-const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v4-outline-fix` as const;
+const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v4-outline-fix` as const;
+const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v5-frame-cut-fix` as const;
 const SOURCE_ROOT = `${ROOT}/mass-production-v1/icons` as const;
 const BACKING_PATH = `${ROOT}/candidates/references/charcoal-forged-stone-v6.png` as const;
 const GEOMETRY_PATH = `${ROOT}/geometry-v2.json` as const;
@@ -32,7 +34,7 @@ const RECORDS = [
 		sourceMode: 'revision-provider',
 		sourcePath: `${CLEANUP_ROOT}/provider-sources/craft-forging-fuel-craft-v3.png`,
 		sourceHash: 'e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec',
-		currentPath: `${CLEANUP_ROOT}/composites/craft-forging-fuel-craft-v3.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/craft-forging-fuel-craft.png`
 	},
 	{
 		targetId: 'craft:alchemy:concentration',
@@ -41,7 +43,7 @@ const RECORDS = [
 		rank: 'D',
 		artworkScale: 1.08,
 		sourceMode: 'mass-production',
-		currentPath: `${CLEANUP_ROOT}/composites/craft-alchemy-concentration.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/craft-alchemy-concentration.png`
 	},
 	{
 		targetId: 'craft:alchemy:antidotes',
@@ -50,7 +52,7 @@ const RECORDS = [
 		rank: 'E',
 		artworkScale: 1.08,
 		sourceMode: 'mass-production',
-		currentPath: `${CLEANUP_ROOT}/composites/craft-alchemy-antidotes.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/craft-alchemy-antidotes.png`
 	},
 	{
 		targetId: 'magical:elemental:spike-field',
@@ -59,7 +61,7 @@ const RECORDS = [
 		rank: 'E',
 		artworkScale: 1.08,
 		sourceMode: 'mass-production',
-		currentPath: `${CLEANUP_ROOT}/composites/magical-elemental-spike-field.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/magical-elemental-spike-field.png`
 	},
 	{
 		targetId: 'magical:elemental:where-all-rivers-end',
@@ -68,7 +70,7 @@ const RECORDS = [
 		rank: 'S',
 		artworkScale: 1.15,
 		sourceMode: 'mass-production',
-		currentPath: `${CLEANUP_ROOT}/composites/magical-elemental-where-all-rivers-end.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/magical-elemental-where-all-rivers-end.png`
 	},
 	{
 		targetId: 'magical:elemental:the-deep',
@@ -77,9 +79,28 @@ const RECORDS = [
 		rank: 'A',
 		artworkScale: 1.08,
 		sourceMode: 'mass-production',
-		currentPath: `${CLEANUP_ROOT}/composites/magical-elemental-the-deep.png`
+		currentPath: `${PRIOR_REVIEW_ROOT}/candidates/magical-elemental-the-deep.png`
 	}
 ] as const;
+
+interface RenderedRecord {
+	readonly targetId: string;
+	readonly slug: string;
+	readonly name: string;
+	readonly rank: string;
+	readonly artworkScale: number;
+	readonly sourceMode: 'revision-provider' | 'mass-production';
+	readonly sourcePath?: string;
+	readonly currentPath: string;
+	readonly sourceHash: string;
+	readonly framePath: string;
+	readonly frameHash: string;
+	readonly candidatePath: string;
+	readonly candidate: Buffer;
+	readonly candidateHash: string;
+	readonly removedPixels: number;
+	readonly inspection: CleanupInspection;
+}
 
 function sha256(bytes: Buffer): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -187,7 +208,7 @@ async function comparisonSheet(input: {
 		{
 			input: textLayer(width, header, [
 				{
-					text: 'CURRENT',
+					text: input.size === 384 ? 'OUTLINE FIX · V4' : 'V4',
 					x: input.size / 2,
 					y: header - 20,
 					size: input.size === 384 ? 20 : 12,
@@ -195,7 +216,7 @@ async function comparisonSheet(input: {
 					weight: 700
 				},
 				{
-					text: 'OUTLINE FIX',
+					text: input.size === 384 ? 'FRAME CUT FIX · V5' : 'V5',
 					x: input.size + gap + input.size / 2,
 					y: header - 20,
 					size: input.size === 384 ? 20 : 12,
@@ -267,7 +288,7 @@ export async function renderSkillIconOutlineFixReview(options: {
 		manifest.skills.map((record) => [record.targetId, record.finalImageHash])
 	);
 	const backingHash = sha256(backing);
-	const rendered = [];
+	const rendered: RenderedRecord[] = [];
 	for (const record of RECORDS) {
 		const source =
 			record.sourceMode === 'revision-provider'
@@ -322,7 +343,7 @@ export async function renderSkillIconOutlineFixReview(options: {
 				backing,
 				interior: interior.bytes,
 				frame,
-				compositionProfile: 'frame-opening-v2'
+				compositionProfile: 'frame-opening-v3'
 			}),
 			geometry
 		);
@@ -332,7 +353,7 @@ export async function renderSkillIconOutlineFixReview(options: {
 			interior: interior.bytes,
 			frame,
 			geometry,
-			compositionProfile: 'frame-opening-v2',
+			compositionProfile: 'frame-opening-v3',
 			boundLayerHashes: {
 				backing: backingHash,
 				interior: sha256(interior.bytes),
@@ -370,14 +391,23 @@ export async function renderSkillIconOutlineFixReview(options: {
 		{
 			path: reportPath,
 			bytes: jsonBytes({
-				schemaVersion: 'skill-icon-outline-fix-review-v1',
+				schemaVersion: 'skill-icon-frame-cut-fix-review-v1',
 				strategy: {
 					aperture: 'center-connected-transparent-opening-of-accepted-v9-frame',
-					backing: 'retained-only-beneath-nontransparent-artwork-or-frame-pixels',
+					backing: 'large-detached-backing-regions-removed',
+					frameSeams:
+						'radius-one-enclosed-frame-alpha-gaps-retain-backing-support; detached-backing-remains-transparent',
 					legacyArtworkScale: 1.08,
 					sRankArtworkScale: 1.15,
 					revisionProviderBackground: 'opaque-black-preserved-through-the-frame-opening'
 				},
+				deferred: [
+					{
+						finding: 'traces-of-previous-frame-inside-accepted-frame',
+						status: 'deferred-by-owner',
+						note: 'Intentionally unchanged in this review.'
+					}
+				],
 				records: rendered.map(({ candidate: _candidate, inspection, ...record }) => ({
 					...record,
 					inspection: {

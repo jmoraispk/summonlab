@@ -982,6 +982,112 @@ describe('deterministic protected-aperture composition', { timeout: 60_000 }, ()
 		]);
 	});
 
+	it('preserves backing in an enclosed frame seam while clearing detached backing', async () => {
+		// Catches treating a one-pixel frame seam like the broad backing halo and cutting the frame.
+		const backing = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[7, 5, 32, 32, 32, 255],
+				[1, 1, 32, 32, 32, 255]
+			]
+		);
+		const interior = await rgbaFixture([0, 0, 0, 0], []);
+		const frame = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[6, 4, 0, 0, 255, 255],
+				[7, 4, 0, 0, 255, 255],
+				[8, 4, 0, 0, 255, 255],
+				[6, 5, 0, 0, 255, 255],
+				[8, 5, 0, 0, 255, 255],
+				[6, 6, 0, 0, 255, 255],
+				[7, 6, 0, 0, 255, 255],
+				[8, 6, 0, 0, 255, 255]
+			]
+		);
+		const composite = await composeCleanupIcon({
+			backing,
+			interior,
+			frame,
+			compositionProfile: 'frame-opening-v3'
+		});
+		const data = await rawRgba(composite);
+
+		expect(pixel(data, 7, 5)).toEqual([32, 32, 32, 255]);
+		expect(pixel(data, 1, 1)).toEqual([0, 0, 0, 0]);
+		await expect(
+			inspectCleanupComposite({
+				composite,
+				backing,
+				interior,
+				frame,
+				geometry: syntheticGeometry,
+				compositionProfile: 'frame-opening-v3'
+			})
+		).resolves.toMatchObject({ backingOnlyComponents: [] });
+	});
+
+	it('clears backing from a frame gap connected to the exterior', async () => {
+		// Catches morphological closing that mistakes an open channel for an enclosed frame seam.
+		const backing = await rgbaFixture([0, 0, 0, 0], [[7, 5, 32, 32, 32, 255]]);
+		const interior = await rgbaFixture([0, 0, 0, 0], []);
+		const frame = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[6, 4, 0, 0, 255, 255],
+				[8, 4, 0, 0, 255, 255],
+				[6, 5, 0, 0, 255, 255],
+				[8, 5, 0, 0, 255, 255],
+				[6, 6, 0, 0, 255, 255],
+				[7, 6, 0, 0, 255, 255],
+				[8, 6, 0, 0, 255, 255]
+			]
+		);
+		const composite = await composeCleanupIcon({
+			backing,
+			interior,
+			frame,
+			compositionProfile: 'frame-opening-v3'
+		});
+		const data = await rawRgba(composite);
+
+		expect(pixel(data, 7, 5)).toEqual([0, 0, 0, 0]);
+	});
+
+	it('preserves a two-pixel enclosed frame seam within the radius-one closure', async () => {
+		// Locks the largest seam width v3 may repair without filling broader frame openings.
+		const backing = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[7, 5, 32, 32, 32, 255],
+				[8, 5, 32, 32, 32, 255],
+				[7, 6, 32, 32, 32, 255],
+				[8, 6, 32, 32, 32, 255]
+			]
+		);
+		const interior = await rgbaFixture([0, 0, 0, 0], []);
+		const framePixels: (readonly [number, number, number, number, number, number])[] = [];
+		for (let y = 4; y <= 7; y += 1) {
+			for (let x = 6; x <= 9; x += 1) {
+				if ((x === 7 || x === 8) && (y === 5 || y === 6)) continue;
+				framePixels.push([x, y, 0, 0, 255, 255]);
+			}
+		}
+		const frame = await rgbaFixture([0, 0, 0, 0], framePixels);
+		const composite = await composeCleanupIcon({
+			backing,
+			interior,
+			frame,
+			compositionProfile: 'frame-opening-v3'
+		});
+		const data = await rawRgba(composite);
+
+		expect(pixel(data, 7, 5)).toEqual([32, 32, 32, 255]);
+		expect(pixel(data, 8, 5)).toEqual([32, 32, 32, 255]);
+		expect(pixel(data, 7, 6)).toEqual([32, 32, 32, 255]);
+		expect(pixel(data, 8, 6)).toEqual([32, 32, 32, 255]);
+	});
+
 	it('rejects stale layer hashes and detects opaque exterior pixels', async () => {
 		// Catches accepting stale provenance or treating backing/frame pixels outside geometry as valid.
 		const backing = await rgbaFixture(

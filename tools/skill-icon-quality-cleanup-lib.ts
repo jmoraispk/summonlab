@@ -213,13 +213,15 @@ export interface LegacyInteriorOptions {
 	readonly artworkScale?: number;
 }
 
+export type CleanupCompositionProfile = 'legacy-v1' | 'frame-opening-v2' | 'frame-opening-v3';
+
 export interface CleanupInspectionInput {
 	readonly composite: Buffer;
 	readonly backing: Buffer;
 	readonly interior: Buffer;
 	readonly frame: Buffer;
 	readonly geometry: SkillIconGeometryV2;
-	readonly compositionProfile?: 'legacy-v1' | 'frame-opening-v2';
+	readonly compositionProfile?: CleanupCompositionProfile;
 	readonly boundLayerHashes?: Readonly<{
 		backing: string;
 		interior: string;
@@ -1403,7 +1405,7 @@ export async function composeCleanupIcon(input: {
 	readonly backing: Buffer;
 	readonly interior: Buffer;
 	readonly frame: Buffer;
-	readonly compositionProfile?: 'legacy-v1' | 'frame-opening-v2';
+	readonly compositionProfile?: CleanupCompositionProfile;
 }): Promise<Buffer> {
 	const [backing, interior, frame] = await Promise.all([
 		rgbaBytes(input.backing),
@@ -1426,13 +1428,24 @@ export async function composeCleanupIcon(input: {
 			blend: 'over'
 		}
 	]);
-	if (input.compositionProfile !== 'frame-opening-v2') {
+	if (
+		input.compositionProfile !== 'frame-opening-v2' &&
+		input.compositionProfile !== 'frame-opening-v3'
+	) {
 		return pipeline.png(DETERMINISTIC_PNG_OPTIONS).toBuffer();
 	}
 	const composite = await pipeline.raw().toBuffer();
+	const frameSeamSupport =
+		input.compositionProfile === 'frame-opening-v3'
+			? enclosedFrameSeamSupport(frame.data, backing.width, backing.height)
+			: null;
 	for (let index = 0; index < backing.width * backing.height; index += 1) {
 		const offset = index * 4;
-		if ((interior.data[offset + 3] ?? 0) === 0 && (frame.data[offset + 3] ?? 0) === 0) {
+		if (
+			(interior.data[offset + 3] ?? 0) === 0 &&
+			(frame.data[offset + 3] ?? 0) === 0 &&
+			frameSeamSupport?.[index] !== 1
+		) {
 			composite.fill(0, offset, offset + 4);
 		}
 	}
@@ -1524,12 +1537,14 @@ function backingOnlyComponents(
 	interior: Buffer,
 	frame: Buffer,
 	width: number,
-	height: number
+	height: number,
+	allowedBacking?: Uint8Array
 ): CleanupInspection['backingOnlyComponents'] {
 	const exposed = new Uint8Array(width * height);
 	for (let index = 0; index < width * height; index += 1) {
 		const offset = index * 4;
 		if (
+			allowedBacking?.[index] !== 1 &&
 			(actual[offset + 3] ?? 0) > 0 &&
 			(backing[offset + 3] ?? 0) > 0 &&
 			(interior[offset + 3] ?? 0) === 0 &&
@@ -1577,6 +1592,82 @@ function backingOnlyComponents(
 	return components.sort((left, right) => right.pixels - left.pixels);
 }
 
+function borderConnectedFrameExterior(frame: Buffer, width: number, height: number): Uint8Array {
+	const exterior = new Uint8Array(width * height);
+	const queue: number[] = [];
+	const enqueue = (index: number): void => {
+		if (exterior[index] !== 0 || (frame[index * 4 + 3] ?? 255) !== 0) return;
+		exterior[index] = 1;
+		queue.push(index);
+	};
+	for (let x = 0; x < width; x += 1) {
+		enqueue(x);
+		enqueue((height - 1) * width + x);
+	}
+	for (let y = 1; y < height - 1; y += 1) {
+		enqueue(y * width);
+		enqueue(y * width + width - 1);
+	}
+	for (let cursor = 0; cursor < queue.length; cursor += 1) {
+		const current = queue[cursor]!;
+		const x = current % width;
+		for (const next of [
+			x > 0 ? current - 1 : -1,
+			x + 1 < width ? current + 1 : -1,
+			current >= width ? current - width : -1,
+			current + width < exterior.length ? current + width : -1
+		]) {
+			if (next >= 0) enqueue(next);
+		}
+	}
+	return exterior;
+}
+
+function enclosedFrameSeamSupport(frame: Buffer, width: number, height: number): Uint8Array {
+	const exterior = borderConnectedFrameExterior(frame, width, height);
+	const centerOpening = centerConnectedFrameOpening(frame, width, height);
+	const dilated = new Uint8Array(width * height);
+	for (let y = 0; y < height; y += 1) {
+		for (let x = 0; x < width; x += 1) {
+			const index = y * width + x;
+			if ((frame[index * 4 + 3] ?? 0) === 0) continue;
+			for (
+				let adjacentY = Math.max(0, y - 1);
+				adjacentY <= Math.min(height - 1, y + 1);
+				adjacentY += 1
+			) {
+				for (
+					let adjacentX = Math.max(0, x - 1);
+					adjacentX <= Math.min(width - 1, x + 1);
+					adjacentX += 1
+				) {
+					dilated[adjacentY * width + adjacentX] = 1;
+				}
+			}
+		}
+	}
+	const support = new Uint8Array(width * height);
+	for (let y = 1; y < height - 1; y += 1) {
+		for (let x = 1; x < width - 1; x += 1) {
+			const index = y * width + x;
+			if ((frame[index * 4 + 3] ?? 0) > 0 || exterior[index] === 1 || centerOpening[index] === 1) {
+				continue;
+			}
+			let enclosed = true;
+			for (let adjacentY = y - 1; adjacentY <= y + 1 && enclosed; adjacentY += 1) {
+				for (let adjacentX = x - 1; adjacentX <= x + 1; adjacentX += 1) {
+					if (dilated[adjacentY * width + adjacentX] !== 1) {
+						enclosed = false;
+						break;
+					}
+				}
+			}
+			if (enclosed) support[index] = 1;
+		}
+	}
+	return support;
+}
+
 export async function inspectCleanupComposite(
 	input: CleanupInspectionInput
 ): Promise<CleanupInspection> {
@@ -1612,10 +1703,16 @@ export async function inspectCleanupComposite(
 		geometry.canvas.width,
 		geometry.canvas.height
 	);
-	const acceptedFrameOpening =
-		input.compositionProfile === 'frame-opening-v2'
-			? centerConnectedFrameOpening(frameRgba.data, geometry.canvas.width, geometry.canvas.height)
-			: null;
+	const frameOpeningComposition =
+		input.compositionProfile === 'frame-opening-v2' ||
+		input.compositionProfile === 'frame-opening-v3';
+	const acceptedFrameOpening = frameOpeningComposition
+		? centerConnectedFrameOpening(frameRgba.data, geometry.canvas.width, geometry.canvas.height)
+		: null;
+	const allowedBacking =
+		input.compositionProfile === 'frame-opening-v3'
+			? enclosedFrameSeamSupport(frameRgba.data, geometry.canvas.width, geometry.canvas.height)
+			: undefined;
 	let protectedBandMatches = true;
 	let exteriorTransparent = true;
 	for (let y = 0; y < geometry.canvas.height && protectedBandMatches; y += 1) {
@@ -1664,7 +1761,8 @@ export async function inspectCleanupComposite(
 		interiorRgba.data,
 		frameRgba.data,
 		geometry.canvas.width,
-		geometry.canvas.height
+		geometry.canvas.height,
+		allowedBacking
 	);
 	return {
 		layerHashesMatch:
