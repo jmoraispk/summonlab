@@ -21,6 +21,7 @@ const REFERENCE_ROOT = 'assets/wiki/skills/icon-production-v1' as const;
 const ASSIGNED_AT = '2026-09-04T00:00:00.000Z' as const;
 
 const FRAME_MATERIAL = {
+	F: 'blackened iron and dark steel with sparse minimal rivets and no decorative flourishes',
 	E: 'aged bronze with brown-gold patina and understated corner collars',
 	D: 'tempered blue steel with cool edge highlights and restrained rivets',
 	C: 'moonlit silver with clean bevels and minimal ornament',
@@ -30,6 +31,7 @@ const FRAME_MATERIAL = {
 } as const;
 
 const FRAME_RARITIES = ['E', 'D', 'C', 'B', 'A', 'S'] as const;
+const REVISION_NINE_FRAME_RARITIES = ['F', ...FRAME_RARITIES] as const;
 const FORBIDDEN_SHARED_PATHS = [
 	`${REFERENCE_ROOT}/catalog.json`,
 	`${REFERENCE_ROOT}/visual-specs.json`,
@@ -401,7 +403,7 @@ export async function exportCleanupReferencePackets({
 		backingPacket(authorities, REVISION_SIX),
 		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_SEVEN)),
 		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_EIGHT)),
-		...FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_NINE))
+		...REVISION_NINE_FRAME_RARITIES.map((rarity) => framePacket(rarity, authorities, REVISION_NINE))
 	];
 	assertCollisionSafe(packets);
 	const written: string[] = [];

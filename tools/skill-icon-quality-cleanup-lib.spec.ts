@@ -111,7 +111,7 @@ function pixel(data: Buffer, x: number, y: number): readonly number[] {
 
 const cleanupLayerJobs = [
 	['charcoal-forged-stone-v6', 'backing', null],
-	['rarity-frame-f-v5', 'rarity-frame', 'F'],
+	['rarity-frame-f-v9', 'rarity-frame', 'F'],
 	['rarity-frame-e-v9', 'rarity-frame', 'E'],
 	['rarity-frame-d-v9', 'rarity-frame', 'D'],
 	['rarity-frame-c-v9', 'rarity-frame', 'C'],
@@ -165,23 +165,86 @@ async function seedReadyFinalizerRoot(root: string): Promise<{
 	for (const [jobId] of cleanupLayerJobs) {
 		for (const repositoryPath of [
 			`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
-			`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
-			`assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
-			`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
+			`assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`
 		]) {
 			const destination = path.join(root, repositoryPath);
 			await mkdir(path.dirname(destination), { recursive: true });
 			await copyFile(path.join(workspaceRoot, repositoryPath), destination);
 		}
+		if (jobId !== 'rarity-frame-f-v9') {
+			for (const repositoryPath of [
+				`assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`,
+				`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`
+			]) {
+				const destination = path.join(root, repositoryPath);
+				await mkdir(path.dirname(destination), { recursive: true });
+				await copyFile(path.join(workspaceRoot, repositoryPath), destination);
+			}
+		}
 	}
-	for (const repositoryPath of [
-		'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v3.json',
-		'assets/wiki/skills/icon-production-v1/assignments/references/rarity-frame-f-v3.json',
-		'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-f-v3.json'
-	]) {
+
+	const fJobId = 'rarity-frame-f-v9';
+	const fCandidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${fJobId}.png`;
+	const fResultPath = `assets/wiki/skills/icon-production-v1/results/references/${fJobId}.json`;
+	const fTarget = JSON.parse(
+		await readFile(
+			path.join(root, `assets/wiki/skills/icon-production-v1/targets/references/${fJobId}.json`),
+			'utf8'
+		)
+	) as Record<string, unknown>;
+	const templateResult = JSON.parse(
+		await readFile(
+			path.join(
+				workspaceRoot,
+				'assets/wiki/skills/icon-production-v1/results/references/rarity-frame-e-v9.json'
+			),
+			'utf8'
+		)
+	) as Record<string, unknown>;
+	const fCandidate = await readFile(
+		path.join(
+			workspaceRoot,
+			'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png'
+		)
+	);
+	const fCandidateHash = sha256(fCandidate);
+	const fPrompt = fTarget.exactPrompt as string;
+	const fOutput = templateResult.output as Record<string, unknown>;
+	const fNormalization = templateResult.normalization as Record<string, unknown>;
+	const fReferences = fTarget.references as ReadonlyArray<{
+		readonly path: string;
+		readonly contentHash: string;
+	}>;
+	const fResult = {
+		...templateResult,
+		resultId: `result-${fJobId}`,
+		jobId: fJobId,
+		logicalIdentity: 'rarity-frame-f',
+		revision: 9,
+		assignmentId: `assignment-${fJobId}`,
+		exactPrompt: fPrompt,
+		promptHash: sha256(Buffer.from(fPrompt)),
+		referenceInputs: fReferences.map(({ path: referencePath, contentHash }) => ({
+			path: referencePath,
+			contentHash
+		})),
+		normalization: { ...fNormalization, outputContentHash: fCandidateHash },
+		output: {
+			...fOutput,
+			path: fCandidatePath,
+			bytes: fCandidate.byteLength,
+			contentHash: fCandidateHash
+		},
+		resultPath: fResultPath,
+		writtenOutputPaths: [fCandidatePath, fResultPath]
+	};
+	for (const [repositoryPath, bytes] of [
+		[fCandidatePath, fCandidate],
+		[fResultPath, Buffer.from(`${JSON.stringify(fResult, null, '\t')}\n`)]
+	] as const) {
 		const destination = path.join(root, repositoryPath);
 		await mkdir(path.dirname(destination), { recursive: true });
-		await copyFile(path.join(workspaceRoot, repositoryPath), destination);
+		await writeFile(destination, bytes);
 	}
 
 	const first = manifest.records[0]!;
@@ -671,7 +734,7 @@ describe('deterministic protected-aperture composition', () => {
 			expect(report.ready).toBe(false);
 			expect(report.pendingLayerJobIds).toEqual([
 				'charcoal-forged-stone-v6',
-				'rarity-frame-f-v5',
+				'rarity-frame-f-v9',
 				'rarity-frame-e-v9',
 				'rarity-frame-d-v9',
 				'rarity-frame-c-v9',
@@ -814,15 +877,22 @@ describe('deterministic protected-aperture composition', () => {
 					)
 			},
 			{
-				name: 'stale reprocess packet hash',
+				name: 'coherently reordered F authority inputs',
 				mutate: async (root: string) => {
-					const targetPath = path.join(
+					const jobId = 'rarity-frame-f-v9';
+					await updateJsonArtifact(
 						root,
-						'assets/wiki/skills/icon-production-v1/targets/references/rarity-frame-f-v5.json'
+						`assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+						(target) => {
+							target.references = [...(target.references as unknown[])].reverse();
+						}
 					);
-					await writeFile(
-						targetPath,
-						Buffer.concat([await readFile(targetPath), Buffer.from('\n')])
+					await updateJsonArtifact(
+						root,
+						`assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`,
+						(result) => {
+							result.referenceInputs = [...(result.referenceInputs as unknown[])].reverse();
+						}
 					);
 				}
 			},

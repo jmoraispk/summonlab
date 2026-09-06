@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** In progress; black-matte revision-9 frame route queued
+**Status:** In progress; F-rank black-matte revision-9 replacement packet queued
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
 **Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
 **Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
@@ -27,8 +27,10 @@ The defects are not one alpha-channel problem.
   for every skill. Consequently, all 456 frames are generated interpretations rather than a shared
   pixel-identical layer. Small rail, crest, scale, and ornament differences are systemic.
 - The seven individually attempted v4 rarity-frame jobs failed normalization; only an F v5
-  candidate survives as a standalone frame. The approved seven-frame sheet is a visual authority,
-  not seven production-ready transparent layers.
+  candidate survives as historical standalone-frame evidence. A later full-size cleanup audit
+  found severe magenta aperture speckling and matte residue on its contours, so it is not eligible
+  as the canonical F cleanup layer. The approved seven-frame sheet is a visual authority, not seven
+  production-ready transparent layers.
 - The profile-v3 `charcoal-forged-stone-v5` retry exhausted both provider calls. Its corrected RGB
   source was visually usable but failed the clean-green exterior heuristic, while a direct-alpha
   spike returned painted checker pixels rather than transparency. The owner approved an additive
@@ -57,6 +59,12 @@ The defects are not one alpha-channel problem.
   Exactly six E/D/C/B/A/S-v9 packets preserve each rank's material, proportion, crest, geometry, and
   exclusions while changing the matte contract. Only unattempted D/C/B/A/S-v8 are superseded;
   attempted E-v8, E-v7, and E-v6 remain `revise` evidence. There is no backing-v9 or F-v9 packet.
+- The first full-size deterministic cleanup run exposed F-v5's magenta aperture contamination and
+  contour residue. Its 1,368 untracked outputs were discarded. One additive F-v9 packet now uses
+  the validated black-matte profile/producer-v7 route, exact ordered Option C, approved-sheet, and
+  geometry-guide authority, and the approved blackened-iron/dark-steel identity with sparse
+  minimal rivets, no decorative flourishes, and one integrated F crest. F-v5 remains byte-identical
+  historical evidence; cleanup finalization now requires F-v9 and cannot fall back to F-v5.
 - `repair-skill-icon-mass-exteriors.ts` correctly masks pixels outside the broad outer geometry, but
   it does not restore a canonical frame, protect the frame aperture from subject art, or understand
   semantic glyphs.
@@ -132,12 +140,11 @@ Sigil Binding, Tide Sense, Languages, Read Surface, Mental Fortress, and Ancient
 
 ### Phase 1: establish seven canonical frame layers
 
-Use the existing technically valid F revision-5 candidate and generate standalone higher-revision
-E, D, C, B, A, and S frame candidates through the normalized reference-asset pipeline. Every new
-frame target binds the selected seven-frame sheet as shape authority, Option C as material and
-ornament authority, and `geometry-v2.json` plus its provider-space guide as registration authority.
-Preserve the integrated crest and letter. Validate that the central aperture and exterior are
-transparent and that each rail is continuous.
+Generate standalone revision-9 F, E, D, C, B, A, and S frame candidates through the normalized
+reference-asset pipeline. Every frame target binds the selected seven-frame sheet as shape
+authority, Option C as material and ornament authority, and `geometry-v2.json` plus its
+provider-space guide as registration authority. Preserve the integrated crest and letter. Validate
+that the central aperture and exterior are transparent and that each rail is continuous.
 
 The selected sheet is generation guidance, never a crop or trace source. This follows the current
 production contract and avoids attributing extracted pixels to an independently generated frame.
@@ -147,11 +154,12 @@ geometry, issue a new revision using the exact geometry-first/producer-v5 tuple.
 relabel the failed v5 evidence. Geometry-first retains the canonical `caBX`, assigned-sRGB,
 geometry-v2/guide-v2, and fixed-output provenance gates; it is not a manual masking exception.
 
-The queued production inventory is now exactly backing-v6, F-v5, and E/D/C/B/A/S-v9. The six
+The canonical production inventory is now exactly backing-v6 and F/E/D/C/B/A/S-v9. The six
 unattempted E/D/C/B/A/S v5 frame packets and the five unattempted D/C/B/A/S packets at each of v6,
 v7, and v8 have authority-bound `superseded` results. Attempted E-v6, E-v7, and E-v8 remain
-`revise` evidence, failed backing-v5 is not superseded, and no backing-v7/v8/v9 or F-v6/v7/v8/v9
-packet exists. Revision 9 uses the exact frame-only black-matte profile/producer-v7 tuple; prior
+`revise` evidence, failed backing-v5 is not superseded, and no backing-v7/v8/v9 or F-v6/v7/v8
+packet exists. F-v5 remains immutable but is superseded only as cleanup authority by the additive
+F-v9 packet. Revision 9 uses the exact frame-only black-matte profile/producer-v7 tuple; prior
 profiles and evidence remain immutable.
 
 ### Phase 2: recompose all candidates

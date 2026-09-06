@@ -88,7 +88,7 @@ function validResult() {
 				contentHash: hash
 			},
 			frame: {
-				path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png',
+				path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png',
 				contentHash: hash
 			}
 		},
@@ -270,7 +270,7 @@ describe('skill-icon quality-cleanup contracts', () => {
 		).toBe(false);
 	});
 
-	it('binds F to revision five and every other cleanup frame to revision nine', () => {
+	it('binds every cleanup frame, including F, to revision nine', () => {
 		const fResult = validResult();
 		expect(SkillIconCleanupResultSchema.safeParse(fResult).success).toBe(true);
 		expect(
@@ -280,7 +280,7 @@ describe('skill-icon quality-cleanup contracts', () => {
 					...fResult.compositionAuthority,
 					frame: {
 						...fResult.compositionAuthority.frame,
-						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v6.png'
+						path: 'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v5.png'
 					}
 				}
 			}).success

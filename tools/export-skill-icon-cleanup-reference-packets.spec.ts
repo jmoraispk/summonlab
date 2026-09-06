@@ -20,7 +20,7 @@ const SELECTED_FRAME_SHEET_PATH =
 const GEOMETRY_PATH = 'assets/wiki/skills/icon-production-v1/geometry-v2.json';
 const PROVIDER_GUIDE_PATH =
 	'assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png';
-const frameRarities = ['E', 'D', 'C', 'B', 'A', 'S'] as const;
+const frameRarities = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
 const revisionFiveJobIds = [
 	'rarity-frame-e-v5',
 	'rarity-frame-d-v5',
@@ -56,6 +56,7 @@ const revisionEightJobIds = [
 	'rarity-frame-s-v8'
 ] as const;
 const revisionNineJobIds = [
+	'rarity-frame-f-v9',
 	'rarity-frame-e-v9',
 	'rarity-frame-d-v9',
 	'rarity-frame-c-v9',
@@ -64,6 +65,7 @@ const revisionNineJobIds = [
 	'rarity-frame-s-v9'
 ] as const;
 const frameMaterials = {
+	F: 'blackened iron and dark steel with sparse minimal rivets and no decorative flourishes',
 	E: 'aged bronze with brown-gold patina and understated corner collars',
 	D: 'tempered blue steel with cool edge highlights and restrained rivets',
 	C: 'moonlit silver with clean bevels and minimal ornament',
@@ -119,7 +121,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		).toBe(false);
 	});
 
-	it('preserves revisions five through eight and adds exactly six black-matte revision-nine frame pairs', async () => {
+	it('preserves revisions five through eight and adds exactly seven black-matte revision-nine frame pairs', async () => {
 		const root = await temporaryWorkspace();
 		const existingPacketBytes = new Map<string, Buffer>();
 		for (const jobId of [
@@ -136,7 +138,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		const report = await exportCleanupReferencePackets({ root, mode: 'write' });
 
 		expect(report).toMatchObject({ mode: 'write', written: expect.any(Array), drifted: [] });
-		expect(report.written).toHaveLength(12);
+		expect(report.written).toHaveLength(14);
 		expect(report.jobIds).toEqual([
 			...revisionFiveJobIds,
 			...revisionSixJobIds,
@@ -253,12 +255,11 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		expect(backingAssignment.permittedOutputs).toEqual(backing.output);
 		outputPaths.add(backing.output.candidatePath);
 		outputPaths.add(backing.output.resultPath);
-		expect(outputPaths.size).toBe(14);
+		expect(outputPaths.size).toBe(16);
 		for (const forbiddenJobId of [
 			'rarity-frame-f-v6',
 			'rarity-frame-f-v7',
 			'rarity-frame-f-v8',
-			'rarity-frame-f-v9',
 			'charcoal-forged-stone-v7',
 			'charcoal-forged-stone-v8',
 			'charcoal-forged-stone-v9'
@@ -285,7 +286,7 @@ describe('cleanup shared-layer reference packet exporter', () => {
 		['revision-six assignment', 'assignments', 'rarity-frame-e-v6'],
 		['revision-seven assignment', 'assignments', 'rarity-frame-e-v7'],
 		['revision-eight assignment', 'assignments', 'rarity-frame-e-v8'],
-		['revision-nine assignment', 'assignments', 'rarity-frame-e-v9']
+		['revision-nine assignment', 'assignments', 'rarity-frame-f-v9']
 	] as const)(
 		'refuses to replace a drifted %s packet in write mode',
 		async (_label, kind, jobId) => {

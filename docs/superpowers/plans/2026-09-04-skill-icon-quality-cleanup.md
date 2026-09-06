@@ -505,14 +505,41 @@ Attempted E-v8, E-v7, and E-v6 remain immutable `revise` evidence and are not su
 slice creates no backing-v9, F-v9, candidate image, promotion, or finalizer output and does not
 update the installed personal skill.
 
+### Task 5L: Replace the defective F-rank shared frame authority
+
+**Files:**
+
+- Modify: cleanup packet exporter and focused no-replace tests
+- Modify: cleanup result contract and finalizer shared-layer binding/tests
+- Generate: `rarity-frame-f-v9` target/assignment pair only
+- Preserve: every F-v5 packet/result/candidate and all `mass-production-v1` bytes
+
+The first full-size deterministic materialization audit found severe magenta speckling inside the
+F-v5 aperture and matte residue along its contours. The 1,368 untracked cleanup outputs were
+discarded. F-v5 remains immutable audit evidence but is no longer visually eligible as the
+canonical cleanup frame.
+
+- [x] **Step 1: Add RED coverage for the F-v9 packet and canonical result binding**
+- [x] **Step 2: Export exactly one collision-safe F-v9 target/assignment pair**
+- [x] **Step 3: Bind F cleanup composition to the exact ordinary-v2 F-v9 execution**
+- [x] **Step 4: Preserve strict ordered reference authentication and immutable history**
+
+F-v9 uses the already validated `skill-icon-black-matte-geometry-role-mask-v1` +
+`summonlab-skill-icon-production-v7` tuple, the same Option C/frame-sheet/geometry-guide authority,
+regular point-up geometry, transparent aperture, and black-matte contract as the other v9 frames.
+Its rank identity is blackened iron/dark steel with sparse minimal rivets, no decorative
+flourishes, and one integrated F crest. This task creates no raster, result, promotion, selection,
+owner review, or finalizer output.
+
 ### Task 5: Produce shared layers and all deterministic cleanup candidates
 
 **Files:**
 
-- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{e,d,c,b,a,s}-v9.png`
-- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{e,d,c,b,a,s}-v9.json`
+- Create: `assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-{f,e,d,c,b,a,s}-v9.png`
+- Create: `assets/wiki/skills/icon-production-v1/results/references/rarity-frame-{f,e,d,c,b,a,s}-v9.json`
 - Preserve: the failed `assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json`
-- Preserve: the successful `rarity-frame-f-v5` candidate and result
+- Preserve: the historically successful but full-size-audit-defective `rarity-frame-f-v5`
+  candidate and result as immutable evidence
 - Create: the `charcoal-forged-stone-v6` candidate and result using the issued revision-6 packet
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/*.png`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/*.png`
@@ -520,17 +547,17 @@ update the installed personal skill.
 
 **Interfaces:**
 
-- Consumes: six revision-9 frame assignments, the revision-6 backing assignment, the retained F
-  revision-5 frame, and the complete cleanup manifest.
-- Produces: six frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
+- Consumes: seven revision-9 frame assignments, the revision-6 backing assignment, and the complete
+  cleanup manifest.
+- Produces: seven frame candidates/results, one geometry-first backing candidate/result, and 456 deterministic cleanup
   interiors/composites/results.
 
-- [ ] **Step 1: Dispatch the seven independent reference jobs as one batch**
+- [ ] **Step 1: Dispatch the eight independent reference jobs as one batch**
 
-Use `summonlab-skill-icon-production` once for each revision-9 E/D/C/B/A/S frame, binding
+Use `summonlab-skill-icon-production` once for each revision-9 F/E/D/C/B/A/S frame, binding
 `skill-icon-black-matte-geometry-role-mask-v1` to `summonlab-skill-icon-production-v7`, and once for the
 revision-6 backing packet, binding `skill-icon-geometry-role-mask-v1` to
-`summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or successful F-v5 evidence.
+`summonlab-skill-icon-production-v5`; never alter the failed backing-v5 or historical F-v5 evidence.
 Each worker validates its exact target and assignment, submits the exact prompt, persists through
 `pnpm persist:skill-icon-output`, records full-size and 96-pixel findings, and writes only its
 candidate/result pair. Do not ask for per-job owner approval and do not promote.
@@ -543,7 +570,7 @@ corepack pnpm finalize:skill-icon-quality-cleanup
 corepack pnpm validate:skill-icon-quality-cleanup
 ```
 
-Expected: F revision 5 plus six new frames and the revision-6 backing are role-valid; the reference contact sheet is
+Expected: seven revision-9 frames plus the revision-6 backing are role-valid; the reference contact sheet is
 current in the cleanup namespace. If a job is terminally failed after its allowed correction, stop
 the batch honestly and issue a higher revision in a new plan rather than weakening normalization.
 

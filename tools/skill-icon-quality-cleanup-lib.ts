@@ -27,7 +27,6 @@ import {
 	SkillIconCleanupManifestSchema,
 	SkillIconCleanupResultSchema,
 	SkillIconGeometryV2Schema,
-	SkillIconReprocessTargetSchema,
 	type SkillIconCatalog,
 	type SkillIconCleanupFinding,
 	type SkillIconCleanupManifest,
@@ -35,7 +34,6 @@ import {
 } from '../packages/contracts/src/index.js';
 import type { MassProductionManifest } from './skill-icon-mass-production-lib.js';
 import type { SkillIconMotifMap, SkillIconVisualSpecs } from './skill-icon-production-lib.js';
-import { assertSkillIconReprocessExecutionBytes } from './skill-icon-reprocess-consumer-lib.js';
 
 export const QUALITY_CLEANUP_ROOT =
 	'assets/wiki/skills/icon-production-v1/quality-cleanup-v1' as const;
@@ -539,14 +537,15 @@ const CLEANUP_LAYER_JOBS = [
 		references: CLEANUP_BACKING_REFERENCES
 	},
 	{
-		kind: 'reprocess-v1',
-		jobId: 'rarity-frame-f-v5',
+		kind: 'ordinary-v2',
+		jobId: 'rarity-frame-f-v9',
 		logicalIdentity: 'rarity-frame-f',
-		revision: 5,
+		revision: 9,
 		role: 'rarity-frame',
 		rarity: 'F',
-		profile: 'skill-icon-green-key-role-mask-v3',
-		producer: 'summonlab-skill-icon-reprocess-v1'
+		profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+		producer: 'summonlab-skill-icon-production-v7',
+		references: CLEANUP_FRAME_REFERENCES
 	},
 	...(['E', 'D', 'C', 'B', 'A', 'S'] as const).map((rarity) => ({
 		kind: 'ordinary-v2' as const,
@@ -918,72 +917,32 @@ async function existingCleanupLayer(
 		throw new Error(`Cleanup shared-layer execution evidence is incomplete: ${job.jobId}`);
 	}
 
-	let execution:
-		| ReturnType<typeof SkillIconExecutionV2Schema.parse>
-		| ReturnType<typeof assertSkillIconReprocessExecutionBytes>;
-	let profileProducerMatches: boolean;
-	if (job.kind === 'ordinary-v2') {
-		execution = SkillIconExecutionV2Schema.parse({
-			schemaVersion: 'skill-icon-execution-v2',
-			target: JSON.parse(targetBytes.toString('utf8')) as unknown,
-			assignment: JSON.parse(assignmentBytes.toString('utf8')) as unknown,
-			result: JSON.parse(resultBytes.toString('utf8')) as unknown
-		});
-		const expectedResultReferences = job.references.map(({ path, contentHash }) => ({
-			path,
-			contentHash
-		}));
-		if (
-			JSON.stringify(execution.target.references) !== JSON.stringify(job.references) ||
-			JSON.stringify(execution.result.referenceInputs) !== JSON.stringify(expectedResultReferences)
-		) {
-			throw new Error(
-				`Cleanup shared-layer execution does not match canonical ordered references: ${job.jobId}`
-			);
-		}
-		await Promise.all([
-			...execution.target.references.map((reference) => assertBoundHash(root, reference)),
-			assertBoundHash(root, execution.target.normalization.geometry)
-		]);
-		profileProducerMatches =
-			execution.target.normalization.profile === job.profile &&
-			execution.assignment.normalization.profile === job.profile &&
-			execution.assignment.skillVersion === job.producer;
-	} else {
-		const target = SkillIconReprocessTargetSchema.parse(
-			JSON.parse(targetBytes.toString('utf8')) as unknown
+	const execution = SkillIconExecutionV2Schema.parse({
+		schemaVersion: 'skill-icon-execution-v2',
+		target: JSON.parse(targetBytes.toString('utf8')) as unknown,
+		assignment: JSON.parse(assignmentBytes.toString('utf8')) as unknown,
+		result: JSON.parse(resultBytes.toString('utf8')) as unknown
+	});
+	const expectedResultReferences = job.references.map(({ path, contentHash }) => ({
+		path,
+		contentHash
+	}));
+	if (
+		JSON.stringify(execution.target.references) !== JSON.stringify(job.references) ||
+		JSON.stringify(execution.result.referenceInputs) !== JSON.stringify(expectedResultReferences)
+	) {
+		throw new Error(
+			`Cleanup shared-layer execution does not match canonical ordered references: ${job.jobId}`
 		);
-		const [originTargetBytes, originAssignmentBytes, originResultBytes] = await Promise.all([
-			regularBytes(root, target.originAuthority.target.path),
-			regularBytes(root, target.originAuthority.assignment.path),
-			regularBytes(root, target.originAuthority.result.path)
-		]);
-		const originTarget = JSON.parse(originTargetBytes.toString('utf8')) as {
-			readonly output?: { readonly candidatePath?: unknown };
-		};
-		const originCandidatePresent =
-			typeof originTarget.output?.candidatePath === 'string' &&
-			(await currentBytes(root, originTarget.output.candidatePath)) !== null;
-		execution = assertSkillIconReprocessExecutionBytes({
-			targetPath: paths.target,
-			targetBytes,
-			assignmentPath: paths.assignment,
-			assignmentBytes,
-			resultPath: paths.result,
-			resultBytes,
-			originTargetBytes,
-			originAssignmentBytes,
-			originResultBytes,
-			originCandidatePresent
-		});
-		await Promise.all([
-			assertBoundHash(root, execution.target.processingAuthority.geometry),
-			assertBoundHash(root, execution.target.processingAuthority.guide)
-		]);
-		profileProducerMatches =
-			execution.target.processingAuthority.profile === job.profile &&
-			execution.assignment.toolVersion === job.producer;
 	}
+	await Promise.all([
+		...execution.target.references.map((reference) => assertBoundHash(root, reference)),
+		assertBoundHash(root, execution.target.normalization.geometry)
+	]);
+	const profileProducerMatches =
+		execution.target.normalization.profile === job.profile &&
+		execution.assignment.normalization.profile === job.profile &&
+		execution.assignment.skillVersion === job.producer;
 
 	const { target, result } = execution;
 	const contentHash = sha256(candidate);

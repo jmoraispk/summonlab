@@ -238,7 +238,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports exactly the six queued black-matte v9 frames while accepting retained shared layers', async () => {
+	it('reports exactly the queued F black-matte v9 frame while accepting produced shared layers', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
@@ -246,15 +246,8 @@ describe('skill-icon revision resolution', () => {
 			message = error instanceof Error ? error.message : String(error);
 		}
 		const diagnostics = message.split('\n');
-		expect(diagnostics).toEqual([
-			'references/rarity-frame-a-v9: missing result inventory entry',
-			'references/rarity-frame-b-v9: missing result inventory entry',
-			'references/rarity-frame-c-v9: missing result inventory entry',
-			'references/rarity-frame-d-v9: missing result inventory entry',
-			'references/rarity-frame-e-v9: missing result inventory entry',
-			'references/rarity-frame-s-v9: missing result inventory entry'
-		]);
-		expect(diagnostics).toHaveLength(6);
+		expect(diagnostics).toEqual(['references/rarity-frame-f-v9: missing result inventory entry']);
+		expect(diagnostics).toHaveLength(1);
 		expect(message).not.toMatch(/latest revision v8 is revise/iu);
 		expect(message).not.toMatch(/latest revision v7 is revise/iu);
 		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);

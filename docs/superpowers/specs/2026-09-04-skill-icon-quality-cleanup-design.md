@@ -49,10 +49,10 @@ content.
 
 ### 1. Canonical shared layers
 
-The approved seven-frame sheet is generation guidance, not a crop source. The cleanup reuses the
-technically valid F revision-5 frame candidate and creates revision-6 standalone candidates for E,
-D, C, B, A, S, and the charcoal backing through the existing normalized reference-asset pipeline.
-New frame targets bind both the selected shape sheet and Option C material authority.
+The approved seven-frame sheet is generation guidance, not a crop source. The original cleanup
+design reused the then-technically-valid F revision-5 frame candidate and created later standalone
+candidates for E, D, C, B, A, S, and the charcoal backing through the normalized reference-asset
+pipeline. New frame targets bind both the selected shape sheet and Option C material authority.
 
 The seven frames and backing are generated as one batch. The cleanup run may use their exact hashes
 to build review candidates, but they remain candidates and are not called approved masters before
@@ -108,6 +108,16 @@ Only output-free D/C/B/A/S-v8 are coordinator-superseded against their exact v9 
 attempted E-v8, E-v7, and E-v6 are not superseded. Cleanup composition now uses backing-v6, F-v5,
 and E/D/C/B/A/S-v9. No backing-v9 or F-v9 packet exists, and every earlier profile remains
 byte-stable.
+
+The first full-size materialization audit subsequently disqualified F-v5: its aperture contains
+severe magenta speckling and its contours retain matte residue. All 1,368 untracked deterministic
+outputs from that audit were discarded. The canonical cleanup authority now uses backing-v6 and
+F/E/D/C/B/A/S-v9. F-v9 is an ordinary structural-v2 packet on the same exact black-matte
+profile/producer-v7 tuple and ordered Option C, approved-sheet, and geometry-guide authorities as
+the other v9 frames. Its approved identity is blackened iron/dark steel, sparse minimal rivets, no
+decorative flourishes, and one integrated F crest; its aperture and exterior contain no icon,
+backing, or foreground. F-v5 remains byte-identical immutable audit evidence and is not deleted,
+overwritten, or relabeled.
 
 ### 2. Deterministic whole-catalog recomposition
 
