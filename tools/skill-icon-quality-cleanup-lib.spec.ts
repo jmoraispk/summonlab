@@ -583,6 +583,29 @@ describe('skill-icon quality-cleanup manifest exporter', { timeout: 60_000 }, ()
 		}
 	});
 
+	it.each(['check', 'write'] as const)(
+		'rejects exact packet bytes reached through an outside-root parent symlink in %s mode',
+		async (mode) => {
+			// Catches accepting a regular leaf whose ancestor redirects the complete exact packet tree.
+			const root = await seedExporterRoot();
+			const packetParent = path.join(root, QUALITY_CLEANUP_ROOT, 'prompts/revisions');
+			const outside = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-packets-outside-'));
+			const relocatedParent = path.join(outside, 'revisions');
+			await rename(packetParent, relocatedParent);
+			await symlink(relocatedParent, packetParent, 'dir');
+			const exactOutsideSnapshot = await snapshot(relocatedParent);
+			try {
+				await expect(exportSkillIconQualityCleanup({ root, mode })).rejects.toThrow(
+					/parent|symbolic|outside|escape/iu
+				);
+				expect(await snapshot(relocatedParent)).toEqual(exactOutsideSnapshot);
+			} finally {
+				await rm(root, { recursive: true });
+				await rm(outside, { recursive: true });
+			}
+		}
+	);
+
 	it('does not clobber synchronized drift that appears after the missing-file check', async () => {
 		const root = await seedExporterRoot();
 		const cleanupDirectory = path.resolve(root, QUALITY_CLEANUP_ROOT);

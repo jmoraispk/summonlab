@@ -816,19 +816,6 @@ export async function loadCleanupRevisionPackets(
 	return buildCleanupRevisionPackets(repositoryRoot, input, manifest, expectedManifestBytes);
 }
 
-async function currentBytes(root: string, repositoryPath: string): Promise<Buffer | null> {
-	const absolutePath = path.resolve(root, repositoryPath);
-	const metadata = await lstat(absolutePath).catch((error: NodeJS.ErrnoException) => {
-		if (error.code === 'ENOENT') return null;
-		throw error;
-	});
-	if (!metadata) return null;
-	if (!metadata.isFile() || metadata.isSymbolicLink()) {
-		throw new Error(`Refusing symbolic-link or non-regular cleanup artifact: ${repositoryPath}`);
-	}
-	return readFile(absolutePath);
-}
-
 interface HeldCleanupOutputParent {
 	readonly path: string;
 	readonly handle: Awaited<ReturnType<typeof open>>;
@@ -844,7 +831,11 @@ function heldCleanupOutputChild(parent: HeldCleanupOutputParent, name: string): 
 	return `/proc/self/fd/${parent.handle.fd}/${name}`;
 }
 
-async function ensureSafeCleanupOutputParent(root: string, destination: string): Promise<void> {
+async function ensureSafeCleanupOutputParent(
+	root: string,
+	destination: string,
+	createMissing: boolean
+): Promise<boolean> {
 	const rootMetadata = await lstat(root);
 	if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory()) {
 		throw new Error('Cleanup artifact workspace root must be a real directory');
@@ -864,6 +855,7 @@ async function ensureSafeCleanupOutputParent(root: string, destination: string):
 			throw error;
 		});
 		if (!metadata) {
+			if (!createMissing) return false;
 			await mkdir(cursor).catch((error: NodeJS.ErrnoException) => {
 				if (error.code !== 'EEXIST') throw error;
 			});
@@ -876,13 +868,15 @@ async function ensureSafeCleanupOutputParent(root: string, destination: string):
 			throw new Error(`Cleanup artifact parent escaped the workspace root: ${cursor}`);
 		}
 	}
+	return true;
 }
 
-async function openCleanupOutputParent(
+async function bindCleanupOutputParent(
 	root: string,
-	destination: string
-): Promise<HeldCleanupOutputParent> {
-	await ensureSafeCleanupOutputParent(root, destination);
+	destination: string,
+	createMissing: boolean
+): Promise<HeldCleanupOutputParent | null> {
+	if (!(await ensureSafeCleanupOutputParent(root, destination, createMissing))) return null;
 	const parentPath = path.dirname(destination);
 	const [expectedRealPath, expectedMetadata] = await Promise.all([
 		realpath(parentPath),
@@ -918,6 +912,15 @@ async function openCleanupOutputParent(
 	}
 }
 
+async function openCleanupOutputParent(
+	root: string,
+	destination: string
+): Promise<HeldCleanupOutputParent> {
+	const parent = await bindCleanupOutputParent(root, destination, true);
+	if (!parent) throw new Error(`Cleanup artifact parent is missing: ${path.dirname(destination)}`);
+	return parent;
+}
+
 async function assertCleanupOutputParentNamed(parent: HeldCleanupOutputParent): Promise<void> {
 	const [realPathNow, metadata] = await Promise.all([realpath(parent.path), lstat(parent.path)]);
 	if (
@@ -928,6 +931,53 @@ async function assertCleanupOutputParentNamed(parent: HeldCleanupOutputParent): 
 		metadata.ino !== parent.inode
 	) {
 		throw new Error(`Cleanup artifact parent identity changed: ${parent.path}`);
+	}
+}
+
+async function currentBytes(root: string, repositoryPath: string): Promise<Buffer | null> {
+	const absolutePath = path.resolve(root, repositoryPath);
+	if (!isInside(root, absolutePath) || absolutePath === root) {
+		throw new Error(`Cleanup artifact path escaped the workspace root: ${repositoryPath}`);
+	}
+	const parent = await bindCleanupOutputParent(root, absolutePath, false);
+	if (!parent) return null;
+	const heldPath = heldCleanupOutputChild(parent, path.basename(absolutePath));
+	let handle: Awaited<ReturnType<typeof open>> | null = null;
+	try {
+		try {
+			handle = await open(heldPath, constants.O_RDONLY | constants.O_NOFOLLOW);
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+				await assertCleanupOutputParentNamed(parent);
+				return null;
+			}
+			if ((error as NodeJS.ErrnoException).code === 'ELOOP') {
+				throw new Error(
+					`Refusing symbolic-link or non-regular cleanup artifact: ${repositoryPath}`,
+					{ cause: error }
+				);
+			}
+			throw error;
+		}
+		const opened = await handle.stat();
+		if (!opened.isFile()) {
+			throw new Error(`Refusing symbolic-link or non-regular cleanup artifact: ${repositoryPath}`);
+		}
+		const bytes = await handle.readFile();
+		const named = await lstat(heldPath);
+		if (
+			named.isSymbolicLink() ||
+			!named.isFile() ||
+			named.dev !== opened.dev ||
+			named.ino !== opened.ino
+		) {
+			throw new Error(`Cleanup artifact identity changed during preflight: ${repositoryPath}`);
+		}
+		await assertCleanupOutputParentNamed(parent);
+		return bytes;
+	} finally {
+		await handle?.close().catch(() => undefined);
+		await parent.handle.close().catch(() => undefined);
 	}
 }
 
