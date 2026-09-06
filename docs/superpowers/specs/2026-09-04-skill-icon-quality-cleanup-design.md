@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup Design
 
 **Date:** 2026-09-04
-**Status:** In implementation; geometry-first shared-layer route approved
+**Status:** In implementation; semantic-revision packets and persistence ready
 **Issue:** [Skill Icon Quality Cleanup](../issues/2026-09-04-skill-icon-quality-cleanup.md)
 
 ## Goal
@@ -148,6 +148,17 @@ only detached explanatory badges, arrows, gauges, hearts, crosses, chevrons, or 
 The revised provider image is never promoted directly. It is reduced to the protected interior and
 passes through the same backing-and-frame compositor as every other icon.
 
+The coordinator exports exactly one immutable `revision-packet-v1` JSON artifact per confirmed
+target. Its ordered references are Painted Emblem style authority, provider-space geometry guide,
+the exact family sheet, the original provider source, and the current deterministic composite. The
+packet additionally binds the frozen cleanup manifest, source candidate, current result, geometry,
+backing, rank frame, exact prompt hash, one-initial-plus-one-correction ceiling, and four derived
+destinations. Persistence accepts no destination override: it retains the supplied provider PNG
+byte-for-byte, derives the protected interior and recomposed candidate, records full-size and
+384-pixel observations, stages all four artifacts, reauthenticates every input, and uses create-only
+hard links with inode-and-byte-owned rollback. Any stale hash, symlink, path escape, pre-existing
+destination, authority mutation, excess attempt, or partial publication fails closed.
+
 The ten symbolic-language skills remain in a separate decision lane because their symbols may be
 the central magical or knowledge subject. They are displayed at full size in the final review with
 `keep` and `remove` decisions; the system never guesses that a meaningful sigil is UI debris.
@@ -179,6 +190,7 @@ The namespace contains:
 
 - `manifest.json`: frozen authorities, inventory, per-skill disposition, hashes, and completion;
 - `findings.json`: machine-readable confirmed and review-required defects;
+- `prompts/revisions/`: 28 immutable, authority-bound semantic-revision packets;
 - `interiors/`: deterministic legacy-interior migration layers;
 - `provider-sources/`: exact sources for targeted semantic revisions;
 - `revisions/`: normalized revised interior candidates and receipts;

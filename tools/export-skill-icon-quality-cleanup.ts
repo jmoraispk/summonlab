@@ -15,7 +15,7 @@ if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === imp
 	exportSkillIconQualityCleanup({ mode: parseMode(process.argv.slice(2)) })
 		.then((report) => {
 			process.stdout.write(
-				`${report.mode}: ${report.counts.total} skills (${report.counts.Martial} Martial, ${report.counts.Magical} Magical, ${report.counts.Craft} Craft); ${report.written.length} written; ${report.drifted.length} drifted\n`
+				`${report.mode}: ${report.counts.total} skills (${report.counts.Martial} Martial, ${report.counts.Magical} Magical, ${report.counts.Craft} Craft); ${report.revisionPackets} immutable revision packets; ${report.written.length} written; ${report.drifted.length} drifted\n`
 			);
 			if (report.drifted.length > 0) process.exitCode = 1;
 		})

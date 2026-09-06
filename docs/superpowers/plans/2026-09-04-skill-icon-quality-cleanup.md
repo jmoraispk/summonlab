@@ -609,9 +609,10 @@ git commit -m "feat(skills): recompose canonical icon frames"
 - Modify: `tools/export-skill-icon-quality-cleanup.ts`
 - Modify: `package.json`
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/*.json`
-- Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/*.png`
-- Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/*.png`
-- Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/*.json`
+
+Task 6 materializes packet JSON only. Its authenticated persister defines the provider-source,
+revised-interior, composite, and result outputs; Task 7 supplies and persists those raster/result
+artifacts after generation and visual inspection.
 
 **Interfaces:**
 
@@ -621,13 +622,13 @@ git commit -m "feat(skills): recompose canonical icon frames"
 - The input binds target ID, exact prompt, ordered reference paths/hashes, provider source hash,
   output paths, and one-attempt-plus-one-correction ceiling.
 
-- [ ] **Step 1: Write persistence and authority tests**
+- [x] **Step 1: Write persistence and authority tests**
 
 Reject wrong target IDs, stale source/current-candidate/family-sheet hashes, unlisted references,
 path traversal, symlinks, existing output paths, more than two attempts, and any manifest edit by a
 worker. Prove candidate and result publish together without replacement.
 
-- [ ] **Step 2: Run the focused test and verify failure**
+- [x] **Step 2: Run the focused test and verify failure**
 
 ```bash
 corepack pnpm vitest run tools/persist-skill-icon-cleanup-output.spec.ts
@@ -635,7 +636,7 @@ corepack pnpm vitest run tools/persist-skill-icon-cleanup-output.spec.ts
 
 Expected: FAIL because the persister does not exist.
 
-- [ ] **Step 3: Export exact revision prompts**
+- [x] **Step 3: Export exact revision prompts**
 
 Each prompt repeats the canonical dominant subject, optional supporting cue, palette, composition,
 and exclusions. It adds the exact unwanted glyph from `findings.source.json` and this invariant:
@@ -650,7 +651,7 @@ the protected central aperture.
 References are the Painted Emblem authority, geometry guide, exact family reference sheet, original
 provider source, and current cleanup composite, each with a purpose-limited hash.
 
-- [ ] **Step 4: Implement no-replace persistence**
+- [x] **Step 4: Implement no-replace persistence**
 
 Retain exact provider bytes, normalize only the cleanup interior through the declared mask, compose
 with the same backing/frame hashes, and publish provider source, revised interior, composite, and
@@ -666,7 +667,7 @@ The command accepts exactly `--packet`, `--source`, `--source-hash`, `--attempt-
 full-size/384-pixel inspection outcomes and observations. It derives every repository destination
 from the immutable packet.
 
-- [ ] **Step 5: Run tests and commit the protocol**
+- [x] **Step 5: Run tests and commit the protocol**
 
 ```bash
 corepack pnpm vitest run tools/persist-skill-icon-cleanup-output.spec.ts \

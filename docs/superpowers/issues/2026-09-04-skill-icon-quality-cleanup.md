@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** In progress; F-rank black-matte revision-9 replacement packet queued
+**Status:** In progress; deterministic catalog complete and 28 semantic-revision packets ready
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
 **Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
 **Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
@@ -182,6 +182,14 @@ than receiving a manual smear or patch.
 Regenerate or inpaint only the icon layer for the confirmed glyph list with the existing motif-family
 reference and a hard exclusion for badges, arrows, gauges, hearts, crosses, corner symbols, or
 explanatory UI. Run the result through the same backing/frame composition from Phase 2.
+
+The revision protocol is now implemented. Exactly 28 immutable packets bind the cleanup manifest,
+canonical semantic fields, exact prompt, ordered purpose-limited reference hashes, original source,
+current candidate/result, rank-specific backing/frame authorities, two-attempt ceiling, and four
+collision-free output paths. The cleanup persister retains provider bytes exactly, masks only the
+revised interior, recomposes with the bound layers, and publishes provider/interior/composite/result
+as one create-only transaction with owned rollback. Task 6 generated packet JSON only; raster
+production and human visual inspection remain in Task 7.
 
 ### Phase 4: add missing automated gates
 

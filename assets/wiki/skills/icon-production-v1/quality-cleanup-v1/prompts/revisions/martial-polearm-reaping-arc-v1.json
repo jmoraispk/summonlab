@@ -1,0 +1,102 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v1",
+	"revision": 1,
+	"targetId": "martial:polearm:reaping-arc",
+	"name": "Reaping Arc",
+	"domain": "Martial",
+	"family": "Polearm",
+	"rank": "D",
+	"motifFamily": "polearm.reaping-blade",
+	"finding": {
+		"targetId": "martial:polearm:reaping-arc",
+		"kind": "stray-ui-glyph",
+		"detail": "Lower-left circular gauge.",
+		"requiredAction": "revise-art"
+	},
+	"visualSpec": {
+		"dominantSubject": "a clearly visible halberd actively performing Reaping Arc, with the acting tool never replaced by a free-floating effect",
+		"supportingCue": "one restrained secondary cue communicating this effect: Wide sweep; each kill refreshes the cooldown",
+		"semanticPalette": [
+			"tempered steel",
+			"charcoal black",
+			"restrained warm sparks"
+		],
+		"composition": "Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.",
+		"exclusions": [
+			"no skill name, mastery, level, caption, logo, watermark, or UI panel",
+			"no extra frame letter or rarity symbol beyond the required integrated crest",
+			"no narrative scenery or unrelated props",
+			"no effect-only abstraction replacing the concrete acting subject from F through A"
+		]
+	},
+	"cleanupManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
+		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+	},
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-reaping-arc.png",
+		"contentHash": "838ef5c16c135347a64d9350a5108f3bb79fc1db538a9c4015f9976b5f32f194"
+	},
+	"currentCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc.png",
+		"contentHash": "74f2cebaee901e23dc01a870d34d1eb5b2132a515cc3a7afeda022decb7f642a"
+	},
+	"currentResult": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-reaping-arc.json",
+		"contentHash": "1bc2e53f271ec0639d4c9bce841c780b85a366f738a55dd6b40084e5aadd1434"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-reaping-blade.png",
+			"purpose": "Exact polearm.reaping-blade motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "cb5250ab6c16075ab0f659834c5cd4cd9f32863266dbb1b4fb85e4f7bfe78caa"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-reaping-arc-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "e089ab59a4a3d42ffa80a1199a3f8d5d2dd83edc3e30ae628304677ee058e47d"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "74f2cebaee901e23dc01a870d34d1eb5b2132a515cc3a7afeda022decb7f642a"
+		}
+	],
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Reaping Arc in the Martial / Polearm taxonomy.\nDominant subject: a clearly visible halberd actively performing Reaping Arc, with the acting tool never replaced by a free-floating effect\nSupporting cue: one restrained secondary cue communicating this effect: Wide sweep; each kill refreshes the cooldown\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Lower-left circular gauge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and D-rank frame.",
+	"exactPromptHash": "6b959f437358a81a0e930c0947ca8ff2a901832f2b108887bb58a91af5aed98d",
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v1.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v1.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v1.json"
+	}
+}

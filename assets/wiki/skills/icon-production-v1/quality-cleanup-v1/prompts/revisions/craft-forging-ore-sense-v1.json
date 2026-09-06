@@ -1,0 +1,102 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v1",
+	"revision": 1,
+	"targetId": "craft:forging:ore-sense",
+	"name": "Ore Sense",
+	"domain": "Craft",
+	"family": "Forging",
+	"rank": "F",
+	"motifFamily": "forging.smithing",
+	"finding": {
+		"targetId": "craft:forging:ore-sense",
+		"kind": "stray-ui-glyph",
+		"detail": "Corner eye badge.",
+		"requiredAction": "revise-art"
+	},
+	"visualSpec": {
+		"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Ore Sense",
+		"supportingCue": "one restrained secondary cue communicating this effect: Identifies raw material quality by eye. **Foundation.**",
+		"semanticPalette": [
+			"worked bronze",
+			"charcoal black",
+			"natural material color"
+		],
+		"composition": "Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.",
+		"exclusions": [
+			"no skill name, mastery, level, caption, logo, watermark, or UI panel",
+			"no extra frame letter or rarity symbol beyond the required integrated crest",
+			"no narrative scenery or unrelated props",
+			"no effect-only abstraction replacing the concrete acting subject from F through A"
+		]
+	},
+	"cleanupManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
+		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+	},
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-ore-sense.png",
+		"contentHash": "7cb7a186c4ed5e61c2a431cab1c0b4e91aeea6f47d7831366b4fa564b273381d"
+	},
+	"currentCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-ore-sense.png",
+		"contentHash": "8795e56828b4de80b2de321b1b8678694788210c2174c94b49af7033d1a6683b"
+	},
+	"currentResult": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-ore-sense.json",
+		"contentHash": "c3529b382ad410e1b1ee0be4dd0bda639ad4ebcbb40b1464a99185099f232ac4"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-smithing.png",
+			"purpose": "Exact forging.smithing motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "8fadd4e02ab0d0d6e31381ac175ab179c9882b98f66923871d4b2ef9cb4564fa"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-forging-ore-sense-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "2802522a5a4919e8d77b4ea8d71f5f83a0f001024297079c1372f6ad54e5d854"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-ore-sense.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "8795e56828b4de80b2de321b1b8678694788210c2174c94b49af7033d1a6683b"
+		}
+	],
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Ore Sense in the Craft / Forging taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Ore Sense\nSupporting cue: one restrained secondary cue communicating this effect: Identifies raw material quality by eye. **Foundation.**\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Corner eye badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and F-rank frame.",
+	"exactPromptHash": "17a1dc2fc4e4cd9125176823874da774dd1ea7242796416b0b07119bb18b50fd",
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v1.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-ore-sense-v1.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-ore-sense-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v1.json"
+	}
+}

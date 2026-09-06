@@ -15,6 +15,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import sharp from 'sharp';
+import { z } from 'zod';
 
 import {
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
@@ -43,6 +44,83 @@ const FINDINGS_SOURCE_PATH = `${QUALITY_CLEANUP_ROOT}/findings.source.json` as c
 const MANIFEST_PATH = `${QUALITY_CLEANUP_ROOT}/manifest.json` as const;
 const FINDINGS_PATH = `${QUALITY_CLEANUP_ROOT}/findings.json` as const;
 
+export const CLEANUP_REVISION_PROMPT_INVARIANT =
+	'Preserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.' as const;
+
+const REPOSITORY_PATH = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\\)[a-zA-Z0-9._/-]+$/u;
+const SHA256 = /^[a-f0-9]{64}$/u;
+const RevisionBindingSchema = z
+	.object({
+		path: z.string().regex(REPOSITORY_PATH),
+		contentHash: z.string().regex(SHA256)
+	})
+	.strict();
+
+export const CleanupRevisionPacketSchema = z
+	.object({
+		schemaVersion: z.literal('skill-icon-quality-cleanup-revision-packet-v1'),
+		revision: z.literal(1),
+		targetId: z.string().min(1),
+		name: z.string().min(1),
+		domain: z.string().min(1),
+		family: z.string().min(1),
+		rank: z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S']),
+		motifFamily: z.string().min(1),
+		finding: SkillIconCleanupFindingSchema,
+		visualSpec: z
+			.object({
+				dominantSubject: z.string().min(1),
+				supportingCue: z.string().min(1).nullable(),
+				semanticPalette: z.array(z.string().min(1)).min(1),
+				composition: z.string().min(1),
+				exclusions: z.array(z.string().min(1)).min(1)
+			})
+			.strict(),
+		cleanupManifest: RevisionBindingSchema,
+		sourceCandidate: RevisionBindingSchema,
+		currentCandidate: RevisionBindingSchema,
+		currentResult: RevisionBindingSchema,
+		compositionAuthority: z
+			.object({
+				geometry: RevisionBindingSchema,
+				backing: RevisionBindingSchema,
+				frame: RevisionBindingSchema
+			})
+			.strict(),
+		references: z
+			.array(
+				z
+					.object({
+						path: z.string().regex(REPOSITORY_PATH),
+						purpose: z.string().min(1),
+						contentHash: z.string().regex(SHA256)
+					})
+					.strict()
+			)
+			.length(5),
+		exactPrompt: z.string().min(1),
+		exactPromptHash: z.string().regex(SHA256),
+		attempts: z
+			.object({ initial: z.literal(1), correctiveEdits: z.literal(1), maximum: z.literal(2) })
+			.strict(),
+		output: z
+			.object({
+				providerSourcePath: z.string().regex(REPOSITORY_PATH),
+				revisedInteriorPath: z.string().regex(REPOSITORY_PATH),
+				compositePath: z.string().regex(REPOSITORY_PATH),
+				resultPath: z.string().regex(REPOSITORY_PATH)
+			})
+			.strict()
+	})
+	.strict();
+
+export type CleanupRevisionPacket = z.infer<typeof CleanupRevisionPacketSchema>;
+
+export interface CleanupRevisionPacketArtifact {
+	readonly path: string;
+	readonly packet: CleanupRevisionPacket;
+}
+
 const AUTHORITY_PATHS = {
 	massProductionManifest: `${MASS_PRODUCTION_ROOT}/manifest.json`,
 	catalog: 'assets/wiki/skills/icon-production-v1/catalog.json',
@@ -70,6 +148,7 @@ export interface CleanupManifestInput {
 export interface CleanupExportReport {
 	readonly mode: 'write' | 'check';
 	readonly counts: Readonly<{ total: number; Martial: number; Magical: number; Craft: number }>;
+	readonly revisionPackets: number;
 	readonly written: readonly string[];
 	readonly drifted: readonly string[];
 }
@@ -364,6 +443,309 @@ export function buildSkillIconCleanupManifest(
 	});
 }
 
+const REVISION_REFERENCE_PURPOSES = {
+	paintedEmblem: 'Painted Emblem style authority only; never copy its pixels or rank frame.',
+	geometryGuide:
+		'Protected central-aperture geometry only; never render guide colors or construction marks.',
+	originalProvider:
+		'Original provider source for target identity, subject, palette, lighting, and action continuity only.',
+	currentComposite:
+		'Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.'
+} as const;
+
+function revisionPrompt(input: {
+	readonly name: string;
+	readonly domain: string;
+	readonly family: string;
+	readonly rank: string;
+	readonly finding: SkillIconCleanupFinding;
+	readonly visualSpec: {
+		readonly dominantSubject: string;
+		readonly supportingCue: string | null;
+		readonly semanticPalette: readonly string[];
+		readonly composition: string;
+		readonly exclusions: readonly string[];
+	};
+}): string {
+	return `Use case: stylized-concept
+Asset type: isolated full-resolution Summonlab skill-icon artwork revision
+Primary request: Revise only the painted artwork for ${input.name} in the ${input.domain} / ${input.family} taxonomy.
+Dominant subject: ${input.visualSpec.dominantSubject}
+Supporting cue: ${input.visualSpec.supportingCue ?? 'none'}
+Palette: ${input.visualSpec.semanticPalette.join(', ')}
+Composition: ${input.visualSpec.composition}
+Existing exclusions: ${input.visualSpec.exclusions.join('; ')}
+Unwanted detached explanatory UI glyph: ${input.finding.detail}
+${CLEANUP_REVISION_PROMPT_INVARIANT}
+Output exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and ${input.rank}-rank frame.`;
+}
+
+function assertPacketPathCoverage(
+	manifest: SkillIconCleanupManifest,
+	packets: readonly CleanupRevisionPacketArtifact[]
+): void {
+	if (packets.length !== 28) {
+		throw new Error(`Expected exactly 28 cleanup revision packets; received ${packets.length}`);
+	}
+	const packetPaths = packets.map((artifact) => artifact.path);
+	if (new Set(packetPaths).size !== packetPaths.length) {
+		throw new Error('Cleanup revision packet path collision');
+	}
+	const outputOwners = new Map<string, string>();
+	const reservedPaths = new Set<string>([
+		MANIFEST_PATH,
+		FINDINGS_PATH,
+		FINDINGS_SOURCE_PATH,
+		...manifest.records.flatMap((record) => [
+			record.sourceCandidate.path,
+			record.cleanupCompositePath,
+			record.resultPath,
+			cleanupInteriorPath(record.targetId)
+		])
+	]);
+	for (const { path: packetPath, packet } of packets) {
+		if (reservedPaths.has(packetPath)) {
+			throw new Error(`Cleanup revision packet collides with immutable input: ${packetPath}`);
+		}
+		for (const outputPath of Object.values(packet.output)) {
+			const owner = outputOwners.get(outputPath);
+			if (owner) {
+				throw new Error(
+					`Cleanup revision output collision: ${outputPath} (${owner}, ${packet.targetId})`
+				);
+			}
+			if (reservedPaths.has(outputPath) || packetPaths.includes(outputPath)) {
+				throw new Error(`Cleanup revision output collides with immutable input: ${outputPath}`);
+			}
+			outputOwners.set(outputPath, packet.targetId);
+		}
+	}
+}
+
+async function buildCleanupRevisionPackets(
+	root: string,
+	input: CleanupManifestInput,
+	manifest: SkillIconCleanupManifest,
+	manifestBytes: Buffer
+): Promise<readonly CleanupRevisionPacketArtifact[]> {
+	const revisionFindings = input.findings.filter(
+		(finding) => finding.kind === 'stray-ui-glyph' && finding.requiredAction === 'revise-art'
+	);
+	if (
+		revisionFindings.length !== 28 ||
+		new Set(revisionFindings.map((finding) => finding.targetId)).size !== 28
+	) {
+		throw new Error('Cleanup findings do not contain exactly 28 unique stray-glyph revisions');
+	}
+	const catalogByTargetId = new Map(
+		input.catalog.records.map((record) => [record.targetId, record])
+	);
+	const motifByTargetId = new Map(
+		input.motifMap.records.map((record) => [record.targetId, record])
+	);
+	const visualByTargetId = new Map(
+		input.visualSpecifications.records.map((record) => [record.targetId, record])
+	);
+	const massByTargetId = new Map(
+		input.massProductionManifest.skills.map((record) => [record.targetId, record])
+	);
+	const familyById = new Map(
+		input.massProductionManifest.families.map((record) => [record.familyId, record])
+	);
+	const cleanupByTargetId = new Map(manifest.records.map((record) => [record.targetId, record]));
+	const manifestBinding = { path: MANIFEST_PATH, contentHash: sha256(manifestBytes) };
+
+	const packets = await Promise.all(
+		revisionFindings.map(async (finding): Promise<CleanupRevisionPacketArtifact> => {
+			const targetId = finding.targetId;
+			const catalogRecord = catalogByTargetId.get(targetId);
+			const motifRecord = motifByTargetId.get(targetId);
+			const visualRecord = visualByTargetId.get(targetId);
+			const massRecord = massByTargetId.get(targetId);
+			const cleanupRecord = cleanupByTargetId.get(targetId);
+			if (!catalogRecord || !motifRecord || !visualRecord || !massRecord || !cleanupRecord) {
+				throw new Error(`Cleanup revision target is missing canonical evidence: ${targetId}`);
+			}
+			if (
+				catalogRecord.status !== 'authored' ||
+				visualRecord.status !== 'authored' ||
+				!catalogRecord.visualSpec ||
+				!visualRecord.visualSpec ||
+				JSON.stringify(catalogRecord.visualSpec) !== JSON.stringify(visualRecord.visualSpec) ||
+				motifRecord.motifFamily !== catalogRecord.motifFamily ||
+				massRecord.motifFamily !== catalogRecord.motifFamily ||
+				massRecord.name !== catalogRecord.name ||
+				massRecord.domain !== catalogRecord.domain ||
+				massRecord.family !== catalogRecord.family ||
+				massRecord.rarity !== catalogRecord.rarity
+			) {
+				throw new Error(`Cleanup revision semantic authority drift: ${targetId}`);
+			}
+			const familyRecord = familyById.get(catalogRecord.motifFamily);
+			if (
+				!familyRecord ||
+				familyRecord.status !== 'candidate' ||
+				!familyRecord.memberTargetIds.includes(targetId) ||
+				!familyRecord.referenceSheetHash
+			) {
+				throw new Error(`Cleanup revision family authority is incomplete: ${targetId}`);
+			}
+			const [familySheetBytes, massResultBytes, currentResultBytes, currentCandidateBytes] =
+				await Promise.all([
+					regularBytes(root, familyRecord.referenceSheetPath),
+					regularBytes(root, massRecord.resultPath),
+					regularBytes(root, cleanupRecord.resultPath),
+					regularBytes(root, cleanupRecord.cleanupCompositePath)
+				]);
+			if (sha256(familySheetBytes) !== familyRecord.referenceSheetHash) {
+				throw new Error(`Cleanup revision family-sheet hash drift: ${targetId}`);
+			}
+			if (!massRecord.resultHash || sha256(massResultBytes) !== massRecord.resultHash) {
+				throw new Error(`Cleanup revision mass-result hash drift: ${targetId}`);
+			}
+			const massResult = JSON.parse(massResultBytes.toString('utf8')) as {
+				readonly identity?: unknown;
+				readonly providerSource?: {
+					readonly path?: unknown;
+					readonly contentHash?: unknown;
+				};
+			};
+			const expectedOriginalProviderPath = `${MASS_PRODUCTION_ROOT}/provider-sources/${cleanupSlug(targetId)}-v1.png`;
+			if (
+				massResult.identity !== targetId ||
+				massResult.providerSource?.path !== expectedOriginalProviderPath ||
+				massResult.providerSource.contentHash !== massRecord.providerSourceHash ||
+				typeof massResult.providerSource.contentHash !== 'string'
+			) {
+				throw new Error(`Cleanup revision original-provider binding drift: ${targetId}`);
+			}
+			const originalProviderBytes = await regularBytes(root, expectedOriginalProviderPath);
+			if (sha256(originalProviderBytes) !== massResult.providerSource.contentHash) {
+				throw new Error(`Cleanup revision original-provider hash drift: ${targetId}`);
+			}
+			const currentResult = SkillIconCleanupResultSchema.parse(
+				JSON.parse(currentResultBytes.toString('utf8')) as unknown
+			);
+			const currentCandidateHash = sha256(currentCandidateBytes);
+			if (
+				currentResult.targetId !== targetId ||
+				JSON.stringify(currentResult.sourceCandidate) !==
+					JSON.stringify(cleanupRecord.sourceCandidate) ||
+				currentResult.cleanupCompositePath !== cleanupRecord.cleanupCompositePath ||
+				currentResult.resultPath !== cleanupRecord.resultPath ||
+				currentResult.rank !== cleanupRecord.rank ||
+				currentResult.disposition !== cleanupRecord.disposition ||
+				currentResult.cleanupCompositeContentHash !== currentCandidateHash ||
+				JSON.stringify(currentResult.compositionAuthority.geometry) !==
+					JSON.stringify(manifest.authority.geometry)
+			) {
+				throw new Error(`Cleanup revision current-candidate binding drift: ${targetId}`);
+			}
+			await Promise.all(
+				Object.values(currentResult.compositionAuthority).map(async (binding) => {
+					if (sha256(await regularBytes(root, binding.path)) !== binding.contentHash) {
+						throw new Error(`Cleanup revision composition-authority hash drift: ${targetId}`);
+					}
+				})
+			);
+
+			const visualSpec = {
+				dominantSubject: catalogRecord.visualSpec.dominantSubject,
+				supportingCue: catalogRecord.visualSpec.supportingCue ?? null,
+				semanticPalette: [...catalogRecord.visualSpec.semanticPalette],
+				composition: catalogRecord.visualSpec.composition,
+				exclusions: [...catalogRecord.visualSpec.exclusions]
+			};
+			const exactPrompt = revisionPrompt({
+				name: catalogRecord.name,
+				domain: catalogRecord.domain,
+				family: catalogRecord.family,
+				rank: catalogRecord.rarity,
+				finding,
+				visualSpec
+			});
+			const slug = cleanupSlug(targetId);
+			const packet = CleanupRevisionPacketSchema.parse({
+				schemaVersion: 'skill-icon-quality-cleanup-revision-packet-v1',
+				revision: 1,
+				targetId,
+				name: catalogRecord.name,
+				domain: catalogRecord.domain,
+				family: catalogRecord.family,
+				rank: catalogRecord.rarity,
+				motifFamily: catalogRecord.motifFamily,
+				finding,
+				visualSpec,
+				cleanupManifest: manifestBinding,
+				sourceCandidate: cleanupRecord.sourceCandidate,
+				currentCandidate: {
+					path: cleanupRecord.cleanupCompositePath,
+					contentHash: currentCandidateHash
+				},
+				currentResult: {
+					path: cleanupRecord.resultPath,
+					contentHash: sha256(currentResultBytes)
+				},
+				compositionAuthority: currentResult.compositionAuthority,
+				references: [
+					{
+						...manifest.authority.optionCMaterial,
+						purpose: REVISION_REFERENCE_PURPOSES.paintedEmblem
+					},
+					{
+						...manifest.authority.providerSpaceGuide,
+						purpose: REVISION_REFERENCE_PURPOSES.geometryGuide
+					},
+					{
+						path: familyRecord.referenceSheetPath,
+						purpose: `Exact ${catalogRecord.motifFamily} motif-family ancestry only; never crop or copy a complete icon.`,
+						contentHash: familyRecord.referenceSheetHash
+					},
+					{
+						path: expectedOriginalProviderPath,
+						purpose: REVISION_REFERENCE_PURPOSES.originalProvider,
+						contentHash: massResult.providerSource.contentHash
+					},
+					{
+						path: cleanupRecord.cleanupCompositePath,
+						purpose: REVISION_REFERENCE_PURPOSES.currentComposite,
+						contentHash: currentCandidateHash
+					}
+				],
+				exactPrompt,
+				exactPromptHash: sha256(Buffer.from(exactPrompt)),
+				attempts: { initial: 1, correctiveEdits: 1, maximum: 2 },
+				output: {
+					providerSourcePath: `${QUALITY_CLEANUP_ROOT}/provider-sources/${slug}-v1.png`,
+					revisedInteriorPath: `${QUALITY_CLEANUP_ROOT}/revisions/${slug}-v1.png`,
+					compositePath: `${QUALITY_CLEANUP_ROOT}/composites/${slug}-v1.png`,
+					resultPath: `${QUALITY_CLEANUP_ROOT}/results/revisions/${slug}-v1.json`
+				}
+			});
+			return {
+				path: `${QUALITY_CLEANUP_ROOT}/prompts/revisions/${slug}-v1.json`,
+				packet
+			};
+		})
+	);
+	assertPacketPathCoverage(manifest, packets);
+	return packets;
+}
+
+export async function loadCleanupRevisionPackets(
+	root = process.cwd()
+): Promise<readonly CleanupRevisionPacketArtifact[]> {
+	const repositoryRoot = path.resolve(root);
+	const input = await loadCleanupManifestInput(repositoryRoot);
+	const manifest = buildSkillIconCleanupManifest(input);
+	const expectedManifestBytes = jsonBytes(manifest);
+	const actualManifestBytes = await regularBytes(repositoryRoot, MANIFEST_PATH);
+	if (!actualManifestBytes.equals(expectedManifestBytes)) {
+		throw new Error('Cleanup manifest does not match the canonical immutable snapshot');
+	}
+	return buildCleanupRevisionPackets(repositoryRoot, input, manifest, expectedManifestBytes);
+}
+
 async function currentBytes(root: string, repositoryPath: string): Promise<Buffer | null> {
 	const absolutePath = path.resolve(root, repositoryPath);
 	const metadata = await lstat(absolutePath).catch((error: NodeJS.ErrnoException) => {
@@ -446,30 +828,45 @@ export async function exportSkillIconQualityCleanup(options: {
 	const root = path.resolve(options.root ?? process.cwd());
 	const input = await loadCleanupManifestInput(root);
 	const manifest = buildSkillIconCleanupManifest(input);
+	const manifestBytes = jsonBytes(manifest);
+	const revisionPackets = await buildCleanupRevisionPackets(root, input, manifest, manifestBytes);
 	const outputs = [
-		{ path: MANIFEST_PATH, bytes: jsonBytes(manifest) },
+		{ path: MANIFEST_PATH, bytes: manifestBytes },
 		{
 			path: FINDINGS_PATH,
 			bytes: jsonBytes({
 				schemaVersion: 'skill-icon-quality-cleanup-findings-source-v1',
 				findings: input.findings
 			})
-		}
+		},
+		...revisionPackets.map(({ path: packetPath, packet }) => ({
+			path: packetPath,
+			bytes: jsonBytes(packet)
+		}))
 	];
 	const drifted: string[] = [];
 	const written: string[] = [];
-	for (const output of outputs) {
-		const current = await currentBytes(root, output.path);
-		if (current?.equals(output.bytes)) continue;
-		if (options.mode === 'check') {
-			drifted.push(output.path);
-			continue;
+	const outputState = await Promise.all(
+		outputs.map(async (output) => ({ ...output, current: await currentBytes(root, output.path) }))
+	);
+	for (const output of outputState) {
+		if (!output.current?.equals(output.bytes)) drifted.push(output.path);
+	}
+	if (options.mode === 'write') {
+		const existingDrift = outputState.find(
+			(output) => output.current !== null && !output.current.equals(output.bytes)
+		);
+		if (existingDrift) {
+			throw new Error(`Refusing to replace drifted cleanup artifact: ${existingDrift.path}`);
 		}
-		if (
-			await writeMissingAtomic(root, output.path, output.bytes, options.testHooks?.beforePublish)
-		) {
-			written.push(output.path);
+		for (const output of outputState.filter((output) => output.current === null)) {
+			if (
+				await writeMissingAtomic(root, output.path, output.bytes, options.testHooks?.beforePublish)
+			) {
+				written.push(output.path);
+			}
 		}
+		drifted.length = 0;
 	}
 	const counts = manifest.records.reduce(
 		(counts, record) => {
@@ -481,7 +878,7 @@ export async function exportSkillIconQualityCleanup(options: {
 		},
 		{ total: manifest.records.length, Martial: 0, Magical: 0, Craft: 0 }
 	);
-	return { mode: options.mode, counts, written, drifted };
+	return { mode: options.mode, counts, revisionPackets: revisionPackets.length, written, drifted };
 }
 
 type Point = readonly [number, number];
@@ -710,7 +1107,10 @@ export async function composeCleanupIcon(input: {
 		.toBuffer();
 }
 
-async function clearCleanupExterior(bytes: Buffer, geometry: SkillIconGeometryV2): Promise<Buffer> {
+export async function clearCleanupExterior(
+	bytes: Buffer,
+	geometry: SkillIconGeometryV2
+): Promise<Buffer> {
 	const decoded = await rgbaBytes(bytes);
 	assertCanvas('Cleanup composite', decoded, geometry.canvas);
 	const { outer, medallion } = cleanupPolygons(geometry, decoded.width, decoded.height);

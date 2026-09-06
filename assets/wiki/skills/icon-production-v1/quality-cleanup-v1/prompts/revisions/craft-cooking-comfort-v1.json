@@ -1,0 +1,102 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v1",
+	"revision": 1,
+	"targetId": "craft:cooking:comfort",
+	"name": "Comfort",
+	"domain": "Craft",
+	"family": "Cooking",
+	"rank": "C",
+	"motifFamily": "cooking.nourishment",
+	"finding": {
+		"targetId": "craft:cooking:comfort",
+		"kind": "stray-ui-glyph",
+		"detail": "Heart/plus glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"visualSpec": {
+		"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Comfort",
+		"supportingCue": "one restrained secondary cue communicating this effect: Well-fed heroes train faster and recover faster between missions",
+		"semanticPalette": [
+			"worked bronze",
+			"charcoal black",
+			"natural material color"
+		],
+		"composition": "Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.",
+		"exclusions": [
+			"no skill name, mastery, level, caption, logo, watermark, or UI panel",
+			"no extra frame letter or rarity symbol beyond the required integrated crest",
+			"no narrative scenery or unrelated props",
+			"no effect-only abstraction replacing the concrete acting subject from F through A"
+		]
+	},
+	"cleanupManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
+		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+	},
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-comfort.png",
+		"contentHash": "edcfa5e7b442a48fb59f0d9aa5699d5055f4be3e0c7a8e3c392d6558f16b9f75"
+	},
+	"currentCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort.png",
+		"contentHash": "952a3e23213eb6f345112085209fbd5288ea2c55cb99e522420bdba534755b31"
+	},
+	"currentResult": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-comfort.json",
+		"contentHash": "16e42528164f00e14be166d7cfaa97ed02582e7d9bfcd1c10afe902209afba91"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-nourishment.png",
+			"purpose": "Exact cooking.nourishment motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "7cdb9a3717bbe3d60a444f366946555ea757e14b5b3cd8bd2bee9a3977f7fdae"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-cooking-comfort-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "867a6a4bb0bc9a82d172e40a200955e841654f345e27fb52d4f3ce7047bcf9e5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "952a3e23213eb6f345112085209fbd5288ea2c55cb99e522420bdba534755b31"
+		}
+	],
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Comfort in the Craft / Cooking taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Comfort\nSupporting cue: one restrained secondary cue communicating this effect: Well-fed heroes train faster and recover faster between missions\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Heart/plus glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and C-rank frame.",
+	"exactPromptHash": "003871859801e106665561d5d9a7832086a1cf1828654aba22d612d9f865c641",
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v1.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v1.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v1.json"
+	}
+}

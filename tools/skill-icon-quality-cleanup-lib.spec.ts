@@ -280,6 +280,70 @@ async function snapshot(directory: string): Promise<readonly [string, string][]>
 	return files.sort(([left], [right]) => left.localeCompare(right));
 }
 
+async function seedExporterRoot(): Promise<string> {
+	const root = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-exporter-'));
+	const cleanupManifestPath = `${QUALITY_CLEANUP_ROOT}/manifest.json`;
+	const cleanupManifest = SkillIconCleanupManifestSchema.parse(
+		JSON.parse(await readFile(path.join(workspaceRoot, cleanupManifestPath), 'utf8')) as unknown
+	);
+	const massManifest = JSON.parse(
+		await readFile(
+			path.join(
+				workspaceRoot,
+				'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json'
+			),
+			'utf8'
+		)
+	) as {
+		readonly skills: readonly { readonly targetId: string; readonly resultPath: string }[];
+	};
+	const packetDirectory = path.join(workspaceRoot, QUALITY_CLEANUP_ROOT, 'prompts/revisions');
+	const packetNames = (await readdir(packetDirectory)).filter((name) => name.endsWith('.json'));
+	const packets = await Promise.all(
+		packetNames.map(async (name) => ({
+			path: `${QUALITY_CLEANUP_ROOT}/prompts/revisions/${name}`,
+			packet: JSON.parse(await readFile(path.join(packetDirectory, name), 'utf8')) as {
+				readonly targetId: string;
+				readonly currentCandidate: { readonly path: string };
+				readonly currentResult: { readonly path: string };
+				readonly compositionAuthority: Readonly<Record<string, { readonly path: string }>>;
+				readonly references: readonly { readonly path: string }[];
+			}
+		}))
+	);
+	const files = new Set<string>([
+		cleanupManifestPath,
+		`${QUALITY_CLEANUP_ROOT}/findings.json`,
+		`${QUALITY_CLEANUP_ROOT}/findings.source.json`,
+		...Object.values(cleanupManifest.authority).map(({ path: authorityPath }) => authorityPath),
+		...cleanupManifest.records.map(({ sourceCandidate }) => sourceCandidate.path),
+		...packets.map(({ path: packetPath }) => packetPath)
+	]);
+	for (const { packet } of packets) {
+		files.add(packet.currentCandidate.path);
+		files.add(packet.currentResult.path);
+		for (const binding of Object.values(packet.compositionAuthority)) files.add(binding.path);
+		for (const reference of packet.references) files.add(reference.path);
+		const massRecord = massManifest.skills.find(({ targetId }) => targetId === packet.targetId);
+		if (!massRecord) throw new Error(`Missing mass result fixture for ${packet.targetId}`);
+		files.add(massRecord.resultPath);
+	}
+	for (const repositoryPath of files) {
+		const source = path.join(workspaceRoot, repositoryPath);
+		const destination = path.join(root, repositoryPath);
+		await mkdir(path.dirname(destination), { recursive: true });
+		if (repositoryPath === cleanupManifestPath) {
+			await copyFile(source, destination);
+			continue;
+		}
+		await link(source, destination).catch(async (error: NodeJS.ErrnoException) => {
+			if (error.code !== 'EXDEV') throw error;
+			await copyFile(source, destination);
+		});
+	}
+	return root;
+}
+
 function retarget(targetId: string, from: string, to: string): string {
 	return targetId === from ? to : targetId;
 }
@@ -403,7 +467,7 @@ async function waitForExit(child: ChildProcess): Promise<void> {
 	await once(child, 'exit');
 }
 
-describe('skill-icon quality-cleanup manifest exporter', () => {
+describe('skill-icon quality-cleanup manifest exporter', { timeout: 60_000 }, () => {
 	it('freezes every canonical mass-production source with attached findings', async () => {
 		const input = await loadCleanupManifestInput(workspaceRoot);
 		const manifest = SkillIconCleanupManifestSchema.parse(buildSkillIconCleanupManifest(input));
@@ -459,7 +523,9 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 
 		const afterSnapshot = await snapshot(cleanupDirectory);
 		expect(report.counts).toEqual({ total: 456, Martial: 258, Magical: 124, Craft: 74 });
+		expect(report.revisionPackets).toBe(28);
 		expect(report.written).toEqual([]);
+		expect(await readdir(path.join(cleanupDirectory, 'prompts/revisions'))).toHaveLength(28);
 		expect(afterSnapshot).toEqual(beforeSnapshot);
 	});
 
@@ -470,27 +536,54 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 	});
 
 	it('reports output drift in check mode and refuses to replace it in write mode', async () => {
-		const manifestPath = path.resolve(workspaceRoot, QUALITY_CLEANUP_ROOT, 'manifest.json');
+		const root = await seedExporterRoot();
+		const manifestPath = path.resolve(root, QUALITY_CLEANUP_ROOT, 'manifest.json');
 		const original = await readFile(manifestPath);
 		const drift = Buffer.from('intentionally drifted cleanup manifest\n');
 		await writeFile(manifestPath, drift);
 		try {
-			const checked = await exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'check' });
+			const checked = await exportSkillIconQualityCleanup({ root, mode: 'check' });
 			expect(checked.written).toEqual([]);
 			expect(checked.drifted).toEqual([
 				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json'
 			]);
-			await expect(
-				exportSkillIconQualityCleanup({ root: workspaceRoot, mode: 'write' })
-			).rejects.toThrow(/refusing to replace drifted cleanup artifact/i);
+			await expect(exportSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/refusing to replace drifted cleanup artifact/i
+			);
 			expect(await readFile(manifestPath)).toEqual(drift);
 		} finally {
-			await writeFile(manifestPath, original);
+			await writeFile(manifestPath, original).catch(() => undefined);
+			await rm(root, { recursive: true });
+		}
+	});
+
+	it('reports and preserves a drifted immutable revision packet', async () => {
+		const root = await seedExporterRoot();
+		const packetPath = path.join(
+			root,
+			QUALITY_CLEANUP_ROOT,
+			'prompts/revisions/martial-blade-blade-dance-v1.json'
+		);
+		const drift = Buffer.from('{"forged":true}\n');
+		await unlink(packetPath);
+		await writeFile(packetPath, drift);
+		try {
+			const checked = await exportSkillIconQualityCleanup({ root, mode: 'check' });
+			expect(checked.drifted).toEqual([
+				`${QUALITY_CLEANUP_ROOT}/prompts/revisions/martial-blade-blade-dance-v1.json`
+			]);
+			await expect(exportSkillIconQualityCleanup({ root, mode: 'write' })).rejects.toThrow(
+				/refusing to replace drifted cleanup artifact/i
+			);
+			expect(await readFile(packetPath)).toEqual(drift);
+		} finally {
+			await rm(root, { recursive: true });
 		}
 	});
 
 	it('does not clobber synchronized drift that appears after the missing-file check', async () => {
-		const cleanupDirectory = path.resolve(workspaceRoot, QUALITY_CLEANUP_ROOT);
+		const root = await seedExporterRoot();
+		const cleanupDirectory = path.resolve(root, QUALITY_CLEANUP_ROOT);
 		const manifestPath = path.join(cleanupDirectory, 'manifest.json');
 		const original = await readFile(manifestPath);
 		const drift = Buffer.from('concurrent cleanup manifest drift\n');
@@ -501,7 +594,7 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 			writer = await startRaceWriter(cleanupDirectory, manifestPath, drift);
 			await expect(
 				exportSkillIconQualityCleanup({
-					root: workspaceRoot,
+					root,
 					mode: 'write',
 					testHooks: {
 						beforePublish: async (repositoryPath: string) => {
@@ -522,12 +615,13 @@ describe('skill-icon quality-cleanup manifest exporter', () => {
 				writer.child.kill();
 				await waitForExit(writer.child);
 			}
-			await writeFile(manifestPath, original);
+			await writeFile(manifestPath, original).catch(() => undefined);
+			await rm(root, { recursive: true });
 		}
 	});
 });
 
-describe('deterministic protected-aperture composition', () => {
+describe('deterministic protected-aperture composition', { timeout: 60_000 }, () => {
 	it('clears the frame band, medallion, and exterior using geometry-v2 pixels', async () => {
 		// Catches using the broad aperture, omitting the medallion subtraction, or retaining exterior alpha.
 		const source = await rgbaFixture(

@@ -1,0 +1,102 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v1",
+	"revision": 1,
+	"targetId": "magical:elemental:ashfall",
+	"name": "Ashfall",
+	"domain": "Magical",
+	"family": "Elemental",
+	"rank": "C",
+	"motifFamily": "elemental.fire-field",
+	"finding": {
+		"targetId": "magical:elemental:ashfall",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached elemental/alchemical glyph row.",
+		"requiredAction": "revise-art"
+	},
+	"visualSpec": {
+		"dominantSubject": "a concrete fire magical operation that visibly causes Ashfall, expressed through recognizable elemental matter",
+		"supportingCue": "one restrained secondary cue communicating this effect: Lingering ash cloud — blinds and suppresses mana regeneration",
+		"semanticPalette": [
+			"ember orange",
+			"charcoal black",
+			"hot gold"
+		],
+		"composition": "Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.",
+		"exclusions": [
+			"no skill name, mastery, level, caption, logo, watermark, or UI panel",
+			"no extra frame letter or rarity symbol beyond the required integrated crest",
+			"no narrative scenery or unrelated props",
+			"no effect-only abstraction replacing the concrete acting subject from F through A"
+		]
+	},
+	"cleanupManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
+		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+	},
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ashfall.png",
+		"contentHash": "de84441fde9249b4418a88bcb85b532e8906ec077417256a16cb48fc165fcc96"
+	},
+	"currentCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall.png",
+		"contentHash": "506664352d7f7dda57fe207bd1f42c85ac97b279afb5bc54aa70330aec7fb8ae"
+	},
+	"currentResult": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-ashfall.json",
+		"contentHash": "e493a2458114edf2fb6eb8a1d8ec855a6a75f0b7ccef39be5e1128c0203888f3"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-field.png",
+			"purpose": "Exact elemental.fire-field motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "8690006c98f155c74570dfd459b9b171d695927f3a76f2c24f838bfd50247c65"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-ashfall-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "76ba7eca939b789a8723d927acc91090f51e5157da28e5e0dbd67b7a8ef24875"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "506664352d7f7dda57fe207bd1f42c85ac97b279afb5bc54aa70330aec7fb8ae"
+		}
+	],
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Ashfall in the Magical / Elemental taxonomy.\nDominant subject: a concrete fire magical operation that visibly causes Ashfall, expressed through recognizable elemental matter\nSupporting cue: one restrained secondary cue communicating this effect: Lingering ash cloud — blinds and suppresses mana regeneration\nPalette: ember orange, charcoal black, hot gold\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Detached elemental/alchemical glyph row.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and C-rank frame.",
+	"exactPromptHash": "5b8d53fa184d9bee7b5398d7810d7c0d6aa634fe1e9e5384db7c4e18db78288e",
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v1.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v1.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v1.json"
+	}
+}
