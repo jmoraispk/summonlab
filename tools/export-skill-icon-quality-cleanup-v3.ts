@@ -13,7 +13,7 @@ import {
 	stageOutput
 } from './persist-skill-icon-cleanup-output.js';
 import {
-	buildCleanupRevisionV3Packets,
+	buildCleanupRevisionV3PacketInventory,
 	cleanupRevisionV2JsonBytes
 } from './skill-icon-quality-cleanup-v2-lib.js';
 
@@ -59,7 +59,7 @@ export async function exportCleanupRevisionV3Packets(input: {
 	readonly mode: 'write' | 'check';
 }): Promise<ExportCleanupRevisionV3Report> {
 	const root = path.resolve(input.root ?? process.cwd());
-	const packets = await buildCleanupRevisionV3Packets(root);
+	const packets = await buildCleanupRevisionV3PacketInventory(root);
 	const written: string[] = [];
 	const existing: string[] = [];
 	const missing: string[] = [];

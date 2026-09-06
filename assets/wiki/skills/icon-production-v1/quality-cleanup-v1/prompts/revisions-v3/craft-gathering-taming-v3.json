@@ -1,0 +1,136 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v3",
+	"revision": 3,
+	"targetId": "craft:gathering:taming",
+	"name": "Taming",
+	"domain": "Craft",
+	"family": "Gathering",
+	"rank": "E",
+	"motifFamily": "gathering.beast-bond",
+	"finding": {
+		"targetId": "craft:gathering:taming",
+		"kind": "stray-ui-glyph",
+		"detail": "Small medallion badge.",
+		"requiredAction": "revise-art"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-gathering-taming-v2.json",
+			"contentHash": "8480d5da8b7353c2cdca85ef1ae700a81f5c281c6be4d2d59b1ecafff47acdbb"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v2.json",
+			"contentHash": "1b2c6de93b7939cb6377192628fa02029ca6979494965958d83e01bc6c2a1ab8"
+		},
+		"completionAudit": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json",
+			"contentHash": "c9565e502283ae95fbd98b3a6345a1f560c553be972dd4272d78c9081940a3d5"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v2.png",
+			"contentHash": "3d7be588e8dd691025c127851e96ae0f948878a3102e2285e2f4c38fa991de0c"
+		},
+		"transactionContentHash": "f72926e492e74de96cbc1d376750f087dff4be51c261e5d924a96cb8818d972f",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v2.png",
+			"contentHash": "c0154da3b13e5e873547d91b33d281416f702da89d80676cc31b265c3556f387"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming-v2.png",
+			"contentHash": "adb4bd72f156bb2010e85efad23b0bb7181fb9733b0517d03ea8ab3bc4b66188"
+		}
+	},
+	"sourceMode": "generation-v2",
+	"generationTool": "built-in-imagegen",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Taming in the Craft / Gathering taxonomy.\nDominant subject: one complete human handler and one complete wolf together, visibly embodying voluntary trust and a lasting beast bond.\nSupporting cue: communicate trust through the handler's and wolf's pose and eye line only.\nPalette: approved dark worked bronze, charcoal black, and restrained natural wolf and garment colors in the Painted Emblem treatment.\nComposition: Use compact full figures inside a generous central safe area. Prefer the handler kneeling or crouching beside a seated or standing wolf. Preserve clear negative space on every side.\nCompleteness: Every head, ear, hand, forearm, elbow, paw, leg, tail, garment edge, and equipment edge must be fully visible and terminate naturally inside the safe area. Nothing may enter from or exit through a canvas or aperture edge.\nRemove the unwanted medallion completely. Add no replacement symbol, heart, collar tag, badge, UI, frame, crest, rarity letter, text, arrow, gauge, cross, or chevron. Do not use a detached explanatory glyph. Do not render narrative scenery or unrelated props.\nPreserve gathering.beast-bond motif-family ancestry, the concrete handler-and-wolf subject, dark bronze/charcoal palette, engraved painterly lighting, and one readable bonding gesture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, frame, or preprocess the provider source. The authenticated cleanup pipeline supplies the canonical backing and E-rank frame, then requires separate passing review of the literal 1024×1024 composite and exact 384×384 derivative.",
+	"exactPromptHash": "6bfd6c8780908b9ebc5347686755ba4e8ee788e52d5558b2c2fc07f849c4e114",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-beast-bond.png",
+			"purpose": "Exact gathering.beast-bond motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "ca90badc7b6319518ae207dad63593505d86fdbb6e9fa72d034033a5aa949c71"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-taming-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "d649881cc5a7dfa6406c5b676dd7a5543fd79cb3eacc3ac85cb380f5f7785fb9"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "183b0dd119cdde312fd41ec4879af91896b6d2b0150a53599518f67ed307b827"
+		}
+	],
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"reviewRequirements": {
+		"fullSize": {
+			"width": 1024,
+			"height": 1024
+		},
+		"display": {
+			"width": 384,
+			"height": 384
+		},
+		"candidateRequiresBothPass": true
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v3.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v3.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming-v3.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v3.json"
+	}
+}

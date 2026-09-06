@@ -136,6 +136,9 @@ Task 7: fix round 2/5 (5 addressed, 2 new P1 open; commit `dda9308df` — post-a
 Task 7: fix round 3/5 (2 open — revalidate all five artifacts after audit publication; bind identity transform to immediate predecessor)
 Task 7: fix round 3/5 (2 addressed, 0 open; commit `0c479959b`)
 Task 7B: four generation-v2 recovery jobs started (base `0c479959bd6a02ecda368bfe16146c7fa93d7624`)
+Task 7B: complete (commit `546433b26`; review clean; 27 candidates, Taming v2 revise)
+Task 7C: Taming generation-v3 packet started (base `546433b26733f5a8c1a12acd62f6a341b085da9f`)
+Task 7C Phase 1: complete (one create-only Taming v3 generation packet; audited v2 predecessor bound; finalizer 27/28 with Taming v3 pending)
 Task 7B: terminal batch persisted in sorted packet order: Living Metal, Ore Sense, and Rend Armour
 are revision-2 audited candidates; Taming is an audited revision-2 `revise` after its bounded
 correction retained a cropped left-edge forearm. Finalizer state is 27/28, `ready: false`, with

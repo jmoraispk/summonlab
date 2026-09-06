@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import { afterAll, describe, expect, it } from 'vitest';
 
 import { SkillIconCleanupRevisionV2PacketSchema } from '../packages/contracts/src/index.js';
+import { exportCleanupRevisionV3Packets } from './export-skill-icon-quality-cleanup-v3.js';
 import * as revisionProtocol from './skill-icon-quality-cleanup-v2-lib.js';
 import { persistCleanupRevisionV2 } from './persist-skill-icon-cleanup-v2-output.js';
 
@@ -63,6 +64,81 @@ async function seedGenerationPacket() {
 }
 
 describe('cleanup semantic-revision v3 recovery', () => {
+	it('declares one audited Taming generation-v3 packet and makes it the pending terminal revision', async () => {
+		const builder = (
+			revisionProtocol as unknown as {
+				readonly buildCleanupGenerationRevisionV3Packets?: (root: string) => Promise<
+					readonly {
+						readonly path: string;
+						readonly packet: {
+							readonly targetId: string;
+							readonly revision: number;
+							readonly sourceMode: string;
+							readonly generationTool?: string;
+							readonly reviewRequirements?: {
+								readonly fullSize: { readonly width: number; readonly height: number };
+								readonly display: { readonly width: number; readonly height: number };
+								readonly candidateRequiresBothPass: boolean;
+							};
+							readonly predecessor: {
+								readonly completionAudit?: {
+									readonly path: string;
+									readonly contentHash: string;
+								};
+							};
+						};
+					}[]
+				>;
+			}
+		).buildCleanupGenerationRevisionV3Packets;
+		expect(builder).toBeTypeOf('function');
+		const packets = await builder!(workspaceRoot);
+		expect(packets).toHaveLength(1);
+		expect(packets[0]).toMatchObject({
+			path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
+			packet: {
+				targetId: 'craft:gathering:taming',
+				revision: 3,
+				sourceMode: 'generation-v2',
+				generationTool: 'built-in-imagegen',
+				reviewRequirements: {
+					fullSize: { width: 1024, height: 1024 },
+					display: { width: 384, height: 384 },
+					candidateRequiresBothPass: true
+				},
+				predecessor: {
+					completionAudit: {
+						path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json',
+						contentHash: 'c9565e502283ae95fbd98b3a6345a1f560c553be972dd4272d78c9081940a3d5'
+					}
+				}
+			}
+		});
+		const withoutAudit = structuredClone(packets[0]!.packet) as {
+			predecessor: { completionAudit?: unknown };
+		};
+		delete withoutAudit.predecessor.completionAudit;
+		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(withoutAudit).success).toBe(false);
+		const withoutTool = structuredClone(packets[0]!.packet) as { generationTool?: unknown };
+		delete withoutTool.generationTool;
+		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(withoutTool).success).toBe(false);
+		const exportReport = await exportCleanupRevisionV3Packets({
+			root: workspaceRoot,
+			mode: 'check'
+		});
+		expect(exportReport).toMatchObject({ total: 25, written: [] });
+		expect(exportReport.existing).toHaveLength(25);
+
+		const finalization = await revisionProtocol.finalizeCleanupRevisionV2({
+			root: workspaceRoot
+		});
+		expect(finalization.candidateCount).toBe(27);
+		expect(finalization.selection.unresolved).toEqual([
+			{ targetId: 'craft:gathering:taming', revision: 3, status: 'missing' }
+		]);
+		expect(finalization.pendingGenerationTargetIds).toEqual(['craft:gathering:taming']);
+	}, 120_000);
+
 	it('records literal 1024px review cells and a separately versioned 384px caption correction', async () => {
 		const reviewRoot = path.join(
 			workspaceRoot,

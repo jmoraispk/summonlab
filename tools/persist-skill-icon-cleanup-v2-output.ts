@@ -276,6 +276,14 @@ function bindingRequests(packet: CleanupRevisionV2Packet): readonly {
 			description: `Revision ordered reference ${index + 1}`
 		}))
 	];
+	if (packet.predecessor.completionAudit) {
+		requests.push(
+			request(
+				packet.predecessor.completionAudit,
+				'Immutable immediate predecessor completion audit'
+			)
+		);
+	}
 	if (packet.sourceMode === 'identity-adoption') {
 		if (!('revisedInterior' in packet.transform) || !('composite' in packet.transform)) {
 			throw new Error(`Identity-adoption transform is malformed: ${packet.targetId}`);

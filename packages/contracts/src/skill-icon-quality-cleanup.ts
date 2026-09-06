@@ -404,6 +404,7 @@ const CleanupRevisionV2PredecessorSchema = z
 	.object({
 		packet: CleanupRevisionV2BindingSchema,
 		result: CleanupRevisionV2BindingSchema,
+		completionAudit: CleanupRevisionV2BindingSchema.optional(),
 		providerSource: CleanupRevisionV2BindingSchema,
 		transactionContentHash: StateHashSchema,
 		revisedInterior: CleanupRevisionV2BindingSchema,
@@ -451,6 +452,7 @@ export const SkillIconCleanupRevisionV2PacketSchema = z
 		finding: CleanupRevisionV2FindingSchema,
 		predecessor: CleanupRevisionV2PredecessorSchema,
 		sourceMode: z.enum(['deterministic-inset', 'identity-adoption', 'generation-v2']),
+		generationTool: z.literal('built-in-imagegen').optional(),
 		transform: CleanupRevisionV2TransformSchema,
 		exactPrompt: z.string().trim().min(1),
 		exactPromptHash: StateHashSchema,
@@ -470,6 +472,14 @@ export const SkillIconCleanupRevisionV2PacketSchema = z
 		attempts: z
 			.object({ initial: z.literal(1), correctiveEdits: z.literal(1), maximum: z.literal(2) })
 			.strict(),
+		reviewRequirements: z
+			.object({
+				fullSize: z.object({ width: z.literal(1024), height: z.literal(1024) }).strict(),
+				display: z.object({ width: z.literal(384), height: z.literal(384) }).strict(),
+				candidateRequiresBothPass: z.literal(true)
+			})
+			.strict()
+			.optional(),
 		output: CleanupRevisionV2OutputSchema
 	})
 	.strict()
@@ -546,6 +556,20 @@ export const SkillIconCleanupRevisionV2PacketSchema = z
 				code: 'custom',
 				path: ['predecessor'],
 				message: 'Revision predecessor must bind this target’s immediate packet and result'
+			});
+		}
+		if (
+			packet.revision >= 3 &&
+			packet.sourceMode === 'generation-v2' &&
+			(packet.predecessor.completionAudit === undefined ||
+				packet.generationTool !== 'built-in-imagegen' ||
+				packet.reviewRequirements === undefined)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['predecessor'],
+				message:
+					'Generated revision v3+ must bind its predecessor audit, generation tool, and two-scale review contract'
 			});
 		}
 	});

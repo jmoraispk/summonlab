@@ -194,13 +194,15 @@ describe('cleanup semantic-revision v2 authority', () => {
 		).rejects.toThrow();
 	}, 30_000);
 
-	it('selects audited generation candidates while retaining the higher Taming revise receipt as unresolved', async () => {
+	it('selects audited candidates while the declared Taming v3 generation packet is pending', async () => {
 		const finalization = await finalizeCleanupRevisionV2({ root: workspaceRoot });
 		expect(finalization.ready).toBe(false);
 		expect(finalization.candidateCount).toBe(27);
 		expect(finalization.receipts).toHaveLength(28);
 		expect(
-			finalization.receipts.filter((receipt) => receipt.revision === 3 && receipt.status === 'candidate')
+			finalization.receipts.filter(
+				(receipt) => receipt.revision === 3 && receipt.status === 'candidate'
+			)
 		).toHaveLength(24);
 		expect(
 			finalization.receipts
@@ -226,7 +228,8 @@ describe('cleanup semantic-revision v2 authority', () => {
 			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
 		]);
 		expect(finalization.selection.unresolved).toEqual([
-			{ targetId: 'craft:gathering:taming', revision: 2, status: 'revise' }
+			{ targetId: 'craft:gathering:taming', revision: 3, status: 'missing' }
 		]);
+		expect(finalization.pendingGenerationTargetIds).toEqual(['craft:gathering:taming']);
 	}, 120_000);
 });

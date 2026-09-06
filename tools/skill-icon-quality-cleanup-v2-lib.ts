@@ -128,6 +128,7 @@ export const CleanupRevisionV2PacketSchema = z
 			.object({
 				packet: BindingSchema,
 				result: BindingSchema,
+				completionAudit: BindingSchema.optional(),
 				providerSource: BindingSchema,
 				transactionContentHash: z.string().regex(SHA256),
 				revisedInterior: BindingSchema,
@@ -135,6 +136,7 @@ export const CleanupRevisionV2PacketSchema = z
 			})
 			.strict(),
 		sourceMode: z.enum(['deterministic-inset', 'identity-adoption', 'generation-v2']),
+		generationTool: z.literal('built-in-imagegen').optional(),
 		transform: z.union([
 			z
 				.object({
@@ -190,6 +192,14 @@ export const CleanupRevisionV2PacketSchema = z
 		attempts: z
 			.object({ initial: z.literal(1), correctiveEdits: z.literal(1), maximum: z.literal(2) })
 			.strict(),
+		reviewRequirements: z
+			.object({
+				fullSize: z.object({ width: z.literal(1024), height: z.literal(1024) }).strict(),
+				display: z.object({ width: z.literal(384), height: z.literal(384) }).strict(),
+				candidateRequiresBothPass: z.literal(true)
+			})
+			.strict()
+			.optional(),
 		output: RevisionV2OutputSchema
 	})
 	.strict()
@@ -276,6 +286,20 @@ export const CleanupRevisionV2PacketSchema = z
 				code: 'custom',
 				path: ['predecessor'],
 				message: 'Revision predecessor must bind its immediate packet and result'
+			});
+		}
+		if (
+			packet.revision >= 3 &&
+			packet.sourceMode === 'generation-v2' &&
+			(packet.predecessor.completionAudit === undefined ||
+				packet.generationTool !== 'built-in-imagegen' ||
+				packet.reviewRequirements === undefined)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['predecessor'],
+				message:
+					'Generated revision v3+ must bind its predecessor audit, generation tool, and two-scale review contract'
 			});
 		}
 	});
@@ -613,6 +637,138 @@ export async function buildCleanupRevisionV3Packets(
 	return v3Packets.sort((left, right) => left.path.localeCompare(right.path));
 }
 
+const TAMING_REVISION_V3_PROMPT = `Use case: stylized-concept
+Asset type: isolated full-resolution Summonlab skill-icon artwork revision
+Primary request: Revise only the painted artwork for Taming in the Craft / Gathering taxonomy.
+Dominant subject: one complete human handler and one complete wolf together, visibly embodying voluntary trust and a lasting beast bond.
+Supporting cue: communicate trust through the handler's and wolf's pose and eye line only.
+Palette: approved dark worked bronze, charcoal black, and restrained natural wolf and garment colors in the Painted Emblem treatment.
+Composition: Use compact full figures inside a generous central safe area. Prefer the handler kneeling or crouching beside a seated or standing wolf. Preserve clear negative space on every side.
+Completeness: Every head, ear, hand, forearm, elbow, paw, leg, tail, garment edge, and equipment edge must be fully visible and terminate naturally inside the safe area. Nothing may enter from or exit through a canvas or aperture edge.
+Remove the unwanted medallion completely. Add no replacement symbol, heart, collar tag, badge, UI, frame, crest, rarity letter, text, arrow, gauge, cross, or chevron. Do not use a detached explanatory glyph. Do not render narrative scenery or unrelated props.
+Preserve gathering.beast-bond motif-family ancestry, the concrete handler-and-wolf subject, dark bronze/charcoal palette, engraved painterly lighting, and one readable bonding gesture.
+Output exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, frame, or preprocess the provider source. The authenticated cleanup pipeline supplies the canonical backing and E-rank frame, then requires separate passing review of the literal 1024×1024 composite and exact 384×384 derivative.`;
+
+/**
+ * The deterministic V3 builder intentionally remains the immutable 24-packet
+ * recovery inventory. Generated follow-ups are declared separately so issuing
+ * one cannot silently change or rerun the deterministic recovery batch.
+ */
+export async function buildCleanupGenerationRevisionV3Packets(
+	root = process.cwd()
+): Promise<readonly CleanupRevisionV2PacketArtifact[]> {
+	const repositoryRoot = path.resolve(root);
+	const v2Artifact = (await buildCleanupRevisionV2Packets(repositoryRoot)).find(
+		({ packet }) => packet.targetId === 'craft:gathering:taming'
+	);
+	if (!v2Artifact || v2Artifact.packet.sourceMode !== 'generation-v2') {
+		throw new Error('Expected the immutable Taming generation-v2 packet');
+	}
+	const v2Packet = v2Artifact.packet;
+	const auditPath = cleanupRevisionCompletionAuditPath(v2Packet.targetId, 2);
+	const [v2PacketBytes, v2ResultBytes, v2AuditBytes] = await Promise.all([
+		regularBytes(repositoryRoot, v2Artifact.path),
+		regularBytes(repositoryRoot, v2Packet.output.resultPath),
+		regularBytes(repositoryRoot, auditPath)
+	]);
+	if (!v2PacketBytes.equals(cleanupRevisionV2JsonBytes(v2Packet))) {
+		throw new Error('Cleanup Taming v2 packet drift before v3 generation chaining');
+	}
+	const v2Result = SkillIconCleanupRevisionV2ResultSchema.parse(
+		JSON.parse(v2ResultBytes.toString('utf8')) as unknown
+	);
+	const v2Audit = SkillIconCleanupRevisionCompletionAuditSchema.parse(
+		JSON.parse(v2AuditBytes.toString('utf8')) as unknown
+	);
+	if (
+		v2Result.revision !== 2 ||
+		v2Result.targetId !== v2Packet.targetId ||
+		v2Result.status !== 'revise' ||
+		v2Result.revisionPacket.path !== v2Artifact.path ||
+		v2Result.revisionPacket.contentHash !== sha256(v2PacketBytes) ||
+		v2Result.sourceMode !== 'generation-v2' ||
+		!sameJson(v2Result.compositionAuthority, v2Packet.compositionAuthority)
+	) {
+		throw new Error('Cleanup Taming v2 result is not the required audited revise authority');
+	}
+	assertCompletionAudit({
+		audit: v2Audit,
+		packet: v2Packet,
+		packetPath: v2Artifact.path,
+		packetBytes: v2PacketBytes,
+		result: v2Result,
+		resultBytes: v2ResultBytes
+	});
+	await assertRevisionPacketAuthorities(repositoryRoot, v2Packet);
+	const [providerBytes, interiorBytes, compositeBytes] = await Promise.all([
+		regularBytes(repositoryRoot, v2Result.providerSource.path),
+		regularBytes(repositoryRoot, v2Result.revisedInterior.path),
+		regularBytes(repositoryRoot, v2Result.composite.path)
+	]);
+	if (
+		sha256(providerBytes) !== v2Result.providerSource.contentHash ||
+		sha256(interiorBytes) !== v2Result.revisedInterior.contentHash ||
+		sha256(compositeBytes) !== v2Result.composite.contentHash
+	) {
+		throw new Error('Cleanup Taming v2 artifact hash drift before v3 generation chaining');
+	}
+	const packet = CleanupRevisionV2PacketSchema.parse({
+		schemaVersion: 'skill-icon-quality-cleanup-revision-packet-v3',
+		revision: 3,
+		targetId: v2Packet.targetId,
+		name: v2Packet.name,
+		domain: v2Packet.domain,
+		family: v2Packet.family,
+		rank: v2Packet.rank,
+		motifFamily: v2Packet.motifFamily,
+		finding: v2Packet.finding,
+		predecessor: {
+			packet: { path: v2Artifact.path, contentHash: sha256(v2PacketBytes) },
+			result: { path: v2Packet.output.resultPath, contentHash: sha256(v2ResultBytes) },
+			completionAudit: { path: auditPath, contentHash: sha256(v2AuditBytes) },
+			providerSource: {
+				path: v2Result.providerSource.path,
+				contentHash: v2Result.providerSource.contentHash
+			},
+			transactionContentHash: v2Result.transactionContentHash,
+			revisedInterior: {
+				path: v2Result.revisedInterior.path,
+				contentHash: v2Result.revisedInterior.contentHash
+			},
+			composite: {
+				path: v2Result.composite.path,
+				contentHash: v2Result.composite.contentHash
+			}
+		},
+		sourceMode: 'generation-v2',
+		generationTool: 'built-in-imagegen',
+		transform: v2Packet.transform,
+		exactPrompt: TAMING_REVISION_V3_PROMPT,
+		exactPromptHash: sha256(Buffer.from(TAMING_REVISION_V3_PROMPT)),
+		references: v2Packet.references,
+		compositionAuthority: v2Packet.compositionAuthority,
+		providerEnvelope: v2Packet.providerEnvelope,
+		attempts: v2Packet.attempts,
+		reviewRequirements: {
+			fullSize: { width: 1024, height: 1024 },
+			display: { width: 384, height: 384 },
+			candidateRequiresBothPass: true
+		},
+		output: cleanupRevisionOutputPaths(v2Packet.targetId, 3)
+	});
+	ContractCleanupRevisionV2PacketSchema.parse(packet);
+	return [{ path: cleanupRevisionPacketPath(packet.targetId, packet.revision), packet }];
+}
+
+export async function buildCleanupRevisionV3PacketInventory(
+	root = process.cwd()
+): Promise<readonly CleanupRevisionV2PacketArtifact[]> {
+	return [
+		...(await buildCleanupRevisionV3Packets(root)),
+		...(await buildCleanupGenerationRevisionV3Packets(root))
+	].sort((left, right) => left.path.localeCompare(right.path));
+}
+
 export interface CleanupRevisionV2Derivation {
 	readonly sourceBytes: Buffer;
 	readonly preparedProvider: PreparedSkillIconProviderSourceV3 | null;
@@ -705,8 +861,9 @@ function assertImmediateRevisionPredecessor(input: {
 	readonly packet: CleanupRevisionV2Packet;
 	readonly predecessorPacketBytes: Buffer;
 	readonly predecessorResultBytes: Buffer;
+	readonly predecessorAuditBytes?: Buffer;
 }): void {
-	const { packet, predecessorPacketBytes, predecessorResultBytes } = input;
+	const { packet, predecessorPacketBytes, predecessorResultBytes, predecessorAuditBytes } = input;
 	if (packet.revision === 2) {
 		const v1Packet = CleanupRevisionPacketSchema.parse(
 			JSON.parse(predecessorPacketBytes.toString('utf8')) as unknown
@@ -749,6 +906,27 @@ function assertImmediateRevisionPredecessor(input: {
 		throw new Error(
 			`Cleanup revision predecessor identity drift: ${packet.targetId} v${packet.revision}`
 		);
+	}
+	if (packet.predecessor.completionAudit) {
+		if (
+			!predecessorAuditBytes ||
+			sha256(predecessorAuditBytes) !== packet.predecessor.completionAudit.contentHash
+		) {
+			throw new Error(
+				`Cleanup revision predecessor audit hash drift: ${packet.targetId} v${packet.revision}`
+			);
+		}
+		const predecessorAudit = SkillIconCleanupRevisionCompletionAuditSchema.parse(
+			JSON.parse(predecessorAuditBytes.toString('utf8')) as unknown
+		);
+		assertCompletionAudit({
+			audit: predecessorAudit,
+			packet: predecessorPacket,
+			packetPath: packet.predecessor.packet.path,
+			packetBytes: predecessorPacketBytes,
+			result: predecessorResult,
+			resultBytes: predecessorResultBytes
+		});
 	}
 }
 
@@ -832,7 +1010,15 @@ export async function deriveCleanupRevisionV2(input: {
 				packet.compositionAuthority.frame,
 				'frame authority',
 				input.authorityBytes
-			)
+			),
+			packet.predecessor.completionAudit
+				? authoritativeBytes(
+						root,
+						packet.predecessor.completionAudit,
+						'immediate predecessor completion audit',
+						input.authorityBytes
+					)
+				: Promise.resolve(undefined)
 		]);
 	const [
 		predecessorPacketBytes,
@@ -840,12 +1026,14 @@ export async function deriveCleanupRevisionV2(input: {
 		predecessorProviderBytes,
 		geometryBytes,
 		backing,
-		frame
+		frame,
+		predecessorAuditBytes
 	] = input.authorityBytes ? await readSources() : await phase('source-read', readSources);
 	assertImmediateRevisionPredecessor({
 		packet,
 		predecessorPacketBytes,
-		predecessorResultBytes
+		predecessorResultBytes,
+		...(predecessorAuditBytes ? { predecessorAuditBytes } : {})
 	});
 	const geometry = SkillIconGeometryV2Schema.parse(
 		JSON.parse(geometryBytes.toString('utf8')) as unknown
@@ -1085,7 +1273,10 @@ async function readPublishedRevisionPackets(input: {
 }): Promise<readonly CleanupRevisionV2PacketArtifact[]> {
 	const expectedV2 = new Map(input.baselinePackets.map((artifact) => [artifact.path, artifact]));
 	const expectedV3 = new Map(
-		(await buildCleanupRevisionV3Packets(input.root)).map((artifact) => [artifact.path, artifact])
+		(await buildCleanupRevisionV3PacketInventory(input.root)).map((artifact) => [
+			artifact.path,
+			artifact
+		])
 	);
 	const packetRoot = `${QUALITY_CLEANUP_ROOT}/prompts`;
 	const directories = await readdir(path.join(input.root, packetRoot), { withFileTypes: true });
