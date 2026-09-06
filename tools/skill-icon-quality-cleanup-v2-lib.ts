@@ -242,6 +242,23 @@ export const CleanupRevisionV2PacketSchema = z
 			});
 		}
 		if (
+			packet.sourceMode === 'identity-adoption' &&
+			(!('revisedInterior' in packet.transform) ||
+				!('composite' in packet.transform) ||
+				packet.transform.revisedInterior.path !== packet.predecessor.revisedInterior.path ||
+				packet.transform.revisedInterior.contentHash !==
+					packet.predecessor.revisedInterior.contentHash ||
+				packet.transform.composite.path !== packet.predecessor.composite.path ||
+				packet.transform.composite.contentHash !== packet.predecessor.composite.contentHash)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform'],
+				message:
+					'Identity adoption must retain the immediate predecessor interior and composite bindings'
+			});
+		}
+		if (
 			packet.sourceMode !== 'identity-adoption' &&
 			packet.transform.kind !== 'inset-87-of-128-v1'
 		) {
@@ -639,6 +656,7 @@ function assertV2PacketPredecessor(
 	v1Packet: CleanupRevisionPacket,
 	v1Result: ReturnType<typeof CleanupRevisionResultSchema.parse>
 ): void {
+	assertIdentityAdoptionPredecessorBindings(packet, v1Result);
 	if (
 		v1Packet.targetId !== packet.targetId ||
 		v1Result.targetId !== packet.targetId ||
@@ -652,6 +670,34 @@ function assertV2PacketPredecessor(
 		JSON.stringify(v1Result.compositionAuthority) !== JSON.stringify(packet.compositionAuthority)
 	) {
 		throw new Error(`Cleanup v2 predecessor identity drift: ${packet.targetId}`);
+	}
+}
+
+/**
+ * An identity-adoption lane is a byte-for-byte retention of the preceding
+ * receipt's approved interior and composite. Its transform cannot nominate a
+ * same-rank artifact from another target (or any other revision).
+ */
+export function assertIdentityAdoptionPredecessorBindings(
+	packet: CleanupRevisionV2Packet,
+	predecessor: {
+		readonly revisedInterior: { readonly path: string; readonly contentHash: string };
+		readonly composite: { readonly path: string; readonly contentHash: string };
+	}
+): void {
+	if (packet.sourceMode !== 'identity-adoption') return;
+	if (!('revisedInterior' in packet.transform) || !('composite' in packet.transform)) {
+		throw new Error(`Cleanup identity-adoption transform drift: ${packet.targetId}`);
+	}
+	if (
+		packet.transform.revisedInterior.path !== predecessor.revisedInterior.path ||
+		packet.transform.revisedInterior.contentHash !== predecessor.revisedInterior.contentHash ||
+		packet.transform.composite.path !== predecessor.composite.path ||
+		packet.transform.composite.contentHash !== predecessor.composite.contentHash
+	) {
+		throw new Error(
+			`Cleanup identity-adoption predecessor binding drift: ${packet.targetId} v${packet.revision}`
+		);
 	}
 }
 
@@ -678,6 +724,7 @@ function assertImmediateRevisionPredecessor(input: {
 	const predecessorResult = SkillIconCleanupRevisionV2ResultSchema.parse(
 		JSON.parse(predecessorResultBytes.toString('utf8')) as unknown
 	);
+	assertIdentityAdoptionPredecessorBindings(packet, predecessorResult);
 	if (
 		sha256(predecessorPacketBytes) !== packet.predecessor.packet.contentHash ||
 		predecessorPacket.revision !== packet.revision - 1 ||
@@ -1128,6 +1175,16 @@ function assertReceiptBindings(input: {
 	readonly resultBytes: Buffer;
 }): void {
 	const { packet, packetPath, packetBytes, result } = input;
+	assertIdentityAdoptionPredecessorBindings(packet, result.predecessor);
+	const identityResultRetainsPredecessor =
+		result.sourceMode !== 'identity-adoption' ||
+		('revisedInterior' in result.transform &&
+			'composite' in result.transform &&
+			result.transform.revisedInterior.path === result.predecessor.revisedInterior.path &&
+			result.transform.revisedInterior.contentHash ===
+				result.predecessor.revisedInterior.contentHash &&
+			result.transform.composite.path === result.predecessor.composite.path &&
+			result.transform.composite.contentHash === result.predecessor.composite.contentHash);
 	if (
 		result.revision !== packet.revision ||
 		result.targetId !== packet.targetId ||
@@ -1147,7 +1204,8 @@ function assertReceiptBindings(input: {
 		result.resultPath !== packet.output.resultPath ||
 		!sameJson(result.writtenOutputPaths, Object.values(packet.output)) ||
 		result.completionContract.sharedFilesRemainUntouched !== true ||
-		result.completionContract.selfPromotionForbidden !== true
+		result.completionContract.selfPromotionForbidden !== true ||
+		!identityResultRetainsPredecessor
 	) {
 		throw new Error(
 			`Cleanup revision receipt binding drift: ${packet.targetId} v${packet.revision}`

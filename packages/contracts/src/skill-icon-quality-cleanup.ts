@@ -522,6 +522,23 @@ export const SkillIconCleanupRevisionV2PacketSchema = z
 			});
 		}
 		if (
+			packet.sourceMode === 'identity-adoption' &&
+			(!('revisedInterior' in packet.transform) ||
+				!('composite' in packet.transform) ||
+				packet.transform.revisedInterior.path !== packet.predecessor.revisedInterior.path ||
+				packet.transform.revisedInterior.contentHash !==
+					packet.predecessor.revisedInterior.contentHash ||
+				packet.transform.composite.path !== packet.predecessor.composite.path ||
+				packet.transform.composite.contentHash !== packet.predecessor.composite.contentHash)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform'],
+				message:
+					'Identity adoption must retain the immediate predecessor interior and composite bindings'
+			});
+		}
+		if (
 			packet.predecessor.packet.path !== predecessorPaths.packet ||
 			packet.predecessor.result.path !== predecessorPaths.result
 		) {
@@ -705,6 +722,23 @@ export const SkillIconCleanupRevisionV2ResultSchema = z
 				code: 'custom',
 				path: ['transform', 'kind'],
 				message: 'Identity-adoption result must bind the immediate predecessor revision'
+			});
+		}
+		if (
+			result.sourceMode === 'identity-adoption' &&
+			(!('revisedInterior' in result.transform) ||
+				!('composite' in result.transform) ||
+				result.transform.revisedInterior.path !== result.predecessor.revisedInterior.path ||
+				result.transform.revisedInterior.contentHash !==
+					result.predecessor.revisedInterior.contentHash ||
+				result.transform.composite.path !== result.predecessor.composite.path ||
+				result.transform.composite.contentHash !== result.predecessor.composite.contentHash)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['transform'],
+				message:
+					'Identity-adoption result must retain the immediate predecessor interior and composite bindings'
 			});
 		}
 		if (

@@ -168,6 +168,32 @@ describe('cleanup semantic-revision v2 authority', () => {
 		);
 	}, 30_000);
 
+	it('rejects a same-rank cross-target substitution in an identity-adoption derivation', async () => {
+		const packets = await buildCleanupRevisionV2Packets(workspaceRoot);
+		const identity = packets.find(
+			({ packet }) => packet.targetId === 'magical:elemental:still-depths'
+		)?.packet;
+		if (!identity || identity.transform.kind !== 'identity-adoption-v1') {
+			throw new Error('Expected Still Depths to use identity adoption.');
+		}
+		const sameRankForeign = packets.find(
+			({ packet }) => packet.targetId !== identity.targetId && packet.rank === identity.rank
+		)?.packet;
+		if (!sameRankForeign) throw new Error('Expected a same-rank foreign predecessor.');
+		const substituted = {
+			...identity,
+			transform: {
+				...identity.transform,
+				revisedInterior: sameRankForeign.predecessor.revisedInterior,
+				composite: sameRankForeign.predecessor.composite
+			}
+		};
+
+		await expect(
+			deriveCleanupRevisionV2({ root: workspaceRoot, packet: substituted })
+		).rejects.toThrow();
+	}, 30_000);
+
 	it('selects only audited candidate-v3 recoveries and leaves the four declared generation-v2 lanes unresolved', async () => {
 		const finalization = await finalizeCleanupRevisionV2({ root: workspaceRoot });
 		expect(finalization.ready).toBe(false);

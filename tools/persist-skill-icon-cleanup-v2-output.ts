@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -21,7 +20,6 @@ import {
 	assertOwnedPath,
 	assertSnapshotUnchanged,
 	cleanupTransaction,
-	heldChild,
 	publishStaged,
 	readSafeAbsoluteFile,
 	readSafeRepositoryFile,
@@ -36,6 +34,7 @@ import {
 	cleanupRevisionV2JsonBytes,
 	computeCleanupRevisionTransactionContentHash,
 	deriveCleanupRevisionV2,
+	assertIdentityAdoptionPredecessorBindings,
 	type CleanupRevisionV2AuthorityBytes,
 	type CleanupRevisionV2DerivationPhase,
 	type CleanupRevisionV2Packet
@@ -252,6 +251,10 @@ function bindingRequests(packet: CleanupRevisionV2Packet): readonly {
 	readonly contentHash: string;
 	readonly description: string;
 }[] {
+	// Persisting an identity lane repeats this check before it binds any source.
+	// This makes a cross-target/same-rank transform fail before a transaction can
+	// stage or publish an artifact, even if a caller bypasses packet builders.
+	assertIdentityAdoptionPredecessorBindings(packet, packet.predecessor);
 	const request = (
 		binding: { readonly path: string; readonly contentHash: string },
 		description: string
@@ -278,11 +281,41 @@ function bindingRequests(packet: CleanupRevisionV2Packet): readonly {
 			throw new Error(`Identity-adoption transform is malformed: ${packet.targetId}`);
 		}
 		requests.push(
-			request(packet.transform.revisedInterior, 'V1 identity-adoption interior'),
-			request(packet.transform.composite, 'V1 identity-adoption composite')
+			request(packet.transform.revisedInterior, 'Immediate identity-adoption interior'),
+			request(packet.transform.composite, 'Immediate identity-adoption composite')
 		);
 	}
 	return requests;
+}
+
+/**
+ * Authenticate create-only published artifacts through their canonical named
+ * paths, rather than only through held directory descriptors. `readSafe...`
+ * supplies O_NOFOLLOW/O_NONBLOCK reads and verifies the canonical parent and
+ * file identities while it reads, so a symlink, FIFO, parent swap, or inode
+ * replacement after audit publication fails closed.
+ */
+async function assertPublishedOutputs(
+	outputs: readonly StagedOutput[],
+	description: string
+): Promise<void> {
+	for (const output of outputs) {
+		await assertAllHeldParentsNamed(outputs);
+		await assertOwnedPath(output.destination, output, description);
+		const snapshot = await readSafeAbsoluteFile(output.destination, description);
+		if (
+			snapshot.parent.realPath !== output.parent.realPath ||
+			snapshot.parent.device !== BigInt(output.parent.device) ||
+			snapshot.parent.inode !== BigInt(output.parent.inode) ||
+			snapshot.file.device !== BigInt(output.device) ||
+			snapshot.file.inode !== BigInt(output.inode) ||
+			!snapshot.bytes.equals(output.bytes)
+		) {
+			throw new Error(`${description} identity or bytes changed: ${output.repositoryPath}`);
+		}
+		await assertOwnedPath(output.destination, output, description);
+		await assertAllHeldParentsNamed(outputs);
+	}
 }
 
 async function bindAuthorities(
@@ -581,14 +614,7 @@ export async function persistCleanupRevisionV2(
 			await assertAllHeldParentsNamed(staged);
 		}
 		await assertAuthoritiesUnchanged(bindings);
-		await assertAllHeldParentsNamed(staged);
-		for (const output of staged) {
-			const finalPath = heldChild(output.parent, path.basename(output.destination));
-			await assertOwnedPath(finalPath, output, 'Cleanup v2 revision output');
-			if (!(await readFile(finalPath)).equals(output.bytes)) {
-				throw new Error(`Cleanup v2 revision output bytes changed: ${output.repositoryPath}`);
-			}
-		}
+		await assertPublishedOutputs(staged, 'Cleanup v2 revision output');
 		const corePublicationCompletedAt = new Date().toISOString();
 		const corePublicationDurationMs = Number(
 			(process.hrtime.bigint() - corePublicationStarted) / 1_000_000n
@@ -638,12 +664,10 @@ export async function persistCleanupRevisionV2(
 		await assertAuthoritiesUnchanged(bindings);
 		await publishStaged(auditStaged);
 		await testHooks?.afterPublish?.(4, auditPath);
-		await assertAllHeldParentsNamed(staged);
-		const auditFinalPath = heldChild(auditStaged.parent, path.basename(auditStaged.destination));
-		await assertOwnedPath(auditFinalPath, auditStaged, 'Cleanup revision completion audit');
-		if (!(await readFile(auditFinalPath)).equals(auditStaged.bytes)) {
-			throw new Error(`Cleanup revision completion audit bytes changed: ${auditPath}`);
-		}
+		// This is the post-audit return gate: reauthenticate every core artifact
+		// plus its audit by canonical path, inode, and bytes before exposing a
+		// candidate to the caller.
+		await assertPublishedOutputs(staged, 'Cleanup revision completion artifact');
 		await removeOwnedPath(auditStaged.temporaryPath, auditStaged);
 		await assertAllHeldParentsNamed(staged);
 		return result;

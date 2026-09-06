@@ -209,6 +209,31 @@ function validPacketAtRevision(revision: number) {
 	};
 }
 
+function validIdentityPacketAtRevision(revision: number) {
+	const packet = validPacketAtRevision(revision);
+	return {
+		...packet,
+		sourceMode: 'identity-adoption' as const,
+		transform: {
+			kind: `identity-adoption-v${revision - 1}`,
+			revisedInterior: packet.predecessor.revisedInterior,
+			composite: packet.predecessor.composite,
+			mask: `v${revision - 1}-approved-composition-retained-byte-for-byte`
+		}
+	};
+}
+
+function validIdentityResult() {
+	const packet = validIdentityPacketAtRevision(2);
+	const result = validResult();
+	return {
+		...result,
+		sourceMode: 'identity-adoption' as const,
+		transform: packet.transform,
+		predecessor: packet.predecessor
+	};
+}
+
 describe('skill-icon quality-cleanup v2 contracts', () => {
 	it('requires append-only v2 paths and a complete recovery transform', () => {
 		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(validPacket()).success).toBe(true);
@@ -243,6 +268,50 @@ describe('skill-icon quality-cleanup v2 contracts', () => {
 				predecessor: {
 					...v3.predecessor,
 					packet: binding(`${root}/prompts/revisions-v1/${slug}-v1.json`)
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('requires identity adoption to retain the immediate predecessor interior and composite bindings', () => {
+		const packet = validIdentityPacketAtRevision(3);
+		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(packet).success).toBe(true);
+		expect(
+			SkillIconCleanupRevisionV2PacketSchema.safeParse({
+				...packet,
+				transform: {
+					...packet.transform,
+					revisedInterior: binding(`${root}/revisions/martial-blade-hamstring-v2.png`)
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconCleanupRevisionV2PacketSchema.safeParse({
+				...packet,
+				transform: {
+					...packet.transform,
+					composite: binding(`${root}/composites/martial-blade-hamstring-v2.png`)
+				}
+			}).success
+		).toBe(false);
+
+		const result = validIdentityResult();
+		expect(SkillIconCleanupRevisionV2ResultSchema.safeParse(result).success).toBe(true);
+		expect(
+			SkillIconCleanupRevisionV2ResultSchema.safeParse({
+				...result,
+				transform: {
+					...result.transform,
+					revisedInterior: binding(`${root}/revisions/martial-blade-hamstring-v1.png`)
+				}
+			}).success
+		).toBe(false);
+		expect(
+			SkillIconCleanupRevisionV2ResultSchema.safeParse({
+				...result,
+				transform: {
+					...result.transform,
+					composite: binding(`${root}/composites/martial-blade-hamstring-v1.png`)
 				}
 			}).success
 		).toBe(false);

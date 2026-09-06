@@ -175,6 +175,44 @@ describe('cleanup semantic-revision v3 recovery', () => {
 		expect(SkillIconCleanupRevisionV2PacketSchema.safeParse(packet).success).toBe(true);
 	});
 
+	it('rejects a same-rank cross-target identity transform before finalizer authentication', async () => {
+		const packets = await revisionProtocol.buildCleanupRevisionV3Packets(workspaceRoot);
+		const identity = packets.find(
+			({ packet }) => packet.targetId === 'magical:elemental:still-depths'
+		);
+		if (
+			!identity ||
+			identity.packet.sourceMode !== 'identity-adoption' ||
+			identity.packet.transform.kind !== 'identity-adoption-v2' ||
+			!('revisedInterior' in identity.packet.transform) ||
+			!('composite' in identity.packet.transform)
+		) {
+			throw new Error('Expected Still Depths to use V3 identity adoption.');
+		}
+		const foreign = packets.find(
+			({ packet }) =>
+				packet.targetId !== identity.packet.targetId && packet.rank === identity.packet.rank
+		);
+		if (!foreign) throw new Error('Expected a same-rank foreign V3 packet.');
+		const substituted = {
+			...identity.packet,
+			transform: {
+				...identity.packet.transform,
+				revisedInterior: foreign.packet.predecessor.revisedInterior,
+				composite: foreign.packet.predecessor.composite
+			}
+		};
+		const root = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-v3-finalizer-reject-'));
+		temporaryRoots.push(root);
+		const packetPath = path.join(root, identity.path);
+		await mkdir(path.dirname(packetPath), { recursive: true });
+		await writeFile(packetPath, revisionProtocol.cleanupRevisionV2JsonBytes(substituted));
+
+		await expect(
+			revisionProtocol.authenticateCleanupRevisionReceipt({ root, packetPath: identity.path })
+		).rejects.toThrow();
+	});
+
 	it('requires a result for a declared higher revision rather than falling back to an older candidate', () => {
 		const selector = revisionProtocol.selectHighestCleanupRevisionCandidates as unknown as (input: {
 			readonly requiredTargetIds: readonly string[];

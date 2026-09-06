@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { copyFile, link, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, link, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -56,7 +56,95 @@ async function seedDeterministicPacket() {
 	return { root, packet };
 }
 
+async function seedCrossTargetIdentityPacket() {
+	const root = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-v2-identity-reject-'));
+	temporaryRoots.push(root);
+	const packets = await buildCleanupRevisionV2Packets(workspaceRoot);
+	const identity = packets.find(
+		({ packet }) => packet.targetId === 'magical:elemental:still-depths'
+	);
+	if (!identity || identity.packet.transform.kind !== 'identity-adoption-v1') {
+		throw new Error('Expected the Still Depths v2 identity packet.');
+	}
+	const foreign = packets.find(
+		({ packet }) =>
+			packet.targetId !== identity.packet.targetId && packet.rank === identity.packet.rank
+	);
+	if (!foreign) throw new Error('Expected a same-rank foreign packet.');
+	const packet = {
+		...identity.packet,
+		transform: {
+			...identity.packet.transform,
+			revisedInterior: foreign.packet.predecessor.revisedInterior,
+			composite: foreign.packet.predecessor.composite
+		}
+	};
+	const packetPath = path.join(root, identity.path);
+	await mkdir(path.dirname(packetPath), { recursive: true });
+	await writeFile(packetPath, cleanupRevisionV2JsonBytes(packet));
+	return { root, packetPath: identity.path, packet };
+}
+
 describe('cleanup semantic-revision v2 persistence', () => {
+	it('refuses a same-rank cross-target identity-adoption packet before staging outputs', async () => {
+		const fixture = await seedCrossTargetIdentityPacket();
+		await expect(
+			persistCleanupRevisionV2({
+				root: fixture.root,
+				packetPath: fixture.packetPath,
+				fullSizeOutcome: 'pass',
+				fullSizeObservation: 'The invalid identity lane must never begin publication.',
+				display384Outcome: 'pass',
+				display384Observation: 'The invalid identity lane must never begin publication.'
+			})
+		).rejects.toThrow();
+		await expect(
+			readFile(path.join(fixture.root, fixture.packet.output.compositePath))
+		).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('fails closed when a core composite is replaced after the completion audit publishes', async () => {
+		const fixture = await seedDeterministicPacket();
+		const compositePath = path.join(fixture.root, fixture.packet.packet.output.compositePath);
+		const auditPath = path.join(
+			fixture.root,
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/martial-blade-blade-dance-v2.json'
+		);
+		const foreignComposite = Buffer.from('foreign composite installed after audit publication');
+
+		await expect(
+			persistCleanupRevisionV2({
+				root: fixture.root,
+				packetPath: fixture.packet.path,
+				fullSizeOutcome: 'pass',
+				fullSizeObservation:
+					'The complete sword and action remain inside the aperture after the v2 inset.',
+				display384Outcome: 'pass',
+				display384Observation:
+					'The sword action remains readable without the named arrow glyph at 384 pixels.',
+				testHooks: {
+					afterPublish: async (index, repositoryPath) => {
+						if (index !== 4) return;
+						expect(repositoryPath).toBe(
+							'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/martial-blade-blade-dance-v2.json'
+						);
+						const replacementPath = `${compositePath}.foreign-replacement`;
+						await writeFile(replacementPath, foreignComposite);
+						await rename(replacementPath, compositePath);
+					}
+				}
+			})
+		).rejects.toThrow();
+
+		// Safe rollback must remove the transaction-owned audit but never remove or
+		// replace the foreign composite that won the post-audit race.
+		expect(await readFile(compositePath)).toEqual(foreignComposite);
+		await expect(readFile(auditPath)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(
+			authenticateCleanupRevisionReceipt({ root: fixture.root, packetPath: fixture.packet.path })
+		).rejects.toThrow();
+	}, 30_000);
+
 	it('publishes the deterministic recovery with honest zero-call timing and cannot publish it twice', async () => {
 		const fixture = await seedDeterministicPacket();
 		const result = await persistCleanupRevisionV2({
