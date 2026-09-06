@@ -242,7 +242,12 @@ export const CombatRulesV1Schema = z
 
 export type AttributeModifier = z.infer<typeof AttributeModifierSchema>;
 export type AttributeModifierScope = z.infer<typeof AttributeModifierScopeSchema>;
-export type CombatRulesV1 = z.infer<typeof CombatRulesV1Schema>;
+type DeepReadonly<T> = T extends readonly unknown[]
+	? { readonly [Key in keyof T]: DeepReadonly<T[Key]> }
+	: T extends object
+		? { readonly [Key in keyof T]: DeepReadonly<T[Key]> }
+		: T;
+export type CombatRulesV1 = DeepReadonly<z.infer<typeof CombatRulesV1Schema>>;
 export type DamageChannel = z.infer<typeof DamageChannelSchema>;
 export type DamageTag = z.infer<typeof DamageTagSchema>;
 export type LearningContext = z.infer<typeof LearningContextSchema>;

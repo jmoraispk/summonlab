@@ -28,4 +28,26 @@ describe('combat-rules-v1 content', () => {
 		});
 		expect(COMBAT_RULES_V1.health.combatRecoveryBasisPoints).toBe(10_000 / 5);
 	});
+
+	it('prevents root, nested record, and stacking-order mutation', () => {
+		expect(Object.isFrozen(COMBAT_RULES_V1)).toBe(true);
+		expect(Object.isFrozen(COMBAT_RULES_V1.health)).toBe(true);
+		expect(Object.isFrozen(COMBAT_RULES_V1.attributes.modifierStackingOrder)).toBe(true);
+
+		const rootChanged = Reflect.set(COMBAT_RULES_V1, 'rulesVersion', 'changed-rules');
+		const nestedChanged = Reflect.set(COMBAT_RULES_V1.health, 'baseMaximum', 999);
+		const arrayChanged = Reflect.set(
+			COMBAT_RULES_V1.attributes.modifierStackingOrder,
+			0,
+			'additive-basis-points'
+		);
+
+		expect([rootChanged, nestedChanged, arrayChanged]).toStrictEqual([false, false, false]);
+		expect(COMBAT_RULES_V1.rulesVersion).toBe('combat-rules-v1');
+		expect(COMBAT_RULES_V1.health.baseMaximum).toBe(100);
+		expect(COMBAT_RULES_V1.attributes.modifierStackingOrder).toStrictEqual([
+			'additive-flat',
+			'additive-basis-points'
+		]);
+	});
 });
