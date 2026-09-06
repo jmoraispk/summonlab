@@ -208,12 +208,18 @@ export interface InteriorResult {
 	readonly removedPixelBounds: PixelBounds | null;
 }
 
+export interface LegacyInteriorOptions {
+	readonly frame: Buffer;
+	readonly artworkScale?: number;
+}
+
 export interface CleanupInspectionInput {
 	readonly composite: Buffer;
 	readonly backing: Buffer;
 	readonly interior: Buffer;
 	readonly frame: Buffer;
 	readonly geometry: SkillIconGeometryV2;
+	readonly compositionProfile?: 'legacy-v1' | 'frame-opening-v2';
 	readonly boundLayerHashes?: Readonly<{
 		backing: string;
 		interior: string;
@@ -226,6 +232,10 @@ export interface CleanupInspection {
 	readonly exactComposite: boolean;
 	readonly protectedBandMatches: boolean;
 	readonly exteriorTransparent: boolean;
+	readonly backingOnlyComponents: readonly {
+		readonly pixels: number;
+		readonly bounds: PixelBounds;
+	}[];
 	readonly nearWhiteComponents: readonly {
 		readonly pixels: number;
 		readonly bounds: PixelBounds;
@@ -1284,14 +1294,75 @@ async function encodeRgba(data: Buffer, width: number, height: number): Promise<
 		.toBuffer();
 }
 
+function centerConnectedFrameOpening(frame: Buffer, width: number, height: number): Uint8Array {
+	const opening = new Uint8Array(width * height);
+	const startX = Math.floor(width / 2);
+	const startY = Math.floor(height / 2);
+	const start = startY * width + startX;
+	if ((frame[start * 4 + 3] ?? 255) !== 0) {
+		throw new Error('Accepted rarity frame does not have a transparent center aperture');
+	}
+	const queue = [start];
+	opening[start] = 1;
+	for (let cursor = 0; cursor < queue.length; cursor += 1) {
+		const current = queue[cursor]!;
+		const x = current % width;
+		for (const next of [
+			x > 0 ? current - 1 : -1,
+			x + 1 < width ? current + 1 : -1,
+			current >= width ? current - width : -1,
+			current + width < opening.length ? current + width : -1
+		]) {
+			if (next < 0 || opening[next] !== 0 || (frame[next * 4 + 3] ?? 255) !== 0) continue;
+			opening[next] = 1;
+			queue.push(next);
+		}
+	}
+	return opening;
+}
+
+async function scaledLegacyArtwork(
+	source: Buffer,
+	geometry: SkillIconGeometryV2,
+	artworkScale: number
+): Promise<Buffer> {
+	if (!Number.isFinite(artworkScale) || artworkScale < 1 || artworkScale > 1.5) {
+		throw new Error('Legacy artwork scale must be between 1 and 1.5');
+	}
+	if (artworkScale === 1) return source;
+	const width = Math.ceil(geometry.canvas.width * artworkScale);
+	const height = Math.ceil(geometry.canvas.height * artworkScale);
+	return sharp(source, { failOn: 'error' })
+		.resize(width, height, {
+			fit: 'fill',
+			kernel: 'lanczos3',
+			fastShrinkOnLoad: false
+		})
+		.extract({
+			left: Math.floor((width - geometry.canvas.width) / 2),
+			top: Math.floor((height - geometry.canvas.height) / 2),
+			width: geometry.canvas.width,
+			height: geometry.canvas.height
+		})
+		.png(DETERMINISTIC_PNG_OPTIONS)
+		.toBuffer();
+}
+
 export async function extractLegacyInterior(
 	source: Buffer,
-	geometryInput: SkillIconGeometryV2
+	geometryInput: SkillIconGeometryV2,
+	options?: LegacyInteriorOptions
 ): Promise<InteriorResult> {
 	const geometry = SkillIconGeometryV2Schema.parse(geometryInput);
-	const decoded = await rgbaBytes(source);
+	const decoded = await rgbaBytes(
+		await scaledLegacyArtwork(source, geometry, options?.artworkScale ?? 1)
+	);
 	assertCanvas('Legacy source', decoded, geometry.canvas);
 	const { inner, medallion } = cleanupPolygons(geometry, decoded.width, decoded.height);
+	const frame = options === undefined ? null : await rgbaBytes(options.frame);
+	if (frame !== null) assertCanvas('Accepted rarity frame', frame, geometry.canvas);
+	const frameOpening =
+		frame === null ? null : centerConnectedFrameOpening(frame.data, frame.width, frame.height);
 	const output = Buffer.from(decoded.data);
 	let removedPixels = 0;
 	let left = decoded.width;
@@ -1302,7 +1373,10 @@ export async function extractLegacyInterior(
 		for (let x = 0; x < decoded.width; x += 1) {
 			const offset = (y * decoded.width + x) * 4;
 			const allowed =
-				pointInPolygon(x + 0.5, y + 0.5, inner) && !pointInPolygon(x + 0.5, y + 0.5, medallion);
+				frameOpening?.[y * decoded.width + x] === 1 ||
+				(frameOpening === null &&
+					pointInPolygon(x + 0.5, y + 0.5, inner) &&
+					!pointInPolygon(x + 0.5, y + 0.5, medallion));
 			if (!allowed) {
 				if ((output[offset + 3] ?? 0) > 0) {
 					removedPixels += 1;
@@ -1329,6 +1403,7 @@ export async function composeCleanupIcon(input: {
 	readonly backing: Buffer;
 	readonly interior: Buffer;
 	readonly frame: Buffer;
+	readonly compositionProfile?: 'legacy-v1' | 'frame-opening-v2';
 }): Promise<Buffer> {
 	const [backing, interior, frame] = await Promise.all([
 		rgbaBytes(input.backing),
@@ -1337,23 +1412,31 @@ export async function composeCleanupIcon(input: {
 	]);
 	assertCanvas('Interior', interior, backing);
 	assertCanvas('Frame', frame, backing);
-	return sharp(backing.data, {
+	const pipeline = sharp(backing.data, {
 		raw: { width: backing.width, height: backing.height, channels: 4 }
-	})
-		.composite([
-			{
-				input: interior.data,
-				raw: { width: backing.width, height: backing.height, channels: 4 },
-				blend: 'over'
-			},
-			{
-				input: frame.data,
-				raw: { width: backing.width, height: backing.height, channels: 4 },
-				blend: 'over'
-			}
-		])
-		.png(DETERMINISTIC_PNG_OPTIONS)
-		.toBuffer();
+	}).composite([
+		{
+			input: interior.data,
+			raw: { width: backing.width, height: backing.height, channels: 4 },
+			blend: 'over'
+		},
+		{
+			input: frame.data,
+			raw: { width: backing.width, height: backing.height, channels: 4 },
+			blend: 'over'
+		}
+	]);
+	if (input.compositionProfile !== 'frame-opening-v2') {
+		return pipeline.png(DETERMINISTIC_PNG_OPTIONS).toBuffer();
+	}
+	const composite = await pipeline.raw().toBuffer();
+	for (let index = 0; index < backing.width * backing.height; index += 1) {
+		const offset = index * 4;
+		if ((interior.data[offset + 3] ?? 0) === 0 && (frame.data[offset + 3] ?? 0) === 0) {
+			composite.fill(0, offset, offset + 4);
+		}
+	}
+	return encodeRgba(composite, backing.width, backing.height);
 }
 
 export async function clearCleanupExterior(
@@ -1435,6 +1518,65 @@ function nearWhiteComponents(
 	return components;
 }
 
+function backingOnlyComponents(
+	actual: Buffer,
+	backing: Buffer,
+	interior: Buffer,
+	frame: Buffer,
+	width: number,
+	height: number
+): CleanupInspection['backingOnlyComponents'] {
+	const exposed = new Uint8Array(width * height);
+	for (let index = 0; index < width * height; index += 1) {
+		const offset = index * 4;
+		if (
+			(actual[offset + 3] ?? 0) > 0 &&
+			(backing[offset + 3] ?? 0) > 0 &&
+			(interior[offset + 3] ?? 0) === 0 &&
+			(frame[offset + 3] ?? 0) === 0
+		) {
+			exposed[index] = 1;
+		}
+	}
+	const components: { pixels: number; bounds: PixelBounds }[] = [];
+	for (let start = 0; start < exposed.length; start += 1) {
+		if (exposed[start] !== 1) continue;
+		const queue = [start];
+		exposed[start] = 2;
+		let pixels = 0;
+		let left = width;
+		let top = height;
+		let right = -1;
+		let bottom = -1;
+		for (let cursor = 0; cursor < queue.length; cursor += 1) {
+			const current = queue[cursor]!;
+			const x = current % width;
+			const y = Math.floor(current / width);
+			pixels += 1;
+			left = Math.min(left, x);
+			top = Math.min(top, y);
+			right = Math.max(right, x);
+			bottom = Math.max(bottom, y);
+			for (const next of [
+				x > 0 ? current - 1 : -1,
+				x + 1 < width ? current + 1 : -1,
+				current >= width ? current - width : -1,
+				current + width < exposed.length ? current + width : -1
+			]) {
+				if (next >= 0 && exposed[next] === 1) {
+					exposed[next] = 2;
+					queue.push(next);
+				}
+			}
+		}
+		components.push({
+			pixels,
+			bounds: { left, top, width: right - left + 1, height: bottom - top + 1 }
+		});
+	}
+	return components.sort((left, right) => right.pixels - left.pixels);
+}
+
 export async function inspectCleanupComposite(
 	input: CleanupInspectionInput
 ): Promise<CleanupInspection> {
@@ -1449,13 +1591,19 @@ export async function inspectCleanupComposite(
 		await composeCleanupIcon({
 			backing: input.backing,
 			interior: emptyInterior,
-			frame: input.frame
+			frame: input.frame,
+			...(input.compositionProfile === undefined
+				? {}
+				: { compositionProfile: input.compositionProfile })
 		}),
 		geometry
 	);
-	const [actualRgba, protectedRgba] = await Promise.all([
+	const [actualRgba, protectedRgba, backingRgba, interiorRgba, frameRgba] = await Promise.all([
 		rgbaBytes(input.composite),
-		rgbaBytes(protectedComposite)
+		rgbaBytes(protectedComposite),
+		rgbaBytes(input.backing),
+		rgbaBytes(input.interior),
+		rgbaBytes(input.frame)
 	]);
 	assertCanvas('Cleanup composite', actualRgba, geometry.canvas);
 	assertCanvas('Protected composite', protectedRgba, geometry.canvas);
@@ -1464,6 +1612,10 @@ export async function inspectCleanupComposite(
 		geometry.canvas.width,
 		geometry.canvas.height
 	);
+	const acceptedFrameOpening =
+		input.compositionProfile === 'frame-opening-v2'
+			? centerConnectedFrameOpening(frameRgba.data, geometry.canvas.width, geometry.canvas.height)
+			: null;
 	let protectedBandMatches = true;
 	let exteriorTransparent = true;
 	for (let y = 0; y < geometry.canvas.height && protectedBandMatches; y += 1) {
@@ -1471,8 +1623,11 @@ export async function inspectCleanupComposite(
 			const pixelX = x + 0.5;
 			const pixelY = y + 0.5;
 			const protectedPixel =
-				(pointInPolygon(pixelX, pixelY, outer) && !pointInPolygon(pixelX, pixelY, inner)) ||
-				pointInPolygon(pixelX, pixelY, medallion);
+				acceptedFrameOpening === null
+					? (pointInPolygon(pixelX, pixelY, outer) && !pointInPolygon(pixelX, pixelY, inner)) ||
+						pointInPolygon(pixelX, pixelY, medallion)
+					: pointInPolygon(pixelX, pixelY, outer) &&
+						acceptedFrameOpening[y * geometry.canvas.width + x] !== 1;
 			if (!protectedPixel) continue;
 			const offset = (y * geometry.canvas.width + x) * 4;
 			if (
@@ -1503,6 +1658,14 @@ export async function inspectCleanupComposite(
 		geometry.canvas.width,
 		geometry.canvas.height
 	);
+	const exposedBacking = backingOnlyComponents(
+		actualRgba.data,
+		backingRgba.data,
+		interiorRgba.data,
+		frameRgba.data,
+		geometry.canvas.width,
+		geometry.canvas.height
+	);
 	return {
 		layerHashesMatch:
 			input.boundLayerHashes === undefined ||
@@ -1512,6 +1675,7 @@ export async function inspectCleanupComposite(
 		exactComposite: input.composite.equals(expected),
 		protectedBandMatches,
 		exteriorTransparent,
+		backingOnlyComponents: exposedBacking,
 		nearWhiteComponents: components,
 		warnings: components.map(
 			(component) =>

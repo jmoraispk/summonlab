@@ -763,6 +763,43 @@ describe('deterministic protected-aperture composition', { timeout: 60_000 }, ()
 		expect(result.removedPixelBounds).toEqual({ left: 0, top: 2, width: 6, height: 4 });
 	});
 
+	it('uses the center-connected frame opening instead of exposing backing around the artwork', async () => {
+		// Catches geometry insets that are narrower than the actual accepted-frame opening.
+		const narrowGeometry: SkillIconGeometryV2 = {
+			...syntheticGeometry,
+			aperturePoints: [
+				[0.5, 0.4],
+				[0.6, 0.45],
+				[0.6, 0.55],
+				[0.5, 0.6],
+				[0.4, 0.55],
+				[0.4, 0.45]
+			]
+		};
+		const source = await rgbaFixture([0, 255, 0, 255], []);
+		const ringPixels: (readonly [number, number, number, number, number, number])[] = [];
+		for (let coordinate = 2; coordinate <= 7; coordinate += 1) {
+			ringPixels.push(
+				[coordinate, 2, 0, 0, 255, 255],
+				[coordinate, 7, 0, 0, 255, 255],
+				[2, coordinate, 0, 0, 255, 255],
+				[7, coordinate, 0, 0, 255, 255]
+			);
+		}
+		const frame = await rgbaFixture([0, 0, 0, 0], ringPixels);
+
+		const result = await extractLegacyInterior(source, narrowGeometry, {
+			frame,
+			artworkScale: 1
+		});
+		const data = await rawRgba(result.bytes);
+
+		expect(pixel(data, 5, 5)).toEqual([0, 255, 0, 255]);
+		expect(pixel(data, 3, 5)).toEqual([0, 255, 0, 255]);
+		expect(pixel(data, 2, 5)).toEqual([0, 0, 0, 0]);
+		expect(pixel(data, 1, 5)).toEqual([0, 0, 0, 0]);
+	});
+
 	it('keeps same-rank protected pixels byte-identical across different interiors', async () => {
 		// Catches wrong layer order or interior leakage into the protected frame/medallion band.
 		const backing = await rgbaFixture(
@@ -855,6 +892,7 @@ describe('deterministic protected-aperture composition', { timeout: 60_000 }, ()
 			layerHashesMatch: true,
 			exactComposite: true,
 			protectedBandMatches: true,
+			backingOnlyComponents: [],
 			nearWhiteComponents: [],
 			warnings: []
 		});
@@ -897,6 +935,51 @@ describe('deterministic protected-aperture composition', { timeout: 60_000 }, ()
 			{ pixels: 2, bounds: { left: 5, top: 5, width: 2, height: 1 } }
 		]);
 		expect(contaminated.warnings).toHaveLength(1);
+	});
+
+	it('hides exposed backing while still reporting it in an unauthorized composite', async () => {
+		// Catches the charcoal underfill becoming a visible outline instead of hidden seam insurance.
+		const backing = await rgbaFixture(
+			[0, 0, 0, 0],
+			[
+				[5, 5, 32, 32, 32, 255],
+				[6, 5, 32, 32, 32, 255]
+			]
+		);
+		const interior = await rgbaFixture([0, 0, 0, 0], [[5, 5, 0, 255, 0, 255]]);
+		const frame = await rgbaFixture([0, 0, 0, 0], []);
+		const composite = await composeCleanupIcon({
+			backing,
+			interior,
+			frame,
+			compositionProfile: 'frame-opening-v2'
+		});
+		const clean = await inspectCleanupComposite({
+			composite,
+			backing,
+			interior,
+			frame,
+			geometry: syntheticGeometry,
+			compositionProfile: 'frame-opening-v2'
+		});
+		expect(clean.backingOnlyComponents).toEqual([]);
+
+		const unauthorizedComposite = await sharp(backing)
+			.composite([{ input: interior, blend: 'over' }])
+			.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
+			.toBuffer();
+		const inspection = await inspectCleanupComposite({
+			composite: unauthorizedComposite,
+			backing,
+			interior,
+			frame,
+			geometry: syntheticGeometry,
+			compositionProfile: 'frame-opening-v2'
+		});
+
+		expect(inspection.backingOnlyComponents).toEqual([
+			{ pixels: 1, bounds: { left: 6, top: 5, width: 1, height: 1 } }
+		]);
 	});
 
 	it('rejects stale layer hashes and detects opaque exterior pixels', async () => {
