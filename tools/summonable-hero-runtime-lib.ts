@@ -11,7 +11,7 @@ import {
 } from '../packages/contracts/src/index.js';
 import sharp from 'sharp';
 
-const EXPORTER_VERSION = 'summonable-hero-runtime-exporter-v1' as const;
+const EXPORTER_VERSION = 'summonable-hero-runtime-exporter-v2' as const;
 
 export interface SummonableHeroRuntimePlanEntry {
 	readonly heroId: string;
@@ -19,7 +19,7 @@ export interface SummonableHeroRuntimePlanEntry {
 	readonly manifestHash: string;
 	readonly bundleName: string;
 	readonly alias: string;
-	readonly usage: 'summon' | 'combat-chibi';
+	readonly usage: 'summon' | 'combat-chibi' | 'village-cutout';
 	readonly width: number;
 	readonly quality: number;
 	readonly budgetBytes: number;
@@ -65,7 +65,18 @@ export function planSummonableHeroRuntime(
 					quality: 80,
 					budgetBytes: 120_000,
 					source: entry.visuals.combatChibi
-				}
+				},
+				...(entry.visuals.villageCutout
+					? [
+							{
+								usage: 'village-cutout' as const,
+								width: 384,
+								quality: 82,
+								budgetBytes: 120_000,
+								source: entry.visuals.villageCutout.asset
+							}
+						]
+					: [])
 			] as const
 		).map((profile) => ({
 			heroId: entry.heroId,
@@ -76,6 +87,50 @@ export function planSummonableHeroRuntime(
 			...profile
 		}))
 	);
+}
+
+export async function assertVillageCutoutAlpha(bytes: Buffer): Promise<void> {
+	const source = sharp(bytes);
+	const metadata = await source.metadata();
+	if (metadata.format !== 'png') {
+		throw new Error('Village cutout must be a PNG');
+	}
+	if (metadata.width !== 1024 || metadata.height !== 1536) {
+		throw new Error('Village cutout must be 1024x1536');
+	}
+	if (metadata.hasAlpha !== true) {
+		throw new Error('Village cutout must have true alpha');
+	}
+	const { data, info } = await source.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+	const alphaChannel = info.channels - 1;
+	const alphaAt = (x: number, y: number) =>
+		data[(y * info.width + x) * info.channels + alphaChannel]!;
+	let coveredPixels = 0;
+	let edgeHasVisiblePixel = false;
+	for (let y = 0; y < info.height; y += 1) {
+		for (let x = 0; x < info.width; x += 1) {
+			const alpha = alphaAt(x, y);
+			if (alpha > 8) {
+				coveredPixels += 1;
+				if (x === 0 || y === 0 || x === info.width - 1 || y === info.height - 1) {
+					edgeHasVisiblePixel = true;
+				}
+			}
+		}
+	}
+	if (coveredPixels === info.width * info.height) {
+		throw new Error('Village cutout must have true alpha');
+	}
+	if (coveredPixels === 0) {
+		throw new Error('Village cutout cannot be fully transparent');
+	}
+	if (edgeHasVisiblePixel) {
+		throw new Error('Village cutout cannot touch the canvas edge');
+	}
+	const coverage = coveredPixels / (info.width * info.height);
+	if (coverage < 0.02 || coverage > 0.6) {
+		throw new Error('Village cutout alpha coverage must be within 0.02..0.60');
+	}
 }
 
 export async function verifyApprovedHeroSource(
@@ -94,6 +149,7 @@ async function generateRuntimeAsset(
 	plan: SummonableHeroRuntimePlanEntry
 ): Promise<GeneratedRuntimeAsset> {
 	const sourceBytes = await verifyApprovedHeroSource(workspaceRoot, plan.source);
+	if (plan.usage === 'village-cutout') await assertVillageCutoutAlpha(sourceBytes);
 	const { data, info } = await sharp(sourceBytes)
 		.rotate()
 		.resize({ width: plan.width, fit: 'inside', withoutEnlargement: true })
@@ -104,6 +160,9 @@ async function generateRuntimeAsset(
 			smartSubsample: true
 		})
 		.toBuffer({ resolveWithObject: true });
+	if (plan.usage === 'village-cutout' && (await sharp(data).metadata()).hasAlpha !== true) {
+		throw new Error(`Village cutout runtime output lost alpha: ${plan.heroId}`);
+	}
 	if (data.byteLength > plan.budgetBytes) {
 		throw new Error(
 			`${plan.heroId}/${plan.usage} is ${data.byteLength} bytes; budget is ${plan.budgetBytes}`
@@ -183,7 +242,7 @@ export async function buildSummonableHeroRuntime(
 		};
 	});
 	const core = {
-		schemaVersion: 'summonable-hero-runtime-manifest-v1' as const,
+		schemaVersion: 'summonable-hero-runtime-manifest-v2' as const,
 		catalogVersion: catalog.catalogVersion,
 		sourceCatalogContentHash: sha256(canonicalJson(catalog)),
 		exporterVersion: EXPORTER_VERSION,

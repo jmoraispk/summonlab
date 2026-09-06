@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SummonableHeroCatalogSchema } from './summonable-hero.js';
+import { SummonableHeroCatalogSchema, type SummonableHeroEntry } from './summonable-hero.js';
 
 const hash = 'a'.repeat(64);
 
@@ -108,7 +108,7 @@ function entry(overrides: Record<string, unknown> = {}) {
 
 function catalog(entries: unknown[]) {
 	return {
-		schemaVersion: 'summonable-hero-catalog-v1',
+		schemaVersion: 'summonable-hero-catalog-v2',
 		catalogVersion: 'summonable-heroes-v1',
 		status: 'approved',
 		approvedOn: '2026-09-05',
@@ -118,7 +118,7 @@ function catalog(entries: unknown[]) {
 	};
 }
 
-function validEntries() {
+function validEntries(): SummonableHeroEntry[] {
 	return Array.from({ length: 200 }, (_, index) => {
 		const ordinal = index + 1;
 		const heroId = `hero-${ordinal.toString().padStart(3, '0')}`;
@@ -155,12 +155,61 @@ function validEntries() {
 				}
 			}
 		});
-	});
+	}) as SummonableHeroEntry[];
 }
 
 describe('summonable hero catalog contract', () => {
 	it('accepts an approved hero with a summon and combat-chibi binding', () => {
 		expect(SummonableHeroCatalogSchema.parse(catalog(validEntries())).entries).toHaveLength(200);
+	});
+
+	it('accepts a partial catalog with one source-bound Village cutout', () => {
+		const entries = validEntries();
+		const first = entries[0]!;
+		entries[0] = {
+			...first,
+			visuals: {
+				...first.visuals,
+				villageCutout: {
+					sourceSummonAssetKey: first.visuals.summon.assetKey,
+					sourceSummonContentHash: first.visuals.summon.contentHash,
+					asset: {
+						...first.visuals.summon,
+						assetKey: `${first.heroId}-village-cutout-v1`,
+						role: 'village-cutout',
+						file: 'assets/heroes/experiments/example/village-cutout.png'
+					}
+				}
+			}
+		};
+
+		const parsed = SummonableHeroCatalogSchema.parse(catalog(entries));
+		expect(parsed.entries[0]!.visuals.villageCutout?.asset.role).toBe('village-cutout');
+		expect(parsed.entries[1]!.visuals.villageCutout).toBeUndefined();
+	});
+
+	it('rejects a Village cutout bound to a different summon source', () => {
+		const entries = validEntries();
+		const first = entries[0]!;
+		entries[0] = {
+			...first,
+			visuals: {
+				...first.visuals,
+				villageCutout: {
+					sourceSummonAssetKey: 'another-hero-summon-v1',
+					sourceSummonContentHash: 'f'.repeat(64),
+					asset: {
+						...first.visuals.summon,
+						assetKey: `${first.heroId}-village-cutout-v1`,
+						role: 'village-cutout'
+					}
+				}
+			}
+		};
+
+		expect(() => SummonableHeroCatalogSchema.parse(catalog(entries))).toThrow(
+			/Village cutout must bind the matching summon source/u
+		);
 	});
 
 	it('rejects duplicate hero identities and visual asset keys', () => {

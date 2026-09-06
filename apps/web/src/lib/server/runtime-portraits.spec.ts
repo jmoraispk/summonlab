@@ -40,5 +40,8 @@ describe('runtime portraits', () => {
 
 		expect(summon?.publicPath).toContain(`/summonable-heroes-v1/${hero.heroId}/summon.`);
 		expect(combatChibi?.publicPath).toContain(`/summonable-heroes-v1/${hero.heroId}/combat-chibi.`);
+		expect(
+			runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'village-cutout')
+		).toBeNull();
 	});
 });

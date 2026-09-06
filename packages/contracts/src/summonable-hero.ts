@@ -9,7 +9,7 @@ const HeroSlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,79}$/u);
 export const ApprovedHeroSourceAssetSchema = z
 	.object({
 		assetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
-		role: z.enum(['summon', 'combat-chibi']),
+		role: z.enum(['summon', 'combat-chibi', 'village-cutout']),
 		status: z.literal('approved'),
 		file: z
 			.string()
@@ -24,6 +24,14 @@ export const ApprovedHeroSourceAssetSchema = z
 	})
 	.strict();
 
+export const VillageCutoutBindingSchema = z
+	.object({
+		sourceSummonAssetKey: z.string().regex(/^[a-z][a-z0-9-]{2,99}$/u),
+		sourceSummonContentHash: StateHashSchema,
+		asset: ApprovedHeroSourceAssetSchema
+	})
+	.strict();
+
 export const SummonableHeroEntrySchema = z
 	.object({
 		heroId: HeroSlugSchema,
@@ -33,7 +41,8 @@ export const SummonableHeroEntrySchema = z
 		visuals: z
 			.object({
 				summon: ApprovedHeroSourceAssetSchema,
-				combatChibi: ApprovedHeroSourceAssetSchema
+				combatChibi: ApprovedHeroSourceAssetSchema,
+				villageCutout: VillageCutoutBindingSchema.optional()
 			})
 			.strict()
 	})
@@ -69,6 +78,18 @@ export const SummonableHeroEntrySchema = z
 		if (entry.visuals.combatChibi.role !== 'combat-chibi') {
 			context.addIssue({ code: 'custom', message: `Combat chibi role mismatch: ${entry.heroId}` });
 		}
+		const cutout = entry.visuals.villageCutout;
+		if (
+			cutout &&
+			(cutout.asset.role !== 'village-cutout' ||
+				cutout.sourceSummonAssetKey !== entry.visuals.summon.assetKey ||
+				cutout.sourceSummonContentHash !== entry.visuals.summon.contentHash)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: `Village cutout must bind the matching summon source: ${entry.heroId}`
+			});
+		}
 		if (entry.draft.manifest.artKey !== entry.visuals.summon.assetKey) {
 			context.addIssue({
 				code: 'custom',
@@ -79,7 +100,7 @@ export const SummonableHeroEntrySchema = z
 
 export const SummonableHeroCatalogSchema = z
 	.object({
-		schemaVersion: z.literal('summonable-hero-catalog-v1'),
+		schemaVersion: z.literal('summonable-hero-catalog-v2'),
 		catalogVersion: ContentVersionSchema,
 		status: z.literal('approved'),
 		approvedOn: IsoDateTimeSchema.or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/u)),
@@ -106,7 +127,8 @@ export const SummonableHeroCatalogSchema = z
 				'assetKey',
 				catalog.entries.flatMap((entry) => [
 					entry.visuals.summon.assetKey,
-					entry.visuals.combatChibi.assetKey
+					entry.visuals.combatChibi.assetKey,
+					...(entry.visuals.villageCutout ? [entry.visuals.villageCutout.asset.assetKey] : [])
 				])
 			]
 		] as const;
@@ -136,7 +158,16 @@ export const SummonableHeroRuntimeEntrySchema = z
 			});
 		}
 		const usages = new Set(entry.bundle.assets.map((asset) => asset.usage));
-		if (usages.size !== 2 || !usages.has('summon') || !usages.has('combat-chibi')) {
+		if (
+			usages.size !== entry.bundle.assets.length ||
+			!usages.has('summon') ||
+			!usages.has('combat-chibi') ||
+			usages.size < 2 ||
+			usages.size > 3 ||
+			[...usages].some(
+				(usage) => usage !== 'summon' && usage !== 'combat-chibi' && usage !== 'village-cutout'
+			)
+		) {
 			context.addIssue({
 				code: 'custom',
 				message: `Runtime visual pair incomplete: ${entry.heroId}`
@@ -157,10 +188,10 @@ export const SummonableHeroRuntimeEntrySchema = z
 
 export const SummonableHeroRuntimeManifestSchema = z
 	.object({
-		schemaVersion: z.literal('summonable-hero-runtime-manifest-v1'),
+		schemaVersion: z.literal('summonable-hero-runtime-manifest-v2'),
 		catalogVersion: ContentVersionSchema,
 		sourceCatalogContentHash: StateHashSchema,
-		exporterVersion: z.literal('summonable-hero-runtime-exporter-v1'),
+		exporterVersion: z.literal('summonable-hero-runtime-exporter-v2'),
 		loading: z.literal('lazy-per-hero'),
 		totalBytes: z.number().int().positive(),
 		entries: z.array(SummonableHeroRuntimeEntrySchema).length(200),
@@ -181,7 +212,7 @@ export const SummonableHeroRuntimeManifestSchema = z
 			const pixiBundle = manifest.pixiManifest.bundles.find(
 				(candidate) => candidate.name === entry.bundle.name
 			);
-			if (!pixiBundle || pixiBundle.assets.length !== 2) {
+			if (!pixiBundle || pixiBundle.assets.length !== entry.bundle.assets.length) {
 				context.addIssue({
 					code: 'custom',
 					message: `Pixi bundle projection missing: ${entry.heroId}`
@@ -191,6 +222,7 @@ export const SummonableHeroRuntimeManifestSchema = z
 	});
 
 export type ApprovedHeroSourceAsset = z.infer<typeof ApprovedHeroSourceAssetSchema>;
+export type VillageCutoutBinding = z.infer<typeof VillageCutoutBindingSchema>;
 export type SummonableHeroEntry = z.infer<typeof SummonableHeroEntrySchema>;
 export type SummonableHeroCatalog = z.infer<typeof SummonableHeroCatalogSchema>;
 export type SummonableHeroRuntimeEntry = z.infer<typeof SummonableHeroRuntimeEntrySchema>;
