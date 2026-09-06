@@ -59,6 +59,34 @@
 			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
 		}
 	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"normalizationAuthority": {
+		"profile": "skill-icon-cleanup-artwork-resize-mask-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 1024,
+			"height": 1024,
+			"fit": "fill",
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"mask": "geometry-v2-protected-central-aperture",
+		"encoder": {
+			"format": "png",
+			"compressionLevel": 9,
+			"adaptiveFiltering": false,
+			"palette": false,
+			"progressive": false
+		},
+		"sharpVersion": "0.35.3",
+		"vipsVersion": "8.18.3"
+	},
 	"references": [
 		{
 			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
@@ -86,8 +114,8 @@
 			"contentHash": "86bced0319515089d06c7a21c03931e22e7bec44e2cd30dba37470f16afa46dd"
 		}
 	],
-	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Cooking in the Craft / Cooking taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Cooking\nSupporting cue: one restrained secondary cue communicating this effect: Prepared food removes the unfed penalty. **Foundation.**\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Smiling-face/heart badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and F-rank frame.",
-	"exactPromptHash": "557fdc2c9ddf5ac514beb81773992cc0148811ac184a692c87b00ecfc0f45d13",
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Cooking in the Craft / Cooking taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Cooking\nSupporting cue: one restrained secondary cue communicating this effect: Prepared food removes the unfed penalty. **Foundation.**\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Smiling-face/heart badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and F-rank frame.",
+	"exactPromptHash": "fdf107ff477f1859d65eb09c4a0ca08e630a6235c9ecdff853e5b7acd0a53ea7",
 	"attempts": {
 		"initial": 1,
 		"correctiveEdits": 1,

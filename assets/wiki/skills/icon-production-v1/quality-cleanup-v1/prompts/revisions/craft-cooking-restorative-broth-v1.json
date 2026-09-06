@@ -59,6 +59,34 @@
 			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
 		}
 	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"normalizationAuthority": {
+		"profile": "skill-icon-cleanup-artwork-resize-mask-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 1024,
+			"height": 1024,
+			"fit": "fill",
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"mask": "geometry-v2-protected-central-aperture",
+		"encoder": {
+			"format": "png",
+			"compressionLevel": 9,
+			"adaptiveFiltering": false,
+			"palette": false,
+			"progressive": false
+		},
+		"sharpVersion": "0.35.3",
+		"vipsVersion": "8.18.3"
+	},
 	"references": [
 		{
 			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
@@ -86,8 +114,8 @@
 			"contentHash": "328a3d3f0759ca7d44276a2032ae5f662e90d4d7d0a3603f86dadea577fd2725"
 		}
 	],
-	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Restorative Broth in the Craft / Cooking taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Restorative Broth\nSupporting cue: one restrained secondary cue communicating this effect: Food that heals over time and clears minor conditions\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Heart/plus glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and D-rank frame.",
-	"exactPromptHash": "20730408cc7e3494cb4b3709736523ea6f3bed903b9a8f5449088c215a93613b",
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Restorative Broth in the Craft / Cooking taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Restorative Broth\nSupporting cue: one restrained secondary cue communicating this effect: Food that heals over time and clears minor conditions\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Heart/plus glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and D-rank frame.",
+	"exactPromptHash": "8b7e18f8727739bb7ee9f3d4df2029d45cb777576c019e15a0099aecd33e08ec",
 	"attempts": {
 		"initial": 1,
 		"correctiveEdits": 1,

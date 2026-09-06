@@ -238,22 +238,7 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports exactly the queued F black-matte v9 frame while accepting produced shared layers', async () => {
-		let message = '';
-		try {
-			await validateSkillIconAssets(process.cwd());
-		} catch (error) {
-			message = error instanceof Error ? error.message : String(error);
-		}
-		const diagnostics = message.split('\n');
-		expect(diagnostics).toEqual(['references/rarity-frame-f-v9: missing result inventory entry']);
-		expect(diagnostics).toHaveLength(1);
-		expect(message).not.toMatch(/latest revision v8 is revise/iu);
-		expect(message).not.toMatch(/latest revision v7 is revise/iu);
-		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
-		expect(message).not.toMatch(/backing.*missing result/iu);
-		expect(message).not.toMatch(/latest revision v2 is failed/iu);
-		expect(message).not.toMatch(/latest revision v1 is failed/iu);
-		expect(message).not.toMatch(/missing candidate/iu);
-	});
+	it('accepts the completed F black-matte v9 frame and all other produced shared layers', async () => {
+		await expect(validateSkillIconAssets(process.cwd())).resolves.toBeUndefined();
+	}, 30_000);
 });

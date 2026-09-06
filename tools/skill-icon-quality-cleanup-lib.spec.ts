@@ -4,10 +4,12 @@ import { once } from 'node:events';
 import {
 	copyFile,
 	link,
+	lstat,
 	mkdtemp,
 	mkdir,
 	readdir,
 	readFile,
+	rename,
 	rm,
 	symlink,
 	unlink,
@@ -617,6 +619,47 @@ describe('skill-icon quality-cleanup manifest exporter', { timeout: 60_000 }, ()
 			}
 			await writeFile(manifestPath, original).catch(() => undefined);
 			await rm(root, { recursive: true });
+		}
+	});
+
+	it('does not publish a revision packet through a renamed and symlink-swapped parent', async () => {
+		// Catches resolving the stage and destination by their mutable parent pathname after preflight.
+		const root = await seedExporterRoot();
+		const repositoryPath = `${QUALITY_CLEANUP_ROOT}/prompts/revisions/martial-blade-blade-dance-v1.json`;
+		const packetPath = path.join(root, repositoryPath);
+		const packetBytes = await readFile(packetPath);
+		const parent = path.dirname(packetPath);
+		const movedParent = `${parent}.moved`;
+		const outside = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-exporter-escape-'));
+		await unlink(packetPath);
+		let swapped = false;
+		try {
+			await expect(
+				exportSkillIconQualityCleanup({
+					root,
+					mode: 'write',
+					testHooks: {
+						beforePublish: async (publishingPath) => {
+							expect(publishingPath).toBe(repositoryPath);
+							await rename(parent, movedParent);
+							const stageName = (await readdir(movedParent)).find((name) =>
+								name.includes('.stage-')
+							);
+							if (!stageName) throw new Error('Expected exporter stage file');
+							await writeFile(path.join(outside, stageName), packetBytes);
+							await symlink(outside, parent);
+							swapped = true;
+						}
+					}
+				})
+			).rejects.toThrow(/parent|identity|symbolic|outside|escape/iu);
+			expect(swapped).toBe(true);
+			await expect(lstat(path.join(outside, path.basename(packetPath)))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		} finally {
+			await rm(root, { recursive: true });
+			await rm(outside, { recursive: true });
 		}
 	});
 });

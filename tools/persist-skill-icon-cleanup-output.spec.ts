@@ -15,12 +15,14 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import sharp from 'sharp';
 import { afterAll, describe, expect, it } from 'vitest';
 
 import { loadCleanupRevisionPackets } from './skill-icon-quality-cleanup-lib.js';
 import {
 	parsePersistCleanupRevisionCliRequest,
-	persistCleanupRevision
+	persistCleanupRevision,
+	type PersistCleanupRevisionTestHooks
 } from './persist-skill-icon-cleanup-output.js';
 
 const workspaceRoot = path.resolve(import.meta.dirname, '..');
@@ -103,7 +105,7 @@ async function seedRevisionWorkspace() {
 	await writeFile(packetPath, packetBytes);
 	const sourcePath = path.join(root, 'incoming-provider.png');
 	const sourceBytes = await readFile(
-		path.join(workspaceRoot, packetArtifact.packet.currentCandidate.path)
+		path.join(workspaceRoot, packetArtifact.packet.references[3]!.path)
 	);
 	await writeFile(sourcePath, sourceBytes);
 	const input = {
@@ -221,6 +223,34 @@ describe('cleanup semantic-revision persistence', () => {
 						contentHash: 'c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22'
 					}
 				},
+				providerEnvelope: {
+					profile: 'skill-icon-provider-envelope-v3',
+					mediaType: 'image/png',
+					width: 1254,
+					height: 1254,
+					alphaMode: 'rgb'
+				},
+				normalizationAuthority: {
+					profile: 'skill-icon-cleanup-artwork-resize-mask-v1',
+					decoderInput: 'remove-bounded-cabx-and-assign-srgb',
+					resize: {
+						width: 1024,
+						height: 1024,
+						fit: 'fill',
+						kernel: 'lanczos3',
+						fastShrinkOnLoad: false
+					},
+					mask: 'geometry-v2-protected-central-aperture',
+					encoder: {
+						format: 'png',
+						compressionLevel: 9,
+						adaptiveFiltering: false,
+						palette: false,
+						progressive: false
+					},
+					sharpVersion: '0.35.3',
+					vipsVersion: '8.18.3'
+				},
 				attempts: { initial: 1, correctiveEdits: 1, maximum: 2 },
 				output: {
 					providerSourcePath:
@@ -275,11 +305,19 @@ Composition: Centered painted emblem with one dominant silhouette, strong negati
 Existing exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A
 Unwanted detached explanatory UI glyph: Up/down arrows.
 Preserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.
-Output exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and D-rank frame.`);
+Output exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and D-rank frame.`);
 	}, 30_000);
 
-	it('retains provider bytes and publishes the interior, composite, and bound result together', async () => {
+	it('normalizes a native provider envelope while retaining bytes and publishes all outputs together', async () => {
 		const fixture = await seedRevisionWorkspace();
+		const nativeMetadata = await sharp(fixture.sourceBytes).metadata();
+		expect(nativeMetadata).toMatchObject({
+			format: 'png',
+			width: 1254,
+			height: 1254,
+			channels: 3,
+			hasAlpha: false
+		});
 		const manifestBefore = await readFile(fixture.cleanupManifestPath);
 		const currentCandidateBefore = await readFile(
 			path.join(fixture.root, fixture.packetArtifact.packet.currentCandidate.path)
@@ -298,10 +336,22 @@ Output exactly one square PNG provider source containing only the revised painte
 			attemptCeiling: 2,
 			providerSource: {
 				path: fixture.packetArtifact.packet.output.providerSourcePath,
-				contentHash: fixture.input.sourceHash
+				contentHash: fixture.input.sourceHash,
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb'
 			},
 			revisedInterior: {
-				path: fixture.packetArtifact.packet.output.revisedInteriorPath
+				path: fixture.packetArtifact.packet.output.revisedInteriorPath,
+				width: 1024,
+				height: 1024
+			},
+			normalizationAuthority: fixture.packetArtifact.packet.normalizationAuthority,
+			normalization: {
+				profile: 'skill-icon-cleanup-artwork-resize-mask-v1',
+				sourceContentHash: fixture.input.sourceHash,
+				colorSpaceDisposition: 'assigned-srgb',
+				geometryContentHash: fixture.packetArtifact.packet.compositionAuthority.geometry.contentHash
 			},
 			composite: { path: fixture.packetArtifact.packet.output.compositePath },
 			resultPath: fixture.packetArtifact.packet.output.resultPath,
@@ -311,11 +361,24 @@ Output exactly one square PNG provider source containing only the revised painte
 				selfPromotionForbidden: true
 			}
 		});
+		expect(result.normalization.decoderInputContentHash).toMatch(/^[a-f0-9]{64}$/u);
+		expect(result.normalization.containerBox).toMatchObject({
+			chunkType: 'caBX',
+			bytes: expect.any(Number),
+			contentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+		});
+		expect(result.normalization.outputContentHash).toBe(result.revisedInterior.contentHash);
 		expect(
 			await readFile(
 				path.join(fixture.root, fixture.packetArtifact.packet.output.providerSourcePath)
 			)
 		).toEqual(fixture.sourceBytes);
+		const persistedResult = await readFile(
+			path.join(fixture.root, fixture.packetArtifact.packet.output.resultPath),
+			'utf8'
+		);
+		expect(persistedResult).not.toContain(fixture.sourcePath);
+		expect(persistedResult).not.toContain(fixture.root);
 		for (const repositoryPath of Object.values(fixture.packetArtifact.packet.output)) {
 			const bytes = await readFile(path.join(fixture.root, repositoryPath));
 			expect(bytes.byteLength).toBeGreaterThan(0);
@@ -460,6 +523,72 @@ Output exactly one square PNG provider source containing only the revised painte
 			})
 		).rejects.toThrow(/injected partial publication failure/iu);
 		await expectNoRevisionOutputs(fixture.root, fixture.packetArtifact.packet);
+	}, 60_000);
+
+	it('rejects and rolls back when a named output parent is swapped after publication', async () => {
+		// Catches validating only held directory descriptors after an afterPublish rename/symlink swap.
+		const fixture = await seedRevisionWorkspace();
+		const providerPath = path.join(
+			fixture.root,
+			fixture.packetArtifact.packet.output.providerSourcePath
+		);
+		const providerParent = path.dirname(providerPath);
+		const movedParent = `${providerParent}.moved`;
+		const outside = await mkdtemp(path.join(tmpdir(), 'skill-icon-cleanup-persist-escape-'));
+		temporaryRoots.push(outside);
+		let swapped = false;
+
+		await expect(
+			persistCleanupRevision({
+				...fixture.input,
+				testHooks: {
+					afterPublish: async (index) => {
+						if (index !== 0) return;
+						await rename(providerParent, movedParent);
+						await symlink(outside, providerParent);
+						swapped = true;
+					}
+				}
+			})
+		).rejects.toThrow(/parent|identity|symbolic|changed/iu);
+		expect(swapped).toBe(true);
+		await expectNoRevisionOutputs(fixture.root, fixture.packetArtifact.packet);
+		await expect(lstat(path.join(movedParent, path.basename(providerPath)))).rejects.toMatchObject({
+			code: 'ENOENT'
+		});
+	}, 60_000);
+
+	it('never unlinks a foreign replacement introduced at the legacy rollback race boundary', async () => {
+		// Catches validating a canonical pathname and then unlinking whatever inode later occupies it.
+		const fixture = await seedRevisionWorkspace();
+		const repositoryPath = fixture.packetArtifact.packet.output.providerSourcePath;
+		const providerPath = path.join(fixture.root, repositoryPath);
+		const foreign = Buffer.from('foreign replacement must survive rollback\n');
+		let replacementInstalled = false;
+		const testHooks: PersistCleanupRevisionTestHooks = {
+			afterPublish: (index: number) => {
+				if (index === 0) throw new Error('trigger rollback after provider publication');
+			},
+			beforeRollbackDetach: async (checkedPath: string) => {
+				if (checkedPath !== repositoryPath) return;
+				await unlink(providerPath).catch((error: NodeJS.ErrnoException) => {
+					if (error.code !== 'ENOENT') throw error;
+				});
+				await writeFile(providerPath, foreign);
+				replacementInstalled = true;
+			}
+		};
+
+		await expect(persistCleanupRevision({ ...fixture.input, testHooks })).rejects.toThrow(
+			/safe rollback was incomplete|refused unowned/iu
+		);
+		expect(replacementInstalled).toBe(true);
+		expect(await readFile(providerPath)).toEqual(foreign);
+		for (const otherPath of Object.values(fixture.packetArtifact.packet.output).slice(1)) {
+			await expect(lstat(path.join(fixture.root, otherPath))).rejects.toMatchObject({
+				code: 'ENOENT'
+			});
+		}
 	}, 60_000);
 
 	it('accepts exactly the packet, source, source hash, attempt count, and two inspection pairs', () => {

@@ -1985,7 +1985,7 @@ describe('skill-icon production contracts', () => {
 			const parsingError = parsed.success ? '' : parsed.error.message;
 			expect(parsed.success, `${filename}: ${parsingError}`).toBe(true);
 		}
-		expect(structuralV2Count).toBe(56);
+		expect(structuralV2Count).toBe(57);
 	});
 
 	it('records an unattempted superseded packet only against stronger raw authority', () => {

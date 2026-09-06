@@ -59,6 +59,34 @@
 			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
 		}
 	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"normalizationAuthority": {
+		"profile": "skill-icon-cleanup-artwork-resize-mask-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 1024,
+			"height": 1024,
+			"fit": "fill",
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"mask": "geometry-v2-protected-central-aperture",
+		"encoder": {
+			"format": "png",
+			"compressionLevel": 9,
+			"adaptiveFiltering": false,
+			"palette": false,
+			"progressive": false
+		},
+		"sharpVersion": "0.35.3",
+		"vipsVersion": "8.18.3"
+	},
 	"references": [
 		{
 			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
@@ -86,8 +114,8 @@
 			"contentHash": "183b0dd119cdde312fd41ec4879af91896b6d2b0150a53599518f67ed307b827"
 		}
 	],
-	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Taming in the Craft / Gathering taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Taming\nSupporting cue: one restrained secondary cue communicating this effect: Permanently binds a low-tier creature as a companion\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Small medallion badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and E-rank frame.",
-	"exactPromptHash": "305b36be9ea16165b7a3cb77788a42c2b83eb91bfbb71ec2a3f1a10e3f6226db",
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Taming in the Craft / Gathering taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Taming\nSupporting cue: one restrained secondary cue communicating this effect: Permanently binds a low-tier creature as a companion\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Small medallion badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and E-rank frame.",
+	"exactPromptHash": "a25bcc4809a4c73123b06f60167d55f0d9e755cc1d75298046d9617529063206",
 	"attempts": {
 		"initial": 1,
 		"correctiveEdits": 1,

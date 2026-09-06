@@ -59,6 +59,34 @@
 			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
 		}
 	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"normalizationAuthority": {
+		"profile": "skill-icon-cleanup-artwork-resize-mask-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 1024,
+			"height": 1024,
+			"fit": "fill",
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"mask": "geometry-v2-protected-central-aperture",
+		"encoder": {
+			"format": "png",
+			"compressionLevel": 9,
+			"adaptiveFiltering": false,
+			"palette": false,
+			"progressive": false
+		},
+		"sharpVersion": "0.35.3",
+		"vipsVersion": "8.18.3"
+	},
 	"references": [
 		{
 			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
@@ -86,8 +114,8 @@
 			"contentHash": "bd789630570d71dfde22903eee907818ce7c410128a21d6b19694ada0a8dde94"
 		}
 	],
-	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Sustained Weave in the Magical / Enchantment taxonomy.\nDominant subject: a concrete magical focus, sigil, target, or transformation visibly performing Sustained Weave\nSupporting cue: one restrained secondary cue communicating this effect: Buffs the hero applies last substantially longer\nPalette: arcane gold, deep indigo, pale spectral light\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Detached plus/element glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and D-rank frame.",
-	"exactPromptHash": "689f93864b0808c087a364d05e49d3fb5c579fe53e66daceedeffab3bb1a5ddc",
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Sustained Weave in the Magical / Enchantment taxonomy.\nDominant subject: a concrete magical focus, sigil, target, or transformation visibly performing Sustained Weave\nSupporting cue: one restrained secondary cue communicating this effect: Buffs the hero applies last substantially longer\nPalette: arcane gold, deep indigo, pale spectral light\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Detached plus/element glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and D-rank frame.",
+	"exactPromptHash": "713d9d31840f6f676ca980459f06f12ea4102ab7b6af39624b690b86fa1e35da",
 	"attempts": {
 		"initial": 1,
 		"correctiveEdits": 1,

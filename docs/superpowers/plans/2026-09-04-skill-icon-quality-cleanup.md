@@ -621,12 +621,17 @@ artifacts after generation and visual inspection.
   `persistCleanupRevision(input: PersistCleanupRevisionInput): Promise<CleanupRevisionResult>`.
 - The input binds target ID, exact prompt, ordered reference paths/hashes, provider source hash,
   output paths, and one-attempt-plus-one-correction ceiling.
+- Each packet binds the built-in generator's native `1254×1254` RGB
+  `skill-icon-provider-envelope-v3` and the exact caBX removal, assigned-sRGB decode, Lanczos3
+  `1024×1024` resize, geometry-v2 protected-aperture mask, encoder, and Sharp/libvips authority.
 
 - [x] **Step 1: Write persistence and authority tests**
 
 Reject wrong target IDs, stale source/current-candidate/family-sheet hashes, unlisted references,
 path traversal, symlinks, existing output paths, more than two attempts, and any manifest edit by a
-worker. Prove candidate and result publish together without replacement.
+worker. Prove candidate and result publish together without replacement. Cover parent-directory
+rename/symlink swaps before and after publication plus a foreign replacement at the legacy
+rollback check-to-unlink boundary.
 
 - [x] **Step 2: Run the focused test and verify failure**
 
@@ -650,12 +655,20 @@ the protected central aperture.
 
 References are the Painted Emblem authority, geometry guide, exact family reference sheet, original
 provider source, and current cleanup composite, each with a purpose-limited hash.
+The final prompt line requests exactly one unmodified `1254×1254` RGB PNG provider source and
+reserves resize/mask processing to the authenticated persister.
 
 - [x] **Step 4: Implement no-replace persistence**
 
-Retain exact provider bytes, normalize only the cleanup interior through the declared mask, compose
-with the same backing/frame hashes, and publish provider source, revised interior, composite, and
-result through one authenticated transaction. A worker writes only its assigned paths.
+Retain exact provider bytes and pathless source/decoder/caBX hashes. Remove only the bounded native
+caBX container payload, assign sRGB, resize the complete provider canvas to `1024×1024` with the
+packet-pinned Lanczos3 authority, normalize only the cleanup interior through the declared mask,
+and compose with the same backing/frame hashes. Publish provider source, revised interior,
+composite, and result through one authenticated transaction. Publication uses held directory
+descriptors and create-only links, reauthenticates every canonical named parent after every
+publication and before success, and atomically quarantines rollback entries before ownership
+validation so a foreign replacement is preserved and causes a closed failure. A worker writes only
+its assigned paths.
 
 Add:
 
@@ -673,12 +686,16 @@ from the immutable packet.
 corepack pnpm vitest run tools/persist-skill-icon-cleanup-output.spec.ts \
   tools/skill-icon-quality-cleanup-lib.spec.ts
 corepack pnpm typecheck:skill-icons
+corepack pnpm test:skill-icons
 git add package.json tools/persist-skill-icon-cleanup-output.ts \
   tools/persist-skill-icon-cleanup-output.spec.ts tools/skill-icon-quality-cleanup-lib.ts \
   tools/export-skill-icon-quality-cleanup.ts \
   assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions
 git commit -m "feat(skills): add targeted icon cleanup jobs"
 ```
+
+Both cleanup protocol specs are part of `test:skill-icons`, and therefore part of the repository's
+ordinary `pnpm test` CI path.
 
 ### Task 7: Generate the 28 confirmed revisions and complete review evidence
 

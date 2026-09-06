@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { constants } from 'node:fs';
 import {
 	link,
 	lstat,
@@ -34,6 +35,11 @@ import {
 	type SkillIconGeometryV2
 } from '../packages/contracts/src/index.js';
 import type { MassProductionManifest } from './skill-icon-mass-production-lib.js';
+import {
+	SKILL_ICON_NORMALIZER_SHARP_VERSION,
+	SKILL_ICON_NORMALIZER_VIPS_VERSION,
+	SKILL_ICON_PROVIDER_SIZE
+} from './normalize-skill-icon-provider-source.js';
 import type { SkillIconMotifMap, SkillIconVisualSpecs } from './skill-icon-production-lib.js';
 
 export const QUALITY_CLEANUP_ROOT =
@@ -85,6 +91,42 @@ export const CleanupRevisionPacketSchema = z
 				geometry: RevisionBindingSchema,
 				backing: RevisionBindingSchema,
 				frame: RevisionBindingSchema
+			})
+			.strict(),
+		providerEnvelope: z
+			.object({
+				profile: z.literal('skill-icon-provider-envelope-v3'),
+				mediaType: z.literal('image/png'),
+				width: z.literal(SKILL_ICON_PROVIDER_SIZE),
+				height: z.literal(SKILL_ICON_PROVIDER_SIZE),
+				alphaMode: z.literal('rgb')
+			})
+			.strict(),
+		normalizationAuthority: z
+			.object({
+				profile: z.literal('skill-icon-cleanup-artwork-resize-mask-v1'),
+				decoderInput: z.literal('remove-bounded-cabx-and-assign-srgb'),
+				resize: z
+					.object({
+						width: z.number().int().positive(),
+						height: z.number().int().positive(),
+						fit: z.literal('fill'),
+						kernel: z.literal('lanczos3'),
+						fastShrinkOnLoad: z.literal(false)
+					})
+					.strict(),
+				mask: z.literal('geometry-v2-protected-central-aperture'),
+				encoder: z
+					.object({
+						format: z.literal('png'),
+						compressionLevel: z.literal(9),
+						adaptiveFiltering: z.literal(false),
+						palette: z.literal(false),
+						progressive: z.literal(false)
+					})
+					.strict(),
+				sharpVersion: z.literal(SKILL_ICON_NORMALIZER_SHARP_VERSION),
+				vipsVersion: z.literal(SKILL_ICON_NORMALIZER_VIPS_VERSION)
 			})
 			.strict(),
 		references: z
@@ -477,7 +519,7 @@ Composition: ${input.visualSpec.composition}
 Existing exclusions: ${input.visualSpec.exclusions.join('; ')}
 Unwanted detached explanatory UI glyph: ${input.finding.detail}
 ${CLEANUP_REVISION_PROMPT_INVARIANT}
-Output exactly one square PNG provider source containing only the revised painted artwork; the authenticated cleanup pipeline supplies the canonical backing and ${input.rank}-rank frame.`;
+Output exactly one ${SKILL_ICON_PROVIDER_SIZE}×${SKILL_ICON_PROVIDER_SIZE} RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and ${input.rank}-rank frame.`;
 }
 
 function assertPacketPathCoverage(
@@ -687,6 +729,34 @@ async function buildCleanupRevisionPackets(
 					contentHash: sha256(currentResultBytes)
 				},
 				compositionAuthority: currentResult.compositionAuthority,
+				providerEnvelope: {
+					profile: 'skill-icon-provider-envelope-v3',
+					mediaType: 'image/png',
+					width: SKILL_ICON_PROVIDER_SIZE,
+					height: SKILL_ICON_PROVIDER_SIZE,
+					alphaMode: 'rgb'
+				},
+				normalizationAuthority: {
+					profile: 'skill-icon-cleanup-artwork-resize-mask-v1',
+					decoderInput: 'remove-bounded-cabx-and-assign-srgb',
+					resize: {
+						width: input.geometry.canvas.width,
+						height: input.geometry.canvas.height,
+						fit: 'fill',
+						kernel: 'lanczos3',
+						fastShrinkOnLoad: false
+					},
+					mask: 'geometry-v2-protected-central-aperture',
+					encoder: {
+						format: 'png',
+						compressionLevel: 9,
+						adaptiveFiltering: false,
+						palette: false,
+						progressive: false
+					},
+					sharpVersion: SKILL_ICON_NORMALIZER_SHARP_VERSION,
+					vipsVersion: SKILL_ICON_NORMALIZER_VIPS_VERSION
+				},
 				references: [
 					{
 						...manifest.authority.optionCMaterial,
@@ -759,6 +829,108 @@ async function currentBytes(root: string, repositoryPath: string): Promise<Buffe
 	return readFile(absolutePath);
 }
 
+interface HeldCleanupOutputParent {
+	readonly path: string;
+	readonly handle: Awaited<ReturnType<typeof open>>;
+	readonly realPath: string;
+	readonly device: number;
+	readonly inode: number;
+}
+
+function heldCleanupOutputChild(parent: HeldCleanupOutputParent, name: string): string {
+	if (name !== path.basename(name) || name === '.' || name === '..') {
+		throw new Error(`Unsafe cleanup artifact child name: ${name}`);
+	}
+	return `/proc/self/fd/${parent.handle.fd}/${name}`;
+}
+
+async function ensureSafeCleanupOutputParent(root: string, destination: string): Promise<void> {
+	const rootMetadata = await lstat(root);
+	if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory()) {
+		throw new Error('Cleanup artifact workspace root must be a real directory');
+	}
+	const realRoot = await realpath(root);
+	if (!isInside(root, destination) || destination === root) {
+		throw new Error('Cleanup artifact destination escaped the workspace root');
+	}
+	let cursor = root;
+	for (const segment of path
+		.relative(root, path.dirname(destination))
+		.split(path.sep)
+		.filter(Boolean)) {
+		cursor = path.join(cursor, segment);
+		let metadata = await lstat(cursor).catch((error: NodeJS.ErrnoException) => {
+			if (error.code === 'ENOENT') return null;
+			throw error;
+		});
+		if (!metadata) {
+			await mkdir(cursor).catch((error: NodeJS.ErrnoException) => {
+				if (error.code !== 'EEXIST') throw error;
+			});
+			metadata = await lstat(cursor);
+		}
+		if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+			throw new Error(`Cleanup artifact parent must be a real directory: ${cursor}`);
+		}
+		if (!isInside(realRoot, await realpath(cursor))) {
+			throw new Error(`Cleanup artifact parent escaped the workspace root: ${cursor}`);
+		}
+	}
+}
+
+async function openCleanupOutputParent(
+	root: string,
+	destination: string
+): Promise<HeldCleanupOutputParent> {
+	await ensureSafeCleanupOutputParent(root, destination);
+	const parentPath = path.dirname(destination);
+	const [expectedRealPath, expectedMetadata] = await Promise.all([
+		realpath(parentPath),
+		lstat(parentPath)
+	]);
+	const handle = await open(
+		parentPath,
+		constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW
+	);
+	try {
+		const opened = await handle.stat();
+		const heldRealPath = await realpath(`/proc/self/fd/${handle.fd}`);
+		if (
+			!opened.isDirectory() ||
+			expectedMetadata.isSymbolicLink() ||
+			opened.dev !== expectedMetadata.dev ||
+			opened.ino !== expectedMetadata.ino ||
+			heldRealPath !== expectedRealPath ||
+			!isInside(await realpath(root), heldRealPath)
+		) {
+			throw new Error(`Cleanup artifact parent identity changed: ${parentPath}`);
+		}
+		return {
+			path: parentPath,
+			handle,
+			realPath: heldRealPath,
+			device: opened.dev,
+			inode: opened.ino
+		};
+	} catch (error) {
+		await handle.close();
+		throw error;
+	}
+}
+
+async function assertCleanupOutputParentNamed(parent: HeldCleanupOutputParent): Promise<void> {
+	const [realPathNow, metadata] = await Promise.all([realpath(parent.path), lstat(parent.path)]);
+	if (
+		metadata.isSymbolicLink() ||
+		!metadata.isDirectory() ||
+		realPathNow !== parent.realPath ||
+		metadata.dev !== parent.device ||
+		metadata.ino !== parent.inode
+	) {
+		throw new Error(`Cleanup artifact parent identity changed: ${parent.path}`);
+	}
+}
+
 async function writeMissingAtomic(
 	root: string,
 	repositoryPath: string,
@@ -766,8 +938,7 @@ async function writeMissingAtomic(
 	beforePublish?: (repositoryPath: string) => void | Promise<void>
 ): Promise<boolean> {
 	const destination = path.resolve(root, repositoryPath);
-	const rootRealPath = await realpath(root);
-	if (!isInside(rootRealPath, destination)) {
+	if (!isInside(root, destination)) {
 		throw new Error(
 			`Cleanup artifact path resolves outside the repository root: ${repositoryPath}`
 		);
@@ -775,45 +946,70 @@ async function writeMissingAtomic(
 	const current = await currentBytes(root, repositoryPath);
 	if (current?.equals(bytes)) return false;
 	if (current) throw new Error(`Refusing to replace drifted cleanup artifact: ${repositoryPath}`);
-	await mkdir(path.dirname(destination), { recursive: true });
-	const resolvedDirectory = await realpath(path.dirname(destination));
-	if (!isInside(rootRealPath, resolvedDirectory)) {
-		throw new Error(
-			`Cleanup artifact parent resolves outside the repository root: ${repositoryPath}`
-		);
-	}
-	const stage = `${destination}.stage-${process.pid}-${randomUUID()}`;
+	const parent = await openCleanupOutputParent(root, destination);
+	const destinationName = path.basename(destination);
+	const finalPath = heldCleanupOutputChild(parent, destinationName);
+	const stageName = `.${destinationName}.stage-${process.pid}-${randomUUID()}`;
+	const stage = heldCleanupOutputChild(parent, stageName);
 	let handle: Awaited<ReturnType<typeof open>> | null = null;
+	let published = false;
 	try {
-		handle = await open(stage, 'wx');
+		handle = await open(
+			stage,
+			constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+			0o644
+		);
 		await handle.writeFile(bytes);
 		await handle.sync();
 		await handle.close();
 		handle = null;
+		await parent.handle.sync();
 		await beforePublish?.(repositoryPath);
-		let published = false;
+		await assertCleanupOutputParentNamed(parent);
 		try {
-			await link(stage, destination);
+			await link(stage, finalPath);
 			published = true;
+			await parent.handle.sync();
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-			const concurrent = await currentBytes(root, repositoryPath);
+			const concurrent = await readFile(finalPath).catch(() => null);
 			if (!concurrent?.equals(bytes)) {
 				throw new Error(`Refusing to replace drifted cleanup artifact: ${repositoryPath}`, {
 					cause: error
 				});
 			}
 		}
-		const current = await currentBytes(root, repositoryPath);
-		if (!current?.equals(bytes)) {
+		await assertCleanupOutputParentNamed(parent);
+		const installed = await readFile(finalPath).catch(() => null);
+		if (!installed?.equals(bytes)) {
 			throw new Error(`Refusing to replace drifted cleanup artifact: ${repositoryPath}`);
 		}
 		await unlink(stage);
+		await parent.handle.sync();
 		return published;
 	} catch (error) {
 		await handle?.close().catch(() => undefined);
+		if (published) {
+			const [stageMetadata, finalMetadata] = await Promise.all([
+				lstat(stage).catch(() => null),
+				lstat(finalPath).catch(() => null)
+			]);
+			if (
+				stageMetadata?.isFile() &&
+				finalMetadata?.isFile() &&
+				!stageMetadata.isSymbolicLink() &&
+				!finalMetadata.isSymbolicLink() &&
+				stageMetadata.dev === finalMetadata.dev &&
+				stageMetadata.ino === finalMetadata.ino
+			) {
+				await unlink(finalPath).catch(() => undefined);
+				await parent.handle.sync().catch(() => undefined);
+			}
+		}
 		await unlink(stage).catch(() => undefined);
 		throw error;
+	} finally {
+		await parent.handle.close().catch(() => undefined);
 	}
 }
 

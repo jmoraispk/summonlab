@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
-import { link, lstat, mkdir, open, readFile, realpath, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, readFile, realpath, rename, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -8,6 +8,12 @@ import sharp from 'sharp';
 import { z } from 'zod';
 
 import { SkillIconGeometryV2Schema } from '../packages/contracts/src/index.js';
+import {
+	SKILL_ICON_NORMALIZER_SHARP_VERSION,
+	SKILL_ICON_NORMALIZER_VIPS_VERSION,
+	SKILL_ICON_PROVIDER_SIZE,
+	prepareSkillIconProviderSourceV3
+} from './normalize-skill-icon-provider-source.js';
 import {
 	CleanupRevisionPacketSchema,
 	clearCleanupExterior,
@@ -39,6 +45,7 @@ export interface PersistCleanupRevisionTestHooks {
 	readonly afterDerivation?: () => void | Promise<void>;
 	readonly afterStage?: () => void | Promise<void>;
 	readonly afterPublish?: (index: number, repositoryPath: string) => void | Promise<void>;
+	readonly beforeRollbackDetach?: (repositoryPath: string) => void | Promise<void>;
 }
 
 export interface PersistCleanupRevisionInput extends PersistCleanupRevisionCliRequest {
@@ -58,6 +65,26 @@ const ArtifactEvidenceSchema = z
 		height: z.number().int().positive(),
 		bytes: z.number().int().positive(),
 		contentHash: z.string().regex(SHA256)
+	})
+	.strict();
+const ProviderArtifactEvidenceSchema = ArtifactEvidenceSchema.extend({
+	alphaMode: z.literal('rgb')
+}).strict();
+const CleanupNormalizationEvidenceSchema = z
+	.object({
+		profile: z.literal('skill-icon-cleanup-artwork-resize-mask-v1'),
+		sourceContentHash: z.string().regex(SHA256),
+		decoderInputContentHash: z.string().regex(SHA256),
+		containerBox: z
+			.object({
+				chunkType: z.literal('caBX'),
+				bytes: z.number().int().positive(),
+				contentHash: z.string().regex(SHA256)
+			})
+			.strict(),
+		colorSpaceDisposition: z.literal('assigned-srgb'),
+		geometryContentHash: z.string().regex(SHA256),
+		outputContentHash: z.string().regex(SHA256)
 	})
 	.strict();
 
@@ -85,7 +112,9 @@ export const CleanupRevisionResultSchema = z
 		exactPrompt: z.string().min(1),
 		exactPromptHash: z.string().regex(SHA256),
 		references: CleanupRevisionPacketSchema.shape.references,
-		providerSource: ArtifactEvidenceSchema,
+		providerEnvelope: CleanupRevisionPacketSchema.shape.providerEnvelope,
+		normalizationAuthority: CleanupRevisionPacketSchema.shape.normalizationAuthority,
+		providerSource: ProviderArtifactEvidenceSchema,
 		revisedInterior: ArtifactEvidenceSchema.extend({
 			removedPixels: z.number().int().nonnegative(),
 			removedPixelBounds: z
@@ -98,6 +127,7 @@ export const CleanupRevisionResultSchema = z
 				.strict()
 				.nullable()
 		}).strict(),
+		normalization: CleanupNormalizationEvidenceSchema,
 		compositionAuthority: CleanupRevisionPacketSchema.shape.compositionAuthority,
 		composite: ArtifactEvidenceSchema,
 		display384: ArtifactEvidenceSchema.omit({ path: true }).strict(),
@@ -579,6 +609,15 @@ async function assertHeldParentNamed(parent: HeldParent): Promise<void> {
 	}
 }
 
+async function assertAllHeldParentsNamed(outputs: readonly StagedOutput[]): Promise<void> {
+	const checked = new Set<number>();
+	for (const output of outputs) {
+		if (checked.has(output.parent.handle.fd)) continue;
+		checked.add(output.parent.handle.fd);
+		await assertHeldParentNamed(output.parent);
+	}
+}
+
 async function stageOutput(
 	root: string,
 	repositoryPath: string,
@@ -657,24 +696,67 @@ async function publishStaged(output: StagedOutput): Promise<void> {
 	await assertHeldParentNamed(output.parent);
 }
 
-async function removeOwnedPath(filePath: string, output: StagedOutput): Promise<void> {
-	const metadata = await metadataOrNull(filePath);
-	if (!metadata) return;
-	await assertOwnedPath(filePath, output, 'Cleanup revision rollback artifact');
-	const bytes = await readFile(filePath);
-	if (!bytes.equals(output.bytes)) {
-		throw new Error(`Cleanup revision rollback bytes changed: ${output.repositoryPath}`);
+async function restoreQuarantinedUnownedPath(
+	quarantinePath: string,
+	originalPath: string,
+	output: StagedOutput
+): Promise<void> {
+	try {
+		await link(quarantinePath, originalPath);
+	} catch (error) {
+		throw new Error(
+			`Cleanup revision preserved an unowned rollback artifact at ${path.basename(quarantinePath)} because its original name is occupied`,
+			{ cause: error }
+		);
 	}
-	await unlink(filePath);
+	await unlink(quarantinePath);
 	await output.parent.handle.sync();
 }
 
-async function cleanupTransaction(outputs: readonly StagedOutput[]): Promise<void> {
+async function removeOwnedPath(
+	filePath: string,
+	output: StagedOutput,
+	beforeDetach?: (repositoryPath: string) => void | Promise<void>
+): Promise<void> {
+	const quarantinePath = heldChild(
+		output.parent,
+		`.${path.basename(filePath)}.cleanup-revision-rollback-${process.pid}-${randomUUID()}`
+	);
+	await beforeDetach?.(output.repositoryPath);
+	try {
+		await rename(filePath, quarantinePath);
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+		throw error;
+	}
+	const metadata = await lstat(quarantinePath);
+	const bytes =
+		metadata.isFile() && !metadata.isSymbolicLink() ? await readFile(quarantinePath) : null;
+	if (
+		!metadata.isFile() ||
+		metadata.isSymbolicLink() ||
+		metadata.dev !== output.device ||
+		metadata.ino !== output.inode ||
+		!bytes?.equals(output.bytes)
+	) {
+		await restoreQuarantinedUnownedPath(quarantinePath, filePath, output);
+		throw new Error(
+			`Cleanup revision rollback refused an unowned artifact: ${output.repositoryPath}`
+		);
+	}
+	await unlink(quarantinePath);
+	await output.parent.handle.sync();
+}
+
+async function cleanupTransaction(
+	outputs: readonly StagedOutput[],
+	beforeDetach?: (repositoryPath: string) => void | Promise<void>
+): Promise<void> {
 	const errors: unknown[] = [];
 	for (const output of [...outputs].reverse()) {
 		const finalPath = heldChild(output.parent, path.basename(output.destination));
 		if (output.installed) {
-			await removeOwnedPath(finalPath, output).catch((error) => errors.push(error));
+			await removeOwnedPath(finalPath, output, beforeDetach).catch((error) => errors.push(error));
 		}
 		await removeOwnedPath(output.temporaryPath, output).catch((error) => errors.push(error));
 	}
@@ -775,16 +857,52 @@ export async function persistCleanupRevision(
 	const geometry = SkillIconGeometryV2Schema.parse(
 		JSON.parse(geometryBytes.toString('utf8')) as unknown
 	);
-	const sourceMetadata = await sharp(sourceSnapshot.bytes, { failOn: 'error' }).metadata();
 	if (
-		sourceMetadata.format !== 'png' ||
-		sourceMetadata.width !== geometry.canvas.width ||
-		sourceMetadata.height !== geometry.canvas.height
+		sharp.versions.sharp !== SKILL_ICON_NORMALIZER_SHARP_VERSION ||
+		sharp.versions.vips !== SKILL_ICON_NORMALIZER_VIPS_VERSION ||
+		packet.normalizationAuthority.sharpVersion !== SKILL_ICON_NORMALIZER_SHARP_VERSION ||
+		packet.normalizationAuthority.vipsVersion !== SKILL_ICON_NORMALIZER_VIPS_VERSION
 	) {
 		throw new Error(
-			`Cleanup revision provider source must be a ${geometry.canvas.width}x${geometry.canvas.height} PNG`
+			'Cleanup revision normalization requires the packet-pinned Sharp/libvips toolchain'
 		);
 	}
+	if (
+		packet.providerEnvelope.width !== SKILL_ICON_PROVIDER_SIZE ||
+		packet.providerEnvelope.height !== SKILL_ICON_PROVIDER_SIZE ||
+		packet.normalizationAuthority.resize.width !== geometry.canvas.width ||
+		packet.normalizationAuthority.resize.height !== geometry.canvas.height
+	) {
+		throw new Error('Cleanup revision provider envelope does not match its geometry authority');
+	}
+	const preparedProvider = prepareSkillIconProviderSourceV3(sourceSnapshot.bytes);
+	if (preparedProvider.source.contentHash !== boundInput.sourceHash) {
+		throw new Error('Cleanup revision prepared provider hash does not match --source-hash');
+	}
+	const normalizedCanvas = await sharp(preparedProvider.decoderInput, {
+		failOn: 'error',
+		limitInputPixels: SKILL_ICON_PROVIDER_SIZE * SKILL_ICON_PROVIDER_SIZE,
+		sequentialRead: true
+	})
+		.toColourspace('srgb')
+		.removeAlpha()
+		.resize(
+			packet.normalizationAuthority.resize.width,
+			packet.normalizationAuthority.resize.height,
+			{
+				fit: packet.normalizationAuthority.resize.fit,
+				kernel: sharp.kernel.lanczos3,
+				fastShrinkOnLoad: packet.normalizationAuthority.resize.fastShrinkOnLoad
+			}
+		)
+		.ensureAlpha()
+		.png({
+			compressionLevel: packet.normalizationAuthority.encoder.compressionLevel,
+			adaptiveFiltering: packet.normalizationAuthority.encoder.adaptiveFiltering,
+			palette: packet.normalizationAuthority.encoder.palette,
+			progressive: packet.normalizationAuthority.encoder.progressive
+		})
+		.toBuffer();
 	const authorityBytes = (binding: { readonly path: string }): Buffer => {
 		const absolutePath = path.resolve(root, binding.path);
 		const bytes = authorityBindings.find(({ snapshot }) => snapshot.path === absolutePath)?.snapshot
@@ -794,7 +912,7 @@ export async function persistCleanupRevision(
 	};
 	const backing = authorityBytes(packet.compositionAuthority.backing);
 	const frame = authorityBytes(packet.compositionAuthority.frame);
-	const interior = await extractLegacyInterior(sourceSnapshot.bytes, geometry);
+	const interior = await extractLegacyInterior(normalizedCanvas, geometry);
 	const composite = await clearCleanupExterior(
 		await composeCleanupIcon({ backing, interior: interior.bytes, frame }),
 		geometry
@@ -826,12 +944,10 @@ export async function persistCleanupRevision(
 	await testHooks?.afterDerivation?.();
 
 	const packetHash = sha256(packetSnapshot.bytes);
-	const providerEvidence = artifactEvidence(
-		packet.output.providerSourcePath,
-		sourceSnapshot.bytes,
-		geometry.canvas.width,
-		geometry.canvas.height
-	);
+	const providerEvidence = {
+		path: packet.output.providerSourcePath,
+		...preparedProvider.source
+	};
 	const interiorEvidence = {
 		...artifactEvidence(
 			packet.output.revisedInteriorPath,
@@ -865,10 +981,20 @@ export async function persistCleanupRevision(
 			observation: boundInput.display384Observation
 		}
 	};
+	const normalization = CleanupNormalizationEvidenceSchema.parse({
+		profile: packet.normalizationAuthority.profile,
+		sourceContentHash: providerEvidence.contentHash,
+		decoderInputContentHash: preparedProvider.decoderInputContentHash,
+		containerBox: preparedProvider.containerBox,
+		colorSpaceDisposition: preparedProvider.colorSpaceDisposition,
+		geometryContentHash: packet.compositionAuthority.geometry.contentHash,
+		outputContentHash: interiorEvidence.contentHash
+	});
 	const transactionContentHash = sha256(
 		jsonBytes({
 			packet: packetHash,
 			providerSource: providerEvidence.contentHash,
+			normalization,
 			revisedInterior: interiorEvidence.contentHash,
 			compositionAuthority: packet.compositionAuthority,
 			composite: compositeEvidence.contentHash,
@@ -897,8 +1023,11 @@ export async function persistCleanupRevision(
 		exactPrompt: packet.exactPrompt,
 		exactPromptHash: packet.exactPromptHash,
 		references: packet.references,
+		providerEnvelope: packet.providerEnvelope,
+		normalizationAuthority: packet.normalizationAuthority,
 		providerSource: providerEvidence,
 		revisedInterior: interiorEvidence,
+		normalization,
 		compositionAuthority: packet.compositionAuthority,
 		composite: compositeEvidence,
 		display384: display384Evidence,
@@ -933,11 +1062,13 @@ export async function persistCleanupRevision(
 		for (const [index, output] of staged.entries()) {
 			await publishStaged(output);
 			await testHooks?.afterPublish?.(index, output.repositoryPath);
+			await assertAllHeldParentsNamed(staged);
 		}
 		await Promise.all([
 			assertAuthoritiesUnchanged(authorityBindings),
 			assertSnapshotUnchanged(sourceSnapshot, 'Cleanup revision provider source')
 		]);
+		await assertAllHeldParentsNamed(staged);
 		for (const output of staged) {
 			await assertOwnedPath(
 				heldChild(output.parent, path.basename(output.destination)),
@@ -954,10 +1085,11 @@ export async function persistCleanupRevision(
 		for (const output of staged) {
 			await removeOwnedPath(output.temporaryPath, output);
 		}
+		await assertAllHeldParentsNamed(staged);
 		return result;
 	} catch (error) {
 		try {
-			await cleanupTransaction(staged);
+			await cleanupTransaction(staged, testHooks?.beforeRollbackDetach);
 		} catch (cleanupError) {
 			throw new AggregateError(
 				[error, cleanupError],

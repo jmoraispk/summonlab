@@ -145,19 +145,28 @@ recomposition. Each revision binds the current skill, motif-family sheet, origin
 current candidate, exact prompt, and output hash. The prompt preserves the main subject and removes
 only detached explanatory badges, arrows, gauges, hearts, crosses, chevrons, or corner symbols.
 
-The revised provider image is never promoted directly. It is reduced to the protected interior and
-passes through the same backing-and-frame compositor as every other icon.
+The revised provider image is never promoted directly. The built-in generator's native output is a
+`1254×1254` 8-bit RGB PNG carrying the bounded profile-v3 caBX container. Persistence retains those
+exact provider bytes and pathless hashes, removes only caBX from the decoder input, assigns sRGB,
+performs the packet-pinned full-canvas Lanczos3 resize to `1024×1024`, reduces the result to the
+geometry-v2 protected interior, and passes it through the same backing-and-frame compositor as every
+other icon.
 
 The coordinator exports exactly one immutable `revision-packet-v1` JSON artifact per confirmed
 target. Its ordered references are Painted Emblem style authority, provider-space geometry guide,
 the exact family sheet, the original provider source, and the current deterministic composite. The
 packet additionally binds the frozen cleanup manifest, source candidate, current result, geometry,
 backing, rank frame, exact prompt hash, one-initial-plus-one-correction ceiling, and four derived
-destinations. Persistence accepts no destination override: it retains the supplied provider PNG
-byte-for-byte, derives the protected interior and recomposed candidate, records full-size and
-384-pixel observations, stages all four artifacts, reauthenticates every input, and uses create-only
-hard links with inode-and-byte-owned rollback. Any stale hash, symlink, path escape, pre-existing
-destination, authority mutation, excess attempt, or partial publication fails closed.
+destinations. The packet also binds the native provider envelope and the decoder, resize, mask,
+encoder, and Sharp/libvips normalization authority. Persistence accepts no destination override: it
+retains the supplied provider PNG byte-for-byte, derives the protected interior and recomposed
+candidate, records full-size and 384-pixel observations, and stages all four artifacts. Publication
+is anchored to held parent-directory descriptors with create-only hard links; every canonical named
+parent is reauthenticated after every publication and again before success. Rollback first detaches
+each pathname atomically into a private quarantine, validates the detached inode and bytes, removes
+only transaction-owned content, and preserves any foreign replacement while failing closed. Any
+stale hash, symlink, path escape, pre-existing destination, authority mutation, parent swap, excess
+attempt, or partial publication fails closed.
 
 The ten symbolic-language skills remain in a separate decision lane because their symbols may be
 the central magical or knowledge subject. They are displayed at full size in the final review with

@@ -188,8 +188,14 @@ canonical semantic fields, exact prompt, ordered purpose-limited reference hashe
 current candidate/result, rank-specific backing/frame authorities, two-attempt ceiling, and four
 collision-free output paths. The cleanup persister retains provider bytes exactly, masks only the
 revised interior, recomposes with the bound layers, and publishes provider/interior/composite/result
-as one create-only transaction with owned rollback. Task 6 generated packet JSON only; raster
-production and human visual inspection remain in Task 7.
+as one create-only transaction with owned rollback. Packets now bind the built-in generator's native
+`1254×1254` RGB profile-v3 envelope and exact caBX removal, assigned-sRGB decoding, Lanczos3
+`1024×1024` resize, geometry mask, encoder, and Sharp/libvips authority while keeping exact provider
+bytes and pathless hashes. Held directory descriptors prevent parent-path redirection; canonical
+named parents are reauthenticated after each publication and before success; atomic rollback
+quarantine preserves foreign replacements and fails closed. Both protocol suites run in the central
+skill-icon/CI test command. Task 6 generated packet JSON only; raster production and human visual
+inspection remain in Task 7.
 
 ### Phase 4: add missing automated gates
 

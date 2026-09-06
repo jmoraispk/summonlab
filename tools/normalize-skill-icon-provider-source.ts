@@ -149,6 +149,14 @@ export interface NormalizedSkillIconProviderSource<
 	readonly bytes: Buffer;
 }
 
+export interface PreparedSkillIconProviderSourceV3 {
+	readonly source: SkillIconProviderSourceEvidence;
+	readonly decoderInput: Buffer;
+	readonly decoderInputContentHash: string;
+	readonly containerBox: SkillIconNormalizationEvidenceV2['containerBox'];
+	readonly colorSpaceDisposition: 'assigned-srgb';
+}
+
 type Point = readonly [number, number];
 
 function sha256(bytes: Buffer | string): string {
@@ -1566,15 +1574,42 @@ export async function normalizeSkillIconProviderSource(
 export function preflightSkillIconProviderSourceV3(
 	sourceBytes: Buffer
 ): SkillIconProviderSourceEvidence {
+	return prepareSkillIconProviderSourceV3(sourceBytes).source;
+}
+
+/**
+ * Validates and removes only the native provider's bounded caBX payload, then supplies the
+ * canonical assigned-sRGB decoder input without retaining any machine-local source path.
+ */
+export function prepareSkillIconProviderSourceV3(
+	sourceBytes: Buffer
+): PreparedSkillIconProviderSourceV3 {
 	const sourceSnapshot = Buffer.from(sourceBytes);
-	assertCanonicalProviderPngEnvelope(sourceSnapshot, SKILL_ICON_NORMALIZATION_PROFILE_V3);
+	if (
+		sourceSnapshot.byteLength === 0 ||
+		sourceSnapshot.byteLength > SKILL_ICON_PROVIDER_MAX_BYTES
+	) {
+		throw new Error('Provider source byte size is outside the bounded envelope');
+	}
+	const envelope = assertCanonicalProviderPngEnvelope(
+		sourceSnapshot,
+		SKILL_ICON_NORMALIZATION_PROFILE_V3
+	);
+	if (!envelope.containerBox) throw new Error('Provider PNG v3 envelope is incomplete');
+	const decoderInput = Buffer.from(envelope.decoderInput);
 	return {
-		mediaType: 'image/png',
-		width: SKILL_ICON_PROVIDER_SIZE,
-		height: SKILL_ICON_PROVIDER_SIZE,
-		bytes: sourceSnapshot.byteLength,
-		alphaMode: 'rgb',
-		contentHash: createHash('sha256').update(sourceSnapshot).digest('hex')
+		source: {
+			mediaType: 'image/png',
+			width: SKILL_ICON_PROVIDER_SIZE,
+			height: SKILL_ICON_PROVIDER_SIZE,
+			bytes: sourceSnapshot.byteLength,
+			alphaMode: 'rgb',
+			contentHash: createHash('sha256').update(sourceSnapshot).digest('hex')
+		},
+		decoderInput,
+		decoderInputContentHash: createHash('sha256').update(decoderInput).digest('hex'),
+		containerBox: envelope.containerBox,
+		colorSpaceDisposition: 'assigned-srgb'
 	};
 }
 
