@@ -77,11 +77,6 @@
 	const heroSocial = $derived(
 		presentation?.social.find((entry) => entry.heroId === snapshot.manifest.characterId) ?? null
 	);
-	const resilience = $derived(
-		'characterSchemaVersion' in snapshot
-			? snapshot.capabilityProfile.attributes.vitality
-			: snapshot.mind.aptitudes.resolve * 10
-	);
 	const selectedEmberOption = $derived(
 		emberOptions.find((option) => option.id === selectedEmberFacility) ?? null
 	);
@@ -510,9 +505,9 @@
 			<div class="status-bars">
 				<div><span>Body</span><i><b style="width: 100%"></b></i><strong>100</strong></div>
 				<div>
-					<span>{'characterSchemaVersion' in snapshot ? 'Vitality' : 'Resolve'}</span><i
-						><b style={`width: ${resilience}%`}></b></i
-					><strong>{resilience}</strong>
+					<span>{data.resilience.label}</span><i
+						><b style={`width: ${data.resilience.percentage}%`}></b></i
+					><strong>{data.resilience.displayValue}</strong>
 				</div>
 				<div>
 					<span>Trust</span><i

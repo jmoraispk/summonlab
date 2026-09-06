@@ -18,3 +18,16 @@ export function projectProofRunForPublic(
 		}
 	});
 }
+
+export function projectProofResilience(snapshot: ProofRunSnapshot | ProofRunSnapshotV2): {
+	readonly label: 'Resolve' | 'Vitality';
+	readonly displayValue: number;
+	readonly percentage: number;
+} {
+	if ('characterSchemaVersion' in snapshot) {
+		const vitality = snapshot.capabilityProfile.attributes.vitality;
+		return { label: 'Vitality', displayValue: vitality, percentage: vitality };
+	}
+	const resolve = snapshot.mind.aptitudes.resolve;
+	return { label: 'Resolve', displayValue: resolve, percentage: resolve * 10 };
+}

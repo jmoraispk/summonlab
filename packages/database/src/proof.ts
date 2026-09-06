@@ -1,6 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import {
+	CharacterDraftSchema,
+	CharacterDraftV2Schema,
 	CharacterMindSchema,
 	EngineCommandSchema,
 	ProofRunSnapshotSchema,
@@ -110,6 +112,7 @@ function iso(value: Date | string): string {
 }
 
 type StoredProofRunSnapshot = ProofRunSnapshot | ProofRunSnapshotV2;
+const StoredCharacterDraftSchema = CharacterDraftSchema.or(CharacterDraftV2Schema);
 
 function engineMindForDraft(draft: CharacterDraft | CharacterDraftV2): CharacterDraft['mind'] {
 	if (!('capabilityProfile' in draft)) return draft.mind;
@@ -333,9 +336,15 @@ async function loadWithSql(
 		createdAt: iso(row.created_at)
 	};
 	if (row.character_schema_version === 'character-v1') {
+		if (row.capability_profile !== null) {
+			throw new Error('character-v1 proof rows must not contain a capability profile');
+		}
 		return ProofRunSnapshotSchema.parse(snapshot);
 	}
 	if (row.character_schema_version === 'character-v2') {
+		if (row.capability_profile === null) {
+			throw new Error('character-v2 proof rows require a capability profile');
+		}
 		return ProofRunSnapshotV2Schema.parse({
 			...snapshot,
 			characterSchemaVersion: row.character_schema_version,
@@ -349,9 +358,10 @@ export async function createProofRun(
 	databaseUrl: string,
 	input: CreateProofRunInput
 ): Promise<StoredProofRunSnapshot> {
+	const draft = StoredCharacterDraftSchema.parse(input.draft);
+	const isV2 = 'capabilityProfile' in draft;
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
-		const isV2 = 'capabilityProfile' in input.draft;
 		await sql.begin(async (transaction) => {
 			await transaction`
 				insert into summonlab_proof_runs (
@@ -360,21 +370,21 @@ export async function createProofRun(
 					first_observation, first_line, destination, story_branch
 				) values (
 					${input.runId}, ${input.controlMode}, ${input.directive},
-					${transaction.json(input.draft.recipe)}, ${transaction.json(input.draft.manifest)},
-					${transaction.json(input.draft.mind)},
-					${isV2 ? transaction.json(input.draft.capabilityProfile) : null},
-					${isV2 ? 'character-v2' : 'character-v1'}, ${input.draft.manifestHash},
+					${transaction.json(draft.recipe)}, ${transaction.json(draft.manifest)},
+					${transaction.json(draft.mind)},
+					${isV2 ? transaction.json(draft.capabilityProfile) : null},
+					${isV2 ? 'character-v2' : 'character-v1'}, ${draft.manifestHash},
 					${input.firstObservation}, ${input.choice?.firstLine ?? null},
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)
 			`;
 			const engine = await initializeEngineRun(transaction, {
 				runId: input.runId,
-				seed: input.engineSeed ?? input.draft.recipe.seed,
-				heroId: input.draft.manifest.characterId,
-				manifestHash: input.draft.manifestHash,
-				rarityStars: input.draft.manifest.rarityStars,
-				mind: engineMindForDraft(input.draft),
+				seed: input.engineSeed ?? draft.recipe.seed,
+				heroId: draft.manifest.characterId,
+				manifestHash: draft.manifestHash,
+				rarityStars: draft.manifest.rarityStars,
+				mind: engineMindForDraft(draft),
 				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 				...(input.developmentMissionScenario
 					? { developmentMissionScenario: input.developmentMissionScenario }
@@ -390,12 +400,12 @@ export async function createProofRun(
 					input.runId,
 					1,
 					'hero.summoned',
-					`${input.draft.manifest.displayName} crossed the gate.`,
+					`${draft.manifest.displayName} crossed the gate.`,
 					'system',
 					{
-						characterId: input.draft.manifest.characterId,
-						manifestHash: input.draft.manifestHash,
-						rarityStars: input.draft.manifest.rarityStars
+						characterId: draft.manifest.characterId,
+						manifestHash: draft.manifestHash,
+						rarityStars: draft.manifest.rarityStars
 					}
 				)
 			);
@@ -410,7 +420,7 @@ export async function createProofRun(
 					transaction,
 					destinationCommand(
 						input.runId,
-						input.draft.manifest.characterId,
+						draft.manifest.characterId,
 						engine.state.version,
 						input.controlMode,
 						input.choice

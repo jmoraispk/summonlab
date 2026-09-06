@@ -39,6 +39,85 @@ describe('summon proof persistence', () => {
 		expect(await getProofRun(databaseUrl, runId)).toEqual(created);
 	});
 
+	run('rejects mismatched character schema versions and capability profiles', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const [legacyDraft, v2Draft] = await Promise.all([
+			generateCharacterDraft(recipeFromSeed(`proof-legacy-mismatch-${randomUUID()}`)),
+			generateSummonableCharacterDraft(recipeFromSeed(`proof-v2-mismatch-${randomUUID()}`))
+		]);
+		const legacyRunId = randomUUID();
+		const v2RunId = randomUUID();
+		for (const [runId, draft] of [
+			[legacyRunId, legacyDraft],
+			[v2RunId, v2Draft]
+		] as const) {
+			await createProofRun(databaseUrl, {
+				runId,
+				draft,
+				controlMode: 'wait',
+				directive: '',
+				firstObservation: FIRST_OBSERVATION,
+				choice: null
+			});
+		}
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			await sql`
+				update summonlab_proof_runs
+				set capability_profile = ${sql.json(v2Draft.capabilityProfile)}
+				where run_id = ${legacyRunId}
+			`;
+			await sql`
+				update summonlab_proof_runs
+				set capability_profile = null
+				where run_id = ${v2RunId}
+			`;
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
+
+		const results = await Promise.allSettled([
+			getProofRun(databaseUrl, legacyRunId),
+			getProofRun(databaseUrl, v2RunId)
+		]);
+		expect(results.map((result) => result.status)).toEqual(['rejected', 'rejected']);
+	});
+
+	run('rejects malformed v2 drafts before writing proof or engine rows', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateSummonableCharacterDraft(
+			recipeFromSeed(`proof-malformed-${randomUUID()}`)
+		);
+		const runId = randomUUID();
+		const malformedDraft = {
+			...draft,
+			capabilityProfile: { ...draft.capabilityProfile, unexpected: true }
+		};
+
+		await expect(
+			createProofRun(databaseUrl, {
+				runId,
+				draft: malformedDraft as typeof draft,
+				controlMode: 'wait',
+				directive: '',
+				firstObservation: FIRST_OBSERVATION,
+				choice: null
+			})
+		).rejects.toThrow();
+
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			const [proofRows, engineRows] = await Promise.all([
+				sql`select run_id from summonlab_proof_runs where run_id = ${runId}`,
+				sql`select run_id from summonlab_engine_runs where run_id = ${runId}`
+			]);
+			expect(proofRows).toHaveLength(0);
+			expect(engineRows).toHaveLength(0);
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
+	});
+
 	run(
 		'persists identity, observation, branch choice, and arrival as an append-only log',
 		async () => {

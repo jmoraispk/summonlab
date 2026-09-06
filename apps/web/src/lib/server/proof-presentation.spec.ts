@@ -6,7 +6,7 @@ import {
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { projectProofRunForPublic } from './proof-presentation.js';
+import * as proofPresentation from './proof-presentation.js';
 
 const manifest = {
 	characterId: '00000000-0000-4000-8000-000000000123',
@@ -112,7 +112,7 @@ function legacySnapshot(): ProofRunSnapshot {
 
 describe('public proof presentation', () => {
 	it('retains visible v2 attributes while removing the entire learning profile', () => {
-		const projected = projectProofRunForPublic(v2Snapshot());
+		const projected = proofPresentation.projectProofRunForPublic(v2Snapshot());
 		const serialized = JSON.stringify(projected);
 		if (!('characterSchemaVersion' in projected)) throw new Error('Expected a v2 projection');
 
@@ -129,6 +129,31 @@ describe('public proof presentation', () => {
 
 	it('preserves legacy proof snapshots without synthesizing capabilities', () => {
 		const legacy = legacySnapshot();
-		expect(projectProofRunForPublic(legacy)).toEqual(legacy);
+		expect(proofPresentation.projectProofRunForPublic(legacy)).toEqual(legacy);
+	});
+
+	it('projects separate display and percentage values for legacy resolve and v2 vitality', () => {
+		const projectProofResilience = (
+			proofPresentation as typeof proofPresentation & {
+				projectProofResilience?: (snapshot: ProofRunSnapshot | ProofRunSnapshotV2) => {
+					label: string;
+					displayValue: number;
+					percentage: number;
+				};
+			}
+		).projectProofResilience;
+		expect(projectProofResilience).toBeTypeOf('function');
+		if (!projectProofResilience) throw new Error('Expected the resilience projector export');
+
+		expect(projectProofResilience(legacySnapshot())).toEqual({
+			label: 'Resolve',
+			displayValue: 5,
+			percentage: 50
+		});
+		expect(projectProofResilience(v2Snapshot())).toEqual({
+			label: 'Vitality',
+			displayValue: 52,
+			percentage: 52
+		});
 	});
 });
