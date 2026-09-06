@@ -5,6 +5,7 @@
 		FirstEmberFacility,
 		FirstEmberRationale,
 		ProofRunSnapshot,
+		PublicProofRunSnapshotV2,
 		SettlementPresentation,
 		SimulationClock
 	} from '@summonlab/contracts';
@@ -23,8 +24,9 @@
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
 	let { data } = $props();
+	type PublicProofSnapshot = ProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
-	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
+	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
 	let walking = $state(!data.equipment && !snapshot.arrived);
 	let journalOpen = $state(false);
@@ -74,6 +76,11 @@
 	const firstEmber = $derived(presentation?.firstEmber ?? null);
 	const heroSocial = $derived(
 		presentation?.social.find((entry) => entry.heroId === snapshot.manifest.characterId) ?? null
+	);
+	const resilience = $derived(
+		'characterSchemaVersion' in snapshot
+			? snapshot.capabilityProfile.attributes.vitality
+			: snapshot.mind.aptitudes.resolve * 10
 	);
 	const selectedEmberOption = $derived(
 		emberOptions.find((option) => option.id === selectedEmberFacility) ?? null
@@ -131,7 +138,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: '{}'
 			});
-			const result = (await response.json()) as ProofRunSnapshot & { message?: string };
+			const result = (await response.json()) as PublicProofSnapshot & { message?: string };
 			if (!response.ok) throw new Error(result.message ?? 'Arrival could not be recorded.');
 			snapshot = result;
 			walking = false;
@@ -503,9 +510,9 @@
 			<div class="status-bars">
 				<div><span>Body</span><i><b style="width: 100%"></b></i><strong>100</strong></div>
 				<div>
-					<span>Resolve</span><i
-						><b style={`width: ${snapshot.mind.aptitudes.resolve * 10}%`}></b></i
-					><strong>{snapshot.mind.aptitudes.resolve}</strong>
+					<span>{'characterSchemaVersion' in snapshot ? 'Vitality' : 'Resolve'}</span><i
+						><b style={`width: ${resilience}%`}></b></i
+					><strong>{resilience}</strong>
 				</div>
 				<div>
 					<span>Trust</span><i

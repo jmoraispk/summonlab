@@ -1,9 +1,12 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import {
+	CharacterMindSchema,
 	EngineCommandSchema,
 	ProofRunSnapshotSchema,
+	ProofRunSnapshotV2Schema,
 	type CharacterDraft,
+	type CharacterDraftV2,
 	type ClockSpeed,
 	type DecisionSource,
 	type EngineCommand,
@@ -11,7 +14,8 @@ import {
 	type FirstDestination,
 	type ProofControlMode,
 	type ProofEvent,
-	type ProofRunSnapshot
+	type ProofRunSnapshot,
+	type ProofRunSnapshotV2
 } from '@summonlab/contracts';
 import { deterministicUuid } from '@summonlab/engine';
 import postgres from 'postgres';
@@ -30,6 +34,8 @@ interface ProofRunRow {
 	recipe: unknown;
 	manifest: unknown;
 	mind: unknown;
+	capability_profile: unknown | null;
+	character_schema_version: string;
 	manifest_hash: string;
 	first_observation: string;
 	first_line: string | null;
@@ -60,7 +66,7 @@ export interface ResolvedFirstChoice {
 
 export interface CreateProofRunInput {
 	readonly runId: string;
-	readonly draft: CharacterDraft;
+	readonly draft: CharacterDraft | CharacterDraftV2;
 	readonly engineSeed?: string;
 	readonly controlMode: ProofControlMode;
 	readonly directive: string;
@@ -101,6 +107,22 @@ export interface CreateProofRunInput {
 
 function iso(value: Date | string): string {
 	return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
+}
+
+type StoredProofRunSnapshot = ProofRunSnapshot | ProofRunSnapshotV2;
+
+function engineMindForDraft(draft: CharacterDraft | CharacterDraftV2): CharacterDraft['mind'] {
+	if (!('capabilityProfile' in draft)) return draft.mind;
+	const { attributes } = draft.capabilityProfile;
+	return CharacterMindSchema.parse({
+		...draft.mind,
+		aptitudes: {
+			might: Math.ceil(attributes.might / 10),
+			finesse: Math.ceil(attributes.agility / 10),
+			insight: Math.ceil(attributes.spirit / 10),
+			resolve: Math.ceil(attributes.vitality / 10)
+		}
+	});
 }
 
 function eventHash(
@@ -269,7 +291,10 @@ async function insertEvent(
 	`;
 }
 
-async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSnapshot | null> {
+async function loadWithSql(
+	sql: postgres.Sql,
+	runId: string
+): Promise<StoredProofRunSnapshot | null> {
 	const runRows = await sql<ProofRunRow[]>`
 		select * from summonlab_proof_runs where run_id = ${runId}
 	`;
@@ -281,7 +306,7 @@ async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSn
 		where run_id = ${runId}
 		order by sequence asc
 	`;
-	return ProofRunSnapshotSchema.parse({
+	const snapshot = {
 		runId: row.run_id,
 		storyEnvelopeId: row.story_envelope_id,
 		controlMode: row.control_mode,
@@ -306,24 +331,39 @@ async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSn
 			createdAt: iso(event.created_at)
 		})),
 		createdAt: iso(row.created_at)
-	});
+	};
+	if (row.character_schema_version === 'character-v1') {
+		return ProofRunSnapshotSchema.parse(snapshot);
+	}
+	if (row.character_schema_version === 'character-v2') {
+		return ProofRunSnapshotV2Schema.parse({
+			...snapshot,
+			characterSchemaVersion: row.character_schema_version,
+			capabilityProfile: row.capability_profile
+		});
+	}
+	throw new Error(`Unsupported character schema version: ${row.character_schema_version}`);
 }
 
 export async function createProofRun(
 	databaseUrl: string,
 	input: CreateProofRunInput
-): Promise<ProofRunSnapshot> {
+): Promise<StoredProofRunSnapshot> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
+		const isV2 = 'capabilityProfile' in input.draft;
 		await sql.begin(async (transaction) => {
 			await transaction`
 				insert into summonlab_proof_runs (
-					run_id, control_mode, directive, recipe, manifest, mind, manifest_hash,
+					run_id, control_mode, directive, recipe, manifest, mind, capability_profile,
+					character_schema_version, manifest_hash,
 					first_observation, first_line, destination, story_branch
 				) values (
 					${input.runId}, ${input.controlMode}, ${input.directive},
 					${transaction.json(input.draft.recipe)}, ${transaction.json(input.draft.manifest)},
-					${transaction.json(input.draft.mind)}, ${input.draft.manifestHash},
+					${transaction.json(input.draft.mind)},
+					${isV2 ? transaction.json(input.draft.capabilityProfile) : null},
+					${isV2 ? 'character-v2' : 'character-v1'}, ${input.draft.manifestHash},
 					${input.firstObservation}, ${input.choice?.firstLine ?? null},
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)
@@ -334,7 +374,7 @@ export async function createProofRun(
 				heroId: input.draft.manifest.characterId,
 				manifestHash: input.draft.manifestHash,
 				rarityStars: input.draft.manifest.rarityStars,
-				mind: input.draft.mind,
+				mind: engineMindForDraft(input.draft),
 				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 				...(input.developmentMissionScenario
 					? { developmentMissionScenario: input.developmentMissionScenario }
@@ -459,7 +499,7 @@ export async function resolveProofDecision(
 	runId: string,
 	directive: string,
 	choice: ResolvedFirstChoice
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
@@ -530,7 +570,7 @@ export async function resolveProofDecision(
 export async function markProofArrival(
 	databaseUrl: string,
 	runId: string
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
@@ -608,7 +648,7 @@ export async function markProofArrival(
 export async function getProofRun(
 	databaseUrl: string,
 	runId: string
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await loadWithSql(sql, runId);

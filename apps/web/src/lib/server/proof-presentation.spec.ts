@@ -1,0 +1,134 @@
+import {
+	ProofRunSnapshotSchema,
+	ProofRunSnapshotV2Schema,
+	type ProofRunSnapshot,
+	type ProofRunSnapshotV2
+} from '@summonlab/contracts';
+import { describe, expect, it } from 'vitest';
+
+import { projectProofRunForPublic } from './proof-presentation.js';
+
+const manifest = {
+	characterId: '00000000-0000-4000-8000-000000000123',
+	displayName: 'Boundary Hero',
+	appearanceSeed: 'boundary-hero',
+	generationVersion: 'human-v6',
+	rarityStars: 1,
+	adultAge: 26,
+	genderPresentation: 'androgynous' as const,
+	pronouns: 'they/them',
+	bodyFrame: 'balanced' as const,
+	bodyBuild: 'athletic' as const,
+	heightCm: 174,
+	phenotype: {
+		skinTone: 'deep umber',
+		faceShape: 'oval',
+		noseProfile: 'broad straight',
+		hairTexture: 'coiled',
+		hairColor: 'black',
+		hairStyle: 'high knot',
+		eyeColor: 'brown'
+	},
+	voice: { register: 'mid' as const, texture: 'clear', cadence: 'measured' as const },
+	posture: 'grounded' as const,
+	handedness: 'right' as const,
+	visualTraits: ['left brow scar'],
+	palette: { skin: '#633b2d', hair: '#17151b', cloth: '#272932', accent: '#d49b47' },
+	rig: {
+		headScale: 1,
+		shoulderWidth: 1,
+		hipWidth: 1,
+		legRatio: 1,
+		anchors: { head: [50, 17], leftHand: [27, 56], rightHand: [73, 56], back: [50, 36] }
+	},
+	artKey: null,
+	assetProvenance: 'procedural' as const
+};
+
+const mind = {
+	personality: {
+		openness: 50,
+		conscientiousness: 60,
+		extraversion: 40,
+		agreeableness: 70,
+		emotionalVolatility: 30
+	},
+	primaryValue: 'duty' as const,
+	primaryDrive: 'protect' as const,
+	socialStyle: 'direct' as const,
+	stressResponse: 'prepare' as const,
+	dailyHabit: 'stretches-at-dawn' as const
+};
+
+const common = {
+	runId: '00000000-0000-4000-8000-000000000456',
+	storyEnvelopeId: 'first-ember-v1' as const,
+	controlMode: 'wait' as const,
+	directive: '',
+	recipe: {
+		seed: 'proof-boundary',
+		generationVersion: 'human-v6',
+		cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+	},
+	manifest,
+	manifestHash: 'a'.repeat(64),
+	firstObservation: 'A gate cools behind the hero.',
+	firstLine: null,
+	destination: null,
+	storyBranch: null,
+	arrived: false,
+	events: [],
+	createdAt: '2026-09-06T00:00:00.000Z'
+};
+
+function v2Snapshot(): ProofRunSnapshotV2 {
+	return ProofRunSnapshotV2Schema.parse({
+		...common,
+		characterSchemaVersion: 'character-v2',
+		mind,
+		capabilityProfile: {
+			profileVersion: 'character-capability-v1',
+			attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
+			learning: {
+				cognitiveLearningScore: 85,
+				domainAptitudes: {
+					martial: 16,
+					magical: 27,
+					crafting: 38,
+					survival: 49,
+					social: 50
+				}
+			}
+		}
+	});
+}
+
+function legacySnapshot(): ProofRunSnapshot {
+	return ProofRunSnapshotSchema.parse({
+		...common,
+		mind: { ...mind, aptitudes: { might: 4, finesse: 6, insight: 7, resolve: 5 } }
+	});
+}
+
+describe('public proof presentation', () => {
+	it('retains visible v2 attributes while removing the entire learning profile', () => {
+		const projected = projectProofRunForPublic(v2Snapshot());
+		const serialized = JSON.stringify(projected);
+		if (!('characterSchemaVersion' in projected)) throw new Error('Expected a v2 projection');
+
+		expect(projected.capabilityProfile.attributes).toEqual({
+			might: 41,
+			vitality: 52,
+			agility: 63,
+			spirit: 74
+		});
+		expect(projected.capabilityProfile).not.toHaveProperty('learning');
+		expect(serialized).not.toContain('cognitiveLearningScore');
+		expect(serialized).not.toContain('domainAptitudes');
+	});
+
+	it('preserves legacy proof snapshots without synthesizing capabilities', () => {
+		const legacy = legacySnapshot();
+		expect(projectProofRunForPublic(legacy)).toEqual(legacy);
+	});
+});

@@ -4,6 +4,7 @@ import {
 	CharacterManifestSchema,
 	CharacterMindSchema,
 	type CharacterDraft,
+	type CharacterDraftV2,
 	type CharacterGenerationCursors,
 	type CharacterGenerationRecipe,
 	type CharacterManifest,
@@ -16,6 +17,7 @@ import { resolveCanonicalSummonableDraft } from './summonable.js';
 
 export {
 	SUMMONABLE_HERO_GENERATION_VERSION,
+	generateLegacySummonableCharacterDraft,
 	generateSummonableCharacterDraft,
 	generateSummonableCompany,
 	listSummonableHeroDrafts
@@ -1223,12 +1225,22 @@ function directiveScores(directive: string): { kitchen: number; trainingGround: 
 	};
 }
 
-function scriptedScores(draft: CharacterDraft, directive: string) {
+type GeneratedCharacterDraft = CharacterDraft | CharacterDraftV2;
+
+function scriptedScores(draft: GeneratedCharacterDraft, directive: string) {
 	const { mind } = draft;
+	let might: number;
+	let resolve: number;
+	if ('capabilityProfile' in draft) {
+		might = Math.ceil(draft.capabilityProfile.attributes.might / 10);
+		resolve = Math.ceil(draft.capabilityProfile.attributes.vitality / 10);
+	} else {
+		might = draft.mind.aptitudes.might;
+		resolve = draft.mind.aptitudes.resolve;
+	}
 	let kitchen = Math.round((mind.personality.agreeableness + mind.personality.extraversion) / 12);
 	let trainingGround = Math.round(
-		(mind.personality.conscientiousness + mind.aptitudes.might * 8 + mind.aptitudes.resolve * 7) /
-			16
+		(mind.personality.conscientiousness + might * 8 + resolve * 7) / 16
 	);
 	if (['belonging', 'mercy'].includes(mind.primaryValue)) kitchen += 14;
 	if (['connect', 'protect'].includes(mind.primaryDrive)) kitchen += 10;
@@ -1243,7 +1255,7 @@ function scriptedScores(draft: CharacterDraft, directive: string) {
 	};
 }
 
-function openingLine(draft: CharacterDraft, destination: FirstDestination): string {
+function openingLine(draft: GeneratedCharacterDraft, destination: FirstDestination): string {
 	if (draft.manifest.artKey === 'ember-01-anchor-v1') {
 		return destination === 'training-ground'
 			? "I don't know you, and I don't know this place. Show me somewhere I can test what this body remembers."
@@ -1263,7 +1275,7 @@ function openingLine(draft: CharacterDraft, destination: FirstDestination): stri
 }
 
 export function chooseFirstDestination(
-	draft: CharacterDraft,
+	draft: GeneratedCharacterDraft,
 	controlMode: ProofControlMode,
 	directive: string
 ): FirstChoice {

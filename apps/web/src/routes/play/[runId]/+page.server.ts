@@ -12,6 +12,7 @@ import { error } from '@sveltejs/kit';
 
 import { campaignExperienceView } from '$lib/server/campaign';
 import { projectEquipmentWorkshop } from '$lib/server/equipment-runtime';
+import { projectProofRunForPublic } from '$lib/server/proof-presentation';
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
 import { parseVillageMode, type VillageResident } from '$lib/village-shell';
 
@@ -84,7 +85,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			};
 		}) ?? [];
 	return {
-		snapshot,
+		snapshot: projectProofRunForPublic(snapshot),
 		clock,
 		eventHead,
 		presentation,

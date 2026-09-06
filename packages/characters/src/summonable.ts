@@ -1,7 +1,9 @@
 import {
+	CharacterDraftV2Schema,
 	CharacterGenerationRecipeSchema,
 	SummonableHeroCatalogSchema,
 	type CharacterDraft,
+	type CharacterDraftV2,
 	type CharacterGenerationRecipe
 } from '@summonlab/contracts';
 
@@ -61,11 +63,52 @@ export function resolveCanonicalSummonableDraft(
 	return entry.draft;
 }
 
-export async function generateSummonableCharacterDraft(
+function scoreForRecipeLabel(
+	recipe: CharacterGenerationRecipe,
+	label: string,
+	minimum: number,
+	maximum: number
+): number {
+	return minimum + (hash32(`${selectionKey(recipe)}\0${label}`) % (maximum - minimum + 1));
+}
+
+export async function generateLegacySummonableCharacterDraft(
 	input: CharacterGenerationRecipe
 ): Promise<CharacterDraft> {
 	const recipe = CharacterGenerationRecipeSchema.parse(input);
 	return entryAtSelectionKey(selectionKey(recipe)).draft;
+}
+
+export async function generateSummonableCharacterDraft(
+	input: CharacterGenerationRecipe
+): Promise<CharacterDraftV2> {
+	const legacy = await generateLegacySummonableCharacterDraft(input);
+	const { aptitudes: legacyAptitudes, ...mind } = legacy.mind;
+	void legacyAptitudes;
+	const recipe = legacy.recipe;
+	return CharacterDraftV2Schema.parse({
+		...legacy,
+		mind,
+		capabilityProfile: {
+			profileVersion: 'character-capability-v1',
+			attributes: {
+				might: scoreForRecipeLabel(recipe, 'combat-attribute:might:v1', 1, 100),
+				vitality: scoreForRecipeLabel(recipe, 'combat-attribute:vitality:v1', 1, 100),
+				agility: scoreForRecipeLabel(recipe, 'combat-attribute:agility:v1', 1, 100),
+				spirit: scoreForRecipeLabel(recipe, 'combat-attribute:spirit:v1', 1, 100)
+			},
+			learning: {
+				cognitiveLearningScore: scoreForRecipeLabel(recipe, 'learning:cognitive:v1', 0, 100),
+				domainAptitudes: {
+					martial: scoreForRecipeLabel(recipe, 'learning:domain:martial:v1', 0, 100),
+					magical: scoreForRecipeLabel(recipe, 'learning:domain:magical:v1', 0, 100),
+					crafting: scoreForRecipeLabel(recipe, 'learning:domain:crafting:v1', 0, 100),
+					survival: scoreForRecipeLabel(recipe, 'learning:domain:survival:v1', 0, 100),
+					social: scoreForRecipeLabel(recipe, 'learning:domain:social:v1', 0, 100)
+				}
+			}
+		}
+	});
 }
 
 export async function generateSummonableCompany(

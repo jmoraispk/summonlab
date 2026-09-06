@@ -5,15 +5,17 @@
 		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
-		ProofRunSnapshot
+		ProofRunSnapshot,
+		PublicProofRunSnapshotV2
 	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 
 	let { data } = $props();
+	type PublicProofSnapshot = ProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
-	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
+	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
 	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
 	// svelte-ignore state_referenced_locally
@@ -295,7 +297,7 @@
 			decisionJob = current;
 			if (current.status === 'applied') {
 				const runResponse = await fetch(`/api/runs/${snapshot.runId}`);
-				if (runResponse.ok) snapshot = (await runResponse.json()) as ProofRunSnapshot;
+				if (runResponse.ok) snapshot = (await runResponse.json()) as PublicProofSnapshot;
 				stage = 4;
 				await refreshDecisionPacket();
 				return;
@@ -378,7 +380,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ directive: directive.trim(), trigger })
 			});
-			const result = (await response.json()) as ProofRunSnapshot & { message?: string };
+			const result = (await response.json()) as PublicProofSnapshot & { message?: string };
 			if (!response.ok) throw new Error(result.message ?? 'The decision could not be resolved.');
 			snapshot = result;
 			stage = 4;

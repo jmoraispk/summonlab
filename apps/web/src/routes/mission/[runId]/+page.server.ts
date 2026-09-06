@@ -10,6 +10,7 @@ import { supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+import { projectProofRunForPublic } from '$lib/server/proof-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -41,7 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
 	return {
 		report,
-		proof,
+		proof: projectProofRunForPublic(proof),
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {
 			isPortal,

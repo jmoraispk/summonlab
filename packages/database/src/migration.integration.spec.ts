@@ -51,6 +51,24 @@ describe('database migration', () => {
 					)
 			`;
 			expect(rows).toHaveLength(21);
+			const proofColumns = await sql<
+				{ column_name: string; is_nullable: 'YES' | 'NO'; column_default: string | null }[]
+			>`
+				select column_name, is_nullable, column_default
+				from information_schema.columns
+				where table_schema = 'public'
+					and table_name = 'summonlab_proof_runs'
+					and column_name in ('capability_profile', 'character_schema_version')
+				order by column_name
+			`;
+			expect(proofColumns).toEqual([
+				{ column_name: 'capability_profile', is_nullable: 'YES', column_default: null },
+				{
+					column_name: 'character_schema_version',
+					is_nullable: 'NO',
+					column_default: "'character-v1'::text"
+				}
+			]);
 		} finally {
 			await sql.end({ timeout: 5 });
 		}
