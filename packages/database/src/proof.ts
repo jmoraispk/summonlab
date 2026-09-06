@@ -381,26 +381,31 @@ export async function createProofRun(
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)
 			`;
-			const engine = await initializeEngineRun(transaction, {
-				runId: input.runId,
-				seed: input.engineSeed ?? draft.recipe.seed,
-				...(isV2 && !usesDevelopmentEngineBootstrap
-					? { draft }
-					: {
+			const engine =
+				isV2 && !usesDevelopmentEngineBootstrap
+					? await initializeEngineRun(transaction, {
+							runId: input.runId,
+							seed: input.engineSeed ?? draft.recipe.seed,
+							draft,
+							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
+							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
+						})
+					: await initializeEngineRun(transaction, {
+							runId: input.runId,
+							seed: input.engineSeed ?? draft.recipe.seed,
 							heroId: draft.manifest.characterId,
 							manifestHash: draft.manifestHash,
 							rarityStars: draft.manifest.rarityStars,
-							mind: engineMindForDraft(draft)
-						}),
-				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
-				...(input.developmentMissionScenario
-					? { developmentMissionScenario: input.developmentMissionScenario }
-					: {}),
-				...(input.developmentEquipmentScenario
-					? { developmentEquipmentScenario: input.developmentEquipmentScenario }
-					: {}),
-				...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
-			});
+							mind: engineMindForDraft(draft),
+							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
+							...(input.developmentMissionScenario
+								? { developmentMissionScenario: input.developmentMissionScenario }
+								: {}),
+							...(input.developmentEquipmentScenario
+								? { developmentEquipmentScenario: input.developmentEquipmentScenario }
+								: {}),
+							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
+						});
 			await insertEvent(
 				transaction,
 				eventValues(

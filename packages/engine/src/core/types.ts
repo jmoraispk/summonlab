@@ -89,26 +89,6 @@ interface BootstrapEngineInputBase {
 	readonly runId: string;
 	readonly seed: string;
 	readonly simulatedAt?: string;
-	readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
-	readonly developmentMissionScenario?: {
-		readonly initialMissionId: string;
-		readonly availableMissionIds: readonly string[];
-		readonly enableMissionAftermath?: boolean;
-		readonly enableMasterPermadeath?: boolean;
-		readonly enableAttemptAftermath?: boolean;
-		readonly enableMasterTiming?: boolean;
-		readonly enableMasterFallback?: boolean;
-		readonly enableStoryPatch?: boolean;
-		readonly enableSynthesis?: boolean;
-		readonly enableFirstBandArchive?: boolean;
-		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
-		readonly foundryRouteMemoryHeroId?: string;
-	};
-	readonly developmentEquipmentScenario?: {
-		readonly enabled: true;
-		readonly materialLots?: Readonly<Partial<Record<EquipmentMaterialId, number>>>;
-		readonly forgeReady?: true;
-	};
 }
 
 interface BootstrapLegacyHeroInput {
@@ -116,16 +96,59 @@ interface BootstrapLegacyHeroInput {
 	readonly manifestHash: string;
 	readonly rarityStars?: number;
 	readonly mind?: CharacterMind;
+	readonly draft?: never;
 }
 
-interface BootstrapDraftHeroInput {
-	readonly draft: CharacterDraft | CharacterDraftV2;
+interface BootstrapDraftHeroInput<Draft extends CharacterDraft | CharacterDraftV2> {
+	readonly draft: Draft;
+	readonly heroId?: never;
+	readonly manifestHash?: never;
+	readonly rarityStars?: never;
+	readonly mind?: never;
 }
 
-export type BootstrapEngineInput = BootstrapEngineInputBase &
-	(BootstrapLegacyHeroInput | BootstrapDraftHeroInput);
+export type BootstrapAdditionalHeroInput =
+	BootstrapLegacyHeroInput | BootstrapDraftHeroInput<CharacterDraft>;
 
-export type BootstrapAdditionalHeroInput = BootstrapLegacyHeroInput | BootstrapDraftHeroInput;
+type BootstrapCapabilityAdditionalHeroInput =
+	BootstrapAdditionalHeroInput | BootstrapDraftHeroInput<CharacterDraftV2>;
+
+interface BootstrapDevelopmentMissionScenario {
+	readonly initialMissionId: string;
+	readonly availableMissionIds: readonly string[];
+	readonly enableMissionAftermath?: boolean;
+	readonly enableMasterPermadeath?: boolean;
+	readonly enableAttemptAftermath?: boolean;
+	readonly enableMasterTiming?: boolean;
+	readonly enableMasterFallback?: boolean;
+	readonly enableStoryPatch?: boolean;
+	readonly enableSynthesis?: boolean;
+	readonly enableFirstBandArchive?: boolean;
+	readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
+	readonly foundryRouteMemoryHeroId?: string;
+}
+
+interface BootstrapDevelopmentEquipmentScenario {
+	readonly enabled: true;
+	readonly materialLots?: Readonly<Partial<Record<EquipmentMaterialId, number>>>;
+	readonly forgeReady?: true;
+}
+
+type BootstrapCapabilityEngineInput = BootstrapEngineInputBase &
+	BootstrapDraftHeroInput<CharacterDraft | CharacterDraftV2> & {
+		readonly additionalHeroes?: readonly BootstrapCapabilityAdditionalHeroInput[];
+		readonly developmentMissionScenario?: never;
+		readonly developmentEquipmentScenario?: never;
+	};
+
+type BootstrapLegacyEngineInput = BootstrapEngineInputBase &
+	(BootstrapLegacyHeroInput | BootstrapDraftHeroInput<CharacterDraft>) & {
+		readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
+		readonly developmentMissionScenario?: BootstrapDevelopmentMissionScenario;
+		readonly developmentEquipmentScenario?: BootstrapDevelopmentEquipmentScenario;
+	};
+
+export type BootstrapEngineInput = BootstrapCapabilityEngineInput | BootstrapLegacyEngineInput;
 
 export interface BootstrapEngineResult {
 	readonly snapshot: EngineSnapshot;

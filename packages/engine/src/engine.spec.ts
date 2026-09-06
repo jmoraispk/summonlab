@@ -24,11 +24,13 @@ import {
 	type ActivityKind,
 	type ActionSource,
 	type AuthoritativeEvent,
+	type CharacterDraft,
+	type CharacterDraftV2,
 	type EngineCommand,
 	type EngineGameStateV1,
 	type FirstEmberFacility
 } from '@summonlab/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
 	ENGINE_INVARIANTS,
@@ -36,6 +38,8 @@ import {
 	IllegalActionError,
 	ReplayIntegrityError,
 	StaleStateVersionError,
+	type BootstrapAdditionalHeroInput,
+	type BootstrapEngineInput,
 	applyCommand,
 	applyCatchUpPolicy,
 	addGameMinutes,
@@ -302,19 +306,23 @@ describe('deterministic engine', () => {
 		const legacy = fixture();
 		if (legacy.snapshot.state.schemaVersion !== 13) throw new Error('Expected engine-v13 state');
 		const legacyMind = legacy.snapshot.state.heroes[deterministicUuid('engine-test-hero')]!.mind;
-		const profile = capabilityProfileFromLegacyMind(legacyMind);
+		const nonuniformLegacyMind = {
+			...legacyMind,
+			aptitudes: { might: 1, finesse: 2, insight: 3, resolve: 4 }
+		};
+		const profile = capabilityProfileFromLegacyMind(nonuniformLegacyMind);
 
 		expect(profile).toStrictEqual({
 			profileVersion: 'character-capability-v1',
-			attributes: { might: 50, vitality: 50, agility: 50, spirit: 50 },
+			attributes: { might: 10, vitality: 40, agility: 20, spirit: 30 },
 			learning: {
 				cognitiveLearningScore: 20,
 				domainAptitudes: { martial: 78, magical: 81, crafting: 46, survival: 96, social: 27 }
 			}
 		});
 		const changedCombatOnly = {
-			...legacyMind,
-			aptitudes: { might: 1, finesse: 2, insight: 3, resolve: 4 }
+			...nonuniformLegacyMind,
+			aptitudes: { might: 9, finesse: 8, insight: 7, resolve: 6 }
 		};
 		expect(capabilityProfileFromLegacyMind(changedCombatOnly).learning).toStrictEqual(
 			profile.learning
@@ -325,7 +333,7 @@ describe('deterministic engine', () => {
 			recipe: source.recipe,
 			manifest: source.manifest,
 			manifestHash: source.manifestHash,
-			mind: { ...source.mind, aptitudes: legacyMind.aptitudes }
+			mind: { ...source.mind, aptitudes: nonuniformLegacyMind.aptitudes }
 		});
 		const migrated = createBootstrapEngine({
 			runId: deterministicUuid('engine-v25-legacy-draft-run'),
@@ -339,6 +347,107 @@ describe('deterministic engine', () => {
 			mind: source.mind,
 			capabilityProfile: profile
 		});
+	});
+
+	it('types bootstrap inputs according to the v25 and legacy runtime branches', () => {
+		type DirectV25 = {
+			readonly runId: string;
+			readonly seed: string;
+			readonly draft: CharacterDraftV2;
+			readonly additionalHeroes: readonly [{ readonly draft: CharacterDraftV2 }];
+		};
+		type LegacyDevelopment = {
+			readonly runId: string;
+			readonly seed: string;
+			readonly draft: CharacterDraft;
+			readonly developmentEquipmentScenario: { readonly enabled: true };
+			readonly additionalHeroes: readonly [{ readonly draft: CharacterDraft }];
+		};
+		type V2Development = DirectV25 & {
+			readonly developmentEquipmentScenario: { readonly enabled: true };
+		};
+		type LegacyPrimaryWithV2Additional = {
+			readonly runId: string;
+			readonly seed: string;
+			readonly heroId: string;
+			readonly manifestHash: string;
+			readonly additionalHeroes: readonly [{ readonly draft: CharacterDraftV2 }];
+		};
+		type DevelopmentScenarioWithV2Additional = {
+			readonly runId: string;
+			readonly seed: string;
+			readonly heroId: string;
+			readonly manifestHash: string;
+			readonly developmentMissionScenario: {
+				readonly initialMissionId: string;
+				readonly availableMissionIds: readonly string[];
+				readonly additionalHeroes: readonly [{ readonly draft: CharacterDraftV2 }];
+			};
+		};
+
+		expectTypeOf<DirectV25>().toMatchTypeOf<BootstrapEngineInput>();
+		expectTypeOf<LegacyDevelopment>().toMatchTypeOf<BootstrapEngineInput>();
+		expectTypeOf<V2Development>().not.toMatchTypeOf<BootstrapEngineInput>();
+		expectTypeOf<LegacyPrimaryWithV2Additional>().not.toMatchTypeOf<BootstrapEngineInput>();
+		expectTypeOf<DevelopmentScenarioWithV2Additional>().not.toMatchTypeOf<BootstrapEngineInput>();
+		expectTypeOf<{
+			readonly draft: CharacterDraftV2;
+		}>().not.toMatchTypeOf<BootstrapAdditionalHeroInput>();
+	});
+
+	it('admits additional v2 drafts only when the whole bootstrap enters v25', () => {
+		const primary = v2Draft(deterministicUuid('engine-v25-primary-draft'));
+		const additional = v2Draft(deterministicUuid('engine-v25-additional-draft'));
+		const direct = createBootstrapEngine({
+			runId: deterministicUuid('engine-v25-multiple-drafts'),
+			seed: 'engine-v25-multiple-drafts-seed',
+			draft: primary,
+			additionalHeroes: [{ draft: additional }]
+		});
+		if (direct.snapshot.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		expect(direct.snapshot.state.heroes[primary.manifest.characterId]!.capabilityProfile).toEqual(
+			primary.capabilityProfile
+		);
+		expect(
+			direct.snapshot.state.heroes[additional.manifest.characterId]!.capabilityProfile
+		).toEqual(additional.capabilityProfile);
+		const legacyDraft = CharacterDraftSchema.parse({
+			recipe: primary.recipe,
+			manifest: primary.manifest,
+			mind: {
+				...primary.mind,
+				aptitudes: { might: 1, finesse: 2, insight: 3, resolve: 4 }
+			},
+			manifestHash: primary.manifestHash
+		});
+		const legacyDevelopment = createBootstrapEngine({
+			runId: deterministicUuid('engine-v24-legacy-development-draft'),
+			seed: 'engine-v24-legacy-development-draft-seed',
+			draft: legacyDraft,
+			developmentEquipmentScenario: { enabled: true }
+		});
+		expect(legacyDevelopment.snapshot.state.schemaVersion).toBe(24);
+
+		const v2Development = {
+			runId: deterministicUuid('engine-v25-invalid-development'),
+			seed: 'engine-v25-invalid-development-seed',
+			draft: primary,
+			developmentEquipmentScenario: { enabled: true }
+		};
+		expect(() => Reflect.apply(createBootstrapEngine, undefined, [v2Development])).toThrow(
+			'V2 drafts require the capability engine bootstrap'
+		);
+
+		const legacyWithV2Additional = {
+			runId: deterministicUuid('engine-v25-invalid-additional'),
+			seed: 'engine-v25-invalid-additional-seed',
+			heroId: deterministicUuid('engine-v25-legacy-primary'),
+			manifestHash: sha256Hex('engine-v25-legacy-primary-manifest'),
+			additionalHeroes: [{ draft: additional }]
+		};
+		expect(() => Reflect.apply(createBootstrapEngine, undefined, [legacyWithV2Additional])).toThrow(
+			'V2 drafts require the capability engine bootstrap'
+		);
 	});
 
 	it('keeps external mutation sources outside the engine contract', () => {

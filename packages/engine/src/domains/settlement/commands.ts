@@ -416,7 +416,7 @@ function assertSettlementCommandLegal(
 		}
 	}
 	if (command.commandType === 'hero.equip.item') {
-		if (state.schemaVersion === 24) {
+		if (state.schemaVersion === 24 || state.schemaVersion === 25) {
 			try {
 				equipEquipmentItem(state, {
 					heroId: command.actorId,
@@ -1091,11 +1091,13 @@ function buildModernSettlementEvent(
 		const nextItem = state.items[command.itemId];
 		const base = eventBase(state, command, 'hero.item.equipped');
 		const targetSlot =
-			state.schemaVersion === 24 && nextItem && 'definitionId' in nextItem
+			(state.schemaVersion === 24 || state.schemaVersion === 25) &&
+			nextItem &&
+			'definitionId' in nextItem
 				? (command.targetSlot ?? verifiedEquipmentDefinition(nextItem.definitionId).slot)
 				: undefined;
 		const previousItemId =
-			state.schemaVersion === 24 && targetSlot
+			(state.schemaVersion === 24 || state.schemaVersion === 25) && targetSlot
 				? state.heroes[command.actorId]!.equipment[
 						targetSlot === 'main-hand'
 							? 'mainHand'
