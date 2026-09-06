@@ -138,6 +138,9 @@ Task 7: fix round 3/5 (2 addressed, 0 open; commit `0c479959b`)
 Task 7B: four generation-v2 recovery jobs started (base `0c479959bd6a02ecda368bfe16146c7fa93d7624`)
 Task 7B: complete (commit `546433b26`; review clean; 27 candidates, Taming v2 revise)
 Task 7C: Taming generation-v3 packet started (base `546433b26733f5a8c1a12acd62f6a341b085da9f`)
+Task 7C Phase 1: complete (commit `46ae596a3`; independent review PASS; Taming v3 pending)
+Task 7C Phase 2: Taming v3 raster production started (base `46ae596a324edccb31a8f9e89ef2ca784d19d60f`)
+Task 7C Phase 2: complete (Taming v3 authenticated candidate; 2 bounded calls; literal 1024/384 pass; finalizer 28/28 and full 23-file review package rendered; no owner acceptance, selection, promotion, or wiki refresh)
 Task 7C Phase 1: complete (one create-only Taming v3 generation packet; audited v2 predecessor bound; finalizer 27/28 with Taming v3 pending)
 Task 7B: terminal batch persisted in sorted packet order: Living Metal, Ore Sense, and Rend Armour
 are revision-2 audited candidates; Taming is an audited revision-2 `revise` after its bounded

@@ -64,7 +64,7 @@ async function seedGenerationPacket() {
 }
 
 describe('cleanup semantic-revision v3 recovery', () => {
-	it('declares one audited Taming generation-v3 packet and makes it the pending terminal revision', async () => {
+	it('declares one audited Taming generation-v3 packet whose terminal receipt completes selection', async () => {
 		const builder = (
 			revisionProtocol as unknown as {
 				readonly buildCleanupGenerationRevisionV3Packets?: (root: string) => Promise<
@@ -132,11 +132,10 @@ describe('cleanup semantic-revision v3 recovery', () => {
 		const finalization = await revisionProtocol.finalizeCleanupRevisionV2({
 			root: workspaceRoot
 		});
-		expect(finalization.candidateCount).toBe(27);
-		expect(finalization.selection.unresolved).toEqual([
-			{ targetId: 'craft:gathering:taming', revision: 3, status: 'missing' }
-		]);
-		expect(finalization.pendingGenerationTargetIds).toEqual(['craft:gathering:taming']);
+		expect(finalization.ready).toBe(true);
+		expect(finalization.candidateCount).toBe(28);
+		expect(finalization.selection.unresolved).toEqual([]);
+		expect(finalization.pendingGenerationTargetIds).toEqual([]);
 	}, 120_000);
 
 	it('records literal 1024px review cells and a separately versioned 384px caption correction', async () => {

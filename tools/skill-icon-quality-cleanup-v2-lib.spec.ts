@@ -194,16 +194,16 @@ describe('cleanup semantic-revision v2 authority', () => {
 		).rejects.toThrow();
 	}, 30_000);
 
-	it('selects audited candidates while the declared Taming v3 generation packet is pending', async () => {
+	it('selects all audited candidates after the Taming v3 terminal receipt is published', async () => {
 		const finalization = await finalizeCleanupRevisionV2({ root: workspaceRoot });
-		expect(finalization.ready).toBe(false);
-		expect(finalization.candidateCount).toBe(27);
-		expect(finalization.receipts).toHaveLength(28);
+		expect(finalization.ready).toBe(true);
+		expect(finalization.candidateCount).toBe(28);
+		expect(finalization.receipts).toHaveLength(29);
 		expect(
 			finalization.receipts.filter(
 				(receipt) => receipt.revision === 3 && receipt.status === 'candidate'
 			)
-		).toHaveLength(24);
+		).toHaveLength(25);
 		expect(
 			finalization.receipts
 				.filter((receipt) => receipt.revision === 2)
@@ -214,10 +214,10 @@ describe('cleanup semantic-revision v2 authority', () => {
 			{ targetId: 'craft:gathering:taming', status: 'revise' },
 			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
 		]);
-		expect(finalization.selection.selected).toHaveLength(27);
+		expect(finalization.selection.selected).toHaveLength(28);
 		expect(
 			finalization.selection.selected.filter((receipt) => receipt.revision === 3)
-		).toHaveLength(24);
+		).toHaveLength(25);
 		expect(
 			finalization.selection.selected
 				.filter((receipt) => receipt.revision === 2)
@@ -227,9 +227,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 			{ targetId: 'craft:forging:ore-sense', status: 'candidate' },
 			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
 		]);
-		expect(finalization.selection.unresolved).toEqual([
-			{ targetId: 'craft:gathering:taming', revision: 3, status: 'missing' }
-		]);
-		expect(finalization.pendingGenerationTargetIds).toEqual(['craft:gathering:taming']);
+		expect(finalization.selection.unresolved).toEqual([]);
+		expect(finalization.pendingGenerationTargetIds).toEqual([]);
 	}, 120_000);
 });
