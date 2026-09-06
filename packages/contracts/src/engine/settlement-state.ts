@@ -471,9 +471,15 @@ export const EngineHeroStateV24Schema = z
 		}
 	});
 
+const CapabilityResourceSchema = z.number().int().nonnegative().max(10_000);
+
 export const EngineHeroStateV25Schema = z
 	.object({
 		...EngineHeroStateV24Schema.shape,
+		health: CapabilityResourceSchema,
+		maxHealth: CapabilityResourceSchema.positive(),
+		mana: CapabilityResourceSchema,
+		maxMana: CapabilityResourceSchema.positive(),
 		mind: CharacterMindV2Schema,
 		capabilityProfile: CharacterCapabilityProfileV1Schema
 	})
@@ -484,6 +490,9 @@ export const EngineHeroStateV25Schema = z
 		}
 		if (hero.health > hero.maxHealth) {
 			context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+		}
+		if (hero.mana > hero.maxMana) {
+			context.addIssue({ code: 'custom', message: 'Hero mana cannot exceed maxMana' });
 		}
 		if (hero.lifeState === 'active' && hero.health === 0) {
 			context.addIssue({ code: 'custom', message: 'An active hero must have health' });

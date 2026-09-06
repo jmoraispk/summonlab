@@ -262,8 +262,10 @@ describe('deterministic engine', () => {
 				[heroId]: {
 					mind: draft.mind,
 					capabilityProfile: draft.capabilityProfile,
-					health: 100,
-					maxHealth: 100
+					health: 348,
+					maxHealth: 348,
+					mana: 88,
+					maxMana: 88
 				}
 			}
 		});

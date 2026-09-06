@@ -202,7 +202,17 @@ function v25StateFromV24Fixture() {
 		).map(([heroId, hero]) => {
 			const mind = structuredClone(hero.mind) as { aptitudes?: unknown };
 			delete mind.aptitudes;
-			return [heroId, { ...hero, mind, capabilityProfile: V25_CAPABILITY_PROFILE }];
+			return [
+				heroId,
+				{
+					...hero,
+					mind,
+					maxHealth: 308,
+					mana: 188,
+					maxMana: 188,
+					capabilityProfile: V25_CAPABILITY_PROFILE
+				}
+			];
 		})
 	) as Record<string, Record<string, unknown>>;
 	const firstHero = Object.values(heroes)[0]!;
@@ -289,6 +299,11 @@ describe('engine contracts compatibility', () => {
 		const parsed = gameStateContracts.EngineGameStateV25Schema.parse(state);
 		expect(parsed).toStrictEqual(engineContracts.EngineGameStateV25Schema.parse(state));
 		expect(Object.values(parsed.heroes)).toHaveLength(2);
+		expect(Object.values(parsed.heroes)[0]).toMatchObject({
+			maxHealth: 308,
+			mana: 188,
+			maxMana: 188
+		});
 		for (const heroId of Object.keys(parsed.heroes)) {
 			const withoutProfile = structuredClone(state);
 			delete withoutProfile.heroes[heroId].capabilityProfile;

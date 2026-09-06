@@ -70,6 +70,10 @@ function equipmentStateV25(): EngineGameStateV25 {
 			...state.heroes,
 			[heroId]: {
 				...hero,
+				health: 260,
+				maxHealth: 260,
+				mana: 100,
+				maxMana: 100,
 				mind: {
 					personality: hero.mind.personality,
 					primaryValue: hero.mind.primaryValue,
@@ -428,5 +432,11 @@ describe('engine-v24 equipment state', () => {
 			ready.heroes[heroId]!.capabilityProfile
 		);
 		expect(parsed.heroes[heroId]!.mind).toStrictEqual(ready.heroes[heroId]!.mind);
+		expect(parsed.heroes[heroId]).toMatchObject({
+			health: 260,
+			maxHealth: 260,
+			mana: 100,
+			maxMana: 100
+		});
 	});
 });

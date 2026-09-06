@@ -1,6 +1,7 @@
 export * from './hearth-01-scene.js';
 export * from './hearth-01.js';
 export * from './affinity-workflow.js';
+export * from './combat-rules.js';
 export * from './enemy-affinity.js';
 export * from './enemy-affinity-expansion.js';
 export * from './enemy-roster.js';

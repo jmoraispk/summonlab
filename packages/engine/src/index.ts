@@ -1,4 +1,5 @@
 export * from './catch-up.js';
+export * from './domains/combat/capability.js';
 export * from './context.js';
 export * from './engine.js';
 export * from './entropy.js';

@@ -28,7 +28,7 @@ import {
 	type LearningDomain,
 	type RewardDelta
 } from '@summonlab/contracts';
-import { IRON_MOON_PACKAGE, TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
+import { COMBAT_RULES_V1, IRON_MOON_PACKAGE, TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
 
 import { verifiedMissionBinding, verifiedSettlementContent } from '../core/content-bindings.js';
 import { emptyMetadata, systemSource } from '../core/event-metadata.js';
@@ -64,6 +64,7 @@ import {
 import { createStoryPatchCheckpoint } from '../domains/story/runtime.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from '../hash.js';
 import { adaptLegacyEquipmentItem } from '../domains/settlement/equipment.js';
+import { maximumHealth, maximumMana } from '../domains/combat/capability.js';
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	personality: {
@@ -404,62 +405,75 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			lastGateResonance: null
 		},
 		heroes: Object.fromEntries(
-			bootstrapHeroes.map((hero) => [
-				hero.heroId,
-				{
-					heroId: hero.heroId,
-					lifeState: 'active',
-					location: forgeReadyHeroId === hero.heroId ? 'workshop' : 'summoning-gate',
-					locationNodeId:
-						forgeReadyHeroId === hero.heroId ? 'workshop-forge' : settlementContent.spawnNodeId,
-					firstArrivalCompleted: forgeReadyHeroId === hero.heroId,
-					destination: null,
-					health: 100,
-					maxHealth: 100,
-					manifestHash: hero.manifestHash,
-					needs: { hunger: 20, fatigue: 15 },
-					injuries: [],
-					progression: {
-						stars: hero.rarityStars ?? 1,
-						level: 1,
-						experience: 0,
-						skills: { swordFighting: { rank: 0, experience: 0 } }
-					},
-					equipment: equipmentState
-						? {
-								mainHand: hero.bladeId,
-								offHand: null,
-								head: null,
-								torso: null,
-								legs: null,
-								boots: null
-							}
-						: { mainHand: hero.bladeId },
-					currentActivity: null,
-					currentTravel: null,
-					assignment:
-						forgeReadyHeroId === hero.heroId
-							? {
-									buildingId: 'workshop',
-									nodeId: 'workshop-bench',
-									role: 'artisan',
-									assignedAt: simulatedAt
-								}
-							: null,
-					mind: hero.mind,
-					...(capabilityEngineState ? { capabilityProfile: hero.capabilityProfile } : {}),
-					habit: {
-						habit: hero.mind.dailyHabit,
-						strength: clamp(Math.round(35 + hero.mind.personality.conscientiousness * 0.55)),
-						repetitions: 0,
-						satisfaction: 50,
-						lastTriggeredAt: null
-					},
-					dailyPlan: null,
-					currentRoutine: null,
-					...(equipmentState ? { currentForging: null } : {})
+			bootstrapHeroes.map((hero) => {
+				const capabilityProfile = capabilityEngineState ? hero.capabilityProfile : undefined;
+				if (capabilityEngineState && !capabilityProfile) {
+					throw new Error('Capability engine heroes require a capability profile');
 				}
-			])
+				const maxHealth = capabilityProfile
+					? maximumHealth(capabilityProfile.attributes.vitality, COMBAT_RULES_V1)
+					: 100;
+				const maxMana = capabilityProfile
+					? maximumMana(capabilityProfile.attributes.spirit, COMBAT_RULES_V1)
+					: null;
+				return [
+					hero.heroId,
+					{
+						heroId: hero.heroId,
+						lifeState: 'active',
+						location: forgeReadyHeroId === hero.heroId ? 'workshop' : 'summoning-gate',
+						locationNodeId:
+							forgeReadyHeroId === hero.heroId ? 'workshop-forge' : settlementContent.spawnNodeId,
+						firstArrivalCompleted: forgeReadyHeroId === hero.heroId,
+						destination: null,
+						health: maxHealth,
+						maxHealth,
+						...(maxMana === null ? {} : { mana: maxMana, maxMana }),
+						manifestHash: hero.manifestHash,
+						needs: { hunger: 20, fatigue: 15 },
+						injuries: [],
+						progression: {
+							stars: hero.rarityStars ?? 1,
+							level: 1,
+							experience: 0,
+							skills: { swordFighting: { rank: 0, experience: 0 } }
+						},
+						equipment: equipmentState
+							? {
+									mainHand: hero.bladeId,
+									offHand: null,
+									head: null,
+									torso: null,
+									legs: null,
+									boots: null
+								}
+							: { mainHand: hero.bladeId },
+						currentActivity: null,
+						currentTravel: null,
+						assignment:
+							forgeReadyHeroId === hero.heroId
+								? {
+										buildingId: 'workshop',
+										nodeId: 'workshop-bench',
+										role: 'artisan',
+										assignedAt: simulatedAt
+									}
+								: null,
+						mind: hero.mind,
+						...(capabilityEngineState ? { capabilityProfile: hero.capabilityProfile } : {}),
+						habit: {
+							habit: hero.mind.dailyHabit,
+							strength: clamp(Math.round(35 + hero.mind.personality.conscientiousness * 0.55)),
+							repetitions: 0,
+							satisfaction: 50,
+							lastTriggeredAt: null
+						},
+						dailyPlan: null,
+						currentRoutine: null,
+						...(equipmentState ? { currentForging: null } : {})
+					}
+				];
+			})
 		),
 		settlement: {
 			resources: initialResources,
