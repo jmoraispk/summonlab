@@ -1,8 +1,13 @@
 # Four-Attribute and Versioned Combat Modes Design
 
-Status: **approved in conversation; written-spec review requested**
+Status: **accepted; implementation planned**
 
 Date: 2026-09-06
+
+Implementation plans:
+
+- `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`
+- `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`
 
 ## Purpose
 
