@@ -252,7 +252,7 @@ async function metadataOrNull(filePath: string) {
 	});
 }
 
-interface SafeSnapshot {
+export interface SafeSnapshot {
 	readonly bytes: Buffer;
 	readonly path: string;
 	readonly parent: {
@@ -292,7 +292,10 @@ async function readBoundedFile(
 	return bytes;
 }
 
-async function readSafeAbsoluteFile(filePath: string, description: string): Promise<SafeSnapshot> {
+export async function readSafeAbsoluteFile(
+	filePath: string,
+	description: string
+): Promise<SafeSnapshot> {
 	const absolutePath = path.resolve(filePath);
 	const parentPath = path.dirname(absolutePath);
 	const filesystemRoot = path.parse(absolutePath).root;
@@ -373,7 +376,7 @@ async function readSafeAbsoluteFile(filePath: string, description: string): Prom
 	}
 }
 
-async function readSafeRepositoryFile(
+export async function readSafeRepositoryFile(
 	root: string,
 	repositoryPath: string,
 	description: string
@@ -422,7 +425,10 @@ function sameSnapshot(left: SafeSnapshot, right: SafeSnapshot): boolean {
 	);
 }
 
-async function assertSnapshotUnchanged(snapshot: SafeSnapshot, description: string): Promise<void> {
+export async function assertSnapshotUnchanged(
+	snapshot: SafeSnapshot,
+	description: string
+): Promise<void> {
 	const current = await readSafeAbsoluteFile(snapshot.path, description);
 	if (!sameSnapshot(snapshot, current))
 		throw new Error(`${description} changed during persistence`);
@@ -503,7 +509,7 @@ async function assertAuthoritiesUnchanged(
 	}
 }
 
-interface HeldParent {
+export interface HeldParent {
 	readonly path: string;
 	readonly handle: Awaited<ReturnType<typeof open>>;
 	readonly realPath: string;
@@ -511,7 +517,7 @@ interface HeldParent {
 	readonly inode: number;
 }
 
-interface StagedOutput {
+export interface StagedOutput {
 	readonly repositoryPath: string;
 	readonly destination: string;
 	readonly parent: HeldParent;
@@ -552,7 +558,7 @@ async function ensureSafeOutputParent(root: string, destination: string): Promis
 	}
 }
 
-function heldChild(parent: HeldParent, name: string): string {
+export function heldChild(parent: HeldParent, name: string): string {
 	if (name !== path.basename(name) || name === '.' || name === '..') {
 		throw new Error(`Unsafe cleanup persistence child name: ${name}`);
 	}
@@ -609,7 +615,7 @@ async function assertHeldParentNamed(parent: HeldParent): Promise<void> {
 	}
 }
 
-async function assertAllHeldParentsNamed(outputs: readonly StagedOutput[]): Promise<void> {
+export async function assertAllHeldParentsNamed(outputs: readonly StagedOutput[]): Promise<void> {
 	const checked = new Set<number>();
 	for (const output of outputs) {
 		if (checked.has(output.parent.handle.fd)) continue;
@@ -618,7 +624,7 @@ async function assertAllHeldParentsNamed(outputs: readonly StagedOutput[]): Prom
 	}
 }
 
-async function stageOutput(
+export async function stageOutput(
 	root: string,
 	repositoryPath: string,
 	bytes: Buffer
@@ -669,7 +675,7 @@ async function stageOutput(
 	}
 }
 
-async function assertOwnedPath(
+export async function assertOwnedPath(
 	filePath: string,
 	output: StagedOutput,
 	description: string
@@ -685,7 +691,7 @@ async function assertOwnedPath(
 	}
 }
 
-async function publishStaged(output: StagedOutput): Promise<void> {
+export async function publishStaged(output: StagedOutput): Promise<void> {
 	await assertHeldParentNamed(output.parent);
 	await assertOwnedPath(output.temporaryPath, output, 'Cleanup revision stage');
 	const finalPath = heldChild(output.parent, path.basename(output.destination));
@@ -713,7 +719,7 @@ async function restoreQuarantinedUnownedPath(
 	await output.parent.handle.sync();
 }
 
-async function removeOwnedPath(
+export async function removeOwnedPath(
 	filePath: string,
 	output: StagedOutput,
 	beforeDetach?: (repositoryPath: string) => void | Promise<void>
@@ -748,7 +754,7 @@ async function removeOwnedPath(
 	await output.parent.handle.sync();
 }
 
-async function cleanupTransaction(
+export async function cleanupTransaction(
 	outputs: readonly StagedOutput[],
 	beforeDetach?: (repositoryPath: string) => void | Promise<void>
 ): Promise<void> {

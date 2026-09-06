@@ -50,6 +50,14 @@
 		"export-skill-icon-quality-cleanup.ts",
 		"persist-skill-icon-cleanup-output.ts",
 		"persist-skill-icon-cleanup-output.spec.ts",
+		"skill-icon-quality-cleanup-v2-lib.ts",
+		"skill-icon-quality-cleanup-v2-lib.spec.ts",
+		"persist-skill-icon-cleanup-v2-output.ts",
+		"persist-skill-icon-cleanup-v2-output.spec.ts",
+		"export-skill-icon-quality-cleanup-v2.ts",
+		"recover-skill-icon-quality-cleanup-v2.ts",
+		"render-skill-icon-cleanup-v2-recovery-inspection.ts",
+		"finalize-skill-icon-quality-cleanup-v2.ts",
 		"render-skill-icon-quality-cleanup-review.ts",
 		"render-skill-icon-quality-cleanup-review.spec.ts"
 	]

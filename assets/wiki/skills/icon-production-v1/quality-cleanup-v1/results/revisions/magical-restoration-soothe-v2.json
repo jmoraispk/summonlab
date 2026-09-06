@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "magical:restoration:soothe",
+	"name": "Soothe",
+	"rank": "F",
+	"motifFamily": "restoration.vital-renewal",
+	"finding": {
+		"targetId": "magical:restoration:soothe",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached shield badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-restoration-soothe-v2.json",
+		"contentHash": "098900e29d419c9b4aaa1f4dbdd2b8e60cb40a382d93abf316e2f6ee066f844f"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-restoration-soothe-v1.json",
+			"contentHash": "07a52398db2ba700883f05878a7f29ca206eec73b32e1e7a6fc596377c141c7f"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v1.json",
+			"contentHash": "63d58c717dee1e8f3a6e4f3abc766af3820a9a4963ca097d8a9c1c8dbecf8153"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v1.png",
+			"contentHash": "c32fc2d903089f4eaf69a0f58d40016f18cbe9b7820d4dd58acb51d94c73554a"
+		},
+		"transactionContentHash": "090cdeae25ea8954d9bf56eb53252003ea4b1fed344257be90caab1686d323b6",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-restoration-soothe-v1.png",
+			"contentHash": "d68c3ae68e9a391f87fd7f74677030bca3191c142a56439ec836177bdf9b7f7e"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-soothe-v1.png",
+			"contentHash": "5df770e0ed112572fad94a49aff34e5eb7fac2907872c8087a320a0e64abd0d8"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1678227,
+		"contentHash": "c32fc2d903089f4eaf69a0f58d40016f18cbe9b7820d4dd58acb51d94c73554a",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-restoration-soothe-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 651218,
+		"contentHash": "bcad4ca6f0822a1f05b441faf9995b7a08a396b8cd1b639ef0cad216f9ce4bb3"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-soothe-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1228465,
+		"contentHash": "71c97bb99722e24d94ab97b500410f17cce164fe2d0e7a035bd68a3f62690466"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 178338,
+		"contentHash": "8fd4c6019453a41bef52f52325527cd71c35dfa389bb8fa055f0d27c5da20cae"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Detached shield badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:36.523Z",
+		"finishedAt": "2026-09-06T09:39:38.670Z",
+		"durationMs": 2147,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:36.523Z",
+				"finishedAt": "2026-09-06T09:39:36.562Z",
+				"durationMs": 38
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:36.570Z",
+				"finishedAt": "2026-09-06T09:39:37.120Z",
+				"durationMs": 550
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:37.120Z",
+				"finishedAt": "2026-09-06T09:39:37.517Z",
+				"durationMs": 397
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:37.517Z",
+				"finishedAt": "2026-09-06T09:39:38.654Z",
+				"durationMs": 1137
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:38.670Z",
+				"finishedAt": "2026-09-06T09:39:38.670Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "f44fa1cc2e8c9a99304390625d7815245e01cf036af7357a17cf70803fcd96ad",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-restoration-soothe-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-soothe-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

@@ -44,6 +44,10 @@ contracts and promotion tooling, SvelteKit wiki exporter.
 | `tools/export-skill-icon-quality-cleanup.ts` | `--write`/`--check` manifest and findings exporter |
 | `tools/export-skill-icon-cleanup-reference-packets.ts` | Higher-revision E–S frame and backing target/assignment exporter |
 | `tools/persist-skill-icon-cleanup-output.ts` | No-replace persistence for targeted semantic revision sources/results |
+| `tools/skill-icon-quality-cleanup-v2-lib.ts` | Append-only semantic-revision v2 chaining, deterministic inset/adoption derivation, and highest-valid-candidate finalization |
+| `tools/persist-skill-icon-cleanup-v2-output.ts` | Held-parent, create-only v2 persistence with current-run timing and zero-call provenance |
+| `tools/recover-skill-icon-quality-cleanup-v2.ts` | Sorted 24-target deterministic recovery coordinator; retains four explicit generation-v2 jobs |
+| `tools/render-skill-icon-cleanup-v2-recovery-inspection.ts` | Immutable partial-review sheets for the 24 v2 deterministic candidates |
 | `tools/finalize-skill-icon-quality-cleanup.ts` | Builds all deterministic interiors/composites/review sheets and completion evidence |
 | `tools/select-skill-icon-quality-cleanup.ts` | Applies an accepted owner review and writes the selected cleanup authority |
 | `tools/tsconfig.skill-icon-production.json` | Includes the cleanup tools in skill-icon typechecking |
@@ -699,6 +703,11 @@ ordinary `pnpm test` CI path.
 
 ### Task 7: Generate the 28 confirmed revisions and complete review evidence
 
+> **Task 7 v1 status: retracted.** Independent review found that its full-canvas v1 normalization
+> clipped 23 candidate compositions and that its renderer could substitute a `revise` receipt. The
+> v1 packets, rasters, receipts, and review sheets remain immutable historical evidence; their
+> timing/call telemetry is not retroactively reconstructed. Task 7A adds append-only v2 authority.
+
 **Files:**
 
 - Generate: `assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/*.png`
@@ -716,30 +725,36 @@ ordinary `pnpm test` CI path.
 - Consumes: 28 immutable revision packets and the completed deterministic cleanup set.
 - Produces: revised composites/results plus one complete end-of-run review package.
 
-- [x] **Step 1: Dispatch all confirmed semantic jobs without intermediate checkpoints**
+- [~] **Step 1: Dispatch all confirmed semantic jobs without intermediate checkpoints**
 
-Generate exactly one provider image per packet, with at most one bounded corrective edit when the
-packet permits it. Persist every successful result immediately. A failed target does not erase
-other completed work and remains resumable only through a new explicit revision.
+The v1 generation batch is not completion evidence. Task 7A materializes 28 immutable v2 packets in
+sorted path order: 21 rejected v1 candidates use the exact `1254 -> 696` single-pass Lanczos3 inset
+at `(164,192)` before the existing mask/backing/frame; Still Depths, Warmth, and Red Harvest use
+byte-for-byte identity adoption; Taming, Rend Armour, Living Metal, and Ore Sense are explicit
+generation-v2 packets. The first 24 are current-run candidate receipts with zero generation calls;
+the four generation-v2 packets remain pending and may not be silently replaced by v1 candidates.
 
-- [x] **Step 2: Re-finalize the catalog with revised interiors selected**
+- [~] **Step 2: Re-finalize the catalog with revised interiors selected**
 
 ```bash
 corepack pnpm finalize:skill-icon-quality-cleanup
 corepack pnpm validate:skill-icon-quality-cleanup
 ```
 
-Expected: all 456 composites remain present; 28 select revised interiors; deterministic-only records
-retain their original cleanup hashes.
+The legacy 456-composite finalizer remains separate from semantic review and does not promote v2
+artwork. `finalize:skill-icon-cleanup-v2` selects only the highest revision for each semantic target,
+and only when that receipt is `candidate`; a higher `revise`, `failed`, or missing receipt makes the
+target unresolved. It is deliberately `24/28` and `ready: false` until the four generation-v2
+candidate receipts exist.
 
-- [x] **Step 3: Render the review package**
+- [~] **Step 3: Render the review package**
 
-The catalog pages show before/after pairs over a solid-dark well with target name, domain/family,
-rank, motif family, disposition, and finding tags outside the image. The focused sheets show the ten
-frame examples, all 28 semantic revisions, and the ten undecided symbolic-language cases at no less
-than 384 pixels per icon.
+The historical v1 review remains unchanged. Task 7A renders immutable v2-recovery contact sheets for
+the 24 deterministic candidates at source-composite and 384px display scale. The final v2 review
+renderer writes only under `review/v2/`, refuses to render while any of the required 28 highest v2
+receipts is unresolved, and never substitutes a `revise` or `failed` composite.
 
-- [x] **Step 4: Run complete technical validation**
+- [~] **Step 4: Run complete technical validation**
 
 ```bash
 corepack pnpm check:skill-icon-quality-cleanup
@@ -750,14 +765,21 @@ corepack pnpm typecheck:skill-icons
 corepack pnpm test:skill-icons
 ```
 
-Expected: all commands PASS and check modes write zero files.
+The v2 packet/recovery checker, focused contract/persistence/selector tests, and immutable-input audit
+must pass. The final-v2 review and `--require-complete` gate are expected to fail closed during Task
+7A with exactly the four generation-v2 targets listed above; that is a valid partial-recovery state,
+not completion.
 
-- [x] **Step 5: Commit the completed candidate batch**
+- [~] **Step 5: Commit the append-only v2 recovery slice**
 
 ```bash
 git add assets/wiki/skills/icon-production-v1/quality-cleanup-v1
-git commit -m "feat(skills): complete icon quality candidates"
+git commit -m "fix(skills): recover semantic revisions with v2 authority"
 ```
+
+Task 7 remains incomplete after this commit. The later bounded generation task must produce and
+inspect candidate-v2 receipts for the four explicitly pending targets before the final review can be
+rendered or any owner decision can be requested.
 
 ### Task 8: Record one owner decision, select the cleanup set, and refresh the wiki
 

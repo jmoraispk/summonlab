@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { buildSkillIconQualityCleanupReviewPlan } from './render-skill-icon-quality-cleanup-review.js';
 
 describe('skill-icon quality-cleanup review plan', () => {
-	it('keeps terminal revise evidence visible while limiting revised composites to review display', () => {
-		// Catches silently dropping a terminal revise receipt or treating a review layout as owner promotion.
+	it('keeps terminal revise evidence visible without substituting its composite', () => {
+		// A higher terminal receipt is visible in the plan but can never replace the eligible cleanup image.
 		const plan = buildSkillIconQualityCleanupReviewPlan({
 			records: [
 				{
@@ -63,6 +63,7 @@ describe('skill-icon quality-cleanup review plan', () => {
 			reviewedRevisions: 2,
 			candidateRevisions: 1,
 			reviseRevisions: 1,
+			failedRevisions: 0,
 			symbolicDecisions: 1,
 			ownerPromotion: false
 		});
@@ -71,7 +72,7 @@ describe('skill-icon quality-cleanup review plan', () => {
 		).toEqual([
 			['martial:blade:blade-dance', 'mass/blade-dance.png', 'revisions/blade-dance.png'],
 			['magical:elemental:tide-sense', 'mass/tide-sense.png', 'cleanup/tide-sense.png'],
-			['craft:forging:ore-sense', 'mass/ore-sense.png', 'revisions/ore-sense.png']
+			['craft:forging:ore-sense', 'mass/ore-sense.png', 'cleanup/ore-sense.png']
 		]);
 	});
 });

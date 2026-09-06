@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup Design
 
 **Date:** 2026-09-04
-**Status:** In implementation; semantic-revision packets and persistence ready
+**Status:** In implementation; v2 semantic recovery is 24/28 candidate receipts, with four bounded generation jobs pending
 **Issue:** [Skill Icon Quality Cleanup](../issues/2026-09-04-skill-icon-quality-cleanup.md)
 
 ## Goal
@@ -168,6 +168,31 @@ only transaction-owned content, and preserves any foreign replacement while fail
 stale hash, symlink, path escape, pre-existing destination, authority mutation, parent swap, excess
 attempt, or partial publication fails closed.
 
+#### 3A. Append-only semantic-revision v2 recovery
+
+The v1 semantic batch is historical evidence, not current completion authority. Independent review
+found 23 candidate compositions clipped by the v1 full-canvas normalization and found that the old
+review renderer could substitute a terminal `revise` receipt. The historical v1 packet, provider,
+revision, composite, result, and review bytes remain untouched. Its missing per-call/timing telemetry
+is not invented after the fact.
+
+Every v2 packet binds its exact v1 packet/result/provider/interior/composite predecessor hashes and
+uses a collision-free v2 path. Twenty-one reviewer-rejected candidate sources take one exact,
+authenticated transform: remove only the bounded `caBX` container payload, assign sRGB, single-pass
+Lanczos3 resize from the `1254×1254` RGB provider to `696×696`, place it at `(164,192)` on a
+transparent-black `1024×1024` canvas, then use the existing geometry mask, backing, and frame.
+Still Depths, Warmth, and Red Harvest instead bind an identity/adoption transform and reproduce their
+approved v1 interior and composite bytes exactly. Both deterministic lanes record zero generation
+calls and current-run timing/tool/provenance in their v2 receipts.
+
+Exactly four v2 packets remain generation lanes: Taming, Rend Armour, Living Metal, and Ore Sense.
+Their prompt retains the named-glyph removal while explicitly keeping the complete subject, all
+visible limbs, equipment, and companion content inside a generous safe area. They are not generated
+in the deterministic recovery slice. A semantic finalizer/review resolver considers only each
+target's highest receipt and accepts it only when it is a valid `candidate`; `revise`, `failed`, and
+missing highest receipts are unresolved. A final review requires all 28 candidate-v2 outputs and
+cannot fall back to a lower v1 candidate.
+
 The ten symbolic-language skills remain in a separate decision lane because their symbols may be
 the central magical or knowledge subject. They are displayed at full size in the final review with
 `keep` and `remove` decisions; the system never guesses that a meaningful sigil is UI debris.
@@ -200,12 +225,17 @@ The namespace contains:
 - `manifest.json`: frozen authorities, inventory, per-skill disposition, hashes, and completion;
 - `findings.json`: machine-readable confirmed and review-required defects;
 - `prompts/revisions/`: 28 immutable, authority-bound semantic-revision packets;
+- `prompts/revisions-v2/`: 28 append-only revision-v2 packets with exact v1 predecessor bindings;
 - `interiors/`: deterministic legacy-interior migration layers;
 - `provider-sources/`: exact sources for targeted semantic revisions;
 - `revisions/`: normalized revised interior candidates and receipts;
 - `composites/`: final cleanup candidates, one per canonical skill;
 - `results/`: source/output/provenance records;
 - `review/`: shared-layer, before/after, focused-defect, and symbolic-decision sheets.
+
+The v2 deterministic recovery adds versioned `*-v2` provider/revision/composite/result outputs for
+24 targets and a `review/v2-recovery/` inspection package. The final review renderer uses the
+separate `review/v2/` namespace only after all 28 highest-valid candidate-v2 receipts exist.
 
 The active wiki continues to consume `mass-production-v1` until an accepted cleanup selection
 record points the derivative exporter at `quality-cleanup-v1`.

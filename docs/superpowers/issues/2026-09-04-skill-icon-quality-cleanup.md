@@ -1,7 +1,7 @@
 # Skill Icon Quality Cleanup
 
 **Date opened:** 2026-09-04
-**Status:** In progress; deterministic catalog complete and 28 semantic-revision packets ready
+**Status:** In progress; append-only v2 semantic recovery has 24/28 candidate receipts and four bounded generation jobs pending
 **Inventory reviewed:** 456 candidate icons across 19 catalog contact sheets
 **Design:** [Skill Icon Quality Cleanup Design](../specs/2026-09-04-skill-icon-quality-cleanup-design.md)
 **Plan:** [Skill Icon Quality Cleanup Implementation Plan](../plans/2026-09-04-skill-icon-quality-cleanup.md)
@@ -196,6 +196,23 @@ named parents are reauthenticated after each publication and before success; ato
 quarantine preserves foreign replacements and fails closed. Both protocol suites run in the central
 skill-icon/CI test command. Task 6 generated packet JSON only; raster production and human visual
 inspection remain in Task 7.
+
+#### Semantic revision correction (Task 7A)
+
+The original Task 7 v1 completion claim is retracted. Review found aperture clipping in 23 v1
+candidate compositions, two terminal v1 `revise` receipts, renderer substitution of non-candidate
+receipts, and no independently auditable v1 call/timing telemetry. V1 evidence remains immutable;
+no timing or generator identity is retroactively asserted.
+
+Revision-v2 binds every predecessor packet/result/provider/interior/composite hash. Twenty-one
+targets use the exact authenticated `1254×1254` RGB provider recovery (`caBX` removal, sRGB,
+one Lanczos3 `696×696` inset at `(164,192)`, then the existing aperture/backing/frame). Still
+Depths, Warmth, and Red Harvest use byte-for-byte identity adoption. The 24 current-run receipts
+are candidate-v2, record current timing/tool provenance and zero generator calls, and have
+1024px/384px review sheets under `review/v2-recovery/`. Taming, Rend Armour, Living Metal, and
+Ore Sense are deliberately unresolved generation-v2 packets; their strengthened prompts require
+complete limbs/equipment inside the safe area. The semantic finalizer and final review renderer
+accept only the highest valid `candidate` per target and fail closed until all 28 are present.
 
 ### Phase 4: add missing automated gates
 

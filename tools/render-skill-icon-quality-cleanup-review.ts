@@ -10,15 +10,12 @@ import {
 	SkillIconCleanupManifestSchema,
 	SkillIconCleanupResultSchema
 } from '../packages/contracts/src/index.js';
-import {
-	QUALITY_CLEANUP_ROOT,
-	loadCleanupRevisionPackets
-} from './skill-icon-quality-cleanup-lib.js';
-import { CleanupRevisionResultSchema } from './persist-skill-icon-cleanup-output.js';
+import { QUALITY_CLEANUP_ROOT } from './skill-icon-quality-cleanup-lib.js';
+import { finalizeCleanupRevisionV2 } from './skill-icon-quality-cleanup-v2-lib.js';
 
 type Mode = 'check' | 'write';
 
-const REVIEW_ROOT = `${QUALITY_CLEANUP_ROOT}/review` as const;
+const REVIEW_ROOT = `${QUALITY_CLEANUP_ROOT}/review/v2` as const;
 const REVIEW_CATALOG_ROOT = `${REVIEW_ROOT}/catalog` as const;
 const RANKS = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
 const CATALOG_PAGE_SIZE = 24;
@@ -40,13 +37,13 @@ export interface SkillIconCleanupReviewRecord {
 
 export interface SkillIconCleanupRevisionReceipt {
 	readonly targetId: string;
-	readonly status: 'candidate' | 'revise';
-	readonly compositePath: string;
+	readonly status: 'candidate' | 'revise' | 'failed';
+	readonly compositePath: string | null;
 }
 
 export interface SkillIconCleanupReviewPlanRecord extends SkillIconCleanupReviewRecord {
 	readonly afterPath: string;
-	readonly revisionStatus: 'candidate' | 'revise' | null;
+	readonly revisionStatus: 'candidate' | 'revise' | 'failed' | null;
 }
 
 export interface SkillIconCleanupReviewPlan {
@@ -56,6 +53,7 @@ export interface SkillIconCleanupReviewPlan {
 		readonly reviewedRevisions: number;
 		readonly candidateRevisions: number;
 		readonly reviseRevisions: number;
+		readonly failedRevisions: number;
 		readonly symbolicDecisions: number;
 		readonly ownerPromotion: false;
 	};
@@ -68,6 +66,7 @@ export interface SkillIconCleanupReviewReport {
 	readonly reviewedRevisions: number;
 	readonly candidateRevisions: number;
 	readonly reviseRevisions: number;
+	readonly failedRevisions: number;
 	readonly frameExamples: number;
 	readonly symbolicDecisions: number;
 	readonly ownerPromotion: false;
@@ -96,7 +95,10 @@ export function buildSkillIconQualityCleanupReviewPlan(input: {
 		const receipt = receiptsByTarget.get(record.targetId) ?? null;
 		return {
 			...record,
-			afterPath: receipt?.compositePath ?? record.cleanupPath,
+			afterPath:
+				receipt?.status === 'candidate' && receipt.compositePath !== null
+					? receipt.compositePath
+					: record.cleanupPath,
 			revisionStatus: receipt?.status ?? null
 		};
 	});
@@ -104,13 +106,17 @@ export function buildSkillIconQualityCleanupReviewPlan(input: {
 		(receipt) => receipt.status === 'candidate'
 	).length;
 	const reviseRevisions = input.revisionReceipts.length - candidateRevisions;
+	const failedRevisions = input.revisionReceipts.filter(
+		(receipt) => receipt.status === 'failed'
+	).length;
 	return {
 		records,
 		summary: {
 			catalogRecords: records.length,
 			reviewedRevisions: input.revisionReceipts.length,
 			candidateRevisions,
-			reviseRevisions,
+			reviseRevisions: reviseRevisions - failedRevisions,
+			failedRevisions,
 			symbolicDecisions: records.filter((record) => record.disposition === 'owner-review').length,
 			ownerPromotion: false
 		}
@@ -264,41 +270,6 @@ async function assertExactPngInventory(
 	) {
 		throw new Error(`Unexpected cleanup review inventory: ${repositoryDirectory}`);
 	}
-}
-
-async function readRevisionReceipt(
-	root: string,
-	packet: Awaited<ReturnType<typeof loadCleanupRevisionPackets>>[number]
-): Promise<SkillIconCleanupRevisionReceipt> {
-	const [packetBytes, resultBytes] = await Promise.all([
-		regularBytes(root, packet.path),
-		regularBytes(root, packet.packet.output.resultPath)
-	]);
-	const result = CleanupRevisionResultSchema.parse(
-		JSON.parse(resultBytes.toString('utf8')) as unknown
-	);
-	if (
-		result.targetId !== packet.packet.targetId ||
-		result.revisionPacket.path !== packet.path ||
-		result.revisionPacket.contentHash !== sha256(packetBytes) ||
-		result.composite.path !== packet.packet.output.compositePath ||
-		result.completionContract.selfPromotionForbidden !== true
-	) {
-		throw new Error(`Revision receipt binding drift: ${packet.packet.targetId}`);
-	}
-	const compositeBytes = await regularBytes(root, result.composite.path);
-	if (sha256(compositeBytes) !== result.composite.contentHash) {
-		throw new Error(`Revision composite hash drift: ${packet.packet.targetId}`);
-	}
-	const metadata = await sharp(compositeBytes).metadata();
-	if (metadata.width !== 1024 || metadata.height !== 1024 || !metadata.hasAlpha) {
-		throw new Error(`Revision composite envelope drift: ${packet.packet.targetId}`);
-	}
-	return {
-		targetId: result.targetId,
-		status: result.status,
-		compositePath: result.composite.path
-	};
 }
 
 async function resizedImage(
@@ -724,10 +695,10 @@ export async function renderSkillIconQualityCleanupReview(options: {
 	readonly mode: Mode;
 }): Promise<SkillIconCleanupReviewReport> {
 	const root = path.resolve(options.root ?? process.cwd());
-	const [manifestBytes, catalogBytes, revisionPackets] = await Promise.all([
+	const [manifestBytes, catalogBytes, semanticFinalization] = await Promise.all([
 		regularBytes(root, `${QUALITY_CLEANUP_ROOT}/manifest.json`),
 		regularBytes(root, 'assets/wiki/skills/icon-production-v1/catalog.json'),
-		loadCleanupRevisionPackets(root)
+		finalizeCleanupRevisionV2({ root })
 	]);
 	const manifest = SkillIconCleanupManifestSchema.parse(
 		JSON.parse(manifestBytes.toString('utf8')) as unknown
@@ -739,12 +710,22 @@ export async function renderSkillIconQualityCleanupReview(options: {
 		throw new Error('Cleanup review requires the complete 456-skill catalog');
 	}
 	const catalogByTarget = new Map(catalog.records.map((record) => [record.targetId, record]));
-	const packets = [...revisionPackets].sort((left, right) => left.path.localeCompare(right.path));
-	if (packets.length !== 28) throw new Error('Cleanup review requires exactly 28 revision packets');
-	const receipts = await Promise.all(packets.map((packet) => readRevisionReceipt(root, packet)));
-	if (new Set(receipts.map((receipt) => receipt.targetId)).size !== 28) {
-		throw new Error('Cleanup review receipts do not cover 28 unique targets');
+	if (
+		!semanticFinalization.ready ||
+		semanticFinalization.candidateCount !== 28 ||
+		semanticFinalization.selection.unresolved.length > 0
+	) {
+		throw new Error(
+			`Cleanup v2 review requires 28 highest-valid candidate receipts; unresolved: ${semanticFinalization.selection.unresolved.map((entry) => `${entry.targetId}:${entry.status}`).join(', ')}`
+		);
 	}
+	const receipts: SkillIconCleanupRevisionReceipt[] = semanticFinalization.selection.selected.map(
+		(receipt) => ({
+			targetId: receipt.targetId,
+			status: receipt.status,
+			compositePath: receipt.compositePath
+		})
+	);
 	const records: SkillIconCleanupReviewRecord[] = manifest.records.map((record) => {
 		const catalogRecord = catalogByTarget.get(record.targetId);
 		if (!catalogRecord || catalogRecord.rarity !== record.rank) {
@@ -769,6 +750,9 @@ export async function renderSkillIconQualityCleanupReview(options: {
 	const plan = buildSkillIconQualityCleanupReviewPlan({ records, revisionReceipts: receipts });
 	if (
 		plan.summary.reviewedRevisions !== 28 ||
+		plan.summary.candidateRevisions !== 28 ||
+		plan.summary.reviseRevisions !== 0 ||
+		plan.summary.failedRevisions !== 0 ||
 		plan.summary.symbolicDecisions !== 10 ||
 		plan.summary.ownerPromotion !== false
 	) {
@@ -816,11 +800,11 @@ export async function renderSkillIconQualityCleanupReview(options: {
 	const cache = new Map<string, Promise<Buffer>>();
 	const outputs: { path: string; bytes: Buffer }[] = [];
 	outputs.push({
-		path: `${REVIEW_ROOT}/reference-assets-v1.png`,
+		path: `${REVIEW_ROOT}/reference-assets-v2.png`,
 		bytes: await referenceAssetsSheet({ root, assets: referenceAssets, cache })
 	});
 	outputs.push({
-		path: `${REVIEW_ROOT}/frame-examples-v1.png`,
+		path: `${REVIEW_ROOT}/frame-examples-v2.png`,
 		bytes: await pairedEvidenceSheet({
 			root,
 			title: 'Summonlab Skill Cleanup Review · Frame and Composition Examples',
@@ -830,7 +814,7 @@ export async function renderSkillIconQualityCleanupReview(options: {
 		})
 	});
 	outputs.push({
-		path: `${REVIEW_ROOT}/semantic-revisions-v1.png`,
+		path: `${REVIEW_ROOT}/semantic-revisions-v2.png`,
 		bytes: await pairedEvidenceSheet({
 			root,
 			title: 'Summonlab Skill Cleanup Review · 28 Semantic Revisions',
@@ -840,7 +824,7 @@ export async function renderSkillIconQualityCleanupReview(options: {
 		})
 	});
 	outputs.push({
-		path: `${REVIEW_ROOT}/symbolic-decisions-v1.png`,
+		path: `${REVIEW_ROOT}/symbolic-decisions-v2.png`,
 		bytes: await symbolicDecisionSheet({ root, records: symbolicRecords, cache })
 	});
 	for (
@@ -869,10 +853,10 @@ export async function renderSkillIconQualityCleanupReview(options: {
 		catalogPaths.map((repositoryPath) => path.basename(repositoryPath))
 	);
 	await assertExactPngInventory(root, REVIEW_ROOT, [
-		'reference-assets-v1.png',
-		'frame-examples-v1.png',
-		'semantic-revisions-v1.png',
-		'symbolic-decisions-v1.png'
+		'reference-assets-v2.png',
+		'frame-examples-v2.png',
+		'semantic-revisions-v2.png',
+		'symbolic-decisions-v2.png'
 	]);
 	return {
 		mode: options.mode,
@@ -881,6 +865,7 @@ export async function renderSkillIconQualityCleanupReview(options: {
 		reviewedRevisions: plan.summary.reviewedRevisions,
 		candidateRevisions: plan.summary.candidateRevisions,
 		reviseRevisions: plan.summary.reviseRevisions,
+		failedRevisions: plan.summary.failedRevisions,
 		frameExamples: frameRecords.length,
 		symbolicDecisions: symbolicRecords.length,
 		ownerPromotion: false

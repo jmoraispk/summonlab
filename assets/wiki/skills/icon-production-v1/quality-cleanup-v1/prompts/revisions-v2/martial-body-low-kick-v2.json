@@ -1,0 +1,120 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v2",
+	"revision": 2,
+	"targetId": "martial:body:low-kick",
+	"name": "Low Kick",
+	"domain": "Martial",
+	"family": "Body",
+	"rank": "F",
+	"motifFamily": "body.striking-form",
+	"finding": {
+		"targetId": "martial:body:low-kick",
+		"kind": "stray-ui-glyph",
+		"detail": "Down arrow.",
+		"requiredAction": "revise-art"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-low-kick-v1.json",
+			"contentHash": "fb368f0c66df07a8ac8186b0c4c40484e81b71990e55dda60ddb28b24a99e858"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v1.json",
+			"contentHash": "d2d86319c6131c439114fc107997d5ee100ec736915d5712e6c897f12770aa52"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v1.png",
+			"contentHash": "bec6b61c11e91d27192f0ef0e92f942ac1a26af68e38be3ac3833e07b25e7a55"
+		},
+		"transactionContentHash": "c078de7f5ed965adeb9c53335ec1abc160f3fe4d0eece50861bdeb400240ae64",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v1.png",
+			"contentHash": "b065e5ac0349dd52278a9814b36f22f97a8065c45fb9bb27e2c5fabed418ae2d"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick-v1.png",
+			"contentHash": "d38fd47b11df2f563caadb2d125cb5c967a4a6a8b3429f189eb07d9d6545427b"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Low Kick in the Martial / Body taxonomy.\nDominant subject: a clearly readable human body performing Low Kick, with the decisive posture and contact point visible\nSupporting cue: one restrained secondary cue communicating this effect: Slows the target's movement\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Down arrow.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and F-rank frame.",
+	"exactPromptHash": "95cd1acd6d9375e58ba01362a8337bc2f2a21345e1d44e5049dcf11aa09fa18a",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-striking-form.png",
+			"purpose": "Exact body.striking-form motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "089a5b208fe5f51a2673f1bb44b6ed55d2bfb755f393149aa17316679116eaed"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-body-low-kick-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "9d9e93af541bd0423d3bb2cba3278acbb86454b4443d511d6984eeb82f8505a5"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "77ddf1d925d0f883e42669fd403d60fd26b04a6cc85ef9a339311a049f50ff56"
+		}
+	],
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v2.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v2.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick-v2.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v2.json"
+	}
+}
