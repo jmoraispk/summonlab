@@ -73,6 +73,14 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 		'aria-current',
 		'page'
 	);
+	await expect(page.getByRole('link', { name: 'summonlab' })).toBeVisible();
+	await expect(page.getByTestId('campaign-status-header')).toHaveCount(0);
+	const desktopScene = page.getByTestId('living-settlement');
+	await expect(desktopScene.getByTestId('settlement-occupant')).toHaveCount(1);
+	await expect(desktopScene.getByText('Authoritative world')).toBeVisible();
+	await expect(
+		desktopScene.locator('[aria-label="Settlement occupancy and assignment capacity"]')
+	).toBeVisible();
 	if (process.env.CAPTURE_VILLAGE_SHELL_DIR) {
 		await page.screenshot({
 			path: `${process.env.CAPTURE_VILLAGE_SHELL_DIR}/village-desktop.png`,
@@ -102,61 +110,6 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`/play/${runId}`);
-	const statusHeader = page.getByTestId('campaign-status-header');
-	await expect(statusHeader).toContainText('Hearth 01');
-	await expect(statusHeader).toContainText(/Day \d+/u);
-
-	const scene = page.getByTestId('living-settlement');
-	const sceneResidents = scene.getByTestId('village-scene-resident');
-	await expect(sceneResidents).toHaveCount(3);
-	for (const heroName of heroNames) {
-		const resident = sceneResidents.filter({ hasText: heroName });
-		await expect(resident).toBeVisible();
-		await expect(resident.locator('img')).toHaveCount(1);
-		await expect(resident.locator('img')).toHaveAttribute(
-			'src',
-			/\/(?:combat-chibi|roster)\.[a-f0-9]{12}\.webp$/u
-		);
-	}
-	await expect(scene.locator('.resident-silhouette')).toHaveCount(0);
-	const residentBoxes = await Promise.all(
-		(await sceneResidents.all()).map((resident) => resident.boundingBox())
-	);
-	for (let left = 0; left < residentBoxes.length; left += 1) {
-		for (let right = left + 1; right < residentBoxes.length; right += 1) {
-			const first = residentBoxes[left]!;
-			const second = residentBoxes[right]!;
-			const overlapWidth = Math.max(
-				0,
-				Math.min(first!.x + first!.width, second!.x + second!.width) - Math.max(first!.x, second!.x)
-			);
-			const overlapHeight = Math.max(
-				0,
-				Math.min(first!.y + first!.height, second!.y + second!.height) -
-					Math.max(first!.y, second!.y)
-			);
-			expect(overlapWidth * overlapHeight).toBeLessThan(10);
-		}
-	}
-
-	const facilityCallouts = scene.getByTestId('village-facility-callout');
-	await expect(facilityCallouts).toHaveCount(5);
-	for (const facilityName of [
-		'Portal Tower',
-		'Kitchen',
-		'Forge',
-		'Residence',
-		'Training Grounds'
-	]) {
-		await expect(facilityCallouts.filter({ hasText: facilityName })).toBeVisible();
-	}
-	await expect(scene.getByText('Authoritative world')).toHaveCount(0);
-	await expect(
-		scene.getByRole('group', { name: 'Settlement occupancy and assignment capacity' })
-	).toHaveCount(0);
-	await expect(page.getByTestId('run-connection')).toBeHidden();
-	await expect(page.getByTestId('sensory-controls')).toBeHidden();
-
 	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
 	await expect(phoneLinks).toHaveCount(4);
@@ -176,13 +129,8 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 		);
 	}
 	const navBox = await phoneNav.boundingBox();
-	const headerBox = await statusHeader.boundingBox();
-	const sceneBox = await scene.boundingBox();
 	const objectiveBox = await page.getByTestId('active-objective').boundingBox();
-	expect(objectiveBox!.width).toBeLessThanOrEqual(64);
-	expect(objectiveBox!.y + objectiveBox!.height).toBeLessThanOrEqual(sceneBox!.y + 72);
-	expect(sceneBox!.y).toBeGreaterThanOrEqual(headerBox!.y + headerBox!.height - 1);
-	expect(sceneBox!.height).toBeGreaterThanOrEqual(navBox!.y - sceneBox!.y - 1);
+	expect(objectiveBox!.y + objectiveBox!.height).toBeLessThanOrEqual(navBox!.y);
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
 	);

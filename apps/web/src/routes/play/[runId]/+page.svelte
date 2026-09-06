@@ -88,11 +88,6 @@
 					) + 1
 				: 1
 	);
-	const settlementWatch = $derived(
-		presentation?.dayPhase
-			? `${presentation.dayPhase} watch`
-			: `${clock?.currentGameTime.slice(11, 16) ?? '00:00'} watch`
-	);
 	const wallSpines = Array.from({ length: 11 }, (_, index) => index);
 	const destinationLabel = $derived(
 		equipment ? 'Workshop' : snapshot.destination === 'kitchen' ? 'Kitchen' : 'Training Ground'
@@ -239,41 +234,26 @@
 	class:kitchen={snapshot.destination === 'kitchen'}
 	class:training={snapshot.destination === 'training-ground'}
 	class:has-village-nav={Boolean(data.campaignView)}
-	class:campaign-village={Boolean(data.campaignView && data.mode === 'village')}
 >
-	<header
-		class:campaign-header={Boolean(data.campaignView)}
-		data-testid={data.campaignView ? 'campaign-status-header' : undefined}
-	>
-		{#if data.campaignView}
-			<div class="hearth-id">
-				<i aria-hidden="true">✧</i>
-				<strong>Hearth 01</strong>
-			</div>
-			<div class="settlement-watch">
-				<span>Day {settlementDay}</span>
-				<strong>{settlementWatch}</strong>
-			</div>
-		{:else}
-			<a class="wordmark" href={resolve('/')}>summonlab</a>
-			<div class="clock">
-				<span>Hearth 01 · Day {settlementDay}</span>
-				<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
-				<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
-			</div>
-			<nav aria-label="Campaign utilities">
-				<button
-					type="button"
-					onclick={() => (journalOpen = !journalOpen)}
-					aria-expanded={journalOpen}
-					data-sound-cue="menu"
-				>
-					Journal <span>{snapshot.events.length}</span>
-				</button>
-				<a href={resolve('/replay/[runId]', { runId: snapshot.runId })}>Replay</a>
-				<a href={resolve('/forge')}>New seed</a>
-			</nav>
-		{/if}
+	<header>
+		<a class="wordmark" href={resolve('/')}>summonlab</a>
+		<div class="clock">
+			<span>Hearth 01 · Day {settlementDay}</span>
+			<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
+			<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
+		</div>
+		<nav aria-label="Campaign utilities">
+			<button
+				type="button"
+				onclick={() => (journalOpen = !journalOpen)}
+				aria-expanded={journalOpen}
+				data-sound-cue="menu"
+			>
+				Journal <span>{snapshot.events.length}</span>
+			</button>
+			<a href={resolve('/replay/[runId]', { runId: snapshot.runId })}>Replay</a>
+			<a href={resolve('/forge')}>New seed</a>
+		</nav>
 	</header>
 	{#if data.campaignView}
 		<VillageModeNav runId={snapshot.runId} current={data.mode} />
@@ -283,7 +263,6 @@
 		initialCursor={data.eventHead.eventCursor}
 		onRefresh={refreshProjection}
 		onEvent={showEventCue}
-		quiet={Boolean(data.campaignView && data.mode === 'village')}
 	/>
 
 	{#if data.campaignView && data.mode === 'residents'}
@@ -372,7 +351,6 @@
 				scene={data.scene}
 				{presentation}
 				manifest={snapshot.manifest}
-				residents={data.residents}
 				{eventCue}
 			/>
 		{/if}
@@ -601,7 +579,6 @@
 		initialObjectives={data.campaignView.objectives}
 		villageNavigation
 		compact={data.mode !== 'village'}
-		onOpenJournal={() => (journalOpen = true)}
 	/>
 {/if}
 
@@ -611,17 +588,9 @@
 		background: #080a0e;
 	}
 
-	:global(body:has(main.campaign-village) .sensory-layer) {
-		display: none;
-	}
-
 	main {
 		min-height: 100vh;
 		background: #080a0e;
-	}
-
-	main.campaign-village :global(.living-scene) {
-		min-height: calc(100dvh - 7.9rem);
 	}
 
 	@media (max-width: 650px) {
@@ -641,60 +610,6 @@
 		padding: 0 clamp(1.2rem, 3vw, 3rem);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 		background: rgba(7, 8, 12, 0.96);
-	}
-
-	header.campaign-header {
-		grid-template-columns: 1fr auto;
-		height: 3.8rem;
-		padding-right: 4.8rem;
-		border-color: rgba(203, 153, 79, 0.28);
-		background:
-			radial-gradient(circle at 12% 50%, rgba(199, 114, 49, 0.08), transparent 24rem), #05090c;
-	}
-
-	.hearth-id,
-	.settlement-watch {
-		display: flex;
-		align-items: center;
-	}
-
-	.hearth-id {
-		gap: 0.85rem;
-	}
-
-	.hearth-id i {
-		color: #d28143;
-		font:
-			1.45rem/1 Georgia,
-			serif;
-	}
-
-	.hearth-id strong {
-		color: #e1ae71;
-		font:
-			400 clamp(0.92rem, 1.6vw, 1.25rem)/1 Georgia,
-			serif;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.settlement-watch {
-		gap: 0.55rem;
-		color: #61cbd4;
-		font:
-			700 0.66rem/1 ui-monospace,
-			monospace;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-
-	.settlement-watch span::after {
-		margin-left: 0.55rem;
-		content: '·';
-	}
-
-	.settlement-watch strong {
-		font: inherit;
 	}
 
 	a {
@@ -1819,35 +1734,6 @@
 			gap: 0.75rem;
 			height: auto;
 			padding: 0.85rem 1rem;
-		}
-
-		header.campaign-header {
-			grid-template-columns: 1fr auto;
-			gap: 0.5rem;
-			height: 3.8rem;
-			padding: 0.65rem 4.5rem 0.65rem 0.85rem;
-		}
-
-		.hearth-id {
-			gap: 0.48rem;
-		}
-
-		.hearth-id i {
-			font-size: 1.2rem;
-		}
-
-		.hearth-id strong {
-			font-size: 0.83rem;
-		}
-
-		.settlement-watch {
-			gap: 0.34rem;
-			font-size: 0.52rem;
-			letter-spacing: 0.08em;
-		}
-
-		.settlement-watch span::after {
-			margin-left: 0.34rem;
 		}
 
 		header nav {

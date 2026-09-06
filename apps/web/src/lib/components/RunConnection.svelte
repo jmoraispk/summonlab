@@ -13,14 +13,12 @@
 		runId,
 		initialCursor,
 		onRefresh,
-		onEvent,
-		quiet = false
+		onEvent
 	}: {
 		runId: string;
 		initialCursor: number;
 		onRefresh?: () => void | Promise<void>;
 		onEvent?: (event: AuthoritativeEvent) => void;
-		quiet?: boolean;
 	} = $props();
 
 	let status = $state<'connecting' | 'live' | 'reconnecting' | 'offline' | 'resyncing'>(
@@ -168,7 +166,6 @@
 <div
 	class:live={status === 'live'}
 	class:offline={status === 'offline'}
-	class:quiet={quiet && status === 'live'}
 	class="presence"
 	data-testid="run-connection"
 >
@@ -255,9 +252,6 @@
 		background: rgba(8, 10, 15, 0.88);
 		box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.25);
 		backdrop-filter: blur(12px);
-	}
-	.presence.quiet {
-		display: none;
 	}
 	.presence i {
 		width: 0.38rem;

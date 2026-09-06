@@ -12,14 +12,12 @@
 		runId,
 		initialObjectives,
 		villageNavigation = false,
-		compact = false,
-		onOpenJournal
+		compact = false
 	}: {
 		runId: string;
 		initialObjectives: CampaignObjectiveProjection;
 		villageNavigation?: boolean;
 		compact?: boolean;
-		onOpenJournal?: () => void;
 	} = $props();
 	let objectives = $derived(initialObjectives);
 	let open = $state(false);
@@ -76,11 +74,6 @@
 		returnFocus?.focus();
 	}
 
-	async function openJournal() {
-		await closeMenu();
-		onOpenJournal?.();
-	}
-
 	async function restartSameSeed() {
 		if (!confirmRestart) {
 			confirmRestart = true;
@@ -119,7 +112,7 @@
 <div
 	class="objective-chip"
 	class:village-navigation={villageNavigation}
-	class:compact={compact || villageNavigation}
+	class:compact
 	data-testid="active-objective"
 >
 	<button type="button" onclick={() => openMenu('objectives')}>
@@ -158,12 +151,6 @@
 				>
 			</header>
 			<p class="clock-note">Interface paused · the server-owned settlement clock continues.</p>
-			<div class="menu-utilities" aria-label="Campaign records">
-				{#if onOpenJournal}
-					<button type="button" onclick={openJournal}>Journal</button>
-				{/if}
-				<a href={resolve('/replay/[runId]', { runId })}>Replay</a>
-			</div>
 			<nav aria-label="Pause menu sections">
 				<button
 					class:active={tab === 'objectives'}
@@ -258,14 +245,6 @@
 		display: none;
 	}
 
-	.objective-chip.village-navigation {
-		top: 0.4rem;
-		right: 1rem;
-		bottom: auto;
-		grid-template-columns: 3.05rem;
-		box-shadow: none;
-	}
-
 	.objective-chip button:first-child {
 		padding: 0.8rem 1rem;
 	}
@@ -347,29 +326,6 @@
 		padding: 0 1.7rem 1rem;
 		color: rgba(244, 233, 213, 0.42);
 		font-size: 0.68rem;
-	}
-	.menu-utilities {
-		display: flex;
-		gap: 0.65rem;
-		padding: 0 1.7rem 1rem;
-	}
-	.menu-utilities button,
-	.menu-utilities a {
-		min-height: 2.75rem;
-		padding: 0.7rem 1rem;
-		border: 1px solid rgba(239, 201, 129, 0.18);
-		background: transparent;
-		color: rgba(244, 233, 213, 0.68);
-		font-size: 0.6rem;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		text-transform: uppercase;
-		cursor: pointer;
-	}
-	.menu-utilities button:focus-visible,
-	.menu-utilities a:focus-visible {
-		outline: 2px solid #e5aa73;
-		outline-offset: 2px;
 	}
 	.menu nav {
 		display: flex;
@@ -490,10 +446,7 @@
 			grid-template-columns: 1fr 2.9rem;
 		}
 		.objective-chip.village-navigation {
-			top: 0.4rem;
-			right: 0.55rem;
-			bottom: auto;
-			left: auto;
+			bottom: calc(6.2rem + env(safe-area-inset-bottom));
 		}
 		.objective-chip.compact {
 			right: 0.65rem;
@@ -526,10 +479,6 @@
 			grid-template-columns: 1fr;
 			margin-right: 1rem;
 			margin-left: 1rem;
-		}
-		.menu-utilities {
-			padding-right: 1rem;
-			padding-left: 1rem;
 		}
 	}
 </style>
