@@ -125,9 +125,22 @@ Task 6: fix round 3/5 (1 open — open preflight leaves nonblocking before type 
 Task 6: fix round 3/5 (1 addressed, 0 open; commit `4658cbfa0`)
 Task 6: complete (commits `5154657`..`4658cbf`; review clean)
 Task 7: 28 semantic revisions and review package started (base `4658cbfa00df009930f4406547775fee5e70fa67`)
+Task 7: v1 batch complete but review failed (commit `b3251395a`; 23 candidate clipping contradictions, 2 explicit revise receipts, unauditable v1 timing/order claims)
+Ruling: enforce the strict complete-subject interpretation because it directly matches the user's frame-overlap/positioning cleanup requirement. Preserve all v1 evidence. Recover 21 cropped candidates via the spike-proven uniform deterministic inset, carry three passing candidates through explicit identity v2 evidence, and regenerate only four intrinsically bad sources under additive v2 packets. If wrong, the cost is append-only v2 evidence; no v1 or historical byte changes.
+Task 7: fix round 1/5 (3 open — append-only v2 recovery, complete 28-candidate selection, honest v2 execution evidence)
+Task 7A: v2 protocol and 24 deterministic recoveries started (base `b3251395a`)
+Task 7A: implementation complete (commit `437108d0c`; review found 4 P1 protocol defects and 1 P2 mislabeled inspection artifact)
+Task 7: fix round 1/5 (visual clipping addressed for 24 outputs, but 5 protocol/review findings remain open)
+Task 7: fix round 2/5 (5 open — generation persistence, arbitrary revision chaining, receipt authentication, honest completion timing, true 1024 review evidence)
+Task 7: fix round 2/5 (5 addressed, 2 new P1 open; commit `dda9308df` — post-audit core replacement and cross-target identity adoption)
+Task 7: fix round 3/5 (2 open — revalidate all five artifacts after audit publication; bind identity transform to immediate predecessor)
+Task 7: fix round 3/5 (2 addressed, 0 open; commit `0c479959b`)
+Task 7B: four generation-v2 recovery jobs started (base `0c479959bd6a02ecda368bfe16146c7fa93d7624`)
 Task 6: fix round 1 complete (commit `1d5047334`; all 5 findings have RED/GREEN regressions; 28 authority-updated packet JSON files rematerialized; central skill-icon suite 406/406 green; pushed and clean)
 Task 6: fix round 2 validated (RED/GREEN in check and write modes; cleanup suite 21/21; central suite 408/408; delivery pending)
 Task 6: fix round 2 complete (commit `6a4b61f8e`; exact-packet ancestor symlink rejected in both modes; pushed and clean)
 Task 6: fix round 3 validated (FIFO preflight RED/GREEN; cleanup suite 22/22; typecheck and deterministic check green; delivery pending)
 Task 6: fix round 3 complete (commit `4658cbfa0`; FIFO artifacts reject without a writer; pushed and clean)
 Task 7: complete; all 28 immutable packets were processed in sorted path order with 56 built-in image-generation calls and immediate create-only receipts. The terminal batch is 26 `candidate`, 2 honest `revise`, and 0 provider failures. All 456 deterministic base composites remain unchanged; the 28 revision composites are selected only for review layouts, not owner selection or wiki promotion. The complete 23-PNG review package, zero-write checks, full technical validation, and immutable-byte audit are recorded in `task-7-report.md`.
+Task 7A: deterministic v2 recovery complete (commit `437108d0c`, pushed): the Task 7 v1 completion claim is retracted; 28 v2 packets and 24 current-run candidate-v2 receipts are materialized with zero generation calls. The exact four generation-v2 targets remain pending, and final review/complete gates intentionally fail closed. No owner acceptance, promotion, selection, or wiki replacement occurred.
+Task 7: fix round 3/5 complete (commit `0c479959b`, pushed) — post-audit publication now reauthenticates all four core artifacts plus the audit by canonical named path/inode/bytes before returning a candidate; a foreign composite replacement at `afterPublish(4)` fails closed, preserves the foreign inode, and removes the owned audit. Identity-adoption-vN transform interior/composite bindings must exactly equal the immediate predecessor receipt in contract, derivation, persistence, and finalizer checks. No image calls or V1/V2/V3 evidence writes occurred; targeted tests/typecheck/packet/recovery checks and immutable aggregates are green.
