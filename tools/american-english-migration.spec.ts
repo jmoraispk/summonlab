@@ -1,0 +1,493 @@
+import { execFileSync, spawnSync } from 'node:child_process';
+import {
+	chmod,
+	mkdtemp,
+	mkdir,
+	readFile,
+	readlink,
+	rm,
+	symlink,
+	writeFile
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+
+import { afterEach, describe, expect, it } from 'vitest';
+
+import {
+	applyAmericanEnglishMigration,
+	planAmericanEnglishMigration
+} from './american-english-migration.js';
+import { type AmericanEnglishRuleId, deriveRetiredForms } from './american-english-policy.js';
+
+const temporaryRoots: string[] = [];
+
+type FixtureValue = string | Uint8Array | { readonly symlink: string };
+
+afterEach(async () => {
+	await Promise.all(
+		temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true }))
+	);
+});
+
+function retired(ruleId: AmericanEnglishRuleId, index = 0): string {
+	const value = deriveRetiredForms(ruleId)[index];
+	if (value === undefined) throw new Error(`Missing fixture form ${ruleId}[${index}]`);
+	return value;
+}
+
+function titleCase(value: string): string {
+	return `${value[0]!.toUpperCase()}${value.slice(1)}`;
+}
+
+function git(repositoryRoot: string, arguments_: readonly string[]): string {
+	return execFileSync('git', arguments_, { cwd: repositoryRoot, encoding: 'utf8' }).trim();
+}
+
+async function makeRepository(files: Readonly<Record<string, FixtureValue>>): Promise<{
+	readonly root: string;
+	readonly baseline: string;
+}> {
+	const root = await mkdtemp(path.join(tmpdir(), 'american-english-migration-'));
+	temporaryRoots.push(root);
+	git(root, ['init', '--quiet']);
+	for (const [repositoryPath, contents] of Object.entries(files)) {
+		const destination = path.join(root, ...repositoryPath.split('/'));
+		await mkdir(path.dirname(destination), { recursive: true });
+		if (typeof contents === 'object' && !ArrayBuffer.isView(contents)) {
+			await symlink(contents.symlink, destination);
+		} else {
+			await writeFile(destination, contents);
+		}
+	}
+	git(root, ['add', '--all']);
+	git(root, [
+		'-c',
+		'user.name=Test',
+		'-c',
+		'user.email=test@example.com',
+		'commit',
+		'--quiet',
+		'-m',
+		'fixture'
+	]);
+	return { root, baseline: git(root, ['rev-parse', 'HEAD']) };
+}
+
+async function trackedSnapshot(repositoryRoot: string): Promise<Readonly<Record<string, Buffer>>> {
+	const tracked = git(repositoryRoot, ['ls-files']).split('\n').filter(Boolean);
+	return Object.fromEntries(
+		await Promise.all(
+			tracked.map(async (repositoryPath) => {
+				const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
+				try {
+					return [repositoryPath, Buffer.from(await readlink(absolutePath))] as const;
+				} catch {
+					return [repositoryPath, await readFile(absolutePath)] as const;
+				}
+			})
+		)
+	);
+}
+
+function planPaths(plan: Awaited<ReturnType<typeof planAmericanEnglishMigration>>): string[] {
+	return plan.pathMoves.map(({ source, destination }) => `${source} -> ${destination}`);
+}
+
+describe('American English migration planning', () => {
+	it('accepts the package-manager argument separator at the CLI boundary', async () => {
+		const repository = await makeRepository({ 'safe.txt': 'safe\n' });
+		const command = spawnSync(
+			process.execPath,
+			[
+				path.resolve('node_modules/tsx/dist/cli.mjs'),
+				path.resolve('tools/american-english-migration.ts'),
+				'--',
+				'--baseline',
+				repository.baseline,
+				'--repository-root',
+				repository.root,
+				'--format',
+				'json'
+			],
+			{ encoding: 'utf8' }
+		);
+
+		expect(command.status).toBe(0);
+		expect(JSON.parse(command.stdout)).toMatchObject({ baselineCommit: repository.baseline });
+	});
+
+	it('plans deterministic filtered edits while preserving dry-run bytes', async () => {
+		const gray = retired('gray');
+		const armor = retired('armor');
+		const behavior = retired('behavior');
+		const color = retired('color');
+		const sharpMethod = `to${titleCase(color)}space`;
+		const repository = await makeRepository({
+			'.gitattributes': 'assets/*.bin -text\n',
+			[`assets/${gray}.bin`]: Buffer.concat([Buffer.from([0, 1, 2]), Buffer.from(color)]),
+			[`docs/${gray}/nested/${armor}-note.txt`]: Buffer.from(
+				`\uFEFFcombat${titleCase(behavior)}\r\n${armor}\r\n`,
+				'utf8'
+			),
+			[`links/${gray}-alias`]: { symlink: `../docs/${color}` },
+			'pnpm-lock.yaml': `name: "@img/${color}"\n`,
+			'tools/normalize-skill-icon-provider-source.ts': `image.${sharpMethod}();\n`
+		});
+		const before = await trackedSnapshot(repository.root);
+
+		const first = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const second = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+
+		expect(second).toEqual(first);
+		expect(planPaths(first)).toEqual([
+			`assets/${gray}.bin -> assets/gray.bin`,
+			`docs/${gray}/nested/${armor}-note.txt -> docs/gray/nested/armor-note.txt`,
+			`links/${gray}-alias -> links/gray-alias`
+		]);
+		expect(first.pathMoves.find(({ source }) => source === `assets/${gray}.bin`)?.binary).toBe(
+			true
+		);
+		expect(first.textEdits).toEqual([
+			{ path: `docs/${gray}/nested/${armor}-note.txt`, violationCount: 2 },
+			{ path: `links/${gray}-alias`, violationCount: 1 }
+		]);
+		expect(first.collisions).toEqual([]);
+		expect(first.unownedIntegrityBindings).toEqual([]);
+		expect(await trackedSnapshot(repository.root)).toEqual(before);
+		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
+
+		const filtered = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['gray'],
+			roots: ['docs']
+		});
+		expect(planPaths(filtered)).toEqual([
+			`docs/${gray}/nested/${armor}-note.txt -> docs/gray/nested/${armor}-note.txt`
+		]);
+		expect(filtered.textEdits).toEqual([]);
+	});
+
+	it('reports full-tree exact and case-folded collisions before filters', async () => {
+		const gray = retired('gray');
+		const color = retired('color');
+		const repository = await makeRepository({
+			[`docs/${gray}/color.txt`]: 'first\n',
+			[`docs/gray/${color}.txt`]: 'second\n',
+			[`outside/${titleCase(color)}.txt`]: 'third\n',
+			[`outside/${color}.txt`]: 'fourth\n',
+			'src/safe.txt': 'safe\n'
+		});
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			roots: ['src']
+		});
+
+		expect(plan.pathMoves).toEqual([]);
+		expect(plan.collisions).toEqual([
+			{
+				destination: 'docs/gray/color.txt',
+				sources: [`docs/gray/${color}.txt`, `docs/${gray}/color.txt`]
+			},
+			{
+				destination: 'outside/Color.txt',
+				sources: [`outside/${titleCase(color)}.txt`, `outside/${color}.txt`]
+			}
+		]);
+	});
+
+	it('reports an untracked path occupying a tracked destination', async () => {
+		const gray = retired('gray');
+		const repository = await makeRepository({ [`docs/${gray}.txt`]: 'tracked\n' });
+		await writeFile(path.join(repository.root, 'docs/gray.txt'), 'untracked\n');
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+
+		expect(plan.collisions).toEqual([
+			{
+				destination: 'docs/gray.txt',
+				sources: ['docs/gray.txt', `docs/${gray}.txt`]
+			}
+		]);
+	});
+
+	it('reports an ignored case-folded destination occupant', async () => {
+		const color = retired('color');
+		const repository = await makeRepository({
+			'.gitignore': 'docs/color.txt\n',
+			[`docs/${titleCase(color)}.txt`]: 'tracked\n'
+		});
+		await writeFile(path.join(repository.root, 'docs/color.txt'), 'ignored\n');
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+
+		expect(plan.collisions).toEqual([
+			{
+				destination: 'docs/Color.txt',
+				sources: [`docs/${titleCase(color)}.txt`, 'docs/color.txt']
+			}
+		]);
+	});
+
+	it('conservatively reports files with potential integrity bindings', async () => {
+		const behavior = retired('behavior');
+		const repository = await makeRepository({
+			'records/manifest.json': `{"${behavior}":true,"contentHash":"${'a'.repeat(64)}"}\n`
+		});
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+
+		expect(plan.unownedIntegrityBindings).toEqual([
+			{
+				path: 'records/manifest.json',
+				reasons: ['contentHash']
+			}
+		]);
+	});
+});
+
+describe('American English transactional application', () => {
+	it('does not overwrite an existing receipt or start repository changes', async () => {
+		const gray = retired('gray');
+		const repository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const before = await trackedSnapshot(repository.root);
+		const receiptPath = path.join(tmpdir(), `existing-${process.pid}.json`);
+		await writeFile(receiptPath, 'existing receipt\n');
+		temporaryRoots.push(receiptPath);
+
+		await expect(
+			applyAmericanEnglishMigration(plan, { repositoryRoot: repository.root, receiptPath })
+		).rejects.toThrow(/receipt.*exists/i);
+		expect(await readFile(receiptPath, 'utf8')).toBe('existing receipt\n');
+		expect(await trackedSnapshot(repository.root)).toEqual(before);
+		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
+	});
+
+	it('blocks collisions, dirty trees, stale baselines, and unowned bindings before changes', async () => {
+		const gray = retired('gray');
+		const behavior = retired('behavior');
+
+		const collisionRepository = await makeRepository({
+			[`docs/${gray}.txt`]: 'source\n',
+			'docs/gray.txt': 'destination\n'
+		});
+		const collisionPlan = await planAmericanEnglishMigration({
+			repositoryRoot: collisionRepository.root,
+			baselineCommit: collisionRepository.baseline
+		});
+		const collisionBefore = await trackedSnapshot(collisionRepository.root);
+		await expect(
+			applyAmericanEnglishMigration(collisionPlan, {
+				repositoryRoot: collisionRepository.root,
+				receiptPath: path.join(tmpdir(), `collision-${process.pid}.json`)
+			})
+		).rejects.toThrow(/collision/i);
+		expect(await trackedSnapshot(collisionRepository.root)).toEqual(collisionBefore);
+
+		const dirtyRepository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const dirtyPlan = await planAmericanEnglishMigration({
+			repositoryRoot: dirtyRepository.root,
+			baselineCommit: dirtyRepository.baseline
+		});
+		await writeFile(path.join(dirtyRepository.root, 'unrelated.txt'), 'dirty\n');
+		const dirtyBefore = await readFile(path.join(dirtyRepository.root, `docs/${gray}.txt`));
+		await expect(
+			applyAmericanEnglishMigration(dirtyPlan, {
+				repositoryRoot: dirtyRepository.root,
+				receiptPath: path.join(tmpdir(), `dirty-${process.pid}.json`)
+			})
+		).rejects.toThrow(/clean working tree/i);
+		expect(await readFile(path.join(dirtyRepository.root, `docs/${gray}.txt`))).toEqual(
+			dirtyBefore
+		);
+
+		const staleRepository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const stalePlan = await planAmericanEnglishMigration({
+			repositoryRoot: staleRepository.root,
+			baselineCommit: staleRepository.baseline
+		});
+		git(staleRepository.root, ['checkout', '--quiet', '--orphan', 'unrelated-history']);
+		git(staleRepository.root, ['rm', '--quiet', '-r', '--force', '.']);
+		await writeFile(path.join(staleRepository.root, `docs-${gray}.txt`), 'source\n');
+		git(staleRepository.root, ['add', '--all']);
+		git(staleRepository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit',
+			'--quiet',
+			'-m',
+			'unrelated'
+		]);
+		await expect(
+			applyAmericanEnglishMigration(stalePlan, {
+				repositoryRoot: staleRepository.root,
+				receiptPath: path.join(tmpdir(), `stale-${process.pid}.json`)
+			})
+		).rejects.toThrow(/ancestor/i);
+
+		const bindingRepository = await makeRepository({
+			'record.json': `{"${behavior}":true,"sha256":"${'b'.repeat(64)}"}\n`
+		});
+		const bindingPlan = await planAmericanEnglishMigration({
+			repositoryRoot: bindingRepository.root,
+			baselineCommit: bindingRepository.baseline
+		});
+		const bindingBefore = await trackedSnapshot(bindingRepository.root);
+		await expect(
+			applyAmericanEnglishMigration(bindingPlan, {
+				repositoryRoot: bindingRepository.root,
+				receiptPath: path.join(tmpdir(), `binding-${process.pid}.json`)
+			})
+		).rejects.toThrow(/integrity/i);
+		expect(await trackedSnapshot(bindingRepository.root)).toEqual(bindingBefore);
+	});
+
+	it('rejects a committed source that drifted from the frozen baseline', async () => {
+		const gray = retired('gray');
+		const repository = await makeRepository({ [`docs/${gray}.txt`]: 'source\n' });
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		await writeFile(path.join(repository.root, `docs/${gray}.txt`), 'changed source\n');
+		git(repository.root, ['add', '--all']);
+		git(repository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit',
+			'--quiet',
+			'-m',
+			'source drift'
+		]);
+		const before = await trackedSnapshot(repository.root);
+
+		await expect(
+			applyAmericanEnglishMigration(plan, {
+				repositoryRoot: repository.root,
+				receiptPath: path.join(tmpdir(), `drift-${process.pid}.json`)
+			})
+		).rejects.toThrow(/source blob/i);
+		expect(await trackedSnapshot(repository.root)).toEqual(before);
+		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
+	});
+
+	it('rolls back every path and byte after an injected mid-operation failure', async () => {
+		const gray = retired('gray');
+		const armor = retired('armor');
+		const repository = await makeRepository({
+			[`deep/${gray}/${armor}.txt`]: `${armor}\n`,
+			[`other/${gray}.txt`]: `${armor}\n`
+		});
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const before = await trackedSnapshot(repository.root);
+		const receiptPath = path.join(tmpdir(), `rollback-${process.pid}.json`);
+
+		await expect(
+			applyAmericanEnglishMigration(plan, {
+				repositoryRoot: repository.root,
+				receiptPath,
+				failAfterOperation: 1
+			})
+		).rejects.toThrow(/injected/i);
+
+		expect(await trackedSnapshot(repository.root)).toEqual(before);
+		expect(git(repository.root, ['status', '--porcelain'])).toBe('');
+		await expect(readFile(receiptPath)).rejects.toThrow();
+	});
+
+	it('preserves representation and mode while producing a hash-only receipt', async () => {
+		const gray = retired('gray');
+		const armor = retired('armor');
+		const behavior = retired('behavior');
+		const color = retired('color');
+		const sourceText = Buffer.from(`\uFEFFcombat${titleCase(behavior)}\r\n${armor}`, 'utf8');
+		const binaryBytes = Buffer.concat([Buffer.from([0, 255, 4]), Buffer.from(color)]);
+		const repository = await makeRepository({
+			'.gitattributes': 'assets/*.bin -text\n',
+			[`assets/${gray}.bin`]: binaryBytes,
+			[`docs/${gray}/${armor}.txt`]: sourceText,
+			[`links/${gray}`]: { symlink: `../${color}` }
+		});
+		const executablePath = path.join(repository.root, `docs/${gray}/${armor}.txt`);
+		await chmod(executablePath, 0o755);
+		git(repository.root, ['add', `docs/${gray}/${armor}.txt`]);
+		git(repository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit',
+			'--quiet',
+			'-m',
+			'executable mode'
+		]);
+		const baseline = git(repository.root, ['rev-parse', 'HEAD']);
+		const sourceMode = Number.parseInt(
+			git(repository.root, ['ls-files', '-s', `docs/${gray}/${armor}.txt`]).slice(0, 6),
+			10
+		);
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: baseline
+		});
+		const receiptPath = path.join(tmpdir(), `success-${process.pid}.json`);
+
+		const receipt = await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+
+		expect(await readFile(path.join(repository.root, 'docs/gray/armor.txt'))).toEqual(
+			Buffer.from('\uFEFFcombatBehavior\r\narmor', 'utf8')
+		);
+		expect(await readFile(path.join(repository.root, 'assets/gray.bin'))).toEqual(binaryBytes);
+		expect(await readlink(path.join(repository.root, 'links/gray'))).toBe('../color');
+		const successorMode = Number.parseInt(
+			git(repository.root, ['ls-files', '-s', 'docs/gray/armor.txt']).slice(0, 6),
+			10
+		);
+		expect(successorMode).toBe(sourceMode);
+		expect(receipt).toEqual(JSON.parse(await readFile(receiptPath, 'utf8')));
+		expect(receipt.baselineCommit).toBe(baseline);
+		expect(receipt.policyVersion).toBe(1);
+		expect(receipt.ruleCounts).toMatchObject({ armor: 2, behavior: 1, color: 1, gray: 3 });
+		expect(receipt.ownerCounts).toEqual({ 'migration-planner': 3 });
+		expect(receipt.files).toHaveLength(3);
+		expect(
+			receipt.files.find(({ successorPath }) => successorPath === 'assets/gray.bin')
+		).toMatchObject({ unchangedBinary: true });
+		const serialized = JSON.stringify(receipt);
+		for (const value of [gray, armor, behavior, color]) expect(serialized).not.toContain(value);
+		expect(serialized).not.toContain(`docs/${gray}/${armor}.txt`);
+		expect(executablePath).not.toBe(path.join(repository.root, 'docs/gray/armor.txt'));
+	});
+});

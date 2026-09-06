@@ -8,6 +8,8 @@
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
+		"american-english-migration.ts",
+		"american-english-migration.spec.ts",
 		"american-english-policy.ts",
 		"american-english-policy.spec.ts",
 		"check-american-english.ts",
