@@ -60,6 +60,8 @@
 		"finalize-skill-icon-quality-cleanup-v2.ts",
 		"render-skill-icon-quality-cleanup-review.ts",
 		"render-skill-icon-quality-cleanup-review.spec.ts",
-		"render-skill-icon-outline-fix-review.ts"
+		"render-skill-icon-outline-fix-review.ts",
+		"render-skill-icon-badge-tip-review.ts",
+		"render-skill-icon-badge-tip-review.spec.ts"
 	]
 }
