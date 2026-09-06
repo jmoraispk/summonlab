@@ -44,11 +44,15 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isLegacyAutomatic = $derived(engineState.schemaVersion === 25);
+	const isCapabilityMission = $derived(engineState.schemaVersion === 25);
+	const isModeBoundCombat = $derived(data.combatMode !== null);
+	const isLegacyAutomatic = $derived(
+		data.combatMode?.status === 'available' && data.combatMode.modeId === 'legacy-auto-v1'
+	);
 	const isMasterFallback = $derived(engineState.schemaVersion === 20);
 	const isMasterTiming = $derived(engineState.schemaVersion === 19 || isMasterFallback);
 	const isAttemptAftermath = $derived(
-		engineState.schemaVersion === 18 || isLegacyAutomatic || isMasterTiming
+		engineState.schemaVersion === 18 || isCapabilityMission || isMasterTiming
 	);
 	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
 	const isAftermath = $derived(
@@ -904,8 +908,10 @@
 								.objectiveTitle}</strong
 						>
 						<small
-							>{isLegacyAutomatic
-								? 'The heroes choose from legal actions when you continue.'
+							>{isModeBoundCombat
+								? isLegacyAutomatic
+									? 'The heroes choose from legal actions when you continue.'
+									: (data.combatMode?.message ?? 'This bound combat mode is unavailable.')
 								: 'Choose only the Master. Every summoned hero chooses independently.'}</small
 						>
 					</div>
@@ -928,15 +934,23 @@
 							{/each}
 						</div>
 					{/if}
-					{#if isLegacyAutomatic}
-						<button
-							class="primary resolve"
-							disabled={busy}
-							onclick={advanceAutomaticCombat}
-							data-testid="continue-battle"
-							><span>Continue battle</span><small>heroes choose → seeded initiative → engine</small
-							></button
-						>
+					{#if isModeBoundCombat}
+						{#if isLegacyAutomatic}
+							<button
+								class="primary resolve"
+								disabled={busy}
+								onclick={advanceAutomaticCombat}
+								data-testid="continue-battle"
+								><span>Continue battle</span><small
+									>heroes choose → seeded initiative → engine</small
+								></button
+							>
+						{:else}
+							<div class="empty-state" data-testid="combat-mode-unavailable">
+								<strong>Combat mode unavailable</strong>
+								<p>{data.combatMode?.message ?? 'This bound combat mode cannot advance yet.'}</p>
+							</div>
+						{/if}
 					{:else}
 						<div class="turn-choices" data-testid="master-turn-actions">
 							{#each masterTurnActions as choice (choice.actionId)}

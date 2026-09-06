@@ -1,6 +1,11 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
-import type { EngineSnapshot } from '@summonlab/contracts';
-import { createBootstrapEngine, deterministicUuid } from '@summonlab/engine';
+import { EngineGameStateV25Schema, type EngineSnapshot } from '@summonlab/contracts';
+import {
+	applyCommand,
+	createBootstrapEngine,
+	createCombatModeBinding,
+	deterministicUuid
+} from '@summonlab/engine';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -30,6 +35,42 @@ vi.mock('@summonlab/database', async (importOriginal) => {
 import { POST } from './+server.js';
 
 let snapshot: EngineSnapshot;
+
+function deployedLegacySnapshot(): EngineSnapshot {
+	if (snapshot.state.schemaVersion !== 25) throw new Error('Expected v25 snapshot');
+	const heroId = Object.keys(snapshot.state.heroes)[0]!;
+	const source = {
+		source: 'manual' as const,
+		timing: 'step' as const,
+		fallbackPolicy: null,
+		directiveIds: [],
+		decisionJobId: null
+	};
+	const prepareId = deterministicUuid(`${snapshot.state.runId}:web-prepare`);
+	const prepared = applyCommand(snapshot.state, {
+		commandId: prepareId,
+		runId: snapshot.state.runId,
+		actorId: snapshot.state.master.masterId,
+		expectedVersion: snapshot.state.version,
+		correlationId: prepareId,
+		source,
+		commandType: 'mission.prepare',
+		heroIds: [heroId],
+		combatModeBinding: createCombatModeBinding('legacy-auto-v1', snapshot.state.simulatedAt)
+	});
+	if (prepared.state.schemaVersion !== 25) throw new Error('Expected prepared v25 state');
+	const deployId = deterministicUuid(`${snapshot.state.runId}:web-deploy`);
+	const deployed = applyCommand(prepared.state, {
+		commandId: deployId,
+		runId: prepared.state.runId,
+		actorId: prepared.state.master.masterId,
+		expectedVersion: prepared.state.version,
+		correlationId: deployId,
+		source,
+		commandType: 'mission.deploy'
+	});
+	return { state: deployed.state, stateHash: deployed.stateHash };
+}
 
 async function callMission(body: unknown): Promise<Response> {
 	return (await POST({
@@ -84,6 +125,9 @@ describe('V25 legacy automatic mission API', () => {
 
 	it('turns Continue battle into one internal automatic command with no player choices', async () => {
 		// Advancing an existing attempt never rebinds from the current operator default.
+		const deployed = deployedLegacySnapshot();
+		mocks.getSnapshot.mockResolvedValue(deployed);
+		mocks.commit.mockResolvedValue({ snapshot: deployed, events: [], legalActions: [] });
 		mocks.combatMode = 'agent-readiness-v1';
 		const response = await callMission({ action: 'advance-automatic-combat' });
 
@@ -98,6 +142,36 @@ describe('V25 legacy automatic mission API', () => {
 		expect(command).not.toHaveProperty('choices');
 		expect(command).not.toHaveProperty('targetId');
 		expect(command).not.toHaveProperty('policy');
+	});
+
+	it('refuses the explicit not-yet-live mode from the stored attempt binding', async () => {
+		const deployed = deployedLegacySnapshot();
+		if (deployed.state.schemaVersion !== 25 || !deployed.state.mission.attempt) {
+			throw new Error('Expected deployed v25 attempt');
+		}
+		const agentState = EngineGameStateV25Schema.parse({
+			...deployed.state,
+			mission: {
+				...deployed.state.mission,
+				attempt: {
+					...deployed.state.mission.attempt,
+					combatModeBinding: {
+						...deployed.state.mission.attempt.combatModeBinding,
+						modeId: 'agent-readiness-v1',
+						rulesVersion: 'agent-readiness-rules-v1'
+					}
+				}
+			}
+		});
+		mocks.getSnapshot.mockResolvedValue({ ...deployed, state: agentState });
+
+		const response = await callMission({ action: 'advance-automatic-combat' });
+
+		expect(response.status).toBe(409);
+		expect(await response.json()).toMatchObject({
+			message: 'Combat mode agent-readiness-v1 is not yet live'
+		});
+		expect(mocks.commit).not.toHaveBeenCalled();
 	});
 
 	it('rejects manual turn selection and injected policy fields for V25', async () => {

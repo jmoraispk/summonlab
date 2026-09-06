@@ -58,11 +58,45 @@ No production diff was needed in `packages/contracts/src/proof.ts` or `apps/web/
 
 ## Self-review
 
-- `agent-readiness-v1` exists only as a reserved contract ID. Config and the V25 runner reject it; no player can select either mode.
+- `agent-readiness-v1` exists only as a reserved contract ID. Config does not select it in this phase; a persisted future binding receives an explicit not-yet-live result from the V25 dispatcher. No player can select either mode.
 - The legacy projection is used only by the V25 compatibility path. Historical minds retain and consume their stored aptitudes unchanged.
 - The V25 consequence schema widens hero Health/damage bounds only. Historical harm/result schemas and Master Health remain unchanged.
 - Preparation, party revision, deployment, resolution, extraction, retreat internals, and aftermath archival preserve the stored binding. Public V25 combat legality exposes only automatic advance while combat is active.
 - The Task 4 premature V25 mission alias was replaced by actual `MissionRunStateV9` schema/export/lifecycle/reducer support.
+
+## Architecture fix round 1
+
+### Findings addressed
+
+- Isolated `legacy-auto-v1` behind `mission-mode-runner.ts` and the versioned `legacy-auto-v1-resolver.ts`. The latter projects V25 into a V24-shaped state: schema/content version, legacy mind aptitudes, legacy progression, V8-shaped mission/aftermath, and no combat-mode binding inside the frozen resolver input. Capability profile, V25 progression, Mana, and the immutable combat binding stay outside the boundary and are restored/adapted afterward.
+- Removed `EngineGameStateV25` and every V25 discriminator branch from `combat.ts`. Its historical `resolveMissionCombatTurn()` entrypoint once again accepts only V13–V24. A narrow schema adapter lets the versioned wrapper parse V25-only Health evidence and reattach V9 binding/archive evidence after the unchanged legacy rules execute.
+- Made the attempt binding authoritative. Legal actions, command validation/building, replay reduction, the mission route, server presentation, and the page all consult `modeId + rulesVersion + contentHash`. Only the verified `legacy-auto-v1` triple dispatches; `agent-readiness-v1` has an explicit not-yet-live result and invalid rules/hashes are unavailable.
+- The V25 page never falls through to player-supplied actor/action/target controls when a bound mode is unavailable. It shows an unavailable state; a verified legacy binding alone shows **Continue battle**.
+
+### RED evidence
+
+1. The resolver boundary type assertion failed under `tsc` because `EngineGameStateV25` still matched `Parameters<typeof resolveMissionCombatTurn>[0]`.
+2. The binding-authority runtime test received `mission.advance.automatic` for an `agent-readiness-v1` attempt because legality still dispatched on `schemaVersion === 25`.
+3. The first V24 projection run rejected seeded Master/hero choices as illegal, proving the wrapper still revalidated V25 automatic policy evidence under historical source rules; the compatibility entry was narrowed to consume already-generated, schema-validated policy choices.
+4. The reserved readiness binding test initially threw during binding creation, proving the code had no representable not-yet-live operator branch.
+
+### GREEN and compatibility evidence
+
+- Focused engine architecture/replay set: 4 files, 51 tests passed (`legacy-auto`, mission runtime, public API, replay vectors).
+- Web mission route: 1 file, 4 tests passed, including stored legacy binding after an operator-default change and explicit refusal of a stored readiness binding.
+- Full engine suite: 29 files, 317 tests passed.
+- Full web suite: 33 files, 163 tests passed.
+- Engine and web typechecks passed; Svelte reported zero errors and zero warnings.
+- Engine and web lint passed. Focused Prettier verification and `git diff --check` passed.
+- The frozen V24 replay retains its five exact event hashes, entropy cursor `14`, and final state hash `be17653a611538c5820f595dd04b61265e94896c399dca7d05e02d5d19491d20`.
+- The 48-round automatic boundary remains covered by the V25 legacy suite.
+
+### Added file seams
+
+- `packages/engine/src/domains/mission/legacy-auto-v1-resolver.ts`
+- `packages/engine/src/domains/mission/mission-mode-runner.ts`
+
+These are the minimal versioned runner/resolver seams required by the architecture review. The reviewer’s prepared-route → operator-config-change → advance E2E gap remains deferred to final whole-branch review as a Minor; the route test now uses a real engine-prepared/deployed snapshot but does not prepare it through the route itself.
 
 ## Known pre-existing validation issue
 

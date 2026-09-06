@@ -8,7 +8,7 @@ import {
 	type EngineGameStateV25
 } from '@summonlab/contracts';
 import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
 	applyCommand,
@@ -17,7 +17,9 @@ import {
 	legalActions,
 	reduceEvent
 } from '../../index.js';
-import { createCombatModeBinding } from './combat-mode.js';
+import { combatModeAvailability, createCombatModeBinding } from './combat-mode.js';
+import { resolveMissionCombatTurn } from './combat.js';
+import { projectLegacyAutoV1State } from './legacy-auto-v1-resolver.js';
 import {
 	LEGACY_AUTO_POLICY_ID,
 	legacyAutomaticChoices,
@@ -64,6 +66,12 @@ async function capabilityState(): Promise<EngineGameStateV25> {
 }
 
 describe('legacy automatic combat', () => {
+	it('keeps capability states outside the frozen historical resolver boundary', () => {
+		type FrozenResolverState = Parameters<typeof resolveMissionCombatTurn>[0];
+
+		expectTypeOf<EngineGameStateV25>().not.toMatchTypeOf<FrozenResolverState>();
+	});
+
 	it('projects each canonical attribute onto only its agreed legacy aptitude with half-up clamps', () => {
 		expect(
 			legacyCapabilityProjection({ might: 1, vitality: 5, agility: 6, spirit: 95 })
@@ -71,6 +79,26 @@ describe('legacy automatic combat', () => {
 		expect(
 			legacyCapabilityProjection({ might: 94, vitality: 100, agility: 55, spirit: 45 })
 		).toStrictEqual({ might: 9, finesse: 6, insight: 5, resolve: 10 });
+	});
+
+	it('projects a v25 state through an explicit v24-shaped resolver boundary', async () => {
+		const state = await capabilityState();
+		const heroId = Object.keys(state.heroes)[0]!;
+		const projected = projectLegacyAutoV1State(state);
+
+		expect(projected.schemaVersion).toBe(24);
+		expect(projected.contentVersion).toBe('engine-v24');
+		expect(projected.heroes[heroId]!.health).toBe(state.heroes[heroId]!.health);
+		expect(projected.heroes[heroId]).not.toHaveProperty('capabilityProfile');
+		expect(projected.heroes[heroId]).not.toHaveProperty('mana');
+		expect(projected.heroes[heroId]).not.toHaveProperty('maxMana');
+		expect(projected.heroes[heroId]!.mind.aptitudes).toStrictEqual(
+			legacyCapabilityProjection(state.heroes[heroId]!.capabilityProfile.attributes)
+		);
+		expect(projected.heroes[heroId]!.progression).not.toHaveProperty('unspentAttributePoints');
+		expect(projected.mission.aftermath.aftermathVersion).toBe('mission-aftermath-v3');
+		expect(projected.mission.attempt).toBeNull();
+		expect(state.heroes[heroId]).not.toHaveProperty('mind.aptitudes');
 	});
 
 	it('binds the enabled mode to the aggregate combat mechanics hash at preparation time', () => {
@@ -81,6 +109,17 @@ describe('legacy automatic combat', () => {
 			rulesVersion: 'legacy-auto-rules-v1',
 			contentHash: COMBAT_CONTENT_BINDING.contentHash,
 			boundAt: BOUND_AT
+		});
+		expect(combatModeAvailability({ ...binding, contentHash: '0'.repeat(64) })).toStrictEqual({
+			status: 'unavailable',
+			modeId: 'legacy-auto-v1',
+			message: 'Combat mode legacy-auto-v1 rules binding is unavailable'
+		});
+		const agentBinding = createCombatModeBinding('agent-readiness-v1', BOUND_AT);
+		expect(combatModeAvailability(agentBinding)).toStrictEqual({
+			status: 'not-yet-live',
+			modeId: 'agent-readiness-v1',
+			message: 'Combat mode agent-readiness-v1 is not yet live'
 		});
 	});
 
@@ -164,6 +203,9 @@ describe('legacy automatic combat', () => {
 			commandType: 'mission.deploy'
 		});
 		if (deployed.state.schemaVersion !== 25) throw new Error('Expected v25 state');
+		expect(projectLegacyAutoV1State(deployed.state).mission.attempt).not.toHaveProperty(
+			'combatModeBinding'
+		);
 		expect(
 			legalActions(deployed.state, deployed.state.master.masterId).map((action) => action.actionId)
 		).toStrictEqual(['mission.advance.automatic']);
@@ -191,6 +233,68 @@ describe('legacy automatic combat', () => {
 		expect(() => reduceEvent(deployed.state, changedBindingEvent)).toThrow(
 			/Legacy automatic mission round payload diverged/u
 		);
+	});
+
+	it('derives combat availability from the stored mode and rules binding', async () => {
+		const initial = await capabilityState();
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const prepared = applyCommand(initial, {
+			...commandBase(initial, 'binding-authority-prepare'),
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			combatModeBinding: createCombatModeBinding('legacy-auto-v1', initial.simulatedAt)
+		});
+		if (prepared.state.schemaVersion !== 25) throw new Error('Expected v25 state');
+		const deployed = applyCommand(prepared.state, {
+			...commandBase(prepared.state, 'binding-authority-deploy'),
+			commandType: 'mission.deploy'
+		});
+		if (deployed.state.schemaVersion !== 25 || !deployed.state.mission.attempt) {
+			throw new Error('Expected deployed v25 state');
+		}
+
+		const agentReadiness = EngineGameStateV25Schema.parse({
+			...deployed.state,
+			mission: {
+				...deployed.state.mission,
+				attempt: {
+					...deployed.state.mission.attempt,
+					combatModeBinding: {
+						...deployed.state.mission.attempt.combatModeBinding,
+						modeId: 'agent-readiness-v1',
+						rulesVersion: 'agent-readiness-rules-v1'
+					}
+				}
+			}
+		});
+		expect(legalActions(agentReadiness, agentReadiness.master.masterId)).toStrictEqual([]);
+		expect(() =>
+			applyCommand(agentReadiness, {
+				...commandBase(agentReadiness, 'agent-readiness-advance'),
+				commandType: 'mission.advance.automatic'
+			})
+		).toThrow(/agent-readiness-v1 is not yet live/u);
+
+		const unavailableRules = EngineGameStateV25Schema.parse({
+			...deployed.state,
+			mission: {
+				...deployed.state.mission,
+				attempt: {
+					...deployed.state.mission.attempt,
+					combatModeBinding: {
+						...deployed.state.mission.attempt.combatModeBinding,
+						rulesVersion: 'legacy-auto-rules-v2'
+					}
+				}
+			}
+		});
+		expect(legalActions(unavailableRules, unavailableRules.master.masterId)).toStrictEqual([]);
+		expect(() =>
+			applyCommand(unavailableRules, {
+				...commandBase(unavailableRules, 'unavailable-rules-advance'),
+				commandType: 'mission.advance.automatic'
+			})
+		).toThrow(/legacy-auto-v1 rules binding is unavailable/u);
 	});
 
 	it('widens only v25 hero harm evidence beyond legacy Health 100', () => {

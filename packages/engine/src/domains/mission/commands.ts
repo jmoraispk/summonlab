@@ -52,7 +52,10 @@ import {
 	resolvePortalMissionTurn,
 	type PortalResourceChange
 } from './portal.js';
-import { legacyAutomaticChoices } from './legacy-auto.js';
+import {
+	assertMissionModeAdvanceAvailable,
+	resolveMissionModeTurn
+} from './mission-mode-runner.js';
 
 export const MISSION_COMMAND_TYPES = [
 	'master.configure.timing',
@@ -272,7 +275,7 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		) {
 			throw new IllegalActionError(command.commandType, []);
 		}
-		legacyAutomaticChoices(state);
+		assertMissionModeAdvanceAvailable(state);
 		return;
 	}
 	if (command.source.source !== 'manual' || command.source.timing !== 'step') {
@@ -468,12 +471,17 @@ export function buildMissionEvent(
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'mission.round.resolved');
+		const automaticResolution =
+			command.commandType === 'mission.advance.automatic'
+				? resolveMissionModeTurn(state as EngineGameStateV25, base.eventId)
+				: null;
 		const choices =
 			command.commandType === 'mission.advance.automatic'
-				? legacyAutomaticChoices(state as EngineGameStateV25)
+				? automaticResolution!.choices
 				: command.choices;
 		const resolution =
-			state.schemaVersion === 15
+			automaticResolution ??
+			(state.schemaVersion === 15
 				? resolvePortalMissionTurn(state, choices)
 				: state.schemaVersion === 13 ||
 					  state.schemaVersion === 14 ||
@@ -483,8 +491,7 @@ export function buildMissionEvent(
 					  state.schemaVersion === 19 ||
 					  state.schemaVersion === 20 ||
 					  state.schemaVersion === 23 ||
-					  state.schemaVersion === 24 ||
-					  state.schemaVersion === 25
+					  state.schemaVersion === 24
 					? resolveMissionCombatTurn(
 							state,
 							choices,
@@ -494,12 +501,15 @@ export function buildMissionEvent(
 								state.schemaVersion === 19 ||
 								state.schemaVersion === 20 ||
 								state.schemaVersion === 23 ||
-								state.schemaVersion === 24 ||
-								state.schemaVersion === 25
+								state.schemaVersion === 24
 								? base.eventId
 								: null
 						)
-					: resolveMissionTurn(state, choices);
+					: state.schemaVersion === 12
+						? resolveMissionTurn(state, choices)
+						: (() => {
+								throw new IllegalActionError(command.commandType);
+							})());
 		const monsterCount =
 			'monsterActions' in resolution.round ? resolution.round.monsterActions.length : 0;
 		const timingResolution =

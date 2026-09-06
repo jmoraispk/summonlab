@@ -61,7 +61,7 @@ import {
 	retreatMissionAttempt,
 	reviseMissionParty
 } from './lifecycle.js';
-import { legacyAutomaticChoices } from './legacy-auto.js';
+import { resolveMissionModeTurn } from './mission-mode-runner.js';
 import {
 	applyMasterSafetyStop,
 	configureMasterFallback,
@@ -583,11 +583,10 @@ function reduceMissionEventInternal(
 					event.sequence
 				);
 			}
-			const expectedChoices = legacyAutomaticChoices(state);
-			if (hashCanonical(expectedChoices) !== hashCanonical(payload.choices)) {
+			const expected = resolveMissionModeTurn(state, event.eventId);
+			if (hashCanonical(expected.choices) !== hashCanonical(payload.choices)) {
 				throw new ReplayIntegrityError('Legacy automatic policy evidence diverged', event.sequence);
 			}
-			const expected = resolveMissionCombatTurn(state, expectedChoices, event.eventId);
 			if (
 				expected.entropyCursor !== event.seedCursor ||
 				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||

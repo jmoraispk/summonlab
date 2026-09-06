@@ -18,6 +18,7 @@ import {
 import {
 	IllegalActionError,
 	assembleHeroDecisionPacket,
+	combatModeAvailability,
 	createCombatModeBinding,
 	hashCanonical,
 	masterFallbackActionSource,
@@ -214,8 +215,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		} else if (parsed.data.action === 'deploy') {
 			command = { ...base, source: manualSource, commandType: 'mission.deploy' };
 		} else if (parsed.data.action === 'advance-automatic-combat') {
-			if (snapshot.state.schemaVersion !== 25) {
+			if (snapshot.state.schemaVersion !== 25 || !snapshot.state.mission.attempt) {
 				throw new IllegalActionError('mission.advance.automatic');
+			}
+			const availability = combatModeAvailability(snapshot.state.mission.attempt.combatModeBinding);
+			if (availability.status !== 'available') {
+				return json({ message: availability.message }, { status: 409 });
 			}
 			command = {
 				...base,

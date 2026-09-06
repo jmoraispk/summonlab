@@ -48,6 +48,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'canceledScheduledEventIdsFromEvent',
 	'canonicalJson',
 	'capabilityProfileFromLegacyMind',
+	'combatModeAvailability',
 	'commandFromHeroPolicyResult',
 	'compareGameTime',
 	'createBootstrapEngine',

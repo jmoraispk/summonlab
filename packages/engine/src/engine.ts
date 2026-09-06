@@ -62,6 +62,7 @@ export {
 export { missionTurnLegalActions } from './domains/mission/actions.js';
 export {
 	LEGACY_AUTO_RULES_VERSION,
+	combatModeAvailability,
 	createCombatModeBinding
 } from './domains/mission/combat-mode.js';
 export {

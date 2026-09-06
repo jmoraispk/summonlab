@@ -6,7 +6,7 @@ import {
 	projectMissionArenaKnowledge
 } from '@summonlab/content';
 import { getEngineReplay, getProofRun } from '@summonlab/database';
-import { supportsMissionApi } from '@summonlab/engine';
+import { combatModeAvailability, supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
@@ -40,12 +40,17 @@ export const load: PageServerLoad = async ({ params }) => {
 				(candidate) => candidate.missionId === missionBindingId
 			) ?? TOWER_FLOOR_01_PACKAGE);
 	const attempt = report.snapshot.state.mission.attempt;
+	const combatMode =
+		report.snapshot.state.schemaVersion === 25 && attempt
+			? combatModeAvailability(report.snapshot.state.mission.attempt!.combatModeBinding)
+			: null;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
 	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
 	return {
 		report,
 		proof: projectProofRunForPublic(proof),
+		combatMode,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {
 			isPortal,

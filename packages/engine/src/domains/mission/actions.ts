@@ -28,6 +28,7 @@ import {
 
 import { missionContentForState } from '../../core/content-bindings.js';
 import { IllegalActionError } from '../../errors.js';
+import { combatModeAvailability } from './combat-mode.js';
 import { allPartyAtNode, missionPartyIsReserved } from './lifecycle.js';
 
 const MISSION_MOVE_PREFIX = 'mission.move.';
@@ -439,6 +440,8 @@ export function missionLegalActions(
 	}
 	if (attempt?.status === 'deployed' || attempt?.status === 'resolving') {
 		if (state.schemaVersion === 25) {
+			if (combatModeAvailability(state.mission.attempt!.combatModeBinding).status !== 'available')
+				return [];
 			return [
 				missionAction({
 					actionId: 'mission.advance.automatic',
