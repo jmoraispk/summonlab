@@ -136,6 +136,12 @@ Task 7: fix round 2/5 (5 addressed, 2 new P1 open; commit `dda9308df` — post-a
 Task 7: fix round 3/5 (2 open — revalidate all five artifacts after audit publication; bind identity transform to immediate predecessor)
 Task 7: fix round 3/5 (2 addressed, 0 open; commit `0c479959b`)
 Task 7B: four generation-v2 recovery jobs started (base `0c479959bd6a02ecda368bfe16146c7fa93d7624`)
+Task 7B: terminal batch persisted in sorted packet order: Living Metal, Ore Sense, and Rend Armour
+are revision-2 audited candidates; Taming is an audited revision-2 `revise` after its bounded
+correction retained a cropped left-edge forearm. Finalizer state is 27/28, `ready: false`, with
+Taming as the only unresolved target; no semantic review package, owner action, selection,
+promotion, or wiki replacement was performed. A separately authorized higher Taming revision is
+required before Task 7 can complete.
 Task 6: fix round 1 complete (commit `1d5047334`; all 5 findings have RED/GREEN regressions; 28 authority-updated packet JSON files rematerialized; central skill-icon suite 406/406 green; pushed and clean)
 Task 6: fix round 2 validated (RED/GREEN in check and write modes; cleanup suite 21/21; central suite 408/408; delivery pending)
 Task 6: fix round 2 complete (commit `6a4b61f8e`; exact-packet ancestor symlink rejected in both modes; pushed and clean)

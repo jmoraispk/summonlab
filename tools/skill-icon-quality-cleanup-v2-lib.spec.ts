@@ -194,19 +194,39 @@ describe('cleanup semantic-revision v2 authority', () => {
 		).rejects.toThrow();
 	}, 30_000);
 
-	it('selects only audited candidate-v3 recoveries and leaves the four declared generation-v2 lanes unresolved', async () => {
+	it('selects audited generation candidates while retaining the higher Taming revise receipt as unresolved', async () => {
 		const finalization = await finalizeCleanupRevisionV2({ root: workspaceRoot });
 		expect(finalization.ready).toBe(false);
-		expect(finalization.candidateCount).toBe(24);
-		expect(finalization.receipts).toHaveLength(24);
-		expect(finalization.receipts.every((receipt) => receipt.revision === 3)).toBe(true);
-		expect(finalization.selection.selected).toHaveLength(24);
-		expect(finalization.selection.selected.every((receipt) => receipt.revision === 3)).toBe(true);
+		expect(finalization.candidateCount).toBe(27);
+		expect(finalization.receipts).toHaveLength(28);
+		expect(
+			finalization.receipts.filter((receipt) => receipt.revision === 3 && receipt.status === 'candidate')
+		).toHaveLength(24);
+		expect(
+			finalization.receipts
+				.filter((receipt) => receipt.revision === 2)
+				.map(({ targetId, status }) => ({ targetId, status }))
+		).toEqual([
+			{ targetId: 'craft:forging:living-metal', status: 'candidate' },
+			{ targetId: 'craft:forging:ore-sense', status: 'candidate' },
+			{ targetId: 'craft:gathering:taming', status: 'revise' },
+			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
+		]);
+		expect(finalization.selection.selected).toHaveLength(27);
+		expect(
+			finalization.selection.selected.filter((receipt) => receipt.revision === 3)
+		).toHaveLength(24);
+		expect(
+			finalization.selection.selected
+				.filter((receipt) => receipt.revision === 2)
+				.map(({ targetId, status }) => ({ targetId, status }))
+		).toEqual([
+			{ targetId: 'craft:forging:living-metal', status: 'candidate' },
+			{ targetId: 'craft:forging:ore-sense', status: 'candidate' },
+			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
+		]);
 		expect(finalization.selection.unresolved).toEqual([
-			{ targetId: 'craft:forging:living-metal', revision: 2, status: 'missing' },
-			{ targetId: 'craft:forging:ore-sense', revision: 2, status: 'missing' },
-			{ targetId: 'craft:gathering:taming', revision: 2, status: 'missing' },
-			{ targetId: 'martial:polearm:rend-armour', revision: 2, status: 'missing' }
+			{ targetId: 'craft:gathering:taming', revision: 2, status: 'revise' }
 		]);
 	}, 120_000);
 });
