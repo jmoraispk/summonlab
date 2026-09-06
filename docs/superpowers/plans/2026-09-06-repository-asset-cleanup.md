@@ -31,11 +31,11 @@ integrity, image bytes, and LFS coverage. Runtime WebP assets remain unchanged.
 - Modify: `package.json`
 - Modify: `.gitignore`
 
-- [ ] Write failing unit tests for forbidden paths and approved hero path constraints.
-- [ ] Run the focused test and confirm the expected failure.
-- [ ] Implement the pure policy checks and filesystem-backed validator.
-- [ ] Add `validate:repository-assets` to the root check sequence.
-- [ ] Run the focused tests and validator.
+- [x] Write failing unit tests for forbidden paths and approved hero path constraints.
+- [x] Run the focused test and confirm the expected failure.
+- [x] Implement the pure policy checks and filesystem-backed validator.
+- [x] Add `validate:repository-assets` to the root check sequence.
+- [x] Run the focused tests and validator.
 
 ### Task 2: Promote approved hero masters
 
@@ -45,12 +45,12 @@ integrity, image bytes, and LFS coverage. Runtime WebP assets remain unchanged.
 - Modify: `assets/heroes/approved/summonable-roster-v1/catalog.json`
 - Modify: `.gitattributes`
 
-- [ ] Capture the current ordered catalog hashes and runtime manifest hash.
-- [ ] Copy each catalog-selected source to its stable approved path.
-- [ ] Update catalog paths without changing any content hash, dimensions, byte counts, or identity.
-- [ ] Replace experiment evidence files with the compact provenance record.
-- [ ] Add targeted LFS tracking for approved hero PNG masters.
-- [ ] Run the validator and runtime export check.
+- [x] Capture the current ordered catalog hashes and runtime manifest hash.
+- [x] Copy each catalog-selected source to its stable approved path.
+- [x] Update catalog paths without changing any content hash, dimensions, byte counts, or identity.
+- [x] Replace experiment evidence files with the compact provenance record.
+- [x] Add targeted LFS tracking for approved hero PNG masters.
+- [x] Run the validator and runtime export check.
 
 ### Task 3: Retire the one-off hero production surface
 
@@ -61,17 +61,22 @@ integrity, image bytes, and LFS coverage. Runtime WebP assets remain unchanged.
 - Delete: `tools/promote-summonable-hero-roster.ts`
 - Modify: `docs/decisions/0071-generated-heroes-are-the-summonable-roster.md`
 
-- [ ] Remove the experiment-coupled catalog generator and its test.
-- [ ] Remove all hero experiment runs.
-- [ ] Update the accepted decision to name the catalog validator as the durability gate.
-- [ ] Confirm no tracked hero experiment path or Python bytecode remains.
+- [x] Remove the experiment-coupled catalog generator and its test.
+- [x] Remove all hero experiment runs.
+- [x] Update the accepted decision to name the catalog validator as the durability gate.
+- [x] Confirm no tracked hero experiment path or Python bytecode remains.
 
 ### Task 4: Verification and delivery
 
 **Files:**
 - Modify: `docs/superpowers/plans/2026-09-06-repository-asset-cleanup.md`
 
-- [ ] Run focused catalog, runtime, contract, and repository-policy tests.
-- [ ] Run the full repository check and distinguish any unchanged baseline failures.
-- [ ] Compare catalog hashes, runtime hashes, file counts, and tracked sizes with the captured baseline.
-- [ ] Mark this plan complete, commit all in-scope changes, and push the cleanup branch.
+- [x] Run focused catalog, runtime, contract, and repository-policy tests.
+- [x] Run the full repository check and distinguish any unchanged baseline failures.
+- [x] Compare catalog hashes, runtime hashes, file counts, and tracked sizes with the captured baseline.
+- [x] Mark this plan complete, commit all in-scope changes, and push the cleanup branch.
+
+The full repository check passes every gate before `test:family-affinity-production`, where it
+reproduces the seven pre-existing environment-bound failures: the installed and tracked skill roots
+do not equal the sealed receipt, and `/home/joao/.nvm` is absent. The result remains 297 passing and
+7 failing tests in that suite, matching the captured baseline.

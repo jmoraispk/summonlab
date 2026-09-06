@@ -18,6 +18,30 @@ outputs must not remain in the primary Git history.
 - Generated contact sheets, screenshots, thumbnails, and other reproducible derivatives are not
   source authorities.
 
+## Audit snapshot
+
+The pre-cleanup tree contained 26,743 tracked paths representing 7,574,281,406 bytes of
+path-weighted Git blob data. The largest retention classes were:
+
+| Class | Tracked paths | Git blob bytes | Disposition |
+| --- | ---: | ---: | --- |
+| Enemy experiments | 5,870 | 3,331,366,679 | Defer until active validators no longer consume the runs |
+| Hero experiments | 11,352 | 2,178,010,561 | Remove in this slice |
+| Equipment experiments | 2,859 | 592,605,904 | Defer until active validators no longer consume the runs |
+| Other non-runtime assets | 3,289 | 1,117,338,832 | Audit by source authority in later slices |
+| Runtime assets | 953 | 87,187,092 | Keep in regular Git |
+| Code, docs, and configuration | 2,420 | 267,772,338 | Keep in regular Git |
+
+The staged hero cleanup reduces the current snapshot to 15,790 paths and 5,396,298,153 bytes of
+path-weighted regular-Git data. It removes 10,953 paths and 2,177,983,253 bytes from the current
+snapshot while preserving 1,003,897,801 bytes of approved hero masters in Git LFS.
+
+Git LFS is appropriate for canonical raster masters that cannot be cheaply reproduced. It is not
+appropriate as an archive for rejected candidates or complete generation runs, and runtime assets
+remain in regular Git because application builds consume them directly. Enemy and equipment
+masters should move to LFS only as part of their later promotion-and-retirement slices, after their
+validators stop depending on experiment directories.
+
 ## First cleanup slice
 
 The first slice cleans the hero asset family without changing runtime identity or pixels:

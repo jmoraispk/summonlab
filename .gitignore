@@ -12,6 +12,8 @@ build/
 coverage/
 playwright-report/
 test-results/
+__pycache__/
+*.pyc
 
 # Local configuration and process output
 .env

@@ -1,6 +1,6 @@
 assets/wiki/skills/icon-production-v1/mass-production-v1/**/*.png filter=lfs diff=lfs merge=lfs -text
-assets/wiki/skills/**/*.png filter=lfs diff=lfs merge=lfs -text
 assets/heroes/approved/summonable-roster-v1/sources/**/*.png filter=lfs diff=lfs merge=lfs -text
+assets/wiki/skills/**/*.png filter=lfs diff=lfs merge=lfs -text
 assets/heroes/visuals/**/*.png filter=lfs diff=lfs merge=lfs -text
 apps/web/src/routes/living-village-lab/village/cutouts/*.png filter=lfs diff=lfs merge=lfs -text
 assets/enemies/approved/fauna-family-v1/sources/**/*.png filter=lfs diff=lfs merge=lfs -text
