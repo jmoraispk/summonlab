@@ -1,6 +1,6 @@
 # Persistent Village Hero Cutouts Design
 
-**Status:** Approved in chat; awaiting review of this written specification  
+**Status:** Approved
 **Date:** 2026-09-06
 
 ## Goal
