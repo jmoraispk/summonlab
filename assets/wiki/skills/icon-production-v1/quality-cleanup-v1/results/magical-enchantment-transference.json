@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:transference",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-transference.png",
+		"contentHash": "a06ed859ec9a5b8ed560834b01bf2769712f76acb864e077bc8c1d1a72adc045"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-transference.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-transference.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-transference.png",
+		"contentHash": "0fb6b4c5326d87f2dec971e3f3483919c14913922fa97bfb2b0d04705ab0400b",
+		"removedPixels": 168309,
+		"removedPixelBounds": {
+			"left": 136,
+			"top": 37,
+			"width": 754,
+			"height": 930
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "51ccc438bb59b5822448fe92771b48681bdcd0b38e4f31aee89f1ff5125703ac",
+	"resultContentHash": "8679117fdb528fb43069079595358e5141707b944dd7264375cd3a903c7394a5"
+}

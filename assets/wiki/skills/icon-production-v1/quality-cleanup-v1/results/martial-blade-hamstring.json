@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:blade:hamstring",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-hamstring.png",
+		"contentHash": "9ef141620093690b377ccf4602abd5b85935bcb9bc8534685c65248d7cb67ee0"
+	},
+	"rank": "E",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:blade:hamstring",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached foot/boot badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-hamstring.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-hamstring.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-hamstring.png",
+		"contentHash": "ca278aa9a017ac08f3a56bba2f0f997f63c067d91e09bcf116fe7ce45f0d1e83",
+		"removedPixels": 210965,
+		"removedPixelBounds": {
+			"left": 109,
+			"top": 11,
+			"width": 806,
+			"height": 1000
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "71a9c6c12d7601c3a92957b5fbc72965ed9776692a45312e56aed3d0dc38a496",
+	"resultContentHash": "24ee795518e5c834001e38c62a9cd9043f0f85616d13a806570621ddc370e5c1"
+}

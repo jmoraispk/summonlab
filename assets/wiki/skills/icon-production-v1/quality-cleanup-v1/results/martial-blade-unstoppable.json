@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:unstoppable",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-unstoppable.png",
+		"contentHash": "479ca33c7ae60b95d209229f9ad8f7f1b661b779a30295c6ea3bc50510d17d3c"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-unstoppable.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-unstoppable.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-unstoppable.png",
+		"contentHash": "e54a329b637b1eb809aad27b619abe6c1d3d834fba67554bb8e79cbb96ef8fb3",
+		"removedPixels": 191118,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 8,
+			"width": 788,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "3f4a6e8dcdc3e2fc0b3e97109e26edca4a0cf93664a807253f6016473d89b13f",
+	"resultContentHash": "98a616c6ea8b445d17dcd42c4fe8dcfb9c313fd0421e2d122ca103a57bba78ba"
+}

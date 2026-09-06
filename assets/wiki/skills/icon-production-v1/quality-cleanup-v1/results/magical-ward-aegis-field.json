@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:ward:aegis-field",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-aegis-field.png",
+		"contentHash": "c284437b9bc2083ee60f4d0d65591dcdbecf49c3b33ad25f21dbd6fc1105fe88"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-aegis-field.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-aegis-field.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-aegis-field.png",
+		"contentHash": "02a3f87b73419255225ac39fdd02c29dad5f154863b4af91dd0124f43acde2c3",
+		"removedPixels": 164961,
+		"removedPixelBounds": {
+			"left": 136,
+			"top": 24,
+			"width": 755,
+			"height": 954
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "d02e8abd7ffc24d7dc988a2567f1ab51dd95c229649ddd381a8564d12eefb3f5",
+	"resultContentHash": "d408bfaa3be37377b8219e804ad50fb71a7ed574e939fb54418d1febfb486d13"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:cooking:banquet-of-the-five",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-banquet-of-the-five.png",
+		"contentHash": "3fcee7123eeacbc056ab20089df3c5fa98ca681f03a04051ba9b2d03b073b6a8"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-banquet-of-the-five.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-banquet-of-the-five.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-banquet-of-the-five.png",
+		"contentHash": "f1bb3fc47980275e17daa118904a433f12c84e2b5601e1d6aec3eeba4415ded4",
+		"removedPixels": 215966,
+		"removedPixelBounds": {
+			"left": 107,
+			"top": 13,
+			"width": 811,
+			"height": 1003
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "639a3314042eb5ff841255ffb7e20b342f5e30481150dc31b6fdcc77ae19ed6f",
+	"resultContentHash": "a204cad28c021260dd6ae60ab78f0faffbe37027658076c22d2d20168eff3598"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:grab",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-grab.png",
+		"contentHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-grab.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-grab.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-grab.png",
+		"contentHash": "e6532f0e9e6e4efaeaa4dbe5e972a15507576a217235011b46ae0aca87510b6b",
+		"removedPixels": 173339,
+		"removedPixelBounds": {
+			"left": 119,
+			"top": 23,
+			"width": 788,
+			"height": 972
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "19e5b4cac3f2657a3fffb08d97f87f33c92083fa4acb5b316a7da0d6fa48f149",
+	"resultContentHash": "80f571ed95eeb90a9df0a889a90eccf5c0fa292b2fa32bc051711008452e59d5"
+}

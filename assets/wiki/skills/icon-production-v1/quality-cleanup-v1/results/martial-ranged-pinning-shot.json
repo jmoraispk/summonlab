@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:pinning-shot",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-pinning-shot.png",
+		"contentHash": "155b255dee44eacdba2379ecc4819172304055407afddae5fa7246892b1371b2"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-pinning-shot.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-pinning-shot.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-pinning-shot.png",
+		"contentHash": "17b88782d4e340a08ec2c49059d924969620f8b74e5abcc60fe3b7cacc54a837",
+		"removedPixels": 169294,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 35,
+			"width": 736,
+			"height": 952
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "803eedfdd75958c4b94e999c53c97061572739566ccfc8f2eeb7eaa23992ece5",
+	"resultContentHash": "6fb576aae6d4da70990ffa76268e8a36967cee20ad148fba1d60882a0145efad"
+}

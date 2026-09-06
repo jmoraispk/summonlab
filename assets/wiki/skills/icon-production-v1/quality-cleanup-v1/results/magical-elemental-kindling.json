@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:kindling",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-kindling.png",
+		"contentHash": "e30e5d0df3bd325eeb0614f2765e352791675d371868053f9170b98eaa9441ca"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-kindling.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-kindling.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-kindling.png",
+		"contentHash": "33df123bd34f19dbdd3f8ce95a9ceffee3bc558648215b0061141dfbcdcf6a4f",
+		"removedPixels": 168805,
+		"removedPixelBounds": {
+			"left": 138,
+			"top": 25,
+			"width": 746,
+			"height": 962
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "5d5cc74aceef3d55f5afea3f2e1c395e93c1e6d773f3fae16884154f9a1dee68",
+	"resultContentHash": "f9ec47fa08c4a44e93f08e76bfc76b981b7cef7b9e47d7e4c76c3378c7326866"
+}

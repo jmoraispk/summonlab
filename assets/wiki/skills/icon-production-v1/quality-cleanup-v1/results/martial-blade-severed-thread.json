@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:blade:severed-thread",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severed-thread.png",
+		"contentHash": "3d9ccdb65d21f87e42c6585f81aa5bbef7f8b3a220115aad788558e616b9545c"
+	},
+	"rank": "A",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:blade:severed-thread",
+			"kind": "stray-ui-glyph",
+			"detail": "Crossed medical symbol.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-severed-thread.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-severed-thread.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-severed-thread.png",
+		"contentHash": "90964a248777bcb6fcfa6386dbeb7cf511935acdc08e2c2e0e8ab6455cf1a46b",
+		"removedPixels": 238713,
+		"removedPixelBounds": {
+			"left": 80,
+			"top": 8,
+			"width": 865,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"cleanupCompositeContentHash": "a47ab47fa3afde33965f1db6f19bdf8a45624e99bfd9d887be2aa5a2b31c9583",
+	"resultContentHash": "b978d615650d88bfa1867ee1171ecdec2b839cc91cab6c57ca3026a1f7e8c980"
+}

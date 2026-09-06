@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:mind:mental-fortress",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-mental-fortress.png",
+		"contentHash": "84bad0c70b3bc635a52adc13eb8c60c97cf79755dce34491e469908869765813"
+	},
+	"rank": "D",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "magical:mind:mental-fortress",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-mental-fortress.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-mind-mental-fortress.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-mental-fortress.png",
+		"contentHash": "bceedad5387f0ae8d7061014cb9b9129dbe4016f470bd2b974251146aa25bf94",
+		"removedPixels": 180213,
+		"removedPixelBounds": {
+			"left": 129,
+			"top": 8,
+			"width": 764,
+			"height": 983
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "0de1e66afbe7ec22cdf1062ec55d2bb5db3d9d8dbd658d0c624ec3b5d599fafc",
+	"resultContentHash": "fb829480c43303d4bb3bc52fbb2bd00e748ccafe05e625d2af1313d178e55091"
+}

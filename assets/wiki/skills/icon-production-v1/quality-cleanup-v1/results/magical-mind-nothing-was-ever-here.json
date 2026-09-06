@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:mind:nothing-was-ever-here",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-nothing-was-ever-here.png",
+		"contentHash": "ca119f9cf697e2ddbdae3fa2d4ce7bd5e29f5c945f8be012045a921445c06fe4"
+	},
+	"rank": "S",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-nothing-was-ever-here.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-mind-nothing-was-ever-here.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-nothing-was-ever-here.png",
+		"contentHash": "36f027aafd67c77235b87a51360e8fe3f9f95a1a39f4037c708b40035e51fe88",
+		"removedPixels": 195197,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 8,
+			"width": 788,
+			"height": 989
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-s-v9.png",
+			"contentHash": "3c2c189312b312d8415852c9222a6018c3dbac31a3784f7d74e2f80bc01f090e"
+		}
+	},
+	"cleanupCompositeContentHash": "64835bfa926f1ebb318f57d49c987b6c30d58a765fb9db26068b2ed025f0d9e0",
+	"resultContentHash": "67dc2327280e8368348633301ae2b9a5e60c49e7240dbb688df198d3868016ad"
+}

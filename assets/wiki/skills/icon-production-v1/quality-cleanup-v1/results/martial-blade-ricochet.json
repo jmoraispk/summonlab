@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:ricochet",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-ricochet.png",
+		"contentHash": "ff223f5eb04cae44e159c7a4335420015a29e43ded693d2179097b4d81a5cbc9"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-ricochet.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-ricochet.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-ricochet.png",
+		"contentHash": "a392cef4ff3b490aa173d430a52b9166e40276234eaf3bc6e04f7c549f076299",
+		"removedPixels": 194154,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 33,
+			"width": 787,
+			"height": 982
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "66b5acc9fa4c6170ad3daefa3a20368c96ceac78025b5e65dbe070abc9bdc96d",
+	"resultContentHash": "4ab867e16037479d4ea6128b0b72550dc9efa5cfd9a0fe9c30d38441081a7963"
+}

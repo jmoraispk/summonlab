@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:crushing-weight",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-crushing-weight.png",
+		"contentHash": "42a3fca058e498f97b70325c65b5fdac3815f200c23a031b52dad2d4b431cfb6"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-crushing-weight.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-crushing-weight.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-crushing-weight.png",
+		"contentHash": "707485acc6fe8ab260cc403ce757b7e797408dba376af18939c06131b46f2a9e",
+		"removedPixels": 180466,
+		"removedPixelBounds": {
+			"left": 117,
+			"top": 16,
+			"width": 789,
+			"height": 978
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "6ae3f2bdc09d6936dcde13f4fa500a134cb6824408f6d402473ce4bb9873c58e",
+	"resultContentHash": "0e4098859957f87864ecb37fc398c65ff13116f42218a1b6fc353dfb54e409d5"
+}

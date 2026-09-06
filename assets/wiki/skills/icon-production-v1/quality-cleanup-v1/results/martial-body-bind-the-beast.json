@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:bind-the-beast",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-bind-the-beast.png",
+		"contentHash": "867fa4b0165e61b6d8891fd80b9a2e363ff316e9a40f7165867c1806fe83debf"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-bind-the-beast.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-bind-the-beast.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-bind-the-beast.png",
+		"contentHash": "8c2fc2d11f07162fb337f7e6605351164a891eb7fc86944b8affd18665085072",
+		"removedPixels": 189572,
+		"removedPixelBounds": {
+			"left": 80,
+			"top": 8,
+			"width": 862,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "1f5e266bcf29030261232de25753eaab4e26b75a82fdef7225f6e71b5e0a9279",
+	"resultContentHash": "1526c7bf83ac4dc9bc7233287064985cca48deba90bba7c75d7fd4d5b10f8273"
+}

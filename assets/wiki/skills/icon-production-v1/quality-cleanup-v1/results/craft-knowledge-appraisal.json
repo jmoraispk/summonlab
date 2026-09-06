@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:knowledge:appraisal",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-appraisal.png",
+		"contentHash": "3adfb2d6df52131553f42abd0c7ebfff1f96c95c17ca0b276650daa8b9eedcf0"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-knowledge-appraisal.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-knowledge-appraisal.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-knowledge-appraisal.png",
+		"contentHash": "174daabe06da8ccc6048f3f2cc0049cfbb9ad649d5f6c88d61c908dd19db01e6",
+		"removedPixels": 164302,
+		"removedPixelBounds": {
+			"left": 146,
+			"top": 37,
+			"width": 730,
+			"height": 973
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "9b50628777bf66993da67165d6e32cb4824c72bc83ea8af97de305d9b947245b",
+	"resultContentHash": "4a05e4fdb9a77cb685122a3864fa28b00f0e7b713eb1eeff505d53a62fe4e362"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:dash",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-dash.png",
+		"contentHash": "6f658e3da48c4a0613836fd5e2f0be028b28380c4d16b693d394cbd98756b770"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-dash.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-dash.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-dash.png",
+		"contentHash": "cd3ea99efb2daf4591bfa864cb45f00889231051ec36004a7e8953ee960c0385",
+		"removedPixels": 174974,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 20,
+			"width": 794,
+			"height": 977
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "1a931fac22a84b47c743fae7d8774654e8138748527fed5e974c22e00430f7e4",
+	"resultContentHash": "8c907e2acc46de6a88ff9e6cecf7c8d0c7d3315f0ff1b7416ff272df0f55a899"
+}

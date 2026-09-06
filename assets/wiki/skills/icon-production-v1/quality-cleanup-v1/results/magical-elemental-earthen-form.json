@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:earthen-form",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-earthen-form.png",
+		"contentHash": "779fd043ce3d02a6ec9fce2a0aa5e368d38ea399f74b5bb52a58172afb9d39e4"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-earthen-form.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-earthen-form.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-earthen-form.png",
+		"contentHash": "5970e9fe8d01dee0aab31d961149e609746260e20e8d60809fc9398df7304b87",
+		"removedPixels": 216191,
+		"removedPixelBounds": {
+			"left": 125,
+			"top": 17,
+			"width": 774,
+			"height": 992
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "5e3529b6cd054b2515cb2e40119bac52bb86a0f5b9018d4e1c20c5d24e327ebd",
+	"resultContentHash": "690daf2917292331db39c0f6685d19a2e5c081c646c5fb2dd18953f0e3b8cda0"
+}

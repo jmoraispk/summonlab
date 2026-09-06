@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:concussive-blow",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-concussive-blow.png",
+		"contentHash": "2306f5df02dad011c43d449de8d5f4fce4b144be804704e460eec9ab6c06d4c2"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-concussive-blow.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-concussive-blow.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-concussive-blow.png",
+		"contentHash": "ac67160b985d86666d6c435973df4b89bc5a70f7d7c7cff566f871d783c1c6eb",
+		"removedPixels": 209150,
+		"removedPixelBounds": {
+			"left": 109,
+			"top": 18,
+			"width": 806,
+			"height": 977
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "dc119a323eee7299f6f6f410c73018355a474743b226da57e68b881792f89cc1",
+	"resultContentHash": "f19f8cb27e186740c1ae046be065f3e24c271863bae441425a76afac60e57325"
+}

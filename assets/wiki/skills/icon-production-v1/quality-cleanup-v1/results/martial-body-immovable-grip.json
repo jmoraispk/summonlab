@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:immovable-grip",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-immovable-grip.png",
+		"contentHash": "c8ba5d0d89af61482804452d939c41ce7999bc26f46f1ee5ab4ca24fb8536876"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-immovable-grip.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-immovable-grip.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-immovable-grip.png",
+		"contentHash": "a171f580b3eac1c826339fe6bb47364d52461b31a248d4b38cec3aef2cfeaeaf",
+		"removedPixels": 229159,
+		"removedPixelBounds": {
+			"left": 83,
+			"top": 8,
+			"width": 861,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "8d0300ce1f5c341711cdc22c67a1887600bc885e24cc069c784f8608c3274137",
+	"resultContentHash": "71c2623d2128777ab0d01ba643d10508f5192f4e054a4ae5908aa676b0e79a30"
+}

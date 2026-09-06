@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:twin-fangs",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-twin-fangs.png",
+		"contentHash": "d548454b272b9fefd4a391662f8594d06dd9d86d463d23b1193e6f47797c6233"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-twin-fangs.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-twin-fangs.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-twin-fangs.png",
+		"contentHash": "a3eac5244e3776a4ead71040421ba62c6486f121b96ce31ea6bc7ec2f62137c6",
+		"removedPixels": 146207,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 37,
+			"width": 734,
+			"height": 929
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "33d7dcbd11f57e26355c9956abbda5f380bdcd03066d758af799518210c771b0",
+	"resultContentHash": "e999946b821f621c01ec69b27a7bf49a147603568639de26ecf89b40b4912e6b"
+}

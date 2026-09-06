@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:breathing-form",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-breathing-form.png",
+		"contentHash": "080f0f2cc27a0961321a58d1ec5a2c7d2cdd3716318c0fdcbe1309edf2c1544c"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-breathing-form.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-breathing-form.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-breathing-form.png",
+		"contentHash": "917361b50808af0b59b50acd62a845c19506856a4c8517e3bdccd3f18c97ffd8",
+		"removedPixels": 174327,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 19,
+			"width": 788,
+			"height": 988
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "4a0f82c3368f80d15a1b13dc3d350a735c2e30d6edc11b1a8e40549bf85fb400",
+	"resultContentHash": "ab7d23ab5448284e4b7d92d43511e18d6cd45f481d98ca8a2b84f49e527f8671"
+}

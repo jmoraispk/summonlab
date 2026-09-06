@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:ground-control",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-ground-control.png",
+		"contentHash": "082be7ab644cb9640433dc0694935c6b0a3e97b7a80df2adfeebaefcaa026c09"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-ground-control.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-ground-control.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-ground-control.png",
+		"contentHash": "6e7683159aa95cc6b828219c7155e8f5f0318abc8cc9f983037ac86a4c82203c",
+		"removedPixels": 207112,
+		"removedPixelBounds": {
+			"left": 80,
+			"top": 8,
+			"width": 865,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "142d173ff68c063d346799ba3fbe8551ac1dff17ad04ce1b01b32e4ba63225f0",
+	"resultContentHash": "de3a9c50a1fcebe036fb6e56abb4058eb9f6c7ddd630bf6778f17b7b5283aa33"
+}

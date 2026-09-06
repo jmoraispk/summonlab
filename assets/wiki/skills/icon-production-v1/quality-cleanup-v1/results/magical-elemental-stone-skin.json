@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:stone-skin",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-stone-skin.png",
+		"contentHash": "61d1d115335cb853a71e2b154c95d34b426b67ee4f37de77cadd7fd08d614949"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-stone-skin.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-stone-skin.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-stone-skin.png",
+		"contentHash": "fdf1184060df87d71cd27ed11dceb89e0aedd24d9efa8dd1d38bf1234e5beb2f",
+		"removedPixels": 191854,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 37,
+			"width": 779,
+			"height": 966
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "7427ced480508ba29600967d6081de92ce9ba443e89f3d0eda1f56732f8df20d",
+	"resultContentHash": "c638261362c3d525dd41db57eca4c931bf071d02e867fa942bcf178757532aaa"
+}

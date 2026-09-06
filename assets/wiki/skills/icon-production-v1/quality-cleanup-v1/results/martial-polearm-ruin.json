@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:ruin",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-ruin.png",
+		"contentHash": "9e08c98752245e909e29f3d475a5d8c0d0a6d7fcec89983b2ce25659d30f371d"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-ruin.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-ruin.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-ruin.png",
+		"contentHash": "8cb3ec0b3d743c356265bb9950ea07e3fb2f311324e57fc74d458ec6add0bfb0",
+		"removedPixels": 186762,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 8,
+			"width": 801,
+			"height": 1007
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "ed72ecb4b206362b3071519d0c77d7d75521911a36c3b4c8929286885f76d66f",
+	"resultContentHash": "3a2bb67ebc05f333bc95d0909de080a4bde483af12b05072bfb901c67596f4f6"
+}

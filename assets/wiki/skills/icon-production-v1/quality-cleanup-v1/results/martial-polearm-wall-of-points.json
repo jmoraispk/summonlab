@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:polearm:wall-of-points",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-wall-of-points.png",
+		"contentHash": "d69effa1b52c8eed4ecbd2d1ed9fc5e35d1db196ed96224d31b78816965d3a1f"
+	},
+	"rank": "D",
+	"disposition": "recompose",
+	"findings": [
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"kind": "frame-composition",
+			"detail": "Generated outer rails leave conspicuous transparent side runs.",
+			"requiredAction": "recompose"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-wall-of-points.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-wall-of-points.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-wall-of-points.png",
+		"contentHash": "82282c85fa7c146a004f0d8b002ccb47cc52a9b05288bc9e9143ae61588eb39a",
+		"removedPixels": 113525,
+		"removedPixelBounds": {
+			"left": 170,
+			"top": 37,
+			"width": 685,
+			"height": 910
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "1fcef0a9c8f2caf0d1a0a8b42177a45c64b451c8f029f3d1dde3bdae014f1e4a",
+	"resultContentHash": "4896bd1f0abb778e1c84310681150b272ef6cda2e6ffd0fbdb52afe246c2fece"
+}

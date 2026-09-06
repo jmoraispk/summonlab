@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:the-machine",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-the-machine.png",
+		"contentHash": "6010e51495c42675d85008f3b7b4efc376962a6ad9a1801516d9d8618cc89800"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-the-machine.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-the-machine.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-the-machine.png",
+		"contentHash": "c28b5b2eb206149082e45f3b8e36e3e4b69ba657037f969f3551e2822ed21b80",
+		"removedPixels": 157963,
+		"removedPixelBounds": {
+			"left": 130,
+			"top": 27,
+			"width": 765,
+			"height": 976
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "88c004453d68aeaaa00bf626635cbd4a11dd444494f49523217b85629b2e7088",
+	"resultContentHash": "21e888ea212d0e5679cb0127c179cb8b38e2fb08c1559702932f6f08e5b1365a"
+}

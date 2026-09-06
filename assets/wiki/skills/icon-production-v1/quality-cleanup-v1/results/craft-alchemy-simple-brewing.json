@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:simple-brewing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-simple-brewing.png",
+		"contentHash": "e0849c15cfe64801f426ea658c7f4f25cf6ef31b9160ca37871c748e4420b88e"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-simple-brewing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-simple-brewing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-simple-brewing.png",
+		"contentHash": "0a457acb745fcbec9b5aa32f0a47dbd135d0c367a776df2d3ab952eb6617e6fe",
+		"removedPixels": 187404,
+		"removedPixelBounds": {
+			"left": 104,
+			"top": 8,
+			"width": 819,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "60cb83b1f3bf612f3a112a3cc972f03a7895f87e54ed08afbb048036748e77e1",
+	"resultContentHash": "1e7e4425d1cf1f0c2efad2d4907706579c2c516e54c2a7218c715622a9a827bd"
+}

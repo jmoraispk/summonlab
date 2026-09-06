@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:ranged:heartseeker",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-heartseeker.png",
+		"contentHash": "e731b13d3e79e7e8dd50c0ced9d7346397c6f747d9f66a42dd3fd49b8fb13503"
+	},
+	"rank": "C",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:ranged:heartseeker",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached checkmark/target badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-heartseeker.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-heartseeker.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-heartseeker.png",
+		"contentHash": "c9a6b429011e1152b3e8d0d8a3197c98c9b65683d989e8cb98ccb780264d62e8",
+		"removedPixels": 206115,
+		"removedPixelBounds": {
+			"left": 116,
+			"top": 11,
+			"width": 792,
+			"height": 989
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "02f43f46f0835fb61dbffe272f8884a98f76ba2654bb639975575497104f777e",
+	"resultContentHash": "56d6be2f1fc94c58bdc6fbcfb8f63a57beaeeb0676f98d1b7cf9e0aad48742f5"
+}

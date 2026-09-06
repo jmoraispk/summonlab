@@ -1,0 +1,47 @@
+{
+	"targetId": "craft:cooking:preserving",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-preserving.png",
+		"contentHash": "4fc092fb597183d8fd7ef8027f6798c3ef8cc9305b0999e936c55fe91db23c36"
+	},
+	"rank": "E",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "craft:cooking:preserving",
+			"kind": "stray-ui-glyph",
+			"detail": "Infinity badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-preserving.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-preserving.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-preserving.png",
+		"contentHash": "222e3f01d6349271eb5902c4bd7aa48548eea1d35972b412a0d4b460345e62c3",
+		"removedPixels": 187559,
+		"removedPixelBounds": {
+			"left": 136,
+			"top": 28,
+			"width": 752,
+			"height": 959
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "9fe64b0efb18cf18d109009b84dedba7d836176652d806e629a41f1bb9828743",
+	"resultContentHash": "152d483bd7754a349a7c4522534f8a40a0d5576e7f21bdf01d2762b278d0062b"
+}

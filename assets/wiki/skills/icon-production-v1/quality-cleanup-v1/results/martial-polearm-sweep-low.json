@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:sweep-low",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-sweep-low.png",
+		"contentHash": "9f12018a6e834e022f41f5762cb20f5faf3db54ecb8cbb51fedb986c1eabfd8b"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-sweep-low.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-sweep-low.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-sweep-low.png",
+		"contentHash": "6ef3e30ff9e484116058708b2bc12c947e8c1304217d5e4e70564595ea78da47",
+		"removedPixels": 192766,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 20,
+			"width": 779,
+			"height": 979
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "5dd55908047198627e5381b6d7419fcce909b1c032b25247e3866d04349f7fbb",
+	"resultContentHash": "9f8213feacc6565b3a725757d634e675fc1f6a6d487f6f7bc969cd3387c132b4"
+}

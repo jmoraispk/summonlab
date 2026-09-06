@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:elbow-and-knee",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-elbow-and-knee.png",
+		"contentHash": "8ece3317d819d5f81bf05d72eae00fcafbb2c543a9a9615041d43ce1d408b6ec"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-elbow-and-knee.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-elbow-and-knee.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-elbow-and-knee.png",
+		"contentHash": "2db9a30a9a0f8a71dfe1f77ed2edbfeac131807e2b3c81b16c173f6750ecc136",
+		"removedPixels": 193866,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 35,
+			"width": 795,
+			"height": 960
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "63175b41b8dff00720608be3e6df3d2f7956777ac74e0444e35d22f6f755c934",
+	"resultContentHash": "1055f8b2148b884ad982892230577e0fc08972ac6504f38f6d3c83fb1d5175be"
+}

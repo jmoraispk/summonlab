@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:cooking:seasoning",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-seasoning.png",
+		"contentHash": "4edfa09bbc7847d325d7b0d52b8a9ddabffcf4bc08d19fc5df896685b93ab48e"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-seasoning.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-seasoning.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-seasoning.png",
+		"contentHash": "dd53129b0577a49a08aa40d93a589a37070223c0872a94e644fd8a8ed5b93a1f",
+		"removedPixels": 185254,
+		"removedPixelBounds": {
+			"left": 134,
+			"top": 33,
+			"width": 755,
+			"height": 980
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "7b9539700c6c3264179c13392bff69cb205b05e00aec24a94da1c2d1460826e4",
+	"resultContentHash": "e9b2d8fcb61ada02e70d612fc0a80fc19b9d99adb8feb977ccb564250c2a9656"
+}

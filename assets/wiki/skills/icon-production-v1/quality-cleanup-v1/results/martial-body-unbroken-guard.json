@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:unbroken-guard",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-unbroken-guard.png",
+		"contentHash": "93623578e4f7652764937763ca516a8bec158b0a50bd42878736c4b3639656eb"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-unbroken-guard.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-unbroken-guard.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-unbroken-guard.png",
+		"contentHash": "c4ca503c97ec280378feb4a051a234e84153027547ba50acfe7ddd00c07f804e",
+		"removedPixels": 199662,
+		"removedPixelBounds": {
+			"left": 128,
+			"top": 16,
+			"width": 766,
+			"height": 964
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "47472c89ff2d9bcef5fcd3aa1d670ca6dfab40da61b317afc9ec2d026806e4db",
+	"resultContentHash": "63d0e8e83f95d1755333c9f3b4f0273fadb1da5bbe7e354e1ff1b7b026fa38dc"
+}

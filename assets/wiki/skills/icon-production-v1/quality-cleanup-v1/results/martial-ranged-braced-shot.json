@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:braced-shot",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-braced-shot.png",
+		"contentHash": "3818d4e630313a262ba8e16f6325c332b6c870185f1d4adb3727da4b98c96ea7"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-braced-shot.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-braced-shot.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-braced-shot.png",
+		"contentHash": "54c05ae122a98af65d46fbcf6b9b0089b00d34378f1f59fb22e4e3b04347dbf4",
+		"removedPixels": 213252,
+		"removedPixelBounds": {
+			"left": 103,
+			"top": 8,
+			"width": 818,
+			"height": 1005
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "42b453d3f2e384ad9e47c1984010d7af38599faf5706329ccb85eda1cb1d1024",
+	"resultContentHash": "410e17b22483b72d6b643affe78f534ba88cd973b6fd189cd7bc545b23c4327d"
+}

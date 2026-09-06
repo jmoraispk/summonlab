@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:the-last-harvest",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-the-last-harvest.png",
+		"contentHash": "6e8a09e45365dc3196d6b0736820b1e6134f07944467ded17fedc7eb4f7ce652"
+	},
+	"rank": "A",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-the-last-harvest.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-the-last-harvest.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-the-last-harvest.png",
+		"contentHash": "db088b60f6ca328f51a337c024a9126d991be010f548bcc13cc82b95aaeaddf2",
+		"removedPixels": 200154,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 11,
+			"width": 802,
+			"height": 999
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"cleanupCompositeContentHash": "061d292e59370935c87b4b9ff2d1ead88dd46d7dc3479e479349c4aeca6c5e77",
+	"resultContentHash": "2af42ff7b1435a40986d1b2f689509d613db3b6731e1e7ce05aebff42ca406a0"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:gathering:skinning",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-skinning.png",
+		"contentHash": "5a25915b41cbc9632f6c19de3f741d7a5618109c8bd55b812f3e7162d4020e4b"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-skinning.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-skinning.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-skinning.png",
+		"contentHash": "4560940f6224aee6fab0baaa17c2e0d99ce116fdb51b149ac4f3d2981d0fea78",
+		"removedPixels": 186203,
+		"removedPixelBounds": {
+			"left": 113,
+			"top": 29,
+			"width": 800,
+			"height": 987
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "1febd4fb1c6f9068e34cce0a894d5bd3a8c8d08da3c9f7a80b66fcf91534a426",
+	"resultContentHash": "adc58cb87bf5c225e587993d6d49d9d583381e89a5ffb9920b01079be908a015"
+}

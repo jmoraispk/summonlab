@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:climb",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-climb.png",
+		"contentHash": "58a0790ea52afbc99e6910bb0b37c079857db8fa24ab91e0c67cfb30f7a34b15"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-climb.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-climb.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-climb.png",
+		"contentHash": "e5e15e2614f625230bb8bfbe538abac7143b876baa741b2e47f026c079e4f832",
+		"removedPixels": 168539,
+		"removedPixelBounds": {
+			"left": 124,
+			"top": 16,
+			"width": 774,
+			"height": 952
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "77bb894c800dbec8bf64eb3d54dc8b88c131fc1355245fc80c3a59c50761f936",
+	"resultContentHash": "6eafff3ee618394373fccfe7d5a30b68f8cebc57a9153ee752ce7e3e606e81ce"
+}

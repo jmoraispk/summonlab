@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:tremor",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-tremor.png",
+		"contentHash": "1be333626ee08b8fec612f5fa07b95abaa728f2907c539c367c5e802c1da7666"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-tremor.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-tremor.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-tremor.png",
+		"contentHash": "b276fcd9aa73c7a9abbc80e76bc206bd6c7628a26088432b7180f25b944c7c79",
+		"removedPixels": 164282,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 27,
+			"width": 771,
+			"height": 950
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "a6ad8ff5a79db740a827ea9b983a3be987770694f35c143587607dd46ba8318f",
+	"resultContentHash": "6cb9268a4b149eecc3c186dafb8773847709ed69a558af909784ef24d6f7ddfc"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:shatter",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-shatter.png",
+		"contentHash": "e3334264311ed3db95ee23922e5b7bf08b40d065547c365a198cf0ea2df9e495"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-shatter.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-shatter.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-shatter.png",
+		"contentHash": "e12d575a2021445ea6933e63ef4402315703808577f7098176f27c69ef5e1101",
+		"removedPixels": 203170,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 17,
+			"width": 802,
+			"height": 978
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "0c0bf7269043913981d6af8b905e8ada45f36441f80819f913b23045513193f3",
+	"resultContentHash": "89d9a089b3f6977640ca943658e3ec52227a987784df827d8ee8a6a9a796b124"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:anvil-strike",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-anvil-strike.png",
+		"contentHash": "77dc2d97535f23c19960210be60c6208004c526daa88389d325cfd227dfbf693"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-anvil-strike.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-anvil-strike.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-anvil-strike.png",
+		"contentHash": "bc37cf69c0fc9c60decafbf891077f21883a5a299b8ec9f77db6072443675141",
+		"removedPixels": 193508,
+		"removedPixelBounds": {
+			"left": 109,
+			"top": 20,
+			"width": 806,
+			"height": 975
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "31b50177148bcab17fe06d1b1a6f309c479515b3c013ea2d6603a3c1746f1a51",
+	"resultContentHash": "9ee849c1486c702d41cc6d4111e21b1f5f4535b31a1e3b641a2bc9fe08b9043b"
+}

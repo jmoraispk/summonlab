@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:vanish",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-vanish.png",
+		"contentHash": "00a6a3c763f3fd373630bd6e23fb030b079717a1b127e112abf65a353700f831"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-vanish.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-vanish.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-vanish.png",
+		"contentHash": "ef9f8c7fff971c9966423a767b71327179e11c9d52a62bdbcde6634ba26ef35e",
+		"removedPixels": 176091,
+		"removedPixelBounds": {
+			"left": 124,
+			"top": 16,
+			"width": 776,
+			"height": 970
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "0c4629e2b43d5aaa4d94ed81b9c7f88e383b9e69461c548297f4edbb94980054",
+	"resultContentHash": "5ea7882c93f50edd86b7dbb13842895bce78077ff9d79afb09e1c6c54cbd1727"
+}

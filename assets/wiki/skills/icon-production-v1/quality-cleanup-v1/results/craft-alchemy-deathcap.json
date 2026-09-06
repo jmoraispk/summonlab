@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:deathcap",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-deathcap.png",
+		"contentHash": "77acda9b760c2cbcecd3fa73cfadca21e721e7a0eed8af2ba1825df8677fac07"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-deathcap.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-deathcap.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-deathcap.png",
+		"contentHash": "05faa387d847e01712417717dc87307c205a3858711bf0f5db3f51e3633c4d23",
+		"removedPixels": 199213,
+		"removedPixelBounds": {
+			"left": 119,
+			"top": 37,
+			"width": 788,
+			"height": 971
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "8903ca7bf805444f18cc8fdd366f03d566b1b42c78167a151e697679d313138e",
+	"resultContentHash": "da4f221c7d5752ca2cd9e1337a9ed40c91954ec2930aba9c79ae5b54eff09552"
+}

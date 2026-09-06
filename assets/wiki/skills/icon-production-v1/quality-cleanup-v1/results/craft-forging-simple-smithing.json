@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:forging:simple-smithing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-simple-smithing.png",
+		"contentHash": "2fe15ebbac1174086c34350f63a0aaf8b84e17bf94966baac9ce789e793cd2bd"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-simple-smithing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-simple-smithing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-simple-smithing.png",
+		"contentHash": "7bb46e5b4030591383f437e8e7963ade91053a7e24afba05cd1c7a59659ef3ae",
+		"removedPixels": 183556,
+		"removedPixelBounds": {
+			"left": 131,
+			"top": 13,
+			"width": 762,
+			"height": 978
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "f364175821cfc44c1f919872d433c7ff2c89b6ce0ff23f1f26a0012e8918e8e4",
+	"resultContentHash": "188e72afd1d600db92b6a19dca2365a363537a23a6082da7a2fc76231adaa537"
+}

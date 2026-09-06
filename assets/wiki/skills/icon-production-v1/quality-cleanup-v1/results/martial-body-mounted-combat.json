@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:mounted-combat",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-mounted-combat.png",
+		"contentHash": "fe09ef5c86eb5cf1d6b9034975ca7bebd141a5c280e33b8146549cba0c0f9f23"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-mounted-combat.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-mounted-combat.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-mounted-combat.png",
+		"contentHash": "1a439e4f76216bf071fa2b6fb122a0bfbf6b89514a2838a59852a2dc97999572",
+		"removedPixels": 197138,
+		"removedPixelBounds": {
+			"left": 119,
+			"top": 8,
+			"width": 786,
+			"height": 996
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "0bcfc908c894f8741c6e9b151b7b1eb65f0b49ed99cdee14741c9fc59e356b5f",
+	"resultContentHash": "c1f7d593d1b95708cda5fbb45f0246cc054fd0935bf0a41fa162e6a3e7b62271"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:frozen-world",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-frozen-world.png",
+		"contentHash": "ab5836a2143292d90ef56e089f6f5fb51c43d99eceae0feb4ec86e9c966bab28"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-frozen-world.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-frozen-world.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-frozen-world.png",
+		"contentHash": "140c82e89dec0df1439b7dac749cbfbe0332fa9d061d4f5b6c67ee130bf286bf",
+		"removedPixels": 200386,
+		"removedPixelBounds": {
+			"left": 99,
+			"top": 8,
+			"width": 824,
+			"height": 997
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "08456c773b32dfeb4e766c00749f3d5950f7f9890b50b1f9db9a0716928093fc",
+	"resultContentHash": "f10bc2305c6157a0386c6870af7ea72a38b9b34983f85381792ca85b988a4221"
+}

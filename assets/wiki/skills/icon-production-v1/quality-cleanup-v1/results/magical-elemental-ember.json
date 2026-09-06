@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:ember",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ember.png",
+		"contentHash": "dc06e2839325c35e930e6ce386a067a8ce1e1526074e5b584c7a0cb2b5ec207a"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ember.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-ember.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-ember.png",
+		"contentHash": "4156f8085aefc08f788ff9d6eaf10c8c4f2ecb482f10d52edf65ba5e937d6709",
+		"removedPixels": 176892,
+		"removedPixelBounds": {
+			"left": 132,
+			"top": 17,
+			"width": 756,
+			"height": 999
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "903693eb5b5b75e7653ba6ca48bb46c6e0871ab7ea577647239492086f81b730",
+	"resultContentHash": "77ff4c3dc37980dfee325ac28f836e370a08b949086be5f645e8e5a585f517de"
+}

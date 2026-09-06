@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:gathering:foraging",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-foraging.png",
+		"contentHash": "7d470c2a0438209e508f5896cdf9ab60ca3d06e2360881b78c74f6b110281de4"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-foraging.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-foraging.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-foraging.png",
+		"contentHash": "133c96e6f345db0c5d36e0fd63f574fe4f72420ed5a91b693914995bea7abc45",
+		"removedPixels": 163599,
+		"removedPixelBounds": {
+			"left": 131,
+			"top": 37,
+			"width": 760,
+			"height": 947
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "b6692777674b577c76216127a013dc57d4f560868df6b79a5942a5f22aa8d492",
+	"resultContentHash": "b63810fa9a98298f01db22701b59575d47cf0a0d8e109f84fb1c0464f17000d9"
+}

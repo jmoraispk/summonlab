@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:cooking:hearth-meal",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-hearth-meal.png",
+		"contentHash": "38c23f0eec8b530489d77d128aae5fa5fc9bfce5cbd402b0e3eeacdc418cf8e1"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-hearth-meal.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-hearth-meal.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-hearth-meal.png",
+		"contentHash": "51c23ae4e3a393620c29a0f15786cb8f3b0307b2b9fb1cf8bdf8aaa04aa077e1",
+		"removedPixels": 210796,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 11,
+			"width": 784,
+			"height": 997
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "55ad93ea0a23ec15905c1a5a3d5c78a393cc649495573ea55c8a810a4a87c4a0",
+	"resultContentHash": "228960273bebb3d897bbb441bf21e9dfee9bf60c4847d944bb4c89e198df7e37"
+}
