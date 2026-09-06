@@ -40,4 +40,31 @@ describe('S rarity-frame badge-tip review repair', () => {
 		expect(info.height).toBe(1024);
 		expect(data[(250 * 1024 + 512) * 4 + 3]).toBeGreaterThan(0);
 	});
+
+	it('records canonical layer recomposition instead of patching an already framed composite', async () => {
+		const report = JSON.parse(
+			await readFile(
+				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v7-frame-recomposition/report.json',
+				'utf8'
+			)
+		) as {
+			readonly assembly?: {
+				readonly mode?: string;
+				readonly frameIsFinalLayer?: boolean;
+			};
+			readonly inspection?: {
+				readonly exactComposite?: boolean;
+				readonly protectedBandMatches?: boolean;
+			};
+		};
+
+		expect(report.assembly).toEqual({
+			mode: 'canonical-backing-masked-interior-repaired-frame',
+			frameIsFinalLayer: true
+		});
+		expect(report.inspection).toMatchObject({
+			exactComposite: true,
+			protectedBandMatches: true
+		});
+	});
 });

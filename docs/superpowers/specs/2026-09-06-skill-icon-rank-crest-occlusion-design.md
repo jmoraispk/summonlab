@@ -1,6 +1,6 @@
 # Skill icon rank-crest occlusion design
 
-**Status:** Proposed — direction approved; written specification awaiting owner review
+**Status:** Rejected — superseded by direct full-layer recomposition
 
 **Date:** 2026-09-06
 
@@ -11,6 +11,18 @@
 Prevent skill artwork from appearing through transparent or partially transparent pixels inside a
 rarity crest, including the repaired lower point of the S crest, without hardcoded colors,
 asset-specific paint patches, or changes to accepted historical geometry and frame evidence.
+
+## Resolution
+
+This proposal was rejected after inspecting the V6 review renderer. V6 did not assemble the
+canonical layers with the repaired frame last: it overlaid only the new tip patch onto the already
+framed V5 composite. The apparent need for a second semantic mask therefore came from diagnosing a
+noncanonical review assembly.
+
+The replacement is the existing composition contract applied correctly: canonical backing,
+freshly extracted/masked artwork, then the complete repaired S frame as the final layer. The V7
+review independently verifies exact recomposition and protected-band equality. No geometry-v3,
+second runtime mask, or new normalization tuple is authorized by this rejected document.
 
 The result must preserve the accepted frame pixels while making layer ownership explicit: visual
 alpha describes how the frame looks, while an independent semantic occlusion mask describes where
@@ -56,7 +68,7 @@ outline cleanup.
 evidence, and candidates. Editing it would invalidate historical provenance and make earlier output
 irreproducible.
 
-## Accepted design
+## Rejected proposed design
 
 ### 1. Add immutable geometry v3
 

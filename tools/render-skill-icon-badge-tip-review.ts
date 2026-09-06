@@ -5,6 +5,12 @@ import path from 'node:path';
 import sharp, { type OverlayOptions } from 'sharp';
 
 import {
+	clearCleanupExterior,
+	composeCleanupIcon,
+	extractLegacyInterior,
+	inspectCleanupComposite
+} from './skill-icon-quality-cleanup-lib.js';
+import {
 	skillIconBlackMatteAlpha,
 	skillIconBlackMatteUnmatteChannel
 } from './normalize-skill-icon-provider-source.js';
@@ -14,11 +20,18 @@ type Point = readonly [number, number];
 
 const ROOT = 'assets/wiki/skills/icon-production-v1' as const;
 const CLEANUP_ROOT = `${ROOT}/quality-cleanup-v1` as const;
-const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v5-frame-cut-fix` as const;
-const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v6-badge-tip-fix` as const;
+const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v6-badge-tip-fix` as const;
+const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v7-frame-recomposition` as const;
+const SOURCE_ROOT = `${ROOT}/mass-production-v1/icons` as const;
 const SOURCE_PATH =
 	`${CLEANUP_ROOT}/provider-sources/rarity-frame-s-v10-badge-tip-source.png` as const;
 const FRAME_PATH = `${ROOT}/candidates/references/rarity-frame-s-v9.png` as const;
+const REPAIRED_FRAME_PATH =
+	`${PRIOR_REVIEW_ROOT}/frames/rarity-frame-s-v10-review.png` as const;
+const BACKING_PATH = `${ROOT}/candidates/references/charcoal-forged-stone-v6.png` as const;
+const GEOMETRY_PATH = `${ROOT}/geometry-v2.json` as const;
+const ART_PATH = `${SOURCE_ROOT}/magical-elemental-where-all-rivers-end.png` as const;
+const ART_HASH = '9f0ad37fb6b98a80faffc7d2f731547daff8436f8418b97e236282137326a59a' as const;
 const CURRENT_PATH =
 	`${PRIOR_REVIEW_ROOT}/candidates/magical-elemental-where-all-rivers-end.png` as const;
 const PATCH_POLYGON = [
@@ -270,7 +283,7 @@ async function comparisonSheet(input: {
 			input: textLayer(
 				width,
 				header,
-				input.size === 384 ? ['BEFORE · V5', 'BADGE TIP · V6'] : ['V5', 'V6'],
+				input.size === 384 ? ['PATCHED · V6', 'RECOMPOSED · V7'] : ['V6', 'V7'],
 				input.size === 384 ? 20 : 12
 			),
 			left: 0,
@@ -320,21 +333,62 @@ async function boundaryAudit(frame: Buffer): Promise<{
 
 export async function renderSkillIconBadgeTipReview(options: {
 	readonly root?: string;
+	readonly sourceRoot?: string;
 	readonly mode: Mode;
 }): Promise<{ readonly written: readonly string[]; readonly reviewFiles: readonly string[] }> {
 	const repositoryRoot = path.resolve(options.root ?? process.cwd());
-	const [frame, providerSource, current] = await Promise.all([
+	const sourceRoot = path.resolve(options.sourceRoot ?? path.join(repositoryRoot, SOURCE_ROOT));
+	const [frame, providerSource, repairedFrame, backing, geometryBytes, current, art] =
+		await Promise.all([
 		regularBytes(repositoryRoot, FRAME_PATH),
 		regularBytes(repositoryRoot, SOURCE_PATH),
-		regularBytes(repositoryRoot, CURRENT_PATH)
+		regularBytes(repositoryRoot, REPAIRED_FRAME_PATH),
+		regularBytes(repositoryRoot, BACKING_PATH),
+		regularBytes(repositoryRoot, GEOMETRY_PATH),
+		regularBytes(repositoryRoot, CURRENT_PATH),
+		readFile(path.join(sourceRoot, path.basename(ART_PATH)))
 	]);
+	if (sha256(art) !== ART_HASH) throw new Error('Frozen artwork source hash mismatch');
 	const repaired = await repairSFrameBadgeTipForReview({ frame, providerSource });
 	if (repaired.audit.changedOutsidePatch !== 0 || repaired.audit.addedVisiblePixels === 0)
 		throw new Error('Badge-tip bounded-pixel audit failed');
-	const candidate = await sharp(current)
-		.composite([{ input: repaired.patchBytes, blend: 'over' }])
-		.png(PNG_OPTIONS)
-		.toBuffer();
+	if (!repaired.bytes.equals(repairedFrame))
+		throw new Error('Stored repaired S frame does not match its deterministic derivation');
+	const geometry = JSON.parse(geometryBytes.toString('utf8'));
+	const interior = await extractLegacyInterior(art, geometry, {
+		frame: repairedFrame,
+		artworkScale: 1.15
+	});
+	const candidate = await clearCleanupExterior(
+		await composeCleanupIcon({
+			backing,
+			interior: interior.bytes,
+			frame: repairedFrame,
+			compositionProfile: 'frame-opening-v3'
+		}),
+		geometry
+	);
+	const inspection = await inspectCleanupComposite({
+		composite: candidate,
+		backing,
+		interior: interior.bytes,
+		frame: repairedFrame,
+		geometry,
+		compositionProfile: 'frame-opening-v3',
+		boundLayerHashes: {
+			backing: sha256(backing),
+			interior: sha256(interior.bytes),
+			frame: sha256(repairedFrame)
+		}
+	});
+	if (
+		!inspection.layerHashesMatch ||
+		!inspection.exactComposite ||
+		!inspection.protectedBandMatches ||
+		!inspection.exteriorTransparent ||
+		inspection.backingOnlyComponents.length > 0
+	)
+		throw new Error('Recomposed badge-tip inspection failed');
 	const rankAudit = await Promise.all(
 		(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const).map(async (rank) => ({
 			rank,
@@ -348,22 +402,27 @@ export async function renderSkillIconBadgeTipReview(options: {
 	);
 	const comparison384 = await comparisonSheet({ current, candidate, size: 384 });
 	const comparison96 = await comparisonSheet({ current, candidate, size: 96 });
-	const frameOutputPath = `${REVIEW_ROOT}/frames/rarity-frame-s-v10-review.png`;
 	const candidateOutputPath = `${REVIEW_ROOT}/candidates/magical-elemental-where-all-rivers-end.png`;
 	const reportPath = `${REVIEW_ROOT}/report.json`;
 	const reviewFiles = [
 		`${REVIEW_ROOT}/comparison-384.png`,
 		`${REVIEW_ROOT}/comparison-96.png`,
-		frameOutputPath,
+		candidateOutputPath,
 		reportPath
 	];
 	const report = Buffer.from(
 		`${JSON.stringify(
 			{
-				schemaVersion: 'skill-icon-badge-tip-fix-review-v1',
+				schemaVersion: 'skill-icon-frame-recomposition-review-v1',
 				status: 'review-only-not-promoted',
-				decision: 'preserve-all-v9-frame-pixels-outside-bounded-s-badge-tip-patch',
+				decision: 'recompose-canonical-layers-with-complete-repaired-s-frame-last',
 				deferred: ['traces-of-previous-frame-inside-accepted-frame'],
+				assembly: {
+					mode: 'canonical-backing-masked-interior-repaired-frame',
+					frameIsFinalLayer: true
+				},
+				artworkSource: { path: ART_PATH, contentHash: sha256(art), artworkScale: 1.15 },
+				backing: { path: BACKING_PATH, contentHash: sha256(backing) },
 				source: { path: SOURCE_PATH, contentHash: sha256(providerSource) },
 				sourceProvenance: {
 					kind: 'imagegen-review-source',
@@ -376,12 +435,15 @@ export async function renderSkillIconBadgeTipReview(options: {
 				baseFrame: { path: FRAME_PATH, contentHash: sha256(frame) },
 				patchPolygon: PATCH_POLYGON,
 				repairAudit: repaired.audit,
-				repairedFrame: { path: frameOutputPath, contentHash: sha256(repaired.bytes) },
+				repairedFrame: { path: REPAIRED_FRAME_PATH, contentHash: sha256(repairedFrame) },
+				interior: { contentHash: sha256(interior.bytes), removedPixels: interior.removedPixels },
 				candidate: { path: candidateOutputPath, contentHash: sha256(candidate) },
 				inspection: {
-					baseCompositePreservedOutsidePatch: repaired.audit.changedOutsidePatch === 0,
-					baseFrameVisiblePixelsPreserved: repaired.audit.changedPixels === repaired.audit.addedVisiblePixels,
-					addedBadgeTipPixels: repaired.audit.addedVisiblePixels
+					layerHashesMatch: inspection.layerHashesMatch,
+					exactComposite: inspection.exactComposite,
+					protectedBandMatches: inspection.protectedBandMatches,
+					exteriorTransparent: inspection.exteriorTransparent,
+					backingOnlyComponents: inspection.backingOnlyComponents
 				},
 				allRankV9BoundaryAudit: rankAudit,
 				reviewFiles
@@ -391,7 +453,6 @@ export async function renderSkillIconBadgeTipReview(options: {
 		)}\n`
 	);
 	const outputs = [
-		{ path: frameOutputPath, bytes: repaired.bytes },
 		{ path: candidateOutputPath, bytes: candidate },
 		{ path: `${REVIEW_ROOT}/comparison-384.png`, bytes: comparison384 },
 		{ path: `${REVIEW_ROOT}/comparison-96.png`, bytes: comparison96 },
@@ -404,18 +465,27 @@ export async function renderSkillIconBadgeTipReview(options: {
 	return { written, reviewFiles };
 }
 
-function parseArgs(args: readonly string[]): Mode {
+function parseArgs(args: readonly string[]): { readonly mode: Mode; readonly sourceRoot?: string } {
 	const normalized = args[0] === '--' ? args.slice(1) : args;
-	if (normalized.length !== 1 || !['--write', '--check'].includes(normalized[0]!))
-		throw new Error('Usage: tsx tools/render-skill-icon-badge-tip-review.ts --write|--check');
-	return normalized[0] === '--write' ? 'write' : 'check';
+	const modeArg = normalized.find((argument) => argument === '--write' || argument === '--check');
+	const sourceIndex = normalized.indexOf('--source-root');
+	if (modeArg === undefined || (sourceIndex >= 0 && normalized[sourceIndex + 1] === undefined))
+		throw new Error(
+			'Usage: tsx tools/render-skill-icon-badge-tip-review.ts --write|--check [--source-root path]'
+		);
+	return {
+		mode: modeArg === '--write' ? 'write' : 'check',
+		...(sourceIndex >= 0 ? { sourceRoot: normalized[sourceIndex + 1] } : {})
+	};
 }
 
 if (
 	process.argv[1] !== undefined &&
 	path.resolve(process.argv[1]) === path.resolve(import.meta.filename)
 ) {
-	const mode = parseArgs(process.argv.slice(2));
-	const result = await renderSkillIconBadgeTipReview({ mode });
-	console.log(`${mode}: ${result.reviewFiles.length} review files; ${result.written.length} written`);
+	const request = parseArgs(process.argv.slice(2));
+	const result = await renderSkillIconBadgeTipReview(request);
+	console.log(
+		`${request.mode}: ${result.reviewFiles.length} review files; ${result.written.length} written`
+	);
 }
