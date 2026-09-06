@@ -40,6 +40,7 @@ export interface EngineReplayVector {
 	readonly schemaVersion: number;
 	readonly events: readonly AuthoritativeEvent[];
 	readonly expectedEventTypes: readonly string[];
+	readonly expectedEventHashes?: readonly string[];
 	readonly expectedBeforeHashes: readonly string[];
 	readonly expectedAfterHashes: readonly string[];
 	readonly expectedFinalStateHash: string;
@@ -51,6 +52,7 @@ export interface EngineReplayVector {
 
 interface ReplayExpectation {
 	readonly eventTypes: readonly string[];
+	readonly eventHashes?: readonly string[];
 	readonly beforeHashes: readonly string[];
 	readonly afterHashes: readonly string[];
 	readonly finalStateHash: string;
@@ -484,6 +486,13 @@ const EXPECTATIONS = {
 			'mission.round.resolved',
 			'mission.round.resolved'
 		],
+		eventHashes: [
+			'3c2575e846030bf4858dd3cf5a90d199fb8fe1835c238e3e9bf38b8f8733d323',
+			'c27329ce47d3356d5a5fee05abcf547460529204b52d7d6ab8c459676fe9fea6',
+			'e6bc052c2659863ebf25e97d482f9a08f3f574e610037f4360800caf14c16fb3',
+			'6d41833efdb8c07ab771b86152f832e58467080f58956a9592e41dba5ce88191',
+			'd8ae519a899e33ff3c31a19c709b72b02f858959c4c96e2dbe76e895f26e1851'
+		],
 		afterHashes: [
 			'2f6397320a421dc62bc658e356105ea62b0bee4c906e7c488aba98dd3ece1785',
 			'9a7c0b4bd7b20ed13f5a9b45b671564d7d701a164d8f6a32e46b7d62b6ce0658',
@@ -602,6 +611,7 @@ function finishVector(
 			schemaVersion,
 			events: run.events,
 			expectedEventTypes: expected.eventTypes,
+			...(expected.eventHashes ? { expectedEventHashes: expected.eventHashes } : {}),
 			expectedBeforeHashes: expected.beforeHashes,
 			expectedAfterHashes: expected.afterHashes,
 			expectedFinalStateHash: expected.finalStateHash,

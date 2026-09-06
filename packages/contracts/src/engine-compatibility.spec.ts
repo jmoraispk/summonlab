@@ -78,6 +78,184 @@ import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-stat
 import * as engineContracts from './engine.js';
 import { SocietyStateV4Schema } from './social.js';
 
+function frozenV24CombatReplayFinalStateFixture() {
+	const base = ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!;
+	const masterId = base.master.masterId;
+	const heroId = Object.keys(base.heroes)[0]!;
+	const attemptId = '1460218a-4c06-43b0-bcfb-7da544307358';
+	const scriptedHash = 'a'.repeat(64);
+	const action = (
+		actorId: string,
+		actorKind: 'master' | 'hero',
+		actionId: string,
+		initiativeBase: number,
+		initiativeTieBreak: number,
+		fromNodeId: string,
+		toNodeId: string
+	) => ({
+		actorId,
+		actorKind,
+		actionId,
+		choiceSource: actorKind === 'master' ? ('manual' as const) : ('scripted' as const),
+		policyId: actorKind === 'master' ? null : 'scripted-personality-v1',
+		packetHash: actorKind === 'master' ? null : scriptedHash,
+		legalActionHash: actorKind === 'master' ? null : scriptedHash,
+		policyResultHash: actorKind === 'master' ? null : scriptedHash,
+		publicIntent: `Frozen v24 replay ${actionId}.`,
+		initiativeBase,
+		initiativeTieBreak,
+		initiative: initiativeBase + initiativeTieBreak,
+		outcome: 'applied' as const,
+		fromNodeId,
+		toNodeId,
+		targetId: null,
+		discoveryIds: [],
+		objectiveTransition: null,
+		effectIds: [],
+		summary: `Frozen v24 replay ${actionId}.`
+	});
+	const round = (
+		roundNumber: number,
+		stateVersion: number,
+		heroActionId: string,
+		masterActionId: string,
+		heroInitiativeTieBreak: number,
+		masterInitiativeTieBreak: number,
+		heroFromNodeId: string,
+		heroToNodeId: string,
+		masterFromNodeId: string,
+		masterToNodeId: string
+	) => ({
+		roundVersion: 'mission-round-v2' as const,
+		roundNumber,
+		stateVersion,
+		environmentEventIds: [],
+		threatIntents: [],
+		monsterActionIds: [],
+		initiativeOrder: [heroId, masterId],
+		actions: [
+			action(
+				heroId,
+				'hero',
+				heroActionId,
+				61,
+				heroInitiativeTieBreak,
+				heroFromNodeId,
+				heroToNodeId
+			),
+			action(
+				masterId,
+				'master',
+				masterActionId,
+				50,
+				masterInitiativeTieBreak,
+				masterFromNodeId,
+				masterToNodeId
+			)
+		],
+		monsterActions: [],
+		effects: [],
+		statusAfter: 'resolving' as const
+	});
+	return {
+		...base,
+		version: 4,
+		eventCursor: 5,
+		entropyCursor: 14,
+		mission: {
+			...base.mission,
+			aftermath: {
+				...base.mission.aftermath,
+				activeAttemptId: attemptId
+			},
+			attemptCount: 1,
+			attempt: {
+				attemptId,
+				ordinal: 1,
+				status: 'resolving' as const,
+				party: { masterId, heroIds: [heroId], memberIds: [masterId, heroId] },
+				entryNodeId: 'tower-threshold',
+				extractionNodeId: 'tower-threshold',
+				positions: { [masterId]: 'oath-hall', [heroId]: 'oath-hall' },
+				knowledge: { discoveryIds: [], visitedNodeIds: ['oath-hall', 'tower-threshold'] },
+				completedObjectiveIds: [],
+				preparedAt: '2000-01-01T00:00:00.000Z',
+				deployedAt: '2000-01-01T00:00:00.000Z',
+				extractionOpenedAt: null,
+				endedAt: null,
+				outcome: null,
+				turnState: {
+					turnVersion: 'mission-turn-v2' as const,
+					maximumRounds: 48,
+					roundNumber: 2,
+					objective: {
+						objectiveId: 'recover-first-ember',
+						status: 'available' as const,
+						carrierId: null,
+						recoveredOnRound: null,
+						deliveredOnRound: null
+					},
+					policyBinding: {
+						contentVersion: 'monster-policies-v1',
+						contentHash: '5c1705e15afa8bd59d7a9cc545769044b47abd9d690eab27f3c6c2d361ee99c7'
+					},
+					monsters: {},
+					partyGuard: {
+						[masterId]: {
+							actorId: masterId,
+							guard: 3,
+							maximumGuard: 3,
+							status: 'ready' as const,
+							lastChangedOnRound: 0
+						},
+						[heroId]: {
+							actorId: heroId,
+							guard: 3,
+							maximumGuard: 3,
+							status: 'ready' as const,
+							lastChangedOnRound: 0
+						}
+					},
+					arena: {
+						furnaceState: 'absent' as const,
+						coolingControlNodeId: null,
+						coolingControlExposed: false
+					},
+					currentThreatIntents: [],
+					rounds: [
+						round(
+							1,
+							2,
+							'mission.move.threshold-to-oath-hall',
+							'mission.move.threshold-to-oath-hall',
+							88,
+							56,
+							'tower-threshold',
+							'oath-hall',
+							'tower-threshold',
+							'oath-hall'
+						),
+						round(
+							2,
+							3,
+							'mission.hold',
+							'mission.hold',
+							21,
+							15,
+							'oath-hall',
+							'oath-hall',
+							'oath-hall',
+							'oath-hall'
+						)
+					]
+				}
+			}
+		}
+	};
+}
+
+const V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE = frozenV24CombatReplayFinalStateFixture();
+
 describe('engine contracts compatibility', () => {
 	it('keeps the engine runtime exports available through the contracts entrypoint', async () => {
 		const contracts = await import('@summonlab/contracts');
@@ -102,6 +280,19 @@ describe('engine contracts compatibility', () => {
 				schemaVersion: 25
 			}).success
 		).toBe(false);
+	});
+
+	it('parses the frozen v24 combat replay final state through public schemas', () => {
+		const union = EngineGameStateSchema.parse(V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE);
+		const v24 = engineContracts.EngineGameStateV24Schema.parse(
+			V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE
+		);
+		expect(union).toStrictEqual(v24);
+		expect(v24).toMatchObject({
+			schemaVersion: 24,
+			entropyCursor: 14,
+			mission: { attempt: { status: 'resolving', turnState: { roundNumber: 2 } } }
+		});
 	});
 
 	it('keeps command discriminators and public version constants stable', () => {

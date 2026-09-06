@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { hashGameState, replayEventsStrict } from '../index.js';
+import { hashCanonical, hashGameState, replayEventsStrict } from '../index.js';
 import {
 	ENGINE_REPLAY_VECTOR_CASES,
 	REPLAY_VECTOR_EMPTY_STATE_HASH,
@@ -27,6 +27,16 @@ describe('versioned replay vectors', () => {
 		if (!replayCase) throw new Error('Expected the v24 combat replay vector');
 		const attempt = replayCase.finalState.mission.attempt;
 		if (!attempt) throw new Error('Expected the v24 combat replay to remain deployed');
+		expect(replayCase.vector.expectedEventHashes).toStrictEqual([
+			'3c2575e846030bf4858dd3cf5a90d199fb8fe1835c238e3e9bf38b8f8733d323',
+			'c27329ce47d3356d5a5fee05abcf547460529204b52d7d6ab8c459676fe9fea6',
+			'e6bc052c2659863ebf25e97d482f9a08f3f574e610037f4360800caf14c16fb3',
+			'6d41833efdb8c07ab771b86152f832e58467080f58956a9592e41dba5ce88191',
+			'd8ae519a899e33ff3c31a19c709b72b02f858959c4c96e2dbe76e895f26e1851'
+		]);
+		expect(replayCase.vector.events.map(hashCanonical)).toStrictEqual(
+			replayCase.vector.expectedEventHashes
+		);
 		expect(replayCase.vector.expectedAfterHashes).toStrictEqual([
 			'2f6397320a421dc62bc658e356105ea62b0bee4c906e7c488aba98dd3ece1785',
 			'9a7c0b4bd7b20ed13f5a9b45b671564d7d701a164d8f6a32e46b7d62b6ce0658',
@@ -128,6 +138,9 @@ describe('versioned replay vectors', () => {
 				schemaVersion: vector.schemaVersion
 			});
 			expect(vector.events.map((event) => event.eventType)).toEqual(vector.expectedEventTypes);
+			if (vector.expectedEventHashes) {
+				expect(vector.events.map(hashCanonical)).toEqual(vector.expectedEventHashes);
+			}
 			expect(vector.events.map((event) => event.beforeStateHash)).toEqual(
 				vector.expectedBeforeHashes
 			);
