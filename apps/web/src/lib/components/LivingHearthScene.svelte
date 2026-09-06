@@ -6,39 +6,142 @@
 		SettlementPresentation,
 		SettlementSceneDefinition
 	} from '@summonlab/contracts';
+	import { onMount } from 'svelte';
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
+	import type { VillageResident } from '$lib/village-shell';
 
 	let {
 		scene,
 		presentation,
 		manifest,
+		residents = [],
 		eventCue = null
 	}: {
 		scene: SettlementSceneDefinition;
 		presentation: SettlementPresentation;
 		manifest: CharacterManifest;
+		residents?: readonly VillageResident[];
 		eventCue?: AuthoritativeEvent | null;
 	} = $props();
+
+	interface FacilityCallout {
+		readonly buildingId: string;
+		readonly name: string;
+		readonly anchor: NormalizedScenePoint;
+		readonly label: NormalizedScenePoint;
+		readonly priority: number;
+	}
+
+	const CALLOUTS: Readonly<Record<string, Omit<FacilityCallout, 'buildingId' | 'anchor'>>> = {
+		'summoning-gate': {
+			name: 'Portal Tower',
+			label: { x: 0.5, y: 0.37 },
+			priority: 5
+		},
+		kitchen: { name: 'Kitchen', label: { x: 0.17, y: 0.46 }, priority: 4 },
+		workshop: { name: 'Forge', label: { x: 0.83, y: 0.46 }, priority: 3 },
+		dormitory: { name: 'Residence', label: { x: 0.18, y: 0.73 }, priority: 2 },
+		'training-ground': {
+			name: 'Training Grounds',
+			label: { x: 0.81, y: 0.74 },
+			priority: 1
+		}
+	};
+	const COURTYARD_POINTS: readonly NormalizedScenePoint[] = [
+		{ x: 0.42, y: 0.53 },
+		{ x: 0.56, y: 0.58 },
+		{ x: 0.48, y: 0.66 },
+		{ x: 0.61, y: 0.49 }
+	];
+
+	let sceneElement = $state<HTMLElement>(null!);
+	let sceneWidth = $state(1_200);
+	let sceneHeight = $state(720);
 
 	const points = $derived(
 		new Map(scene.nodeProjections.map((entry) => [entry.nodeId, entry.point]))
 	);
-	const occupant = $derived(
+	const primaryOccupant = $derived(
 		presentation.occupants.find((entry) => entry.heroId === manifest.characterId) ??
 			presentation.occupants[0]
 	);
-	const markerPoint = $derived(occupant ? pointAlongRoute(occupant) : { x: 0.5, y: 0.35 });
 	const buildingState = $derived(
 		new Map(presentation.buildings.map((building) => [building.buildingId, building]))
 	);
-	const phaseCopy = $derived(
-		presentation.dayPhase === 'dawn'
-			? 'First light catches on the gate.'
-			: presentation.dayPhase === 'day'
-				? 'Work carries across the courtyard.'
-				: presentation.dayPhase === 'dusk'
-					? 'Reserve lamps answer the falling light.'
-					: 'The walls keep watch while Hearth 01 sleeps.'
+	const callouts = $derived(
+		scene.hotspots.flatMap((hotspot) => {
+			const config = CALLOUTS[hotspot.buildingId];
+			return config
+				? [
+						{
+							buildingId: hotspot.buildingId,
+							anchor: hotspot.center,
+							...config
+						}
+					]
+				: [];
+		})
 	);
+	const visibleCalloutIds = $derived(resolveVisibleCallouts(callouts, sceneWidth, sceneHeight));
+	const sceneResidents = $derived.by(() => {
+		if (residents.length > 0) {
+			const projectedResidents = residents.map((resident, index) => {
+				const projected = presentation.occupants.find((entry) => entry.heroId === resident.heroId);
+				return {
+					resident,
+					projected,
+					point: projected
+						? pointAlongRoute(projected)
+						: COURTYARD_POINTS[index % COURTYARD_POINTS.length]!
+				};
+			});
+			const groupSizes = new SvelteMap<string, number>();
+			for (const entry of projectedResidents) {
+				const key = `${entry.point.x.toFixed(3)}:${entry.point.y.toFixed(3)}`;
+				groupSizes.set(key, (groupSizes.get(key) ?? 0) + 1);
+			}
+			const groupIndexes = new SvelteMap<string, number>();
+			return projectedResidents.map((entry) => {
+				const key = `${entry.point.x.toFixed(3)}:${entry.point.y.toFixed(3)}`;
+				const groupSize = groupSizes.get(key) ?? 1;
+				const groupIndex = groupIndexes.get(key) ?? 0;
+				groupIndexes.set(key, groupIndex + 1);
+				const spread = groupSize > 1 ? (groupIndex - (groupSize - 1) / 2) * 0.18 : 0;
+				return {
+					...entry,
+					point: {
+						x: Math.min(0.9, Math.max(0.1, entry.point.x + spread)),
+						y: entry.point.y
+					}
+				};
+			});
+		}
+		return primaryOccupant
+			? [
+					{
+						resident: {
+							heroId: manifest.characterId,
+							name: manifest.displayName,
+							activity: primaryOccupant.activityLabel,
+							location: primaryOccupant.buildingId ?? primaryOccupant.nodeId,
+							portrait: null
+						},
+						projected: primaryOccupant,
+						point: pointAlongRoute(primaryOccupant)
+					}
+				]
+			: [];
+	});
+
+	onMount(() => {
+		const observer = new ResizeObserver(([entry]) => {
+			if (!entry) return;
+			sceneWidth = entry.contentRect.width;
+			sceneHeight = entry.contentRect.height;
+		});
+		observer.observe(sceneElement);
+		return () => observer.disconnect();
+	});
 
 	function pointAlongRoute(
 		entry: SettlementPresentation['occupants'][number]
@@ -60,23 +163,47 @@
 		};
 	}
 
-	function buildingLabel(buildingId: string): string {
-		return buildingId
-			.replace('summoning-gate', 'Gate')
-			.replace('training-ground', 'Training')
-			.replace('dormitory', 'Dorm')
-			.replace('workshop', 'Forge')
-			.replace('kitchen', 'Kitchen');
+	function resolveVisibleCallouts(
+		entries: readonly FacilityCallout[],
+		width: number,
+		height: number
+	): ReadonlySet<string> {
+		const accepted: Array<{ left: number; top: number; right: number; bottom: number }> = [];
+		const visible = new SvelteSet<string>();
+		for (const entry of [...entries].sort((left, right) => right.priority - left.priority)) {
+			const calloutWidth = Math.min(width * 0.42, Math.max(76, entry.name.length * 7 + 24));
+			const calloutHeight = 28;
+			const centerX = entry.label.x * width;
+			const centerY = entry.label.y * height;
+			const bounds = {
+				left: centerX - calloutWidth / 2 - 6,
+				top: centerY - calloutHeight / 2 - 6,
+				right: centerX + calloutWidth / 2 + 6,
+				bottom: centerY + calloutHeight / 2 + 6
+			};
+			const collides = accepted.some(
+				(other) =>
+					bounds.left < other.right &&
+					bounds.right > other.left &&
+					bounds.top < other.bottom &&
+					bounds.bottom > other.top
+			);
+			if (collides) continue;
+			accepted.push(bounds);
+			visible.add(entry.buildingId);
+		}
+		return visible;
 	}
 </script>
 
 <section
+	bind:this={sceneElement}
 	class={`living-scene phase-${presentation.dayPhase}`}
 	data-testid="living-settlement"
 	data-day-phase={presentation.dayPhase}
-	data-hero-pose={occupant?.pose ?? 'absent'}
+	data-hero-pose={primaryOccupant?.pose ?? 'absent'}
 	data-event-cursor={presentation.eventCursor}
-	aria-label={`Hearth 01 on day ${presentation.dayNumber} at ${presentation.gameTime.slice(11, 16)}, ${occupant?.activityLabel ?? 'hero absent'}`}
+	aria-label={`Hearth 01 on day ${presentation.dayNumber} at ${presentation.gameTime.slice(11, 16)}, ${sceneResidents.length} residents visible`}
 >
 	<img
 		class="environment"
@@ -103,51 +230,58 @@
 			class="building-aura"
 			style={`--x:${hotspot.center.x * 100}%;--y:${hotspot.center.y * 100}%;--w:${hotspot.bounds.width * 100}%;--h:${hotspot.bounds.height * 100}%`}
 		></div>
-		<div
-			class="building-chip"
-			style={`--x:${hotspot.center.x * 100}%;--y:${hotspot.center.y * 100}%`}
-			data-power={state?.powerState ?? 'unknown'}
-		>
-			<span>{buildingLabel(hotspot.buildingId)}</span>
-			<small>{state?.occupantHeroIds.length ?? 0} here · {state?.powerState ?? 'unknown'}</small>
-		</div>
 	{/each}
 
-	{#if occupant}
+	<svg class="facility-leaders" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+		{#each callouts as callout (callout.buildingId)}
+			{#if visibleCalloutIds.has(callout.buildingId)}
+				<path
+					d={`M ${callout.label.x * 100} ${callout.label.y * 100} L ${callout.anchor.x * 100} ${callout.anchor.y * 100}`}
+				></path>
+				<circle cx={callout.anchor.x * 100} cy={callout.anchor.y * 100} r="0.55"></circle>
+			{/if}
+		{/each}
+	</svg>
+
+	{#each callouts as callout (callout.buildingId)}
+		{#if visibleCalloutIds.has(callout.buildingId)}
+			<div
+				class="facility-callout"
+				style={`--x:${callout.label.x * 100}%;--y:${callout.label.y * 100}%`}
+				data-testid="village-facility-callout"
+			>
+				{callout.name}
+			</div>
+		{/if}
+	{/each}
+
+	{#each sceneResidents as sceneResident (sceneResident.resident.heroId)}
 		<div
-			class={`occupant pose-${occupant.pose}`}
-			style={`--x:${markerPoint.x * 100}%;--y:${markerPoint.y * 100}%`}
-			data-testid="settlement-occupant"
+			class={`occupant pose-${sceneResident.projected?.pose ?? 'idle'}`}
+			style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%`}
+			data-testid={residents.length > 0 ? 'village-scene-resident' : 'settlement-occupant'}
+			aria-label={`${sceneResident.resident.name}, ${sceneResident.resident.activity}, ${sceneResident.resident.location}`}
 		>
 			<div class="activity-fx" aria-hidden="true">
-				{#if occupant.pose === 'sleep'}<span class="sleep-rune">z</span><span class="sleep-rune"
-						>z</span
+				{#if sceneResident.projected?.pose === 'sleep'}<span class="sleep-rune">z</span><span
+						class="sleep-rune">z</span
 					>{/if}
-				{#if occupant.pose === 'eat'}<span class="steam">⌇</span><i class="bowl"></i>{/if}
-				{#if occupant.pose === 'work'}<span class="spark">✦</span><span class="spark">✦</span>{/if}
-				{#if occupant.pose === 'train'}<i class="arc"></i>{/if}
+				{#if sceneResident.projected?.pose === 'eat'}<span class="steam">⌇</span><i class="bowl"
+					></i>{/if}
+				{#if sceneResident.projected?.pose === 'work'}<span class="spark">✦</span><span
+						class="spark">✦</span
+					>{/if}
+				{#if sceneResident.projected?.pose === 'train'}<i class="arc"></i>{/if}
 			</div>
 			<div class="presence-marker" aria-hidden="true">
-				<span>✦</span>
-				<i></i>
+				<span class="resident-silhouette"><i></i></span>
+				<b></b>
 			</div>
 			<div class="activity-tag">
-				<span>{manifest.displayName}</span>
-				<strong>{occupant.activityLabel}</strong>
+				<strong>{sceneResident.resident.name}</strong>
 			</div>
 		</div>
-	{/if}
-
-	<div class="time-plaque">
-		<p>Hearth 01 · Day {presentation.dayNumber}</p>
-		<strong>{presentation.gameTime.slice(11, 16)}</strong>
-		<span>{presentation.dayPhase} · {phaseCopy}</span>
-	</div>
-
-	<div class="state-seal">
-		<span>Authoritative world</span>
-		<code>#{presentation.eventCursor} · {presentation.stateHash.slice(0, 9)}</code>
-	</div>
+	{/each}
 
 	{#if eventCue}
 		{#key eventCue.sequence}
@@ -157,16 +291,6 @@
 			</div>
 		{/key}
 	{/if}
-
-	<div class="occupancy-ledger" aria-label="Settlement occupancy and assignment capacity">
-		{#each presentation.buildings as building (building.buildingId)}
-			<div class:active={building.occupantHeroIds.length > 0}>
-				<span>{buildingLabel(building.buildingId)}</span>
-				<strong>{building.occupantHeroIds.length}</strong>
-				<small>{building.assignmentCount}/{building.assignmentCapacity} assigned</small>
-			</div>
-		{/each}
-	</div>
 </section>
 
 <style>
@@ -182,7 +306,8 @@
 	.phase-grade,
 	.sky-life,
 	.mist,
-	.building-aura {
+	.building-aura,
+	.facility-leaders {
 		position: absolute;
 		inset: 0;
 	}
@@ -298,73 +423,99 @@
 		background: radial-gradient(ellipse, rgba(96, 219, 228, 0.26), transparent 68%);
 		opacity: 1;
 	}
-	.building-chip {
+	.facility-leaders {
 		position: absolute;
-		z-index: 4;
-		left: var(--x);
-		top: var(--y);
-		display: grid;
-		min-width: 5rem;
-		padding: 0.38rem 0.48rem;
-		border: 1px solid rgba(255, 255, 255, 0.13);
-		background: rgba(4, 8, 13, 0.65);
-		box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.3);
-		backdrop-filter: blur(8px);
-		transform: translate(-50%, -50%);
+		z-index: 3;
+		width: 100%;
+		height: 100%;
 		pointer-events: none;
 	}
-	.building-chip[data-power='powered'] {
-		border-color: rgba(102, 224, 230, 0.65);
+	.facility-leaders path {
+		fill: none;
+		stroke: rgba(91, 215, 227, 0.8);
+		stroke-width: 1;
+		vector-effect: non-scaling-stroke;
 	}
-	.building-chip span {
-		color: #eee7db;
-		font:
-			700 0.5rem/1.1 ui-sans-serif,
-			sans-serif;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
+	.facility-leaders circle {
+		fill: #62dce7;
+		filter: drop-shadow(0 0 0.25rem rgba(98, 220, 231, 0.9));
+		vector-effect: non-scaling-stroke;
 	}
-	.building-chip small {
-		margin-top: 0.2rem;
-		color: rgba(238, 231, 219, 0.46);
+	.facility-callout {
+		position: absolute;
+		z-index: 6;
+		left: var(--x);
+		top: var(--y);
+		padding: 0.25rem 0.4rem;
+		color: #f1ecdf;
 		font:
-			0.42rem ui-monospace,
+			700 clamp(0.52rem, 1.1vw, 0.72rem)/1.1 ui-monospace,
 			monospace;
+		letter-spacing: 0.12em;
+		text-shadow:
+			0 1px 0 #02070b,
+			0 0 0.75rem #02070b;
+		text-transform: uppercase;
+		transform: translate(-50%, -50%);
+		white-space: nowrap;
+		pointer-events: none;
 	}
 	.occupant {
 		position: absolute;
 		z-index: 8;
 		left: var(--x);
 		top: var(--y);
-		width: clamp(2.7rem, 6.2vw, 5.6rem);
+		width: clamp(3rem, 6.2vw, 5rem);
 		transform: translate(-50%, -82%);
 		transition:
 			left 0.8s linear,
 			top 0.8s linear;
 	}
 	.presence-marker {
+		position: relative;
 		display: grid;
 		place-items: center;
-		width: 2.2rem;
-		height: 2.2rem;
+		width: clamp(2.2rem, 4.8vw, 3.8rem);
+		height: clamp(3.2rem, 7.4vw, 5.8rem);
 		margin: 0 auto;
-		border: 1px solid rgba(213, 170, 89, 0.72);
-		border-radius: 50%;
-		color: #f2cf87;
-		background: rgba(5, 8, 12, 0.92);
-		box-shadow:
-			0 0 0 0.28rem rgba(213, 170, 89, 0.12),
-			0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
+		color: #69dce8;
+		filter: drop-shadow(0 0 0.5rem rgba(70, 207, 223, 0.82));
 		animation: marker-pulse 2.5s ease-in-out infinite;
 	}
-	.presence-marker i {
+	.resident-silhouette {
 		position: absolute;
-		top: 2rem;
-		width: 0.35rem;
-		height: 0.35rem;
+		top: 4%;
+		left: 50%;
+		width: 34%;
+		height: 24%;
+		border: 1px solid rgba(210, 240, 237, 0.82);
 		border-radius: 50%;
-		background: #d5aa59;
-		box-shadow: 0 0 0.7rem #d5aa59;
+		background: #16272b;
+		box-shadow: inset 0 0 0.5rem rgba(98, 220, 231, 0.28);
+		transform: translateX(-50%);
+	}
+	.resident-silhouette i {
+		position: absolute;
+		top: 78%;
+		left: 50%;
+		width: 190%;
+		height: 270%;
+		border: 1px solid rgba(210, 240, 237, 0.78);
+		border-top-color: #62dce7;
+		background: linear-gradient(90deg, #0d171b, #213238 52%, #0a1216);
+		clip-path: polygon(30% 0, 70% 0, 100% 34%, 78% 100%, 22% 100%, 0 34%);
+		transform: translateX(-50%);
+	}
+	.presence-marker b {
+		position: absolute;
+		bottom: -0.25rem;
+		left: 50%;
+		width: 58%;
+		height: 0.32rem;
+		border-radius: 50%;
+		background: rgba(92, 218, 230, 0.32);
+		box-shadow: 0 0 0.7rem #62dce7;
+		transform: translateX(-50%);
 	}
 	.pose-downed .presence-marker,
 	.pose-dead .presence-marker {
@@ -373,24 +524,16 @@
 	.activity-tag {
 		position: absolute;
 		left: 50%;
-		bottom: -1rem;
+		bottom: -1.05rem;
 		display: grid;
 		min-width: 6.5rem;
 		padding: 0.35rem 0.45rem;
-		border-left: 2px solid #d5aa59;
+		border-left: 2px solid #62dce7;
 		background: rgba(4, 7, 11, 0.88);
 		box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.45);
 		transform: translateX(-50%);
 	}
-	.activity-tag span {
-		color: rgba(241, 235, 223, 0.5);
-		font:
-			0.38rem ui-monospace,
-			monospace;
-		text-transform: uppercase;
-	}
 	.activity-tag strong {
-		margin-top: 0.08rem;
 		color: #f1ebdf;
 		font:
 			600 0.48rem Georgia,
@@ -460,62 +603,6 @@
 		transform: rotate(22deg);
 		animation: arc 1.05s ease-out infinite;
 	}
-	.time-plaque,
-	.state-seal {
-		position: absolute;
-		z-index: 12;
-		top: clamp(1rem, 2.4vw, 2rem);
-		padding: 0.75rem 0.9rem;
-		border: 1px solid rgba(255, 255, 255, 0.14);
-		background: rgba(3, 7, 12, 0.76);
-		backdrop-filter: blur(12px);
-	}
-	.time-plaque {
-		left: clamp(1rem, 2.4vw, 2rem);
-	}
-	.time-plaque p,
-	.time-plaque strong,
-	.time-plaque span,
-	.state-seal span,
-	.state-seal code {
-		display: block;
-		margin: 0;
-	}
-	.time-plaque p,
-	.state-seal span {
-		color: #d5aa59;
-		font:
-			700 0.48rem ui-sans-serif,
-			sans-serif;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-	.time-plaque strong {
-		margin: 0.1rem 0;
-		color: #f5f0e7;
-		font:
-			400 clamp(1.6rem, 3vw, 2.7rem)/1 Georgia,
-			serif;
-	}
-	.time-plaque span {
-		max-width: 29ch;
-		color: rgba(245, 240, 231, 0.5);
-		font:
-			0.48rem/1.4 ui-monospace,
-			monospace;
-		text-transform: capitalize;
-	}
-	.state-seal {
-		right: clamp(1rem, 2.4vw, 2rem);
-		text-align: right;
-	}
-	.state-seal code {
-		margin-top: 0.3rem;
-		color: #85dbe4;
-		font:
-			0.5rem ui-monospace,
-			monospace;
-	}
 	.event-cue {
 		position: absolute;
 		z-index: 20;
@@ -544,51 +631,6 @@
 			400 0.67rem/1.4 Georgia,
 			serif;
 	}
-	.occupancy-ledger {
-		position: absolute;
-		z-index: 11;
-		right: clamp(1rem, 2.4vw, 2rem);
-		bottom: clamp(1rem, 2.4vw, 2rem);
-		display: grid;
-		grid-template-columns: repeat(5, minmax(4.2rem, 1fr));
-		border: 1px solid rgba(255, 255, 255, 0.13);
-		background: rgba(3, 7, 12, 0.82);
-		backdrop-filter: blur(12px);
-	}
-	.occupancy-ledger div {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: 0.14rem 0.5rem;
-		padding: 0.48rem 0.55rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.08);
-	}
-	.occupancy-ledger div:last-child {
-		border: 0;
-	}
-	.occupancy-ledger div.active {
-		background: rgba(213, 170, 89, 0.08);
-	}
-	.occupancy-ledger span {
-		color: rgba(245, 240, 231, 0.58);
-		font:
-			700 0.4rem ui-sans-serif,
-			sans-serif;
-		text-transform: uppercase;
-	}
-	.occupancy-ledger strong {
-		color: #85dbe4;
-		font:
-			0.7rem Georgia,
-			serif;
-	}
-	.occupancy-ledger small {
-		grid-column: 1 / -1;
-		color: rgba(245, 240, 231, 0.3);
-		font:
-			0.36rem ui-monospace,
-			monospace;
-	}
-
 	@keyframes drift {
 		to {
 			transform: translateX(22%);
@@ -607,9 +649,7 @@
 	}
 	@keyframes marker-pulse {
 		50% {
-			box-shadow:
-				0 0 0 0.45rem rgba(213, 170, 89, 0.05),
-				0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
+			filter: drop-shadow(0 0 0.8rem rgba(70, 207, 223, 0.95));
 		}
 	}
 	@keyframes rise {
@@ -667,39 +707,17 @@
 
 	@media (max-width: 720px) {
 		.living-scene {
-			min-height: 34rem;
+			min-height: calc(100dvh - 3.8rem - 5.65rem - env(safe-area-inset-bottom));
 		}
 		.environment {
 			object-position: 50% 50%;
 		}
-		.building-chip {
-			display: none;
-		}
-		.occupancy-ledger {
-			left: 0.8rem;
-			right: 0.8rem;
-			grid-template-columns: repeat(5, 1fr);
-		}
-		.occupancy-ledger div {
-			padding: 0.4rem 0.3rem;
-		}
-		.occupancy-ledger small {
-			display: none;
-		}
-		.state-seal {
-			top: auto;
-			right: 0.8rem;
-			bottom: 4.8rem;
-		}
-		.time-plaque {
-			top: 0.8rem;
-			left: 0.8rem;
-		}
-		.time-plaque span {
-			display: none;
+		.facility-callout {
+			font-size: 0.48rem;
+			letter-spacing: 0.08em;
 		}
 		.occupant {
-			width: 3.4rem;
+			width: 3rem;
 		}
 	}
 

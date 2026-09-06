@@ -191,9 +191,16 @@ test('meets the complete target-phone performance budget', async ({ browser, req
 	expect(settlementResources.some((resource) => resource.name.includes('/hearth-01/'))).toBe(true);
 	expect(
 		playResources.some(
-			(resource) => resource.initiatorType === 'img' && resource.name.endsWith('.png')
+			(resource) =>
+				resource.initiatorType === 'img' &&
+				resource.name.endsWith('.png') &&
+				!resource.name.includes('/ui/village-nav/')
 		)
 	).toBe(false);
+	const villageNavigationBytes = playResources
+		.filter((resource) => resource.name.includes('/ui/village-nav/'))
+		.reduce((total, resource) => total + resource.encodedBodySize, 0);
+	expect(villageNavigationBytes).toBeLessThanOrEqual(128 * 1_024);
 	const firstSettlementVisualBytes = settlementResources.reduce(
 		(total, resource) => total + resource.encodedBodySize,
 		0

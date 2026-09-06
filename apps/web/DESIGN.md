@@ -302,6 +302,23 @@ phone presents the same destinations as a fixed bottom bar with distinct engrave
 labels. Phone targets are at least 44px high, account for the device safe area, and leave the active
 objective control fully above the bar.
 
+Village mode uses a compact `Hearth 01` status rail with the server-owned day and watch. The settlement
+fills the usable initial viewport between that rail and the global navigation; First Ember, historical
+proof, and social detail remain below the scene instead of covering it. Journal, objectives, settings,
+replay, and restart belong in the campaign menu rather than a second dashboard header or a floating
+objective card.
+
+The scene renders every real campaign resident. Authoritative occupant and route nodes own placement
+when present; roster members without a settlement projection use stable courtyard positions and retain
+their honest unavailable activity/location copy. Residents sharing one authoritative node spread around
+that node so each remains identifiable without inventing a different location.
+
+Facility names are live overlays for `Portal Tower`, `Kitchen`, `Forge`, `Residence`, and `Training
+Grounds`. They use scene hotspot anchors, fine cyan leader lines, resize-aware label placement, and
+priority suppression when labels would collide. Connection hashes, event cursors, occupancy counters,
+sound status, and healthy LIVE state are not player-facing Village chrome. Reconnection/offline failures
+and return recaps may still surface when the player must act or understand elapsed settlement history.
+
 The canonical phone icon artwork is the four-mode set embedded in
 `docs/design-proposals/living-village-ui/mockups/village-inventory-phone.png`: the settlement for
 Village, paired hooded residents for Residents, leather pack for Inventory, and hanging mission
