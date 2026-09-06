@@ -49,6 +49,8 @@
 		"skill-icon-quality-cleanup-lib.spec.ts",
 		"export-skill-icon-quality-cleanup.ts",
 		"persist-skill-icon-cleanup-output.ts",
-		"persist-skill-icon-cleanup-output.spec.ts"
+		"persist-skill-icon-cleanup-output.spec.ts",
+		"render-skill-icon-quality-cleanup-review.ts",
+		"render-skill-icon-quality-cleanup-review.spec.ts"
 	]
 }

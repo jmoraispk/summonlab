@@ -716,13 +716,13 @@ ordinary `pnpm test` CI path.
 - Consumes: 28 immutable revision packets and the completed deterministic cleanup set.
 - Produces: revised composites/results plus one complete end-of-run review package.
 
-- [ ] **Step 1: Dispatch all confirmed semantic jobs without intermediate checkpoints**
+- [x] **Step 1: Dispatch all confirmed semantic jobs without intermediate checkpoints**
 
 Generate exactly one provider image per packet, with at most one bounded corrective edit when the
 packet permits it. Persist every successful result immediately. A failed target does not erase
 other completed work and remains resumable only through a new explicit revision.
 
-- [ ] **Step 2: Re-finalize the catalog with revised interiors selected**
+- [x] **Step 2: Re-finalize the catalog with revised interiors selected**
 
 ```bash
 corepack pnpm finalize:skill-icon-quality-cleanup
@@ -732,14 +732,14 @@ corepack pnpm validate:skill-icon-quality-cleanup
 Expected: all 456 composites remain present; 28 select revised interiors; deterministic-only records
 retain their original cleanup hashes.
 
-- [ ] **Step 3: Render the review package**
+- [x] **Step 3: Render the review package**
 
 The catalog pages show before/after pairs over a solid-dark well with target name, domain/family,
 rank, motif family, disposition, and finding tags outside the image. The focused sheets show the ten
 frame examples, all 28 semantic revisions, and the ten undecided symbolic-language cases at no less
 than 384 pixels per icon.
 
-- [ ] **Step 4: Run complete technical validation**
+- [x] **Step 4: Run complete technical validation**
 
 ```bash
 corepack pnpm check:skill-icon-quality-cleanup
@@ -752,7 +752,7 @@ corepack pnpm test:skill-icons
 
 Expected: all commands PASS and check modes write zero files.
 
-- [ ] **Step 5: Commit the completed candidate batch**
+- [x] **Step 5: Commit the completed candidate batch**
 
 ```bash
 git add assets/wiki/skills/icon-production-v1/quality-cleanup-v1
