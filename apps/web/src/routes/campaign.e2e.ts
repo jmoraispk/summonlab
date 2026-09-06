@@ -1,11 +1,21 @@
 import { randomUUID } from 'node:crypto';
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function createCampaign(page: Page, seed: string) {
+	const response = await page.request.post('/api/campaigns', {
+		data: { seed, controlMode: 'wait' }
+	});
+	expect(response.status()).toBe(201);
+	return (await response.json()) as {
+		campaign: { runId: string };
+		resumePath: string;
+	};
+}
 
 test('default company arrives as three realistic inspectable heroes', async ({ page }) => {
-	await page.goto('/');
-	await page.getByLabel('New chronicle seed').fill('hearth-01');
-	await page.getByTestId('begin-campaign').click();
+	const { resumePath } = await createCampaign(page, 'hearth-01');
+	await page.goto(resumePath);
 	await page.getByTestId('answer-reserve-bell').click();
 	await page.getByTestId('open-summoning-gate').click();
 
@@ -15,7 +25,7 @@ test('default company arrives as three realistic inspectable heroes', async ({ p
 	await expect(page.getByTestId('summoned-hero-portrait')).toBeVisible();
 	await expect(page.getByTestId('summoned-hero-portrait')).toHaveAttribute(
 		'src',
-		/^\/runtime\/visual-catalog-v1\/hero-jori-daro-anchor-v1\/summon\.[a-f0-9]{12}\.webp$/u
+		/^\/runtime\/(?:visual-catalog-v1|summonable-heroes-v1)\/[^/]+\/summon\.[a-f0-9]{12}\.webp$/u
 	);
 	if (process.env.CAPTURE_FIN007_CORRECTION_DIR) {
 		await page.screenshot({
@@ -31,9 +41,14 @@ test('default company arrives as three realistic inspectable heroes', async ({ p
 		});
 	}
 
+	const secondHeroName = (await heroes.nth(1).locator('strong').textContent())?.trim();
+	if (!secondHeroName) throw new Error('Second hero did not expose a display name');
 	await heroes.nth(1).click({ button: 'right' });
 	await expect(heroes.nth(1)).toHaveAttribute('aria-selected', 'true');
-	await expect(page.getByTestId('summoned-hero-portrait')).toHaveAttribute('alt', /Dara Zev/u);
+	await expect(page.getByTestId('summoned-hero-portrait')).toHaveAttribute(
+		'alt',
+		`${secondHeroName}, newly summoned at the gate`
+	);
 });
 
 test('onboards a stable company and preserves the prior chronicle when restarted', async ({
@@ -64,55 +79,21 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 
 	await page.goto('/');
 	await expect(page.getByTestId('campaign-title')).toBeVisible();
-	await expect(page.getByRole('heading', { name: /They were summoned/ })).toBeVisible();
-	await expect(page.getByAltText('An agent hero crossing an arcane summoning gate')).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Summonlab' })).toBeAttached();
+	await expect(page.getByTestId('enter-village')).toBeVisible();
+	await expect(page.locator('.key-art')).toBeVisible();
 	await capture('title');
 
-	const settingsButton = page.getByRole('button', { name: 'Settings', exact: true });
-	await settingsButton.focus();
-	await settingsButton.press('Enter');
-	const settingsDialog = page.getByRole('dialog', { name: 'Settings' });
-	await expect(settingsDialog).toBeFocused();
-	const titleSettings = page.getByTestId('player-settings');
-	await titleSettings.getByRole('radio', { name: 'Large', exact: true }).check();
-	await titleSettings.getByRole('radio', { name: 'Reduced', exact: true }).check();
-	await titleSettings.getByRole('radio', { name: 'Full mix', exact: true }).check();
-	await titleSettings.getByRole('radio', { name: '5-second handoff', exact: true }).check();
-	await expect(titleSettings.getByRole('checkbox', { name: 'Captions on' })).toBeChecked();
-	await expect(page.locator('html')).toHaveAttribute('data-player-text', 'large');
-	await expect(page.locator('html')).toHaveAttribute('data-player-motion', 'reduced');
-	await expect(page.locator('html')).toHaveAttribute('data-player-sound', 'full');
-	await expect(page.getByTestId('sensory-controls')).toHaveAttribute('data-audio-state', 'active');
-	await capture('settings');
-	await settingsDialog.press('Escape');
-	await expect(settingsButton).toBeFocused();
-	await page.reload();
-	await page.getByRole('button', { name: 'Settings', exact: true }).click();
-	await expect(
-		page.getByTestId('player-settings').getByRole('radio', { name: 'Large', exact: true })
-	).toBeChecked();
-	await expect(
-		page.getByTestId('player-settings').getByRole('radio', { name: 'Reduced', exact: true })
-	).toBeChecked();
-	await expect(
-		page
-			.getByTestId('player-settings')
-			.getByRole('radio', { name: '5-second handoff', exact: true })
-	).toBeChecked();
-	await expect(
-		page.getByTestId('player-settings').getByRole('radio', { name: 'Full mix', exact: true })
-	).toBeChecked();
-	await page.getByRole('button', { name: /Close/ }).click();
-	await page.getByRole('button', { name: 'Start sound' }).click();
-	await expect(page.getByTestId('sensory-controls')).toHaveAttribute('data-audio-state', 'active');
-
-	await page.getByLabel('New chronicle seed').fill(seed);
-	await page.getByTestId('begin-campaign').click();
+	const { campaign, resumePath } = await createCampaign(page, seed);
+	await page.goto('/');
+	await expect(page.getByTestId('enter-village')).toHaveAttribute(
+		'href',
+		/^\/(?:onboarding|play)\/[a-f0-9-]+$/u
+	);
+	await page.goto(resumePath);
 	await expect(page).toHaveURL(/\/onboarding\/[a-f0-9-]+$/u);
-	await expect(page.locator('#main-content')).toBeFocused();
 	expect(await page.evaluate(() => window.scrollY)).toBe(0);
-	const firstRunId = page.url().split('/').at(-1);
-	if (!firstRunId) throw new Error('Campaign onboarding URL did not include a run ID');
+	const firstRunId = campaign.runId;
 
 	await expect(page.getByTestId('onboarding-step')).toHaveText('PROLOGUE · 1/4');
 	await expect(page.getByTestId('active-objective')).toContainText('Reach the summoning gate');
@@ -161,12 +142,16 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	await expect(page.getByTestId('campaign-objectives').locator('article.complete')).toHaveCount(4);
 	await capture('pause');
 	await pauseMenu.getByRole('button', { name: 'Settings', exact: true }).click();
-	await expect(pauseMenu.getByRole('radio', { name: 'Large', exact: true })).toBeChecked();
-	await expect(pauseMenu.getByRole('radio', { name: 'Reduced', exact: true })).toBeChecked();
-	await expect(
-		pauseMenu.getByRole('radio', { name: '5-second handoff', exact: true })
-	).toBeChecked();
-	await expect(pauseMenu.getByRole('radio', { name: 'Full mix', exact: true })).toBeChecked();
+	const settings = pauseMenu.getByTestId('player-settings');
+	await settings.getByRole('radio', { name: 'Large', exact: true }).check();
+	await settings.getByRole('radio', { name: 'Reduced', exact: true }).check();
+	await settings.getByRole('radio', { name: 'Full mix', exact: true }).check();
+	await settings.getByRole('radio', { name: '5-second handoff', exact: true }).check();
+	await expect(settings.getByRole('checkbox', { name: 'Captions on' })).toBeChecked();
+	await expect(page.locator('html')).toHaveAttribute('data-player-text', 'large');
+	await expect(page.locator('html')).toHaveAttribute('data-player-motion', 'reduced');
+	await expect(page.locator('html')).toHaveAttribute('data-player-sound', 'full');
+	await capture('settings');
 
 	await pauseMenu.getByRole('button', { name: 'Restart same seed', exact: true }).click();
 	await pauseMenu.getByRole('button', { name: 'Confirm restart', exact: true }).click();

@@ -1,568 +1,268 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { onMount, tick } from 'svelte';
-	import PlaytestConsentPanel from '$lib/components/PlaytestConsentPanel.svelte';
-	import PlayerSettingsPanel from '$lib/components/PlayerSettingsPanel.svelte';
-	import { loadPlayerSettings } from '$lib/player-settings';
-	import { trackPlaytestEvent } from '$lib/playtest-analytics';
-	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import playerVisualManifest from '../../static/runtime/player/manifest.json';
 
 	const titlePhone = playerVisualManifest.assets.find((asset) => asset.usage === 'title-phone')!;
 	const titleDesktop = playerVisualManifest.assets.find(
 		(asset) => asset.usage === 'title-desktop'
 	)!;
+	const openingPath = resolve('/living-village-lab/opening');
 
 	let { data } = $props();
-	let seed = $state('hearth-01');
-	let beginning = $state(false);
-	let errorMessage = $state('');
-	let settingsOpen = $state(false);
-	let settingsDialog = $state<HTMLDivElement>(null!);
-	let settingsTrigger = $state<HTMLButtonElement>(null!);
-	let returnFocus: HTMLElement | null = null;
-
-	onMount(() => {
-		loadPlayerSettings();
-	});
-
-	async function openSettings() {
-		returnFocus =
-			document.activeElement instanceof HTMLElement ? document.activeElement : settingsTrigger;
-		settingsOpen = true;
-		await tick();
-		focusDialog(settingsDialog);
-	}
-
-	async function closeSettings() {
-		settingsOpen = false;
-		await tick();
-		returnFocus?.focus();
-	}
-
-	async function beginCampaign() {
-		beginning = true;
-		errorMessage = '';
-		try {
-			const response = await fetch('/api/campaigns', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ seed, controlMode: loadPlayerSettings().controlMode })
-			});
-			const body = (await response.json()) as {
-				campaign?: { runId: string };
-				message?: string;
-			};
-			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'The gate stayed dark.');
-			await trackPlaytestEvent({
-				eventType: 'campaign_started',
-				route: 'title',
-				runId: body.campaign.runId,
-				controlMode: loadPlayerSettings().controlMode
-			});
-			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'The gate stayed dark.';
-			beginning = false;
-		}
-	}
+	let villagePath = $derived(data.resumePath ?? openingPath);
 </script>
 
 <svelte:head>
-	<title>Summonlab · Every hero chooses</title>
+	<title>Summonlab · Enter the Village</title>
 	<meta
 		name="description"
-		content="Lead an autonomous summoned company through a hundred-floor tower and a living settlement."
+		content="Enter a living settlement, summon autonomous heroes, and prepare them for a hundred-floor Tower."
 	/>
 </svelte:head>
 
-<main data-testid="campaign-title" inert={settingsOpen}>
-	<img
-		class="key-art"
-		src={titleDesktop.publicPath}
-		srcset={`${titlePhone.publicPath} ${titlePhone.width}w, ${titleDesktop.publicPath} ${titleDesktop.width}w`}
-		sizes="(max-width: 650px) 100vw, 78vw"
-		width={titleDesktop.width}
-		height={titleDesktop.height}
-		fetchpriority="high"
-		decoding="async"
-		alt="An agent hero crossing an arcane summoning gate"
-	/>
-	<div class="wash"></div>
-	<div class="grain"></div>
+<main data-testid="campaign-title">
+	<picture class="gateway-art" aria-hidden="true">
+		<source media="(max-width: 650px)" srcset={titlePhone.publicPath} />
+		<img
+			class="key-art"
+			src={titleDesktop.publicPath}
+			width={titleDesktop.width}
+			height={titleDesktop.height}
+			fetchpriority="high"
+			decoding="async"
+			alt=""
+		/>
+	</picture>
+	<div class="scene-veil" aria-hidden="true"></div>
 
 	<header>
-		<a class="wordmark" href={resolve('/')}>SUMMON<span>LAB</span></a>
-		<div class="system-state" class:offline={data.health.database.status !== 'available'}>
-			<i></i>{data.health.database.status === 'available' ? 'Hearth online' : 'Hearth offline'}
-		</div>
-		<a class="wiki-button" href={resolve('/wiki')} data-testid="open-wiki">Wiki</a>
-		<button bind:this={settingsTrigger} type="button" onclick={openSettings} data-sound-cue="menu"
-			>Settings</button
-		>
+		<p class="wordmark" aria-hidden="true">
+			<span>Summon</span><strong>lab</strong>
+		</p>
+		<a class="wiki-link" href={resolve('/wiki')} data-testid="open-wiki">Wiki</a>
 	</header>
 
-	<section class="title-copy">
-		<p class="kicker">A 100-floor autonomous RPG</p>
-		<h1>They were summoned.<br /><em>They still choose.</em></h1>
-		<p class="premise">
-			Wake the last settlement. Call three strangers through the gate. Earn their trust—or lead
-			alone—while every habit, fear, promise, and death becomes history.
-		</p>
-
-		{#if data.campaign && data.resumePath}
-			<a class="continue" href={data.resumePath} data-testid="continue-campaign">
-				<span>Continue chronicle</span>
-				<strong>{data.campaign.campaignSeed}</strong>
-				<small
-					>Onboarding {data.campaign.onboardingStep}/3 · {data.campaign.heroes.length} summoned</small
-				>
-				<b>→</b>
-			</a>
-		{/if}
-
-		<form
-			onsubmit={(event) => {
-				event.preventDefault();
-				void beginCampaign();
-			}}
-		>
-			<label for="campaign-seed">New chronicle seed</label>
-			<div class="seed-row">
-				<input id="campaign-seed" bind:value={seed} minlength="1" maxlength="128" required />
-				<button
-					type="submit"
-					disabled={beginning}
-					data-testid="begin-campaign"
-					data-sound-cue="gate"
-				>
-					{beginning ? 'Opening…' : 'Begin'}
-				</button>
-			</div>
-			<p>
-				One seed binds physiology, personality, habits, and the first company. Reuse it to replay.
-			</p>
-		</form>
-
-		<PlaytestConsentPanel compact />
-
-		{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
+	<section class="entry">
+		<h1>Summonlab</h1>
+		<a class="enter-village" href={villagePath} data-testid="enter-village" data-sound-cue="gate">
+			Enter Village
+		</a>
 	</section>
-
-	<aside class="tower-mark" aria-hidden="true">
-		<span>FLOOR</span><strong>001</strong><i>／100</i>
-	</aside>
-
-	<footer>
-		<p>Adult heroes · permanent history · autonomous lives</p>
-		<nav aria-label="Development tools">
-			<a href={resolve('/forge')}>Forge</a>
-			<a href={resolve('/mission-lab')}>Mission lab</a>
-			<a href={resolve('/playtest-report')}>Playtest signal</a>
-			<a href={resolve('/design-reference')}>Design notes</a>
-		</nav>
-	</footer>
 </main>
 
-{#if settingsOpen}
-	<div class="settings-backdrop">
-		<div
-			bind:this={settingsDialog}
-			class="settings-modal"
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="settings-title"
-			tabindex="-1"
-			onkeydown={(event) => handleModalKeydown(event, settingsDialog, closeSettings)}
-		>
-			<header>
-				<div>
-					<span>Local preferences</span>
-					<h2 id="settings-title">Settings</h2>
-				</div>
-				<button type="button" onclick={closeSettings} data-sound-cue="menu">Close ×</button>
-			</header>
-			<PlayerSettingsPanel />
-		</div>
-	</div>
-{/if}
-
 <style>
-	:global(body) {
-		background: #070707;
-		color: #f4ead6;
+	:global(html) {
+		background: #020304;
 	}
+
+	:global(body) {
+		overflow: hidden;
+		background: #020304;
+		color: #f2eadb;
+	}
+
 	main {
 		position: relative;
+		display: grid;
 		min-height: 100svh;
 		overflow: hidden;
-		background: #080806;
 		isolation: isolate;
+		background: #020304;
+		font-family: Georgia, 'Times New Roman', serif;
 	}
-	.key-art {
-		position: absolute;
-		inset: 0 0 0 auto;
-		z-index: -4;
-		width: min(78vw, 92rem);
-		height: 100%;
-		object-fit: cover;
-		object-position: 64% center;
-		filter: saturate(0.78) contrast(1.06);
-		animation: breathe 14s ease-in-out infinite alternate;
-	}
-	.wash {
+
+	.gateway-art,
+	.gateway-art::after,
+	.scene-veil {
 		position: absolute;
 		inset: 0;
+	}
+
+	.gateway-art {
 		z-index: -3;
+		display: block;
+	}
+
+	.gateway-art::after {
+		content: '';
 		background:
 			linear-gradient(
-				90deg,
-				#070707 0%,
-				#070707 28%,
-				rgba(7, 7, 7, 0.87) 47%,
-				rgba(7, 7, 7, 0.14) 78%
+				180deg,
+				rgba(1, 2, 3, 0.34),
+				transparent 24%,
+				transparent 70%,
+				rgba(1, 2, 3, 0.42)
 			),
-			linear-gradient(0deg, rgba(4, 4, 4, 0.82), transparent 42%);
+			linear-gradient(90deg, rgba(1, 2, 3, 0.16), transparent 42%);
 	}
-	.grain {
-		position: absolute;
-		inset: 0;
+
+	.key-art {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		animation: gateway-breathe 14s ease-in-out infinite alternate;
+	}
+
+	.scene-veil {
 		z-index: -2;
-		opacity: 0.18;
 		pointer-events: none;
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+		background:
+			radial-gradient(circle at 76% 54%, transparent 24%, rgba(0, 0, 0, 0.12) 58%),
+			linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent 18%);
 	}
-	main > header {
+
+	header {
+		align-self: start;
 		display: flex;
 		align-items: center;
-		gap: 1.5rem;
-		padding: 1.35rem clamp(1rem, 4vw, 4rem);
-		border-bottom: 1px solid rgba(242, 210, 154, 0.12);
+		justify-content: space-between;
+		padding: clamp(1.6rem, 4vw, 3.6rem) clamp(1.5rem, 4vw, 4rem);
 	}
-	.wordmark {
-		margin-right: auto;
-		color: #f4ead6;
-		font-family: Georgia, serif;
-		font-size: 1.06rem;
-		letter-spacing: 0.17em;
+
+	.wordmark,
+	.wiki-link {
+		margin: 0;
+		color: #efe8db;
+		font-size: 0.95rem;
+		letter-spacing: 0.3em;
 		text-decoration: none;
+		text-transform: uppercase;
+		text-shadow: 0 2px 1.5rem #000;
 	}
-	.wordmark span {
-		color: #bd5a2b;
+
+	.wordmark strong {
+		color: #bf5b2b;
+		font-weight: 400;
 	}
-	.wiki-button {
-		padding: 0.55rem 0.75rem;
-		border: 1px solid rgba(224, 166, 110, 0.42);
-		color: #e7cba7;
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.12em;
+
+	.wiki-link {
+		padding: 0.7rem 0 0.7rem 0.7rem;
+		color: rgba(239, 232, 219, 0.72);
+		font-size: 0.72rem;
+		transition: color 180ms ease;
+	}
+
+	.wiki-link:hover,
+	.wiki-link:focus-visible {
+		color: #fff5e5;
+	}
+
+	.entry {
+		align-self: end;
+		justify-self: start;
+		margin: 0 1.5rem clamp(2.8rem, 7vh, 5.5rem) clamp(1.5rem, 7.5vw, 7rem);
+	}
+
+	h1 {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	.enter-village {
+		display: grid;
+		width: min(28rem, calc(100vw - 3rem));
+		min-height: 6.5rem;
+		place-items: center;
+		border: 1px solid rgba(211, 153, 86, 0.88);
+		background: rgba(4, 5, 5, 0.9);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 223, 169, 0.05),
+			0 1.5rem 4rem rgba(0, 0, 0, 0.32);
+		color: #f4ebdb;
+		font-size: clamp(1.35rem, 2.3vw, 2rem);
+		letter-spacing: 0.18em;
+		text-align: center;
 		text-decoration: none;
+		text-shadow: 0 1px 0.8rem rgba(255, 209, 139, 0.22);
 		text-transform: uppercase;
 		transition:
-			border-color 160ms ease,
-			background 160ms ease,
-			color 160ms ease;
+			border-color 180ms ease,
+			background 180ms ease,
+			box-shadow 180ms ease,
+			color 180ms ease;
 	}
-	.wiki-button:hover,
-	.wiki-button:focus-visible {
-		border-color: #d0733b;
-		background: rgba(164, 61, 32, 0.2);
-		color: #fff1dc;
-		outline: none;
+
+	.enter-village:hover,
+	.enter-village:focus-visible {
+		border-color: #f0b96f;
+		background: rgba(22, 14, 8, 0.94);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 223, 169, 0.12),
+			0 0 2.5rem rgba(200, 118, 49, 0.18),
+			0 1.5rem 4rem rgba(0, 0, 0, 0.4);
+		color: #fff7e9;
 	}
-	main > header button {
-		border: 0;
-		background: transparent;
-		color: rgba(244, 234, 214, 0.7);
-		font: inherit;
-		font-size: 0.65rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		cursor: pointer;
+
+	.enter-village:active {
+		background: rgba(35, 20, 10, 0.96);
 	}
-	.system-state {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-		color: rgba(244, 234, 214, 0.48);
-		font:
-			0.58rem ui-monospace,
-			monospace;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
-	.system-state i {
-		width: 0.4rem;
-		height: 0.4rem;
-		border-radius: 50%;
-		background: #5fbc83;
-		box-shadow: 0 0 1rem #5fbc83;
-	}
-	.system-state.offline i {
-		background: #a84832;
-		box-shadow: none;
-	}
-	.title-copy {
-		width: min(38rem, calc(100% - 2rem));
-		margin: clamp(4rem, 10vh, 8rem) 0 8rem clamp(1rem, 9vw, 9rem);
-	}
-	.kicker,
-	form label,
-	.settings-modal span {
-		margin: 0 0 0.9rem;
-		color: #d0733b;
-		font:
-			0.62rem ui-monospace,
-			monospace;
-		letter-spacing: 0.19em;
-		text-transform: uppercase;
-	}
-	h1 {
-		margin: 0;
-		font-family: Georgia, serif;
-		font-size: clamp(3.3rem, 7vw, 7rem);
-		font-weight: 400;
-		line-height: 0.86;
-		letter-spacing: -0.065em;
-		text-shadow: 0 0.3rem 2rem rgba(0, 0, 0, 0.7);
-	}
-	h1 em {
-		color: #e0a66e;
-		font-weight: 400;
-	}
-	.premise {
-		max-width: 35rem;
-		margin: 1.8rem 0 2rem;
-		color: rgba(244, 234, 214, 0.65);
-		font-family: Georgia, serif;
-		font-size: clamp(0.92rem, 1.3vw, 1.1rem);
-		line-height: 1.7;
-	}
-	.continue {
-		position: relative;
-		display: grid;
-		grid-template-columns: 1fr auto;
-		margin-bottom: 1rem;
-		padding: 1rem 3.2rem 1rem 1.1rem;
-		border: 1px solid rgba(229, 158, 88, 0.45);
-		background: linear-gradient(90deg, rgba(158, 57, 24, 0.32), rgba(20, 15, 10, 0.76));
-		color: #f4ead6;
-		text-decoration: none;
-	}
-	.continue span,
-	.continue small {
-		grid-column: 1;
-		color: #d0733b;
-		font:
-			0.56rem ui-monospace,
-			monospace;
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-	}
-	.continue strong {
-		margin: 0.25rem 0;
-		font:
-			1.15rem Georgia,
-			serif;
-	}
-	.continue small {
-		color: rgba(244, 234, 214, 0.44);
-		letter-spacing: 0.04em;
-		text-transform: none;
-	}
-	.continue b {
-		position: absolute;
-		right: 1.2rem;
-		top: 50%;
-		color: #e0a66e;
-		transform: translateY(-50%);
-	}
-	form {
-		padding: 1rem 1.1rem;
-		border: 1px solid rgba(244, 234, 214, 0.14);
-		background: rgba(6, 6, 5, 0.72);
-		backdrop-filter: blur(12px);
-	}
-	form label {
-		display: block;
-		margin-bottom: 0.65rem;
-	}
-	.seed-row {
-		display: grid;
-		grid-template-columns: 1fr auto;
-	}
-	.seed-row input {
-		min-width: 0;
-		padding: 0.9rem 1rem;
-		border: 1px solid rgba(244, 234, 214, 0.18);
-		border-right: 0;
-		background: rgba(255, 255, 255, 0.035);
-		color: #f4ead6;
-		font:
-			0.78rem ui-monospace,
-			monospace;
-		outline: 0;
-	}
-	.seed-row input:focus {
-		border-color: #ce6e38;
-	}
-	.seed-row button {
-		min-width: 7.5rem;
-		border: 1px solid #c56230;
-		background: #a43d20;
-		color: white;
-		font:
-			0.65rem ui-monospace,
-			monospace;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		cursor: pointer;
-	}
-	form p {
-		margin: 0.65rem 0 0;
-		color: rgba(244, 234, 214, 0.38);
-		font-size: 0.63rem;
-		line-height: 1.4;
-	}
-	.error {
-		color: #ff9a7c;
-		font-size: 0.75rem;
-	}
-	.tower-mark {
-		position: absolute;
-		right: clamp(1rem, 4vw, 4rem);
-		bottom: 5rem;
-		display: grid;
-		text-align: right;
-		text-shadow: 0 0.2rem 1rem #000;
-	}
-	.tower-mark span {
-		color: rgba(244, 234, 214, 0.45);
-		font:
-			0.55rem ui-monospace,
-			monospace;
-		letter-spacing: 0.22em;
-	}
-	.tower-mark strong {
-		font:
-			4.6rem/0.9 Georgia,
-			serif;
-		font-weight: 400;
-	}
-	.tower-mark i {
-		color: #d0733b;
-		font:
-			0.72rem ui-monospace,
-			monospace;
-	}
-	main > footer {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		display: flex;
-		justify-content: space-between;
-		padding: 1.1rem clamp(1rem, 4vw, 4rem);
-		border-top: 1px solid rgba(242, 210, 154, 0.1);
-		color: rgba(244, 234, 214, 0.35);
-		font:
-			0.55rem ui-monospace,
-			monospace;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-	footer p {
-		margin: 0;
-	}
-	footer nav {
-		display: flex;
-		gap: 1rem;
-	}
-	footer a {
-		color: inherit;
-		text-decoration: none;
-	}
-	.settings-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 100;
-		display: grid;
-		place-items: center;
-		padding: 1rem;
-		background: rgba(0, 0, 0, 0.82);
-		backdrop-filter: blur(14px);
-	}
-	.settings-modal {
-		width: min(50rem, 100%);
-		max-height: calc(100svh - 2rem);
-		overflow: auto;
-		padding: 1.5rem;
-		border: 1px solid rgba(229, 158, 88, 0.3);
-		background: #0c0b09;
-		color: #f4ead6;
-	}
-	.settings-modal header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-	}
-	.settings-modal h2 {
-		margin: 0.2rem 0 1rem;
-		font:
-			2.4rem Georgia,
-			serif;
-		font-weight: 400;
-	}
-	.settings-modal button {
-		border: 0;
-		background: none;
-		color: rgba(244, 234, 214, 0.6);
-		cursor: pointer;
-	}
-	@keyframes breathe {
+
+	@keyframes gateway-breathe {
 		from {
-			transform: scale(1.01);
+			filter: saturate(0.94) brightness(0.96);
+			transform: scale(1);
 		}
 		to {
-			transform: scale(1.055) translateX(-0.4%);
+			filter: saturate(1.04) brightness(1.02);
+			transform: scale(1.012);
 		}
 	}
-	:global(html[data-player-motion='reduced']) .key-art {
-		animation: none;
-	}
-	@media (max-width: 700px) {
-		.key-art {
-			inset: 0;
+
+	@media (max-width: 650px) {
+		header {
+			padding: max(1.5rem, env(safe-area-inset-top)) 1.6rem 1rem;
+		}
+
+		.wordmark {
+			font-size: 0.9rem;
+			letter-spacing: 0.25em;
+		}
+
+		.wiki-link {
+			font-size: 0.68rem;
+		}
+
+		.entry {
+			justify-self: stretch;
+			margin: 0 1.6rem max(3rem, calc(env(safe-area-inset-bottom) + 1.5rem));
+		}
+
+		.enter-village {
 			width: 100%;
-			object-position: 62% center;
-			opacity: 0.55;
+			min-height: 6.75rem;
+			font-size: clamp(1.25rem, 6vw, 1.6rem);
+			letter-spacing: 0.15em;
 		}
-		.wash {
-			background: linear-gradient(0deg, #070707 0%, rgba(7, 7, 7, 0.74) 62%, rgba(7, 7, 7, 0.24));
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.key-art {
+			animation: none;
 		}
-		.system-state {
+
+		.enter-village,
+		.wiki-link {
+			transition: none;
+		}
+	}
+
+	@media (forced-colors: active) {
+		.scene-veil,
+		.gateway-art::after {
 			display: none;
 		}
-		.title-copy {
-			margin: clamp(5rem, 12vh, 8rem) auto 8rem;
-			padding: 0 0.1rem;
-		}
-		h1 {
-			font-size: clamp(3.2rem, 16vw, 5rem);
-		}
-		.tower-mark {
-			display: none;
-		}
-		main > footer {
-			align-items: flex-start;
-			gap: 0.8rem;
-		}
-		footer nav {
-			flex-wrap: wrap;
-			justify-content: flex-end;
+
+		.wordmark,
+		.wiki-link,
+		.enter-village {
+			color: LinkText;
 		}
 	}
 </style>

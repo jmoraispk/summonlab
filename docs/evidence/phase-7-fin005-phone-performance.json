@@ -1,7 +1,7 @@
 {
   "schemaVersion": "phone-performance-report-v1",
-  "recordedAt": "2026-09-04T04:33:57.614Z",
-  "sourceRevision": "4ef8c04b1203040240a3e6c1ac5352db4762257b",
+  "recordedAt": "2026-09-06T17:46:15.929Z",
+  "sourceRevision": "working-tree",
   "profile": {
     "name": "mid-range-phone-390x844-2x",
     "viewportWidth": 390,
@@ -23,16 +23,16 @@
     "rendererWorkingSetReferenceBytes": 300000000
   },
   "measurements": {
-    "interactiveShellMs": 819.2,
+    "interactiveShellMs": 779.8,
     "initialJavaScriptGzipBytes": 49376,
-    "playerTitleVisualBytes": 47288,
+    "playerTitleVisualBytes": 51714,
     "firstSettlementVisualBytes": 296168,
     "activeSceneFramesPerSecond": 60,
-    "interfaceResponseP95Ms": 30.4,
-    "reconnectMs": 2517.4,
-    "javascriptHeapBytes": 4564516,
-    "decodedImageBytes": 6291456,
-    "rendererWorkingSetReferenceBytes": 10855972
+    "interfaceResponseP95Ms": 38.7,
+    "reconnectMs": 2779.4,
+    "javascriptHeapBytes": 4515616,
+    "decodedImageBytes": 9830400,
+    "rendererWorkingSetReferenceBytes": 14346016
   },
   "status": {
     "interactiveShell": "within-budget",

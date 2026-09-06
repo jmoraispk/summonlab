@@ -24,6 +24,7 @@
 	let visualTimer: ReturnType<typeof setTimeout> | null = null;
 	const profile = $derived(soundProfileForPath(page.url.pathname));
 	const available = $derived(profile !== 'silence');
+	const showControls = $derived(available && page.url.pathname !== '/');
 	const buttonLabel = $derived(
 		settings.sound === 'muted' ? 'Turn sound on' : active ? 'Mute sound' : 'Start sound'
 	);
@@ -94,7 +95,7 @@
 	}
 </script>
 
-{#if available}
+{#if showControls}
 	<div
 		class={`sensory-layer profile-${profile}`}
 		class:active

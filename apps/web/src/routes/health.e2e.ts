@@ -1,21 +1,13 @@
 import { expect, test } from '@playwright/test';
 
-test('renders the player title with live foundation health', async ({ page }) => {
+test('renders the focused player title without operational diagnostics', async ({ page }) => {
 	await page.goto('/');
 
 	await expect(page.getByTestId('campaign-title')).toBeVisible();
-	await expect(page.getByRole('heading', { name: /They were summoned/ })).toBeVisible();
-	await expect
-		.poll(
-			async () => {
-				if (await page.getByText('Hearth online').isVisible()) return true;
-				await page.reload();
-				return page.getByText('Hearth online').isVisible();
-			},
-			{ timeout: 15_000 }
-		)
-		.toBe(true);
-	await expect(page.getByRole('link', { name: 'Design notes' })).toBeVisible();
+	await expect(page.getByTestId('enter-village')).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Wiki', exact: true })).toBeVisible();
+	await expect(page.getByText(/Hearth (?:online|offline)/u)).toHaveCount(0);
+	await expect(page.getByRole('link', { name: 'Design notes' })).toHaveCount(0);
 
 	if (process.env.CAPTURE_FOUNDATION) {
 		await page.screenshot({ path: process.env.CAPTURE_FOUNDATION, fullPage: true });

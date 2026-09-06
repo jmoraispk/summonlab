@@ -14,22 +14,22 @@ import sharp from 'sharp';
 
 const EXPORTER_VERSION = 'player-visual-exporter-v1' as const;
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const sourceFile = 'assets/agent-summoning-concept.png';
-const sourcePath = resolve(workspaceRoot, sourceFile);
 const outputRoot = resolve(workspaceRoot, 'apps/web/static/runtime/player');
 const manifestPath = resolve(outputRoot, 'manifest.json');
 
 const profiles = [
 	{
 		usage: 'title-phone' as const,
-		width: 832,
+		sourceFile: 'assets/title-gateway-background-phone-v1.png',
+		width: 480,
 		quality: 78,
 		budgetBytes: 100_000,
 		decodedMemoryBudgetBytes: 2_000_000
 	},
 	{
 		usage: 'title-desktop' as const,
-		width: 1_681,
+		sourceFile: 'assets/title-gateway-background-desktop-v1.png',
+		width: 1_486,
 		quality: 82,
 		budgetBytes: 250_000,
 		decodedMemoryBudgetBytes: 8_000_000
@@ -44,10 +44,10 @@ async function buildManifest(): Promise<{
 	manifest: PlayerVisualManifest;
 	generated: ReadonlyArray<{ record: PlayerVisualAsset; buffer: Buffer }>;
 }> {
-	const source = await readFile(sourcePath);
-	const sourceContentHash = sha256(source);
 	const generated = await Promise.all(
 		profiles.map(async (profile) => {
+			const source = await readFile(resolve(workspaceRoot, profile.sourceFile));
+			const sourceContentHash = sha256(source);
 			const { data, info } = await sharp(source)
 				.rotate()
 				.resize({ width: profile.width, fit: 'inside', withoutEnlargement: true })
@@ -64,7 +64,7 @@ async function buildManifest(): Promise<{
 				buffer: data,
 				record: PlayerVisualManifestSchema.shape.assets.element.parse({
 					usage: profile.usage,
-					sourceFile,
+					sourceFile: profile.sourceFile,
 					sourceContentHash,
 					file: `apps/web/static/${file}`,
 					publicPath: `/${file}`,
