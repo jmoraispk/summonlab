@@ -1,5 +1,6 @@
 export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION',
+	'CAPABILITY_ENGINE_CONTENT_VERSION',
 	'COMMUNICATION_ENGINE_CONTENT_VERSION',
 	'CONVERSATION_ENGINE_CONTENT_VERSION',
 	'DEFAULT_MEMORY_CHARACTER_LIMIT',
@@ -43,6 +44,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'assembleHeroDecisionPacket',
 	'canceledScheduledEventIdsFromEvent',
 	'canonicalJson',
+	'capabilityProfileFromLegacyMind',
 	'commandFromHeroPolicyResult',
 	'compareGameTime',
 	'createBootstrapEngine',

@@ -1,5 +1,8 @@
 import {
 	AuthoritativeEventSchema,
+	CharacterCapabilityProfileV1Schema,
+	CharacterDraftSchema,
+	CharacterDraftV2Schema,
 	CharacterMindSchema,
 	EngineGameStateV13Schema,
 	EngineGameStateV14Schema,
@@ -13,9 +16,16 @@ import {
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
 	EngineSnapshotSchema,
 	EquipmentMaterialIdSchema,
 	ResourceKeySchema,
+	type CharacterCapabilityProfileV1,
+	type CharacterDraft,
+	type CharacterDraftV2,
+	type CharacterMind,
+	type CharacterMindV2,
+	type LearningDomain,
 	type RewardDelta
 } from '@summonlab/contracts';
 import { IRON_MOON_PACKAGE, TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
@@ -26,6 +36,7 @@ import { hashParsedGameState } from '../core/state.js';
 import type { BootstrapEngineInput, BootstrapEngineResult } from '../core/types.js';
 import {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
+	CAPABILITY_ENGINE_CONTENT_VERSION,
 	DEFAULT_ACTIVE_SYSTEM_IDS,
 	ENGINE_CONTENT_VERSION,
 	EQUIPMENT_ENGINE_CONTENT_VERSION,
@@ -51,7 +62,7 @@ import {
 	createSealedFirstBandArchive
 } from '../domains/story/archive.js';
 import { createStoryPatchCheckpoint } from '../domains/story/runtime.js';
-import { deterministicUuid, EMPTY_STATE_HASH } from '../hash.js';
+import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from '../hash.js';
 import { adaptLegacyEquipmentItem } from '../domains/settlement/equipment.js';
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
@@ -69,6 +80,130 @@ const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
 	dailyHabit: 'checks-exits',
 	aptitudes: { might: 5, finesse: 5, insight: 5, resolve: 5 }
 });
+
+const CHARACTER_DRAFT_SCHEMA = CharacterDraftSchema.or(CharacterDraftV2Schema);
+const LEGACY_LEARNING_HASH_PURPOSES = {
+	cognitiveLearningScore: 'legacy-learning.cognitive-v1',
+	domainAptitudes: {
+		martial: 'legacy-learning.domain.martial-v1',
+		magical: 'legacy-learning.domain.magical-v1',
+		crafting: 'legacy-learning.domain.crafting-v1',
+		survival: 'legacy-learning.domain.survival-v1',
+		social: 'legacy-learning.domain.social-v1'
+	}
+} as const satisfies {
+	readonly cognitiveLearningScore: string;
+	readonly domainAptitudes: Readonly<Record<LearningDomain, string>>;
+};
+
+function legacyLearningScore(mind: CharacterMind, purpose: string): number {
+	const learningMind = legacyMindWithoutAptitudes(mind);
+	const hash = hashCanonical({ mind: learningMind, purpose });
+	return Number(BigInt(`0x${hash.slice(0, 16)}`) % 101n);
+}
+
+function legacyMindWithoutAptitudes(mind: CharacterMind): CharacterMindV2 {
+	return {
+		personality: mind.personality,
+		primaryValue: mind.primaryValue,
+		primaryDrive: mind.primaryDrive,
+		socialStyle: mind.socialStyle,
+		stressResponse: mind.stressResponse,
+		dailyHabit: mind.dailyHabit
+	};
+}
+
+function deterministicLegacyLearningProfile(mind: CharacterMind) {
+	return {
+		cognitiveLearningScore: legacyLearningScore(
+			mind,
+			LEGACY_LEARNING_HASH_PURPOSES.cognitiveLearningScore
+		),
+		domainAptitudes: Object.fromEntries(
+			Object.entries(LEGACY_LEARNING_HASH_PURPOSES.domainAptitudes).map(([domain, purpose]) => [
+				domain,
+				legacyLearningScore(mind, purpose)
+			])
+		) as Record<LearningDomain, number>
+	};
+}
+
+// Bootstrap compatibility boundary only: never use this to rewrite event history or persisted rows.
+export function capabilityProfileFromLegacyMind(
+	mindInput: CharacterMind
+): CharacterCapabilityProfileV1 {
+	const mind = CharacterMindSchema.parse(mindInput);
+	return CharacterCapabilityProfileV1Schema.parse({
+		profileVersion: 'character-capability-v1',
+		attributes: {
+			might: mind.aptitudes.might * 10,
+			vitality: mind.aptitudes.resolve * 10,
+			agility: mind.aptitudes.finesse * 10,
+			spirit: mind.aptitudes.insight * 10
+		},
+		learning: deterministicLegacyLearningProfile(mind)
+	});
+}
+
+interface BootstrapHero {
+	readonly heroId: string;
+	readonly manifestHash: string;
+	readonly rarityStars?: number;
+	readonly mind: CharacterMind | CharacterMindV2;
+	readonly capabilityProfile?: CharacterCapabilityProfileV1;
+}
+
+function normalizeBootstrapHero(
+	input:
+		| { readonly draft: CharacterDraft | CharacterDraftV2 }
+		| {
+				readonly heroId: string;
+				readonly manifestHash: string;
+				readonly rarityStars?: number;
+				readonly mind?: CharacterMind;
+		  },
+	capabilityEngineState: boolean
+): BootstrapHero {
+	if ('draft' in input) {
+		const draft = CHARACTER_DRAFT_SCHEMA.parse(input.draft);
+		if ('capabilityProfile' in draft) {
+			if (!capabilityEngineState) {
+				throw new Error('V2 drafts require the capability engine bootstrap');
+			}
+			return {
+				heroId: draft.manifest.characterId,
+				manifestHash: draft.manifestHash,
+				rarityStars: draft.manifest.rarityStars,
+				mind: draft.mind,
+				capabilityProfile: draft.capabilityProfile
+			};
+		}
+		if (capabilityEngineState) {
+			return {
+				heroId: draft.manifest.characterId,
+				manifestHash: draft.manifestHash,
+				rarityStars: draft.manifest.rarityStars,
+				mind: legacyMindWithoutAptitudes(draft.mind),
+				capabilityProfile: capabilityProfileFromLegacyMind(draft.mind)
+			};
+		}
+		return {
+			heroId: draft.manifest.characterId,
+			manifestHash: draft.manifestHash,
+			rarityStars: draft.manifest.rarityStars,
+			mind: draft.mind
+		};
+	}
+	const legacyMind = CharacterMindSchema.parse(input.mind ?? DEFAULT_CHARACTER_MIND);
+	if (capabilityEngineState) {
+		return {
+			...input,
+			mind: legacyMindWithoutAptitudes(legacyMind),
+			capabilityProfile: capabilityProfileFromLegacyMind(legacyMind)
+		};
+	}
+	return { ...input, mind: legacyMind };
+}
 
 export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEngineResult {
 	const masterId = deterministicUuid(`${input.runId}:master`);
@@ -89,30 +224,36 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const buildingStates = createBuildingStates(settlementContent);
 	const developmentMissionScenario = input.developmentMissionScenario;
 	const equipmentDevelopmentScenario = input.developmentEquipmentScenario?.enabled === true;
+	const capabilityEngineState =
+		'draft' in input && !developmentMissionScenario && !equipmentDevelopmentScenario;
 	const forgeReady = input.developmentEquipmentScenario?.forgeReady === true;
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
 	}
 	const bootstrapHeroInputs = [
-		{
-			heroId: input.heroId,
-			manifestHash: input.manifestHash,
-			rarityStars: input.rarityStars,
-			mind: input.mind
-		},
+		'draft' in input
+			? { draft: input.draft }
+			: {
+					heroId: input.heroId,
+					manifestHash: input.manifestHash,
+					...(input.rarityStars === undefined ? {} : { rarityStars: input.rarityStars }),
+					...(input.mind === undefined ? {} : { mind: input.mind })
+				},
 		...(input.additionalHeroes ?? developmentMissionScenario?.additionalHeroes ?? [])
 	];
+	const normalizedBootstrapHeroes = bootstrapHeroInputs.map((hero) =>
+		normalizeBootstrapHero(hero, capabilityEngineState)
+	);
 	if (
-		bootstrapHeroInputs.length > 4 ||
-		new Set(bootstrapHeroInputs.map((hero) => hero.heroId)).size !== bootstrapHeroInputs.length
+		normalizedBootstrapHeroes.length > 4 ||
+		new Set(normalizedBootstrapHeroes.map((hero) => hero.heroId)).size !==
+			normalizedBootstrapHeroes.length
 	) {
 		throw new Error('A development bootstrap supports one to four unique summoned heroes');
 	}
-	const bootstrapHeroes = bootstrapHeroInputs.map((hero) => {
-		const mind = CharacterMindSchema.parse(hero.mind ?? DEFAULT_CHARACTER_MIND);
+	const bootstrapHeroes = normalizedBootstrapHeroes.map((hero) => {
 		return {
 			...hero,
-			mind,
 			bladeId: deterministicUuid(`${input.runId}:${hero.heroId}:practice-blade`),
 			bowId: deterministicUuid(`${input.runId}:${hero.heroId}:short-bow`)
 		};
@@ -161,84 +302,92 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const synthesisDevelopmentScenario = developmentMissionScenario?.enableSynthesis === true;
 	const firstBandArchiveDevelopmentScenario =
 		developmentMissionScenario?.enableFirstBandArchive === true || equipmentDevelopmentScenario;
+	const equipmentState = equipmentDevelopmentScenario || capabilityEngineState;
+	const firstBandArchiveState = firstBandArchiveDevelopmentScenario || capabilityEngineState;
 	const initialMaterialLots = Object.fromEntries(
 		EquipmentMaterialIdSchema.options.map((materialId) => [
 			materialId,
 			input.developmentEquipmentScenario?.materialLots?.[materialId] ?? 0
 		])
 	);
-	const stateSchema = firstBandArchiveDevelopmentScenario
-		? equipmentDevelopmentScenario
-			? EngineGameStateV24Schema
-			: EngineGameStateV23Schema
-		: synthesisDevelopmentScenario
-			? EngineGameStateV22Schema
-			: storyPatchDevelopmentScenario
-				? EngineGameStateV21Schema
-				: masterFallbackDevelopmentScenario
-					? EngineGameStateV20Schema
-					: masterTimingDevelopmentScenario
-						? EngineGameStateV19Schema
-						: attemptAftermathDevelopmentScenario
-							? EngineGameStateV18Schema
-							: masterPermadeathDevelopmentScenario
-								? EngineGameStateV17Schema
-								: aftermathDevelopmentScenario
-									? EngineGameStateV16Schema
-									: portalDevelopmentScenario
-										? EngineGameStateV15Schema
-										: developmentMissionScenario
-											? EngineGameStateV14Schema
-											: EngineGameStateV13Schema;
+	const stateSchema = capabilityEngineState
+		? EngineGameStateV25Schema
+		: firstBandArchiveDevelopmentScenario
+			? equipmentDevelopmentScenario
+				? EngineGameStateV24Schema
+				: EngineGameStateV23Schema
+			: synthesisDevelopmentScenario
+				? EngineGameStateV22Schema
+				: storyPatchDevelopmentScenario
+					? EngineGameStateV21Schema
+					: masterFallbackDevelopmentScenario
+						? EngineGameStateV20Schema
+						: masterTimingDevelopmentScenario
+							? EngineGameStateV19Schema
+							: attemptAftermathDevelopmentScenario
+								? EngineGameStateV18Schema
+								: masterPermadeathDevelopmentScenario
+									? EngineGameStateV17Schema
+									: aftermathDevelopmentScenario
+										? EngineGameStateV16Schema
+										: portalDevelopmentScenario
+											? EngineGameStateV15Schema
+											: developmentMissionScenario
+												? EngineGameStateV14Schema
+												: EngineGameStateV13Schema;
 	const state = stateSchema.parse({
-		schemaVersion: equipmentDevelopmentScenario
-			? 24
-			: firstBandArchiveDevelopmentScenario
-				? 23
-				: synthesisDevelopmentScenario
-					? 22
-					: storyPatchDevelopmentScenario
-						? 21
-						: masterFallbackDevelopmentScenario
-							? 20
-							: masterTimingDevelopmentScenario
-								? 19
-								: attemptAftermathDevelopmentScenario
-									? 18
-									: masterPermadeathDevelopmentScenario
-										? 17
-										: aftermathDevelopmentScenario
-											? 16
-											: portalDevelopmentScenario
-												? 15
-												: developmentMissionScenario
-													? 14
-													: 13,
+		schemaVersion: capabilityEngineState
+			? 25
+			: equipmentDevelopmentScenario
+				? 24
+				: firstBandArchiveDevelopmentScenario
+					? 23
+					: synthesisDevelopmentScenario
+						? 22
+						: storyPatchDevelopmentScenario
+							? 21
+							: masterFallbackDevelopmentScenario
+								? 20
+								: masterTimingDevelopmentScenario
+									? 19
+									: attemptAftermathDevelopmentScenario
+										? 18
+										: masterPermadeathDevelopmentScenario
+											? 17
+											: aftermathDevelopmentScenario
+												? 16
+												: portalDevelopmentScenario
+													? 15
+													: developmentMissionScenario
+														? 14
+														: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: equipmentDevelopmentScenario
-			? EQUIPMENT_ENGINE_CONTENT_VERSION
-			: firstBandArchiveDevelopmentScenario
-				? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
-				: synthesisDevelopmentScenario
-					? SYNTHESIS_ENGINE_CONTENT_VERSION
-					: storyPatchDevelopmentScenario
-						? STORY_PATCH_ENGINE_CONTENT_VERSION
-						: masterFallbackDevelopmentScenario
-							? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
-							: masterTimingDevelopmentScenario
-								? MASTER_TIMING_ENGINE_CONTENT_VERSION
-								: attemptAftermathDevelopmentScenario
-									? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-									: masterPermadeathDevelopmentScenario
-										? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-										: aftermathDevelopmentScenario
-											? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-											: portalDevelopmentScenario
-												? PORTAL_ENGINE_CONTENT_VERSION
-												: developmentMissionScenario
-													? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-													: ENGINE_CONTENT_VERSION,
+		contentVersion: capabilityEngineState
+			? CAPABILITY_ENGINE_CONTENT_VERSION
+			: equipmentDevelopmentScenario
+				? EQUIPMENT_ENGINE_CONTENT_VERSION
+				: firstBandArchiveDevelopmentScenario
+					? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
+					: synthesisDevelopmentScenario
+						? SYNTHESIS_ENGINE_CONTENT_VERSION
+						: storyPatchDevelopmentScenario
+							? STORY_PATCH_ENGINE_CONTENT_VERSION
+							: masterFallbackDevelopmentScenario
+								? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+								: masterTimingDevelopmentScenario
+									? MASTER_TIMING_ENGINE_CONTENT_VERSION
+									: attemptAftermathDevelopmentScenario
+										? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+										: masterPermadeathDevelopmentScenario
+											? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+											: aftermathDevelopmentScenario
+												? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+												: portalDevelopmentScenario
+													? PORTAL_ENGINE_CONTENT_VERSION
+													: developmentMissionScenario
+														? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+														: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,
@@ -276,7 +425,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						experience: 0,
 						skills: { swordFighting: { rank: 0, experience: 0 } }
 					},
-					equipment: equipmentDevelopmentScenario
+					equipment: equipmentState
 						? {
 								mainHand: hero.bladeId,
 								offHand: null,
@@ -298,6 +447,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 								}
 							: null,
 					mind: hero.mind,
+					...(capabilityEngineState ? { capabilityProfile: hero.capabilityProfile } : {}),
 					habit: {
 						habit: hero.mind.dailyHabit,
 						strength: clamp(Math.round(35 + hero.mind.personality.conscientiousness * 0.55)),
@@ -307,7 +457,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					},
 					dailyPlan: null,
 					currentRoutine: null,
-					...(equipmentDevelopmentScenario ? { currentForging: null } : {})
+					...(equipmentState ? { currentForging: null } : {})
 				}
 			])
 		),
@@ -333,7 +483,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				modifiers: [],
 				reactions: []
 			},
-			...(equipmentDevelopmentScenario
+			...(equipmentState
 				? {
 						materialLots: initialMaterialLots,
 						forgeSystemPower: forgeReady ? 'powered' : 'dormant'
@@ -343,7 +493,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 		items: Object.assign(
 			{},
 			...bootstrapHeroes.map((hero) => ({
-				[hero.bladeId]: equipmentDevelopmentScenario
+				[hero.bladeId]: equipmentState
 					? adaptLegacyEquipmentItem({
 							itemId: hero.bladeId,
 							templateId: 'practice-blade',
@@ -362,7 +512,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 							durability: 6,
 							maxDurability: 6
 						},
-				[hero.bowId]: equipmentDevelopmentScenario
+				[hero.bowId]: equipmentState
 					? adaptLegacyEquipmentItem({
 							itemId: hero.bowId,
 							templateId: 'short-bow',
@@ -384,7 +534,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			}))
 		),
 		society:
-			synthesisDevelopmentScenario || firstBandArchiveDevelopmentScenario
+			synthesisDevelopmentScenario || firstBandArchiveState
 				? createBootstrapCompanySocietyV5(
 						bootstrapHeroes.map((hero) => hero.heroId),
 						masterId,
@@ -399,7 +549,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					),
 		mission: {
 			binding: missionBinding,
-			...(developmentMissionScenario || equipmentDevelopmentScenario
+			...(developmentMissionScenario || equipmentState
 				? {
 						availableMissionIds,
 						evidence:
@@ -417,7 +567,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 								: {}
 					}
 				: {}),
-			...(firstBandArchiveDevelopmentScenario ||
+			...(firstBandArchiveState ||
 			synthesisDevelopmentScenario ||
 			storyPatchDevelopmentScenario ||
 			masterFallbackDevelopmentScenario ||
@@ -449,7 +599,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			attemptCount: 0,
 			attempt: null
 		},
-		...(firstBandArchiveDevelopmentScenario ||
+		...(firstBandArchiveState ||
 		synthesisDevelopmentScenario ||
 		storyPatchDevelopmentScenario ||
 		masterFallbackDevelopmentScenario
@@ -492,21 +642,17 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					}
 				: {}),
 		story: { envelopeId: 'first-ember-v1', branch: null },
-		...(firstBandArchiveDevelopmentScenario ||
-		synthesisDevelopmentScenario ||
-		storyPatchDevelopmentScenario
+		...(firstBandArchiveState || synthesisDevelopmentScenario || storyPatchDevelopmentScenario
 			? {
-					bandStory: firstBandArchiveDevelopmentScenario
+					bandStory: firstBandArchiveState
 						? createFirstBandArchiveStoryCheckpoint()
 						: createStoryPatchCheckpoint()
 				}
 			: {}),
-		...(synthesisDevelopmentScenario || firstBandArchiveDevelopmentScenario
+		...(synthesisDevelopmentScenario || firstBandArchiveState
 			? { synthesis: { contentVersion: 'synthesis-v1', receipts: {}, rumors: {} } }
 			: {}),
-		...(firstBandArchiveDevelopmentScenario
-			? { firstBandArchive: createSealedFirstBandArchive() }
-			: {})
+		...(firstBandArchiveState ? { firstBandArchive: createSealedFirstBandArchive() } : {})
 	});
 	const stateHash = hashParsedGameState(state);
 	const rewardDeltas = resourceLedger.map((entry): RewardDelta => ({

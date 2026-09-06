@@ -1,5 +1,7 @@
 import type {
 	AuthoritativeEvent,
+	CharacterDraft,
+	CharacterDraftV2,
 	CharacterMind,
 	EquipmentMaterialId,
 	EngineCommand,
@@ -27,6 +29,7 @@ import type {
 	EngineGameStateV22,
 	EngineGameStateV23,
 	EngineGameStateV24,
+	EngineGameStateV25,
 	EngineSnapshot,
 	EntropyDraw,
 	LegalAction,
@@ -57,7 +60,8 @@ export type EngineGameStateModern =
 	| EngineGameStateV21
 	| EngineGameStateV22
 	| EngineGameStateV23
-	| EngineGameStateV24;
+	| EngineGameStateV24
+	| EngineGameStateV25;
 export type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
@@ -78,16 +82,13 @@ export type EngineRoutineState =
 	| EngineGameStateV21
 	| EngineGameStateV22
 	| EngineGameStateV23
-	| EngineGameStateV24;
+	| EngineGameStateV24
+	| EngineGameStateV25;
 
-export interface BootstrapEngineInput {
+interface BootstrapEngineInputBase {
 	readonly runId: string;
 	readonly seed: string;
-	readonly heroId: string;
-	readonly manifestHash: string;
-	readonly rarityStars?: number;
 	readonly simulatedAt?: string;
-	readonly mind?: CharacterMind;
 	readonly additionalHeroes?: readonly BootstrapAdditionalHeroInput[];
 	readonly developmentMissionScenario?: {
 		readonly initialMissionId: string;
@@ -110,12 +111,21 @@ export interface BootstrapEngineInput {
 	};
 }
 
-export interface BootstrapAdditionalHeroInput {
+interface BootstrapLegacyHeroInput {
 	readonly heroId: string;
 	readonly manifestHash: string;
 	readonly rarityStars?: number;
 	readonly mind?: CharacterMind;
 }
+
+interface BootstrapDraftHeroInput {
+	readonly draft: CharacterDraft | CharacterDraftV2;
+}
+
+export type BootstrapEngineInput = BootstrapEngineInputBase &
+	(BootstrapLegacyHeroInput | BootstrapDraftHeroInput);
+
+export type BootstrapAdditionalHeroInput = BootstrapLegacyHeroInput | BootstrapDraftHeroInput;
 
 export interface BootstrapEngineResult {
 	readonly snapshot: EngineSnapshot;

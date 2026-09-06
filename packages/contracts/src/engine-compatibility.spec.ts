@@ -183,6 +183,51 @@ const V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE = JSON.parse(
 	gunzipSync(Buffer.from(V24_COMBAT_REPLAY_FINAL_STATE_SNAPSHOT, 'base64')).toString('utf8')
 );
 
+const V25_CAPABILITY_PROFILE = {
+	profileVersion: 'character-capability-v1' as const,
+	attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
+	learning: {
+		cognitiveLearningScore: 55,
+		domainAptitudes: { martial: 61, magical: 62, crafting: 63, survival: 64, social: 65 }
+	}
+};
+
+function v25StateFromV24Fixture() {
+	const heroes = Object.fromEntries(
+		Object.entries(
+			V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.heroes as Record<
+				string,
+				{ mind: { aptitudes: unknown }; [key: string]: unknown }
+			>
+		).map(([heroId, hero]) => {
+			const mind = structuredClone(hero.mind) as { aptitudes?: unknown };
+			delete mind.aptitudes;
+			return [heroId, { ...hero, mind, capabilityProfile: V25_CAPABILITY_PROFILE }];
+		})
+	) as Record<string, Record<string, unknown>>;
+	const firstHero = Object.values(heroes)[0]!;
+	const secondHeroId = '11111111-1111-4111-8111-111111111111';
+	heroes[secondHeroId] = {
+		...structuredClone(firstHero),
+		heroId: secondHeroId,
+		manifestHash: '1'.repeat(64),
+		equipment: {
+			mainHand: null,
+			offHand: null,
+			head: null,
+			torso: null,
+			legs: null,
+			boots: null
+		}
+	};
+	return {
+		...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE,
+		schemaVersion: 25,
+		contentVersion: 'engine-v25',
+		heroes
+	};
+}
+
 describe('engine contracts compatibility', () => {
 	it('keeps the engine runtime exports available through the contracts entrypoint', async () => {
 		const contracts = await import('@summonlab/contracts');
@@ -195,18 +240,13 @@ describe('engine contracts compatibility', () => {
 		expect(Object.keys(engineContracts).sort()).toEqual(ENGINE_CONTRACT_RUNTIME_EXPORTS);
 	});
 
-	it('keeps frozen public engine schema coverage at v24', () => {
+	it('adds v25 public schema coverage without changing the frozen v24 boundary', () => {
 		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV24Schema');
-		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).not.toContain('EngineGameStateV25Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV25Schema');
 		expect(
 			EngineGameStateSchema.parse(ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!).schemaVersion
 		).toBe(24);
-		expect(
-			EngineGameStateSchema.safeParse({
-				...ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!,
-				schemaVersion: 25
-			}).success
-		).toBe(false);
+		expect(EngineGameStateSchema.parse(v25StateFromV24Fixture()).schemaVersion).toBe(25);
 	});
 
 	it('parses the frozen v24 combat replay final state through public schemas', () => {
@@ -242,6 +282,32 @@ describe('engine contracts compatibility', () => {
 			]
 		]);
 		expect(hashCanonical(v24)).toBe(V24_COMBAT_REPLAY_FINAL_STATE_HASH);
+	});
+
+	it('requires every v25 hero to carry a capability profile and a v2 mind', () => {
+		const state = v25StateFromV24Fixture();
+		const parsed = gameStateContracts.EngineGameStateV25Schema.parse(state);
+		expect(parsed).toStrictEqual(engineContracts.EngineGameStateV25Schema.parse(state));
+		expect(Object.values(parsed.heroes)).toHaveLength(2);
+		for (const heroId of Object.keys(parsed.heroes)) {
+			const withoutProfile = structuredClone(state);
+			delete withoutProfile.heroes[heroId].capabilityProfile;
+			expect(gameStateContracts.EngineGameStateV25Schema.safeParse(withoutProfile).success).toBe(
+				false
+			);
+		}
+
+		const withLegacyAptitudes = structuredClone(state);
+		const firstHero = Object.values(withLegacyAptitudes.heroes)[0]! as {
+			mind: { aptitudes?: unknown };
+		};
+		firstHero.mind.aptitudes = { might: 10, finesse: 10, insight: 10, resolve: 10 };
+		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(withLegacyAptitudes).success).toBe(
+			false
+		);
+		expect(
+			engineContracts.EngineGameStateV24Schema.parse(V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE)
+		).toBeDefined();
 	});
 
 	it('keeps command discriminators and public version constants stable', () => {
@@ -472,7 +538,7 @@ describe('engine contracts compatibility', () => {
 
 		const unsupported = {
 			...ENGINE_COMPATIBILITY_STATE_FIXTURES[23],
-			schemaVersion: 25
+			schemaVersion: 26
 		};
 		const directVersionResult = gameStateContracts.EngineGameStateV24Schema.safeParse(unsupported);
 		expect(directVersionResult).toStrictEqual(
@@ -507,7 +573,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['schemaVersion'],
 				message:
-					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24'"
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25'"
 			}
 		]);
 	});

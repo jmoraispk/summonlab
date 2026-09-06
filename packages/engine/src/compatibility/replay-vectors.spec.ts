@@ -25,6 +25,9 @@ describe('versioned replay vectors', () => {
 			({ vector }) => vector.id === 'v24-equipment-mission-resolution'
 		);
 		if (!replayCase) throw new Error('Expected the v24 combat replay vector');
+		if (replayCase.finalState.schemaVersion !== 24) {
+			throw new Error('Expected the v24 combat replay final state');
+		}
 		const attempt = replayCase.finalState.mission.attempt;
 		if (!attempt) throw new Error('Expected the v24 combat replay to remain deployed');
 		expect(replayCase.vector.expectedEventHashes).toStrictEqual([

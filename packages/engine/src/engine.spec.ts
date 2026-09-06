@@ -1,4 +1,6 @@
 import {
+	CharacterDraftV2Schema,
+	CharacterDraftSchema,
 	EngineGameStateV2Schema,
 	EngineGameStateV3Schema,
 	EngineGameStateV4Schema,
@@ -37,6 +39,7 @@ import {
 	applyCommand,
 	applyCatchUpPolicy,
 	addGameMinutes,
+	capabilityProfileFromLegacyMind,
 	createBootstrapEngine,
 	createEntropyCursor,
 	deterministicUuid,
@@ -126,6 +129,75 @@ function fixture() {
 	});
 }
 
+function v2Draft(heroId: string) {
+	return CharacterDraftV2Schema.parse({
+		recipe: {
+			seed: 'engine-v25-character-seed',
+			generationVersion: 'human-v6',
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		},
+		manifest: {
+			characterId: heroId,
+			displayName: 'Capability Hero',
+			appearanceSeed: 'engine-v25-appearance',
+			generationVersion: 'human-v6',
+			rarityStars: 3,
+			adultAge: 25,
+			genderPresentation: 'androgynous',
+			pronouns: 'they/them',
+			bodyFrame: 'balanced',
+			bodyBuild: 'athletic',
+			heightCm: 172,
+			phenotype: {
+				skinTone: 'deep umber',
+				faceShape: 'oval',
+				noseProfile: 'broad straight',
+				hairTexture: 'coiled',
+				hairColor: 'black',
+				hairStyle: 'high knot',
+				eyeColor: 'brown'
+			},
+			voice: { register: 'mid', texture: 'clear', cadence: 'measured' },
+			posture: 'grounded',
+			handedness: 'right',
+			visualTraits: ['left brow scar'],
+			palette: { skin: '#633b2d', hair: '#17151b', cloth: '#272932', accent: '#d49b47' },
+			rig: {
+				headScale: 1,
+				shoulderWidth: 1,
+				hipWidth: 1,
+				legRatio: 1,
+				anchors: { head: [50, 17], leftHand: [27, 56], rightHand: [73, 56], back: [50, 36] }
+			},
+			artKey: null,
+			assetProvenance: 'procedural'
+		},
+		mind: {
+			personality: {
+				openness: 55,
+				conscientiousness: 60,
+				extraversion: 45,
+				agreeableness: 50,
+				emotionalVolatility: 40
+			},
+			primaryValue: 'duty',
+			primaryDrive: 'survive',
+			socialStyle: 'reserved',
+			stressResponse: 'prepare',
+			dailyHabit: 'checks-exits'
+		},
+		capabilityProfile: {
+			profileVersion: 'character-capability-v1',
+			attributes: { might: 81, vitality: 62, agility: 43, spirit: 24 },
+			learning: {
+				cognitiveLearningScore: 35,
+				domainAptitudes: { martial: 46, magical: 57, crafting: 68, survival: 79, social: 90 }
+			}
+		},
+		manifestHash: sha256Hex('engine-v25-character-manifest')
+	});
+}
+
 function commandBase(
 	state: ReturnType<typeof fixture>['snapshot']['state'],
 	actorId: string,
@@ -166,6 +238,109 @@ function arriveAtTraining() {
 }
 
 describe('deterministic engine', () => {
+	it('bootstraps v2 drafts directly into v25 capability state without legacy aptitudes', () => {
+		const runId = deterministicUuid('engine-v25-test-run');
+		const heroId = deterministicUuid('engine-v25-test-hero');
+		const draft = v2Draft(heroId);
+		const bootstrap = createBootstrapEngine({
+			runId,
+			seed: 'engine-v25-test-seed',
+			draft
+		});
+		if (bootstrap.snapshot.state.schemaVersion !== 25) {
+			throw new Error('Expected engine-v25 state');
+		}
+
+		expect(bootstrap.snapshot.state).toMatchObject({
+			schemaVersion: 25,
+			contentVersion: 'engine-v25',
+			heroes: {
+				[heroId]: {
+					mind: draft.mind,
+					capabilityProfile: draft.capabilityProfile,
+					health: 100,
+					maxHealth: 100
+				}
+			}
+		});
+		expect(bootstrap.snapshot.state.heroes[heroId]?.mind).not.toHaveProperty('aptitudes');
+
+		const chosen = applyCommand(bootstrap.snapshot.state, {
+			...commandBase(bootstrap.snapshot.state, heroId, 'v25-choose-training'),
+			commandType: 'hero.choose.destination',
+			destination: 'training-ground',
+			firstLine: 'I will test the practice ring.',
+			storyBranch: 'steel-before-trust'
+		});
+		if (chosen.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		expect(chosen.state.heroes[heroId]).toMatchObject({
+			capabilityProfile: draft.capabilityProfile,
+			destination: 'training-ground'
+		});
+		const traveling = applyCommand(chosen.state, {
+			...commandBase(chosen.state, heroId, 'v25-travel-training'),
+			commandType: 'hero.start.travel',
+			targetNodeId: 'training-ring'
+		});
+		const arrived = applyCommand(traveling.state, {
+			...commandBase(traveling.state, traveling.state.master.masterId, 'v25-arrive-training'),
+			commandType: 'simulation.advance',
+			targetGameTime: traveling.scheduled[0]!.dueGameTime
+		});
+		if (arrived.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		expect(arrived.state.heroes[heroId]).toMatchObject({
+			location: 'training-ground',
+			capabilityProfile: draft.capabilityProfile
+		});
+		expect(arrived.state.heroes[heroId]?.mind).not.toHaveProperty('aptitudes');
+		expect(legalActions(arrived.state, heroId).map((action) => action.actionId)).toContain(
+			'hero.plan.day'
+		);
+	});
+
+	it('converts an explicitly migrated v1 draft at the bootstrap boundary only', () => {
+		const legacy = fixture();
+		if (legacy.snapshot.state.schemaVersion !== 13) throw new Error('Expected engine-v13 state');
+		const legacyMind = legacy.snapshot.state.heroes[deterministicUuid('engine-test-hero')]!.mind;
+		const profile = capabilityProfileFromLegacyMind(legacyMind);
+
+		expect(profile).toStrictEqual({
+			profileVersion: 'character-capability-v1',
+			attributes: { might: 50, vitality: 50, agility: 50, spirit: 50 },
+			learning: {
+				cognitiveLearningScore: 20,
+				domainAptitudes: { martial: 78, magical: 81, crafting: 46, survival: 96, social: 27 }
+			}
+		});
+		const changedCombatOnly = {
+			...legacyMind,
+			aptitudes: { might: 1, finesse: 2, insight: 3, resolve: 4 }
+		};
+		expect(capabilityProfileFromLegacyMind(changedCombatOnly).learning).toStrictEqual(
+			profile.learning
+		);
+
+		const source = v2Draft(deterministicUuid('engine-v25-legacy-draft-hero'));
+		const legacyDraft = CharacterDraftSchema.parse({
+			recipe: source.recipe,
+			manifest: source.manifest,
+			manifestHash: source.manifestHash,
+			mind: { ...source.mind, aptitudes: legacyMind.aptitudes }
+		});
+		const migrated = createBootstrapEngine({
+			runId: deterministicUuid('engine-v25-legacy-draft-run'),
+			seed: 'engine-v25-legacy-draft-seed',
+			draft: legacyDraft
+		});
+		if (migrated.snapshot.state.schemaVersion !== 25) {
+			throw new Error('Expected migrated engine-v25 state');
+		}
+		expect(migrated.snapshot.state.heroes[legacyDraft.manifest.characterId]).toMatchObject({
+			mind: source.mind,
+			capabilityProfile: profile
+		});
+	});
+
 	it('keeps external mutation sources outside the engine contract', () => {
 		expect(ENGINE_INVARIANTS).toContain('no-model-sdk');
 		expect(ENGINE_INVARIANTS).toContain('no-wall-clock');

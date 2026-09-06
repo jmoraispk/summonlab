@@ -1,5 +1,6 @@
 export {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
+	CAPABILITY_ENGINE_CONTENT_VERSION,
 	COMMUNICATION_ENGINE_CONTENT_VERSION,
 	CONVERSATION_ENGINE_CONTENT_VERSION,
 	DIRECTIVE_ENGINE_CONTENT_VERSION,
@@ -73,7 +74,10 @@ export {
 } from './domains/mission/monster-policy.js';
 export { legalActions, decisionLegalActions } from './orchestration/legal-actions.js';
 export { commandFromHeroPolicyResult } from './orchestration/policy-commands.js';
-export { createBootstrapEngine } from './orchestration/bootstrap.js';
+export {
+	capabilityProfileFromLegacyMind,
+	createBootstrapEngine
+} from './orchestration/bootstrap.js';
 export { applyCommand } from './orchestration/apply-command.js';
 export { reduceEvent } from './orchestration/reduction.js';
 export {

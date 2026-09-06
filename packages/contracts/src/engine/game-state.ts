@@ -26,6 +26,7 @@ import {
 	EngineHeroStateV4Schema,
 	EngineHeroStateV5Schema,
 	EngineHeroStateV24Schema,
+	EngineHeroStateV25Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
@@ -833,6 +834,14 @@ const EngineGameStateV24BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV25BaseSchema = z
+	.object({
+		...EngineGameStateV24BaseSchema.shape,
+		schemaVersion: z.literal(25),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV25Schema)
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -1621,6 +1630,56 @@ export const EngineGameStateV24Schema = EngineGameStateV24BaseSchema.superRefine
 	}
 );
 
+export const EngineGameStateV25Schema = EngineGameStateV25BaseSchema.superRefine(
+	(state, context) => {
+		const mainHandItemIds = new Set(
+			Object.values(state.heroes)
+				.map((hero) => hero.equipment.mainHand)
+				.filter((itemId): itemId is string => itemId !== null)
+		);
+		validateFirstBandArchiveEngineState(
+			{
+				...state,
+				heroes: Object.fromEntries(
+					Object.entries(state.heroes).map(([heroId, hero]) => [
+						heroId,
+						{ ...hero, equipment: { mainHand: hero.equipment.mainHand } }
+					])
+				),
+				items: Object.fromEntries(
+					Object.entries(state.items).map(([itemId, item]) => [
+						itemId,
+						{ ...item, equippedById: mainHandItemIds.has(itemId) ? item.equippedById : null }
+					])
+				)
+			} as unknown as z.infer<typeof EngineGameStateV23BaseSchema>,
+			context
+		);
+		const equippedItemIds = new Set<string>();
+		for (const hero of Object.values(state.heroes)) {
+			for (const itemId of Object.values(hero.equipment)) {
+				if (itemId === null) continue;
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned v25 item'
+					});
+				}
+				equippedItemIds.add(itemId);
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (item.equippedById !== null && !equippedItemIds.has(item.itemId)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Equipped v25 item must be linked by its hero loadout'
+				});
+			}
+		}
+	}
+);
+
 export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV1Schema,
 	EngineGameStateV2Schema,
@@ -1645,7 +1704,8 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
-	EngineGameStateV24Schema
+	EngineGameStateV24Schema,
+	EngineGameStateV25Schema
 ]);
 
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
@@ -1673,3 +1733,4 @@ export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
 export type EngineGameStateV22 = z.infer<typeof EngineGameStateV22Schema>;
 export type EngineGameStateV23 = z.infer<typeof EngineGameStateV23Schema>;
 export type EngineGameStateV24 = z.infer<typeof EngineGameStateV24Schema>;
+export type EngineGameStateV25 = z.infer<typeof EngineGameStateV25Schema>;

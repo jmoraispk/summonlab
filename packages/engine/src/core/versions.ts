@@ -12,6 +12,7 @@ export const STORY_PATCH_ENGINE_CONTENT_VERSION = 'engine-v21';
 export const SYNTHESIS_ENGINE_CONTENT_VERSION = 'engine-v22';
 export const FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION = 'engine-v23';
 export const EQUIPMENT_ENGINE_CONTENT_VERSION = 'engine-v24';
+export const CAPABILITY_ENGINE_CONTENT_VERSION = 'engine-v25';
 export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
 export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
 export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
@@ -49,28 +50,28 @@ export const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
 ] as const);
 
 const NAVIGATION_VERSIONS = Object.freeze([
-	3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const FACILITY_VERSIONS = Object.freeze([
-	4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const ROUTINE_VERSIONS = Object.freeze([
-	5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const FIRST_EMBER_VERSIONS = Object.freeze([
-	6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const SOCIETY_VERSIONS = Object.freeze([
-	7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const COMMUNICATION_VERSIONS = Object.freeze([
-	8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const CONVERSATION_VERSIONS = Object.freeze([
-	9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const DIRECTIVE_VERSIONS = Object.freeze([
-	10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
 ] as const);
 const MISSION_VERSIONS = Object.freeze([
 	11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24

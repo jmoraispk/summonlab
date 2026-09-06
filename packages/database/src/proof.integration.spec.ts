@@ -10,7 +10,7 @@ import {
 import postgres from 'postgres';
 import { describe, expect, it } from 'vitest';
 
-import { getEngineReplay } from './engine.js';
+import { getEngineReplay, getEngineSnapshot } from './engine.js';
 import { createProofRun, getProofRun, markProofArrival, resolveProofDecision } from './proof.js';
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -23,13 +23,14 @@ describe('summon proof persistence', () => {
 			recipeFromSeed(`proof-capability-${randomUUID()}`)
 		);
 		const runId = randomUUID();
+		const choice = chooseFirstDestination(draft, 'wait', 'Please train and prepare for the tower.');
 		const created = await createProofRun(databaseUrl, {
 			runId,
 			draft,
 			controlMode: 'wait',
 			directive: '',
 			firstObservation: FIRST_OBSERVATION,
-			choice: null
+			choice
 		});
 
 		if (!('characterSchemaVersion' in created)) throw new Error('Expected a v2 proof snapshot');
@@ -37,6 +38,26 @@ describe('summon proof persistence', () => {
 		expect(created.mind).not.toHaveProperty('aptitudes');
 		expect(created.capabilityProfile).toEqual(draft.capabilityProfile);
 		expect(await getProofRun(databaseUrl, runId)).toEqual(created);
+		const engine = await getEngineSnapshot(databaseUrl, runId);
+		if (engine?.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		expect(engine.state).toMatchObject({
+			schemaVersion: 25,
+			contentVersion: 'engine-v25',
+			heroes: {
+				[draft.manifest.characterId]: {
+					mind: draft.mind,
+					capabilityProfile: draft.capabilityProfile
+				}
+			}
+		});
+		expect(engine.state.heroes[draft.manifest.characterId]?.mind).not.toHaveProperty('aptitudes');
+		await markProofArrival(databaseUrl, runId);
+		const arrived = await getEngineSnapshot(databaseUrl, runId);
+		if (arrived?.state.schemaVersion !== 25) throw new Error('Expected arrived engine-v25 state');
+		expect(arrived.state.heroes[draft.manifest.characterId]).toMatchObject({
+			location: choice.destination,
+			capabilityProfile: draft.capabilityProfile
+		});
 	});
 
 	run('rejects mismatched character schema versions and capability profiles', async () => {

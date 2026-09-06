@@ -41,6 +41,7 @@ export {
 	EngineHeroStateV4Schema,
 	EngineHeroStateV5Schema,
 	EngineHeroStateV24Schema,
+	EngineHeroStateV25Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
@@ -66,6 +67,7 @@ export {
 	type FirstEmberRationale,
 	type FirstEmberState,
 	type EngineHeroStateV24,
+	type EngineHeroStateV25,
 	type EngineSettlementStateV24,
 	type EquipmentMaterialLotsV24,
 	type RoutineKind

@@ -360,6 +360,9 @@ export async function createProofRun(
 ): Promise<StoredProofRunSnapshot> {
 	const draft = StoredCharacterDraftSchema.parse(input.draft);
 	const isV2 = 'capabilityProfile' in draft;
+	const usesDevelopmentEngineBootstrap = Boolean(
+		input.developmentMissionScenario || input.developmentEquipmentScenario
+	);
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
@@ -381,10 +384,14 @@ export async function createProofRun(
 			const engine = await initializeEngineRun(transaction, {
 				runId: input.runId,
 				seed: input.engineSeed ?? draft.recipe.seed,
-				heroId: draft.manifest.characterId,
-				manifestHash: draft.manifestHash,
-				rarityStars: draft.manifest.rarityStars,
-				mind: engineMindForDraft(draft),
+				...(isV2 && !usesDevelopmentEngineBootstrap
+					? { draft }
+					: {
+							heroId: draft.manifest.characterId,
+							manifestHash: draft.manifestHash,
+							rarityStars: draft.manifest.rarityStars,
+							mind: engineMindForDraft(draft)
+						}),
 				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 				...(input.developmentMissionScenario
 					? { developmentMissionScenario: input.developmentMissionScenario }
@@ -609,7 +616,8 @@ export async function markProofArrival(
 				engine.state.schemaVersion === 10 ||
 				engine.state.schemaVersion === 11 ||
 				engine.state.schemaVersion === 12 ||
-				engine.state.schemaVersion === 13
+				engine.state.schemaVersion === 13 ||
+				engine.state.schemaVersion === 25
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,
