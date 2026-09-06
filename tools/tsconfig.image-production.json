@@ -8,6 +8,9 @@
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
+		"american-english-policy.ts",
+		"american-english-policy.spec.ts",
+		"check-american-english.ts",
 		"family-affinity-production-lib.ts",
 		"family-affinity-production-lib.spec.ts",
 		"image-production-lib.ts",

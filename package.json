@@ -17,6 +17,7 @@
 		"db:logs": "node tools/database.mjs logs",
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
+		"check:american-english": "tsx tools/check-american-english.ts",
 		"validate:repository-assets": "tsx tools/validate-repository-assets.ts",
 		"validate:pack-two-monsters": "tsx tools/validate-pack-two-monsters.ts",
 		"validate:fauna-family-design": "vitest run tools/fauna-family-design.spec.ts",
