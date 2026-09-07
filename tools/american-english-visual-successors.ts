@@ -38,8 +38,9 @@ export const VISUAL_PRODUCTION_FILE_BINDING_PATH_PATTERNS = [
 	/^apps\/web\/static\/(?:runtime\/enemies\/fauna-family-v1|wiki-media\/(?:monsters|skills))\//u,
 	/^docs\/(?:affinity-wave-scheduler\.md|evidence\/fauna-family-v1\/index\.html)$/u,
 	/^docs\/superpowers\/plans\/[^/]*(?:monster|skill-icon)[^/]*\.md$/u,
-	/^packages\/characters\/(?:src|test)\/.*\.(?:ts|json)$/u,
-	/^packages\/(?:content\/src\/affinity-workflow|contracts\/src\/(?:character|image-production))(?:\.|\/)/u,
+	/^packages\/characters\/src\/index\.ts$/u,
+	/^packages\/content\/src\/affinity-workflow(?:\.spec)?\.ts$/u,
+	/^packages\/contracts\/src\/(?:character|image-production)\.ts$/u,
 	/^tools\/(?![^/]*equipment)[^/]*(?:affinity|earth-bridge|family|fauna|hero|skill-icon|visual|wiki)[^/]*\.(?:ts|mjs)$/u,
 	/^tools\/image-production-lib(?:\.spec)?\.ts$/u,
 	/^tools\/[^/]*reversal-cut[^/]*\.(?:ts|mjs)$/u

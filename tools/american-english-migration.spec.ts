@@ -402,7 +402,7 @@ describe('American English migration planning', () => {
 	it('consumes the integrity registry for an explicitly owned runtime binding', async () => {
 		const behavior = retired('behavior');
 		const repository = await makeRepository({
-			'packages/engine/src/fixture.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
+			'packages/engine/src/story.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
 		});
 
 		const plan = await planAmericanEnglishMigration({
@@ -418,7 +418,7 @@ describe('American English migration planning', () => {
 				pathCount: 1,
 				successorIntents: [
 					expect.objectContaining({
-						path: 'packages/engine/src/fixture.ts',
+						path: 'packages/engine/src/story.ts',
 						languageMigrationSuccessor: true
 					})
 				],
@@ -433,7 +433,7 @@ describe('American English transactional application', () => {
 	it('records the registered integrity owner on each successor receipt entry', async () => {
 		const behavior = retired('behavior');
 		const repository = await makeRepository({
-			'packages/engine/src/fixture.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
+			'packages/engine/src/story.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
 		});
 		const plan = await planAmericanEnglishMigration({
 			repositoryRoot: repository.root,

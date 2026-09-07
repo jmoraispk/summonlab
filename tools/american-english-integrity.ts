@@ -11,6 +11,7 @@ import {
 import { equipmentIntegrityOwner } from './american-english-equipment-successors.js';
 import { runtimeAndEngineIntegrityOwner } from './american-english-runtime-successors.js';
 import { visualProductionIntegrityOwner } from './american-english-visual-successors.js';
+import { OWNER_DIGEST_PATH_REFERENCES } from './american-english-integrity-pointers.js';
 import { replaceRetiredForms } from './american-english-policy.js';
 
 export * from './american-english-integrity-contracts.js';
@@ -54,6 +55,7 @@ export interface IntegrityOwnerPlan {
 		readonly externalDependencies: readonly {
 			readonly jsonPointer: string;
 			readonly value: string;
+			readonly candidatePaths?: readonly string[];
 		}[];
 		readonly languageMigrationSuccessor: true;
 	}[];
@@ -221,6 +223,74 @@ function getJsonPointer(value: unknown, pointer: string): unknown {
 	return current;
 }
 
+function materializePathPointer(
+	digestPointer: string,
+	template: string,
+	pathTemplate: string
+): string | null {
+	const actualTokens = digestPointer.slice(1).split('/');
+	const templateTokens = template.slice(1).split('/');
+	if (actualTokens.length !== templateTokens.length) return null;
+	const captures: string[] = [];
+	for (const [index, expected] of templateTokens.entries()) {
+		const actual = actualTokens[index]!;
+		if (expected === '*') {
+			if (!/^(?:0|[1-9]\d*)$/u.test(actual)) return null;
+			captures.push(actual);
+		} else if (expected !== actual) return null;
+	}
+	let captureIndex = 0;
+	return `/${pathTemplate
+		.slice(1)
+		.split('/')
+		.map((token) => (token === '*' ? captures[captureIndex++]! : token))
+		.join('/')}`;
+}
+
+function registeredPathPointers(
+	ownerId: IntegrityOwnerId,
+	digestPointer: string
+): readonly string[] {
+	const contracts = OWNER_DIGEST_PATH_REFERENCES[ownerId];
+	return contracts
+		.flatMap(({ digestPointer: template, pathPointer }) => {
+			const materialized = materializePathPointer(digestPointer, template, pathPointer);
+			return materialized === null ? [] : [materialized];
+		})
+		.sort(compareCodepoints);
+}
+
+function referencedSourcePaths(
+	repositoryPath: string,
+	value: unknown,
+	pathPointers: readonly string[],
+	candidateSources: readonly string[],
+	projectedBySource: ReadonlyMap<string, string>
+): readonly { readonly sourcePath: string; readonly jsonPointer: string }[] {
+	const matches: { sourcePath: string; jsonPointer: string }[] = [];
+	for (const jsonPointer of pathPointers) {
+		const reference = getJsonPointer(value, jsonPointer);
+		if (typeof reference !== 'string') continue;
+		const possiblePaths = new Set([
+			reference,
+			path.posix.normalize(path.posix.join(path.posix.dirname(repositoryPath), reference))
+		]);
+		for (const sourcePath of candidateSources) {
+			if (
+				possiblePaths.has(sourcePath) ||
+				possiblePaths.has(projectedBySource.get(sourcePath) ?? '')
+			) {
+				matches.push({ sourcePath, jsonPointer });
+			}
+		}
+	}
+	return matches.sort(
+		(left, right) =>
+			compareCodepoints(left.sourcePath, right.sourcePath) ||
+			compareCodepoints(left.jsonPointer, right.jsonPointer)
+	);
+}
+
 async function buildOwnerPlan(
 	owner: AmericanEnglishIntegrityOwner,
 	ownedBindings: readonly IntegrityBinding[],
@@ -267,7 +337,7 @@ async function buildOwnerPlan(
 			}
 		];
 	});
-	const digestSources = new Map<string, string>();
+	const digestSources = new Map<string, string[]>();
 	for (const draft of drafts) {
 		const [current] = await owner.planSuccessors({
 			nodes: [
@@ -280,24 +350,71 @@ async function buildOwnerPlan(
 				}
 			]
 		});
-		if (current !== undefined) digestSources.set(current.digest, draft.sourcePath);
+		if (current !== undefined) {
+			const sources = digestSources.get(current.digest) ?? [];
+			sources.push(draft.sourcePath);
+			digestSources.set(current.digest, sources);
+		}
 	}
 	const projectedBySource = new Map(drafts.map(({ sourcePath, path }) => [sourcePath, path]));
 	const nodes = drafts.map((draft) => {
 		const dependsOn = new Set<string>();
-		const dependencyBindings: { sourcePath: string; jsonPointer: string }[] = [];
-		const externalDependencies: { jsonPointer: string; value: string }[] = [];
+		const dependencyBindings: {
+			sourcePath: string;
+			jsonPointer: string;
+			replacement?: 'digest' | 'path';
+		}[] = [];
+		const externalDependencies: {
+			jsonPointer: string;
+			value: string;
+			candidatePaths?: readonly string[];
+		}[] = [];
 		for (const binding of draft.pathBindings) {
 			if (binding.jsonPointer === '') continue;
 			const projectedPointer = replaceRetiredForms(binding.jsonPointer);
 			const current = getJsonPointer(draft.currentValue, binding.jsonPointer);
 			if (typeof current !== 'string') continue;
-			const dependencySource = digestSources.get(current);
+			const candidateSources = digestSources.get(current) ?? [];
+			const pathReferences = referencedSourcePaths(
+				draft.sourcePath,
+				draft.currentValue,
+				registeredPathPointers(owner.id, binding.jsonPointer),
+				candidateSources,
+				projectedBySource
+			);
+			const referencedSources = [...new Set(pathReferences.map(({ sourcePath }) => sourcePath))];
+			const dependencySource =
+				candidateSources.length === 1
+					? candidateSources[0]
+					: referencedSources.length === 1
+						? referencedSources[0]
+						: undefined;
 			if (dependencySource !== undefined && dependencySource !== draft.sourcePath) {
 				const dependencyPath = projectedBySource.get(dependencySource)!;
 				dependsOn.add(dependencyPath);
 				dependencyBindings.push({ sourcePath: dependencyPath, jsonPointer: projectedPointer });
-			} else externalDependencies.push({ jsonPointer: projectedPointer, value: current });
+				for (const pathReference of pathReferences.filter(
+					({ sourcePath }) => sourcePath === dependencySource
+				)) {
+					dependencyBindings.push({
+						sourcePath: dependencyPath,
+						jsonPointer: replaceRetiredForms(pathReference.jsonPointer),
+						replacement: 'path'
+					});
+				}
+			} else {
+				externalDependencies.push({
+					jsonPointer: projectedPointer,
+					value: current,
+					...(candidateSources.length > 1
+						? {
+								candidatePaths: candidateSources
+									.map((sourcePath) => projectedBySource.get(sourcePath)!)
+									.sort(compareCodepoints)
+							}
+						: {})
+				});
+			}
 		}
 		return {
 			path: draft.path,

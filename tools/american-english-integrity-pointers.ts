@@ -318,3 +318,57 @@ export const OWNER_DIGEST_POINTER_PATTERNS = {
 	'visual-production': VISUAL_PRODUCTION_DIGEST_POINTERS.map(exactPointerPattern),
 	'runtime-and-engine': RUNTIME_AND_ENGINE_DIGEST_POINTERS.map(exactPointerPattern)
 } as const;
+
+export interface IntegrityDigestPathReference {
+	readonly digestPointer: string;
+	readonly pathPointer: string;
+}
+
+/** Exact sibling path bindings that can disambiguate equal selected-node digests. */
+export const OWNER_DIGEST_PATH_REFERENCES = {
+	equipment: [
+		{
+			digestPointer: '/bundles/*/assets/*/sourceContentHash',
+			pathPointer: '/bundles/*/assets/*/sourceApprovedPath'
+		},
+		{ digestPointer: '/classAudit/sha256', pathPointer: '/classAudit/path' },
+		{ digestPointer: '/consistencySource/sha256', pathPointer: '/consistencySource/path' },
+		{ digestPointer: '/decisions/*/imageSha256', pathPointer: '/decisions/*/imagePath' },
+		{ digestPointer: '/entries/*/candidateSha256', pathPointer: '/entries/*/candidatePath' },
+		{ digestPointer: '/output/sha256', pathPointer: '/output/path' },
+		{ digestPointer: '/records/*/approved/sha256', pathPointer: '/records/*/approved/path' },
+		{ digestPointer: '/records/*/candidate/sha256', pathPointer: '/records/*/candidate/path' },
+		{ digestPointer: '/references/*/sha256', pathPointer: '/references/*/path' },
+		{ digestPointer: '/revisionSource/sha256', pathPointer: '/revisionSource/path' },
+		{ digestPointer: '/selections/*/candidateSha256', pathPointer: '/selections/*/candidatePath' },
+		{ digestPointer: '/sourceCandidateSha256', pathPointer: '/sourceCandidatePath' }
+	],
+	'visual-production': [
+		{ digestPointer: '/anchor/normalCandidateSha256', pathPointer: '/anchor/normalCandidatePath' },
+		{ digestPointer: '/assignmentSha256', pathPointer: '/assignmentPath' },
+		{ digestPointer: '/candidateSha256', pathPointer: '/candidatePath' },
+		{ digestPointer: '/derivatives/*/sourceSha256', pathPointer: '/derivatives/*/sourcePath' },
+		{ digestPointer: '/entries/*/combatChibi/sha256', pathPointer: '/entries/*/combatChibi/path' },
+		{ digestPointer: '/entries/*/summon/sha256', pathPointer: '/entries/*/summon/path' },
+		{
+			digestPointer: '/families/*/forms/*/coordinates/*/candidate/sha256',
+			pathPointer: '/families/*/forms/*/coordinates/*/candidate/path'
+		},
+		{
+			digestPointer: '/monsters/*/variants/*/contentHash',
+			pathPointer: '/monsters/*/variants/*/approvedPath'
+		},
+		{
+			digestPointer: '/monsters/*/variants/*/contentHash',
+			pathPointer: '/monsters/*/variants/*/candidatePath'
+		},
+		{ digestPointer: '/records/*/approved/sha256', pathPointer: '/records/*/approved/path' },
+		{ digestPointer: '/records/*/candidate/sha256', pathPointer: '/records/*/candidate/path' },
+		{ digestPointer: '/records/*/source/sha256', pathPointer: '/records/*/source/path' },
+		{ digestPointer: '/resultSha256', pathPointer: '/resultPath' },
+		{ digestPointer: '/targetSha256', pathPointer: '/targetPath' },
+		{ digestPointer: '/targets/*/chibiSha256', pathPointer: '/targets/*/chibi' },
+		{ digestPointer: '/targets/*/summonSha256', pathPointer: '/targets/*/summon' }
+	],
+	'runtime-and-engine': []
+} as const satisfies Record<IntegrityPointerOwnerId, readonly IntegrityDigestPathReference[]>;

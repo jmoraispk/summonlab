@@ -37,6 +37,7 @@ export interface IntegrityPlanningNode {
 	readonly externalDependencies?: readonly {
 		readonly jsonPointer: string;
 		readonly value: string;
+		readonly candidatePaths?: readonly string[];
 	}[];
 }
 
@@ -59,6 +60,7 @@ export interface IntegritySuccessor {
 	readonly externalDependencies: readonly {
 		readonly jsonPointer: string;
 		readonly value: string;
+		readonly candidatePaths?: readonly string[];
 	}[];
 	readonly languageMigrationSuccessor: true;
 }

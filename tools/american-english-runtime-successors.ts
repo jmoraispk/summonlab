@@ -27,7 +27,11 @@ export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
 	/^apps\/web\/src\/(?:lib\/components\/living-village|routes\/story-patch)\/.*\.(?:ts|svelte)$/u,
 	/^docs\/(?:evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
-	/^packages\/(?:content\/src\/(?:tower-|story)|contracts\/src\/(?:contracts\.spec|engine\/|final-controlled-)|engine\/|evaluation\/|policies\/).*\.(?:ts|json|snap)$/u,
+	/^packages\/content\/src\/tower-band-01-story\.ts$/u,
+	/^packages\/contracts\/src\/(?:contracts\.spec\.ts|engine\/settlement-state\.ts|final-controlled-design-risk-(?:decisions|resolutions)\.ts)$/u,
+	/^packages\/engine\/src\/(?:domains\/settlement\/(?:equipment\.spec|routines)\.ts|orchestration\/(?:__snapshots__\/actions\.spec\.ts\.snap|legal-actions\.ts)|presentation(?:\.spec)?\.ts|story(?:\.spec)?\.ts)$/u,
+	/^packages\/evaluation\/src\/(?:foundry|story-patch)\.ts$/u,
+	/^packages\/policies\/src\/(?:index|openai)\.ts$/u,
 	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness)\.ts$/u
 ] as const;
 

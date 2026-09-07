@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -471,7 +472,8 @@ describe('integrity binding classification', () => {
 				''
 			)
 		).toBe(true);
-		expect(runtimeAndEngineIntegrityOwner.owns('packages/engine/src/hash.ts', '')).toBe(true);
+		expect(runtimeAndEngineIntegrityOwner.ownsPath('packages/engine/src/hash.ts')).toBe(true);
+		expect(runtimeAndEngineIntegrityOwner.owns('packages/engine/src/story.ts', '')).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.owns('unregistered/receipt.json', '')).toBe(false);
 	});
 
@@ -554,6 +556,7 @@ describe('integrity binding classification', () => {
 	it('keeps exact known non-JSON package integrity sources registered', async () => {
 		const paths = [
 			'packages/characters/src/index.ts',
+			'packages/engine/src/domains/settlement/equipment.spec.ts',
 			'packages/engine/src/story.ts',
 			'packages/evaluation/src/story-patch.ts',
 			'packages/policies/src/openai.ts'
@@ -562,7 +565,7 @@ describe('integrity binding classification', () => {
 			{
 				entries: paths.map((path) => ({
 					path,
-					bytes: Buffer.from('export const safe = true;\n'),
+					bytes: readFileSync(path),
 					binary: false
 				}))
 			},
@@ -570,6 +573,38 @@ describe('integrity binding classification', () => {
 		);
 		expect(report.problems).toEqual([]);
 		expect(report.bindings.map(({ path }) => path)).toEqual(paths);
+	});
+
+	it('does not manufacture package bindings from a recognized extension', async () => {
+		const entries = [
+			{
+				path: 'packages/engine/plain.ts',
+				bytes: Buffer.from('export const color = "gray";\n'),
+				binary: false as const
+			},
+			{
+				path: 'packages/evaluation/plain.json',
+				bytes: Buffer.from('{"color":"gray"}\n'),
+				binary: false as const
+			},
+			{
+				path: 'packages/policies/plain.ts',
+				bytes: Buffer.from('export const behavior = true;\n'),
+				binary: false as const
+			},
+			{
+				path: 'packages/characters/src/plain.json',
+				bytes: Buffer.from('{"color":"gray"}\n'),
+				binary: false as const
+			}
+		];
+		const report = await classifyIntegrityBindings(
+			{ entries },
+			proposed(entries.map(({ path }) => path))
+		);
+		expect(report.problems).toEqual([]);
+		expect(report.bindings).toEqual([]);
+		expect(report.ownerPlans).toEqual([]);
 	});
 
 	it('hashes the real projected value and path instead of a synthetic descriptor', async () => {
@@ -629,6 +664,103 @@ describe('integrity binding classification', () => {
 		expect(intents[2]!.dependencies).toEqual([
 			expect.objectContaining({ path: assignmentPath, digest: intents[1]!.projectedValueDigest })
 		]);
+	});
+
+	it('preserves a duplicate digest as explicitly ambiguous instead of choosing a source', async () => {
+		const firstPath = 'assets/heroes/experiments/fixture/a/target.json';
+		const secondPath = 'assets/heroes/experiments/fixture/b/target.json';
+		const assignmentPath = 'assets/heroes/experiments/fixture/assignment.json';
+		const target = { prompt: 'same canonical target' };
+		const targetSha256 = sha256Json(target);
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{ path: firstPath, bytes: Buffer.from(JSON.stringify(target)), binary: false },
+					{ path: secondPath, bytes: Buffer.from(JSON.stringify(target)), binary: false },
+					{
+						path: assignmentPath,
+						bytes: Buffer.from(JSON.stringify({ targetSha256 })),
+						binary: false
+					}
+				]
+			},
+			proposed([firstPath, secondPath, assignmentPath])
+		);
+		const assignment = report.ownerPlans[0]!.successorIntents.find(
+			({ path }) => path === assignmentPath
+		)!;
+		expect(assignment.dependencies).toEqual([]);
+		expect(assignment.externalDependencies).toEqual([
+			{
+				jsonPointer: '/targetSha256',
+				value: targetSha256,
+				candidatePaths: [firstPath, secondPath]
+			}
+		]);
+	});
+
+	it('uses a registered exact path reference to disambiguate and project a duplicate digest', async () => {
+		const firstPath = 'assets/heroes/experiments/fixture/a/target.json';
+		const firstSuccessorPath = 'assets/heroes/experiments/fixture/a/gray-target.json';
+		const secondPath = 'assets/heroes/experiments/fixture/b/target.json';
+		const assignmentPath = 'assets/heroes/experiments/fixture/assignment.json';
+		const target = { prompt: 'same canonical target' };
+		const targetSha256 = sha256Json(target);
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: firstPath,
+						projectedPath: firstSuccessorPath,
+						bytes: Buffer.from(JSON.stringify(target)),
+						binary: false
+					},
+					{ path: secondPath, bytes: Buffer.from(JSON.stringify(target)), binary: false },
+					{
+						path: assignmentPath,
+						bytes: Buffer.from(JSON.stringify({ targetPath: firstPath, targetSha256 })),
+						binary: false
+					}
+				]
+			},
+			proposed([firstPath, secondPath, assignmentPath])
+		);
+		const intents = report.ownerPlans[0]!.successorIntents;
+		const first = intents.find(({ sourcePath }) => sourcePath === firstPath)!;
+		const assignment = intents.find(({ path }) => path === assignmentPath)!;
+		expect(assignment.dependencies).toEqual([
+			{ path: firstSuccessorPath, digest: first.projectedValueDigest }
+		]);
+		expect(assignment.externalDependencies).toEqual([]);
+		expect(assignment.projectedValueDigest).toBe(
+			sha256Json({ targetPath: firstSuccessorPath, targetSha256: first.projectedValueDigest })
+		);
+	});
+
+	it('produces the same explicit duplicate-digest result regardless of entry order', async () => {
+		const firstPath = 'assets/heroes/experiments/fixture/a/target.json';
+		const secondPath = 'assets/heroes/experiments/fixture/b/target.json';
+		const assignmentPath = 'assets/heroes/experiments/fixture/assignment.json';
+		const target = { prompt: 'same canonical target' };
+		const targetSha256 = sha256Json(target);
+		const entries = [
+			{ path: firstPath, bytes: Buffer.from(JSON.stringify(target)), binary: false as const },
+			{ path: secondPath, bytes: Buffer.from(JSON.stringify(target)), binary: false as const },
+			{
+				path: assignmentPath,
+				bytes: Buffer.from(JSON.stringify({ targetSha256 })),
+				binary: false as const
+			}
+		];
+		const classify = async (orderedEntries: typeof entries) => {
+			const report = await classifyIntegrityBindings(
+				{ entries: orderedEntries },
+				proposed([firstPath, secondPath, assignmentPath])
+			);
+			return report.ownerPlans[0]!.successorIntents.find(({ path }) => path === assignmentPath);
+		};
+		expect(await classify(entries)).toEqual(await classify([...entries].reverse()));
+		expect((await classify(entries))?.dependencies).toEqual([]);
 	});
 
 	it('requires a registered path and exact pointer for every digest', async () => {
@@ -702,7 +834,7 @@ describe('integrity binding classification', () => {
 	});
 
 	it('includes adapter-produced and verified successor intent for real bindings', async () => {
-		const path = 'packages/engine/src/fixture.ts';
+		const path = 'packages/engine/src/story.ts';
 		const report = await classifyIntegrityBindings(
 			{
 				entries: [
@@ -725,14 +857,14 @@ describe('integrity binding classification', () => {
 			...runtimeAndEngineIntegrityOwner,
 			verify: async () => [
 				{
-					path: 'packages/engine/src/fixture.ts',
+					path: 'packages/engine/src/story.ts',
 					jsonPointer: '',
 					code: 'digest-mismatch',
 					message: 'Injected adapter verification failure'
 				}
 			]
 		};
-		const path = 'packages/engine/src/fixture.ts';
+		const path = 'packages/engine/src/story.ts';
 		const report = await classifyIntegrityBindings(
 			{
 				entries: [
