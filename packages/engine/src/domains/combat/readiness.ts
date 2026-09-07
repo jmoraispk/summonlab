@@ -8,6 +8,7 @@ import {
 	type CombatRulesV1,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
+import type { ZodError } from 'zod';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { healthRegeneration, manaRegeneration } from './capability.js';
@@ -106,6 +107,20 @@ function safetyResult(
 		result
 	});
 	return { kind: 'combat-result', state: completed, result };
+}
+
+function actorContextFailureResult(
+	state: ReadinessCombatStateV1,
+	validationError: ZodError<ReadinessCombatStateV1>
+): Extract<ReadyCohortAdvance, { kind: 'combat-result' }> {
+	const isActorContextOnlyFailure =
+		validationError.issues.length > 0 &&
+		validationError.issues.every((issue) => issue.path[0] === 'actorContexts');
+	if (!isActorContextOnlyFailure) throw validationError;
+
+	// Completing the state exempts it from live actor-context requirements. Parsing inside
+	// safetyResult then proves every remaining canonical field before returning the typed stop.
+	return safetyResult({ ...state, actorContexts: {} }, 'invalid-state');
 }
 
 function applyScheduledEffect(
@@ -291,7 +306,7 @@ export function advanceUntilReadyCohort(
 ): ReadyCohortAdvance {
 	const rules = CombatRulesV1Schema.parse(rulesInput);
 	const parsedInput = ReadinessCombatStateV1Schema.safeParse(stateInput);
-	if (!parsedInput.success) return safetyResult(stateInput, 'invalid-state');
+	if (!parsedInput.success) return actorContextFailureResult(stateInput, parsedInput.error);
 	let state = parsedInput.data;
 	if (state.status === 'complete') {
 		if (!state.result) throw new Error('Complete readiness combat state is missing its result');

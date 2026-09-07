@@ -539,6 +539,63 @@ describe('frozen combat decision windows', () => {
 		expect(left.result.safetyStop?.reason).toBe('invalid-state');
 	});
 
+	it('sanitizes an actor-context identity mismatch into a stable bound invalid-state result', () => {
+		const arranged = state();
+		const heroContext = arranged.actorContexts[ID.hero]!;
+		arranged.actorContexts[ID.hero] = {
+			...heroContext,
+			actorId: ID.ally,
+			rememberedContext: ['private-invalid-context-sentinel']
+		};
+		const before = hashCanonical(arranged);
+
+		const left = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+		const right = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+		expect(left).toStrictEqual(right);
+		expect(left.kind).toBe('combat-result');
+		if (left.kind !== 'combat-result') return;
+		expect(left.result).toMatchObject({
+			attemptId: arranged.attemptId,
+			endedAtTick: arranged.tick,
+			finalCombatants: arranged.combatants,
+			safetyStop: { reason: 'invalid-state', ...arranged.safety }
+		});
+		expect(JSON.stringify(left)).not.toContain('private-invalid-context-sentinel');
+		expect(JSON.stringify(left)).not.toContain('actorContexts');
+		expect(hashCanonical(arranged)).toBe(before);
+	});
+
+	it('sanitizes hidden action targets into a stable bound invalid-state result', () => {
+		const arranged = state();
+		const heroContext = arranged.actorContexts[ID.hero]!;
+		arranged.actorContexts[ID.hero] = {
+			...heroContext,
+			rememberedContext: ['private-hidden-target-sentinel'],
+			legalActionTemplates: [
+				actionTemplate('strike-hidden-target', ID.hiddenMonster, 'Strike hidden target'),
+				zeroManaGuardTemplate()
+			]
+		};
+		const before = hashCanonical(arranged);
+
+		const left = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+		const right = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+		expect(left).toStrictEqual(right);
+		expect(left.kind).toBe('combat-result');
+		if (left.kind !== 'combat-result') return;
+		expect(left.result).toMatchObject({
+			attemptId: arranged.attemptId,
+			endedAtTick: arranged.tick,
+			finalCombatants: arranged.combatants,
+			safetyStop: { reason: 'invalid-state', ...arranged.safety }
+		});
+		expect(JSON.stringify(left)).not.toContain('private-hidden-target-sentinel');
+		expect(JSON.stringify(left)).not.toContain('actorContexts');
+		expect(hashCanonical(arranged)).toBe(before);
+	});
+
 	it('rejects a ready actor set that does not exactly match canonical readiness', () => {
 		expect(() =>
 			buildCombatWindowSnapshot({
