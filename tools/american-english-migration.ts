@@ -1433,7 +1433,7 @@ async function readPreviousReceipt(
 	return {
 		receipt,
 		successorBlobsByPathHash,
-		receiptHash: sha256(Buffer.from(JSON.stringify(receipt), 'utf8'))
+		receiptHash: sha256(bytes)
 	};
 }
 

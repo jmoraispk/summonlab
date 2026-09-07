@@ -1363,7 +1363,7 @@ describe('American English receipt finalization', () => {
 		).rejects.toThrow(/direct parent|migration boundary/i);
 	});
 
-	it('reseals validated owner changes and lets the next filtered slice plan and apply', async () => {
+	it('binds pretty receipt bytes while resealing and finalizing the next filtered slice', async () => {
 		const armor = retired('armor');
 		const color = retired('color');
 		const upstreamBefore = { contentHash: 'a'.repeat(64), label: color, next: armor };
@@ -1382,6 +1382,7 @@ describe('American English receipt finalization', () => {
 		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
 		const finalizedReceiptPath = path.join(receiptDirectory, 'finalized.json');
 		const nextReceiptPath = path.join(receiptDirectory, 'next.json');
+		const nextFinalizedReceiptPath = path.join(receiptDirectory, 'next-finalized.json');
 		const firstPlan = await planAmericanEnglishMigration({
 			repositoryRoot: repository.root,
 			baselineCommit: repository.baseline,
@@ -1508,12 +1509,29 @@ describe('American English receipt finalization', () => {
 			ruleIds: ['armor'],
 			previousReceiptPath: finalizedReceiptPath
 		});
+		expect(await readFile(finalizedReceiptPath, 'utf8')).toBe(
+			`${JSON.stringify(finalized, null, 2)}\n`
+		);
+		expect(nextPlan.previousReceiptHash).toBe(await fileSha256(finalizedReceiptPath));
+		const nextPlanArtifact = await writePlanArtifact(receiptDirectory, 'next-plan.json', nextPlan);
 		expect(nextPlan.textEdits).toHaveLength(3);
 		await applyAmericanEnglishMigration(nextPlan, {
 			repositoryRoot: repository.root,
 			receiptPath: nextReceiptPath,
 			previousReceiptPath: finalizedReceiptPath
 		});
+		const nextMigrationCommit = commitAll(repository.root, 'apply next spelling slice');
+		const nextFinalized = await finalizeAmericanEnglishMigrationReceipt({
+			repositoryRoot: repository.root,
+			expectedMigrationCommit: nextMigrationCommit,
+			planPath: nextPlanArtifact.path,
+			expectedPlanHash: nextPlanArtifact.sha256,
+			initialReceiptPath: nextReceiptPath,
+			expectedInitialReceiptHash: await fileSha256(nextReceiptPath),
+			previousReceiptPath: finalizedReceiptPath,
+			receiptPath: nextFinalizedReceiptPath
+		});
+		expect(nextFinalized.files.length).toBeGreaterThan(0);
 		expect(
 			await readFile(path.join(repository.root, 'packages/engine/src/fixture.json'), 'utf8')
 		).toContain('armor');
