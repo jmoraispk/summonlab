@@ -52,7 +52,11 @@ must be absent at preflight.
    Emblem authority and geometry guide, plus the family calibration plate and approved immediate
    parent master when the canonical catalog record requires them. These are distinct path-bound
    authorities; one reference cannot fill multiple roles. Never crop an individual icon from a
-   calibration sheet.
+   calibration sheet. A family calibration plate may present complete framed tiles for lineage
+   review, but it is reference-only presentation: it never authorizes frame generation, cropping,
+   or frame content in the individual `skill-art` request. The returned `skill-art` is one
+   frameless artwork layer with centered subject matter and enough breathing room for the
+   coordinator's deterministic composition.
    A profile-v3, geometry-first, or black-matte frame additionally requires the exact geometry-v2
    guide reference declared by its target; use it only for provider-space registration and never
    as image content.
@@ -125,6 +129,9 @@ must be absent at preflight.
 - Never spend a generation call on a `skill-art` prompt that requests a rarity frame or crest.
   Shared-frame assembly requires a genuinely frameless artwork layer; placing the canonical frame
   last cannot hide generated rails that lie inside its transparent aperture.
+- Never resize, position, mask, add backing to, or apply a rarity frame to `skill-art`. The
+  coordinator alone performs deterministic final assembly after this producer has returned its
+  exact provider image.
 - Never normalize provider output manually or copy a provider source into the repository. Never
   persist its machine-local absolute path or a `caBX` payload in result JSON; normalized results
   record only pathless source media, dimensions, alpha mode, byte count, content hash, and the
