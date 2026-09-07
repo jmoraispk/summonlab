@@ -17,13 +17,16 @@ type Rank = 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S';
 
 const ROOT = 'assets/wiki/skills/icon-production-v1' as const;
 const CLEANUP_ROOT = `${ROOT}/quality-cleanup-v1` as const;
+const PRIOR_REVIEW_ROOT = `${CLEANUP_ROOT}/review/v11-inner-frame-regeneration` as const;
+const PRIOR_REPORT_PATH = `${PRIOR_REVIEW_ROOT}/report.json` as const;
 const FRAME_ROOT = `${CLEANUP_ROOT}/review/v9-complete-frame-rollout/frames` as const;
-const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v11-inner-frame-regeneration` as const;
+const REVIEW_ROOT = `${CLEANUP_ROOT}/review/v12-inner-frame-regeneration-scale` as const;
 const CANDIDATE_ROOT = `${REVIEW_ROOT}/candidates` as const;
 const COMPARISON_ROOT = `${REVIEW_ROOT}/comparison` as const;
 const GEOMETRY_PATH = `${ROOT}/geometry-v2.json` as const;
 const BACKING_PATH = `${ROOT}/candidates/references/charcoal-forged-stone-v6.png` as const;
 const PAGE_SIZE = 6;
+const ARTWORK_SCALE = 0.9;
 const PNG_OPTIONS = { compressionLevel: 9, adaptiveFiltering: false, palette: false } as const;
 
 interface InspectionSummary {
@@ -41,6 +44,13 @@ interface RenderedRecord {
 	readonly rank: Rank;
 	readonly currentPath: string;
 	readonly currentHash: string;
+	readonly comparisonBaselinePath: string;
+	readonly comparisonBaselineHash: string;
+	readonly sourceBinding: {
+		readonly v11Path: string;
+		readonly v11ContentHash: string;
+		readonly matches: true;
+	};
 	readonly referencePath: string;
 	readonly referenceHash: string;
 	readonly sourcePath: string;
@@ -63,6 +73,11 @@ interface RenderedRecord {
 	readonly frameHash: string;
 	readonly candidatePath: string;
 	readonly candidateHash: string;
+	readonly apertureCoverage: {
+		readonly expectedPixels: number;
+		readonly coveredPixels: number;
+		readonly complete: boolean;
+	};
 	readonly inspection: InspectionSummary;
 	readonly current: Buffer;
 	readonly candidate: Buffer;
@@ -97,6 +112,53 @@ function escapeXml(value: string): string {
 
 function concise(value: string, limit = 31): string {
 	return value.length <= limit ? value : `${value.slice(0, limit - 1)}…`;
+}
+
+async function countVisiblePixels(bytes: Buffer): Promise<number> {
+	const { data, info } = await sharp(bytes)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	let visible = 0;
+	for (let index = 0; index < info.width * info.height; index += 1)
+		if ((data[index * 4 + 3] ?? 0) > 0) visible += 1;
+	return visible;
+}
+
+async function prepareLessZoomedArtwork(
+	source: Buffer,
+	canvas: { readonly width: number; readonly height: number }
+): Promise<{
+	readonly bytes: Buffer;
+	readonly width: number;
+	readonly height: number;
+	readonly left: number;
+	readonly top: number;
+}> {
+	const width = Math.round(canvas.width * ARTWORK_SCALE);
+	const height = Math.round(canvas.height * ARTWORK_SCALE);
+	const left = Math.floor((canvas.width - width) / 2);
+	const top = Math.floor((canvas.height - height) / 2);
+	const scaled = await sharp(source)
+		.resize(width, height, {
+			fit: 'fill',
+			kernel: sharp.kernel.lanczos3,
+			fastShrinkOnLoad: false
+		})
+		.png(PNG_OPTIONS)
+		.toBuffer();
+	const bytes = await sharp({
+		create: {
+			width: canvas.width,
+			height: canvas.height,
+			channels: 4,
+			background: { r: 0, g: 0, b: 0, alpha: 0 }
+		}
+	})
+		.composite([{ input: scaled, left, top }])
+		.png(PNG_OPTIONS)
+		.toBuffer();
+	return { bytes, width, height, left, top };
 }
 
 async function regularBytes(repositoryRoot: string, repositoryPath: string): Promise<Buffer> {
@@ -168,7 +230,7 @@ async function comparisonPage(page: number, records: readonly RenderedRecord[]):
 	const overlays: OverlayOptions[] = [];
 	const labels: TextLine[] = [
 		{
-			text: `FRAMELESS REGENERATION · PAGE ${page}`,
+			text: `LESS-ZOOM REGENERATION · PAGE ${page}`,
 			x: width / 2,
 			y: 43,
 			size: 27,
@@ -197,8 +259,8 @@ async function comparisonPage(page: number, records: readonly RenderedRecord[]):
 			{ input: candidate, left: left + 402, top: top + 28 }
 		);
 		labels.push(
-			{ text: 'CURRENT', x: left + 168, y: top + 20, size: 13, fill: '#9aa3b1' },
-			{ text: 'REGENERATED', x: left + 552, y: top + 20, size: 13, fill: '#79c49b' },
+			{ text: 'V11 · 100%', x: left + 168, y: top + 20, size: 13, fill: '#9aa3b1' },
+			{ text: 'V12 · 90%', x: left + 552, y: top + 20, size: 13, fill: '#79c49b' },
 			{
 				text: `${concise(record.name)} · ${record.rank}`,
 				x: left + 18,
@@ -233,8 +295,8 @@ function reviewIndex(pageCount: number): Buffer {
 	}).join('\n');
 	return Buffer.from(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Inner-frame regeneration review</title><style>body{margin:0;background:#090d12;color:#f3ead8;font-family:sans-serif}main{max-width:1500px;margin:auto;padding:24px}h1,p{text-align:center}strong{color:#79c49b}img{display:block;width:100%;height:auto;margin:24px 0;border:1px solid #343b47}</style></head>
-<body><main><h1>Inner-frame regeneration · 23 skills</h1><p><strong>Review only:</strong> regenerated frameless art beneath the canonical backing and complete rank frame. The five borderline cases remain untouched.</p><p>The complete frame is the final compositing layer in every candidate. No production icon is promoted by this review.</p>${pages}</main></body></html>\n`);
+<title>Less-zoom inner-frame regeneration review</title><style>body{margin:0;background:#090d12;color:#f3ead8;font-family:sans-serif}main{max-width:1500px;margin:auto;padding:24px}h1,p{text-align:center}strong{color:#79c49b}img{display:block;width:100%;height:auto;margin:24px 0;border:1px solid #343b47}</style></head>
+<body><main><h1>Less-zoom regeneration · 23 skills</h1><p><strong>Review only:</strong> V11 at 100% is shown directly beside V12 with the same accepted frameless art centered at 90%. The five borderline cases remain untouched.</p><p>The complete frame is the final compositing layer in every candidate, and an automated gate proves the scaled art covers the entire aperture. No production icon is promoted by this review.</p>${pages}</main></body></html>\n`);
 }
 
 async function assertExactInventory(
@@ -277,41 +339,98 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 }): Promise<{ readonly written: readonly string[]; readonly reviewFiles: readonly string[] }> {
 	const repositoryRoot = path.resolve(options.root ?? process.cwd());
 	const jobs = await buildSkillIconInnerFrameRegenerationJobs(repositoryRoot);
-	const [geometryBytes, backing] = await Promise.all([
+	const [geometryBytes, backing, priorReportBytes] = await Promise.all([
 		regularBytes(repositoryRoot, GEOMETRY_PATH),
-		regularBytes(repositoryRoot, BACKING_PATH)
+		regularBytes(repositoryRoot, BACKING_PATH),
+		regularBytes(repositoryRoot, PRIOR_REPORT_PATH)
 	]);
 	const geometry = JSON.parse(geometryBytes.toString('utf8'));
+	const priorReport = JSON.parse(priorReportBytes.toString('utf8')) as {
+		readonly records: readonly {
+			readonly targetId: string;
+			readonly candidatePath: string;
+			readonly candidateHash: string;
+			readonly sourcePath: string;
+			readonly source: { readonly contentHash: string };
+			readonly generationAttempts: readonly {
+				readonly path: string;
+				readonly status: 'accepted' | 'rejected';
+				readonly contentHash: string;
+			}[];
+		}[];
+	};
+	const priorByTarget = new Map(priorReport.records.map((record) => [record.targetId, record]));
 	const backingHash = sha256(backing);
+	const opaqueCanvas = await sharp({
+		create: {
+			width: geometry.canvas.width,
+			height: geometry.canvas.height,
+			channels: 4,
+			background: { r: 255, g: 255, b: 255, alpha: 1 }
+		}
+	})
+		.png(PNG_OPTIONS)
+		.toBuffer();
 	const frames = new Map<
 		Rank,
-		{ readonly path: string; readonly bytes: Buffer; readonly hash: string }
+		{
+			readonly path: string;
+			readonly bytes: Buffer;
+			readonly hash: string;
+			readonly openingPixels: number;
+		}
 	>();
 	for (const rank of ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const) {
 		const framePath = `${FRAME_ROOT}/rarity-frame-${rank.toLowerCase()}-v11-review.png`;
 		const bytes = await regularBytes(repositoryRoot, framePath);
-		frames.set(rank, { path: framePath, bytes, hash: sha256(bytes) });
+		const opening = await extractLegacyInterior(opaqueCanvas, geometry, {
+			frame: bytes,
+			artworkScale: 1
+		});
+		frames.set(rank, {
+			path: framePath,
+			bytes,
+			hash: sha256(bytes),
+			openingPixels: await countVisiblePixels(opening.bytes)
+		});
 	}
 
 	const rendered: RenderedRecord[] = [];
 	for (const job of jobs) {
 		const frame = frames.get(job.rank);
 		if (!frame) throw new Error(`Missing complete ${job.rank} frame`);
-		const [attemptBytes, current] = await Promise.all([
+		const priorRecord = priorByTarget.get(job.targetId);
+		if (!priorRecord) throw new Error(`Missing V11 comparison baseline for ${job.targetId}`);
+		const [attemptBytes, productionCurrent, comparisonBaseline] = await Promise.all([
 			Promise.all(
 				job.sourceAttempts.map(async (attempt) => ({
 					...attempt,
 					bytes: await regularBytes(repositoryRoot, attempt.path)
 				}))
 			),
-			regularBytes(repositoryRoot, job.currentPath)
+			regularBytes(repositoryRoot, job.currentPath),
+			regularBytes(repositoryRoot, priorRecord.candidatePath)
 		]);
 		const selectedAttempt = attemptBytes.find((attempt) => attempt.status === 'accepted');
 		if (!selectedAttempt || selectedAttempt.path !== job.outputPath)
 			throw new Error(`Missing accepted regeneration source for ${job.targetId}`);
 		const sourceBytes = selectedAttempt.bytes;
-		if (sha256(current) !== job.currentHash)
+		const sourceHash = sha256(sourceBytes);
+		const priorAcceptedAttempts = priorRecord.generationAttempts.filter(
+			(attempt) => attempt.status === 'accepted'
+		);
+		const sourceBindingMatches =
+			priorRecord.sourcePath === selectedAttempt.path &&
+			priorRecord.source.contentHash === sourceHash &&
+			priorAcceptedAttempts.length === 1 &&
+			priorAcceptedAttempts[0]?.path === selectedAttempt.path &&
+			priorAcceptedAttempts[0]?.contentHash === sourceHash;
+		if (!sourceBindingMatches)
+			throw new Error(`V11 accepted-source binding drift for ${job.targetId}`);
+		if (sha256(productionCurrent) !== job.currentHash)
 			throw new Error(`Current composite hash drift for ${job.targetId}`);
+		if (sha256(comparisonBaseline) !== priorRecord.candidateHash)
+			throw new Error(`V11 comparison baseline hash drift for ${job.targetId}`);
 		for (const attempt of attemptBytes) {
 			const sourceMetadata = await sharp(attempt.bytes).metadata();
 			if (
@@ -321,14 +440,19 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 			)
 				throw new Error(`Unexpected generated source format for ${job.targetId}`);
 		}
-		const prepared = await sharp(sourceBytes)
-			.resize(1024, 1024, { fit: 'fill', kernel: sharp.kernel.lanczos3, fastShrinkOnLoad: false })
-			.png(PNG_OPTIONS)
-			.toBuffer();
-		const interior = await extractLegacyInterior(prepared, geometry, {
+		const prepared = await prepareLessZoomedArtwork(sourceBytes, geometry.canvas);
+		const interior = await extractLegacyInterior(prepared.bytes, geometry, {
 			frame: frame.bytes,
 			artworkScale: 1
 		});
+		const coveredPixels = await countVisiblePixels(interior.bytes);
+		const apertureCoverage = {
+			expectedPixels: frame.openingPixels,
+			coveredPixels,
+			complete: coveredPixels === frame.openingPixels
+		};
+		if (!apertureCoverage.complete)
+			throw new Error(`Scaled artwork does not cover the aperture for ${job.targetId}`);
 		const candidate = await clearCleanupExterior(
 			await composeCleanupIcon({
 				backing,
@@ -374,6 +498,13 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 			rank: job.rank,
 			currentPath: job.currentPath,
 			currentHash: job.currentHash,
+			comparisonBaselinePath: priorRecord.candidatePath,
+			comparisonBaselineHash: priorRecord.candidateHash,
+			sourceBinding: {
+				v11Path: priorRecord.sourcePath,
+				v11ContentHash: priorRecord.source.contentHash,
+				matches: true
+			},
 			referencePath: job.referencePath,
 			referenceHash: job.referenceHash,
 			sourcePath: job.outputPath,
@@ -381,7 +512,7 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 				width: 1254,
 				height: 1254,
 				alphaMode: 'rgb',
-				contentHash: sha256(sourceBytes)
+				contentHash: sourceHash
 			},
 			exactPrompt: job.exactPrompt,
 			generationAttempts: attemptBytes.map(({ bytes, ...attempt }) => ({
@@ -393,8 +524,9 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 			frameHash: frame.hash,
 			candidatePath,
 			candidateHash: sha256(candidate),
+			apertureCoverage,
 			inspection,
-			current,
+			current: comparisonBaseline,
 			candidate
 		});
 	}
@@ -415,9 +547,9 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 	outputs.push({
 		path: `${REVIEW_ROOT}/report.json`,
 		bytes: jsonBytes({
-			schemaVersion: 'skill-icon-inner-frame-regeneration-review-v1',
-			status: 'owner-approved-regeneration-review-not-promoted',
-			decision: 'regenerate-all-23-clear-inner-frame-failures-sequentially',
+			schemaVersion: 'skill-icon-inner-frame-regeneration-review-v2',
+			status: 'owner-approved-less-zoom-review-not-promoted',
+			decision: 'center-accepted-frameless-art-at-90-percent-scale',
 			scope: { regenerated: 23, borderlineUntouched: 5 },
 			sequence: {
 				mode: 'sequential',
@@ -428,13 +560,25 @@ export async function renderSkillIconInnerFrameRegenerationReview(options: {
 				}))
 			},
 			assembly: {
-				artworkTreatment: 'generated-frameless-source-masked-to-canonical-aperture',
+				artworkTreatment: 'generated-frameless-source-centered-before-aperture-mask',
+				artworkScale: ARTWORK_SCALE,
+				preparedSource: {
+					width: Math.round(geometry.canvas.width * ARTWORK_SCALE),
+					height: Math.round(geometry.canvas.height * ARTWORK_SCALE),
+					left: Math.floor(
+						(geometry.canvas.width - Math.round(geometry.canvas.width * ARTWORK_SCALE)) / 2
+					),
+					top: Math.floor(
+						(geometry.canvas.height - Math.round(geometry.canvas.height * ARTWORK_SCALE)) / 2
+					)
+				},
 				backing: { path: BACKING_PATH, contentHash: backingHash },
 				frameIsFinalLayer: true,
 				compositionProfile: 'frame-opening-v3'
 			},
 			inputs: {
 				geometry: { path: GEOMETRY_PATH, contentHash: sha256(geometryBytes) },
+				priorReview: { path: PRIOR_REPORT_PATH, contentHash: sha256(priorReportBytes) },
 				generationTool: 'built-in imagegen'
 			},
 			records: rendered.map(({ current: _current, candidate: _candidate, ...record }) => record)
