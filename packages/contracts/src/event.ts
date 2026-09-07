@@ -2,7 +2,11 @@ import { z } from 'zod';
 
 import { CombatAttributeNameSchema } from './capability.js';
 import { CombatRulesVersionSchema } from './combat-rules.js';
-import { CombatChoiceBatchV1Schema, CombatResolvedEventSchema } from './readiness-combat.js';
+import {
+	CombatChoiceBatchV1Schema,
+	CombatResolvedEventSchema,
+	CombatResultSchema
+} from './readiness-combat.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -189,7 +193,37 @@ export const CombatChoiceBatchAppliedEventSchema = AuthoritativeEventSchema.exte
 	payload: z
 		.object({
 			batch: CombatChoiceBatchV1Schema,
-			resolvedEvents: z.array(CombatResolvedEventSchema).max(1_000)
+			resolvedEvents: z.array(CombatResolvedEventSchema).max(1_000),
+			terminalResult: CombatResultSchema.nullable(),
+			claimCheckpoint: z
+				.object({
+					checkpointVersion: z.literal('combat-claim-transition-checkpoint-v1'),
+					checkpointId: EntityIdSchema,
+					attemptId: EntityIdSchema,
+					beforeMissionHash: StateHashSchema,
+					beforeProgressionHash: StateHashSchema,
+					resultHash: StateHashSchema,
+					claimManifestHash: StateHashSchema,
+					authorityHash: StateHashSchema,
+					afterMissionHash: StateHashSchema,
+					afterProgressionHash: StateHashSchema,
+					receiptManifestHash: StateHashSchema
+				})
+				.strict()
+				.nullable()
+		})
+		.strict()
+}).strict();
+
+export const ReadinessCombatTerminalCommittedEventSchema = AuthoritativeEventSchema.extend({
+	schemaVersion: z.literal(26),
+	eventType: z.literal('mission.combat.readiness.terminal.committed'),
+	contentVersion: z.literal('engine-v26'),
+	payload: z
+		.object({
+			result: CombatResultSchema,
+			claimCheckpoint:
+				CombatChoiceBatchAppliedEventSchema.shape.payload.shape.claimCheckpoint.unwrap()
 		})
 		.strict()
 }).strict();

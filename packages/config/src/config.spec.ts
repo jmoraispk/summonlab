@@ -26,9 +26,11 @@ describe('configuration', () => {
 		expect(config.imageTimeoutMs).toBe(120_000);
 	});
 
-	it('accepts only the operator-owned legacy combat mode in this release phase', () => {
+	it('accepts both operator-owned combat modes while rejecting player-facing variants', () => {
 		expect(parseConfig({ COMBAT_MODE: 'legacy-auto-v1' }).combatMode).toBe('legacy-auto-v1');
-		expect(() => parseConfig({ COMBAT_MODE: 'agent-readiness-v1' })).toThrow();
+		expect(parseConfig({ COMBAT_MODE: 'agent-readiness-v1' }).combatMode).toBe(
+			'agent-readiness-v1'
+		);
 		expect(() => parseConfig({ COMBAT_MODE: 'player-choice' })).toThrow();
 	});
 

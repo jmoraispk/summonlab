@@ -13,6 +13,7 @@ import {
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
 	FirstBandArchiveStateSchema,
 	MasterControlStateSchema,
 	MasterControlStateV2Schema,
@@ -35,6 +36,7 @@ import {
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
 	MissionRunStateV9Schema,
+	MissionRunStateV10Schema,
 	MissionTurnChoiceSchema,
 	ResourceKeySchema,
 	RuntimeBandStoryStateSchema,
@@ -429,6 +431,15 @@ const MissionLegacyAutomaticTurnResolvedPayloadSchema = EmptyMetadataSchema.exte
 	nextVersion: z.number().int().positive()
 }).strict();
 
+const MissionLegacyAutomaticTurnResolvedPayloadV2Schema = EmptyMetadataSchema.extend({
+	transition: z.literal('resolve-turn'),
+	mission: MissionRunStateV10Schema,
+	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
+	round: MissionRoundV2Schema,
+	consequences: z.array(MissionConsequenceRecordV4Schema).max(40),
+	nextVersion: z.number().int().positive()
+}).strict();
+
 const MasterTimingChangedPayloadSchema = EmptyMetadataSchema.extend({
 	timing: z.enum(['wait', 'countdown', 'step', 'continuous']),
 	countdownSeconds: z.number().int().min(1).max(60),
@@ -536,6 +547,14 @@ const MissionTransitionPayloadV12Schema = MissionTransitionPayloadV11Schema.safe
 const MissionTransitionPayloadV13Schema = EmptyMetadataSchema.extend({
 	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
 	mission: MissionRunStateV9Schema,
+	heroIds: z.array(z.string().uuid()).max(7),
+	completedObjectiveIds: z.array(z.string()).max(20),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionTransitionPayloadV14Schema = EmptyMetadataSchema.extend({
+	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
+	mission: MissionRunStateV10Schema,
 	heroIds: z.array(z.string().uuid()).max(7),
 	completedObjectiveIds: z.array(z.string()).max(20),
 	nextVersion: z.number().int().positive()
@@ -751,6 +770,47 @@ function reduceMissionEventInternal(
 		});
 	}
 	if (event.eventType === 'mission.round.resolved') {
+		if (state.schemaVersion === 26) {
+			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionLegacyAutomaticTurnResolvedPayloadV2Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round version diverged',
+					event.sequence
+				);
+			}
+			const expected = resolveMissionModeTurn(state, event.eventId);
+			if (
+				expected.entropyCursor !== event.seedCursor ||
+				hashCanonical(expected.choices) !== hashCanonical(payload.choices) ||
+				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||
+				hashCanonical(expected.round) !== hashCanonical(payload.round) ||
+				hashCanonical(expected.consequences) !== hashCanonical(payload.consequences) ||
+				hashCanonical(expected.mission) !== hashCanonical(payload.mission)
+			) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round payload diverged',
+					event.sequence
+				);
+			}
+			return EngineGameStateV26Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				heroes: expected.heroes,
+				items: expected.items,
+				society: expected.society,
+				master: expected.master,
+				status: expected.status
+			});
+		}
 		if (state.schemaVersion === 25) {
 			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
 				throw new ReplayIntegrityError(
@@ -1144,6 +1204,84 @@ function reduceMissionEventInternal(
 			'mission.retreated'
 		].includes(event.eventType)
 	) {
+		if (state.schemaVersion === 26) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.eventType === 'mission.extraction.opened'
+			) {
+				throw new ReplayIntegrityError(
+					'Current mission transition precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionTransitionPayloadV14Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Current mission transition version diverged',
+					event.sequence
+				);
+			}
+			const eventTypes = {
+				prepare: 'mission.preparation.started',
+				'revise-party': 'mission.party.revised',
+				cancel: 'mission.preparation.canceled',
+				deploy: 'mission.deployed',
+				extract: 'mission.extracted',
+				retreat: 'mission.retreated'
+			} as const;
+			if (eventTypes[payload.transition] !== event.eventType) {
+				throw new ReplayIntegrityError('Current mission event type diverged', event.sequence);
+			}
+			const expectedMission =
+				payload.transition === 'prepare'
+					? prepareMissionAttempt(
+							state,
+							event.commandId,
+							payload.heroIds,
+							payload.mission.binding.missionId,
+							payload.mission.attempt?.combatModeBinding
+						)
+					: payload.transition === 'revise-party'
+						? reviseMissionParty(state, payload.heroIds)
+						: payload.transition === 'cancel'
+							? cancelMissionPreparation(state)
+							: payload.transition === 'deploy'
+								? deployMissionAttempt(state).mission
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
+			if (hashCanonical(expectedMission) !== hashCanonical(payload.mission)) {
+				throw new ReplayIntegrityError(
+					'Current mission transition payload diverged',
+					event.sequence
+				);
+			}
+			if (payload.transition === 'deploy') {
+				const deployment = deployMissionAttempt(state);
+				if (
+					deployment.entropyCursor !== event.seedCursor ||
+					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
+				) {
+					throw new ReplayIntegrityError(
+						'Current mission deployment entropy diverged',
+						event.sequence
+					);
+				}
+			} else if (event.seedCursor !== state.entropyCursor || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError(
+					'Current mission transition entropy diverged',
+					event.sequence
+				);
+			}
+			return EngineGameStateV26Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission
+			});
+		}
 		if (state.schemaVersion === 25) {
 			if (
 				event.actorId !== state.master.masterId ||

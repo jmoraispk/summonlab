@@ -12,6 +12,7 @@ import {
 	EngineGameStateV25Schema,
 	EngineGameStateV26Schema,
 	CombatChoiceBatchAppliedEventSchema,
+	ReadinessCombatTerminalCommittedEventSchema,
 	type AuthoritativeEvent,
 	type CombatChoiceBatchV1,
 	type EngineCommand,
@@ -316,6 +317,25 @@ function combatBatchCommand(
 	};
 }
 
+function readinessTerminalCommand(state: EngineGameStateV26, key: string): EngineCommand {
+	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
+	return {
+		commandType: 'mission.commit.readiness-terminal',
+		commandId,
+		runId: state.runId,
+		actorId: state.master.masterId,
+		expectedVersion: state.version,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		}
+	};
+}
+
 function deployedV24EquipmentMissionState(): EngineGameStateV24 {
 	const heroId = deterministicUuid('v24-conflict-hero');
 	const initial = EngineGameStateV24Schema.parse(
@@ -343,6 +363,58 @@ function deployedV24EquipmentMissionState(): EngineGameStateV24 {
 }
 
 describe('mission runtime ownership', () => {
+	it('binds either current combat mode when a v26 attempt begins', async () => {
+		const draft = await generateSummonableCharacterDraft(
+			{
+				seed: 'v26-attempt-mode-binding-character',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '9'.repeat(64) }
+		);
+		for (const modeId of ['legacy-auto-v1', 'agent-readiness-v1'] as const) {
+			const initial = createBootstrapEngine({
+				runId: deterministicUuid(`v26-attempt-mode-binding-${modeId}`),
+				seed: `v26-attempt-mode-binding-${modeId}-seed`,
+				draft,
+				combatMode: modeId
+			}).snapshot.state;
+			if (initial.schemaVersion !== 26) throw new Error('Expected current v26 run');
+			const heroId = Object.keys(initial.heroes)[0]!;
+			const binding = createCombatModeBinding(modeId, initial.simulatedAt);
+			const prepared = applyCommand(initial, {
+				...missionTestCommand(initial, `v26-${modeId}-prepare`, {
+					commandType: 'mission.prepare',
+					heroIds: [heroId],
+					combatModeBinding: binding
+				})
+			}).state;
+
+			expect(prepared.schemaVersion).toBe(26);
+			if (prepared.schemaVersion !== 26) throw new Error('Expected current v26 run');
+			expect(prepared.mission.attempt?.combatModeBinding).toStrictEqual(binding);
+			expect(prepared.mission.attempt?.combatState.modeId).toBe(modeId);
+			if (modeId === 'agent-readiness-v1') {
+				const combat = prepared.mission.attempt?.combatState;
+				if (combat?.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness combat');
+				expect(combat.readinessState).toMatchObject({
+					stateVersion: 'readiness-combat-state-v1',
+					attemptId: prepared.mission.attempt!.attemptId,
+					status: 'active',
+					result: null
+				});
+				expect(combat.readinessState.actorContexts[heroId]?.legalActionTemplates).toEqual(
+					expect.arrayContaining([
+						expect.objectContaining({
+							resolutionProfile: expect.objectContaining({
+								rulesVersion: 'combat-rules-v1'
+							})
+						})
+					])
+				);
+			}
+		}
+	});
 	it('assigns mission command and event discriminators to one domain owner', () => {
 		expect(MISSION_COMMAND_TYPES).toStrictEqual([
 			'master.configure.timing',
@@ -382,7 +454,8 @@ describe('mission runtime ownership', () => {
 			'mission.deployed',
 			'mission.extracted',
 			'mission.retreated',
-			'mission.combat.choice-batch.applied'
+			'mission.combat.choice-batch.applied',
+			'mission.combat.readiness.terminal.committed'
 		]);
 		expect(firstBandMissionEventReducer).toMatchObject({
 			ownerId: 'first-band-mission',
@@ -412,7 +485,8 @@ describe('mission runtime ownership', () => {
 				'mission.deployed',
 				'mission.extracted',
 				'mission.retreated',
-				'mission.combat.choice-batch.applied'
+				'mission.combat.choice-batch.applied',
+				'mission.combat.readiness.terminal.committed'
 			]
 		);
 	});
@@ -507,6 +581,78 @@ describe('mission runtime ownership', () => {
 		expect(() => reduceEvent(fixture.state, forged)).toThrow(ReplayIntegrityError);
 	});
 
+	it('authoritatively commits pre-window readiness completion and transitions the outer mission once', async () => {
+		const draft = await generateSummonableCharacterDraft(
+			{
+				seed: 'readiness-terminal-character',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '8'.repeat(64) }
+		);
+		const initial = EngineGameStateV25Schema.parse(
+			createBootstrapEngine({
+				runId: deterministicUuid('readiness-terminal-run'),
+				seed: 'readiness-terminal-engine',
+				draft
+			}).snapshot.state
+		);
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const prepared = applyCommand(initial, {
+			...missionTestCommand(initial, 'readiness-terminal-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				combatModeBinding: createCombatModeBinding('legacy-auto-v1', initial.simulatedAt)
+			})
+		}).state;
+		const deployed = applyCommand(prepared, {
+			...missionTestCommand(prepared, 'readiness-terminal-deploy', {
+				commandType: 'mission.deploy'
+			})
+		}).state;
+		if (deployed.schemaVersion !== 25) throw new Error('Expected deployed v25 state');
+		const fixture = readinessV26Fixture(deployed);
+		const terminalInput = structuredClone(fixture.state);
+		const combatState = terminalInput.mission.attempt!.combatState;
+		if (combatState.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+		const enemy = Object.values(combatState.readinessState.combatants).find(
+			(combatant) => combatant.teamId === 'enemy'
+		)!;
+		enemy.resources.health.current = 0;
+		enemy.downed = true;
+		enemy.active = false;
+		const terminal = EngineGameStateV26Schema.parse(terminalInput);
+		const command = readinessTerminalCommand(terminal, 'commit');
+		const applied = applyCommand(terminal, command);
+
+		expect(applied.events).toHaveLength(1);
+		const event = ReadinessCombatTerminalCommittedEventSchema.parse(applied.events[0]);
+		expect(event.payload.result).toMatchObject({
+			outcome: 'victory',
+			attemptId: terminal.mission.attempt!.attemptId
+		});
+		if (applied.state.schemaVersion !== 26) throw new Error('Expected v26 applied state');
+		expect(applied.state.mission.attempt).toMatchObject({ status: 'extraction', outcome: null });
+		expect(applied.state.mission.attempt!.combatState).toMatchObject({
+			modeId: 'agent-readiness-v1',
+			readinessState: { status: 'complete', result: event.payload.result }
+		});
+		expect(reduceEvent(terminal, event)).toStrictEqual(applied.state);
+
+		expect(() =>
+			applyCommand(fixture.state, readinessTerminalCommand(fixture.state, 'early'))
+		).toThrow(IllegalActionError);
+		const forged = structuredClone(event);
+		forged.payload.result = { ...forged.payload.result, traceHash: 'f'.repeat(64) };
+		expect(() => reduceEvent(terminal, forged)).toThrow(ReplayIntegrityError);
+		const forgedCheckpoint = structuredClone(event);
+		forgedCheckpoint.payload.claimCheckpoint = {
+			...forgedCheckpoint.payload.claimCheckpoint,
+			authorityHash: 'f'.repeat(64)
+		};
+		expect(() => reduceEvent(terminal, forgedCheckpoint)).toThrow(ReplayIntegrityError);
+	});
+
 	it('round-trips the composed handler through every mission-capable schema version', () => {
 		const observedHashes = Object.fromEntries(
 			MISSION_SCHEMA_VERSIONS.map((schemaVersion) => {
@@ -586,6 +732,18 @@ describe('mission runtime ownership', () => {
 		).state;
 		if (deployedV25.schemaVersion !== 25) throw new Error('Expected deployed v25 state');
 		const readinessV26 = readinessV26Fixture(deployedV25);
+		const terminalReadinessInput = structuredClone(readinessV26.state);
+		const terminalReadinessCombat = terminalReadinessInput.mission.attempt!.combatState;
+		if (terminalReadinessCombat.modeId !== 'agent-readiness-v1') {
+			throw new Error('Expected readiness state');
+		}
+		const terminalEnemy = Object.values(terminalReadinessCombat.readinessState.combatants).find(
+			(combatant) => combatant.teamId === 'enemy'
+		)!;
+		terminalEnemy.resources.health.current = 0;
+		terminalEnemy.downed = true;
+		terminalEnemy.active = false;
+		const terminalReadinessV26 = EngineGameStateV26Schema.parse(terminalReadinessInput);
 
 		const initialV12 = missionVersionFixture(12);
 		const heroV12 = Object.keys(initialV12.heroes)[0]!;
@@ -780,6 +938,12 @@ describe('mission runtime ownership', () => {
 				)
 			},
 			{
+				commandType: 'mission.commit.readiness-terminal',
+				eventType: 'mission.combat.readiness.terminal.committed',
+				state: terminalReadinessV26,
+				command: readinessTerminalCommand(terminalReadinessV26, 'mapping-readiness-terminal')
+			},
+			{
 				commandType: 'mission.open.extraction',
 				eventType: 'mission.extraction.opened',
 				state: deployedV11,
@@ -866,7 +1030,12 @@ describe('mission runtime ownership', () => {
 			{
 				commandType: 'mission.apply.combat-choice-batch',
 				eventType: 'mission.combat.choice-batch.applied',
-				eventHash: 'd0010a460d82d2a65666d8d3796d99594705e2c0445a6e8968c25668cc4678ca'
+				eventHash: 'd9d15f01586df5f2c3984162f5e860207d4869c415819696e729e8caa1c2a9d1'
+			},
+			{
+				commandType: 'mission.commit.readiness-terminal',
+				eventType: 'mission.combat.readiness.terminal.committed',
+				eventHash: 'b355bad82973cb5bf9f872f142499e9210dce706fa7fab9f2ae5898d4b56f3e1'
 			},
 			{
 				commandType: 'mission.open.extraction',

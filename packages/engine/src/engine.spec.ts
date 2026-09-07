@@ -456,6 +456,34 @@ describe('deterministic engine', () => {
 		);
 	});
 
+	it('boots readiness-configured capability runs into v26 without changing legacy v25', () => {
+		const draft = v2Draft(deterministicUuid('operator-readiness-bootstrap-draft'));
+		const readiness = createBootstrapEngine({
+			runId: deterministicUuid('operator-readiness-bootstrap-run'),
+			seed: 'operator-readiness-bootstrap-seed',
+			draft,
+			combatMode: 'agent-readiness-v1'
+		});
+		const legacy = createBootstrapEngine({
+			runId: deterministicUuid('operator-legacy-bootstrap-run'),
+			seed: 'operator-legacy-bootstrap-seed',
+			draft,
+			combatMode: 'legacy-auto-v1'
+		});
+
+		expect(readiness.snapshot.state).toMatchObject({
+			schemaVersion: 26,
+			contentVersion: 'engine-v26',
+			mission: { attemptCount: 0, attempt: null }
+		});
+		expect(readiness.event).toMatchObject({ schemaVersion: 26, contentVersion: 'engine-v26' });
+		expect(legacy.snapshot.state).toMatchObject({
+			schemaVersion: 26,
+			contentVersion: 'engine-v26',
+			mission: { attemptCount: 0, attempt: null }
+		});
+	});
+
 	it('keeps external mutation sources outside the engine contract', () => {
 		expect(ENGINE_INVARIANTS).toContain('no-model-sdk');
 		expect(ENGINE_INVARIANTS).toContain('no-wall-clock');

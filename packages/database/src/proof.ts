@@ -15,6 +15,7 @@ import {
 	type CharacterDraft,
 	type CharacterDraftV2,
 	type ClockSpeed,
+	type CombatModeId,
 	type DecisionSource,
 	type EngineCommand,
 	type EquipmentMaterialId,
@@ -82,6 +83,8 @@ export interface CreateProofRunInput {
 	readonly firstObservation: string;
 	readonly choice: ResolvedFirstChoice | null;
 	readonly clockSpeed?: ClockSpeed;
+	/** Current operator release value used only to select the new run's current engine schema. */
+	readonly combatMode?: CombatModeId;
 	readonly additionalHeroes?: readonly {
 		readonly heroId: string;
 		readonly manifestHash: string;
@@ -414,6 +417,7 @@ export async function createProofRun(
 							seed: effectiveEngineSeed,
 							draft,
 							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
+							...(input.combatMode === undefined ? {} : { combatMode: input.combatMode }),
 							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
 						})
 					: await initializeEngineRun(transaction, {

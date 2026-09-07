@@ -120,9 +120,9 @@ describe('legacy automatic combat', () => {
 		});
 		const agentBinding = createCombatModeBinding('agent-readiness-v1', BOUND_AT);
 		expect(combatModeAvailability(agentBinding)).toStrictEqual({
-			status: 'not-yet-live',
+			status: 'available',
 			modeId: 'agent-readiness-v1',
-			message: 'Combat mode agent-readiness-v1 is not yet live'
+			message: null
 		});
 	});
 
@@ -276,7 +276,7 @@ describe('legacy automatic combat', () => {
 				...commandBase(agentReadiness, 'agent-readiness-advance'),
 				commandType: 'mission.advance.automatic'
 			})
-		).toThrow(/agent-readiness-v1 is not yet live/u);
+		).toThrow();
 
 		const unavailableRules = EngineGameStateV25Schema.parse({
 			...deployed.state,

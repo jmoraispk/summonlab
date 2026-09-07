@@ -734,6 +734,24 @@ export async function getCombatDecisionWindow(
 	}
 }
 
+export async function getLatestCombatDecisionWindowForRun(
+	databaseUrl: string,
+	runId: string,
+	attemptId: string
+): Promise<CombatDecisionWindow | null> {
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		const rows = await sql<WindowRow[]>`
+			select * from summonlab_combat_decision_windows
+			where run_id = ${runId} and attempt_id = ${attemptId}
+			order by created_at desc, window_id desc limit 1
+		`;
+		return rows[0] ? await readWindow(sql, rows[0]) : null;
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function listDispatchableCombatDecisionJobIds(
 	databaseUrl: string,
 	limit = 32

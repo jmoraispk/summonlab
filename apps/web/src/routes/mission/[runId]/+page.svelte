@@ -19,6 +19,9 @@
 	let selectionInitialized = $state(false);
 	let resultMessage = $state('');
 	let errorMessage = $state('');
+	type CombatWindowStatus = NonNullable<typeof data.combatWindow>;
+	let combatWindow = $state<CombatWindowStatus | null>(null);
+	let pollingCombat = $state(false);
 	let selectedMasterActionId = $state('');
 	let observedNow = $state(Date.now());
 	let lastAutoDecisionId = $state('');
@@ -46,10 +49,15 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
-	const isCapabilityMission = $derived(engineState.schemaVersion === 25);
+	const isCapabilityMission = $derived(
+		engineState.schemaVersion === 25 || engineState.schemaVersion === 26
+	);
 	const isModeBoundCombat = $derived(data.combatMode !== null);
 	const isLegacyAutomatic = $derived(
 		data.combatMode?.status === 'available' && data.combatMode.modeId === 'legacy-auto-v1'
+	);
+	const isReadinessCombat = $derived(
+		data.combatMode?.status === 'available' && data.combatMode.modeId === 'agent-readiness-v1'
 	);
 	const isMasterFallback = $derived(engineState.schemaVersion === 20);
 	const isMasterTiming = $derived(engineState.schemaVersion === 19 || isMasterFallback);
@@ -87,12 +95,14 @@
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
 			engineState.schemaVersion === 20 ||
-			engineState.schemaVersion === 25
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
 			? engineState.mission
 			: null
 	);
 	const attempt = $derived(mission?.attempt ?? null);
 	const turnState = $derived(attempt?.turnState ?? null);
+	const readinessState = $derived(attempt?.readiness ?? null);
 	const portalTurnState = $derived(
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
@@ -104,7 +114,8 @@
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
 			engineState.schemaVersion === 20 ||
-			engineState.schemaVersion === 25
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
 			? (engineState.mission.attempt?.turnState ?? null)
 			: null
 	);
@@ -114,7 +125,8 @@
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
 			engineState.schemaVersion === 20 ||
-			engineState.schemaVersion === 25
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
 			? engineState.mission.aftermath
 			: null
 	);
@@ -220,7 +232,21 @@
 
 	onMount(() => {
 		const timer = window.setInterval(() => (observedNow = Date.now()), 100);
-		return () => window.clearInterval(timer);
+		const combatTimer = window.setInterval(() => {
+			if (combatWindow && ['collecting', 'ready'].includes(combatWindow.status)) {
+				void pollCombatWindow(combatWindow.windowId);
+			}
+		}, 1_000);
+		return () => {
+			window.clearInterval(timer);
+			window.clearInterval(combatTimer);
+		};
+	});
+
+	$effect(() => {
+		if (data.combatWindow && data.combatWindow.updatedAt !== combatWindow?.updatedAt) {
+			combatWindow = data.combatWindow;
+		}
 	});
 
 	$effect(() => {
@@ -408,11 +434,59 @@
 		selectedMasterActionId = '';
 	}
 
+	async function pollCombatWindow(windowId: string) {
+		if (pollingCombat) return;
+		pollingCombat = true;
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/combat-windows/${windowId}`);
+			const body = (await response.json()) as CombatWindowStatus & { message?: string };
+			if (!response.ok)
+				throw new Error(body.message ?? 'The combat status could not be refreshed.');
+			combatWindow = body;
+			if (['applied', 'stale', 'failed'].includes(body.status)) {
+				resultMessage =
+					body.status === 'applied'
+						? 'The heroes resolved the readiness window.'
+						: body.status === 'stale'
+							? 'That combat window was superseded. The current battle state has been restored.'
+							: 'The heroes could not resolve that window.';
+				await invalidateAll();
+			}
+		} catch (error) {
+			errorMessage =
+				error instanceof Error ? error.message : 'The combat status could not be refreshed.';
+		} finally {
+			pollingCombat = false;
+		}
+	}
+
 	async function advanceAutomaticCombat() {
-		await act(
-			{ action: 'advance-automatic-combat' },
-			'The heroes resolved one automatic combat round.'
-		);
+		busy = true;
+		resultMessage = '';
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/mission`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ action: 'advance-automatic-combat' })
+			});
+			const body = (await response.json()) as CombatWindowStatus & {
+				message?: string;
+				missionStatus?: string;
+			};
+			if (!response.ok) throw new Error(body.message ?? 'The battle could not continue.');
+			if ('windowId' in body) {
+				combatWindow = body;
+				resultMessage = 'The heroes are choosing their next actions.';
+			} else {
+				resultMessage = 'The battle reached a resolved state.';
+				await invalidateAll();
+			}
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The battle could not continue.';
+		} finally {
+			busy = false;
+		}
 	}
 
 	function actorName(actorId: string) {
@@ -436,7 +510,8 @@
 			engineState.schemaVersion !== 18 &&
 			engineState.schemaVersion !== 19 &&
 			engineState.schemaVersion !== 20 &&
-			engineState.schemaVersion !== 25
+			engineState.schemaVersion !== 25 &&
+			engineState.schemaVersion !== 26
 		)
 			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
@@ -671,7 +746,9 @@
 				<span>{phase === 'available' ? 'Threshold dormant' : phase.replaceAll('-', ' ')}</span>
 				<strong
 					>{attempt
-						? `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/${data.missionDefinition.maximumRounds}`
+						? readinessState
+							? `Attempt ${attempt.ordinal} · Battle tick ${readinessState.tick}`
+							: `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/${data.missionDefinition.maximumRounds}`
 						: 'No attempt committed'}</strong
 				>
 			</div>
@@ -1024,16 +1101,18 @@
 					>
 				{:else if phase === 'deployed' || phase === 'resolving'}
 					<div class="turn-objective">
-						<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
+						<span
+							>{readinessState
+								? `Battle tick ${readinessState.tick}`
+								: `Round ${(turnState?.roundNumber ?? 0) + 1}`}</span
+						>
 						<strong
 							>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
 								.objectiveTitle}</strong
 						>
 						<small
 							>{isModeBoundCombat
-								? isLegacyAutomatic
-									? 'The heroes choose from legal actions when you continue.'
-									: (data.combatMode?.message ?? 'This bound combat mode is unavailable.')
+								? 'The heroes choose from legal actions when you continue.'
 								: 'Choose only the Master. Every summoned hero chooses independently.'}</small
 						>
 					</div>
@@ -1057,14 +1136,24 @@
 						</div>
 					{/if}
 					{#if isModeBoundCombat}
-						{#if isLegacyAutomatic}
+						{#if isLegacyAutomatic || isReadinessCombat}
+							{#if isReadinessCombat && combatWindow && ['collecting', 'ready'].includes(combatWindow.status)}
+								<div class="turn-objective" aria-live="polite" data-testid="combat-window-status">
+									<span>Heroes choosing</span>
+									<strong>{combatWindow.readyActors}/{combatWindow.totalActors} ready</strong>
+									<small>Battle tick {combatWindow.tick}. This updates automatically.</small>
+								</div>
+							{/if}
 							<button
 								class="primary resolve"
-								disabled={busy}
+								disabled={busy ||
+									pollingCombat ||
+									Boolean(combatWindow && ['collecting', 'ready'].includes(combatWindow.status))}
+								aria-busy={busy || pollingCombat}
 								onclick={advanceAutomaticCombat}
 								data-testid="continue-battle"
-								><span>Continue battle</span><small
-									>heroes choose → seeded initiative → engine</small
+								><span>{busy || pollingCombat ? 'Continuing…' : 'Continue battle'}</span><small
+									>heroes choose → engine resolves</small
 								></button
 							>
 						{:else}
@@ -1309,7 +1398,7 @@
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
 				: isCapabilityMission
-					? 'MIS-025 · operator-bound legacy automatic combat'
+					? 'MIS-025 · operator-bound automatic combat'
 					: isMasterFallback
 						? 'MIS-014 · authoritative player journal'
 						: isMasterTiming
@@ -1324,7 +1413,7 @@
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
 				: isCapabilityMission
-					? 'Next: agent-readiness combat after replay, collision, provider, safety, and balance gates pass.'
+					? 'Next: replay, collision, provider, safety, and balance calibration.'
 					: isMasterFallback
 						? 'Next: queued agent decisions through provider-neutral model jobs.'
 						: isMasterTiming

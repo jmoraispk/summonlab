@@ -42,7 +42,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			directive: parsed.data.directive,
 			firstObservation: FIRST_OBSERVATION,
 			choice,
-			clockSpeed: config.simulationSpeed
+			clockSpeed: config.simulationSpeed,
+			combatMode: config.combatMode
 		});
 		return json(
 			{

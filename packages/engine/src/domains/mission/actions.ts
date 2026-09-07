@@ -17,6 +17,7 @@ import {
 	type EngineGameStateV23,
 	type EngineGameStateV24,
 	type EngineGameStateV25,
+	type EngineGameStateV26,
 	type LegalAction,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
@@ -388,10 +389,11 @@ type MissionActionState =
 	| EngineGameStateV20
 	| EngineGameStateV23
 	| EngineGameStateV24
-	| EngineGameStateV25;
+	| EngineGameStateV25
+	| EngineGameStateV26;
 
 export function supportsMissionActions(state: EngineGameState): state is MissionActionState {
-	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25].includes(state.schemaVersion);
+	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 26].includes(state.schemaVersion);
 }
 
 export function missionLegalActions(
@@ -439,7 +441,12 @@ export function missionLegalActions(
 		];
 	}
 	if (attempt?.status === 'deployed' || attempt?.status === 'resolving') {
-		if (state.schemaVersion === 25) {
+		if (state.schemaVersion === 25 || state.schemaVersion === 26) {
+			if (
+				state.schemaVersion === 25 &&
+				state.mission.attempt!.combatModeBinding.modeId !== 'legacy-auto-v1'
+			)
+				return [];
 			if (combatModeAvailability(state.mission.attempt!.combatModeBinding).status !== 'available')
 				return [];
 			return [

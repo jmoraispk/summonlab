@@ -6,6 +6,7 @@ import {
 	type EngineGameStateV23,
 	type EngineGameStateV24,
 	type EngineGameStateV25,
+	type EngineGameStateV26,
 	type EntropyDraw,
 	type MissionRunStateV3,
 	type MissionRunStateV4,
@@ -193,7 +194,8 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 			state.schemaVersion !== 20 &&
 			state.schemaVersion !== 23 &&
 			state.schemaVersion !== 24 &&
-			state.schemaVersion !== 25) ||
+			state.schemaVersion !== 25 &&
+			state.schemaVersion !== 26) ||
 		state.status !== 'active' ||
 		state.master.lifeState !== 'alive' ||
 		command.actorId !== state.master.masterId
@@ -268,7 +270,7 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 	}
 	if (command.commandType === 'mission.advance.automatic') {
 		if (
-			state.schemaVersion !== 25 ||
+			(state.schemaVersion !== 25 && state.schemaVersion !== 26) ||
 			command.source.source !== 'manual' ||
 			command.source.timing !== 'step'
 		) {
@@ -294,7 +296,8 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
 		state.schemaVersion === 24 ||
-		state.schemaVersion === 25
+		state.schemaVersion === 25 ||
+		state.schemaVersion === 26
 	) {
 		if (command.commandType === 'mission.prepare')
 			prepareMissionAttempt(
@@ -444,14 +447,19 @@ export function buildMissionEvent(
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 23 &&
 		state.schemaVersion !== 24 &&
-		state.schemaVersion !== 25
+		state.schemaVersion !== 25 &&
+		state.schemaVersion !== 26
 	)
 		throw new IllegalActionError(command.commandType);
 	if (
 		command.commandType === 'mission.resolve.turn' ||
 		command.commandType === 'mission.advance.automatic'
 	) {
-		if (command.commandType === 'mission.advance.automatic' && state.schemaVersion !== 25) {
+		if (
+			command.commandType === 'mission.advance.automatic' &&
+			state.schemaVersion !== 25 &&
+			state.schemaVersion !== 26
+		) {
 			throw new IllegalActionError(command.commandType);
 		}
 		if (
@@ -466,13 +474,14 @@ export function buildMissionEvent(
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
 			state.schemaVersion !== 23 &&
-			state.schemaVersion !== 24
+			state.schemaVersion !== 24 &&
+			state.schemaVersion !== 26
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'mission.round.resolved');
 		const automaticResolution =
 			command.commandType === 'mission.advance.automatic'
-				? resolveMissionModeTurn(state as EngineGameStateV25, base.eventId)
+				? resolveMissionModeTurn(state as EngineGameStateV25 | EngineGameStateV26, base.eventId)
 				: null;
 		const choices =
 			command.commandType === 'mission.advance.automatic'
@@ -571,7 +580,8 @@ export function buildMissionEvent(
 					state.schemaVersion === 20 ||
 					state.schemaVersion === 23 ||
 					state.schemaVersion === 24 ||
-					state.schemaVersion === 25) &&
+					state.schemaVersion === 25 ||
+					command.commandType === 'mission.advance.automatic') &&
 				'consequences' in resolution
 					? { consequences: resolution.consequences }
 					: {}),
@@ -636,8 +646,11 @@ export function buildMissionEvent(
 					  state.schemaVersion === 20 ||
 					  state.schemaVersion === 23 ||
 					  state.schemaVersion === 24 ||
-					  state.schemaVersion === 25
-					? `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8 | MissionRunStateV9).attempt!.turnState.monsters).length} deterministic monster duties activated.`
+					  state.schemaVersion === 25 ||
+					  state.schemaVersion === 26
+					? state.schemaVersion === 26
+						? 'The prepared party crossed the Tower Threshold; combat began under the stored attempt mode.'
+						: `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8 | MissionRunStateV9).attempt!.turnState.monsters).length} deterministic monster duties activated.`
 					: 'The prepared party crossed the Tower Threshold as one authoritative deployment.';
 	} else if (command.commandType === 'mission.open.extraction') {
 		if (state.schemaVersion !== 11) throw new IllegalActionError(command.commandType);

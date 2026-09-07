@@ -1,4 +1,4 @@
-import type { EngineGameStateV25 } from '@summonlab/contracts';
+import type { EngineGameStateV25, EngineGameStateV26 } from '@summonlab/contracts';
 import {
 	decisionLegalActions,
 	missionHeroReadiness,
@@ -37,7 +37,7 @@ const PUBLIC_REASONS = {
 } as const;
 
 export function projectMissionReadinessForPublic(
-	state: EngineGameStateV25,
+	state: EngineGameStateV25 | EngineGameStateV26,
 	heroId: string
 ): PublicMissionReadiness {
 	const heroReadiness = missionHeroReadiness(state, heroId);

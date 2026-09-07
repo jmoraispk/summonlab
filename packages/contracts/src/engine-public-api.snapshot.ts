@@ -21,6 +21,7 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'CombatModeBindingSchema',
 	'CombatModeIdSchema',
 	'CommitFirstEmberCommandSchema',
+	'CommitReadinessTerminalCommandSchema',
 	'CommunicationRequestSchema',
 	'ConfigureMasterFallbackCommandSchema',
 	'ConfigureMasterTimingCommandSchema',

@@ -443,7 +443,7 @@ describe('player-facing engine boundaries', () => {
 			'capabilityProfile'
 		]);
 		expectExactKeys(hero.capabilityProfile, ['profileVersion', 'attributes']);
-		const round = projected.mission.attempt!.turnState.rounds[0]!;
+		const round = projected.mission.attempt!.turnState!.rounds[0]!;
 		expectExactKeys(round.actions[0], [
 			'actorId',
 			'actorKind',
@@ -504,6 +504,40 @@ describe('player-facing engine boundaries', () => {
 		expect(baselineProof.publicManifestHash).not.toBe(mocks.proof!.manifestHash);
 		expect(hashPublicProjection('proof-manifest', baselineProof.manifest)).toBe(
 			baselineProof.publicManifestHash
+		);
+	});
+
+	it('projects v26 readiness combat as facts without actor views, hashes, or hidden state', () => {
+		const internal = structuredClone(mocks.report!.snapshot.state) as unknown as Record<
+			string,
+			unknown
+		>;
+		internal.schemaVersion = 26;
+		internal.contentVersion = 'engine-v26';
+		const mission = internal.mission as Record<string, unknown>;
+		const attempt = mission.attempt as Record<string, unknown>;
+		delete attempt.turnState;
+		attempt.combatState = {
+			modeId: 'agent-readiness-v1',
+			readinessState: {
+				tick: 19,
+				status: 'active',
+				result: null,
+				actorContexts: { private: 'never-serialize-actor-view' },
+				seed: 'never-serialize-readiness-seed',
+				outcomeEvidence: {
+					resolvedEvents: [{ private: 'never-serialize-resolved-event' }]
+				}
+			}
+		};
+
+		const projected = projectEngineStateForPublic(internal);
+		expect(projected.mission.attempt).toMatchObject({
+			turnState: null,
+			readiness: { tick: 19, status: 'active', outcome: null, resolvedEventCount: 1 }
+		});
+		expect(JSON.stringify(projected)).not.toMatch(
+			/actorContexts|actor-view|readiness-seed|resolved-event/iu
 		);
 	});
 

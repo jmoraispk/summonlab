@@ -3,6 +3,7 @@ import type {
 	CharacterDraft,
 	CharacterDraftV2,
 	CharacterMind,
+	CombatModeId,
 	EquipmentMaterialId,
 	EngineCommand,
 	EngineGameState,
@@ -92,6 +93,8 @@ interface BootstrapEngineInputBase {
 	readonly runId: string;
 	readonly seed: string;
 	readonly simulatedAt?: string;
+	/** Explicit current-run creation binding; attempts still bind the live operator value separately. */
+	readonly combatMode?: CombatModeId;
 }
 
 interface BootstrapLegacyHeroInput {

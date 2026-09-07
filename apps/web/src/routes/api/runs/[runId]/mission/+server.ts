@@ -3,7 +3,9 @@ import { randomUUID } from 'node:crypto';
 import { getConfig } from '@summonlab/config';
 import {
 	MissionLifecycleRequestSchema,
+	type ActorDecisionView,
 	type ActionSource,
+	type CombatActionIntent,
 	type EngineCommand,
 	type EngineSnapshot,
 	type MissionTurnChoice
@@ -12,14 +14,17 @@ import {
 	IdempotencyConflictError,
 	StaleRunVersionError,
 	commitEngineCommand,
+	createCombatDecisionWindow,
 	getEngineSnapshot,
 	getProofRun
 } from '@summonlab/database';
 import {
 	IllegalActionError,
+	advanceUntilDecision,
 	assembleHeroDecisionPacket,
 	combatModeAvailability,
 	createCombatModeBinding,
+	deterministicUuid,
 	hashCanonical,
 	masterFallbackActionSource,
 	masterFallbackMissionChoice,
@@ -28,10 +33,12 @@ import {
 	selectMasterFallback,
 	supportsMissionApi
 } from '@summonlab/engine';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { ScriptedPolicy } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
 
 import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
+import { projectCombatWindowStatus } from '$lib/server/combat-window-presentation';
 
 import type { RequestHandler } from './$types';
 
@@ -42,6 +49,44 @@ const manualSource: ActionSource = {
 	directiveIds: [],
 	decisionJobId: null
 };
+
+function deterministicFallback(
+	view: ActorDecisionView,
+	attemptId: string,
+	tick: number,
+	snapshotHash: string
+): CombatActionIntent {
+	const action = view.legalActions[0]!;
+	const contract = action.targetContract;
+	const target =
+		contract.kind === 'self'
+			? ({ kind: 'self' } as const)
+			: contract.kind === 'entity'
+				? ({ kind: 'entity', combatantId: contract.allowedCombatantIds[0]! } as const)
+				: contract.kind === 'tile'
+					? ({ kind: 'tile', position: contract.allowedPositions[0]! } as const)
+					: ({
+							kind: 'entity-relative-position',
+							combatantId: contract.allowedCombatantIds[0]!,
+							relation: contract.allowedRelations[0]!
+						} as const);
+	return {
+		windowId: view.windowId,
+		attemptId,
+		tick,
+		actorId: view.actorId,
+		snapshotHash,
+		actorViewHash: view.actorViewHash,
+		legalActionSetHash: view.legalActionSetHash,
+		actionId: action.actionId,
+		actionInstanceId: action.actionInstanceId,
+		actionKind: action.actionKind,
+		skillId: action.skillId,
+		target,
+		fallbackId: action.fallbackOptions[0]?.fallbackId ?? null,
+		publicIntent: `Follow the deterministic fallback: ${action.publicLabel}.`
+	};
+}
 
 async function assembleMissionChoices(
 	snapshot: EngineSnapshot,
@@ -195,10 +240,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
 				source: manualSource,
 				commandType: 'mission.prepare',
 				heroIds: parsed.data.heroIds,
-				...(snapshot.state.schemaVersion === 25
+				...(snapshot.state.schemaVersion === 25 || snapshot.state.schemaVersion === 26
 					? {
 							combatModeBinding: createCombatModeBinding(
-								config.combatMode,
+								snapshot.state.schemaVersion === 25 ? 'legacy-auto-v1' : config.combatMode,
 								snapshot.state.simulatedAt
 							)
 						}
@@ -217,12 +262,77 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		} else if (parsed.data.action === 'deploy') {
 			command = { ...base, source: manualSource, commandType: 'mission.deploy' };
 		} else if (parsed.data.action === 'advance-automatic-combat') {
-			if (snapshot.state.schemaVersion !== 25 || !snapshot.state.mission.attempt) {
+			if (
+				(snapshot.state.schemaVersion !== 25 && snapshot.state.schemaVersion !== 26) ||
+				!snapshot.state.mission.attempt
+			) {
 				throw new IllegalActionError('mission.advance.automatic');
 			}
-			const availability = combatModeAvailability(snapshot.state.mission.attempt.combatModeBinding);
+			const attempt = snapshot.state.mission.attempt;
+			const availability = combatModeAvailability(attempt.combatModeBinding);
 			if (availability.status !== 'available') {
 				return json({ message: availability.message }, { status: 409 });
+			}
+			if (
+				snapshot.state.schemaVersion === 26 &&
+				snapshot.state.mission.attempt!.combatState.modeId === 'agent-readiness-v1'
+			) {
+				const readinessAttempt = snapshot.state.mission.attempt!;
+				if (readinessAttempt.combatState.modeId !== 'agent-readiness-v1') {
+					throw new IllegalActionError('mission.advance.automatic');
+				}
+				const advance = advanceUntilDecision(
+					readinessAttempt.combatState.readinessState,
+					COMBAT_RULES_V1
+				);
+				if (advance.kind === 'combat-result') {
+					const terminalCommandId = deterministicUuid(
+						`${params.runId}:${readinessAttempt.attemptId}:readiness-terminal:${advance.result.endedAtTick}`
+					);
+					const receipt = await commitEngineCommand(config.databaseUrl, {
+						commandType: 'mission.commit.readiness-terminal',
+						commandId: terminalCommandId,
+						runId: params.runId,
+						actorId: snapshot.state.master.masterId,
+						expectedVersion: snapshot.state.version,
+						correlationId: terminalCommandId,
+						source: {
+							source: 'system',
+							timing: null,
+							fallbackPolicy: null,
+							directiveIds: [],
+							decisionJobId: null
+						}
+					});
+					const committedAttempt =
+						receipt.snapshot.state.schemaVersion === 26
+							? receipt.snapshot.state.mission.attempt
+							: null;
+					return json({
+						status: 'terminal',
+						outcome: advance.result.outcome,
+						tick: advance.result.endedAtTick,
+						missionStatus: committedAttempt?.status ?? null
+					});
+				}
+				const window = await createCombatDecisionWindow(config.databaseUrl, {
+					runId: params.runId,
+					expectedRunVersion: snapshot.state.version,
+					expectedEventCursor: snapshot.state.eventCursor,
+					snapshot: advance.snapshot,
+					actors: advance.views.map((view) => ({
+						view,
+						requestedPolicy: config.policyMode,
+						deterministicFallback: deterministicFallback(
+							view,
+							advance.snapshot.attemptId,
+							advance.snapshot.tick,
+							advance.snapshot.snapshotHash
+						),
+						maxProviderAttempts: config.decisionJobMaxProviderAttempts
+					}))
+				});
+				return json(projectCombatWindowStatus(window));
 			}
 			command = {
 				...base,
@@ -299,7 +409,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			committed.snapshot.state.schemaVersion !== 20 &&
 			committed.snapshot.state.schemaVersion !== 23 &&
 			committed.snapshot.state.schemaVersion !== 24 &&
-			committed.snapshot.state.schemaVersion !== 25
+			committed.snapshot.state.schemaVersion !== 25 &&
+			committed.snapshot.state.schemaVersion !== 26
 		) {
 			throw new Error('Mission commit changed the engine schema.');
 		}

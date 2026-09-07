@@ -236,8 +236,14 @@ export interface PublicMissionAttempt {
 	readonly extractionOpenedAt: string | null;
 	readonly endedAt: string | null;
 	readonly outcome: string | null;
-	readonly turnState: PublicMissionTurnState;
+	readonly turnState: PublicMissionTurnState | null;
 	readonly combatModeBinding?: PublicCombatModeBinding;
+	readonly readiness?: {
+		readonly tick: number;
+		readonly status: 'active' | 'complete';
+		readonly outcome: string | null;
+		readonly resolvedEventCount: number;
+	};
 }
 
 export interface PublicEngineState {

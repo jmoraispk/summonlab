@@ -32,6 +32,7 @@ export const MODERN_EVENT_TYPES = [
 	'master.safety.stopped',
 	'master.timing.changed',
 	'mission.combat.choice-batch.applied',
+	'mission.combat.readiness.terminal.committed',
 	'mission.deployed',
 	'mission.extracted',
 	'mission.extraction.opened',

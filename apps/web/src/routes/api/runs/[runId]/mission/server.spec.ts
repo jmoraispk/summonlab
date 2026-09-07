@@ -1,24 +1,29 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
-import { EngineGameStateV25Schema, type EngineSnapshot } from '@summonlab/contracts';
+import type { ActorDecisionView, CombatModeId, EngineSnapshot } from '@summonlab/contracts';
 import {
 	applyCommand,
 	createBootstrapEngine,
 	createCombatModeBinding,
-	deterministicUuid
+	deterministicUuid,
+	hashGameState,
+	legalActions
 } from '@summonlab/engine';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-	combatMode: 'legacy-auto-v1' as 'legacy-auto-v1' | 'agent-readiness-v1',
+	combatMode: 'agent-readiness-v1' as CombatModeId,
+	snapshot: null as EngineSnapshot | null,
 	commit: vi.fn(),
-	getSnapshot: vi.fn(),
-	getProof: vi.fn()
+	createWindow: vi.fn(),
+	commitsById: new Map<string, unknown>()
 }));
 
 vi.mock('@summonlab/config', () => ({
 	getConfig: () => ({
 		databaseUrl: 'postgres://unused',
-		combatMode: mocks.combatMode
+		combatMode: mocks.combatMode,
+		policyMode: 'scripted',
+		decisionJobMaxProviderAttempts: 2
 	})
 }));
 
@@ -27,166 +32,251 @@ vi.mock('@summonlab/database', async (importOriginal) => {
 	return {
 		...actual,
 		commitEngineCommand: mocks.commit,
-		getEngineSnapshot: mocks.getSnapshot,
-		getProofRun: mocks.getProof
+		createCombatDecisionWindow: mocks.createWindow,
+		getEngineSnapshot: vi.fn(async () => mocks.snapshot),
+		getProofRun: vi.fn(async () => ({ manifest: { characterId: 'unused' } }))
 	};
 });
 
 import { POST } from './+server.js';
 
-let snapshot: EngineSnapshot;
+let initial: EngineSnapshot;
+let heroId: string;
 
-function deployedLegacySnapshot(): EngineSnapshot {
-	if (snapshot.state.schemaVersion !== 25) throw new Error('Expected v25 snapshot');
-	const heroId = Object.keys(snapshot.state.heroes)[0]!;
-	const source = {
-		source: 'manual' as const,
-		timing: 'step' as const,
-		fallbackPolicy: null,
-		directiveIds: [],
-		decisionJobId: null
-	};
-	const prepareId = deterministicUuid(`${snapshot.state.runId}:web-prepare`);
-	const prepared = applyCommand(snapshot.state, {
-		commandId: prepareId,
+function commandBase(snapshot: EngineSnapshot, key: string) {
+	const commandId = deterministicUuid(key);
+	return {
+		commandId,
 		runId: snapshot.state.runId,
 		actorId: snapshot.state.master.masterId,
 		expectedVersion: snapshot.state.version,
-		correlationId: prepareId,
-		source,
-		commandType: 'mission.prepare',
-		heroIds: [heroId],
-		combatModeBinding: createCombatModeBinding('legacy-auto-v1', snapshot.state.simulatedAt)
-	});
-	if (prepared.state.schemaVersion !== 25) throw new Error('Expected prepared v25 state');
-	const deployId = deterministicUuid(`${snapshot.state.runId}:web-deploy`);
-	const deployed = applyCommand(prepared.state, {
-		commandId: deployId,
-		runId: prepared.state.runId,
-		actorId: prepared.state.master.masterId,
-		expectedVersion: prepared.state.version,
-		correlationId: deployId,
-		source,
-		commandType: 'mission.deploy'
-	});
-	return { state: deployed.state, stateHash: deployed.stateHash };
+		correlationId: commandId,
+		source: {
+			source: 'manual' as const,
+			timing: 'step' as const,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		}
+	};
 }
 
-async function callMission(body: unknown): Promise<Response> {
-	return (await POST({
-		params: { runId: snapshot.state.runId },
-		request: new Request(`http://summonlab.test/api/runs/${snapshot.state.runId}/mission`, {
+function deployed(modeId: CombatModeId): EngineSnapshot {
+	if (initial.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
+	const prepared = applyCommand(initial.state, {
+		...commandBase(initial, `${modeId}-prepare`),
+		commandType: 'mission.prepare',
+		heroIds: [heroId],
+		combatModeBinding: createCombatModeBinding(modeId, initial.state.simulatedAt)
+	}).state;
+	const preparedSnapshot = { state: prepared, stateHash: hashGameState(prepared) };
+	const state = applyCommand(prepared, {
+		...commandBase(preparedSnapshot, `${modeId}-deploy`),
+		commandType: 'mission.deploy'
+	}).state;
+	return { state, stateHash: hashGameState(state) };
+}
+
+function call(body: unknown): Promise<Response> {
+	return POST({
+		params: { runId: initial.state.runId },
+		request: new Request(`http://summonlab.test/api/runs/${initial.state.runId}/mission`, {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify(body)
 		})
-	} as never)) as Response;
+	} as never) as Promise<Response>;
 }
 
-describe('V25 legacy automatic mission API', () => {
+describe('operator-bound mission combat', () => {
 	beforeAll(async () => {
 		const draft = await generateSummonableCharacterDraft(
 			{
-				seed: 'web-legacy-auto-seed',
+				seed: 'web-readiness-mission-route',
 				generationVersion: 'human-v6',
 				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
 			},
-			{ capabilityEntropy: '8'.repeat(64) }
+			{ capabilityEntropy: 'a'.repeat(64) }
 		);
-		snapshot = createBootstrapEngine({
-			runId: deterministicUuid('web-legacy-auto-run'),
-			seed: 'web-legacy-auto-engine',
-			draft
+		heroId = draft.manifest.characterId;
+		initial = createBootstrapEngine({
+			runId: deterministicUuid('web-readiness-mission-route-run'),
+			seed: 'web-readiness-mission-route-engine',
+			draft,
+			combatMode: 'agent-readiness-v1'
 		}).snapshot;
 	});
 
 	beforeEach(() => {
-		mocks.combatMode = 'legacy-auto-v1';
-		mocks.commit.mockReset();
-		mocks.getSnapshot.mockReset().mockResolvedValue(snapshot);
-		mocks.getProof.mockReset().mockResolvedValue({ manifest: {} });
-		mocks.commit.mockResolvedValue({ snapshot, events: [], legalActions: [] });
+		mocks.combatMode = 'agent-readiness-v1';
+		mocks.snapshot = initial;
+		mocks.commitsById.clear();
+		mocks.commit.mockReset().mockImplementation(async (_databaseUrl, command) => {
+			const existing = mocks.commitsById.get(command.commandId);
+			if (existing) return existing;
+			const applied = applyCommand(mocks.snapshot!.state, command);
+			mocks.snapshot = { state: applied.state, stateHash: hashGameState(applied.state) };
+			const receipt = { snapshot: mocks.snapshot, events: applied.events, legalActions: [] };
+			mocks.commitsById.set(command.commandId, receipt);
+			return receipt;
+		});
+		mocks.createWindow.mockReset().mockImplementation(async (_databaseUrl, input) => ({
+			windowId: input.snapshot.windowId,
+			runId: input.runId,
+			attemptId: input.snapshot.attemptId,
+			tick: input.snapshot.tick,
+			status: 'collecting',
+			createdAt: '2000-01-01T00:00:00.000Z',
+			updatedAt: '2000-01-01T00:00:00.000Z',
+			jobs: input.actors.map(({ view }: { view: ActorDecisionView }) => ({
+				status: 'created',
+				heroId: view.actorId
+			}))
+		}));
 	});
 
-	it('binds the operator mode while the player supplies only party preparation', async () => {
-		const heroId = Object.keys(snapshot.state.heroes)[0]!;
-		const response = await callMission({ action: 'prepare', heroIds: [heroId] });
+	it('uses the attempt binding after the operator default changes and persists one safe window', async () => {
+		mocks.snapshot = deployed('agent-readiness-v1');
+		mocks.combatMode = 'legacy-auto-v1';
 
-		expect(response.status).toBe(200);
-		expect(mocks.commit).toHaveBeenCalledWith(
-			'postgres://unused',
-			expect.objectContaining({
-				commandType: 'mission.prepare',
-				heroIds: [heroId],
-				combatModeBinding: expect.objectContaining({
-					modeId: 'legacy-auto-v1',
-					boundAt: snapshot.state.simulatedAt
-				})
-			})
+		const response = await call({ action: 'advance-automatic-combat' });
+		const body = await response.json();
+
+		expect(response.status, JSON.stringify(body)).toBe(200);
+		expect(mocks.commit).not.toHaveBeenCalled();
+		expect(mocks.createWindow).toHaveBeenCalledOnce();
+		expect(mocks.createWindow.mock.calls[0]?.[1]).toMatchObject({
+			runId: initial.state.runId,
+			expectedRunVersion: mocks.snapshot.state.version,
+			actors: expect.arrayContaining([
+				expect.objectContaining({ requestedPolicy: 'scripted', maxProviderAttempts: 2 })
+			])
+		});
+		expect(body).toMatchObject({ status: 'collecting', readyActors: 0 });
+		expect(body).not.toHaveProperty('snapshot');
+		expect(body).not.toHaveProperty('jobs');
+		expect(JSON.stringify(body)).not.toContain('actorViewHash');
+		expect(JSON.stringify(body)).not.toContain('legalActions');
+	});
+
+	it('keeps an active attempt immutable while a later attempt binds the new operator default', async () => {
+		mocks.combatMode = 'agent-readiness-v1';
+		let response = await call({ action: 'prepare', heroIds: [heroId] });
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		const afterPrepare = mocks.snapshot;
+		if (!afterPrepare || afterPrepare.state.schemaVersion !== 26)
+			throw new Error('Expected v26 fixture');
+		expect(afterPrepare.state.mission.attempt?.combatModeBinding.modeId).toBe('agent-readiness-v1');
+
+		mocks.combatMode = 'legacy-auto-v1';
+		response = await call({ action: 'revise-party', heroIds: [heroId] });
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		const afterRevision = mocks.snapshot;
+		if (!afterRevision || afterRevision.state.schemaVersion !== 26)
+			throw new Error('Expected v26 fixture');
+		expect(afterRevision.state.mission.attempt?.combatModeBinding.modeId).toBe(
+			'agent-readiness-v1'
+		);
+
+		response = await call({ action: 'cancel' });
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		response = await call({ action: 'prepare', heroIds: [heroId] });
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		const nextAttempt = mocks.snapshot;
+		if (!nextAttempt || nextAttempt.state.schemaVersion !== 26)
+			throw new Error('Expected v26 fixture');
+		expect(nextAttempt.state.mission.attempt).toMatchObject({
+			ordinal: 2,
+			combatModeBinding: { modeId: 'legacy-auto-v1' },
+			combatState: { modeId: 'legacy-auto-v1' }
+		});
+	});
+
+	it('keeps the legacy path synchronous under its stored attempt mode', async () => {
+		mocks.snapshot = deployed('legacy-auto-v1');
+		mocks.combatMode = 'agent-readiness-v1';
+		if (mocks.snapshot.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
+		expect(mocks.snapshot.state.mission.attempt).toMatchObject({
+			status: 'deployed',
+			combatModeBinding: { modeId: 'legacy-auto-v1' },
+			combatState: { modeId: 'legacy-auto-v1' }
+		});
+		expect(
+			legalActions(mocks.snapshot.state, mocks.snapshot.state.master.masterId).map(
+				(action) => action.actionId
+			)
+		).toContain('mission.advance.automatic');
+		applyCommand(mocks.snapshot.state, {
+			...commandBase(mocks.snapshot, 'legacy-probe'),
+			commandType: 'mission.advance.automatic'
+		});
+
+		const response = await call({ action: 'advance-automatic-combat' });
+
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		expect(mocks.commit).toHaveBeenCalledOnce();
+		expect(mocks.commit.mock.calls[0]?.[1]).toMatchObject({
+			commandType: 'mission.advance.automatic'
+		});
+		expect(mocks.createWindow).not.toHaveBeenCalled();
+	});
+
+	it('persists a pre-window terminal result through the system command before responding', async () => {
+		const active = deployed('agent-readiness-v1');
+		if (active.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
+		const input = structuredClone(active.state);
+		const combat = input.mission.attempt!.combatState;
+		if (combat.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness combat');
+		for (const enemy of Object.values(combat.readinessState.combatants).filter(
+			(combatant) => combatant.teamId === 'enemy'
+		)) {
+			enemy.resources.health.current = 0;
+			enemy.downed = true;
+			enemy.active = false;
+		}
+		mocks.snapshot = { state: input, stateHash: hashGameState(input) };
+
+		const response = await call({ action: 'advance-automatic-combat' });
+		const body = await response.json();
+
+		expect(response.status, JSON.stringify(body)).toBe(200);
+		expect(mocks.commit).toHaveBeenCalledOnce();
+		expect(mocks.commit.mock.calls[0]?.[1]).toMatchObject({
+			commandType: 'mission.commit.readiness-terminal',
+			source: { source: 'system', timing: null }
+		});
+		expect(mocks.snapshot.state.schemaVersion).toBe(26);
+		if (mocks.snapshot.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
+		expect(mocks.snapshot.state.mission.attempt).toMatchObject({
+			status: 'extraction',
+			outcome: null
+		});
+		expect(body).toMatchObject({
+			status: 'terminal',
+			outcome: 'victory',
+			missionStatus: 'extraction'
+		});
+		expect(mocks.createWindow).not.toHaveBeenCalled();
+
+		const retry = await call({ action: 'advance-automatic-combat' });
+		expect(retry.status, JSON.stringify(await retry.clone().json())).toBe(200);
+		expect(mocks.commit).toHaveBeenCalledTimes(2);
+		expect(mocks.commit.mock.calls[1]?.[1].commandId).toBe(
+			mocks.commit.mock.calls[0]?.[1].commandId
 		);
 	});
 
-	it('turns Continue battle into one internal automatic command with no player choices', async () => {
-		// Advancing an existing attempt never rebinds from the current operator default.
-		const deployed = deployedLegacySnapshot();
-		mocks.getSnapshot.mockResolvedValue(deployed);
-		mocks.commit.mockResolvedValue({ snapshot: deployed, events: [], legalActions: [] });
-		mocks.combatMode = 'agent-readiness-v1';
-		const response = await callMission({ action: 'advance-automatic-combat' });
-
-		expect(response.status).toBe(200);
-		const command = mocks.commit.mock.calls[0]?.[1];
-		expect(command).toMatchObject({
-			commandType: 'mission.advance.automatic',
-			source: { source: 'manual', timing: 'step' }
-		});
-		expect(command).not.toHaveProperty('combatMode');
-		expect(command).not.toHaveProperty('masterActionId');
-		expect(command).not.toHaveProperty('choices');
-		expect(command).not.toHaveProperty('targetId');
-		expect(command).not.toHaveProperty('policy');
-	});
-
-	it('refuses the explicit not-yet-live mode from the stored attempt binding', async () => {
-		const deployed = deployedLegacySnapshot();
-		if (deployed.state.schemaVersion !== 25 || !deployed.state.mission.attempt) {
-			throw new Error('Expected deployed v25 attempt');
+	it('rejects client mode, provider, action, and target overrides before dispatch', async () => {
+		for (const override of [
+			{ combatMode: 'legacy-auto-v1' },
+			{ provider: 'random' },
+			{ actionId: 'combat-skill-basic-sword-strike' },
+			{ targetId: heroId }
+		]) {
+			const response = await call({ action: 'advance-automatic-combat', ...override });
+			expect(response.status).toBe(400);
 		}
-		const agentState = EngineGameStateV25Schema.parse({
-			...deployed.state,
-			mission: {
-				...deployed.state.mission,
-				attempt: {
-					...deployed.state.mission.attempt,
-					combatModeBinding: {
-						...deployed.state.mission.attempt.combatModeBinding,
-						modeId: 'agent-readiness-v1',
-						rulesVersion: 'agent-readiness-rules-v1'
-					}
-				}
-			}
-		});
-		mocks.getSnapshot.mockResolvedValue({ ...deployed, state: agentState });
-
-		const response = await callMission({ action: 'advance-automatic-combat' });
-
-		expect(response.status).toBe(409);
-		expect(await response.json()).toMatchObject({
-			message: 'Combat mode agent-readiness-v1 is not yet live'
-		});
 		expect(mocks.commit).not.toHaveBeenCalled();
-	});
-
-	it('rejects manual turn selection and injected policy fields for V25', async () => {
-		const manual = await callMission({ action: 'resolve-turn', masterActionId: 'mission.hold' });
-		expect(manual.status).toBe(409);
-		expect(mocks.commit).not.toHaveBeenCalled();
-
-		const injected = await callMission({
-			action: 'advance-automatic-combat',
-			policy: 'random'
-		});
-		expect(injected.status).toBe(400);
-		expect(mocks.commit).not.toHaveBeenCalled();
+		expect(mocks.createWindow).not.toHaveBeenCalled();
 	});
 });

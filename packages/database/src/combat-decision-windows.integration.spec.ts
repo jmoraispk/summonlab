@@ -28,6 +28,7 @@ import {
 	createCombatDecisionWindow,
 	failCombatDecisionJobAttempt,
 	getCombatDecisionWindow,
+	getLatestCombatDecisionWindowForRun,
 	listActionableCombatDecisionWindowIds,
 	queueCombatDecisionJob,
 	recoverExpiredCombatDecisionJobs,
@@ -732,6 +733,12 @@ describe.sequential('durable combat decision cohorts', () => {
 			const retried = await createCombatDecisionWindow(databaseUrl, input);
 			expect(created.jobs).toHaveLength(2);
 			expect(retried).toEqual(created);
+			expect(
+				await getLatestCombatDecisionWindowForRun(databaseUrl, runId, f.snapshot.attemptId)
+			).toEqual(created);
+			expect(
+				await getLatestCombatDecisionWindowForRun(databaseUrl, runId, randomUUID())
+			).toBeNull();
 			const legacyJobId = randomUUID();
 			const legacySql = postgres(databaseUrl, { max: 1 });
 			try {

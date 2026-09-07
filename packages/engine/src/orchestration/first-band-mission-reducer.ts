@@ -4,6 +4,7 @@ import {
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
 	MissionRunStateV8Schema,
+	ReadinessCombatTerminalCommittedEventSchema,
 	type AuthoritativeEvent,
 	type EngineCommand,
 	type EngineGameState,
@@ -32,16 +33,22 @@ import { completeFirstBandStory, recoverFirstBandArchive } from '../domains/stor
 import { reduceFirstBandMissionConsequences } from '../domains/story/reducer.js';
 import { IllegalActionError, ReplayIntegrityError } from '../errors.js';
 import { hashCanonical } from '../hash.js';
+import { advanceReadinessToTerminal, finalizeReadinessMission } from './readiness-terminal.js';
 
 type ReadinessBatchCommand = Extract<
 	EngineCommand,
 	{ commandType: 'mission.apply.combat-choice-batch' }
 >;
-type OrchestratedMissionCommand = MissionCommand | ReadinessBatchCommand;
+type ReadinessTerminalCommand = Extract<
+	EngineCommand,
+	{ commandType: 'mission.commit.readiness-terminal' }
+>;
+type OrchestratedMissionCommand = MissionCommand | ReadinessBatchCommand | ReadinessTerminalCommand;
 
 export const FIRST_BAND_MISSION_COMMAND_TYPES = [
 	...MISSION_COMMAND_TYPES.slice(0, 10),
 	'mission.apply.combat-choice-batch',
+	'mission.commit.readiness-terminal',
 	...MISSION_COMMAND_TYPES.slice(10)
 ] as const;
 
@@ -52,10 +59,14 @@ export const FIRST_BAND_MISSION_EVENT_TYPES = [
 	'mission.deployed',
 	'mission.extracted',
 	'mission.retreated',
-	'mission.combat.choice-batch.applied'
+	'mission.combat.choice-batch.applied',
+	'mission.combat.readiness.terminal.committed'
 ] as const;
 
-function assertReadinessBatchLegal(state: EngineGameState, command: ReadinessBatchCommand): void {
+function assertReadinessSystemCommand(
+	state: EngineGameState,
+	command: ReadinessBatchCommand | ReadinessTerminalCommand
+): asserts state is Extract<EngineGameState, { schemaVersion: 26 }> {
 	const attempt = state.schemaVersion === 26 ? state.mission.attempt : null;
 	if (
 		state.schemaVersion !== 26 ||
@@ -76,6 +87,14 @@ function assertReadinessBatchLegal(state: EngineGameState, command: ReadinessBat
 		attempt.combatState.readinessState.status !== 'active' ||
 		attempt.combatState.readinessState.attemptId !== attempt.attemptId
 	) {
+		throw new IllegalActionError(command.commandType, []);
+	}
+}
+
+function assertReadinessBatchLegal(state: EngineGameState, command: ReadinessBatchCommand): void {
+	assertReadinessSystemCommand(state, command);
+	const attempt = state.mission.attempt!;
+	if (attempt.combatState.modeId !== 'agent-readiness-v1') {
 		throw new IllegalActionError(command.commandType, []);
 	}
 	try {
@@ -100,10 +119,44 @@ function buildReadinessBatchEvent(
 		command.batch,
 		COMBAT_RULES_V1
 	);
+	const base = eventBase(state, command, 'mission.combat.choice-batch.applied');
+	const finalization =
+		resolution.state.status === 'complete'
+			? finalizeReadinessMission(state, resolution.state, base.eventId)
+			: null;
 	return CombatChoiceBatchAppliedEventSchema.parse({
-		...eventBase(state, command, 'mission.combat.choice-batch.applied'),
+		...base,
 		seedCursor: state.entropyCursor,
-		payload: { batch: command.batch, resolvedEvents: resolution.events }
+		payload: {
+			batch: command.batch,
+			resolvedEvents: resolution.events,
+			terminalResult: resolution.state.status === 'complete' ? resolution.state.result : null,
+			claimCheckpoint: finalization?.claimCheckpoint ?? null
+		}
+	});
+}
+
+function assertReadinessTerminalLegal(
+	state: EngineGameState,
+	command: ReadinessTerminalCommand
+): void {
+	assertReadinessSystemCommand(state, command);
+	if (!advanceReadinessToTerminal(state)) throw new IllegalActionError(command.commandType, []);
+}
+
+function buildReadinessTerminalEvent(
+	state: EngineGameState,
+	command: ReadinessTerminalCommand
+): AuthoritativeEvent {
+	assertReadinessTerminalLegal(state, command);
+	if (state.schemaVersion !== 26) throw new IllegalActionError(command.commandType, []);
+	const advanced = advanceReadinessToTerminal(state)!;
+	const base = eventBase(state, command, 'mission.combat.readiness.terminal.committed');
+	const finalization = finalizeReadinessMission(state, advanced.state, base.eventId);
+	return ReadinessCombatTerminalCommittedEventSchema.parse({
+		...base,
+		seedCursor: state.entropyCursor,
+		payload: { result: advanced.result, claimCheckpoint: finalization.claimCheckpoint }
 	});
 }
 
@@ -154,14 +207,28 @@ function reduceReadinessBatchEvent(
 	if (hashCanonical(resolution.events) !== hashCanonical(parsed.payload.resolvedEvents)) {
 		throw new ReplayIntegrityError('Readiness combat resolved trace diverged', event.sequence);
 	}
+	const expectedTerminal = resolution.state.status === 'complete' ? resolution.state.result : null;
+	if (hashCanonical(expectedTerminal) !== hashCanonical(parsed.payload.terminalResult)) {
+		throw new ReplayIntegrityError('Readiness combat terminal result diverged', event.sequence);
+	}
+	const finalization = expectedTerminal
+		? finalizeReadinessMission(state, resolution.state, parsed.eventId)
+		: null;
+	if (
+		hashCanonical(finalization?.claimCheckpoint ?? null) !==
+		hashCanonical(parsed.payload.claimCheckpoint)
+	) {
+		throw new ReplayIntegrityError('Readiness combat claim checkpoint diverged', event.sequence);
+	}
+	const transitioned = finalization?.state ?? state;
 	return EngineGameStateV26Schema.parse({
-		...state,
+		...transitioned,
 		version: state.version + 1,
 		eventCursor: parsed.sequence,
 		mission: {
-			...state.mission,
+			...transitioned.mission,
 			attempt: {
-				...attempt,
+				...transitioned.mission.attempt!,
 				combatState: {
 					modeId: 'agent-readiness-v1',
 					readinessState: resolution.state
@@ -171,12 +238,69 @@ function reduceReadinessBatchEvent(
 	});
 }
 
+function reduceReadinessTerminalEvent(
+	state: EngineGameState,
+	event: AuthoritativeEvent
+): EngineGameState {
+	const parsed = ReadinessCombatTerminalCommittedEventSchema.parse(event);
+	if (state.schemaVersion !== 26) {
+		throw new ReplayIntegrityError('Readiness terminal requires v26 state', event.sequence);
+	}
+	const syntheticCommand: ReadinessTerminalCommand = {
+		commandType: 'mission.commit.readiness-terminal',
+		commandId: parsed.commandId,
+		runId: parsed.runId,
+		actorId: parsed.actorId!,
+		expectedVersion: state.version,
+		correlationId: parsed.correlationId,
+		source: parsed.source
+	};
+	try {
+		assertReadinessSystemCommand(state, syntheticCommand);
+	} catch {
+		throw new ReplayIntegrityError('Readiness terminal precondition failed', event.sequence);
+	}
+	if (
+		parsed.gameTime !== state.simulatedAt ||
+		parsed.seedCursor !== state.entropyCursor ||
+		parsed.causationId !== null ||
+		parsed.correlationId !== parsed.commandId
+	) {
+		throw new ReplayIntegrityError('Readiness terminal metadata diverged', event.sequence);
+	}
+	const advanced = advanceReadinessToTerminal(state);
+	if (!advanced) {
+		throw new ReplayIntegrityError(
+			'Readiness terminal encountered a decision window',
+			event.sequence
+		);
+	}
+	if (hashCanonical(advanced.result) !== hashCanonical(parsed.payload.result)) {
+		throw new ReplayIntegrityError('Readiness terminal result diverged', event.sequence);
+	}
+	const finalization = finalizeReadinessMission(state, advanced.state, parsed.eventId);
+	if (
+		hashCanonical(finalization.claimCheckpoint) !== hashCanonical(parsed.payload.claimCheckpoint)
+	) {
+		throw new ReplayIntegrityError('Readiness terminal claim checkpoint diverged', event.sequence);
+	}
+	const transitioned = finalization.state;
+	return EngineGameStateV26Schema.parse({
+		...transitioned,
+		version: state.version + 1,
+		eventCursor: parsed.sequence
+	});
+}
+
 function reduceFirstBandMissionEvent(
 	state: EngineGameState,
 	event: AuthoritativeEvent
 ): EngineGameState {
 	if (event.eventType === 'mission.combat.choice-batch.applied') {
 		return reduceReadinessBatchEvent(state, event);
+	}
+	if (event.eventType === 'mission.combat.readiness.terminal.committed') {
+		return reduceReadinessTerminalEvent(state, event);
 	}
 	if (state.schemaVersion !== 23 && state.schemaVersion !== 24)
 		return reduceMissionEvent(state, event);
@@ -215,12 +339,18 @@ export const firstBandMissionCommandHandler = {
 			assertReadinessBatchLegal(state, command);
 			return;
 		}
+		if (command.commandType === 'mission.commit.readiness-terminal') {
+			assertReadinessTerminalLegal(state, command);
+			return;
+		}
 		missionCommandHandler.assertLegal(state, command);
 	},
 	buildEvent: (state: EngineGameState, command: OrchestratedMissionCommand) =>
 		command.commandType === 'mission.apply.combat-choice-batch'
 			? buildReadinessBatchEvent(state, command)
-			: missionCommandHandler.buildEvent(state, command, buildFirstBandMissionCommandConsequences)
+			: command.commandType === 'mission.commit.readiness-terminal'
+				? buildReadinessTerminalEvent(state, command)
+				: missionCommandHandler.buildEvent(state, command, buildFirstBandMissionCommandConsequences)
 } satisfies EngineCommandHandler<OrchestratedMissionCommand>;
 
 export const firstBandMissionEventReducer: EngineEventReducer = {

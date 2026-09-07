@@ -332,6 +332,12 @@ function publicMissionAttempt(value: unknown): PublicMissionAttempt | null {
 	const party = record(attempt.party);
 	const knowledge = record(attempt.knowledge);
 	const binding = publicCombatModeBinding(attempt.combatModeBinding);
+	const combatState = record(attempt.combatState);
+	const readinessState = record(combatState.readinessState);
+	const readinessResult = record(readinessState.result);
+	const readinessEvidence = record(readinessState.outcomeEvidence);
+	const turnStateSource =
+		attempt.turnState ?? (combatState.modeId === 'legacy-auto-v1' ? combatState.turnState : null);
 	return {
 		attemptId: string(attempt.attemptId),
 		ordinal: number(attempt.ordinal),
@@ -358,8 +364,19 @@ function publicMissionAttempt(value: unknown): PublicMissionAttempt | null {
 		extractionOpenedAt: nullableString(attempt.extractionOpenedAt),
 		endedAt: nullableString(attempt.endedAt),
 		outcome: nullableString(attempt.outcome),
-		turnState: publicTurnState(attempt.turnState),
-		...(binding ? { combatModeBinding: binding } : {})
+		turnState: turnStateSource ? publicTurnState(turnStateSource) : null,
+		...(binding ? { combatModeBinding: binding } : {}),
+		...(combatState.modeId === 'agent-readiness-v1'
+			? {
+					readiness: {
+						tick: number(readinessState.tick),
+						status:
+							readinessState.status === 'complete' ? ('complete' as const) : ('active' as const),
+						outcome: nullableString(readinessResult.outcome),
+						resolvedEventCount: records(readinessEvidence.resolvedEvents).length
+					}
+				}
+			: {})
 	};
 }
 

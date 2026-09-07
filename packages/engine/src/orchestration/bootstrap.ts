@@ -17,6 +17,7 @@ import {
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
 	EngineSnapshotSchema,
 	EquipmentMaterialIdSchema,
 	ResourceKeySchema,
@@ -37,6 +38,7 @@ import type { BootstrapEngineInput, BootstrapEngineResult } from '../core/types.
 import {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
 	CAPABILITY_ENGINE_CONTENT_VERSION,
+	READINESS_COMBAT_ENGINE_CONTENT_VERSION,
 	DEFAULT_ACTIVE_SYSTEM_IDS,
 	ENGINE_CONTENT_VERSION,
 	EQUIPMENT_ENGINE_CONTENT_VERSION,
@@ -229,6 +231,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const equipmentDevelopmentScenario = input.developmentEquipmentScenario?.enabled === true;
 	const capabilityEngineState =
 		'draft' in input && !developmentMissionScenario && !equipmentDevelopmentScenario;
+	const currentCombatEngineState = capabilityEngineState && input.combatMode !== undefined;
 	const forgeReady = input.developmentEquipmentScenario?.forgeReady === true;
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
@@ -315,84 +318,90 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			input.developmentEquipmentScenario?.materialLots?.[materialId] ?? 0
 		])
 	);
-	const stateSchema = capabilityEngineState
-		? EngineGameStateV25Schema
-		: firstBandArchiveDevelopmentScenario
-			? equipmentDevelopmentScenario
-				? EngineGameStateV24Schema
-				: EngineGameStateV23Schema
-			: synthesisDevelopmentScenario
-				? EngineGameStateV22Schema
-				: storyPatchDevelopmentScenario
-					? EngineGameStateV21Schema
-					: masterFallbackDevelopmentScenario
-						? EngineGameStateV20Schema
-						: masterTimingDevelopmentScenario
-							? EngineGameStateV19Schema
-							: attemptAftermathDevelopmentScenario
-								? EngineGameStateV18Schema
-								: masterPermadeathDevelopmentScenario
-									? EngineGameStateV17Schema
-									: aftermathDevelopmentScenario
-										? EngineGameStateV16Schema
-										: portalDevelopmentScenario
-											? EngineGameStateV15Schema
-											: developmentMissionScenario
-												? EngineGameStateV14Schema
-												: EngineGameStateV13Schema;
+	const stateSchema = currentCombatEngineState
+		? EngineGameStateV26Schema
+		: capabilityEngineState
+			? EngineGameStateV25Schema
+			: firstBandArchiveDevelopmentScenario
+				? equipmentDevelopmentScenario
+					? EngineGameStateV24Schema
+					: EngineGameStateV23Schema
+				: synthesisDevelopmentScenario
+					? EngineGameStateV22Schema
+					: storyPatchDevelopmentScenario
+						? EngineGameStateV21Schema
+						: masterFallbackDevelopmentScenario
+							? EngineGameStateV20Schema
+							: masterTimingDevelopmentScenario
+								? EngineGameStateV19Schema
+								: attemptAftermathDevelopmentScenario
+									? EngineGameStateV18Schema
+									: masterPermadeathDevelopmentScenario
+										? EngineGameStateV17Schema
+										: aftermathDevelopmentScenario
+											? EngineGameStateV16Schema
+											: portalDevelopmentScenario
+												? EngineGameStateV15Schema
+												: developmentMissionScenario
+													? EngineGameStateV14Schema
+													: EngineGameStateV13Schema;
 	const state = stateSchema.parse({
-		schemaVersion: capabilityEngineState
-			? 25
-			: equipmentDevelopmentScenario
-				? 24
-				: firstBandArchiveDevelopmentScenario
-					? 23
-					: synthesisDevelopmentScenario
-						? 22
-						: storyPatchDevelopmentScenario
-							? 21
-							: masterFallbackDevelopmentScenario
-								? 20
-								: masterTimingDevelopmentScenario
-									? 19
-									: attemptAftermathDevelopmentScenario
-										? 18
-										: masterPermadeathDevelopmentScenario
-											? 17
-											: aftermathDevelopmentScenario
-												? 16
-												: portalDevelopmentScenario
-													? 15
-													: developmentMissionScenario
-														? 14
-														: 13,
+		schemaVersion: currentCombatEngineState
+			? 26
+			: capabilityEngineState
+				? 25
+				: equipmentDevelopmentScenario
+					? 24
+					: firstBandArchiveDevelopmentScenario
+						? 23
+						: synthesisDevelopmentScenario
+							? 22
+							: storyPatchDevelopmentScenario
+								? 21
+								: masterFallbackDevelopmentScenario
+									? 20
+									: masterTimingDevelopmentScenario
+										? 19
+										: attemptAftermathDevelopmentScenario
+											? 18
+											: masterPermadeathDevelopmentScenario
+												? 17
+												: aftermathDevelopmentScenario
+													? 16
+													: portalDevelopmentScenario
+														? 15
+														: developmentMissionScenario
+															? 14
+															: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: capabilityEngineState
-			? CAPABILITY_ENGINE_CONTENT_VERSION
-			: equipmentDevelopmentScenario
-				? EQUIPMENT_ENGINE_CONTENT_VERSION
-				: firstBandArchiveDevelopmentScenario
-					? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
-					: synthesisDevelopmentScenario
-						? SYNTHESIS_ENGINE_CONTENT_VERSION
-						: storyPatchDevelopmentScenario
-							? STORY_PATCH_ENGINE_CONTENT_VERSION
-							: masterFallbackDevelopmentScenario
-								? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
-								: masterTimingDevelopmentScenario
-									? MASTER_TIMING_ENGINE_CONTENT_VERSION
-									: attemptAftermathDevelopmentScenario
-										? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-										: masterPermadeathDevelopmentScenario
-											? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-											: aftermathDevelopmentScenario
-												? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-												: portalDevelopmentScenario
-													? PORTAL_ENGINE_CONTENT_VERSION
-													: developmentMissionScenario
-														? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-														: ENGINE_CONTENT_VERSION,
+		contentVersion: currentCombatEngineState
+			? READINESS_COMBAT_ENGINE_CONTENT_VERSION
+			: capabilityEngineState
+				? CAPABILITY_ENGINE_CONTENT_VERSION
+				: equipmentDevelopmentScenario
+					? EQUIPMENT_ENGINE_CONTENT_VERSION
+					: firstBandArchiveDevelopmentScenario
+						? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
+						: synthesisDevelopmentScenario
+							? SYNTHESIS_ENGINE_CONTENT_VERSION
+							: storyPatchDevelopmentScenario
+								? STORY_PATCH_ENGINE_CONTENT_VERSION
+								: masterFallbackDevelopmentScenario
+									? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+									: masterTimingDevelopmentScenario
+										? MASTER_TIMING_ENGINE_CONTENT_VERSION
+										: attemptAftermathDevelopmentScenario
+											? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+											: masterPermadeathDevelopmentScenario
+												? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+												: aftermathDevelopmentScenario
+													? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+													: portalDevelopmentScenario
+														? PORTAL_ENGINE_CONTENT_VERSION
+														: developmentMissionScenario
+															? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+															: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,

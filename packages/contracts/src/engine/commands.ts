@@ -330,6 +330,10 @@ export const ApplyCombatChoiceBatchCommandSchema = EngineCommandBaseSchema.exten
 	batch: CombatChoiceBatchV1Schema
 }).strict();
 
+export const CommitReadinessTerminalCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.commit.readiness-terminal')
+}).strict();
+
 export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.open.extraction'),
 	completedObjectiveIds: z.array(MissionSlugSchema).min(1).max(20)
@@ -433,6 +437,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	ResolveMissionTurnCommandSchema,
 	AdvanceAutomaticCombatCommandSchema,
 	ApplyCombatChoiceBatchCommandSchema,
+	CommitReadinessTerminalCommandSchema,
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
@@ -473,6 +478,7 @@ export const CatchUpRequestSchema = z
 
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
 export type ApplyCombatChoiceBatchCommand = z.infer<typeof ApplyCombatChoiceBatchCommandSchema>;
+export type CommitReadinessTerminalCommand = z.infer<typeof CommitReadinessTerminalCommandSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
 export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;

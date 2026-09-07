@@ -975,7 +975,7 @@ describe('readiness combat contracts', () => {
 			beforeStateHash: HASH.state,
 			afterStateHash: HASH.trace,
 			contentVersion: 'engine-v26',
-			payload: { batch, resolvedEvents: [] }
+			payload: { batch, resolvedEvents: [], terminalResult: null, claimCheckpoint: null }
 		} as const;
 		expect(CombatChoiceBatchAppliedEventSchema.parse(event)).toStrictEqual(event);
 		expect(AuthoritativeEventSchema.parse(event)).toStrictEqual(event);
