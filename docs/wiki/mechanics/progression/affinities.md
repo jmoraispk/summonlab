@@ -2,30 +2,47 @@
 
 Wiki ID: `mechanics.progression.affinities`
 
-Design status: **accepted supplied design with explicit tuning gaps**.
+Design status: **four base associations accepted; advanced affinity ranks, duals, statuses, and
+combat formulas remain unshipped design**.
+
+The four-attribute foundation establishes Fire/Might, Earth/Vitality, Wind/Agility, and
+Water/Spirit as the only base attribute associations. `combat-rules-v1` contains a 1,000-basis-point
+cap for a matching-affinity nudge to the matching **attribute contribution**, not to final damage,
+Health, mitigation, or another complete outcome. The committed balance harness exercises that
+candidate and off-association builds, but the production engine does not yet apply an affinity
+combat formula or automatic affinity level-up point.
+
+Sections below the base association describe the accepted affinity design direction. They are not
+evidence that advanced ranks, dual affinities, statuses, Dominion, or infusion are implemented.
 
 ## 2.1 What an affinity is
 
-**An affinity is a property of the hero, not of a skill.** It describes something about the body and spirit of the bearer — which is why it has its own progression track and its own ranks. A hero holds an affinity; skills merely provide slots that the hero fills from what they hold.
+**An affinity is a property of the hero, not of a skill.** It describes something about the bearer.
+Skills may refer to that affinity, but do not manufacture it.
 
-Skills may be *authored* around an element — a fire technique from a fire school — but such a skill still requires the hero to hold Fire in order to function at full strength. A hero cannot borrow an element they do not possess.
+The proposed rank, slot, and status rules below remain future content. New mechanics must bind them
+to explicit versioned records before presenting them as active.
 
-**Affinity rank** is the affinity track's only measure. It runs 0 through V, rises through use, element-aligned training, leyline nodes and absorbed monster cores, and governs proc chance, status potency, environmental interaction, and dual-affinity stability. It is never raised by hero level and it never appears on the attribute sheet.
+In that future design, affinity rank is independent of hero level and never appears on the attribute
+sheet as a player-allocated combat attribute.
 
-This produces two independent multipliers on any single action. Attributes decide how hard, how fast, and how precisely it lands. Affinity rank decides what element it carries and whether that element does anything at all. A Fire caster with high Intellect and low affinity rank hits hard, with fire-coloured damage that rarely burns; reverse the two and the strikes land softly, but everything catches.
+Attributes and affinity remain separate inputs. Spirit governs magical magnitude; learned mastery
+governs accuracy and reliability. An affinity may later add elemental expression, but cannot become
+a substitute accuracy or learning stat.
 
-**The single coupling to attributes.** On level-up, a hero receives a modest attribute bonus matching their affinity. Flavour, not structure — it nudges a build, it does not define one.
+**The single coupling to attributes.** Each base affinity has one matching attribute. The first
+combat candidate can add no more than 10% of that attribute's contribution. This is flavour, not
+structure: it must not define the build.
 
-| Affinity | Attribute nudged | Reason |
-|---|---|---|
+| Affinity | Matching attribute | Reason |
+| --- | --- | --- |
 | Fire | Might | Expansion, force |
 | Earth | Vitality | Stability, endurance |
 | Wind | Agility | Motion, displacement |
 | Water | Spirit | Depth, patience, flow |
 
-**Dexterity and Intellect are nudged by no affinity.** These are the two learned attributes — precision and comprehension — and neither is elemental. A scholar and a brute may hold the same element, and a hero cannot become more accurate by burning brighter. Leaving both outside the elemental system keeps skills the primary lever, which is the point.
-
-Dual affinities do not nudge attributes at all. Their reward is elemental, not statistical.
+Accuracy and comprehension are learned systems, not extra attributes, so no affinity grants them.
+Dual-affinity bonuses remain deferred with the rest of the dual system.
 
 ## 2.2 The four affinities
 
@@ -34,7 +51,7 @@ Four base affinities. The set is chosen for legibility over tradition: each one 
 | Affinity | Colour | Character | Status | Behaviour |
 |---|---|---|---|---|
 | **Fire** | Vermilion | Expansion, aggression, consumption | **Burn** | Damage over time; intensity stacks rather than duration |
-| **Earth** | Ochre-brown | Stability, endurance, weight | **Weight** | Reduces poise and action speed; increases stagger taken |
+| **Earth** | Ochre-brown | Stability, endurance, weight | **Weight** | Proposed: slows actions and increases susceptibility to authored stagger or Break effects |
 | **Wind** | Pale green-grey | Motion, severance, displacement | **Lacerate** | Cutting damage scaling with the target's movement |
 | **Water** | Deep blue | Flow, depth, patience | **Chill** | Reduces attack speed and mana regeneration; escalates toward torpor |
 

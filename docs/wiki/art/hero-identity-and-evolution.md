@@ -191,22 +191,21 @@ locking a hero to a combat class.
 
 ## Capability is suggested, not diagrammed
 
-The accepted attributes remain Might, Vitality, Agility, Dexterity, Intellect, and Spirit. The
-image should use concrete, drawable evidence rather than abstract claims such as "has fine motor
-habits."
+The accepted visible combat attributes are Might, Vitality, Agility, and Spirit. The image should
+use concrete, drawable evidence rather than turning a score into physiognomy.
 
 | Attribute | Useful candidate cues | Cues that must not become a rule |
 | --- | --- | --- |
 | Might | frame and muscle distribution, stable leverage, garment fit across shoulders or legs, forceful stance | large body always means high Might |
 | Vitality | robust conditioning, grounded balance, durable bearing, recovery-ready clothing construction | body fat, age, scars, or attractiveness prove Vitality |
 | Agility | low visual inertia, mobile stance, free hems, close sleeves, long or coiled movement lines | thinness always means fast |
-| Dexterity | precise closures, controlled hand pose when reliably rendered, meticulous wrapping or repair, uncluttered hand silhouette | face shape or social class proves precision |
-| Intellect | studied or observant expression, organized clothing, scholarly/student/medical/craft history cues, notes or small personal effects when composition permits | ethnicity, beauty, skull shape, or expensive clothing proves intelligence |
-| Spirit | composure, deliberate stillness, centered gaze, ritual or contemplative history cues, disciplined visual rhythm | age, religion, quietness, or affinity proves Spirit |
+| Spirit | authored magical practice cues, a focus, ritual wear, or controlled magical residue when the brief permits it | religion, quietness, composure, morality, or affinity proves Spirit |
 
-These are weighted proxies. A scholar may have modest Intellect, a new medical student may be
-brilliant or overwhelmed, and a physically imposing hero may also be highly intellectual. The cue
-mix creates expectations and occasional surprises; it never reveals exact numbers.
+Learned precision, knowledge, scholarship, medicine, and craft may still appear through clothing,
+tools, repairs, notes, and lived history. They are skill and experience cues, not extra attributes or
+evidence of an IQ score. A scholar may learn slowly, a new medical student may be brilliant or
+overwhelmed, and a physically imposing hero may also be highly intellectual. Art never reveals an
+exact attribute or hidden learning value.
 
 Valid capability combinations always retain a nonzero probability. Strong correlations make some
 extreme contradictions very, very rare, but no valid attribute or aptitude combination is forbidden.
@@ -215,27 +214,20 @@ a rare person and make the final image physically coherent rather than silently 
 the common case. Invalid anatomy and broken image generation are production failures, not forbidden
 character builds.
 
-## Aptitudes: one accepted typed model
+## Learning profile: one accepted typed model
 
-New hero design and visual production use only the five aptitude categories defined by the
-progression authority:
+New characters generate learning separately from combat attributes:
 
-| Category | Concrete target |
+| Category | Mechanical target |
 | --- | --- |
-| Attribute | one of the six accepted attributes |
-| Family | an authored skill family |
-| Learning mode | solo practice, guidance, or pressure |
-| Variety | stronger benefit from novel contexts |
-| Affinity | one accepted affinity |
+| Cognitive learning | one hidden bounded score used only for comprehension-heavy practice |
+| Domain aptitude | martial, magical, crafting, survival, or social practice |
 
-The legacy four scores named `might`, `finesse`, `insight`, and `resolve` are superseded. They must
-not be generated for a new hero, used to direct new art, or treated as the semantic source for an
-aptitude. Existing contracts, policies, fixtures, receipts, and replay snapshots that still carry
-those scores are compatibility-only technical debt pending a versioned cross-system migration.
-There is no authoritative one-to-one conversion from the four legacy scores to the five typed
-categories.
+The legacy aptitude scores named `might`, `finesse`, `insight`, and `resolve` remain only in
+historical state and the versioned `legacy-auto-v1` compatibility boundary. They must not direct new
+art or become the source for a new learning profile.
 
-Aptitude means training rate or access, not present ability or ultimate ceiling. The visual can
+Aptitude means training rate, not present ability, decision quality, or human worth. The visual can
 weakly foreshadow an aptitude, but hidden aptitudes must remain discoverable through play rather
 than being printed into the costume.
 

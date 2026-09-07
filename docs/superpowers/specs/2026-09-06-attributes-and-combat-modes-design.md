@@ -9,6 +9,12 @@ Implementation plans:
 - `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`
 - `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`
 
+Implementation sequencing: the first plan owns the `engine-v25` four-attribute foundation and the
+operator-controlled `legacy-auto-v1` beta default. The second plan alone owns the unshipped
+`agent-readiness-v1` stepped resolver, provider orchestration, collision arbitration, and common
+combat-result expansion. Balance-harness formulas outside the first plan's versioned runtime rules
+and catalogs remain benchmark candidates until their owning production task promotes them.
+
 ## Purpose
 
 Replace the six-attribute proposal with a smaller combat-first capability model, revise the target

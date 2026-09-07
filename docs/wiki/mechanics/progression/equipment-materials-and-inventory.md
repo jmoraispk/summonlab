@@ -44,7 +44,7 @@ protection, giving a settlement a reason to cultivate smiths.
 | Property | Frequency | Proposed role |
 | --- | --- | --- |
 | Offensive stats | Common on weapons | Damage, attack speed, penetration |
-| Defensive stats | Common on armor | Mitigation, poise, resistances |
+| Defensive stats | Common on armor | General mitigation and named resistances; authored Break effects only |
 | Health bonus | Common on armor | Default defensive benefit |
 | Attribute bonus | Rare | Supplement rather than define builds |
 | Enchantment slots | Uncommon+ | Filled by Enchantment skills |

@@ -2,131 +2,124 @@
 
 Wiki ID: `mechanics.progression.attributes-training`
 
-Design status: **authoritative vocabulary with open tuning**. Might, Vitality, Agility, Dexterity,
-Intellect, and Spirit are the accepted six attributes. Their numeric curves and the broader training
-proposal remain subject to review.
+Design status: **four-attribute foundation implemented; idle schedules and broader training loops
+remain separate design work**.
 
-## Three pillars and six attributes
+## Four combat-first attributes
 
-The source begins with a warrior’s fable: a warrior needs strength to deliver and endure a blow,
-speed so attack and defense arrive in time, and control so a strike lands only where intended. It
-then adds understanding, which the fable omits and a pure fighter can afford to neglect.
+New characters use Might, Vitality, Agility, and Spirit on a `1..100` intrinsic scale.
 
-| Axis | Physical | Mental |
+| Attribute | Primary territory | Failure without it |
 | --- | --- | --- |
-| Power—what is put out | Might | Intellect |
-| Resilience—what is absorbed and sustained | Vitality | Spirit |
-| Execution—how the act lands | Agility (how fast) | Dexterity (how exactly) |
+| **Might** | physical magnitude, carrying, equipment-load tolerance, explicit heavy-item requirements | a technique connects but lacks force or the loadout is unusable |
+| **Vitality** | maximum Health and modest natural Health recovery | mistakes consume a smaller Health reserve and take longer to recover from |
+| **Agility** | readiness, movement, evasion, bounded relative speed in hit contests | repositioning and avoidance are weaker |
+| **Spirit** | magical magnitude, maximum Mana, modest saturating Mana recovery | magical output and available technique resource are lower |
 
-| Attribute | Pillar | Proposed territory | Failure without it |
-| --- | --- | --- | --- |
-| Might | Strength | Physical damage, stagger force, carry capacity, equipment-weight tolerance, forceful interaction, heavy-weapon scaling | A blow connects but moves nothing |
-| Vitality | Strength | Health, mitigation, poise, physical-status resistance | Death on the first mistake |
-| Agility | Speed | Attack and movement speed, evasion, initiative, action economy | Acting last and being hit first |
-| Dexterity | Control | Accuracy, critical rate, weak-point targeting, technique execution, crafting precision, finesse-weapon scaling | Real damage delivered unreliably |
-| Intellect | Understanding | Magical magnitude, learning, analysis, identification, recipe comprehension | Unable to learn what is shown |
-| Spirit | Control | Mana and regeneration, channel stability, control duration, mental resistance, stance upkeep | Running dry or losing a technique halfway |
+Attributes describe broad combat capability. Skill mastery describes learned execution. Personality,
+history, relationships, knowledge, morale, motivation, and current condition remain separate systems.
+The retired Dexterity/Intellect proposal is not used for new state. Universal poise, attribute-based
+mitigation, Spirit-based morale/control/learning, and Vitality armour requirements are also removed.
 
-Might mirrors Intellect as physical and mental output. Vitality mirrors Spirit as bodily and mental
-endurance. Agility is the fist arriving quickly; Dexterity is its arriving at the intended point;
-stopping it there is Spirit.
+## Intrinsic growth and scoped modifiers
 
-## Resources
+```text
+generated capability + validated permanent receipts = intrinsic attribute
+intrinsic attribute + valid action-scoped modifiers = effective attribute
+```
 
-The source proposes exactly two bars and explicitly rejects stamina:
+Every permanent change is append-only evidence. New `engine-v25` heroes begin at level 1 with zero
+unspent points. A transition from level `L` to `L+n` grants exactly `n` points. Allocation spends one
+point on one named attribute and records the hero, before/after intrinsic values, source level,
+command, rules version, and game time. It never rewrites the generated character profile.
 
-| Bar | Driven by | Spent on | Restored by |
-| --- | --- | --- | --- |
-| Health | Vitality | Damage taken | Slow out-of-combat recovery, skills, consumables |
-| Mana | Spirit | Every martial or magical skill | Continuous Spirit-scaled regeneration |
+The initial rule is therefore **one freely allocated attribute point per level gained**. It is not a
+copy of an old six-stat budget. Each receipt must continue the prior intrinsic value exactly, and
+intrinsic attributes cannot exceed 100.
 
-Internal energy treats a perfect sword cut and flame magic as techniques drawing on one resource.
-Basic attacks, movement, and dodging cost nothing; pacing comes from mana, cooldowns, and poise. The
-source argues that a stamina bar duplicates mana and creates the undesirable state of being unable
-to dodge after choosing correctly.
+Equipment, food, enchantments, conditions, statuses, skills, and physiology use a different typed
+modifier contract. Each modifier names its scope and duration. An equipment-load Might modifier,
+for example, can change load tolerance but cannot satisfy an item's intrinsic-Might requirement or
+increase physical damage.
 
-## Three defenses
+## Health and Mana
 
-| Route | Attribute | Mechanism |
-| --- | --- | --- |
-| Absorb | Vitality | Larger Health pool, mitigation, and poise |
-| Avoid | Agility | Evasion, movement, and acting first |
-| Resist | Spirit | Mental resistance, shorter control effects, and channel stability |
+Health and Mana are the only universal bars. `combat-rules-v1` currently derives:
 
-Equipment also supplies mitigation, allowing a low-Vitality build to remain viable rather than only
-fragile.
+```text
+maximum Health = 100 + 4 × Vitality
+maximum Mana   = 40 + 2 × Spirit
+```
 
-## Derived-stat map
+Allocating Vitality or Spirit raises only the corresponding maximum; it does not heal or refill the
+current resource.
 
-| Derived stat | Primary | Support |
-| --- | --- | --- |
-| Health pool | Vitality | — |
-| Mana pool | Spirit | — |
-| Mana regeneration | Spirit | Intellect |
-| Physical damage | Might | Dexterity |
-| Magical damage | Intellect | Spirit |
-| Critical rate | Dexterity | Agility |
-| Critical damage | Might | Dexterity |
-| Accuracy | Dexterity | Agility |
-| Attack speed | Agility | Dexterity |
-| Movement speed | Agility | — |
-| Evasion | Agility | Dexterity |
-| Initiative | Agility | Intellect |
-| Armour/mitigation | Vitality | Might |
-| Poise | Vitality | Might |
-| Physical-status resistance | Vitality | Spirit |
-| Mental-status resistance | Spirit | Intellect |
-| Control duration inflicted | Spirit | Intellect |
-| Channel stability | Spirit | Vitality |
-| Learning rate | Intellect | Dexterity |
-| Stance-upkeep efficiency | Spirit | Vitality |
-| Carry capacity | Might | Vitality |
-| Weight tolerance | Might | Vitality |
-| Gathering yield | Dexterity | Intellect |
-| Crafting quality | Dexterity | Intellect |
+Natural Health recovery is deliberately modest:
 
-## Allocation and ceilings
+- safe-rest recovery is `2 + floor(Vitality / 10)` per recovery application;
+- combat recovery is one fifth of that safe-rest amount;
+- combat recovery pauses for 50 ticks after damage;
+- natural recovery is zero while Downed and cannot revive a hero;
+- it cannot repair an injury;
+- healing skills, consumables, and safe rest remain stronger recovery sources.
 
-- Level-earned attribute points are fully player allocated.
-- Respec is available only through a rare item.
-- The source proposes no hard or soft attribute ceiling.
-- A level-10 hero can therefore become extremely trained while having little combat experience.
-- Steep repetition decay is the natural brake: this route costs far more time and resources and
-  does not also supply skills, affinity ranks, or battle-earned practice bonuses.
-- Diminishing returns preserve readable specialist builds without an arbitrary wall.
+Mana recovery receives a small Spirit bonus that saturates rather than growing without bound.
+Combat Mana recovery is half the safe-rest value. It is also zero while Downed or when resolving
+injury repair. Equipment, stances, passives, and skill effects remain the stronger specialization
+levers.
 
-## Training outside levels
+The committed balance evidence compares recovery and peer damage on a common candidate timeline.
+That harness is a promotion gate, not a claim that its attack cadence is already production combat.
 
-Attribute practice costs time and actions rather than points. It is the non-kill route through which
-a civic or other non-combat hero can become formidable.
+## Damage, defence, and accuracy
 
-| Attribute | Example training actions |
-| --- | --- |
-| Might | Weighted labor, forge work, hauling, wrestling, breaking stone, marching in armor |
-| Vitality | Long marches, climate exposure, watch duty, hit-taking sparring, hard work in bad conditions |
-| Agility | Footwork, obstacle traversal, climbing, dance, sprint intervals, dodge practice |
-| Dexterity | Target practice, calligraphy, whittling, lockpicking, blade forms, instruments, fine crafting |
-| Intellect | Reading, scholarly study, puzzles, star charts, alchemy, deciphering, recipe development |
-| Spirit | Meditation, breathing forms, vigil, ritual, stillness at a leyline node |
+- Might alone supplies base-attribute scaling for physical magnitude.
+- Spirit alone supplies base-attribute scaling for magical magnitude.
+- Armour supplies general reduction after penetration. The curve is monotonic and
+  `combat-rules-v1` caps it at 7,499 basis points, so armour alone never reaches 75% reduction.
+- Authored `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistance receipts
+  stack additively up to the 7,500-basis-point global cap.
+- Skill mastery owns authored accuracy and reliability steps. Agility's future relative-speed term
+  is bounded and secondary; the current harness formula remains a benchmark candidate until the
+  readiness combat plan ships it.
+- Critical chance is never derived from a base attribute.
 
-One action can train two attributes: fine crafting may train Dexterity and Intellect, while marching
-in armor trains Might and Vitality. This keeps the world from looking like a menu. Attribute
-training uses the same repetition × quality × variety × aptitude practice model as skills and shows
-the same yield.
+There is no universal poise. A boss, shield, stance, or skill may explicitly own a visible Break
+meter without creating a hidden resource on every combatant.
 
-## Passive and active modes
+## Learning profile
 
-Most heroes are assigned to passive regimens between missions. Yield is steady and low, making it
-the intended default for rosters of hundreds. Active training uses direct attention, a mentor, or a
-dedicated facility for substantially higher yield, and some quality states—especially correction
-from a mentor—exist only there. Limited active slots force an investment choice.
+The learning profile is generated independently from combat attributes and is hidden by default. It
+contains:
 
-The strategic premise is that training halls, resident masters, and heroes teaching one another
-compound into a long-term settlement advantage distinct from speed-climbing.
+- a bounded cognitive-learning score;
+- martial, magical, crafting, survival, and social domain aptitudes.
 
-## Living Village subset
+For comprehension-heavy evidence only, the cognitive score maps to a `0.90..1.10` factor. Ordinary
+practice uses a neutral `1.00` cognitive factor. Domain aptitude maps separately to `0.80..1.20`,
+then teaching quality, facility quality, motivation, condition, variety, and repetition decay are
+applied before one final deterministic rounding step.
 
-The milestone can begin with one static training facility, passive assignment, visible time cost,
-one or two approved training actions per accepted attribute, and displayed yield. Mentorship,
-active-slot optimization, cross-attribute actions, respec items, and uncapped long-run training can
-remain deferred until the attribute vocabulary and numeric curves are accepted.
+This preserves a small, real general learning difference without pretending it is decision quality.
+The player sees outcomes and mentor observations, not an IQ number. Public character/proof
+projections omit the full learning profile, and future player-facing learning receipts must also
+redact the invertible cognitive factor.
+
+## Practice and idle progression
+
+The capability contract permits permanent-training receipts, but this foundation does not decide
+how heroes schedule their days, how much they are willing to practise, or what they accomplish while
+the player is away. Those “human” idle-gain rules require their own design: time, motivation,
+relationships, needs, facilities, teaching, variety, fatigue, and personal choice should matter
+without turning one hidden number into destiny.
+
+Until that design lands, do not treat a theoretical twelve-hour training assignment, passive slot,
+or repetition-yield curve as canonical runtime behavior.
+
+## References
+
+- [Attributes](../attributes.md)
+- [Affinities](affinities.md)
+- [Skill framework](../skills/framework.md)
+- [Equipment rarity and weight](../equipment/rarity-and-weight.md)
+- [Four-attribute implementation plan](../../../superpowers/plans/2026-09-06-four-attribute-legacy-combat.md)

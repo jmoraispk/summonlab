@@ -4,7 +4,8 @@ Wiki ID: `mechanics.progression.open-decisions`
 
 Design status: **internal convergence record**. This page keeps genuine source gaps explicit. Under
 ADR 0063, supplied rules win direct conflicts with earlier conversational feedback; they are still
-content rather than instructions to repository workers.
+content rather than instructions to repository workers. [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+later supersedes the imported attribute and combat-mode rows identified below.
 
 ## Reconciliation register
 
@@ -12,9 +13,9 @@ content rather than instructions to repository workers.
 | --- | --- | --- | --- |
 | 6★/7★ caps | 70 / 99 | Earlier ADR 0058: 99 / 999 | Source values authoritative; ADR 0063 supersedes the old caps |
 | Readiness | Level gates implied by rank package | ADR 0058 uses smooth effective-power anchors | Use smooth readiness; retain levels as only one input |
-| Attribute vocabulary | Might, Vitality, Agility, Dexterity, Intellect, Spirit | Earlier wiki vocabulary differed | Source vocabulary authoritative; migrate new content IDs together |
+| Attribute vocabulary | Imported six-stat vocabulary | ADR 0072: Might, Vitality, Agility, Spirit | ADR 0072 supersedes the source for new mechanics; historical schemas remain versioned |
 | Resources | Health and Mana; explicitly no stamina | Earlier wiki mentioned stamina | Source wins; combat must use Health and Mana only |
-| Affinity stat effect | Permanent matching attribute nudge each level | Earlier affinity contract used derived-action contribution only | Source wins; version the progression/affinity contract |
+| Affinity stat effect | Permanent matching attribute nudge each level | ADR 0072: matching association with a capped contribution candidate | No automatic level-up grant ships; current rules cap the candidate at 10% of the attribute contribution |
 | Base affinity roster | Fire, Earth, Wind, Water | Earlier source used Wood, Fire, Earth, Metal, Water | Latest affinity revision wins; Wood and Metal are no longer affinities |
 | Skill/affinity relation | Grade B+ skills carry additive affinity slots | Earlier source denied generic infusion/socketing | Latest affinity revision wins; a slot can use only an affinity its hero holds |
 | XP source | Kills only | Earlier generic progression interface allowed broader XP | Source wins; other systems grant non-XP growth or kill-credit receipts |
@@ -42,7 +43,9 @@ content rather than instructions to repository workers.
 
 ## Source-parked questions
 
-- Attribute numerics: base ranges, damage/check curves, carry-capacity scaling, and bend points.
+- Attribute numerics still open beyond the shipped `1..100` intrinsic band, `1..200` effective band,
+  resource formulas, and physical/magical scaling: carrying capacity and future readiness/hit curves
+  need their owning versions.
 - Durability and repair: whether gear degrades and whether repair belongs to Forging or its own focus.
 - Dedicated passes for materials, equipment-tier specifics, and food/upkeep.
 - Synthesis: the old concept considered transferring hero experience or potential skills and also

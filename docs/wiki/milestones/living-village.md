@@ -110,7 +110,7 @@ These are reviewable content budgets, not permanent catalog limits.
 | --- | --- | --- |
 | Heroes | exactly Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl | broader procedural human generation is deferred until after the prototype |
 | Summoning | one Normal channel; deterministic receipt; enough starting access to form a party | Advanced, gems, pity, portal upgrades, and 4★–5★ odds documented but deferred |
-| Progression | 1★ and levels 1–10; six attributes; XP and training deltas | all seven star caps and late progression documented |
+| Progression | 1★ and levels 1–10; Might, Vitality, Agility, Spirit; XP and training deltas | all seven star caps and late progression documented |
 | Affinity | every 1★ hero is Unaligned; an authored monster fixture may use a base affinity only if the first resolver explicitly enables it | ten total affinities, the T1–T5 affinity-rank mapping, and the rule that monsters below T3 are mostly Unaligned remain documented; hero awakening, affinity ranks, dual affinities, advanced states, Dominion, and off-cycle affinities deferred |
 | Skills | 8–12 definitions across representative martial, magical, and support disciplines | complete draft compendium remains available and addressable by ID |
 | Equipment | 12–20 definitions; weapon, armour, accessory; equip/unequip, rarity, weight, modifiers | complete materials/items/sets/crafting catalog documented |

@@ -10,7 +10,8 @@ internal bounded contexts stay separate even though the player experiences them 
 
 - one Normal summoning channel and enough introductory access to form one party;
 - 1★ levels 1–10 with the accepted future cap table preserved in schema;
-- six attributes and the explicit Unaligned affinity state; 1★ heroes cannot awaken an affinity;
+- four visible combat attributes and the explicit Unaligned affinity state; 1★ heroes cannot
+  awaken an affinity;
 - 8–12 runtime skills from the complete compendium;
 - 12–20 runtime equipment definitions across weapon, armour, and accessory;
 - direct attribute or owned-skill training;
@@ -40,12 +41,13 @@ Detailed source material:
 - [Rewards and engagement](../mechanics/rewards-and-engagement.md)
 - [Living Village release matrix](../roadmap/living-village-v1.md)
 
-## Target combat modes and party requirements
+## Target mission structures and party requirements
 
 Design status: **accepted direction; exact balance and unlock counts remain outside the current
 milestone**
 
-The complete game distinguishes two combat modes:
+The complete game distinguishes these mission structures. They are different from the versioned
+combat-resolution modes described below.
 
 ### Expeditions
 
@@ -73,25 +75,83 @@ own attempt, state, receipts, retreat decision, and rewards; one party's explora
 another party's combat state. Exploration evidence may prepare the player for the challenge, but it
 does not satisfy the requirement to complete all five challenge battles in sequence.
 
-These target modes do not silently change the narrower Living Village prototype below. That
+These mission structures do not silently change the narrower Living Village prototype below. That
 prototype continues to prove one-party reservation, repeated encounters, safety thresholds, and
 receipt handoff until shared contracts promote the broader design.
 
-## Combat design draft
+## Versioned combat resolution
 
-Design status: **supplied draft under owner review**
+Foundation status: **`legacy-auto-v1` implemented in `engine-v25`; `agent-readiness-v1` reserved but
+not live**.
+
+Combat mode is release configuration owned by the operator. It is not a player preference and no
+player API accepts it. Preparation stores a binding containing mode ID, mode-rules version,
+aggregate combat-content hash, and timestamp on the attempt. Changing the configured default affects
+future attempts only; the stored binding cannot change while an attempt is active.
+
+`COMBAT_MODE` currently defaults to and accepts only `legacy-auto-v1`. The cross-phase contract also
+recognizes `agent-readiness-v1`, but a stored readiness binding returns an explicit not-yet-live
+result. The implementation work required to enable it is tracked in the
+[agent-readiness combat plan](../../superpowers/plans/2026-09-06-agent-readiness-combat.md).
+
+| Mode | Release status | Choice source | Time and randomness |
+| --- | --- | --- | --- |
+| `legacy-auto-v1` | beta-safe operator default | seeded automatic policy; no hero-model calls | frozen legacy rounds, sequential entropy, 48-round safety boundary |
+| `agent-readiness-v1` | next plan; unavailable to releases and players | one intent provider call per ready hero | planned one-tick readiness cohorts and purpose-keyed randomness |
+
+### Legacy automatic combat
+
+For a new v25 attempt the player can press **Continue battle**. That command advances automatic
+combat; the request cannot contain a combat mode, actor action, target, choices, or policy. A seeded
+policy selects one legal action for every party actor, and the engine records the policy ID plus
+packet, legal-action-set, and result hashes.
+
+The runner isolates the frozen historical resolver behind a v24-shaped boundary. New four-attribute
+heroes receive a mode-local compatibility projection with integer half-up scaling and clamping:
+
+```text
+legacy might   <- Might
+legacy finesse <- Agility
+legacy insight <- Spirit
+legacy resolve <- Vitality
+```
+
+The projection never appears on the character sheet and never rewrites persisted v1 or v24 state.
+Historical attempts continue using their original aptitudes, event bytes, entropy purposes, and
+state hashes. A behavior change requires another explicit mode/rules version.
+
+### Authority layers
 
 Combat separates three responsibilities that must not silently collapse into one another:
 
-| Layer | Responsibility | Deterministic | Living Village |
-| --- | --- | --- | --- |
-| Resolution | initiative, legal outcomes, damage, Mana, status, victory, defeat, and drop claims | yes, from a supplied seed | represented by a transparent route-local fixture |
-| Intent | choose one engine-enumerated legal action | the provider may vary; recorded choices make replay exact | scripted fixture choices only |
-| Narration | turn an already-resolved event trace into color | no mechanical authority | off; the trace must explain itself without a model |
+| Layer | Responsibility | Mechanical authority |
+| --- | --- | --- |
+| Intent provider | choose one engine-enumerated legal action, target/destination, and allowed fallback | none beyond the validated selection |
+| Combat Resolver | timing, arbitration, movement, hit, critical, damage, status, downing, and outcome | complete and deterministic |
+| Narration | present already-resolved events | none |
 
-The governing boundary is: **an intent provider is a player, never the referee**. It may choose one
-item from the legal-action list. It cannot construct an unvalidated effect, inspect hidden rolls,
-compute an outcome, or write state. Resolution alone emits the event trace and proposed claims.
+The governing boundary is: **an intent provider is never the referee**. The legacy provider is a
+seeded automatic policy; the future readiness provider may be a hero agent. Neither can construct an
+effect, inspect hidden rolls, compute an outcome, or write state. Resolution alone emits the factual
+event trace and proposed claims.
+
+### Planned readiness stepping
+
+The readiness mode is unshipped. Its accepted contract will advance a deterministic simulation to
+the next tick on which one or more actors are ready, freeze one canonical snapshot for that cohort,
+derive a filtered view and legal-action set for each actor, collect their choices concurrently, and
+then apply one validated batch:
+
+```text
+advanceUntilDecision(state) -> DecisionWindow | CombatResult
+applyChoiceBatch(state, validated choices) -> state + events
+```
+
+All actors in tick `T` choose against the same pre-action truth. They do not see another actor's
+unresolved choice. Resolution orders collisions by exact readiness time, authored reaction priority,
+then a stable purpose-keyed tie-break; each later choice is revalidated and follows its authored
+fallback if an earlier move, flank, downing, or object claim invalidated it. No agent is re-queried
+during arbitration, and API latency never changes simulation time.
 
 ### Power integrity and human realism
 
@@ -133,14 +193,15 @@ Fairness requirements follow from this boundary:
 
 Human realism changes **how power is expressed**, not whether power exists.
 
-The target production shape is a pure simulation:
+The future readiness production shape is a deterministic stepped simulation around an external
+provider boundary:
 
 ```text
 simulate(CombatSpec, ProviderBinding) -> CombatResult
 ```
 
-The master seed is an input. Individual rolls derive from stable purpose keys rather than one
-position-dependent random stream:
+The master seed is an input. In `agent-readiness-v1`, individual rolls will derive from stable
+purpose keys rather than the position-dependent stream retained by historical legacy combat:
 
 ```text
 roll = hash(masterSeed, encounterIndex, tick, actorId, purpose, sequence)
@@ -149,6 +210,31 @@ roll = hash(masterSeed, encounterIndex, tick, actorId, purpose, sequence)
 Purposes include initiative, hit, critical, status, drop, and reward. Given the same frozen spec,
 seed, and choices, replay must produce the same receipt and trace. Changing one choice may change
 affected outcomes without reshuffling unrelated call sites.
+
+### Planned common result and consequences
+
+The readiness plan introduces a common outer combat result with final combat-local resources,
+harm/recovery evidence, skill-practice evidence, loot/extraction claims, decisive events, bindings,
+and replay hashes. Owning progression, inventory, expedition, and aftermath processes validate and
+commit those idempotent claims; combat does not directly grant durable rewards.
+
+That plan also makes Downed the zero-Health state. Safe victory or extraction removes Downed from a
+recovered hero and restores only the minimum safe Health needed to leave the state. A failed
+extraction may make an unrecovered hero permanently lost only through an explicit, traceable engine
+rule. These readiness/common-result consequences are accepted design, not shipped v25 legacy
+behavior.
+
+### Balance evidence boundary
+
+The committed combat-balance evidence validates immutable rules and content hashes across levels
+10, 40, 70, and 99 with 10,000 seeded trials per matchup. The 7,499-basis-point general-armour cap,
+four-attribute resource/scaling rules, named resistance cap, and versioned skill/equipment catalogs
+are production foundation.
+
+The harness's peer hit/evasion equation, relative-Agility conversion, attack cadence and variance,
+affinity matchup application, general armour-point fixture values, and magical-active substitute are
+explicitly hash-bound **benchmark candidates**. They prove that a coherent tuning set can pass the
+promotion gates; they do not become runtime mechanics merely because the evidence passes.
 
 ### Explanatory trace
 
@@ -197,13 +283,13 @@ damage = SkillBase
        x (1 - Mitigation)
 ```
 
-The broader draft includes tick-driven action accumulation, ten total affinities (four base and six
-dual), status applications, threat, poise, group formations, consumables, kill-sensitive drops,
-gathering, and permanent consequences. The accepted family consolidation keeps form tier,
-numerical level, and affinity rank as separate axes; any restriction on low-tier affinity use must
-be authored explicitly. Living Village implements only the explanatory seams needed by its
-presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic
-intent, and model narration remain off.
+The broader design includes tick-driven readiness, ten total affinities (four base and six dual),
+status applications, threat, authored Break mechanics, group formations, consumables,
+kill-sensitive drops, gathering, and permanent consequences. The accepted family consolidation
+keeps form tier, numerical level, and affinity rank as separate axes; any restriction on low-tier
+affinity use must be authored explicitly. Engine-v25 ships the four-attribute and automatic-mode
+foundation only. Production armour magnitudes, magical active skills, readiness intent, permanent
+injury/death, free-roaming gathering, and model narration remain unshipped.
 
 ### Accepted combat presentation direction
 

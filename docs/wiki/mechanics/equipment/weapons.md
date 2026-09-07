@@ -2,13 +2,15 @@
 
 Wiki ID: `mechanics.equipment.weapons`
 
-Design status: **owner-approved class foundation; runtime-v1 visuals and definitions integrated**.
+Design status: **runtime-v1 visuals/definitions and initial engine-v25 combat delivery profiles
+integrated**.
 Equipment uses six canonical weapon classes. Named, monster-derived, or visually unusual weapons
 still bind to one of these classes rather than creating another handling family.
 
 Runtime-v1 implements one definition and lazy card/detail visual for every legal rank-bearing
-material/class pairing; current Forging produces Standard instances only. Detailed damage, handling
-tradeoffs, and skill compatibility remain later combat work.
+material/class pairing; current Forging produces Standard instances only. Engine-v25 adds stable
+load plus the initial Sword, Dagger, Bow, Staff, and Shield family tags. Detailed weapon damage,
+handling tradeoffs, and the remaining skill-family mappings remain later combat work.
 
 ## Canonical classes
 
@@ -53,14 +55,32 @@ silently add another playable definition family.
 
 ## Skill boundary
 
-Each weapon needs one foundation and only enough signature techniques to express its identity.
-General blocking, parrying, movement, recovery, and power attacks belong to shared Martial skills.
-The target is roughly three to five signature techniques per weapon, not an independent catalog at
-every rank.
+An active skill is legal only when its delivery tags intersect both the equipped item's family tags
+and the hero's trained tags for that skill. Training is family-based, not bound to one exact item
+instance.
 
-The shared skill taxonomy still contains legacy equipment labels and large imported ladders. Its
-owner must separately reconcile those definitions with this six-weapon decision; this page does
-not change executable labels or shared skill catalogs.
+Current combat profiles publish:
+
+| Equipment | Delivery family |
+| --- | --- |
+| Sword and Dagger | `one-handed-blade` |
+| Bow | `bow` |
+| Staff | `staff-focus` |
+| Shield | `shield` |
+| Spear, Axe, and Mace | no active delivery tag yet |
+
+The contract also reserves `unarmed` and `two-handed-blade`, but no production equipment profile
+should be inferred from a reserved tag. Basic Sword Strike and Basic Bow Shot are the first
+hash-bound active skills using this boundary. The production catalog does not yet ship a magical
+active skill.
+
+Each weapon still needs only enough signature techniques to express its identity. General blocking,
+parrying, movement, recovery, and power attacks can belong to shared Martial skills rather than an
+independent catalog at every rank.
+
+The larger shared skill taxonomy still contains imported ladders. Its owner must reconcile those
+definitions with this six-weapon decision through a new versioned catalog; reserved delivery tags do
+not silently make imported entries executable.
 
 ## Retired classes
 
@@ -93,7 +113,7 @@ set unless a later named set explicitly binds them.
 ## Open implementation questions
 
 - Define the compact signature-technique set for each weapon with the Martial skill owner.
-- Define the exact item difficulty, hand tradeoffs, and benefits of one-handed, two-handed, Shield,
-  and Dual Wield loadouts.
+- Define detailed weapon magnitude, item difficulty, hand tradeoffs, and benefits of one-handed,
+  two-handed, Shield, and Dual Wield loadouts.
 - Bind Axe and Mace labels and retire obsolete labels only through the shared skill-taxonomy
   integration.

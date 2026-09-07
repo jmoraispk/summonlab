@@ -5,6 +5,11 @@ Wiki ID: `mechanics.progression.skills-ladders`
 Design status: **draft**. The supplied `skill_compendium.md` is the companion catalog; this page
 preserves the complete framework imported from `progression_system.md`.
 
+Supersession note: the implemented foundation is defined by the
+[Skill Framework](../skills/framework.md) and [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md).
+Per-skill mastery currently changes only authored accuracy, reliability, and refinements; the
+promotion bundles and permanent grants below remain unshipped design.
+
 ## Rarity and mastery are independent
 
 | Axis | Meaning | Movement | Owner |
@@ -169,7 +174,7 @@ S-grade requirements use a **minimum affinity rank** wherever a skill carries an
 
 | Condition | Example |
 | --- | --- |
-| Attribute | Dexterity exceeds a threshold |
+| Capability | Authored intrinsic combat attribute, skill mastery, or practice-evidence threshold |
 | Prerequisite mastery | Fireball at Expert or higher |
 | Repetitions | 10,000 sword swings, 100 parries, or 1,000 potions |
 | Affinity | Fire Rank II or higher, for magical skills only |
@@ -191,7 +196,7 @@ Example Mythic counter technique:
 | --- | --- |
 | Taught | Parry at Master + living holder + guided training period |
 | Bloody | Parry at Master + 5,000 successful parries + parry a named boss signature |
-| Scholar’s | Parry at Expert + high Intellect + recovered treatise + rare catalyst |
+| Scholar’s | Parry at Expert + high Knowledge mastery + recovered treatise + rare catalyst |
 
 This lets mentorship, veteran experience, and scholarship all remain valid strategies. Rarer skills
 tend to have fewer and harder paths; a Legendary may have one path nobody has yet walked.

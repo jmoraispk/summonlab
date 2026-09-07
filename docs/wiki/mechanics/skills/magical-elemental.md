@@ -7,6 +7,11 @@ Family: **Elemental**
 
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
+Supersession note: requirements or effects below that mention retired attributes or poise are
+preserved migration prose, not active mechanics. [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+requires learned mastery/evidence in place of precision or comprehension stats and permits only
+explicitly authored Break mechanics.
+
 Elemental owns the active affinity-specific magical ladders. The Element label records compatibility
 without creating another progression node; each foundation chain remains expressed through skill
 prerequisites. Fire, Water, Wind, and Earth are the active Element labels. Fire, Water, and Earth
