@@ -22,6 +22,7 @@
 		"@summonlab/queue": "workspace:*"
 	},
 	"devDependencies": {
-		"@summonlab/characters": "workspace:*"
+		"@summonlab/characters": "workspace:*",
+		"@summonlab/content": "workspace:*"
 	}
 }

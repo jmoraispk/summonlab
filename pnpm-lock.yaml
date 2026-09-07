@@ -172,6 +172,9 @@ importers:
       '@summonlab/characters':
         specifier: workspace:*
         version: link:../../packages/characters
+      '@summonlab/content':
+        specifier: workspace:*
+        version: link:../../packages/content
 
   packages/characters:
     dependencies:

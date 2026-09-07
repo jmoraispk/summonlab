@@ -1,4 +1,6 @@
 import {
+	type ActorDecisionView,
+	type CombatLegalAction,
 	HERO_DECISION_PREVIEW_VERSION,
 	HeroDecisionPreviewSchema,
 	HeroDecisionSchema,
@@ -14,9 +16,78 @@ import {
 } from '@summonlab/contracts';
 import { sha256Hex } from '@summonlab/engine';
 
-import { createHeroPolicyResult, validatePolicyPacket, type HeroPolicy } from './core.js';
+import {
+	createHeroPolicyResult,
+	validateCombatPolicyResponse,
+	validateCombatPolicyView,
+	validatePolicyPacket,
+	type CombatPolicy,
+	type CombatPolicyResponse,
+	type HeroPolicy
+} from './core.js';
 
 export * from './core.js';
+
+function primaryTarget(action: CombatLegalAction): CombatPolicyResponse['target'] {
+	const contract = action.targetContract;
+	if (contract.kind === 'self') return { kind: 'self' };
+	if (contract.kind === 'entity') {
+		return { kind: 'entity', combatantId: contract.allowedCombatantIds[0]! };
+	}
+	if (contract.kind === 'tile') return { kind: 'tile', position: contract.allowedPositions[0]! };
+	return {
+		kind: 'entity-relative-position',
+		combatantId: contract.allowedCombatantIds[0]!,
+		relation: contract.allowedRelations[0]!
+	};
+}
+
+function combatResponse(
+	view: ActorDecisionView,
+	action: CombatLegalAction,
+	publicIntent: string
+): CombatPolicyResponse {
+	return validateCombatPolicyResponse(view, {
+		windowId: view.windowId,
+		snapshotHash: view.snapshotHash,
+		actorViewHash: view.actorViewHash,
+		legalActionSetHash: view.legalActionSetHash,
+		actionId: action.actionId,
+		target: primaryTarget(action),
+		fallbackId: action.fallbackOptions[0]?.fallbackId ?? null,
+		publicIntent: bounded(publicIntent, 240)
+	});
+}
+
+export class RandomCombatPolicy implements CombatPolicy {
+	constructor(private readonly seed: string) {
+		if (!seed.trim()) throw new Error('RandomCombatPolicy requires an explicit non-empty seed');
+	}
+
+	async decide(input: ActorDecisionView): Promise<CombatPolicyResponse> {
+		const view = validateCombatPolicyView(input);
+		const seedHash = sha256Hex(
+			`random-combat-policy-v1\u0000${this.seed}\u0000${view.actorViewHash}\u0000${view.legalActionSetHash}`
+		);
+		const action =
+			view.legalActions[Number.parseInt(seedHash.slice(0, 8), 16) % view.legalActions.length];
+		if (!action) throw new Error('RandomCombatPolicy found no supplied legal action');
+		return combatResponse(view, action, 'I act on the opening I can see.');
+	}
+}
+
+export class ScriptedCombatPolicy implements CombatPolicy {
+	async decide(input: ActorDecisionView): Promise<CombatPolicyResponse> {
+		const view = validateCombatPolicyView(input);
+		const action = [...view.legalActions].sort((left, right) => {
+			const leftCost = left.manaCost + left.recoveryTicks;
+			const rightCost = right.manaCost + right.recoveryTicks;
+			return leftCost - rightCost || left.actionId.localeCompare(right.actionId);
+		})[0];
+		if (!action) throw new Error('ScriptedCombatPolicy found no supplied legal action');
+		return combatResponse(view, action, 'I choose the least costly legal commitment.');
+	}
+}
 
 function bounded(value: string, limit: number): string {
 	return value.length <= limit ? value : `${value.slice(0, Math.max(1, limit - 1)).trimEnd()}…`;

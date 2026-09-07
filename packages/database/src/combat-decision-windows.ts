@@ -765,6 +765,42 @@ export async function listDispatchableCombatDecisionJobIds(
 	}
 }
 
+export async function listActionableCombatDecisionWindowIds(
+	databaseUrl: string,
+	limit = 32
+): Promise<string[]> {
+	if (!Number.isSafeInteger(limit) || limit < 1 || limit > 256) {
+		throw new Error('Combat decision window sweep limit must be from 1 to 256');
+	}
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		const rows = await sql<{ window_id: string }[]>`
+			select windows.window_id
+			from summonlab_combat_decision_windows windows
+			where windows.status = 'ready'
+				or (
+					windows.status = 'collecting'
+					and exists (
+						select 1 from summonlab_decision_jobs jobs
+						where jobs.window_id = windows.window_id
+							and jobs.schema_version = ${COMBAT_DECISION_JOB_VERSION}
+					)
+					and not exists (
+						select 1 from summonlab_decision_jobs jobs
+						where jobs.window_id = windows.window_id
+							and jobs.schema_version = ${COMBAT_DECISION_JOB_VERSION}
+							and (jobs.status <> 'completed' or jobs.result is null)
+					)
+				)
+			order by windows.updated_at, windows.window_id
+			limit ${limit}
+		`;
+		return rows.map((row) => row.window_id);
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function queueCombatDecisionJob(databaseUrl: string, jobId: string): Promise<boolean> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {

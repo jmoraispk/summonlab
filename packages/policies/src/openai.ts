@@ -1,4 +1,5 @@
 import {
+	type ActorDecisionView,
 	DECISION_PROVIDER_REQUEST_VERSION,
 	DecisionProviderRequestProfileSchema,
 	HERO_MODEL_PROMPT_VERSION,
@@ -14,7 +15,12 @@ import {
 	type StoryWorkshopBrief,
 	type StoryWorkshopModelOutput
 } from '@summonlab/contracts';
-import { canonicalJson, hashCanonical, sha256Hex } from '@summonlab/engine';
+import {
+	assembleCombatActionDecisionContext,
+	canonicalJson,
+	hashCanonical,
+	sha256Hex
+} from '@summonlab/engine';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import type {
@@ -22,7 +28,16 @@ import type {
 	ResponseCreateParamsNonStreaming
 } from 'openai/resources/responses/responses';
 
-import { createHeroPolicyResult, validatePolicyPacket, type HeroPolicy } from './core.js';
+import {
+	CombatPolicyResponseSchema,
+	createHeroPolicyResult,
+	validateCombatPolicyResponse,
+	validateCombatPolicyView,
+	validatePolicyPacket,
+	type CombatPolicy,
+	type CombatPolicyResponse,
+	type HeroPolicy
+} from './core.js';
 
 export const OPENAI_HERO_DECISION_SCHEMA_NAME = 'summonlab_hero_decision';
 
@@ -45,6 +60,19 @@ export const OPENAI_HERO_DECISION_FORMAT = zodTextFormat(
 );
 
 export const OPENAI_HERO_DECISION_JSON_SCHEMA = OPENAI_HERO_DECISION_FORMAT.schema;
+
+export const OPENAI_COMBAT_DECISION_SCHEMA_NAME = 'summonlab_combat_decision';
+export const OPENAI_COMBAT_DECISION_INSTRUCTIONS =
+	'Choose exactly one supplied legal action. The engine resolves it.';
+const OpenAICombatDecisionOutputSchema = CombatPolicyResponseSchema.extend({
+	publicIntent: CombatPolicyResponseSchema.shape.publicIntent.unwrap().nullable()
+}).strict();
+export const OPENAI_COMBAT_DECISION_FORMAT = zodTextFormat(
+	OpenAICombatDecisionOutputSchema,
+	OPENAI_COMBAT_DECISION_SCHEMA_NAME,
+	{ description: 'One legal combat intent bound to a supplied frozen actor view.' }
+);
+export const OPENAI_COMBAT_DECISION_JSON_SCHEMA = OPENAI_COMBAT_DECISION_FORMAT.schema;
 
 export type ModelPolicyFailureCode =
 	| 'provider-timeout'
@@ -101,6 +129,8 @@ export interface OpenAIModelPolicyOptions {
 	readonly reasoningEffort?: 'minimal' | 'low' | 'medium';
 	readonly transport?: OpenAIResponsesTransport;
 }
+
+export type OpenAICombatPolicyOptions = OpenAIModelPolicyOptions;
 
 function responseRefusal(response: Response): string | null {
 	for (const item of response.output) {
@@ -195,6 +225,40 @@ function requestFor(
 			format: OPENAI_HERO_DECISION_FORMAT
 		}
 	};
+}
+
+function combatRequestFor(
+	view: ActorDecisionView,
+	model: string,
+	maxOutputTokens: number,
+	reasoningEffort: 'minimal' | 'low' | 'medium'
+): ResponseCreateParamsNonStreaming {
+	return {
+		model,
+		background: false,
+		store: false,
+		service_tier: 'default',
+		max_output_tokens: maxOutputTokens,
+		reasoning: { effort: reasoningEffort },
+		instructions: OPENAI_COMBAT_DECISION_INSTRUCTIONS,
+		input: canonicalJson({ context: assembleCombatActionDecisionContext(view) }),
+		text: { verbosity: 'low', format: OPENAI_COMBAT_DECISION_FORMAT }
+	};
+}
+
+export function buildOpenAICombatDecisionRequest(
+	viewInput: ActorDecisionView,
+	options: Pick<OpenAICombatPolicyOptions, 'model' | 'maxOutputTokens' | 'reasoningEffort'>
+): ResponseCreateParamsNonStreaming {
+	const view = validateCombatPolicyView(viewInput);
+	const model = options.model.trim();
+	if (!model) throw new Error('OpenAICombatPolicy requires a model');
+	return combatRequestFor(
+		view,
+		model,
+		positiveInteger(options.maxOutputTokens ?? 800, 'maxOutputTokens', 128, 4_000),
+		options.reasoningEffort ?? 'minimal'
+	);
 }
 
 export function buildOpenAIHeroDecisionRequest(
@@ -368,6 +432,99 @@ export class OpenAIModelPolicy implements HeroPolicy {
 			throw new ModelPolicyError(
 				'decision-illegal',
 				'The structured model decision crossed the packet legal boundary.',
+				true,
+				error
+			);
+		}
+	}
+}
+
+export class OpenAICombatPolicy implements CombatPolicy {
+	private readonly model: string;
+	private readonly maxOutputTokens: number;
+	private readonly reasoningEffort: 'minimal' | 'low' | 'medium';
+	private readonly transport: OpenAIResponsesTransport;
+
+	constructor(options: OpenAICombatPolicyOptions) {
+		this.model = options.model.trim();
+		if (!this.model) throw new Error('OpenAICombatPolicy requires a model');
+		const timeoutMs = positiveInteger(options.timeoutMs ?? 30_000, 'timeoutMs', 1_000, 120_000);
+		this.maxOutputTokens = positiveInteger(
+			options.maxOutputTokens ?? 800,
+			'maxOutputTokens',
+			128,
+			4_000
+		);
+		this.reasoningEffort = options.reasoningEffort ?? 'minimal';
+		if (options.transport) {
+			this.transport = options.transport;
+		} else {
+			const apiKey = options.apiKey?.trim();
+			if (!apiKey) throw new Error('OpenAICombatPolicy requires an API key or injected transport');
+			this.transport = new OpenAISdkResponsesTransport(apiKey, timeoutMs);
+		}
+	}
+
+	async decide(viewInput: ActorDecisionView): Promise<CombatPolicyResponse> {
+		const view = validateCombatPolicyView(viewInput);
+		const request = combatRequestFor(view, this.model, this.maxOutputTokens, this.reasoningEffort);
+		let response: OpenAIModelResponse;
+		try {
+			response = await this.transport.create(request);
+		} catch (error) {
+			throw classifyTransportError(error);
+		}
+		if (response.error || response.status === 'failed' || response.status === 'cancelled') {
+			throw new ModelPolicyError(
+				'response-failed',
+				`The combat model response failed (${response.error?.code ?? response.status}).`,
+				true
+			);
+		}
+		if (response.status !== 'completed') {
+			throw new ModelPolicyError(
+				'response-incomplete',
+				`The combat model response was ${response.status}.`,
+				true
+			);
+		}
+		if (response.refusal) {
+			throw new ModelPolicyError(
+				'response-refused',
+				'The model declined to choose a combat intent.',
+				false
+			);
+		}
+		if (!response.outputText.trim()) {
+			throw new ModelPolicyError(
+				'output-missing',
+				'The model returned no structured combat intent.',
+				true
+			);
+		}
+		let parsed: unknown;
+		try {
+			parsed = JSON.parse(response.outputText);
+		} catch (error) {
+			throw new ModelPolicyError(
+				'output-malformed',
+				'The combat model output was not valid JSON.',
+				true,
+				error
+			);
+		}
+		try {
+			const output = OpenAICombatDecisionOutputSchema.parse(parsed);
+			return validateCombatPolicyResponse(
+				view,
+				output.publicIntent === null
+					? Object.fromEntries(Object.entries(output).filter(([key]) => key !== 'publicIntent'))
+					: output
+			);
+		} catch (error) {
+			throw new ModelPolicyError(
+				'decision-illegal',
+				'The structured combat decision crossed the supplied legal boundary.',
 				true,
 				error
 			);

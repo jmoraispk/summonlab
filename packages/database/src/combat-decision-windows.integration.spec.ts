@@ -28,6 +28,7 @@ import {
 	createCombatDecisionWindow,
 	failCombatDecisionJobAttempt,
 	getCombatDecisionWindow,
+	listActionableCombatDecisionWindowIds,
 	queueCombatDecisionJob,
 	recoverExpiredCombatDecisionJobs,
 	refreshCombatDecisionWindow
@@ -472,6 +473,42 @@ describe.sequential('durable combat decision cohorts', () => {
 			await sql.end({ timeout: 5 });
 		}
 	});
+
+	run(
+		'discovers terminal unapplied windows after a coordinator restart',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const f = fixture(runId);
+			const created = await createCombatDecisionWindow(databaseUrl, {
+				runId,
+				expectedRunVersion: 3,
+				expectedEventCursor: 4,
+				snapshot: f.snapshot,
+				actors: f.views.map((view) => ({
+					view,
+					requestedPolicy: 'scripted' as const,
+					deterministicFallback: f.result(view)
+				}))
+			});
+			expect(await listActionableCombatDecisionWindowIds(databaseUrl)).not.toContain(
+				f.snapshot.windowId
+			);
+			for (const job of created.jobs) {
+				await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+				await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+				const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
+				await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 0);
+			}
+			expect(await listActionableCombatDecisionWindowIds(databaseUrl)).toContain(
+				f.snapshot.windowId
+			);
+			await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+			expect(await listActionableCombatDecisionWindowIds(databaseUrl)).toContain(
+				f.snapshot.windowId
+			);
+		},
+		10_000
+	);
 
 	run(
 		'atomically enqueues every actor, retries idempotently, and aggregates out of order',
