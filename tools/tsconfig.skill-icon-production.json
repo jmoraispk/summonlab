@@ -66,6 +66,10 @@
 		"render-skill-icon-complete-frame-rollout-review.ts",
 		"render-skill-icon-complete-frame-rollout-review.spec.ts",
 		"render-skill-icon-inner-frame-audit-review.ts",
-		"render-skill-icon-inner-frame-audit-review.spec.ts"
+		"render-skill-icon-inner-frame-audit-review.spec.ts",
+		"skill-icon-inner-frame-regeneration.ts",
+		"skill-icon-inner-frame-regeneration.spec.ts",
+		"render-skill-icon-inner-frame-regeneration-review.ts",
+		"render-skill-icon-inner-frame-regeneration-review.spec.ts"
 	]
 }
