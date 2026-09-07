@@ -44,6 +44,44 @@ type BalanceLevel = (typeof BALANCE_LEVELS)[number];
 type BalanceSpread = (typeof BALANCE_SPREADS)[number];
 type MasteryBand = 'novice' | 'trained' | 'mastered';
 type ArmourState = 'unarmoured' | 'armoured';
+type BalanceRandomCoordinate =
+	| Readonly<{
+			streamKind: 'accuracy';
+			values: Readonly<{
+				level: BalanceLevel;
+				attributeSpread: BalanceSpread;
+				masteryBand: MasteryBand;
+			}>;
+	  }>
+	| Readonly<{
+			streamKind: 'relativeAgility';
+			values: Readonly<{
+				level: BalanceLevel;
+				attributeSpread: BalanceSpread;
+				direction: 'faster' | 'slower';
+			}>;
+	  }>
+	| Readonly<{
+			streamKind: 'regeneration';
+			values: Readonly<{
+				level: BalanceLevel;
+				attributeSpread: BalanceSpread;
+				armourState: ArmourState;
+			}>;
+	  }>
+	| Readonly<{
+			streamKind: 'affinity';
+			values: Readonly<{
+				level: BalanceLevel;
+				attributeSpread: BalanceSpread;
+				archetype: 'fire-caster' | 'water-martial';
+				variant: 'matched' | 'off-affinity';
+			}>;
+	  }>
+	| Readonly<{
+			streamKind: 'armour';
+			values: Readonly<{ level: BalanceLevel; attributeSpread: BalanceSpread }>;
+	  }>;
 
 function deepFreeze<T>(value: T): T {
 	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -63,7 +101,26 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	},
 	randomness: {
 		version: 'sha256-seeded-xorshift32-v1',
-		seedMaterial: 'canonical-object-of-randomness-version-matchup-id-and-seed',
+		streamNamespace: 'combat-balance-candidate-v1',
+		seedMaterial:
+			'canonical-object-of-namespace-randomness-version-stream-kind-coordinate-and-seed',
+		coordinateDerivation: {
+			encoding: 'declared-ordered-field-tuples',
+			fieldsByStreamKind: {
+				accuracy: ['level', 'attributeSpread', 'masteryBand'],
+				relativeAgility: ['level', 'attributeSpread', 'direction'],
+				regeneration: ['level', 'attributeSpread', 'armourState'],
+				affinity: ['level', 'attributeSpread', 'archetype', 'variant'],
+				armour: ['level', 'attributeSpread']
+			}
+		},
+		pairedStreamDerivation: {
+			relativeAgility: {
+				pairedComparisons: ['baseline', 'adjusted'],
+				coordinatePolicy: 'omit-comparison-role',
+				replayPolicy: 'restart-identical-stream'
+			}
+		},
 		seedDigestHexStart: 0,
 		seedDigestHexLength: 8,
 		seedDigestRadix: 16,
@@ -142,7 +199,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		missConsumesAction: true,
 		defencePolicy: 'no-armour-or-named-resistance',
 		affinityVariantRandomStreamCoupling: 'independent',
-		affinityVariantRandomStreamSuffixes: { matched: 'matched', offAffinity: 'off' }
+		affinityVariantCoordinates: { matched: 'matched', offAffinity: 'off-affinity' }
 	},
 	promotionGates: {
 		accuracyStatistic: 'aggregate-hit-rate',
@@ -458,17 +515,39 @@ function trialsPerSeed(): number {
 	return trials;
 }
 
-function randomStream(matchupId: string, seed: string): () => number {
+function orderedRandomCoordinate(
+	coordinate: BalanceRandomCoordinate
+): readonly (readonly [string, string | number])[] {
+	const derivation = BALANCE_SIMULATION_PROFILE_V1.randomness.coordinateDerivation;
+	if (derivation.encoding !== 'declared-ordered-field-tuples') {
+		throw new Error('Unsupported balance random-coordinate encoding');
+	}
+	const declaredFields = derivation.fieldsByStreamKind[coordinate.streamKind];
+	const values = coordinate.values as Readonly<Record<string, string | number>>;
+	const actualFields = Object.keys(values).sort();
+	const expectedFields = [...declaredFields].sort();
+	if (
+		actualFields.length !== expectedFields.length ||
+		actualFields.some((field, index) => field !== expectedFields[index])
+	) {
+		throw new Error(`Invalid ${coordinate.streamKind} random-coordinate fields`);
+	}
+	return declaredFields.map((field) => [field, values[field]!] as const);
+}
+
+function randomStream(coordinate: BalanceRandomCoordinate, seed: string): () => number {
 	if (
 		BALANCE_SIMULATION_PROFILE_V1.randomness.seedMaterial !==
-		'canonical-object-of-randomness-version-matchup-id-and-seed'
+		'canonical-object-of-namespace-randomness-version-stream-kind-coordinate-and-seed'
 	) {
 		throw new Error('Unsupported balance seed-material policy');
 	}
 	const randomness = BALANCE_SIMULATION_PROFILE_V1.randomness;
 	const digest = hashCanonical({
+		streamNamespace: randomness.streamNamespace,
 		randomnessVersion: randomness.version,
-		matchupId,
+		streamKind: coordinate.streamKind,
+		coordinate: orderedRandomCoordinate(coordinate),
 		seed
 	});
 	let state = Number.parseInt(
@@ -585,7 +664,7 @@ function peerHitContest(
 }
 
 function simulateHitRate(
-	matchupId: string,
+	randomCoordinate: BalanceRandomCoordinate,
 	chanceBasisPoints: number
 ): {
 	observedBasisPoints: number;
@@ -595,7 +674,7 @@ function simulateHitRate(
 	const cohortRates: number[] = [];
 	const cohortTrials = trialsPerSeed();
 	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
-		const random = randomStream(matchupId, seed);
+		const random = randomStream(randomCoordinate, seed);
 		let cohortHits = 0;
 		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			if (rollBasisPoints(random, chanceBasisPoints)) cohortHits += 1;
@@ -622,7 +701,13 @@ function buildAccuracyMatchups(): AccuracyMatchup[] {
 				const matchupId = `accuracy-l${level}-${attributeSpread}-${masteryBand}`;
 				const agility = attributeValue(level, attributeSpread);
 				const contest = peerHitContest(level, agility, agility, masteryBand);
-				const result = simulateHitRate(matchupId, contest.chanceBasisPoints);
+				const result = simulateHitRate(
+					{
+						streamKind: 'accuracy',
+						values: { level, attributeSpread, masteryBand }
+					},
+					contest.chanceBasisPoints
+				);
 				return {
 					matchupId,
 					level,
@@ -670,12 +755,23 @@ function buildAgilityMatchups(): AgilityMatchup[] {
 				);
 				const effectiveChanceShiftBasisPoints =
 					adjustedContest.chanceBasisPoints - baselineContest.chanceBasisPoints;
-				if (fixture.randomStreamCoupling !== 'paired-baseline-and-adjusted') {
+				const pairing =
+					BALANCE_SIMULATION_PROFILE_V1.randomness.pairedStreamDerivation.relativeAgility;
+				if (
+					fixture.randomStreamCoupling !== 'paired-baseline-and-adjusted' ||
+					pairing.coordinatePolicy !== 'omit-comparison-role' ||
+					pairing.replayPolicy !== 'restart-identical-stream' ||
+					pairing.pairedComparisons[0] !== 'baseline' ||
+					pairing.pairedComparisons[1] !== 'adjusted'
+				) {
 					throw new Error('Unsupported relative-Agility random-stream coupling');
 				}
-				const pairedStreamId = `${matchupId}-paired`;
-				const baseline = simulateHitRate(pairedStreamId, baselineContest.chanceBasisPoints);
-				const adjusted = simulateHitRate(pairedStreamId, adjustedContest.chanceBasisPoints);
+				const pairedCoordinate = {
+					streamKind: 'relativeAgility',
+					values: { level, attributeSpread, direction }
+				} as const satisfies BalanceRandomCoordinate;
+				const baseline = simulateHitRate(pairedCoordinate, baselineContest.chanceBasisPoints);
+				const adjusted = simulateHitRate(pairedCoordinate, adjustedContest.chanceBasisPoints);
 				return {
 					matchupId,
 					level,
@@ -757,7 +853,7 @@ function damageAfterMitigation(
 }
 
 function simulatePeerDamage(input: {
-	matchupId: string;
+	randomCoordinate: BalanceRandomCoordinate;
 	attributes: CombatAttributes;
 	level: BalanceLevel;
 	armourPoints: number;
@@ -767,7 +863,7 @@ function simulatePeerDamage(input: {
 	const profile = createPeerDamageProfile(input);
 	const cohortTrials = trialsPerSeed();
 	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
-		const random = randomStream(input.matchupId, seed);
+		const random = randomStream(input.randomCoordinate, seed);
 		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			values.push(peerDamageForAttack(random, profile));
 		}
@@ -849,7 +945,7 @@ function peerDamageForAttack(random: () => number, profile: PeerDamageProfile): 
 }
 
 function simulateSustainedTimeline(input: {
-	matchupId: string;
+	randomCoordinate: BalanceRandomCoordinate;
 	attributes: CombatAttributes;
 	level: BalanceLevel;
 	armourPoints: number;
@@ -892,7 +988,7 @@ function simulateSustainedTimeline(input: {
 	const regenerationTotals: number[] = [];
 	const cohortTrials = trialsPerSeed();
 	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
-		const random = randomStream(input.matchupId, seed);
+		const random = randomStream(input.randomCoordinate, seed);
 		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			let damageTotal = 0;
 			let regenerationTotal = 0;
@@ -960,7 +1056,10 @@ function buildRegenerationMatchups(): RegenerationMatchup[] {
 				const matchupId = `regeneration-l${level}-${attributeSpread}-${armourState}`;
 				const armourFixture = BALANCE_SIMULATION_PROFILE_V1.armourFixtures[armourState];
 				const timeline = simulateSustainedTimeline({
-					matchupId,
+					randomCoordinate: {
+						streamKind: 'regeneration',
+						values: { level, attributeSpread, armourState }
+					},
 					attributes,
 					level,
 					armourPoints: armourFixture.armourPoints,
@@ -980,7 +1079,7 @@ function buildRegenerationMatchups(): RegenerationMatchup[] {
 }
 
 function simulateCompletionActions(input: {
-	matchupId: string;
+	randomCoordinate: BalanceRandomCoordinate;
 	attributes: CombatAttributes;
 	level: BalanceLevel;
 	channel: DamageChannel;
@@ -1018,7 +1117,7 @@ function simulateCompletionActions(input: {
 	}
 	const cohortTrials = trialsPerSeed();
 	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
-		const random = randomStream(input.matchupId, seed);
+		const random = randomStream(input.randomCoordinate, seed);
 		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			let dealt = 0;
 			let actions = 0;
@@ -1108,14 +1207,30 @@ function buildAffinityMatchups(): AffinityMatchup[] {
 					throw new Error(`Affinity archetype ${archetype} does not define matched/off controls`);
 				}
 				const matchedCompletion = simulateCompletionActions({
-					matchupId: `${matchupId}-${completionFixture.affinityVariantRandomStreamSuffixes.matched}`,
+					randomCoordinate: {
+						streamKind: 'affinity',
+						values: {
+							level,
+							attributeSpread,
+							archetype,
+							variant: completionFixture.affinityVariantCoordinates.matched
+						}
+					},
 					attributes,
 					level,
 					channel,
 					matchedAffinity: matchedAppliesNudge
 				});
 				const offCompletion = simulateCompletionActions({
-					matchupId: `${matchupId}-${completionFixture.affinityVariantRandomStreamSuffixes.offAffinity}`,
+					randomCoordinate: {
+						streamKind: 'affinity',
+						values: {
+							level,
+							attributeSpread,
+							archetype,
+							variant: completionFixture.affinityVariantCoordinates.offAffinity
+						}
+					},
 					attributes,
 					level,
 					channel,
@@ -1163,7 +1278,10 @@ function buildArmourMatchups(): ArmourMatchup[] {
 				trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 				reductionCurve,
 				damageAfterArmour: simulatePeerDamage({
-					matchupId,
+					randomCoordinate: {
+						streamKind: 'armour',
+						values: { level, attributeSpread }
+					},
 					attributes: peerAttributes(level, attributeSpread),
 					level,
 					armourPoints: BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.damageFixturePoints,

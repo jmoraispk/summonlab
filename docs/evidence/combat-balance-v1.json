@@ -32,7 +32,48 @@
 			},
 			"randomness": {
 				"version": "sha256-seeded-xorshift32-v1",
-				"seedMaterial": "canonical-object-of-randomness-version-matchup-id-and-seed",
+				"streamNamespace": "combat-balance-candidate-v1",
+				"seedMaterial": "canonical-object-of-namespace-randomness-version-stream-kind-coordinate-and-seed",
+				"coordinateDerivation": {
+					"encoding": "declared-ordered-field-tuples",
+					"fieldsByStreamKind": {
+						"accuracy": [
+							"level",
+							"attributeSpread",
+							"masteryBand"
+						],
+						"relativeAgility": [
+							"level",
+							"attributeSpread",
+							"direction"
+						],
+						"regeneration": [
+							"level",
+							"attributeSpread",
+							"armourState"
+						],
+						"affinity": [
+							"level",
+							"attributeSpread",
+							"archetype",
+							"variant"
+						],
+						"armour": [
+							"level",
+							"attributeSpread"
+						]
+					}
+				},
+				"pairedStreamDerivation": {
+					"relativeAgility": {
+						"pairedComparisons": [
+							"baseline",
+							"adjusted"
+						],
+						"coordinatePolicy": "omit-comparison-role",
+						"replayPolicy": "restart-identical-stream"
+					}
+				},
 				"seedDigestHexStart": 0,
 				"seedDigestHexLength": 8,
 				"seedDigestRadix": 16,
@@ -172,9 +213,9 @@
 				"missConsumesAction": true,
 				"defencePolicy": "no-armour-or-named-resistance",
 				"affinityVariantRandomStreamCoupling": "independent",
-				"affinityVariantRandomStreamSuffixes": {
+				"affinityVariantCoordinates": {
 					"matched": "matched",
-					"offAffinity": "off"
+					"offAffinity": "off-affinity"
 				}
 			},
 			"promotionGates": {
@@ -326,7 +367,7 @@
 				"armouredEquipmentDefinitionId": "equipment-iron-heavy-armour-torso"
 			}
 		},
-		"profileHash": "b925b579f583cb009f8e571dd957dcce7c86fcdc7ca6804966f9c90f9923847b",
+		"profileHash": "cd622e9d65ab831dc6b6c32e3361d521b70f7e707fcd0cc3ae28564dd71ec65b",
 		"trialsPerMatchup": 10000,
 		"percentileMethod": "nearest-rank",
 		"seedSet": [
@@ -389,11 +430,11 @@
 		"relativeAgility": {
 			"status": "passed",
 			"maximumAllowedChanceShiftBasisPoints": 1000,
-			"maximumAbsoluteChanceShiftBasisPoints": 904
+			"maximumAbsoluteChanceShiftBasisPoints": 900
 		},
 		"passiveCombatRegeneration": {
 			"status": "passed",
-			"maximumRegenerationToDamageRatioBasisPoints": 3
+			"maximumRegenerationToDamageRatioBasisPoints": 5
 		},
 		"offAffinityCompletion": {
 			"status": "passed",
@@ -428,11 +469,11 @@
 				"defenderEvasionBasisPoints": 20,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6685,
+				"observedHitRateBasisPoints": 6736,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6490,
-					"p50": 6660,
-					"p90": 6840
+					"p10": 6560,
+					"p50": 6720,
+					"p90": 6890
 				}
 			},
 			{
@@ -446,11 +487,11 @@
 				"defenderEvasionBasisPoints": 20,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8000,
-				"observedHitRateBasisPoints": 7921,
+				"observedHitRateBasisPoints": 8030,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7720,
-					"p50": 7920,
-					"p90": 8030
+					"p10": 7880,
+					"p50": 8000,
+					"p90": 8150
 				}
 			},
 			{
@@ -464,11 +505,11 @@
 				"defenderEvasionBasisPoints": 20,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9272,
+				"observedHitRateBasisPoints": 9317,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9130,
-					"p50": 9260,
-					"p90": 9370
+					"p10": 9200,
+					"p50": 9320,
+					"p90": 9400
 				}
 			},
 			{
@@ -482,10 +523,10 @@
 				"defenderEvasionBasisPoints": 30,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6740,
-				"observedHitRateBasisPoints": 6731,
+				"observedHitRateBasisPoints": 6715,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6540,
-					"p50": 6770,
+					"p10": 6490,
+					"p50": 6720,
 					"p90": 6820
 				}
 			},
@@ -500,11 +541,11 @@
 				"defenderEvasionBasisPoints": 30,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 7990,
-				"observedHitRateBasisPoints": 7980,
+				"observedHitRateBasisPoints": 8045,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7860,
-					"p50": 7960,
-					"p90": 8110
+					"p10": 7830,
+					"p50": 8070,
+					"p90": 8130
 				}
 			},
 			{
@@ -518,11 +559,11 @@
 				"defenderEvasionBasisPoints": 30,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9240,
-				"observedHitRateBasisPoints": 9240,
+				"observedHitRateBasisPoints": 9276,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9030,
-					"p50": 9240,
-					"p90": 9330
+					"p10": 9110,
+					"p50": 9230,
+					"p90": 9430
 				}
 			},
 			{
@@ -536,11 +577,11 @@
 				"defenderEvasionBasisPoints": 40,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6730,
-				"observedHitRateBasisPoints": 6714,
+				"observedHitRateBasisPoints": 6605,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6390,
-					"p50": 6710,
-					"p90": 6940
+					"p10": 6410,
+					"p50": 6580,
+					"p90": 6790
 				}
 			},
 			{
@@ -554,11 +595,11 @@
 				"defenderEvasionBasisPoints": 40,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 7980,
-				"observedHitRateBasisPoints": 8088,
+				"observedHitRateBasisPoints": 7957,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7880,
-					"p50": 8070,
-					"p90": 8260
+					"p10": 7770,
+					"p50": 7910,
+					"p90": 8030
 				}
 			},
 			{
@@ -572,11 +613,11 @@
 				"defenderEvasionBasisPoints": 40,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9230,
-				"observedHitRateBasisPoints": 9264,
+				"observedHitRateBasisPoints": 9244,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9160,
-					"p50": 9210,
-					"p90": 9360
+					"p10": 9090,
+					"p50": 9250,
+					"p90": 9280
 				}
 			},
 			{
@@ -590,11 +631,11 @@
 				"defenderEvasionBasisPoints": 55,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6775,
-				"observedHitRateBasisPoints": 6793,
+				"observedHitRateBasisPoints": 6771,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6570,
+					"p10": 6620,
 					"p50": 6750,
-					"p90": 6980
+					"p90": 6840
 				}
 			},
 			{
@@ -610,9 +651,9 @@
 				"contestChanceBasisPoints": 8025,
 				"observedHitRateBasisPoints": 8065,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7860,
-					"p50": 8070,
-					"p90": 8120
+					"p10": 7780,
+					"p50": 8040,
+					"p90": 8240
 				}
 			},
 			{
@@ -626,11 +667,11 @@
 				"defenderEvasionBasisPoints": 55,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9275,
-				"observedHitRateBasisPoints": 9266,
+				"observedHitRateBasisPoints": 9260,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9090,
-					"p50": 9280,
-					"p90": 9350
+					"p10": 9170,
+					"p50": 9250,
+					"p90": 9300
 				}
 			},
 			{
@@ -644,11 +685,11 @@
 				"defenderEvasionBasisPoints": 75,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6755,
-				"observedHitRateBasisPoints": 6678,
+				"observedHitRateBasisPoints": 6736,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6350,
-					"p50": 6650,
-					"p90": 6930
+					"p10": 6470,
+					"p50": 6720,
+					"p90": 6920
 				}
 			},
 			{
@@ -662,11 +703,11 @@
 				"defenderEvasionBasisPoints": 75,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8005,
-				"observedHitRateBasisPoints": 8064,
+				"observedHitRateBasisPoints": 8056,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7940,
-					"p50": 8030,
-					"p90": 8210
+					"p10": 7770,
+					"p50": 8020,
+					"p90": 8170
 				}
 			},
 			{
@@ -680,11 +721,11 @@
 				"defenderEvasionBasisPoints": 75,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9255,
-				"observedHitRateBasisPoints": 9273,
+				"observedHitRateBasisPoints": 9256,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9190,
-					"p50": 9230,
-					"p90": 9370
+					"p10": 9060,
+					"p50": 9270,
+					"p90": 9330
 				}
 			},
 			{
@@ -698,11 +739,11 @@
 				"defenderEvasionBasisPoints": 95,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6735,
-				"observedHitRateBasisPoints": 6813,
+				"observedHitRateBasisPoints": 6701,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6590,
-					"p50": 6810,
-					"p90": 6880
+					"p10": 6540,
+					"p50": 6680,
+					"p90": 6800
 				}
 			},
 			{
@@ -716,11 +757,11 @@
 				"defenderEvasionBasisPoints": 95,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 7985,
-				"observedHitRateBasisPoints": 7986,
+				"observedHitRateBasisPoints": 8020,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7810,
-					"p50": 7990,
-					"p90": 8100
+					"p10": 7930,
+					"p50": 7980,
+					"p90": 8060
 				}
 			},
 			{
@@ -734,11 +775,11 @@
 				"defenderEvasionBasisPoints": 95,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9235,
-				"observedHitRateBasisPoints": 9200,
+				"observedHitRateBasisPoints": 9226,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9120,
-					"p50": 9190,
-					"p90": 9270
+					"p10": 9070,
+					"p50": 9230,
+					"p90": 9290
 				}
 			},
 			{
@@ -752,11 +793,11 @@
 				"defenderEvasionBasisPoints": 90,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6800,
-				"observedHitRateBasisPoints": 6680,
+				"observedHitRateBasisPoints": 6709,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6380,
-					"p50": 6680,
-					"p90": 6800
+					"p10": 6440,
+					"p50": 6730,
+					"p90": 6830
 				}
 			},
 			{
@@ -770,11 +811,11 @@
 				"defenderEvasionBasisPoints": 90,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8050,
-				"observedHitRateBasisPoints": 8058,
+				"observedHitRateBasisPoints": 8029,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7940,
-					"p50": 8050,
-					"p90": 8110
+					"p10": 7880,
+					"p50": 7960,
+					"p90": 8190
 				}
 			},
 			{
@@ -788,11 +829,11 @@
 				"defenderEvasionBasisPoints": 90,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9300,
-				"observedHitRateBasisPoints": 9337,
+				"observedHitRateBasisPoints": 9265,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9170,
-					"p50": 9350,
-					"p90": 9420
+					"p10": 9150,
+					"p50": 9240,
+					"p90": 9330
 				}
 			},
 			{
@@ -806,11 +847,11 @@
 				"defenderEvasionBasisPoints": 120,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6770,
-				"observedHitRateBasisPoints": 6817,
+				"observedHitRateBasisPoints": 6771,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6600,
-					"p50": 6800,
-					"p90": 6870
+					"p10": 6460,
+					"p50": 6730,
+					"p90": 6950
 				}
 			},
 			{
@@ -824,11 +865,11 @@
 				"defenderEvasionBasisPoints": 120,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8020,
-				"observedHitRateBasisPoints": 8013,
+				"observedHitRateBasisPoints": 8007,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7760,
-					"p50": 8010,
-					"p90": 8260
+					"p10": 7930,
+					"p50": 7970,
+					"p90": 8110
 				}
 			},
 			{
@@ -842,11 +883,11 @@
 				"defenderEvasionBasisPoints": 120,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9270,
-				"observedHitRateBasisPoints": 9240,
+				"observedHitRateBasisPoints": 9308,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9060,
-					"p50": 9210,
-					"p90": 9320
+					"p10": 9210,
+					"p50": 9290,
+					"p90": 9410
 				}
 			},
 			{
@@ -860,11 +901,11 @@
 				"defenderEvasionBasisPoints": 150,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6740,
-				"observedHitRateBasisPoints": 6760,
+				"observedHitRateBasisPoints": 6777,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6540,
+					"p10": 6580,
 					"p50": 6790,
-					"p90": 6870
+					"p90": 6930
 				}
 			},
 			{
@@ -878,11 +919,11 @@
 				"defenderEvasionBasisPoints": 150,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 7990,
-				"observedHitRateBasisPoints": 8013,
+				"observedHitRateBasisPoints": 7915,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7790,
+					"p10": 7640,
 					"p50": 7940,
-					"p90": 8210
+					"p90": 8090
 				}
 			},
 			{
@@ -896,10 +937,10 @@
 				"defenderEvasionBasisPoints": 150,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9240,
-				"observedHitRateBasisPoints": 9249,
+				"observedHitRateBasisPoints": 9266,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9160,
-					"p50": 9220,
+					"p10": 9090,
+					"p50": 9260,
 					"p90": 9350
 				}
 			},
@@ -914,11 +955,11 @@
 				"defenderEvasionBasisPoints": 124,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6824,
-				"observedHitRateBasisPoints": 6815,
+				"observedHitRateBasisPoints": 6844,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6610,
-					"p50": 6820,
-					"p90": 6970
+					"p10": 6630,
+					"p50": 6770,
+					"p90": 7020
 				}
 			},
 			{
@@ -932,11 +973,11 @@
 				"defenderEvasionBasisPoints": 124,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8074,
-				"observedHitRateBasisPoints": 8092,
+				"observedHitRateBasisPoints": 8006,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7890,
-					"p50": 8120,
-					"p90": 8220
+					"p10": 7790,
+					"p50": 7980,
+					"p90": 8130
 				}
 			},
 			{
@@ -950,11 +991,11 @@
 				"defenderEvasionBasisPoints": 124,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9324,
-				"observedHitRateBasisPoints": 9336,
+				"observedHitRateBasisPoints": 9297,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9210,
+					"p10": 9100,
 					"p50": 9320,
-					"p90": 9440
+					"p90": 9390
 				}
 			},
 			{
@@ -968,11 +1009,11 @@
 				"defenderEvasionBasisPoints": 164,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6784,
-				"observedHitRateBasisPoints": 6798,
+				"observedHitRateBasisPoints": 6785,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6470,
-					"p50": 6780,
-					"p90": 6990
+					"p10": 6460,
+					"p50": 6800,
+					"p90": 7040
 				}
 			},
 			{
@@ -986,11 +1027,11 @@
 				"defenderEvasionBasisPoints": 164,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8034,
-				"observedHitRateBasisPoints": 8050,
+				"observedHitRateBasisPoints": 7978,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7850,
-					"p50": 8000,
-					"p90": 8210
+					"p10": 7840,
+					"p50": 7940,
+					"p90": 8100
 				}
 			},
 			{
@@ -1004,11 +1045,11 @@
 				"defenderEvasionBasisPoints": 164,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9284,
-				"observedHitRateBasisPoints": 9283,
+				"observedHitRateBasisPoints": 9281,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9080,
-					"p50": 9270,
-					"p90": 9360
+					"p10": 9120,
+					"p50": 9250,
+					"p90": 9390
 				}
 			},
 			{
@@ -1022,11 +1063,11 @@
 				"defenderEvasionBasisPoints": 194,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 6754,
-				"observedHitRateBasisPoints": 6776,
+				"observedHitRateBasisPoints": 6742,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6530,
-					"p50": 6790,
-					"p90": 6870
+					"p10": 6380,
+					"p50": 6750,
+					"p90": 6880
 				}
 			},
 			{
@@ -1040,11 +1081,11 @@
 				"defenderEvasionBasisPoints": 194,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 8004,
-				"observedHitRateBasisPoints": 8002,
+				"observedHitRateBasisPoints": 7973,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7860,
-					"p50": 7970,
-					"p90": 8140
+					"p10": 7820,
+					"p50": 7950,
+					"p90": 8080
 				}
 			},
 			{
@@ -1058,11 +1099,11 @@
 				"defenderEvasionBasisPoints": 194,
 				"relativeAgilityBasisPoints": 0,
 				"contestChanceBasisPoints": 9254,
-				"observedHitRateBasisPoints": 9236,
+				"observedHitRateBasisPoints": 9261,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9080,
-					"p50": 9230,
-					"p90": 9290
+					"p10": 9130,
+					"p50": 9280,
+					"p90": 9330
 				}
 			}
 		],
@@ -1076,12 +1117,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 900,
-				"observedChanceShiftBasisPoints": 904,
-				"adjustedHitRateBasisPoints": 8871,
+				"observedChanceShiftBasisPoints": 875,
+				"adjustedHitRateBasisPoints": 8930,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8720,
-					"p50": 8870,
-					"p90": 8940
+					"p10": 8830,
+					"p50": 8910,
+					"p90": 9030
 				}
 			},
 			{
@@ -1093,12 +1134,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -90,
-				"observedChanceShiftBasisPoints": -93,
-				"adjustedHitRateBasisPoints": 7940,
+				"observedChanceShiftBasisPoints": -97,
+				"adjustedHitRateBasisPoints": 8025,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7760,
-					"p50": 7950,
-					"p90": 8010
+					"p10": 7740,
+					"p50": 8020,
+					"p90": 8240
 				}
 			},
 			{
@@ -1110,12 +1151,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 800,
-				"observedChanceShiftBasisPoints": 861,
-				"adjustedHitRateBasisPoints": 8750,
+				"observedChanceShiftBasisPoints": 819,
+				"adjustedHitRateBasisPoints": 8799,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8570,
-					"p50": 8730,
-					"p90": 8850
+					"p10": 8660,
+					"p50": 8800,
+					"p90": 8940
 				}
 			},
 			{
@@ -1127,12 +1168,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -190,
-				"observedChanceShiftBasisPoints": -196,
-				"adjustedHitRateBasisPoints": 7745,
+				"observedChanceShiftBasisPoints": -202,
+				"adjustedHitRateBasisPoints": 7769,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7600,
-					"p50": 7730,
-					"p90": 7820
+					"p10": 7530,
+					"p50": 7810,
+					"p90": 7920
 				}
 			},
 			{
@@ -1144,12 +1185,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 700,
-				"observedChanceShiftBasisPoints": 718,
-				"adjustedHitRateBasisPoints": 8648,
+				"observedChanceShiftBasisPoints": 665,
+				"adjustedHitRateBasisPoints": 8683,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8400,
-					"p50": 8660,
-					"p90": 8730
+					"p10": 8430,
+					"p50": 8680,
+					"p90": 8860
 				}
 			},
 			{
@@ -1161,12 +1202,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -290,
-				"observedChanceShiftBasisPoints": -299,
-				"adjustedHitRateBasisPoints": 7661,
+				"observedChanceShiftBasisPoints": -255,
+				"adjustedHitRateBasisPoints": 7762,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7500,
-					"p50": 7650,
-					"p90": 7810
+					"p10": 7560,
+					"p50": 7750,
+					"p90": 7910
 				}
 			},
 			{
@@ -1178,12 +1219,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 850,
-				"observedChanceShiftBasisPoints": 874,
-				"adjustedHitRateBasisPoints": 8910,
+				"observedChanceShiftBasisPoints": 830,
+				"adjustedHitRateBasisPoints": 8887,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8820,
-					"p50": 8880,
-					"p90": 9000
+					"p10": 8770,
+					"p50": 8870,
+					"p90": 8990
 				}
 			},
 			{
@@ -1195,12 +1236,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -140,
-				"observedChanceShiftBasisPoints": -149,
-				"adjustedHitRateBasisPoints": 7884,
+				"observedChanceShiftBasisPoints": -137,
+				"adjustedHitRateBasisPoints": 7947,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7700,
-					"p50": 7880,
-					"p90": 8020
+					"p10": 7670,
+					"p50": 7930,
+					"p90": 8060
 				}
 			},
 			{
@@ -1212,12 +1253,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 650,
-				"observedChanceShiftBasisPoints": 634,
-				"adjustedHitRateBasisPoints": 8600,
+				"observedChanceShiftBasisPoints": 664,
+				"adjustedHitRateBasisPoints": 8706,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8410,
-					"p50": 8540,
-					"p90": 8800
+					"p10": 8560,
+					"p50": 8640,
+					"p90": 8880
 				}
 			},
 			{
@@ -1229,12 +1270,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -340,
-				"observedChanceShiftBasisPoints": -326,
-				"adjustedHitRateBasisPoints": 7722,
+				"observedChanceShiftBasisPoints": -331,
+				"adjustedHitRateBasisPoints": 7627,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7630,
-					"p50": 7700,
-					"p90": 7800
+					"p10": 7440,
+					"p50": 7660,
+					"p90": 7730
 				}
 			},
 			{
@@ -1246,12 +1287,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 450,
-				"observedChanceShiftBasisPoints": 489,
-				"adjustedHitRateBasisPoints": 8456,
+				"observedChanceShiftBasisPoints": 427,
+				"adjustedHitRateBasisPoints": 8392,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8320,
-					"p50": 8460,
-					"p90": 8550
+					"p10": 8180,
+					"p50": 8400,
+					"p90": 8520
 				}
 			},
 			{
@@ -1263,12 +1304,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -540,
-				"observedChanceShiftBasisPoints": -531,
-				"adjustedHitRateBasisPoints": 7471,
+				"observedChanceShiftBasisPoints": -513,
+				"adjustedHitRateBasisPoints": 7443,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7300,
-					"p50": 7470,
-					"p90": 7580
+					"p10": 7320,
+					"p50": 7380,
+					"p90": 7540
 				}
 			},
 			{
@@ -1280,12 +1321,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 800,
-				"observedChanceShiftBasisPoints": 824,
-				"adjustedHitRateBasisPoints": 8893,
+				"observedChanceShiftBasisPoints": 794,
+				"adjustedHitRateBasisPoints": 8862,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8690,
-					"p50": 8890,
-					"p90": 8980
+					"p10": 8660,
+					"p50": 8870,
+					"p90": 8940
 				}
 			},
 			{
@@ -1297,12 +1338,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -190,
-				"observedChanceShiftBasisPoints": -160,
-				"adjustedHitRateBasisPoints": 7919,
+				"observedChanceShiftBasisPoints": -175,
+				"adjustedHitRateBasisPoints": 7936,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7830,
-					"p50": 7920,
-					"p90": 7980
+					"p10": 7800,
+					"p50": 7890,
+					"p90": 8100
 				}
 			},
 			{
@@ -1314,12 +1355,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 500,
-				"observedChanceShiftBasisPoints": 483,
-				"adjustedHitRateBasisPoints": 8493,
+				"observedChanceShiftBasisPoints": 477,
+				"adjustedHitRateBasisPoints": 8477,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8300,
-					"p50": 8470,
-					"p90": 8640
+					"p10": 8310,
+					"p50": 8450,
+					"p90": 8610
 				}
 			},
 			{
@@ -1331,12 +1372,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -490,
-				"observedChanceShiftBasisPoints": -495,
-				"adjustedHitRateBasisPoints": 7523,
+				"observedChanceShiftBasisPoints": -503,
+				"adjustedHitRateBasisPoints": 7474,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7260,
-					"p50": 7510,
-					"p90": 7640
+					"p10": 7340,
+					"p50": 7420,
+					"p90": 7650
 				}
 			},
 			{
@@ -1348,12 +1389,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 200,
-				"observedChanceShiftBasisPoints": 197,
-				"adjustedHitRateBasisPoints": 8221,
+				"observedChanceShiftBasisPoints": 201,
+				"adjustedHitRateBasisPoints": 8182,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8090,
-					"p50": 8230,
-					"p90": 8310
+					"p10": 8030,
+					"p50": 8090,
+					"p90": 8340
 				}
 			},
 			{
@@ -1365,12 +1406,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -790,
-				"observedChanceShiftBasisPoints": -799,
-				"adjustedHitRateBasisPoints": 7204,
+				"observedChanceShiftBasisPoints": -791,
+				"adjustedHitRateBasisPoints": 7200,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6950,
-					"p50": 7180,
-					"p90": 7340
+					"p10": 6990,
+					"p50": 7140,
+					"p90": 7330
 				}
 			},
 			{
@@ -1382,12 +1423,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 750,
-				"observedChanceShiftBasisPoints": 731,
-				"adjustedHitRateBasisPoints": 8784,
+				"observedChanceShiftBasisPoints": 763,
+				"adjustedHitRateBasisPoints": 8826,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8690,
-					"p50": 8770,
-					"p90": 8870
+					"p10": 8700,
+					"p50": 8820,
+					"p90": 8910
 				}
 			},
 			{
@@ -1399,12 +1440,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -240,
-				"observedChanceShiftBasisPoints": -256,
-				"adjustedHitRateBasisPoints": 7840,
+				"observedChanceShiftBasisPoints": -247,
+				"adjustedHitRateBasisPoints": 7805,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7510,
-					"p50": 7830,
-					"p90": 8000
+					"p10": 7660,
+					"p50": 7800,
+					"p90": 7920
 				}
 			},
 			{
@@ -1416,12 +1457,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 350,
-				"observedChanceShiftBasisPoints": 352,
-				"adjustedHitRateBasisPoints": 8387,
+				"observedChanceShiftBasisPoints": 353,
+				"adjustedHitRateBasisPoints": 8361,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8280,
-					"p50": 8410,
-					"p90": 8430
+					"p10": 8170,
+					"p50": 8360,
+					"p90": 8490
 				}
 			},
 			{
@@ -1433,12 +1474,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -640,
-				"observedChanceShiftBasisPoints": -636,
-				"adjustedHitRateBasisPoints": 7306,
+				"observedChanceShiftBasisPoints": -671,
+				"adjustedHitRateBasisPoints": 7418,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6950,
-					"p50": 7290,
-					"p90": 7460
+					"p10": 7240,
+					"p50": 7450,
+					"p90": 7490
 				}
 			},
 			{
@@ -1450,12 +1491,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 50,
-				"observedChanceShiftBasisPoints": 60,
-				"adjustedHitRateBasisPoints": 7983,
+				"observedChanceShiftBasisPoints": 47,
+				"adjustedHitRateBasisPoints": 8110,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7850,
-					"p50": 7990,
-					"p90": 8080
+					"p10": 7930,
+					"p50": 8100,
+					"p90": 8200
 				}
 			},
 			{
@@ -1467,12 +1508,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -900,
-				"observedChanceShiftBasisPoints": -891,
-				"adjustedHitRateBasisPoints": 7155,
+				"observedChanceShiftBasisPoints": -893,
+				"adjustedHitRateBasisPoints": 7121,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6930,
-					"p50": 7100,
-					"p90": 7310
+					"p10": 6980,
+					"p50": 7080,
+					"p90": 7230
 				}
 			}
 		],
@@ -1486,25 +1527,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 124.494,
+					"mean": 124.808,
 					"p10": 102,
 					"p50": 128,
 					"p90": 146
 				},
 				"regenerationTotal": {
-					"mean": 0.03,
+					"mean": 0.028,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1037.453,
+					"mean": 1040.071,
 					"p10": 850,
 					"p50": 1067,
 					"p90": 1217
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.25,
+					"mean": 0.233,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1519,25 +1560,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 57.684,
+					"mean": 57.688,
 					"p10": 48,
 					"p50": 60,
 					"p90": 66
 				},
 				"regenerationTotal": {
-					"mean": 0.016,
+					"mean": 0.024,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 480.7,
+					"mean": 480.73,
 					"p10": 400,
 					"p50": 500,
 					"p90": 550
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.133,
+					"mean": 0.2,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1552,25 +1593,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 134.216,
+					"mean": 134.06,
 					"p10": 110,
 					"p50": 138,
-					"p90": 157
+					"p90": 156
 				},
 				"regenerationTotal": {
-					"mean": 0.015,
+					"mean": 0.022,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1118.464,
+					"mean": 1117.171,
 					"p10": 917,
 					"p50": 1150,
-					"p90": 1308
+					"p90": 1300
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.125,
+					"mean": 0.183,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1585,25 +1626,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 60.635,
+					"mean": 60.531,
 					"p10": 49,
 					"p50": 62,
 					"p90": 71
 				},
 				"regenerationTotal": {
-					"mean": 0.021,
+					"mean": 0.031,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 505.294,
+					"mean": 504.422,
 					"p10": 408,
 					"p50": 517,
 					"p90": 592
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.175,
+					"mean": 0.258,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1618,25 +1659,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 153.118,
+					"mean": 153.336,
 					"p10": 126,
 					"p50": 157,
 					"p90": 179
 				},
 				"regenerationTotal": {
-					"mean": 0.014,
+					"mean": 0.02,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1275.982,
+					"mean": 1277.799,
 					"p10": 1050,
 					"p50": 1308,
 					"p90": 1492
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.116,
+					"mean": 0.166,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1651,25 +1692,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 69.978,
+					"mean": 70.037,
 					"p10": 57,
 					"p50": 72,
 					"p90": 82
 				},
 				"regenerationTotal": {
-					"mean": 0.024,
+					"mean": 0.025,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 583.152,
+					"mean": 583.643,
 					"p10": 475,
 					"p50": 600,
 					"p90": 683
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.199,
+					"mean": 0.208,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1684,25 +1725,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 202.724,
+					"mean": 202.072,
 					"p10": 165,
 					"p50": 207,
-					"p90": 237
+					"p90": 236
 				},
 				"regenerationTotal": {
-					"mean": 0.024,
+					"mean": 0.023,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1689.363,
+					"mean": 1683.933,
 					"p10": 1375,
 					"p50": 1725,
-					"p90": 1975
+					"p90": 1967
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.2,
+					"mean": 0.191,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1717,25 +1758,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 94.064,
+					"mean": 94.13,
 					"p10": 77,
 					"p50": 96,
 					"p90": 110
 				},
 				"regenerationTotal": {
-					"mean": 0.013,
+					"mean": 0.022,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 783.862,
+					"mean": 784.418,
 					"p10": 642,
 					"p50": 800,
 					"p90": 917
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.108,
+					"mean": 0.183,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1750,25 +1791,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 230.77,
+					"mean": 230.152,
 					"p10": 189,
-					"p50": 237,
+					"p50": 236,
 					"p90": 269
 				},
 				"regenerationTotal": {
-					"mean": 0.026,
+					"mean": 0.019,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1923.085,
+					"mean": 1917.934,
 					"p10": 1575,
-					"p50": 1975,
+					"p50": 1967,
 					"p90": 2242
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.216,
+					"mean": 0.158,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1783,25 +1824,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 107.813,
+					"mean": 107.794,
 					"p10": 88,
 					"p50": 110,
 					"p90": 126
 				},
 				"regenerationTotal": {
-					"mean": 0.018,
+					"mean": 0.015,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 898.441,
+					"mean": 898.28,
 					"p10": 733,
 					"p50": 917,
 					"p90": 1050
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.15,
+					"mean": 0.125,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1816,25 +1857,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 268.265,
+					"mean": 268.123,
 					"p10": 220,
 					"p50": 275,
-					"p90": 314
+					"p90": 313
 				},
 				"regenerationTotal": {
-					"mean": 0.015,
+					"mean": 0.029,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2235.542,
+					"mean": 2234.357,
 					"p10": 1833,
 					"p50": 2292,
-					"p90": 2617
+					"p90": 2608
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.125,
+					"mean": 0.241,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1849,25 +1890,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 126.691,
+					"mean": 126.841,
 					"p10": 104,
 					"p50": 130,
 					"p90": 148
 				},
 				"regenerationTotal": {
-					"mean": 0.024,
+					"mean": 0.022,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1055.762,
+					"mean": 1057.005,
 					"p10": 867,
 					"p50": 1083,
 					"p90": 1233
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.2,
+					"mean": 0.183,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1882,25 +1923,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 280.207,
-					"p10": 230,
+					"mean": 279.428,
+					"p10": 229,
 					"p50": 286,
-					"p90": 326
+					"p90": 325
 				},
 				"regenerationTotal": {
-					"mean": 0.017,
+					"mean": 0.021,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2335.054,
-					"p10": 1917,
+					"mean": 2328.562,
+					"p10": 1908,
 					"p50": 2383,
-					"p90": 2717
+					"p90": 2708
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.141,
+					"mean": 0.175,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1915,25 +1956,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 132.715,
-					"p10": 108,
+					"mean": 133.202,
+					"p10": 109,
 					"p50": 136,
 					"p90": 155
 				},
 				"regenerationTotal": {
-					"mean": 0.026,
+					"mean": 0.015,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1105.954,
-					"p10": 900,
+					"mean": 1110.017,
+					"p10": 908,
 					"p50": 1133,
 					"p90": 1292
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.216,
+					"mean": 0.125,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1948,25 +1989,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 347.78,
+					"mean": 346.809,
 					"p10": 284,
-					"p50": 356,
+					"p50": 355,
 					"p90": 404
 				},
 				"regenerationTotal": {
-					"mean": 0.013,
+					"mean": 0.01,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2898.163,
+					"mean": 2890.072,
 					"p10": 2367,
-					"p50": 2967,
+					"p50": 2958,
 					"p90": 3367
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.108,
+					"mean": 0.083,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -1981,7 +2022,7 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 162.112,
+					"mean": 162.594,
 					"p10": 133,
 					"p50": 167,
 					"p90": 188
@@ -1993,7 +2034,7 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1350.935,
+					"mean": 1354.948,
 					"p10": 1108,
 					"p50": 1392,
 					"p90": 1567
@@ -2014,25 +2055,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 412.246,
-					"p10": 338,
+					"mean": 412.407,
+					"p10": 337,
 					"p50": 423,
 					"p90": 482
 				},
 				"regenerationTotal": {
-					"mean": 0.042,
+					"mean": 0.046,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 3435.389,
-					"p10": 2817,
+					"mean": 3436.725,
+					"p10": 2808,
 					"p50": 3525,
 					"p90": 4017
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.35,
+					"mean": 0.384,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2047,25 +2088,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 189.496,
+					"mean": 189.45,
 					"p10": 155,
 					"p50": 194,
 					"p90": 221
 				},
 				"regenerationTotal": {
-					"mean": 0.044,
+					"mean": 0.028,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1579.126,
+					"mean": 1578.747,
 					"p10": 1292,
 					"p50": 1617,
 					"p90": 1842
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.367,
+					"mean": 0.234,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2080,25 +2121,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 368.27,
+					"mean": 368.536,
 					"p10": 301,
 					"p50": 376,
-					"p90": 427
+					"p90": 426
 				},
 				"regenerationTotal": {
-					"mean": 0.011,
+					"mean": 0.019,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 3068.913,
+					"mean": 3071.133,
 					"p10": 2508,
 					"p50": 3133,
-					"p90": 3558
+					"p90": 3550
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.091,
+					"mean": 0.158,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2113,25 +2154,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 170.243,
+					"mean": 169.799,
 					"p10": 139,
 					"p50": 174,
 					"p90": 197
 				},
 				"regenerationTotal": {
-					"mean": 0.023,
+					"mean": 0.022,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1418.689,
+					"mean": 1414.996,
 					"p10": 1158,
 					"p50": 1450,
 					"p90": 1642
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.192,
+					"mean": 0.183,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2146,25 +2187,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 481.586,
-					"p10": 394,
-					"p50": 494,
-					"p90": 560
+					"mean": 483.278,
+					"p10": 395,
+					"p50": 495,
+					"p90": 561
 				},
 				"regenerationTotal": {
-					"mean": 0.05,
+					"mean": 0.044,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 4013.221,
-					"p10": 3283,
-					"p50": 4117,
-					"p90": 4667
+					"mean": 4027.314,
+					"p10": 3292,
+					"p50": 4125,
+					"p90": 4675
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.417,
+					"mean": 0.367,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2179,25 +2220,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 224.414,
+					"mean": 224.46,
 					"p10": 183,
 					"p50": 230,
-					"p90": 262
+					"p90": 261
 				},
 				"regenerationTotal": {
-					"mean": 0.032,
+					"mean": 0.036,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1870.123,
+					"mean": 1870.498,
 					"p10": 1525,
 					"p50": 1917,
-					"p90": 2183
+					"p90": 2175
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.267,
+					"mean": 0.3,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2212,25 +2253,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 567.396,
-					"p10": 466,
+					"mean": 566.321,
+					"p10": 464,
 					"p50": 581,
-					"p90": 660
+					"p90": 661
 				},
 				"regenerationTotal": {
-					"mean": 0.062,
+					"mean": 0.026,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 4728.307,
-					"p10": 3883,
+					"mean": 4719.343,
+					"p10": 3867,
 					"p50": 4842,
-					"p90": 5500
+					"p90": 5508
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.517,
+					"mean": 0.217,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2245,25 +2286,25 @@
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 264.66,
-					"p10": 217,
-					"p50": 271,
+					"mean": 265.242,
+					"p10": 218,
+					"p50": 272,
 					"p90": 308
 				},
 				"regenerationTotal": {
-					"mean": 0.054,
+					"mean": 0.036,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2205.501,
-					"p10": 1808,
-					"p50": 2258,
+					"mean": 2210.348,
+					"p10": 1817,
+					"p50": 2267,
 					"p90": 2567
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.451,
+					"mean": 0.3,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
@@ -2429,7 +2470,7 @@
 					"completionActions": {
 						"p10": 15,
 						"p50": 17,
-						"p90": 20
+						"p90": 21
 					}
 				},
 				"offAffinity": {
@@ -2643,7 +2684,7 @@
 					"completionActions": {
 						"p10": 7,
 						"p50": 8,
-						"p90": 10
+						"p90": 11
 					}
 				},
 				"medianCompletionTimeRatioBasisPoints": 10000
@@ -2786,7 +2827,7 @@
 					"completedTrials": 10000,
 					"timedOutTrials": 0,
 					"completionActions": {
-						"p10": 11,
+						"p10": 10,
 						"p50": 12,
 						"p90": 15
 					}
@@ -3001,7 +3042,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 2.939,
+					"mean": 2.955,
 					"p10": 0,
 					"p50": 4,
 					"p90": 4
@@ -3039,7 +3080,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 3.195,
+					"mean": 3.196,
 					"p10": 0,
 					"p50": 4,
 					"p90": 4
@@ -3077,7 +3118,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 3.699,
+					"mean": 3.689,
 					"p10": 0,
 					"p50": 5,
 					"p90": 5
@@ -3115,7 +3156,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 4.798,
+					"mean": 4.837,
 					"p10": 0,
 					"p50": 6,
 					"p90": 7
@@ -3153,7 +3194,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 5.473,
+					"mean": 5.45,
 					"p10": 0,
 					"p50": 7,
 					"p90": 7
@@ -3191,7 +3232,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 6.383,
+					"mean": 6.378,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
@@ -3229,7 +3270,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 6.645,
+					"mean": 6.677,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
@@ -3267,7 +3308,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 8.264,
+					"mean": 8.22,
 					"p10": 0,
 					"p50": 10,
 					"p90": 11
@@ -3305,7 +3346,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 9.923,
+					"mean": 9.722,
 					"p10": 0,
 					"p50": 12,
 					"p90": 13
@@ -3343,7 +3384,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 8.741,
+					"mean": 8.793,
 					"p10": 0,
 					"p50": 11,
 					"p90": 12
@@ -3381,7 +3422,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 11.448,
+					"mean": 11.477,
 					"p10": 0,
 					"p50": 14,
 					"p90": 15
@@ -3419,9 +3460,9 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 13.379,
+					"mean": 13.392,
 					"p10": 0,
-					"p50": 16,
+					"p50": 17,
 					"p90": 18
 				}
 			}

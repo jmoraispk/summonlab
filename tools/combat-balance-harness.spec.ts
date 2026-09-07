@@ -254,7 +254,26 @@ describe('four-attribute combat balance evidence', () => {
 		});
 		expect(first.simulation.profile.randomness).toStrictEqual({
 			version: 'sha256-seeded-xorshift32-v1',
-			seedMaterial: 'canonical-object-of-randomness-version-matchup-id-and-seed',
+			streamNamespace: 'combat-balance-candidate-v1',
+			seedMaterial:
+				'canonical-object-of-namespace-randomness-version-stream-kind-coordinate-and-seed',
+			coordinateDerivation: {
+				encoding: 'declared-ordered-field-tuples',
+				fieldsByStreamKind: {
+					accuracy: ['level', 'attributeSpread', 'masteryBand'],
+					relativeAgility: ['level', 'attributeSpread', 'direction'],
+					regeneration: ['level', 'attributeSpread', 'armourState'],
+					affinity: ['level', 'attributeSpread', 'archetype', 'variant'],
+					armour: ['level', 'attributeSpread']
+				}
+			},
+			pairedStreamDerivation: {
+				relativeAgility: {
+					pairedComparisons: ['baseline', 'adjusted'],
+					coordinatePolicy: 'omit-comparison-role',
+					replayPolicy: 'restart-identical-stream'
+				}
+			},
 			seedDigestHexStart: 0,
 			seedDigestHexLength: 8,
 			seedDigestRadix: 16,
@@ -327,7 +346,7 @@ describe('four-attribute combat balance evidence', () => {
 			missConsumesAction: true,
 			defencePolicy: 'no-armour-or-named-resistance',
 			affinityVariantRandomStreamCoupling: 'independent',
-			affinityVariantRandomStreamSuffixes: { matched: 'matched', offAffinity: 'off' }
+			affinityVariantCoordinates: { matched: 'matched', offAffinity: 'off-affinity' }
 		});
 		expect(first.simulation.profile.affinityApplication).toStrictEqual({
 			matchingRule: 'associated-attribute-matches-channel-attribute',
@@ -388,7 +407,23 @@ describe('four-attribute combat balance evidence', () => {
 			},
 			{
 				...first.simulation.profile,
-				randomness: { ...first.simulation.profile.randomness, seedDigestHexLength: 16 }
+				randomness: {
+					...first.simulation.profile.randomness,
+					streamNamespace: 'combat-balance-candidate-v2'
+				}
+			},
+			{
+				...first.simulation.profile,
+				randomness: {
+					...first.simulation.profile.randomness,
+					coordinateDerivation: {
+						...first.simulation.profile.randomness.coordinateDerivation,
+						fieldsByStreamKind: {
+							...first.simulation.profile.randomness.coordinateDerivation.fieldsByStreamKind,
+							accuracy: ['masteryBand', 'level', 'attributeSpread']
+						}
+					}
+				}
 			},
 			{
 				...first.simulation.profile,
