@@ -70,6 +70,9 @@
 		"skill-icon-inner-frame-regeneration.ts",
 		"skill-icon-inner-frame-regeneration.spec.ts",
 		"render-skill-icon-inner-frame-regeneration-review.ts",
-		"render-skill-icon-inner-frame-regeneration-review.spec.ts"
+		"render-skill-icon-inner-frame-regeneration-review.spec.ts",
+		"skill-icon-inner-frame-acceptance.ts",
+		"skill-icon-inner-frame-acceptance.spec.ts",
+		"accept-skill-icon-inner-frame-regeneration.ts"
 	]
 }

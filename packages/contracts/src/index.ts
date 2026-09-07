@@ -21,6 +21,7 @@ export * from './settlement.js';
 export * from './settlement-scene.js';
 export * from './skill-icon-production.js';
 export * from './skill-icon-quality-cleanup.js';
+export * from './skill-icon-inner-frame-acceptance.js';
 export * from './social.js';
 export * from './story-workshop.js';
 export * from './visual.js';
