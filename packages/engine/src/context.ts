@@ -1,5 +1,6 @@
 import {
 	CharacterManifestSchema,
+	ActorDecisionViewSchema,
 	EngineSnapshotSchema,
 	HERO_CONTEXT_POLICY_VERSION,
 	HERO_DECISION_PACKET_VERSION,
@@ -9,6 +10,7 @@ import {
 	HeroDecisionPacketSchema,
 	PlayerDirectiveSchema,
 	type CharacterManifest,
+	type ActorDecisionView,
 	type EngineGameStateV8,
 	type EngineGameStateV9,
 	type EngineGameStateV10,
@@ -32,6 +34,53 @@ import {
 import { hashGameState } from './core/state.js';
 import { deterministicUuid, hashCanonical } from './hash.js';
 import { decisionLegalActions } from './orchestration/legal-actions.js';
+
+export type CombatActionDecisionContext = Readonly<{
+	decisionKind: 'combat-action';
+	windowId: string;
+	actorId: string;
+	snapshotHash: string;
+	actorViewHash: string;
+	legalActionSetHash: string;
+	view: ActorDecisionView;
+	responseContract: Readonly<{
+		instruction: 'Choose exactly one supplied legal action. The engine resolves it.';
+	}>;
+}>;
+
+function deepFreezeContext<T>(value: T): T {
+	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+		for (const child of Object.values(value)) deepFreezeContext(child);
+		Object.freeze(value);
+	}
+	return value;
+}
+
+export function assembleCombatActionDecisionContext(
+	viewInput: ActorDecisionView
+): CombatActionDecisionContext {
+	const view = ActorDecisionViewSchema.parse(viewInput);
+	if (hashCanonical(view.legalActions) !== view.legalActionSetHash) {
+		throw new Error('Combat context legal action hash does not match its supplied actions');
+	}
+	const unsignedView: Partial<ActorDecisionView> = { ...view };
+	delete unsignedView.actorViewHash;
+	if (hashCanonical(unsignedView) !== view.actorViewHash) {
+		throw new Error('Combat context actor view hash does not match its supplied view');
+	}
+	return deepFreezeContext({
+		decisionKind: 'combat-action',
+		windowId: view.windowId,
+		actorId: view.actorId,
+		snapshotHash: view.snapshotHash,
+		actorViewHash: view.actorViewHash,
+		legalActionSetHash: view.legalActionSetHash,
+		view,
+		responseContract: {
+			instruction: 'Choose exactly one supplied legal action. The engine resolves it.'
+		}
+	});
+}
 
 export const DEFAULT_MEMORY_ITEM_LIMIT = 8;
 export const DEFAULT_MEMORY_CHARACTER_LIMIT = 1_800;

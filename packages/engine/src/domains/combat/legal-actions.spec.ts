@@ -6,7 +6,13 @@ import type {
 	LearnedCombatSkillState
 } from '@summonlab/contracts';
 
-import { evaluateCombatLoadout, legalCombatSkillActions } from './legal-actions.js';
+import { deterministicUuid } from '../../hash.js';
+import {
+	authorCombatLegalActions,
+	canonicalCombatLegalActions,
+	evaluateCombatLoadout,
+	legalCombatSkillActions
+} from './legal-actions.js';
 
 const skill = {
 	schemaVersion: 'combat-skill-v1',
@@ -57,6 +63,195 @@ function learned(
 }
 
 describe('combat legal actions', () => {
+	it('authors stable effect-free actions for every typed target contract with finite fallbacks', () => {
+		const actorId = deterministicUuid('legal-actions-actor');
+		const targetId = deterministicUuid('legal-actions-target');
+		const windowId = deterministicUuid('legal-actions-window');
+		const actions = authorCombatLegalActions({
+			actorId,
+			windowId,
+			actions: [
+				{
+					actionId: 'move-behind',
+					actionKind: 'move',
+					skillId: null,
+					publicLabel: 'Move behind target',
+					targetContract: {
+						kind: 'entity-relative-position',
+						allowedCombatantIds: [targetId],
+						allowedRelations: ['behind', 'flank-left']
+					},
+					reactionPriority: 1,
+					recoveryTicks: 3,
+					manaCost: 0,
+					fallbackOptions: [
+						{
+							fallbackId: 'flank-left',
+							publicLabel: 'Take the left flank',
+							target: {
+								kind: 'entity-relative-position',
+								combatantId: targetId,
+								relation: 'flank-left'
+							}
+						}
+					]
+				},
+				{
+					actionId: 'guard-self',
+					actionKind: 'guard',
+					skillId: null,
+					publicLabel: 'Guard',
+					targetContract: { kind: 'self' },
+					reactionPriority: 0,
+					recoveryTicks: 2,
+					manaCost: 0,
+					fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }]
+				},
+				{
+					actionId: 'step-east',
+					actionKind: 'move',
+					skillId: null,
+					publicLabel: 'Step east',
+					targetContract: { kind: 'tile', allowedPositions: [{ x: 2, y: 1 }] },
+					reactionPriority: 0,
+					recoveryTicks: 2,
+					manaCost: 0,
+					fallbackOptions: [
+						{
+							fallbackId: 'step-north',
+							publicLabel: 'Step north',
+							target: { kind: 'tile', position: { x: 1, y: 0 } }
+						}
+					]
+				},
+				{
+					actionId: 'strike-target',
+					actionKind: 'attack',
+					skillId: 'combat-skill-basic-sword-strike',
+					publicLabel: 'Strike target',
+					targetContract: { kind: 'entity', allowedCombatantIds: [targetId] },
+					reactionPriority: 0,
+					recoveryTicks: 4,
+					manaCost: 1,
+					fallbackOptions: [
+						{
+							fallbackId: 'retarget',
+							publicLabel: 'Retarget',
+							target: { kind: 'entity', combatantId: targetId }
+						}
+					]
+				}
+			]
+		});
+
+		expect(actions.map((action) => action.actionId)).toStrictEqual([
+			'guard-self',
+			'move-behind',
+			'step-east',
+			'strike-target'
+		]);
+		expect(actions[0]?.actionInstanceId).toBe(
+			deterministicUuid(`${windowId}:${actorId}:guard-self`)
+		);
+		expect(actions.every((action) => action.fallbackOptions.length === 1)).toBe(true);
+		expect(JSON.stringify(actions)).not.toContain('damage');
+		expect(Object.isFrozen(actions[0]?.fallbackOptions)).toBe(true);
+	});
+
+	it('rejects duplicate action IDs and actions without an authored fallback', () => {
+		const actorId = deterministicUuid('duplicate-action-actor');
+		const windowId = deterministicUuid('duplicate-action-window');
+		const base = {
+			actionId: 'guard-self',
+			actionKind: 'guard' as const,
+			skillId: null,
+			publicLabel: 'Guard',
+			targetContract: { kind: 'self' as const },
+			reactionPriority: 0,
+			recoveryTicks: 2,
+			manaCost: 0,
+			fallbackOptions: [
+				{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
+			]
+		};
+		expect(() => authorCombatLegalActions({ actorId, windowId, actions: [base, base] })).toThrow(
+			'unique'
+		);
+		expect(() =>
+			canonicalCombatLegalActions([
+				{
+					...base,
+					actionInstanceId: deterministicUuid('shared-action-instance')
+				},
+				{
+					...base,
+					actionId: 'guard-again',
+					actionInstanceId: deterministicUuid('shared-action-instance')
+				}
+			])
+		).toThrow('instance');
+		expect(() =>
+			authorCombatLegalActions({
+				actorId,
+				windowId,
+				actions: [{ ...base, fallbackOptions: [] }]
+			})
+		).toThrow('fallback');
+	});
+
+	it('canonicalizes target sets and fallback options before binding the legal-action hash', () => {
+		const firstTargetId = deterministicUuid('canonical-first-target');
+		const secondTargetId = deterministicUuid('canonical-second-target');
+		const actionInstanceId = deterministicUuid('canonical-action-instance');
+		const base = {
+			actionId: 'choose-target',
+			actionInstanceId,
+			actionKind: 'attack' as const,
+			skillId: null,
+			publicLabel: 'Choose target',
+			targetContract: {
+				kind: 'entity' as const,
+				allowedCombatantIds: [secondTargetId, firstTargetId]
+			},
+			reactionPriority: 0,
+			recoveryTicks: 3,
+			manaCost: 0,
+			fallbackOptions: [
+				{
+					fallbackId: 'second-choice',
+					publicLabel: 'Second choice',
+					target: { kind: 'entity' as const, combatantId: secondTargetId }
+				},
+				{
+					fallbackId: 'first-choice',
+					publicLabel: 'First choice',
+					target: { kind: 'entity' as const, combatantId: firstTargetId }
+				}
+			]
+		};
+		const canonical = canonicalCombatLegalActions([base]);
+		const reversed = canonicalCombatLegalActions([
+			{
+				...base,
+				targetContract: {
+					...base.targetContract,
+					allowedCombatantIds: [...base.targetContract.allowedCombatantIds].reverse()
+				},
+				fallbackOptions: [...base.fallbackOptions].reverse()
+			}
+		]);
+
+		expect(reversed).toStrictEqual(canonical);
+		expect(canonical[0]?.targetContract).toStrictEqual({
+			kind: 'entity',
+			allowedCombatantIds: [firstTargetId, secondTargetId].sort()
+		});
+		expect(canonical[0]?.fallbackOptions.map((fallback) => fallback.fallbackId)).toStrictEqual([
+			'first-choice',
+			'second-choice'
+		]);
+	});
+
 	it('requires one family to intersect equipment, skill delivery, and trained tags', () => {
 		const common = {
 			intrinsicMight: 60,

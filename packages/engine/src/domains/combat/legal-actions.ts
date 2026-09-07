@@ -1,13 +1,76 @@
 import {
 	CombatEquipmentProfileSchema,
+	CombatLegalActionSchema,
 	CombatSkillDefinitionSchema,
 	LearnedCombatSkillStateSchema,
 	type CombatEquipmentProfile,
+	type CombatLegalAction,
 	type CombatSkillDefinition,
 	type EquipmentFamilyTag,
 	type EquipmentProficiencyTag,
 	type LearnedCombatSkillState
 } from '@summonlab/contracts';
+
+import { deterministicUuid } from '../../hash.js';
+
+export type AuthoredCombatLegalAction = Readonly<Omit<CombatLegalAction, 'actionInstanceId'>>;
+
+export type AuthorCombatLegalActionsInput = Readonly<{
+	actorId: string;
+	windowId: string;
+	actions: readonly AuthoredCombatLegalAction[];
+}>;
+
+function deepFreeze<T>(value: T): T {
+	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+		for (const child of Object.values(value)) deepFreeze(child);
+		Object.freeze(value);
+	}
+	return value;
+}
+
+export function canonicalCombatLegalActions(
+	actionsInput: readonly CombatLegalAction[]
+): readonly CombatLegalAction[] {
+	const actions = actionsInput
+		.map((action) => CombatLegalActionSchema.parse(action))
+		.sort((left, right) => left.actionId.localeCompare(right.actionId));
+	if (actions.length === 0) throw new Error('A combat actor requires at least one legal action');
+	if (new Set(actions.map((action) => action.actionId)).size !== actions.length) {
+		throw new Error('Combat legal action IDs must be unique');
+	}
+	if (new Set(actions.map((action) => action.actionInstanceId)).size !== actions.length) {
+		throw new Error('Combat legal action instance IDs must be unique');
+	}
+	for (const action of actions) {
+		if (action.fallbackOptions.length === 0) {
+			throw new Error(`Combat legal action ${action.actionId} requires an authored fallback`);
+		}
+		action.fallbackOptions.sort((left, right) => left.fallbackId.localeCompare(right.fallbackId));
+		if (action.targetContract.kind === 'entity') {
+			action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
+		} else if (action.targetContract.kind === 'tile') {
+			action.targetContract.allowedPositions.sort(
+				(left, right) => left.y - right.y || left.x - right.x
+			);
+		} else if (action.targetContract.kind === 'entity-relative-position') {
+			action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
+			action.targetContract.allowedRelations.sort((left, right) => left.localeCompare(right));
+		}
+	}
+	return deepFreeze(actions);
+}
+
+export function authorCombatLegalActions(
+	input: AuthorCombatLegalActionsInput
+): readonly CombatLegalAction[] {
+	return canonicalCombatLegalActions(
+		input.actions.map((action) => ({
+			...action,
+			actionInstanceId: deterministicUuid(`${input.windowId}:${input.actorId}:${action.actionId}`)
+		}))
+	);
+}
 
 export type CombatLoadoutInput = Readonly<{
 	intrinsicMight: number;

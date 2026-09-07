@@ -1,5 +1,6 @@
 import {
 	CharacterManifestSchema,
+	ActorDecisionViewSchema,
 	EngineCommandSchema,
 	EngineGameStateV13Schema,
 	EngineGameStateV15Schema,
@@ -13,6 +14,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	applyCommand,
+	assembleCombatActionDecisionContext,
 	assembleHeroDecisionPacket,
 	createBootstrapEngine,
 	deterministicUuid,
@@ -108,6 +110,97 @@ function communicate(state: EngineGameStateV13, heroId: string, key = 'context-w
 }
 
 describe('hero decision context', () => {
+	it('wraps a combat actor view without weakening any of its evidence bindings', () => {
+		const heroId = deterministicUuid('combat-context-hero');
+		const windowId = deterministicUuid('combat-context-window');
+		const targetId = deterministicUuid('combat-context-target');
+		const snapshotHash = '1'.repeat(64);
+		const legalActions = [
+			{
+				actionId: 'guard',
+				actionInstanceId: deterministicUuid('combat-context-action'),
+				actionKind: 'guard' as const,
+				skillId: null,
+				publicLabel: 'Guard',
+				targetContract: { kind: 'self' as const },
+				reactionPriority: 0,
+				recoveryTicks: 2,
+				manaCost: 0,
+				fallbackOptions: [
+					{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
+				]
+			}
+		];
+		const legalActionSetHash = hashCanonical(legalActions);
+		const viewWithoutHash = {
+			viewVersion: 'actor-decision-view-v1',
+			windowId,
+			actorId: heroId,
+			snapshotHash,
+			legalActionSetHash,
+			self: {
+				combatantId: heroId,
+				combatantKind: 'hero',
+				teamId: 'party',
+				position: { x: 1, y: 1 },
+				resources: {
+					health: { current: 100, maximum: 100 },
+					mana: { current: 20, maximum: 20 }
+				},
+				conditions: [],
+				readiness: { ready: true, recoveryTicksRemaining: 0 },
+				downed: false,
+				active: true
+			},
+			visibleCombatants: [
+				{
+					combatantId: targetId,
+					combatantKind: 'monster',
+					teamId: 'enemy',
+					position: { x: 2, y: 1 },
+					resources: {
+						health: { current: 80, maximum: 80 },
+						mana: { current: 0, maximum: 1 }
+					},
+					conditions: [],
+					readinessStatus: 'unknown',
+					downed: false,
+					active: true
+				}
+			],
+			visibleTerrain: { width: 4, height: 4, blockedTiles: [], features: [] },
+			visibleTelegraphs: [],
+			rememberedContext: ['It favored the left side.'],
+			doctrine: ['Keep allies between threats and the gate.'],
+			relationships: [],
+			masterDirections: ['Hold the gate.'],
+			legalActions
+		} as const;
+		const actorViewHash = hashCanonical(viewWithoutHash);
+		const view = ActorDecisionViewSchema.parse({ ...viewWithoutHash, actorViewHash });
+		const context = assembleCombatActionDecisionContext(view);
+
+		expect(context).toStrictEqual({
+			decisionKind: 'combat-action',
+			windowId,
+			actorId: heroId,
+			snapshotHash,
+			actorViewHash,
+			legalActionSetHash,
+			view,
+			responseContract: {
+				instruction: 'Choose exactly one supplied legal action. The engine resolves it.'
+			}
+		});
+		expect(Object.isFrozen(context.view)).toBe(true);
+		expect(() =>
+			assembleCombatActionDecisionContext({ ...view, legalActionSetHash: '4'.repeat(64) })
+		).toThrow('legal action');
+		expect(() =>
+			assembleCombatActionDecisionContext({ ...view, actorViewHash: '4'.repeat(64) })
+		).toThrow('actor view');
+	});
+
 	it('gives an Iron Moon hero the authoritative timer, cargo, quota, and finite deposits', () => {
 		const runId = deterministicUuid('context-iron-moon-run');
 		const heroId = deterministicUuid('context-iron-moon-hero');
