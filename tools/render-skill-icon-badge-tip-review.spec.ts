@@ -4,6 +4,7 @@ import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import {
+	adoptCompleteRankFrameForReview,
 	adoptCompleteSFrameForReview,
 	repairSFrameBadgeTipForReview
 } from './render-skill-icon-badge-tip-review.js';
@@ -12,8 +13,42 @@ const FRAME_PATH =
 	'assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-s-v9.png';
 const SOURCE_PATH =
 	'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-s-v10-badge-tip-source.png';
+const COMPLETE_SOURCE_BY_RANK = {
+	F: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-f-v10-complete-source.png',
+	E: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-e-v10-complete-source.png',
+	D: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-d-v10-complete-source.png',
+	C: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-c-v10-complete-source.png',
+	B: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-b-v10-complete-source.png',
+	A: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-a-v10-complete-source.png',
+	S: SOURCE_PATH
+} as const;
 
 describe('S rarity-frame badge-tip review repair', () => {
+	it('adopts complete generated frames for every rank without the v9 badge cutoff', async () => {
+		for (const [rank, sourcePath] of Object.entries(COMPLETE_SOURCE_BY_RANK)) {
+			const adopted = await adoptCompleteRankFrameForReview({
+				rank,
+				providerSource: await readFile(sourcePath)
+			});
+			const { data, info } = await sharp(adopted.bytes)
+				.ensureAlpha()
+				.raw()
+				.toBuffer({ resolveWithObject: true });
+			const alphaAt = (x: number, y: number): number => data[(y * info.width + x) * 4 + 3]!;
+
+			expect(info).toMatchObject({ width: 1024, height: 1024, channels: 4 });
+			expect(alphaAt(0, 0), `${rank} exterior`).toBe(0);
+			expect(alphaAt(512, 512), `${rank} aperture`).toBe(0);
+			expect(alphaAt(150, 512), `${rank} side rail`).toBeGreaterThan(0);
+			expect(adopted.audit.matteBorderMaximum).toBeLessThanOrEqual(4);
+			expect(
+				adopted.audit.centerBadgePixelsBelowLegacyCutoff,
+				`${rank} complete badge point`
+			).toBeGreaterThan(0);
+			expect(adopted.audit.lowestCenterBadgeRow).toBeGreaterThan(219);
+		}
+	});
+
 	it('adopts the complete generated S frame without mixing in the clipped v9 frame', async () => {
 		const adopted = await adoptCompleteSFrameForReview({
 			providerSource: await readFile(SOURCE_PATH)

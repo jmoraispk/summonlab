@@ -62,6 +62,8 @@
 		"render-skill-icon-quality-cleanup-review.spec.ts",
 		"render-skill-icon-outline-fix-review.ts",
 		"render-skill-icon-badge-tip-review.ts",
-		"render-skill-icon-badge-tip-review.spec.ts"
+		"render-skill-icon-badge-tip-review.spec.ts",
+		"render-skill-icon-complete-frame-rollout-review.ts",
+		"render-skill-icon-complete-frame-rollout-review.spec.ts"
 	]
 }

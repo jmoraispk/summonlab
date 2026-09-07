@@ -63,6 +63,12 @@ export interface CompleteSFrameAdoptionAudit {
 	readonly visibleBounds: Bounds | null;
 }
 
+export interface CompleteFrameAdoptionAudit extends CompleteSFrameAdoptionAudit {
+	readonly matteBorderMaximum: number;
+	readonly centerBadgePixelsBelowLegacyCutoff: number;
+	readonly lowestCenterBadgeRow: number | null;
+}
+
 function sha256(bytes: Buffer): string {
 	return createHash('sha256').update(bytes).digest('hex');
 }
@@ -206,9 +212,10 @@ export async function repairSFrameBadgeTipForReview(input: {
 	};
 }
 
-export async function adoptCompleteSFrameForReview(input: {
+export async function adoptCompleteRankFrameForReview(input: {
+	readonly rank: string;
 	readonly providerSource: Buffer;
-}): Promise<{ readonly bytes: Buffer; readonly audit: CompleteSFrameAdoptionAudit }> {
+}): Promise<{ readonly bytes: Buffer; readonly audit: CompleteFrameAdoptionAudit }> {
 	const providerMetadata = await sharp(input.providerSource).metadata();
 	if (
 		providerMetadata.width !== 1254 ||
@@ -216,7 +223,31 @@ export async function adoptCompleteSFrameForReview(input: {
 		providerMetadata.hasAlpha ||
 		providerMetadata.channels !== 3
 	)
-		throw new Error('Complete S frame source must be the frozen 1254×1254 RGB imagegen output');
+		throw new Error(
+			`Complete ${input.rank} frame source must be the frozen 1254×1254 RGB imagegen output`
+		);
+	const providerOriginal = await sharp(input.providerSource)
+		.removeAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	let matteBorderMaximum = 0;
+	const borderWidth = 12;
+	for (let y = 0; y < providerOriginal.info.height; y += 1) {
+		for (let x = 0; x < providerOriginal.info.width; x += 1) {
+			if (
+				x >= borderWidth &&
+				y >= borderWidth &&
+				x < providerOriginal.info.width - borderWidth &&
+				y < providerOriginal.info.height - borderWidth
+			)
+				continue;
+			const offset = (y * providerOriginal.info.width + x) * providerOriginal.info.channels;
+			for (let channel = 0; channel < 3; channel += 1)
+				matteBorderMaximum = Math.max(matteBorderMaximum, providerOriginal.data[offset + channel]!);
+		}
+	}
+	if (matteBorderMaximum > 4)
+		throw new Error(`Complete ${input.rank} frame source must use a uniform black exterior matte`);
 	const providerDecoded = await sharp(input.providerSource)
 		.resize(1024, 1024, { fit: 'fill', kernel: 'lanczos3', fastShrinkOnLoad: false })
 		.removeAlpha()
@@ -224,6 +255,8 @@ export async function adoptCompleteSFrameForReview(input: {
 		.toBuffer({ resolveWithObject: true });
 	const output = Buffer.alloc(1024 * 1024 * 4);
 	const visibleIndices: number[] = [];
+	let centerBadgePixelsBelowLegacyCutoff = 0;
+	let lowestCenterBadgeRow: number | null = null;
 	for (let index = 0; index < 1024 * 1024; index += 1) {
 		const sourceOffset = index * 3;
 		const outputOffset = index * 4;
@@ -235,7 +268,15 @@ export async function adoptCompleteSFrameForReview(input: {
 		output[outputOffset + 1] = skillIconBlackMatteUnmatteChannel(green, alpha);
 		output[outputOffset + 2] = skillIconBlackMatteUnmatteChannel(blue, alpha);
 		output[outputOffset + 3] = alpha;
-		if (alpha > 0) visibleIndices.push(index);
+		if (alpha > 0) {
+			visibleIndices.push(index);
+			const x = index % 1024;
+			const y = Math.floor(index / 1024);
+			if (x >= 448 && x < 576 && y > 219 && y < 320) {
+				centerBadgePixelsBelowLegacyCutoff += 1;
+				lowestCenterBadgeRow = y;
+			}
+		}
 	}
 	return {
 		bytes: await sharp(output, { raw: { width: 1024, height: 1024, channels: 4 } })
@@ -243,7 +284,26 @@ export async function adoptCompleteSFrameForReview(input: {
 			.toBuffer(),
 		audit: {
 			visiblePixels: visibleIndices.length,
-			visibleBounds: boundsOf(visibleIndices, 1024)
+			visibleBounds: boundsOf(visibleIndices, 1024),
+			matteBorderMaximum,
+			centerBadgePixelsBelowLegacyCutoff,
+			lowestCenterBadgeRow
+		}
+	};
+}
+
+export async function adoptCompleteSFrameForReview(input: {
+	readonly providerSource: Buffer;
+}): Promise<{ readonly bytes: Buffer; readonly audit: CompleteSFrameAdoptionAudit }> {
+	const adopted = await adoptCompleteRankFrameForReview({
+		rank: 'S',
+		providerSource: input.providerSource
+	});
+	return {
+		bytes: adopted.bytes,
+		audit: {
+			visiblePixels: adopted.audit.visiblePixels,
+			visibleBounds: adopted.audit.visibleBounds
 		}
 	};
 }
