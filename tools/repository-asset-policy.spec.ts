@@ -24,17 +24,29 @@ describe('repository asset retention policy', () => {
 		]);
 	});
 
-	it('rejects retired bridge rasters and the standalone family-affinity review gallery', () => {
+	it('rejects retired production rasters and standalone review galleries', () => {
 		expect(
 			findRepositoryAssetPathViolations([
 				'assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
 				'assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
+				'assets/equipment/experiments/material-equipment-v1/candidates/f/bronze/sword-v1.png',
+				'assets/equipment/experiments/material-equipment-v1/manifest.json',
+				'assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/sword-v2.png',
+				'assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png',
+				'assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png',
+				'assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html',
 				'docs/evidence/enemy-image-review-gallery-v1/index.html',
 				'docs/evidence/enemy-image-review-gallery-v1/owner-acceptance.md'
 			])
 		).toEqual([
 			'Family-affinity bridge raster must not be tracked: assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
 			'Fauna experiment candidate raster must not be tracked: assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
+			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v1/candidates/f/bronze/sword-v1.png',
+			'Superseded Equipment campaign path must not be tracked: assets/equipment/experiments/material-equipment-v1/manifest.json',
+			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/sword-v2.png',
+			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png',
+			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png',
+			'Equipment review artifact must not be tracked: assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html',
 			'Standalone family-affinity review gallery must not be tracked: docs/evidence/enemy-image-review-gallery-v1/index.html'
 		]);
 	});
@@ -98,6 +110,8 @@ describe('repository asset retention policy', () => {
 		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
 			approvedFaunaImageCount: 200,
 			approvedFaunaBytes: 560_162_021,
+			approvedEquipmentImageCount: 161,
+			approvedEquipmentBytes: 224_157_513,
 			retainedFamilyAffinityImageCount: 750,
 			retainedFamilyAffinityBytes: 2_078_754_623
 		});

@@ -13,6 +13,7 @@ import {
 	FAUNA_APPROVED_MANIFEST_PATH,
 	validateFaunaFamilyPromotion
 } from './fauna-family-promotion.js';
+import { checkEquipmentApprovedSources } from './equipment-approved-source-promotion.js';
 
 const approvedHeroRoot = 'assets/heroes/approved/summonable-roster-v1';
 const retainedEnemyPackManifestPath = 'assets/enemies/legacy/affinity-pack-v1/manifest.json';
@@ -33,6 +34,8 @@ export interface RepositoryAssetValidationSummary {
 	readonly approvedHeroBytes: number;
 	readonly approvedFaunaImageCount: number;
 	readonly approvedFaunaBytes: number;
+	readonly approvedEquipmentImageCount: number;
+	readonly approvedEquipmentBytes: number;
 	readonly retainedEnemyImageCount: number;
 	readonly retainedEnemyBytes: number;
 	readonly retainedFamilyAffinityImageCount: number;
@@ -148,6 +151,31 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 			path.endsWith('.png')
 		) {
 			violations.push(`Fauna experiment candidate raster must not be tracked: ${path}`);
+		}
+		const supersededEquipmentCampaign =
+			path.startsWith('assets/equipment/experiments/material-equipment-v1/') ||
+			path.startsWith('assets/equipment/experiments/material-equipment-v2/');
+		if (supersededEquipmentCampaign) {
+			violations.push(
+				path.endsWith('.png')
+					? `Equipment production raster must not be tracked: ${path}`
+					: `Superseded Equipment campaign path must not be tracked: ${path}`
+			);
+		}
+		if (
+			(path.startsWith('assets/equipment/experiments/material-equipment-v3/candidates/') ||
+				/^assets\/equipment\/experiments\/material-equipment-v3\/revisions\/.*\/candidate\.png$/u.test(
+					path
+				)) &&
+			path.endsWith('.png')
+		) {
+			violations.push(`Equipment production raster must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('assets/equipment/experiments/material-equipment-v3/reviews/') &&
+			/\.(?:png|webp|html)$/u.test(path)
+		) {
+			violations.push(`Equipment review artifact must not be tracked: ${path}`);
 		}
 		if (path === 'docs/evidence/enemy-image-review-gallery-v1/index.html') {
 			violations.push(`Standalone family-affinity review gallery must not be tracked: ${path}`);
@@ -471,6 +499,7 @@ export async function validateRepositoryAssets(
 		tracked
 	);
 	const approvedFauna = await validateFaunaFamilyPromotion(workspaceRoot);
+	const approvedEquipment = await checkEquipmentApprovedSources(workspaceRoot);
 	const violations = findRepositoryAssetPathViolations(tracked);
 	violations.push(
 		...findApprovedHeroPathViolations(
@@ -521,6 +550,38 @@ export async function validateRepositoryAssets(
 			violations.push(`Retired fauna candidate is still tracked: ${record.candidate.path}`);
 		}
 	}
+	const approvedEquipmentManifest = JSON.parse(
+		await readFile(
+			resolve(workspaceRoot, 'assets/equipment/approved/material-equipment-v1/manifest.json'),
+			'utf8'
+		)
+	) as { records: Array<{ candidate: { path: string }; approved: { path: string } }> };
+	const approvedEquipmentPaths = approvedEquipmentManifest.records.map(
+		({ approved }) => approved.path
+	);
+	if (
+		approvedEquipmentManifest.records.length !== 161 ||
+		new Set(approvedEquipmentPaths).size !== 161
+	) {
+		violations.push('Approved Equipment manifest must contain exactly 161 unique source paths');
+	}
+	const equipmentPngPaths = tracked.filter(
+		(path) => path.startsWith('assets/equipment/') && path.endsWith('.png')
+	);
+	const equipmentFilters = lfsFilters(workspaceRoot, equipmentPngPaths);
+	for (const path of equipmentPngPaths) {
+		if (equipmentFilters.get(path) !== 'lfs') {
+			violations.push(`Retained Equipment PNG is not covered by Git LFS: ${path}`);
+		}
+	}
+	for (const record of approvedEquipmentManifest.records) {
+		if (!trackedSet.has(record.approved.path)) {
+			violations.push(`Approved Equipment image is not tracked: ${record.approved.path}`);
+		}
+		if (trackedSet.has(record.candidate.path)) {
+			violations.push(`Retired Equipment candidate is still tracked: ${record.candidate.path}`);
+		}
+	}
 	const filters = lfsFilters(
 		workspaceRoot,
 		visualRecords.map((record) => record.file)
@@ -556,6 +617,8 @@ export async function validateRepositoryAssets(
 		approvedHeroBytes,
 		approvedFaunaImageCount: approvedFauna.approvedCount,
 		approvedFaunaBytes: approvedFauna.approvedBytes,
+		approvedEquipmentImageCount: approvedEquipment.verified,
+		approvedEquipmentBytes: approvedEquipment.totalBytes,
 		retainedEnemyImageCount: retainedEnemyPack.candidateCount,
 		retainedEnemyBytes: retainedEnemyPack.bytes,
 		retainedFamilyAffinityImageCount: retainedFamilyAffinityPack.candidateCount,

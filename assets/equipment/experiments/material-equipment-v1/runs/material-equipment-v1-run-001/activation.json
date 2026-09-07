@@ -1,8 +1,0 @@
-{
-	"schemaVersion": "equipment-production-run-activation-v1",
-	"activationId": "material-equipment-v1-run-001-activation",
-	"runId": "material-equipment-v1-run-001",
-	"runPlanCanonicalSha256": "4c577f3c924d9ebab9e9d96ee5e4d241cd35ab462b545815b12ee26c5a8c1b08",
-	"activatedAt": "2026-09-02T14:44:20.000Z",
-	"activatedBy": "owner"
-}

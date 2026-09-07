@@ -185,216 +185,24 @@ All 161 entries are owner-approved sources. The 140 isolated items each have det
 detail runtime derivatives; the 21 full-set images remain approved continuity references and never
 become inventory items.
 
-The historical v1
-[material production manifest](../../../../assets/equipment/experiments/material-equipment-v1/manifest.json)
-expanded this budget into explicit targets. Its
-[allocation plan](../../../../assets/equipment/experiments/material-equipment-v1/allocation-plan.json)
-mapped all 161 targets into a dependency-aware run with 77 root jobs and 84 Armour-piece jobs gated
-four at a time behind 21 full-set reviews. The adjacent
-[production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md) preserve
-that run's execution and provenance boundary.
+### Retained visual authority
 
-### V3 candidate-production completion
+The [approved source catalog](../../../../assets/equipment/approved/material-equipment-v1/manifest.json)
+is the sole retained full-resolution authority for the accepted 161-image material ladder. Its
+manifest and approval receipts preserve the historical v3 candidate paths, hashes, and checkpoint
+decisions. The duplicate candidate and revision rasters are retired; all retained Equipment PNG
+masters and visual references are stored through Git LFS. The 280 optimized runtime WebPs remain
+ordinary Git files.
 
-The [rank-first v3 production](../../../../assets/equipment/experiments/material-equipment-v3/README.md)
-completed owner-reviewed candidate closeout on 2026-09-03. It produced and accepted 77 roots and 84
-individual Armour pieces across all 28 materials. The 21 full Armour sets remain consistency
-evidence; the resulting equipment library therefore contains 140 isolated item images and 21
-complete-set evidence images.
+The [rank-first v3 production record](../../../../assets/equipment/experiments/material-equipment-v3/README.md)
+retains its compact manifest, targets, assignments, prompts, results, checkpoints, selections,
+receipts, and accepted direction boards. Generated contact sheets, review galleries, thumbnails,
+and the duplicate source rasters are intentionally absent. The superseded v1 and v2 planning runs
+and their one-time production tooling were retired on 2026-09-07.
 
-The [final Armour gallery](../../../../assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html),
-[candidate closeout](../../../../assets/equipment/experiments/material-equipment-v3/runs/material-equipment-v3-run-001/candidate-closeout-v1.json),
-and [proposal-only promotion list](../../../../assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json)
-preserve the exact selected paths, hashes, attempts, and owner decisions. The immutable candidates
-were subsequently copied byte-for-byte into the
-[approved source catalog](../../../../assets/equipment/approved/material-equipment-v1/manifest.json),
-then exported into the checked Equipment runtime catalog and bound to 140 content definitions.
-
-### Historical V2 planning state
-
-The owner-locked [v2 planning package](../../../../assets/equipment/experiments/material-equipment-v2/README.md)
-retains the same 161-target and full-set-first structure under a collision-safe new namespace. Its
-manifest uses Bronze, Ash, and Hard Leather; its approval-candidate visual profile binds every
-Equipment class to a hash-checked pose or camera reference, locks the standard single-bit Axe, uses
-an 8% framing target with a 5% hard minimum, and requires empty self-supporting Armour sets.
-
-The owner has accepted the v2 visual profile through a canonical-hash and reference-byte-bound
-receipt whose scope is visual-profile-only. Additive v2 schemas now define the future target,
-assignment, result, Armour-review, and contract-readiness records. Its deterministic renderer has
-materialized the 77 root target/assignment pairs with class-scoped references. The immutable
-`material-equipment-v2-run-001` activation authorizes only those roots at concurrency 16, backed by
-byte- and PNG-metadata-verifying exclusive persistence. The 84 Armour pieces remain gated and
-unmaterialized. Candidates and results remain review evidence rather than approved or runtime
-assets; the v1/shared runner remains separate.
-
-The v2 root run is complete: all 77 attempts have verified results and terminal receipts. Producer
-triage recorded 37 **pass** (`candidate`), 33 **check** (`revise`), and 7 **no image** (`failed`),
-for 70 reviewable PNGs. The no-image targets are Bronze Mace, Bronze Shield, Coarse Hide Light
-Armour full set, Iron Axe, Blacksteel Heavy Armour full set, Heartwood Staff, and Sunsteel Sword.
-These are immutable single-call outcomes, not approval decisions. No full Armour set has been human
-accepted, so all 84 piece images remain locked and absent.
-
-The [rank-first full-production plan](../../../superpowers/plans/2026-09-02-equipment-rank-first-full-production.md)
-is complete through owner-reviewed candidate closeout. It used class progression direction first,
-dedicated individual renders second, material-cohort review as a secondary check, and Armour pieces
-only after accepted full-set sources. The earlier material-first draft is superseded.
-
-### Historical v1 root-production review state
-
-Run `material-equipment-v1-run-001` is activated and its root phase is complete. All 77 root jobs
-have verified provenance results and terminal journal evidence: 16 are machine-checklist
-`candidate`, 60 are `revise`, and one is `failed`. There are 76 reviewable PNGs because the failed
-Ash Staff call returned no usable image.
-
-These states are not approval decisions. Read `candidate` as **pass**, `revise` as **check**, and
-`failed` as **no image**. Most check states in this run are strict framing-margin flags. The
-[root review packet](../../../../assets/equipment/experiments/material-equipment-v1/review-packets/material-equipment-v1-run-001/README.md)
-contains the rank sheets, exact totals, and the owner-feedback brief for a separately versioned v2.
-
-The 84 Armour-piece jobs remain gated and unproduced. No full-set source has been accepted through
-the gate, and no candidate has been approved or promoted to runtime.
-
-```text
-profile candidate → exact owner acceptance → 77 root packets
-zero-write readiness → immutable activation → claim up to 16
-worker generation → result verification → terminal journal event
-human full-set receipt → four child packets → continued claims
-candidate review remains separate from approval and runtime promotion
-```
-
-#### Historical operator reference
-
-The commands below document the v1 workflow. They are retained for audit and recovery; the
-one-time profile acceptance and activation commands must not be rerun against existing artifacts.
-Read-only checks still create no run or image state:
-
-```bash
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/export-equipment-image-profile.ts --check
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts check-root-packets
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts report-readiness
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts simulate --available-worker-slots 16
-```
-
-The profile candidate’s deterministic write command is
-`corepack pnpm tsx tools/export-equipment-image-profile.ts`; its one-time exact owner-acceptance
-command is recorded in the
-[Equipment-local production notes](../../../../assets/equipment/experiments/material-equipment-v1/README.md)
-and must not overwrite the existing exclusive acceptance.
-
-The following block records the activation boundary used by v1. Do not rerun it against the
-existing run ID:
-
-```bash
-EQUIPMENT_RUN_ID=material-equipment-v1-run-001
-EQUIPMENT_RUN_CREATED_AT=2026-09-02T01:00:00.000Z
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts activate-run \
-    --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \
-    --activated-at 2026-09-02T01:00:01.000Z --activated-by owner
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts claim-next \
-    --run-id "$EQUIPMENT_RUN_ID" --available-worker-slots 16 \
-    --epoch-id equipment-epoch-001 --actor root-orchestrator \
-    --requested-at 2026-09-02T01:01:00.000Z --recorded-at 2026-09-02T01:01:01.000Z
-```
-
-For each exact returned claim, validate the packet, render its byte-exact prompt, record start,
-persist only the exact generated source, persist and verify the result, then record terminal:
-
-```bash
-EQUIPMENT_TARGET_PATH='replace-with-claim-target-path'
-EQUIPMENT_ASSIGNMENT_PATH='replace-with-claim-assignment-path'
-EQUIPMENT_TARGET_ID='replace-with-claim-target-id'
-EQUIPMENT_WORKER_ID='replace-with-claim-worker-id'
-EQUIPMENT_CLAIM_ID='replace-with-claim-id'
-EQUIPMENT_CANDIDATE_PATH='replace-with-assignment-candidate-path'
-EQUIPMENT_RESULT_PATH='replace-with-assignment-result-path'
-EQUIPMENT_RESULT_CANONICAL_SHA256='replace-with-verified-result-canonical-sha256'
-EQUIPMENT_SOURCE_IMAGE=/absolute/path/to/exact-imagegen-output.png
-EQUIPMENT_RESULT_JSON=/absolute/path/to/worker-result.json
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts validate-packet \
-    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts render-prompt \
-    --target "$EQUIPMENT_TARGET_PATH"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts record-start \
-    --run-id "$EQUIPMENT_RUN_ID" --event-id start-001 --actor root-orchestrator \
-    --requested-at 2026-09-02T01:02:00.000Z --recorded-at 2026-09-02T01:02:01.000Z \
-    --claim-id "$EQUIPMENT_CLAIM_ID" --target-id "$EQUIPMENT_TARGET_ID" \
-    --worker-id "$EQUIPMENT_WORKER_ID"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/persist-equipment-image-production-output.ts \
-    --workspace-root "$PWD" --source "$EQUIPMENT_SOURCE_IMAGE" \
-    --destination "$EQUIPMENT_CANDIDATE_PATH" --width 1024 --height 1024 \
-    --media-type image/png
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts persist-result \
-    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH" \
-    < "$EQUIPMENT_RESULT_JSON"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts verify-result \
-    --target "$EQUIPMENT_TARGET_PATH" --assignment "$EQUIPMENT_ASSIGNMENT_PATH" \
-    --result "$EQUIPMENT_RESULT_PATH"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts record-terminal \
-    --run-id "$EQUIPMENT_RUN_ID" --event-id terminal-001 --actor root-orchestrator \
-    --requested-at 2026-09-02T01:10:00.000Z --recorded-at 2026-09-02T01:10:01.000Z \
-    --target-id "$EQUIPMENT_TARGET_ID" --worker-id "$EQUIPMENT_WORKER_ID" \
-    --status candidate --result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
-```
-
-A human-accepted full-set receipt creates exactly four child packet pairs and unlocks continued
-claims. This accepts consistency-source evidence only; it does not approve the candidate or promote
-anything to runtime:
-
-```bash
-EQUIPMENT_GATE_ID='replace-with-gate-id'
-EQUIPMENT_CANDIDATE_SHA256='replace-with-human-inspected-candidate-sha256'
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts review-armour-source \
-    --run-id "$EQUIPMENT_RUN_ID" --gate-id "$EQUIPMENT_GATE_ID" --reviewer owner \
-    --reviewed-at 2026-09-02T01:20:00.000Z \
-    --accept-candidate-sha256 "$EQUIPMENT_CANDIDATE_SHA256"
-```
-
-Crash reconciliation is read-only until explicitly acknowledged. It blocks partial output, never
-time-reaps a started worker, verifies a complete immutable pair before a terminal append, and
-requires exact target, worker, reason, acknowledgement, and append identity for operator-confirmed
-failure. Terminal append authorization must copy both the exact status and exact canonical result
-SHA-256 from the prior dry response; locked re-verification rejects drift without an append. Dry,
-terminal-append, and operator-confirmed-failure modes are complete and mutually exclusive. Report
-remains zero-write:
-
-```bash
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts reconcile \
-    --run-id "$EQUIPMENT_RUN_ID" --target-id "$EQUIPMENT_TARGET_ID" \
-    --worker-id "$EQUIPMENT_WORKER_ID" \
-    --observed-at 2026-09-02T01:30:00.000Z
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts reconcile \
-    --run-id "$EQUIPMENT_RUN_ID" --target-id "$EQUIPMENT_TARGET_ID" \
-    --worker-id "$EQUIPMENT_WORKER_ID" \
-    --observed-at 2026-09-02T01:30:00.000Z --event-id reconcile-terminal-001 \
-    --actor root-orchestrator --requested-at 2026-09-02T01:30:00.000Z \
-    --recorded-at 2026-09-02T01:30:01.000Z --acknowledge-terminal yes \
-    --expected-terminal-status candidate \
-    --expected-result-canonical-sha256 "$EQUIPMENT_RESULT_CANONICAL_SHA256"
-PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
-  corepack pnpm tsx tools/equipment-image-production.ts report \
-    --run-id "$EQUIPMENT_RUN_ID" --created-at "$EQUIPMENT_RUN_CREATED_AT" \
-    --generated-at 2026-09-02T01:31:00.000Z
-```
-
-The Equipment-local production notes contain the exact candidate persistence, result persistence,
-rejection, pause/resume, and operator-confirmed failure variants. Candidate review, source approval,
-and runtime promotion remain distinct later decisions.
+Accepted material-vs-class and rank-first calibration boards remain as visual-production guidance.
+The separate two-handed Greatsword campaign also remains intact because its seven candidates are
+still awaiting owner review; it is not part of the approved 161-source material ladder.
 
 ## Source authority and remaining decisions
 
@@ -426,6 +234,10 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-07 — source retirement — Retained the 161 approved masters, 280 runtime derivatives,
+  compact v3 provenance, accepted direction/calibration boards, and review-pending Greatsword
+  campaign; retired superseded v1/v2 campaigns, duplicate v3 rasters/review galleries, and obsolete
+  producer tooling; moved every retained Equipment PNG to Git LFS.
 - 2026-09-03 — v3 candidate closeout — Accepted all 77 roots and 84 Armour pieces, reconciled 11
   directions and 60 audit sheets, and created a 161-entry proposal-only promotion list without
   modifying approved or runtime assets.
