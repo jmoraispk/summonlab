@@ -55,12 +55,14 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			['pnpm', 'tsx', 'tools/reseal-skill-taxonomy-expectations.ts'],
 			['pnpm', 'tsx', 'tools/export-skill-taxonomy-migration.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-engine-replay-expectations.ts'],
+			['pnpm', 'export:story-envelope'],
 			['pnpm', 'export:story-patch'],
 			['pnpm', 'prettier', '--write', 'tools/package-playtest-release.ts']
 		],
 		paths: [
 			'tools/package-playtest-release.ts',
 			'packages/engine/src/compatibility/replay-vectors.ts',
+			'docs/evidence/phase-6-story-envelope.json',
 			'docs/evidence/phase-6-runtime-story-patch.json',
 			'docs/wiki/mechanics/skills/migration-v2.json',
 			'tools/export-skill-taxonomy-migration.spec.ts',

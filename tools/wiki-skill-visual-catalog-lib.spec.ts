@@ -15,6 +15,8 @@ import {
 	assertWikiSkillVisualManagedBudget,
 	buildWikiSkillVisualCatalogFromAuthorities,
 	checkWikiSkillVisualCatalog,
+	finalizeWikiSkillVisualManagedDirectorySummary,
+	formatWikiSkillVisualManifest,
 	writeWikiSkillVisualCatalog
 } from './wiki-skill-visual-catalog-lib.js';
 
@@ -213,6 +215,26 @@ describe('wiki skill visual catalog exporter', () => {
 		expect(built.manifest.summary.managedDirectoryBytes).toBe(
 			built.manifest.summary.totalBytes + Buffer.byteLength(formatted)
 		);
+	});
+
+	it('reseals a stale managed-directory byte total without rebuilding image derivatives', async () => {
+		const item = await fixture();
+		const built = await item.build();
+		const stale = {
+			...built.manifest,
+			summary: {
+				...built.manifest.summary,
+				managedDirectoryBytes: built.manifest.summary.managedDirectoryBytes + 16
+			}
+		};
+
+		const resealed = await finalizeWikiSkillVisualManagedDirectorySummary(stale);
+		const formatted = await formatWikiSkillVisualManifest(resealed);
+
+		expect(resealed.summary.managedDirectoryBytes).toBe(
+			resealed.summary.totalBytes + formatted.byteLength
+		);
+		expect(resealed.records).toBe(stale.records);
 	});
 
 	it('accepts the exact managed-directory budget and rejects one byte beyond it', () => {

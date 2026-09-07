@@ -20,6 +20,8 @@ import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 
+import { format, getFileInfo, resolveConfig } from 'prettier';
+
 import {
 	AMERICAN_ENGLISH_RULE_IDS,
 	type AmericanEnglishRuleId,
@@ -30,6 +32,7 @@ import {
 	AMERICAN_ENGLISH_INTEGRITY_OWNERS,
 	classifyIntegrityBindings,
 	digestTrackedIntegrityValue,
+	type AmericanEnglishIntegrityOwner,
 	type IntegrityBindingKind,
 	type IntegrityOwnerPlan,
 	type IntegrityOwnerId,
@@ -161,7 +164,11 @@ function stripPrivateOwnerBytes(owner: IntegrityOwnerPlan): IntegrityOwnerPlan {
 	return {
 		...owner,
 		successorIntents: owner.successorIntents.map(
-			({ projectedBytes: _projectedBytes, ...intent }) => intent
+			({
+				materializedValueDigest: _materializedValueDigest,
+				projectedBytes: _projectedBytes,
+				...intent
+			}) => intent
 		)
 	};
 }
@@ -206,6 +213,72 @@ async function gitBlobId(repositoryRoot: string, bytes: Uint8Array): Promise<str
 	return (await runGit(repositoryRoot, ['hash-object', '--stdin'], Buffer.from(bytes)))
 		.toString('utf8')
 		.trim();
+}
+
+async function gitBlobBytes(
+	repositoryRoot: string,
+	objectIds: readonly string[]
+): Promise<ReadonlyMap<string, Buffer>> {
+	const unique = [...new Set(objectIds)].sort(compareCodepoints);
+	if (unique.length === 0) return new Map();
+	const output = await runGit(
+		repositoryRoot,
+		['cat-file', '--batch'],
+		Buffer.from(`${unique.join('\n')}\n`, 'utf8')
+	);
+	const blobs = new Map<string, Buffer>();
+	let offset = 0;
+	for (const requestedId of unique) {
+		const headerEnd = output.indexOf(0x0a, offset);
+		if (headerEnd === -1) throw new Error('Git blob batch omitted an object header');
+		const [actualId, objectType, sizeText] = output
+			.subarray(offset, headerEnd)
+			.toString('utf8')
+			.split(' ');
+		const size = Number(sizeText);
+		if (
+			actualId !== requestedId ||
+			objectType !== 'blob' ||
+			!Number.isSafeInteger(size) ||
+			size < 0
+		) {
+			throw new Error(`Git blob batch returned an invalid object header for ${requestedId}`);
+		}
+		const bodyStart = headerEnd + 1;
+		const bodyEnd = bodyStart + size;
+		if (bodyEnd >= output.length || output[bodyEnd] !== 0x0a) {
+			throw new Error(`Git blob batch returned invalid object bytes for ${requestedId}`);
+		}
+		blobs.set(requestedId, Buffer.from(output.subarray(bodyStart, bodyEnd)));
+		offset = bodyEnd + 1;
+	}
+	if (offset !== output.length) throw new Error('Git blob batch returned trailing bytes');
+	return blobs;
+}
+
+export function resolveIntentMaterializationPathPairs(
+	materialization: NonNullable<AmericanEnglishIntegrityOwner['intentMaterialization']>,
+	trackedPaths: readonly string[],
+	pathMoves: readonly { readonly source: string; readonly destination: string }[]
+): readonly { readonly source: string; readonly destination: string }[] {
+	const tracked = new Set(trackedPaths);
+	for (const repositoryPath of materialization.paths) {
+		if (!tracked.has(repositoryPath)) {
+			throw new Error(`Owner intent materialization path is not tracked: ${repositoryPath}`);
+		}
+	}
+	const selected = materialization.selectPaths?.(trackedPaths) ?? [];
+	for (const repositoryPath of selected) {
+		if (!tracked.has(repositoryPath)) {
+			throw new Error(`Owner intent selector returned an untracked path: ${repositoryPath}`);
+		}
+	}
+	const destinationBySource = new Map(
+		pathMoves.map(({ source, destination }) => [source, destination])
+	);
+	return [...new Set([...materialization.paths, ...selected])]
+		.sort(compareCodepoints)
+		.map((source) => ({ source, destination: destinationBySource.get(source) ?? source }));
 }
 
 function fingerprintPlanMaterial(
@@ -272,11 +345,16 @@ async function materializeAuthenticatedOwnerIntents(options: {
 		}
 		const materialized = new Map<string, Uint8Array>();
 		for (const owner of owners) {
-			for (const repositoryPath of owner.intentMaterialization!.paths) {
-				materialized.set(
-					repositoryPath,
-					await readFile(path.join(worktree, ...repositoryPath.split('/')))
-				);
+			const pairs = resolveIntentMaterializationPathPairs(
+				owner.intentMaterialization!,
+				[...options.index.keys()],
+				options.pathMoves
+			);
+			for (const { source, destination } of pairs) {
+				if (materialized.has(source)) {
+					throw new Error(`Duplicate owner intent materialization path: ${source}`);
+				}
+				materialized.set(source, await readFile(path.join(worktree, ...destination.split('/'))));
 			}
 		}
 		return materialized;
@@ -563,22 +641,38 @@ async function collectIntegritySnapshot(
 	expectedBinaryBlobs: ReadonlyMap<string, string>,
 	index: ReadonlyMap<string, { readonly mode: string; readonly blobId: string }>,
 	projectedPaths: ReadonlyMap<string, string>,
-	projectedBytes: ReadonlyMap<string, Uint8Array>
+	projectedBytes: ReadonlyMap<string, Uint8Array>,
+	authoritativeProjectedPaths: ReadonlySet<string> = new Set()
 ): Promise<TrackedTreeSnapshot> {
 	const entries: TrackedTreeSnapshot['entries'][number][] = [];
+	const binaryBlobBytes = await gitBlobBytes(
+		repositoryRoot,
+		affectedPaths.flatMap((repositoryPath) => {
+			if (!(binary.get(repositoryPath) ?? false)) return [];
+			const blobId = index.get(repositoryPath)?.blobId;
+			if (blobId === undefined) {
+				throw new Error(`Tracked binary path is absent from the index: ${repositoryPath}`);
+			}
+			return [blobId];
+		})
+	);
 	for (const repositoryPath of affectedPaths) {
 		const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
 		const status = await lstat(absolutePath);
-		const bytes = status.isSymbolicLink()
-			? Buffer.from(await readlink(absolutePath))
-			: await readFile(absolutePath);
 		const isBinary = binary.get(repositoryPath) ?? false;
+		const indexBlobId = index.get(repositoryPath)?.blobId;
+		const bytes = isBinary
+			? binaryBlobBytes.get(indexBlobId!)!
+			: status.isSymbolicLink()
+				? Buffer.from(await readlink(absolutePath))
+				: await readFile(absolutePath);
 		const expectedBinaryBlob = expectedBinaryBlobs.get(repositoryPath);
 		entries.push({
 			path: repositoryPath,
 			bytes,
 			projectedPath: projectedPaths.get(repositoryPath) ?? repositoryPath,
 			projectedBytes: projectedBytes.get(repositoryPath) ?? bytes,
+			authoritativeProjectedBytes: authoritativeProjectedPaths.has(repositoryPath),
 			binary: isBinary,
 			...(isBinary && expectedBinaryBlob !== undefined
 				? { binaryChanged: index.get(repositoryPath)?.blobId !== expectedBinaryBlob }
@@ -708,7 +802,16 @@ export async function planAmericanEnglishMigration(
 		const selected = (contentViolations.get(repositoryPath) ?? []).filter(({ ruleId }) =>
 			selectedRuleIds.has(ruleId)
 		);
-		projectedBytes.set(repositoryPath, Buffer.from(applyContentViolations(source, selected)));
+		projectedBytes.set(
+			repositoryPath,
+			Buffer.from(
+				await formatContentSuccessor(
+					repositoryRoot,
+					projectedPaths.get(repositoryPath) ?? repositoryPath,
+					applyContentViolations(source, selected)
+				)
+			)
+		);
 	}
 	const integrity = await classifyIntegrityBindings(
 		await collectIntegritySnapshot(
@@ -757,7 +860,8 @@ export async function planAmericanEnglishMigration(
 				new Map(pathMoves.map(({ source, sourceBlobId }) => [source, sourceBlobId])),
 				index,
 				projectedPaths,
-				closureProjectedBytes
+				closureProjectedBytes,
+				new Set(materializedOwnerBytes.keys())
 			),
 			{
 				textEdits: closurePaths
@@ -829,8 +933,10 @@ export async function planAmericanEnglishMigration(
 	const directSuccessors = await Promise.all(
 		affectedPaths.map(async (source) => {
 			const destination = projectedPaths.get(source) ?? source;
+			const sourceBlobId = resolveSourceBlob(source);
+			const isBinary = binary.get(source) ?? false;
 			let successorBytes = projectedBytes.get(source);
-			if (successorBytes === undefined) {
+			if (!isBinary && successorBytes === undefined) {
 				const absolutePath = path.join(repositoryRoot, ...source.split('/'));
 				const status = await lstat(absolutePath);
 				successorBytes = status.isSymbolicLink()
@@ -840,9 +946,9 @@ export async function planAmericanEnglishMigration(
 			return {
 				sourcePathHash: hashRepositoryPath(source),
 				successorPathHash: hashRepositoryPath(destination),
-				sourceBlobId: resolveSourceBlob(source),
-				successorBlobId: await gitBlobId(repositoryRoot, successorBytes),
-				binary: binary.get(source) ?? false,
+				sourceBlobId,
+				successorBlobId: isBinary ? sourceBlobId : await gitBlobId(repositoryRoot, successorBytes!),
+				binary: isBinary,
 				ownerId: directOwnerByPath.get(source) ?? ('migration-planner' as const)
 			};
 		})
@@ -865,10 +971,17 @@ export async function planAmericanEnglishMigration(
 	for (let iteration = 0; iteration <= closureIntents.length; iteration += 1) {
 		let changed = false;
 		const sourcesByCurrentDigest = new Map<string, typeof closureIntents>();
+		const sourcesByMaterializedDigest = new Map<string, typeof closureIntents>();
 		for (const intent of closureIntents) {
 			const sources = sourcesByCurrentDigest.get(intent.currentValueDigest) ?? [];
 			sources.push(intent);
 			sourcesByCurrentDigest.set(intent.currentValueDigest, sources);
+			if (intent.materializedValueDigest !== undefined) {
+				const materializedSources =
+					sourcesByMaterializedDigest.get(intent.materializedValueDigest) ?? [];
+				materializedSources.push(intent);
+				sourcesByMaterializedDigest.set(intent.materializedValueDigest, materializedSources);
+			}
 		}
 		for (const intent of closureIntents.filter(({ serializer }) => serializer === 'utf8-string')) {
 			let text = projectedTextBySource.get(intent.sourcePath)!;
@@ -886,6 +999,22 @@ export async function planAmericanEnglishMigration(
 					continue;
 				}
 				text = text.replaceAll(currentDigest, source.projectedValueDigest);
+				dependencies.set(source.path, {
+					path: source.path,
+					digest: source.projectedValueDigest
+				});
+			}
+			for (const [materializedDigest, sources] of sourcesByMaterializedDigest) {
+				if (sources.length !== 1) continue;
+				const source = sources[0]!;
+				if (
+					source.sourcePath === intent.sourcePath ||
+					source.projectedValueDigest === materializedDigest ||
+					!text.includes(materializedDigest)
+				) {
+					continue;
+				}
+				text = text.replaceAll(materializedDigest, source.projectedValueDigest);
 				dependencies.set(source.path, {
 					path: source.path,
 					digest: source.projectedValueDigest
@@ -1038,6 +1167,34 @@ function applyContentViolations(
 		)}`;
 	}
 	return result;
+}
+
+async function formatContentSuccessor(
+	repositoryRoot: string,
+	repositoryPath: string,
+	source: string
+): Promise<string> {
+	const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
+	const config = await resolveConfig(absolutePath);
+	if (config === null) return source;
+	const ignorePaths: string[] = [];
+	let directory = path.dirname(absolutePath);
+	while (directory.startsWith(repositoryRoot)) {
+		const ignorePath = path.join(directory, '.prettierignore');
+		try {
+			if ((await lstat(ignorePath)).isFile()) ignorePaths.push(ignorePath);
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+		}
+		if (directory === repositoryRoot) break;
+		directory = path.dirname(directory);
+	}
+	const fileInfo = await getFileInfo(absolutePath, {
+		...(ignorePaths.length === 0 ? {} : { ignorePath: ignorePaths }),
+		...(config?.plugins === undefined ? {} : { plugins: config.plugins })
+	});
+	if (fileInfo.ignored || fileInfo.inferredParser === null) return source;
+	return format(source, { ...config, filepath: absolutePath });
 }
 
 async function readSnapshot(
@@ -1340,14 +1497,6 @@ async function assertBlobObjectsExist(
 	}
 }
 
-async function readTrackedBytes(repositoryRoot: string, repositoryPath: string): Promise<Buffer> {
-	const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
-	const status = await lstat(absolutePath);
-	return status.isSymbolicLink()
-		? Buffer.from(await readlink(absolutePath), 'utf8')
-		: readFile(absolutePath);
-}
-
 function ownerCountsForReceiptFiles(
 	files: readonly AmericanEnglishMigrationReceiptFile[]
 ): Readonly<Record<string, number>> {
@@ -1629,6 +1778,15 @@ export async function finalizeAmericanEnglishMigrationReceipt(
 	const ownerBySuccessorHash = new Map(
 		plan.expectedOwnerSuccessors.map((successor) => [successor.successorPathHash, successor])
 	);
+	const currentOwnerBlobBytes = await gitBlobBytes(
+		repositoryRoot,
+		plan.expectedOwnerSuccessors.flatMap((successor) => {
+			const currentPath = currentPathsByHash.get(successor.successorPathHash);
+			const blobId =
+				currentPath === undefined ? undefined : currentEntries.get(currentPath)?.blobId;
+			return blobId === undefined ? [] : [blobId];
+		})
+	);
 
 	const expectedInitial = new Map<string, AmericanEnglishMigrationReceiptFile>(
 		previousReceipt?.files.map((file) => [file.successorPathHash, file]) ?? []
@@ -1711,7 +1869,10 @@ export async function finalizeAmericanEnglishMigrationReceipt(
 		if (successor.serializer === 'raw-file' && current.blobId !== successor.sourceBlobId) {
 			throw new Error('Binary successor drifted from its authenticated source bytes');
 		}
-		const currentBytes = await readTrackedBytes(repositoryRoot, currentPath);
+		const currentBytes = currentOwnerBlobBytes.get(current.blobId);
+		if (currentBytes === undefined) {
+			throw new Error('Current owner successor lacks readable tracked blob bytes');
+		}
 		const actualDigest = digestTrackedIntegrityValue({
 			ownerId: successor.ownerId,
 			path: currentPath,
@@ -1776,8 +1937,34 @@ export async function finalizeAmericanEnglishMigrationReceipt(
 			ownerId: successor.ownerId
 		});
 	}
+	const movedDirectBySourceHash = new Map(
+		plan.directSuccessors
+			.filter(({ sourcePathHash, successorPathHash }) => sourcePathHash !== successorPathHash)
+			.map((successor) => [successor.sourcePathHash, successor])
+	);
 	for (const preimage of plan.authenticatedHeadPreimages) {
 		if (finalized.has(preimage.successorPathHash)) continue;
+		const movedDirect = movedDirectBySourceHash.get(preimage.successorPathHash);
+		if (movedDirect !== undefined) {
+			const basePath = basePathsByHash.get(preimage.successorPathHash);
+			const currentPath = currentPathsByHash.get(movedDirect.successorPathHash);
+			const successorReceipt = finalized.get(movedDirect.successorPathHash);
+			if (
+				basePath === undefined ||
+				currentPath === undefined ||
+				baseEntries.get(basePath)?.blobId !== preimage.blobId ||
+				baseEntries.get(basePath)?.mode !== preimage.mode ||
+				currentEntries.get(currentPath)?.mode !== preimage.mode ||
+				movedDirect.sourceBlobId !== preimage.blobId ||
+				movedDirect.binary !== preimage.binary ||
+				successorReceipt?.sourceBlobId !== preimage.blobId
+			) {
+				throw new Error(
+					'Authenticated plan-HEAD preimage does not match its direct path-move successor'
+				);
+			}
+			continue;
+		}
 		const basePath = basePathsByHash.get(preimage.successorPathHash);
 		const currentPath = currentPathsByHash.get(preimage.successorPathHash);
 		if (
@@ -1860,6 +2047,7 @@ export async function materializeAuthenticatedOwnerSuccessors(
 		if (actualDigest !== expected.projectedValueDigest) {
 			throw new Error('Private owner bytes do not match their authenticated plan intent');
 		}
+		if (expected.serializer === 'raw-file') continue;
 		writes.push({ path: repositoryPath, bytes });
 	}
 	for (const write of writes.sort((left, right) => compareCodepoints(left.path, right.path))) {
@@ -2102,7 +2290,11 @@ export async function applyAmericanEnglishMigration(
 			if (violations.length !== edit.violationCount) {
 				throw new Error(`Content violation count changed after planning: ${edit.path}`);
 			}
-			const successor = applyContentViolations(source, violations);
+			const successor = await formatContentSuccessor(
+				repositoryRoot,
+				destination,
+				applyContentViolations(source, violations)
+			);
 			if (snapshot.kind === 'symlink') {
 				await unlink(absolutePath);
 				await symlink(successor, absolutePath);

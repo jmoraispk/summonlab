@@ -133,6 +133,46 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
+	it('registers every live digest pointer selected by the visual terminology slice', () => {
+		const visualPointers = [
+			'/approvedSourceContentHash',
+			'/auditHash',
+			'/catalogContentHash',
+			'/findings/0/selectedResultSha256',
+			'/manifestHash',
+			'/ownerAcceptance/sha256',
+			'/producerRuns/0/calls/0/sourceSha256',
+			'/prompt/templateSha256',
+			'/promptTemplateSha256',
+			'/records/0/historicalChibiSha256',
+			'/records/0/summonSha256',
+			'/reviewManifest/sha256',
+			'/runtimeCatalog/sha256',
+			'/sourceEvidence/productionJournalSha256',
+			'/sourceEvidence/productionPlanSha256',
+			'/sourceEvidence/reviewManifestSha256',
+			'/sourceEvidence/sourceRosterSha256',
+			'/sourceEvidence/upstreamCompletionReportSha256',
+			'/upstreamCompletionReportSha256',
+			'/upstreamManifestSha256'
+		];
+		expect(
+			visualPointers.filter(
+				(pointer) =>
+					!visualProductionIntegrityOwner.owns(
+						'assets/heroes/experiments/visual-slice/receipt.json',
+						pointer
+					)
+			)
+		).toEqual([]);
+		expect(
+			equipmentIntegrityOwner.owns(
+				'assets/equipment/approved/material-equipment-v1/receipts/promotion-v1.json',
+				'/checkpoints/armorPieces/canonicalSha256'
+			)
+		).toBe(true);
+	});
+
 	it('selects each live serializer from an explicit path and record contract', () => {
 		const select = (owner: AmericanEnglishIntegrityOwner, path: string, kind: string) =>
 			(
@@ -208,7 +248,7 @@ describe('integrity owner successor planning', () => {
 			'assets/equipment/experiments/material-equipment-v1/manifest.json',
 			'canonical-json',
 			{ b: 2, a: 1 },
-			canonicalJsonSha256({ b: 2, a: 1 })
+			canonicalSha256({ b: 2, a: 1 })
 		],
 		[
 			'equipment-v2',
@@ -216,7 +256,7 @@ describe('integrity owner successor planning', () => {
 			'assets/equipment/experiments/material-equipment-v2/manifest.json',
 			'canonical-json',
 			{ b: 2, a: 1 },
-			canonicalJsonSha256V2({ b: 2, a: 1 })
+			canonicalSha256({ b: 2, a: 1 })
 		],
 		[
 			'equipment-v3',
@@ -487,6 +527,16 @@ describe('integrity binding classification', () => {
 				''
 			)
 		).toBe(true);
+		expect(
+			visualProductionIntegrityOwner.ownsPath(
+				'apps/web/static/runtime/enemies/monster-wiki-v1/wolves/wolf-gray-wolf/normal.webp'
+			)
+		).toBe(true);
+		expect(
+			visualProductionIntegrityOwner.ownsPath(
+				'apps/web/static/runtime/summonable-heroes-v1/manifest.json'
+			)
+		).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.ownsPath('packages/engine/src/hash.ts')).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.owns('packages/engine/src/story.ts', '')).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.owns('tools/skill-taxonomy-lib.ts', '')).toBe(true);
@@ -545,6 +595,62 @@ describe('integrity binding classification', () => {
 		);
 		expect(equipmentIntegrityOwner.regeneration?.checkCommand).not.toContain(
 			'export-equipment-image-profile'
+		);
+	});
+
+	it('materializes the wiki skill visual manifest self-inclusive byte budget', () => {
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/reseal-wiki-skill-visual-manifest.ts'
+		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
+			'apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json'
+		);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
+			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json'
+		);
+	});
+
+	it('materializes equipment runtime and integration self-derived outputs', () => {
+		expect(equipmentIntegrityOwner.intentMaterialization?.commands).toEqual(
+			expect.arrayContaining([
+				['pnpm', 'tsx', 'tools/reseal-equipment-prompt-lineage.ts'],
+				['pnpm', 'tsx', 'tools/reseal-equipment-promotion-authorization.ts'],
+				['pnpm', 'tsx', 'tools/reseal-equipment-content-expectations.ts'],
+				['pnpm', 'export:equipment-runtime-visuals'],
+				['pnpm', 'export:equipment-integration-report']
+			])
+		);
+		const commands = equipmentIntegrityOwner.intentMaterialization?.commands ?? [];
+		expect(
+			commands.some((command) => command.join(' ').includes('material-equipment-v2'))
+		).toBe(false);
+		expect(
+			commands.some((command) => command.join(' ').includes('equipment-image-profile'))
+		).toBe(false);
+		expect(
+			commands.findIndex((command) => command[command.length - 1] === 'export:equipment-runtime-visuals')
+		).toBeLessThan(
+			commands.findIndex((command) => command[command.length - 1] === 'export:equipment-integration-report')
+		);
+		expect(equipmentIntegrityOwner.intentMaterialization?.paths).toEqual(
+			expect.arrayContaining([
+				'apps/web/static/runtime/equipment-v1/manifest.json',
+				'tools/equipment-approved-source-contract.spec.ts',
+				'assets/equipment/approved/material-equipment-v1/reviews/runtime-v1/index.html',
+				'assets/equipment/approved/material-equipment-v1/integration-report.json'
+			])
+		);
+	});
+
+	it('materializes the runtime story envelope self-derived evidence hash', () => {
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'export:story-envelope'
+		]);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(
+			'docs/evidence/phase-6-story-envelope.json'
 		);
 	});
 
@@ -794,6 +900,134 @@ describe('integrity binding classification', () => {
 		);
 	});
 
+	it('discovers an affected leaf dependency through its registered sibling path', async () => {
+		const leafPath =
+			'assets/equipment/experiments/material-equipment-v2/assignments/f/bronze/heavy-armor-full-set-v2.json';
+		const planPath =
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json';
+		const leaf = { targetId: 'old-target' };
+		const projectedLeaf = { targetId: 'new-target' };
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: leafPath,
+						bytes: Buffer.from(JSON.stringify(leaf)),
+						projectedBytes: Buffer.from(JSON.stringify(projectedLeaf)),
+						binary: false
+					},
+					{
+						path: planPath,
+						bytes: Buffer.from(
+							JSON.stringify({
+								rootPackets: [
+									{
+										assignmentPath: leafPath,
+										assignmentCanonicalSha256: canonicalSha256(leaf)
+									}
+								]
+							})
+						),
+						binary: false
+					}
+				]
+			},
+			proposed([leafPath, planPath])
+		);
+		expect(report.problems).toEqual([]);
+		const intents = report.ownerPlans[0]!.successorIntents;
+		const leafIntent = intents.find(({ sourcePath }) => sourcePath === leafPath)!;
+		const planIntent = intents.find(({ sourcePath }) => sourcePath === planPath)!;
+		expect(leafIntent.projectedValueDigest).toBe(canonicalSha256(projectedLeaf));
+		expect(planIntent.dependencies).toEqual([
+			{ path: leafPath, digest: leafIntent.projectedValueDigest }
+		]);
+	});
+
+	it('connects an owner-materialized projected digest when the persisted binding is stale', async () => {
+		const planPath =
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json';
+		const activationPath =
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json';
+		const plan = { terminology: 'old', profileCanonicalSha256: 'a'.repeat(64) };
+		const projectedPlan = { terminology: 'new', profileCanonicalSha256: 'a'.repeat(64) };
+		const activation = { runPlanCanonicalSha256: 'f'.repeat(64) };
+		const projectedActivation = {
+			runPlanCanonicalSha256: canonicalSha256(projectedPlan)
+		};
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: planPath,
+						bytes: Buffer.from(JSON.stringify(plan)),
+						projectedBytes: Buffer.from(JSON.stringify(projectedPlan)),
+						binary: false
+					},
+					{
+						path: activationPath,
+						bytes: Buffer.from(JSON.stringify(activation)),
+						projectedBytes: Buffer.from(JSON.stringify(projectedActivation)),
+						binary: false
+					}
+				]
+			},
+			proposed([planPath, activationPath])
+		);
+		expect(report.problems).toEqual([]);
+		const intents = report.ownerPlans[0]!.successorIntents;
+		const planIntent = intents.find(({ sourcePath }) => sourcePath === planPath)!;
+		const activationIntent = intents.find(({ sourcePath }) => sourcePath === activationPath)!;
+		expect(planIntent.materializedValueDigest).toBe(canonicalSha256(projectedPlan));
+		expect(activationIntent.dependencies).toEqual([
+			{ path: planPath, digest: planIntent.projectedValueDigest }
+		]);
+	});
+
+	it('preserves authenticated materializer bytes while retaining dependency attestations', async () => {
+		const planPath =
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json';
+		const activationPath =
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/activation.json';
+		const plan = { terminology: 'old', profileCanonicalSha256: 'a'.repeat(64) };
+		const projectedPlan = { terminology: 'new', profileCanonicalSha256: 'a'.repeat(64) };
+		const activation = { runPlanCanonicalSha256: canonicalSha256(plan) };
+		const materializedActivation = {
+			runPlanCanonicalSha256: canonicalSha256(projectedPlan),
+			authorizationSha256: 'e'.repeat(64)
+		};
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: planPath,
+						bytes: Buffer.from(JSON.stringify(plan)),
+						projectedBytes: Buffer.from(JSON.stringify(projectedPlan)),
+						binary: false
+					},
+					{
+						path: activationPath,
+						bytes: Buffer.from(JSON.stringify(activation)),
+						projectedBytes: Buffer.from(JSON.stringify(materializedActivation)),
+						authoritativeProjectedBytes: true,
+						binary: false
+					}
+				]
+			},
+			proposed([planPath, activationPath])
+		);
+		expect(report.problems).toEqual([]);
+		const activationIntent = report.ownerPlans[0]!.successorIntents.find(
+			({ sourcePath }) => sourcePath === activationPath
+		)!;
+		expect(activationIntent.projectedValueDigest).toBe(
+			canonicalSha256(materializedActivation)
+		);
+		expect(activationIntent.dependencies).toEqual([
+			{ path: planPath, digest: canonicalSha256(projectedPlan) }
+		]);
+	});
+
 	it('produces the same explicit duplicate-digest result regardless of entry order', async () => {
 		const firstPath = 'assets/heroes/experiments/fixture/a/target.json';
 		const secondPath = 'assets/heroes/experiments/fixture/b/target.json';
@@ -860,6 +1094,17 @@ describe('integrity binding classification', () => {
 			proposed([visualPath])
 		);
 		expect(boundedArray.problems).toEqual([]);
+		const familySummaryPath =
+			'assets/enemies/experiments/family-affinity-v1/review/families/elementals/summary.json';
+		const familySummary = await classifyIntegrityBindings(
+			snapshot({
+				[familySummaryPath]: {
+					cells: [{ candidatePath: 'assets/enemies/candidate.png', candidateSha256: HASH }]
+				}
+			}),
+			proposed([familySummaryPath])
+		);
+		expect(familySummary.problems).toEqual([]);
 		const unboundedMap = await classifyIntegrityBindings(
 			snapshot({ [visualPath]: { references: { arbitrary: { sha256: HASH } } } }),
 			proposed([visualPath])

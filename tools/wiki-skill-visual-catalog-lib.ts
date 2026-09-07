@@ -231,7 +231,9 @@ function assertMatched(canonical: CanonicalRecord, mass: MassRecord): void {
 	}
 }
 
-async function formatManifest(manifest: WikiSkillVisualRuntimeManifest): Promise<Buffer> {
+export async function formatWikiSkillVisualManifest(
+	manifest: WikiSkillVisualRuntimeManifest
+): Promise<Buffer> {
 	const config = await resolveConfig(REPOSITORY_MANIFEST_PATH, { useCache: false });
 	return Buffer.from(
 		await format(JSON.stringify(manifest), {
@@ -265,12 +267,12 @@ export function assertWikiSkillVisualManagedBudget(
 	return managedDirectoryBytes;
 }
 
-async function finalizeManagedDirectorySummary(
+export async function finalizeWikiSkillVisualManagedDirectorySummary(
 	manifest: WikiSkillVisualRuntimeManifest
 ): Promise<WikiSkillVisualRuntimeManifest> {
 	let candidate = manifest;
 	for (let attempt = 0; attempt < 10; attempt += 1) {
-		const manifestBytes = await formatManifest(candidate);
+		const manifestBytes = await formatWikiSkillVisualManifest(candidate);
 		const managedDirectoryBytes = assertWikiSkillVisualManagedBudget(
 			candidate.summary.totalBytes,
 			manifestBytes.byteLength
@@ -439,7 +441,7 @@ export async function buildWikiSkillVisualCatalogFromAuthorities(
 	});
 	const records = generated.map(({ record }) => record);
 	const totalBytes = records.reduce((total, record) => total + record.bytes, 0);
-	const manifest = await finalizeManagedDirectorySummary({
+	const manifest = await finalizeWikiSkillVisualManagedDirectorySummary({
 		schemaVersion: 'wiki-skill-visual-catalog-v1',
 		exporterVersion: WIKI_SKILL_VISUAL_EXPORTER_VERSION,
 		encoder: {
@@ -496,7 +498,7 @@ export async function writeWikiSkillVisualCatalog(
 		for (const { record, buffer } of built.generated) {
 			await writeExclusive(path.join(stage, record.file), buffer);
 		}
-		const manifestBytes = await formatManifest(built.manifest);
+		const manifestBytes = await formatWikiSkillVisualManifest(built.manifest);
 		await writeExclusive(path.join(stage, 'manifest.json'), manifestBytes, true);
 		await assertBuiltInventory(stage, built, manifestBytes);
 		const existing = await lstat(outputRoot).catch((error: NodeJS.ErrnoException) => {
@@ -534,7 +536,7 @@ export async function checkWikiSkillVisualCatalog(
 	if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
 		throw new Error('Managed output root must be a non-symbolic-link directory');
 	}
-	const expectedManifest = await formatManifest(built.manifest);
+	const expectedManifest = await formatWikiSkillVisualManifest(built.manifest);
 	await assertBuiltInventory(outputRoot, built, expectedManifest);
 	for (const { record, buffer } of built.generated) {
 		const current = await readRegularFile(workspaceRoot, outputPath(record), 'derived skill icon');

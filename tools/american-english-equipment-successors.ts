@@ -11,6 +11,7 @@ import {
 	type IntegritySerializerId
 } from './american-english-integrity-contracts.js';
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
+import { selectEquipmentPromptLineagePaths } from './reseal-equipment-prompt-lineage.js';
 
 export const EQUIPMENT_INTEGRITY_PATH_PATTERNS = [
 	/^assets\/equipment\//u,
@@ -61,13 +62,35 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'equipment',
 	intentMaterialization: {
 		commands: [
+			['pnpm', 'tsx', 'tools/reseal-equipment-prompt-lineage.ts'],
+			['pnpm', 'tsx', 'tools/reseal-equipment-promotion-authorization.ts'],
 			['pnpm', 'tsx', 'tools/reseal-equipment-content-expectations.ts'],
-			['pnpm', 'tsx', 'tools/reseal-equipment-profile-plan.ts']
+			['pnpm', 'export:equipment-runtime-visuals'],
+			['pnpm', 'export:equipment-integration-report']
 		],
 		paths: [
+			'apps/web/static/runtime/equipment-v1/manifest.json',
+			'tools/equipment-approved-source-contract.spec.ts',
+			'assets/equipment/approved/material-equipment-v1/integration-report.json',
+			'assets/equipment/approved/material-equipment-v1/reviews/runtime-v1/index.html',
 			'packages/content/src/equipment.ts',
-			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json'
-		]
+			'tools/equipment-approved-source-contract.ts',
+			'assets/equipment/approved/material-equipment-v1/manifest.json',
+			'assets/equipment/approved/material-equipment-v1/receipts/promotion-v1.json',
+			'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json',
+			'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json',
+			'assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json'
+		],
+		selectPaths(paths) {
+			return [
+				...selectEquipmentPromptLineagePaths(paths),
+				...paths.filter((repositoryPath) =>
+					/^assets\/equipment\/experiments\/material-equipment-v3\/checkpoints\/checkpoint-3-[^/]+-pieces\.json$/u.test(
+						repositoryPath
+					)
+				)
+			];
+		}
 	},
 	regeneration: {
 		writeCommand:
@@ -79,11 +102,7 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 		return EQUIPMENT_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));
 	},
 	regeneratesPath(path) {
-		return (
-			this.ownsPath(path) &&
-			!path.includes('/runs/') &&
-			path !== 'tools/equipment-image-terminal-journal-v2.spec.ts'
-		);
+		return this.ownsPath(path) && !path.includes('/runs/');
 	},
 	owns(path, jsonPointer) {
 		if (!this.ownsPath(path)) return false;

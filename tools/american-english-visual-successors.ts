@@ -13,10 +13,11 @@ import {
 	type IntegritySerializerId
 } from './american-english-integrity-contracts.js';
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
+import { selectFamilyAffinitySourceLineagePaths } from './reseal-family-affinity-source-lineage.js';
 
 export const VISUAL_PRODUCTION_INTEGRITY_PATH_PATTERNS = [
 	/^assets\/(?:enemies|heroes|wiki)\//u,
-	/^apps\/web\/static\/runtime\/enemies\/fauna-family-v1\//u,
+	/^apps\/web\/static\/runtime\/(?:enemies\/monster-wiki-v1|summonable-heroes-v1)\//u,
 	/^apps\/web\/static\/wiki-media\/monsters\//u,
 	/^apps\/web\/static\/wiki-media\/skills\//u,
 	/^docs\/(?:affinity-|evidence\/fauna-family-|wiki\/creatures\/)/u,
@@ -35,7 +36,7 @@ export const VISUAL_PRODUCTION_FILE_BINDING_PATH_PATTERNS = [
 	/^assets\/(?:enemies|heroes|wiki)\/.*\/(?:review|reviews)\/.*\.(?:json|html|md)$/u,
 	/^assets\/(?:enemies|heroes|wiki)\/.*\/schemas\/.*\.json$/u,
 	/^assets\/heroes\/.*\/(?:scripts|tests)\/.*\.(?:py|ts)$/u,
-	/^apps\/web\/static\/(?:runtime\/enemies\/fauna-family-v1|wiki-media\/(?:monsters|skills))\//u,
+	/^apps\/web\/static\/(?:runtime\/(?:enemies\/monster-wiki-v1|summonable-heroes-v1)|wiki-media\/(?:monsters|skills))\//u,
 	/^docs\/(?:affinity-wave-scheduler\.md|evidence\/fauna-family-v1\/index\.html)$/u,
 	/^docs\/superpowers\/plans\/[^/]*(?:monster|skill-icon)[^/]*\.md$/u,
 	/^packages\/characters\/src\/(?:characters\.spec|index)\.ts$/u,
@@ -48,7 +49,7 @@ export const VISUAL_PRODUCTION_FILE_BINDING_PATH_PATTERNS = [
 
 export const VISUAL_PRODUCTION_BINARY_PATH_PATTERNS = [
 	/^assets\/(?:enemies|heroes|wiki)\/.*\.(?:png|webp)$/u,
-	/^apps\/web\/static\/(?:runtime\/enemies\/fauna-family-v1|wiki-media\/(?:monsters|skills))\/.*\.(?:png|webp)$/u
+	/^apps\/web\/static\/(?:runtime\/(?:enemies\/monster-wiki-v1|summonable-heroes-v1)|wiki-media\/(?:monsters|skills))\/.*\.(?:png|webp)$/u
 ] as const;
 
 function visualDigest(serializer: IntegritySerializerId, value: unknown): string {
@@ -70,15 +71,20 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'visual-production',
 	intentMaterialization: {
 		commands: [
+			['pnpm', 'tsx', 'tools/reseal-family-affinity-source-lineage.ts'],
 			['pnpm', 'tsx', 'tools/reseal-character-generation-expectations.ts'],
+			['pnpm', 'export:wiki-monster-visuals'],
 			['pnpm', 'export:player-visuals'],
+			['pnpm', 'export:summonable-hero-runtime'],
 			['pnpm', 'tsx', 'tools/reseal-skill-icon-content-bindings.ts'],
+			['pnpm', 'tsx', 'tools/reseal-wiki-skill-visual-manifest.ts'],
 			['pnpm', 'prettier', '--write', 'packages/contracts/src/character.ts']
 		],
 		paths: [
+			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json',
+			'apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json',
 			'packages/contracts/src/character.ts',
 			'packages/characters/src/characters.spec.ts',
-			'assets/heroes/visuals/forge-v2/catalog.json',
 			'assets/wiki/skills/icon-production-v2/overlay.json',
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v1/manifest.json',
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/completion.json',
@@ -90,13 +96,14 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json',
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json',
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json'
-		]
+		],
+		selectPaths: selectFamilyAffinitySourceLineagePaths
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm export:family-affinity-production && pnpm export:affinity-workflow && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-skill-visual-catalog && pnpm export:runtime-visuals && pnpm export:player-visuals && pnpm tsx tools/export-summonable-hero-runtime.ts && pnpm export:skill-icon-runtime',
+			'pnpm export:family-affinity-production && pnpm export:affinity-workflow && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-monster-visuals && pnpm export:wiki-skill-visual-catalog && pnpm export:player-visuals && pnpm export:summonable-hero-runtime && pnpm export:skill-icon-runtime',
 		checkCommand:
-			'pnpm check:family-affinity-production && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-skill-visual-catalog && pnpm validate:runtime-visuals && pnpm validate:player-visuals && pnpm tsx tools/export-summonable-hero-runtime.ts --check && pnpm check:skill-icon-runtime && pnpm validate:skill-icons'
+			'pnpm check:family-affinity-production && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-monster-visuals && pnpm validate:wiki-skill-visual-catalog && pnpm validate:player-visuals && pnpm validate:summonable-hero-runtime && pnpm check:skill-icon-runtime && pnpm validate:skill-icons'
 	},
 	serializerFor(path, kind) {
 		if (kind === 'raw-file')

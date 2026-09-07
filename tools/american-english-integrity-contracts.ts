@@ -98,6 +98,7 @@ export interface AmericanEnglishIntegrityOwner {
 	readonly intentMaterialization?: {
 		readonly commands: readonly (readonly string[])[];
 		readonly paths: readonly string[];
+		readonly selectPaths?: (trackedPaths: readonly string[]) => readonly string[];
 	};
 	ownsPath(path: string): boolean;
 	regeneratesPath(path: string): boolean;

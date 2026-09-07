@@ -26,6 +26,8 @@ export interface TrackedTreeEntry {
 	readonly bytes: Uint8Array;
 	readonly projectedPath?: string;
 	readonly projectedBytes?: Uint8Array;
+	/** Projected bytes produced by an authenticated owner materializer and already internally sealed. */
+	readonly authoritativeProjectedBytes?: boolean;
 	readonly binary: boolean;
 	readonly baselineBytes?: Uint8Array;
 	readonly binaryChanged?: boolean;
@@ -59,6 +61,8 @@ export interface IntegrityOwnerPlan {
 		readonly projectedValueDigest: string;
 		readonly currentRawDigest: string;
 		readonly projectedRawDigest: string;
+		/** Private plan-time digest before dependency propagation; stripped from serialized plans. */
+		readonly materializedValueDigest?: string;
 		/** Private plan-time bytes; stripped before a migration plan is serialized. */
 		readonly projectedBytes?: Uint8Array;
 		readonly dependencies: readonly {
@@ -337,9 +341,6 @@ async function buildOwnerPlan(
 	projectText: (value: string) => string
 ): Promise<IntegrityOwnerPlan | null> {
 	if (ownedBindings.length === 0 || owner.regeneration === null) return null;
-	const paths = [...new Set(ownedBindings.map(({ path: repositoryPath }) => repositoryPath))].sort(
-		compareCodepoints
-	);
 	const bindingsByPath = new Map<
 		string,
 		{ jsonPointer: string; field: string; kind: IntegrityBindingKind }[]
@@ -349,6 +350,33 @@ async function buildOwnerPlan(
 		pathBindings.push({ jsonPointer, field, kind });
 		bindingsByPath.set(repositoryPath, pathBindings);
 	}
+	const pathSet = new Set(ownedBindings.map(({ path: repositoryPath }) => repositoryPath));
+	const projectedSourceByPath = new Map(
+		[...entries].map(([sourcePath, entry]) => [entry.projectedPath ?? sourcePath, sourcePath])
+	);
+	for (const repositoryPath of pathSet) {
+		const entry = entries.get(repositoryPath);
+		if (entry === undefined || entry.binary) continue;
+		const currentValue = entryValue(entry, repositoryPath, false);
+		for (const binding of bindingsByPath.get(repositoryPath) ?? []) {
+			if (binding.jsonPointer === '') continue;
+			for (const pathPointer of registeredPathPointers(owner.id, binding.jsonPointer)) {
+				const reference = getJsonPointer(currentValue, pathPointer);
+				if (typeof reference !== 'string') continue;
+				const candidates = [
+					reference,
+					path.posix.normalize(path.posix.join(path.posix.dirname(repositoryPath), reference))
+				];
+				for (const candidate of candidates) {
+					const sourcePath = entries.has(candidate)
+						? candidate
+						: projectedSourceByPath.get(candidate);
+					if (sourcePath !== undefined && owner.ownsPath(sourcePath)) pathSet.add(sourcePath);
+				}
+			}
+		}
+	}
+	const paths = [...pathSet].sort(compareCodepoints);
 	const drafts = paths.flatMap((repositoryPath) => {
 		const entry = entries.get(repositoryPath);
 		if (entry === undefined) return [];
@@ -374,25 +402,50 @@ async function buildOwnerPlan(
 				currentValue: entryValue(entry, repositoryPath, false),
 				projectedRawBytes: entry.projectedBytes ?? entry.bytes,
 				currentRawBytes: entry.bytes,
-				pathBindings
+				pathBindings,
+				authoritativeProjectedBytes: entry.authoritativeProjectedBytes ?? false
 			}
 		];
 	});
 	const digestSources = new Map<string, string[]>();
+	const projectedDigestSources = new Map<string, string[]>();
+	const projectedDigestBySource = new Map<string, string>();
 	const currentDigestBySource = new Map<string, string>();
 	for (const draft of drafts) {
-		const [current] = await owner.planSuccessors({
-			nodes: [
-				{
-					path: draft.sourcePath,
-					kind: draft.kind,
-					serializer: draft.serializer,
-					value: draft.currentValue,
-					rawBytes: draft.currentRawBytes,
-					dependsOn: []
-				}
-			]
-		});
+		const [current, projected] = await Promise.all([
+			owner.planSuccessors({
+				nodes: [
+					{
+						path: draft.sourcePath,
+						kind: draft.kind,
+						serializer: draft.serializer,
+						value: draft.currentValue,
+						rawBytes: draft.currentRawBytes,
+						dependsOn: []
+					}
+				]
+			}),
+			owner.planSuccessors({
+				nodes: [
+					{
+						path: draft.sourcePath,
+						kind: draft.kind,
+						serializer: draft.serializer,
+						value: draft.value,
+						rawBytes: draft.projectedRawBytes,
+						dependsOn: []
+					}
+				]
+			})
+		]).then(([current, projected]) => [current[0], projected[0]]);
+		if (projected !== undefined) {
+			projectedDigestBySource.set(draft.sourcePath, projected.digest);
+			for (const digest of [projected.digest, projected.rawDigest]) {
+				const sources = projectedDigestSources.get(digest) ?? [];
+				if (!sources.includes(draft.sourcePath)) sources.push(draft.sourcePath);
+				projectedDigestSources.set(digest, sources);
+			}
+		}
 		if (current !== undefined) {
 			currentDigestBySource.set(draft.sourcePath, current.digest);
 			const sources = digestSources.get(current.digest) ?? [];
@@ -421,10 +474,15 @@ async function buildOwnerPlan(
 			const projectedPointer = projectText(binding.jsonPointer);
 			const current = getJsonPointer(draft.currentValue, binding.jsonPointer);
 			if (typeof current !== 'string') continue;
-			const candidateSources = digestSources.get(current) ?? [];
+			const projected = getJsonPointer(draft.value, projectedPointer);
+			const currentCandidateSources = digestSources.get(current) ?? [];
+			const projectedCandidateSources =
+				typeof projected === 'string' ? (projectedDigestSources.get(projected) ?? []) : [];
+			const candidateSources =
+				currentCandidateSources.length > 0 ? currentCandidateSources : projectedCandidateSources;
 			const pathReferences = referencedSourcePaths(
 				draft.sourcePath,
-				draft.currentValue,
+				currentCandidateSources.length > 0 ? draft.currentValue : draft.value,
 				registeredPathPointers(owner.id, binding.jsonPointer),
 				candidateSources,
 				projectedBySource
@@ -445,19 +503,21 @@ async function buildOwnerPlan(
 						? ('raw-digest' as const)
 						: ('digest' as const);
 				dependsOn.add(dependencyPath);
-				dependencyBindings.push({
-					sourcePath: dependencyPath,
-					jsonPointer: projectedPointer,
-					replacement
-				});
-				for (const pathReference of pathReferences.filter(
-					({ sourcePath }) => sourcePath === dependencySource
-				)) {
+				if (!draft.authoritativeProjectedBytes) {
 					dependencyBindings.push({
 						sourcePath: dependencyPath,
-						jsonPointer: projectText(pathReference.jsonPointer),
-						replacement: 'path'
+						jsonPointer: projectedPointer,
+						replacement
 					});
+					for (const pathReference of pathReferences.filter(
+						({ sourcePath }) => sourcePath === dependencySource
+					)) {
+						dependencyBindings.push({
+							sourcePath: dependencyPath,
+							jsonPointer: projectText(pathReference.jsonPointer),
+							replacement: 'path'
+						});
+					}
 				}
 			} else {
 				externalDependencies.push({
@@ -499,6 +559,9 @@ async function buildOwnerPlan(
 			.update(drafts.find(({ sourcePath }) => sourcePath === successor.sourcePath)!.currentRawBytes)
 			.digest('hex'),
 		projectedRawDigest: successor.rawDigest,
+		...(projectedDigestBySource.get(successor.sourcePath) === undefined
+			? {}
+			: { materializedValueDigest: projectedDigestBySource.get(successor.sourcePath)! }),
 		projectedBytes: successor.rawBytes,
 		dependencies: successor.dependencies,
 		externalDependencies: successor.externalDependencies,
