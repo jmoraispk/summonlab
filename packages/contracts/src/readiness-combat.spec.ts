@@ -199,6 +199,27 @@ const state = {
 	result: null
 } as const;
 
+const terminalResult = {
+	resultVersion: 'combat-result-v1',
+	resultId: ID.event,
+	attemptId: ID.attempt,
+	modeId: 'agent-readiness-v1',
+	rulesVersion: 'combat-rules-v1',
+	outcome: 'victory',
+	endedAtTick: state.tick,
+	finalCombatants: state.combatants,
+	claims: [],
+	decisiveEventIds: [ID.event],
+	safetyStop: null,
+	traceHash: HASH.trace
+} as const;
+
+const completedState = {
+	...state,
+	status: 'complete',
+	result: terminalResult
+} as const;
+
 describe('readiness combat contracts', () => {
 	it('accepts a bounded canonical readiness state and rejects unknown state fields', () => {
 		expect(ReadinessCombatStateV1Schema.parse(state)).toStrictEqual(state);
@@ -211,32 +232,35 @@ describe('readiness combat contracts', () => {
 	});
 
 	it('requires completed-state combatants to equal the result final combatants', () => {
-		const result = {
-			resultVersion: 'combat-result-v1',
-			resultId: ID.event,
-			attemptId: ID.attempt,
-			modeId: 'agent-readiness-v1',
-			rulesVersion: 'combat-rules-v1',
-			outcome: 'victory',
-			endedAtTick: state.tick,
-			finalCombatants: state.combatants,
-			claims: [],
-			decisiveEventIds: [ID.event],
-			safetyStop: null,
-			traceHash: HASH.trace
-		} as const;
-		const completed = { ...state, status: 'complete' as const, result };
-		expect(ReadinessCombatStateV1Schema.safeParse(completed).success).toBe(true);
+		expect(ReadinessCombatStateV1Schema.safeParse(completedState).success).toBe(true);
 		expect(
 			ReadinessCombatStateV1Schema.safeParse({
-				...completed,
+				...completedState,
 				combatants: {
-					...completed.combatants,
+					...completedState.combatants,
 					[ID.hero]: {
 						...hero,
 						readiness: { ...hero.readiness, value: 9_999, exactNumerator: 9_999 }
 					}
 				}
+			}).success
+		).toBe(false);
+	});
+
+	it('rejects a completed readiness state carrying a legacy-mode result', () => {
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...completedState,
+				result: { ...terminalResult, modeId: 'legacy-auto-v1' }
+			}).success
+		).toBe(false);
+	});
+
+	it('rejects a completed readiness state whose result ended on another tick', () => {
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...completedState,
+				result: { ...terminalResult, endedAtTick: state.tick - 1 }
 			}).success
 		).toBe(false);
 	});

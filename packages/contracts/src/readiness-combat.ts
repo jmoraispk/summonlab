@@ -655,6 +655,20 @@ export const ReadinessCombatStateV1Schema = z
 				message: 'Combat result must belong to the state attempt'
 			});
 		}
+		if (state.result !== null && state.result.modeId !== 'agent-readiness-v1') {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'modeId'],
+				message: 'Readiness combat state requires an agent-readiness result'
+			});
+		}
+		if (state.result !== null && state.result.endedAtTick !== state.tick) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'endedAtTick'],
+				message: 'Combat result end tick must match the completed readiness state tick'
+			});
+		}
 		if (
 			state.result !== null &&
 			!structurallyEqual(state.combatants, state.result.finalCombatants)
