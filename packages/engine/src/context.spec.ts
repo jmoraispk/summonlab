@@ -126,6 +126,11 @@ describe('hero decision context', () => {
 				reactionPriority: 0,
 				recoveryTicks: 2,
 				manaCost: 0,
+				conflictPolicy: {
+					invalidTarget: 'cancel',
+					occupiedDestination: 'cancel',
+					cancellationRefund: { mana: 'full', readiness: 'full' }
+				},
 				fallbackOptions: [
 					{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
 				]

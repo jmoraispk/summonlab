@@ -1,5 +1,10 @@
 export * from './catch-up.js';
 export * from './domains/combat/capability.js';
+export {
+	applyCombatChoiceBatch,
+	combatChoiceBatchHash,
+	type CombatChoiceBatchResolution
+} from './domains/combat/arbitration.js';
 export * from './domains/combat/readiness.js';
 export {
 	purposeKeyedInteger,

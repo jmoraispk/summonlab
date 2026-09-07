@@ -205,6 +205,16 @@ export const CombatFallbackOptionSchema = z
 	})
 	.strict();
 
+export const CombatActionConflictPolicySchema = z
+	.object({
+		invalidTarget: z.enum(['selected-fallback', 'cancel']),
+		occupiedDestination: z.enum(['selected-fallback', 'cancel']),
+		cancellationRefund: z
+			.object({ mana: z.enum(['full', 'none']), readiness: z.enum(['full', 'none']) })
+			.strict()
+	})
+	.strict();
+
 export const CombatLegalActionSchema = z
 	.object({
 		actionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
@@ -216,6 +226,7 @@ export const CombatLegalActionSchema = z
 		reactionPriority: z.number().int().min(-100).max(100),
 		recoveryTicks: z.number().int().positive().max(100_000),
 		manaCost: z.number().int().nonnegative().max(1_000_000),
+		conflictPolicy: CombatActionConflictPolicySchema,
 		fallbackOptions: z.array(CombatFallbackOptionSchema).max(16)
 	})
 	.strict()
@@ -301,6 +312,7 @@ export const CombatLegalActionTemplateSchema = z
 		reactionPriority: z.number().int().min(-100).max(100),
 		recoveryTicks: z.number().int().positive().max(100_000),
 		manaCost: z.number().int().nonnegative().max(1_000_000),
+		conflictPolicy: CombatActionConflictPolicySchema,
 		fallbackOptions: z.array(CombatFallbackOptionSchema).min(1).max(16),
 		resolutionProfile: CombatActionResolutionProfileSchema
 	})
@@ -612,6 +624,20 @@ export const CombatResolvedEffectSchema = z.discriminatedUnion('kind', [
 		.strict(),
 	z
 		.object({
+			kind: z.literal('readiness'),
+			combatantId: EntityIdSchema,
+			before: CombatReadinessSchema,
+			after: CombatReadinessSchema,
+			exactNumeratorDelta: z.number().int()
+		})
+		.strict()
+		.refine(
+			(effect) =>
+				effect.after.exactNumerator - effect.before.exactNumerator === effect.exactNumeratorDelta,
+			{ message: 'Readiness delta is inconsistent' }
+		),
+	z
+		.object({
 			kind: z.literal('condition'),
 			combatantId: EntityIdSchema,
 			operation: z.enum(['applied', 'removed']),
@@ -636,6 +662,7 @@ export const CombatResolvedEventSchema = z
 		originalIntent: CombatActionIntentSchema,
 		conflictingEventId: EntityIdSchema.nullable(),
 		fallbackApplied: CombatFallbackOptionSchema.nullable(),
+		refundApplied: CombatActionConflictPolicySchema.shape.cancellationRefund.nullable(),
 		finalOutcome: z.enum(['applied', 'superseded', 'canceled']),
 		effects: z.array(CombatResolvedEffectSchema).max(256)
 	})
@@ -656,6 +683,20 @@ export const CombatResolvedEventSchema = z
 				code: 'custom',
 				path: ['originalIntent'],
 				message: 'Resolved event must bind to its original intent'
+			});
+		}
+		if ((event.finalOutcome === 'canceled') !== (event.refundApplied !== null)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['refundApplied'],
+				message: 'Only a canceled combat action records its applied refund policy'
+			});
+		}
+		if ((event.finalOutcome === 'superseded') !== (event.fallbackApplied !== null)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['fallbackApplied'],
+				message: 'A superseded combat action must record its applied fallback'
 			});
 		}
 	});
@@ -1136,6 +1177,7 @@ export type ActorDecisionView = z.infer<typeof ActorDecisionViewSchema>;
 export type ActorSelfDecisionState = z.infer<typeof ActorSelfDecisionStateSchema>;
 export type CombatActorContextState = z.infer<typeof CombatActorContextStateSchema>;
 export type CombatActionIntent = z.infer<typeof CombatActionIntentSchema>;
+export type CombatActionConflictPolicy = z.infer<typeof CombatActionConflictPolicySchema>;
 export type CombatAdvance = z.infer<typeof CombatAdvanceSchema>;
 export type CombatChoiceBatchV1 = z.infer<typeof CombatChoiceBatchV1Schema>;
 export type CombatClaim = z.infer<typeof CombatClaimSchema>;

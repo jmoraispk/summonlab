@@ -4,6 +4,7 @@ import {
 	ActorDecisionViewSchema,
 	CombatAdvanceSchema,
 	CombatChoiceBatchV1Schema,
+	CombatActionConflictPolicySchema,
 	CombatClaimSchema,
 	CombatLegalActionSchema,
 	CombatLegalActionTemplateSchema,
@@ -109,6 +110,11 @@ const legalAction = {
 	reactionPriority: 0,
 	recoveryTicks: 8,
 	manaCost: 4,
+	conflictPolicy: {
+		invalidTarget: 'selected-fallback',
+		occupiedDestination: 'selected-fallback',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	},
 	fallbackOptions: [
 		{
 			fallbackId: 'hold-ground',
@@ -127,6 +133,7 @@ const legalActionTemplate = {
 	reactionPriority: legalAction.reactionPriority,
 	recoveryTicks: legalAction.recoveryTicks,
 	manaCost: legalAction.manaCost,
+	conflictPolicy: legalAction.conflictPolicy,
 	fallbackOptions: legalAction.fallbackOptions,
 	resolutionProfile: {
 		profileKind: 'attack',
@@ -158,6 +165,11 @@ const zeroManaGuardTemplate = {
 	reactionPriority: 0,
 	recoveryTicks: 2,
 	manaCost: 0,
+	conflictPolicy: {
+		invalidTarget: 'cancel',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	},
 	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
 	resolutionProfile: {
 		profileKind: 'non-damaging',
@@ -652,6 +664,7 @@ describe('readiness combat contracts', () => {
 			originalIntent: intent,
 			conflictingEventId: null,
 			fallbackApplied: null,
+			refundApplied: null,
 			finalOutcome: 'applied',
 			effects: [
 				{
@@ -680,6 +693,54 @@ describe('readiness combat contracts', () => {
 		]) {
 			expect(CombatResolvedEventSchema.safeParse(contradictoryEvent).success).toBe(false);
 		}
+		expect(
+			CombatResolvedEventSchema.safeParse({
+				...event,
+				finalOutcome: 'canceled',
+				refundApplied: null
+			}).success
+		).toBe(false);
+		expect(
+			CombatResolvedEventSchema.safeParse({
+				...event,
+				finalOutcome: 'superseded',
+				fallbackApplied: null
+			}).success
+		).toBe(false);
+	});
+
+	it('requires explicit authored conflict and cancellation refund policy', () => {
+		const policy = {
+			invalidTarget: 'selected-fallback',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'none', readiness: 'full' }
+		} as const;
+		expect(CombatActionConflictPolicySchema.parse(policy)).toStrictEqual(policy);
+		expect(
+			CombatLegalActionSchema.safeParse({ ...legalAction, conflictPolicy: undefined }).success
+		).toBe(false);
+		expect(
+			CombatResolvedEventSchema.safeParse({
+				...{
+					eventVersion: 'combat-resolved-event-v1',
+					eventId: ID.event,
+					attemptId: ID.attempt,
+					windowId: ID.window,
+					tick: 12,
+					actorId: ID.hero,
+					actionId: legalAction.actionId,
+					snapshotHash: HASH.snapshot,
+					actorViewHash: HASH.view,
+					legalActionSetHash: HASH.legal,
+					originalIntent: intent,
+					conflictingEventId: ID.action,
+					fallbackApplied: null,
+					finalOutcome: 'canceled',
+					effects: []
+				},
+				refundApplied: policy.cancellationRefund
+			}).success
+		).toBe(true);
 	});
 
 	it('validates safety stops and idempotent typed claims', () => {

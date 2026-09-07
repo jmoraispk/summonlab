@@ -113,6 +113,11 @@ function action(
 		reactionPriority: 0,
 		recoveryTicks: 4,
 		manaCost: 2,
+		conflictPolicy: {
+			invalidTarget: 'cancel',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		},
 		fallbackOptions: [
 			{ fallbackId: 'hold-ground', publicLabel: 'Hold ground', target: { kind: 'self' } }
 		]
@@ -135,6 +140,11 @@ function actionTemplate(
 		reactionPriority: fullAction.reactionPriority,
 		recoveryTicks: fullAction.recoveryTicks,
 		manaCost: fullAction.manaCost,
+		conflictPolicy: {
+			invalidTarget: 'cancel',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		},
 		fallbackOptions: fullAction.fallbackOptions,
 		resolutionProfile: {
 			profileKind: 'attack',
@@ -169,6 +179,11 @@ function zeroManaGuardTemplate(): CombatLegalActionTemplate {
 		reactionPriority: 0,
 		recoveryTicks: 2,
 		manaCost: 0,
+		conflictPolicy: {
+			invalidTarget: 'cancel',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		},
 		fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
 		resolutionProfile: {
 			profileKind: 'non-damaging',
@@ -413,6 +428,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									conflictPolicy: {
+										invalidTarget: 'cancel',
+										occupiedDestination: 'cancel',
+										cancellationRefund: { mana: 'full', readiness: 'full' }
+									},
 									resolutionProfile: {
 										profileKind: 'non-damaging',
 										rulesVersion: 'combat-rules-v1',
@@ -457,6 +477,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									conflictPolicy: {
+										invalidTarget: 'cancel',
+										occupiedDestination: 'cancel',
+										cancellationRefund: { mana: 'full', readiness: 'full' }
+									},
 									resolutionProfile: {
 										profileKind: 'non-damaging',
 										rulesVersion: 'combat-rules-v1',
@@ -502,6 +527,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									conflictPolicy: {
+										invalidTarget: 'cancel',
+										occupiedDestination: 'cancel',
+										cancellationRefund: { mana: 'full', readiness: 'full' }
+									},
 									resolutionProfile: {
 										profileKind: 'non-damaging',
 										rulesVersion: 'combat-rules-v1',
@@ -744,6 +774,11 @@ describe('frozen combat decision windows', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: {
 						profileKind: 'non-damaging',
 						rulesVersion: 'combat-rules-v1',

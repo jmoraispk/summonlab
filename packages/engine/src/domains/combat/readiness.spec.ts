@@ -28,6 +28,11 @@ const ZERO_MANA_GUARD_TEMPLATE = {
 	reactionPriority: 0,
 	recoveryTicks: 2,
 	manaCost: 0,
+	conflictPolicy: {
+		invalidTarget: 'cancel',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	},
 	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
 	resolutionProfile: {
 		profileKind: 'non-damaging',
@@ -141,6 +146,11 @@ const ACTION = {
 	reactionPriority: 0,
 	recoveryTicks: 3,
 	manaCost: 0,
+	conflictPolicy: {
+		invalidTarget: 'cancel',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	},
 	fallbackOptions: []
 } as const satisfies CombatLegalAction;
 

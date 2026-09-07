@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import type {
 	CombatActionResolutionProfile,
 	CombatEquipmentProfile,
+	CombatLegalAction,
+	CombatLegalActionTemplate,
 	CombatSkillDefinition,
 	LearnedCombatSkillState
 } from '@summonlab/contracts';
@@ -112,6 +114,11 @@ describe('combat legal actions', () => {
 					reactionPriority: 1,
 					recoveryTicks: 3,
 					manaCost: 0,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [
 						{
@@ -134,6 +141,11 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }]
 				},
@@ -146,6 +158,11 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [
 						{
@@ -164,6 +181,11 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 4,
 					manaCost: 1,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: ATTACK_RESOLUTION,
 					fallbackOptions: [
 						{
@@ -193,7 +215,7 @@ describe('combat legal actions', () => {
 	it('rejects duplicate action IDs and actions without an authored fallback', () => {
 		const actorId = deterministicUuid('duplicate-action-actor');
 		const windowId = deterministicUuid('duplicate-action-window');
-		const base = {
+		const base: CombatLegalActionTemplate = {
 			actionId: 'guard-self',
 			actionKind: 'guard' as const,
 			skillId: null,
@@ -202,6 +224,11 @@ describe('combat legal actions', () => {
 			reactionPriority: 0,
 			recoveryTicks: 2,
 			manaCost: 0,
+			conflictPolicy: {
+				invalidTarget: 'cancel',
+				occupiedDestination: 'cancel',
+				cancellationRefund: { mana: 'full', readiness: 'full' }
+			},
 			resolutionProfile: NON_DAMAGING_RESOLUTION,
 			fallbackOptions: [
 				{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
@@ -243,13 +270,18 @@ describe('combat legal actions', () => {
 		const actorId = deterministicUuid('affordability-actor');
 		const targetId = deterministicUuid('affordability-target');
 		const windowId = deterministicUuid('affordability-window');
-		const base = {
+		const base: Omit<CombatLegalActionTemplate, 'actionId' | 'manaCost'> = {
 			actionKind: 'guard' as const,
 			skillId: null,
 			publicLabel: 'Guard',
 			targetContract: { kind: 'self' as const },
 			reactionPriority: 0,
 			recoveryTicks: 2,
+			conflictPolicy: {
+				invalidTarget: 'cancel',
+				occupiedDestination: 'cancel',
+				cancellationRefund: { mana: 'full', readiness: 'full' }
+			},
 			fallbackOptions: [
 				{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
 			],
@@ -269,6 +301,11 @@ describe('combat legal actions', () => {
 					skillId: 'combat-skill-basic-sword-strike',
 					targetContract: { kind: 'entity', allowedCombatantIds: [targetId] },
 					manaCost: 5,
+					conflictPolicy: {
+						invalidTarget: 'cancel',
+						occupiedDestination: 'cancel',
+						cancellationRefund: { mana: 'full', readiness: 'full' }
+					},
 					resolutionProfile: ATTACK_RESOLUTION
 				}
 			]
@@ -282,7 +319,7 @@ describe('combat legal actions', () => {
 		const firstTargetId = deterministicUuid('canonical-first-target');
 		const secondTargetId = deterministicUuid('canonical-second-target');
 		const actionInstanceId = deterministicUuid('canonical-action-instance');
-		const base = {
+		const base: CombatLegalAction = {
 			actionId: 'choose-target',
 			actionInstanceId,
 			actionKind: 'attack' as const,
@@ -295,6 +332,11 @@ describe('combat legal actions', () => {
 			reactionPriority: 0,
 			recoveryTicks: 3,
 			manaCost: 0,
+			conflictPolicy: {
+				invalidTarget: 'cancel',
+				occupiedDestination: 'cancel',
+				cancellationRefund: { mana: 'full', readiness: 'full' }
+			},
 			fallbackOptions: [
 				{
 					fallbackId: 'second-choice',
@@ -313,8 +355,8 @@ describe('combat legal actions', () => {
 			{
 				...base,
 				targetContract: {
-					...base.targetContract,
-					allowedCombatantIds: [...base.targetContract.allowedCombatantIds].reverse()
+					kind: 'entity',
+					allowedCombatantIds: [firstTargetId, secondTargetId]
 				},
 				fallbackOptions: [...base.fallbackOptions].reverse()
 			}

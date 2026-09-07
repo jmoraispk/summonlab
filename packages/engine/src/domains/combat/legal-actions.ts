@@ -104,6 +104,7 @@ export function authorCombatLegalActions(
 				reactionPriority: action.reactionPriority,
 				recoveryTicks: action.recoveryTicks,
 				manaCost: action.manaCost,
+				conflictPolicy: action.conflictPolicy,
 				fallbackOptions: action.fallbackOptions
 			}))
 	);

@@ -13,7 +13,12 @@ import {
 	type DamageTag,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1, COMBAT_SKILLS_BY_ID } from '@summonlab/content';
+import {
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1,
+	COMBAT_SKILLS_BY_ID,
+	COMBAT_SKILL_CONFLICT_POLICIES_V1
+} from '@summonlab/content';
 
 import { hashCanonical } from '../../hash.js';
 import { armourReduction } from './capability.js';
@@ -79,7 +84,7 @@ export type ResolveCombatActionInput = Readonly<{
 	rules: CombatRulesV1;
 }>;
 
-type DerivedActionAuthority = Readonly<{
+export type BoundCombatActionAuthority = Readonly<{
 	view: ActorDecisionView;
 	legalAction: CombatLegalAction;
 	template: CombatLegalActionTemplate;
@@ -145,7 +150,7 @@ function rederiveActionAuthority(
 	state: ReadinessCombatStateV1,
 	intent: CombatActionIntent,
 	rules: CombatRulesV1
-): DerivedActionAuthority {
+): BoundCombatActionAuthority {
 	if (
 		intent.attemptId !== state.attemptId ||
 		intent.tick !== state.tick ||
@@ -235,7 +240,9 @@ function validateResolutionProfile(
 		!skill.deliveryTags.includes(profile.deliveryTag) ||
 		!masteryStep ||
 		masteryStep.accuracyBasisPoints !== profile.skillAccuracyBasisPoints ||
-		!sameStringSet(skill.damageTags, profile.damage.tags)
+		!sameStringSet(skill.damageTags, profile.damage.tags) ||
+		hashCanonical(COMBAT_SKILL_CONFLICT_POLICIES_V1[legalAction.skillId]) !==
+			hashCanonical(legalAction.conflictPolicy)
 	) {
 		throw new Error('Combat resolution profile does not match the immutable skill catalog');
 	}
@@ -489,7 +496,25 @@ export function resolveCombatAction(input: ResolveCombatActionInput): CombatActi
 	const state = ReadinessCombatStateV1Schema.parse(input.state);
 	const intent = CombatActionIntentSchema.parse(input.intent);
 	const rules = immutableRules(input.rules);
-	const { legalAction, template } = rederiveActionAuthority(state, intent, rules);
+	const authority = rederiveActionAuthority(state, intent, rules);
+	return resolveBoundCombatAction({ state, intent, rules, authority });
+}
+
+/**
+ * Internal same-window entry point. The package root intentionally does not export it: callers
+ * must first bind authority through the frozen window, while arbitration reuses that already
+ * validated authority against progressive canonical state.
+ */
+export function resolveBoundCombatAction(input: {
+	state: ReadinessCombatStateV1;
+	intent: CombatActionIntent;
+	rules: CombatRulesV1;
+	authority: BoundCombatActionAuthority;
+}): CombatActionResolution {
+	const state = ReadinessCombatStateV1Schema.parse(input.state);
+	const intent = CombatActionIntentSchema.parse(input.intent);
+	const rules = immutableRules(input.rules);
+	const { legalAction, template } = input.authority;
 	validateResolutionProfile(template.resolutionProfile, legalAction, rules);
 
 	const actor = state.combatants[intent.actorId];

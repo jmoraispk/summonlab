@@ -59,6 +59,11 @@ function attackTemplate(resolutionProfile = profile()): CombatLegalActionTemplat
 		reactionPriority: 0,
 		recoveryTicks: 4,
 		manaCost: 2,
+		conflictPolicy: {
+			invalidTarget: 'cancel',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'none', readiness: 'none' }
+		},
 		fallbackOptions: [
 			{ fallbackId: 'hold-ground', publicLabel: 'Hold Ground', target: { kind: 'self' } }
 		],
@@ -75,6 +80,11 @@ const GUARD_TEMPLATE = {
 	reactionPriority: 0,
 	recoveryTicks: 2,
 	manaCost: 0,
+	conflictPolicy: {
+		invalidTarget: 'cancel',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	},
 	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
 	resolutionProfile: {
 		profileKind: 'non-damaging',
@@ -404,6 +414,27 @@ describe('authoritative combat action resolution', () => {
 			).toThrow();
 			expect(hashCanonical(canonical)).toBe(before);
 		}
+	});
+
+	it('rejects an action conflict policy that drifts from its immutable skill', () => {
+		const canonical = state();
+		const template = canonical.actorContexts[ID.actor]!.legalActionTemplates.find(
+			(action) => action.actionId === 'cross-cut'
+		)!;
+		template.conflictPolicy = {
+			invalidTarget: 'selected-fallback',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		};
+		const before = hashCanonical(canonical);
+		expect(() =>
+			resolveCombatAction({
+				state: canonical,
+				intent: decision(canonical).intent,
+				rules: COMBAT_RULES_V1
+			})
+		).toThrow('skill catalog');
+		expect(hashCanonical(canonical)).toBe(before);
 	});
 
 	it('rejects caller-modified combat rules before resolving canonical state', () => {

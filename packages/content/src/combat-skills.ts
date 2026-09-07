@@ -64,6 +64,20 @@ export const COMBAT_SKILLS_BY_ID = Object.freeze(
 	>
 );
 
+/** Readiness-v1 arbitration policy sidecar; kept outside the frozen v1 skill catalog. */
+export const COMBAT_SKILL_CONFLICT_POLICIES_V1 = deepFreeze({
+	[BASIC_SWORD_STRIKE.skillId]: {
+		invalidTarget: 'cancel',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'none', readiness: 'none' }
+	},
+	[BASIC_BOW_SHOT.skillId]: {
+		invalidTarget: 'selected-fallback',
+		occupiedDestination: 'cancel',
+		cancellationRefund: { mana: 'full', readiness: 'full' }
+	}
+} as const);
+
 function canonicalJson(value: unknown): string {
 	if (value === null || typeof value !== 'object') return JSON.stringify(value);
 	if (Array.isArray(value)) return `[${value.map((item) => canonicalJson(item)).join(',')}]`;
