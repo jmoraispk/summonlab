@@ -118,13 +118,17 @@ function attackProfile(): AttackProfile {
 	};
 }
 
-function attackTemplate(actionId: string, policy = NO_REFUND): CombatLegalActionTemplate {
+function attackTemplate(
+	actionId: string,
+	policy = NO_REFUND,
+	targetId: string = ID.target
+): CombatLegalActionTemplate {
 	return {
 		actionId,
 		actionKind: 'attack',
 		skillId: 'combat-skill-basic-sword-strike',
 		publicLabel: actionId,
-		targetContract: { kind: 'entity', allowedCombatantIds: [ID.target] },
+		targetContract: { kind: 'entity', allowedCombatantIds: [targetId] },
 		reactionPriority: 0,
 		recoveryTicks: 5,
 		manaCost: 3,
@@ -396,6 +400,116 @@ describe('same-window combat arbitration', () => {
 			value: 1_000,
 			exactNumerator: 1_000,
 			recoveryUntilTick: 25
+		});
+	});
+
+	it('attributes a downed actor cancellation to the earlier downing event even when its intent targets another combatant', () => {
+		const relativeTarget = {
+			kind: 'entity-relative-position' as const,
+			combatantId: ID.c,
+			relation: 'behind' as const
+		};
+		const fallback = { kind: 'tile' as const, position: { x: 5, y: 5 } };
+		const cancelOnInvalidActor: CombatActionConflictPolicy = {
+			invalidTarget: 'cancel',
+			occupiedDestination: 'selected-fallback',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		};
+		let observed: ReturnType<typeof applyCombatChoiceBatch> | undefined;
+		for (let index = 0; index < 100 && !observed; index += 1) {
+			const canonical = state({
+				include: [ID.a, ID.b, ID.c],
+				actionByActor: {
+					[ID.a]: attackTemplate('down-b', NO_REFUND, ID.b),
+					[ID.b]: moveTemplate({
+						actionId: 'move-around-c',
+						target: relativeTarget,
+						fallback,
+						conflictPolicy: cancelOnInvalidActor
+					})
+				},
+				readiness: { [ID.a]: 12_000, [ID.b]: 11_000, [ID.c]: 0 },
+				seed: sha256Hex(`arbitration-down-actor-${index}`)
+			});
+			canonical.combatants[ID.b]!.resources.health.current = 1;
+			const candidate = applyCombatChoiceBatch(
+				canonical,
+				choiceBatch(canonical, {
+					[ID.a]: { actionId: 'down-b', target: { kind: 'entity', combatantId: ID.b } },
+					[ID.b]: { actionId: 'move-around-c', target: relativeTarget }
+				}),
+				COMBAT_RULES_V1
+			);
+			if (candidate.state.combatants[ID.b]!.downed) observed = candidate;
+		}
+
+		expect(observed).toBeDefined();
+		const result = observed!;
+		const downing = result.events.find((event) => event.actorId === ID.a)!;
+		const canceled = result.events.find((event) => event.actorId === ID.b)!;
+		expect(canceled).toMatchObject({
+			originalIntent: { target: relativeTarget, fallbackId: 'alternate' },
+			finalOutcome: 'canceled',
+			fallbackApplied: null,
+			conflictingEventId: downing.eventId,
+			refundApplied: { mana: 'full', readiness: 'full' },
+			effects: []
+		});
+		expect(result.state.combatants[ID.b]!.position).toStrictEqual({ x: 4, y: 1 });
+	});
+
+	it('attributes an actor-invalid selected fallback to the earlier downing event', () => {
+		const relativeTarget = {
+			kind: 'entity-relative-position' as const,
+			combatantId: ID.c,
+			relation: 'behind' as const
+		};
+		const relativeFallback = {
+			kind: 'entity-relative-position' as const,
+			combatantId: ID.c,
+			relation: 'flank-right' as const
+		};
+		let observed: ReturnType<typeof applyCombatChoiceBatch> | undefined;
+		for (let index = 0; index < 100 && !observed; index += 1) {
+			const canonical = state({
+				include: [ID.a, ID.b, ID.c],
+				actionByActor: {
+					[ID.a]: attackTemplate('down-b-before-fallback', NO_REFUND, ID.b),
+					[ID.b]: moveTemplate({
+						actionId: 'fallback-around-c',
+						target: relativeTarget,
+						fallback: relativeFallback
+					})
+				},
+				readiness: { [ID.a]: 12_000, [ID.b]: 11_000, [ID.c]: 0 },
+				seed: sha256Hex(`arbitration-down-fallback-actor-${index}`)
+			});
+			canonical.combatants[ID.b]!.resources.health.current = 1;
+			const candidate = applyCombatChoiceBatch(
+				canonical,
+				choiceBatch(canonical, {
+					[ID.a]: {
+						actionId: 'down-b-before-fallback',
+						target: { kind: 'entity', combatantId: ID.b }
+					},
+					[ID.b]: { actionId: 'fallback-around-c', target: relativeTarget }
+				}),
+				COMBAT_RULES_V1
+			);
+			if (candidate.state.combatants[ID.b]!.downed) observed = candidate;
+		}
+
+		expect(observed).toBeDefined();
+		const result = observed!;
+		const downing = result.events.find((event) => event.actorId === ID.a)!;
+		const canceled = result.events.find((event) => event.actorId === ID.b)!;
+		expect(canceled).toMatchObject({
+			originalIntent: { target: relativeTarget, fallbackId: 'alternate' },
+			finalOutcome: 'canceled',
+			fallbackApplied: null,
+			conflictingEventId: downing.eventId,
+			refundApplied: { mana: 'full', readiness: 'full' },
+			effects: []
 		});
 	});
 

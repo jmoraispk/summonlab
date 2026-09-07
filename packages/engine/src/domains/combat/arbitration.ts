@@ -175,11 +175,16 @@ type ProgressiveValidation =
 			valid: true;
 			reason: null;
 			resolvedPosition: Readonly<{ x: number; y: number }> | null;
+			cause: null;
 	  }>
 	| Readonly<{
 			valid: false;
 			reason: 'invalid-target' | 'occupied-destination';
 			resolvedPosition: Readonly<{ x: number; y: number }> | null;
+			cause:
+				| Readonly<{ kind: 'actor' | 'target'; combatantId: string }>
+				| Readonly<{ kind: 'destination'; position: Readonly<{ x: number; y: number }> }>
+				| Readonly<{ kind: 'none' }>;
 	  }>;
 
 function fixedTileValidation(
@@ -194,15 +199,25 @@ function fixedTileValidation(
 		position.y >= state.terrain.height ||
 		state.terrain.blockedTiles.some((blocked) => positionKey(blocked) === positionKey(position))
 	) {
-		return { valid: false, reason: 'invalid-target', resolvedPosition: position };
+		return {
+			valid: false,
+			reason: 'invalid-target',
+			resolvedPosition: position,
+			cause: { kind: 'none' }
+		};
 	}
 	const occupied = Object.values(state.combatants).some(
 		(combatant) =>
 			combatant.combatantId !== actorId && positionKey(combatant.position) === positionKey(position)
 	);
 	return occupied
-		? { valid: false, reason: 'occupied-destination', resolvedPosition: position }
-		: { valid: true, reason: null, resolvedPosition: position };
+		? {
+				valid: false,
+				reason: 'occupied-destination',
+				resolvedPosition: position,
+				cause: { kind: 'destination', position }
+			}
+		: { valid: true, reason: null, resolvedPosition: position, cause: null };
 }
 
 function targetIsProgressivelyValid(
@@ -212,7 +227,12 @@ function targetIsProgressivelyValid(
 ): ProgressiveValidation {
 	const actor = state.combatants[intent.actorId];
 	if (!actor || !actor.active || actor.downed) {
-		return { valid: false, reason: 'invalid-target', resolvedPosition: null };
+		return {
+			valid: false,
+			reason: 'invalid-target',
+			resolvedPosition: null,
+			cause: { kind: 'actor', combatantId: intent.actorId }
+		};
 	}
 	if (intent.actionKind === 'move') {
 		if (target.kind === 'tile') {
@@ -226,30 +246,51 @@ function targetIsProgressivelyValid(
 				target.relation
 			);
 			if (resolution.ok) {
-				return { valid: true, reason: null, resolvedPosition: resolution.position };
+				return { valid: true, reason: null, resolvedPosition: resolution.position, cause: null };
 			}
 			return {
 				valid: false,
 				reason: resolution.reason === 'occupied' ? 'occupied-destination' : 'invalid-target',
-				resolvedPosition: resolution.position
+				resolvedPosition: resolution.position,
+				cause:
+					resolution.reason === 'occupied' && resolution.position
+						? { kind: 'destination', position: resolution.position }
+						: resolution.reason === 'inactive-target' || resolution.reason === 'impossible-geometry'
+							? { kind: 'target', combatantId: target.combatantId }
+							: { kind: 'none' }
 			};
 		}
 		return target.kind === 'self'
-			? { valid: true, reason: null, resolvedPosition: actor.position }
-			: { valid: false, reason: 'invalid-target', resolvedPosition: null };
+			? { valid: true, reason: null, resolvedPosition: actor.position, cause: null }
+			: {
+					valid: false,
+					reason: 'invalid-target',
+					resolvedPosition: null,
+					cause: { kind: 'none' }
+				};
 	}
 	if (target.kind === 'entity' || target.kind === 'entity-relative-position') {
 		const entity = state.combatants[target.combatantId];
 		return entity?.active && !entity.downed
-			? { valid: true, reason: null, resolvedPosition: null }
-			: { valid: false, reason: 'invalid-target', resolvedPosition: null };
+			? { valid: true, reason: null, resolvedPosition: null, cause: null }
+			: {
+					valid: false,
+					reason: 'invalid-target',
+					resolvedPosition: null,
+					cause: { kind: 'target', combatantId: target.combatantId }
+				};
 	}
 	if (target.kind === 'self') {
 		return intent.actionKind === 'attack' || intent.actionKind === 'skill'
-			? { valid: false, reason: 'invalid-target', resolvedPosition: null }
-			: { valid: true, reason: null, resolvedPosition: null };
+			? {
+					valid: false,
+					reason: 'invalid-target',
+					resolvedPosition: null,
+					cause: { kind: 'none' }
+				}
+			: { valid: true, reason: null, resolvedPosition: null, cause: null };
 	}
-	return { valid: true, reason: null, resolvedPosition: null };
+	return { valid: true, reason: null, resolvedPosition: null, cause: null };
 }
 
 function readinessCostEffect(
@@ -347,31 +388,22 @@ function applyCancellationCosts(
 
 function conflictingEvent(
 	events: readonly CombatResolvedEvent[],
-	intent: CombatActionIntent,
-	target: Target,
-	reason: 'invalid-target' | 'occupied-destination',
-	resolvedPosition: Readonly<{ x: number; y: number }> | null
+	cause: Extract<ProgressiveValidation, { valid: false }>['cause']
 ): CombatResolvedEvent | undefined {
-	if (reason === 'occupied-destination') {
-		const destination = resolvedPosition;
+	if (cause.kind === 'destination') {
 		return [...events]
 			.reverse()
 			.find((event) =>
 				event.effects.some(
 					(effect) =>
-						effect.kind === 'position' &&
-						destination !== null &&
-						positionKey(effect.after) === positionKey(destination)
+						effect.kind === 'position' && positionKey(effect.after) === positionKey(cause.position)
 				)
 			);
 	}
-	const entityId =
-		target.kind === 'entity' || target.kind === 'entity-relative-position'
-			? target.combatantId
-			: intent.actorId;
+	if (cause.kind === 'none') return undefined;
 	return [...events]
 		.reverse()
-		.find((event) => event.effects.some((effect) => effect.combatantId === entityId));
+		.find((event) => event.effects.some((effect) => effect.combatantId === cause.combatantId));
 }
 
 function resolvedEvent(input: {
@@ -460,13 +492,7 @@ export function applyCombatChoiceBatch(
 		}
 
 		const reason = primary.reason!;
-		const conflict = conflictingEvent(
-			events,
-			choice.intent,
-			choice.intent.target,
-			reason,
-			primary.resolvedPosition
-		);
+		const conflict = conflictingEvent(events, primary.cause);
 		const policy =
 			reason === 'occupied-destination'
 				? choice.authority.legalAction.conflictPolicy.occupiedDestination
@@ -507,13 +533,7 @@ export function applyCombatChoiceBatch(
 			selectedFallback &&
 			fallbackValidity &&
 			!fallbackValidity.valid
-				? (conflictingEvent(
-						events,
-						choice.intent,
-						selectedFallback.target,
-						fallbackValidity.reason,
-						fallbackValidity.resolvedPosition
-					) ?? conflict)
+				? (conflictingEvent(events, fallbackValidity.cause) ?? conflict)
 				: conflict;
 		events.push(
 			resolvedEvent({
