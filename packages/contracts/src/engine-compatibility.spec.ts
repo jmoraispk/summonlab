@@ -294,6 +294,43 @@ function v26ReadinessStateFromV24Fixture() {
 			}
 		])
 	);
+	const actorContexts = Object.fromEntries(
+		attempt.party.memberIds.map((combatantId: string, index: number) => [
+			combatantId,
+			{
+				actorId: combatantId,
+				visibleCombatantIds: [],
+				visibleTelegraphIds: [],
+				observableReadinessActorIds: [],
+				targetablePositions: [{ x: index + 1, y: 1 }],
+				visibleTerrainFeatureIds: [],
+				rememberedContext: [],
+				doctrine: [],
+				relationships: [],
+				masterDirections: [],
+				legalActionTemplates: [
+					{
+						actionId: 'guard-self',
+						actionKind: 'guard',
+						skillId: null,
+						publicLabel: 'Guard',
+						targetContract: { kind: 'self' },
+						reactionPriority: 0,
+						recoveryTicks: 2,
+						manaCost: 0,
+						fallbackOptions: [
+							{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }
+						],
+						resolutionProfile: {
+							profileKind: 'non-damaging',
+							rulesVersion: 'combat-rules-v1',
+							contentHash: '2'.repeat(64)
+						}
+					}
+				]
+			}
+		])
+	);
 	return {
 		...v25,
 		schemaVersion: 26,
@@ -320,7 +357,7 @@ function v26ReadinessStateFromV24Fixture() {
 						attemptId: attempt.attemptId,
 						tick: 12,
 						combatants,
-						actorContexts: {},
+						actorContexts,
 						terrain: { width: 16, height: 8, blockedTiles: [], features: [] },
 						visibleTelegraphs: [],
 						scheduledEffects: [],

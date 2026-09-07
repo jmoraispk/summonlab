@@ -172,31 +172,60 @@ function state(
 	if (options.includeAlly) {
 		combatants[ID.ally] = fighter(ID.ally, 'party', { x: 2, y: 2 });
 	}
+	const actorContexts: ReadinessCombatStateV1['actorContexts'] = {
+		[ID.actor]: {
+			actorId: ID.actor,
+			visibleCombatantIds: options.includeAlly ? [ID.target, ID.ally] : [ID.target],
+			visibleTelegraphIds: [],
+			observableReadinessActorIds: [],
+			targetablePositions: [
+				{ x: 1, y: 1 },
+				{ x: 2, y: 1 },
+				...(options.includeAlly ? [{ x: 2, y: 2 }] : [])
+			],
+			visibleTerrainFeatureIds: [],
+			rememberedContext: [],
+			doctrine: [],
+			relationships: [],
+			masterDirections: [],
+			legalActionTemplates: [attackTemplate(options.resolutionProfile), GUARD_TEMPLATE]
+		},
+		[ID.target]: {
+			actorId: ID.target,
+			visibleCombatantIds: [],
+			visibleTelegraphIds: [],
+			observableReadinessActorIds: [],
+			targetablePositions: [{ x: 2, y: 1 }],
+			visibleTerrainFeatureIds: [],
+			rememberedContext: [],
+			doctrine: [],
+			relationships: [],
+			masterDirections: [],
+			legalActionTemplates: [GUARD_TEMPLATE]
+		}
+	};
+	if (options.includeAlly) {
+		actorContexts[ID.ally] = {
+			actorId: ID.ally,
+			visibleCombatantIds: [],
+			visibleTelegraphIds: [],
+			observableReadinessActorIds: [],
+			targetablePositions: [{ x: 2, y: 2 }],
+			visibleTerrainFeatureIds: [],
+			rememberedContext: [],
+			doctrine: [],
+			relationships: [],
+			masterDirections: [],
+			legalActionTemplates: [GUARD_TEMPLATE]
+		};
+	}
 	return {
 		stateVersion: 'readiness-combat-state-v1',
 		seed: options.seed ?? sha256Hex('resolver-private-seed'),
 		attemptId: ID.attempt,
 		tick: options.tick ?? 13,
 		combatants,
-		actorContexts: {
-			[ID.actor]: {
-				actorId: ID.actor,
-				visibleCombatantIds: options.includeAlly ? [ID.target, ID.ally] : [ID.target],
-				visibleTelegraphIds: [],
-				observableReadinessActorIds: [],
-				targetablePositions: [
-					{ x: 1, y: 1 },
-					{ x: 2, y: 1 },
-					...(options.includeAlly ? [{ x: 2, y: 2 }] : [])
-				],
-				visibleTerrainFeatureIds: [],
-				rememberedContext: [],
-				doctrine: [],
-				relationships: [],
-				masterDirections: [],
-				legalActionTemplates: [attackTemplate(options.resolutionProfile), GUARD_TEMPLATE]
-			}
-		},
+		actorContexts,
 		terrain: { width: 4, height: 4, blockedTiles: [], features: [] },
 		visibleTelegraphs: [],
 		scheduledEffects: [],

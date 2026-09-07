@@ -289,8 +289,10 @@ export function advanceUntilReadyCohort(
 	stateInput: ReadinessCombatStateV1,
 	rulesInput: CombatRulesV1
 ): ReadyCohortAdvance {
-	let state = ReadinessCombatStateV1Schema.parse(stateInput);
 	const rules = CombatRulesV1Schema.parse(rulesInput);
+	const parsedInput = ReadinessCombatStateV1Schema.safeParse(stateInput);
+	if (!parsedInput.success) return safetyResult(stateInput, 'invalid-state');
+	let state = parsedInput.data;
 	if (state.status === 'complete') {
 		if (!state.result) throw new Error('Complete readiness combat state is missing its result');
 		return { kind: 'combat-result', state, result: state.result };

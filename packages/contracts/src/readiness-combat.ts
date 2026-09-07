@@ -974,6 +974,22 @@ export const ReadinessCombatStateV1Schema = z
 	.superRefine((state, context) => {
 		validateCombatantMap(state.combatants, state.terrain, context, state.tick);
 		validateActorContexts(state, context);
+		if (state.status === 'active') {
+			for (const [combatantId, combatant] of Object.entries(state.combatants)) {
+				if (!combatant.active || combatant.downed) continue;
+				const actorContext = state.actorContexts[combatantId];
+				if (
+					!actorContext ||
+					!actorContext.legalActionTemplates.some((action) => action.manaCost === 0)
+				) {
+					context.addIssue({
+						code: 'custom',
+						path: ['actorContexts', combatantId, 'legalActionTemplates'],
+						message: 'Every active combatant requires an authored zero-Mana legal action'
+					});
+				}
+			}
+		}
 		if (
 			new Set(state.visibleTelegraphs.map((telegraph) => telegraph.telegraphId)).size !==
 			state.visibleTelegraphs.length

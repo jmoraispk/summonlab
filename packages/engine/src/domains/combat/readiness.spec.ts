@@ -1,9 +1,10 @@
 import type {
 	CombatLegalAction,
+	CombatLegalActionTemplate,
 	CombatRulesV1,
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical } from '../../hash.js';
@@ -17,6 +18,23 @@ const ID = {
 	effect: '21000000-0000-4000-8000-000000000005',
 	action: '21000000-0000-4000-8000-000000000006'
 } as const;
+
+const ZERO_MANA_GUARD_TEMPLATE = {
+	actionId: 'guard-self',
+	actionKind: 'guard',
+	skillId: null,
+	publicLabel: 'Guard',
+	targetContract: { kind: 'self' },
+	reactionPriority: 0,
+	recoveryTicks: 2,
+	manaCost: 0,
+	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
+	resolutionProfile: {
+		profileKind: 'non-damaging',
+		rulesVersion: 'combat-rules-v1',
+		contentHash: COMBAT_CONTENT_BINDING.contentHash
+	}
+} as const satisfies CombatLegalActionTemplate;
 
 function combatant(
 	combatantId: string,
@@ -74,7 +92,26 @@ function state(
 		attemptId: ID.attempt,
 		tick: input.tick ?? 0,
 		combatants,
-		actorContexts: {},
+		actorContexts: Object.fromEntries(
+			Object.values(combatants)
+				.filter((combatant) => combatant.active && !combatant.downed)
+				.map((combatant) => [
+					combatant.combatantId,
+					{
+						actorId: combatant.combatantId,
+						visibleCombatantIds: [],
+						visibleTelegraphIds: [],
+						observableReadinessActorIds: [],
+						targetablePositions: [combatant.position],
+						visibleTerrainFeatureIds: [],
+						rememberedContext: [],
+						doctrine: [],
+						relationships: [],
+						masterDirections: [],
+						legalActionTemplates: [ZERO_MANA_GUARD_TEMPLATE]
+					}
+				])
+		),
 		terrain: { width: 8, height: 8, blockedTiles: [], features: [] },
 		visibleTelegraphs: [],
 		scheduledEffects: input.scheduledEffects ?? [],

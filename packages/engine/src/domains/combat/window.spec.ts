@@ -159,6 +159,25 @@ function actionTemplate(
 	};
 }
 
+function zeroManaGuardTemplate(): CombatLegalActionTemplate {
+	return {
+		actionId: 'guard-self',
+		actionKind: 'guard',
+		skillId: null,
+		publicLabel: 'Guard',
+		targetContract: { kind: 'self' },
+		reactionPriority: 0,
+		recoveryTicks: 2,
+		manaCost: 0,
+		fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
+		resolutionProfile: {
+			profileKind: 'non-damaging',
+			rulesVersion: 'combat-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		}
+	};
+}
+
 function contexts(): Readonly<Record<string, CombatActorContextState>> {
 	return {
 		[ID.hero]: {
@@ -177,7 +196,10 @@ function contexts(): Readonly<Record<string, CombatActorContextState>> {
 			doctrine: ['Protect allies before pursuing.'],
 			relationships: [{ entityId: ID.ally, publicSummary: 'A trusted shield-partner.' }],
 			masterDirections: ['Hold the eastern lane.'],
-			legalActionTemplates: [actionTemplate('cross-cut', ID.visibleMonster, 'Cross Cut')]
+			legalActionTemplates: [
+				actionTemplate('cross-cut', ID.visibleMonster, 'Cross Cut'),
+				zeroManaGuardTemplate()
+			]
 		},
 		[ID.ally]: {
 			actorId: ID.ally,
@@ -200,8 +222,35 @@ function contexts(): Readonly<Record<string, CombatActorContextState>> {
 					ID.hiddenMonster,
 					'Driving Shot',
 					'combat-skill-basic-bow-shot'
-				)
+				),
+				zeroManaGuardTemplate()
 			]
+		},
+		[ID.visibleMonster]: {
+			actorId: ID.visibleMonster,
+			visibleCombatantIds: [],
+			visibleTelegraphIds: [],
+			observableReadinessActorIds: [],
+			targetablePositions: [{ x: 4, y: 1 }],
+			visibleTerrainFeatureIds: [],
+			rememberedContext: [],
+			doctrine: [],
+			relationships: [],
+			masterDirections: [],
+			legalActionTemplates: [zeroManaGuardTemplate()]
+		},
+		[ID.hiddenMonster]: {
+			actorId: ID.hiddenMonster,
+			visibleCombatantIds: [],
+			visibleTelegraphIds: [],
+			observableReadinessActorIds: [],
+			targetablePositions: [{ x: 6, y: 6 }],
+			visibleTerrainFeatureIds: [],
+			rememberedContext: [],
+			doctrine: [],
+			relationships: [],
+			masterDirections: [],
+			legalActionTemplates: [zeroManaGuardTemplate()]
 		}
 	};
 }
@@ -232,10 +281,12 @@ describe('frozen combat decision windows', () => {
 		expect(result.views[0]?.actorViewHash).not.toBe(result.views[1]?.actorViewHash);
 		expect(result.views[0]?.legalActionSetHash).not.toBe(result.views[1]?.legalActionSetHash);
 		expect(result.views[0]?.legalActions.map((legal) => legal.actionId)).toStrictEqual([
-			'cross-cut'
+			'cross-cut',
+			'guard-self'
 		]);
 		expect(result.views[1]?.legalActions.map((legal) => legal.actionId)).toStrictEqual([
-			'driving-shot'
+			'driving-shot',
+			'guard-self'
 		]);
 		expect(result.snapshot).not.toHaveProperty('actorContexts');
 		expect(hashCanonical(arranged)).toBe(inputHash);
@@ -251,6 +302,24 @@ describe('frozen combat decision windows', () => {
 			contentHash: COMBAT_CONTENT_BINDING.contentHash
 		});
 		expect(changedSnapshot.stateHash).not.toBe(result.snapshot.stateHash);
+	});
+
+	it('gives a zero-Mana ready actor only its authored affordable zero-cost action', () => {
+		const arranged = state();
+		arranged.combatants[ID.hero]!.resources.mana.current = 0;
+		arranged.combatants[ID.ally]!.readiness = {
+			value: 0,
+			exactNumerator: 0,
+			recoveryUntilTick: 0
+		};
+
+		const result = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+		expect(result.kind).toBe('decision-window');
+		if (result.kind !== 'decision-window') return;
+		const heroView = result.views.find((view) => view.actorId === ID.hero)!;
+		expect(heroView.legalActions.map((action) => action.actionId)).toStrictEqual(['guard-self']);
+		expect(heroView.legalActions[0]?.manaCost).toBe(0);
 	});
 
 	it('filters hidden truth, private readiness internals, ally private state, and unresolved choices', () => {
@@ -583,7 +652,10 @@ describe('frozen combat decision windows', () => {
 					...heroContext,
 					visibleCombatantIds: [ID.ally],
 					visibleTelegraphIds: [],
-					legalActionTemplates: [actionTemplate('cover-ally', ID.ally, 'Cover Ally')]
+					legalActionTemplates: [
+						actionTemplate('cover-ally', ID.ally, 'Cover Ally'),
+						zeroManaGuardTemplate()
+					]
 				};
 			}
 

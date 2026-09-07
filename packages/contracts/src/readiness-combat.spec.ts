@@ -149,6 +149,23 @@ const legalActionTemplate = {
 	}
 } as const;
 
+const zeroManaGuardTemplate = {
+	actionId: 'guard-self',
+	actionKind: 'guard',
+	skillId: null,
+	publicLabel: 'Guard',
+	targetContract: { kind: 'self' },
+	reactionPriority: 0,
+	recoveryTicks: 2,
+	manaCost: 0,
+	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
+	resolutionProfile: {
+		profileKind: 'non-damaging',
+		rulesVersion: 'combat-rules-v1',
+		contentHash: HASH.content
+	}
+} as const;
+
 const heroActorContext = {
 	actorId: ID.hero,
 	visibleCombatantIds: [ID.monster],
@@ -160,7 +177,21 @@ const heroActorContext = {
 	doctrine: ['Protect the Master.'],
 	relationships: [{ entityId: ID.monster, publicSummary: 'A known threat.' }],
 	masterDirections: ['Hold the gate.'],
-	legalActionTemplates: [legalActionTemplate]
+	legalActionTemplates: [legalActionTemplate, zeroManaGuardTemplate]
+} as const;
+
+const monsterActorContext = {
+	actorId: ID.monster,
+	visibleCombatantIds: [],
+	visibleTelegraphIds: [],
+	observableReadinessActorIds: [],
+	targetablePositions: [monster.position],
+	visibleTerrainFeatureIds: [],
+	rememberedContext: [],
+	doctrine: [],
+	relationships: [],
+	masterDirections: [],
+	legalActionTemplates: [zeroManaGuardTemplate]
 } as const;
 
 const intent = {
@@ -243,7 +274,7 @@ const state = {
 	attemptId: ID.attempt,
 	tick: 12,
 	combatants: { [ID.hero]: hero, [ID.monster]: monster },
-	actorContexts: { [ID.hero]: heroActorContext },
+	actorContexts: { [ID.hero]: heroActorContext, [ID.monster]: monsterActorContext },
 	terrain,
 	visibleTelegraphs: [telegraph],
 	scheduledEffects: [],
@@ -274,6 +305,22 @@ const completedState = {
 } as const;
 
 describe('readiness combat contracts', () => {
+	it('rejects an active actor context containing only Mana-costly authored actions', () => {
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				actorContexts: {
+					...state.actorContexts,
+					[ID.hero]: { ...heroActorContext, legalActionTemplates: [legalActionTemplate] }
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('accepts an active actor context with both Mana-costly and zero-Mana authored actions', () => {
+		expect(ReadinessCombatStateV1Schema.safeParse(state).success).toBe(true);
+	});
+
 	it('keeps strict engine resolution authority private and action-kind compatible', () => {
 		const attackResolution = {
 			profileKind: 'attack',
