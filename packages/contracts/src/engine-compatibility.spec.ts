@@ -277,6 +277,7 @@ function v26ReadinessStateFromV24Fixture() {
 				combatantKind: combatantId === attempt.party.masterId ? 'master' : 'hero',
 				teamId: 'party',
 				position: { x: index + 1, y: 1 },
+				facing: 'east',
 				resources: {
 					health: { current: 100, maximum: 100 },
 					mana: { current: 50, maximum: 50 }

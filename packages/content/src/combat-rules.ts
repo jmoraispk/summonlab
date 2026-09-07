@@ -47,6 +47,16 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 			domainMaximumBasisPoints: 12_000
 		},
 		affinity: { contributionNudgeCapBasisPoints: 1_000 },
+		hit: {
+			minimumChanceBasisPoints: 500,
+			maximumChanceBasisPoints: 9_950,
+			defenderAgilityEvasionBasisPointsPerPoint: 1,
+			relativeAgilityBasisPointsPerPoint: 10,
+			relativeAgilityCapBasisPoints: 900,
+			flankBasisPoints: 600,
+			surroundBasisPoints: 700,
+			unawareBasisPoints: 1_200
+		},
 		readiness: {
 			tickDurationMilliseconds: 100,
 			threshold: 10_000,

@@ -3,10 +3,13 @@ import { z } from 'zod';
 import { CombatAttributesSchema } from './capability.js';
 import {
 	CombatRulesVersionSchema,
+	DamageChannelSchema,
+	DamageTagSchema,
 	ResistanceTagSchema,
 	type CombatRulesV1
 } from './combat-rules.js';
 import { CombatSkillIdSchema } from './combat-skill.js';
+import { EquipmentFamilyTagSchema } from './equipment.js';
 import { EntityIdSchema, StateHashSchema } from './shared.js';
 
 export const ReadinessCombatStateVersionSchema = z.literal('readiness-combat-state-v1');
@@ -65,6 +68,7 @@ export const CombatantStateSchema = z
 		combatantKind: z.enum(['master', 'hero', 'monster']),
 		teamId: TeamIdSchema,
 		position: CombatPositionSchema,
+		facing: z.enum(['north', 'east', 'south', 'west']),
 		resources: CombatResourcesSchema,
 		lastDamagedAtTick: TickSchema.nullable(),
 		attributes: CombatAttributesSchema,
@@ -100,6 +104,13 @@ export const CombatantStateSchema = z
 				code: 'custom',
 				path: ['active'],
 				message: 'A downed combatant cannot be active'
+			});
+		}
+		if (combatant.resources.health.current === 0 && !combatant.downed) {
+			context.addIssue({
+				code: 'custom',
+				path: ['downed'],
+				message: 'A zero-Health combatant must be downed'
 			});
 		}
 	});
@@ -221,6 +232,65 @@ export const CombatLegalActionSchema = z
 		}
 	});
 
+export const CombatActionStatusResolutionProfileSchema = z
+	.object({
+		conditionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
+		chanceBasisPoints: z.number().int().min(0).max(10_000),
+		damageMultiplierBasisPoints: z.number().int().min(0).max(100_000),
+		stacks: z.number().int().positive().max(1_000),
+		durationTicks: TickSchema.refine((ticks) => ticks > 0, {
+			message: 'Status duration must be positive'
+		})
+	})
+	.strict();
+
+export const CombatActionDamageResolutionProfileSchema = z
+	.object({
+		channel: DamageChannelSchema,
+		tags: z.array(DamageTagSchema).min(1).max(DamageTagSchema.options.length),
+		baseMagnitude: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		coefficientBasisPoints: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		affinityContributionBasisPoints: z.number().int().nonnegative().max(1_000),
+		criticalChanceBasisPoints: z.number().int().min(0).max(10_000),
+		criticalMultiplierBasisPoints: z.number().int().nonnegative().max(100_000),
+		penetration: z.number().int().nonnegative().max(1_000_000),
+		status: CombatActionStatusResolutionProfileSchema.nullable()
+	})
+	.strict()
+	.superRefine((damage, context) => {
+		if (!damage.tags.includes(damage.channel)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['tags'],
+				message: 'Damage tags must include the authored channel'
+			});
+		}
+		if (new Set(damage.tags).size !== damage.tags.length) {
+			context.addIssue({ code: 'custom', path: ['tags'], message: 'Damage tags must be unique' });
+		}
+	});
+
+export const CombatActionResolutionProfileSchema = z.discriminatedUnion('profileKind', [
+	z
+		.object({
+			profileKind: z.literal('attack'),
+			rulesVersion: CombatRulesVersionSchema,
+			contentHash: StateHashSchema,
+			deliveryTag: EquipmentFamilyTagSchema,
+			masteryStepMinimum: z.number().int().min(0).max(100),
+			skillAccuracyBasisPoints: z.number().int().min(0).max(10_000),
+			damage: CombatActionDamageResolutionProfileSchema
+		})
+		.strict(),
+	z
+		.object({
+			profileKind: z.literal('non-damaging'),
+			rulesVersion: CombatRulesVersionSchema,
+			contentHash: StateHashSchema
+		})
+		.strict()
+]);
+
 export const CombatLegalActionTemplateSchema = z
 	.object({
 		actionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
@@ -231,7 +301,8 @@ export const CombatLegalActionTemplateSchema = z
 		reactionPriority: z.number().int().min(-100).max(100),
 		recoveryTicks: z.number().int().positive().max(100_000),
 		manaCost: z.number().int().nonnegative().max(1_000_000),
-		fallbackOptions: z.array(CombatFallbackOptionSchema).min(1).max(16)
+		fallbackOptions: z.array(CombatFallbackOptionSchema).min(1).max(16),
+		resolutionProfile: CombatActionResolutionProfileSchema
 	})
 	.strict()
 	.superRefine((action, context) => {
@@ -243,6 +314,19 @@ export const CombatLegalActionTemplateSchema = z
 				code: 'custom',
 				path: ['fallbackOptions'],
 				message: 'Fallback options must be unique'
+			});
+		}
+		const canDamage = action.actionKind === 'attack' || action.actionKind === 'skill';
+		if (
+			(action.resolutionProfile.profileKind === 'attack' &&
+				(!canDamage || action.skillId === null)) ||
+			(action.actionKind === 'attack' && action.resolutionProfile.profileKind !== 'attack') ||
+			(!canDamage && action.resolutionProfile.profileKind !== 'non-damaging')
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['resolutionProfile'],
+				message: 'Combat action kind and private resolution profile are incompatible'
 			});
 		}
 	});
@@ -456,6 +540,9 @@ export const CombatActionIntentSchema = z
 		actorViewHash: StateHashSchema,
 		legalActionSetHash: StateHashSchema,
 		actionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
+		actionInstanceId: EntityIdSchema,
+		actionKind: CombatLegalActionSchema.shape.actionKind,
+		skillId: CombatSkillIdSchema.nullable(),
 		target: CombatTargetSelectionSchema,
 		fallbackId: z
 			.string()
@@ -1038,6 +1125,7 @@ export type CombatChoiceBatchV1 = z.infer<typeof CombatChoiceBatchV1Schema>;
 export type CombatClaim = z.infer<typeof CombatClaimSchema>;
 export type CombatLegalAction = z.infer<typeof CombatLegalActionSchema>;
 export type CombatLegalActionTemplate = z.infer<typeof CombatLegalActionTemplateSchema>;
+export type CombatActionResolutionProfile = z.infer<typeof CombatActionResolutionProfileSchema>;
 export type CombatResolvedEvent = z.infer<typeof CombatResolvedEventSchema>;
 export type CombatResult = z.infer<typeof CombatResultSchema>;
 export type CombatSafetyStop = z.infer<typeof CombatSafetyStopSchema>;

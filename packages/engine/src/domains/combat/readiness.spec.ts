@@ -38,6 +38,7 @@ function combatant(
 		combatantKind: combatantId === ID.monster ? ('monster' as const) : ('hero' as const),
 		teamId: combatantId === ID.monster ? 'enemy' : 'party',
 		position: { x: combatantId === ID.monster ? 3 : combatantId === ID.ally ? 2 : 1, y: 1 },
+		facing: combatantId === ID.monster ? ('west' as const) : ('east' as const),
 		resources: {
 			health: { current: downed ? 0 : (input.health ?? 50), maximum: 100 },
 			mana: { current: input.mana ?? 10, maximum: 100 }

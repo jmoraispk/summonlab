@@ -5,6 +5,8 @@ import {
 	CombatAdvanceSchema,
 	CombatChoiceBatchV1Schema,
 	CombatClaimSchema,
+	CombatLegalActionSchema,
+	CombatLegalActionTemplateSchema,
 	CombatResolvedEventSchema,
 	CombatResultSchema,
 	CombatSafetyStopSchema,
@@ -41,6 +43,7 @@ const hero = {
 	combatantKind: 'hero',
 	teamId: 'party',
 	position: { x: 1, y: 1 },
+	facing: 'east',
 	resources: {
 		health: { current: 120, maximum: 120 },
 		mana: { current: 40, maximum: 50 }
@@ -74,6 +77,7 @@ const monster = {
 	combatantKind: 'monster',
 	teamId: 'enemy',
 	position: { x: 3, y: 1 },
+	facing: 'west',
 	conditions: [],
 	cooldowns: {},
 	readiness: { value: 9_900, exactNumerator: 9_900, recoveryUntilTick: 0 },
@@ -123,7 +127,26 @@ const legalActionTemplate = {
 	reactionPriority: legalAction.reactionPriority,
 	recoveryTicks: legalAction.recoveryTicks,
 	manaCost: legalAction.manaCost,
-	fallbackOptions: legalAction.fallbackOptions
+	fallbackOptions: legalAction.fallbackOptions,
+	resolutionProfile: {
+		profileKind: 'attack',
+		rulesVersion: 'combat-rules-v1',
+		contentHash: HASH.content,
+		deliveryTag: 'one-handed-blade',
+		masteryStepMinimum: 0,
+		skillAccuracyBasisPoints: 6_750,
+		damage: {
+			channel: 'physical',
+			tags: ['physical', 'cut'],
+			baseMagnitude: 10,
+			coefficientBasisPoints: 10_000,
+			affinityContributionBasisPoints: 0,
+			criticalChanceBasisPoints: 500,
+			criticalMultiplierBasisPoints: 15_000,
+			penetration: 0,
+			status: null
+		}
+	}
 } as const;
 
 const heroActorContext = {
@@ -149,6 +172,9 @@ const intent = {
 	actorViewHash: HASH.view,
 	legalActionSetHash: HASH.legal,
 	actionId: legalAction.actionId,
+	actionInstanceId: legalAction.actionInstanceId,
+	actionKind: legalAction.actionKind,
+	skillId: legalAction.skillId,
 	target: { kind: 'entity', combatantId: ID.monster },
 	fallbackId: 'hold-ground',
 	publicIntent: 'I will draw it away from the gate.'
@@ -248,6 +274,83 @@ const completedState = {
 } as const;
 
 describe('readiness combat contracts', () => {
+	it('keeps strict engine resolution authority private and action-kind compatible', () => {
+		const attackResolution = {
+			profileKind: 'attack',
+			rulesVersion: 'combat-rules-v1',
+			contentHash: HASH.content,
+			deliveryTag: 'one-handed-blade',
+			masteryStepMinimum: 0,
+			skillAccuracyBasisPoints: 6_750,
+			damage: {
+				channel: 'physical',
+				tags: ['physical', 'cut'],
+				baseMagnitude: 10,
+				coefficientBasisPoints: 10_000,
+				affinityContributionBasisPoints: 0,
+				criticalChanceBasisPoints: 500,
+				criticalMultiplierBasisPoints: 15_000,
+				penetration: 0,
+				status: null
+			}
+		} as const;
+		const canonical = CombatLegalActionTemplateSchema.parse({
+			...legalActionTemplate,
+			actionKind: 'attack',
+			resolutionProfile: attackResolution
+		});
+		expect(canonical.resolutionProfile).toStrictEqual(attackResolution);
+		expect(
+			CombatLegalActionSchema.safeParse({ ...legalAction, resolutionProfile: attackResolution })
+				.success
+		).toBe(false);
+		expect(
+			CombatLegalActionTemplateSchema.safeParse({
+				...canonical,
+				actionKind: 'move'
+			}).success
+		).toBe(false);
+		expect(
+			CombatLegalActionTemplateSchema.safeParse({
+				...canonical,
+				resolutionProfile: {
+					profileKind: 'non-damaging',
+					rulesVersion: 'combat-rules-v1',
+					contentHash: HASH.content
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('rejects active zero-Health combatants and accepts only typed zero-Health downing', () => {
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				combatants: {
+					...state.combatants,
+					[ID.monster]: {
+						...monster,
+						resources: { ...monster.resources, health: { current: 0, maximum: 120 } }
+					}
+				}
+			}).success
+		).toBe(false);
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				combatants: {
+					...state.combatants,
+					[ID.monster]: {
+						...monster,
+						resources: { ...monster.resources, health: { current: 0, maximum: 120 } },
+						downed: true,
+						active: false
+					}
+				}
+			}).success
+		).toBe(true);
+	});
+
 	it('validates private actor context references without exposing window-bound instances', () => {
 		expect(ReadinessCombatStateV1Schema.parse(state).actorContexts[ID.hero]).toStrictEqual(
 			heroActorContext

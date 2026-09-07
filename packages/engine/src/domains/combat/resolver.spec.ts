@@ -1,127 +1,33 @@
 import type {
 	CombatActionIntent,
-	CombatLegalAction,
+	CombatActionResolutionProfile,
+	CombatLegalActionTemplate,
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
-import { sha256Hex } from '../../hash.js';
-import { combatHitChance, resolveCombatAction, type CombatActionAuthority } from './resolver.js';
+import { hashCanonical, sha256Hex } from '../../hash.js';
+import { resolveCombatAction } from './resolver.js';
+import { advanceUntilDecision } from './window.js';
 
 const ID = {
 	attempt: '42000000-0000-4000-8000-000000000001',
 	actor: '42000000-0000-4000-8000-000000000002',
-	target: '42000000-0000-4000-8000-000000000003',
-	action: '42000000-0000-4000-8000-000000000004',
-	window: '42000000-0000-4000-8000-000000000005'
+	ally: '42000000-0000-4000-8000-000000000003',
+	target: '42000000-0000-4000-8000-000000000004'
 } as const;
 
-function combatant(
-	combatantId: string,
-	teamId: 'party' | 'enemy',
-	input: {
-		health?: number;
-		mana?: number;
-		might?: number;
-		spirit?: number;
-		agility?: number;
-		armour?: number;
-		resistances?: ReadinessCombatStateV1['combatants'][string]['resistances'];
-	} = {}
-) {
-	return {
-		combatantId,
-		combatantKind: teamId === 'party' ? ('hero' as const) : ('monster' as const),
-		teamId,
-		position: { x: teamId === 'party' ? 1 : 2, y: 1 },
-		resources: {
-			health: { current: input.health ?? 500, maximum: 500 },
-			mana: { current: input.mana ?? 20, maximum: 100 }
-		},
-		lastDamagedAtTick: null,
-		attributes: {
-			might: input.might ?? 20,
-			vitality: 20,
-			agility: input.agility ?? 20,
-			spirit: input.spirit ?? 20
-		},
-		armour: input.armour ?? 0,
-		resistances: input.resistances ?? {},
-		readiness: { value: 10_000, exactNumerator: 10_000, recoveryUntilTick: 0 },
-		conditions: [],
-		cooldowns: {},
-		downed: false,
-		active: true
-	};
-}
+type AttackProfile = Extract<CombatActionResolutionProfile, { profileKind: 'attack' }>;
 
-function state(seed = sha256Hex('resolver-private-seed')): ReadinessCombatStateV1 {
+function profile(overrides: Partial<AttackProfile> = {}): AttackProfile {
 	return {
-		stateVersion: 'readiness-combat-state-v1',
-		seed,
-		attemptId: ID.attempt,
-		tick: 13,
-		combatants: {
-			[ID.actor]: combatant(ID.actor, 'party'),
-			[ID.target]: combatant(ID.target, 'enemy', {
-				armour: 100,
-				resistances: { cut: 2_000, burn: 7_500 }
-			})
-		},
-		actorContexts: {},
-		terrain: { width: 4, height: 4, blockedTiles: [], features: [] },
-		visibleTelegraphs: [],
-		scheduledEffects: [],
-		safety: { ticksAdvanced: 13, eventsEmitted: 0, noProgressCycles: 0 },
-		status: 'active',
-		result: null
-	};
-}
-
-const ACTION = {
-	actionId: 'cross-cut',
-	actionInstanceId: ID.action,
-	actionKind: 'attack',
-	skillId: 'combat-skill-basic-sword-strike',
-	publicLabel: 'Cross Cut',
-	targetContract: { kind: 'entity', allowedCombatantIds: [ID.target] },
-	reactionPriority: 0,
-	recoveryTicks: 4,
-	manaCost: 2,
-	fallbackOptions: [
-		{ fallbackId: 'hold-ground', publicLabel: 'Hold Ground', target: { kind: 'self' } }
-	]
-} as const satisfies CombatLegalAction;
-
-function intent(publicIntent = 'Cut across the exposed line.'): CombatActionIntent {
-	return {
-		windowId: ID.window,
-		attemptId: ID.attempt,
-		tick: 13,
-		actorId: ID.actor,
-		snapshotHash: '1'.repeat(64),
-		actorViewHash: '2'.repeat(64),
-		legalActionSetHash: '3'.repeat(64),
-		actionId: ACTION.actionId,
-		target: { kind: 'entity', combatantId: ID.target },
-		fallbackId: 'hold-ground',
-		publicIntent
-	};
-}
-
-function authority(overrides: Partial<CombatActionAuthority> = {}): CombatActionAuthority {
-	return {
-		authorityVersion: 'combat-action-authority-v1',
-		actionId: ACTION.actionId,
-		skillId: ACTION.skillId,
-		hit: {
-			skillAccuracyBasisPoints: 10_000,
-			defenderEvasionBasisPoints: 0,
-			flank: false,
-			surround: false,
-			unaware: false
-		},
+		profileKind: 'attack',
+		rulesVersion: 'combat-rules-v1',
+		contentHash: COMBAT_CONTENT_BINDING.contentHash,
+		deliveryTag: 'one-handed-blade',
+		masteryStepMinimum: 0,
+		skillAccuracyBasisPoints: 6_750,
 		damage: {
 			channel: 'physical',
 			tags: ['physical', 'cut'],
@@ -143,54 +49,211 @@ function authority(overrides: Partial<CombatActionAuthority> = {}): CombatAction
 	};
 }
 
+function attackTemplate(resolutionProfile = profile()): CombatLegalActionTemplate {
+	return {
+		actionId: 'cross-cut',
+		actionKind: 'attack',
+		skillId: 'combat-skill-basic-sword-strike',
+		publicLabel: 'Cross Cut',
+		targetContract: { kind: 'entity', allowedCombatantIds: [ID.target] },
+		reactionPriority: 0,
+		recoveryTicks: 4,
+		manaCost: 2,
+		fallbackOptions: [
+			{ fallbackId: 'hold-ground', publicLabel: 'Hold Ground', target: { kind: 'self' } }
+		],
+		resolutionProfile
+	};
+}
+
+const GUARD_TEMPLATE = {
+	actionId: 'guard-self',
+	actionKind: 'guard',
+	skillId: null,
+	publicLabel: 'Guard',
+	targetContract: { kind: 'self' },
+	reactionPriority: 0,
+	recoveryTicks: 2,
+	manaCost: 0,
+	fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
+	resolutionProfile: {
+		profileKind: 'non-damaging',
+		rulesVersion: 'combat-rules-v1',
+		contentHash: COMBAT_CONTENT_BINDING.contentHash
+	}
+} as const satisfies CombatLegalActionTemplate;
+
+function fighter(
+	combatantId: string,
+	teamId: 'party' | 'enemy',
+	position: { x: number; y: number },
+	options: {
+		mana?: number | undefined;
+		health?: number | undefined;
+		agility?: number | undefined;
+		readiness?: number;
+		facing?: 'north' | 'east' | 'south' | 'west';
+		unaware?: boolean | undefined;
+	} = {}
+) {
+	return {
+		combatantId,
+		combatantKind: teamId === 'party' ? ('hero' as const) : ('monster' as const),
+		teamId,
+		position,
+		facing: options.facing ?? (teamId === 'party' ? ('east' as const) : ('west' as const)),
+		resources: {
+			health: { current: options.health ?? 500, maximum: 500 },
+			mana: { current: options.mana ?? 20, maximum: 100 }
+		},
+		lastDamagedAtTick: null,
+		attributes: { might: 20, vitality: 20, agility: options.agility ?? 20, spirit: 20 },
+		armour: teamId === 'enemy' ? 100 : 0,
+		resistances: teamId === 'enemy' ? { cut: 2_000, burn: 7_500 } : {},
+		readiness: {
+			value: options.readiness ?? 0,
+			exactNumerator: options.readiness ?? 0,
+			recoveryUntilTick: 0
+		},
+		conditions: options.unaware
+			? [
+					{
+						conditionId: 'unaware',
+						stacks: 1,
+						appliedAtTick: 0,
+						expiresAtTick: null,
+						sourceCombatantId: null
+					}
+				]
+			: [],
+		cooldowns: {},
+		downed: false,
+		active: true
+	};
+}
+
+function state(
+	options: {
+		seed?: string;
+		actorMana?: number;
+		actorAgility?: number;
+		targetAgility?: number;
+		targetHealth?: number;
+		targetFacing?: 'north' | 'east' | 'south' | 'west';
+		includeAlly?: boolean;
+		unaware?: boolean;
+		resolutionProfile?: AttackProfile;
+		tick?: number;
+	} = {}
+): ReadinessCombatStateV1 {
+	const combatants: ReadinessCombatStateV1['combatants'] = {
+		[ID.actor]: fighter(
+			ID.actor,
+			'party',
+			{ x: 1, y: 1 },
+			{
+				mana: options.actorMana,
+				agility: options.actorAgility,
+				readiness: 10_000
+			}
+		),
+		[ID.target]: fighter(
+			ID.target,
+			'enemy',
+			{ x: 2, y: 1 },
+			{
+				health: options.targetHealth,
+				agility: options.targetAgility,
+				facing: options.targetFacing ?? 'north',
+				unaware: options.unaware
+			}
+		)
+	};
+	if (options.includeAlly) {
+		combatants[ID.ally] = fighter(ID.ally, 'party', { x: 2, y: 2 });
+	}
+	return {
+		stateVersion: 'readiness-combat-state-v1',
+		seed: options.seed ?? sha256Hex('resolver-private-seed'),
+		attemptId: ID.attempt,
+		tick: options.tick ?? 13,
+		combatants,
+		actorContexts: {
+			[ID.actor]: {
+				actorId: ID.actor,
+				visibleCombatantIds: options.includeAlly ? [ID.target, ID.ally] : [ID.target],
+				visibleTelegraphIds: [],
+				observableReadinessActorIds: [],
+				targetablePositions: [
+					{ x: 1, y: 1 },
+					{ x: 2, y: 1 },
+					...(options.includeAlly ? [{ x: 2, y: 2 }] : [])
+				],
+				visibleTerrainFeatureIds: [],
+				rememberedContext: [],
+				doctrine: [],
+				relationships: [],
+				masterDirections: [],
+				legalActionTemplates: [attackTemplate(options.resolutionProfile), GUARD_TEMPLATE]
+			}
+		},
+		terrain: { width: 4, height: 4, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		scheduledEffects: [],
+		safety: { ticksAdvanced: 13, eventsEmitted: 0, noProgressCycles: 0 },
+		status: 'active',
+		result: null
+	};
+}
+
+function decision(canonical: ReadinessCombatStateV1, publicIntent = 'Cross cut.') {
+	const advance = advanceUntilDecision(canonical, COMBAT_RULES_V1);
+	if (advance.kind !== 'decision-window') throw new Error('Expected decision window');
+	const view = advance.views.find((candidate) => candidate.actorId === ID.actor)!;
+	const action = view.legalActions.find((candidate) => candidate.actionId === 'cross-cut');
+	if (!action) throw new Error('Expected an affordable Cross Cut');
+	const intent: CombatActionIntent = {
+		windowId: advance.snapshot.windowId,
+		attemptId: advance.snapshot.attemptId,
+		tick: advance.snapshot.tick,
+		actorId: ID.actor,
+		snapshotHash: advance.snapshot.snapshotHash,
+		actorViewHash: view.actorViewHash,
+		legalActionSetHash: view.legalActionSetHash,
+		actionId: action.actionId,
+		actionInstanceId: action.actionInstanceId,
+		actionKind: action.actionKind,
+		skillId: action.skillId,
+		target: { kind: 'entity', combatantId: ID.target },
+		fallbackId: 'hold-ground',
+		publicIntent
+	};
+	return { intent, action };
+}
+
+function findOutcome(hit: boolean) {
+	for (let index = 0; index < 1_000; index += 1) {
+		const canonical = state({ seed: sha256Hex(`resolver-outcome-${index}`) });
+		const { intent } = decision(canonical);
+		const result = resolveCombatAction({ state: canonical, intent, rules: COMBAT_RULES_V1 });
+		if (result.outcome.hit === hit) return { canonical, intent, result };
+	}
+	throw new Error('No deterministic outcome found');
+}
+
 describe('authoritative combat action resolution', () => {
-	it('uses bounded relative Agility and explicit positional modifiers in the hit contest', () => {
-		expect(
-			combatHitChance({
-				skillAccuracyBasisPoints: 6_750,
-				defenderEvasionBasisPoints: 0,
-				attackerAgility: 20,
-				defenderAgility: 20,
-				flank: false,
-				surround: false,
-				unaware: false
-			})
-		).toBe(6_750);
-		expect(
-			combatHitChance({
-				skillAccuracyBasisPoints: 6_750,
-				defenderEvasionBasisPoints: 0,
-				attackerAgility: 200,
-				defenderAgility: 1,
-				flank: true,
-				surround: true,
-				unaware: true
-			})
-		).toBe(9_950);
-		expect(
-			combatHitChance({
-				skillAccuracyBasisPoints: 6_750,
-				defenderEvasionBasisPoints: 0,
-				attackerAgility: 1,
-				defenderAgility: 200,
-				flank: false,
-				surround: false,
-				unaware: false
-			})
-		).toBe(5_850);
-	});
-
-	it('applies authored, attribute, affinity, critical/status, armour, resistance, and clamp stages in order', () => {
-		const arranged = state();
-		const result = resolveCombatAction({
-			state: arranged,
-			intent: intent(),
-			legalAction: ACTION,
-			authority: authority(),
-			rules: COMBAT_RULES_V1
+	it('rederives evidence and uses only the catalog-bound private canonical profile', () => {
+		const { canonical, result } = findOutcome(true);
+		expect(result.hitContest).toStrictEqual({
+			skillAccuracyBasisPoints: 6_750,
+			defenderEvasionBasisPoints: 20,
+			relativeAgilityBasisPoints: 0,
+			flank: true,
+			surround: false,
+			unaware: false,
+			positionalBasisPoints: 600,
+			chanceBasisPoints: 7_330
 		});
-
-		expect(result.outcome).toMatchObject({ hit: true, critical: true, statusApplied: true });
 		expect(result.calculation).toStrictEqual({
 			authoredMagnitude: 150,
 			attributeScaledMagnitude: 180,
@@ -202,266 +265,191 @@ describe('authoritative combat action resolution', () => {
 			resistanceReductionBasisPoints: 2_000,
 			finalDamage: 132
 		});
-		expect(result.state.combatants[ID.target]).toMatchObject({
-			resources: { health: { current: 368, maximum: 500 }, mana: { current: 20, maximum: 100 } },
-			lastDamagedAtTick: 13,
-			downed: false,
-			active: true
+		expect(result.effects[0]).toStrictEqual({
+			kind: 'resource',
+			combatantId: ID.actor,
+			resource: 'mana',
+			before: 20,
+			after: 18,
+			delta: -2
+		});
+		expect(result.state.combatants[ID.target]!.resources.health.current).toBe(368);
+		expect(canonical.combatants[ID.actor]!.resources.mana.current).toBe(20);
+	});
+
+	it('derives evasion, flank, surround, unaware, and capped relative Agility from state', () => {
+		const canonical = state({
+			actorAgility: 100,
+			targetAgility: 1,
+			includeAlly: true,
+			unaware: true
+		});
+		const result = resolveCombatAction({
+			state: canonical,
+			intent: decision(canonical).intent,
+			rules: COMBAT_RULES_V1
+		});
+		expect(result.hitContest).toMatchObject({
+			defenderEvasionBasisPoints: 1,
+			relativeAgilityBasisPoints: 900,
+			flank: true,
+			surround: true,
+			unaware: true,
+			positionalBasisPoints: 2_500,
+			chanceBasisPoints: 9_950
+		});
+	});
+
+	it('debits Mana exactly once on a miss and never regenerates during resolution', () => {
+		const { canonical, result } = findOutcome(false);
+		expect(result.outcome).toStrictEqual({
+			hit: false,
+			critical: false,
+			statusApplied: false,
+			downed: false
 		});
 		expect(result.effects).toStrictEqual([
 			{
 				kind: 'resource',
-				combatantId: ID.target,
-				resource: 'health',
-				before: 500,
-				after: 368,
-				delta: -132
-			},
-			{
-				kind: 'condition',
-				combatantId: ID.target,
-				operation: 'applied',
-				condition: {
-					conditionId: 'opened-guard',
-					stacks: 1,
-					appliedAtTick: 13,
-					expiresAtTick: 16,
-					sourceCombatantId: ID.actor
-				}
+				combatantId: ID.actor,
+				resource: 'mana',
+				before: 20,
+				after: 18,
+				delta: -2
 			}
 		]);
-		expect(arranged.combatants[ID.target]?.resources.health.current).toBe(500);
+		expect(result.state.combatants[ID.target]!.resources).toStrictEqual(
+			canonical.combatants[ID.target]!.resources
+		);
 	});
 
-	it('uses Spirit for magical damage and skips general physical armour', () => {
-		const arranged = state();
-		arranged.combatants[ID.actor]!.attributes = {
-			...arranged.combatants[ID.actor]!.attributes,
-			might: 1,
-			spirit: 50
+	it('filters unaffordable actions and rejects their stale intent without mutation', () => {
+		const rich = state();
+		const staleIntent = decision(rich).intent;
+		const poor = state({ actorMana: 1 });
+		const advance = advanceUntilDecision(poor, COMBAT_RULES_V1);
+		expect(advance.kind).toBe('decision-window');
+		if (advance.kind !== 'decision-window') return;
+		expect(advance.views[0]!.legalActions.map((action) => action.actionId)).toStrictEqual([
+			'guard-self'
+		]);
+		const before = hashCanonical(poor);
+		expect(() =>
+			resolveCombatAction({ state: poor, intent: staleIntent, rules: COMBAT_RULES_V1 })
+		).toThrow();
+		expect(hashCanonical(poor)).toBe(before);
+	});
+
+	it.each([
+		['window', { windowId: ID.attempt }],
+		['snapshot', { snapshotHash: 'f'.repeat(64) }],
+		['view', { actorViewHash: 'e'.repeat(64) }],
+		['legal set', { legalActionSetHash: 'd'.repeat(64) }],
+		['instance', { actionInstanceId: ID.attempt }],
+		['kind', { actionKind: 'guard' }],
+		['skill', { skillId: null }]
+	] as const)('rejects forged %s binding atomically', (_label, forged) => {
+		const canonical = state();
+		const intent = { ...decision(canonical).intent, ...forged };
+		const before = hashCanonical(canonical);
+		expect(() =>
+			resolveCombatAction({ state: canonical, intent, rules: COMBAT_RULES_V1 })
+		).toThrow();
+		expect(hashCanonical(canonical)).toBe(before);
+	});
+
+	it('rejects content, mastery accuracy, and delivery drift from immutable catalogs', () => {
+		for (const changed of [
+			{ contentHash: 'f'.repeat(64) },
+			{ skillAccuracyBasisPoints: 6_751 },
+			{ deliveryTag: 'bow' as const }
+		]) {
+			const canonical = state({ resolutionProfile: profile(changed) });
+			const before = hashCanonical(canonical);
+			expect(() =>
+				resolveCombatAction({
+					state: canonical,
+					intent: decision(canonical).intent,
+					rules: COMBAT_RULES_V1
+				})
+			).toThrow();
+			expect(hashCanonical(canonical)).toBe(before);
+		}
+	});
+
+	it('rejects caller-modified combat rules before resolving canonical state', () => {
+		const canonical = state();
+		const forgedRules = {
+			...COMBAT_RULES_V1,
+			hit: { ...COMBAT_RULES_V1.hit, flankBasisPoints: 601 }
 		};
-		const result = resolveCombatAction({
-			state: arranged,
-			intent: intent(),
-			legalAction: ACTION,
-			authority: authority({
-				damage: {
-					channel: 'magical',
-					tags: ['magical', 'burn'],
-					baseMagnitude: 100,
-					coefficientBasisPoints: 10_000,
-					affinityContributionBasisPoints: 0,
-					criticalChanceBasisPoints: 0,
-					criticalMultiplierBasisPoints: 15_000,
-					penetration: 0,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-
-		expect(result.calculation).toMatchObject({
-			authoredMagnitude: 100,
-			attributeScaledMagnitude: 150,
-			armourReductionBasisPoints: 0,
-			armourAdjustedMagnitude: 150,
-			resistanceReductionBasisPoints: 7_500,
-			finalDamage: 38
-		});
+		const before = hashCanonical(canonical);
+		expect(() =>
+			resolveCombatAction({
+				state: canonical,
+				intent: decision(canonical).intent,
+				rules: forgedRules
+			})
+		).toThrow('immutable combat rules');
+		expect(hashCanonical(canonical)).toBe(before);
 	});
 
-	it('keeps hit and critical draws independent and does not regenerate during resolution', () => {
-		let arranged = state();
-		for (let index = 0; index < 10_000; index += 1) {
-			arranged = state(sha256Hex(`forced-miss-${index}`));
-			const candidate = resolveCombatAction({
-				state: arranged,
-				intent: intent('First prose.'),
-				legalAction: ACTION,
-				authority: authority({
-					hit: {
-						...authority().hit,
-						skillAccuracyBasisPoints: 500
-					},
-					damage: {
-						...authority().damage!,
-						criticalChanceBasisPoints: 0,
-						status: null
-					}
-				}),
+	it('clamps lethal damage to zero, downs exactly once, and applies no status', () => {
+		for (let index = 0; index < 1_000; index += 1) {
+			const canonical = state({ targetHealth: 5, seed: sha256Hex(`lethal-${index}`) });
+			const result = resolveCombatAction({
+				state: canonical,
+				intent: decision(canonical).intent,
 				rules: COMBAT_RULES_V1
 			});
-			if (!candidate.outcome.hit) break;
+			if (!result.outcome.hit) continue;
+			expect(result.calculation?.finalDamage).toBe(5);
+			expect(result.state.combatants[ID.target]).toMatchObject({
+				resources: { health: { current: 0 } },
+				downed: true,
+				active: false
+			});
+			expect(result.outcome.statusApplied).toBe(false);
+			expect(result.effects.at(-1)).toStrictEqual({ kind: 'downed', combatantId: ID.target });
+			return;
 		}
-		const before = arranged.combatants[ID.actor]!.resources;
-		const withoutCritical = resolveCombatAction({
-			state: arranged,
-			intent: intent('First prose.'),
-			legalAction: ACTION,
-			authority: authority({
-				hit: { ...authority().hit, skillAccuracyBasisPoints: 500 },
-				damage: {
-					...authority().damage!,
-					criticalChanceBasisPoints: 0,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-		const guaranteedCritical = resolveCombatAction({
-			state: arranged,
-			intent: intent('Entirely different provider prose.'),
-			legalAction: ACTION,
-			authority: authority({
-				hit: { ...authority().hit, skillAccuracyBasisPoints: 500 },
-				damage: {
-					...authority().damage!,
-					criticalChanceBasisPoints: 10_000,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-
-		expect(withoutCritical.outcome.hit).toBe(false);
-		expect(guaranteedCritical.outcome.hit).toBe(false);
-		expect(guaranteedCritical.outcome.critical).toBe(false);
-		expect(guaranteedCritical.effects).toStrictEqual([]);
-		expect(guaranteedCritical.state.combatants[ID.actor]!.resources).toStrictEqual(before);
+		throw new Error('No lethal hit found');
 	});
 
-	it('clamps lethal damage to exact zero and emits one typed downing effect', () => {
-		const arranged = state();
-		arranged.combatants[ID.target]!.resources.health = { current: 5, maximum: 500 };
-		const result = resolveCombatAction({
-			state: arranged,
-			intent: intent(),
-			legalAction: ACTION,
-			authority: authority({
-				damage: {
-					...authority().damage!,
-					criticalChanceBasisPoints: 0,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-
-		expect(result.state.combatants[ID.target]).toMatchObject({
-			resources: { health: { current: 0 } },
-			downed: true,
-			active: false
-		});
-		expect(result.calculation?.finalDamage).toBe(5);
-		expect(result.effects.at(-1)).toStrictEqual({ kind: 'downed', combatantId: ID.target });
-	});
-
-	it('applies penetration only to physical armour before matching named resistance', () => {
-		const result = resolveCombatAction({
-			state: state(),
-			intent: intent(),
-			legalAction: ACTION,
-			authority: authority({
-				damage: {
-					...authority().damage!,
-					baseMagnitude: 100,
-					coefficientBasisPoints: 10_000,
-					affinityContributionBasisPoints: 0,
-					criticalChanceBasisPoints: 0,
-					penetration: 25,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-
-		expect(result.calculation).toMatchObject({
-			attributeScaledMagnitude: 120,
-			armourReductionBasisPoints: 4_286,
-			armourAdjustedMagnitude: 69,
-			resistanceReductionBasisPoints: 2_000,
-			finalDamage: 55
-		});
-	});
-
-	it('rounds every basis-point boundary half-up and keeps successful damage meaningful', () => {
-		const arranged = state();
-		arranged.combatants[ID.target]!.armour = 1_000_000;
-		arranged.combatants[ID.target]!.resistances = { cut: 7_500 };
-		const result = resolveCombatAction({
-			state: arranged,
-			intent: intent(),
-			legalAction: ACTION,
-			authority: authority({
-				damage: {
-					...authority().damage!,
-					baseMagnitude: 1,
-					coefficientBasisPoints: 5_000,
-					affinityContributionBasisPoints: 0,
-					criticalChanceBasisPoints: 0,
-					status: null
-				}
-			}),
-			rules: COMBAT_RULES_V1
-		});
-		expect(result.calculation?.authoredMagnitude).toBe(1);
-		expect(result.calculation?.armourReductionBasisPoints).toBe(7_499);
-		expect(result.calculation?.finalDamage).toBe(1);
-	});
-
-	it('rejects unsafe damage arithmetic before mutating canonical state', () => {
-		const arranged = state();
+	it('rejects provider outcomes while prose cannot alter resolution', () => {
+		const canonical = state();
+		const first = decision(canonical, 'First prose.').intent;
+		const second = { ...first, publicIntent: 'Different prose.' };
+		expect(
+			resolveCombatAction({ state: canonical, intent: second, rules: COMBAT_RULES_V1 })
+		).toStrictEqual(
+			resolveCombatAction({ state: canonical, intent: first, rules: COMBAT_RULES_V1 })
+		);
 		expect(() =>
 			resolveCombatAction({
-				state: arranged,
-				intent: intent(),
-				legalAction: ACTION,
-				authority: authority({
-					damage: {
-						...authority().damage!,
-						baseMagnitude: Number.MAX_SAFE_INTEGER,
-						coefficientBasisPoints: 10_001,
-						criticalChanceBasisPoints: 0,
-						status: null
-					}
-				}),
-				rules: COMBAT_RULES_V1
-			})
-		).toThrow('safe integer');
-		expect(arranged.combatants[ID.target]!.resources.health.current).toBe(500);
-	});
-
-	it('rejects provider-authored outcomes and invented targets', () => {
-		const forgedIntent = {
-			...intent(),
-			damage: 999,
-			hit: true,
-			critical: true,
-			status: 'dead',
-			downed: true,
-			loot: ['crown'],
-			death: ID.target
-		};
-		expect(() =>
-			resolveCombatAction({
-				state: state(),
-				intent: forgedIntent,
-				legalAction: ACTION,
-				authority: authority(),
+				state: canonical,
+				intent: { ...first, damage: 999, hit: true, death: ID.target } as CombatActionIntent,
 				rules: COMBAT_RULES_V1
 			})
 		).toThrow();
+	});
+
+	it('rejects late status expiry overflow before changing Mana or Health', () => {
+		const base = profile();
+		const canonical = state({
+			tick: Number.MAX_SAFE_INTEGER,
+			resolutionProfile: profile({
+				damage: { ...base.damage, status: { ...base.damage.status!, durationTicks: 1 } }
+			})
+		});
+		const before = hashCanonical(canonical);
 		expect(() =>
 			resolveCombatAction({
-				state: state(),
-				intent: {
-					...intent(),
-					target: { kind: 'entity', combatantId: ID.actor }
-				},
-				legalAction: ACTION,
-				authority: authority(),
+				state: canonical,
+				intent: decision(canonical).intent,
 				rules: COMBAT_RULES_V1
 			})
-		).toThrow('not supplied by the legal action');
+		).toThrow('safe integer');
+		expect(hashCanonical(canonical)).toBe(before);
 	});
 });

@@ -220,6 +220,18 @@ export const CombatRulesV1Schema = z
 			})
 			.strict(),
 		affinity: z.object({ contributionNudgeCapBasisPoints: BasisPointsSchema.max(1_000) }).strict(),
+		hit: z
+			.object({
+				minimumChanceBasisPoints: BasisPointsSchema,
+				maximumChanceBasisPoints: BasisPointsSchema,
+				defenderAgilityEvasionBasisPointsPerPoint: BasisPointsSchema,
+				relativeAgilityBasisPointsPerPoint: BasisPointsSchema,
+				relativeAgilityCapBasisPoints: BasisPointsSchema,
+				flankBasisPoints: BasisPointsSchema,
+				surroundBasisPoints: BasisPointsSchema,
+				unawareBasisPoints: BasisPointsSchema
+			})
+			.strict(),
 		readiness: z
 			.object({
 				tickDurationMilliseconds: z.number().int().positive(),
@@ -266,6 +278,9 @@ export const CombatRulesV1Schema = z
 				path: ['learning'],
 				message: 'Invalid domain aptitude band'
 			});
+		}
+		if (rules.hit.minimumChanceBasisPoints > rules.hit.maximumChanceBasisPoints) {
+			context.addIssue({ code: 'custom', path: ['hit'], message: 'Invalid hit chance band' });
 		}
 	});
 

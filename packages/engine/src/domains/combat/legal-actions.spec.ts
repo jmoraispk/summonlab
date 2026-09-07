@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type {
+	CombatActionResolutionProfile,
 	CombatEquipmentProfile,
 	CombatSkillDefinition,
 	LearnedCombatSkillState
@@ -13,6 +14,32 @@ import {
 	evaluateCombatLoadout,
 	legalCombatSkillActions
 } from './legal-actions.js';
+
+const CONTENT_HASH = 'a'.repeat(64);
+const NON_DAMAGING_RESOLUTION = {
+	profileKind: 'non-damaging',
+	rulesVersion: 'combat-rules-v1',
+	contentHash: CONTENT_HASH
+} as const;
+const ATTACK_RESOLUTION: CombatActionResolutionProfile = {
+	profileKind: 'attack',
+	rulesVersion: 'combat-rules-v1',
+	contentHash: CONTENT_HASH,
+	deliveryTag: 'one-handed-blade',
+	masteryStepMinimum: 0,
+	skillAccuracyBasisPoints: 6_750,
+	damage: {
+		channel: 'physical',
+		tags: ['physical', 'cut'],
+		baseMagnitude: 10,
+		coefficientBasisPoints: 10_000,
+		affinityContributionBasisPoints: 0,
+		criticalChanceBasisPoints: 500,
+		criticalMultiplierBasisPoints: 15_000,
+		penetration: 0,
+		status: null
+	}
+};
 
 const skill = {
 	schemaVersion: 'combat-skill-v1',
@@ -70,6 +97,7 @@ describe('combat legal actions', () => {
 		const actions = authorCombatLegalActions({
 			actorId,
 			windowId,
+			availableMana: 10,
 			actions: [
 				{
 					actionId: 'move-behind',
@@ -84,6 +112,7 @@ describe('combat legal actions', () => {
 					reactionPriority: 1,
 					recoveryTicks: 3,
 					manaCost: 0,
+					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [
 						{
 							fallbackId: 'flank-left',
@@ -105,6 +134,7 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }]
 				},
 				{
@@ -116,6 +146,7 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					resolutionProfile: NON_DAMAGING_RESOLUTION,
 					fallbackOptions: [
 						{
 							fallbackId: 'step-north',
@@ -133,6 +164,7 @@ describe('combat legal actions', () => {
 					reactionPriority: 0,
 					recoveryTicks: 4,
 					manaCost: 1,
+					resolutionProfile: ATTACK_RESOLUTION,
 					fallbackOptions: [
 						{
 							fallbackId: 'retarget',
@@ -170,21 +202,28 @@ describe('combat legal actions', () => {
 			reactionPriority: 0,
 			recoveryTicks: 2,
 			manaCost: 0,
+			resolutionProfile: NON_DAMAGING_RESOLUTION,
 			fallbackOptions: [
 				{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
 			]
 		};
-		expect(() => authorCombatLegalActions({ actorId, windowId, actions: [base, base] })).toThrow(
-			'unique'
-		);
+		expect(() =>
+			authorCombatLegalActions({ actorId, windowId, availableMana: 10, actions: [base, base] })
+		).toThrow('unique');
+		const publicBase = authorCombatLegalActions({
+			actorId,
+			windowId,
+			availableMana: 10,
+			actions: [base]
+		})[0]!;
 		expect(() =>
 			canonicalCombatLegalActions([
 				{
-					...base,
+					...publicBase,
 					actionInstanceId: deterministicUuid('shared-action-instance')
 				},
 				{
-					...base,
+					...publicBase,
 					actionId: 'guard-again',
 					actionInstanceId: deterministicUuid('shared-action-instance')
 				}
@@ -194,9 +233,49 @@ describe('combat legal actions', () => {
 			authorCombatLegalActions({
 				actorId,
 				windowId,
+				availableMana: 10,
 				actions: [{ ...base, fallbackOptions: [] }]
 			})
 		).toThrow('fallback');
+	});
+
+	it('filters unaffordable private templates before public action-set hashing', () => {
+		const actorId = deterministicUuid('affordability-actor');
+		const targetId = deterministicUuid('affordability-target');
+		const windowId = deterministicUuid('affordability-window');
+		const base = {
+			actionKind: 'guard' as const,
+			skillId: null,
+			publicLabel: 'Guard',
+			targetContract: { kind: 'self' as const },
+			reactionPriority: 0,
+			recoveryTicks: 2,
+			fallbackOptions: [
+				{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
+			],
+			resolutionProfile: NON_DAMAGING_RESOLUTION
+		};
+		const actions = authorCombatLegalActions({
+			actorId,
+			windowId,
+			availableMana: 3,
+			actions: [
+				{ ...base, actionId: 'free-guard', manaCost: 0 },
+				{ ...base, actionId: 'costly-guard', manaCost: 4 },
+				{
+					...base,
+					actionId: 'costly-strike',
+					actionKind: 'attack',
+					skillId: 'combat-skill-basic-sword-strike',
+					targetContract: { kind: 'entity', allowedCombatantIds: [targetId] },
+					manaCost: 5,
+					resolutionProfile: ATTACK_RESOLUTION
+				}
+			]
+		});
+
+		expect(actions.map((action) => action.actionId)).toStrictEqual(['free-guard']);
+		expect(JSON.stringify(actions)).not.toContain('resolutionProfile');
 	});
 
 	it('canonicalizes target sets and fallback options before binding the legal-action hash', () => {

@@ -25,6 +25,16 @@ describe('combat-rules-v1 content', () => {
 				cognitiveMaximumBasisPoints: 11_000
 			},
 			affinity: { contributionNudgeCapBasisPoints: 1_000 },
+			hit: {
+				minimumChanceBasisPoints: 500,
+				maximumChanceBasisPoints: 9_950,
+				defenderAgilityEvasionBasisPointsPerPoint: 1,
+				relativeAgilityBasisPointsPerPoint: 10,
+				relativeAgilityCapBasisPoints: 900,
+				flankBasisPoints: 600,
+				surroundBasisPoints: 700,
+				unawareBasisPoints: 1_200
+			},
 			readiness: {
 				tickDurationMilliseconds: 100,
 				threshold: 10_000,

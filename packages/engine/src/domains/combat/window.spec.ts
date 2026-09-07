@@ -37,6 +37,7 @@ function combatant(
 		combatantKind: teamId === 'enemy' ? ('monster' as const) : ('hero' as const),
 		teamId,
 		position,
+		facing: teamId === 'enemy' ? ('west' as const) : ('east' as const),
 		resources: {
 			health: { current: teamId === 'enemy' ? 70 : 90, maximum: 100 },
 			mana: { current: teamId === 'enemy' ? 4 : 30, maximum: 40 }
@@ -134,7 +135,27 @@ function actionTemplate(
 		reactionPriority: fullAction.reactionPriority,
 		recoveryTicks: fullAction.recoveryTicks,
 		manaCost: fullAction.manaCost,
-		fallbackOptions: fullAction.fallbackOptions
+		fallbackOptions: fullAction.fallbackOptions,
+		resolutionProfile: {
+			profileKind: 'attack',
+			rulesVersion: 'combat-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			deliveryTag: skillId === 'combat-skill-basic-bow-shot' ? 'bow' : 'one-handed-blade',
+			masteryStepMinimum: 0,
+			skillAccuracyBasisPoints: 6_750,
+			damage: {
+				channel: 'physical',
+				tags:
+					skillId === 'combat-skill-basic-bow-shot' ? ['physical', 'pierce'] : ['physical', 'cut'],
+				baseMagnitude: 10,
+				coefficientBasisPoints: 10_000,
+				affinityContributionBasisPoints: 0,
+				criticalChanceBasisPoints: 500,
+				criticalMultiplierBasisPoints: 15_000,
+				penetration: 0,
+				status: null
+			}
+		}
 	};
 }
 
@@ -323,6 +344,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									resolutionProfile: {
+										profileKind: 'non-damaging',
+										rulesVersion: 'combat-rules-v1',
+										contentHash: COMBAT_CONTENT_BINDING.contentHash
+									},
 									fallbackOptions: [
 										{
 											fallbackId: 'stay',
@@ -362,6 +388,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									resolutionProfile: {
+										profileKind: 'non-damaging',
+										rulesVersion: 'combat-rules-v1',
+										contentHash: COMBAT_CONTENT_BINDING.contentHash
+									},
 									fallbackOptions: [
 										{
 											fallbackId: 'stay',
@@ -402,6 +433,11 @@ describe('frozen combat decision windows', () => {
 									reactionPriority: 0,
 									recoveryTicks: 2,
 									manaCost: 0,
+									resolutionProfile: {
+										profileKind: 'non-damaging',
+										rulesVersion: 'combat-rules-v1',
+										contentHash: COMBAT_CONTENT_BINDING.contentHash
+									},
 									fallbackOptions: [
 										{
 											fallbackId: 'stay',
@@ -579,6 +615,11 @@ describe('frozen combat decision windows', () => {
 					reactionPriority: 0,
 					recoveryTicks: 2,
 					manaCost: 0,
+					resolutionProfile: {
+						profileKind: 'non-damaging',
+						rulesVersion: 'combat-rules-v1',
+						contentHash: COMBAT_CONTENT_BINDING.contentHash
+					},
 					fallbackOptions: [{ fallbackId: 'stay', publicLabel: 'Stay', target: { kind: 'self' } }]
 				}
 			]

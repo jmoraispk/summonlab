@@ -56,6 +56,16 @@ function validRules() {
 			domainMaximumBasisPoints: 12_000
 		},
 		affinity: { contributionNudgeCapBasisPoints: 1_000 },
+		hit: {
+			minimumChanceBasisPoints: 500,
+			maximumChanceBasisPoints: 9_950,
+			defenderAgilityEvasionBasisPointsPerPoint: 1,
+			relativeAgilityBasisPointsPerPoint: 10,
+			relativeAgilityCapBasisPoints: 900,
+			flankBasisPoints: 600,
+			surroundBasisPoints: 700,
+			unawareBasisPoints: 1_200
+		},
 		readiness: {
 			tickDurationMilliseconds: 100,
 			threshold: 10_000,
@@ -72,6 +82,19 @@ function validRules() {
 }
 
 describe('combat rules contracts', () => {
+	it('binds all hit-contest clamps and modifiers into combat-rules-v1', () => {
+		const parsed = CombatRulesV1Schema.parse(validRules());
+		expect(parsed.hit).toStrictEqual(validRules().hit);
+		for (const hit of [
+			{ ...parsed.hit, minimumChanceBasisPoints: 10_001 },
+			{ ...parsed.hit, maximumChanceBasisPoints: 10_001 },
+			{ ...parsed.hit, relativeAgilityCapBasisPoints: -1 },
+			{ ...parsed.hit, defenderAgilityEvasionBasisPointsPerPoint: -1 }
+		]) {
+			expect(CombatRulesV1Schema.safeParse({ ...validRules(), hit }).success).toBe(false);
+		}
+	});
+
 	it('binds integer one-tick readiness and engine safety candidates', () => {
 		const parsed = CombatRulesV1Schema.parse(validRules());
 		expect(parsed.readiness).toStrictEqual({

@@ -371,6 +371,7 @@ function actorView(
 	const legalActions = authorCombatLegalActions({
 		actorId,
 		windowId: snapshot.windowId,
+		availableMana: self.resources.mana.current,
 		actions: contextInput.legalActionTemplates
 	});
 	validateProviderActionVisibility(actorId, visibleSet, legalActions);

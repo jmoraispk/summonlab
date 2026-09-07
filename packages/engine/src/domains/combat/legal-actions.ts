@@ -20,6 +20,7 @@ export type AuthoredCombatLegalAction = Readonly<CombatLegalActionTemplate>;
 export type AuthorCombatLegalActionsInput = Readonly<{
 	actorId: string;
 	windowId: string;
+	availableMana: number;
 	actions: readonly AuthoredCombatLegalAction[];
 }>;
 
@@ -85,11 +86,26 @@ export function canonicalCombatLegalActions(
 export function authorCombatLegalActions(
 	input: AuthorCombatLegalActionsInput
 ): readonly CombatLegalAction[] {
+	if (!Number.isSafeInteger(input.availableMana) || input.availableMana < 0) {
+		throw new Error('Available combat Mana must be a nonnegative safe integer');
+	}
 	return canonicalCombatLegalActions(
-		canonicalCombatLegalActionTemplates(input.actions).map((action) => ({
-			...action,
-			actionInstanceId: deterministicUuid(`${input.windowId}:${input.actorId}:${action.actionId}`)
-		}))
+		canonicalCombatLegalActionTemplates(input.actions)
+			.filter((action) => action.manaCost <= input.availableMana)
+			.map((action) => ({
+				actionId: action.actionId,
+				actionInstanceId: deterministicUuid(
+					`${input.windowId}:${input.actorId}:${action.actionId}`
+				),
+				actionKind: action.actionKind,
+				skillId: action.skillId,
+				publicLabel: action.publicLabel,
+				targetContract: action.targetContract,
+				reactionPriority: action.reactionPriority,
+				recoveryTicks: action.recoveryTicks,
+				manaCost: action.manaCost,
+				fallbackOptions: action.fallbackOptions
+			}))
 	);
 }
 

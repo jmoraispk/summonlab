@@ -8,9 +8,9 @@ export {
 } from './domains/combat/randomness.js';
 export {
 	resolveCombatAction,
-	type CombatActionAuthority,
 	type CombatActionResolution,
 	type CombatDamageCalculation,
+	type CombatHitContest,
 	type ResolveCombatActionInput
 } from './domains/combat/resolver.js';
 export { advanceUntilDecision } from './domains/combat/window.js';

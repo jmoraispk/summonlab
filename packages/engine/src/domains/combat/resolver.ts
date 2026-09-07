@@ -1,103 +1,50 @@
 import {
 	CombatActionIntentSchema,
-	CombatLegalActionSchema,
 	CombatRulesV1Schema,
-	DamageChannelSchema,
-	DamageTagSchema,
 	ReadinessCombatStateV1Schema,
+	type ActorDecisionView,
 	type CombatActionIntent,
+	type CombatActionResolutionProfile,
 	type CombatLegalAction,
+	type CombatLegalActionTemplate,
 	type CombatResolvedEvent,
 	type CombatRulesV1,
 	type DamageChannel,
 	type DamageTag,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { z } from 'zod';
+import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1, COMBAT_SKILLS_BY_ID } from '@summonlab/content';
 
+import { hashCanonical } from '../../hash.js';
 import { armourReduction } from './capability.js';
 import { purposeKeyedInteger } from './randomness.js';
+import { advanceUntilDecision } from './window.js';
 
 const BASIS_POINTS = 10_000;
 
-const COMBAT_HIT_PROFILE_V1 = Object.freeze({
-	minimumChanceBasisPoints: 500,
-	maximumChanceBasisPoints: 9_950,
-	relativeAgilityBasisPointsPerPoint: 10,
-	relativeAgilityCapBasisPoints: 900,
-	flankBasisPoints: 600,
-	surroundBasisPoints: 700,
-	unawareBasisPoints: 1_200
-});
+type AttackResolutionProfile = Extract<CombatActionResolutionProfile, { profileKind: 'attack' }>;
 
-const HitAuthoritySchema = z
-	.object({
-		// This is the authored mastery-step accuracy, not a second attribute-derived score.
-		skillAccuracyBasisPoints: z.number().int().min(0).max(BASIS_POINTS),
-		defenderEvasionBasisPoints: z.number().int().min(0).max(BASIS_POINTS),
-		flank: z.boolean(),
-		surround: z.boolean(),
-		unaware: z.boolean()
-	})
-	.strict();
+export type CombatHitChanceInput = Readonly<{
+	skillAccuracyBasisPoints: number;
+	defenderEvasionBasisPoints: number;
+	attackerAgility: number;
+	defenderAgility: number;
+	flank: boolean;
+	surround: boolean;
+	unaware: boolean;
+	rules: CombatRulesV1['hit'];
+}>;
 
-const StatusAuthoritySchema = z
-	.object({
-		conditionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
-		chanceBasisPoints: z.number().int().min(0).max(BASIS_POINTS),
-		damageMultiplierBasisPoints: z.number().int().min(0).max(100_000),
-		stacks: z.number().int().positive().max(1_000),
-		durationTicks: z.number().int().positive().max(Number.MAX_SAFE_INTEGER)
-	})
-	.strict();
-
-const DamageAuthoritySchema = z
-	.object({
-		channel: DamageChannelSchema,
-		tags: z.array(DamageTagSchema).min(1).max(DamageTagSchema.options.length),
-		baseMagnitude: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
-		coefficientBasisPoints: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
-		affinityContributionBasisPoints: z.number().int().nonnegative().max(BASIS_POINTS),
-		criticalChanceBasisPoints: z.number().int().min(0).max(BASIS_POINTS),
-		criticalMultiplierBasisPoints: z.number().int().nonnegative().max(100_000),
-		penetration: z.number().int().nonnegative().max(1_000_000),
-		status: StatusAuthoritySchema.nullable()
-	})
-	.strict()
-	.superRefine((damage, context) => {
-		if (!damage.tags.includes(damage.channel)) {
-			context.addIssue({
-				code: 'custom',
-				path: ['tags'],
-				message: 'Damage tags must include the authored damage channel'
-			});
-		}
-		if (new Set(damage.tags).size !== damage.tags.length) {
-			context.addIssue({ code: 'custom', path: ['tags'], message: 'Damage tags must be unique' });
-		}
-	});
-
-const CombatActionAuthoritySchema = z
-	.object({
-		authorityVersion: z.literal('combat-action-authority-v1'),
-		actionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
-		skillId: z
-			.string()
-			.regex(/^combat-skill-[a-z0-9]+(?:-[a-z0-9]+)*$/u)
-			.nullable(),
-		hit: HitAuthoritySchema,
-		damage: DamageAuthoritySchema.nullable()
-	})
-	.strict();
-
-export type CombatActionAuthority = Readonly<z.infer<typeof CombatActionAuthoritySchema>>;
-
-export type CombatHitChanceInput = Readonly<
-	z.infer<typeof HitAuthoritySchema> & {
-		attackerAgility: number;
-		defenderAgility: number;
-	}
->;
+export type CombatHitContest = Readonly<{
+	skillAccuracyBasisPoints: number;
+	defenderEvasionBasisPoints: number;
+	relativeAgilityBasisPoints: number;
+	flank: boolean;
+	surround: boolean;
+	unaware: boolean;
+	positionalBasisPoints: number;
+	chanceBasisPoints: number;
+}>;
 
 export type CombatDamageCalculation = Readonly<{
 	authoredMagnitude: number;
@@ -122,15 +69,20 @@ export type CombatActionResolution = Readonly<{
 		statusApplied: boolean;
 		downed: boolean;
 	}>;
+	hitContest: CombatHitContest | null;
 	calculation: CombatDamageCalculation | null;
 }>;
 
 export type ResolveCombatActionInput = Readonly<{
 	state: ReadinessCombatStateV1;
 	intent: CombatActionIntent;
-	legalAction: CombatLegalAction;
-	authority: CombatActionAuthority;
 	rules: CombatRulesV1;
+}>;
+
+type DerivedActionAuthority = Readonly<{
+	view: ActorDecisionView;
+	legalAction: CombatLegalAction;
+	template: CombatLegalActionTemplate;
 }>;
 
 function clamp(value: number, minimum: number, maximum: number): number {
@@ -149,37 +101,12 @@ function scaleHalfUp(value: number, basisPoints: number, label: string): number 
 	return Number(result);
 }
 
-export function combatHitChance(input: CombatHitChanceInput): number {
-	const hit = HitAuthoritySchema.parse({
-		skillAccuracyBasisPoints: input.skillAccuracyBasisPoints,
-		defenderEvasionBasisPoints: input.defenderEvasionBasisPoints,
-		flank: input.flank,
-		surround: input.surround,
-		unaware: input.unaware
-	});
-	if (
-		!Number.isSafeInteger(input.attackerAgility) ||
-		input.attackerAgility < 0 ||
-		!Number.isSafeInteger(input.defenderAgility) ||
-		input.defenderAgility < 0
-	) {
-		throw new Error('Combat Agility values must be nonnegative safe integers');
+function immutableRules(rulesInput: CombatRulesV1): CombatRulesV1 {
+	const parsed = CombatRulesV1Schema.parse(rulesInput);
+	if (hashCanonical(parsed) !== hashCanonical(COMBAT_RULES_V1)) {
+		throw new Error('Combat resolution requires the immutable combat rules');
 	}
-	const agilityShift = clamp(
-		(input.attackerAgility - input.defenderAgility) *
-			COMBAT_HIT_PROFILE_V1.relativeAgilityBasisPointsPerPoint,
-		-COMBAT_HIT_PROFILE_V1.relativeAgilityCapBasisPoints,
-		COMBAT_HIT_PROFILE_V1.relativeAgilityCapBasisPoints
-	);
-	const positionalShift =
-		(hit.flank ? COMBAT_HIT_PROFILE_V1.flankBasisPoints : 0) +
-		(hit.surround ? COMBAT_HIT_PROFILE_V1.surroundBasisPoints : 0) +
-		(hit.unaware ? COMBAT_HIT_PROFILE_V1.unawareBasisPoints : 0);
-	return clamp(
-		hit.skillAccuracyBasisPoints - hit.defenderEvasionBasisPoints + agilityShift + positionalShift,
-		COMBAT_HIT_PROFILE_V1.minimumChanceBasisPoints,
-		COMBAT_HIT_PROFILE_V1.maximumChanceBasisPoints
-	);
+	return COMBAT_RULES_V1;
 }
 
 function selectedTargetIsLegal(
@@ -214,6 +141,218 @@ function targetCombatantId(intent: CombatActionIntent): string | null {
 	return null;
 }
 
+function rederiveActionAuthority(
+	state: ReadinessCombatStateV1,
+	intent: CombatActionIntent,
+	rules: CombatRulesV1
+): DerivedActionAuthority {
+	if (
+		intent.attemptId !== state.attemptId ||
+		intent.tick !== state.tick ||
+		state.status !== 'active'
+	) {
+		throw new Error('Combat intent does not bind to the current canonical state');
+	}
+	const advance = advanceUntilDecision(state, rules);
+	if (advance.kind !== 'decision-window' || advance.snapshot.tick !== state.tick) {
+		throw new Error('Combat state is not at the intent decision window');
+	}
+	const { snapshot } = advance;
+	if (
+		intent.windowId !== snapshot.windowId ||
+		intent.attemptId !== snapshot.attemptId ||
+		intent.tick !== snapshot.tick ||
+		intent.snapshotHash !== snapshot.snapshotHash
+	) {
+		throw new Error('Combat intent window or snapshot binding does not match canonical truth');
+	}
+	const view = advance.views.find((candidate) => candidate.actorId === intent.actorId);
+	if (!view) throw new Error('Combat intent actor is not ready in the current window');
+	if (
+		intent.actorViewHash !== view.actorViewHash ||
+		intent.legalActionSetHash !== view.legalActionSetHash
+	) {
+		throw new Error('Combat intent view or legal-action-set binding does not match');
+	}
+	const legalAction = view.legalActions.find((action) => action.actionId === intent.actionId);
+	if (!legalAction) throw new Error('Combat action is not in the current legal-action set');
+	if (
+		intent.actionInstanceId !== legalAction.actionInstanceId ||
+		intent.actionKind !== legalAction.actionKind ||
+		intent.skillId !== legalAction.skillId
+	) {
+		throw new Error('Combat intent action instance, kind, or skill binding does not match');
+	}
+	if (!selectedTargetIsLegal(intent, legalAction)) {
+		throw new Error('Combat target was not supplied by the legal action');
+	}
+	if (
+		intent.fallbackId !== null &&
+		!legalAction.fallbackOptions.some((fallback) => fallback.fallbackId === intent.fallbackId)
+	) {
+		throw new Error('Combat fallback was not supplied by the legal action');
+	}
+	const context = state.actorContexts[intent.actorId];
+	const template = context?.legalActionTemplates.find(
+		(candidate) => candidate.actionId === legalAction.actionId
+	);
+	if (!context || !template) {
+		throw new Error('Combat action has no private canonical resolution profile');
+	}
+	return { view, legalAction, template };
+}
+
+function sameStringSet(left: readonly string[], right: readonly string[]): boolean {
+	const sortedRight = [...right].sort();
+	return (
+		left.length === right.length &&
+		[...left].sort().every((value, index) => value === sortedRight[index])
+	);
+}
+
+function validateResolutionProfile(
+	profile: CombatActionResolutionProfile,
+	legalAction: CombatLegalAction,
+	rules: CombatRulesV1
+): void {
+	if (
+		profile.rulesVersion !== rules.rulesVersion ||
+		profile.contentHash !== COMBAT_CONTENT_BINDING.contentHash
+	) {
+		throw new Error('Combat resolution profile does not match immutable rules and content');
+	}
+	if (profile.profileKind !== 'attack') return;
+	if (legalAction.skillId === null) {
+		throw new Error('Combat attack resolution requires a catalog skill');
+	}
+	const skill = COMBAT_SKILLS_BY_ID[legalAction.skillId];
+	const masteryStep = skill?.masteryProgression.find(
+		(step) => step.minimumMastery === profile.masteryStepMinimum
+	);
+	if (
+		!skill ||
+		skill.kind !== 'attack' ||
+		!skill.deliveryTags.includes(profile.deliveryTag) ||
+		!masteryStep ||
+		masteryStep.accuracyBasisPoints !== profile.skillAccuracyBasisPoints ||
+		!sameStringSet(skill.damageTags, profile.damage.tags)
+	) {
+		throw new Error('Combat resolution profile does not match the immutable skill catalog');
+	}
+	if (
+		profile.damage.affinityContributionBasisPoints > rules.affinity.contributionNudgeCapBasisPoints
+	) {
+		throw new Error('Authored affinity contribution exceeds the combat rules cap');
+	}
+}
+
+function facingDirection(
+	facing: ReadinessCombatStateV1['combatants'][string]['facing']
+): Readonly<{ x: number; y: number }> {
+	if (facing === 'north') return { x: 0, y: -1 };
+	if (facing === 'east') return { x: 1, y: 0 };
+	if (facing === 'south') return { x: 0, y: 1 };
+	return { x: -1, y: 0 };
+}
+
+function relativeCardinalDirection(
+	from: Readonly<{ x: number; y: number }>,
+	to: Readonly<{ x: number; y: number }>
+): Readonly<{ x: number; y: number }> | null {
+	const deltaX = to.x - from.x;
+	const deltaY = to.y - from.y;
+	if (deltaX === 0 && deltaY === 0) return null;
+	return Math.abs(deltaX) >= Math.abs(deltaY)
+		? { x: Math.sign(deltaX), y: 0 }
+		: { x: 0, y: Math.sign(deltaY) };
+}
+
+function isFlanking(
+	attacker: ReadinessCombatStateV1['combatants'][string],
+	defender: ReadinessCombatStateV1['combatants'][string]
+): boolean {
+	const direction = relativeCardinalDirection(defender.position, attacker.position);
+	if (!direction) return false;
+	const facing = facingDirection(defender.facing);
+	return direction.x * facing.x + direction.y * facing.y === 0;
+}
+
+function isSurrounded(
+	state: ReadinessCombatStateV1,
+	defender: ReadinessCombatStateV1['combatants'][string]
+): boolean {
+	const occupiedSides = new Set<string>();
+	for (const combatant of Object.values(state.combatants)) {
+		if (
+			combatant.teamId === defender.teamId ||
+			!combatant.active ||
+			combatant.downed ||
+			Math.abs(combatant.position.x - defender.position.x) +
+				Math.abs(combatant.position.y - defender.position.y) !==
+				1
+		) {
+			continue;
+		}
+		occupiedSides.add(
+			`${combatant.position.x - defender.position.x}:${combatant.position.y - defender.position.y}`
+		);
+	}
+	return occupiedSides.size >= 2;
+}
+
+function hasActiveCondition(
+	combatant: ReadinessCombatStateV1['combatants'][string],
+	conditionId: string,
+	tick: number
+): boolean {
+	return combatant.conditions.some(
+		(condition) =>
+			condition.conditionId === conditionId &&
+			(condition.expiresAtTick === null || condition.expiresAtTick > tick)
+	);
+}
+
+export function combatHitChance(input: CombatHitChanceInput): CombatHitContest {
+	for (const [label, value] of [
+		['skill accuracy', input.skillAccuracyBasisPoints],
+		['defender evasion', input.defenderEvasionBasisPoints],
+		['attacker Agility', input.attackerAgility],
+		['defender Agility', input.defenderAgility]
+	] as const) {
+		if (!Number.isSafeInteger(value) || value < 0) {
+			throw new Error(`Combat ${label} must be a nonnegative safe integer`);
+		}
+	}
+	const agilityShift = clamp(
+		(input.attackerAgility - input.defenderAgility) *
+			input.rules.relativeAgilityBasisPointsPerPoint,
+		-input.rules.relativeAgilityCapBasisPoints,
+		input.rules.relativeAgilityCapBasisPoints
+	);
+	const positionalShift =
+		(input.flank ? input.rules.flankBasisPoints : 0) +
+		(input.surround ? input.rules.surroundBasisPoints : 0) +
+		(input.unaware ? input.rules.unawareBasisPoints : 0);
+	const chance = clamp(
+		input.skillAccuracyBasisPoints -
+			input.defenderEvasionBasisPoints +
+			agilityShift +
+			positionalShift,
+		input.rules.minimumChanceBasisPoints,
+		input.rules.maximumChanceBasisPoints
+	);
+	return {
+		skillAccuracyBasisPoints: input.skillAccuracyBasisPoints,
+		defenderEvasionBasisPoints: input.defenderEvasionBasisPoints,
+		relativeAgilityBasisPoints: agilityShift,
+		flank: input.flank,
+		surround: input.surround,
+		unaware: input.unaware,
+		positionalBasisPoints: positionalShift,
+		chanceBasisPoints: chance
+	};
+}
+
 function actorPurposeRoll(
 	state: ReadinessCombatStateV1,
 	intent: CombatActionIntent,
@@ -246,7 +385,7 @@ function resistanceReduction(
 }
 
 function calculateDamage(
-	authority: NonNullable<CombatActionAuthority['damage']>,
+	authority: AttackResolutionProfile['damage'],
 	channel: DamageChannel,
 	attacker: ReadinessCombatStateV1['combatants'][string],
 	target: ReadinessCombatStateV1['combatants'][string],
@@ -330,88 +469,128 @@ function calculateDamage(
 	};
 }
 
+function frozenResolution(
+	state: ReadinessCombatStateV1,
+	effects: CombatResolvedEffect[],
+	outcome: CombatActionResolution['outcome'],
+	hitContest: CombatHitContest | null,
+	calculation: CombatDamageCalculation | null
+): CombatActionResolution {
+	return Object.freeze({
+		state: ReadinessCombatStateV1Schema.parse(state),
+		effects: Object.freeze(effects),
+		outcome: Object.freeze(outcome),
+		hitContest: hitContest === null ? null : Object.freeze(hitContest),
+		calculation: calculation === null ? null : Object.freeze(calculation)
+	});
+}
+
 export function resolveCombatAction(input: ResolveCombatActionInput): CombatActionResolution {
 	const state = ReadinessCombatStateV1Schema.parse(input.state);
 	const intent = CombatActionIntentSchema.parse(input.intent);
-	const legalAction = CombatLegalActionSchema.parse(input.legalAction);
-	const authority = CombatActionAuthoritySchema.parse(input.authority);
-	const rules = CombatRulesV1Schema.parse(input.rules);
-	if (
-		intent.attemptId !== state.attemptId ||
-		intent.tick !== state.tick ||
-		intent.actionId !== legalAction.actionId ||
-		authority.actionId !== legalAction.actionId ||
-		authority.skillId !== legalAction.skillId
-	) {
-		throw new Error('Combat intent, legal action, and engine authority bindings do not match');
-	}
-	if (!selectedTargetIsLegal(intent, legalAction)) {
-		throw new Error('Combat target was not supplied by the legal action');
-	}
-	if (
-		intent.fallbackId !== null &&
-		!legalAction.fallbackOptions.some((fallback) => fallback.fallbackId === intent.fallbackId)
-	) {
-		throw new Error('Combat fallback was not supplied by the legal action');
-	}
+	const rules = immutableRules(input.rules);
+	const { legalAction, template } = rederiveActionAuthority(state, intent, rules);
+	validateResolutionProfile(template.resolutionProfile, legalAction, rules);
+
 	const actor = state.combatants[intent.actorId];
+	if (!actor || !actor.active || actor.downed) throw new Error('Combat actor is not active');
+	if (actor.resources.mana.current < legalAction.manaCost) {
+		throw new Error('Combat action is not affordable with current Mana');
+	}
 	const targetId = targetCombatantId(intent);
 	const target = targetId === null ? null : state.combatants[targetId];
-	if (!actor || !actor.active || actor.downed) throw new Error('Combat actor is not active');
-	if (authority.damage && (!target || !target.active || target.downed)) {
-		throw new Error('Damage authority requires an active combatant target');
+	const profile = template.resolutionProfile;
+	if (profile.profileKind === 'attack' && (!target || !target.active || target.downed)) {
+		throw new Error('Combat attack requires an active combatant target');
 	}
-	if (
-		authority.damage &&
-		authority.damage.affinityContributionBasisPoints >
-			rules.affinity.contributionNudgeCapBasisPoints
-	) {
-		throw new Error('Authored affinity contribution exceeds the combat rules cap');
+	const possibleStatusExpiry =
+		profile.profileKind === 'attack' && profile.damage.status !== null
+			? state.tick + profile.damage.status.durationTicks
+			: null;
+	if (possibleStatusExpiry !== null && !Number.isSafeInteger(possibleStatusExpiry)) {
+		throw new Error('Status expiry exceeded the safe integer domain');
 	}
 
-	if (!authority.damage || !target) {
-		return Object.freeze({
+	const effects: CombatResolvedEffect[] = [];
+	const manaBefore = actor.resources.mana.current;
+	const manaAfter = manaBefore - legalAction.manaCost;
+	const manaEffect =
+		legalAction.manaCost === 0
+			? null
+			: ({
+					kind: 'resource',
+					combatantId: actor.combatantId,
+					resource: 'mana',
+					before: manaBefore,
+					after: manaAfter,
+					delta: -legalAction.manaCost
+				} as const);
+
+	if (profile.profileKind !== 'attack' || !target) {
+		actor.resources.mana.current = manaAfter;
+		if (manaEffect) effects.push(manaEffect);
+		return frozenResolution(
 			state,
-			effects: Object.freeze([]),
-			outcome: Object.freeze({ hit: true, critical: false, statusApplied: false, downed: false }),
-			calculation: null
-		});
+			effects,
+			{ hit: true, critical: false, statusApplied: false, downed: false },
+			null,
+			null
+		);
 	}
 
-	const chance = combatHitChance({
-		...authority.hit,
+	const defenderEvasion = clamp(
+		target.attributes.agility * rules.hit.defenderAgilityEvasionBasisPointsPerPoint,
+		0,
+		BASIS_POINTS
+	);
+	const hitContest = combatHitChance({
+		skillAccuracyBasisPoints: profile.skillAccuracyBasisPoints,
+		defenderEvasionBasisPoints: defenderEvasion,
 		attackerAgility: actor.attributes.agility,
-		defenderAgility: target.attributes.agility
+		defenderAgility: target.attributes.agility,
+		flank: isFlanking(actor, target),
+		surround: isSurrounded(state, target),
+		unaware: hasActiveCondition(target, 'unaware', state.tick),
+		rules: rules.hit
 	});
-	const hit = actorPurposeRoll(state, intent, legalAction, targetId, 'hit') < chance;
+	const hit =
+		actorPurposeRoll(state, intent, legalAction, targetId, 'hit') < hitContest.chanceBasisPoints;
 	const criticalTriggered =
+		hit &&
 		actorPurposeRoll(state, intent, legalAction, targetId, 'critical') <
-		authority.damage.criticalChanceBasisPoints;
-	const statusTriggered = authority.damage.status
-		? actorPurposeRoll(state, intent, legalAction, targetId, 'status') <
-			authority.damage.status.chanceBasisPoints
-		: false;
+			profile.damage.criticalChanceBasisPoints;
+	const statusTriggered =
+		hit &&
+		profile.damage.status !== null &&
+		actorPurposeRoll(state, intent, legalAction, targetId, 'status') <
+			profile.damage.status.chanceBasisPoints;
 	if (!hit) {
-		return Object.freeze({
+		actor.resources.mana.current = manaAfter;
+		if (manaEffect) effects.push(manaEffect);
+		return frozenResolution(
 			state,
-			effects: Object.freeze([]),
-			outcome: Object.freeze({ hit: false, critical: false, statusApplied: false, downed: false }),
-			calculation: null
-		});
+			effects,
+			{ hit: false, critical: false, statusApplied: false, downed: false },
+			hitContest,
+			null
+		);
 	}
 
 	const calculation = calculateDamage(
-		authority.damage,
-		authority.damage.channel,
+		profile.damage,
+		profile.damage.channel,
 		actor,
 		target,
 		rules,
 		criticalTriggered,
 		statusTriggered
 	);
-	const effects: CombatResolvedEffect[] = [];
 	const healthBefore = target.resources.health.current;
-	const healthAfter = Math.max(0, healthBefore - calculation.finalDamage);
+	const healthAfter = healthBefore - calculation.finalDamage;
+	const downed = healthBefore > 0 && healthAfter === 0;
+
+	actor.resources.mana.current = manaAfter;
+	if (manaEffect) effects.push(manaEffect);
 	if (calculation.finalDamage > 0) {
 		target.resources.health.current = healthAfter;
 		target.lastDamagedAtTick = state.tick;
@@ -424,19 +603,14 @@ export function resolveCombatAction(input: ResolveCombatActionInput): CombatActi
 			delta: healthAfter - healthBefore
 		});
 	}
-	const downed = healthBefore > 0 && healthAfter === 0;
 	let statusApplied = false;
-	if (statusTriggered && authority.damage.status && !downed) {
-		const status = authority.damage.status;
-		const expiresAtTick = state.tick + status.durationTicks;
-		if (!Number.isSafeInteger(expiresAtTick)) {
-			throw new Error('Status expiry exceeded the safe integer domain');
-		}
+	if (statusTriggered && profile.damage.status && !downed && possibleStatusExpiry !== null) {
+		const status = profile.damage.status;
 		const condition = {
 			conditionId: status.conditionId,
 			stacks: status.stacks,
 			appliedAtTick: state.tick,
-			expiresAtTick,
+			expiresAtTick: possibleStatusExpiry,
 			sourceCombatantId: actor.combatantId
 		};
 		const existingIndex = target.conditions.findIndex(
@@ -466,11 +640,11 @@ export function resolveCombatAction(input: ResolveCombatActionInput): CombatActi
 		target.active = false;
 		effects.push({ kind: 'downed', combatantId: target.combatantId });
 	}
-	const parsedState = ReadinessCombatStateV1Schema.parse(state);
-	return Object.freeze({
-		state: parsedState,
-		effects: Object.freeze(effects),
-		outcome: Object.freeze({ hit, critical: criticalTriggered, statusApplied, downed }),
-		calculation: Object.freeze(calculation)
-	});
+	return frozenResolution(
+		state,
+		effects,
+		{ hit: true, critical: criticalTriggered, statusApplied, downed },
+		hitContest,
+		calculation
+	);
 }
