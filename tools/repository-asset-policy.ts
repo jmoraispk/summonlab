@@ -14,6 +14,7 @@ import {
 	validateFaunaFamilyPromotion
 } from './fauna-family-promotion.js';
 import { checkEquipmentApprovedSources } from './equipment-approved-source-promotion.js';
+import { validateGreatswordCampaignFiles } from './validate-greatsword-campaign-v1.js';
 
 const approvedHeroRoot = 'assets/heroes/approved/summonable-roster-v1';
 const retainedEnemyPackManifestPath = 'assets/enemies/legacy/affinity-pack-v1/manifest.json';
@@ -176,6 +177,28 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 			/\.(?:png|webp|html)$/u.test(path)
 		) {
 			violations.push(`Equipment review artifact must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('assets/equipment/experiments/two-handed-greatsword-v1/candidates/') &&
+			path.endsWith('.png')
+		) {
+			violations.push(`Greatsword candidate raster must not be tracked: ${path}`);
+		}
+		if (
+			(path ===
+				'assets/equipment/experiments/two-handed-greatsword-v1/direction/greatsword-metal-ranks-v1.png' ||
+				path.startsWith(
+					'assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/'
+				)) &&
+			path.endsWith('.png')
+		) {
+			violations.push(`Greatsword superseded direction raster must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('assets/equipment/experiments/two-handed-greatsword-v1/reviews/') &&
+			/\.(?:png|webp|html)$/u.test(path)
+		) {
+			violations.push(`Greatsword review artifact must not be tracked: ${path}`);
 		}
 		if (path === 'docs/evidence/enemy-image-review-gallery-v1/index.html') {
 			violations.push(`Standalone family-affinity review gallery must not be tracked: ${path}`);
@@ -500,6 +523,7 @@ export async function validateRepositoryAssets(
 	);
 	const approvedFauna = await validateFaunaFamilyPromotion(workspaceRoot);
 	const approvedEquipment = await checkEquipmentApprovedSources(workspaceRoot);
+	const approvedGreatswords = await validateGreatswordCampaignFiles(workspaceRoot);
 	const violations = findRepositoryAssetPathViolations(tracked);
 	violations.push(
 		...findApprovedHeroPathViolations(
@@ -559,11 +583,22 @@ export async function validateRepositoryAssets(
 	const approvedEquipmentPaths = approvedEquipmentManifest.records.map(
 		({ approved }) => approved.path
 	);
+	const approvedGreatswordManifest = JSON.parse(
+		await readFile(
+			resolve(workspaceRoot, 'assets/equipment/approved/two-handed-greatsword-v1/manifest.json'),
+			'utf8'
+		)
+	) as { records: Array<{ candidate: { path: string }; approved: { path: string } }> };
+	const approvedGreatswordPaths = approvedGreatswordManifest.records.map(
+		({ approved }) => approved.path
+	);
+	const allApprovedEquipmentPaths = [...approvedEquipmentPaths, ...approvedGreatswordPaths];
 	if (
 		approvedEquipmentManifest.records.length !== 161 ||
-		new Set(approvedEquipmentPaths).size !== 161
+		approvedGreatswordManifest.records.length !== 7 ||
+		new Set(allApprovedEquipmentPaths).size !== 168
 	) {
-		violations.push('Approved Equipment manifest must contain exactly 161 unique source paths');
+		violations.push('Approved Equipment manifests must contain exactly 168 unique source paths');
 	}
 	const equipmentPngPaths = tracked.filter(
 		(path) => path.startsWith('assets/equipment/') && path.endsWith('.png')
@@ -574,7 +609,10 @@ export async function validateRepositoryAssets(
 			violations.push(`Retained Equipment PNG is not covered by Git LFS: ${path}`);
 		}
 	}
-	for (const record of approvedEquipmentManifest.records) {
+	for (const record of [
+		...approvedEquipmentManifest.records,
+		...approvedGreatswordManifest.records
+	]) {
 		if (!trackedSet.has(record.approved.path)) {
 			violations.push(`Approved Equipment image is not tracked: ${record.approved.path}`);
 		}
@@ -617,8 +655,9 @@ export async function validateRepositoryAssets(
 		approvedHeroBytes,
 		approvedFaunaImageCount: approvedFauna.approvedCount,
 		approvedFaunaBytes: approvedFauna.approvedBytes,
-		approvedEquipmentImageCount: approvedEquipment.verified,
-		approvedEquipmentBytes: approvedEquipment.totalBytes,
+		approvedEquipmentImageCount:
+			approvedEquipment.verified + (approvedGreatswords.approvedSourceCount ?? 0),
+		approvedEquipmentBytes: approvedEquipment.totalBytes + (approvedGreatswords.approvedBytes ?? 0),
 		retainedEnemyImageCount: retainedEnemyPack.candidateCount,
 		retainedEnemyBytes: retainedEnemyPack.bytes,
 		retainedFamilyAffinityImageCount: retainedFamilyAffinityPack.candidateCount,

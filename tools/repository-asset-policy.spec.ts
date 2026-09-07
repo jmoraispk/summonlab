@@ -35,6 +35,9 @@ describe('repository asset retention policy', () => {
 				'assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png',
 				'assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png',
 				'assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html',
+				'assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png',
+				'assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v2-attempt-1.png',
+				'assets/equipment/experiments/two-handed-greatsword-v1/reviews/items/index.html',
 				'docs/evidence/enemy-image-review-gallery-v1/index.html',
 				'docs/evidence/enemy-image-review-gallery-v1/owner-acceptance.md'
 			])
@@ -47,6 +50,9 @@ describe('repository asset retention policy', () => {
 			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/sword-v3.png',
 			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png',
 			'Equipment review artifact must not be tracked: assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-3-final/index.html',
+			'Greatsword candidate raster must not be tracked: assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png',
+			'Greatsword superseded direction raster must not be tracked: assets/equipment/experiments/two-handed-greatsword-v1/direction/revisions/greatsword-metal-ranks-v2-attempt-1.png',
+			'Greatsword review artifact must not be tracked: assets/equipment/experiments/two-handed-greatsword-v1/reviews/items/index.html',
 			'Standalone family-affinity review gallery must not be tracked: docs/evidence/enemy-image-review-gallery-v1/index.html'
 		]);
 	});
@@ -110,8 +116,8 @@ describe('repository asset retention policy', () => {
 		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
 			approvedFaunaImageCount: 200,
 			approvedFaunaBytes: 560_162_021,
-			approvedEquipmentImageCount: 161,
-			approvedEquipmentBytes: 224_157_513,
+			approvedEquipmentImageCount: 168,
+			approvedEquipmentBytes: 229_920_937,
 			retainedFamilyAffinityImageCount: 750,
 			retainedFamilyAffinityBytes: 2_078_754_623
 		});

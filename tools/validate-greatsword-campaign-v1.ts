@@ -7,6 +7,8 @@ import { z } from 'zod';
 
 const HASH_PATTERN = /^[a-f0-9]{64}$/;
 const CAMPAIGN_RELATIVE_ROOT = 'assets/equipment/experiments/two-handed-greatsword-v1';
+const APPROVED_RELATIVE_ROOT = 'assets/equipment/approved/two-handed-greatsword-v1';
+const APPROVED_MANIFEST_PATH = `${APPROVED_RELATIVE_ROOT}/manifest.json`;
 const EXPECTED_CELLS = [
 	{ rank: 'F', materialId: 'bronze', materialName: 'Bronze' },
 	{ rank: 'E', materialId: 'iron', materialName: 'Iron' },
@@ -366,6 +368,107 @@ const ItemReviewManifestSchema = z.object({
 	ownerDecision: z.null()
 });
 
+const CanonicalReferenceSchema = z
+	.object({
+		path: z.string().min(1),
+		canonicalSha256: z.string().regex(HASH_PATTERN)
+	})
+	.strict();
+
+const GreatswordApprovalReceiptSchema = z
+	.object({
+		schemaVersion: z.literal('equipment-greatsword-owner-approval-v1'),
+		approvalId: z.literal('two-handed-greatsword-v1-all-seven'),
+		campaignId: z.literal('two-handed-greatsword-v1'),
+		approvedAt: z.string().datetime({ offset: true }),
+		approvedBy: z.literal('owner'),
+		decision: z.literal('accept'),
+		scope: z.literal('all-seven-dedicated-greatsword-candidates'),
+		sourceReview: CanonicalReferenceSchema,
+		selections: z
+			.array(
+				z
+					.object({
+						targetId: z.string().min(1),
+						rank: z.string().min(1),
+						materialId: z.string().min(1),
+						candidatePath: z.string().min(1),
+						candidateSha256: z.string().regex(HASH_PATTERN)
+					})
+					.strict()
+			)
+			.length(7)
+	})
+	.strict();
+
+const GreatswordApprovedRecordSchema = z
+	.object({
+		assetKey: z.string().regex(/^equipment-greatsword-v1-[fedcbas]-[a-z0-9-]+$/u),
+		targetId: z.string().min(1),
+		rank: z.string().min(1),
+		materialId: z.string().min(1),
+		candidate: z
+			.object({ path: z.string().min(1), sha256: z.string().regex(HASH_PATTERN) })
+			.strict(),
+		result: CanonicalReferenceSchema,
+		proportionReview: CanonicalReferenceSchema,
+		approved: z
+			.object({
+				path: z.string().min(1),
+				sha256: z.string().regex(HASH_PATTERN),
+				bytes: z.number().int().positive(),
+				width: z.literal(1024),
+				height: z.literal(1024),
+				mediaType: z.literal('image/png')
+			})
+			.strict()
+	})
+	.strict();
+
+const GreatswordApprovedManifestSchema = z
+	.object({
+		schemaVersion: z.literal('equipment-greatsword-approved-source-manifest-v1'),
+		catalogId: z.literal('two-handed-greatsword-v1'),
+		createdAt: z.string().datetime({ offset: true }),
+		createdBy: z.string().min(1),
+		approval: CanonicalReferenceSchema,
+		itemModel: z
+			.object({
+				visualFamilyId: z.literal('greatsword'),
+				mechanicalClass: z.literal('sword'),
+				slot: z.literal('main-hand'),
+				handedness: z.literal('two-handed'),
+				weightClass: z.literal('heavy')
+			})
+			.strict(),
+		summary: z.object({ total: z.literal(7), totalBytes: z.number().int().positive() }).strict(),
+		records: z.array(GreatswordApprovedRecordSchema).length(7)
+	})
+	.strict();
+
+function canonicalJson(value: unknown): string {
+	function canonicalize(child: unknown): unknown {
+		if (Array.isArray(child)) return child.map(canonicalize);
+		if (child !== null && typeof child === 'object') {
+			return Object.fromEntries(
+				Object.entries(child as Record<string, unknown>)
+					.sort(([left], [right]) => left.localeCompare(right))
+					.map(([key, item]) => [key, canonicalize(item)])
+			);
+		}
+		return child;
+	}
+	return JSON.stringify(canonicalize(value));
+}
+
+function sha256(bytes: Uint8Array | string): string {
+	return createHash('sha256').update(bytes).digest('hex');
+}
+
+function canonicalSha256(value: unknown): string {
+	return sha256(canonicalJson(value));
+}
+
 export type GreatswordCampaignSummary = {
 	campaignId: 'two-handed-greatsword-v1';
 	materialCellCount: 7;
@@ -377,7 +480,8 @@ export type GreatswordCampaignSummary = {
 		| 'direction-proportion-candidate-pending-owner-review'
 		| 'direction-proportion-revision-review-pending-owner'
 		| 'item-production-assigned'
-		| 'item-production-review-pending-owner';
+		| 'item-production-review-pending-owner'
+		| 'approved-sources-recorded';
 };
 
 type GreatswordMeasurements = {
@@ -585,8 +689,12 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 			| 'direction-proportion-candidate-recorded'
 			| 'direction-proportion-revision-recorded'
 			| 'item-assignments-ready'
-			| 'item-candidates-recorded';
+			| 'item-candidates-recorded'
+			| 'approved-sources-recorded';
 		referenceCount: 0;
+		approvedSourceCount?: 7;
+		retiredCandidateCount?: 7;
+		approvedBytes?: number;
 	}
 > {
 	const campaignRoot = `${repositoryRoot}/${CAMPAIGN_RELATIVE_ROOT}`;
@@ -604,6 +712,35 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 	const summary = validateGreatswordCampaign({ manifest, target, assignment, prompt });
 	const parsedAssignment = AssignmentSchema.parse(assignment);
 	const parsedTarget = TargetSchema.parse(target);
+	const approvedManifestAbsolutePath = `${repositoryRoot}/${APPROVED_MANIFEST_PATH}`;
+	const approvedManifest = existsSync(approvedManifestAbsolutePath)
+		? GreatswordApprovedManifestSchema.parse(
+				JSON.parse(readFileSync(approvedManifestAbsolutePath, 'utf8'))
+			)
+		: null;
+	const approvalReceipt = approvedManifest
+		? GreatswordApprovalReceiptSchema.parse(
+				JSON.parse(readFileSync(`${repositoryRoot}/${approvedManifest.approval.path}`, 'utf8'))
+			)
+		: null;
+	const approvedReview = approvalReceipt
+		? ItemReviewManifestSchema.parse(
+				JSON.parse(readFileSync(`${repositoryRoot}/${approvalReceipt.sourceReview.path}`, 'utf8'))
+			)
+		: null;
+	if (
+		approvedManifest &&
+		approvalReceipt &&
+		approvedReview &&
+		(canonicalSha256(approvalReceipt) !== approvedManifest.approval.canonicalSha256 ||
+			canonicalSha256(approvedReview) !== approvalReceipt.sourceReview.canonicalSha256 ||
+			approvalReceipt.sourceReview.path !==
+				`${CAMPAIGN_RELATIVE_ROOT}/reviews/items/review-manifest.json` ||
+			approvedManifest.records.reduce((total, record) => total + record.approved.bytes, 0) !==
+				approvedManifest.summary.totalBytes)
+	) {
+		throw new Error('Approved Greatsword manifest, receipt, or source-review binding mismatch.');
+	}
 
 	const proportionContractBytes = readFileSync(
 		`${repositoryRoot}/${parsedAssignment.proportionContract.path}`
@@ -757,6 +894,9 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 			const candidatePath = `${repositoryRoot}/${item.candidatePath}`;
 			const resultPath = `${repositoryRoot}/${item.resultPath}`;
 			const measurementPath = `${repositoryRoot}/${item.measurementPath}`;
+			const approvedRecord = approvedManifest?.records[index];
+			const approvalSelection = approvalReceipt?.selections[index];
+			const reviewSelection = approvedReview?.candidates[index];
 			const outputPresence = [candidatePath, resultPath, measurementPath].map(existsSync);
 			if (summary.state === 'item-production-assigned') {
 				if (outputPresence.some(Boolean)) {
@@ -766,17 +906,43 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 				}
 				continue;
 			}
-			if (!outputPresence.every(Boolean)) {
+			if (approvedManifest && approvedRecord && approvalSelection && reviewSelection) {
+				const expectedApprovedPath = `${APPROVED_RELATIVE_ROOT}/items/${expected.rank.toLowerCase()}/${expected.materialId}/greatsword.png`;
+				if (
+					outputPresence[0] ||
+					!outputPresence[1] ||
+					!outputPresence[2] ||
+					approvedRecord.targetId !== item.targetId ||
+					approvedRecord.rank !== expected.rank ||
+					approvedRecord.materialId !== expected.materialId ||
+					approvedRecord.candidate.path !== item.candidatePath ||
+					approvedRecord.approved.path !== expectedApprovedPath ||
+					approvalSelection.targetId !== item.targetId ||
+					approvalSelection.rank !== expected.rank ||
+					approvalSelection.materialId !== expected.materialId ||
+					approvalSelection.candidatePath !== item.candidatePath ||
+					approvalSelection.candidateSha256 !== approvedRecord.candidate.sha256 ||
+					reviewSelection.rank !== expected.rank ||
+					reviewSelection.materialId !== expected.materialId ||
+					reviewSelection.path !== item.candidatePath ||
+					reviewSelection.sha256 !== approvedRecord.candidate.sha256
+				) {
+					throw new Error(`Approved Greatsword selection mismatch: ${item.targetId}.`);
+				}
+			} else if (!outputPresence.every(Boolean)) {
 				throw new Error(`Candidate, result, and measurement must all exist: ${item.targetId}.`);
 			}
 
-			const candidateBytes = readFileSync(candidatePath);
-			const itemCandidateSha256 = createHash('sha256').update(candidateBytes).digest('hex');
+			const sourcePath = approvedRecord
+				? `${repositoryRoot}/${approvedRecord.approved.path}`
+				: candidatePath;
+			const candidateBytes = readFileSync(sourcePath);
+			const itemCandidateSha256 = sha256(candidateBytes);
 			const candidateMetadata = await sharp(candidateBytes).metadata();
-			const itemResult = ItemResultSchema.parse(JSON.parse(readFileSync(resultPath, 'utf8')));
-			const itemReview = ItemMeasurementReviewSchema.parse(
-				JSON.parse(readFileSync(measurementPath, 'utf8'))
-			);
+			const itemResultValue = JSON.parse(readFileSync(resultPath, 'utf8'));
+			const itemReviewValue = JSON.parse(readFileSync(measurementPath, 'utf8'));
+			const itemResult = ItemResultSchema.parse(itemResultValue);
+			const itemReview = ItemMeasurementReviewSchema.parse(itemReviewValue);
 			if (
 				itemResult.targetId !== item.targetId ||
 				itemResult.assignmentId !== itemAssignment.assignmentId ||
@@ -789,6 +955,20 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 				candidateMetadata.format !== 'png'
 			) {
 				throw new Error(`Item result does not bind retained candidate bytes: ${item.targetId}.`);
+			}
+			if (
+				approvedRecord &&
+				(approvedRecord.candidate.sha256 !== itemCandidateSha256 ||
+					approvedRecord.approved.sha256 !== itemCandidateSha256 ||
+					approvedRecord.approved.bytes !== candidateBytes.length ||
+					approvedRecord.approved.width !== candidateMetadata.width ||
+					approvedRecord.approved.height !== candidateMetadata.height ||
+					approvedRecord.result.path !== item.resultPath ||
+					approvedRecord.result.canonicalSha256 !== canonicalSha256(itemResultValue) ||
+					approvedRecord.proportionReview.path !== item.measurementPath ||
+					approvedRecord.proportionReview.canonicalSha256 !== canonicalSha256(itemReviewValue))
+			) {
+				throw new Error(`Approved Greatsword source mismatch: ${item.targetId}.`);
 			}
 			if (
 				itemReview.targetId !== item.targetId ||
@@ -816,7 +996,7 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 			}
 		}
 
-		if (summary.state === 'item-production-review-pending-owner') {
+		if (summary.state === 'item-production-review-pending-owner' && !approvedManifest) {
 			const reviewManifestPath = `${repositoryRoot}/${parsedManifest.itemReview.reviewManifestPath}`;
 			const reviewManifest = ItemReviewManifestSchema.parse(
 				JSON.parse(readFileSync(reviewManifestPath, 'utf8'))
@@ -854,6 +1034,26 @@ export async function validateGreatswordCampaignFiles(repositoryRoot: string): P
 					throw new Error(`Dedicated review candidate mismatch at ${expected.rank}.`);
 				}
 			}
+		}
+		if (approvedManifest) {
+			if (
+				new Set(approvedManifest.records.map(({ assetKey }) => assetKey)).size !== 7 ||
+				new Set(approvedManifest.records.map(({ approved }) => approved.path)).size !== 7 ||
+				new Set(approvalReceipt!.selections.map(({ targetId }) => targetId)).size !== 7 ||
+				existsSync(`${repositoryRoot}/${parsedManifest.itemReview.reviewPagePath}`) ||
+				existsSync(`${repositoryRoot}/${parsedManifest.itemReview.contactSheetPath}`)
+			) {
+				throw new Error('Approved Greatsword catalog is duplicate or retains review artifacts.');
+			}
+			return {
+				...summary,
+				state: 'approved-sources-recorded',
+				artifactState: 'approved-sources-recorded',
+				referenceCount: 0,
+				approvedSourceCount: 7,
+				retiredCandidateCount: 7,
+				approvedBytes: approvedManifest.summary.totalBytes
+			};
 		}
 
 		return {

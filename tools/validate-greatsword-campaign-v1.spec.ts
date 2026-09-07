@@ -95,9 +95,12 @@ describe('Greatsword candidate campaign validation', () => {
 		});
 	});
 
-	it('verifies seven hash-bound dedicated candidates and proportion reviews', async () => {
+	it('verifies seven approved sources and retired historical candidates', async () => {
 		await expect(validateGreatswordCampaignFiles(repositoryRoot)).resolves.toMatchObject({
-			artifactState: 'item-candidates-recorded',
+			state: 'approved-sources-recorded',
+			artifactState: 'approved-sources-recorded',
+			approvedSourceCount: 7,
+			retiredCandidateCount: 7,
 			referenceCount: 0
 		});
 	});

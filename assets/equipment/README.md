@@ -18,19 +18,20 @@ The `armour-set-references/` images preserve the accepted visual identity of eac
 review and future production. They are reference-only: only the four individual Head, Torso, Legs,
 and Boots sources under `items/` are eligible for runtime export and equipment definitions.
 
-The approved catalog contains 161 exact source images: 140 equippable items and 21 complete-set
-references. Runtime export produces a lazy `card` and `detail` WebP for every item—140 bundles and
-280 derivatives total—without exporting the set references. `equipment-content-v1` binds those 140
-items one-to-one to the legal material/form definitions used by engine-v24 Forging and authored
-drops. All retained Equipment PNG masters and visual references are Git LFS objects; the optimized
-runtime WebPs remain ordinary Git files.
+Approved Equipment now contains 168 exact source images across two catalogs. The material-equipment
+catalog contains 140 runtime-bound items and 21 complete-set references. The source-only Greatsword
+catalog adds seven two-handed Sword-family masters but does not yet add content definitions or
+runtime derivatives. Runtime export therefore remains 140 bundles and 280 card/detail WebPs.
+`equipment-content-v1` binds those 140 material-equipment items one-to-one to the legal definitions
+used by engine-v24 Forging and authored drops. All retained Equipment PNG masters and visual
+references are Git LFS objects; the optimized runtime WebPs remain ordinary Git files.
 
 The completed `material-equipment-v1` and `material-equipment-v2` experiment trees and their
 one-time production tooling were retired on 2026-09-07. The completed v3 tree retains its manifest,
 targets, assignments, prompts, results, checkpoints, selections, receipts, and accepted direction
 boards, but not duplicate candidate/revision rasters or generated review sheets. The separate
-two-handed Greatsword campaign remains intact because its seven candidates still await owner
-review.
+two-handed Greatsword campaign retains compact provenance and its accepted v2 direction board; its
+seven selected candidate rasters now exist only as approved masters.
 
 Do not edit approved pixels in place. A visual change starts as a new candidate and requires a new
 reviewed promotion with collision-safe, versioned destinations. Use the promotion checker to verify

@@ -1,10 +1,11 @@
 # Two-handed Greatsword v1
 
-Status: **seven dedicated candidates recorded; owner review pending**.
+Status: **seven dedicated candidates owner-approved and promoted on 2026-09-07**.
 
-This collision-safe campaign develops Greatsword as a two-handed visual family inside the canonical
-`Sword` mechanical class. It does not add another Weapon class, change the approved Equipment v1
-catalog, promote source art, export runtime derivatives, or integrate gameplay behavior.
+This collision-safe campaign developed Greatsword as a two-handed visual family inside the
+canonical `Sword` mechanical class. Its seven exact selected sources now live under
+`assets/equipment/approved/two-handed-greatsword-v1/`. It does not add another Weapon class, export
+runtime derivatives, or integrate gameplay behavior.
 
 ## Item model
 
@@ -51,8 +52,10 @@ uses the functional quillon tips. Dedicated reviews in `reviews/proportions/item
 candidate hash to the accepted profile, pixel measurements, derived ratios, framing, and pass/fail
 criteria.
 
-Open `reviews/items/index.html` for the dedicated-candidate comparison and native-detail links.
-Promotion remains blocked until the owner accepts the exact seven candidate paths and hashes.
+The owner accepted all seven exact candidate paths and hashes on 2026-09-07. The approved manifest
+and receipt bind those selections to their production results and proportion reviews. Duplicate
+candidate PNGs, rejected direction attempts, and generated review pages/thumbnails/contact sheets
+were retired after promotion; their historical paths and hashes remain in the compact records.
 
 ## References
 
@@ -65,10 +68,10 @@ Both inputs are repository-owned direction evidence, not output sources:
 
 ## Lifecycle
 
-`reference → v1 revise → proportion contract → v2 revise → owner decision → item assignments → item candidates → review`
+`reference → v1 revise → proportion contract → v2 revise → owner direction → item candidates → owner approval → approved sources`
 
-Promotion, approved masters, runtime derivatives, and content definitions are explicitly outside
-this campaign boundary until separately authorized.
+Approved masters are complete. Runtime derivatives, content definitions, acquisition, balance, and
+skill integration remain separately deferred.
 
 ## Validation
 

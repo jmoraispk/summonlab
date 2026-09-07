@@ -45,11 +45,11 @@ an oversized slab. A Greatsword occupies the main hand and off-hand together and
 Heavy weight class.
 
 The visual family follows the complete metal ladder from Bronze F through Sunsteel S. Rank remains
-material-led, craftsmanship does not select separate art, and Forged and Dropped instances reuse the
-same authored definition while preserving their instance provenance. Candidate visuals are being
-developed under `assets/equipment/experiments/two-handed-greatsword-v1/`; content definitions,
-runtime visuals, acquisition, balance, and skill compatibility remain deferred until an exact
-candidate selection is approved for integration.
+material-led and craftsmanship does not select separate art. All seven exact source images were
+owner-approved on 2026-09-07 and live in the source-only
+`assets/equipment/approved/two-handed-greatsword-v1/` catalog. Content definitions, runtime visuals,
+acquisition, balance, and skill compatibility remain deferred; approval of source art does not
+silently add another playable definition family.
 
 ## Skill boundary
 

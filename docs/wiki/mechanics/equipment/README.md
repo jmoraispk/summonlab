@@ -194,6 +194,12 @@ decisions. The duplicate candidate and revision rasters are retired; all retaine
 masters and visual references are stored through Git LFS. The 280 optimized runtime WebPs remain
 ordinary Git files.
 
+The separate
+[Greatsword source catalog](../../../../assets/equipment/approved/two-handed-greatsword-v1/manifest.json)
+contains seven owner-approved, source-only masters across the metal rank ladder. These bring the
+approved Equipment source total to 168 without changing the current 140 definitions or 280 runtime
+derivatives.
+
 The [rank-first v3 production record](../../../../assets/equipment/experiments/material-equipment-v3/README.md)
 retains its compact manifest, targets, assignments, prompts, results, checkpoints, selections,
 receipts, and accepted direction boards. Generated contact sheets, review galleries, thumbnails,
@@ -201,8 +207,9 @@ and the duplicate source rasters are intentionally absent. The superseded v1 and
 and their one-time production tooling were retired on 2026-09-07.
 
 Accepted material-vs-class and rank-first calibration boards remain as visual-production guidance.
-The separate two-handed Greatsword campaign also remains intact because its seven candidates are
-still awaiting owner review; it is not part of the approved 161-source material ladder.
+The completed two-handed Greatsword campaign retains its compact provenance and accepted direction
+board; its seven duplicate candidate rasters and generated review artifacts were retired after
+source promotion.
 
 ## Source authority and remaining decisions
 
@@ -234,6 +241,10 @@ remain preserved rather than silently normalized:
 
 ## Change notes
 
+- 2026-09-07 — Greatsword source promotion — Promoted all seven exact reviewed Greatsword sources
+  into a dedicated approved catalog, retained compact provenance and the accepted direction board,
+  and retired duplicate candidates and generated review artifacts without changing runtime or
+  gameplay content.
 - 2026-09-07 — source retirement — Retained the 161 approved masters, 280 runtime derivatives,
   compact v3 provenance, accepted direction/calibration boards, and review-pending Greatsword
   campaign; retired superseded v1/v2 campaigns, duplicate v3 rasters/review galleries, and obsolete

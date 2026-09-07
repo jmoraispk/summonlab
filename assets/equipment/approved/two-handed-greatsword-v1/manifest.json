@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "equipment-greatsword-approved-source-manifest-v1",
+  "catalogId": "two-handed-greatsword-v1",
+  "createdAt": "2026-09-07T18:08:23.000Z",
+  "createdBy": "root-orchestrator",
+  "approval": {
+    "path": "assets/equipment/approved/two-handed-greatsword-v1/receipts/owner-approval-v1.json",
+    "canonicalSha256": "073f48aef7f436c5c8172e667ce62dfe64cba83e354fb7dd7d95db3839324a21"
+  },
+  "itemModel": {
+    "visualFamilyId": "greatsword",
+    "mechanicalClass": "sword",
+    "slot": "main-hand",
+    "handedness": "two-handed",
+    "weightClass": "heavy"
+  },
+  "summary": {
+    "total": 7,
+    "totalBytes": 5763424
+  },
+  "records": [
+    {
+      "assetKey": "equipment-greatsword-v1-f-bronze",
+      "targetId": "greatsword-v1-bronze-f",
+      "rank": "F",
+      "materialId": "bronze",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/f/bronze/greatsword-v1.png",
+        "sha256": "3e50a90b46bc0cb5510dd8b9fd60e238ea47f3a672fbdd523db844190d2df756"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/f/bronze/greatsword-v1.json",
+        "canonicalSha256": "898ee530f855b025bb28b85503b057508a054b2f804ee19ffb1fdf47db844dc3"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/f-bronze-greatsword-v1.json",
+        "canonicalSha256": "dc8538fe16b346e1ad152e0791be6dc49034087358167d7e6f788176703ea38e"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/f/bronze/greatsword.png",
+        "sha256": "3e50a90b46bc0cb5510dd8b9fd60e238ea47f3a672fbdd523db844190d2df756",
+        "bytes": 825568,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-e-iron",
+      "targetId": "greatsword-v1-iron-e",
+      "rank": "E",
+      "materialId": "iron",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/e/iron/greatsword-v1.png",
+        "sha256": "ff5324c9eee9c215aa7af9eeb05eb44c492d7e5e9804c0125df7302d723de173"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/e/iron/greatsword-v1.json",
+        "canonicalSha256": "ac797a6783729882bdde7ba90aabcb881a467c48cb35f65b67f3be8bcba2b6d6"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/e-iron-greatsword-v1.json",
+        "canonicalSha256": "ed10fb11d449983b9d4d3145a58aaca7a1144e0999fad79f1c418dd4dc966dd1"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/e/iron/greatsword.png",
+        "sha256": "ff5324c9eee9c215aa7af9eeb05eb44c492d7e5e9804c0125df7302d723de173",
+        "bytes": 820126,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-d-steel",
+      "targetId": "greatsword-v1-steel-d",
+      "rank": "D",
+      "materialId": "steel",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/d/steel/greatsword-v1.png",
+        "sha256": "ea716f8c2dcb738dee64089a247ae23def279393ade7000b4392a7c60ea63366"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/d/steel/greatsword-v1.json",
+        "canonicalSha256": "5a49cdfe45bc952cbbc87ca66ebc081272ee115d00d791a80a49f0ec42de93ea"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/d-steel-greatsword-v1.json",
+        "canonicalSha256": "986f9ee1c498e5ba73de6b53f7689614cdf3081f2f506a98ef662bfbf06283d6"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/d/steel/greatsword.png",
+        "sha256": "ea716f8c2dcb738dee64089a247ae23def279393ade7000b4392a7c60ea63366",
+        "bytes": 821531,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-c-blacksteel",
+      "targetId": "greatsword-v1-blacksteel-c",
+      "rank": "C",
+      "materialId": "blacksteel",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/c/blacksteel/greatsword-v1.png",
+        "sha256": "9e9d6dfff4ddee93cae0bb243ea559b8d6ed49024949147de3f6864bc909981b"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/c/blacksteel/greatsword-v1.json",
+        "canonicalSha256": "049e7d9bcaf9e7f701f54a76a29e747deaec21a349e8c561ccbfa65916384122"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/c-blacksteel-greatsword-v1.json",
+        "canonicalSha256": "f4c192bba46a5a42691070f0ef5ca59d7f0c8c54072ef7a67ab7ba20b7313a1b"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/c/blacksteel/greatsword.png",
+        "sha256": "9e9d6dfff4ddee93cae0bb243ea559b8d6ed49024949147de3f6864bc909981b",
+        "bytes": 791859,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-b-skyiron",
+      "targetId": "greatsword-v1-skyiron-b",
+      "rank": "B",
+      "materialId": "skyiron",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/b/skyiron/greatsword-v1.png",
+        "sha256": "98919de4042a6d59b98701c2630f163d8bffbbf01bce3c16764911834e94cae3"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/b/skyiron/greatsword-v1.json",
+        "canonicalSha256": "ea9c40cc02699d8922c146ea6a3300d6e6b25dc993578f868d2a8b3d244819c2"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/b-skyiron-greatsword-v1.json",
+        "canonicalSha256": "f49b8855e4f9182cbd955dc37ae65b33ea249987cf7ab9772a5d594b650d5bd1"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/b/skyiron/greatsword.png",
+        "sha256": "98919de4042a6d59b98701c2630f163d8bffbbf01bce3c16764911834e94cae3",
+        "bytes": 873767,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-a-starmetal",
+      "targetId": "greatsword-v1-starmetal-a",
+      "rank": "A",
+      "materialId": "starmetal",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/a/starmetal/greatsword-v1.png",
+        "sha256": "51373d4d9bce76fc3f632a7100d48aa9e9866c887fdca7aebbff98dc7158ec34"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/a/starmetal/greatsword-v1.json",
+        "canonicalSha256": "becf8cb511d95778a1c091e64fcbb3d4680bc784078f8a5e6dab94262dd0b464"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/a-starmetal-greatsword-v1.json",
+        "canonicalSha256": "7ab7631dae7d03578a01c3b221706d5df44a6cb406bc5df94f1226eaaf935270"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/a/starmetal/greatsword.png",
+        "sha256": "51373d4d9bce76fc3f632a7100d48aa9e9866c887fdca7aebbff98dc7158ec34",
+        "bytes": 873158,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    },
+    {
+      "assetKey": "equipment-greatsword-v1-s-sunsteel",
+      "targetId": "greatsword-v1-sunsteel-s",
+      "rank": "S",
+      "materialId": "sunsteel",
+      "candidate": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/candidates/s/sunsteel/greatsword-v1.png",
+        "sha256": "87f8b38c9b12c6697f8c96704d3345bd66d1ea2e03ed2212b743560d6d81f748"
+      },
+      "result": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/results/s/sunsteel/greatsword-v1.json",
+        "canonicalSha256": "a4cafd73a9802d846e4f4cab8ad5f62ddd7345891bb17adf23b146808b405b06"
+      },
+      "proportionReview": {
+        "path": "assets/equipment/experiments/two-handed-greatsword-v1/reviews/proportions/items/s-sunsteel-greatsword-v1.json",
+        "canonicalSha256": "34497df768ed49769dcd5d2177104fd6119dbfcf08d928d7ecc8c30b136a1dfb"
+      },
+      "approved": {
+        "path": "assets/equipment/approved/two-handed-greatsword-v1/items/s/sunsteel/greatsword.png",
+        "sha256": "87f8b38c9b12c6697f8c96704d3345bd66d1ea2e03ed2212b743560d6d81f748",
+        "bytes": 757415,
+        "width": 1024,
+        "height": 1024,
+        "mediaType": "image/png"
+      }
+    }
+  ]
+}

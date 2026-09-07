@@ -14,6 +14,10 @@
 		"equipment-approved-source-promotion.spec.ts",
 		"export-equipment-integration-report.ts",
 		"export-equipment-integration-report.spec.ts",
-		"promote-equipment-approved-sources.ts"
+		"promote-equipment-approved-sources.ts",
+		"repository-asset-policy.ts",
+		"repository-asset-policy.spec.ts",
+		"validate-greatsword-campaign-v1.ts",
+		"validate-greatsword-campaign-v1.spec.ts"
 	]
 }
