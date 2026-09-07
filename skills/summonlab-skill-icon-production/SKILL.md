@@ -114,19 +114,20 @@ must be absent at preflight.
 
 ## Coordinator-owned `skill-art` handoff
 
-When returning a retained `skill-art`, explicitly report this deterministic handoff without executing
-any part of it. The coordinator—not this producer—centers the exact provider artwork at
-`artworkScale: 0.9`, producing `922x922` pixels at `(51,51)` on the `1024x1024` canvas. The
-coordinator verifies complete aperture coverage, extracts the aperture interior, adds canonical
-backing, then applies the canonical rarity frame with `compositionProfile: 'frame-opening-v3'`.
-The frame is the final layer.
+When returning a retained frameless artwork layer, explicitly report this deterministic handoff
+without executing any part of it. The coordinator—not this producer—centers the exact provider
+artwork at `artworkScale: 0.9`, producing `922x922` pixels at `(51,51)` on the `1024x1024` canvas.
+The coordinator assembles layers strictly back-to-front as `backing → skill-art → rarity-frame`;
+`rarityFrameIsFinal === true`. It extracts the aperture interior, adds canonical backing, and applies
+the canonical rarity frame with `compositionProfile: 'frame-opening-v3'`.
 
-The coordinator must fail closed on every one of these composition gates, which the producer reports
-as handoff constraints only: complete aperture coverage, baked frame traces, exterior opacity,
-backing-only components, layer-hash mismatch, non-exact recomposition, protected-band mismatch, and
-any composition where the frame is not the final layer. This handoff does not authorize the producer
-to resize, position, mask, extract, add backing, apply a frame, composite, promote, or otherwise
-change the returned provider image.
+The producer reports these coordinator-owned handoff constraints only. The coordinator fails closed
+unless every literal outcome holds: `apertureCoverage.complete === true`; no baked frame traces;
+`exteriorTransparent === true`; `backingOnlyComponents.length === 0`; `layerHashesMatch === true`;
+`exactComposite === true`; `protectedBandMatches === true`; and `rarityFrameIsFinal === true`. This
+report-only handoff does not authorize producer execution of resize, positioning, masking, aperture
+extraction, backing, framing, compositing, promotion, or any other change to the returned provider
+image.
 
 ## Hard boundaries
 

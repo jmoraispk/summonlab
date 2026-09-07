@@ -95,3 +95,30 @@ artifact.
 - `python3 -m unittest skills/summonlab-skill-icon-production/scripts/test_verify_result.py` passed;
   `corepack pnpm typecheck:skill-icons`, focused Prettier check, and `git diff --check` also passed
   under Node `v24.14.1`.
+
+## Fix round 2 — literal assembly predicates and local safeguards
+
+Addressed both remaining Task 3 findings without changing the deferred Minor or accepted overlay
+artifacts.
+
+- The producer's report-only handoff now states the exact back-to-front order
+  `backing → skill-art → rarity-frame`, `rarityFrameIsFinal === true`, and every required literal
+  gate predicate or outcome. It explicitly assigns those constraints to the coordinator and denies
+  producer execution authority for all assembly operations.
+- The coordinator's individual-production block carries the same explicit order and predicates.
+  The static test extracts that numbered block and the producer handoff section before asserting
+  their role-local requirements. The extracted coordinator block must exactly equal its canonical
+  frameless template; five mutations—Attach, Include, Add, Pass, and Use a canonical frame in an
+  individual prompt/generation/reference—therefore each fail the structural safeguard.
+
+### Fix-round 2 RED → GREEN evidence
+
+- RED, Node `v24.14.1`: after writing the block-local assertions, the focused suite failed with the
+  producer handoff missing `frameless artwork layer` and the coordinator block missing
+  `backing → skill-art → rarity-frame` (2 failed, 1 passed).
+- GREEN, Node `v24.14.1`: `corepack pnpm vitest run
+  tools/summonlab-skill-creation-skill.spec.ts` passed with 3 tests after the literal order and
+  predicate edits.
+- `python3 -m unittest skills/summonlab-skill-icon-production/scripts/test_verify_result.py` passed
+  under the Node `v24.14.1` shell; the focused typecheck, Prettier check, and `git diff --check` are
+  recorded with this fix round's final verification.

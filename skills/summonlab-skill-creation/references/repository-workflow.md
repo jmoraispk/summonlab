@@ -124,17 +124,18 @@ For every affected motif family:
    family sheet may remain a complete framed review reference, never crop content; do not use an
    enlarged crop from it as individual artwork.
 4. The coordinator centers the accepted provider artwork at artworkScale: 0.9, producing 922x922
-   pixels at (51,51) on the 1024x1024 canvas. It verifies complete aperture coverage, extracts the
-   aperture interior, adds canonical backing, and applies the canonical rarity frame as the final
-   layer with compositionProfile: 'frame-opening-v3'. A different scale requires new explicit
-   owner-reviewed authority; never guess it per target. Here, accepted provider artwork means the
+   pixels at (51,51) on the 1024x1024 canvas. It assembles layers strictly back-to-front as
+   `backing → skill-art → rarity-frame`; `rarityFrameIsFinal === true`. It extracts the aperture
+   interior, adds canonical backing, and applies the canonical rarity frame with
+   compositionProfile: 'frame-opening-v3'. A different scale requires new explicit owner-reviewed
+   authority; never guess it per target. Here, accepted provider artwork means the
    coordinator-selected exact provider source, not owner approval or promotion.
-5. Fail closed before composition acceptance on incomplete aperture coverage, baked frame traces,
-   exterior opacity, backing-only components, layer-hash mismatch, non-exact recomposition,
-   protected-band mismatch, or any composition where the frame is not the final layer.
-   Required final order: frame is the final layer. Preserve
-   source, layer, candidate, result, hashes, and inspection evidence for the provider artwork and
-   deterministic assembly.
+5. Fail closed before composition acceptance unless every literal outcome holds:
+   `apertureCoverage.complete === true`; no baked frame traces; `exteriorTransparent === true`;
+   `backingOnlyComponents.length === 0`; `layerHashesMatch === true`; `exactComposite === true`;
+   `protectedBandMatches === true`; and `rarityFrameIsFinal === true`. Preserve source, layer,
+   candidate, result, hashes, and inspection evidence for the provider artwork and deterministic
+   assembly.
 
 Use `summonlab-skill-icon-production` for each assigned manifest-bound raster. That producer writes
 only its owned candidate/result paths and never promotes. The coordinating change owns manifests,
