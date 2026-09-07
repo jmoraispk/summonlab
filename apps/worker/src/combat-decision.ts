@@ -179,6 +179,7 @@ async function processCombatDecisionJob(
 		await failCombatDecisionJobAttempt(
 			config.databaseUrl,
 			jobId,
+			claim.attemptNumber,
 			policyFailure(error),
 			Math.max(0, Math.round(performance.now() - startedAt))
 		);
@@ -187,6 +188,7 @@ async function processCombatDecisionJob(
 	await completeCombatDecisionJobAttempt(
 		config.databaseUrl,
 		jobId,
+		claim.attemptNumber,
 		intent,
 		Math.max(0, Math.round(performance.now() - startedAt))
 	);

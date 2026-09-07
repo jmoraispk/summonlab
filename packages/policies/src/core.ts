@@ -47,16 +47,11 @@ export function validateCombatPolicyView(input: ActorDecisionView): ActorDecisio
 }
 
 function targetMatchesAction(action: CombatLegalAction, response: CombatPolicyResponse): boolean {
-	const selectedFallback =
-		response.fallbackId === null
-			? null
-			: action.fallbackOptions.find((fallback) => fallback.fallbackId === response.fallbackId);
-	if (response.fallbackId !== null && !selectedFallback) return false;
 	if (
-		selectedFallback &&
-		hashCanonical(selectedFallback.target) === hashCanonical(response.target)
+		response.fallbackId !== null &&
+		!action.fallbackOptions.some((fallback) => fallback.fallbackId === response.fallbackId)
 	) {
-		return true;
+		return false;
 	}
 	const contract = action.targetContract;
 	const target = response.target;

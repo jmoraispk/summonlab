@@ -95,6 +95,22 @@ function actionTemplate() {
 	};
 }
 
+function entityActionTemplate(targetId: string) {
+	return {
+		...actionTemplate(),
+		actionId: 'support-ally',
+		publicLabel: 'Support ally',
+		targetContract: { kind: 'entity' as const, allowedCombatantIds: [targetId] },
+		fallbackOptions: [
+			{
+				fallbackId: 'guard-instead',
+				publicLabel: 'Guard instead',
+				target: { kind: 'self' as const }
+			}
+		]
+	};
+}
+
 function engineCommandBase(state: EngineGameStateV25, key: string) {
 	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
 	return {
@@ -143,7 +159,10 @@ function buildFixture(deployed: EngineGameStateV25) {
 				doctrine: [],
 				relationships: [],
 				masterDirections: [],
-				legalActionTemplates: [actionTemplate()]
+				legalActionTemplates: [
+					actionTemplate(),
+					entityActionTemplate(Object.keys(combatants).find((id) => id !== actorId)!)
+				]
 			}
 		])
 	);
@@ -475,6 +494,181 @@ describe.sequential('durable combat decision cohorts', () => {
 	});
 
 	run(
+		'keeps fallback selection separate from primary target validity through batch apply',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const f = fixture(runId);
+			const created = await createCombatDecisionWindow(databaseUrl, {
+				runId,
+				expectedRunVersion: 3,
+				expectedEventCursor: 4,
+				snapshot: f.snapshot,
+				actors: f.views.map((view) => ({
+					view,
+					requestedPolicy: 'scripted' as const,
+					deterministicFallback: f.result(view)
+				}))
+			});
+			const selected = created.jobs[0]!;
+			const action = selected.view.legalActions.find(
+				(candidate) => candidate.actionId === 'support-ally'
+			)!;
+			if (action.targetContract.kind !== 'entity') throw new Error('Expected entity action');
+			await queueCombatDecisionJob(databaseUrl, selected.decisionJobId);
+			const claim = await claimCombatDecisionJob(databaseUrl, selected.decisionJobId);
+			if (!claim) throw new Error('Expected entity action claim');
+			const base = {
+				...f.result(selected.view),
+				actionId: action.actionId,
+				actionInstanceId: action.actionInstanceId,
+				actionKind: action.actionKind,
+				skillId: action.skillId,
+				fallbackId: 'guard-instead'
+			};
+			await expect(
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					selected.decisionJobId,
+					claim.attemptNumber,
+					{ ...base, target: { kind: 'self' } },
+					0
+				)
+			).rejects.toThrow(/supplied legal action/u);
+			await completeCombatDecisionJobAttempt(
+				databaseUrl,
+				selected.decisionJobId,
+				claim.attemptNumber,
+				{
+					...base,
+					target: {
+						kind: 'entity',
+						combatantId: action.targetContract.allowedCombatantIds[0]!
+					}
+				},
+				0
+			);
+			for (const job of created.jobs.slice(1)) {
+				await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+				const otherClaim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+				if (!otherClaim) throw new Error('Expected other actor claim');
+				await completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					otherClaim.attemptNumber,
+					f.result(job.view),
+					0
+				);
+			}
+			const ready = await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+			expect(ready.batch?.choices[0]).toMatchObject({
+				actionId: 'support-ally',
+				target: { kind: 'entity' },
+				fallbackId: 'guard-instead'
+			});
+			expect(
+				(await applyCombatDecisionWindowBatch(databaseUrl, f.snapshot.windowId, ready.batch!))
+					.disposition
+			).toBe('applied');
+		},
+		10_000
+	);
+
+	run(
+		'binds terminal writes to the exact live claim attempt and unexpired lease',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const f = fixture(runId);
+			const created = await createCombatDecisionWindow(databaseUrl, {
+				runId,
+				expectedRunVersion: 3,
+				expectedEventCursor: 4,
+				snapshot: f.snapshot,
+				actors: f.views.map((view) => ({
+					view,
+					requestedPolicy: 'scripted' as const,
+					deterministicFallback: f.result(view)
+				}))
+			});
+			const job = created.jobs[0]!;
+			await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+			const first = await claimCombatDecisionJob(databaseUrl, job.decisionJobId, 10);
+			if (!first) throw new Error('Expected first claim');
+			const sql = postgres(databaseUrl, { max: 1 });
+			try {
+				await sql`update summonlab_decision_jobs set lease_expires_at = now() - interval '1 second'
+					where decision_job_id = ${job.decisionJobId}`;
+			} finally {
+				await sql.end({ timeout: 5 });
+			}
+			await expect(
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					first.attemptNumber,
+					job.deterministicFallback,
+					0
+				)
+			).rejects.toThrow(/claim|lease/u);
+			expect(await recoverExpiredCombatDecisionJobs(databaseUrl)).toBe(1);
+			await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+			const second = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			if (!second) throw new Error('Expected second claim');
+			expect(second.attemptNumber).toBe(first.attemptNumber + 1);
+			for (const lateWrite of [
+				() =>
+					completeCombatDecisionJobAttempt(
+						databaseUrl,
+						job.decisionJobId,
+						first.attemptNumber,
+						job.deterministicFallback,
+						0
+					),
+				() =>
+					failCombatDecisionJobAttempt(
+						databaseUrl,
+						job.decisionJobId,
+						first.attemptNumber,
+						{ code: 'late-worker', message: 'late attempt', retryable: true },
+						0
+					)
+			]) {
+				await expect(lateWrite()).rejects.toThrow(/claim|lease/u);
+			}
+			const stillOwned = await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+			expect(stillOwned?.jobs[0]).toMatchObject({
+				status: 'in_progress',
+				attemptCount: second.attemptNumber
+			});
+			const completed = await completeCombatDecisionJobAttempt(
+				databaseUrl,
+				job.decisionJobId,
+				second.attemptNumber,
+				job.deterministicFallback,
+				0
+			);
+			await expect(
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					second.attemptNumber,
+					job.deterministicFallback,
+					0
+				)
+			).resolves.toEqual(completed);
+			await expect(
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					second.attemptNumber,
+					{ ...job.deterministicFallback, publicIntent: 'Divergent retry.' },
+					0
+				)
+			).rejects.toThrow(/different result/u);
+		},
+		10_000
+	);
+
+	run(
 		'discovers terminal unapplied windows after a coordinator restart',
 		async () => {
 			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
@@ -495,9 +689,16 @@ describe.sequential('durable combat decision cohorts', () => {
 			);
 			for (const job of created.jobs) {
 				await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
-				await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+				const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+				if (!claim) throw new Error('Expected restart-discovery claim');
 				const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
-				await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 0);
+				await completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					claim.attemptNumber,
+					f.result(view),
+					0
+				);
 			}
 			expect(await listActionableCombatDecisionWindowIds(databaseUrl)).toContain(
 				f.snapshot.windowId
@@ -568,7 +769,13 @@ describe.sequential('durable combat decision cohorts', () => {
 				const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId, 30);
 				expect(claim?.job.windowId).toBe(f.snapshot.windowId);
 				const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
-				await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 5);
+				await completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					claim!.attemptNumber,
+					f.result(view),
+					5
+				);
 				if (index === 0) {
 					expect((await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)).status).toBe(
 						'collecting'
@@ -724,9 +931,16 @@ describe.sequential('durable combat decision cohorts', () => {
 		});
 		for (const job of created.jobs) {
 			await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
-			await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			if (!claim) throw new Error('Expected corruption-matrix claim');
 			const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
-			await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 0);
+			await completeCombatDecisionJobAttempt(
+				databaseUrl,
+				job.decisionJobId,
+				claim.attemptNumber,
+				f.result(view),
+				0
+			);
 		}
 		const ready = await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
 		let removeTrigger: (() => Promise<void>) | undefined;
@@ -843,10 +1057,17 @@ describe.sequential('durable combat decision cohorts', () => {
 		});
 		const job = created.jobs[0]!;
 		await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
-		await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+		const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+		if (!claim) throw new Error('Expected cross-window claim');
 		const wrong = { ...f.result(f.views[0]!), windowId: randomUUID() };
 		await expect(
-			completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, wrong, 1)
+			completeCombatDecisionJobAttempt(
+				databaseUrl,
+				job.decisionJobId,
+				claim.attemptNumber,
+				wrong,
+				1
+			)
 		).rejects.toThrow(/another window|binding/u);
 	});
 
@@ -915,9 +1136,16 @@ describe.sequential('durable combat decision cohorts', () => {
 
 		for (const job of created.jobs) {
 			await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
-			await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			if (!claim) throw new Error('Expected concurrency claim');
 			const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
-			await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 0);
+			await completeCombatDecisionJobAttempt(
+				databaseUrl,
+				job.decisionJobId,
+				claim.attemptNumber,
+				f.result(view),
+				0
+			);
 		}
 		const ready = await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
 		const removeBarrierTrigger = await installCombatCommitBarrierTrigger();
@@ -987,25 +1215,30 @@ describe.sequential('durable combat decision cohorts', () => {
 			await completeCombatDecisionJobAttempt(
 				databaseUrl,
 				first.decisionJobId,
+				fallback!.attemptNumber,
 				first.deterministicFallback,
 				0
 			);
 
 			const second = created.jobs[1]!;
 			await queueCombatDecisionJob(databaseUrl, second.decisionJobId);
-			await claimCombatDecisionJob(databaseUrl, second.decisionJobId);
+			const primary = await claimCombatDecisionJob(databaseUrl, second.decisionJobId);
+			if (!primary) throw new Error('Expected primary failure claim');
 			const failed = await failCombatDecisionJobAttempt(
 				databaseUrl,
 				second.decisionJobId,
+				primary.attemptNumber,
 				{ code: 'provider-failed', message: 'provider unavailable', retryable: false },
 				2
 			);
 			expect(failed.status).toBe('fallback');
 			await queueCombatDecisionJob(databaseUrl, second.decisionJobId);
-			await claimCombatDecisionJob(databaseUrl, second.decisionJobId);
+			const secondFallback = await claimCombatDecisionJob(databaseUrl, second.decisionJobId);
+			if (!secondFallback) throw new Error('Expected second fallback claim');
 			await completeCombatDecisionJobAttempt(
 				databaseUrl,
 				second.decisionJobId,
+				secondFallback.attemptNumber,
 				second.deterministicFallback,
 				0
 			);

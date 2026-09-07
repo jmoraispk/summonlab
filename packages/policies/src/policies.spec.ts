@@ -463,4 +463,32 @@ describe('frozen-view combat policies', () => {
 		}
 		expect(CombatActionIntentSchema.safeParse(response).success).toBe(false);
 	});
+
+	it('never treats an authored fallback target as a valid primary target', () => {
+		const view = combatViewFixture();
+		const action = view.legalActions.find((candidate) => candidate.actionId === 'strike-nearby')!;
+		const bindings = {
+			windowId: view.windowId,
+			snapshotHash: view.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: action.actionId,
+			fallbackId: 'guard-instead'
+		};
+		expect(() =>
+			validateCombatPolicyResponse(view, { ...bindings, target: { kind: 'self' } })
+		).toThrow(/supplied legal actions/u);
+		expect(
+			validateCombatPolicyResponse(view, {
+				...bindings,
+				target: {
+					kind: 'entity',
+					combatantId:
+						action.targetContract.kind === 'entity'
+							? action.targetContract.allowedCombatantIds[0]!
+							: ''
+				}
+			})
+		).toMatchObject({ actionId: action.actionId, fallbackId: 'guard-instead' });
+	});
 });

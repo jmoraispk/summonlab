@@ -95,6 +95,22 @@ function actionTemplate() {
 	};
 }
 
+function entityActionTemplate(targetId: string) {
+	return {
+		...actionTemplate(),
+		actionId: 'support-ally',
+		publicLabel: 'Support ally',
+		targetContract: { kind: 'entity' as const, allowedCombatantIds: [targetId] },
+		fallbackOptions: [
+			{
+				fallbackId: 'guard-instead',
+				publicLabel: 'Guard instead',
+				target: { kind: 'self' as const }
+			}
+		]
+	};
+}
+
 function commandBase(state: EngineGameStateV25, key: string) {
 	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
 	return {
@@ -169,7 +185,10 @@ async function createRunFixture(runId: string) {
 				doctrine: [],
 				relationships: [],
 				masterDirections: [],
-				legalActionTemplates: [actionTemplate()]
+				legalActionTemplates: [
+					actionTemplate(),
+					entityActionTemplate(Object.keys(combatants).find((id) => id !== actorId)!)
+				]
 			}
 		])
 	);
@@ -348,47 +367,58 @@ describe.sequential('combat decision worker', () => {
 		);
 	});
 
-	run('exhausts malformed provider responses before using exact persisted fallbacks', async () => {
-		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
-		const fixture = await createRunFixture(runId);
-		await createCombatDecisionWindow(databaseUrl, {
-			runId,
-			expectedRunVersion: 3,
-			expectedEventCursor: 4,
-			snapshot: fixture.snapshot,
-			actors: fixture.views.map((view) => ({
-				view,
-				requestedPolicy: 'model' as const,
-				deterministicFallback: fixture.fallback(view),
-				maxProviderAttempts: 2
-			}))
-		});
-		let providerCalls = 0;
-		const factory: CombatDecisionPolicyFactory = {
-			create: () => ({
-				async decide(view) {
-					providerCalls += 1;
-					return {
-						...(await new ScriptedCombatPolicy().decide(view)),
-						legalActionSetHash: 'f'.repeat(64)
-					};
-				}
-			})
-		};
-		await processCombatDecisionSweep(config(), factory);
-		await processCombatDecisionSweep(config(), factory);
-		const final = await processCombatDecisionSweep(config(), factory);
-		const window = await getCombatDecisionWindow(databaseUrl, fixture.snapshot.windowId);
-		expect(providerCalls).toBe(4);
-		expect(final.applied).toBe(1);
-		expect(window?.status).toBe('applied');
-		expect(window?.jobs.every((job) => job.resolution === 'fallback')).toBe(true);
-		expect(
-			window?.jobs.every(
-				(job) => hashCanonical(job.result) === hashCanonical(job.deterministicFallback)
-			)
-		).toBe(true);
-	});
+	run(
+		'rejects fallback targets as primary selections before using exact persisted fallbacks',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const fixture = await createRunFixture(runId);
+			await createCombatDecisionWindow(databaseUrl, {
+				runId,
+				expectedRunVersion: 3,
+				expectedEventCursor: 4,
+				snapshot: fixture.snapshot,
+				actors: fixture.views.map((view) => ({
+					view,
+					requestedPolicy: 'model' as const,
+					deterministicFallback: fixture.fallback(view),
+					maxProviderAttempts: 2
+				}))
+			});
+			let providerCalls = 0;
+			const factory: CombatDecisionPolicyFactory = {
+				create: () => ({
+					async decide(view) {
+						providerCalls += 1;
+						const action = view.legalActions.find(
+							(candidate) => candidate.actionId === 'support-ally'
+						)!;
+						return {
+							windowId: view.windowId,
+							snapshotHash: view.snapshotHash,
+							actorViewHash: view.actorViewHash,
+							legalActionSetHash: view.legalActionSetHash,
+							actionId: action.actionId,
+							target: { kind: 'self' as const },
+							fallbackId: 'guard-instead'
+						};
+					}
+				})
+			};
+			await processCombatDecisionSweep(config(), factory);
+			await processCombatDecisionSweep(config(), factory);
+			const final = await processCombatDecisionSweep(config(), factory);
+			const window = await getCombatDecisionWindow(databaseUrl, fixture.snapshot.windowId);
+			expect(providerCalls).toBe(4);
+			expect(final.applied).toBe(1);
+			expect(window?.status).toBe('applied');
+			expect(window?.jobs.every((job) => job.resolution === 'fallback')).toBe(true);
+			expect(
+				window?.jobs.every(
+					(job) => hashCanonical(job.result) === hashCanonical(job.deterministicFallback)
+				)
+			).toBe(true);
+		}
+	);
 
 	run(
 		'discovers a completed cohort after restart and concurrent sweepers never re-query providers',
@@ -414,6 +444,7 @@ describe.sequential('combat decision worker', () => {
 				await completeCombatDecisionJobAttempt(
 					databaseUrl,
 					job.decisionJobId,
+					claim.attemptNumber,
 					materializeCombatActionIntent(created, job, response),
 					0
 				);

@@ -240,30 +240,20 @@ function targetAllowed(view: ActorDecisionView, intent: CombatActionIntent): boo
 	}
 	const contract = action.targetContract;
 	const target = intent.target;
-	const fallbackMatches = action.fallbackOptions.some(
-		(fallback) =>
-			fallback.fallbackId === intent.fallbackId &&
-			hashCanonical(fallback.target) === hashCanonical(target)
-	);
-	if (contract.kind !== target.kind) {
-		return fallbackMatches;
-	}
+	if (contract.kind !== target.kind) return false;
 	if (contract.kind === 'self') return true;
 	if (contract.kind === 'entity' && target.kind === 'entity') {
-		return contract.allowedCombatantIds.includes(target.combatantId) || fallbackMatches;
+		return contract.allowedCombatantIds.includes(target.combatantId);
 	}
 	if (contract.kind === 'tile' && target.kind === 'tile') {
-		return (
-			contract.allowedPositions.some(
-				(position) => position.x === target.position.x && position.y === target.position.y
-			) || fallbackMatches
+		return contract.allowedPositions.some(
+			(position) => position.x === target.position.x && position.y === target.position.y
 		);
 	}
 	if (contract.kind === 'entity-relative-position' && target.kind === 'entity-relative-position') {
 		return (
-			(contract.allowedCombatantIds.includes(target.combatantId) &&
-				contract.allowedRelations.includes(target.relation)) ||
-			fallbackMatches
+			contract.allowedCombatantIds.includes(target.combatantId) &&
+			contract.allowedRelations.includes(target.relation)
 		);
 	}
 	return false;
@@ -903,32 +893,60 @@ function failureDestination(row: JobRow, retryable: boolean) {
 export async function completeCombatDecisionJobAttempt(
 	databaseUrl: string,
 	jobId: string,
+	attemptNumber: number,
 	resultInput: CombatActionIntent,
 	latencyMs: number
 ): Promise<CombatDecisionJob> {
+	if (!Number.isSafeInteger(attemptNumber) || attemptNumber < 1) {
+		throw new Error('Combat decision attempt number must be a positive safe integer');
+	}
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
 			const row = (
 				await transaction<JobRow[]>`select * from summonlab_decision_jobs
-				where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update`
+					where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update`
 			)[0];
-			if (!row || row.status !== 'in_progress')
-				throw new Error(`Combat decision job is not in progress: ${jobId}`);
+			if (!row) throw new Error(`Combat decision job was not found: ${jobId}`);
 			const result = parseBoundIntent(row, resultInput);
+			if (row.status === 'completed' && row.attempt_count === attemptNumber) {
+				if (
+					row.result !== null &&
+					hashCanonical(parseBoundIntent(row, row.result)) === hashCanonical(result)
+				) {
+					return parseJob(row);
+				}
+				throw new Error('Combat decision attempt was already completed with a different result');
+			}
 			if (
 				row.next_attempt_kind === 'fallback' &&
 				hashCanonical(result) !== hashCanonical(row.deterministic_fallback)
 			) {
 				throw new Error('Fallback attempt must use the precomputed deterministic fallback');
 			}
-			await transaction`update summonlab_decision_job_attempts set status = 'succeeded',
-				completed_at = now(), latency_ms = ${latencyMs}, result_hash = ${hashCanonical(result)}
-				where decision_job_id = ${jobId} and attempt_number = ${row.attempt_count} and status = 'in_progress'`;
-			await transaction`update summonlab_decision_jobs set status = 'completed',
+			const updated = await transaction<
+				JobRow[]
+			>`update summonlab_decision_jobs set status = 'completed',
 				result = ${transaction.json(result as never)},
 				resolution = ${row.next_attempt_kind === 'fallback' ? 'fallback' : 'requested'},
-				lease_expires_at = null, updated_at = now() where decision_job_id = ${jobId}`;
+				lease_expires_at = null, updated_at = now()
+				where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION}
+					and status = 'in_progress' and attempt_count = ${attemptNumber}
+					and lease_expires_at > now()
+				returning *`;
+			if (!updated[0]) {
+				throw new Error('Combat decision completion no longer owns the exact live claim lease');
+			}
+			const completedAttempts = await transaction<{ attempt_number: number }[]>`
+				update summonlab_decision_job_attempts set status = 'succeeded',
+				completed_at = now(), latency_ms = ${latencyMs}, result_hash = ${hashCanonical(result)}
+				where decision_job_id = ${jobId} and attempt_number = ${attemptNumber}
+					and status = 'in_progress'
+				returning attempt_number
+			`;
+			if (completedAttempts.length !== 1) {
+				throw new Error('Combat decision attempt ledger lost the exact live claim');
+			}
 			await appendTransition(
 				transaction,
 				jobId,
@@ -936,13 +954,7 @@ export async function completeCombatDecisionJobAttempt(
 				'completed',
 				'policy-result-completed'
 			);
-			return parseJob(
-				(
-					await transaction<
-						JobRow[]
-					>`select * from summonlab_decision_jobs where decision_job_id = ${jobId}`
-				)[0]!
-			);
+			return parseJob(updated[0]);
 		});
 	} finally {
 		await sql.end({ timeout: 5 });
@@ -952,9 +964,13 @@ export async function completeCombatDecisionJobAttempt(
 export async function failCombatDecisionJobAttempt(
 	databaseUrl: string,
 	jobId: string,
+	attemptNumber: number,
 	failureInput: Omit<DecisionJobFailure, 'occurredAt'>,
 	latencyMs: number
 ): Promise<CombatDecisionJob> {
+	if (!Number.isSafeInteger(attemptNumber) || attemptNumber < 1) {
+		throw new Error('Combat decision attempt number must be a positive safe integer');
+	}
 	const failure = DecisionJobFailureSchema.parse({
 		...failureInput,
 		occurredAt: new Date().toISOString()
@@ -966,15 +982,30 @@ export async function failCombatDecisionJobAttempt(
 				await transaction<JobRow[]>`select * from summonlab_decision_jobs
 				where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update`
 			)[0];
-			if (!row || row.status !== 'in_progress')
-				throw new Error(`Combat decision job is not in progress: ${jobId}`);
+			if (!row) throw new Error(`Combat decision job was not found: ${jobId}`);
 			const next = failureDestination(row, failure.retryable);
-			await transaction`update summonlab_decision_job_attempts set status = 'failed', completed_at = now(),
-				latency_ms = ${latencyMs}, failure = ${transaction.json(failure as never)}
-				where decision_job_id = ${jobId} and attempt_number = ${row.attempt_count} and status = 'in_progress'`;
-			await transaction`update summonlab_decision_jobs set status = ${next.status},
+			const updated = await transaction<
+				JobRow[]
+			>`update summonlab_decision_jobs set status = ${next.status},
 				next_attempt_kind = ${next.next}, failure = ${transaction.json(failure as never)},
-				lease_expires_at = null, updated_at = now() where decision_job_id = ${jobId}`;
+				lease_expires_at = null, updated_at = now()
+				where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION}
+					and status = 'in_progress' and attempt_count = ${attemptNumber}
+					and lease_expires_at > now()
+				returning *`;
+			if (!updated[0]) {
+				throw new Error('Combat decision failure no longer owns the exact live claim lease');
+			}
+			const failedAttempts = await transaction<{ attempt_number: number }[]>`
+				update summonlab_decision_job_attempts set status = 'failed', completed_at = now(),
+					latency_ms = ${latencyMs}, failure = ${transaction.json(failure as never)}
+				where decision_job_id = ${jobId} and attempt_number = ${attemptNumber}
+					and status = 'in_progress'
+				returning attempt_number
+			`;
+			if (failedAttempts.length !== 1) {
+				throw new Error('Combat decision attempt ledger lost the exact live claim');
+			}
 			await appendTransition(
 				transaction,
 				jobId,
@@ -986,13 +1017,7 @@ export async function failCombatDecisionJobAttempt(
 						? 'retry-scheduled'
 						: 'attempts-exhausted'
 			);
-			return parseJob(
-				(
-					await transaction<
-						JobRow[]
-					>`select * from summonlab_decision_jobs where decision_job_id = ${jobId}`
-				)[0]!
-			);
+			return parseJob(updated[0]);
 		});
 	} finally {
 		await sql.end({ timeout: 5 });
