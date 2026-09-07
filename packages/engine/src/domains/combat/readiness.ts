@@ -12,6 +12,7 @@ import type { ZodError } from 'zod';
 import { healthRegeneration, manaRegeneration } from './capability.js';
 import {
 	appendReadinessEmittedEventIds,
+	finalizeReadinessCombatIfTerminal,
 	finalizeReadinessCombatOutcome,
 	recordReadinessOutcomeDamage,
 	synchronizeReadinessOutcomeEvidence
@@ -91,6 +92,13 @@ function safetyResult(
 		safetyStop
 	});
 	return { kind: 'combat-result', ...finalized };
+}
+
+function ordinaryTerminalResult(
+	state: ReadinessCombatStateV1
+): Extract<ReadyCohortAdvance, { kind: 'combat-result' }> | null {
+	const finalized = finalizeReadinessCombatIfTerminal(state);
+	return finalized ? { kind: 'combat-result', ...finalized } : null;
 }
 
 function actorContextFailureResult(
@@ -316,6 +324,8 @@ export function advanceUntilReadyCohort(
 			return safetyResult(state, currentTickEffects.reason);
 		}
 		state = currentTickEffects.state;
+		const currentTerminal = ordinaryTerminalResult(state);
+		if (currentTerminal) return currentTerminal;
 		const ready = readyActorIds(state, rules);
 		if (ready.length > 0) return { kind: 'decision-window', state, readyActorIds: ready };
 
@@ -354,6 +364,8 @@ export function advanceUntilReadyCohort(
 			return safetyResult(beforeTick, scheduled.reason);
 		}
 		candidate = scheduled.state;
+		const advancedTerminal = ordinaryTerminalResult(candidate);
+		if (advancedTerminal) return advancedTerminal;
 		if (!regenerateAndAccumulate(candidate, rules)) {
 			return safetyResult(beforeTick, 'arithmetic-overflow');
 		}

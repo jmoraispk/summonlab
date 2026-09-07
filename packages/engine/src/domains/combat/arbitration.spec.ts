@@ -562,7 +562,7 @@ describe('same-window combat arbitration', () => {
 	});
 
 	it.each(['extraction', 'retreat'] as const)(
-		'finalizes an engine-authorized %s directive after actual batch resolution',
+		'finalizes an engine-authorized %s directive before another decision window',
 		(kind) => {
 			const initial = state({
 				include: [ID.a, ID.target],
@@ -576,16 +576,13 @@ describe('same-window combat arbitration', () => {
 				objectiveStates: [{ objectiveId: 'survive', completed: true }]
 			});
 			const authorized = authorizeReadinessTerminalDirective({ state: initial, directive });
-			const result = applyCombatChoiceBatch(
-				authorized,
-				choiceBatch(authorized, {
-					[ID.a]: { actionId: 'guard-self', target: { kind: 'self' }, fallbackId: 'brace' }
-				}),
-				COMBAT_RULES_V1
-			);
+			const result = advanceUntilReadyCohort(authorized, COMBAT_RULES_V1);
 
-			expect(result.state.result).toMatchObject({ outcome: kind });
-			expect(result.state.result?.claimEvidence.securedLoot).toStrictEqual(directive.securedLoot);
+			expect(result.kind).toBe('combat-result');
+			if (result.kind !== 'combat-result') return;
+			expect(result.result).toMatchObject({ outcome: kind });
+			expect(result.result.claimEvidence.securedLoot).toStrictEqual(directive.securedLoot);
+			expect(result.result.claimEvidence.resolvedEvents).toStrictEqual([]);
 		}
 	);
 
@@ -626,7 +623,7 @@ describe('same-window combat arbitration', () => {
 		expect(stopped.state.result?.claims).not.toHaveLength(0);
 	});
 
-	it('finalizes an authored deadline after actual batch resolution', () => {
+	it('finalizes an authored deadline before another decision window', () => {
 		const canonical = state({
 			include: [ID.a, ID.target],
 			actionByActor: {},
@@ -638,15 +635,12 @@ describe('same-window combat arbitration', () => {
 			attemptId: ID.attempt,
 			deadlineTick: canonical.tick
 		};
-		const result = applyCombatChoiceBatch(
-			canonical,
-			choiceBatch(canonical, {
-				[ID.a]: { actionId: 'guard-self', target: { kind: 'self' }, fallbackId: 'brace' }
-			}),
-			COMBAT_RULES_V1
-		);
+		const result = advanceUntilReadyCohort(canonical, COMBAT_RULES_V1);
 
-		expect(result.state.result).toMatchObject({ outcome: 'deadline' });
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result).toMatchObject({ outcome: 'deadline' });
+		expect(result.result.claimEvidence.resolvedEvents).toStrictEqual([]);
 	});
 
 	it('attributes a downed actor cancellation to the earlier downing event even when its intent targets another combatant', () => {

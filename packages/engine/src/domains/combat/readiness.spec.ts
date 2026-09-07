@@ -316,10 +316,61 @@ describe('agent-readiness one-tick cohorts', () => {
 		expect(result.readyActorIds).toStrictEqual([ID.hero]);
 	});
 
-	it('resolves effects already due on the current tick before emitting its frozen cohort', () => {
+	it('finalizes victory immediately when a due scheduled effect downs the final enemy', () => {
 		const result = advanceUntilReadyCohort(
 			state(
-				{ [ID.hero]: combatant(ID.hero, { readiness: 10_000, health: 50 }) },
+				{
+					[ID.hero]: combatant(ID.hero, { readiness: 10_000 }),
+					[ID.monster]: combatant(ID.monster, { health: 20 })
+				},
+				{
+					scheduledEffects: [
+						{
+							scheduledEffectId: ID.effect,
+							resolvesAtTick: 0,
+							sourceCombatantId: ID.hero,
+							effects: [
+								{
+									kind: 'resource',
+									combatantId: ID.monster,
+									resource: 'health',
+									before: 20,
+									after: 0,
+									delta: -20
+								},
+								{ kind: 'downed', combatantId: ID.monster }
+							]
+						}
+					]
+				}
+			),
+			COMBAT_RULES_V1
+		);
+
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result).toMatchObject({ outcome: 'victory', endedAtTick: 0, safetyStop: null });
+		expect(result.state.combatants[ID.monster]).toMatchObject({
+			resources: { health: { current: 0, maximum: 100 } },
+			downed: true,
+			active: false
+		});
+		expect(result.state.scheduledEffects).toStrictEqual([]);
+		expect(result.state.safety.eventsEmitted).toBe(1);
+		expect(result.state.outcomeEvidence).toMatchObject({
+			eventsEmitted: 1,
+			emittedEventIds: [ID.effect]
+		});
+		expect(result.result.claims).not.toHaveLength(0);
+	});
+
+	it('finalizes total-party downing immediately from a due scheduled lethal effect', () => {
+		const result = advanceUntilReadyCohort(
+			state(
+				{
+					[ID.hero]: combatant(ID.hero, { readiness: 10_000, health: 50 }),
+					[ID.monster]: combatant(ID.monster)
+				},
 				{
 					scheduledEffects: [
 						{
@@ -344,14 +395,58 @@ describe('agent-readiness one-tick cohorts', () => {
 			COMBAT_RULES_V1
 		);
 		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result).toMatchObject({
+			outcome: 'party-downed',
+			endedAtTick: 0,
+			safetyStop: null,
+			claimEvidence: { engineDamageTakenByHeroId: { [ID.hero]: 50 } }
+		});
 		expect(result.state.combatants[ID.hero]).toMatchObject({
 			lastDamagedAtTick: 0,
 			downed: true,
 			active: false
 		});
-		if (result.kind === 'combat-result') {
-			expect(result.result.safetyStop?.reason).toBe('no-progress-cycles');
-		}
+		expect(result.state.scheduledEffects).toStrictEqual([]);
+		expect(result.state.outcomeEvidence).toMatchObject({
+			eventsEmitted: 1,
+			emittedEventIds: [ID.effect],
+			partyHeroes: {
+				[ID.hero]: { currentHealth: 0, damageTaken: 50, downed: true }
+			}
+		});
+	});
+
+	it('ends at the authored deadline tick before any actor becomes ready', () => {
+		const arranged = state({
+			[ID.hero]: combatant(ID.hero),
+			[ID.monster]: combatant(ID.monster)
+		});
+		arranged.outcomeEvidence.authoredDeadline = {
+			deadlineVersion: 'readiness-authored-deadline-v1',
+			deadlineId: ID.action,
+			attemptId: ID.attempt,
+			deadlineTick: 3
+		};
+
+		const result = advanceUntilReadyCohort(arranged, COMBAT_RULES_V1);
+
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result).toMatchObject({
+			outcome: 'deadline',
+			endedAtTick: 3,
+			safetyStop: null,
+			claimEvidence: { resolvedEvents: [] }
+		});
+		expect(result.state.tick).toBe(3);
+		expect(result.state.safety).toStrictEqual({
+			ticksAdvanced: 3,
+			eventsEmitted: 0,
+			noProgressCycles: 0
+		});
+		expect(result.state.outcomeEvidence.eventsEmitted).toBe(0);
+		expect(result.result.claims.some((claim) => claim.claimType === 'skill-practice')).toBe(false);
 	});
 
 	it('persists the Health damage clock across decision windows and ignores non-damaging effects', () => {
@@ -475,7 +570,7 @@ describe('agent-readiness one-tick cohorts', () => {
 						}
 					)
 				: reason === 'no-progress-cycles'
-					? state({ [ID.hero]: combatant(ID.hero, { downed: true }) })
+					? state({ [ID.hero]: { ...combatant(ID.hero), active: false } })
 					: state({ [ID.hero]: combatant(ID.hero) });
 		const result = advanceUntilReadyCohort(arranged, rules);
 		expect(result.kind).toBe('combat-result');

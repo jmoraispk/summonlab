@@ -64,6 +64,9 @@ or permanent-loss state.
   helper instead of the production post-batch path.
 - Contract REDs rejected the new private accumulator until it was required and cross-validated
   against canonical combatants, event counters, and completed-result evidence.
+- Final-review REDs showed that time advance returned a decision window after a due scheduled
+  effect had already downed the final enemy or the complete party, and after crossing an authored
+  deadline. All three public regressions failed with `decision-window` instead of a combat result.
 
 ### GREEN
 
@@ -72,6 +75,8 @@ or permanent-loss state.
 - Content focused rules coverage: 2/2.
 - Contracts full: 146/146; content full: 66/66.
 - Engine full after second-review fixes: 452/452.
+- Final-review readiness/outcome/window/arbitration focus: 73/73.
+- Engine full after final-review time-advance fixes: 454/454.
 - Public API, replay, and module boundaries: 14/14.
 - Combat balance: 10,000 trials per matchup, rules hash
   `13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`.
@@ -95,8 +100,11 @@ or permanent-loss state.
   output Health/downed/lost/recovered invariants are asserted after both pure projections;
 - ordinary readiness completion requires explicit accumulated engine evidence; actual readiness
   safety stops and the V26 legacy adapter never produce `claims: []`.
-- production post-batch arbitration detects victory, total-party downing, authored deadlines, and
-  authenticated extraction/retreat directives, and sends all of them through the same finalizer;
+- production time advance and post-batch arbitration both send ordinary terminal conditions
+  through the same finalizer; scheduled lethal effects finalize at their exact due tick, while an
+  authored deadline or authenticated extraction/retreat ends before another decision window;
+- scheduled-effect victory and total-party downing retain the exact emitted-event count and ID,
+  final resources, harm, and downing evidence without applying post-terminal regeneration;
 - a safety stop after prior applied action preserves exact final Health (including the 70/100
   regression), harm, four emitted events, and legitimate skill-practice evidence;
 - altered/deleted owner effects cannot be hidden behind otherwise valid per-claim receipts: exact
