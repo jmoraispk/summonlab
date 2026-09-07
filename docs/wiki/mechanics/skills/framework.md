@@ -120,7 +120,6 @@ Future skills may compose multiple explicit learn paths. Supported design inputs
 
 | Condition | Example |
 | --- | --- |
-| Intrinsic attribute | Might threshold for a forceful technique |
 | Prerequisite skill | Basic Sword Strike at the authored mastery |
 | Practice evidence | A count of validated uses or successful parries |
 | Affinity | Holds the required future affinity rank |
@@ -128,9 +127,10 @@ Future skills may compose multiple explicit learn paths. Supported design inputs
 | Deed | Survived a named encounter or completed a trial |
 | Material | Consumes an authored component |
 
-Attribute requirements use only Might, Vitality, Agility, or Spirit and only when that attribute
-actually owns the gate. Lore and scholarship use Knowledge skills and evidence, not an intelligence
-attribute. Precision uses practice/mastery, not a dexterity attribute.
+Combat attributes scale the execution of actions in their owned scopes; they do not gate learning or
+change practice rate. Lore, scholarship, precision, crafting, and other learned capabilities use
+skills, mastery, and evidence rather than intelligence, dexterity, or another combat-attribute
+threshold.
 
 ## Domains and families
 

@@ -34,8 +34,8 @@ scale:
 
 Dexterity and Intellect are retired as attributes for new canonical mechanics. Learned precision,
 knowledge, analysis, crafting quality, and identification belong to skills, practice, evidence, and
-domain aptitude. Personality, history, relationships, morale, motivation, and condition remain
-separate human layers.
+the relevant domain learning score. Personality, history, relationships, morale, motivation, and
+condition remain separate human layers.
 
 Persistent growth and situational effects are distinct. Generated capability plus typed permanent
 receipts forms the intrinsic value. Equipment, effects, and conditions may change only the effective
@@ -47,10 +47,11 @@ penetration and is capped at 7,499 basis points by `combat-rules-v1`. Authored C
 Burn, Frost, Shock, and Arcane resistance receipts stack under a separate 7,500-basis-point cap.
 There is no universal poise; content may opt into an explicit visible Break meter.
 
-Learning profiles remain hidden by default and are generated independently from combat attributes.
-A general cognitive factor is bounded to `0.90..1.10` and applies only to comprehension-heavy
-practice. Martial, magical, crafting, survival, and social aptitudes contribute separately. Neither
-field changes model reasoning or action quality, and player-facing projections omit them.
+Learning profiles remain hidden by default and are generated independently from combat attributes
+and stars. A general cognitive factor is bounded to `0.90..1.10` and applies only to
+comprehension-heavy practice. Five independent hidden domain scores—martial, magical, crafting,
+survival, and social—contribute separately. Neither layer changes model reasoning or action quality,
+and player-facing projections omit them.
 
 ### Operator-owned versioned modes
 

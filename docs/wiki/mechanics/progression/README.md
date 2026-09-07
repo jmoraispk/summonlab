@@ -1,12 +1,13 @@
-# Progression system draft
+# Progression system
 
 Wiki ID: `mechanics.progression`
 
-Design status: **authoritative supplied design with explicit parked areas**. This section preserves
-the progression mechanics supplied across `progression_system.md` and the later affinity revision;
-their imperative language describes game rules and is not an instruction to repository workers.
-Under ADR 0063, the latest supplied source wins direct conflicts with earlier drafts. Explicit
-placeholders, approximations, and unfinished sections remain visibly unresolved.
+Design status: **authoritative for retained progression rules with explicit parked areas**. This
+section preserves progression mechanics supplied across `progression_system.md` and the later
+affinity revision except where a newer decision supersedes them. Under ADR 0063, supplied source
+wins direct conflicts with earlier drafts;
+[ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md) is the current
+authority for combat attributes, hidden learning profiles, and level-allocation mechanics.
 
 The draft is a design reference for hero and monster progression. Numbers appear only where a ratio
 or structural shape matters, and its preferred player-facing language says “the hero,” never “you.”
@@ -25,38 +26,40 @@ summon heroes
 ```
 
 For that milestone, implement a bounded subset: 1★ and levels 1–10 while preserving the supplied
-future cap table; starting attributes, skills, aptitudes, and equipment; one versioned Normal
-summoning channel; one training route; a small set of combat skills; explicit Unaligned affinity
-state; basic drops and inventory. Because the playable heroes remain 1★, hero affinity awakening is
-outside this slice. Advanced summoning and gems, affinity awakening and ranks, dual affinities, full
-skill ladders, teaching, epiphanies, merging, star-stone fusion, crafting, food, dimensional
-inventory, and late-game equipment remain documented but deferred rather than deleted.
+future cap table; four starting combat attributes, a separate hidden learning profile, skills, and
+equipment; one versioned Normal summoning channel; one training route; a small set of combat skills;
+explicit Unaligned affinity state; basic drops and inventory. Because the playable heroes remain
+1★, hero affinity awakening is outside this slice. Advanced summoning and gems, affinity awakening
+and ranks, dual affinities, full skill ladders, teaching, epiphanies, merging, star-stone fusion,
+crafting, food, dimensional inventory, and late-game equipment remain documented but deferred rather
+than deleted.
 
 ## Progression tracks
 
-| Track | Draft meaning | Draft advancement |
+| Track | Current meaning | Current advancement |
 | --- | --- | --- |
-| Attributes | How well a hero delivers any action | Level-up points and training outside levels |
+| Combat attributes | Broad physical and magical combat capability | One freely allocated intrinsic point per gained level plus typed permanent-training receipts |
 | Skills | What a hero can do | Repetition, quality, and variety of practice |
+| Hidden learning profile | Rate modifiers for validated practice; never decision quality or access | Generated independently from combat attributes and stars; no current star-awakening rule |
 | Affinities | Which element a hero embodies | Affinity rank through use and aligned training |
-| Stars | Innate endowment at summon and how far it has been nurtured | Born with it; raised with star stones |
+| Stars | Starting endowment, level cap, and how far a hero has been nurtured | Born with it; raised with star stones; does not grant learning bundles or change point rate |
 | Levels | Accumulated life-energy of what the hero has killed | Experience, proposed as kills only |
 
 Affinities comprise four base affinities—Fire, Earth, Wind, and Water—and six rare dual
 affinities, for ten total. Unaligned is the absence of affinity, not an eleventh affinity.
 
-Attributes sit at the center of the imported proposal:
+The current ownership boundaries are:
 
-| Influence | Proposed mechanism |
+| Influence | Current mechanism |
 | --- | --- |
-| Attributes → Skills | Scale magnitude and gate learning |
-| Skills → Attributes | Mastery promotion grants permanent attributes retained if the skill is lost |
-| Affinity → Attributes | The source proposes a modest element-matched attribute bonus per level |
-| Affinity → Combat | The bearer’s element affects damage, cycle relations, and status procs |
+| Combat attributes → actions | Might scales physical magnitude; Spirit scales magical magnitude; Vitality and Agility own their documented combat scopes |
+| Combat attributes → learning | No gate or practice-rate effect |
+| Hidden learning profile → practice | One bounded cognitive factor for comprehension-heavy evidence plus independent martial, magical, crafting, survival, and social domain scores |
+| Affinity → attributes | No automatic point per level; a matching contribution nudge is capped at 10% and remains formula-specific |
+| Affinity → combat | The bearer's element may affect damage, cycle relations, and status procs when the owning combat version implements them |
 | Skills ↔ Affinity | Grade B+ skills carry additive affinity slots filled from affinities the hero holds |
-| Stars → Attributes | Starting attribute band and points granted per level |
-| Stars → Aptitudes | Starting aptitudes govern rates of learning |
-| Levels → Attributes | A level directly grants attribute points |
+| Stars → attributes/learning | No star-based attribute budget, multi-point package, aptitude count, or learning-profile awakening |
+| Levels → attributes | Each gained level grants exactly one freely allocated intrinsic combat-attribute point |
 
 An affinity belongs to the hero, while a skill supplies the slot through which that affinity is
 expressed. Infusion adds elemental rider damage, rank-gated status and environmental behavior, and
@@ -66,10 +69,11 @@ affinity they do not hold.
 ## Draft design principles
 
 - Skills are intended to be the largest capability lever; attributes widen or narrow their output.
-- Levels are permission more than power: they grant attributes and access, not competence by
-  themselves.
+- Levels are permission more than power: each gained level grants one intrinsic combat-attribute
+  point, not learned competence by itself.
 - Skill, material, and equipment rarity is fixed. Hero star rank alone can rise.
-- Stars measure starting endowment and later nurture, not a skill ceiling or human worth.
+- Stars measure starting endowment, level cap, and later nurture, not learning rate, skill ceiling,
+  or human worth.
 - Practice records repetition, quality, and variety instead of assuming growth.
 - No progression route is absolutely closed: weak routes remain possible at sharply diminished
   returns.
@@ -79,7 +83,7 @@ These principles are expanded in:
 - [Attributes and training](attributes-and-training.md)
 - [Affinities](affinities.md)
 - [Skills, mastery, ladders, and merging](skills-and-ladders.md)
-- [Heroes, stars, levels, aptitudes, and summoning](heroes-stars-and-summoning.md)
+- [Heroes, stars, levels, learning profiles, and summoning](heroes-stars-and-summoning.md)
 - [Equipment, materials, food, and inventory](equipment-materials-and-inventory.md)
 - [Conflicts and parked decisions](open-decisions.md)
 

@@ -33,8 +33,9 @@ later supersedes the imported attribute and combat-mode rows identified below.
 - “XP comes only from kills” coexists with synthesis being parked as a possible experience transfer.
 - “No heroes are consumed, ever” is broader in wording than its promotion context and would erase the
   separately described synthesis concept if taken literally.
-- Aptitudes are said to affect access but never ceiling; rare ladder paths and epiphany chance must
-  still leave a non-random eventual route if that ceiling claim is retained.
+- The imported star-count and five-category aptitude model affected access while claiming no
+  ceiling. ADR 0072 resolves that tension for current mechanics: the hidden learning profile affects
+  practice rate only and never eventual access.
 - The source calls its skill ladder catalog worked “in full,” then parks fourteen remaining foci.
 - It says nothing is closed off, while affinity awakening is chance-based and not guaranteed by any
   amount of play, dual affinity is tied partly to one-per-hero narrative events, and Legendary
@@ -62,9 +63,11 @@ later supersedes the imported attribute and combat-mode rows identified below.
   excludes a construction system.
 - General material fusion: no decision whether it exists outside star stones.
 - Exact summon odds, prices, guaranteed tickets, pity, and portal-upgrade effects.
-- Exact aptitude magnitudes, awakening chances, appraisal costs, and initial mastery by star rank.
-- Exact practice decay curves, mastery thresholds, quality multipliers, novelty recovery, attribute
-  grants, and promotion-bonus magnitudes.
+- Player-facing observation and mentor language for the hidden cognitive/domain learning profile;
+  exact scores remain private and stars do not grant or awaken them.
+- Exact practice decay curves, mastery thresholds, quality multipliers, novelty recovery, and
+  promotion-bonus magnitudes. Level growth already uses one intrinsic combat-attribute point per
+  gained level rather than a mastery or star-scaled package.
 - Skill input consumption, active/passive capacity, cooldown/action economy, and merged-skill budget.
 - Affinity proc rates, resistances, status stacking/cleansing, and the numeric combat modifiers for
   normal, overcoming, neutral, same-affinity, and off-cycle pairings.

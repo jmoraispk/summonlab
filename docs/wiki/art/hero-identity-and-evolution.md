@@ -5,9 +5,9 @@ Wiki ID: `art.hero-identity-evolution`
 Design status: **accepted visual-generation direction; 200-hero summon roster approved and bound**.
 
 This page governs hero identity generation beyond the fixed Living Village prototype roster. It
-connects physical variation, starting capability, aptitudes, personality, wardrobe, native stars,
-and current-star evolution without pretending that an image model is a deterministic procedural
-human renderer.
+connects physical variation, the four combat attributes, a separate hidden learning profile,
+personality, history, wardrobe, native stars, and current-star evolution without pretending that an
+image model is a deterministic procedural human renderer.
 
 ## Accepted rendering register
 
@@ -117,19 +117,17 @@ rather than a chibi, opaque portrait, or invented vector substitute.
 ## Generation order
 
 ```text
-recipe + native stars
+recipe + identity inputs
         |
         v
 identity anchors + coherent physical profile
         |
-        v
-starting attribute budget with probabilistic physical correlations
-        |
-        +------> concrete aptitude set
-        +------> independent personality
+        +------> four combat attributes with probabilistic physical cues
+        +------> separate hidden learning profile
+        +------> independent personality and history
         |
         v
-wardrobe DNA + current-star presentation state + affinity state
+wardrobe DNA + native/current-star presentation + affinity state
         |
         v
 candidate full-body renders -> approved anchor -> derived small-scale views
@@ -158,7 +156,7 @@ should deliberately vary hair texture, mass, length, asymmetry, shaved areas, br
 head wraps, and grooming while avoiding the same fashionable silhouette on every hero. Jewelry,
 bracelets, necklaces, earrings, piercings, tattoos, and other durable personal marks may be used
 freely at 1★ when they clarify identity. They are personal design language, not automatic evidence
-of rank, affinity, aptitude, wealth, morality, or culture.
+of rank, affinity, hidden learning, wealth, morality, or culture.
 
 They are also optional. A mass-generation wave should include many heroes with no tattoos and no
 visible jewelry. Body construction, hair, garment silhouette, repairs, pattern, closures, keepsakes,
@@ -184,7 +182,7 @@ Every hero receives an outfit system rather than an interchangeable fantasy unif
 - fabric weight, stiffness, surface treatment, closures, asymmetry, and pattern language;
 - maintenance, repairs, stains, age, personal alterations, and one keepsake or signature detail;
 - a bounded palette and cultural/technological vocabulary that do not imply phenotype, personality,
-  aptitude, morality, or star rank.
+  hidden learning, morality, or star rank.
 
 The default summon image remains weaponless. Clothing can support movement and capability without
 locking a hero to a combat class.
@@ -208,11 +206,11 @@ overwhelmed, and a physically imposing hero may also be highly intellectual. Art
 exact attribute or hidden learning value.
 
 Valid capability combinations always retain a nonzero probability. Strong correlations make some
-extreme contradictions very, very rare, but no valid attribute or aptitude combination is forbidden.
-An exceptional broad, heavy hero may begin extraordinarily agile; the manifest should treat that as
-a rare person and make the final image physically coherent rather than silently rerolling them into
-the common case. Invalid anatomy and broken image generation are production failures, not forbidden
-character builds.
+extreme contradictions very, very rare, but no valid combat-attribute or learning-profile
+combination is forbidden. An exceptional broad, heavy hero may begin extraordinarily agile; the
+manifest should treat that as a rare person and make the final image physically coherent rather
+than silently rerolling them into the common case. Invalid anatomy and broken image generation are
+production failures, not forbidden character builds.
 
 ## Learning profile: one accepted typed model
 
@@ -221,21 +219,21 @@ New characters generate learning separately from combat attributes:
 | Category | Mechanical target |
 | --- | --- |
 | Cognitive learning | one hidden bounded score used only for comprehension-heavy practice |
-| Domain aptitude | martial, magical, crafting, survival, or social practice |
+| Domain learning | martial, magical, crafting, survival, or social practice |
 
 The legacy aptitude scores named `might`, `finesse`, `insight`, and `resolve` remain only in
 historical state and the versioned `legacy-auto-v1` compatibility boundary. They must not direct new
 art or become the source for a new learning profile.
 
-Aptitude means training rate, not present ability, decision quality, or human worth. The visual can
-weakly foreshadow an aptitude, but hidden aptitudes must remain discoverable through play rather
-than being printed into the costume.
+The hidden learning profile changes training rate, not present ability, decision quality, or human
+worth. The visual can weakly foreshadow observed practice, but hidden scores must remain
+discoverable through play rather than being printed into the costume.
 
 ## Personality and appearance
 
 Personality remains independently generated. It can direct expression, gaze, grooming, garment
 maintenance, color confidence, ornament density, and how the hero occupies space after both are
-known. It does not derive from body, phenotype, stars, affinity, or aptitude.
+known. It does not derive from body, phenotype, stars, affinity, or hidden learning.
 
 This independence allows useful combinations: a huge gentle scholar, a slight confrontational
 laborer, a meticulous extrovert in visibly repaired clothes, or a reserved hero whose elaborate
@@ -348,6 +346,7 @@ reference.
 This page authorizes hero visual planning, candidate production, and maintenance of the approved
 hero catalog and its derived lazy runtime visuals. Player summon selection may consume the approved
 catalog through the character package, but combat rules, policies, replay formats, affinity tables,
-and unrelated shared catalogs remain outside this visual-production decision. Replacing the legacy
-four-score aptitude payload still requires an integration owner to define a versioned typed schema,
-migration and replay compatibility behavior, update every consumer, and validate existing histories.
+and unrelated shared catalogs remain outside this visual-production decision. The `character-v2`
+and `engine-v25` capability profile already supplies typed four-attribute and hidden-learning data.
+Adoption of those fields by paired visual manifests remains future, versioned integration; until
+then, art records must not invent missing capability data.

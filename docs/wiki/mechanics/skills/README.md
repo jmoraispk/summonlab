@@ -12,7 +12,7 @@ mastery describes one hero's realized command of that skill. The catalog spans c
 craft, and life disciplines so a hero's value is not reducible to direct combat power.
 
 The canonical ownership path is **Domain → Family → Skill**. Every skill belongs to exactly one
-family, and that family owns aptitude and progression. Optional labels narrow compatibility or
+family, and that family owns its progression lineage. Optional labels narrow compatibility or
 affinity without creating another progression level.
 
 ## Reading the catalog
@@ -26,8 +26,9 @@ catalyst,” and “composite condition” are design shorthand, not executable 
 Rows that retain Dexterity, Intellect, or poise wording are rendered from immutable
 imported/migration evidence, not active mechanics.
 [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
-supersedes those requirements: new definitions use the four combat attributes only where they own
-the gate, learned mastery/evidence for precision or knowledge, and explicit authored Break mechanics.
+supersedes those requirements: combat attributes may scale execution but do not gate learning; new
+definitions use learned mastery/evidence for precision or knowledge and explicit authored Break
+mechanics.
 
 The authored label namespaces are:
 
