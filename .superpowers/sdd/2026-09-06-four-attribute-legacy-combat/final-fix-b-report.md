@@ -34,6 +34,22 @@ The character-art regression was test-driven in two layers:
   proves every unbound v25 slot is a missing-art record and that the legacy `.actor-token`,
   `.monster-token`, and `.master-portrait` substitutes are absent from the v25 DOM.
 
+## Review round 2 — null-art boundary and active browser contracts
+
+The roster's resolved and unresolved states now pass through `MissionHeroRosterArt`. When a v25
+portrait cannot resolve, this boundary renders `CharacterArtMissing`; it has no image role, star
+glyph, or decorative CSS character fallback. `HeroArtPlaceholder` remains reachable only through
+the component's explicit historical presentation branch. The rendered test failed RED while the
+boundary did not exist and passes GREEN for both the strict v25 absence and retained legacy branch.
+
+The two stale active browser contracts now reflect their real product purpose. `mission.e2e.ts`
+creates a current public v25 run, binds the actual public identity to the approved source/runtime
+manifests, verifies roster and combat assets, verifies the entropy-bounded three-to-four monster
+duty set, advances legacy automatic combat, and checks reload persistence. It no longer asserts the
+retired fixed Mara identity or historical manual-turn controls. `master-game-over.e2e.ts` retains
+its historical v17 fixture while checking current **Health** terminology and the actual public
+sealed-replay evidence.
+
 ## Root causes and repaired seams
 
 1. The summon CTA correctly linked to `/play/:runId`, and the proof arrival writer already used real
@@ -129,19 +145,16 @@ browser review were used as the documented fallback.
   compatibility and replay vectors.
 - `pnpm --filter @summonlab/web test:unit` — 38 files passed, 1 skipped; 186/186 executed tests passed.
 - Review-round rerun: 39 files passed, 1 skipped; 187/187 executed tests passed.
+- Review-round-2 rerun: 40 files passed, 1 skipped; 189/189 executed tests passed.
 - `pnpm --filter @summonlab/web test:e2e -- foundation-final-fix-b.e2e.ts` — 2/2 passed.
+- `pnpm --filter @summonlab/web test:e2e -- mission.e2e.ts` — 1/1 passed in isolation.
+- `pnpm --filter @summonlab/web test:e2e -- master-game-over.e2e.ts` — 1/1 passed in isolation.
 - Contracts and engine TypeScript checks — passed.
 - Web Svelte/TypeScript check — 0 errors and 0 warnings.
 - Engine and web ESLint — passed.
 - Production web build — passed as the Playwright web-server precondition; only existing optional
   Sharp-resolution and large-chunk warnings were emitted.
 - `git diff --check` — passed.
-
-For transparency, two optional historical browser specs were also sampled but are already stale at
-the pre-art base revision and fail before reaching their tactical-board assertions:
-`mission.e2e.ts` hard-codes the superseded `Mara Vey` roster identity, and
-`master-game-over.e2e.ts` still expects the superseded `vitality` pool label instead of the accepted
-`Health` correction. Neither file nor its production behavior was changed in this review round.
 
 No blocking seam remains in this slice. Agent-controlled readiness/compliance remains deliberately
 deferred to the separately accepted agent-readiness plan.

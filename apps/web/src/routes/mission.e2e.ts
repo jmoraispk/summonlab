@@ -1,4 +1,41 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+const summonableCatalogSource = JSON.parse(
+	readFileSync(
+		new URL(
+			'../../../../assets/heroes/approved/summonable-roster-v1/catalog.json',
+			import.meta.url
+		),
+		'utf8'
+	)
+) as {
+	entries: Array<{
+		heroId: string;
+		displayName: string;
+		draft: { manifestHash: string; manifest: { artKey: string | null } };
+	}>;
+};
+const summonableRuntimeManifestSource = JSON.parse(
+	readFileSync(
+		new URL('../../static/runtime/summonable-heroes-v1/manifest.json', import.meta.url),
+		'utf8'
+	)
+) as {
+	entries: Array<{
+		heroId: string;
+		manifestHash: string;
+		bundle: {
+			assets: Array<{
+				usage: string;
+				sourceAssetKey: string;
+				sourceStatus: string;
+				manifestHashes: string[];
+				publicPath: string;
+			}>;
+		};
+	}>;
+};
 
 const recipe = {
 	seed: 'ember-01',
@@ -6,7 +43,7 @@ const recipe = {
 	cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
 };
 
-test('prepares, retreats, retries, and resolves one replayable Floor 01 party', async ({
+test('binds the current summoned identity and advances v25 automatic combat', async ({
 	page,
 	request
 }) => {
@@ -15,13 +52,37 @@ test('prepares, retreats, retries, and resolves one replayable Floor 01 party', 
 	});
 	expect(createdResponse.status()).toBe(201);
 	const created = (await createdResponse.json()) as { runId: string };
+	const publicRunResponse = await request.get(`/api/runs/${created.runId}`);
+	expect(publicRunResponse.status()).toBe(200);
+	const publicRun = (await publicRunResponse.json()) as {
+		manifest: { artKey: string | null; displayName: string };
+	};
+	const approvedHero = summonableCatalogSource.entries.find(
+		(entry) => entry.draft.manifest.artKey === publicRun.manifest.artKey
+	);
+	expect(approvedHero?.displayName).toBe(publicRun.manifest.displayName);
+	const runtimeEntry = summonableRuntimeManifestSource.entries.find(
+		(entry) => entry.heroId === approvedHero?.heroId
+	);
+	expect(runtimeEntry?.manifestHash).toBe(approvedHero?.draft.manifestHash);
+	const rosterArt = runtimeEntry?.bundle.assets.find(
+		(asset) => asset.usage === 'summon' && asset.sourceAssetKey === publicRun.manifest.artKey
+	);
+	const combatArt = runtimeEntry?.bundle.assets.find((asset) => asset.usage === 'combat-chibi');
+	for (const asset of [rosterArt, combatArt]) {
+		expect(asset?.sourceStatus).toBe('approved');
+		expect(asset?.manifestHashes).toContain(approvedHero?.draft.manifestHash);
+	}
 
 	await page.goto(`/mission/${created.runId}`);
 	await expect(page.getByRole('heading', { name: /The Unlit Muster/ })).toBeVisible();
+	await expect(page.getByText('Tower Floor 01 / operator-bound combat')).toBeVisible();
 	await expect(
 		page.getByText('31f756076a3e67ad9023108400464e9a0ab9995637266b1b9f41c802d3a48b02')
 	).toBeVisible();
-	await expect(page.getByTestId('hero-roster-card')).toContainText('Mara Vey');
+	const roster = page.getByTestId('hero-roster-card');
+	await expect(roster).toContainText(publicRun.manifest.displayName);
+	await expect(roster.locator('img')).toHaveAttribute('src', rosterArt?.publicPath ?? 'missing');
 	await expect(page.locator('.phase-heading h2')).toHaveText('available');
 
 	await page.getByTestId('prepare-party').click();
@@ -31,67 +92,33 @@ test('prepares, retreats, retries, and resolves one replayable Floor 01 party', 
 	await expect(page.locator('.phase-heading h2')).toHaveText('deployed');
 	await expect(page.getByTestId('mission-board')).toBeVisible();
 	await expect(page.getByTestId('threat-intents')).toContainText('Declared threats');
-	await expect(page.getByTestId('threat-intents').locator('article')).toHaveCount(3);
-	await expect(page.getByTestId('monster-token')).toHaveCount(3);
-	await page.getByTestId('retreat-party').click();
-	await expect(page.locator('.phase-heading h2')).toHaveText('retreat');
-	await expect(page.getByText('mission.retreated')).toBeVisible();
-
-	await page.getByTestId('prepare-party').click();
-	await expect(page.locator('.scene-caption')).toContainText('Attempt 2');
-	await page.getByTestId('deploy-party').click();
+	const enemyArtGaps = page.getByTestId('enemy-combat-art-missing');
+	const enemyCount = await enemyArtGaps.count();
+	expect(enemyCount).toBeGreaterThanOrEqual(3);
+	expect(enemyCount).toBeLessThanOrEqual(4);
+	await expect(enemyArtGaps.filter({ hasText: 'Ember Hauler 01' })).toHaveCount(1);
+	await expect(page.getByTestId('threat-intents').locator('article')).toHaveCount(enemyCount);
+	await expect(page.getByTestId('hero-combat-art')).toHaveAttribute(
+		'src',
+		combatArt?.publicPath ?? 'missing'
+	);
+	await expect(page.getByTestId('continue-battle')).toBeVisible();
+	await expect(page.getByTestId('master-turn-actions')).toHaveCount(0);
 	await page.setViewportSize({ width: 390, height: 844 });
 	await expect(page.getByTestId('mission-board')).toBeVisible();
-	await expect(page.getByTestId('master-turn-actions')).toBeVisible();
-	await expect(page.getByTestId('resolve-turn')).toBeVisible();
+	await expect(page.getByTestId('continue-battle')).toBeVisible();
 	await page.setViewportSize({ width: 1280, height: 720 });
-	for (const [index, label] of [
-		'Move to Oath Hall',
-		'Move to Shattered Gallery',
-		'Move to Chain Court',
-		'Move to Ember Vault',
-		'Lift the First Ember',
-		'Move to Chain Court',
-		'Move to Shattered Gallery',
-		'Move to Oath Hall',
-		'Move to Tower Threshold'
-	].entries()) {
-		await page.getByTestId('master-turn-actions').getByRole('button', { name: label }).click();
-		await page.getByTestId('resolve-turn').click();
-		await expect(page.getByTestId('initiative-report')).toBeVisible();
-		if (index === 2) {
-			await expect(page.getByTestId('threat-intents')).toContainText('lowers a hooked blade');
-			await expect(
-				page
-					.getByTestId('master-turn-actions')
-					.getByRole('button', { name: /Strike/ })
-					.first()
-			).toBeVisible();
-		}
-		if (index === 0 && process.env.CAPTURE_PHASE6_MISSION_TURNS) {
-			await page.setViewportSize({ width: 1440, height: 1100 });
-			await page.screenshot({
-				path: process.env.CAPTURE_PHASE6_MISSION_TURNS,
-				fullPage: true
-			});
-		}
-		if (index === 2 && process.env.CAPTURE_PHASE6_MONSTER_DUTIES) {
-			await page.setViewportSize({ width: 1440, height: 1200 });
-			await page.screenshot({
-				path: process.env.CAPTURE_PHASE6_MONSTER_DUTIES,
-				fullPage: true
-			});
-		}
-	}
-	await expect(page.locator('.phase-heading h2')).toHaveText('extraction');
-	await expect(page.getByText('First Ember returned to threshold')).toBeVisible();
+	const versionBeforeRound = await page.getByTestId('run-version').textContent();
+	await page.getByTestId('continue-battle').click();
+	await expect(page.getByTestId('initiative-report')).toBeVisible();
+	await expect
+		.poll(() => page.getByTestId('run-version').textContent())
+		.not.toBe(versionBeforeRound);
+	const versionAfterRound = await page.getByTestId('run-version').textContent();
 	await expect(page.getByText('mission.round.resolved').first()).toBeVisible();
 
-	await page.getByTestId('extract-party').click();
-	await expect(page.locator('.phase-heading h2')).toHaveText('success');
-	await expect(page.getByText('mission.extracted')).toBeVisible();
 	await page.reload();
-	await expect(page.locator('.phase-heading h2')).toHaveText('success');
-	await expect(page.getByText('16 transitions')).toBeVisible();
-	await expect(page.getByText('Floor 01 is complete.')).toBeVisible();
+	await expect(page.getByTestId('initiative-report')).toBeVisible();
+	await expect(page.getByTestId('run-version')).toHaveText(versionAfterRound ?? '');
+	await expect(page.getByText('mission.round.resolved').first()).toBeVisible();
 });

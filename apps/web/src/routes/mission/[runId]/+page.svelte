@@ -9,7 +9,7 @@
 	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
 	import CharacterArtMissing from '$lib/components/CharacterArtMissing.svelte';
-	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
+	import MissionHeroRosterArt from '$lib/components/MissionHeroRosterArt.svelte';
 	import PlayerJournal from '$lib/components/PlayerJournal.svelte';
 
 	let { data } = $props();
@@ -915,16 +915,11 @@
 						data-testid="hero-roster-card"
 					>
 						<div class="portrait hero-portrait">
-							{#if data.heroPortrait}
-								<img
-									src={data.heroPortrait.publicPath}
-									width={data.heroPortrait.width}
-									height={data.heroPortrait.height}
-									alt={`${data.proof.manifest.displayName} roster portrait`}
-								/>
-							{:else}
-								<HeroArtPlaceholder name={data.proof.manifest.displayName} compact />
-							{/if}
+							<MissionHeroRosterArt
+								{isCapabilityMission}
+								name={data.proof.manifest.displayName}
+								portrait={data.heroPortrait}
+							/>
 						</div>
 						<div>
 							<span>{'✦'.repeat(data.proof.manifest.rarityStars)} · summoned hero</span>
@@ -2091,13 +2086,6 @@
 		overflow: hidden;
 		background: #080a0b;
 		position: relative;
-	}
-	.party-card .portrait img {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: 50% 15%;
 	}
 	.master-portrait:before {
 		content: '';
