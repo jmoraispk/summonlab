@@ -501,6 +501,7 @@ function validateTerminalReceipt(
 		addIssue(context, 'defeatedEnemyIds must agree with final enemy states', ['defeatedEnemyIds']);
 	}
 
+	const hasRequiredEnemy = receipt.finalEnemies.some((enemy) => enemy.requiredForVictory);
 	const requiredEnemiesDefeated = receipt.finalEnemies
 		.filter((enemy) => enemy.requiredForVictory)
 		.every((enemy) => enemy.combatState === 'defeated');
@@ -508,6 +509,9 @@ function validateTerminalReceipt(
 	if (receipt.outcome === 'victory') {
 		if (receipt.decisiveCause.code !== 'enemies-defeated') {
 			addIssue(context, 'Victory receipts require an enemies-defeated decisive cause', ['decisiveCause', 'code']);
+		}
+		if (!hasRequiredEnemy) {
+			addIssue(context, 'Victory requires at least one required enemy', ['finalEnemies']);
 		}
 		if (!requiredEnemiesDefeated) {
 			addIssue(context, 'Victory requires every required enemy to be defeated', ['finalEnemies']);

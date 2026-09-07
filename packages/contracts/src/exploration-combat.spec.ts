@@ -1,4 +1,11 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
+import {
+	ExplorationCombatReceiptSchema,
+	ExplorationCombatRejectionSchema,
+	ExplorationCombatReplayRefSchema,
+	ExplorationEncounterRequestSchema
+} from './exploration-combat.js';
 
 const hash = 'a'.repeat(64);
 const alternateHash = 'b'.repeat(64);
@@ -16,10 +23,15 @@ const ids = {
 type SafeParseResult = { success: boolean; data?: unknown };
 type SafeSchema = { safeParse: (input: unknown) => SafeParseResult };
 
-let contract: Record<string, unknown>;
+const contract = {
+	ExplorationCombatReceiptSchema,
+	ExplorationCombatRejectionSchema,
+	ExplorationCombatReplayRefSchema,
+	ExplorationEncounterRequestSchema
+} satisfies Record<string, SafeSchema>;
 
-function parse(schemaName: string, input: unknown) {
-	return (contract[schemaName] as SafeSchema | undefined)?.safeParse(input);
+function parse(schemaName: keyof typeof contract, input: unknown) {
+	return contract[schemaName].safeParse(input);
 }
 
 function validPresentation(approvalStatus: 'approved' | 'fixture-only' = 'approved') {
@@ -238,10 +250,6 @@ function validVictoryReceipt() {
 	};
 }
 
-beforeAll(async () => {
-	contract = await import('./exploration-combat.js');
-});
-
 describe('exploration combat contracts', () => {
 	it('accepts one frozen bounded encounter request', () => {
 		const parsed = parse('ExplorationEncounterRequestSchema', validRequest());
@@ -340,6 +348,17 @@ describe('exploration combat contracts', () => {
 			inventoryCommitted: false,
 			lootCacheMutated: false
 		});
+	});
+
+	it('rejects victory receipts with no required enemy', () => {
+		const receipt = validVictoryReceipt();
+
+		expect(
+			parse('ExplorationCombatReceiptSchema', {
+				...receipt,
+				finalEnemies: receipt.finalEnemies.map((enemy) => ({ ...enemy, requiredForVictory: false }))
+			}).success
+		).toBe(false);
 	});
 
 	it('rejects contradictory terminal evidence and claims without source events', () => {
