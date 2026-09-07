@@ -581,6 +581,57 @@ describe('agent-readiness one-tick cohorts', () => {
 		);
 	});
 
+	it('returns a completed safety stop byte-for-byte instead of attempting action payment', () => {
+		const terminal = advanceUntilReadyCohort(
+			state({ [ID.hero]: combatant(ID.hero, { downed: true }) }),
+			rulesWithSafety({ maximumNoProgressCycles: 1 })
+		);
+		expect(terminal.kind).toBe('combat-result');
+		if (terminal.kind !== 'combat-result') return;
+		const beforeState = hashCanonical(terminal.state);
+		const beforeResult = hashCanonical(terminal.result);
+
+		const payment = applyReadinessActionCost(terminal.state, ID.hero, ACTION, COMBAT_RULES_V1);
+
+		expect(payment).toStrictEqual(terminal);
+		expect(hashCanonical(terminal.state)).toBe(beforeState);
+		expect(hashCanonical(terminal.result)).toBe(beforeResult);
+	});
+
+	it('returns an ordinary completed result byte-for-byte instead of mutating final combatants', () => {
+		const finalCombatants = {
+			[ID.hero]: combatant(ID.hero, { readiness: 10_000 }),
+			[ID.monster]: combatant(ID.monster, { downed: true })
+		};
+		const result = {
+			resultVersion: 'combat-result-v1' as const,
+			resultId: ID.effect,
+			attemptId: ID.attempt,
+			modeId: 'agent-readiness-v1' as const,
+			rulesVersion: 'combat-rules-v1' as const,
+			outcome: 'victory' as const,
+			endedAtTick: 12,
+			finalCombatants,
+			claims: [],
+			decisiveEventIds: [],
+			safetyStop: null,
+			traceHash: 'b'.repeat(64)
+		};
+		const completed: ReadinessCombatStateV1 = {
+			...state(finalCombatants, { tick: 12 }),
+			status: 'complete',
+			result
+		};
+		const beforeState = hashCanonical(completed);
+		const beforeResult = hashCanonical(result);
+
+		const payment = applyReadinessActionCost(completed, ID.hero, ACTION, COMBAT_RULES_V1);
+
+		expect(payment).toStrictEqual({ kind: 'combat-result', state: completed, result });
+		expect(hashCanonical(completed)).toBe(beforeState);
+		expect(hashCanonical(result)).toBe(beforeResult);
+	});
+
 	it.each([
 		['outside the arena', { x: 8, y: 1 }],
 		['onto an occupied tile', { x: 2, y: 1 }],

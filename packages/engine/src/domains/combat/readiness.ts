@@ -362,6 +362,10 @@ export function applyReadinessActionCost(
 	rulesInput: CombatRulesV1
 ): ReadinessActionCostResult {
 	const state = ReadinessCombatStateV1Schema.parse(stateInput);
+	const terminalResult = state.result;
+	if (state.status === 'complete' && terminalResult !== null) {
+		return { kind: 'combat-result', state, result: terminalResult };
+	}
 	const rules = CombatRulesV1Schema.parse(rulesInput);
 	const action = CombatLegalActionSchema.parse(actionInput);
 	if (!hasConsistentReadinessProjection(state, rules)) {

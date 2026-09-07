@@ -210,6 +210,37 @@ describe('readiness combat contracts', () => {
 		);
 	});
 
+	it('requires completed-state combatants to equal the result final combatants', () => {
+		const result = {
+			resultVersion: 'combat-result-v1',
+			resultId: ID.event,
+			attemptId: ID.attempt,
+			modeId: 'agent-readiness-v1',
+			rulesVersion: 'combat-rules-v1',
+			outcome: 'victory',
+			endedAtTick: state.tick,
+			finalCombatants: state.combatants,
+			claims: [],
+			decisiveEventIds: [ID.event],
+			safetyStop: null,
+			traceHash: HASH.trace
+		} as const;
+		const completed = { ...state, status: 'complete' as const, result };
+		expect(ReadinessCombatStateV1Schema.safeParse(completed).success).toBe(true);
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...completed,
+				combatants: {
+					...completed.combatants,
+					[ID.hero]: {
+						...hero,
+						readiness: { ...hero.readiness, value: 9_999, exactNumerator: 9_999 }
+					}
+				}
+			}).success
+		).toBe(false);
+	});
+
 	it('validates positions, resources, readiness, and condition timing', () => {
 		expect(
 			ReadinessCombatStateV1Schema.safeParse({
