@@ -35,6 +35,7 @@ describe('integrated monster wiki database', () => {
 				.every(
 					(coordinate) =>
 						coordinate.presentationStatus === 'runtime' &&
+						coordinate.candidateExists === false &&
 						coordinate.approvedPath?.startsWith(
 							'assets/enemies/approved/fauna-family-v1/sources/'
 						) &&

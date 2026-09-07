@@ -1,22 +1,16 @@
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, relative, resolve, sep } from 'node:path';
+import { lstat, readFile, stat } from 'node:fs/promises';
+import { relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import sharp from 'sharp';
 
 import {
-	FAUNA_FAMILY_ROOT,
 	FamilyAffinityAssignmentSchema,
 	FamilyAffinityResultSchema,
 	FamilyAffinityTargetSchema,
-	FaunaFamilyManifestSchema,
-	PRODUCTION_AFFINITIES,
 	familyAffinityRawSha256,
-	familyAffinitySha256,
-	familyAffinitySourcePacketBinding,
-	stableFamilyAffinityJson,
-	validateFamilyAffinityCandidateEvidence
+	familyAffinitySha256
 } from './family-affinity-production-lib.js';
 
 export const FAUNA_APPROVED_ROOT = 'assets/enemies/approved/fauna-family-v1' as const;
@@ -29,93 +23,92 @@ export const FAUNA_RUNTIME_RECEIPT_PATH = `${FAUNA_RUNTIME_ROOT}/receipt-v1.json
 export const FAUNA_OWNER_ACCEPTANCE_PATH =
 	'docs/evidence/fauna-family-v1/owner-acceptance.md' as const;
 
-const CANDIDATE_HANDOFF_COMMIT = '677426c4b4f59d4c9ff37f578aef17e9410ab5c9' as const;
-const OWNER_APPROVAL_DATE = '2026-09-04' as const;
-const RUNTIME_WIDTH = 960;
-const RUNTIME_HEIGHT = 768;
-
-type InventoryCoordinate = {
-	coordinateId: string;
-	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	activeVersion: number;
-	target: { path: string; sha256: string };
-	assignment: { path: string; sha256: string };
-	candidate: { path: string; sha256: string };
-	provenance: { path: string; sha256: string };
-};
-
-type Inventory = {
-	schemaVersion: 'fauna-family-candidate-inventory-v1';
-	experimentId: 'fauna-family-v1';
-	stateCeiling: 'candidate-only';
-	counts: {
-		familyCount: 8;
-		formCount: 40;
-		coordinateCount: 200;
-		candidateCount: 200;
-		resultCount: 200;
-	};
-	families: Array<{
-		familyId: string;
-		displayName: string;
-		sourceRaceNumber: number;
-		forms: Array<{
-			formId: string;
-			displayName: string;
-			tier: string;
-			coordinates: InventoryCoordinate[];
-		}>;
-	}>;
-};
+type HashReference = { readonly path: string; readonly sha256: string };
 
 type ApprovedRecord = {
-	assetKey: string;
-	coordinateId: string;
-	familyId: string;
-	formId: string;
-	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	activeVersion: number;
-	target: { path: string; sha256: string };
-	assignment: { path: string; sha256: string };
-	candidate: { path: string; sha256: string };
-	provenance: { path: string; sha256: string };
-	approved: {
-		path: string;
-		sha256: string;
-		bytes: number;
-		width: number;
-		height: number;
-		format: 'png';
+	readonly assetKey: string;
+	readonly coordinateId: string;
+	readonly familyId: string;
+	readonly formId: string;
+	readonly affinity: string;
+	readonly activeVersion: number;
+	readonly target: HashReference;
+	readonly assignment: HashReference;
+	readonly candidate: HashReference;
+	readonly provenance: HashReference;
+	readonly approved: HashReference & {
+		readonly bytes: number;
+		readonly width: number;
+		readonly height: number;
+		readonly format: 'png';
 	};
 };
 
 type RuntimeRecord = {
-	assetKey: string;
-	coordinateId: string;
-	familyId: string;
-	formId: string;
-	affinity: (typeof PRODUCTION_AFFINITIES)[number];
-	source: { path: string; sha256: string };
-	runtime: {
-		path: string;
-		publicUrl: string;
-		sha256: string;
-		bytes: number;
-		width: number;
-		height: number;
-		format: 'webp';
+	readonly assetKey: string;
+	readonly coordinateId: string;
+	readonly familyId: string;
+	readonly formId: string;
+	readonly affinity: string;
+	readonly source: HashReference;
+	readonly runtime: HashReference & {
+		readonly publicUrl: string;
+		readonly bytes: number;
+		readonly width: number;
+		readonly height: number;
+		readonly format: 'webp';
 	};
 };
 
-export type FaunaPromotionSummary = {
-	familyCount: 8;
-	formCount: 40;
-	coordinateCount: 200;
-	approvedCount: 200;
-	runtimeCount: 200;
+type PromotionCounts = {
+	readonly familyCount: 8;
+	readonly formCount: 40;
+	readonly coordinateCount: 200;
+	readonly approvedCount: 200;
+	readonly runtimeCount: 200;
 };
 
-type PromotionArtifact = { path: string; bytes: Buffer };
+type ApprovedManifest = {
+	readonly schemaVersion: 'fauna-family-approved-manifest-v1';
+	readonly catalogId: 'fauna-family-v1';
+	readonly source: {
+		readonly inventoryPath: string;
+		readonly inventorySha256: string;
+		readonly manifestPath: string;
+		readonly manifestSha256: string;
+	};
+	readonly summary: PromotionCounts;
+	readonly records: readonly ApprovedRecord[];
+};
+
+type OwnerApprovalReceipt = {
+	readonly schemaVersion: 'fauna-family-owner-approval-receipt-v1';
+	readonly approvedManifest: HashReference;
+	readonly ownerAcceptance: HashReference;
+	readonly summary: PromotionCounts;
+};
+
+type RuntimeCatalog = {
+	readonly schemaVersion: 'fauna-family-runtime-catalog-v1';
+	readonly catalogId: 'fauna-family-v1';
+	readonly approvedManifest: HashReference;
+	readonly ownerApproval: HashReference;
+	readonly summary: PromotionCounts;
+	readonly records: readonly RuntimeRecord[];
+};
+
+type RuntimeReceipt = {
+	readonly schemaVersion: 'fauna-family-runtime-promotion-receipt-v1';
+	readonly approvedManifest: HashReference;
+	readonly ownerApproval: HashReference;
+	readonly runtimeCatalog: HashReference;
+	readonly summary: PromotionCounts;
+};
+
+export type FaunaPromotionSummary = PromotionCounts & {
+	readonly approvedBytes: number;
+	readonly retiredCandidateCount: 200;
+};
 
 function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
@@ -125,7 +118,7 @@ function repositoryPath(repositoryRoot: string, path: string): string {
 	const root = resolve(repositoryRoot);
 	const absolute = resolve(root, path);
 	if (!absolute.startsWith(`${root}${sep}`)) {
-		throw new Error(`Fauna promotion path escapes repository: ${path}`);
+		throw new Error(`Fauna validation path escapes repository: ${path}`);
 	}
 	return absolute;
 }
@@ -138,317 +131,230 @@ async function readRealFile(repositoryRoot: string, path: string): Promise<Buffe
 		cursor = resolve(cursor, part);
 		const metadata = await lstat(cursor);
 		if (metadata.isSymbolicLink()) {
-			throw new Error(`Fauna promotion source cannot be a symlink: ${path}`);
+			throw new Error(`Fauna retained asset cannot be a symlink: ${path}`);
 		}
 	}
 	return readFile(absolute);
 }
 
-function approvedPath(familyId: string, formId: string, affinity: string): string {
-	return `${FAUNA_APPROVED_ROOT}/sources/${familyId}/${formId}/${affinity}.png`;
-}
-
-function assetKey(familyId: string, formId: string, affinity: string): string {
-	return `enemy-fauna-v1-${familyId}-${formId}-${affinity}`;
-}
-
-function runtimePath(familyId: string, formId: string, affinity: string, digest: string): string {
-	return `apps/web/static/runtime/enemies/fauna-family-v1/${familyId}/${formId}/${affinity}.${digest.slice(0, 12)}.webp`;
-}
-
-function runtimeUrl(path: string): string {
-	return `/${path.replace('apps/web/static/', '')}`;
-}
-
-function approvalAuthorization() {
-	return {
-		approvedBy: 'owner',
-		approvedOn: OWNER_APPROVAL_DATE,
-		scope: 'all 200 fauna-family-v1 candidates',
-		instruction: 'All approved. Wire them up, update the wiki, and then merge back to main.',
-		candidateHandoffCommit: CANDIDATE_HANDOFF_COMMIT
-	} as const;
-}
-
-function jsonBytes(value: unknown): Buffer {
-	return Buffer.from(stableFamilyAffinityJson(value));
-}
-
-async function buildPromotionArtifacts(repositoryRootInput: string): Promise<{
-	artifacts: PromotionArtifact[];
-	summary: FaunaPromotionSummary;
-}> {
-	const repositoryRoot = resolve(repositoryRootInput);
-	const inventoryPath = `${FAUNA_FAMILY_ROOT}/inventory.json`;
-	const [inventoryBytes, sourceManifestBytes] = await Promise.all([
-		readRealFile(repositoryRoot, inventoryPath),
-		readRealFile(repositoryRoot, `${FAUNA_FAMILY_ROOT}/manifest.json`)
-	]);
-	const ownerAcceptanceBytes = await readRealFile(repositoryRoot, FAUNA_OWNER_ACCEPTANCE_PATH);
-	const inventory = JSON.parse(inventoryBytes.toString('utf8')) as Inventory;
-	const sourceManifest = FaunaFamilyManifestSchema.parse(
-		JSON.parse(sourceManifestBytes.toString('utf8'))
-	);
-	if (
-		inventory.schemaVersion !== 'fauna-family-candidate-inventory-v1' ||
-		inventory.experimentId !== 'fauna-family-v1' ||
-		inventory.stateCeiling !== 'candidate-only' ||
-		inventory.counts.familyCount !== 8 ||
-		inventory.counts.formCount !== 40 ||
-		inventory.counts.coordinateCount !== 200 ||
-		inventory.counts.candidateCount !== 200 ||
-		inventory.counts.resultCount !== 200
-	) {
-		throw new Error('Fauna promotion requires the complete 200-coordinate candidate inventory');
-	}
-	if (sourceManifest.status !== 'candidate-matrix-complete') {
-		throw new Error('Fauna promotion requires the complete candidate handoff manifest');
-	}
-
-	const approvedRecords: ApprovedRecord[] = [];
-	const runtimeRecords: RuntimeRecord[] = [];
-	const imageArtifacts: PromotionArtifact[] = [];
-	for (const family of inventory.families) {
-		for (const form of family.forms) {
-			for (const coordinate of form.coordinates) {
-				const [targetBytes, assignmentBytes, candidateBytes, resultBytes] = await Promise.all([
-					readRealFile(repositoryRoot, coordinate.target.path),
-					readRealFile(repositoryRoot, coordinate.assignment.path),
-					readRealFile(repositoryRoot, coordinate.candidate.path),
-					readRealFile(repositoryRoot, coordinate.provenance.path)
-				]);
-				const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
-				const assignment = FamilyAffinityAssignmentSchema.parse(
-					JSON.parse(assignmentBytes.toString('utf8'))
-				);
-				const result = FamilyAffinityResultSchema.parse(JSON.parse(resultBytes.toString('utf8')));
-				const source = familyAffinitySourcePacketBinding(target);
-				const sourceBytes = await readRealFile(repositoryRoot, source.path);
-				validateFamilyAffinityCandidateEvidence({
-					target,
-					assignment,
-					familyPacketBytes: sourceBytes,
-					candidateBytes,
-					resultBytes
-				});
-				if (result.producerId === 'owner') {
-					throw new Error(`Fauna producer cannot self-approve: ${coordinate.coordinateId}`);
-				}
-				if (
-					familyAffinitySha256(target) !== coordinate.target.sha256 ||
-					familyAffinitySha256(assignment) !== coordinate.assignment.sha256 ||
-					familyAffinityRawSha256(candidateBytes) !== coordinate.candidate.sha256 ||
-					familyAffinityRawSha256(resultBytes) !== coordinate.provenance.sha256 ||
-					target.coordinateId !== coordinate.coordinateId ||
-					assignment.coordinateId !== coordinate.coordinateId
-				) {
-					throw new Error(`Fauna candidate evidence drift: ${coordinate.coordinateId}`);
-				}
-				const metadata = await sharp(candidateBytes, { failOn: 'error' }).metadata();
-				if (
-					metadata.format !== 'png' ||
-					metadata.width === undefined ||
-					metadata.height === undefined ||
-					metadata.width < 1024 ||
-					metadata.height < 1024
-				) {
-					throw new Error(`Fauna candidate format drift: ${coordinate.coordinateId}`);
-				}
-				const approvedAssetPath = approvedPath(family.familyId, form.formId, coordinate.affinity);
-				const runtimeBytes = await sharp(candidateBytes)
-					.resize(RUNTIME_WIDTH, RUNTIME_HEIGHT, {
-						fit: 'contain',
-						background: { r: 8, g: 11, b: 15, alpha: 1 }
-					})
-					.webp({ quality: 88, effort: 4 })
-					.toBuffer();
-				const runtimeSha256 = sha256(runtimeBytes);
-				const runtimeAssetPath = runtimePath(
-					family.familyId,
-					form.formId,
-					coordinate.affinity,
-					runtimeSha256
-				);
-				const coordinateAssetKey = assetKey(family.familyId, form.formId, coordinate.affinity);
-				approvedRecords.push({
-					assetKey: coordinateAssetKey,
-					coordinateId: coordinate.coordinateId,
-					familyId: family.familyId,
-					formId: form.formId,
-					affinity: coordinate.affinity,
-					activeVersion: coordinate.activeVersion,
-					target: coordinate.target,
-					assignment: coordinate.assignment,
-					candidate: coordinate.candidate,
-					provenance: coordinate.provenance,
-					approved: {
-						path: approvedAssetPath,
-						sha256: coordinate.candidate.sha256,
-						bytes: candidateBytes.byteLength,
-						width: metadata.width,
-						height: metadata.height,
-						format: 'png'
-					}
-				});
-				runtimeRecords.push({
-					assetKey: coordinateAssetKey,
-					coordinateId: coordinate.coordinateId,
-					familyId: family.familyId,
-					formId: form.formId,
-					affinity: coordinate.affinity,
-					source: { path: approvedAssetPath, sha256: coordinate.candidate.sha256 },
-					runtime: {
-						path: runtimeAssetPath,
-						publicUrl: runtimeUrl(runtimeAssetPath),
-						sha256: runtimeSha256,
-						bytes: runtimeBytes.byteLength,
-						width: RUNTIME_WIDTH,
-						height: RUNTIME_HEIGHT,
-						format: 'webp'
-					}
-				});
-				imageArtifacts.push(
-					{ path: approvedAssetPath, bytes: candidateBytes },
-					{ path: runtimeAssetPath, bytes: runtimeBytes }
-				);
-			}
-		}
-	}
-	if (
-		approvedRecords.length !== 200 ||
-		runtimeRecords.length !== 200 ||
-		new Set(approvedRecords.map(({ coordinateId }) => coordinateId)).size !== 200 ||
-		new Set(approvedRecords.map(({ assetKey }) => assetKey)).size !== 200 ||
-		new Set(approvedRecords.map(({ approved }) => approved.path)).size !== 200 ||
-		new Set(runtimeRecords.map(({ runtime }) => runtime.path)).size !== 200
-	) {
-		throw new Error('Fauna promotion did not resolve exactly 200 unique coordinates');
-	}
-
-	const summary: FaunaPromotionSummary = {
-		familyCount: 8,
-		formCount: 40,
-		coordinateCount: 200,
-		approvedCount: 200,
-		runtimeCount: 200
-	};
-	const approvedManifest = {
-		schemaVersion: 'fauna-family-approved-manifest-v1',
-		catalogId: 'fauna-family-v1',
-		authorization: approvalAuthorization(),
-		source: {
-			inventoryPath,
-			inventorySha256: sha256(inventoryBytes),
-			manifestPath: `${FAUNA_FAMILY_ROOT}/manifest.json`,
-			manifestSha256: sha256(sourceManifestBytes)
-		},
-		summary,
-		records: approvedRecords
-	};
-	const approvedManifestBytes = jsonBytes(approvedManifest);
-	const ownerApprovalReceipt = {
-		schemaVersion: 'fauna-family-owner-approval-receipt-v1',
-		receiptId: 'fauna-family-v1-owner-approval-v1',
-		authorization: approvalAuthorization(),
-		approvedManifest: {
-			path: FAUNA_APPROVED_MANIFEST_PATH,
-			sha256: sha256(approvedManifestBytes)
-		},
-		ownerAcceptance: {
-			path: FAUNA_OWNER_ACCEPTANCE_PATH,
-			sha256: sha256(ownerAcceptanceBytes)
-		},
-		repository: {
-			branch: 'codex/enemies-affinity-wiki',
-			basisCommit: CANDIDATE_HANDOFF_COMMIT
-		},
-		summary
-	};
-	const ownerApprovalBytes = jsonBytes(ownerApprovalReceipt);
-	const runtimeCatalog = {
-		schemaVersion: 'fauna-family-runtime-catalog-v1',
-		catalogId: 'fauna-family-v1',
-		approvedManifest: {
-			path: FAUNA_APPROVED_MANIFEST_PATH,
-			sha256: sha256(approvedManifestBytes)
-		},
-		ownerApproval: { path: FAUNA_OWNER_APPROVAL_PATH, sha256: sha256(ownerApprovalBytes) },
-		summary,
-		records: runtimeRecords
-	};
-	const runtimeCatalogBytes = jsonBytes(runtimeCatalog);
-	const runtimeReceipt = {
-		schemaVersion: 'fauna-family-runtime-promotion-receipt-v1',
-		receiptId: 'fauna-family-v1-runtime-v1',
-		ownerApproval: { path: FAUNA_OWNER_APPROVAL_PATH, sha256: sha256(ownerApprovalBytes) },
-		approvedManifest: {
-			path: FAUNA_APPROVED_MANIFEST_PATH,
-			sha256: sha256(approvedManifestBytes)
-		},
-		runtimeCatalog: { path: FAUNA_RUNTIME_CATALOG_PATH, sha256: sha256(runtimeCatalogBytes) },
-		summary
-	};
-	return {
-		summary,
-		artifacts: [
-			...imageArtifacts,
-			{ path: FAUNA_APPROVED_MANIFEST_PATH, bytes: approvedManifestBytes },
-			{ path: FAUNA_OWNER_APPROVAL_PATH, bytes: ownerApprovalBytes },
-			{ path: FAUNA_RUNTIME_CATALOG_PATH, bytes: runtimeCatalogBytes },
-			{ path: FAUNA_RUNTIME_RECEIPT_PATH, bytes: jsonBytes(runtimeReceipt) }
-		]
-	};
-}
-
-async function writeCollisionSafe(
-	repositoryRoot: string,
-	artifact: PromotionArtifact
-): Promise<void> {
-	const absolute = repositoryPath(repositoryRoot, artifact.path);
-	await mkdir(dirname(absolute), { recursive: true });
+async function pathExists(repositoryRoot: string, path: string): Promise<boolean> {
 	try {
-		await writeFile(absolute, artifact.bytes, { flag: 'wx' });
+		await lstat(repositoryPath(repositoryRoot, path));
+		return true;
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-		const existing = await readRealFile(repositoryRoot, artifact.path);
-		if (!existing.equals(artifact.bytes)) {
-			throw new Error(`Fauna promotion collision: ${artifact.path}`);
-		}
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
+		throw error;
 	}
 }
 
-export async function promoteFaunaFamilyAssets(
-	repositoryRoot: string
-): Promise<FaunaPromotionSummary> {
-	const promotion = await buildPromotionArtifacts(repositoryRoot);
-	for (const artifact of promotion.artifacts) {
-		await writeCollisionSafe(repositoryRoot, artifact);
+function exactCounts(summary: PromotionCounts): boolean {
+	return (
+		summary.familyCount === 8 &&
+		summary.formCount === 40 &&
+		summary.coordinateCount === 200 &&
+		summary.approvedCount === 200 &&
+		summary.runtimeCount === 200
+	);
+}
+
+function assertHashReference(
+	label: string,
+	reference: HashReference,
+	expectedPath: string,
+	bytes: Uint8Array
+): void {
+	if (reference.path !== expectedPath || reference.sha256 !== sha256(bytes)) {
+		throw new Error(`Fauna ${label} hash binding is stale`);
 	}
-	return promotion.summary;
 }
 
 export async function validateFaunaFamilyPromotion(
-	repositoryRoot: string
+	repositoryRootInput: string
 ): Promise<FaunaPromotionSummary> {
-	const promotion = await buildPromotionArtifacts(repositoryRoot);
-	for (const artifact of promotion.artifacts) {
-		const actual = await readRealFile(repositoryRoot, artifact.path);
-		if (!actual.equals(artifact.bytes)) {
-			throw new Error(`Fauna promotion artifact is stale: ${artifact.path}`);
+	const repositoryRoot = resolve(repositoryRootInput);
+	const [approvedManifestBytes, ownerApprovalBytes, runtimeCatalogBytes, runtimeReceiptBytes] =
+		await Promise.all([
+			readRealFile(repositoryRoot, FAUNA_APPROVED_MANIFEST_PATH),
+			readRealFile(repositoryRoot, FAUNA_OWNER_APPROVAL_PATH),
+			readRealFile(repositoryRoot, FAUNA_RUNTIME_CATALOG_PATH),
+			readRealFile(repositoryRoot, FAUNA_RUNTIME_RECEIPT_PATH)
+		]);
+	const approvedManifest = JSON.parse(approvedManifestBytes.toString('utf8')) as ApprovedManifest;
+	const ownerApproval = JSON.parse(ownerApprovalBytes.toString('utf8')) as OwnerApprovalReceipt;
+	const runtimeCatalog = JSON.parse(runtimeCatalogBytes.toString('utf8')) as RuntimeCatalog;
+	const runtimeReceipt = JSON.parse(runtimeReceiptBytes.toString('utf8')) as RuntimeReceipt;
+	if (
+		approvedManifest.schemaVersion !== 'fauna-family-approved-manifest-v1' ||
+		approvedManifest.catalogId !== 'fauna-family-v1' ||
+		ownerApproval.schemaVersion !== 'fauna-family-owner-approval-receipt-v1' ||
+		runtimeCatalog.schemaVersion !== 'fauna-family-runtime-catalog-v1' ||
+		runtimeCatalog.catalogId !== 'fauna-family-v1' ||
+		runtimeReceipt.schemaVersion !== 'fauna-family-runtime-promotion-receipt-v1' ||
+		!exactCounts(approvedManifest.summary) ||
+		!exactCounts(ownerApproval.summary) ||
+		!exactCounts(runtimeCatalog.summary) ||
+		!exactCounts(runtimeReceipt.summary)
+	) {
+		throw new Error('Fauna retained promotion catalogs have invalid identity or counts');
+	}
+	const [inventoryBytes, sourceManifestBytes, ownerAcceptanceBytes] = await Promise.all([
+		readRealFile(repositoryRoot, approvedManifest.source.inventoryPath),
+		readRealFile(repositoryRoot, approvedManifest.source.manifestPath),
+		readRealFile(repositoryRoot, FAUNA_OWNER_ACCEPTANCE_PATH)
+	]);
+	if (
+		approvedManifest.source.inventorySha256 !== sha256(inventoryBytes) ||
+		approvedManifest.source.manifestSha256 !== sha256(sourceManifestBytes)
+	) {
+		throw new Error('Fauna approval source metadata has drifted');
+	}
+	assertHashReference(
+		'owner approval manifest',
+		ownerApproval.approvedManifest,
+		FAUNA_APPROVED_MANIFEST_PATH,
+		approvedManifestBytes
+	);
+	assertHashReference(
+		'owner acceptance',
+		ownerApproval.ownerAcceptance,
+		FAUNA_OWNER_ACCEPTANCE_PATH,
+		ownerAcceptanceBytes
+	);
+	assertHashReference(
+		'runtime approved manifest',
+		runtimeCatalog.approvedManifest,
+		FAUNA_APPROVED_MANIFEST_PATH,
+		approvedManifestBytes
+	);
+	assertHashReference(
+		'runtime owner approval',
+		runtimeCatalog.ownerApproval,
+		FAUNA_OWNER_APPROVAL_PATH,
+		ownerApprovalBytes
+	);
+	assertHashReference(
+		'receipt approved manifest',
+		runtimeReceipt.approvedManifest,
+		FAUNA_APPROVED_MANIFEST_PATH,
+		approvedManifestBytes
+	);
+	assertHashReference(
+		'receipt owner approval',
+		runtimeReceipt.ownerApproval,
+		FAUNA_OWNER_APPROVAL_PATH,
+		ownerApprovalBytes
+	);
+	assertHashReference(
+		'receipt runtime catalog',
+		runtimeReceipt.runtimeCatalog,
+		FAUNA_RUNTIME_CATALOG_PATH,
+		runtimeCatalogBytes
+	);
+	if (approvedManifest.records.length !== 200 || runtimeCatalog.records.length !== 200) {
+		throw new Error('Fauna retained promotion requires exactly 200 approved and runtime records');
+	}
+	const runtimeByCoordinate = new Map(
+		runtimeCatalog.records.map((record) => [record.coordinateId, record])
+	);
+	if (runtimeByCoordinate.size !== 200) {
+		throw new Error('Fauna runtime catalog contains duplicate coordinates');
+	}
+	const coordinateIds = new Set<string>();
+	const assetKeys = new Set<string>();
+	const approvedPaths = new Set<string>();
+	let approvedBytes = 0;
+	for (const record of approvedManifest.records) {
+		if (
+			coordinateIds.has(record.coordinateId) ||
+			assetKeys.has(record.assetKey) ||
+			approvedPaths.has(record.approved.path)
+		) {
+			throw new Error(
+				`Fauna retained promotion contains duplicate identity: ${record.coordinateId}`
+			);
+		}
+		coordinateIds.add(record.coordinateId);
+		assetKeys.add(record.assetKey);
+		approvedPaths.add(record.approved.path);
+		const expectedApprovedPath = `${FAUNA_APPROVED_ROOT}/sources/${record.familyId}/${record.formId}/${record.affinity}.png`;
+		if (
+			record.approved.path !== expectedApprovedPath ||
+			record.approved.format !== 'png' ||
+			record.candidate.sha256 !== record.approved.sha256 ||
+			!record.candidate.path.startsWith('assets/enemies/experiments/fauna-family-v1/candidates/') ||
+			(await pathExists(repositoryRoot, record.candidate.path))
+		) {
+			throw new Error(`Fauna candidate retirement is invalid: ${record.coordinateId}`);
+		}
+		const [targetBytes, assignmentBytes, provenanceBytes, approvedSourceBytes] = await Promise.all([
+			readRealFile(repositoryRoot, record.target.path),
+			readRealFile(repositoryRoot, record.assignment.path),
+			readRealFile(repositoryRoot, record.provenance.path),
+			readRealFile(repositoryRoot, record.approved.path)
+		]);
+		const target = FamilyAffinityTargetSchema.parse(JSON.parse(targetBytes.toString('utf8')));
+		const assignment = FamilyAffinityAssignmentSchema.parse(
+			JSON.parse(assignmentBytes.toString('utf8'))
+		);
+		FamilyAffinityResultSchema.parse(JSON.parse(provenanceBytes.toString('utf8')));
+		if (
+			familyAffinitySha256(target) !== record.target.sha256 ||
+			familyAffinitySha256(assignment) !== record.assignment.sha256 ||
+			familyAffinityRawSha256(provenanceBytes) !== record.provenance.sha256 ||
+			target.coordinateId !== record.coordinateId ||
+			assignment.coordinateId !== record.coordinateId ||
+			sha256(approvedSourceBytes) !== record.approved.sha256 ||
+			approvedSourceBytes.byteLength !== record.approved.bytes
+		) {
+			throw new Error(`Fauna approved provenance has drifted: ${record.coordinateId}`);
+		}
+		const approvedMetadata = await sharp(approvedSourceBytes, { failOn: 'error' }).metadata();
+		if (
+			approvedMetadata.format !== record.approved.format ||
+			approvedMetadata.width !== record.approved.width ||
+			approvedMetadata.height !== record.approved.height
+		) {
+			throw new Error(`Fauna approved source dimensions have drifted: ${record.coordinateId}`);
+		}
+		approvedBytes += (await stat(repositoryPath(repositoryRoot, record.approved.path))).size;
+		const runtime = runtimeByCoordinate.get(record.coordinateId);
+		if (
+			!runtime ||
+			runtime.assetKey !== record.assetKey ||
+			runtime.familyId !== record.familyId ||
+			runtime.formId !== record.formId ||
+			runtime.affinity !== record.affinity ||
+			runtime.source.path !== record.approved.path ||
+			runtime.source.sha256 !== record.approved.sha256
+		) {
+			throw new Error(`Fauna runtime source binding has drifted: ${record.coordinateId}`);
+		}
+		const runtimeBytes = await readRealFile(repositoryRoot, runtime.runtime.path);
+		const runtimeMetadata = await sharp(runtimeBytes, { failOn: 'error' }).metadata();
+		if (
+			sha256(runtimeBytes) !== runtime.runtime.sha256 ||
+			runtimeBytes.byteLength !== runtime.runtime.bytes ||
+			runtimeMetadata.format !== runtime.runtime.format ||
+			runtimeMetadata.width !== runtime.runtime.width ||
+			runtimeMetadata.height !== runtime.runtime.height
+		) {
+			throw new Error(`Fauna runtime derivative has drifted: ${record.coordinateId}`);
 		}
 	}
-	return promotion.summary;
+	return {
+		...approvedManifest.summary,
+		approvedBytes,
+		retiredCandidateCount: 200
+	};
 }
 
 const entrypoint = process.argv[1];
 if (entrypoint && import.meta.url === pathToFileURL(entrypoint).href) {
-	const write = process.argv.includes('--write');
-	const check = process.argv.includes('--check');
-	if (write === check) throw new Error('Pass exactly one of --write or --check');
-	const summary = write
-		? await promoteFaunaFamilyAssets(process.cwd())
-		: await validateFaunaFamilyPromotion(process.cwd());
+	if (!process.argv.includes('--check') || process.argv.includes('--write')) {
+		throw new Error('The promoted fauna catalog is immutable; pass --check');
+	}
+	const summary = await validateFaunaFamilyPromotion(process.cwd());
 	console.log(
-		`${write ? 'Promoted' : 'Validated'} ${summary.approvedCount} approved fauna sources and ${summary.runtimeCount} runtime derivatives.`
+		`Validated ${summary.approvedCount} approved fauna sources, ${summary.runtimeCount} runtime derivatives, and ${summary.retiredCandidateCount} retired candidate rasters.`
 	);
 }

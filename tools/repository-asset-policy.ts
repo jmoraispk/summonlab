@@ -9,6 +9,11 @@ import {
 } from '../packages/contracts/src/index.js';
 import sharp from 'sharp';
 
+import {
+	FAUNA_APPROVED_MANIFEST_PATH,
+	validateFaunaFamilyPromotion
+} from './fauna-family-promotion.js';
+
 const approvedHeroRoot = 'assets/heroes/approved/summonable-roster-v1';
 const retainedEnemyPackManifestPath = 'assets/enemies/legacy/affinity-pack-v1/manifest.json';
 const retainedFamilyAffinityPackManifestPath =
@@ -26,6 +31,8 @@ export interface RepositoryAssetValidationSummary {
 	readonly approvedHeroCount: number;
 	readonly approvedHeroImageCount: number;
 	readonly approvedHeroBytes: number;
+	readonly approvedFaunaImageCount: number;
+	readonly approvedFaunaBytes: number;
 	readonly retainedEnemyImageCount: number;
 	readonly retainedEnemyBytes: number;
 	readonly retainedFamilyAffinityImageCount: number;
@@ -135,6 +142,12 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 			path.endsWith('.png')
 		) {
 			violations.push(`Family-affinity bridge raster must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('assets/enemies/experiments/fauna-family-v1/candidates/') &&
+			path.endsWith('.png')
+		) {
+			violations.push(`Fauna experiment candidate raster must not be tracked: ${path}`);
 		}
 		if (path === 'docs/evidence/enemy-image-review-gallery-v1/index.html') {
 			violations.push(`Standalone family-affinity review gallery must not be tracked: ${path}`);
@@ -457,6 +470,7 @@ export async function validateRepositoryAssets(
 		workspaceRoot,
 		tracked
 	);
+	const approvedFauna = await validateFaunaFamilyPromotion(workspaceRoot);
 	const violations = findRepositoryAssetPathViolations(tracked);
 	violations.push(
 		...findApprovedHeroPathViolations(
@@ -488,6 +502,25 @@ export async function validateRepositoryAssets(
 		entry.visuals.summon,
 		entry.visuals.combatChibi
 	]);
+	const approvedFaunaManifest = JSON.parse(
+		await readFile(resolve(workspaceRoot, FAUNA_APPROVED_MANIFEST_PATH), 'utf8')
+	) as { records: Array<{ candidate: { path: string }; approved: { path: string } }> };
+	const approvedFaunaPaths = approvedFaunaManifest.records.map(({ approved }) => approved.path);
+	const approvedFaunaFilters = lfsFilters(workspaceRoot, approvedFaunaPaths);
+	if (approvedFaunaManifest.records.length !== 200 || new Set(approvedFaunaPaths).size !== 200) {
+		violations.push('Approved fauna manifest must contain exactly 200 unique source paths');
+	}
+	for (const record of approvedFaunaManifest.records) {
+		if (!trackedSet.has(record.approved.path)) {
+			violations.push(`Approved fauna image is not tracked: ${record.approved.path}`);
+		}
+		if (approvedFaunaFilters.get(record.approved.path) !== 'lfs') {
+			violations.push(`Approved fauna image is not covered by Git LFS: ${record.approved.path}`);
+		}
+		if (trackedSet.has(record.candidate.path)) {
+			violations.push(`Retired fauna candidate is still tracked: ${record.candidate.path}`);
+		}
+	}
 	const filters = lfsFilters(
 		workspaceRoot,
 		visualRecords.map((record) => record.file)
@@ -521,6 +554,8 @@ export async function validateRepositoryAssets(
 		approvedHeroCount: catalog.entries.length,
 		approvedHeroImageCount: visualRecords.length,
 		approvedHeroBytes,
+		approvedFaunaImageCount: approvedFauna.approvedCount,
+		approvedFaunaBytes: approvedFauna.approvedBytes,
 		retainedEnemyImageCount: retainedEnemyPack.candidateCount,
 		retainedEnemyBytes: retainedEnemyPack.bytes,
 		retainedFamilyAffinityImageCount: retainedFamilyAffinityPack.candidateCount,

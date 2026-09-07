@@ -28,11 +28,13 @@ describe('repository asset retention policy', () => {
 		expect(
 			findRepositoryAssetPathViolations([
 				'assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
+				'assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
 				'docs/evidence/enemy-image-review-gallery-v1/index.html',
 				'docs/evidence/enemy-image-review-gallery-v1/owner-acceptance.md'
 			])
 		).toEqual([
 			'Family-affinity bridge raster must not be tracked: assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
+			'Fauna experiment candidate raster must not be tracked: assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
 			'Standalone family-affinity review gallery must not be tracked: docs/evidence/enemy-image-review-gallery-v1/index.html'
 		]);
 	});
@@ -94,6 +96,8 @@ describe('repository asset retention policy', () => {
 
 	it('protects the complete canonical family-affinity pack with Git LFS', async () => {
 		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
+			approvedFaunaImageCount: 200,
+			approvedFaunaBytes: 560_162_021,
 			retainedFamilyAffinityImageCount: 750,
 			retainedFamilyAffinityBytes: 2_078_754_623
 		});

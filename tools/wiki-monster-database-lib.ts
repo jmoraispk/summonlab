@@ -655,10 +655,12 @@ ${coordinates}
 
 function buildRuntimeMonsterWikiPage(form: CanonicalMonsterForm): string {
 	const coordinates = form.coordinates
-		.map(
-			(coordinate) =>
-				`| ${affinityLabel(coordinate.affinity)} | \`runtime\` | v${coordinate.version} | \`${coordinate.targetPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.approvedPath}\` | \`${coordinate.runtimePath}\` | \`${coordinate.contentHash}\` |`
-		)
+		.map((coordinate) => {
+			const candidateRecord = coordinate.candidateExists
+				? `\`${coordinate.candidatePath}\``
+				: `retired raster; hash-bound record \`${coordinate.candidatePath}\``;
+			return `| ${affinityLabel(coordinate.affinity)} | \`runtime\` | v${coordinate.version} | \`${coordinate.targetPath}\` | ${candidateRecord} | \`${coordinate.approvedPath}\` | \`${coordinate.runtimePath}\` | \`${coordinate.contentHash}\` |`;
+		})
 		.join('\n');
 	return `# ${form.displayName}
 
@@ -719,15 +721,15 @@ ${textOrNotApplicable(form.lowerFormInteraction)}
 
 ## Five-coordinate approved runtime matrix
 
-| Affinity | State | Version | Target evidence | Candidate provenance | Approved source | Wiki-runtime asset | Source SHA-256 |
+| Affinity | State | Version | Target evidence | Historical candidate record | Approved source | Wiki-runtime asset | Source SHA-256 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 ${coordinates}
 
 ### State semantics
 
 - \`runtime\` means the exact owner-approved PNG source has a hash-bound WebP derivative in the enemy-only wiki-runtime catalog.
-- Candidate provenance remains immutable under \`assets/enemies/experiments/fauna-family-v1\`.
-- Approved sources live separately under \`assets/enemies/approved/fauna-family-v1\` and are byte-identical to the selected candidates.
+- Candidate paths and hashes remain as compact historical provenance under \`assets/enemies/experiments/fauna-family-v1\`; the duplicate candidate PNGs are retired.
+- Approved sources under \`assets/enemies/approved/fauna-family-v1\` are the sole retained full-resolution pixel authority.
 - Wiki-runtime derivatives are presentation assets only; this promotion does not assign floors or change combat engine contracts.
 `;
 }

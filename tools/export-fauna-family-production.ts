@@ -10,6 +10,7 @@ import {
 	stableFamilyAffinityJson,
 	validateFaunaFamilyProductionBundle
 } from './family-affinity-production-lib.js';
+import { validateFaunaFamilyPromotion } from './fauna-family-promotion.js';
 
 const ACTIVE_SOURCES_PATH = `${FAUNA_FAMILY_ROOT}/active-sources.json`;
 
@@ -152,7 +153,10 @@ export async function exportFaunaFamilyProduction(input: {
 		join(input.repositoryRoot, FAUNA_FAMILY_ROOT, 'candidates')
 	);
 	const resultFiles = await listFiles(join(input.repositoryRoot, FAUNA_FAMILY_ROOT, 'results'));
-	if (candidateFiles.length !== resultFiles.length) {
+	const retiredAfterPromotion = candidateFiles.length === 0 && resultFiles.length === 200;
+	if (retiredAfterPromotion) {
+		await validateFaunaFamilyPromotion(input.repositoryRoot);
+	} else if (candidateFiles.length !== resultFiles.length) {
 		throw new Error(
 			`Fauna production has partial candidate/result coverage: ${candidateFiles.length}/${resultFiles.length}`
 		);
@@ -164,7 +168,7 @@ export async function exportFaunaFamilyProduction(input: {
 		formCount: 40,
 		targetCount,
 		assignmentCount,
-		candidateCount: candidateFiles.length,
+		candidateCount: retiredAfterPromotion ? 200 : candidateFiles.length,
 		resultCount: resultFiles.length
 	};
 }
