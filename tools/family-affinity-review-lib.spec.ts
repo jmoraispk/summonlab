@@ -974,6 +974,39 @@ describe('family-affinity review receipt contract', () => {
 		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(/orphan|unbound/i);
 	}, 30_000);
 
+	it('allows a superseded candidate payload to be retired while retaining its JSON history', async () => {
+		const live = await stageLiveAttempt('T1', true);
+		const issued = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			issued.path,
+			ordinaryFor(live.activeTarget, live.result, 'rejected')
+		);
+		await allocateFamilyAffinityRevision({
+			repositoryRoot: live.root,
+			manifestPath: familyAffinityManifestPath,
+			namespace: 'canonical',
+			coordinateId: live.activeTarget.coordinateId,
+			callerRole: 'integration-controller',
+			reviewPath: live.activeTarget.ownedPaths.decision
+		});
+		await rm(join(live.root, live.activeTarget.ownedPaths.candidate));
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(live.root);
+		const cell = artifacts.families
+			.find(({ familyId }) => familyId === 'goblins')!
+			.summary.cells.find(({ coordinateId }) => coordinateId === live.activeTarget.coordinateId)!;
+		expect(cell).toMatchObject({
+			activeVersion: 2,
+			state: 'planned',
+			historyAttemptCount: 1,
+			historyRevisionRequiredCount: 1
+		});
+	}, 30_000);
+
 	it('binds resultSha256 to raw result bytes, including otherwise harmless whitespace', async () => {
 		const live = await stageLiveAttempt();
 		const reviewAssignment = await issueReviewAssignmentExclusive(
@@ -1106,6 +1139,21 @@ describe('family-affinity review receipt contract', () => {
 });
 
 describe('initial family review evidence', () => {
+	it('exports compact review data without persisting reproducible contact sheets', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-compact-export-'));
+		temporaryRoots.push(root);
+		await materializeCleanProductionCorpus(root);
+
+		const report = await exportFamilyAffinityReview(root, 'write');
+		expect(report).toMatchObject({
+			contactSheetCount: 0,
+			artifactCount: 31
+		});
+		for (const family of (await buildFamilyAffinityReviewArtifacts(root)).families) {
+			expect(await readdir(join(root, dirname(family.summaryPath)))).toEqual(['summary.json']);
+		}
+	}, 120_000);
+
 	it('builds thirty deterministic 5x5 sheets with truthful live counts', async () => {
 		const first = await buildFamilyAffinityReviewArtifacts(process.cwd());
 		const second = await buildFamilyAffinityReviewArtifacts(process.cwd());
@@ -1170,7 +1218,7 @@ describe('initial family review evidence', () => {
 		await expect(buildFamilyAffinityReviewArtifacts(root)).rejects.toThrow(/extraneous/i);
 	});
 
-	it('reports provisional Earth bridge candidates separately from the canonical 750', async () => {
+	it('reports current bridge candidates and treats deleted bridge rasters as retired', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-bridge-'));
 		temporaryRoots.push(root);
 		await materializeCleanProductionCorpus(root);
@@ -1281,6 +1329,16 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 1,
 			bridgeApprovedReviewCount: 0
 		});
+		await rm(join(root, bridgePaths.candidate));
+		const retiredBridge = await buildFamilyAffinityReviewArtifacts(root);
+		expect(retiredBridge.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: canonicalBaseline.generatedCount,
+			bridgeCoordinateCount: 1,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0
+		});
+		await writeFile(join(root, bridgePaths.candidate), candidateBytes);
 		const issued = await issueReviewAssignmentExclusive(root, {
 			callerRole: 'controller',
 			issuerId: 'review-controller-alpha',
@@ -1355,6 +1413,26 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
 			runtimeCount: 0
+		});
+	}, 30_000);
+
+	it('validates retired bridge results against bridge identity packets', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-retired-bridge-'));
+		temporaryRoots.push(root);
+		await materializeCleanProductionCorpus(root);
+		await attachCurrentBridgeFixture(root);
+		await cp(
+			join(process.cwd(), familyAffinityRoot, 'review/bridge'),
+			join(root, familyAffinityRoot, 'review/bridge'),
+			{ recursive: true }
+		);
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(root);
+		expect(artifacts.catalog).toMatchObject({
+			coordinateCount: 750,
+			bridgeCoordinateCount: 38,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0
 		});
 	}, 30_000);
 });

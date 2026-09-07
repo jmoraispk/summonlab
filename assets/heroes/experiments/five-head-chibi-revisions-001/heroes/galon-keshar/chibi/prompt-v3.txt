@@ -1,6 +1,0 @@
-Use case: precise-object-edit with identity preservation.
-Asset type: Summonlab combat chibi proportion normalization.
-Input images: Image 1 is the edit target and supplies the complete accepted chibi body, pose, wardrobe, palette, rendering, and facial stylization. Image 2 is the original or accepted revised summon identity authority.
-Make one narrow correction: uniformly reduce the entire head in Image 1—including skull, face, ears, and attached hair—to 90 percent of its current linear height and width. Keep the chin and neck attachment fixed. Do not resize, lengthen, shorten, zoom, or redraw the body. Do not change the figure's overall crown-to-sole placement or canvas scale.
-Preserve the unmistakable chibi design: simplified facial planes, modestly enlarged eyes relative to the smaller face, warm painted illustration, adult identity, and readable combat silhouette. Preserve Image 2's identity, apparent age, skin, body build, hairstyle design, clothing construction, palette, accessories, tattoos, markings, and restrained expression.
-Exactly one complete standing figure. No miniature-realistic conversion, child, toddler, mascot, bobble head, photography, plastic 3D, cel shading, magic, stars, UI, text, logo, watermark, extra subject, or anatomy errors.

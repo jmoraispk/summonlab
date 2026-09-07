@@ -1,0 +1,31 @@
+{
+	"schemaVersion": "retained-enemy-pack-v1",
+	"packId": "affinity-legacy-pack-v1",
+	"state": "retained-reference",
+	"decision": {
+		"decidedBy": "owner",
+		"decidedOn": "2026-09-06",
+		"instruction": "Keep the selected 175 images as a legacy pack."
+	},
+	"sources": [
+		{
+			"experimentId": "affinity-expansion-v1",
+			"catalogPath": "assets/enemies/experiments/affinity-expansion-v1/review/catalog.json",
+			"catalogSha256": "67e99bad737093cfe458d46eea39bdc7327bb73828e9b551109c2fb43f89ecc1",
+			"candidateRoot": "assets/enemies/experiments/affinity-expansion-v1/candidates",
+			"candidateCount": 136
+		},
+		{
+			"experimentId": "affinity-workflow-v1",
+			"catalogPath": "assets/enemies/experiments/affinity-workflow-v1/review/catalog.json",
+			"catalogSha256": "254d01d7d7e9f8e8c0879bb632b62749bf85147c39bc7250f6f8cdbdc17fab68",
+			"candidateRoot": "assets/enemies/experiments/affinity-workflow-v1/candidates",
+			"candidateCount": 39
+		}
+	],
+	"summary": {
+		"experimentCount": 2,
+		"candidateCount": 175,
+		"bytes": 382203544
+	}
+}

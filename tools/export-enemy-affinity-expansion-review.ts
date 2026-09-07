@@ -2,8 +2,6 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import sharp from 'sharp';
-
 const workspaceRoot = process.cwd();
 const experimentRoot = 'assets/enemies/experiments/affinity-expansion-v1';
 const reviewRoot = `${experimentRoot}/review`;
@@ -61,7 +59,6 @@ interface CatalogEntry {
 }
 
 const versions = ['v3', 'v2', 'v1'] as const;
-const affinityOrder = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 const generatedAt = '2026-08-30T23:30:00.000Z';
 
 function versioned(pathname: string, version: (typeof versions)[number]): string {
@@ -70,15 +67,6 @@ function versioned(pathname: string, version: (typeof versions)[number]): string
 
 function sha256(bytes: Uint8Array): string {
 	return createHash('sha256').update(bytes).digest('hex');
-}
-
-function escapeXml(value: string): string {
-	return value
-		.replaceAll('&', '&amp;')
-		.replaceAll('<', '&lt;')
-		.replaceAll('>', '&gt;')
-		.replaceAll('"', '&quot;')
-		.replaceAll("'", '&apos;');
 }
 
 async function readJson<T>(pathname: string): Promise<T> {
@@ -135,61 +123,6 @@ async function resolveEntry(
 	throw new Error(`No usable retained result for ${target.targetId}.`);
 }
 
-async function renderContactSheet(
-	resolved: Array<{ entry: CatalogEntry; image: Buffer }>,
-	speciesIds: string[]
-): Promise<Buffer> {
-	const width = 1536;
-	const headerHeight = 92;
-	const rowHeight = 176;
-	const cellWidth = width / affinityOrder.length;
-	const height = headerHeight + speciesIds.length * rowHeight;
-	const byCoordinate = new Map(
-		resolved.map((item) => [`${item.entry.speciesId}/${item.entry.affinity}`, item] as const)
-	);
-	const composites = await Promise.all(
-		speciesIds.flatMap((speciesId, row) =>
-			affinityOrder.map(async (affinity, column) => {
-				const item = byCoordinate.get(`${speciesId}/${affinity}`);
-				if (!item) throw new Error(`Missing contact-sheet cell ${speciesId}/${affinity}.`);
-				return {
-					input: await sharp(item.image)
-						.rotate()
-						.resize({
-							width: cellWidth - 8,
-							height: rowHeight - 28,
-							fit: 'contain',
-							background: '#06080c'
-						})
-						.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
-						.toBuffer(),
-					left: column * cellWidth + 4,
-					top: headerHeight + row * rowHeight + 4
-				};
-			})
-		)
-	);
-	const columnLabels = affinityOrder
-		.map(
-			(affinity, column) =>
-				`<text x="${column * cellWidth + cellWidth / 2}" y="70" text-anchor="middle" fill="#7ed6e5" font-size="15" font-weight="700" font-family="sans-serif" letter-spacing="2">${affinity.toUpperCase()}</text>`
-		)
-		.join('');
-	const rowLabels = speciesIds
-		.map(
-			(speciesId, row) =>
-				`<g><rect x="4" y="${headerHeight + row * rowHeight + rowHeight - 26}" width="248" height="22" fill="#07090ddd"/><text x="12" y="${headerHeight + row * rowHeight + rowHeight - 10}" fill="#f4efe5" font-size="12" font-family="sans-serif">${escapeXml(speciesId.replaceAll('-', ' '))}</text></g>`
-		)
-		.join('');
-	const overlay = Buffer.from(
-		`<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg"><text x="20" y="30" fill="#f4efe5" font-size="18" font-weight="700" font-family="sans-serif">SUMMONLAB · 34-SPECIES AFFINITY EXPANSION</text><text x="20" y="51" fill="#f4efe599" font-size="12" font-family="sans-serif">204 producer candidates · human approval pending</text>${columnLabels}${rowLabels}</svg>`
-	);
-	return sharp({ create: { width, height, channels: 3, background: '#06080c' } })
-		.composite([...composites, { input: overlay, left: 0, top: 0 }])
-		.png({ compressionLevel: 9, adaptiveFiltering: false, palette: false })
-		.toBuffer();
-}
-
 const manifest = await readJson<Manifest>(`${experimentRoot}/manifest.json`);
 const resolved: Array<{ entry: CatalogEntry; image: Buffer }> = [];
 for (const species of manifest.species) {
@@ -201,6 +134,10 @@ for (const species of manifest.species) {
 const entries = resolved.map(({ entry }) => entry);
 const candidateCount = entries.filter(({ status }) => status === 'candidate').length;
 const reviseCount = entries.filter(({ status }) => status === 'revise').length;
+const expectedTargetCount = manifest.species.reduce(
+	(total, species) => total + species.targetPaths.length,
+	0
+);
 const catalog = {
 	schemaVersion: 'enemy-affinity-expansion-catalog-v1',
 	experimentId: manifest.experimentId,
@@ -218,11 +155,11 @@ const evaluation = {
 	generatedAt,
 	decision: candidateCount === entries.length ? 'producer-complete' : 'producer-revision-required',
 	producerChecks: {
-		allTargetsRetained: entries.length === 204,
-		allTargetsCandidates: candidateCount === 204,
+		allTargetsRetained: entries.length === expectedTargetCount,
+		allTargetsCandidates: candidateCount === entries.length && reviseCount === 0,
 		remainingReviseCount: reviseCount,
 		contentHashesVerified: true,
-		contactSheetTargetCount: entries.length
+		catalogTargetCount: entries.length
 	},
 	humanReview: {
 		status: 'pending',
@@ -235,21 +172,17 @@ const evaluation = {
 		note: 'Producer candidate status does not promote or approve runtime art.'
 	}
 };
-const contactSheet = await renderContactSheet(
-	resolved,
-	manifest.species.map(({ speciesId }) => speciesId)
-);
-const record = `# Affinity expansion generation record\n\n- Experiment: \`${manifest.experimentId}\`\n- Completed: ${generatedAt}\n- Species: ${manifest.species.length}\n- Canonical targets: ${entries.length}\n- Producer candidates: ${candidateCount}\n- Remaining revisions: ${reviseCount}\n- Contact sheet SHA-256: \`${sha256(contactSheet)}\`\n- Human review: pending\n\nEach catalog entry resolves the newest valid candidate in v3 → v2 → v1 order, verifies its retained-image hash, and preserves the exact result receipt. No image is promoted to runtime or approved by this record.\n`;
+const catalogBytes = Buffer.from(`${JSON.stringify(catalog, null, '\t')}\n`);
+const record = `# Affinity expansion generation record\n\n- Experiment: \`${manifest.experimentId}\`\n- Completed: ${generatedAt}\n- Species: ${manifest.species.length}\n- Canonical targets: ${entries.length}\n- Producer candidates: ${candidateCount}\n- Remaining revisions: ${reviseCount}\n- Catalog SHA-256: \`${sha256(catalogBytes)}\`\n- Human review: pending\n\nEach catalog entry resolves the newest valid candidate in v3 → v2 → v1 order, verifies its retained-image hash, and preserves the exact result receipt. No image is promoted to runtime or approved by this record. Reproducible contact sheets are generated on demand and are not retained as source authority.\n`;
 const artifacts: Array<{ pathname: string; bytes: Buffer }> = [
 	{
 		pathname: `${reviewRoot}/catalog.json`,
-		bytes: Buffer.from(`${JSON.stringify(catalog, null, '\t')}\n`)
+		bytes: catalogBytes
 	},
 	{
 		pathname: `${reviewRoot}/evaluation.json`,
 		bytes: Buffer.from(`${JSON.stringify(evaluation, null, '\t')}\n`)
 	},
-	{ pathname: `${reviewRoot}/contact-sheet.png`, bytes: contactSheet },
 	{ pathname: `${experimentRoot}/generation-record.md`, bytes: Buffer.from(record) }
 ];
 
@@ -268,5 +201,5 @@ for (const artifact of artifacts) {
 if (check && !inSync) throw new Error('Affinity expansion review artifacts are missing or stale.');
 
 process.stdout.write(
-	`${JSON.stringify({ mode: write ? 'write' : 'check', speciesCount: manifest.species.length, targetCount: entries.length, candidateCount, reviseCount, contactSheetSha256: sha256(contactSheet), artifacts: artifacts.map(({ pathname }) => pathname), inSync: write || inSync }, null, 2)}\n`
+	`${JSON.stringify({ mode: write ? 'write' : 'check', speciesCount: manifest.species.length, targetCount: entries.length, candidateCount, reviseCount, catalogSha256: sha256(catalogBytes), artifacts: artifacts.map(({ pathname }) => pathname), inSync: write || inSync }, null, 2)}\n`
 );

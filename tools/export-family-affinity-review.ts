@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 import {
 	FAMILY_AFFINITY_REVIEW_CATALOG_PATH,
+	FAMILY_AFFINITY_RETAINED_PACK_PATH,
 	buildFamilyAffinityReviewArtifacts
 } from './family-affinity-review-lib.js';
 import { stableFamilyAffinityJson } from './family-affinity-production-lib.js';
@@ -75,8 +76,9 @@ export async function exportFamilyAffinityReview(
 	coordinateCount: 750;
 	generatedCount: number;
 	approvedReviewCount: number;
-	contactSheetCount: 30;
-	artifactCount: 61;
+	contactSheetCount: 0;
+	artifactCount: number;
+	retainedPackCount: 0 | 750;
 	digest: string;
 	writtenCount: number;
 	inSync: boolean;
@@ -87,13 +89,25 @@ export async function exportFamilyAffinityReview(
 			path: FAMILY_AFFINITY_REVIEW_CATALOG_PATH,
 			bytes: Buffer.from(stableFamilyAffinityJson(bundle.catalog))
 		},
-		...bundle.families.flatMap((family) => [
-			{ path: family.summaryPath, bytes: Buffer.from(stableFamilyAffinityJson(family.summary)) },
-			{ path: family.contactSheetPath, bytes: family.contactSheet }
-		])
+		...bundle.families.map((family) => ({
+			path: family.summaryPath,
+			bytes: Buffer.from(stableFamilyAffinityJson(family.summary))
+		})),
+		...(bundle.retainedPack
+			? [
+					{
+						path: FAMILY_AFFINITY_RETAINED_PACK_PATH,
+						bytes: Buffer.from(stableFamilyAffinityJson(bundle.retainedPack))
+					}
+				]
+			: [])
 	];
-	if (artifacts.length !== 61)
-		throw new Error(`Expected 61 controller artifacts, found ${artifacts.length}`);
+	const expectedArtifactCount = bundle.retainedPack ? 32 : 31;
+	if (artifacts.length !== expectedArtifactCount) {
+		throw new Error(
+			`Expected ${expectedArtifactCount} controller artifacts, found ${artifacts.length}`
+		);
+	}
 	let writtenCount = 0;
 	for (const artifact of artifacts) {
 		const current = await currentBytes(repositoryRoot, artifact.path);
@@ -109,8 +123,9 @@ export async function exportFamilyAffinityReview(
 		coordinateCount: 750,
 		generatedCount: bundle.catalog.generatedCount,
 		approvedReviewCount: bundle.catalog.approvedReviewCount,
-		contactSheetCount: 30,
-		artifactCount: 61,
+		contactSheetCount: 0,
+		artifactCount: artifacts.length,
+		retainedPackCount: bundle.retainedPack ? 750 : 0,
 		digest: bundle.digest,
 		writtenCount,
 		inSync: mode === 'check' || writtenCount === 0
@@ -124,7 +139,7 @@ async function main(): Promise<void> {
 	const mode: ExportMode = process.argv.includes('--check') ? 'check' : 'write';
 	const report = await exportFamilyAffinityReview(process.cwd(), mode);
 	console.log(
-		`family-affinity-review mode=${report.mode} families=${report.familyCount} coordinates=${report.coordinateCount} generated=${report.generatedCount} approved=${report.approvedReviewCount} sheets=${report.contactSheetCount} artifacts=${report.artifactCount} written=${report.writtenCount} digest=${report.digest}`
+		`family-affinity-review mode=${report.mode} families=${report.familyCount} coordinates=${report.coordinateCount} generated=${report.generatedCount} approved=${report.approvedReviewCount} retained=${report.retainedPackCount} sheets=${report.contactSheetCount} artifacts=${report.artifactCount} written=${report.writtenCount} digest=${report.digest}`
 	);
 }
 

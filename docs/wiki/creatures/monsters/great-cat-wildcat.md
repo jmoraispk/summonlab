@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.great-cat-wildcat`
 
-[← Canonical monster database](README.md)
+[← Great Cats family](families/great-cats.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural feline expedition family centered on concealment, facing, isolation, explosive pounces, and hunting-territory control.
 
-## Family visual grammar
+## Family context
 
-- Every form retains a four-legged feline body, flexible spine, retractile claws, whiskered muzzle, mobile ears, and expressive tail.
-- Species variation remains feline and is communicated by coat pattern, limb proportion, mane, canine length, and hunting posture rather than equipment.
-- Eye line, tail stillness, shoulder compression, cover disturbance, and landing posture preserve readable attack direction.
+Shared visual constants and the complete T1–T5 comparison live on the [Great Cats family page](families/great-cats.md).
 
 **Escalation axis:** A simple cover pounce becomes high-ground hunting, sightline isolation, saber-tooth pinning, and finally an apex territory hunt that assigns every lower form a role.
 

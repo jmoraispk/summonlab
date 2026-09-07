@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.golem-rune-warrior`
 
-[← Canonical monster database](README.md)
+[← Golems family](families/golems.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Golems are treated as a constructed visual and encounter-production family. Statements about servitude, animation, life, free will, makers, rank, and agency are proposals rather than accepted metaphysics or social taxonomy. The packet preserves blocky workmanship progression and readable magical joints without asserting universal personhood.
 
-## Family visual grammar
+## Family context
 
-- Blocky heavy humanoid construction, oversized hands, small or absent head, blank carved face, and visible joint gaps remain legible.
-- Clay, fieldstone, iron banding, granite, basalt, marble, gold inlay, and gemstone stay distinct construction materials.
-- Runes and seam light remain bounded animation hardware rather than generic affinity spectacle.
-- Workmanship and material quality progress from fingerprints and one scratched rune to sculptural relief and a gemstone heart.
+Shared visual constants and the complete T1–T5 comparison live on the [Golems family page](families/golems.md).
 
 **Escalation axis:** Workmanship, material quality, and programmable rune behaviors rise from crude clay to a sovereign monument that reconfigures the arena.
 

@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.vampire-ancient`
 
-[← Canonical monster database](README.md)
+[← Vampires family](families/vampires.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Vampires are treated as intelligent blood-drinking undead whose authored encounter hierarchy is expressed through age and refinement, not as a biological race or a universal claim about culture, class, heredity, morality, consent, or personhood. Bestial posture, predatory anatomy, couture, crests, and blood-glass remain visual and mechanical production grammar rather than social canon.
 
-## Family visual grammar
+## Family context
 
-- A tall or lengthening human silhouette retains corpse-white skin, long fingers, fangs, claws, red eyes, and an absence of warm living complexion.
-- Posture escalates from feral hunch to impossible stillness; higher forms widen through fitted coats, tailored cloaks, bat membrane, or shadow wings without obscuring humanlike anatomy.
-- Black, bone pallor, deep blood red, and aged gold remain paired with velvet, silk, brocade, polished leather, blood-glass, and bat membrane.
-- Blood is family-native feeding matter and lineage symbolism rather than Fire or Water affinity by itself; every use has a source, route, vessel, or recoverable feeding window.
-- Signet rings, high collars, jeweled clasps, medals, canes, blades, and family crests communicate authored encounter rank while exposing the hand, vessel, or crest that carries each command.
+Shared visual constants and the complete T1–T5 comparison live on the [Vampires family page](families/vampires.md).
 
 **Escalation axis:** A hungry animal posture becomes a patient hunter, a formal blood-contract Specialist, a centuries-old cloak lord, and finally a crest-commanding throne sovereign whose shattered blood-glass court removes powers one lineage at a time.
 

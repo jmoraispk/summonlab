@@ -92,6 +92,7 @@ export type CanonicalProductionCoordinate = {
 	resultPath: string;
 	version: number;
 	candidateExists: boolean;
+	sourceContentHash: string | null;
 	historyAttemptCount: number;
 	historyRevisionRequiredCount: number;
 	approvedPath?: string;
@@ -353,6 +354,7 @@ export function buildCanonicalMonsterWikiDatabase(
 			resultPath: target.ownedPaths.result,
 			version: coordinate.activeVersion,
 			candidateExists: hasCandidate,
+			sourceContentHash: reviewEvidence.candidateSha256,
 			historyAttemptCount: reviewEvidence.historyAttemptCount,
 			historyRevisionRequiredCount: reviewEvidence.historyRevisionRequiredCount
 		};
@@ -575,14 +577,11 @@ export function buildMonsterWikiPage(form: CanonicalMonsterForm): string {
 				`| ${affinityLabel(coordinate.affinity)} | \`${coordinate.status}\` | \`${coordinateEvidenceLabel(coordinate)}\` | v${coordinate.version} | \`${coordinate.targetPath}\` | \`${coordinate.assignmentPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.resultPath}\` |`
 		)
 		.join('\n');
-	const constants = form.visualConstants
-		.map((constant) => `- ${sanitizeRenderedCopy(constant)}`)
-		.join('\n');
 	return `# ${form.displayName}
 
 Wiki ID: \`monster.${form.formId}\`
 
-[← Canonical monster database](README.md)
+[← ${form.familyName} family](families/${form.familyId}.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -601,9 +600,9 @@ Visual-production status: **${formVisualProductionStatus(form)}**
 
 ${form.classificationNotes}
 
-## Family visual grammar
+## Family context
 
-${constants}
+Shared visual constants and the complete T1–T5 comparison live on the [${form.familyName} family page](families/${form.familyId}.md).
 
 **Escalation axis:** ${form.escalationAxis}
 
@@ -661,14 +660,11 @@ function buildRuntimeMonsterWikiPage(form: CanonicalMonsterForm): string {
 				`| ${affinityLabel(coordinate.affinity)} | \`runtime\` | v${coordinate.version} | \`${coordinate.targetPath}\` | \`${coordinate.candidatePath}\` | \`${coordinate.approvedPath}\` | \`${coordinate.runtimePath}\` | \`${coordinate.contentHash}\` |`
 		)
 		.join('\n');
-	const constants = form.visualConstants
-		.map((constant) => `- ${sanitizeRenderedCopy(constant)}`)
-		.join('\n');
 	return `# ${form.displayName}
 
 Wiki ID: \`monster.${form.formId}\`
 
-[← Canonical monster database](README.md)
+[← ${form.familyName} family](families/${form.familyId}.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -687,9 +683,9 @@ Visual-production status: **${formVisualProductionStatus(form)}**
 
 ${form.classificationNotes}
 
-## Family visual grammar
+## Family context
 
-${constants}
+Shared visual constants and the complete T1–T5 comparison live on the [${form.familyName} family page](families/${form.familyId}.md).
 
 **Escalation axis:** ${form.escalationAxis}
 
@@ -736,31 +732,58 @@ ${coordinates}
 `;
 }
 
-function renderFamilySection(family: CanonicalMonsterFamily): string {
+function renderIndexFamilySection(family: CanonicalMonsterFamily): string {
+	const forms = family.forms
+		.map(
+			(form) =>
+				`- **${form.tier}:** [${form.displayName}](${form.formId}.md) — ${sanitizeRenderedCopy(form.primaryArchetype)}`
+		)
+		.join('\n');
+	return `## ${String(family.sourceRaceNumber).padStart(2, '0')} · [${family.displayName}](families/${family.familyId}.md)
+
+${sanitizeRenderedCopy(family.escalationAxis)}
+
+${forms}`;
+}
+
+export function buildMonsterFamilyWikiPage(family: CanonicalMonsterFamily): string {
 	const constants = family.visualConstants.map((constant) => `- ${constant}`).join('\n');
 	const rows = family.forms
 		.map(
 			(form) =>
-				`| ${form.tier} — ${TIER_TITLES[form.tier]} | [${form.displayName}](${form.formId}.md) | ${sanitizeRenderedCopy(form.primaryArchetype)} | ${sanitizeRenderedCopy(form.battlefieldDuty)} | ${sanitizeRenderedCopy(form.teachingGoal)} | ${textOrNotApplicable(form.signatureMechanic)} | ${textOrNotApplicable(form.telegraph)} | ${textOrNotApplicable(form.counterplay)} | ${textOrNotApplicable(form.lowerFormInteraction)} |`
+				`| ${form.tier} — ${TIER_TITLES[form.tier]} | [${form.displayName}](../${form.formId}.md) | ${sanitizeRenderedCopy(form.primaryArchetype)} | ${sanitizeRenderedCopy(form.battlefieldDuty)} | ${sanitizeRenderedCopy(form.teachingGoal)} | ${textOrNotApplicable(form.signatureMechanic)} | ${textOrNotApplicable(form.telegraph)} | ${textOrNotApplicable(form.counterplay)} | ${textOrNotApplicable(form.lowerFormInteraction)} |`
 		)
 		.join('\n');
-	return `## ${String(family.sourceRaceNumber).padStart(2, '0')} · ${family.displayName}
+	return `# ${family.displayName}
+
+Wiki ID: \`monster-family.${family.familyId}\`
+
+[← Canonical monster database](../README.md)
 
 | Family field | Definition |
 | --- | --- |
+| Family number | ${String(family.sourceRaceNumber).padStart(2, '0')} |
 | Family ID | \`${family.familyId}\` |
 | Floor assignment | Unassigned |
 | Classification caveat | ${family.classificationNotes} |
 | Escalation axis | ${family.escalationAxis} |
-| Source | [${sourceLabel(family.sourcePage)}](${sourceLink(family.sourcePage)}) |
+| Source | [${sourceLabel(family.sourcePage)}](${sourceLink(family.sourcePage).replace(/^\.\.\//u, '../../')}) |
 
-**Visual constants**
+## Visual constants
 
 ${constants}
 
+## T1–T5 combat progression
+
 | Tier / function | Canonical form | Primary archetype | Battlefield duty | Teaching goal | Signature mechanic | Telegraph | Counterplay | Lower-form interaction |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-${rows}`;
+${rows}
+
+## Family affinity atlas
+
+The visual atlas above the canonical prose shows all 25 family coordinates in T1–T5 and
+Normal/Fire/Earth/Wind/Water order. Select any image to open its form page.
+`;
 }
 
 function dispositionMeaning(disposition: CurrentClassMappingEntry['disposition']): string {
@@ -774,7 +797,32 @@ function dispositionMeaning(disposition: CurrentClassMappingEntry['disposition']
 }
 
 export function buildMonsterDatabaseIndex(database: CanonicalMonsterWikiDatabase): string {
-	const familySections = database.families.map(renderFamilySection).join('\n\n');
+	const familySections = database.families.map(renderIndexFamilySection).join('\n\n');
+	return `# Monster bestiary
+
+Wiki ID: \`creatures.monster-database\`
+
+**${database.counts.families} families · ${database.counts.forms} T1–T5 forms · ${database.counts.coordinates} Normal/Fire/Earth/Wind/Water coordinates**
+
+Scan every family's complete T1–T5 progression below. Open a family for its visual grammar,
+cross-tier combat comparison, and 25-image affinity atlas; open a form for its detailed combat and
+production evidence.
+
+Family is a production and encounter grouping. It does not by itself establish biology, ancestry,
+personhood, culture, morality, or universal hostility. See the [creature taxonomy](../taxonomy.md).
+
+${familySections}
+
+## Reference
+
+- [Historical class reconciliation](reconciliation.md)
+- [Fauna family expansion](../fauna-family-expansion.md)
+
+Run \`pnpm export:wiki-monsters\` after source or catalog changes. Floor order remains unassigned.
+`;
+}
+
+export function buildMonsterReconciliationWikiPage(database: CanonicalMonsterWikiDatabase): string {
 	const reconciliationRows = database.reconciliation
 		.map((entry) => {
 			const canonical =
@@ -784,33 +832,11 @@ export function buildMonsterDatabaseIndex(database: CanonicalMonsterWikiDatabase
 			return `| \`${entry.currentClassId}\` | ${entry.sourceFamilyLabel} | \`${entry.disposition}\` — ${dispositionMeaning(entry.disposition)} | ${canonical} | ${sanitizeRenderedCopy(entry.rationale)} | No (every target affinity) | ${entry.references.length} candidate-only references |`;
 		})
 		.join('\n');
-	return `# Canonical monster family database
+	return `# Historical monster class reconciliation
 
-Wiki ID: \`creatures.monster-database\`
+Wiki ID: \`creatures.monster-reconciliation\`
 
-This database publishes **${database.counts.families} production families**, **${database.counts.forms} canonical T1–T5 forms**, and **${database.counts.coordinates}
-Normal/Fire/Earth/Wind/Water image coordinates**. Family is a production and encounter grouping;
-it does not by itself establish biology, ancestry, personhood, culture, morality, or universal
-hostility. Read the [creature taxonomy](../taxonomy.md) before turning a family label into lore.
-
-No floor order or difficulty value is assigned here. Every \`floorSlot\` remains unassigned until a
-separate authored combat integration chooses it.
-
-Production statuses describe target availability. Evidence statuses are derived from validated,
-immutable candidate/result/review records and the separate fauna approval/runtime catalogs.
-Candidate, approved-review, approved-source, and runtime remain distinct states.
-
-${familySections}
-
-## Fauna expansion — approved and wired
-
-The original 30-family, 750-coordinate matrix remains frozen and will not be regenerated. Eight
-accepted fauna families—Wolves, Bears, Boars, Burrowers, Great Cats, Serpents, Crocodilians, and
-Raptors—add 40 T1–T5 forms and 200 coordinates. All 200 have immutable candidate provenance,
-byte-identical approved PNG sources, and hash-addressed wiki-runtime WebP derivatives. See the
-[fauna family expansion](../fauna-family-expansion.md) for progression and promotion evidence.
-
-## Completed v1 class reconciliation
+[← Monster bestiary](README.md)
 
 The forty earlier class identities remain preserved as historical production provenance. The fauna
 integration redirects Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm to their new
@@ -818,18 +844,11 @@ canonical forms without rewriting the original program. Armored Brood Guard, Dea
 Drake remain secondary archetypes in Arachnids, Skeletons, and Dragons. Old images remain
 candidate-only reference evidence and are not substituted for the approved fauna coordinates.
 
-### Current class reconciliation
+## Current class reconciliation
 
 | Current class ID | Source family label | Disposition | Canonical destination | Mapping rationale | Reuse eligibility | Preserved provenance |
 | --- | --- | --- | --- | --- | --- | --- |
 ${reconciliationRows}
-
-## Production synchronization
-
-Run \`pnpm export:wiki-monsters\` after source or catalog changes. The exporter reads the validated
-30-family production program plus the separate approved eight-family fauna program. Generated pages
-and the JSON index remain deterministic; approval and runtime bindings come only from the enemy-owned
-fauna catalogs.
 `;
 }
 
@@ -846,7 +865,12 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 			familyId: family.familyId,
 			displayName: family.displayName,
 			sourceRaceNumber: family.sourceRaceNumber,
+			sourcePage: family.sourcePage,
+			classificationNotes: family.classificationNotes,
+			escalationAxis: family.escalationAxis,
+			visualConstants: family.visualConstants,
 			floorSlot: family.floorSlot,
+			pagePath: `docs/wiki/creatures/monsters/families/${family.familyId}.md`,
 			formIds: family.forms.map(({ formId }) => formId)
 		})),
 		monsters: database.forms.map((form) => ({
@@ -856,6 +880,12 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 			familyName: form.familyName,
 			tier: form.tier,
 			role: form.primaryArchetype,
+			battlefieldDuty: form.battlefieldDuty,
+			teachingGoal: form.teachingGoal,
+			signatureMechanic: form.signatureMechanic,
+			telegraph: form.telegraph,
+			counterplay: form.counterplay,
+			lowerFormInteraction: form.lowerFormInteraction,
 			floorSlot: form.floorSlot,
 			pagePath: `docs/wiki/creatures/monsters/${form.formId}.md`,
 			variants: form.coordinates.map((coordinate) => ({
@@ -869,6 +899,7 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 				resultPath: coordinate.resultPath,
 				version: coordinate.version,
 				candidateExists: coordinate.candidateExists,
+				sourceContentHash: coordinate.sourceContentHash,
 				historyAttemptCount: coordinate.historyAttemptCount,
 				historyRevisionRequiredCount: coordinate.historyRevisionRequiredCount,
 				...(coordinate.approvedPath
@@ -907,6 +938,12 @@ export function generatedMonsterPageFileNames(database: CanonicalMonsterWikiData
 	return database.forms.map(({ formId }) => `${formId}.md`).sort();
 }
 
+export function generatedMonsterFamilyPageFileNames(
+	database: CanonicalMonsterWikiDatabase
+): string[] {
+	return database.families.map(({ familyId }) => `${familyId}.md`).sort();
+}
+
 export function legacyMonsterPageFileNames(database: CanonicalMonsterWikiDatabase): string[] {
 	const canonicalIds = new Set(database.forms.map(({ formId }) => formId));
 	return database.reconciliation
@@ -935,6 +972,7 @@ export function unmanagedMonsterPageCollisions(
 ): string[] {
 	const managed = new Set([
 		'README.md',
+		'reconciliation.md',
 		...generatedMonsterPageFileNames(database),
 		...legacyMonsterPageFileNames(database),
 		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `${formId}.md`)
@@ -974,7 +1012,7 @@ export function legacyMonsterRouteMap(
 	return database.reconciliation.map((entry) => {
 		const destination =
 			entry.canonicalFormId === null
-				? '/wiki/creatures/monsters#current-class-reconciliation'
+				? '/wiki/creatures/monsters/reconciliation'
 				: `/wiki/creatures/monsters/${entry.canonicalFormId}`;
 		if (destination === `/wiki/creatures/monsters/${entry.currentClassId}`) {
 			fail(`legacy route would redirect-loop: ${entry.currentClassId}`);
@@ -990,9 +1028,12 @@ export function legacyMonsterRouteMap(
 
 export type StoredMonsterWikiOutputs = {
 	readme: string;
+	reconciliation: string;
 	visualIndex: string;
 	pages: ReadonlyMap<string, string>;
+	familyPages: ReadonlyMap<string, string>;
 	existingFileNames: readonly string[];
+	existingFamilyFileNames: readonly string[];
 };
 
 export function assertGeneratedMonsterWikiFreshness(
@@ -1000,6 +1041,9 @@ export function assertGeneratedMonsterWikiFreshness(
 	stored: StoredMonsterWikiOutputs
 ): void {
 	if (stored.readme !== buildMonsterDatabaseIndex(database)) fail('README is stale');
+	if (stored.reconciliation !== buildMonsterReconciliationWikiPage(database)) {
+		fail('reconciliation page is stale');
+	}
 	const expectedIndex = `${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`;
 	if (stored.visualIndex !== expectedIndex) fail('visual index is stale');
 	for (const form of database.forms) {
@@ -1007,6 +1051,21 @@ export function assertGeneratedMonsterWikiFreshness(
 		const page = stored.pages.get(fileName);
 		if (page === undefined) fail(`missing generated page ${fileName}`);
 		if (page !== buildMonsterWikiPage(form)) fail(`generated page ${fileName} is stale`);
+	}
+	for (const family of database.families) {
+		const fileName = `${family.familyId}.md`;
+		const page = stored.familyPages.get(fileName);
+		if (page === undefined) fail(`missing generated family page ${fileName}`);
+		if (page !== buildMonsterFamilyWikiPage(family)) {
+			fail(`generated family page ${fileName} is stale`);
+		}
+	}
+	const expectedFamilyFiles = new Set(generatedMonsterFamilyPageFileNames(database));
+	const unexpectedFamilyFiles = stored.existingFamilyFileNames.filter(
+		(fileName) => /^[a-z][a-z0-9-]*\.md$/u.test(fileName) && !expectedFamilyFiles.has(fileName)
+	);
+	if (unexpectedFamilyFiles.length > 0) {
+		fail(`unmanaged monster family page collision: ${unexpectedFamilyFiles.join(', ')}`);
 	}
 	const obsolete = obsoleteGeneratedMonsterPages(database, stored.existingFileNames);
 	if (obsolete.length > 0) fail(`managed legacy pages remain: ${obsolete.join(', ')}`);
@@ -1019,6 +1078,10 @@ export function assertCandidateSafeRenderedMonsterWiki(
 ): void {
 	const rendered = [
 		['README.md', buildMonsterDatabaseIndex(database)],
+		['reconciliation.md', buildMonsterReconciliationWikiPage(database)],
+		...database.families.map(
+			(family) => [`families/${family.familyId}.md`, buildMonsterFamilyWikiPage(family)] as const
+		),
 		...database.forms.map((form) => [`${form.formId}.md`, buildMonsterWikiPage(form)] as const)
 	] as const;
 	for (const [fileName, source] of rendered) {

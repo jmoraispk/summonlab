@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.raptor-hunting-hawk`
 
-[← Canonical monster database](README.md)
+[← Raptors family](families/raptors.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural bird-of-prey family centered on vertical tracking, attack shadows, landing windows, carry threats, and airspace control. It remains distinct from humanoid Harpies.
 
-## Family visual grammar
+## Family context
 
-- Every form retains an avian body with two wings, two taloned legs, hooked beak, feathered tail, and species-appropriate head rather than humanoid arms or torso.
-- Tier escalation uses wingspan, feather structure, facial disc, talon mass, scars, and flight behavior rather than worn equipment.
-- Shadow shape, tail fan, primary-feather angle, talon extension, perch choice, and landing route keep aerial attacks readable.
+Shared visual constants and the complete T1–T5 comparison live on the [Raptors family page](families/raptors.md).
 
 **Escalation axis:** A single shadow dive becomes alternating perch attacks, silent movement-triggered drops, carry-off pressure, and finally a sovereign that divides the arena into flight bands.
 

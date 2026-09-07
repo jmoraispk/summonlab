@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.void-horror-fracture`
 
-[← Canonical monster database](README.md)
+[← Void Horrors family](families/void-horrors.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Void Horrors are treated as a progressively unresolved absence-and-fracture visual and encounter-production family. Claims about extradimensional origin, ontology, intent, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- Rough humanoid or many-limbed absence retains edges that fail to close while proportions shift only within readable tier silhouettes.
-- Matte void black, negative space, purple-black, star flecks, and one bounded cold eye accent remain source grammar rather than affinity evidence.
-- Absence, non-reflection, star-field interior, fractured geometry, eye rings, and geometric shards never resolve into ordinary flesh or matter.
-- Power subtracts coherence: later forms occupy less resolvable physical presence while telegraph anchors become deliberately sparse.
+Shared visual constants and the complete T1–T5 comparison live on the [Void Horrors family page](families/void-horrors.md).
 
 **Escalation axis:** Coherence is progressively subtracted from a thin-limbed crawler until the sovereign is an unresolved world-shaped absence with one readable eye-ring system.
 

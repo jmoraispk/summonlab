@@ -1,7 +1,7 @@
 {
 	"schemaVersion": "summonable-hero-runtime-manifest-v1",
 	"catalogVersion": "summonable-heroes-v1",
-	"sourceCatalogContentHash": "217a852f767f23ff9c3c38f7721510dbea08021ddf8442e49ae121b899d2ee67",
+	"sourceCatalogContentHash": "ad9de3c3da26d5d2d99faaa2103e0955396eae7867f933f5d5463d3a998c0d97",
 	"exporterVersion": "summonable-hero-runtime-exporter-v1",
 	"loading": "lazy-per-hero",
 	"totalBytes": 17348736,
@@ -14811,5 +14811,5 @@
 			}
 		]
 	},
-	"manifestHash": "8bf73ddaa74c113bb94939bf4d52b2fbdb39cb4643505ec8bc5f316b7b82a0c0"
+	"manifestHash": "d4424ea1ad62e4b025306b2ecc163799dc78eea22f59f1db7c9fb2b675e56f1c"
 }

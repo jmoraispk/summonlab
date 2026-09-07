@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.bear-scarback`
 
-[← Canonical monster database](README.md)
+[← Bears family](families/bears.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural ursine expedition family built around mass, committed attacks, grappling, and territorial control.
 
-## Family visual grammar
+## Family context
 
-- Every form retains a four-legged ursine body, plantigrade paws, compact tail, broad muzzle, dense coat, and weight-bearing shoulder hump.
-- Escalation uses coat condition, scars, claw specialization, posture, and environmental interaction rather than humanoid equipment.
-- Raised shoulders, planted hind legs, open chest, and exposed inner wrists preserve readable commitment and recovery windows.
+Shared visual constants and the complete T1–T5 comparison live on the [Bears family page](families/bears.md).
 
 **Escalation axis:** A simple committed swipe becomes frontal maul pressure, an asymmetric hook-and-drag specialist, terrain-breaking dominance, and finally den-scale territorial command.
 

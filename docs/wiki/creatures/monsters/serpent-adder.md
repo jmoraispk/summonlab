@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.serpent-adder`
 
-[← Canonical monster database](README.md)
+[← Serpents family](families/serpents.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural limbless snake family centered on fixed strike range, constriction, venom lanes, buried reach, and living coil control. It remains distinct from sapient humanoid Nagas.
 
-## Family visual grammar
+## Family context
 
-- Every form remains limbless with a continuous scaled body, snake skull, jaw hinge, belly scutes, forked tongue, and species-appropriate tail.
-- Tier escalation uses body proportion, hood, fangs, horns, crown scales, muscle distribution, and coil behavior rather than arms or equipment.
-- Strike range, head anchor, venom direction, emergence point, and loosened coil remain visually traceable.
+Shared visual constants and the complete T1–T5 comparison live on the [Serpents family page](families/serpents.md).
 
 **Escalation axis:** A fixed one-length strike becomes anchored constriction, a two-lane venom specialist, buried alternating reach, and finally a sovereign whose body coils become arena terrain.
 

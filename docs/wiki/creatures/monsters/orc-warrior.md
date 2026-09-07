@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.orc-warrior`
 
-[← Canonical monster database](README.md)
+[← Orcs family](families/orcs.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Orcs are treated as a visual and encounter-production family, not as proof of universal culture, allegiance, morality, or personhood. This packet preserves their top-heavy anatomy, tusks, battle marks, heavy equipment, and visible status language while assigning each hostile form a specific authored combat duty.
 
-## Family visual grammar
+## Family context
 
-- Tall, broad, top-heavy humanoid silhouette with a thick neck, wide shoulders, heavy jaw, forward lean, and lower tusks rising past the lip.
-- Grey-green or ash-grey skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.
-- Boiled leather, fur, riveted iron, bone, and crude steel remain thick, weighty, and practical rather than elegant or finely matched.
-- Scars, paint, tusk rings, piercings, skull trophies, spiked pauldrons, and clan totems communicate earned encounter rank without becoming a biological claim.
-- Tusk length, muscle mass, posture, and carried trophies escalate together, but every form retains committed heavy motion and exposed recovery as the family combat grammar.
+Shared visual constants and the complete T1–T5 comparison live on the [Orcs family page](families/orcs.md).
 
 **Escalation axis:** Tusks lengthen and curve higher as muscle, scars, iron, trophies, and command authority accumulate; rising forms turn committed heavy attacks into rhythmic pursuit, formation control, and finally an arena-wide trial of standards.
 

@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.minotaur-charger`
 
-[← Canonical monster database](README.md)
+[← Minotaurs family](families/minotaurs.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Minotaurs are treated as a horned visual and encounter-production family, not as an accepted biological people or a universal statement about culture, intelligence, rank, blood sport, or hostility. Labyrinth and arena imagery becomes authored battlefield geometry rather than an assumed social identity.
 
-## Family visual grammar
+## Family context
 
-- A bull head, bovine snout and ears, wide horns, vastly overbuilt humanoid torso, digitigrade hooved legs, and thick tail remain legible at every tier.
-- Deep russet and black hide, bronze, ox-blood red, and bone define the family palette.
-- Coarse hair, horn, bronze, heavy leather harness, chain, and hewn stone remain distinct load-bearing materials.
-- Nose rings, horn caps, brands, arena trophies, and chained slabs communicate rank through visible history and repairs.
-- Weapon mass and horn spread always preserve a readable commitment direction and recovery side.
+Shared visual constants and the complete T1–T5 comparison live on the [Minotaurs family page](families/minotaurs.md).
 
 **Escalation axis:** Horn spread, visible arena history, and weapon mass escalate from a rangy maul carrier to a sovereign who reconfigures a shattered arena through gateway-wide horn arcs.
 

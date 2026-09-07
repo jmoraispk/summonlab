@@ -5,6 +5,6 @@
   "sourceSha256": "5b4a0f09271bc0fd1914614d50c4977cef6db50373d6357e9c5811aebb94f946",
   "repositoryPath": "assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png",
   "selectionRecord": "The owner explicitly selected the rendering realism visible in this progression on 2026-09-02 and rejected the later ultra-realistic/live-action correction pass.",
-  "relatedExperiment": "assets/heroes/experiments/ultra-realistic-star-progression-v1",
+  "relatedRetiredExperimentId": "ultra-realistic-star-progression-v1",
   "promotionBoundary": "Approval applies only to rendering direction. The depicted identity and rank designs are not thereby approved for runtime use."
 }

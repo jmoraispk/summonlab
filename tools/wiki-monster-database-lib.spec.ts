@@ -22,8 +22,11 @@ import {
 	assertManagedMonsterCatalogEntries,
 	buildCanonicalMonsterWikiDatabase,
 	buildMonsterDatabaseIndex,
+	buildMonsterFamilyWikiPage,
+	buildMonsterReconciliationWikiPage,
 	buildMonsterVisualIndex,
 	buildMonsterWikiPage,
+	generatedMonsterFamilyPageFileNames,
 	generatedMonsterPageFileNames,
 	legacyMonsterPageFileNames,
 	legacyMonsterRouteMap,
@@ -238,10 +241,10 @@ describe('canonical monster wiki database', () => {
 		]);
 		expect(sovereign.coordinates.map(({ presentationStatus }) => presentationStatus)).toEqual([
 			'candidate-only',
-			'planned',
-			'planned',
-			'planned',
-			'planned'
+			'candidate-only',
+			'candidate-only',
+			'candidate-only',
+			'candidate-only'
 		]);
 		expect(sovereign.coordinates[0]).toMatchObject({
 			version: 3,
@@ -250,7 +253,9 @@ describe('canonical monster wiki database', () => {
 			historyRevisionRequiredCount: 2
 		});
 		const page = buildMonsterWikiPage(sovereign);
-		expect(page).toContain('Normal: candidate-only');
+		expect(page).toContain(
+			'Normal: candidate-only; Fire: candidate-only; Earth: candidate-only; Wind: candidate-only; Water: candidate-only.'
+		);
 		expect(page).toContain('`planned-provisional-anchor` means candidate generation is authorized');
 		expect(page).toContain(
 			'Candidate and review evidence only; no coordinate on this page is runtime art.'
@@ -262,17 +267,22 @@ describe('canonical monster wiki database', () => {
 		const goblins = database.families.find(({ familyId }) => familyId === 'goblins')!;
 		const goblinKing = database.forms.find(({ formId }) => formId === 'goblin-king')!;
 		const index = buildMonsterDatabaseIndex(database);
+		const familyPage = buildMonsterFamilyWikiPage(goblins);
 		const page = buildMonsterWikiPage(goblinKing);
+		const reconciliation = buildMonsterReconciliationWikiPage(database);
 
-		expect(index).toContain('## 01 · Goblins');
-		expect(index).toContain(goblins.classificationNotes);
-		expect(index).toContain(goblins.escalationAxis);
-		expect(index).toContain(goblinKing.signatureMechanic);
-		expect(index).toContain('Floor assignment | Unassigned');
-		expect(index).toContain('### Current class reconciliation');
-		expect(index.match(/^\| `[^`]+` \|/gmu)).toHaveLength(40);
+		expect(index).toContain('[Goblins](families/goblins.md)');
 		expect(index).toContain('[Goblin King](goblin-king.md)');
+		expect(index).not.toContain(goblins.classificationNotes);
+		expect(index).not.toContain(goblinKing.signatureMechanic);
+		expect(index).not.toContain('Current class reconciliation');
+		expect(familyPage).toContain(goblins.classificationNotes);
+		expect(familyPage).toContain(goblins.escalationAxis);
+		expect(familyPage).toContain(goblinKing.signatureMechanic);
+		expect(familyPage.match(/^\| T[1-5] /gmu)).toHaveLength(5);
+		expect(familyPage).toContain('[Goblin King](../goblin-king.md)');
 		expect(page).toContain('# Goblin King');
+		expect(page).toContain('[← Goblins family](families/goblins.md)');
 		expect(page).toContain('Tier | T5 — Sovereign');
 		expect(page).toContain('## Combat reading');
 		expect(page).toContain('### Lower-form interaction');
@@ -283,6 +293,17 @@ describe('canonical monster wiki database', () => {
 		expect(page).not.toMatch(
 			/\]\(assets\/enemies\/experiments\/family-affinity-v1\/(?:candidates|results)/u
 		);
+		expect(
+			goblinKing.coordinates.every(({ sourceContentHash }) =>
+				/^[a-f0-9]{64}$/u.test(sourceContentHash ?? '')
+			)
+		).toBe(true);
+		expect(reconciliation.match(/^\| `[^`]+` \|/gmu)).toHaveLength(40);
+		expect(
+			legacyMonsterRouteMap(database).find(
+				({ currentClassId }) => currentClassId === 'death-knight'
+			)?.destination
+		).toBe('/wiki/creatures/monsters/reconciliation');
 		expect(`${index}\n${page}`).not.toMatch(/\b(?:Wood|Metal|Resonance)\b/u);
 		expect(`${index}\n${page}`).not.toMatch(/status:\s*(?:approved|runtime)/iu);
 	});
@@ -307,6 +328,20 @@ describe('canonical monster wiki database', () => {
 		});
 		expect(first.monsters).toHaveLength(150);
 		expect(first.monsters.every(({ variants }) => variants.length === 5)).toBe(true);
+		expect(first.families[0]).toMatchObject({
+			classificationNotes: expect.any(String),
+			escalationAxis: expect.any(String),
+			sourcePage: expect.any(String),
+			visualConstants: expect.any(Array)
+		});
+		expect(first.monsters[0]).toMatchObject({
+			battlefieldDuty: expect.any(String),
+			teachingGoal: expect.any(String),
+			signatureMechanic: expect.any(String),
+			telegraph: expect.any(String),
+			counterplay: expect.any(String),
+			lowerFormInteraction: null
+		});
 		expect(first.reconciliation.entries).toHaveLength(40);
 		expect(first.reconciliation.sourceStatus).toBe('candidate-only-reference');
 		expect(
@@ -317,7 +352,7 @@ describe('canonical monster wiki database', () => {
 		).toEqual(
 			input.mapping.entries.map(({ currentClassId, rationale }) => [currentClassId, rationale])
 		);
-		const reconciliationReadme = buildMonsterDatabaseIndex(database);
+		const reconciliationReadme = buildMonsterReconciliationWikiPage(database);
 		for (const { rationale } of input.mapping.entries) {
 			expect(reconciliationReadme).toContain(rationale);
 		}
@@ -376,19 +411,6 @@ describe('canonical monster wiki database', () => {
 		[
 			'stale review evidence version',
 			(input: MonsterWikiBuildInput): number => ++input.reviewEvidence[0]!.activeVersion
-		],
-		[
-			'planned state with forged candidate evidence',
-			(input: MonsterWikiBuildInput): void => {
-				const evidence = input.reviewEvidence.find(
-					({ state, candidatePath }) => state === 'planned' && candidatePath === null
-				)!;
-				const target = input.targets.find(
-					({ coordinateId }) => coordinateId === evidence.coordinateId
-				)!;
-				evidence.candidatePath = target.ownedPaths.candidate;
-				evidence.candidateSha256 = 'a'.repeat(64);
-			}
 		],
 		[
 			'fake current class',
@@ -454,6 +476,15 @@ describe('canonical monster wiki database', () => {
 		]);
 	});
 
+	it('owns exactly one generated page for every canonical family', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		const pages = generatedMonsterFamilyPageFileNames(database);
+
+		expect(pages).toHaveLength(30);
+		expect(new Set(pages)).toHaveLength(30);
+		expect(pages).toContain('goblins.md');
+	});
+
 	it('fails closed on an unknown monster catalog registration without removing it', async () => {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 		const entries = [
@@ -471,21 +502,42 @@ describe('canonical monster wiki database', () => {
 		expect(entries).toEqual(snapshot);
 	});
 
+	it('preserves hand-authored monster-family catalog entries outside the generated family set', async () => {
+		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
+		const entries = [
+			{ wikiId: 'creatures.monster-database' },
+			{ wikiId: 'monster-family.goblinoids' },
+			{ wikiId: 'system.visuals' }
+		];
+
+		expect(() => assertManagedMonsterCatalogEntries(database, entries)).not.toThrow();
+	});
+
 	async function freshStoredOutputs() {
 		const database = buildCanonicalMonsterWikiDatabase(await productionInput());
 		const pages = new Map(
 			database.forms.map((form) => [`${form.formId}.md`, buildMonsterWikiPage(form)])
 		);
+		const familyPages = new Map(
+			database.families.map((family) => [
+				`${family.familyId}.md`,
+				buildMonsterFamilyWikiPage(family)
+			])
+		);
 		const index = buildMonsterDatabaseIndex(database);
+		const reconciliation = buildMonsterReconciliationWikiPage(database);
 		const visualIndex = `${JSON.stringify(buildMonsterVisualIndex(database), null, 2)}\n`;
 
 		return {
 			database,
 			stored: {
 				readme: index,
+				reconciliation,
 				visualIndex,
 				pages,
-				existingFileNames: ['README.md', 'visual-index.json', ...pages.keys()]
+				familyPages,
+				existingFileNames: ['README.md', 'reconciliation.md', 'visual-index.json', ...pages.keys()],
+				existingFamilyFileNames: [...familyPages.keys()]
 			}
 		};
 	}
@@ -510,6 +562,22 @@ describe('canonical monster wiki database', () => {
 		stored.pages.delete('goblin-runt.md');
 		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
 			/missing generated page goblin-runt/iu
+		);
+	});
+
+	it('detects a missing family page independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.familyPages.delete('goblins.md');
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/missing generated family page goblins/iu
+		);
+	});
+
+	it('detects an altered family page independently', async () => {
+		const { database, stored } = await freshStoredOutputs();
+		stored.familyPages.set('goblins.md', `${stored.familyPages.get('goblins.md')}\nchanged`);
+		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
+			/family page goblins.*stale/iu
 		);
 	});
 
@@ -675,9 +743,9 @@ describe('canonical monster wiki database', () => {
 		});
 		expect(
 			routes.find(({ currentClassId }) => currentClassId === 'death-knight')?.destination
-		).toBe('/wiki/creatures/monsters#current-class-reconciliation');
+		).toBe('/wiki/creatures/monsters/reconciliation');
 		expect(routes.find(({ currentClassId }) => currentClassId === 'grey-wolf')?.destination).toBe(
-			'/wiki/creatures/monsters#current-class-reconciliation'
+			'/wiki/creatures/monsters/reconciliation'
 		);
 		for (const route of routes) {
 			expect(route.destination).not.toBe(`/wiki/creatures/monsters/${route.currentClassId}`);

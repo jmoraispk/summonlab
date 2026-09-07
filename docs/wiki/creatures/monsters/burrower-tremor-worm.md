@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.burrower-tremor-worm`
 
-[← Canonical monster database](README.md)
+[← Burrowers family](families/burrowers.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 One segmented subterranean animal lineage built around ground reading, eruption timing, towing, false ridges, and tunnel networks. It is not a miscellaneous bin for unrelated cave creatures.
 
-## Family visual grammar
+## Family context
 
-- Every form retains a limbless segmented body, armored digging front, softer articulated rear, tactile sensory organs, and soil-displacing locomotion.
-- Tier is shown through mandible specialization, segment reinforcement, collar structure, tail shape, and tunneling behavior rather than humanoid traits.
-- The real underground route and the exposed punish segment always have physical environmental tells.
+Shared visual constants and the complete T1–T5 comparison live on the [Burrowers family page](families/burrowers.md).
 
 **Escalation axis:** A single moving ridge becomes a long eruption lane, hookjaw towing specialist, decoy-ridge champion, and persistent tunnel-network sovereign.
 

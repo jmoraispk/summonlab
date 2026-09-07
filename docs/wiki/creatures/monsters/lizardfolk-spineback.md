@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.lizardfolk-spineback`
 
-[← Canonical monster database](README.md)
+[← Lizardfolk family](families/lizardfolk.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Lizardfolk are treated as a reptilian visual and encounter-production family, not as an accepted biological people or a universal statement about culture, technology, intelligence, social rank, personhood, habitat, or hostility. Source swamp and tribal imagery becomes explicit equipment and arena grammar rather than essentialized identity.
 
-## Family visual grammar
+## Family context
 
-- An upright forward-leaning reptilian body keeps clawed hands and feet, a long counterbalancing tail, a crocodilian or iguana-like head, and an escalating dorsal ridge.
-- Swamp green, mud brown, moss, and ochre are punctuated by warning-bright orange, red, or yellow throat and crest colors.
-- Scale, bone, obsidian, hide, river reed, ordinary mud, and feather remain separately legible materials.
-- Paint, bone piercings, trophy skulls, woven shields, and feather headdresses accumulate without obscuring natural plating.
-- Tail angle, crest posture, dorsal plates, hands, and planted feet preserve the direction and recovery of each attack.
+Shared visual constants and the complete T1–T5 comparison live on the [Lizardfolk family page](families/lizardfolk.md).
 
 **Escalation axis:** Crest height, dorsal spines, natural plating, tail weaponization, and control of marked hunting ground grow from a lean scout to a sovereign back-sail war court.
 

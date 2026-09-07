@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.troll-scrag`
 
-[← Canonical monster database](README.md)
+[← Trolls family](families/trolls.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Trolls are treated as a regenerative body-horror production family, not as a claim that all cave, bridge, or bog dwellers share this physiology or hostility. The packet preserves their stooped long-armed anatomy, wet rubbery hide, visible mishealing, embedded debris, and accumulated scar history while giving each hostile form a bounded encounter role.
 
-## Family visual grammar
+## Family context
 
-- Tall, stooped, potbellied humanoid silhouette with a small head on a thick neck and disproportionately long arms hanging past the knees.
-- Bog green, liver-brown, sallow grey, bruise purple, and wet glistening highlights keep living hide distinct from mud and scavenged rags.
-- Rubbery skin, scar tissue, bark-hard callus, mud, rope, and half-swallowed equipment remain visibly bodily rather than worn as deliberate finery.
-- Healed-over piercings, embedded bones, lodged weapons, misplaced limbs, stray jaws, and layered scars record prior injury as readable construction history.
-- Escalation adds accumulated misregrowth rather than simple size: open gashes become knots, alternate organs, defensive scar architecture, and finally a walking archive of incompatible healing.
+Shared visual constants and the complete T1–T5 comparison live on the [Trolls family page](families/trolls.md).
 
 **Escalation axis:** Regeneration becomes increasingly visible and strategically wrong, progressing from one unstable wound cycle to lodged-injury pressure, player-steerable mutation, shed scar terrain, and a Sovereign that replays and produces its whole wound history.
 

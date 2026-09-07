@@ -18,6 +18,7 @@
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
 		"validate:visual-assets": "tsx tools/validate-visual-assets.ts",
+		"validate:repository-assets": "tsx tools/validate-repository-assets.ts",
 		"validate:pack-two-visuals": "tsx tools/validate-pack-two-visuals.ts",
 		"validate:pack-two-monsters": "tsx tools/validate-pack-two-monsters.ts",
 		"validate:pack-two-revision": "tsx tools/validate-pack-two-revision.ts",
@@ -144,6 +145,8 @@
 		"validate:mission-content": "tsx tools/validate-mission-content.ts",
 		"export:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --write",
 		"validate:wiki-monsters": "tsx tools/export-wiki-monster-database.ts --check",
+		"export:wiki-monster-visuals": "tsx tools/monster-wiki-runtime-visuals.ts --write",
+		"validate:wiki-monster-visuals": "tsx tools/monster-wiki-runtime-visuals.ts --check",
 		"export:wiki-agentic-skills": "node tools/agentic-skill-inventory.mjs --write",
 		"validate:wiki-agentic-skills": "node tools/agentic-skill-inventory.mjs --check",
 		"validate:wiki-affinities": "tsx tools/affinity-wiki-contract.ts",
@@ -189,7 +192,7 @@
 		"test": "pnpm test:wiki-skill-visual-catalog && pnpm test:packaging && pnpm test:family-affinity-production && pnpm test:skill-icons && pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm validate:wiki-skill-visual-catalog && pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:fauna-family-design && pnpm validate:enemy-creation-skill && pnpm validate:hero-creation-skill && pnpm validate:wiki && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm test:family-affinity-production && pnpm validate:runtime-visuals && pnpm validate:equipment-approved-sources && pnpm validate:equipment-runtime-visuals && pnpm validate:equipment-content-bindings && pnpm validate:equipment-integration-report && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm validate:repository-assets && pnpm validate:wiki-skill-visual-catalog && pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:fauna-family-design && pnpm validate:enemy-creation-skill && pnpm validate:hero-creation-skill && pnpm validate:wiki && pnpm validate:visual-assets && pnpm validate:pack-two-revision && pnpm test:family-affinity-production && pnpm validate:runtime-visuals && pnpm validate:equipment-approved-sources && pnpm validate:equipment-runtime-visuals && pnpm validate:equipment-content-bindings && pnpm validate:equipment-integration-report && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:recognition-audit && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

@@ -1,183 +1,218 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { SvelteMap } from 'svelte/reactivity';
 
 	type Variant = {
 		affinity: string;
-		status: string;
 		thumbnailPath: string;
+		width: number;
+		height: number;
 	};
 
-	type Monster = {
+	type Form = {
 		id: string;
 		name: string;
-		familyId: string;
-		familyName: string;
+		tier: string;
 		role: string;
+		signatureMechanic: string | null;
 		variants: Variant[];
 	};
 
-	let { monsters }: { monsters: readonly Monster[] } = $props();
+	type Family = {
+		familyId: string;
+		displayName: string;
+		escalationAxis: string;
+		forms: Form[];
+	};
 
-	const families = $derived.by(() => {
-		const grouped = new SvelteMap<string, { id: string; name: string; monsters: Monster[] }>();
-		for (const monster of monsters) {
-			const family = grouped.get(monster.familyId) ?? {
-				id: monster.familyId,
-				name: monster.familyName,
-				monsters: []
-			};
-			family.monsters.push(monster);
-			grouped.set(monster.familyId, family);
-		}
-		return [...grouped.values()].sort((left, right) => left.name.localeCompare(right.name));
-	});
+	let { families }: { families: readonly Family[] } = $props();
+
+	const formCount = $derived(families.reduce((total, family) => total + family.forms.length, 0));
+	const coordinateCount = $derived(formCount * 5);
+	const normalVariant = (form: Form) =>
+		form.variants.find((variant) => variant.affinity === 'normal');
+	const roleName = (role: string) => role.replace(/\s+\([^)]*\)$/u, '');
+	const mechanicName = (mechanic: string | null) => mechanic?.split(':', 1)[0]?.trim() ?? null;
 </script>
 
 <section class="database" aria-labelledby="monster-database-heading">
-	<header>
+	<header class="database-heading">
 		<div>
-			<p>Summonlab bestiary · {monsters.length} canonical forms</p>
-			<h1 id="monster-database-heading">Monster database</h1>
-			<span>
-				Every monster identity anchors the Normal plus Fire, Earth, Wind, and Water production
-				target. Open an identity to inspect available candidates and preserved legacy evidence.
-			</span>
+			<p>{families.length} families · {formCount} forms · {coordinateCount} images</p>
+			<h1 id="monster-database-heading">Monster bestiary</h1>
+			<span
+				>Scan each family from T1 to T5. Open a family for all affinities and combat detail.</span
+			>
 		</div>
 		<nav aria-label="Monster families">
-			{#each families as family (family.id)}
-				<a href={`#database-${family.id}`}>{family.name}<i>{family.monsters.length}</i></a>
+			{#each families as family (family.familyId)}
+				<a href={`#database-${family.familyId}`}>{family.displayName}</a>
 			{/each}
 		</nav>
 	</header>
 
-	{#each families as family (family.id)}
-		<section class="family" id={`database-${family.id}`}>
+	{#each families as family (family.familyId)}
+		<section class="family" id={`database-${family.familyId}`}>
 			<header>
-				<h2>{family.name}</h2>
+				<p>Family {String(families.indexOf(family) + 1).padStart(2, '0')}</p>
+				<h2>
+					<a href={resolve(`/wiki/creatures/monsters/families/${family.familyId}`)}>
+						{family.displayName}<span>View 25-image atlas →</span>
+					</a>
+				</h2>
+				<span class="escalation">{family.escalationAxis}</span>
 			</header>
 			<div class="monster-grid">
-				{#each family.monsters as monster (monster.id)}
-					{@const base = monster.variants[0]}
-					<a class="monster-card" href={resolve(`/wiki/creatures/monsters/${monster.id}`)}>
-						<img
-							src={base?.thumbnailPath ?? ''}
-							alt={monster.name}
-							width="720"
-							height="480"
-							loading="lazy"
-						/>
-						<span>{monster.familyName}</span>
-						<strong>{monster.name}</strong>
-						<small>{monster.role}</small>
+				{#each family.forms as form (form.id)}
+					{@const normal = normalVariant(form)}
+					<a class="monster-card" href={resolve(`/wiki/creatures/monsters/${form.id}`)}>
+						{#if normal}
+							<img
+								src={normal.thumbnailPath}
+								alt={`${form.name}, Normal affinity`}
+								width={normal.width}
+								height={normal.height}
+								loading="lazy"
+							/>
+						{/if}
+						<div class="card-copy">
+							<span>{form.tier}</span>
+							<strong>{form.name}</strong>
+							<small>{roleName(form.role)}</small>
+							{#if mechanicName(form.signatureMechanic)}
+								<em>{mechanicName(form.signatureMechanic)}</em>
+							{/if}
+						</div>
 					</a>
 				{/each}
 			</div>
 		</section>
 	{/each}
+
+	<footer class="reference-links">
+		<a href={resolve('/wiki/creatures/taxonomy')}>Creature taxonomy</a>
+		<a href={resolve('/wiki/creatures/monsters/reconciliation')}>Historical reconciliation</a>
+		<a href={resolve('/wiki/creatures/fauna-family-expansion')}>Fauna expansion</a>
+	</footer>
 </section>
 
 <style>
 	.database {
-		--line: rgba(225, 211, 184, 0.15);
-		padding: clamp(3rem, 6vw, 6rem);
+		--line: rgba(225, 211, 184, 0.16);
+		padding: clamp(2.5rem, 5vw, 5rem) clamp(1rem, 5vw, 5rem);
 		background:
 			radial-gradient(circle at 82% 3%, rgba(49, 147, 163, 0.13), transparent 25rem),
 			linear-gradient(180deg, #090d12, #090805);
 	}
-	.database > header {
+	.database-heading,
+	.family {
+		max-width: 100rem;
+		margin-inline: auto;
+	}
+	.database-heading {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.58fr);
-		gap: clamp(2rem, 6vw, 7rem);
+		grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.72fr);
+		gap: clamp(2rem, 5vw, 6rem);
 		align-items: end;
-		max-width: 92rem;
-		margin: 0 auto 5rem;
+		margin-bottom: clamp(3rem, 7vw, 7rem);
 	}
 	p {
-		margin: 0 0 0.8rem;
+		margin: 0 0 0.7rem;
 		color: #70c7d2;
 		font:
-			0.68rem ui-monospace,
+			800 0.65rem ui-monospace,
 			monospace;
-		font-weight: 800;
-		letter-spacing: 0.18em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
 	}
 	h1 {
 		margin: 0;
 		font:
-			400 clamp(3.5rem, 8vw, 7.4rem) / 0.84 Georgia,
+			400 clamp(3.4rem, 8vw, 7rem) / 0.87 Georgia,
 			serif;
-		letter-spacing: -0.04em;
+		letter-spacing: -0.05em;
 	}
-	.database > header div > span {
+	.database-heading div > span {
 		display: block;
-		max-width: 45rem;
-		margin-top: 1.7rem;
-		color: rgba(243, 234, 217, 0.66);
+		max-width: 38rem;
+		margin-top: 1.4rem;
+		color: rgba(243, 234, 217, 0.64);
 		font:
-			1.08rem/1.65 Georgia,
+			1rem/1.6 Georgia,
 			serif;
 	}
 	nav {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1px;
-		border: 1px solid var(--line);
-		background: var(--line);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
 	}
 	nav a {
-		display: flex;
-		justify-content: space-between;
-		gap: 0.7rem;
-		padding: 0.7rem;
-		background: rgba(8, 12, 16, 0.96);
-		color: rgba(243, 234, 217, 0.72);
+		padding: 0.45rem 0.6rem;
+		border: 1px solid var(--line);
+		color: rgba(243, 234, 217, 0.68);
 		font:
-			0.63rem ui-monospace,
+			0.58rem ui-monospace,
 			monospace;
-		letter-spacing: 0.07em;
+		letter-spacing: 0.06em;
 		text-decoration: none;
 		text-transform: uppercase;
 	}
-	nav i {
-		color: #70c7d2;
-		font-style: normal;
-	}
 	.family {
-		max-width: 92rem;
-		margin: 0 auto 5rem;
+		margin-bottom: clamp(3.5rem, 7vw, 7rem);
 		scroll-margin-top: 6rem;
 	}
 	.family > header {
-		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 1rem;
-		margin-bottom: 1rem;
-		padding-bottom: 0.8rem;
+		margin-bottom: 0.9rem;
+		padding-bottom: 0.75rem;
 		border-bottom: 1px solid var(--line);
 	}
 	h2 {
 		margin: 0;
 		font:
-			400 clamp(1.9rem, 3vw, 3rem) Georgia,
+			400 clamp(2rem, 3.2vw, 3.2rem) Georgia,
 			serif;
 		letter-spacing: -0.035em;
 	}
+	h2 a {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		color: #f3ead9;
+		text-decoration: none;
+	}
+	h2 span {
+		color: #70c7d2;
+		font:
+			0.58rem ui-monospace,
+			monospace;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.escalation {
+		display: -webkit-box;
+		max-width: 70rem;
+		margin-top: 0.55rem;
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		color: rgba(243, 234, 217, 0.54);
+		font:
+			0.86rem/1.45 Georgia,
+			serif;
+	}
 	.monster-grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.9rem;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 0.7rem;
 	}
 	.monster-card {
-		position: relative;
 		display: grid;
+		grid-template-rows: auto 1fr;
 		min-width: 0;
-		padding-bottom: 1rem;
 		overflow: hidden;
 		border: 1px solid var(--line);
-		border-radius: 0.35rem;
+		border-radius: 0.3rem;
 		background: #080b0f;
 		color: #f3ead9;
 		text-decoration: none;
@@ -187,69 +222,93 @@
 	}
 	.monster-card:hover {
 		transform: translateY(-3px);
-		border-color: rgba(112, 199, 210, 0.5);
+		border-color: rgba(112, 199, 210, 0.55);
 	}
 	.monster-card img {
 		display: block;
 		width: 100%;
 		height: auto;
-		aspect-ratio: 3 / 2;
+		aspect-ratio: 1;
 		object-fit: cover;
-		filter: saturate(0.78);
 	}
-	.monster-card > span,
-	.monster-card > strong,
-	.monster-card > small {
-		margin-inline: 0.9rem;
+	.card-copy {
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		align-items: start;
+		padding: 0.65rem 0.7rem 0.8rem;
 	}
-	.monster-card > span {
-		margin-top: 0.8rem;
+	.card-copy span {
 		color: #70c7d2;
 		font:
-			0.55rem ui-monospace,
+			0.56rem ui-monospace,
 			monospace;
-		letter-spacing: 0.11em;
-		text-transform: uppercase;
+		letter-spacing: 0.12em;
 	}
-	.monster-card > strong {
-		margin-top: 0.25rem;
-		font:
-			400 1.22rem Georgia,
-			serif;
-	}
-	.monster-card > small {
-		margin-top: 0.35rem;
+	.card-copy strong {
+		margin-top: 0.2rem;
 		overflow: hidden;
-		color: rgba(243, 234, 217, 0.5);
 		font:
-			0.72rem/1.35 Georgia,
+			400 clamp(0.9rem, 1.5vw, 1.2rem) Georgia,
 			serif;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	@media (max-width: 74rem) {
-		.monster-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
+	.card-copy small {
+		margin-top: 0.45rem;
+		color: rgba(243, 234, 217, 0.58);
+		font:
+			0.7rem/1.3 Georgia,
+			serif;
 	}
-	@media (max-width: 54rem) {
-		.database {
-			padding-inline: 1rem;
-		}
-		.database > header {
+	.card-copy em {
+		margin-top: auto;
+		padding-top: 0.65rem;
+		color: #c9a66b;
+		font:
+			0.52rem/1.25 ui-monospace,
+			monospace;
+		font-style: normal;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+	}
+	.reference-links {
+		display: flex;
+		max-width: 100rem;
+		flex-wrap: wrap;
+		gap: 0.55rem 1.5rem;
+		margin: 0 auto;
+		padding-top: 1.2rem;
+		border-top: 1px solid var(--line);
+	}
+	.reference-links a {
+		color: #70c7d2;
+		font:
+			0.6rem ui-monospace,
+			monospace;
+		letter-spacing: 0.08em;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+	@media (max-width: 64rem) {
+		.database-heading {
 			grid-template-columns: 1fr;
-			margin-bottom: 3rem;
+		}
+		.monster-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
 	@media (max-width: 34rem) {
 		h1 {
 			font-size: 3.2rem;
 		}
-		nav {
-			grid-template-columns: 1fr;
+		h2 a {
+			align-items: start;
+			flex-direction: column;
+			gap: 0.25rem;
 		}
 		.monster-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 </style>
