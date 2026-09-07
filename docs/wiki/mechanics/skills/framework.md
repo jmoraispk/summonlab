@@ -50,9 +50,11 @@ The versioned vocabulary is `unarmed`, `one-handed-blade`, `two-handed-blade`, `
 Moving a technique to a related family requires authored familiarization or mastery rules; a new
 sword of the same family does not erase training.
 
-An ineligible loadout exposes no active skill action. The current content profiles bind Sword and
-Dagger to `one-handed-blade`, Bow to `bow`, Staff to `staff-focus`, and Shield to `shield`. Other
-family bindings remain content work rather than inferred compatibility.
+When a caller uses the shipped pure loadout evaluator, an ineligible loadout exposes no active
+skill action. Production mission integration is still pending; `legacy-auto-v1` continues through
+its frozen compatibility runner. The current content profiles bind Sword and Dagger to
+`one-handed-blade`, Bow to `bow`, Staff to `staff-focus`, and Shield to `shield`. Other family
+bindings remain content work rather than inferred compatibility.
 
 ## Accuracy, evasion, and criticals
 
@@ -69,8 +71,10 @@ the [agent-readiness combat plan](../../../superpowers/plans/2026-09-06-agent-re
 ships them. The current balance gate requires the candidate relative-Agility term to move peer hit
 chance by no more than ten percentage points.
 
-Criticals and misses use seeded engine randomness. Critical opportunity belongs to the skill,
-target state, positioning, and explicit practice bonuses—not to a base attribute.
+In planned `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
+randomness. Shipped `legacy-auto-v1` retains its frozen sequential entropy. Critical opportunity
+belongs to the skill, target state, positioning, and explicit practice bonuses—not to a base
+attribute.
 
 ## Practice and learning
 

@@ -2,14 +2,15 @@
 
 Wiki ID: `mechanics.equipment.armour-shields`
 
-Design status: **runtime-v1 visuals/definitions and engine-v25 load/eligibility/resistance profiles
-integrated**.
+Design status: **runtime-v1 visuals/definitions and engine-v25 load/resistance profiles plus pure
+eligibility evaluator implemented; production mission integration pending**.
 
 Runtime-v1 implements all four pieces for every retained Armour material and a metal Shield at every
 rank. The 21 complete-set images are approved continuity references only; the 84 individual Armour
-pieces are the equippable definitions. Engine-v25 also binds load, eligibility, delivery families,
-and named resistance grants. General armour-point magnitudes, over-tolerance penalty curves, magical
-support values, and set convenience actions remain deferred.
+pieces are the equippable definitions. Engine-v25 also binds load, delivery families, and named
+resistance grants, and exposes a pure eligibility evaluator. Production missions do not yet consume
+that evaluation. General armour-point magnitudes, over-tolerance penalty curves, magical support
+values, and set convenience actions remain deferred.
 
 Armour uses three classes. The rank-bearing material determines the class; named cuts, cultural
 styles, coverage details, and monster-derived appearances do not create more mechanical classes.
@@ -31,9 +32,11 @@ item requirements, not the hero's Domain.
 | **Light Armour** | `6 / 14 / 11 / 5` | none | Pierce 400 bp (authored cap 1,000) |
 | **Robes** | `2 / 4 / 3 / 2` | none | Arcane 300 bp (authored cap 900) |
 
-Total equipped load is compared with scoped effective equipment-load Might. Explicit item
-requirements read intrinsic Might, so a temporary load bonus cannot satisfy Heavy Armour's Might
-gate. Vitality is never an armour requirement.
+When the pure evaluator is called, total equipped load is compared with scoped effective
+equipment-load Might. Explicit item requirements read intrinsic Might, so a temporary load bonus
+cannot satisfy Heavy Armour's Might gate. Vitality is never an armour requirement. This is the
+defined profile/evaluator boundary, not a claim that the current legacy mission runner rejects the
+loadout.
 
 Equipment, passive-skill, and physiology grants become deterministic typed resistance receipts.
 Matching tags stack additively under the stricter authored/global cap, with a 7,500-basis-point

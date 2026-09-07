@@ -85,21 +85,25 @@ later supersedes the imported attribute and combat-mode rows identified below.
 - Dominion still needs rulings for radius, tick rate, and whether it applies inside its owner's
   party formation.
 
-## Living Village decisions required before implementation
+## Remaining Living Village decisions
 
-1. Lock one attribute vocabulary and one Health/Mana/stamina resource model.
-2. Lock one versioned Normal table for Living Village; keep Advanced, Special, gems, and pity
+[ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md) has resolved
+the attribute vocabulary as Might, Vitality, Agility, and Spirit, with Health and Mana as the only
+universal resource bars. The remaining decisions are:
+
+1. Lock one versioned Normal table for Living Village; keep Advanced, Special, gems, and pity
    documented but outside the first runtime.
-3. Decide whether one authored monster fixture enables a Fire, Earth, Wind, or Water base affinity;
+2. Decide whether one authored monster fixture enables a Fire, Earth, Wind, or Water base affinity;
    every 1★ prototype hero remains Unaligned.
-4. If a monster affinity is enabled, define its minimal combat-facing cycle checks and status
+3. If a monster affinity is enabled, define its minimal combat-facing cycle checks and status
    contract; affinity ranks and dual affinities remain outside the first runtime.
-5. Choose XP sources and a simple, legible level curve through the milestone’s tower floors.
-6. Confirm the proposed 8–12 initial skills, their progress thresholds, and passive application;
+4. Choose XP sources and a simple, legible level curve through the milestone’s tower floors.
+5. Confirm the proposed 8–12 initial skills, their progress thresholds, and passive application;
    complete ladders and stances are outside the first runtime.
-7. Define the minimal equipment slots, load equation, and monster-drop table.
-8. Define one static training facility, assignment flow, time cost, practice yield, and return report.
-9. Bind every progression mutation to a typed grant/event and show exact before/after deltas.
+6. Define the minimal equipment slots, production integration for the shipped pure load evaluator,
+   and monster-drop table.
+7. Define one static training facility, assignment flow, time cost, practice yield, and return report.
+8. Bind every progression mutation to a typed grant/event and show exact before/after deltas.
 
 The deferred systems should remain visible in the wiki so specialist agents can work ahead, but
 none should block the first summon → fight → train loop unless it supplies a required interface.

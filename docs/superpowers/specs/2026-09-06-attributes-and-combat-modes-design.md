@@ -6,8 +6,8 @@ Date: 2026-09-06
 
 Implementation plans:
 
-- `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`
-- `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`
+- [Four-attribute legacy combat foundation](../plans/2026-09-06-four-attribute-legacy-combat.md)
+- [Agent-readiness combat](../plans/2026-09-06-agent-readiness-combat.md)
 
 Implementation sequencing: the first plan owns the `engine-v25` four-attribute foundation and the
 operator-controlled `legacy-auto-v1` beta default. The second plan alone owns the unshipped
@@ -220,10 +220,11 @@ accuracy. Initial experience targets are 65-70% for a novice against an ordinary
 for a trained peer matchup, and 90-95% for mastery against an ordinary peer. Exact scales and clamps
 come from simulation rather than being frozen in this design.
 
-Criticals and misses use seeded engine randomness. Critical opportunity comes from the skill's
-authored behavior, target state, and explicit practice bonuses. Target conditions such as flanked,
-unaware, or staggered may create a strong critical opportunity without making critical chance a
-base attribute.
+In planned `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
+randomness. Shipped `legacy-auto-v1` retains its frozen sequential entropy. Critical opportunity
+comes from the skill's authored behavior, target state, and explicit practice bonuses. Target
+conditions such as flanked, unaware, or staggered may create a strong critical opportunity without
+making critical chance a base attribute.
 
 ## Equipment compatibility
 
@@ -262,19 +263,19 @@ choice batches instead of calling providers.
 
 ### Randomness
 
-Agent-readiness derives every roll from stable purpose keys rather than consuming one sequential
-stream:
+Planned `agent-readiness-v1` derives every roll from stable purpose keys rather than consuming one
+sequential stream:
 
 ```text
 roll = hash(
   master seed,
   attempt ID,
-  tick,
+  tick / decision-window ID,
   actor ID,
   action-instance ID,
   target ID when applicable,
   purpose,
-  sequence
+  purpose-local sequence
 )
 ```
 

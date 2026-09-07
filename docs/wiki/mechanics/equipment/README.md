@@ -2,11 +2,12 @@
 
 Wiki ID: `mechanics.equipment`
 
-Design status: **runtime-v1 catalog plus versioned `engine-v25` combat profiles implemented**. The
-canonical item classes and material relationships are intentionally smaller than the imported
-compendium. The implementation ships 140 Weapon, Armour-piece, Shield, and Staff definitions and a
-separately hash-bound combat profile for each. General armour magnitudes, durability behavior,
-magical active skills, Tool, Accessory, and later quality rules remain unresolved.
+Design status: **runtime-v1 catalog plus versioned `engine-v25` combat profiles and pure evaluator
+implemented; production mission integration pending**. The canonical item classes and material
+relationships are intentionally smaller than the imported compendium. The implementation ships 140
+Weapon, Armour-piece, Shield, and Staff definitions and a separately hash-bound combat profile for
+each. General armour magnitudes, durability behavior, magical active skills, Tool, Accessory, and
+later quality rules remain unresolved.
 
 Equipment covers materials, weapons, armour, shields, casting focuses, tools, accessories, and
 sets. It is a companion to the progression and skill systems: equipment supplements a build,
@@ -85,9 +86,12 @@ forge or receive an authored-drop item
 Combat mechanics live in `combat-equipment-profiles-v1`, separate from the frozen
 `equipment-content-v1` definition/visual catalog. This preserves all existing IDs and the historical
 equipment hash while making load, requirements, delivery families, and named resistances auditable.
-The aggregate combat-content binding includes both the combat-skill and combat-equipment-profile
-catalog hashes; a mission attempt stores that aggregate and does not consult a later operator
-default while it runs.
+The shipped pure profile/evaluator boundary can calculate eligibility and enumerate active skill
+actions without mutating a mission. Production gameplay has not yet integrated that evaluation;
+`legacy-auto-v1` remains isolated behind its frozen compatibility projection. The aggregate
+combat-content binding includes both the combat-skill and combat-equipment-profile catalog hashes;
+a mission attempt stores that aggregate and does not consult a later operator default while it
+runs.
 
 - each equipped item contributes an integer load;
 - Might supplies effective equipment-load tolerance;

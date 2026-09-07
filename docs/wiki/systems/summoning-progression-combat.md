@@ -193,23 +193,32 @@ Fairness requirements follow from this boundary:
 
 Human realism changes **how power is expressed**, not whether power exists.
 
-The future readiness production shape is a deterministic stepped simulation around an external
-provider boundary:
+The future readiness production shape keeps provider calls outside the resolver. An external
+coordinator receives a `DecisionWindow` from `advanceUntilDecision`, calls each ready actor's
+provider concurrently, validates and records the responses, and passes one choice batch to
+`applyChoiceBatch`. Replay bypasses providers and supplies the recorded batches directly.
+
+The master seed is an input. In the unshipped `agent-readiness-v1`, individual rolls—including
+hit/miss and critical resolution—will derive from the complete stable purpose-key identity rather
+than the position-dependent stream retained by historical legacy combat:
 
 ```text
-simulate(CombatSpec, ProviderBinding) -> CombatResult
+roll = hash(
+  master seed,
+  attempt ID,
+  tick / decision-window ID,
+  actor ID,
+  action-instance ID,
+  target ID when applicable,
+  purpose,
+  purpose-local sequence
+)
 ```
 
-The master seed is an input. In `agent-readiness-v1`, individual rolls will derive from stable
-purpose keys rather than the position-dependent stream retained by historical legacy combat:
-
-```text
-roll = hash(masterSeed, encounterIndex, tick, actorId, purpose, sequence)
-```
-
-Purposes include initiative, hit, critical, status, drop, and reward. Given the same frozen spec,
-seed, and choices, replay must produce the same receipt and trace. Changing one choice may change
-affected outcomes without reshuffling unrelated call sites.
+Purposes distinguish readiness ties, hit/miss, critical, status, target fallback, drop, and reward.
+Given the same frozen spec, seed, and choices, replay must produce the same receipt and trace.
+Changing one choice may change affected outcomes without reshuffling unrelated call sites. Shipped
+`legacy-auto-v1` does not use these purpose keys; it retains its frozen sequential entropy.
 
 ### Planned common result and consequences
 

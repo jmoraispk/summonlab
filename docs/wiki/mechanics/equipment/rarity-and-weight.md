@@ -2,7 +2,8 @@
 
 Wiki ID: `mechanics.equipment.rarity-weight`
 
-Design status: **runtime-v1 craftsmanship foundation; engine-v25 load and eligibility implemented**.
+Design status: **runtime-v1 craftsmanship foundation; engine-v25 load profiles and pure eligibility
+evaluator implemented; production mission integration pending**.
 
 Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
 final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
@@ -50,11 +51,12 @@ supplement a build, not define one.
 
 ## Weight classes
 
-Weight is the link between equipment and attributes. A hero's total equipped load must not exceed
-their effective Might in the `equipment-load` scope. A permanent item requirement reads intrinsic
-Might instead. Vitality contributes to neither check and is never an armour gate.
+Weight is the link between equipment and attributes. The shipped pure evaluator considers a
+loadout eligible only when total equipped load does not exceed effective Might in the
+`equipment-load` scope. A permanent item requirement reads intrinsic Might instead. Vitality
+contributes to neither check and is never an armour gate.
 
-| Class | Typical equipment | Current behavior if over tolerance |
+| Class | Typical equipment | Pure evaluator result if over tolerance |
 | --- | --- | --- |
 | **Light** | Dagger, Robes, Accessory | Rarely an issue |
 | **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | loadout is ineligible |
@@ -71,9 +73,10 @@ The combat profile uses explicit per-item load rather than deriving load from th
 | Robes, Head / Torso / Legs / Boots | `2 / 4 / 3 / 2` |
 
 Current heavy-weight profiles require intrinsic Might 35; Heavy Armour requires intrinsic Might 45
-and `armour-training`. No production profile uses a Vitality requirement. The engine currently
-rejects an over-tolerance loadout rather than applying the movement, evasion, or readiness penalties
-described by earlier drafts.
+and `armour-training`. No production profile uses a Vitality requirement. The pure evaluator marks
+an over-tolerance loadout ineligible rather than calculating the movement, evasion, or readiness
+penalties described by earlier drafts. Production gameplay has not yet integrated this check, so
+the current `legacy-auto-v1` runner does not reject a loadout on this basis.
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
 which is one of the main reasons a roster wants a good armoursmith.
