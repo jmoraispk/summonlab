@@ -204,7 +204,12 @@ export const CombatRulesV1Schema = z
 				combatRecoveryBasisPoints: BasisPointsSchema
 			})
 			.strict(),
-		armour: z.object({ curveConstant: z.number().int().positive() }).strict(),
+		armour: z
+			.object({
+				curveConstant: z.number().int().positive(),
+				maximumGeneralReductionBasisPoints: BasisPointsSchema.max(7_499)
+			})
+			.strict(),
 		resistance: z.object({ capBasisPoints: BasisPointsSchema }).strict(),
 		learning: z
 			.object({

@@ -229,6 +229,15 @@ describe('four-attribute combat capability math', () => {
 		expect(armourReduction(100, 0, COMBAT_RULES_V1)).toBe(5_000);
 		expect(armourReduction(100, 25, COMBAT_RULES_V1)).toBe(4_286);
 		expect(armourReduction(50, 100, COMBAT_RULES_V1)).toBe(0);
+		expect(armourReduction(1_000_000, 0, COMBAT_RULES_V1)).toBe(7_499);
+
+		let previous = -1;
+		for (let armour = 0; armour <= 10_000; armour += 1) {
+			const reduction = armourReduction(armour, 0, COMBAT_RULES_V1);
+			expect(reduction).toBeGreaterThanOrEqual(previous);
+			expect(reduction).toBeLessThan(7_500);
+			previous = reduction;
+		}
 	});
 
 	it('adds only matching named resistances and caps their combined reduction', () => {

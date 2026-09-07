@@ -4,7 +4,7 @@
 	"bindings": {
 		"rules": {
 			"rulesVersion": "combat-rules-v1",
-			"rulesHash": "8dbabd54ac17398bba2c64598322a51d09c7abb6c1f3f2d3f944da023c44cfed"
+			"rulesHash": "eb729d85f7a44f74764e1ec7d49c2c039b97058b4dfe1dfe5c04fb2117f31cc8"
 		},
 		"combatContent": {
 			"bindingVersion": "combat-content-binding-v1",
@@ -25,9 +25,62 @@
 		"profile": {
 			"profileVersion": "combat-balance-simulation-profile-v1",
 			"calibrationStatus": "benchmark-promotion-candidate",
-			"randomnessVersion": "sha256-seeded-xorshift32-v1",
-			"agilityAccuracyBasisPointsPerPoint": 10,
-			"agilityAccuracyCapBasisPoints": 900,
+			"randomness": {
+				"version": "sha256-seeded-xorshift32-v1",
+				"xorshift32": {
+					"firstLeftShift": 13,
+					"rightShift": 17,
+					"secondLeftShift": 5,
+					"zeroStateFallback": 1831565813
+				},
+				"rollModulo": 10000
+			},
+			"benchmarkLevels": [
+				10,
+				40,
+				70,
+				99
+			],
+			"attributeSpreads": [
+				"low",
+				"mid",
+				"high"
+			],
+			"trialsPerMatchup": 10000,
+			"percentileMethod": "nearest-rank",
+			"percentileFractions": {
+				"p10": 0.1,
+				"p50": 0.5,
+				"p90": 0.9
+			},
+			"seedSet": [
+				"0x243f6a88",
+				"0x85a308d3",
+				"0x13198a2e",
+				"0x03707344",
+				"0xa4093822",
+				"0x299f31d0",
+				"0x082efa98",
+				"0xec4e6c89",
+				"0x452821e6",
+				"0x38d01377"
+			],
+			"masteryFixtures": {
+				"novice": 0,
+				"trained": 50,
+				"mastered": 100
+			},
+			"hitContest": {
+				"minimumHitChanceBasisPoints": 500,
+				"maximumHitChanceBasisPoints": 9950,
+				"attackerLevelAccuracyBasisPointsPerLevel": 2,
+				"defenderLevelEvasionBasisPointsPerLevel": 1,
+				"defenderAgilityEvasionBasisPointsPerPoint": 1,
+				"relativeAgilityBasisPointsPerPoint": 10,
+				"relativeAgilityCapBasisPoints": 900,
+				"fasterEndpointAgility": 100,
+				"slowerEndpointAgility": 1
+			},
 			"damageVarianceBasisPoints": [
 				9000,
 				11000
@@ -40,8 +93,47 @@
 				150,
 				250
 			],
-			"armouredBenchmarkPoints": 100,
 			"maxCompletionActions": 200,
+			"damageFixture": {
+				"masteryBand": "trained",
+				"minimumSuccessfulDamage": 1,
+				"mitigationOrder": [
+					"armour",
+					"named-resistance"
+				],
+				"penetrationPoints": 0
+			},
+			"promotionGates": {
+				"accuracyBasisPoints": {
+					"novice": {
+						"minimumBasisPoints": 6500,
+						"maximumBasisPoints": 7000
+					},
+					"trained": {
+						"minimumBasisPoints": 7700,
+						"maximumBasisPoints": 8300
+					},
+					"mastered": {
+						"minimumBasisPoints": 9000,
+						"maximumBasisPoints": 9500
+					}
+				},
+				"maximumRelativeAgilityShiftBasisPoints": 1000,
+				"offAffinityMedianRatioBasisPoints": {
+					"minimum": 8500,
+					"maximum": 11500
+				},
+				"regenerationComparison": "p90-total-regeneration-below-p10-total-damage"
+			},
+			"sustainedTimeline": {
+				"tickDurationMilliseconds": 100,
+				"horizonTicks": 120,
+				"firstAttackTick": 0,
+				"attackCadenceTicks": 10,
+				"initialTicksSinceDamage": 0,
+				"resolutionOrder": "attack-then-regeneration",
+				"throughputNormalizationTicks": 1000
+			},
 			"attributeValues": {
 				"10": {
 					"low": 10,
@@ -73,9 +165,10 @@
 			"benchmarkDomain": {
 				"armour": {
 					"minimumPoints": 0,
-					"maximumPoints": 250,
+					"maximumPoints": 10000,
 					"armouredFixturePoints": 100,
-					"runtimeMagnitudeStatus": "not-yet-shipped"
+					"equipmentMagnitudeStatus": "not-yet-shipped",
+					"reductionCeilingStatus": "authoritative-combat-rule"
 				}
 			},
 			"affinityAssociations": {
@@ -84,12 +177,36 @@
 				"wind": "agility",
 				"water": "spirit"
 			},
+			"affinityArchetypes": {
+				"fireCaster": {
+					"archetype": "fire-caster",
+					"channel": "magical",
+					"matchedAffinity": "water",
+					"offAffinity": "fire"
+				},
+				"waterMartial": {
+					"archetype": "water-martial",
+					"channel": "physical",
+					"matchedAffinity": "fire",
+					"offAffinity": "water"
+				}
+			},
+			"armourFixtures": {
+				"unarmoured": {
+					"armourPoints": 0,
+					"includeHeavyArmourResistance": false
+				},
+				"armoured": {
+					"armourPoints": 100,
+					"includeHeavyArmourResistance": true
+				}
+			},
 			"sourceRecords": {
 				"accuracySkillId": "combat-skill-basic-sword-strike",
 				"armouredEquipmentDefinitionId": "equipment-iron-heavy-armour-torso"
 			}
 		},
-		"profileHash": "cd4a8948395c5d05c26d420383902bf613ad789613481886c11fa4ea29a3208e",
+		"profileHash": "daebeee1aa95802e0300a7cabe131a1bcbb997a73f45492f2d9c90a731bafe0d",
 		"trialsPerMatchup": 10000,
 		"percentileMethod": "nearest-rank",
 		"seedSet": [
@@ -156,18 +273,26 @@
 		},
 		"passiveCombatRegeneration": {
 			"status": "passed",
-			"maximumRegenerationToDamageRatioBasisPoints": 2081
+			"maximumRegenerationToDamageRatioBasisPoints": 3
 		},
 		"offAffinityCompletion": {
 			"status": "passed",
+			"minimumAllowedMedianRatioBasisPoints": 8500,
 			"maximumAllowedMedianRatioBasisPoints": 11500,
+			"minimumObservedMedianRatioBasisPoints": 10000,
 			"maximumObservedMedianRatioBasisPoints": 11111
 		},
 		"armour": {
 			"status": "passed",
 			"maximumAllowedExclusiveReductionBasisPoints": 7500,
-			"maximumObservedReductionBasisPoints": 7143,
-			"monotonic": true
+			"maximumObservedReductionBasisPoints": 7499,
+			"monotonic": true,
+			"exhaustiveDomain": {
+				"minimumArmourPoints": 0,
+				"maximumArmourPoints": 10000,
+				"testedPointCount": 10001,
+				"curveHash": "d1b4cd26653e2347046bf701f8c3e090c24b32f0f36dc45ef013622a2ef7c1a5"
+			}
 		}
 	},
 	"matchups": {
@@ -179,6 +304,10 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 20,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6750,
 				"observedHitRateBasisPoints": 6685,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6490,
@@ -193,6 +322,10 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 20,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8000,
 				"observedHitRateBasisPoints": 7921,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7720,
@@ -207,6 +340,10 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 20,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9250,
 				"observedHitRateBasisPoints": 9272,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 9130,
@@ -221,7 +358,11 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6740,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 30,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6740,
+				"observedHitRateBasisPoints": 6731,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6540,
 					"p50": 6770,
@@ -235,9 +376,13 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 7989,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 30,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 7990,
+				"observedHitRateBasisPoints": 7980,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7870,
+					"p10": 7860,
 					"p50": 7960,
 					"p90": 8110
 				}
@@ -249,11 +394,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9248,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 30,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9240,
+				"observedHitRateBasisPoints": 9240,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9050,
+					"p10": 9030,
 					"p50": 9240,
-					"p90": 9340
+					"p90": 9330
 				}
 			},
 			{
@@ -263,10 +412,14 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6734,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 40,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6730,
+				"observedHitRateBasisPoints": 6714,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6390,
-					"p50": 6740,
+					"p50": 6710,
 					"p90": 6940
 				}
 			},
@@ -277,11 +430,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8104,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 40,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 7980,
+				"observedHitRateBasisPoints": 8088,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7900,
-					"p50": 8090,
-					"p90": 8270
+					"p10": 7880,
+					"p50": 8070,
+					"p90": 8260
 				}
 			},
 			{
@@ -291,11 +448,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9283,
+				"attackerAccuracyBasisPoints": 20,
+				"defenderEvasionBasisPoints": 40,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9230,
+				"observedHitRateBasisPoints": 9264,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 9160,
-					"p50": 9260,
-					"p90": 9390
+					"p50": 9210,
+					"p90": 9360
 				}
 			},
 			{
@@ -305,11 +466,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6768,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 55,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6775,
+				"observedHitRateBasisPoints": 6793,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6560,
-					"p50": 6740,
-					"p90": 6950
+					"p10": 6570,
+					"p50": 6750,
+					"p90": 6980
 				}
 			},
 			{
@@ -319,11 +484,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8035,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 55,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8025,
+				"observedHitRateBasisPoints": 8065,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7820,
-					"p50": 8060,
-					"p90": 8110
+					"p10": 7860,
+					"p50": 8070,
+					"p90": 8120
 				}
 			},
 			{
@@ -333,10 +502,14 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9240,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 55,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9275,
+				"observedHitRateBasisPoints": 9266,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9080,
-					"p50": 9260,
+					"p10": 9090,
+					"p50": 9280,
 					"p90": 9350
 				}
 			},
@@ -347,10 +520,14 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6673,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 75,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6755,
+				"observedHitRateBasisPoints": 6678,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6350,
-					"p50": 6640,
+					"p50": 6650,
 					"p90": 6930
 				}
 			},
@@ -361,11 +538,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8055,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 75,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8005,
+				"observedHitRateBasisPoints": 8064,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7940,
-					"p50": 8020,
-					"p90": 8200
+					"p50": 8030,
+					"p90": 8210
 				}
 			},
 			{
@@ -375,11 +556,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9267,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 75,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9255,
+				"observedHitRateBasisPoints": 9273,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9180,
+					"p10": 9190,
 					"p50": 9230,
-					"p90": 9360
+					"p90": 9370
 				}
 			},
 			{
@@ -389,11 +574,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6826,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 95,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6735,
+				"observedHitRateBasisPoints": 6813,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6600,
-					"p50": 6830,
-					"p90": 6900
+					"p10": 6590,
+					"p50": 6810,
+					"p90": 6880
 				}
 			},
 			{
@@ -403,10 +592,14 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8005,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 95,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 7985,
+				"observedHitRateBasisPoints": 7986,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7820,
-					"p50": 8030,
+					"p10": 7810,
+					"p50": 7990,
 					"p90": 8100
 				}
 			},
@@ -417,11 +610,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9213,
+				"attackerAccuracyBasisPoints": 80,
+				"defenderEvasionBasisPoints": 95,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9235,
+				"observedHitRateBasisPoints": 9200,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9130,
-					"p50": 9210,
-					"p90": 9280
+					"p10": 9120,
+					"p50": 9190,
+					"p90": 9270
 				}
 			},
 			{
@@ -431,11 +628,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6634,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 90,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6800,
+				"observedHitRateBasisPoints": 6680,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6350,
-					"p50": 6630,
-					"p90": 6780
+					"p10": 6380,
+					"p50": 6680,
+					"p90": 6800
 				}
 			},
 			{
@@ -445,11 +646,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8008,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 90,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8050,
+				"observedHitRateBasisPoints": 8058,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7900,
-					"p50": 7990,
-					"p90": 8080
+					"p10": 7940,
+					"p50": 8050,
+					"p90": 8110
 				}
 			},
 			{
@@ -459,11 +664,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9285,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 90,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9300,
+				"observedHitRateBasisPoints": 9337,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9140,
-					"p50": 9280,
-					"p90": 9380
+					"p10": 9170,
+					"p50": 9350,
+					"p90": 9420
 				}
 			},
 			{
@@ -473,11 +682,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6803,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 120,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6770,
+				"observedHitRateBasisPoints": 6817,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6580,
-					"p50": 6770,
-					"p90": 6850
+					"p10": 6600,
+					"p50": 6800,
+					"p90": 6870
 				}
 			},
 			{
@@ -487,11 +700,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 7995,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 120,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8020,
+				"observedHitRateBasisPoints": 8013,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7740,
-					"p50": 8000,
-					"p90": 8230
+					"p10": 7760,
+					"p50": 8010,
+					"p90": 8260
 				}
 			},
 			{
@@ -501,11 +718,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9225,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 120,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9270,
+				"observedHitRateBasisPoints": 9240,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 9060,
-					"p50": 9200,
-					"p90": 9290
+					"p50": 9210,
+					"p90": 9320
 				}
 			},
 			{
@@ -515,11 +736,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6772,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 150,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6740,
+				"observedHitRateBasisPoints": 6760,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6570,
-					"p50": 6800,
-					"p90": 6880
+					"p10": 6540,
+					"p50": 6790,
+					"p90": 6870
 				}
 			},
 			{
@@ -529,10 +754,14 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8020,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 150,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 7990,
+				"observedHitRateBasisPoints": 8013,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7810,
-					"p50": 7950,
+					"p10": 7790,
+					"p50": 7940,
 					"p90": 8210
 				}
 			},
@@ -543,11 +772,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9266,
+				"attackerAccuracyBasisPoints": 140,
+				"defenderEvasionBasisPoints": 150,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9240,
+				"observedHitRateBasisPoints": 9249,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9170,
-					"p50": 9240,
-					"p90": 9380
+					"p10": 9160,
+					"p50": 9220,
+					"p90": 9350
 				}
 			},
 			{
@@ -557,11 +790,15 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6750,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 124,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6824,
+				"observedHitRateBasisPoints": 6815,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6540,
-					"p50": 6760,
-					"p90": 6880
+					"p10": 6610,
+					"p50": 6820,
+					"p90": 6970
 				}
 			},
 			{
@@ -571,11 +808,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8007,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 124,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8074,
+				"observedHitRateBasisPoints": 8092,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7830,
-					"p50": 8070,
-					"p90": 8120
+					"p10": 7890,
+					"p50": 8120,
+					"p90": 8220
 				}
 			},
 			{
@@ -585,11 +826,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9270,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 124,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9324,
+				"observedHitRateBasisPoints": 9336,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9110,
-					"p50": 9280,
-					"p90": 9380
+					"p10": 9210,
+					"p50": 9320,
+					"p90": 9440
 				}
 			},
 			{
@@ -599,10 +844,14 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6769,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 164,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6784,
+				"observedHitRateBasisPoints": 6798,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6430,
-					"p50": 6750,
+					"p10": 6470,
+					"p50": 6780,
 					"p90": 6990
 				}
 			},
@@ -613,11 +862,15 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 8018,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 164,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8034,
+				"observedHitRateBasisPoints": 8050,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7810,
-					"p50": 7990,
-					"p90": 8170
+					"p10": 7850,
+					"p50": 8000,
+					"p90": 8210
 				}
 			},
 			{
@@ -627,11 +880,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9244,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 164,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9284,
+				"observedHitRateBasisPoints": 9283,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 9030,
-					"p50": 9260,
-					"p90": 9330
+					"p10": 9080,
+					"p50": 9270,
+					"p90": 9360
 				}
 			},
 			{
@@ -641,7 +898,11 @@
 				"masteryBand": "novice",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 6750,
-				"observedHitRateBasisPoints": 6773,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 194,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 6754,
+				"observedHitRateBasisPoints": 6776,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6530,
 					"p50": 6790,
@@ -655,10 +916,14 @@
 				"masteryBand": "trained",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 8000,
-				"observedHitRateBasisPoints": 7999,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 194,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 8004,
+				"observedHitRateBasisPoints": 8002,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7860,
-					"p50": 7960,
+					"p50": 7970,
 					"p90": 8140
 				}
 			},
@@ -669,11 +934,15 @@
 				"masteryBand": "mastered",
 				"trials": 10000,
 				"authoredAccuracyBasisPoints": 9250,
-				"observedHitRateBasisPoints": 9231,
+				"attackerAccuracyBasisPoints": 198,
+				"defenderEvasionBasisPoints": 194,
+				"relativeAgilityBasisPoints": 0,
+				"contestChanceBasisPoints": 9254,
+				"observedHitRateBasisPoints": 9236,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 9080,
 					"p50": 9230,
-					"p90": 9270
+					"p90": 9290
 				}
 			}
 		],
@@ -721,12 +990,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 800,
-				"observedChanceShiftBasisPoints": 864,
-				"adjustedHitRateBasisPoints": 8764,
+				"observedChanceShiftBasisPoints": 861,
+				"adjustedHitRateBasisPoints": 8750,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8590,
-					"p50": 8740,
-					"p90": 8870
+					"p10": 8570,
+					"p50": 8730,
+					"p90": 8850
 				}
 			},
 			{
@@ -738,12 +1007,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -190,
-				"observedChanceShiftBasisPoints": -191,
-				"adjustedHitRateBasisPoints": 7757,
+				"observedChanceShiftBasisPoints": -196,
+				"adjustedHitRateBasisPoints": 7745,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7610,
-					"p50": 7740,
-					"p90": 7850
+					"p10": 7600,
+					"p50": 7730,
+					"p90": 7820
 				}
 			},
 			{
@@ -755,12 +1024,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 700,
-				"observedChanceShiftBasisPoints": 711,
-				"adjustedHitRateBasisPoints": 8665,
+				"observedChanceShiftBasisPoints": 718,
+				"adjustedHitRateBasisPoints": 8648,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 8400,
-					"p50": 8700,
-					"p90": 8760
+					"p50": 8660,
+					"p90": 8730
 				}
 			},
 			{
@@ -772,12 +1041,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -290,
-				"observedChanceShiftBasisPoints": -279,
-				"adjustedHitRateBasisPoints": 7694,
+				"observedChanceShiftBasisPoints": -299,
+				"adjustedHitRateBasisPoints": 7661,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7530,
-					"p50": 7700,
-					"p90": 7840
+					"p10": 7500,
+					"p50": 7650,
+					"p90": 7810
 				}
 			},
 			{
@@ -789,12 +1058,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 850,
-				"observedChanceShiftBasisPoints": 883,
-				"adjustedHitRateBasisPoints": 8885,
+				"observedChanceShiftBasisPoints": 874,
+				"adjustedHitRateBasisPoints": 8910,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8810,
+					"p10": 8820,
 					"p50": 8880,
-					"p90": 8970
+					"p90": 9000
 				}
 			},
 			{
@@ -806,12 +1075,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -140,
-				"observedChanceShiftBasisPoints": -144,
-				"adjustedHitRateBasisPoints": 7860,
+				"observedChanceShiftBasisPoints": -149,
+				"adjustedHitRateBasisPoints": 7884,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7670,
-					"p50": 7860,
-					"p90": 7980
+					"p10": 7700,
+					"p50": 7880,
+					"p90": 8020
 				}
 			},
 			{
@@ -824,11 +1093,11 @@
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 650,
 				"observedChanceShiftBasisPoints": 634,
-				"adjustedHitRateBasisPoints": 8591,
+				"adjustedHitRateBasisPoints": 8600,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 8410,
-					"p50": 8530,
-					"p90": 8790
+					"p50": 8540,
+					"p90": 8800
 				}
 			},
 			{
@@ -840,12 +1109,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -340,
-				"observedChanceShiftBasisPoints": -328,
-				"adjustedHitRateBasisPoints": 7714,
+				"observedChanceShiftBasisPoints": -326,
+				"adjustedHitRateBasisPoints": 7722,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7630,
 					"p50": 7700,
-					"p90": 7770
+					"p90": 7800
 				}
 			},
 			{
@@ -857,12 +1126,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 450,
-				"observedChanceShiftBasisPoints": 490,
-				"adjustedHitRateBasisPoints": 8469,
+				"observedChanceShiftBasisPoints": 489,
+				"adjustedHitRateBasisPoints": 8456,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8340,
+					"p10": 8320,
 					"p50": 8460,
-					"p90": 8570
+					"p90": 8550
 				}
 			},
 			{
@@ -874,12 +1143,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -540,
-				"observedChanceShiftBasisPoints": -532,
-				"adjustedHitRateBasisPoints": 7489,
+				"observedChanceShiftBasisPoints": -531,
+				"adjustedHitRateBasisPoints": 7471,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7310,
+					"p10": 7300,
 					"p50": 7470,
-					"p90": 7610
+					"p90": 7580
 				}
 			},
 			{
@@ -891,12 +1160,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 800,
-				"observedChanceShiftBasisPoints": 820,
-				"adjustedHitRateBasisPoints": 8833,
+				"observedChanceShiftBasisPoints": 824,
+				"adjustedHitRateBasisPoints": 8893,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8620,
-					"p50": 8820,
-					"p90": 8930
+					"p10": 8690,
+					"p50": 8890,
+					"p90": 8980
 				}
 			},
 			{
@@ -908,12 +1177,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -190,
-				"observedChanceShiftBasisPoints": -158,
-				"adjustedHitRateBasisPoints": 7879,
+				"observedChanceShiftBasisPoints": -160,
+				"adjustedHitRateBasisPoints": 7919,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7780,
-					"p50": 7880,
-					"p90": 7960
+					"p10": 7830,
+					"p50": 7920,
+					"p90": 7980
 				}
 			},
 			{
@@ -925,11 +1194,11 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 500,
-				"observedChanceShiftBasisPoints": 479,
-				"adjustedHitRateBasisPoints": 8473,
+				"observedChanceShiftBasisPoints": 483,
+				"adjustedHitRateBasisPoints": 8493,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8270,
-					"p50": 8450,
+					"p10": 8300,
+					"p50": 8470,
 					"p90": 8640
 				}
 			},
@@ -942,12 +1211,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -490,
-				"observedChanceShiftBasisPoints": -501,
-				"adjustedHitRateBasisPoints": 7500,
+				"observedChanceShiftBasisPoints": -495,
+				"adjustedHitRateBasisPoints": 7523,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7260,
-					"p50": 7450,
-					"p90": 7610
+					"p50": 7510,
+					"p90": 7640
 				}
 			},
 			{
@@ -959,11 +1228,11 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 200,
-				"observedChanceShiftBasisPoints": 196,
-				"adjustedHitRateBasisPoints": 8233,
+				"observedChanceShiftBasisPoints": 197,
+				"adjustedHitRateBasisPoints": 8221,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8110,
-					"p50": 8250,
+					"p10": 8090,
+					"p50": 8230,
 					"p90": 8310
 				}
 			},
@@ -976,12 +1245,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -790,
-				"observedChanceShiftBasisPoints": -800,
-				"adjustedHitRateBasisPoints": 7213,
+				"observedChanceShiftBasisPoints": -799,
+				"adjustedHitRateBasisPoints": 7204,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6970,
-					"p50": 7190,
-					"p90": 7360
+					"p10": 6950,
+					"p50": 7180,
+					"p90": 7340
 				}
 			},
 			{
@@ -993,12 +1262,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 750,
-				"observedChanceShiftBasisPoints": 742,
-				"adjustedHitRateBasisPoints": 8722,
+				"observedChanceShiftBasisPoints": 731,
+				"adjustedHitRateBasisPoints": 8784,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8620,
-					"p50": 8700,
-					"p90": 8790
+					"p10": 8690,
+					"p50": 8770,
+					"p90": 8870
 				}
 			},
 			{
@@ -1010,12 +1279,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -240,
-				"observedChanceShiftBasisPoints": -243,
-				"adjustedHitRateBasisPoints": 7775,
+				"observedChanceShiftBasisPoints": -256,
+				"adjustedHitRateBasisPoints": 7840,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 7480,
-					"p50": 7750,
-					"p90": 7970
+					"p10": 7510,
+					"p50": 7830,
+					"p90": 8000
 				}
 			},
 			{
@@ -1027,12 +1296,12 @@
 				"attackerAgility": 100,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 350,
-				"observedChanceShiftBasisPoints": 353,
-				"adjustedHitRateBasisPoints": 8351,
+				"observedChanceShiftBasisPoints": 352,
+				"adjustedHitRateBasisPoints": 8387,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 8250,
-					"p50": 8360,
-					"p90": 8400
+					"p10": 8280,
+					"p50": 8410,
+					"p90": 8430
 				}
 			},
 			{
@@ -1044,12 +1313,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -640,
-				"observedChanceShiftBasisPoints": -635,
-				"adjustedHitRateBasisPoints": 7271,
+				"observedChanceShiftBasisPoints": -636,
+				"adjustedHitRateBasisPoints": 7306,
 				"seedCohortHitRateBasisPoints": {
-					"p10": 6900,
-					"p50": 7270,
-					"p90": 7420
+					"p10": 6950,
+					"p50": 7290,
+					"p90": 7460
 				}
 			},
 			{
@@ -1062,7 +1331,7 @@
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": 50,
 				"observedChanceShiftBasisPoints": 60,
-				"adjustedHitRateBasisPoints": 7981,
+				"adjustedHitRateBasisPoints": 7983,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 7850,
 					"p50": 7990,
@@ -1078,12 +1347,12 @@
 				"attackerAgility": 1,
 				"trials": 10000,
 				"effectiveChanceShiftBasisPoints": -900,
-				"observedChanceShiftBasisPoints": -892,
-				"adjustedHitRateBasisPoints": 7149,
+				"observedChanceShiftBasisPoints": -891,
+				"adjustedHitRateBasisPoints": 7155,
 				"seedCohortHitRateBasisPoints": {
 					"p10": 6930,
-					"p50": 7090,
-					"p90": 7300
+					"p50": 7100,
+					"p90": 7310
 				}
 			}
 		],
@@ -1094,13 +1363,31 @@
 				"attributeSpread": "low",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 10.381,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 124.494,
+					"p10": 102,
+					"p50": 128,
+					"p90": 146
+				},
+				"regenerationTotal": {
+					"mean": 0.03,
 					"p10": 0,
-					"p50": 13,
-					"p90": 14
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1037.453,
+					"p10": 850,
+					"p50": 1067,
+					"p90": 1217
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.25,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1109,13 +1396,31 @@
 				"attributeSpread": "low",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 4.805,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 57.684,
+					"p10": 48,
+					"p50": 60,
+					"p90": 66
+				},
+				"regenerationTotal": {
+					"mean": 0.016,
 					"p10": 0,
-					"p50": 6,
-					"p90": 6
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 480.7,
+					"p10": 400,
+					"p50": 500,
+					"p90": 550
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.133,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1124,13 +1429,31 @@
 				"attributeSpread": "mid",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 11.188,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 134.216,
+					"p10": 110,
+					"p50": 138,
+					"p90": 157
+				},
+				"regenerationTotal": {
+					"mean": 0.015,
 					"p10": 0,
-					"p50": 14,
-					"p90": 15
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1118.464,
+					"p10": 917,
+					"p50": 1150,
+					"p90": 1308
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.125,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1139,13 +1462,31 @@
 				"attributeSpread": "mid",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 5.081,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 60.635,
+					"p10": 49,
+					"p50": 62,
+					"p90": 71
+				},
+				"regenerationTotal": {
+					"mean": 0.021,
 					"p10": 0,
-					"p50": 6,
-					"p90": 7
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 505.294,
+					"p10": 408,
+					"p50": 517,
+					"p90": 592
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.175,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1154,13 +1495,31 @@
 				"attributeSpread": "high",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 12.784,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 153.118,
+					"p10": 126,
+					"p50": 157,
+					"p90": 179
+				},
+				"regenerationTotal": {
+					"mean": 0.014,
 					"p10": 0,
-					"p50": 16,
-					"p90": 17
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1275.982,
+					"p10": 1050,
+					"p50": 1308,
+					"p90": 1492
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.116,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1169,13 +1528,31 @@
 				"attributeSpread": "high",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 5.773,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 69.978,
+					"p10": 57,
+					"p50": 72,
+					"p90": 82
+				},
+				"regenerationTotal": {
+					"mean": 0.024,
 					"p10": 0,
-					"p50": 7,
-					"p90": 8
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 583.152,
+					"p10": 475,
+					"p50": 600,
+					"p90": 683
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.199,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1184,13 +1561,31 @@
 				"attributeSpread": "low",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 16.732,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 202.724,
+					"p10": 165,
+					"p50": 207,
+					"p90": 237
+				},
+				"regenerationTotal": {
+					"mean": 0.024,
 					"p10": 0,
-					"p50": 20,
-					"p90": 23
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1689.363,
+					"p10": 1375,
+					"p50": 1725,
+					"p90": 1975
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.2,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1199,13 +1594,31 @@
 				"attributeSpread": "low",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 7.861,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 94.064,
+					"p10": 77,
+					"p50": 96,
+					"p90": 110
+				},
+				"regenerationTotal": {
+					"mean": 0.013,
 					"p10": 0,
-					"p50": 9,
-					"p90": 11
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 783.862,
+					"p10": 642,
+					"p50": 800,
+					"p90": 917
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.108,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1214,13 +1627,31 @@
 				"attributeSpread": "mid",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 19.291,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 230.77,
+					"p10": 189,
+					"p50": 237,
+					"p90": 269
+				},
+				"regenerationTotal": {
+					"mean": 0.026,
 					"p10": 0,
-					"p50": 23,
-					"p90": 26
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1923.085,
+					"p10": 1575,
+					"p50": 1975,
+					"p90": 2242
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.216,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1229,13 +1660,31 @@
 				"attributeSpread": "mid",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 8.972,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 107.813,
+					"p10": 88,
+					"p50": 110,
+					"p90": 126
+				},
+				"regenerationTotal": {
+					"mean": 0.018,
 					"p10": 0,
-					"p50": 11,
-					"p90": 12
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 898.441,
+					"p10": 733,
+					"p50": 917,
+					"p90": 1050
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.15,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1244,13 +1693,31 @@
 				"attributeSpread": "high",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 22.425,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 268.265,
+					"p10": 220,
+					"p50": 275,
+					"p90": 314
+				},
+				"regenerationTotal": {
+					"mean": 0.015,
 					"p10": 0,
-					"p50": 27,
-					"p90": 30
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2235.542,
+					"p10": 1833,
+					"p50": 2292,
+					"p90": 2617
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.125,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1259,13 +1726,31 @@
 				"attributeSpread": "high",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 10.632,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 126.691,
+					"p10": 104,
+					"p50": 130,
+					"p90": 148
+				},
+				"regenerationTotal": {
+					"mean": 0.024,
 					"p10": 0,
-					"p50": 13,
-					"p90": 14
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1055.762,
+					"p10": 867,
+					"p50": 1083,
+					"p90": 1233
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.2,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1274,13 +1759,31 @@
 				"attributeSpread": "low",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 23.235,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 280.207,
+					"p10": 230,
+					"p50": 286,
+					"p90": 326
+				},
+				"regenerationTotal": {
+					"mean": 0.017,
 					"p10": 0,
-					"p50": 28,
-					"p90": 31
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2335.054,
+					"p10": 1917,
+					"p50": 2383,
+					"p90": 2717
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.141,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1289,13 +1792,31 @@
 				"attributeSpread": "low",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 11.031,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 132.715,
+					"p10": 108,
+					"p50": 136,
+					"p90": 155
+				},
+				"regenerationTotal": {
+					"mean": 0.026,
 					"p10": 0,
-					"p50": 13,
-					"p90": 15
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1105.954,
+					"p10": 900,
+					"p50": 1133,
+					"p90": 1292
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.216,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1304,13 +1825,31 @@
 				"attributeSpread": "mid",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 28.757,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 347.78,
+					"p10": 284,
+					"p50": 356,
+					"p90": 404
+				},
+				"regenerationTotal": {
+					"mean": 0.013,
 					"p10": 0,
-					"p50": 35,
-					"p90": 39
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2898.163,
+					"p10": 2367,
+					"p50": 2967,
+					"p90": 3367
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.108,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1319,13 +1858,31 @@
 				"attributeSpread": "mid",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 13.524,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 162.112,
+					"p10": 133,
+					"p50": 167,
+					"p90": 188
+				},
+				"regenerationTotal": {
+					"mean": 0.026,
 					"p10": 0,
-					"p50": 17,
-					"p90": 18
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1350.935,
+					"p10": 1108,
+					"p50": 1392,
+					"p90": 1567
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.216,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1334,13 +1891,31 @@
 				"attributeSpread": "high",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 34.422,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 412.246,
+					"p10": 338,
+					"p50": 423,
+					"p90": 482
+				},
+				"regenerationTotal": {
+					"mean": 0.042,
 					"p10": 0,
-					"p50": 42,
-					"p90": 46
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 3435.389,
+					"p10": 2817,
+					"p50": 3525,
+					"p90": 4017
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.35,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1349,13 +1924,31 @@
 				"attributeSpread": "high",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 15.799,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 189.496,
+					"p10": 155,
+					"p50": 194,
+					"p90": 221
+				},
+				"regenerationTotal": {
+					"mean": 0.044,
 					"p10": 0,
-					"p50": 19,
-					"p90": 21
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1579.126,
+					"p10": 1292,
+					"p50": 1617,
+					"p90": 1842
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.367,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1364,13 +1957,31 @@
 				"attributeSpread": "low",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 30.315,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 368.27,
+					"p10": 301,
+					"p50": 376,
+					"p90": 427
+				},
+				"regenerationTotal": {
+					"mean": 0.011,
 					"p10": 0,
-					"p50": 37,
-					"p90": 41
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 3068.913,
+					"p10": 2508,
+					"p50": 3133,
+					"p90": 3558
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.091,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1379,13 +1990,31 @@
 				"attributeSpread": "low",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 1,
-				"sustainedPeerDamage": {
-					"mean": 14.022,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 170.243,
+					"p10": 139,
+					"p50": 174,
+					"p90": 197
+				},
+				"regenerationTotal": {
+					"mean": 0.023,
 					"p10": 0,
-					"p50": 17,
-					"p90": 19
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1418.689,
+					"p10": 1158,
+					"p50": 1450,
+					"p90": 1642
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.192,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1394,13 +2023,31 @@
 				"attributeSpread": "mid",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 39.808,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 481.586,
+					"p10": 394,
+					"p50": 494,
+					"p90": 560
+				},
+				"regenerationTotal": {
+					"mean": 0.05,
 					"p10": 0,
-					"p50": 49,
-					"p90": 54
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 4013.221,
+					"p10": 3283,
+					"p50": 4117,
+					"p90": 4667
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.417,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1409,13 +2056,31 @@
 				"attributeSpread": "mid",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 18.513,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 224.414,
+					"p10": 183,
+					"p50": 230,
+					"p90": 262
+				},
+				"regenerationTotal": {
+					"mean": 0.032,
 					"p10": 0,
-					"p50": 23,
-					"p90": 25
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1870.123,
+					"p10": 1525,
+					"p50": 1917,
+					"p90": 2183
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.267,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1424,13 +2089,31 @@
 				"attributeSpread": "high",
 				"armourState": "unarmoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 47.216,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 567.396,
+					"p10": 466,
+					"p50": 581,
+					"p90": 660
+				},
+				"regenerationTotal": {
+					"mean": 0.062,
 					"p10": 0,
-					"p50": 58,
-					"p90": 63
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 4728.307,
+					"p10": 3883,
+					"p50": 4842,
+					"p90": 5500
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.517,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			},
 			{
@@ -1439,13 +2122,31 @@
 				"attributeSpread": "high",
 				"armourState": "armoured",
 				"trials": 10000,
-				"combatHealthRegenerationDuringDelay": 0,
-				"combatHealthRegenerationPerTick": 2,
-				"sustainedPeerDamage": {
-					"mean": 22.082,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 264.66,
+					"p10": 217,
+					"p50": 271,
+					"p90": 308
+				},
+				"regenerationTotal": {
+					"mean": 0.054,
 					"p10": 0,
-					"p50": 27,
-					"p90": 29
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2205.501,
+					"p10": 1808,
+					"p50": 2258,
+					"p90": 2567
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.451,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
 				}
 			}
 		],
@@ -1458,6 +2159,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1467,6 +2170,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1483,6 +2188,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1492,6 +2199,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1508,6 +2217,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 14,
 						"p50": 16,
@@ -1517,6 +2228,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 14,
 						"p50": 16,
@@ -1533,6 +2246,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 14,
 						"p50": 16,
@@ -1542,6 +2257,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 14,
 						"p50": 16,
@@ -1558,15 +2275,19 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 15,
 						"p50": 17,
-						"p90": 20
+						"p90": 21
 					}
 				},
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 15,
 						"p50": 17,
@@ -1583,6 +2304,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 15,
 						"p50": 17,
@@ -1592,10 +2315,12 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 15,
 						"p50": 17,
-						"p90": 20
+						"p90": 21
 					}
 				},
 				"medianCompletionTimeRatioBasisPoints": 10000
@@ -1608,6 +2333,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -1617,6 +2344,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -1633,6 +2362,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -1642,6 +2373,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -1658,6 +2391,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 10,
 						"p50": 12,
@@ -1667,6 +2402,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 11,
 						"p50": 13,
@@ -1683,6 +2420,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 10,
 						"p50": 12,
@@ -1692,6 +2431,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 11,
 						"p50": 13,
@@ -1708,6 +2449,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1717,6 +2460,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 13,
 						"p50": 15,
@@ -1733,6 +2478,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 12,
 						"p50": 14,
@@ -1742,6 +2489,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 13,
 						"p50": 15,
@@ -1758,6 +2507,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 8,
@@ -1767,10 +2518,12 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 7,
 						"p50": 8,
-						"p90": 11
+						"p90": 10
 					}
 				},
 				"medianCompletionTimeRatioBasisPoints": 10000
@@ -1783,6 +2536,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 8,
@@ -1792,6 +2547,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 7,
 						"p50": 8,
@@ -1808,6 +2565,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
@@ -1817,10 +2576,12 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
-						"p90": 14
+						"p90": 13
 					}
 				},
 				"medianCompletionTimeRatioBasisPoints": 10000
@@ -1833,6 +2594,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
@@ -1842,10 +2605,12 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
-						"p90": 14
+						"p90": 13
 					}
 				},
 				"medianCompletionTimeRatioBasisPoints": 10000
@@ -1858,6 +2623,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 10,
 						"p50": 12,
@@ -1867,6 +2634,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 11,
 						"p50": 12,
@@ -1883,6 +2652,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 10,
 						"p50": 12,
@@ -1892,6 +2663,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 11,
 						"p50": 12,
@@ -1908,6 +2681,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 7,
@@ -1917,6 +2692,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 7,
@@ -1933,6 +2710,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 7,
@@ -1942,6 +2721,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 6,
 						"p50": 7,
@@ -1958,6 +2739,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 7,
 						"p50": 9,
@@ -1967,6 +2750,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -1983,6 +2768,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 7,
 						"p50": 9,
@@ -1992,6 +2779,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -2008,6 +2797,8 @@
 				"matchedAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -2017,6 +2808,8 @@
 				"offAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
@@ -2033,6 +2826,8 @@
 				"matchedAffinity": {
 					"affinity": "fire",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 8,
 						"p50": 10,
@@ -2042,6 +2837,8 @@
 				"offAffinity": {
 					"affinity": "water",
 					"trials": 10000,
+					"completedTrials": 10000,
+					"timedOutTrials": 0,
 					"completionActions": {
 						"p10": 9,
 						"p50": 11,
@@ -2122,7 +2919,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 3.202,
+					"mean": 3.195,
 					"p10": 0,
 					"p50": 4,
 					"p90": 4
@@ -2160,7 +2957,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 3.712,
+					"mean": 3.699,
 					"p10": 0,
 					"p50": 5,
 					"p90": 5
@@ -2198,7 +2995,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 4.789,
+					"mean": 4.798,
 					"p10": 0,
 					"p50": 6,
 					"p90": 7
@@ -2236,7 +3033,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 5.47,
+					"mean": 5.473,
 					"p10": 0,
 					"p50": 7,
 					"p90": 7
@@ -2274,7 +3071,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 6.398,
+					"mean": 6.383,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
@@ -2312,7 +3109,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 6.622,
+					"mean": 6.645,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
@@ -2350,7 +3147,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 8.235,
+					"mean": 8.264,
 					"p10": 0,
 					"p50": 10,
 					"p90": 11
@@ -2388,7 +3185,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 9.933,
+					"mean": 9.923,
 					"p10": 0,
 					"p50": 12,
 					"p90": 13
@@ -2426,7 +3223,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 8.647,
+					"mean": 8.741,
 					"p10": 0,
 					"p50": 11,
 					"p90": 12
@@ -2464,7 +3261,7 @@
 					}
 				],
 				"damageAfterArmour": {
-					"mean": 11.377,
+					"mean": 11.448,
 					"p10": 0,
 					"p50": 14,
 					"p90": 15

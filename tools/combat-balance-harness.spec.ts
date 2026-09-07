@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import {
 	BASIC_SWORD_STRIKE,
@@ -7,18 +7,26 @@ import {
 	COMBAT_RULES_V1
 } from '../packages/content/src/index.js';
 import { hashCanonical } from '../packages/engine/src/hash.js';
+import { armourReduction } from '../packages/engine/src/domains/combat/capability.js';
 import {
 	BALANCE_LEVELS,
 	BALANCE_SPREADS,
 	BALANCE_TRIALS_PER_MATCHUP,
 	createCombatBalanceEvidence,
+	evaluateAffinityCompletionPair,
 	serializeCombatBalanceEvidence
 } from './combat-balance-harness.js';
 
 describe('four-attribute combat balance evidence', () => {
-	it('covers every benchmark level, attribute spread, mastery band, armour state, and off-affinity archetype', () => {
-		const evidence = createCombatBalanceEvidence();
+	let evidence: Awaited<ReturnType<typeof createCombatBalanceEvidence>>;
 
+	beforeAll(async () => {
+		const pendingEvidence = createCombatBalanceEvidence();
+		expect(pendingEvidence).toBeInstanceOf(Promise);
+		evidence = await pendingEvidence;
+	});
+
+	it('covers every benchmark level, attribute spread, mastery band, armour state, and off-affinity archetype', () => {
 		expect(evidence.fixtures.levels).toStrictEqual([10, 40, 70, 99]);
 		expect(evidence.fixtures.attributeSpreads).toStrictEqual(['low', 'mid', 'high']);
 		expect(evidence.fixtures.masteryBands).toStrictEqual(['novice', 'trained', 'mastered']);
@@ -52,12 +60,27 @@ describe('four-attribute combat balance evidence', () => {
 	});
 
 	it('enforces the mastery-led accuracy and bounded relative-Agility promotion gates', () => {
-		const evidence = createCombatBalanceEvidence();
 		const bands = {
 			novice: [6_500, 7_000],
 			trained: [7_700, 8_300],
 			mastered: [9_000, 9_500]
 		} as const;
+		expect(evidence.simulation.profile.masteryFixtures).toStrictEqual({
+			novice: 0,
+			trained: 50,
+			mastered: 100
+		});
+		expect(evidence.simulation.profile.hitContest).toStrictEqual({
+			minimumHitChanceBasisPoints: 500,
+			maximumHitChanceBasisPoints: 9_950,
+			attackerLevelAccuracyBasisPointsPerLevel: 2,
+			defenderLevelEvasionBasisPointsPerLevel: 1,
+			defenderAgilityEvasionBasisPointsPerPoint: 1,
+			relativeAgilityBasisPointsPerPoint: 10,
+			relativeAgilityCapBasisPoints: 900,
+			fasterEndpointAgility: 100,
+			slowerEndpointAgility: 1
+		});
 
 		for (const matchup of evidence.matchups.accuracy) {
 			const [minimum, maximum] = bands[matchup.masteryBand];
@@ -69,6 +92,12 @@ describe('four-attribute combat balance evidence', () => {
 				p90: expect.any(Number)
 			});
 		}
+		expect(
+			new Set(evidence.matchups.accuracy.map((matchup) => matchup.contestChanceBasisPoints)).size
+		).toBeGreaterThan(3);
+		expect(
+			new Set(evidence.matchups.accuracy.map((matchup) => matchup.defenderEvasionBasisPoints)).size
+		).toBeGreaterThan(BALANCE_LEVELS.length);
 		expect(evidence.gates.accuracy.status).toBe('passed');
 		expect(
 			evidence.gates.relativeAgility.maximumAbsoluteChanceShiftBasisPoints
@@ -84,20 +113,61 @@ describe('four-attribute combat balance evidence', () => {
 	});
 
 	it('rejects immortal passive recovery, affinity lock-in, and armour-only over-mitigation', () => {
-		const evidence = createCombatBalanceEvidence();
-
+		expect(evidence.simulation.profile.sustainedTimeline).toStrictEqual({
+			tickDurationMilliseconds: 100,
+			horizonTicks: 120,
+			firstAttackTick: 0,
+			attackCadenceTicks: 10,
+			initialTicksSinceDamage: 0,
+			resolutionOrder: 'attack-then-regeneration',
+			throughputNormalizationTicks: 1_000
+		});
 		expect(
 			evidence.matchups.regeneration.every(
-				(matchup) => matchup.combatHealthRegenerationPerTick < matchup.sustainedPeerDamage.mean
+				(matchup) =>
+					matchup.timedOutTrials === 0 &&
+					matchup.completedTrials === BALANCE_TRIALS_PER_MATCHUP &&
+					matchup.regenerationTotal.p90 < matchup.damageTotal.p10 &&
+					matchup.regenerationPerThousandTicks.mean < matchup.damagePerThousandTicks.mean
 			)
 		).toBe(true);
 		expect(evidence.gates.passiveCombatRegeneration.status).toBe('passed');
 		expect(
 			evidence.matchups.affinity.every(
-				(matchup) => matchup.medianCompletionTimeRatioBasisPoints <= 11_500
+				(matchup) =>
+					matchup.medianCompletionTimeRatioBasisPoints !== null &&
+					matchup.medianCompletionTimeRatioBasisPoints >= 8_500 &&
+					matchup.medianCompletionTimeRatioBasisPoints <= 11_500 &&
+					matchup.matchedAffinity.timedOutTrials === 0 &&
+					matchup.offAffinity.timedOutTrials === 0
 			)
 		).toBe(true);
+		expect(evidence.gates.offAffinityCompletion.minimumAllowedMedianRatioBasisPoints).toBe(8_500);
 		expect(evidence.gates.offAffinityCompletion.status).toBe('passed');
+		expect(
+			evaluateAffinityCompletionPair(
+				{ completedTrials: 9_999, timedOutTrials: 1, completionActions: null },
+				{
+					completedTrials: 10_000,
+					timedOutTrials: 0,
+					completionActions: { p10: 10, p50: 10, p90: 10 }
+				}
+			)
+		).toStrictEqual({ status: 'failed', medianRatioBasisPoints: null });
+		expect(
+			evaluateAffinityCompletionPair(
+				{
+					completedTrials: 10_000,
+					timedOutTrials: 0,
+					completionActions: { p10: 10, p50: 10, p90: 10 }
+				},
+				{
+					completedTrials: 10_000,
+					timedOutTrials: 0,
+					completionActions: { p10: 20, p50: 20, p90: 20 }
+				}
+			)
+		).toStrictEqual({ status: 'failed', medianRatioBasisPoints: 20_000 });
 		for (const matchup of evidence.matchups.armour) {
 			expect(matchup.reductionCurve.map((point) => point.reductionBasisPoints)).toStrictEqual([
 				0, 2_000, 3_333, 5_000, 6_000, 7_143
@@ -111,12 +181,22 @@ describe('four-attribute combat balance evidence', () => {
 				p90: expect.any(Number)
 			});
 		}
+		const exhaustiveArmourDomain = Array.from({ length: 10_001 }, (_unused, armour) =>
+			armourReduction(armour, 0, COMBAT_RULES_V1)
+		);
+		expect(evidence.gates.armour.exhaustiveDomain).toStrictEqual({
+			minimumArmourPoints: 0,
+			maximumArmourPoints: 10_000,
+			testedPointCount: 10_001,
+			curveHash: hashCanonical(exhaustiveArmourDomain)
+		});
+		expect(evidence.gates.armour.maximumObservedReductionBasisPoints).toBe(7_499);
 		expect(evidence.gates.armour.status).toBe('passed');
 	});
 
-	it('binds exact shipped rules and Task 7 content while remaining byte-deterministic', () => {
-		const first = createCombatBalanceEvidence();
-		const second = createCombatBalanceEvidence();
+	it('binds exact shipped rules and Task 7 content while remaining byte-deterministic', async () => {
+		const first = evidence;
+		const second = await createCombatBalanceEvidence();
 
 		expect(first.bindings.rules).toStrictEqual({
 			rulesVersion: 'combat-rules-v1',
@@ -131,9 +211,10 @@ describe('four-attribute combat balance evidence', () => {
 		expect(first.simulation.profile.calibrationStatus).toBe('benchmark-promotion-candidate');
 		expect(first.simulation.profile.benchmarkDomain.armour).toStrictEqual({
 			minimumPoints: 0,
-			maximumPoints: 250,
+			maximumPoints: 10_000,
 			armouredFixturePoints: 100,
-			runtimeMagnitudeStatus: 'not-yet-shipped'
+			equipmentMagnitudeStatus: 'not-yet-shipped',
+			reductionCeilingStatus: 'authoritative-combat-rule'
 		});
 		expect(first.simulation.profile.sourceRecords).toStrictEqual({
 			accuracySkillId: BASIC_SWORD_STRIKE.skillId,
@@ -142,6 +223,59 @@ describe('four-attribute combat balance evidence', () => {
 		});
 		expect(first.simulation.profileHash).toMatch(/^[a-f0-9]{64}$/u);
 		expect(first.status).toBe('passed');
+		expect(first.simulation.profile).toMatchObject({
+			benchmarkLevels: [10, 40, 70, 99],
+			attributeSpreads: ['low', 'mid', 'high'],
+			trialsPerMatchup: 10_000,
+			percentileMethod: 'nearest-rank',
+			seedSet: expect.arrayContaining(['0x243f6a88', '0x38d01377']),
+			promotionGates: {
+				accuracyBasisPoints: {
+					novice: { minimumBasisPoints: 6_500, maximumBasisPoints: 7_000 },
+					trained: { minimumBasisPoints: 7_700, maximumBasisPoints: 8_300 },
+					mastered: { minimumBasisPoints: 9_000, maximumBasisPoints: 9_500 }
+				},
+				maximumRelativeAgilityShiftBasisPoints: 1_000,
+				offAffinityMedianRatioBasisPoints: { minimum: 8_500, maximum: 11_500 }
+			}
+		});
+		expect(first.simulation.profile.randomness).toStrictEqual({
+			version: 'sha256-seeded-xorshift32-v1',
+			xorshift32: {
+				firstLeftShift: 13,
+				rightShift: 17,
+				secondLeftShift: 5,
+				zeroStateFallback: 0x6d2b79f5
+			},
+			rollModulo: 10_000
+		});
+		expect(first.simulation.profile.damageFixture).toStrictEqual({
+			masteryBand: 'trained',
+			minimumSuccessfulDamage: 1,
+			mitigationOrder: ['armour', 'named-resistance'],
+			penetrationPoints: 0
+		});
+		expect(Object.isFrozen(first)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.hitContest)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.seedSet)).toBe(true);
+		expect(Object.isFrozen(first.matchups.accuracy)).toBe(true);
+		expect(Object.isFrozen(first.matchups.accuracy[0])).toBe(true);
+		const profileHashBeforeMutation = hashCanonical(first.simulation.profile);
+		expect(
+			Reflect.set(first.simulation.profile.hitContest, 'relativeAgilityCapBasisPoints', 0)
+		).toBe(false);
+		expect(hashCanonical(first.simulation.profile)).toBe(profileHashBeforeMutation);
+		expect(first.simulation.profileHash).toBe(profileHashBeforeMutation);
+		expect(
+			hashCanonical({
+				...first.simulation.profile,
+				sustainedTimeline: {
+					...first.simulation.profile.sustainedTimeline,
+					attackCadenceTicks: 11
+				}
+			})
+		).not.toBe(first.simulation.profileHash);
 		expect(serializeCombatBalanceEvidence(second)).toBe(serializeCombatBalanceEvidence(first));
 	});
 });

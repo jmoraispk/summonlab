@@ -18,7 +18,7 @@ describe('combat-rules-v1 content', () => {
 				combatRecoveryBasisPoints: 2_000
 			},
 			mana: { baseMaximum: 40, perSpirit: 2 },
-			armour: { curveConstant: 100 },
+			armour: { curveConstant: 100, maximumGeneralReductionBasisPoints: 7_499 },
 			resistance: { capBasisPoints: 7_500 },
 			learning: {
 				cognitiveMinimumBasisPoints: 9_000,
@@ -32,19 +32,31 @@ describe('combat-rules-v1 content', () => {
 	it('prevents root, nested record, and stacking-order mutation', () => {
 		expect(Object.isFrozen(COMBAT_RULES_V1)).toBe(true);
 		expect(Object.isFrozen(COMBAT_RULES_V1.health)).toBe(true);
+		expect(Object.isFrozen(COMBAT_RULES_V1.armour)).toBe(true);
 		expect(Object.isFrozen(COMBAT_RULES_V1.attributes.modifierStackingOrder)).toBe(true);
 
 		const rootChanged = Reflect.set(COMBAT_RULES_V1, 'rulesVersion', 'changed-rules');
 		const nestedChanged = Reflect.set(COMBAT_RULES_V1.health, 'baseMaximum', 999);
+		const armourChanged = Reflect.set(
+			COMBAT_RULES_V1.armour,
+			'maximumGeneralReductionBasisPoints',
+			10_000
+		);
 		const arrayChanged = Reflect.set(
 			COMBAT_RULES_V1.attributes.modifierStackingOrder,
 			0,
 			'additive-basis-points'
 		);
 
-		expect([rootChanged, nestedChanged, arrayChanged]).toStrictEqual([false, false, false]);
+		expect([rootChanged, nestedChanged, armourChanged, arrayChanged]).toStrictEqual([
+			false,
+			false,
+			false,
+			false
+		]);
 		expect(COMBAT_RULES_V1.rulesVersion).toBe('combat-rules-v1');
 		expect(COMBAT_RULES_V1.health.baseMaximum).toBe(100);
+		expect(COMBAT_RULES_V1.armour.maximumGeneralReductionBasisPoints).toBe(7_499);
 		expect(COMBAT_RULES_V1.attributes.modifierStackingOrder).toStrictEqual([
 			'additive-flat',
 			'additive-basis-points'

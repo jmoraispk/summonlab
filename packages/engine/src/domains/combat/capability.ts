@@ -152,9 +152,12 @@ export function armourReduction(armour: number, penetration: number, rules: Comb
 	assertNonnegativeInteger(penetration, 'Penetration');
 	const effectiveArmour = Math.max(0, armour - penetration);
 	if (effectiveArmour === 0) return 0;
-	return divideHalfUp(
-		BigInt(effectiveArmour) * BigInt(BASIS_POINTS),
-		BigInt(effectiveArmour + rules.armour.curveConstant)
+	return Math.min(
+		rules.armour.maximumGeneralReductionBasisPoints,
+		divideHalfUp(
+			BigInt(effectiveArmour) * BigInt(BASIS_POINTS),
+			BigInt(effectiveArmour + rules.armour.curveConstant)
+		)
 	);
 }
 

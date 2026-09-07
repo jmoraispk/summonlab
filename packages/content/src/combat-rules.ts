@@ -38,7 +38,7 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 			regenerationSaturationConstant: 50,
 			combatRecoveryBasisPoints: 5_000
 		},
-		armour: { curveConstant: 100 },
+		armour: { curveConstant: 100, maximumGeneralReductionBasisPoints: 7_499 },
 		resistance: { capBasisPoints: 7_500 },
 		learning: {
 			cognitiveMinimumBasisPoints: 9_000,
