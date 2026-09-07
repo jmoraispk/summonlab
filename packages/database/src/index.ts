@@ -5,6 +5,7 @@ export * from './affinity-review.js';
 export * from './campaign.js';
 export * from './catch-up.js';
 export * from './clock.js';
+export * from './combat-decision-windows.js';
 export * from './decision-jobs.js';
 export * from './proof.js';
 export * from './engine.js';

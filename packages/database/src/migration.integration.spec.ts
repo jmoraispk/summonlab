@@ -13,11 +13,20 @@ const run = databaseUrl ? it : it.skip;
 const execFileAsync = promisify(execFile);
 const migrationDirectory = join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations');
 const entropyMigrationName = '0020_private_capability_entropy_shape.sql';
+const combatWindowMigrationName = '0021_combat_decision_windows.sql';
 
 describe.sequential('database migration', () => {
 	run('applies the foundation migration to PostgreSQL', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
-		const sql = postgres(databaseUrl, { max: 1 });
+		const sourceUrl = new URL(databaseUrl);
+		const temporaryDatabaseName = `summonlab_migration_${randomUUID().replaceAll('-', '')}`;
+		const adminUrl = new URL(sourceUrl);
+		adminUrl.pathname = '/postgres';
+		const temporaryUrl = new URL(sourceUrl);
+		temporaryUrl.pathname = `/${temporaryDatabaseName}`;
+		const admin = postgres(adminUrl.toString(), { max: 1 });
+		await admin`create database ${admin(temporaryDatabaseName)}`;
+		const sql = postgres(temporaryUrl.toString(), { max: 1 });
 		const migrations = await Promise.all(
 			(await readdir(migrationDirectory))
 				.filter((name) => name.endsWith('.sql'))
@@ -45,6 +54,7 @@ describe.sequential('database migration', () => {
 						'summonlab_decision_jobs',
 						'summonlab_decision_job_attempts',
 						'summonlab_decision_job_transitions',
+						'summonlab_combat_decision_windows',
 						'summonlab_playtest_consents',
 						'summonlab_playtest_sessions',
 						'summonlab_playtest_events',
@@ -55,7 +65,7 @@ describe.sequential('database migration', () => {
 						'summonlab_final_controlled_design_risk_decisions'
 					)
 			`;
-			expect(rows).toHaveLength(21);
+			expect(rows).toHaveLength(22);
 			const proofColumns = await sql<
 				{ column_name: string; is_nullable: 'YES' | 'NO'; column_default: string | null }[]
 			>`
@@ -86,6 +96,107 @@ describe.sequential('database migration', () => {
 				{ constraint_name: 'summonlab_proof_runs_capability_entropy_shape' }
 			]);
 		} finally {
+			await sql.end({ timeout: 5 });
+			await admin`drop database ${admin(temporaryDatabaseName)}`;
+			await admin.end({ timeout: 5 });
+		}
+	});
+
+	run(
+		'reapplies combat decision cohort storage and preserves legacy job null bindings',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const sql = postgres(databaseUrl, { max: 1 });
+			const statement = await readFile(join(migrationDirectory, combatWindowMigrationName), 'utf8');
+			try {
+				await sql.unsafe(statement);
+				await sql.unsafe(statement);
+				const columns = await sql<{ column_name: string; is_nullable: 'YES' | 'NO' }[]>`
+				select column_name, is_nullable from information_schema.columns
+				where table_schema = 'public' and table_name = 'summonlab_decision_jobs'
+					and column_name in ('window_id', 'actor_view_hash', 'deterministic_fallback')
+				order by column_name
+			`;
+				expect(columns).toEqual([
+					{ column_name: 'actor_view_hash', is_nullable: 'YES' },
+					{ column_name: 'deterministic_fallback', is_nullable: 'YES' },
+					{ column_name: 'window_id', is_nullable: 'YES' }
+				]);
+				const uniqueIndexes = await sql<{ indexname: string }[]>`
+				select indexname from pg_indexes where schemaname = 'public'
+					and tablename = 'summonlab_decision_jobs'
+					and indexname = 'summonlab_decision_jobs_window_actor'
+			`;
+				expect(uniqueIndexes).toEqual([{ indexname: 'summonlab_decision_jobs_window_actor' }]);
+				const legacyBindings = await sql<{ invalid_count: number }[]>`
+				select count(*)::integer as invalid_count from summonlab_decision_jobs
+				where schema_version in ('decision-job-v1', 'decision-job-v2')
+					and (window_id is not null or actor_view_hash is not null or deterministic_fallback is not null)
+			`;
+				expect(legacyBindings).toEqual([{ invalid_count: 0 }]);
+			} finally {
+				await sql.end({ timeout: 5 });
+			}
+		}
+	);
+
+	run('recovers the combat migration ledger with v3 rows present and then no-ops', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const sql = postgres(databaseUrl, { max: 1 });
+		const runId = randomUUID();
+		const windowId = randomUUID();
+		const jobId = randomUUID();
+		const actorId = randomUUID();
+		const attemptId = randomUUID();
+		const hash = 'd'.repeat(64);
+		try {
+			await sql.begin(async (transaction) => {
+				await transaction`
+					insert into summonlab_proof_runs (
+						run_id, control_mode, recipe, manifest, mind, manifest_hash, first_observation
+					) values (${runId}, 'wait', ${transaction.json({})}, ${transaction.json({})},
+						${transaction.json({})}, ${hash}, 'migration fixture')
+				`;
+				await transaction`
+					insert into summonlab_engine_runs (
+						run_id, seed, content_version, status, version, event_cursor, entropy_cursor,
+						simulated_at, state_hash
+					) values (${runId}, 'seed', 'engine-v26', 'active', 0, 1, 0, now(), ${hash})
+				`;
+				await transaction`
+					insert into summonlab_combat_decision_windows (
+						window_id, run_id, attempt_id, tick, snapshot_hash, expected_run_version,
+						expected_event_cursor, snapshot
+					) values (${windowId}, ${runId}, ${attemptId}, 0, ${hash}, 0, 1, ${transaction.json({})})
+				`;
+				await transaction`
+					insert into summonlab_decision_jobs (
+						decision_job_id, schema_version, root_job_id, run_id, hero_id, decision_kind,
+						requested_policy, expected_run_version, expected_event_cursor, decision_game_time,
+						packet_id, packet_hash, state_hash, legal_action_hash, prompt_version,
+						context_policy_version, packet, window_id, actor_view_hash, deterministic_fallback
+					) values (${jobId}, 'decision-job-v3', ${jobId}, ${runId}, ${actorId},
+						'combat-action', 'scripted', 0, 1, now(), ${windowId}, ${hash}, ${hash}, ${hash},
+						'combat-action-prompt-v1', 'actor-decision-view-v1', ${transaction.json({})},
+						${windowId}, ${hash}, ${transaction.json({})})
+				`;
+			});
+			await sql`delete from summonlab_migrations where name = ${combatWindowMigrationName}`;
+			await execFileAsync('pnpm', ['migrate'], {
+				cwd: join(migrationDirectory, '..'),
+				env: { ...process.env, DATABASE_URL: databaseUrl }
+			});
+			expect(
+				await sql<{ name: string }[]>`
+					select name from summonlab_migrations where name = ${combatWindowMigrationName}
+				`
+			).toEqual([{ name: combatWindowMigrationName }]);
+			await execFileAsync('pnpm', ['migrate'], {
+				cwd: join(migrationDirectory, '..'),
+				env: { ...process.env, DATABASE_URL: databaseUrl }
+			});
+		} finally {
+			await sql`delete from summonlab_proof_runs where run_id = ${runId}`;
 			await sql.end({ timeout: 5 });
 		}
 	});
