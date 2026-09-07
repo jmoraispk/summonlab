@@ -6,17 +6,20 @@ import {
 	type IntegrityBindingKind,
 	type IntegrityOwnerId,
 	type IntegrityProblem,
-	type IntegritySuccessor
+	type IntegritySerializerId
 } from './american-english-integrity-contracts.js';
 import { equipmentIntegrityOwner } from './american-english-equipment-successors.js';
 import { runtimeAndEngineIntegrityOwner } from './american-english-runtime-successors.js';
 import { visualProductionIntegrityOwner } from './american-english-visual-successors.js';
+import { replaceRetiredForms } from './american-english-policy.js';
 
 export * from './american-english-integrity-contracts.js';
 
 export interface TrackedTreeEntry {
 	readonly path: string;
 	readonly bytes: Uint8Array;
+	readonly projectedPath?: string;
+	readonly projectedBytes?: Uint8Array;
 	readonly binary: boolean;
 	readonly baselineBytes?: Uint8Array;
 	readonly binaryChanged?: boolean;
@@ -41,7 +44,19 @@ export interface IntegrityOwnerPlan {
 	readonly paths: readonly string[];
 	readonly writeCommand: string;
 	readonly checkCommand: string;
-	readonly successorIntents: readonly IntegritySuccessor[];
+	readonly successorIntents: readonly {
+		readonly sourcePath: string;
+		readonly path: string;
+		readonly kind: IntegrityBindingKind;
+		readonly serializer: IntegritySerializerId;
+		readonly projectedValueDigest: string;
+		readonly dependencies: readonly { readonly path: string; readonly digest: string }[];
+		readonly externalDependencies: readonly {
+			readonly jsonPointer: string;
+			readonly value: string;
+		}[];
+		readonly languageMigrationSuccessor: true;
+	}[];
 }
 
 export interface IntegrityBindingReport {
@@ -180,37 +195,134 @@ function classifyScannedBinding(
 	});
 }
 
-function intentKind(
-	bindings: readonly { readonly kind: IntegrityBindingKind }[]
-): IntegrityBindingKind {
-	if (bindings.some(({ kind }) => kind === 'raw-file')) return 'raw-file';
-	if (bindings.some(({ kind }) => kind === 'generated-output')) return 'generated-output';
-	return 'path-and-content';
+function entryValue(entry: TrackedTreeEntry, repositoryPath: string, projected: boolean): unknown {
+	const bytes = projected ? (entry.projectedBytes ?? entry.bytes) : entry.bytes;
+	if (entry.binary) return bytes;
+	const text = Buffer.from(bytes).toString('utf8');
+	const valuePath = projected ? (entry.projectedPath ?? repositoryPath) : repositoryPath;
+	return valuePath.endsWith('.json') ? JSON.parse(text) : text;
+}
+
+function nodeKind(entry: TrackedTreeEntry, repositoryPath: string): IntegrityBindingKind {
+	if (entry.binary) return 'raw-file';
+	const projectedPath = entry.projectedPath ?? repositoryPath;
+	if (isGeneratedArtifactPath(projectedPath)) return 'generated-output';
+	return projectedPath.endsWith('.json') ? 'canonical-json' : 'utf8-string';
+}
+
+function getJsonPointer(value: unknown, pointer: string): unknown {
+	let current = value;
+	for (const token of pointer.slice(1).split('/').filter(Boolean)) {
+		if (current === null || typeof current !== 'object') return undefined;
+		current = (current as Record<string, unknown>)[
+			token.replaceAll('~1', '/').replaceAll('~0', '~')
+		];
+	}
+	return current;
 }
 
 async function buildOwnerPlan(
 	owner: AmericanEnglishIntegrityOwner,
 	ownedBindings: readonly IntegrityBinding[],
-	problems: IntegrityProblem[]
+	problems: IntegrityProblem[],
+	entries: ReadonlyMap<string, TrackedTreeEntry>
 ): Promise<IntegrityOwnerPlan | null> {
 	if (ownedBindings.length === 0 || owner.regeneration === null) return null;
 	const paths = [...new Set(ownedBindings.map(({ path: repositoryPath }) => repositoryPath))].sort(
 		compareCodepoints
 	);
-	const nodes = paths.map((repositoryPath) => {
-		const pathBindings = ownedBindings
-			.filter(({ path: candidatePath }) => candidatePath === repositoryPath)
-			.map(({ jsonPointer, field, kind }) => ({ jsonPointer, field, kind }));
+	const bindingsByPath = new Map<
+		string,
+		{ jsonPointer: string; field: string; kind: IntegrityBindingKind }[]
+	>();
+	for (const { path: repositoryPath, jsonPointer, field, kind } of ownedBindings) {
+		const pathBindings = bindingsByPath.get(repositoryPath) ?? [];
+		pathBindings.push({ jsonPointer, field, kind });
+		bindingsByPath.set(repositoryPath, pathBindings);
+	}
+	const drafts = paths.flatMap((repositoryPath) => {
+		const entry = entries.get(repositoryPath);
+		if (entry === undefined) return [];
+		const pathBindings = bindingsByPath.get(repositoryPath) ?? [];
+		const kind = nodeKind(entry, repositoryPath);
+		const serializer = owner.serializerFor(repositoryPath, kind);
+		if (serializer === null) {
+			problems.push({
+				path: repositoryPath,
+				jsonPointer: '',
+				code: 'unknown-serializer',
+				message: `No serializer mapping for ${owner.id} ${kind}`
+			});
+			return [];
+		}
+		return [
+			{
+				sourcePath: repositoryPath,
+				path: entry.projectedPath ?? repositoryPath,
+				kind,
+				serializer,
+				value: entryValue(entry, repositoryPath, true),
+				currentValue: entryValue(entry, repositoryPath, false),
+				pathBindings
+			}
+		];
+	});
+	const digestSources = new Map<string, string>();
+	for (const draft of drafts) {
+		const [current] = await owner.planSuccessors({
+			nodes: [
+				{
+					path: draft.sourcePath,
+					kind: draft.kind,
+					serializer: draft.serializer,
+					value: draft.currentValue,
+					dependsOn: []
+				}
+			]
+		});
+		if (current !== undefined) digestSources.set(current.digest, draft.sourcePath);
+	}
+	const projectedBySource = new Map(drafts.map(({ sourcePath, path }) => [sourcePath, path]));
+	const nodes = drafts.map((draft) => {
+		const dependsOn = new Set<string>();
+		const dependencyBindings: { sourcePath: string; jsonPointer: string }[] = [];
+		const externalDependencies: { jsonPointer: string; value: string }[] = [];
+		for (const binding of draft.pathBindings) {
+			if (binding.jsonPointer === '') continue;
+			const projectedPointer = replaceRetiredForms(binding.jsonPointer);
+			const current = getJsonPointer(draft.currentValue, binding.jsonPointer);
+			if (typeof current !== 'string') continue;
+			const dependencySource = digestSources.get(current);
+			if (dependencySource !== undefined && dependencySource !== draft.sourcePath) {
+				const dependencyPath = projectedBySource.get(dependencySource)!;
+				dependsOn.add(dependencyPath);
+				dependencyBindings.push({ sourcePath: dependencyPath, jsonPointer: projectedPointer });
+			} else externalDependencies.push({ jsonPointer: projectedPointer, value: current });
+		}
 		return {
-			path: repositoryPath,
-			kind: intentKind(pathBindings),
-			serializer: owner.serializer,
-			value: { ownerId: owner.id, path: repositoryPath, bindings: pathBindings },
-			dependsOn: []
+			path: draft.path,
+			sourcePath: draft.sourcePath,
+			kind: draft.kind,
+			serializer: draft.serializer,
+			value: draft.value,
+			dependsOn: [...dependsOn].sort(compareCodepoints),
+			dependencyBindings,
+			externalDependencies
 		};
 	});
-	const successorIntents = await owner.planSuccessors({ nodes });
-	problems.push(...(await owner.verify({ nodes, successors: successorIntents })));
+	const successors = await owner.planSuccessors({ nodes });
+	problems.push(...(await owner.verify({ nodes, successors })));
+	const serializerByPath = new Map(nodes.map(({ path, serializer }) => [path, serializer]));
+	const successorIntents = successors.map((successor) => ({
+		sourcePath: successor.sourcePath,
+		path: successor.path,
+		kind: successor.kind,
+		serializer: serializerByPath.get(successor.path)!,
+		projectedValueDigest: successor.digest,
+		dependencies: successor.dependencies,
+		externalDependencies: successor.externalDependencies,
+		languageMigrationSuccessor: true as const
+	}));
 	return {
 		id: owner.id,
 		bindingCount: ownedBindings.length,
@@ -317,7 +429,8 @@ export async function classifyIntegrityBindings(
 				buildOwnerPlan(
 					owner,
 					bindings.filter(({ ownerId }) => ownerId === owner.id),
-					problems
+					problems,
+					entries
 				)
 			)
 		)

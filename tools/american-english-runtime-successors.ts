@@ -4,6 +4,7 @@ import {
 	hashCanonical
 } from '../packages/engine/src/hash.js';
 import {
+	digestBytes,
 	digestUtf8,
 	planTopologicalIntegritySuccessors,
 	verifyTopologicalIntegritySuccessors,
@@ -26,11 +27,13 @@ export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
 	/^apps\/web\/src\/(?:lib\/components\/living-village|routes\/story-patch)\/.*\.(?:ts|svelte)$/u,
 	/^docs\/(?:evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
-	/^packages\/(?:content\/src\/(?:tower-|story)|contracts\/src\/(?:contracts\.spec\.ts$|engine\/|final-controlled-)|engine\/|evaluation\/|policies\/)/u,
+	/^packages\/(?:content\/src\/(?:tower-|story)|contracts\/src\/(?:contracts\.spec|engine\/|final-controlled-)|engine\/|evaluation\/|policies\/).*\.(?:ts|json|snap)$/u,
 	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness)\.ts$/u
 ] as const;
 
 function runtimeDigest(serializer: IntegritySerializerId, value: unknown): string {
+	if (serializer === 'raw-file' && value instanceof Uint8Array) return digestBytes(value);
+	if (serializer === 'utf8-string' && typeof value === 'string') return digestUtf8(value);
 	if (serializer === 'engine') return hashCanonical(value);
 	if (serializer === 'character-manifest') return digestUtf8(characterCanonicalJson(value));
 	throw new Error(`Runtime-and-engine owner cannot use serializer ${serializer}`);
@@ -43,12 +46,16 @@ export const runtimeCanonicalSerializers = {
 
 export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'runtime-and-engine',
-	serializer: 'engine',
 	regeneration: {
 		writeCommand:
 			'pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
 			'pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
+	},
+	serializerFor(path, kind) {
+		if (kind === 'raw-file') return null;
+		if (kind === 'utf8-string' || !path.endsWith('.json')) return 'utf8-string';
+		return this.ownsPath(path) ? 'engine' : null;
 	},
 	ownsPath(path) {
 		return RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));

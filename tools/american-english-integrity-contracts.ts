@@ -12,6 +12,8 @@ export type IntegrityBindingKind =
 export type IntegrityOwnerId = 'equipment' | 'visual-production' | 'runtime-and-engine';
 
 export type IntegritySerializerId =
+	| 'raw-file'
+	| 'utf8-string'
 	| 'equipment-v1'
 	| 'equipment-v2'
 	| 'equipment-v3'
@@ -22,6 +24,7 @@ export type IntegritySerializerId =
 
 export interface IntegrityPlanningNode {
 	readonly path: string;
+	readonly sourcePath?: string;
 	readonly kind: IntegrityBindingKind;
 	readonly serializer: IntegritySerializerId;
 	readonly value: unknown;
@@ -29,6 +32,11 @@ export interface IntegrityPlanningNode {
 	readonly dependencyBindings?: readonly {
 		readonly sourcePath: string;
 		readonly jsonPointer: string;
+		readonly replacement?: 'digest' | 'path';
+	}[];
+	readonly externalDependencies?: readonly {
+		readonly jsonPointer: string;
+		readonly value: string;
 	}[];
 }
 
@@ -43,10 +51,15 @@ export interface IntegrityVerificationContext {
 
 export interface IntegritySuccessor {
 	readonly path: string;
+	readonly sourcePath: string;
 	readonly kind: IntegrityBindingKind;
 	readonly digest: string;
 	readonly value: unknown;
 	readonly dependencies: readonly { readonly path: string; readonly digest: string }[];
+	readonly externalDependencies: readonly {
+		readonly jsonPointer: string;
+		readonly value: string;
+	}[];
 	readonly languageMigrationSuccessor: true;
 }
 
@@ -57,6 +70,7 @@ export type IntegrityProblemCode =
 	| 'missing-command'
 	| 'missing-node'
 	| 'unknown-digest'
+	| 'unknown-serializer'
 	| 'unowned-binding';
 
 export interface IntegrityProblem {
@@ -68,13 +82,13 @@ export interface IntegrityProblem {
 
 export interface AmericanEnglishIntegrityOwner {
 	readonly id: IntegrityOwnerId;
-	readonly serializer: IntegritySerializerId;
 	readonly regeneration: {
 		readonly writeCommand: string;
 		readonly checkCommand: string;
 	} | null;
 	ownsPath(path: string): boolean;
 	owns(path: string, jsonPointer: string): boolean;
+	serializerFor(path: string, kind: IntegrityBindingKind): IntegritySerializerId | null;
 	planSuccessors(context: IntegrityPlanningContext): Promise<readonly IntegritySuccessor[]>;
 	verify(context: IntegrityVerificationContext): Promise<readonly IntegrityProblem[]>;
 }
@@ -144,7 +158,8 @@ export async function planTopologicalIntegritySuccessors(
 			.sort((left, right) => compareCodepoints(left.path, right.path));
 		if (ready.length === 0) throw new Error('Integrity dependency cycle');
 		for (const node of ready) {
-			let value = structuredClone(node.value);
+			let value =
+				(node.dependencyBindings?.length ?? 0) > 0 ? structuredClone(node.value) : node.value;
 			const dependencies = node.dependsOn.map((sourcePath) => {
 				const source = completed.get(sourcePath)!;
 				return { path: sourcePath, digest: source.digest };
@@ -153,15 +168,19 @@ export async function planTopologicalIntegritySuccessors(
 				value = setJsonPointer(
 					value,
 					binding.jsonPointer,
-					completed.get(binding.sourcePath)!.digest
+					binding.replacement === 'path'
+						? completed.get(binding.sourcePath)!.path
+						: completed.get(binding.sourcePath)!.digest
 				);
 			}
 			const successor: IntegritySuccessor = {
 				path: node.path,
+				sourcePath: node.sourcePath ?? node.path,
 				kind: node.kind,
 				digest: digest(node.serializer, value),
 				value,
 				dependencies,
+				externalDependencies: node.externalDependencies ?? [],
 				languageMigrationSuccessor: true
 			};
 			completed.set(node.path, successor);
@@ -184,6 +203,7 @@ export async function verifyTopologicalIntegritySuccessors(
 		actualByPath.set(successor.path, successor);
 	}
 	const problems: IntegrityProblem[] = [];
+	const expectedPaths = new Set(expected.map(({ path }) => path));
 	for (const successor of expected) {
 		const actual = actualByPath.get(successor.path);
 		const sourceNode = context.nodes.find(({ path }) => path === successor.path)!;
@@ -192,9 +212,11 @@ export async function verifyTopologicalIntegritySuccessors(
 			duplicatePaths.has(successor.path) ||
 			actual.digest !== successor.digest ||
 			actual.digest !== digest(sourceNode.serializer, actual.value) ||
+			actual.sourcePath !== successor.sourcePath ||
 			actual.kind !== successor.kind ||
 			!isDeepStrictEqual(actual.value, successor.value) ||
 			!isDeepStrictEqual(actual.dependencies, successor.dependencies) ||
+			!isDeepStrictEqual(actual.externalDependencies, successor.externalDependencies) ||
 			actual.languageMigrationSuccessor !== true
 		) {
 			problems.push({
@@ -206,7 +228,7 @@ export async function verifyTopologicalIntegritySuccessors(
 		}
 	}
 	for (const actual of context.successors) {
-		if (!expected.some(({ path }) => path === actual.path)) {
+		if (!expectedPaths.has(actual.path)) {
 			problems.push({
 				path: actual.path,
 				jsonPointer: '',
@@ -222,5 +244,9 @@ export async function verifyTopologicalIntegritySuccessors(
 }
 
 export function digestUtf8(value: string): string {
+	return createHash('sha256').update(value).digest('hex');
+}
+
+export function digestBytes(value: Uint8Array): string {
 	return createHash('sha256').update(value).digest('hex');
 }

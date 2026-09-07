@@ -3,6 +3,8 @@ import {
 	canonicalSha256
 } from './equipment-rank-first-production-v3.js';
 import {
+	digestBytes,
+	digestUtf8,
 	planTopologicalIntegritySuccessors,
 	verifyTopologicalIntegritySuccessors,
 	type AmericanEnglishIntegrityOwner,
@@ -31,9 +33,14 @@ export const EQUIPMENT_FILE_BINDING_PATH_PATTERNS = [
 	/^tools\/[^/]*equipment[^/]*\.(?:ts|mjs)$/u
 ] as const;
 
-export const EQUIPMENT_BINARY_PATH_PATTERNS = [/^assets\/equipment\/.*\.(?:png|webp)$/u] as const;
+export const EQUIPMENT_BINARY_PATH_PATTERNS = [
+	/^assets\/equipment\/.*\.(?:png|webp)$/u,
+	/^apps\/web\/static\/runtime\/equipment-v1\/.*\.webp$/u
+] as const;
 
 function equipmentDigest(serializer: IntegritySerializerId, value: unknown): string {
+	if (serializer === 'raw-file' && value instanceof Uint8Array) return digestBytes(value);
+	if (serializer === 'utf8-string' && typeof value === 'string') return digestUtf8(value);
 	if (
 		serializer === 'equipment-v1' ||
 		serializer === 'equipment-v2' ||
@@ -52,7 +59,6 @@ export const equipmentCanonicalSerializers = {
 
 export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'equipment',
-	serializer: 'equipment-v3',
 	regeneration: {
 		writeCommand:
 			'pnpm export:equipment-runtime-visuals && pnpm export:equipment-integration-report',
@@ -70,6 +76,18 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			);
 		}
 		return OWNER_DIGEST_POINTER_PATTERNS.equipment.some((pattern) => pattern.test(jsonPointer));
+	},
+	serializerFor(path, kind) {
+		if (kind === 'raw-file')
+			return EQUIPMENT_BINARY_PATH_PATTERNS.some((p) => p.test(path)) ? 'raw-file' : null;
+		if (kind === 'utf8-string' || !path.endsWith('.json')) return 'utf8-string';
+		if (path.includes('material-equipment-v1') || path.includes('equipment-v1'))
+			return 'equipment-v1';
+		if (path.includes('material-equipment-v2') || path.includes('equipment-v2'))
+			return 'equipment-v2';
+		if (path.includes('material-equipment-v3') || path.includes('equipment-v3'))
+			return 'equipment-v3';
+		return null;
 	},
 	planSuccessors(context) {
 		return planTopologicalIntegritySuccessors(context, equipmentDigest);

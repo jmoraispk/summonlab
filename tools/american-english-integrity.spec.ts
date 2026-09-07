@@ -1,11 +1,15 @@
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
 import { canonicalSha256 } from './equipment-rank-first-production-v3.js';
-import { stableFamilyAffinityJson } from './family-affinity-production-lib.js';
+import {
+	familyAffinitySha256,
+	stableFamilyAffinityJson
+} from './family-affinity-production-lib.js';
 import { canonicalJson as imageCanonicalJson, sha256Json } from './image-production-lib.js';
 import {
 	AMERICAN_ENGLISH_INTEGRITY_OWNERS,
@@ -128,6 +132,155 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
+	it('selects each live serializer from an explicit path and record contract', () => {
+		const select = (owner: AmericanEnglishIntegrityOwner, path: string, kind: string) =>
+			(
+				owner as unknown as { serializerFor(path: string, kind: string): string | null }
+			).serializerFor(path, kind);
+		expect(
+			select(
+				equipmentIntegrityOwner,
+				'assets/equipment/experiments/material-equipment-v1/manifest.json',
+				'canonical-json'
+			)
+		).toBe('equipment-v1');
+		expect(
+			select(
+				equipmentIntegrityOwner,
+				'assets/equipment/experiments/material-equipment-v2/manifest.json',
+				'canonical-json'
+			)
+		).toBe('equipment-v2');
+		expect(
+			select(
+				equipmentIntegrityOwner,
+				'assets/equipment/experiments/material-equipment-v3/manifest.json',
+				'canonical-json'
+			)
+		).toBe('equipment-v3');
+		expect(
+			select(
+				visualProductionIntegrityOwner,
+				'assets/enemies/experiments/family-affinity-v1/manifest.json',
+				'canonical-json'
+			)
+		).toBe('family-affinity');
+		expect(
+			select(
+				visualProductionIntegrityOwner,
+				'assets/heroes/experiments/fixture/result.json',
+				'canonical-json'
+			)
+		).toBe('image-production');
+		expect(
+			select(
+				visualProductionIntegrityOwner,
+				'packages/characters/src/manifest.json',
+				'canonical-json'
+			)
+		).toBe('character-manifest');
+		expect(
+			select(visualProductionIntegrityOwner, 'packages/characters/src/index.ts', 'utf8-string')
+		).toBe('utf8-string');
+		expect(
+			select(runtimeAndEngineIntegrityOwner, 'packages/engine/src/fixture.json', 'canonical-json')
+		).toBe('engine');
+		expect(select(visualProductionIntegrityOwner, 'assets/heroes/source.png', 'raw-file')).toBe(
+			'raw-file'
+		);
+		expect(
+			select(runtimeAndEngineIntegrityOwner, 'packages/engine/unknown.bin', 'raw-file')
+		).toBeNull();
+	});
+
+	it.each([
+		[
+			'equipment-v1',
+			equipmentIntegrityOwner,
+			'assets/equipment/experiments/material-equipment-v1/manifest.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			canonicalJsonSha256({ b: 2, a: 1 })
+		],
+		[
+			'equipment-v2',
+			equipmentIntegrityOwner,
+			'assets/equipment/experiments/material-equipment-v2/manifest.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			canonicalJsonSha256V2({ b: 2, a: 1 })
+		],
+		[
+			'equipment-v3',
+			equipmentIntegrityOwner,
+			'assets/equipment/experiments/material-equipment-v3/manifest.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			canonicalSha256({ b: 2, a: 1 })
+		],
+		[
+			'family-affinity',
+			visualProductionIntegrityOwner,
+			'assets/enemies/experiments/family-affinity-v1/manifest.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			familyAffinitySha256({ b: 2, a: 1 })
+		],
+		[
+			'image-production',
+			visualProductionIntegrityOwner,
+			'assets/heroes/experiments/fixture/result.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			sha256Json({ b: 2, a: 1 })
+		],
+		[
+			'character-manifest',
+			visualProductionIntegrityOwner,
+			'packages/characters/src/manifest.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			createHash('sha256')
+				.update(characterCanonicalJson({ b: 2, a: 1 }))
+				.digest('hex')
+		],
+		[
+			'engine',
+			runtimeAndEngineIntegrityOwner,
+			'packages/engine/src/fixture.json',
+			'canonical-json',
+			{ b: 2, a: 1 },
+			hashCanonical({ b: 2, a: 1 })
+		],
+		[
+			'raw-file',
+			visualProductionIntegrityOwner,
+			'assets/heroes/source.png',
+			'raw-file',
+			new Uint8Array([0, 1, 2, 255]),
+			createHash('sha256')
+				.update(new Uint8Array([0, 1, 2, 255]))
+				.digest('hex')
+		],
+		[
+			'utf8-string',
+			runtimeAndEngineIntegrityOwner,
+			'packages/engine/src/story.ts',
+			'utf8-string',
+			'export const color = "gray";\n',
+			createHash('sha256').update('export const color = "gray";\n', 'utf8').digest('hex')
+		]
+	] as const)(
+		'computes the %s digest with the selected live serializer',
+		async (serializer, owner, path, kind, value, expectedDigest) => {
+			expect(owner.serializerFor(path, kind)).toBe(serializer);
+			const [successor] = await owner.planSuccessors({
+				nodes: [{ path, kind, serializer, value, dependsOn: [] }]
+			});
+			expect(successor?.digest).toBe(expectedDigest);
+		}
+	);
+
 	it.each([
 		['equipment', equipmentIntegrityOwner, 'assets/equipment/experiments/fixture', 'equipment-v1'],
 		[
@@ -380,18 +533,106 @@ describe('integrity binding classification', () => {
 	});
 
 	it('does not classify a plain file merely because it is below an owner subtree', async () => {
-		const path = 'assets/heroes/plain-not-an-integrity-record.md';
+		const paths = [
+			'assets/heroes/plain-not-an-integrity-record.md',
+			'packages/characters/plain-not-integrity.txt',
+			'packages/engine/plain-not-integrity.txt',
+			'packages/evaluation/plain-not-integrity.txt',
+			'packages/policies/plain-not-integrity.txt'
+		];
 		const report = await classifyIntegrityBindings(
-			{ entries: [{ path, bytes: Buffer.from('Gray prose.\n'), binary: false }] },
-			proposed([path])
+			{
+				entries: paths.map((path) => ({ path, bytes: Buffer.from('Gray prose.\n'), binary: false }))
+			},
+			proposed(paths)
 		);
 		expect(report.problems).toEqual([]);
 		expect(report.bindings).toEqual([]);
 		expect(report.ownerPlans).toEqual([]);
 	});
 
+	it('keeps exact known non-JSON package integrity sources registered', async () => {
+		const paths = [
+			'packages/characters/src/index.ts',
+			'packages/engine/src/story.ts',
+			'packages/evaluation/src/story-patch.ts',
+			'packages/policies/src/openai.ts'
+		];
+		const report = await classifyIntegrityBindings(
+			{
+				entries: paths.map((path) => ({
+					path,
+					bytes: Buffer.from('export const safe = true;\n'),
+					binary: false
+				}))
+			},
+			proposed(paths)
+		);
+		expect(report.problems).toEqual([]);
+		expect(report.bindings.map(({ path }) => path)).toEqual(paths);
+	});
+
+	it('hashes the real projected value and path instead of a synthetic descriptor', async () => {
+		const path = 'packages/engine/src/fixture.json';
+		const classify = (contentHash: string) =>
+			classifyIntegrityBindings(
+				{
+					entries: [
+						{
+							path,
+							bytes: Buffer.from(JSON.stringify({ contentHash: HASH })),
+							projectedPath: 'packages/engine/src/fixture-successor.json',
+							projectedBytes: Buffer.from(JSON.stringify({ contentHash })),
+							binary: false
+						}
+					]
+				},
+				proposed([path])
+			);
+		const first = await classify('b'.repeat(64));
+		const second = await classify('c'.repeat(64));
+		const firstIntent = first.ownerPlans[0]!.successorIntents[0]!;
+		const secondIntent = second.ownerPlans[0]!.successorIntents[0]!;
+		expect(firstIntent.path).toBe('packages/engine/src/fixture-successor.json');
+		expect(firstIntent.projectedValueDigest).toBe(hashCanonical({ contentHash: 'b'.repeat(64) }));
+		expect(firstIntent.projectedValueDigest).not.toBe(secondIntent.projectedValueDigest);
+	});
+
+	it('derives real target to assignment to result dependency edges', async () => {
+		const targetPath = 'assets/heroes/experiments/fixture/target.json';
+		const assignmentPath = 'assets/heroes/experiments/fixture/assignment.json';
+		const resultPath = 'assets/heroes/experiments/fixture/result.json';
+		const target = { prompt: 'old' };
+		const assignment = { targetSha256: sha256Json(target) };
+		const result = { assignmentSha256: sha256Json(assignment) };
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: targetPath,
+						bytes: Buffer.from(JSON.stringify(target)),
+						projectedBytes: Buffer.from(JSON.stringify({ prompt: 'new' })),
+						binary: false
+					},
+					{ path: assignmentPath, bytes: Buffer.from(JSON.stringify(assignment)), binary: false },
+					{ path: resultPath, bytes: Buffer.from(JSON.stringify(result)), binary: false }
+				]
+			},
+			proposed([targetPath, assignmentPath, resultPath])
+		);
+		expect(report.problems).toEqual([]);
+		const intents = report.ownerPlans[0]!.successorIntents;
+		expect(intents.map(({ path }) => path)).toEqual([targetPath, assignmentPath, resultPath]);
+		expect(intents[1]!.dependencies).toEqual([
+			expect.objectContaining({ path: targetPath, digest: intents[0]!.projectedValueDigest })
+		]);
+		expect(intents[2]!.dependencies).toEqual([
+			expect.objectContaining({ path: assignmentPath, digest: intents[1]!.projectedValueDigest })
+		]);
+	});
+
 	it('requires a registered path and exact pointer for every digest', async () => {
-		const path = 'assets/equipment/experiments/fixture/manifest.json';
+		const path = 'assets/equipment/experiments/material-equipment-v3/manifest.json';
 		const known = await classifyIntegrityBindings(
 			snapshot({ [path]: { contentHash: HASH } }),
 			proposed([path])

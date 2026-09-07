@@ -381,7 +381,9 @@ async function collectIntegritySnapshot(
 	affectedPaths: readonly string[],
 	binary: ReadonlyMap<string, boolean>,
 	expectedBinaryBlobs: ReadonlyMap<string, string>,
-	index: ReadonlyMap<string, { readonly mode: string; readonly blobId: string }>
+	index: ReadonlyMap<string, { readonly mode: string; readonly blobId: string }>,
+	projectedPaths: ReadonlyMap<string, string>,
+	projectedBytes: ReadonlyMap<string, Uint8Array>
 ): Promise<TrackedTreeSnapshot> {
 	const entries: TrackedTreeSnapshot['entries'][number][] = [];
 	for (const repositoryPath of affectedPaths) {
@@ -395,6 +397,8 @@ async function collectIntegritySnapshot(
 		entries.push({
 			path: repositoryPath,
 			bytes,
+			projectedPath: projectedPaths.get(repositoryPath) ?? repositoryPath,
+			projectedBytes: projectedBytes.get(repositoryPath) ?? bytes,
 			binary: isBinary,
 			...(isBinary && expectedBinaryBlob !== undefined
 				? { binaryChanged: index.get(repositoryPath)?.blobId !== expectedBinaryBlob }
@@ -486,13 +490,30 @@ export async function planAmericanEnglishMigration(
 		textEdits,
 		pathMoves: pathMoves.sort((left, right) => compareCodepoints(left.source, right.source))
 	};
+	const projectedPaths = new Map(
+		migrationProjection.pathMoves.map(({ source, destination }) => [source, destination])
+	);
+	const projectedBytes = new Map<string, Uint8Array>();
+	for (const { path: repositoryPath } of textEdits) {
+		const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
+		const status = await lstat(absolutePath);
+		const source = status.isSymbolicLink()
+			? await readlink(absolutePath)
+			: (await readFile(absolutePath)).toString('utf8');
+		const selected = (contentViolations.get(repositoryPath) ?? []).filter(({ ruleId }) =>
+			selectedRuleIds.has(ruleId)
+		);
+		projectedBytes.set(repositoryPath, Buffer.from(applyContentViolations(source, selected)));
+	}
 	const integrity = await classifyIntegrityBindings(
 		await collectIntegritySnapshot(
 			repositoryRoot,
 			affectedPaths,
 			binary,
 			new Map(pathMoves.map(({ source, sourceBlobId }) => [source, sourceBlobId])),
-			index
+			index,
+			projectedPaths,
+			projectedBytes
 		),
 		migrationProjection
 	);
