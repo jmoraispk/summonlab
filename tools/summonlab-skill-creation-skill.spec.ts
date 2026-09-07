@@ -64,7 +64,7 @@ function coordinatorDirectives(documentation: string): Array<{ heading: string; 
 
 function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocument[]): string[] {
 	const positiveFrameVerb =
-		/\b(?:attach|include|add|use|supply|provide|giv(?:e|ing)|embed|render|compose|apply|put|place|generate)\b/i;
+		/\b(?:attach|include|add|use|supply|provide|giv(?:e|ing)|embed|render|compose|apply|put|place|generate|copy|imitate)\b/i;
 	const frameContent =
 		/\b(?:canonical|approved|rarity)?\s*(?:frame(?:d)?|crest|rank(?:\s+surround)?|border|rail|ornament)s?\b/i;
 	const generationContext =
@@ -72,11 +72,11 @@ function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocume
 	const directlyNegatedAction =
 		/(?:\b(?:do|does|did|must|should|can|may|will|would)\s+not|\bnever|\bnot|\bwithout)\s*$/i;
 	const allowedReferenceOnlyFamilySheetUse =
-		'Use a complete framed family sheet as a reference-only presentation for individual lineage review.';
+		'When `motifFamily` is set, supply the complete framed family sheet solely as the exact purpose-bound family-lineage reference; never use its frame, crop, or composition as individual artwork content.';
 	const actionPattern = new RegExp(positiveFrameVerb.source, 'gi');
 
 	const hasUnapprovedAction = (text: string): boolean => {
-		if (text === allowedReferenceOnlyFamilySheetUse) {
+		if (text.replace(/^(?:[-*]\s+|\d+\.\s+)/, '') === allowedReferenceOnlyFamilySheetUse) {
 			return false;
 		}
 
@@ -122,6 +122,9 @@ const canonicalIndividualProduction = normalizeWhitespace(`
    candidate, result, hashes, and inspection evidence for the provider artwork and deterministic
    assembly.
 `);
+
+const canonicalFamilyLineageReferenceOnlyInstruction =
+	'When `motifFamily` is set, supply the complete framed family sheet solely as the exact purpose-bound family-lineage reference; never use its frame, crop, or composition as individual artwork content.';
 
 describe('summonlab skill-icon producer and coordinator workflow', () => {
 	it('keeps the producer frameless and makes its coordinator handoff explicit', async () => {
@@ -323,7 +326,7 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 		).toEqual([`action-scope.md: ${directive}`]);
 	});
 
-	it('allows every directly negated frame action and one exact reference-only family-sheet use', () => {
+	it('allows every directly negated frame action and the required purpose-bound family-lineage reference', () => {
 		for (const directive of [
 			'Never attach a canonical frame to individual generation.',
 			'Do not include a canonical frame in an individual prompt.',
@@ -340,7 +343,7 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 			'Do not put a canonical frame in an individual prompt.',
 			'Do not place a canonical frame in an individual prompt.',
 			'Do not generate a framed individual image.',
-			'Use a complete framed family sheet as a reference-only presentation for individual lineage review.'
+			canonicalFamilyLineageReferenceOnlyInstruction
 		]) {
 			expect(
 				findUnapprovedFramedIndividualInstructions([
@@ -348,5 +351,22 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 				])
 			).toEqual([]);
 		}
+	});
+
+	it('retains the required purpose-bound family-lineage reference without allowing frame/crop imitation', async () => {
+		const creationSkill = await readRepositoryFile('skills/summonlab-skill-creation/SKILL.md');
+
+		for (const directive of [
+			"Copy the framed family sheet's frame into individual artwork content.",
+			"Imitate the framed family sheet's crop in individual artwork content."
+		]) {
+			expect(
+				findUnapprovedFramedIndividualInstructions([
+					{ path: 'frame-crop-imitation.md', content: directive }
+				])
+			).toEqual([`frame-crop-imitation.md: ${directive}`]);
+		}
+
+		expect(creationSkill).toContain(canonicalFamilyLineageReferenceOnlyInstruction);
 	});
 });
