@@ -12,12 +12,15 @@
 		id: string;
 		name: string;
 		tier: string;
+		role: string;
+		signatureMechanic: string | null;
 		variants: Variant[];
 	};
 
 	type Family = {
 		familyId: string;
 		displayName: string;
+		escalationAxis: string;
 		forms: Form[];
 	};
 
@@ -27,6 +30,8 @@
 	const coordinateCount = $derived(formCount * 5);
 	const normalVariant = (form: Form) =>
 		form.variants.find((variant) => variant.affinity === 'normal');
+	const roleName = (role: string) => role.replace(/\s+\([^)]*\)$/u, '');
+	const mechanicName = (mechanic: string | null) => mechanic?.split(':', 1)[0]?.trim() ?? null;
 </script>
 
 <section class="database" aria-labelledby="monster-database-heading">
@@ -54,6 +59,7 @@
 						{family.displayName}<span>View 25-image atlas →</span>
 					</a>
 				</h2>
+				<span class="escalation">{family.escalationAxis}</span>
 			</header>
 			<div class="monster-grid">
 				{#each family.forms as form (form.id)}
@@ -68,8 +74,14 @@
 								loading="lazy"
 							/>
 						{/if}
-						<span>{form.tier}</span>
-						<strong>{form.name}</strong>
+						<div class="card-copy">
+							<span>{form.tier}</span>
+							<strong>{form.name}</strong>
+							<small>{roleName(form.role)}</small>
+							{#if mechanicName(form.signatureMechanic)}
+								<em>{mechanicName(form.signatureMechanic)}</em>
+							{/if}
+						</div>
 					</a>
 				{/each}
 			</div>
@@ -176,6 +188,19 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
+	.escalation {
+		display: -webkit-box;
+		max-width: 70rem;
+		margin-top: 0.55rem;
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		color: rgba(243, 234, 217, 0.54);
+		font:
+			0.86rem/1.45 Georgia,
+			serif;
+	}
 	.monster-grid {
 		display: grid;
 		grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -183,8 +208,8 @@
 	}
 	.monster-card {
 		display: grid;
+		grid-template-rows: auto 1fr;
 		min-width: 0;
-		padding-bottom: 0.8rem;
 		overflow: hidden;
 		border: 1px solid var(--line);
 		border-radius: 0.3rem;
@@ -206,19 +231,21 @@
 		aspect-ratio: 1;
 		object-fit: cover;
 	}
-	.monster-card span,
-	.monster-card strong {
-		margin-inline: 0.7rem;
+	.card-copy {
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		align-items: start;
+		padding: 0.65rem 0.7rem 0.8rem;
 	}
-	.monster-card span {
-		margin-top: 0.65rem;
+	.card-copy span {
 		color: #70c7d2;
 		font:
 			0.56rem ui-monospace,
 			monospace;
 		letter-spacing: 0.12em;
 	}
-	.monster-card strong {
+	.card-copy strong {
 		margin-top: 0.2rem;
 		overflow: hidden;
 		font:
@@ -226,6 +253,24 @@
 			serif;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+	.card-copy small {
+		margin-top: 0.45rem;
+		color: rgba(243, 234, 217, 0.58);
+		font:
+			0.7rem/1.3 Georgia,
+			serif;
+	}
+	.card-copy em {
+		margin-top: auto;
+		padding-top: 0.65rem;
+		color: #c9a66b;
+		font:
+			0.52rem/1.25 ui-monospace,
+			monospace;
+		font-style: normal;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
 	}
 	.reference-links {
 		display: flex;

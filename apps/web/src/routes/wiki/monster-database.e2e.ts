@@ -12,22 +12,40 @@ test('renders an image-first T1–T5 index for every family', async ({ page }) =
 		/Runt.*Normal/iu
 	);
 	await expect(page.locator('#database-goblins .monster-card').first()).toContainText('T1');
+	await expect(page.locator('#database-goblins .monster-card').first()).toContainText(
+		'Mob Harrier'
+	);
+	await expect(page.locator('#database-goblins .monster-card').first()).toContainText('Mob Nerve');
 	await expect(page.locator('#database-goblins .monster-card').last()).toContainText('T5');
+	await expect(page.locator('#database-goblins')).toContainText('Scrap becomes treasure');
 	await expect(page.getByRole('heading', { name: 'Current class reconciliation' })).toHaveCount(0);
 });
 
-test('renders the Goblin family progression and all 25 family variants', async ({ page }) => {
+test('applies one selected affinity to all five Goblin tiers', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 900 });
 	await page.goto('/wiki/creatures/monsters/families/goblins');
 
 	await expect(
 		page.locator('.monster-family').getByRole('heading', { name: 'Goblins' })
 	).toBeVisible();
-	await expect(page.locator('.family-atlas img')).toHaveCount(25);
+	await expect(page.locator('.family-atlas img')).toHaveCount(5);
+	await expect(page.locator('.affinity-controls button')).toHaveCount(5);
 	await expect(page.locator('.family-progression tbody tr')).toHaveCount(5);
+	for (const image of await page.locator('.family-atlas img').all()) {
+		await expect(image).toHaveAttribute('alt', /Normal affinity/iu);
+	}
+
+	await page.getByRole('button', { name: 'Show Fire affinity' }).click();
+	for (const image of await page.locator('.family-atlas img').all()) {
+		await expect(image).toHaveAttribute('alt', /Fire affinity/iu);
+	}
 	await expect(page.locator('.family-atlas img').first()).toHaveAttribute(
-		'alt',
-		/Runt.*Normal affinity/iu
+		'src',
+		/runtime\/enemies\/monster-wiki-v1\/goblins\/goblin-runt\/fire\.[a-f0-9]{12}\.webp$/u
+	);
+	await expect(page.getByRole('button', { name: 'Show Fire affinity' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
 	);
 });
 
