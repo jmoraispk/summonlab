@@ -162,3 +162,72 @@ The fixture continues to settle to deterministic victory before 40 seconds.
 - Verified victory evaluates only living enemies marked `requiredForVictory`, not a rat-specific team count.
 - Verified Saffron Arc activates from the bound `saffron-arc-v1` action ID and animation revision counters remain state-owned mechanics data.
 - Kept the motion-pack source validation helper and changed only its public diagnostic input to request bindings.
+
+## Fix round 1 — trace capacity and Arc event identity
+
+### RED — terminal trace capacity and Arc identity
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/realtime-combat.spec.ts
+```
+
+Exact failures:
+
+```text
+AssertionError: expected 2187 to be less than or equal to 2000
+AssertionError: expected [] to deeply equal [ 'action-started', 'action-resolved' ]
+Test Files  1 failed | 32 passed (33)
+Tests  2 failed | 172 passed (174)
+Exit status 1
+```
+
+The initial 2,187 count is the complete mechanics trace plus the two reserved future lifecycle events. The event stream emitted `movement-committed` for every advancing actor on every tick, and Saffron Arc reused the primary strike action ID.
+
+### GREEN — summarized movement and bound Arc identity
+
+Movement events now describe a committed movement transition (a newly selected target or a transition back into advance), rather than emitting every fixed simulation tick. When the third bound Saffron action triggers its Arc, `action-started` and `action-resolved` both carry `saffron-arc-v1`; an otherwise identical actor with that action removed emits neither Arc identity nor Arc summary.
+
+GREEN command:
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/realtime-combat.spec.ts
+```
+
+Exact result:
+
+```text
+Test Files  33 passed (33)
+Tests  174 passed (174)
+```
+
+### Fixture assertion strengthening
+
+Added a low-cost regression that pins all 17 source-to-SHA-256-to-approval mappings, the exact 8-actor bounds and combat profiles, and deep-freeze behavior. It passed against the existing canonical fixture:
+
+```text
+Test Files  33 passed (33)
+Tests  175 passed (175)
+```
+
+### Fix-round verification
+
+```text
+Focused combat regression:
+  Test Files  33 passed (33)
+  Tests  175 passed (175)
+
+Typecheck:
+  svelte-check found 0 errors and 0 warnings
+
+Targeted ESLint:
+  exit 0
+
+git diff --check:
+  exit 0
+```
+
+### Fix-round self-review
+
+- The regression reserves two events for future `encounter-started` and `encounter-ended` lifecycle emission without increasing `maximumTraceEvents`.
+- Movement summaries remain authoritative state-transition events while removing repeated per-tick noise.
+- Arc identity is selected before both action lifecycle events, so no non-Arc strike can be mislabeled and no actor lacking `saffron-arc-v1` can emit it.

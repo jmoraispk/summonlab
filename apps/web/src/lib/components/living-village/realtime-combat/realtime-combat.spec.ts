@@ -4,6 +4,16 @@ import { arenaBounds, isInsideObstacle } from './combat-spatial';
 import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 import { createRealtimeCombat, runRealtimeCombat, stepRealtimeCombat } from './realtime-combat';
 
+function traceToTerminal(state = createRealtimeCombat(RAT_ENCOUNTER_REQUEST)) {
+	const events: ReturnType<typeof stepRealtimeCombat>['events'] = [];
+	for (let tick = 0; tick < 40 * 60 && state.phase === 'running'; tick += 1) {
+		const stepped = stepRealtimeCombat(state, 1 / 60);
+		state = stepped.state;
+		events.push(...stepped.events);
+	}
+	return { state, events };
+}
+
 describe('realtime combat simulation', () => {
 	it('settles to the same deterministic victory every time', () => {
 		const first = runRealtimeCombat(RAT_ENCOUNTER_REQUEST, 40);
@@ -48,6 +58,42 @@ describe('realtime combat simulation', () => {
 			targetIds: [expect.any(String)]
 		});
 		expect(actionEvents[0]?.healthDeltas).toHaveLength(1);
+	});
+
+	it('leaves trace capacity for lifecycle events after the fixture reaches a terminal state', () => {
+		const trace = traceToTerminal();
+		expect(trace.state.phase).toBe('victory');
+		expect(trace.events.length + 2).toBeLessThanOrEqual(
+			RAT_ENCOUNTER_REQUEST.bounds.maximumTraceEvents
+		);
+	});
+
+	it('identifies Saffron Arc as its bound action and never emits it without the binding', () => {
+		const arcTrace = traceToTerminal().events;
+		const arcEvents = arcTrace.filter(
+			(event) =>
+				event.actorId === 'saffron-braid' &&
+				event.actionId === 'saffron-arc-v1' &&
+				(event.kind === 'action-started' || event.kind === 'action-resolved')
+		);
+		expect(arcEvents.filter((event) => event.kind === 'action-started')).not.toEqual([]);
+		expect(arcEvents.filter((event) => event.kind === 'action-resolved')).toHaveLength(
+			arcEvents.filter((event) => event.kind === 'action-started').length
+		);
+
+		const stateWithoutArc = createRealtimeCombat(RAT_ENCOUNTER_REQUEST);
+		const ashaWithoutArc = stateWithoutArc.actors.find((actor) => actor.id === 'saffron-braid')!;
+		ashaWithoutArc.actionDefinitionRefs = ashaWithoutArc.actionDefinitionRefs.filter(
+			(actionId) => actionId !== 'saffron-arc-v1'
+		);
+		const withoutArcEvents = traceToTerminal(stateWithoutArc).events;
+		expect(
+			withoutArcEvents.filter(
+				(event) =>
+					event.actorId === 'saffron-braid' &&
+					(event.actionId === 'saffron-arc-v1' || event.publicSummary.includes('Saffron Arc'))
+			)
+		).toEqual([]);
 	});
 
 	it('keeps a viable committed target when another enemy is only slightly nearer', () => {

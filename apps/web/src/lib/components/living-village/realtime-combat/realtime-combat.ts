@@ -234,7 +234,9 @@ function damageTarget(
 	source.attacksLanded += 1;
 	source.actionRevision += 1;
 	source.attackTimer = source.attackInterval;
-	const actionId = source.actionDefinitionRefs[0];
+	const isSaffronArc =
+		source.actionDefinitionRefs.includes('saffron-arc-v1') && source.attacksLanded % 3 === 0;
+	const actionId = isSaffronArc ? 'saffron-arc-v1' : source.actionDefinitionRefs[0];
 	events.push(
 		mechanicsEvent('action-started', source.id, [target.id], `${source.label} starts an action.`, {
 			actionId
@@ -243,10 +245,7 @@ function damageTarget(
 
 	const healthDeltas = [applyDamage(source, target, source.damage, events)];
 	const targetIds = [target.id];
-	if (
-		source.actionDefinitionRefs.includes('saffron-arc-v1') &&
-		source.attacksLanded % 3 === 0
-	) {
+	if (isSaffronArc) {
 		for (const enemy of state.actors) {
 			if (enemy.team === source.team || enemy.health <= 0 || enemy.id === target.id || distance(source, enemy) > 0.2)
 				continue;
@@ -295,6 +294,7 @@ export function stepRealtimeCombat(
 
 		const target = chooseTarget(entry, state.actors);
 		const wasEngagedWithTarget = entry.intent === 'attack' && entry.targetId === target?.id;
+		const wasAdvancing = entry.intent === 'advance';
 		const previousTargetId = entry.targetId;
 		entry.targetId = target?.id;
 		if (!target) continue;
@@ -321,9 +321,11 @@ export function stepRealtimeCombat(
 			entry.velocityY = (dy / length) * entry.speed;
 			entry.x += (dx / length) * amount;
 			entry.y += (dy / length) * amount;
-			events.push(
-				mechanicsEvent('movement-committed', entry.id, [target.id], `${entry.label} advances.`)
-			);
+			if (!wasAdvancing || entry.targetId !== previousTargetId) {
+				events.push(
+					mechanicsEvent('movement-committed', entry.id, [target.id], `${entry.label} advances.`)
+				);
+			}
 		} else {
 			entry.intent = 'attack';
 			if (entry.attackTimer <= 0) damageTarget(state, entry, target, events);
