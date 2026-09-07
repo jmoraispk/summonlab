@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.dragon-drake`
 
-[← Canonical monster database](README.md)
+[← Dragons family](families/dragons.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Dragons are treated as a draconic visual and encounter-production family, not as a universal claim about intelligence, temperament, treasure ownership, or morality. The packet preserves long reptilian anatomy, four limbs plus age-dependent wings, horn and scale growth, territorial hoard materials, and direct silhouette-based maturation while assigning each hostile form a specific arena duty.
 
-## Family visual grammar
+## Family context
 
-- Long neck and tail, deep chest, four clawed limbs, wedge-shaped horned skull, and wings that emerge and expand after the wingless first form.
-- Each individual holds one coherent metallic or jewel-tone scale identity with a paler underbelly and bright reflective eyes, rather than changing base identity by affinity.
-- Overlapping scales, horn, bone spurs, and leathery wing membrane retain reptilian load paths and readable joints at every tier.
-- Horn crowns, spinal ridges, battle scars, torn membrane, and hoard metal fused into old belly scales accumulate as age and territorial history.
-- Wingspan and horn crown escalate together from absent wings and horn nubs to storm-front wings and branching imperial antlers, while the ground-to-sky grammar remains recognizable.
+Shared visual constants and the complete T1–T5 comparison live on the [Dragons family page](families/dragons.md).
 
 **Escalation axis:** Wings and horns mature from absent and unreliable to arena-defining structures, turning a ground pounce into short draft hops, authored flight lanes, hoard-shaped landing control, and a Sovereign circuit through every earlier movement grammar.
 

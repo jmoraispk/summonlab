@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.fungalfolk-fungal-shaman`
 
-[← Canonical monster database](README.md)
+[← Fungalfolk family](families/fungalfolk.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Fungalfolk are treated as a mushroom-bodied visual and encounter-production family. Claims about habitat, communication, society, cognition, agency, personhood, reproduction, rank, and universal behavior are proposals pending taxonomy review. Bioluminescence, spores, mycelium, and damp surroundings are native fungal motifs rather than affinities.
 
-## Family visual grammar
+## Family context
 
-- Cap-headed, stalk-bodied silhouette with gills, bulbous limbs, and a wider top than base remains recognizable.
-- Pale fungal flesh and one strong cap tone contrast with bounded cyan or green gill bioluminescence from T2 onward.
-- Fungal flesh, spongy cap, mycelium, damp moss, and spore dust remain organic and spatially coherent.
-- Cap breadth, gill light, spore density, secondary growth, and ground mycelium escalate at explicit source tiers.
+Shared visual constants and the complete T1–T5 comparison live on the [Fungalfolk family page](families/fungalfolk.md).
 
 **Escalation axis:** Cap reach and network control progress from a dust puff to battlefield spore writing and finally a sovereign throne connected to the arena floor.
 

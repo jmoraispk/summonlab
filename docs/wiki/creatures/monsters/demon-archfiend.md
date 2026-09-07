@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.demon-archfiend`
 
-[← Canonical monster database](README.md)
+[← Demons family](families/demons.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Demons are treated as physically manifested underworld spirits organized into an authored hostile hierarchy, not as a biological people or a universal claim about religion, evil, culture, cognition, personhood, or social worth. Their source-native embers, magma, smoke, live fire, and obsidian are infernal body materials and non-affinity rank signs; Fire affinity must add a distinct engineered combustion grammar rather than duplicate that identity.
 
-## Family visual grammar
+## Family context
 
-- A horned head, broadening shoulders, digitigrade or hooved legs, long tail, claws, and bat-like wing membranes remain legible from cat-sized pest to enthroned sovereign.
-- Blood red or ashen hide, char black, source-native ember orange, molten yellow, and obsidian preserve an infernal body whose internal fire is explained anatomy rather than affinity by default.
-- Charred hide, obsidian, blackened iron, native molten rock, smoke, and bat membrane retain distinct surfaces instead of collapsing into a generic flame silhouette.
-- Brands, infernal sigils, chains, spiked black armor, skull motifs, and horn arrangements communicate authored rank and command routes without implying a universal moral taxonomy.
-- Horn count, wing authority, and the proportion of source-native fire or obsidian increase with rank, but every form preserves visible hide, joints, brand routes, and an interruptible hierarchy anchor.
+Shared visual constants and the complete T1–T5 comparison live on the [Demons family page](families/demons.md).
 
 **Escalation axis:** A pest steals brands, a line Fiend spends them, a plated Hellknight sentences targets through a seal, an Archfiend chains the hierarchy into formation, and a throne-bound Prince promotes legions until broken command brands strip away its corona and court.
 

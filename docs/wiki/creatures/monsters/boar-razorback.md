@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.boar-razorback`
 
-[← Canonical monster database](README.md)
+[← Boars family](families/boars.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural suid expedition family centered on predictable charge lanes, bracing, displacement, and route creation.
 
-## Family visual grammar
+## Family context
 
-- Every form keeps a low four-legged boar body, cloven hooves, mobile snout, raised bristles, short tail, and visible tusk roots.
-- Tier escalation uses tusk geometry, neck mass, shoulder callus, scars, and bristle profile rather than humanoid equipment.
-- Charge direction remains readable through hoof placement, lowered head angle, tusk contact, dust, and the alignment of the spine.
+Shared visual constants and the complete T1–T5 comparison live on the [Boars family page](families/boars.md).
 
 **Escalation axis:** A short straight charge becomes a braced line-breaker, curved furrow specialist, formation-opening champion, and three-lane sovereign stampede.
 

@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.fae-pixie`
 
-[← Canonical monster database](README.md)
+[← Fae family](families/fae.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Fae are treated as a progressively alien wild-growth spirit visual and encounter-production family. Claims about wild-wood origin, beauty, friendliness, court, culture, cognition, agency, personhood, and hostility remain proposals pending taxonomy review. Leaf, bark, and branch are ordinary source materials, not a current retired botanical element label.
 
-## Family visual grammar
+## Family context
 
-- A slender weightless-looking silhouette retains layered wings while scale, head growth, and proportion change only at explicit tiers.
-- Spring green, petal pink, dusk violet, moth iridescence, and bounded gold pollen light remain source palette rather than affinity evidence.
-- Living leaf, petal, spider silk, stained glass, bark, dew, and moth wing remain discrete ordinary or uncanny materials.
-- Wing complexity and subtly wrong beauty escalate from a palm sprite to a sovereign whose geometry bends the surrounding frame.
+Shared visual constants and the complete T1–T5 comparison live on the [Fae family page](families/fae.md).
 
 **Escalation axis:** Wing construction, scale, court ornament, and perceptual strangeness progress from a thorn-bearing sprite to a season-transforming sovereign.
 

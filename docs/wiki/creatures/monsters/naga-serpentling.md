@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.naga-serpentling`
 
-[← Canonical monster database](README.md)
+[← Nagas family](families/nagas.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Nagas are treated as a serpentine visual and encounter-production family, not as an accepted people or a universal statement about culture, antiquity, intelligence, religion, guardianship, sacred water, treasure, or forbidden knowledge. Temple imagery supplies authored mechanisms while the packet leaves taxonomy, belief, and personhood unresolved.
 
-## Family visual grammar
+## Family context
 
-- A humanoid torso rises from a long coiled serpent body; the T1–T2 forms have two arms and no hood, while hood and additional arms begin only at T3.
-- Emerald, jade, deep teal, gold, bronze, ivory, and jewel-toned scale patterns remain the family palette.
-- Scale, gold, gemstone inlay, silk sash, and temple stone remain separate readable materials rather than a seamless magical body.
-- Arm bands, gold scale bands, jeweled brow pieces, sacred script, and later hood crests communicate rank.
-- Coil direction, weapon-bearing hands, hood angle where present, and exposed scale seams preserve attack and counterplay readability.
+Shared visual constants and the complete T1–T5 comparison live on the [Nagas family page](families/nagas.md).
 
 **Escalation axis:** Coil length, scale ornament, temple mechanism authority, hood complexity from T3 onward, and hand count grow from a mobile two-armed skirmisher to a sovereign relic court.
 

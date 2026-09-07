@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.celestial-seraph`
 
-[← Canonical monster database](README.md)
+[← Celestials family](families/celestials.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Celestials are treated as winged beings manifested through light and geometric order for authored encounters, not as a biological people or a universal claim about religion, holiness, goodness, authority, moral worth, personhood, or cosmic law. Their light, sunlight colors, halos, and luminous bodies are family-native non-affinity materials and symbols; elemental variants require distinct construction beyond radiance.
 
-## Family visual grammar
+## Family context
 
-- An idealized upright humanoid silhouette remains deliberately symmetrical, with feathered wings and a halo above or behind the head even as the body becomes increasingly abstract.
-- White, ivory, pale gold, sunlight yellow, and sky blue remain family-native ordered radiance rather than elemental affinity colors.
-- Polished gold, white marble, feather, silk, and source-native pure light stay layered so armor, cloth, wing roots, halo joints, and the suggested body remain readable.
-- Halos, ring geometry, sacred script, ribbons, censers, blank ceremonial masks, and wing count communicate rank through exact symmetry and moving parts rather than glow or size alone.
-- Escalation increases wing pairs and halo complexity from a simple ring to an orrery, but each tier preserves a breakable alignment joint and a learnable ordered command.
+Shared visual constants and the complete T1–T5 comparison live on the [Celestials family page](families/celestials.md).
 
 **Escalation axis:** A two-wing Messenger draws one line, a Guardian braces it, a four-wing Warden rotates intersecting axes, a six-wing Archon composes those geometries, and an orrery Seraph commands and sheds entire ordered rings as the arena simplifies.
 

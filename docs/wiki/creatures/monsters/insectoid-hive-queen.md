@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.insectoid-hive-queen`
 
-[← Canonical monster database](README.md)
+[← Insectoids family](families/insectoids.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Insectoids are treated as a chitinous visual and encounter-production family, not as an accepted people or universal claims about intelligence, caste, cognition, individuality, personhood, reproductive role, social organization, or hostility. Hive and caste language becomes authored combat coordination while every biological and cultural claim remains a proposal pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- Segmented chitinous body, mandibled head, compound eyes, four to six limbs, narrow waist, and rear abdomen remain legible across all forms.
-- Chitin brown and black mature into glossy crimson, iridescent green-black, and amber accents without replacing caste-specific limb shapes.
-- Chitin, resin, wax comb, translucent wing membrane where anatomically present, and amber remain distinct family materials.
-- Shell ridging, fluting, resin plating, spiracle vents, and comb-throne structures communicate specialization rather than generic size.
-- Wing state is tier-specific: T1–T2 have no wings, T3 has closed wing cases, T4 has functional wings, and the immense T5 Queen is wingless.
+Shared visual constants and the complete T1–T5 comparison live on the [Insectoids family page](families/insectoids.md).
 
 **Escalation axis:** Caste specialization, chitin gloss, limb purpose, vent and wing development, and authority over wax-comb routes grow from a worker probe to a stationary production sovereign.
 

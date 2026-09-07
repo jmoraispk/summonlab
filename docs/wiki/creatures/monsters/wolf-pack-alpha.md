@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.wolf-pack-alpha`
 
-[← Canonical monster database](README.md)
+[← Wolves family](families/wolves.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural lupine expedition family built around pack geometry, pursuit, and coordinated prey selection. It remains distinct from transformed humanoid Werebeasts.
 
-## Family visual grammar
+## Family context
 
-- Every form retains a four-legged lupine skeleton, long muzzle, visible paws, expressive ears, and a readable tail; no form becomes humanoid or wears manufactured armor.
-- Rank is communicated through chest mass, coat mantle, scars, posture, and pack behavior rather than arbitrary glow or simple scale.
-- Pack attack direction remains readable through gaze, ear position, tail line, paw placement, and the spacing of companion Wolves.
+Shared visual constants and the complete T1–T5 comparison live on the [Wolves family page](families/wolves.md).
 
 **Escalation axis:** Opportunistic flanking becomes alternating pursuit, directional pack timing, marked-prey command, and finally an arena-scale hunt circle controlled by an apex Greatwolf.
 

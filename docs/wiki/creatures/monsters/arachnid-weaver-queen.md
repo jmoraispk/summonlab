@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.arachnid-weaver-queen`
 
-[← Canonical monster database](README.md)
+[← Arachnids family](families/arachnids.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Arachnids are treated as a spider-bodied visual and encounter-production family, not as an accepted biological people or universal claims about intelligence, culture, rank, personhood, habitat, predation, or hostility. The T1–T2 remain oversized spiders; the humanoid torso begins only at T3 and is treated as a designed form transition pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- A bulbous abdomen, eight jointed legs arching around the body, clustered eyes, fangs, and spinnerets remain legible; a humanoid torso is added only from T3 onward.
-- Black, charcoal, deep violet, blood-red markings, pale silk white, and green, red, or amber eye accents form the source palette.
-- Chitin, coarse bristle, silk, bone, amber, venom sheen, and eye settings remain physically distinct family materials.
-- Web decorations, silk robes, egg sacs, wrapped prey, jeweled eye settings, and layered drapery communicate escalation.
-- Leg load, spinneret direction, fang posture, silk tension, and eye cluster alignment preserve readable attack and recovery states.
+Shared visual constants and the complete T1–T5 comparison live on the [Arachnids family page](families/arachnids.md).
 
 **Escalation axis:** Eye organization, leg span, silk refinement, web topology, and command over brood routes grow from a hunting spider to a cathedral-scale sovereign loom.
 

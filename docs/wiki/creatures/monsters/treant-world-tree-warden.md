@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.treant-world-tree-warden`
 
-[← Canonical monster database](README.md)
+[← Treants family](families/treants.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Treants are treated as a walking-tree visual and encounter-production family. Claims about age, status, society, cognition, agency, personhood, habitat, and universal behavior remain proposals pending taxonomy review. Ordinary tree material, roots, moss, water, and caught stone are family-native botany and history, not affinity labels.
 
-## Family visual grammar
+## Family context
 
-- Vertical trunk body, root-cluster legs, long branch arms, a bark-suggested face, and canopy remain recognizable.
-- Bark brown and grey, moss green, autumn gold, sap, and restrained amber heartwood remain botanical materials.
-- Nests, vines, mushrooms, bark runes, scars, and growth rings record age without replacing readable joints.
-- Girth, canopy, rooted reach, and resident ecosystems escalate while branch load and root commitment preserve counterplay.
+Shared visual constants and the complete T1–T5 comparison live on the [Treants family page](families/treants.md).
 
 **Escalation axis:** Age and ecosystem load turn simple root movement into canopy control and finally a sovereign walking forest that reconfigures the arena.
 
