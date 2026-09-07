@@ -8,6 +8,7 @@
 		MissionLifecycleRequest
 	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
+	import CharacterArtMissing from '$lib/components/CharacterArtMissing.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import PlayerJournal from '$lib/components/PlayerJournal.svelte';
 
@@ -572,27 +573,76 @@
 					{/each}
 					{#each attempt.party.memberIds as actorId, index (actorId)}
 						{@const position = nodePosition(attempt.positions[actorId] ?? attempt.entryNodeId)}
-						<div
-							class="actor-token"
-							class:master={actorId === engineState.master.masterId}
-							style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
-							title={actorName(actorId)}
-						>
-							{actorId === engineState.master.masterId
-								? 'M'
-								: data.proof.manifest.displayName.slice(0, 1)}
-						</div>
+						{#if isCapabilityMission}
+							{#if actorId === engineState.master.masterId}
+								<div
+									class="tactical-art-missing master"
+									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+									title="The Master · approved combat art unavailable"
+								>
+									<CharacterArtMissing
+										label="The Master"
+										compact
+										testId="master-combat-art-missing"
+									/>
+								</div>
+							{:else if data.heroCombatChibi}
+								<img
+									class="hero-combat-art"
+									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+									src={data.heroCombatChibi.publicPath}
+									width={data.heroCombatChibi.width}
+									height={data.heroCombatChibi.height}
+									alt={`${data.proof.manifest.displayName} combat chibi`}
+									data-character-art-status="approved"
+									data-testid="hero-combat-art"
+								/>
+							{:else}
+								<div
+									class="tactical-art-missing"
+									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+								>
+									<CharacterArtMissing label={data.proof.manifest.displayName} compact />
+								</div>
+							{/if}
+						{:else}
+							<div
+								class="actor-token"
+								class:master={actorId === engineState.master.masterId}
+								style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+								title={actorName(actorId)}
+							>
+								{actorId === engineState.master.masterId
+									? 'M'
+									: data.proof.manifest.displayName.slice(0, 1)}
+							</div>
+						{/if}
 					{/each}
 					{#each Object.values(turnState?.monsters ?? {}).filter((monster) => monster.status === 'active') as monster (monster.monsterId)}
 						{@const position = nodePosition(monster.nodeId)}
-						<div
-							class="monster-token"
-							style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
-							title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health`}
-							data-testid="monster-token"
-						>
-							<span>G</span><small>{monster.vitality}</small>
-						</div>
+						{#if isCapabilityMission}
+							<div
+								class="tactical-art-missing enemy"
+								style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
+								title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health · approved combat art unavailable`}
+							>
+								<CharacterArtMissing
+									label={monster.label}
+									compact
+									testId="enemy-combat-art-missing"
+								/>
+								<small class="tactical-health">Health {monster.vitality}</small>
+							</div>
+						{:else}
+							<div
+								class="monster-token"
+								style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
+								title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health`}
+								data-testid="monster-token"
+							>
+								<span>G</span><small>{monster.vitality}</small>
+							</div>
+						{/if}
 					{/each}
 					{#if !isPortal && combatTurnState?.objective.status === 'carried'}
 						<div class="objective-banner">
@@ -832,7 +882,13 @@
 					class:fatal={isGameOver}
 					data-testid="master-roster-card"
 				>
-					<div class="portrait master-portrait"><span></span></div>
+					<div class="portrait" class:master-portrait={!isCapabilityMission}>
+						{#if isCapabilityMission}
+							<CharacterArtMissing label="The Master" testId="master-roster-art-missing" />
+						{:else}
+							<span></span>
+						{/if}
+					</div>
 					<div>
 						<span>Required · leader</span>
 						<strong>The Master</strong>
@@ -1613,6 +1669,38 @@
 		border-color: #f0bd69;
 		background: #62431e;
 		color: #fff0cf;
+	}
+	.hero-combat-art {
+		position: absolute;
+		z-index: 5;
+		width: 4rem;
+		height: 6rem;
+		object-fit: contain;
+		object-position: 50% 100%;
+		filter: drop-shadow(0 0.35rem 0.2rem rgba(3, 5, 6, 0.85));
+		transform: translate(-50%, -72%);
+	}
+	.tactical-art-missing {
+		position: absolute;
+		z-index: 5;
+		width: 5.4rem;
+		height: 3.2rem;
+		transform: translate(-50%, -50%);
+	}
+	.tactical-art-missing.master {
+		border-top: 1px solid #8f713f;
+	}
+	.tactical-art-missing.enemy {
+		border-top: 1px solid #77483f;
+	}
+	.tactical-health {
+		display: block;
+		margin-top: 0.2rem;
+		color: #d59078;
+		font-size: 0.46rem;
+		letter-spacing: 0.06em;
+		text-align: center;
+		text-transform: uppercase;
 	}
 	.monster-token {
 		position: absolute;

@@ -12,6 +12,28 @@ commits the existing legal route to `gate-dais` and the existing scheduled arriv
 atomic command batch. It does not teleport, mutate a database location directly, or choose any
 combat action. Legacy automatic combat remains operator-owned and advances normally after return.
 
+## Review round 1 — approved character art on the reachable v25 mission
+
+The newly reachable v25 tactical board now requests the summoned hero's exact `combat-chibi` from
+the same immutable runtime-manifest binding used by the approved roster. The route renders that
+approved raster directly; it no longer turns the hero's initial into a tactical character token.
+
+No canonical approved asset binding exists for the Master, Chain Watch, or Ember Hauler. Generic
+combat studies and experimental enemy art were therefore not repurposed. V25 presents those slots
+as a shared, plainly labeled **Art pending** archive record with no image role, glyph, silhouette,
+emoji, SVG, or CSS anatomy. The Master roster card uses the same honest absence state. Existing
+v1–v24 token branches remain unchanged, and the server projects `heroCombatChibi` only for v25.
+
+The character-art regression was test-driven in two layers:
+
+- RED: the component test failed because the honest missing-art component did not exist; after that
+  component passed, the public browser route failed because no `hero-combat-art` was rendered.
+- GREEN: the component render proves the missing state has a label and no depiction markup. The
+  browser flow independently derives the expected hero/path from the approved source catalog and
+  runtime manifest, then proves the live `<img>` has that exact path and approved binding. It also
+  proves every unbound v25 slot is a missing-art record and that the legacy `.actor-token`,
+  `.monster-token`, and `.master-portrait` substitutes are absent from the v25 DOM.
+
 ## Root causes and repaired seams
 
 1. The summon CTA correctly linked to `/play/:runId`, and the proof arrival writer already used real
@@ -89,6 +111,10 @@ Temporary review screenshots from the passing run:
   and the replay journal's travel/arrival evidence.
 - `/tmp/final-fix-b-combat.png` — operator-bound v25 Floor 01 after a persisted legacy automatic
   round.
+- `/tmp/final-fix-b-art-desktop.png` — desktop v25 tactical board with the approved hero chibi and
+  labeled Master/enemy art gaps after one automatic round.
+- `/tmp/final-fix-b-art-mobile.png` — 390×844 v25 mission capture after deployment; the approved
+  hero art is visible and the document has no horizontal overflow.
 
 Visual inspection confirmed the existing Field Archive hierarchy, Georgia display role, fine rules,
 gold/teal status language, approved raster hero art, visible disabled state, and no new parallel
@@ -102,6 +128,7 @@ browser review were used as the documented fallback.
 - `pnpm --filter @summonlab/engine test` — 30 files, 321/321 passed, including frozen historical
   compatibility and replay vectors.
 - `pnpm --filter @summonlab/web test:unit` — 38 files passed, 1 skipped; 186/186 executed tests passed.
+- Review-round rerun: 39 files passed, 1 skipped; 187/187 executed tests passed.
 - `pnpm --filter @summonlab/web test:e2e -- foundation-final-fix-b.e2e.ts` — 2/2 passed.
 - Contracts and engine TypeScript checks — passed.
 - Web Svelte/TypeScript check — 0 errors and 0 warnings.
@@ -109,6 +136,12 @@ browser review were used as the documented fallback.
 - Production web build — passed as the Playwright web-server precondition; only existing optional
   Sharp-resolution and large-chunk warnings were emitted.
 - `git diff --check` — passed.
+
+For transparency, two optional historical browser specs were also sampled but are already stale at
+the pre-art base revision and fail before reaching their tactical-board assertions:
+`mission.e2e.ts` hard-codes the superseded `Mara Vey` roster identity, and
+`master-game-over.e2e.ts` still expects the superseded `vitality` pool label instead of the accepted
+`Health` correction. Neither file nor its production behavior was changed in this review round.
 
 No blocking seam remains in this slice. Agent-controlled readiness/compliance remains deliberately
 deferred to the separately accepted agent-readiness plan.

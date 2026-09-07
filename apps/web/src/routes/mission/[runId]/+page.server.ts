@@ -60,6 +60,10 @@ export const load: PageServerLoad = async ({ params }) => {
 		missionReadiness,
 		combatMode,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
+		heroCombatChibi:
+			report.snapshot.state.schemaVersion === 25
+				? runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'combat-chibi')
+				: null,
 		missionDefinition: {
 			isPortal,
 			isAftermath,
