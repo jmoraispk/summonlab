@@ -100,6 +100,8 @@
 		"validate:runtime-visuals": "tsx tools/export-runtime-visuals.ts --check",
 		"export:summonable-hero-runtime": "tsx tools/export-summonable-hero-runtime.ts",
 		"validate:summonable-hero-runtime": "tsx tools/export-summonable-hero-runtime.ts --check",
+		"export:village-cutout-review": "tsx tools/export-village-cutout-review.ts --write",
+		"validate:village-cutout-review": "tsx tools/export-village-cutout-review.ts --check",
 		"export:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts",
 		"validate:equipment-runtime-visuals": "tsx tools/export-equipment-runtime-visuals.ts --check",
 		"validate:equipment-approved-sources": "tsx tools/promote-equipment-approved-sources.ts --check",
