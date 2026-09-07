@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:rising-moon",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rising-moon.png",
+		"contentHash": "5068e51a2db14fe8598a846c6a060f4523ada6cfd0cbcc0da668701b5111f91d"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-rising-moon.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-rising-moon.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-rising-moon.png",
+		"contentHash": "1a7558d11978497584bc0fbaeaf36a57113eb47e6cd1ec9f26c5c421502c78e0",
+		"removedPixels": 208348,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 16,
+			"width": 770,
+			"height": 998
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "b8728288403510183eccefed0ed4f93ad1354810b2535974b3b30245545dbbc4",
+	"resultContentHash": "a842bf4a8f84c56d1f45c2973c487007a466e48f092e2f87aea9e5d0b8c4c12a"
+}

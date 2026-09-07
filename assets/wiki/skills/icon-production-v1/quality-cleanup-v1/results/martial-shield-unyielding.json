@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:shield:unyielding",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-unyielding.png",
+		"contentHash": "ecac12ec1e377baec418f04836a2cca9d1603f2a990fcea081c1368af4788a03"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-shield-unyielding.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-shield-unyielding.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-shield-unyielding.png",
+		"contentHash": "89f5131dd737393577a365cedc102889c2f8cff323385ba020db605a66f30d03",
+		"removedPixels": 161109,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 37,
+			"width": 734,
+			"height": 938
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "e0da2b73ad5ef19d2fb31deabae3074ff5415e8a0fec9fe8b41a5b07cd60e2d9",
+	"resultContentHash": "b75ba56d56cd78f7b7a7d4279c8dff89053b0ddafbb31a05b1121f275d7096fc"
+}

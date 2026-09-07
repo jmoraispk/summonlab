@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:water-whip",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-water-whip.png",
+		"contentHash": "b946feda8d2999a47c586adcbf850c93d6913031c1b31377a87ac9cd06db4cd8"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-water-whip.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-water-whip.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-water-whip.png",
+		"contentHash": "ce676203b53f4550088c9679738623065797cba1c67618760edf32bfc509e88a",
+		"removedPixels": 185642,
+		"removedPixelBounds": {
+			"left": 129,
+			"top": 15,
+			"width": 770,
+			"height": 973
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "e102771b1f580bef05ed452a71da0e982c4d81d2f23f3d2619873c84a2eb3c91",
+	"resultContentHash": "b3cc1a87d06a9422a22ee730b4475cdeca929f4132eddc4529b21570cbbb9c87"
+}

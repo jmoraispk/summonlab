@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "martial:body:joint-lock",
+	"name": "Joint Lock",
+	"rank": "E",
+	"motifFamily": "body.grappling-control",
+	"finding": {
+		"targetId": "martial:body:joint-lock",
+		"kind": "stray-ui-glyph",
+		"detail": "Prohibition badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-joint-lock-v2.json",
+		"contentHash": "3cfc25f2be820dcac539f0745f28d8fb6548951e28a1209635e7f1658eebf42f"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-joint-lock-v1.json",
+			"contentHash": "fe964f98635217547b6fb5d5d0651ae07f932a800974f8416ef6a4e807f4c5bd"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v1.json",
+			"contentHash": "29bc7faef3957999e49d0950924cf3d7ad0bf0f3683c2173c6937dd770deb2d5"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v1.png",
+			"contentHash": "ccb115316c821435e6860f1b67cc78a386f9ee6fb9527cd18b62b786da4dc50b"
+		},
+		"transactionContentHash": "961205b33e6a238c8bfd9e8b15d7281f17f9b3209fa652fb5e3c008ff22fbfef",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v1.png",
+			"contentHash": "8f98b149131691e2781e65dc94473ba2042d9d94d81214f234b09c5fa86d5eb8"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-joint-lock-v1.png",
+			"contentHash": "b26eadbae0462770477968e901e78ad96dfd91cf0c5393d4d8a4ea4d55014a8b"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1078867,
+		"contentHash": "ccb115316c821435e6860f1b67cc78a386f9ee6fb9527cd18b62b786da4dc50b",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 379406,
+		"contentHash": "46745153ed207c9e8b7be1cf22ccde25fcf32336fcedffb50ab74220e0618c9f"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-joint-lock-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1029882,
+		"contentHash": "e3e5320f90c728fc9609826b594d7e96a96a07e530541c4c617e2c39a3439dab"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 152797,
+		"contentHash": "6e1bd945f97ef27ff2ac99a4250241b6c1cf717693864743ff2d5a1c3db1fc06"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Prohibition badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:50.688Z",
+		"finishedAt": "2026-09-06T09:39:52.750Z",
+		"durationMs": 2061,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:50.688Z",
+				"finishedAt": "2026-09-06T09:39:50.732Z",
+				"durationMs": 43
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:50.739Z",
+				"finishedAt": "2026-09-06T09:39:51.243Z",
+				"durationMs": 503
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:51.243Z",
+				"finishedAt": "2026-09-06T09:39:51.646Z",
+				"durationMs": 402
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:51.646Z",
+				"finishedAt": "2026-09-06T09:39:52.739Z",
+				"durationMs": 1093
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:52.750Z",
+				"finishedAt": "2026-09-06T09:39:52.750Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "cbdd701b8c453fa8f0f857b9571f50be92f4616d36c2f2b8f0d2f2b35f75c260",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-joint-lock-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

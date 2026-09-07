@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:ward:shield-sigil",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-shield-sigil.png",
+		"contentHash": "902864b28d43abf3161546147b2c48400d96dc82c45c2fadd4e5eecde8c32cf6"
+	},
+	"rank": "F",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "magical:ward:shield-sigil",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-shield-sigil.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-shield-sigil.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-shield-sigil.png",
+		"contentHash": "bc5d4ae7b424070dbdcb6e449c8bd55541a40df9bef95d60c2dea93bc439c774",
+		"removedPixels": 185567,
+		"removedPixelBounds": {
+			"left": 118,
+			"top": 16,
+			"width": 788,
+			"height": 998
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "2469d143ac36a5e328e021eec3e8443d04afccf81ae3a382ea6d86308fe5490e",
+	"resultContentHash": "6185d094069336bd8033c7cdfb1eea12613470c73f305b0afdf254f65967628d"
+}

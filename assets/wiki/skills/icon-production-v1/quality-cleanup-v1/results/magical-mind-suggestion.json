@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:mind:suggestion",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-suggestion.png",
+		"contentHash": "114a64d3369d41432f8584f9d7473dbe6c572909df28773df49a116bcd54fa24"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-suggestion.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-mind-suggestion.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-suggestion.png",
+		"contentHash": "7e127591da2387350b546eb33bbfb76b38e520d8fce9785ab5b7910838206ca2",
+		"removedPixels": 159582,
+		"removedPixelBounds": {
+			"left": 140,
+			"top": 37,
+			"width": 744,
+			"height": 935
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "fad290b1d460ec146f612d35d08f9745bf2215083e7a42ec3c9a325c1914d938",
+	"resultContentHash": "b7623d0ae662fd7735749ae0cabd699f21259f0cd9d7bcd1ec53193e56dde3f1"
+}

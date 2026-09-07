@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:ballista-form",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-ballista-form.png",
+		"contentHash": "c0cf00ada5f013f7e302585af58f665d2ef17357af3dedd1d77b5c4597280db4"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-ballista-form.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-ballista-form.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-ballista-form.png",
+		"contentHash": "8786d05486c67a128dfd7b1d39deea145baa57dc58243c717ada845af9c6a7e0",
+		"removedPixels": 204483,
+		"removedPixelBounds": {
+			"left": 106,
+			"top": 22,
+			"width": 813,
+			"height": 994
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "d3d537fe9ad1dbe760d7aa8896dabc7800b8f972f9d5777225d66e852313679c",
+	"resultContentHash": "9144848d3362f8fb8eebdb6842322c7c2fe64a4d2727c2d196e2809fd9e2d16f"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:mind:shared-sight",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-shared-sight.png",
+		"contentHash": "f7914dd4c5fdf5b7c6e594b432fd8f5883824d64b16e80d483ccf3ebe9dd5396"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-shared-sight.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-mind-shared-sight.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-shared-sight.png",
+		"contentHash": "9008f3c828f3fe7aa8ff329a1066db068d49b6c2dda7d35f72c2cd1c0841c449",
+		"removedPixels": 170361,
+		"removedPixelBounds": {
+			"left": 128,
+			"top": 36,
+			"width": 769,
+			"height": 942
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "b156d18a34d4fb6f4dca8a10eafbaca6ec95f864e6fd239c002b840752758101",
+	"resultContentHash": "e5417c25fc21f9d5ab55a2a5b254a8219a642df3b5faf1e329c58d9d0a2a4e77"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:gathering:deep-vein",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-deep-vein.png",
+		"contentHash": "f9ac9c5ce008a848b666a5bef315dbe0ec0615c809c268e91fc6a932228d33f0"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-deep-vein.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-deep-vein.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-deep-vein.png",
+		"contentHash": "70ad3dcb379d4a08f8555a2150fec547da75099a2c239e6f9ae4e3e21047b3ac",
+		"removedPixels": 175541,
+		"removedPixelBounds": {
+			"left": 125,
+			"top": 20,
+			"width": 775,
+			"height": 973
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "2c95e29ce662307c92e83ca459d4e0e218f785904ad414faab9947cfc77448de",
+	"resultContentHash": "1b5e93cc4b0633424d8b5215a71dcb844fb5076165952f79584704b55af9014d"
+}

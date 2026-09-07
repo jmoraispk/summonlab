@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:half-sword",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-half-sword.png",
+		"contentHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-half-sword.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-half-sword.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-half-sword.png",
+		"contentHash": "705a5f7ffe4ca265df5fd0e68e306ac9a163484d49f255431bca3bcccb29611c",
+		"removedPixels": 194281,
+		"removedPixelBounds": {
+			"left": 126,
+			"top": 18,
+			"width": 771,
+			"height": 974
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "4e927ca010c23abc0510efa854362cbee25a9a8247c38b528401b600e8548dfe",
+	"resultContentHash": "ace6f3ff38d12a4838ea2db528566706c7a78ef45c5e454701fd2250cf7e1834"
+}

@@ -1,0 +1,47 @@
+{
+	"targetId": "craft:gathering:the-earth-provides",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-the-earth-provides.png",
+		"contentHash": "9b3256eb5b744cb73d184e132cfcca627e56f52e7a440d10904e51c03e1d0ad0"
+	},
+	"rank": "B",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "craft:gathering:the-earth-provides",
+			"kind": "stray-ui-glyph",
+			"detail": "Circular-arrow badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-the-earth-provides.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-the-earth-provides.png",
+		"contentHash": "e6971346df884f9b9b29cc221f0053f0add7e89c4e2222f7def641b1aad5481e",
+		"removedPixels": 183968,
+		"removedPixelBounds": {
+			"left": 126,
+			"top": 8,
+			"width": 773,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "125c2e35998281602c0ac11901f033d89f0194df0719ef82a744d2241e71eff9",
+	"resultContentHash": "4750b8047c08d87c78f8adc6db70eb6b954947421647be644d2823a1cfac2275"
+}

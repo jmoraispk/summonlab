@@ -8,11 +8,17 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	AnySkillIconAssignmentSchema,
+	SKILL_ICON_APPROVED_FRAME_SHEET_HASH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+	SKILL_ICON_OPTION_C_FRAME_HASH,
+	SKILL_ICON_OPTION_C_FRAME_PATH,
+	SKILL_ICON_OPTION_C_FRAME_PURPOSE,
 	SkillIconGeometrySchema,
 	SkillIconGeometryV2Schema
 } from '../packages/contracts/src/index.js';
@@ -215,6 +221,74 @@ function targetV3(revision = 4, rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOME
 	};
 }
 
+function targetGeometryRoleMask(
+	revision = 6,
+	rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+) {
+	const target = targetV3(revision, rawGeometryHash);
+	return {
+		...target,
+		normalization: {
+			...target.normalization,
+			profile: 'skill-icon-geometry-role-mask-v1' as const
+		}
+	};
+}
+
+function targetStrictGeometryRoleMask(
+	revision = 8,
+	rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+) {
+	const target = targetV3(revision, rawGeometryHash);
+	return {
+		...target,
+		normalization: {
+			...target.normalization,
+			profile: 'skill-icon-geometry-role-mask-v2' as const
+		}
+	};
+}
+
+function targetBlackMatteFrame(
+	rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' = 'E',
+	rawGeometryHash = SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+) {
+	const logicalIdentity = `rarity-frame-${rarity.toLowerCase()}`;
+	const revision = 9;
+	const jobId = `${logicalIdentity}-v${revision}`;
+	const target = targetV3(revision, rawGeometryHash);
+	return {
+		...target,
+		jobId,
+		logicalIdentity,
+		role: 'rarity-frame' as const,
+		rarity,
+		exactPrompt: `Paint the ${rarity} rarity frame over a perfectly uniform opaque #000000 matte with no baked checkerboard.`,
+		references: [
+			...target.references,
+			{
+				path: SKILL_ICON_OPTION_C_FRAME_PATH,
+				purpose: SKILL_ICON_OPTION_C_FRAME_PURPOSE,
+				contentHash: SKILL_ICON_OPTION_C_FRAME_HASH
+			},
+			{
+				path: SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+				purpose: SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
+				contentHash: SKILL_ICON_APPROVED_FRAME_SHEET_HASH
+			}
+		],
+		output: outputPaths(jobId),
+		normalization: {
+			...target.normalization,
+			profile: 'skill-icon-black-matte-geometry-role-mask-v1' as const,
+			sourceContract: {
+				...target.normalization.sourceContract,
+				matteColor: '#000000' as const
+			}
+		}
+	};
+}
+
 function rarityFrameTargetV2(rarity: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S') {
 	const logicalIdentity = `rarity-frame-${rarity.toLowerCase()}`;
 	const jobId = `${logicalIdentity}-v2`;
@@ -233,6 +307,9 @@ type TestTarget =
 	| ReturnType<typeof rarityFrameTargetV1>
 	| ReturnType<typeof targetV2>
 	| ReturnType<typeof targetV3>
+	| ReturnType<typeof targetGeometryRoleMask>
+	| ReturnType<typeof targetStrictGeometryRoleMask>
+	| ReturnType<typeof targetBlackMatteFrame>
 	| ReturnType<typeof rarityFrameTargetV2>;
 
 function assignment(target: TestTarget) {
@@ -252,11 +329,17 @@ function assignment(target: TestTarget) {
 		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${target.jobId}.json`,
 		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`,
 		skillVersion:
-			profile === 'skill-icon-green-key-role-mask-v3'
-				? 'summonlab-skill-icon-production-v4'
-				: v2
-					? 'summonlab-skill-icon-production-v2'
-					: 'summonlab-skill-icon-production-v1',
+			profile === 'skill-icon-black-matte-geometry-role-mask-v1'
+				? 'summonlab-skill-icon-production-v7'
+				: profile === 'skill-icon-geometry-role-mask-v2'
+					? 'summonlab-skill-icon-production-v6'
+					: profile === 'skill-icon-geometry-role-mask-v1'
+						? 'summonlab-skill-icon-production-v5'
+						: profile === 'skill-icon-green-key-role-mask-v3'
+							? 'summonlab-skill-icon-production-v4'
+							: v2
+								? 'summonlab-skill-icon-production-v2'
+								: 'summonlab-skill-icon-production-v1',
 		assignedAt: '2026-09-02T00:00:00.000Z',
 		retryCeiling: 1,
 		permittedOutputs: target.output,
@@ -307,7 +390,10 @@ function candidateResult(target: TestTarget, bytes: Buffer) {
 							contentHash: 'b'.repeat(64)
 						},
 						sourceContentHash: 'b'.repeat(64),
-						...(profile === 'skill-icon-green-key-role-mask-v3'
+						...(profile === 'skill-icon-green-key-role-mask-v3' ||
+						profile === 'skill-icon-geometry-role-mask-v1' ||
+						profile === 'skill-icon-geometry-role-mask-v2' ||
+						profile === 'skill-icon-black-matte-geometry-role-mask-v1'
 							? {
 									decoderInputContentHash: 'c'.repeat(64),
 									containerBox: {
@@ -369,7 +455,10 @@ function failedResult(target: TestTarget) {
 						geometryHash: target.normalization.geometry.contentHash,
 						providerSource: null,
 						sourceContentHash: null,
-						...(profile === 'skill-icon-green-key-role-mask-v3'
+						...(profile === 'skill-icon-green-key-role-mask-v3' ||
+						profile === 'skill-icon-geometry-role-mask-v1' ||
+						profile === 'skill-icon-geometry-role-mask-v2' ||
+						profile === 'skill-icon-black-matte-geometry-role-mask-v1'
 							? {
 									decoderInputContentHash: null,
 									containerBox: null,
@@ -508,6 +597,26 @@ function validFrameFixture(): Promise<Buffer> {
 		return inPolygon(x, y, outer) && !inPolygon(x, y, inner) ? 255 : 0;
 	});
 	return validFrameFixturePromise;
+}
+
+let validFrameV2FixturePromise: Promise<Buffer> | undefined;
+function validFrameV2Fixture(): Promise<Buffer> {
+	const outer = geometryV2.outerEnvelopePoints.map(([px, py]) => [px * 1024, py * 1024] as const);
+	const aperture = geometryV2.aperturePoints.map(([px, py]) => [px * 1024, py * 1024] as const);
+	const inner = aperture.map(
+		([px, py]) =>
+			[
+				512 + (px - 512) * geometryV2.innerApertureScale,
+				512 + (py - 512) * geometryV2.innerApertureScale
+			] as const
+	);
+	const medallion = geometryV2.rarityMedallionExclusion.map(
+		([px, py]) => [px * 1024, py * 1024] as const
+	);
+	validFrameV2FixturePromise ??= rgbaPng((x, y) =>
+		(inPolygon(x, y, outer) && !inPolygon(x, y, inner)) || inPolygon(x, y, medallion) ? 255 : 0
+	);
+	return validFrameV2FixturePromise;
 }
 
 async function seedHistoricalReferenceInventory(root: string): Promise<void> {
@@ -988,6 +1097,69 @@ describe('validateSkillIconAssets revision authority', () => {
 
 		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
 	});
+
+	it('validates geometry-role-mask only through skill-v5 and geometry-v2 authorities', async () => {
+		const root = await revisionTestRoot();
+		const target = targetGeometryRoleMask();
+		const candidate = await validBacking();
+		await writeExecution(root, target, candidateResult(target, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+
+		const assignmentPath = path.join(
+			root,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`
+		);
+		const mixed = assignment(target) as Record<string, unknown>;
+		mixed.skillVersion = 'summonlab-skill-icon-production-v4';
+		mixed.normalization = { profile: 'skill-icon-green-key-role-mask-v3' };
+		await writeFile(assignmentPath, JSON.stringify(mixed));
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/invalid assignment\/result evidence|normalization|profile/iu
+		);
+	}, 15_000);
+
+	it('validates strict geometry-role-mask only through skill-v6 and geometry-v2 authorities', async () => {
+		const root = await revisionTestRoot();
+		const target = targetStrictGeometryRoleMask();
+		const candidate = await validBacking();
+		await writeExecution(root, target, candidateResult(target, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+
+		const assignmentPath = path.join(
+			root,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`
+		);
+		const mixed = assignment(target) as Record<string, unknown>;
+		mixed.skillVersion = 'summonlab-skill-icon-production-v5';
+		mixed.normalization = { profile: 'skill-icon-geometry-role-mask-v1' };
+		await writeFile(assignmentPath, JSON.stringify(mixed));
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/invalid assignment\/result evidence|normalization|profile/iu
+		);
+	}, 15_000);
+
+	it('validates black-matte frames only through skill-v7 and geometry-v2 authorities', async () => {
+		const root = await revisionTestRoot();
+		const target = targetBlackMatteFrame();
+		const candidate = await validFrameV2Fixture();
+		await writeExecution(root, target, candidateResult(target, candidate), candidate);
+
+		await expect(validateSkillIconAssets(root)).resolves.toBeUndefined();
+
+		const assignmentPath = path.join(
+			root,
+			`assets/wiki/skills/icon-production-v1/assignments/references/${target.jobId}.json`
+		);
+		const mixed = assignment(target) as Record<string, unknown>;
+		mixed.skillVersion = 'summonlab-skill-icon-production-v6';
+		mixed.normalization = { profile: 'skill-icon-geometry-role-mask-v2' };
+		await writeFile(assignmentPath, JSON.stringify(mixed));
+		await expect(validateSkillIconAssets(root)).rejects.toThrow(
+			/invalid assignment\/result evidence|normalization|profile/iu
+		);
+	}, 15_000);
 
 	it('rejects changed profile-v3 geometry and guide authority bytes', async () => {
 		const geometryRoot = await revisionTestRoot();

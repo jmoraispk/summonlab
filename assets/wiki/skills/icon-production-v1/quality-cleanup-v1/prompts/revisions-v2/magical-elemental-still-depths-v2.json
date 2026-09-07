@@ -1,0 +1,113 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v2",
+	"revision": 2,
+	"targetId": "magical:elemental:still-depths",
+	"name": "Still Depths",
+	"domain": "Magical",
+	"family": "Elemental",
+	"rank": "C",
+	"motifFamily": "elemental.water-depth",
+	"finding": {
+		"targetId": "magical:elemental:still-depths",
+		"kind": "stray-ui-glyph",
+		"detail": "Shield, drop, and information glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-still-depths-v1.json",
+			"contentHash": "66b0bbdb88792f6a86d16a920c42fe1f2fab40181693286545220da2f3958e9f"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v1.json",
+			"contentHash": "2bedaec528e036e5f61cbaa1c0cece624102e46a5536f8434b759b5c9a47f2b6"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-still-depths-v1.png",
+			"contentHash": "b31b10027fd02ec4bb693806b30d5ca89eaef9bf48ddea9269aeb468d756b4a8"
+		},
+		"transactionContentHash": "fada73606e3e5d0bdd2c7ff90222696eabe32243003d2cc0d62a9933866f07e5",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-still-depths-v1.png",
+			"contentHash": "321081b4caefb4a901bf0d5d2d5fafd5bbbd2b5c1d87e78db947be67c120bcdd"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-still-depths-v1.png",
+			"contentHash": "0f8d04b74484803a0f0249b1088fe993f639266388d09ef0c135f754259d128a"
+		}
+	},
+	"sourceMode": "identity-adoption",
+	"transform": {
+		"kind": "identity-adoption-v1",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-still-depths-v1.png",
+			"contentHash": "321081b4caefb4a901bf0d5d2d5fafd5bbbd2b5c1d87e78db947be67c120bcdd"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-still-depths-v1.png",
+			"contentHash": "0f8d04b74484803a0f0249b1088fe993f639266388d09ef0c135f754259d128a"
+		},
+		"mask": "v1-approved-composition-retained-byte-for-byte"
+	},
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Still Depths in the Magical / Elemental taxonomy.\nDominant subject: a concrete water magical operation that visibly causes Still Depths, expressed through recognizable elemental matter\nSupporting cue: one restrained secondary cue communicating this effect: Continuous mana regeneration and mitigation; movement reduced\nPalette: deep blue, clear cyan, cold silver\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Shield, drop, and information glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and C-rank frame.",
+	"exactPromptHash": "a7cec7c4c34d46c4c63308d20d4aa07ba39320facf999368bf83f314cda0b386",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-depth.png",
+			"purpose": "Exact elemental.water-depth motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "16affa53f33b2432baef6f193bfc0ad3bd0c2ce16b703a6eedfc5138390878ef"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-elemental-still-depths-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "12b0d12b7839ca128eabbaf6c842a89c86bb9c5a021c86684b0dac163e0ac95c"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-still-depths.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "e26a674c4eb10c418950158ef9d0fae1430999af4a68b3f38c1a1badb91a1c49"
+		}
+	],
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-still-depths-v2.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-still-depths-v2.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-still-depths-v2.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v2.json"
+	}
+}

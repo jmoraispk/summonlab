@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:blade:blade-dance",
+	"name": "Blade Dance",
+	"rank": "D",
+	"motifFamily": "blade.sword-dance",
+	"finding": {
+		"targetId": "martial:blade:blade-dance",
+		"kind": "stray-ui-glyph",
+		"detail": "Up/down arrows.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-blade-dance-v3.json",
+		"contentHash": "cff10d1e131b3f63c71fc07a9b441e66a46b20b8b75f1e1ef28cc04a9337d281"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-blade-dance-v2.json",
+			"contentHash": "c1e43627b3380e6cf32aa2f9e4991cddb1b995ad034e6490ca160de0cba7d940"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v2.json",
+			"contentHash": "dd78736e961271850bf2dcc1e9ce4c64bdfa281c630167a7b0f62fff8d1c2519"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v2.png",
+			"contentHash": "e230fda2f598a627346427a7bb57fcf28f68f11f5dff4883406373bdb8ffda87"
+		},
+		"transactionContentHash": "8e98eb919d9685ff6e6f49ff6ed7cbd3e31f07750c0671bd3d71a18f590415e5",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-blade-dance-v2.png",
+			"contentHash": "9a36dd6bb1e028b6abec92153035a32653fd9ad608e68a9bff12edee7275762a"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-blade-dance-v2.png",
+			"contentHash": "e35899d4ffddbdd9ddac45ecd953ec9f76e4469b515a801ab2a6d3aa7281fe03"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1333106,
+		"contentHash": "e230fda2f598a627346427a7bb57fcf28f68f11f5dff4883406373bdb8ffda87",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-blade-dance-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 471175,
+		"contentHash": "9a36dd6bb1e028b6abec92153035a32653fd9ad608e68a9bff12edee7275762a"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-blade-dance-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1090315,
+		"contentHash": "e35899d4ffddbdd9ddac45ecd953ec9f76e4469b515a801ab2a6d3aa7281fe03"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 165114,
+		"contentHash": "c2f8251155aaa74ff0fdafbe38f239cb5f000aa86143bfbd01af55b7d278b2f8"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Up/down arrows."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:12.690Z",
+		"finishedAt": "2026-09-06T11:05:14.891Z",
+		"durationMs": 2201,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:12.690Z",
+				"finishedAt": "2026-09-06T11:05:12.726Z",
+				"durationMs": 36
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:12.733Z",
+				"finishedAt": "2026-09-06T11:05:13.311Z",
+				"durationMs": 578
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:13.311Z",
+				"finishedAt": "2026-09-06T11:05:13.748Z",
+				"durationMs": 437
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:13.748Z",
+				"finishedAt": "2026-09-06T11:05:14.879Z",
+				"durationMs": 1130
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "202804120c536f8422db885731d31122d3f29948a8328eac2d5025c8ff81db56",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-blade-dance-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-blade-dance-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

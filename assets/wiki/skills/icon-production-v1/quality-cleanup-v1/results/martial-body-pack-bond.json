@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:pack-bond",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-pack-bond.png",
+		"contentHash": "ff11a9b4c1ebeb05e0af769ff7d83a090f5891020dc84bb4fc7e6ee220371456"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-pack-bond.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-pack-bond.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-pack-bond.png",
+		"contentHash": "ccccd65ddce3ae253a9d6c05c57dcf838654e4c2d13ceaf03c1557d75ce7790b",
+		"removedPixels": 168773,
+		"removedPixelBounds": {
+			"left": 137,
+			"top": 27,
+			"width": 751,
+			"height": 965
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "33ab20326813666e1598c9d349b90cd3f5fadcb5959dc8c259579f6cfeebd697",
+	"resultContentHash": "af21962df50e1301668bb98a3d98d2c7c2b9fe3c354f81c1b27909e5f167b8e7"
+}

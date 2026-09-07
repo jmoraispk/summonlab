@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:ward:layered-ward",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-layered-ward.png",
+		"contentHash": "5d92816ebe22ae37d3cf11b8132cf34c01e2d8bec9c80e87c0bd4ac2b01fb4d4"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-layered-ward.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-layered-ward.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-layered-ward.png",
+		"contentHash": "4a3881c3d2b88fa3c7837e9f4394f2f57be7afd73e1957bc9aae739cc13b3a79",
+		"removedPixels": 186859,
+		"removedPixelBounds": {
+			"left": 121,
+			"top": 15,
+			"width": 779,
+			"height": 1001
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "fe3bf471dd6e77385019aaddef17be9eb7e40f390ea2fbb2dff996e7c6184dfd",
+	"resultContentHash": "bbdde01800aa2d33d860544ce84b9f714b3c9dfdcfbcf7f2743cbf852f133ba6"
+}

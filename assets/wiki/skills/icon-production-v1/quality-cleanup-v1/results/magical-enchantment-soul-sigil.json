@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:soul-sigil",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-soul-sigil.png",
+		"contentHash": "36a745d3a73ec3a2de98e52c501492b4f76f6bdcd7111003b5e2291d63004393"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-soul-sigil.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-soul-sigil.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-soul-sigil.png",
+		"contentHash": "cac9857195bb9bf85a56109b4ea04b4109521ad0f4cecb03f62276a0e00574ca",
+		"removedPixels": 168960,
+		"removedPixelBounds": {
+			"left": 119,
+			"top": 8,
+			"width": 786,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "773247dc580a1745328ca6d6ff656ae1f0a1193678e7d19676598ec8dcec5d17",
+	"resultContentHash": "407739b374b54042fd1144b314ad972b5aa1665b806cb478731f7f95e6697c54"
+}

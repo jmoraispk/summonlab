@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:polearm:thousand-li-thrust",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-thousand-li-thrust.png",
+		"contentHash": "f4bfef2b2ba4c10e95c28b8ad9b8185aa5dc6ad1de649df36e1b7fa3f09cbdf0"
+	},
+	"rank": "B",
+	"disposition": "recompose",
+	"findings": [
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"kind": "frame-composition",
+			"detail": "Spear and action line compete with the frame boundary.",
+			"requiredAction": "recompose"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-thousand-li-thrust.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-thousand-li-thrust.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-thousand-li-thrust.png",
+		"contentHash": "9faf2b408b57c78ad15ea528ff5a0c6bfaa7d687adb46d50932166faee98638a",
+		"removedPixels": 119780,
+		"removedPixelBounds": {
+			"left": 160,
+			"top": 37,
+			"width": 704,
+			"height": 898
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "b6f5d3b356cedbb6ed56a7a93513bdbffd07d2071d89b6f612fbb18276c8f693",
+	"resultContentHash": "1e9a6b739c52f94cd45c129042fed7089a6482d2fdae11a5e0bfc7cdc4e6f2f0"
+}

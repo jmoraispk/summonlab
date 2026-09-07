@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:antidotes",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-antidotes.png",
+		"contentHash": "b86655d529a01c874df0d54abe03c6e0d7250652db7919bfbbb529381e2e17ad"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-antidotes.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-antidotes.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-antidotes.png",
+		"contentHash": "8ed24e0c1afc0f937a7efe4cd1d09716d0216017fb5f66171254af4b5874ade6",
+		"removedPixels": 199353,
+		"removedPixelBounds": {
+			"left": 124,
+			"top": 30,
+			"width": 778,
+			"height": 980
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "403096574c661857864c9525278a4c586156982a83935d451fb5033ffa547915",
+	"resultContentHash": "e89155a3d222c1e4e923d40d597afe4764fed2d70af74135832da90177630bfa"
+}

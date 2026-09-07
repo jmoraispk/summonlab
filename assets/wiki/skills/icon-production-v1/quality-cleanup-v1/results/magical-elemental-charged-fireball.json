@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:charged-fireball",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-charged-fireball.png",
+		"contentHash": "897425d58f77d142f5e1ce5c7dc04fae770235d0e62e9d2224edd84d45af6c00"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-charged-fireball.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-charged-fireball.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-charged-fireball.png",
+		"contentHash": "263ab89d183ee1616d119becc41e064fb67736d55dabe225c8e67db3f6b71941",
+		"removedPixels": 206543,
+		"removedPixelBounds": {
+			"left": 115,
+			"top": 17,
+			"width": 793,
+			"height": 977
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "c723ca65094f7e4e06b8469045c9739b9185dab607fb0e058891d9cf966d01cf",
+	"resultContentHash": "632252f5bebaebb1bf581f30770ba6a79ff66dc7f384cc040941ee3d67a1d29d"
+}

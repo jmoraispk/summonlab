@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:detonation",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-detonation.png",
+		"contentHash": "f6f4c0c316125c878b548176c9f061faac33dfce928f8e719a7db2f5bbfa805a"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-detonation.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-detonation.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-detonation.png",
+		"contentHash": "f4a27c1acae74545beea7758db250c8bc398340d52edd9aef21c2549a899ae04",
+		"removedPixels": 167076,
+		"removedPixelBounds": {
+			"left": 131,
+			"top": 10,
+			"width": 762,
+			"height": 980
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "3c2c8a5ae8cf98a11bb10cfa101d825df1ae315cd66e10b3c7480637563de5e5",
+	"resultContentHash": "928cf47b299c05a779a1c803f3964a5eebf0d5e06ecad42d516580cb7697a016"
+}

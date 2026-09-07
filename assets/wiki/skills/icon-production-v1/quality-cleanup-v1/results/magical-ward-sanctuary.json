@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:ward:sanctuary",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-sanctuary.png",
+		"contentHash": "8288c69972d3dfcfb99a2af2e10862c2b69a65c910e2a4d10bf10b0ce7ff43f4"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-sanctuary.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-sanctuary.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-sanctuary.png",
+		"contentHash": "4df20e575b6657925c318bc396d331ee7094a00efd198e88d82c4b0586e60c73",
+		"removedPixels": 158768,
+		"removedPixelBounds": {
+			"left": 143,
+			"top": 37,
+			"width": 738,
+			"height": 918
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "6a9ca18d9d77deeb7b787fc451068d4dca97e6486be6214c42d9baaa4012a95d",
+	"resultContentHash": "275e51307f997816ae711e17355140457568c6aacbd8b3011580bb5c33c21d89"
+}

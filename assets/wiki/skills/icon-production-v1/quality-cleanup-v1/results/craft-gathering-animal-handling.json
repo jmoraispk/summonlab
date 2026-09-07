@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:gathering:animal-handling",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-animal-handling.png",
+		"contentHash": "489ad271086d2b13bfe651b40a8bc6f110d4992ac48f7dedc3f3ab1de68fa0d7"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-animal-handling.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-animal-handling.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-animal-handling.png",
+		"contentHash": "a536d0f84179b3d0d421ef00220f190457c97557fcb66f1fd69a85a0889761b2",
+		"removedPixels": 166271,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 15,
+			"width": 734,
+			"height": 1001
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "be3fa0112c2892fc0c09ded842a29d2ca585e8ce1dc134e555d5cac432918ee8",
+	"resultContentHash": "737eb8af5f0b455e6f498f8dcda1f1c1c2f56e36adc1ba709dc50b19229f260b"
+}

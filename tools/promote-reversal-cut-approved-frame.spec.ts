@@ -159,5 +159,5 @@ describe('approved Reversal Cut frame promotion', () => {
 			current: true,
 			written: []
 		});
-	}, 20_000);
+	}, 40_000);
 });

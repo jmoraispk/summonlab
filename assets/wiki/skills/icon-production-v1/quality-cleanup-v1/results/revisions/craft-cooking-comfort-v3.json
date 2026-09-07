@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "craft:cooking:comfort",
+	"name": "Comfort",
+	"rank": "C",
+	"motifFamily": "cooking.nourishment",
+	"finding": {
+		"targetId": "craft:cooking:comfort",
+		"kind": "stray-ui-glyph",
+		"detail": "Heart/plus glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-comfort-v3.json",
+		"contentHash": "3d5e588d9b0da83d0704ada199450f6cf68849ad43422652e85b947676f5d975"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-comfort-v2.json",
+			"contentHash": "a7281be1896388d7d3bac44e65db87ae1b7b268b8cb3fd6d7f210db3d3908a8a"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v2.json",
+			"contentHash": "8e6fd27453f3d7eaaef8ce0015a02879e48963789c816bbc58cac4a9a585e298"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v2.png",
+			"contentHash": "1670b954317fd5d092e1d50eaa7ca463c3066e503b7e9dff608a2a51eb89cf79"
+		},
+		"transactionContentHash": "3326e40b4aa33d0ce67d8ff3f87c4681fcc9f259f3f665492a609b0cbcda39b6",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v2.png",
+			"contentHash": "67798332fc70eb54f7e851226ae2e58978dd17320242338b4347330733a3e7ff"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort-v2.png",
+			"contentHash": "31b1deae3e795faae87cc0ca97679869dc0150702c1e51afab6ffdfa899ca86c"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1758754,
+		"contentHash": "1670b954317fd5d092e1d50eaa7ca463c3066e503b7e9dff608a2a51eb89cf79",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 651101,
+		"contentHash": "67798332fc70eb54f7e851226ae2e58978dd17320242338b4347330733a3e7ff"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1275560,
+		"contentHash": "31b1deae3e795faae87cc0ca97679869dc0150702c1e51afab6ffdfa899ca86c"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 188625,
+		"contentHash": "9c7d47890545f340bacbf5332370a54c3e5aa1a8d5133c0a04d16bff2557dd72"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Heart/plus glyphs."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:04:41.263Z",
+		"finishedAt": "2026-09-06T11:04:43.299Z",
+		"durationMs": 2036,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:04:41.263Z",
+				"finishedAt": "2026-09-06T11:04:41.301Z",
+				"durationMs": 37
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:04:41.308Z",
+				"finishedAt": "2026-09-06T11:04:41.749Z",
+				"durationMs": 440
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:04:41.749Z",
+				"finishedAt": "2026-09-06T11:04:42.126Z",
+				"durationMs": 376
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:04:42.126Z",
+				"finishedAt": "2026-09-06T11:04:43.283Z",
+				"durationMs": 1156
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "d24b61cfc12bacfab0b67d7581b509fab7ef93cb3d37219ecd12129b1280ccf7",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

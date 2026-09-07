@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:elixir-of-years",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-elixir-of-years.png",
+		"contentHash": "502e93199d1d4a592ab176d0e443c4523bffee59968acc63095160c6b3589f27"
+	},
+	"rank": "A",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-elixir-of-years.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-elixir-of-years.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-elixir-of-years.png",
+		"contentHash": "1a07d6a141fe0efcc5f3459c9fd5df6915f3c5fd90589db4b7a2a0b62518fcf2",
+		"removedPixels": 223738,
+		"removedPixelBounds": {
+			"left": 86,
+			"top": 10,
+			"width": 851,
+			"height": 1006
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"cleanupCompositeContentHash": "26285bcf2830c5ded97bf8c9151c7ee6bb54343cec89870aa2c9aae104aef0f7",
+	"resultContentHash": "19fd35f9acf2d11fac23bcb10f2ac8fa5b552e8dd474d0ee4f25c43badfbf885"
+}

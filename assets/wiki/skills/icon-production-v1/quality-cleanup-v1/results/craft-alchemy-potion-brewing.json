@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:potion-brewing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-potion-brewing.png",
+		"contentHash": "ed26ab2956c33272048adbdd43a92d8a3bb43f52e9aedd6da2fef8c258c9adeb"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-potion-brewing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-potion-brewing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-potion-brewing.png",
+		"contentHash": "bfa4914cb6e44c6f8ac1985f08ccf9f7d1bad79123daf1131532f76e1f8e13fb",
+		"removedPixels": 221897,
+		"removedPixelBounds": {
+			"left": 103,
+			"top": 8,
+			"width": 819,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "5ea8b59e385589582a7165fdf486915a236a9417080732c177583312f27537db",
+	"resultContentHash": "8d356bfd7633f2d714343fb210ce2e5cfdfbd7f413747e678227ff70cbc324c4"
+}

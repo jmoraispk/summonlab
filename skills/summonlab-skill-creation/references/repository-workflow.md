@@ -79,7 +79,8 @@ progression.
 
 Author the visual-spec record with one dominant concrete subject and at most one supporting effect.
 F through A remain concrete-first. S may become primarily abstract only when the skill concept and
-lineage make the ancestry recognizable. Preserve these image invariants:
+lineage make the ancestry recognizable. Preserve these final-composite invariants; the individual
+provider request remains a frameless artwork layer:
 
 - regular point-up hexagonal tile;
 - correct rarity frame with integrated crest and uppercase rank letter;
@@ -115,13 +116,26 @@ v1 individual icons may be referenced by exact hash; they are not copied or sile
 For every affected motif family:
 
 1. Save a provider-native reference sheet with all current members in lineage order, complete
-   frames, and no captions.
+   frames, and no captions. It is reference-only presentation for lineage review: it does not
+   authorize frame generation or cropping a framed cell into an individual artwork layer.
 2. Save its cell map, prompt packet, result, references, hashes, and revision evidence.
-3. Generate every new member independently at the provider's largest square size, using the global
-   authority, approved frame, family sheet, and immediate-parent candidate when one exists.
-4. Normalize to a `1024x1024` RGBA candidate without enlargement; retain transparent exterior and
-   all frame ornaments.
-5. Save the provider source, exact prompt, candidate, result, hashes, and inspection findings.
+3. Generate one frameless artwork layer from content, geometry, family, and immediate-parent
+   authorities. The individual producer receives no approved frame as generation content. The
+   family sheet may remain a complete framed review reference, never crop content; do not use an
+   enlarged crop from it as individual artwork.
+4. The coordinator centers the accepted provider artwork at artworkScale: 0.9, producing 922x922
+   pixels at (51,51) on the 1024x1024 canvas. It assembles layers strictly back-to-front as
+   `backing → skill-art → rarity-frame`; `rarityFrameIsFinal === true`. It extracts the aperture
+   interior, adds canonical backing, and applies the canonical rarity frame with
+   compositionProfile: 'frame-opening-v3'. A different scale requires new explicit owner-reviewed
+   authority; never guess it per target. Here, accepted provider artwork means the
+   coordinator-selected exact provider source, not owner approval or promotion.
+5. Fail closed before composition acceptance unless every literal outcome holds:
+   `apertureCoverage.complete === true`; no baked frame traces; `exteriorTransparent === true`;
+   `backingOnlyComponents.length === 0`; `layerHashesMatch === true`; `exactComposite === true`;
+   `protectedBandMatches === true`; and `rarityFrameIsFinal === true`. Preserve source, layer,
+   candidate, result, hashes, and inspection evidence for the provider artwork and deterministic
+   assembly.
 
 Use `summonlab-skill-icon-production` for each assigned manifest-bound raster. That producer writes
 only its owned candidate/result paths and never promotes. The coordinating change owns manifests,

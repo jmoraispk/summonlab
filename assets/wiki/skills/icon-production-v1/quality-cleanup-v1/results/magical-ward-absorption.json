@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:ward:absorption",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-absorption.png",
+		"contentHash": "ab896a414d1ba841324f2367ff37251953f3115ecbc5ef5a43a110a071e9054b"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-absorption.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-absorption.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-absorption.png",
+		"contentHash": "68c209a4583b5f475298fd872e15a994b9c8ac0cd228b419eb7a788f65079fc8",
+		"removedPixels": 177087,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 30,
+			"width": 770,
+			"height": 945
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "f258c06dbc27f64f679ff182aa28db5fc6336e22154a5c3250ca022890ed18dd",
+	"resultContentHash": "b41cb04e7f7726799855d8a839a2405945e1c1f755ead522310243b9ac62736f"
+}

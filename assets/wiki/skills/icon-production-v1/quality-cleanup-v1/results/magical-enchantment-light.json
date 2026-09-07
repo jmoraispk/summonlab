@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:light",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-light.png",
+		"contentHash": "f1ae7ca32a3a57d707114124581dabd267e70654b3f63e55f3cfd9c2d7d37b91"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-light.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-light.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-light.png",
+		"contentHash": "5588d8ad2929c8fd3dead732ce4b1505731aa2a375fdf34b307dd494c6b5b20a",
+		"removedPixels": 171692,
+		"removedPixelBounds": {
+			"left": 126,
+			"top": 18,
+			"width": 772,
+			"height": 970
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "549437b09e4304f942d912fc1da90886f200f445b3990ae97f299186806f097e",
+	"resultContentHash": "1292106d4dac066052dd0bfed44fd31fba3dc3b552365c27995611ef010e02ca"
+}

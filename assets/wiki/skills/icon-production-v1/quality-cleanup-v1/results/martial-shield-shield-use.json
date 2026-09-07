@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:shield:shield-use",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-shield-use.png",
+		"contentHash": "bdc1d49bdf031853a1c32824c1f607bc2e7e1b6fb0ff84bdd6a003407a660ddd"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-shield-shield-use.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-shield-shield-use.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-shield-shield-use.png",
+		"contentHash": "f0e5731ffc7c0edbe31727e3ec14555f3aeb031c0ce1a6d6e2d87b83ecc2e9d6",
+		"removedPixels": 143900,
+		"removedPixelBounds": {
+			"left": 140,
+			"top": 26,
+			"width": 744,
+			"height": 915
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "b97454c0bd6e19d4ccb9210386b3036814b5575ee762066bb9e3e6d11061b323",
+	"resultContentHash": "b1c343766d5e291be20df87ea205c30670632a1f90a28e5a0692b30b9df6dabd"
+}

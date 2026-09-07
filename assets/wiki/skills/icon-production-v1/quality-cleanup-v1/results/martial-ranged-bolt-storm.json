@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:bolt-storm",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-bolt-storm.png",
+		"contentHash": "920c5ecd3a272c646663d30a74745fa03a56d4ef007ca18482088da3853cf99e"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-bolt-storm.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-bolt-storm.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-bolt-storm.png",
+		"contentHash": "63ec46aa9ed12aea3a074ec1db06aec8fcb69e1530aba987b13602bab0d12822",
+		"removedPixels": 181102,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 19,
+			"width": 801,
+			"height": 992
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "9973ad1358f35b34fa688dc1a469fed9a82fb209e6cf64751286e4ad28a7ee01",
+	"resultContentHash": "f2da9a2fc8e5d74e40ed4009d7feb9b3fadfbd841acbc9ff4dd5e1e33bc49b30"
+}

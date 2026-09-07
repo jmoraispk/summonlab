@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:straight-thrust",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-straight-thrust.png",
+		"contentHash": "6ec8cfad8d65762e886c55f9118bc4f1b1cd0b10b7b96d8a255a4b153b0321d2"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-straight-thrust.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-straight-thrust.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-straight-thrust.png",
+		"contentHash": "2ea79d65338909012f8ccab06ac53e26c32db34895af1e5e0fcd2d7f3c5466fe",
+		"removedPixels": 177812,
+		"removedPixelBounds": {
+			"left": 108,
+			"top": 8,
+			"width": 807,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "da1dcf0c1e3ab414c58924eea2dad35449729fb120ecc2dbb7e6625f0a5909b5",
+	"resultContentHash": "fb3bf3d783a38328081aea03925fd5e73630d2213c66df47918f81e3c4eda029"
+}

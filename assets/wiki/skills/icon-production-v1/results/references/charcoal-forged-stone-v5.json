@@ -1,0 +1,61 @@
+{
+  "assignmentId": "assignment-charcoal-forged-stone-v5",
+  "completedAt": "2026-09-05T03:35:17.646Z",
+  "exactPrompt": "Create exactly one 1254\u00d71254 RGB PNG provider-source raster for the universal skill-icon backing layer. Use the supplied Option C comparison only as Option C tonal authority; do not crop or trace it or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Fill the guide's backing aperture with dark neutral charcoal forged stone, restrained shallow facets, and subtle low-contrast forged texture, carrying the material cleanly to the backing boundary. Leave every region outside that aperture as uninterrupted matte. Render on a perfectly uniform opaque #00FF00 matte with no baked checkerboard; keep this provider matte perfectly uniform. Do not render guide colors, construction marks, labels, UI, frame, rim, ornament, emblem, skill art, rarity cue, medallion, letter, number, word, scenery, glow, colored magic, or bright focal mark. The pipeline removes the matte, resizes to 1024\u00d71024, and applies the fixed backing role mask. Output only this isolated provider-source raster.",
+  "failureReason": {
+    "kind": "validation",
+    "message": "Both allowed provider attempts were rejected by profile-v3 normalization: the corrected 1254px RGB source does not have a sufficiently clean #00FF00 edge matte."
+  },
+  "findings": [
+    {
+      "category": "other",
+      "evaluator": "producer",
+      "observation": "Both allowed provider attempts were rejected by profile-v3 normalization: the corrected 1254px RGB source does not have a sufficiently clean #00FF00 edge matte.",
+      "outcome": "fail"
+    }
+  ],
+  "jobId": "charcoal-forged-stone-v5",
+  "logicalIdentity": "charcoal-forged-stone",
+  "noSharedFilesEdited": true,
+  "normalization": {
+    "colorSpaceDisposition": null,
+    "containerBox": null,
+    "decoderInputContentHash": null,
+    "geometryHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab",
+    "outcome": "failed",
+    "outputContentHash": null,
+    "profile": "skill-icon-green-key-role-mask-v3",
+    "providerSource": {
+      "alphaMode": "rgb",
+      "bytes": 1423764,
+      "contentHash": "93274b43321f2d556c238475a5a06423d57501d0550f3bd6265e52cb030af32d",
+      "height": 1254,
+      "mediaType": "image/png",
+      "width": 1254
+    },
+    "sourceContentHash": "93274b43321f2d556c238475a5a06423d57501d0550f3bd6265e52cb030af32d"
+  },
+  "output": null,
+  "promptHash": "5bf9e3e5b88f88561653c2457e09e704d724d5eb63973854da1036741f205ded",
+  "referenceInputs": [
+    {
+      "contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce",
+      "path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png"
+    },
+    {
+      "contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e",
+      "path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png"
+    }
+  ],
+  "resultId": "result-charcoal-forged-stone-v5",
+  "resultPath": "assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json",
+  "revision": 5,
+  "schemaVersion": "skill-icon-result-v2",
+  "selfPromoted": false,
+  "startedAt": "2026-09-05T03:32:14.842Z",
+  "status": "failed",
+  "totalWallTimeMs": 182804,
+  "writtenOutputPaths": [
+    "assets/wiki/skills/icon-production-v1/results/references/charcoal-forged-stone-v5.json"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:fleeting-step",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-fleeting-step.png",
+		"contentHash": "ed17f07be14975c5419805eef23587a4de99544ffa8a51ab025cc0d87a0d4edf"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-fleeting-step.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-fleeting-step.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-fleeting-step.png",
+		"contentHash": "48531d49a111ee38f1e58f569a72918bea7b558b7a048f81f3b270242afeb663",
+		"removedPixels": 181007,
+		"removedPixelBounds": {
+			"left": 128,
+			"top": 16,
+			"width": 769,
+			"height": 969
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "b75789202a6468ed09f9d12feede9a7bbfc30dfce6d4ae64adc63cb40edda8a6",
+	"resultContentHash": "af97efc79dfdc4170d17ecb2d740f29dce200191c3fa7c1627220d307c55ffb4"
+}

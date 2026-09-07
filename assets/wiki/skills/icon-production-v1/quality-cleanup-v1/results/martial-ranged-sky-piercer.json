@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:sky-piercer",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-sky-piercer.png",
+		"contentHash": "ee5b1f7ef4e6957a2d12f56ee503bdae4265f46d9bb4c3229846b50cdc10e31a"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-sky-piercer.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-sky-piercer.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-sky-piercer.png",
+		"contentHash": "7fa573c97fc2aaf4bc8cb9e2e163361640bbb4818998f43e6a07ae0511c5431a",
+		"removedPixels": 152843,
+		"removedPixelBounds": {
+			"left": 134,
+			"top": 24,
+			"width": 756,
+			"height": 963
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "91ea7dc179635da7dfc761ee55b71be86bf5a83b15f3aae033fecd2634182a8a",
+	"resultContentHash": "c841974d0b8be3765421563fa19c37a73064aa4126c71a4da1a400f33142756e"
+}

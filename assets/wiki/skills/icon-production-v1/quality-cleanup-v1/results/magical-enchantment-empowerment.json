@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:empowerment",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-empowerment.png",
+		"contentHash": "fb5af3e0b36ea31d1c12e4547d6f1af2625414e3011349869fa85ee44a1f7d51"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-empowerment.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-empowerment.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-empowerment.png",
+		"contentHash": "03fd1196d867307c1d79ab0d92690aa63d8bb9565dd8efc46964c774ffc6c5a8",
+		"removedPixels": 164994,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 16,
+			"width": 766,
+			"height": 954
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "b036735c6c9987882b88c05cef6a7ed059dbff215b4f9bdb9f3c4fafdfe745b8",
+	"resultContentHash": "322a1e7b7cb7d2d7f8eff4696b251490bfe91bd7bed80f49a1622f98fed48564"
+}

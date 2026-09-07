@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:untouchable",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-untouchable.png",
+		"contentHash": "9902b48b28b96eac9f749cffd7ae085f79666e87944fb882cfa9268e4a54a282"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-untouchable.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-untouchable.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-untouchable.png",
+		"contentHash": "d3e92fcd8405158dde4fe58985b3bf76d3633626a60885076c1fe9c81a588570",
+		"removedPixels": 189344,
+		"removedPixelBounds": {
+			"left": 98,
+			"top": 13,
+			"width": 828,
+			"height": 1003
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "0f3734c1bdb3fa30efcffd11b48a079f143cbe681fab818471a0147bbbcd7caf",
+	"resultContentHash": "5c0e7d63faeddcf29dbd09351a022452bd827e125b552d0651f2623298162745"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:shield:immovable",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-immovable.png",
+		"contentHash": "12d7794564d3250ba22dc7e3dda1ede1c2fe583017f147d10d60ed4338ea0f9c"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-shield-immovable.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-shield-immovable.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-shield-immovable.png",
+		"contentHash": "a7849c4e4a0eaa3b789ca342c04d6b61752dcc6ad46bfef56bce72c6516125a7",
+		"removedPixels": 145108,
+		"removedPixelBounds": {
+			"left": 143,
+			"top": 37,
+			"width": 737,
+			"height": 928
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "90d631a24786b51074f31dd6573be8fd9f7a29e6bd81aa02a4e19341891e52f8",
+	"resultContentHash": "7d7dec46f77bc1ce897b55ce7e27204f46a38d25446037a40128e99dfea8a377"
+}

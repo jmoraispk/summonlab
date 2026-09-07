@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "magical:elemental:ashfall",
+	"name": "Ashfall",
+	"rank": "C",
+	"motifFamily": "elemental.fire-field",
+	"finding": {
+		"targetId": "magical:elemental:ashfall",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached elemental/alchemical glyph row.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-ashfall-v2.json",
+		"contentHash": "c57465e2e89772ac10a2c2c84104622bebf466dbdd15c05d111bb4c4394968b2"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-ashfall-v1.json",
+			"contentHash": "c8b84c5ef136c301b96549e6ddc7de0664d17ac905c4622d55da242a63d8bbff"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v1.json",
+			"contentHash": "3d0b1d493a5684f0380e999685fdd117b9eb2c18027acde5a68abc8e6598ed25"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v1.png",
+			"contentHash": "b8763ec722fc9782e7cf8912c32e03278c8488c9819324f5b9be3e6f5f421948"
+		},
+		"transactionContentHash": "691e82cdd39b7fd7f5c6527242429c3a06ca7a275936e51a6fc6abe6fd5dfe8e",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v1.png",
+			"contentHash": "5b9471c55cce3ed2d899e3dbb07f16e372660fd5d32b8b999312ffe1d7ea7f98"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall-v1.png",
+			"contentHash": "227f3473d36a90327505d356302bb9e3c5ae879599602c9e3a43cf61e4f96c34"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1618496,
+		"contentHash": "b8763ec722fc9782e7cf8912c32e03278c8488c9819324f5b9be3e6f5f421948",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 455011,
+		"contentHash": "7b05491a6811d0b6c3abfe34fdf702133b9e6a8d81b528913d3781b29d8bc959"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1094277,
+		"contentHash": "7957980c15a5653a1d7560074f5b786347505eaa990a6ec33ce954ac418d9f30"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 162374,
+		"contentHash": "525f4d09c60c8b4767fd7932dcd8e06f7254eec4e2e11153a3210fb54d79678f"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Detached elemental/alchemical glyph row."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:28.324Z",
+		"finishedAt": "2026-09-06T09:39:31.479Z",
+		"durationMs": 3155,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:28.324Z",
+				"finishedAt": "2026-09-06T09:39:28.383Z",
+				"durationMs": 58
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:28.393Z",
+				"finishedAt": "2026-09-06T09:39:29.499Z",
+				"durationMs": 1106
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:29.499Z",
+				"finishedAt": "2026-09-06T09:39:30.130Z",
+				"durationMs": 631
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:30.130Z",
+				"finishedAt": "2026-09-06T09:39:31.463Z",
+				"durationMs": 1332
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:31.479Z",
+				"finishedAt": "2026-09-06T09:39:31.479Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "89f1c49d013acb9f698123e2278bfdc5c05fa9e55c8215f59905edb15edf7d79",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

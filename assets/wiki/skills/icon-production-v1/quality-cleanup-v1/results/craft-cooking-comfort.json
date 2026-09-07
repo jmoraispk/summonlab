@@ -1,0 +1,47 @@
+{
+	"targetId": "craft:cooking:comfort",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-comfort.png",
+		"contentHash": "edcfa5e7b442a48fb59f0d9aa5699d5055f4be3e0c7a8e3c392d6558f16b9f75"
+	},
+	"rank": "C",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "craft:cooking:comfort",
+			"kind": "stray-ui-glyph",
+			"detail": "Heart/plus glyphs.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-comfort.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-comfort.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-comfort.png",
+		"contentHash": "8d864a0b865698fd4eed34d58c5ce70dd76dc90f3bf4f322165e0c832427578b",
+		"removedPixels": 179197,
+		"removedPixelBounds": {
+			"left": 136,
+			"top": 37,
+			"width": 752,
+			"height": 958
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "952a3e23213eb6f345112085209fbd5288ea2c55cb99e522420bdba534755b31",
+	"resultContentHash": "efe2b9c937218d2d38caec55fd457e0cd4dc2834db345582e9d52fd41d8aeb80"
+}

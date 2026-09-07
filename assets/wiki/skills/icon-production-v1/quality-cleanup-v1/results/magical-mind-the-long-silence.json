@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:mind:the-long-silence",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-mind-the-long-silence.png",
+		"contentHash": "e0376541b0536e4fffdab252bc1a3d380251b192366a487c7237d694f31712b3"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-the-long-silence.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-mind-the-long-silence.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-the-long-silence.png",
+		"contentHash": "c0af0519d0980bcccd5b88a1776890ab8ccd8f0ef0697e0e39d91a8c5e0a3dda",
+		"removedPixels": 175051,
+		"removedPixelBounds": {
+			"left": 133,
+			"top": 11,
+			"width": 760,
+			"height": 986
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "86b19d19461f9c461cb1fcf8f8020f3bffdcb4f4bebe6ebb30a2d1e2eccc34ce",
+	"resultContentHash": "cf9cd3c3e82ba5f9deed1edb8d00bafa01339a4a2a3528247499b2a4fb8876b5"
+}

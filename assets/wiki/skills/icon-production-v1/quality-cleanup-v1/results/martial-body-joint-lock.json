@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:body:joint-lock",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-joint-lock.png",
+		"contentHash": "de4d323fdfe230f89b9ce633b13174dd03d28031b258e16522c605398d9413a2"
+	},
+	"rank": "E",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:body:joint-lock",
+			"kind": "stray-ui-glyph",
+			"detail": "Prohibition badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-joint-lock.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-joint-lock.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-joint-lock.png",
+		"contentHash": "fb56da02ff87d448e9c813c33c2bdcf88764ff842e501fcee92729a41b2eb11f",
+		"removedPixels": 190901,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 20,
+			"width": 779,
+			"height": 958
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "a5c0e2eba833d80a11ba6ceee8d579c7de026e731bc706437c238602f3c91cdf",
+	"resultContentHash": "e7e9323d26617cf457b6b56d46cab9d896e3989d4ed7eaecf424a319337122d0"
+}

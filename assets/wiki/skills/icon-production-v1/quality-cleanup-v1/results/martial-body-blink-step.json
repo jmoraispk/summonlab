@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:blink-step",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-blink-step.png",
+		"contentHash": "f501662621ff9538102ba723a0335c99deedbcc0e951eb39dc65a1abe401c276"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-blink-step.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-blink-step.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-blink-step.png",
+		"contentHash": "542b3f5f90f67cccc8a9f49688b3b7ac373621e06c15ceb5f63d909aff1804a8",
+		"removedPixels": 194548,
+		"removedPixelBounds": {
+			"left": 109,
+			"top": 11,
+			"width": 801,
+			"height": 988
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "c6012d7b17efeeb1507e2408955a4cfeceb1ff81235dc963cafb887d52702f16",
+	"resultContentHash": "03db30ea2a8de0d9fd0933c6556d4d8af67abef5f71ae6216072c670a9c3fe76"
+}

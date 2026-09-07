@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:bolt-shot",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-bolt-shot.png",
+		"contentHash": "5a60d66b6bde18a40bdd3545ff3b56d54eaf83ca1260702ae931450d0713a0ae"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-bolt-shot.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-bolt-shot.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-bolt-shot.png",
+		"contentHash": "34fd7f7bf59049baf860bdd47b5de56fb9cd0821db0e519b389b195520d8bcf6",
+		"removedPixels": 177207,
+		"removedPixelBounds": {
+			"left": 106,
+			"top": 11,
+			"width": 813,
+			"height": 1004
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "e68e72b0e6073da2d543e1c1f25496ed7e64aad4cafe9c648bc1596e8aadef0a",
+	"resultContentHash": "f7669a9b2206b168bd0bd078e8cd4daf813556693745fa6ea9717fd79988d678"
+}

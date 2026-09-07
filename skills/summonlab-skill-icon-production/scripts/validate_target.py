@@ -37,15 +37,36 @@ PROTOCOLS = {
         "skill-icon-assignment-v2",
         "summonlab-skill-icon-production-v4",
     ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v5",
+    ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v6",
+    ): "skill-icon-execution-v2",
+    (
+        "skill-icon-target-v2",
+        "skill-icon-assignment-v2",
+        "summonlab-skill-icon-production-v7",
+    ): "skill-icon-execution-v2",
 }
 NORMALIZATION_SKILL_VERSIONS = {
     "skill-icon-green-key-role-mask-v1": "summonlab-skill-icon-production-v2",
     "skill-icon-green-key-role-mask-v2": "summonlab-skill-icon-production-v3",
     "skill-icon-green-key-role-mask-v3": "summonlab-skill-icon-production-v4",
+    "skill-icon-geometry-role-mask-v1": "summonlab-skill-icon-production-v5",
+    "skill-icon-geometry-role-mask-v2": "summonlab-skill-icon-production-v6",
+    "skill-icon-black-matte-geometry-role-mask-v1": "summonlab-skill-icon-production-v7",
 }
 PROFILE_V1 = "skill-icon-green-key-role-mask-v1"
 PROFILE_V2 = "skill-icon-green-key-role-mask-v2"
 PROFILE_V3 = "skill-icon-green-key-role-mask-v3"
+PROFILE_V4 = "skill-icon-geometry-role-mask-v1"
+PROFILE_V5 = "skill-icon-geometry-role-mask-v2"
+PROFILE_V6 = "skill-icon-black-matte-geometry-role-mask-v1"
 REPROCESS_PACKET_SCHEMA_VERSIONS = frozenset(
     {
         "skill-icon-reprocess-target-v1",
@@ -62,6 +83,9 @@ NORMALIZATION_GEOMETRY_AUTHORITIES = {
     PROFILE_V1: (GEOMETRY_PATH, GEOMETRY_HASH),
     PROFILE_V2: (GEOMETRY_PATH, GEOMETRY_HASH),
     PROFILE_V3: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+    PROFILE_V4: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+    PROFILE_V5: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
+    PROFILE_V6: (GEOMETRY_V2_PATH, GEOMETRY_V2_HASH),
 }
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 CATALOG_PATH = "assets/wiki/skills/icon-production-v1/catalog.json"
@@ -84,6 +108,16 @@ GEOMETRY_GUIDE_V2_PURPOSE = (
 )
 CALIBRATION_PURPOSE = "Approved motif-family calibration plate."
 PRIMARY_PARENT_PURPOSE = "Approved primary-parent master."
+FRAMELESS_SKILL_ART_PROMPT_CLAUSE = (
+    "Artwork layer only: no rarity frame, rank crest, rank letter, border rails, "
+    "backing, UI, label, logo, watermark, or text."
+)
+FORBIDDEN_SKILL_ART_LAYER_TERM = re.compile(
+    r"\b(?:rarity|rank|frame(?:d|s|work|ing)?|border(?:s|ed)?|rail(?:s)?|"
+    r"crest(?:s|ed)?|badge(?:s)?|medallion(?:s)?|backing|ui|label(?:s)?|"
+    r"logo(?:s)?|watermark(?:s)?|text|letter(?:s)?)\b",
+    re.IGNORECASE,
+)
 
 _CONTRACT_PROGRAM = r"""
 import fs from 'node:fs';
@@ -507,11 +541,12 @@ def _require_individual_authorities(
             fail("primary-parent reference hash does not match the canonical approved master")
 
 
-def _require_profile_v3_guide_authority(target: dict[str, Any]) -> None:
+def _require_geometry_v2_guide_authority(target: dict[str, Any]) -> None:
     normalization = target.get("normalization")
     if (
         not isinstance(normalization, dict)
-        or normalization.get("profile") != PROFILE_V3
+        or normalization.get("profile")
+        not in {PROFILE_V3, PROFILE_V4, PROFILE_V5, PROFILE_V6}
     ):
         return
     matches = [
@@ -520,12 +555,36 @@ def _require_profile_v3_guide_authority(target: dict[str, Any]) -> None:
         if reference.get("path") == GEOMETRY_GUIDE_V2_PATH
     ]
     if len(matches) != 1:
-        fail("profile-v3 target requires exactly one canonical geometry-v2 guide")
+        fail("geometry-v2 profile target requires exactly one canonical geometry-v2 guide")
     guide = matches[0]
     if guide.get("purpose") != GEOMETRY_GUIDE_V2_PURPOSE:
-        fail("profile-v3 geometry guide must use its exact canonical purpose")
+        fail("geometry-v2 profile guide must use its exact canonical purpose")
     if guide.get("contentHash") != GEOMETRY_GUIDE_V2_HASH:
-        fail("profile-v3 geometry guide hash does not match its canonical authority")
+        fail("geometry-v2 profile guide hash does not match its canonical authority")
+
+
+def _require_frameless_skill_art_prompt(target: dict[str, Any]) -> None:
+    if target.get("role") != "skill-art":
+        return
+    prompt = target.get("exactPrompt")
+    if (
+        not isinstance(prompt, str)
+        or prompt.count(FRAMELESS_SKILL_ART_PROMPT_CLAUSE) != 1
+    ):
+        fail(
+            "frameless skill-art prompt must include exactly one exact artwork-layer "
+            "exclusion clause"
+        )
+    artwork_request = prompt.replace(FRAMELESS_SKILL_ART_PROMPT_CLAUSE, "", 1)
+    conflicts = sorted(
+        {match.group(0).casefold() for match in FORBIDDEN_SKILL_ART_LAYER_TERM.finditer(artwork_request)}
+    )
+    if conflicts:
+        fail(
+            "frameless skill-art prompt contradicts its role by discussing forbidden "
+            "composite-layer terms outside the exclusion clause: "
+            + ", ".join(conflicts)
+        )
 
 
 def validate(
@@ -639,8 +698,9 @@ def validate(
         if snapshot.content_hash != expected_hash:
             fail(f"reference hash changed: {raw}")
         reference_snapshots.append((absolute, snapshot, raw))
+    _require_frameless_skill_art_prompt(target)
     _require_individual_authorities(target, catalog)
-    _require_profile_v3_guide_authority(target)
+    _require_geometry_v2_guide_authority(target)
 
     for absolute, snapshot, raw in reference_snapshots:
         reassert_stable_regular_file(absolute, snapshot, label=f"reference {raw}")

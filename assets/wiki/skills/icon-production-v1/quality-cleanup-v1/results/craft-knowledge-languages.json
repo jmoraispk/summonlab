@@ -1,0 +1,47 @@
+{
+	"targetId": "craft:knowledge:languages",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-knowledge-languages.png",
+		"contentHash": "192109cf983eb475f6115fdf83b6f216e88694a0a2135e2ecf80c3ac0e53c5d1"
+	},
+	"rank": "E",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "craft:knowledge:languages",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-knowledge-languages.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-knowledge-languages.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-knowledge-languages.png",
+		"contentHash": "0b4063d0f984ee12b95528f40959a9476d9b9c27d5dc796e0930d77c7c426856",
+		"removedPixels": 121502,
+		"removedPixelBounds": {
+			"left": 166,
+			"top": 37,
+			"width": 692,
+			"height": 901
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "fdf9930b34498442269ec4b6f721db3039cb405f633c0731c6bc2ec0f25da7f5",
+	"resultContentHash": "605c2adc879a3d4bac0210d1d12376f9023e6b360ec88771de3738bef3cc1870"
+}

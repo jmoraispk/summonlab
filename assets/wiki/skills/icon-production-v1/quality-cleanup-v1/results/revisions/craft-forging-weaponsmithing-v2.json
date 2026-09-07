@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "craft:forging:weaponsmithing",
+	"name": "Weaponsmithing",
+	"rank": "E",
+	"motifFamily": "forging.smithing",
+	"finding": {
+		"targetId": "craft:forging:weaponsmithing",
+		"kind": "stray-ui-glyph",
+		"detail": "Green upgrade arrows.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-weaponsmithing-v2.json",
+		"contentHash": "92ae99bfebd73ab218817330547f6f5e4463b681224f2ed8da400fcdf8f15914"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-weaponsmithing-v1.json",
+			"contentHash": "228bacaadf12b214d6c8aaa53e7c3a29a0b20105437fde8ea86573f7e318356a"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v1.json",
+			"contentHash": "86cc21e03ea495d64af3ed6cbde3acca23115d3cf75a00bb88c21c5b23dcf25c"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v1.png",
+			"contentHash": "d026a3d5ee12364d1d555192d534fd3ecd3e94dd33fbf6f7420956c5204cbc75"
+		},
+		"transactionContentHash": "cf3900203b4079f773aa795cc1090df6e28485c270e19df35bd9a591dc39550d",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-weaponsmithing-v1.png",
+			"contentHash": "78f641ebee6aac02cd773b2098107c51a034193f97dd5b3644b9f5c90cad5eb1"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-weaponsmithing-v1.png",
+			"contentHash": "21da143c207b695a70d9daade71031529d978365c6c2e737e204a4c587137ca5"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1151012,
+		"contentHash": "d026a3d5ee12364d1d555192d534fd3ecd3e94dd33fbf6f7420956c5204cbc75",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-weaponsmithing-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 405181,
+		"contentHash": "ec4956b9e8c0cb1ff242c4dd09c32e39a59e11d83ee396b6e37c343c22a0ab48"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-weaponsmithing-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1051448,
+		"contentHash": "faa169bf8610ad25ea98fbb529d40eb339dc11d32518dee1f80f55726c3ec1e7"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 158474,
+		"contentHash": "b2e512687f684108aceb7c41a074f273732e7dc8fc2ea2a872e90130b6b4b984"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Green upgrade arrows."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:23.935Z",
+		"finishedAt": "2026-09-06T09:39:26.120Z",
+		"durationMs": 2185,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:23.935Z",
+				"finishedAt": "2026-09-06T09:39:23.993Z",
+				"durationMs": 58
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:24.001Z",
+				"finishedAt": "2026-09-06T09:39:24.525Z",
+				"durationMs": 523
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:24.525Z",
+				"finishedAt": "2026-09-06T09:39:24.937Z",
+				"durationMs": 411
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:24.937Z",
+				"finishedAt": "2026-09-06T09:39:26.109Z",
+				"durationMs": 1172
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:26.120Z",
+				"finishedAt": "2026-09-06T09:39:26.120Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "8d37aa876769d777f9e9296ebed06fc1c6d671c8f75eae71fc50f8f40c01c618",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-weaponsmithing-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-weaponsmithing-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

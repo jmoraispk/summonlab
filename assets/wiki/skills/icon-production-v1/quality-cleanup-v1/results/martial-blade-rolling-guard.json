@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:rolling-guard",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-rolling-guard.png",
+		"contentHash": "c5543d9a54dd0eec8c2f12a62f3c08e1b45c2199a8112da42786a30df7062ec4"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-rolling-guard.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-rolling-guard.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-rolling-guard.png",
+		"contentHash": "1e1c53a1bc035f64af4c8c138c664c00aeaf40fa01a64b5df4d41d04b4e5e4c2",
+		"removedPixels": 173782,
+		"removedPixelBounds": {
+			"left": 139,
+			"top": 25,
+			"width": 743,
+			"height": 959
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "10c03c9a59e61547832d27d68ce4f6fbd3f774bef5bf5ec6250e19cf59002b47",
+	"resultContentHash": "b9057e7171a96b27bb7e7e0ed46c37a6eb426326cabd6dedce7d8dad8012eaa8"
+}

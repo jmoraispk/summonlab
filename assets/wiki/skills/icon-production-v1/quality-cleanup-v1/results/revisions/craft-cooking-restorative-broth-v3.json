@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "craft:cooking:restorative-broth",
+	"name": "Restorative Broth",
+	"rank": "D",
+	"motifFamily": "cooking.nourishment",
+	"finding": {
+		"targetId": "craft:cooking:restorative-broth",
+		"kind": "stray-ui-glyph",
+		"detail": "Heart/plus glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-restorative-broth-v3.json",
+		"contentHash": "f1022ed8ab714f09e202f4b1bc3fa2bed8477825baa7c19b0077170187424276"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-restorative-broth-v2.json",
+			"contentHash": "d841ddbcba42adca24a7cb8a9ddf446d5c5e60f8463b03a60bcd8011ff57a971"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v2.json",
+			"contentHash": "4ee77584ab59225d2f2d7fec83f0e06f9e1064e018082d7a305e7c6fd37e659d"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v2.png",
+			"contentHash": "24ce808577962d96aedbda3344513ec00461aa1a5e1fa62f7d09990014d47660"
+		},
+		"transactionContentHash": "17c06055f8ebf9fc0edadde51ab79fd1fa231935fb1d38b3d80cba81ff686e90",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-restorative-broth-v2.png",
+			"contentHash": "64f228cbd5231b41ed5788a5856979a85770ff8dbfb7e8dce747796d049523bc"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-restorative-broth-v2.png",
+			"contentHash": "3349ad812f5581b129b021583c6152161b08159971e14d783eb4a2a7e1f97b98"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1295970,
+		"contentHash": "24ce808577962d96aedbda3344513ec00461aa1a5e1fa62f7d09990014d47660",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-restorative-broth-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 490485,
+		"contentHash": "64f228cbd5231b41ed5788a5856979a85770ff8dbfb7e8dce747796d049523bc"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-restorative-broth-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1114268,
+		"contentHash": "3349ad812f5581b129b021583c6152161b08159971e14d783eb4a2a7e1f97b98"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 166054,
+		"contentHash": "5334ff1f9c6f8fe426c513f742f237a73469cce6078b4b59513c3315047bb6e4"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Heart/plus glyphs."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:04:48.019Z",
+		"finishedAt": "2026-09-06T11:04:50.041Z",
+		"durationMs": 2021,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:04:48.019Z",
+				"finishedAt": "2026-09-06T11:04:48.072Z",
+				"durationMs": 53
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:04:48.079Z",
+				"finishedAt": "2026-09-06T11:04:48.559Z",
+				"durationMs": 480
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:04:48.559Z",
+				"finishedAt": "2026-09-06T11:04:48.931Z",
+				"durationMs": 371
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:04:48.931Z",
+				"finishedAt": "2026-09-06T11:04:50.028Z",
+				"durationMs": 1097
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "62ff4ba9c5f0b5f22e6957f88c9fc8f23761e3467c0ebedf8829197a1aa1a104",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-restorative-broth-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-restorative-broth-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

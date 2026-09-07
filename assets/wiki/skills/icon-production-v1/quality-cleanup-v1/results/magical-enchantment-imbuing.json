@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:enchantment:imbuing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-imbuing.png",
+		"contentHash": "1113e2191637ffe0d35193fb81afb8b5be24a0e67cc909a9f3794ea4fae64008"
+	},
+	"rank": "F",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "magical:enchantment:imbuing",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-imbuing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-imbuing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-imbuing.png",
+		"contentHash": "d1ba293613e1abd9e6c1fe1ce905e7a02c080e46416402f6fb1b2f0b30a8e29b",
+		"removedPixels": 159748,
+		"removedPixelBounds": {
+			"left": 132,
+			"top": 29,
+			"width": 759,
+			"height": 948
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "194302ba6fed70672ab9e928d42eacf974b3540c324c82bd1b53be818f227d14",
+	"resultContentHash": "cfb22478c2f1d0071d04731f8b0af4cee829d056882ea6ef5470a014eb5db1b0"
+}

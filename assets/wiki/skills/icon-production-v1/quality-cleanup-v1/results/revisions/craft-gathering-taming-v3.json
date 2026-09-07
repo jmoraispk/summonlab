@@ -1,0 +1,184 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "craft:gathering:taming",
+	"name": "Taming",
+	"rank": "E",
+	"motifFamily": "gathering.beast-bond",
+	"finding": {
+		"targetId": "craft:gathering:taming",
+		"kind": "stray-ui-glyph",
+		"detail": "Small medallion badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json",
+		"contentHash": "207fca70a8617427dd278cdfb8ad224436e2f929dd83e3cf5b8efe30ac46563e"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-gathering-taming-v2.json",
+			"contentHash": "8480d5da8b7353c2cdca85ef1ae700a81f5c281c6be4d2d59b1ecafff47acdbb"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v2.json",
+			"contentHash": "1b2c6de93b7939cb6377192628fa02029ca6979494965958d83e01bc6c2a1ab8"
+		},
+		"completionAudit": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json",
+			"contentHash": "c9565e502283ae95fbd98b3a6345a1f560c553be972dd4272d78c9081940a3d5"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v2.png",
+			"contentHash": "3d7be588e8dd691025c127851e96ae0f948878a3102e2285e2f4c38fa991de0c"
+		},
+		"transactionContentHash": "f72926e492e74de96cbc1d376750f087dff4be51c261e5d924a96cb8818d972f",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v2.png",
+			"contentHash": "c0154da3b13e5e873547d91b33d281416f702da89d80676cc31b265c3556f387"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming-v2.png",
+			"contentHash": "adb4bd72f156bb2010e85efad23b0bb7181fb9733b0517d03ea8ab3bc4b66188"
+		}
+	},
+	"sourceMode": "generation-v2",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 2278037,
+		"contentHash": "f1daf59930f899218313cb5e26e34763d1c5e059388ab1923adfc787b868cd49",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 663312,
+		"contentHash": "6dc7e8b184bb2267d128bb08270f8dc5e67cb5671b8d414559f9b433c2b53084"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1310403,
+		"contentHash": "5fc4af0a6032c87fdd29bb2aedb6510f6a71371bd6f790aa4ae758c4e7823b6d"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 188045,
+		"contentHash": "7182d8abffb3c642bbd33ac8e00a36b8ba9aa4b2ac0f8a641f64c33ff22fec72"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "1024px composite: the compact crouching handler and seated wolf remain wholly within the protected aperture with complete cloak, boots, hands, ears, paws, legs, and tail; the trust gesture is readable and no medallion, frame, crest, text, or glyph appears in the artwork."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "384px derivative: the handler-and-wolf bond remains legible as two complete silhouettes with clear separation and no cropped forms or detached explanatory glyph."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T14:06:34.413Z",
+		"finishedAt": "2026-09-06T14:06:36.617Z",
+		"durationMs": 2203,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T14:06:34.414Z",
+				"finishedAt": "2026-09-06T14:06:34.536Z",
+				"durationMs": 122
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T14:06:34.554Z",
+				"finishedAt": "2026-09-06T14:06:35.118Z",
+				"durationMs": 564
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T14:06:35.118Z",
+				"finishedAt": "2026-09-06T14:06:35.492Z",
+				"durationMs": 373
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T14:06:35.492Z",
+				"finishedAt": "2026-09-06T14:06:36.597Z",
+				"durationMs": 1105
+			}
+		],
+		"generation": {
+			"attemptCount": 2,
+			"callIdentifiers": [
+				"exec-0d4fc78e-5ca3-4d8b-84f0-c8ab6d3a073a",
+				"exec-f179719e-d8bd-4667-8287-b75f823ea2d4"
+			],
+			"callContentHashes": [
+				"a6b6e2f767197681b9a5df29a13becb12019c9f7e91b63b4369e0d9e4f331b5e",
+				"f1daf59930f899218313cb5e26e34763d1c5e059388ab1923adfc787b868cd49"
+			]
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "fbbe22dc1ac1b0b9030f05c8116ad12b12ce92e1dc8648c60b59fb46ba720039",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

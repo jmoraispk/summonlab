@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:elemental:tide-sense",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-tide-sense.png",
+		"contentHash": "ba33ede9ee3d5e24e8a8ec9e7954e2884ae3daeb93f47ae9524974de8af8c17f"
+	},
+	"rank": "D",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "magical:elemental:tide-sense",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-tide-sense.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-tide-sense.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-tide-sense.png",
+		"contentHash": "e03b83594ac5610af4c0a45911cacafd5f9205782407378fd4da949b87f6c5fd",
+		"removedPixels": 184125,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 16,
+			"width": 770,
+			"height": 979
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "c06183044aab77bb0865019d768f7027038692e6e6344c5b196c9a9cf67ae8d0",
+	"resultContentHash": "04b1e18c4ed9b6adeb09d4fdecf04a5c7e9de033700b2926564fd690562d599c"
+}

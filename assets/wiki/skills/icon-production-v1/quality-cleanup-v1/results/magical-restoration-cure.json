@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:restoration:cure",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-cure.png",
+		"contentHash": "8cc9c536248313da7d7323adcc7060ef56a961d784547633042f24aecec9618f"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-cure.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-cure.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-cure.png",
+		"contentHash": "56b6f1121997b69c20f0b16bb218823ae386eab11200529d515fb734d5254685",
+		"removedPixels": 195654,
+		"removedPixelBounds": {
+			"left": 130,
+			"top": 25,
+			"width": 765,
+			"height": 966
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "d319e9dd6c20f40a259e5909b535d6e06f642c0f2d73cf635c6eb14e11ebaaa1",
+	"resultContentHash": "6fbb3e9610eea231fa549612af5bddf0179ec2e7823a23d7b1239243f3af890a"
+}

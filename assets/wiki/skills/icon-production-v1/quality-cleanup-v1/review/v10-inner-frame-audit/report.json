@@ -1,0 +1,611 @@
+{
+	"schemaVersion": "skill-icon-inner-frame-audit-review-v1",
+	"status": "diagnostic-review-only-no-icons-modified",
+	"rootCause": "Original complete-frame pixels were retained as artwork wherever they fall inside the canonical frame aperture.",
+	"scope": {
+		"catalogSkills": 456,
+		"clear": 23,
+		"borderline": 5,
+		"totalCandidates": 28
+	},
+	"inputs": {
+		"priorReport": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v9-complete-frame-rollout/report.json",
+			"contentHash": "bbde2270f6849b7bad08ae5ab4ab8bae8dc16d0bbbb7bf8819f73af59cd3592d"
+		},
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		}
+	},
+	"records": [
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"name": "Piercing Thrust",
+			"rank": "E",
+			"currentHash": "4540472bbf00f07f8473248f65748afee6f602f8183bbe5530c3881bfc403191",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-piercing-thrust.png",
+			"sourceInteriorHash": "767119e2c44c62ce5ad4627ceac1f3253f9dbaa4efb19f3a4057ec82cd56265f",
+			"interiorHash": "7a30cf41515b9297b75ef70d4a4c93523a1c912ab63f928b14a2773d24f6edaf",
+			"candidateHash": "ad42f5d43bb8800762aa9eb3a580573b7f2304dee07d9dde3d984307d7cdcba2",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-piercing-thrust.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Parallel gold rails remain on both sides.",
+			"exposedInteriorHash": "7a30cf41515b9297b75ef70d4a4c93523a1c912ab63f928b14a2773d24f6edaf"
+		},
+		{
+			"targetId": "martial:polearm:keep-away",
+			"name": "Keep Away",
+			"rank": "E",
+			"currentHash": "eba9da9d0986eee0e57bf4dfb9b05332fc89153c564c109262c54b0e8a0bf08d",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-keep-away.png",
+			"sourceInteriorHash": "6a7e9b7e6b0840c001d6ca7da75bd1f5f9d200cf2e4af00031cee61b61a26ec9",
+			"interiorHash": "fd98c5f69c873a6b56505875e06e76f9e4965fa60f361a78494fd0a5a7ec2744",
+			"candidateHash": "4cdfe80480cc25c9214a8795b0f853b2c16e4f969897b75b02eec2378a0c1e93",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-keep-away.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Orange source-frame rails remain at the opening sides.",
+			"exposedInteriorHash": "fd98c5f69c873a6b56505875e06e76f9e4965fa60f361a78494fd0a5a7ec2744"
+		},
+		{
+			"targetId": "martial:polearm:piercing-line",
+			"name": "Piercing Line",
+			"rank": "E",
+			"currentHash": "5a37f1b102724f83590f6e91ba4eddb630a72e1ac07545a82195ab85fa23c80b",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-piercing-line.png",
+			"sourceInteriorHash": "9419644bb9382337eab20fa91c6ed61030d932be667c7681eaddbc7f452eccc2",
+			"interiorHash": "feeda506ff1e9f70bd4cef711d87bf6453aba69bd17fef753fbbac53ab8ed093",
+			"candidateHash": "c188e3d20734b2adcf7a5c50373ddba300a4974f26fa09a0eb0b5ed143a5914f",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-piercing-line.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "A complete thin orange inner hexagon remains visible.",
+			"exposedInteriorHash": "feeda506ff1e9f70bd4cef711d87bf6453aba69bd17fef753fbbac53ab8ed093"
+		},
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"name": "Wall of Points",
+			"rank": "D",
+			"currentHash": "1fcef0a9c8f2caf0d1a0a8b42177a45c64b451c8f029f3d1dde3bdae014f1e4a",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-wall-of-points.png",
+			"sourceInteriorHash": "82282c85fa7c146a004f0d8b002ccb47cc52a9b05288bc9e9143ae61588eb39a",
+			"interiorHash": "deefe9a2fb3b366dfa66ea085d49e0b4fd03ef49235f5129ef87acefaae981f1",
+			"candidateHash": "8d4f6c567b7a1b10433eceb58608522ad77e52fc76c786a01a186a793da8fc24",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-wall-of-points.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Blue vertical source rails remain inside the D frame.",
+			"exposedInteriorHash": "deefe9a2fb3b366dfa66ea085d49e0b4fd03ef49235f5129ef87acefaae981f1"
+		},
+		{
+			"targetId": "martial:polearm:serpent-s-tongue",
+			"name": "Serpent's Tongue",
+			"rank": "D",
+			"currentHash": "94ff9c9796629aac560b4d9936b5b1761bd2b8ba1abe1c2a6ff129fb59cd07ec",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-serpent-s-tongue.png",
+			"sourceInteriorHash": "92d45ae8d730ac92d791f7c48daaa09107cf5baf1d40cdf5bf6752939ea1c3fa",
+			"interiorHash": "9a3d65ba3a7e3aaf6880e5b6696c2b7297725b08d51f70b012064ebf65f4e565",
+			"candidateHash": "2ca0500a856d3b097e3ba76e0421ad4d2c0659bf1b6ea219f6ef601dcbb948b9",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-serpent-s-tongue.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Blue side and lower source rails remain visible.",
+			"exposedInteriorHash": "9a3d65ba3a7e3aaf6880e5b6696c2b7297725b08d51f70b012064ebf65f4e565"
+		},
+		{
+			"targetId": "martial:polearm:heaven-piercer",
+			"name": "Heaven Piercer",
+			"rank": "C",
+			"currentHash": "805d1b19e633f77c88e005c5d7550cdeb2c8051040f72b7d9fa4a7902e0c3816",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-heaven-piercer.png",
+			"sourceInteriorHash": "53e28cde41b30f37be87c420179d0446cc7f90fee32dd2ce53ee1095545c44e5",
+			"interiorHash": "ffc5f264f3939bb266282a6a603ddf7cfc56edb27cedad4fc369f81ab50d788c",
+			"candidateHash": "7a636da9194c23b1274b5dcba5ed1919364a206024d6ce9659c56633d7170366",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-heaven-piercer.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Thin silver source-frame edges remain inside the aperture.",
+			"exposedInteriorHash": "ffc5f264f3939bb266282a6a603ddf7cfc56edb27cedad4fc369f81ab50d788c"
+		},
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"name": "Thousand Li Thrust",
+			"rank": "B",
+			"currentHash": "b6f5d3b356cedbb6ed56a7a93513bdbffd07d2071d89b6f612fbb18276c8f693",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-thousand-li-thrust.png",
+			"sourceInteriorHash": "9faf2b408b57c78ad15ea528ff5a0c6bfaa7d687adb46d50932166faee98638a",
+			"interiorHash": "31d1ad034a7735e1b8853b9a27a5253964d594382255b62c45cff7b3d009df74",
+			"candidateHash": "bb3236d6b8c0dc9c3cb6f8318e2fd108a50ba6aa584a48a4be7d301513d2119f",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-thousand-li-thrust.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Purple side and lower rails remain inside the B frame.",
+			"exposedInteriorHash": "31d1ad034a7735e1b8853b9a27a5253964d594382255b62c45cff7b3d009df74"
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"name": "Rend Armour",
+			"rank": "E",
+			"currentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armour.png",
+			"sourceInteriorHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97",
+			"interiorHash": "dc08def9fba7f1698d3e5ccfad6e5d938efa6bfb44bbb5e66a62db854dc3147c",
+			"candidateHash": "f59f2bff0eae6cef839558a9a8e368ca3dbed2b52a422ed9a5ac940b33ed1f7f",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Orange source-frame edges form an inner hexagon.",
+			"exposedInteriorHash": "dc08def9fba7f1698d3e5ccfad6e5d938efa6bfb44bbb5e66a62db854dc3147c"
+		},
+		{
+			"targetId": "martial:ranged:fletching",
+			"name": "Fletching",
+			"rank": "E",
+			"currentHash": "31970a09e33cb3af68fe0973556d8d050973b66a1f8394e98401dbc2854f81b2",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-fletching.png",
+			"sourceInteriorHash": "74007129d60463d1fc9878e169d0822db81f465fc5ac199d35424b1bddf8030f",
+			"interiorHash": "1c659786719f3a72b83a0ace89042154e14eb18d6975ef23bb73cc27656b1886",
+			"candidateHash": "994c3954b1eae2af234be4c75b13809615f224f7568007df9ae7fa876bedd03b",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-fletching.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "A strong brown-gold inner frame surrounds the artwork.",
+			"exposedInteriorHash": "1c659786719f3a72b83a0ace89042154e14eb18d6975ef23bb73cc27656b1886"
+		},
+		{
+			"targetId": "martial:ranged:power-draw",
+			"name": "Power Draw",
+			"rank": "E",
+			"currentHash": "ee9927bea129a381532428bbb8d2c1b53013c4df5c577ae2edb48c7f466e7ef6",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-power-draw.png",
+			"sourceInteriorHash": "ae8152ddbb363b4acaabfdd1b7ab1951c980ba93db4d1691d62d9ade1bb2482f",
+			"interiorHash": "dc24f450fd808b6bb6f76883658e89e91fa09458b8ebf2dbaea0521589f14163",
+			"candidateHash": "7cee9cde1464333f9e9de79cb89bfc51e3922875e6d4f780a7d34ac2c929069c",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-power-draw.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Thin orange source rails remain near the aperture edge.",
+			"exposedInteriorHash": "dc24f450fd808b6bb6f76883658e89e91fa09458b8ebf2dbaea0521589f14163"
+		},
+		{
+			"targetId": "martial:ranged:piercing-shot",
+			"name": "Piercing Shot",
+			"rank": "D",
+			"currentHash": "da1ab52ca7887bf9958bbc4344153091a8180b85bd923e0743e3a7c2d685ce6d",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-piercing-shot.png",
+			"sourceInteriorHash": "df887ddfe2be3afbc4d63db4e6551ef6d4c0586504ac8356f2b8ef46f5290d5f",
+			"interiorHash": "a22ae6865588ad696b4029925030266b9d23d4ad24220a1d520ea1dcb7359702",
+			"candidateHash": "bce3aa29b59411760734f76dff765fe865e3fc5cb2b28d4ad77f9be0e2b67666",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-piercing-shot.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Blue source-frame lines remain on the opening sides.",
+			"exposedInteriorHash": "a22ae6865588ad696b4029925030266b9d23d4ad24220a1d520ea1dcb7359702"
+		},
+		{
+			"targetId": "martial:ranged:sky-piercer",
+			"name": "Sky Piercer",
+			"rank": "B",
+			"currentHash": "91ea7dc179635da7dfc761ee55b71be86bf5a83b15f3aae033fecd2634182a8a",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-sky-piercer.png",
+			"sourceInteriorHash": "7fa573c97fc2aaf4bc8cb9e2e163361640bbb4818998f43e6a07ae0511c5431a",
+			"interiorHash": "55b49f729337968dbf9052853e556d6c4e7e735f1390229bb557aa4e8bb466a4",
+			"candidateHash": "fa085b19545053f2d9516ccd52dd00c485242271c43d03b70d58d9edaac22ed2",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-sky-piercer.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Purple source-frame edges remain inside the B frame.",
+			"exposedInteriorHash": "55b49f729337968dbf9052853e556d6c4e7e735f1390229bb557aa4e8bb466a4"
+		},
+		{
+			"targetId": "martial:body:sidestep",
+			"name": "Sidestep",
+			"rank": "E",
+			"currentHash": "c312cf9422a3a35dc4406f5fb00d8ce849c0453c415f0c583c3536c3f47101dc",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-sidestep.png",
+			"sourceInteriorHash": "4fa078b64f6c07271c36d94bb6165e72857a5fbf9c8308596a8092d85fe9e531",
+			"interiorHash": "dd9dd68a4590abdb40bc5db1dc809fd5d601747c3e7dd235d9b97eb3f1ad9938",
+			"candidateHash": "22aaebc8b554a7aed397f1e505dbfbe5d0b3399bab67a04364af3ebc69624b3a",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-sidestep.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Orange lower and side source rails remain visible.",
+			"exposedInteriorHash": "dd9dd68a4590abdb40bc5db1dc809fd5d601747c3e7dd235d9b97eb3f1ad9938"
+		},
+		{
+			"targetId": "martial:body:called-shot",
+			"name": "Called Shot",
+			"rank": "E",
+			"currentHash": "32c4c888bb1638bf322d3456cdddcc3e1b141bff2dac584cf8e163f6bb5b144f",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-called-shot.png",
+			"sourceInteriorHash": "6bb7869c242d2d2a725283405c5f1e88cbb0de89c9743c07488f87dc08b31f31",
+			"interiorHash": "d48a6186826ffbb4de522f7b467fef7ef60f07952c02d3c02efaa176fe26362b",
+			"candidateHash": "f8b65df1c71c56c99c64294d7e15897e4926ce14e10cc2323823fbf015ba0a6f",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-called-shot.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Orange source-frame edges remain around the artwork.",
+			"exposedInteriorHash": "d48a6186826ffbb4de522f7b467fef7ef60f07952c02d3c02efaa176fe26362b"
+		},
+		{
+			"targetId": "martial:body:the-road-has-no-end",
+			"name": "The Road Has No End",
+			"rank": "S",
+			"currentHash": "8be1a72775552ca003c5c661c44e23d4d0ceafd57c7facb4e82d40f0dbac93f8",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-the-road-has-no-end.png",
+			"sourceInteriorHash": "a4522add11e698fdccf8648e77db6db92ef7146f51ccbc9ce8c0c94f6c2378f1",
+			"interiorHash": "da20714d632951848b558225b89da341d219621ee6a9ab351f3bf1ddec8bcf43",
+			"candidateHash": "d234ed21fb708ec0702eeceec010406a56089e830adbb1313551b481b2d2ce83",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-the-road-has-no-end.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Gold side and lower rails remain inside the S frame.",
+			"exposedInteriorHash": "da20714d632951848b558225b89da341d219621ee6a9ab351f3bf1ddec8bcf43"
+		},
+		{
+			"targetId": "magical:elemental:torrent",
+			"name": "Torrent",
+			"rank": "D",
+			"currentHash": "5d7f74bbd3f3cdbd787273e130f60b61ce8dcfe67a6f7fb490d0742bac883ab6",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-torrent.png",
+			"sourceInteriorHash": "50f0368107d12ae5639f99dd67d912bd4e6f25ea83ea57f508acb632409d452e",
+			"interiorHash": "2f2deb5131be73ed9efb73ecc6e7f23750e8d5c066c63fffc880991d22f30b6b",
+			"candidateHash": "d5eb58dbeb53d44694be681b175c98315f0156eb24037741a9acb287c2ad1088",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-torrent.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Blue inner rails remain parallel to the D frame.",
+			"exposedInteriorHash": "2f2deb5131be73ed9efb73ecc6e7f23750e8d5c066c63fffc880991d22f30b6b"
+		},
+		{
+			"targetId": "magical:elemental:the-deep",
+			"name": "The Deep",
+			"rank": "A",
+			"currentHash": "1e2f8d699af61b2cf7ad2585b303ee90e5057a4e2a456924c4032bcf8651bde2",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-the-deep.png",
+			"sourceInteriorHash": "5831b1177b16d854d515889a98f8b4a93f5651876f5e8c25a2b4a53ac0b21f00",
+			"interiorHash": "ff3f869a2552f32bfb408b28b1a983653cde48472428baecc1257be12a0278a5",
+			"candidateHash": "ffc1753a026b3e5a0221f62eb639c86e3423fcf18add834a1cb6fea3ce6b7071",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-the-deep.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Silver vertical source rails remain on both sides.",
+			"exposedInteriorHash": "ff3f869a2552f32bfb408b28b1a983653cde48472428baecc1257be12a0278a5"
+		},
+		{
+			"targetId": "magical:elemental:where-all-rivers-end",
+			"name": "Where All Rivers End",
+			"rank": "S",
+			"currentHash": "96cebf92e597293fe1d1ffd79ca6213421e304d7de09fb0a203ccf42a0bb675d",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-where-all-rivers-end.png",
+			"sourceInteriorHash": "49b8cc32a18c811702518acf43fbb093ead57af7ac0f9a5bb1b2db9d4492edbe",
+			"interiorHash": "2054acba55146c3231aa44709fab4d17e4c30c92ba7c29d951e312e506eca96b",
+			"candidateHash": "3bda2a83b99d0004a93938f71955a41ab4a35e9f0f28f1b0fb552e29c9b893a7",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-where-all-rivers-end.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Ornate gold lower and side rails remain exposed.",
+			"exposedInteriorHash": "2054acba55146c3231aa44709fab4d17e4c30c92ba7c29d951e312e506eca96b"
+		},
+		{
+			"targetId": "magical:elemental:spike-field",
+			"name": "Spike Field",
+			"rank": "E",
+			"currentHash": "50b169ff72ffa42a5880526dd3df7b80b3c54ca18f32657405423d55f236faa7",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-spike-field.png",
+			"sourceInteriorHash": "bd65f1600b001778335ceb09387fe80903fcd6ebd5d523480f14b06924386bbd",
+			"interiorHash": "ae8031cd41b0917a7c06a5e95d8a315c0ca99f36e6696438696631227625ec5a",
+			"candidateHash": "520d877a939a569b9de21331ffd0cc4766ae0fcfcb1a9ff3712b57f7cd4bd218",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-spike-field.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Thin gold-brown source-frame edges remain visible.",
+			"exposedInteriorHash": "ae8031cd41b0917a7c06a5e95d8a315c0ca99f36e6696438696631227625ec5a"
+		},
+		{
+			"targetId": "magical:enchantment:component-craft",
+			"name": "Component Craft",
+			"rank": "E",
+			"currentHash": "84c3f82923517866759f2a53c377dbff45b38ce97df6fa791628f5a22ad5c23a",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-component-craft.png",
+			"sourceInteriorHash": "1b360f6a53dcbe01f92a63741fa6a1fe0d0a7038206e1f11f4d82c72903bc2d0",
+			"interiorHash": "71bcfb135a0a19b43ec6c75f702ae9cfb942461e5d94dae545ce66337579b628",
+			"candidateHash": "af05d5cf20f4d7a1f064541e654def77a9fa31b1bd2f71b483185813c7a7898a",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-component-craft.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Gold vertical source rails remain at both sides.",
+			"exposedInteriorHash": "71bcfb135a0a19b43ec6c75f702ae9cfb942461e5d94dae545ce66337579b628"
+		},
+		{
+			"targetId": "magical:mind:memory-edit",
+			"name": "Memory Edit",
+			"rank": "C",
+			"currentHash": "4ecb95f6f42d0418551ebbee417c3f4f625cfcb09fa49e1712de1099f8bce670",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-mind-memory-edit.png",
+			"sourceInteriorHash": "e464df89bbf9dfb2fdc9f0a11d3f2b7ca82534bf9527c435b0e26e7076ab1c4f",
+			"interiorHash": "bd9904d2a954397f1da89f546c2bc0d22e81c2eb97ef787b97a17de2b839173f",
+			"candidateHash": "40a1aef94f1274a06c69fdd6fcbc7182c5a8c72fde47d9d790c9ff6934770a98",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-mind-memory-edit.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "A silver source rail remains along the left opening.",
+			"exposedInteriorHash": "bd9904d2a954397f1da89f546c2bc0d22e81c2eb97ef787b97a17de2b839173f"
+		},
+		{
+			"targetId": "craft:knowledge:languages",
+			"name": "Languages",
+			"rank": "E",
+			"currentHash": "fdf9930b34498442269ec4b6f721db3039cb405f633c0731c6bc2ec0f25da7f5",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-knowledge-languages.png",
+			"sourceInteriorHash": "0b4063d0f984ee12b95528f40959a9476d9b9c27d5dc796e0930d77c7c426856",
+			"interiorHash": "0a5b5cf8963c2b9039892096eb5d66248de4c160d6c608c0bd552a844160e1c9",
+			"candidateHash": "6e6d7dd5edc81fcb52fd7398dd4ec1139fa544a98f4668b45d821e9274ddc723",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-knowledge-languages.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "A complete orange-gold inner hexagon remains visible.",
+			"exposedInteriorHash": "0a5b5cf8963c2b9039892096eb5d66248de4c160d6c608c0bd552a844160e1c9"
+		},
+		{
+			"targetId": "craft:knowledge:research",
+			"name": "Research",
+			"rank": "E",
+			"currentHash": "3398e39ff3c515ecd1cee73690314c53040af1d4d705174ffcbff54b7b5537e8",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-knowledge-research.png",
+			"sourceInteriorHash": "fbd3d9b84c5a83e8462edb1ba68d8ddbcbb6c640cadba3721877102dd1dae204",
+			"interiorHash": "d5ff88b63cfab729ca639f45c439adb5d551d1a0690ab0ca1074b37a50cc7317",
+			"candidateHash": "65a38f269da4f8c1a1c38fee22cc357989d1559927fe231999fb6a475994b72b",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-knowledge-research.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "clear",
+			"observation": "Orange crest and edge fragments remain inside the E frame.",
+			"exposedInteriorHash": "d5ff88b63cfab729ca639f45c439adb5d551d1a0690ab0ca1074b37a50cc7317"
+		},
+		{
+			"targetId": "martial:blade:one-blade-one-world",
+			"name": "One Blade, One World",
+			"rank": "S",
+			"currentHash": "c1b24c2d429a481a7aec959f3d6bb93954a7d0145e6dd9feb4c0211f79203928",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-one-blade-one-world.png",
+			"sourceInteriorHash": "11eef617a927e6a4a03d52305db8f16eedf57b07323bc6ebdc79d47e3aa526f4",
+			"interiorHash": "b63c31638fea686961e7dd537a195f27dc5defcb324bf2a39e08694688313f6e",
+			"candidateHash": "3f942a2ff477658d304073bfff192d224298860ff38d413997ad203a09b6f8c0",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-one-blade-one-world.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "borderline",
+			"observation": "Small S-frame traces are present but visually subtle.",
+			"exposedInteriorHash": "b63c31638fea686961e7dd537a195f27dc5defcb324bf2a39e08694688313f6e"
+		},
+		{
+			"targetId": "martial:blade:blade-throw",
+			"name": "Blade Throw",
+			"rank": "E",
+			"currentHash": "3d4cf134b05b5560503955187a986fe4b6cd46b311a043d65f70df843e5b89ea",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-blade-throw.png",
+			"sourceInteriorHash": "861d26e30c414508fd55d399063c4ce5f53cd4f09b74fc54a6707a03037c3277",
+			"interiorHash": "b4761e98bb2c21a168f85807db6f66a28f0475a961c3df7242ebb671ba272b6c",
+			"candidateHash": "d65b1794c54fbd5315b4476e51e405f7b7874be06b3c161be51dc911c045957b",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-blade-throw.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "borderline",
+			"observation": "Possible displaced lower-left source-frame fragment.",
+			"exposedInteriorHash": "b4761e98bb2c21a168f85807db6f66a28f0475a961c3df7242ebb671ba272b6c"
+		},
+		{
+			"targetId": "martial:ranged:archery",
+			"name": "Archery",
+			"rank": "F",
+			"currentHash": "9691ed1b97b1fa20cf02d9bafe2c5d7e283c9fccb399c514eb73bee20db02be9",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-archery.png",
+			"sourceInteriorHash": "be0d65e8dc162ef796dd41149c9d204c2bf0366d26b9a5aca910fa5d622e0208",
+			"interiorHash": "01d2a96d1e4546a31a3232d66e5f5500b8710791c636b7d961e19bdb17577b6f",
+			"candidateHash": "332cfadc28bd57f7c112fa689295b0a8057ef541c195ada66082d1c9033ac1f6",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-archery.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "borderline",
+			"observation": "Faint dark source boundary may read as a second frame.",
+			"exposedInteriorHash": "01d2a96d1e4546a31a3232d66e5f5500b8710791c636b7d961e19bdb17577b6f"
+		},
+		{
+			"targetId": "martial:ranged:quick-loose",
+			"name": "Quick Loose",
+			"rank": "F",
+			"currentHash": "55602cf88bed205904aca4a4039b404e64dc7190c5eea174f51d05acf9102cae",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-quick-loose.png",
+			"sourceInteriorHash": "082f70498cb73eaee164dbf09d4f8cae0e0a88f444a78f2427845b7178f3a68a",
+			"interiorHash": "f245c462e5f75877712320237bc9fa4cfda5fcaf1e60788e0068bbe38666672b",
+			"candidateHash": "250a1a08b1a7452335c05b5d39b94f3c4110ab5530913ff70a52ea5a9782e15f",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-quick-loose.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "borderline",
+			"observation": "Faint source-edge traces are visible at close inspection.",
+			"exposedInteriorHash": "f245c462e5f75877712320237bc9fa4cfda5fcaf1e60788e0068bbe38666672b"
+		},
+		{
+			"targetId": "martial:ranged:world-s-edge-shot",
+			"name": "World's Edge Shot",
+			"rank": "S",
+			"currentHash": "48dbed44e9b72270288d258060fc4c734aea3bc76a822d4c0da78f35de4cb9f8",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-world-s-edge-shot.png",
+			"sourceInteriorHash": "f2d8cc2dd46486742f46472ba13e92266ff260d3e3d3b0512f420812d9919460",
+			"interiorHash": "52ca8daf62662dd72b52bd5e00f7f9e0d7cb283dece384659e7e8a77d7f344e1",
+			"candidateHash": "f56f0311aa5af965c58f224933b419edbe8c8dd62e62a7583271dfd12b70a752",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-world-s-edge-shot.png",
+			"inspection": {
+				"layerHashesMatch": true,
+				"exactComposite": true,
+				"protectedBandMatches": true,
+				"exteriorTransparent": true,
+				"backingOnlyComponents": []
+			},
+			"classification": "borderline",
+			"observation": "Small gold source-frame fragments remain near the aperture.",
+			"exposedInteriorHash": "52ca8daf62662dd72b52bd5e00f7f9e0d7cb283dece384659e7e8a77d7f344e1"
+		}
+	]
+}

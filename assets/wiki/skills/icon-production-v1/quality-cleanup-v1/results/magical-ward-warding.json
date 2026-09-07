@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:ward:warding",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-warding.png",
+		"contentHash": "3a4ebbebad96ec611e0b08c4dc18d6afdf3be6d21ab14eb6f7071c976e740640"
+	},
+	"rank": "F",
+	"disposition": "owner-review",
+	"findings": [
+		{
+			"targetId": "magical:ward:warding",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-warding.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-warding.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-warding.png",
+		"contentHash": "2c43b06301af009b35b01c945c7ed0f987d0230d9c5ab6ec08581a3f96e51aea",
+		"removedPixels": 173235,
+		"removedPixelBounds": {
+			"left": 121,
+			"top": 22,
+			"width": 782,
+			"height": 990
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "aa88106a3aba7af3b56b58872059ca1765cbbca6bb1fe11ef5b47c533f6899fe",
+	"resultContentHash": "63be774abe0af454aeb04a18c7c6013404d4c882c392c3bf607ca73003f1bc78"
+}
