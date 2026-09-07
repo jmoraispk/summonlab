@@ -1,6 +1,6 @@
 # Persistent Village Hero Travel Animation Design
 
-**Status:** Approved in chat; written-spec review pending  
+**Status:** Approved
 **Date:** 2026-09-06
 
 ## Goal
