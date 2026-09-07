@@ -1,4 +1,5 @@
 import {
+	CombatResultSchema,
 	MissionRunStateSchema,
 	MissionRunStateV2Schema,
 	MissionRunStateV3Schema,
@@ -9,6 +10,7 @@ import {
 	MissionRunStateV8Schema,
 	MissionRunStateV9Schema,
 	type CombatModeBinding,
+	type CombatResult,
 	type EngineGameStateV11,
 	type EngineGameStateV12,
 	type EngineGameStateV13,
@@ -40,13 +42,14 @@ import { IRON_MOON_PACKAGE, MONSTER_POLICY_CATALOG } from '@summonlab/content';
 import { createEntropyCursor } from '../../entropy.js';
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import type { CombatClaimReceipt } from '../../core/combat-claims.js';
 import {
 	missionContentForState,
 	verifiedMissionBinding,
 	verifiedMissionContent
 } from '../../core/content-bindings.js';
-import { spawnMissionCombatants } from './monster-policy.js';
 import { assertLegacyAutoBinding } from './combat-mode.js';
+import { spawnMissionCombatants } from './monster-policy.js';
 
 type PortalAttempt = NonNullable<EngineGameStateV15['mission']['attempt']>;
 type PortalRuntime = PortalAttempt['turnState']['portal'];
@@ -717,4 +720,90 @@ export function retreatMissionAttempt(
 		...state.mission,
 		attempt: { ...attempt, status: 'retreat', endedAt: state.simulatedAt, outcome: 'retreat' }
 	});
+}
+
+export interface CombatMissionClaimCombatantSeed {
+	readonly health: number;
+	readonly mana: number;
+	readonly maximumHealth: number;
+	readonly maximumMana: number;
+	readonly downed: boolean;
+	readonly lost: boolean;
+	readonly injuryIds: readonly string[];
+}
+
+export type CombatMissionClaimCombatantState = CombatMissionClaimCombatantSeed;
+
+/** Ephemeral claim transition projection; canonical mission/aftermath state remains authoritative. */
+export interface CombatMissionClaimProjection {
+	readonly combatants: Readonly<Record<string, CombatMissionClaimCombatantState>>;
+	readonly harm: Readonly<
+		Record<string, { readonly damageTaken: number; readonly downed: boolean }>
+	>;
+	readonly recoveries: Readonly<Record<string, { readonly minimumSafeHealth: number }>>;
+	readonly loot: Readonly<Record<string, Readonly<Record<string, number>>>>;
+	readonly objectives: Readonly<Record<string, boolean>>;
+	readonly attempts: Readonly<
+		Record<
+			string,
+			{
+				readonly outcome: CombatResult['outcome'];
+				readonly modeId: CombatResult['modeId'];
+				readonly rulesVersion: string;
+				readonly traceHash: string;
+			}
+		>
+	>;
+	readonly receipts: Readonly<Record<string, CombatClaimReceipt>>;
+}
+
+export function createCombatMissionClaimProjection(
+	combatants: Readonly<Record<string, CombatMissionClaimCombatantSeed>>
+): CombatMissionClaimProjection {
+	return {
+		combatants: Object.fromEntries(
+			Object.entries(combatants).map(([combatantId, combatant]) => [
+				combatantId,
+				{
+					...combatant,
+					injuryIds: [...combatant.injuryIds]
+				}
+			])
+		),
+		harm: {},
+		recoveries: {},
+		loot: {},
+		objectives: {},
+		attempts: {},
+		receipts: {}
+	};
+}
+
+export interface CombatMissionAttemptTransition {
+	readonly status: 'success' | 'retreat' | 'failure';
+	readonly outcome: 'success' | 'retreat' | 'failure';
+	readonly cause: CombatResult['outcome'];
+	readonly authoredFailure: boolean;
+}
+
+/** Keeps engine safety termination visibly distinct from authored encounter failure. */
+export function missionAttemptTransitionForCombatResult(
+	resultInput: CombatResult
+): CombatMissionAttemptTransition {
+	const result = CombatResultSchema.parse(resultInput);
+	if (result.outcome === 'victory' || result.outcome === 'extraction') {
+		return { status: 'success', outcome: 'success', cause: result.outcome, authoredFailure: false };
+	}
+	if (result.outcome === 'retreat') {
+		return { status: 'retreat', outcome: 'retreat', cause: result.outcome, authoredFailure: false };
+	}
+	if (result.outcome === 'safety-stop' && result.safetyStop?.disposition === 'forced-retreat') {
+		return { status: 'retreat', outcome: 'retreat', cause: result.outcome, authoredFailure: false };
+	}
+	return {
+		status: 'failure',
+		outcome: 'failure',
+		cause: result.outcome,
+		authoredFailure: result.outcome === 'deadline' || result.outcome === 'party-downed'
+	};
 }

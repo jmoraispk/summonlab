@@ -188,6 +188,7 @@ export const CombatRulesV1Schema = z
 			.object({
 				baseMaximum: z.number().int().positive(),
 				perVitality: z.number().int().nonnegative(),
+				minimumSafeHealth: z.number().int().positive(),
 				safeRestRegenerationBase: z.number().int().nonnegative(),
 				safeRestRegenerationVitalityDivisor: z.number().int().positive(),
 				combatRegenerationDelayTicks: z.number().int().nonnegative(),

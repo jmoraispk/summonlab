@@ -10,7 +10,7 @@ import {
 } from './combat-rules.js';
 import { CombatSkillIdSchema } from './combat-skill.js';
 import { EquipmentFamilyTagSchema } from './equipment.js';
-import { EntityIdSchema, StateHashSchema } from './shared.js';
+import { ContentVersionSchema, EntityIdSchema, StateHashSchema } from './shared.js';
 
 export const ReadinessCombatStateVersionSchema = z.literal('readiness-combat-state-v1');
 export const CombatWindowVersionSchema = z.literal('combat-window-v1');
@@ -778,7 +778,7 @@ export const CombatResultSchema = z
 		resultId: EntityIdSchema,
 		attemptId: EntityIdSchema,
 		modeId: z.enum(['legacy-auto-v1', 'agent-readiness-v1']),
-		rulesVersion: CombatRulesVersionSchema,
+		rulesVersion: ContentVersionSchema,
 		outcome: z.enum([
 			'victory',
 			'extraction',
@@ -796,6 +796,15 @@ export const CombatResultSchema = z
 	})
 	.strict()
 	.superRefine((result, context) => {
+		const expectedRulesVersion =
+			result.modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : 'combat-rules-v1';
+		if (result.rulesVersion !== expectedRulesVersion) {
+			context.addIssue({
+				code: 'custom',
+				path: ['rulesVersion'],
+				message: 'Combat result rules must match its immutable mode binding'
+			});
+		}
 		if ((result.outcome === 'safety-stop') !== (result.safetyStop !== null)) {
 			context.addIssue({
 				code: 'custom',

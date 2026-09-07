@@ -1,4 +1,5 @@
 import {
+	CombatResultSchema,
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
@@ -38,16 +39,24 @@ import {
 	ResourceKeySchema,
 	RuntimeBandStoryStateSchema,
 	type AuthoritativeEvent,
+	type CombatClaim,
+	type CombatResult,
 	type EngineGameState,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
 	type MissionRunStateV8,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { EmptyMetadataSchema } from '../../core/event-metadata.js';
 import type { EngineEventReducer, EngineGameStateModern } from '../../core/types.js';
+import {
+	combatClaimReceipt,
+	existingCombatClaimReceipt,
+	type CombatClaimReceipt
+} from '../../core/combat-claims.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
@@ -59,7 +68,8 @@ import {
 	openMissionExtraction,
 	prepareMissionAttempt,
 	retreatMissionAttempt,
-	reviseMissionParty
+	reviseMissionParty,
+	type CombatMissionClaimProjection
 } from './lifecycle.js';
 import { resolveMissionModeTurn } from './mission-mode-runner.js';
 import {
@@ -81,6 +91,169 @@ import {
 	completePortalMissionExtraction,
 	resolvePortalMissionTurn
 } from './portal.js';
+
+export interface CombatMissionClaimTransition {
+	readonly projection: CombatMissionClaimProjection;
+	readonly receipts: readonly CombatClaimReceipt[];
+}
+
+function checkedAdd(left: number, right: number, label: string): number {
+	const value = left + right;
+	if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${label} overflowed`);
+	return value;
+}
+
+function validateOwnedClaim(result: CombatResult, claim: CombatClaim): void {
+	if (!claim.idempotencyKey.startsWith(`${result.attemptId}:`)) {
+		throw new Error('Combat claim belongs to another attempt');
+	}
+	if (claim.claimType === 'final-resource') {
+		const combatant = result.finalCombatants[claim.combatantId];
+		if (!combatant || combatant.resources[claim.resource].current !== claim.value) {
+			throw new Error('Final-resource claim diverged from combat result');
+		}
+	}
+	if (claim.claimType === 'harm') {
+		const combatant = result.finalCombatants[claim.heroId];
+		if (!combatant || combatant.downed !== claim.downed) {
+			throw new Error('Harm claim diverged from combat result');
+		}
+	}
+	if (claim.claimType === 'recovery') {
+		const combatant = result.finalCombatants[claim.heroId];
+		if (
+			!combatant?.downed ||
+			!['victory', 'extraction'].includes(result.outcome) ||
+			claim.minimumSafeHealth !== COMBAT_RULES_V1.health.minimumSafeHealth ||
+			claim.minimumSafeHealth > combatant.resources.health.maximum
+		) {
+			throw new Error('Recovery claim lacks engine-owned safe-outcome evidence');
+		}
+	}
+}
+
+/** Derives only the mission/aftermath-owned side of a common combat result. */
+export function transitionCombatMissionClaims(
+	projection: CombatMissionClaimProjection,
+	resultInput: CombatResult
+): CombatMissionClaimTransition {
+	const result = CombatResultSchema.parse(resultInput);
+	const outcomeClaims = result.claims.filter((claim) => claim.claimType === 'attempt-outcome');
+	if (outcomeClaims.length !== 1 || outcomeClaims[0]?.outcome !== result.outcome) {
+		throw new Error('Combat result outcome claims are inconsistent');
+	}
+	for (const claim of result.claims) validateOwnedClaim(result, claim);
+
+	let mission = projection;
+	const receipts: CombatClaimReceipt[] = [];
+	for (const claim of result.claims) {
+		if (claim.claimType === 'skill-practice') continue;
+		const existing = existingCombatClaimReceipt(mission.receipts, claim, 'mission-aftermath');
+		if (existing) {
+			receipts.push(existing);
+			continue;
+		}
+		const receipt = combatClaimReceipt(claim, 'mission-aftermath', hashCanonical(mission));
+		if (claim.claimType === 'final-resource') {
+			const combatant = mission.combatants[claim.combatantId];
+			if (!combatant) throw new Error(`Unknown persistent combatant ${claim.combatantId}`);
+			const maximum = claim.resource === 'health' ? combatant.maximumHealth : combatant.maximumMana;
+			if (claim.value > maximum)
+				throw new Error('Final combat resource exceeds its persistent cap');
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.combatantId]: { ...combatant, [claim.resource]: claim.value }
+				}
+			};
+		} else if (claim.claimType === 'harm') {
+			const combatant = mission.combatants[claim.heroId];
+			if (!combatant) throw new Error(`Unknown harmed hero ${claim.heroId}`);
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.heroId]: { ...combatant, downed: claim.downed }
+				},
+				harm: {
+					...mission.harm,
+					[claim.heroId]: { damageTaken: claim.damageTaken, downed: claim.downed }
+				}
+			};
+		} else if (claim.claimType === 'recovery') {
+			const combatant = mission.combatants[claim.heroId];
+			if (!combatant) throw new Error(`Unknown recovered hero ${claim.heroId}`);
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.heroId]: {
+						...combatant,
+						health: claim.minimumSafeHealth,
+						downed: false,
+						lost: false
+					}
+				},
+				recoveries: {
+					...mission.recoveries,
+					[claim.heroId]: { minimumSafeHealth: claim.minimumSafeHealth }
+				}
+			};
+		} else if (claim.claimType === 'loot') {
+			const ownerLoot = mission.loot[claim.ownerId] ?? {};
+			mission = {
+				...mission,
+				loot: {
+					...mission.loot,
+					[claim.ownerId]: {
+						...ownerLoot,
+						[claim.lootId]: checkedAdd(ownerLoot[claim.lootId] ?? 0, claim.quantity, 'Combat loot')
+					}
+				}
+			};
+		} else if (claim.claimType === 'objective') {
+			mission = {
+				...mission,
+				objectives: { ...mission.objectives, [claim.objectiveId]: claim.completed }
+			};
+		} else {
+			mission = {
+				...mission,
+				attempts: {
+					...mission.attempts,
+					[result.attemptId]: {
+						outcome: claim.outcome,
+						modeId: result.modeId,
+						rulesVersion: result.rulesVersion,
+						traceHash: result.traceHash
+					}
+				}
+			};
+		}
+		mission = {
+			...mission,
+			receipts: { ...mission.receipts, [claim.idempotencyKey]: receipt }
+		};
+		receipts.push(receipt);
+	}
+
+	if (['retreat', 'party-downed', 'deadline'].includes(result.outcome)) {
+		const recoveredIds = new Set(
+			result.claims.filter((claim) => claim.claimType === 'recovery').map((claim) => claim.heroId)
+		);
+		const combatants = { ...mission.combatants };
+		for (const [combatantId, finalCombatant] of Object.entries(result.finalCombatants)) {
+			const persistent = combatants[combatantId];
+			if (persistent && finalCombatant.downed && !recoveredIds.has(combatantId)) {
+				combatants[combatantId] = { ...persistent, health: 0, downed: true, lost: true };
+			}
+		}
+		mission = { ...mission, combatants };
+	}
+
+	return { projection: mission, receipts };
+}
 
 const ResourceChangeSchema = z
 	.object({

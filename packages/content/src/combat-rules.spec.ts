@@ -14,6 +14,7 @@ describe('combat-rules-v1 content', () => {
 			health: {
 				baseMaximum: 100,
 				perVitality: 4,
+				minimumSafeHealth: 1,
 				combatRegenerationDelayTicks: 50,
 				combatRecoveryBasisPoints: 2_000
 			},

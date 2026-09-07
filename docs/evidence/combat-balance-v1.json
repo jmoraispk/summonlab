@@ -4,7 +4,7 @@
 	"bindings": {
 		"rules": {
 			"rulesVersion": "combat-rules-v1",
-			"rulesHash": "c7d028d44846075e1a71e7ce5b8c6077908ad0655f16090154ccbede7e72f83c"
+			"rulesHash": "13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff"
 		},
 		"combatContent": {
 			"bindingVersion": "combat-content-binding-v1",

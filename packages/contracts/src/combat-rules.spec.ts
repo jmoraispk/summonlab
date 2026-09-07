@@ -34,6 +34,7 @@ function validRules() {
 		health: {
 			baseMaximum: 100,
 			perVitality: 4,
+			minimumSafeHealth: 1,
 			safeRestRegenerationBase: 2,
 			safeRestRegenerationVitalityDivisor: 10,
 			combatRegenerationDelayTicks: 50,
@@ -82,6 +83,17 @@ function validRules() {
 }
 
 describe('combat rules contracts', () => {
+	it('binds the aftermath recovery floor separately from natural regeneration', () => {
+		const parsed = CombatRulesV1Schema.parse(validRules());
+		expect(parsed.health.minimumSafeHealth).toBe(1);
+		expect(
+			CombatRulesV1Schema.safeParse({
+				...validRules(),
+				health: { ...validRules().health, minimumSafeHealth: 0 }
+			}).success
+		).toBe(false);
+	});
+
 	it('binds all hit-contest clamps and modifiers into combat-rules-v1', () => {
 		const parsed = CombatRulesV1Schema.parse(validRules());
 		expect(parsed.hit).toStrictEqual(validRules().hit);

@@ -1,5 +1,6 @@
 export * from './catch-up.js';
 export * from './domains/combat/capability.js';
+export * from './domains/combat/outcome.js';
 export {
 	applyCombatChoiceBatch,
 	combatChoiceBatchHash,
@@ -19,6 +20,23 @@ export {
 	type ResolveCombatActionInput
 } from './domains/combat/resolver.js';
 export { advanceUntilDecision } from './domains/combat/window.js';
+export {
+	createCombatMissionClaimProjection,
+	missionAttemptTransitionForCombatResult,
+	type CombatMissionAttemptTransition,
+	type CombatMissionClaimCombatantSeed,
+	type CombatMissionClaimCombatantState,
+	type CombatMissionClaimProjection
+} from './domains/mission/lifecycle.js';
+export {
+	createCombatProgressionClaimProjection,
+	type CombatProgressionClaimProjection
+} from './domains/progression/claims.js';
+export {
+	transitionCombatResultClaims,
+	type CombatClaimTransition,
+	type CombatClaimTransitionInput
+} from './orchestration/combat-claims.js';
 export * from './context.js';
 export * from './engine.js';
 export * from './entropy.js';

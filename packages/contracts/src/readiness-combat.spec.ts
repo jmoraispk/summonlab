@@ -797,6 +797,18 @@ describe('readiness combat contracts', () => {
 		} as const;
 		expect(CombatResultSchema.parse(result)).toStrictEqual(result);
 		expect(CombatAdvanceSchema.parse({ kind: 'combat-result', result })).toBeDefined();
+		const legacy = {
+			...result,
+			modeId: 'legacy-auto-v1' as const,
+			rulesVersion: 'legacy-auto-rules-v1'
+		};
+		expect(CombatResultSchema.parse(legacy)).toStrictEqual(legacy);
+		expect(
+			CombatResultSchema.safeParse({ ...legacy, rulesVersion: 'combat-rules-v1' }).success
+		).toBe(false);
+		expect(
+			CombatResultSchema.safeParse({ ...result, rulesVersion: 'legacy-auto-rules-v1' }).success
+		).toBe(false);
 	});
 
 	it('requires exactly one correctly bound actor view for every ready actor', () => {

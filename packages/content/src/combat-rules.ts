@@ -25,6 +25,7 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 		health: {
 			baseMaximum: 100,
 			perVitality: 4,
+			minimumSafeHealth: 1,
 			safeRestRegenerationBase: 2,
 			safeRestRegenerationVitalityDivisor: 10,
 			combatRegenerationDelayTicks: 50,
