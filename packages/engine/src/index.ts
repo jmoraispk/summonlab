@@ -1,12 +1,16 @@
 export * from './catch-up.js';
 export * from './domains/combat/capability.js';
 export {
+	authorizeReadinessTerminalDirective,
 	emitCombatOutcome,
 	finalizeReadinessCombatOutcome,
+	readinessTerminalDirective,
+	type AuthorizeReadinessTerminalDirectiveInput,
 	type CombatObjectiveState,
 	type CombatTermination,
 	type EmitCombatOutcomeInput,
 	type FinalizeReadinessCombatInput,
+	type ReadinessTerminalDirective,
 	type SecuredCombatLoot
 } from './domains/combat/outcome.js';
 export {

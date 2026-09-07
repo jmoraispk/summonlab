@@ -8,6 +8,7 @@ import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical } from '../../hash.js';
+import { createReadinessCombatOutcomeEvidence } from './outcome.js';
 import { advanceUntilReadyCohort, applyReadinessActionCost } from './readiness.js';
 
 const ID = {
@@ -91,6 +92,7 @@ function state(
 	combatants: ReadinessCombatStateV1['combatants'],
 	input: Partial<Pick<ReadinessCombatStateV1, 'tick' | 'scheduledEffects' | 'safety'>> = {}
 ): ReadinessCombatStateV1 {
+	const safety = input.safety ?? { ticksAdvanced: 0, eventsEmitted: 0, noProgressCycles: 0 };
 	return {
 		stateVersion: 'readiness-combat-state-v1',
 		seed: 'a'.repeat(64),
@@ -120,7 +122,12 @@ function state(
 		terrain: { width: 8, height: 8, blockedTiles: [], features: [] },
 		visibleTelegraphs: [],
 		scheduledEffects: input.scheduledEffects ?? [],
-		safety: input.safety ?? { ticksAdvanced: 0, eventsEmitted: 0, noProgressCycles: 0 },
+		safety,
+		outcomeEvidence: createReadinessCombatOutcomeEvidence({
+			attemptId: ID.attempt,
+			combatants,
+			eventsEmitted: safety.eventsEmitted
+		}),
 		status: 'active',
 		result: null
 	};
@@ -299,6 +306,12 @@ describe('agent-readiness one-tick cohorts', () => {
 			mana: { current: 14, maximum: 100 }
 		});
 		expect(result.state.combatants[ID.hero]?.lastDamagedAtTick).toBe(1);
+		expect(result.state.outcomeEvidence.partyHeroes[ID.hero]).toMatchObject({
+			currentHealth: 40,
+			damageTaken: 10,
+			downed: false
+		});
+		expect(result.state.outcomeEvidence.emittedEventIds).toStrictEqual([ID.effect]);
 		expect(result.state.combatants[ID.ally]).toStrictEqual(arranged.combatants[ID.ally]);
 		expect(result.readyActorIds).toStrictEqual([ID.hero]);
 	});

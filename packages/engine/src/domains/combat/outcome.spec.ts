@@ -129,20 +129,45 @@ function emit(modeId: CombatModeId, outcome: CombatTermination['kind'], downed =
 }
 
 function activeState(downed = false): ReadinessCombatStateV1 {
+	const hero = { ...combatant(ID.hero, 'party', downed ? 0 : 75, downed), active: false };
+	const monster = {
+		...combatant(ID.monster, 'enemy', downed ? 100 : 0, !downed),
+		active: false
+	};
+	const combatants = { [ID.hero]: hero, [ID.monster]: monster };
 	return {
 		stateVersion: 'readiness-combat-state-v1',
 		seed: 'd'.repeat(64),
 		attemptId: ID.attempt,
 		tick: 8,
-		combatants: {
-			[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 75, downed),
-			[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
-		},
+		combatants,
 		actorContexts: {},
 		terrain: { width: 8, height: 8, blockedTiles: [], features: [] },
 		visibleTelegraphs: [],
 		scheduledEffects: [],
 		safety: { ticksAdvanced: 8, eventsEmitted: 1, noProgressCycles: 0 },
+		outcomeEvidence: {
+			evidenceVersion: 'readiness-outcome-evidence-v1',
+			attemptId: ID.attempt,
+			partyHeroes: {
+				[ID.hero]: {
+					startingHealth: 100,
+					startingMana: 20,
+					currentHealth: hero.resources.health.current,
+					currentMana: hero.resources.mana.current,
+					damageTaken: downed ? 100 : 40,
+					downed
+				}
+			},
+			resolvedEvents: [practiceEvent()],
+			emittedEventIds: [ID.event],
+			eventsEmitted: 1,
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			terminalDirective: null,
+			authoredDeadline: null
+		},
 		status: 'active',
 		result: null
 	};
@@ -180,33 +205,17 @@ describe('common combat outcomes', () => {
 		});
 		expect(result.claims).not.toHaveLength(0);
 	});
-	it('requires explicit accumulated engine evidence for an ordinary readiness terminal', () => {
-		expect(() =>
-			finalizeReadinessCombatOutcome({ state: activeState(), termination: { kind: 'victory' } })
-		).toThrow(/evidence/iu);
+	it.each([
+		['victory', false],
+		['party-downed', true]
+	] as const)('finalizes canonical %s state through the common manifest', (outcome, downed) => {
+		const finalized = finalizeReadinessCombatOutcome({ state: activeState(downed) });
+
+		expect(finalized.state.status).toBe('complete');
+		expect(finalized.state.result).toStrictEqual(finalized.result);
+		expect(finalized.result.outcome).toBe(outcome);
+		expect(finalized.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
 	});
-
-	it.each(['victory', 'extraction', 'retreat', 'party-downed', 'deadline'] as const)(
-		'finalizes the actual readiness state path for %s through the common manifest',
-		(outcome) => {
-			const downed = outcome === 'party-downed';
-			const finalized = finalizeReadinessCombatOutcome({
-				state: activeState(downed),
-				termination: { kind: outcome },
-				resolvedEvents: [practiceEvent()],
-				engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 40 },
-				engineRecoveredCombatantIds: [],
-				securedLoot: [],
-				objectiveStates: [],
-				decisiveEventIds: [ID.event]
-			});
-
-			expect(finalized.state.status).toBe('complete');
-			expect(finalized.state.result).toStrictEqual(finalized.result);
-			expect(finalized.result.outcome).toBe(outcome);
-			expect(finalized.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
-		}
-	);
 	it.each(['victory', 'extraction', 'retreat', 'party-downed', 'deadline', 'safety-stop'] as const)(
 		'emits a strict common result for %s in both combat modes',
 		(outcome) => {

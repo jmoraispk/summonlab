@@ -21,6 +21,70 @@ export const CombatClaimReceiptSchema = z
 
 export type CombatClaimReceipt = z.infer<typeof CombatClaimReceiptSchema>;
 
+export const CombatClaimTransitionCheckpointSchema = z
+	.object({
+		checkpointVersion: z.literal('combat-claim-transition-checkpoint-v1'),
+		checkpointId: z.string().uuid(),
+		attemptId: z.string().uuid(),
+		beforeMissionHash: HashSchema,
+		beforeProgressionHash: HashSchema,
+		resultHash: HashSchema,
+		claimManifestHash: HashSchema,
+		authorityHash: HashSchema,
+		afterMissionHash: HashSchema,
+		afterProgressionHash: HashSchema,
+		receiptManifestHash: HashSchema
+	})
+	.strict();
+
+export type CombatClaimTransitionCheckpoint = z.infer<typeof CombatClaimTransitionCheckpointSchema>;
+
+type UnsignedCombatClaimTransitionCheckpoint = Omit<
+	CombatClaimTransitionCheckpoint,
+	'checkpointId'
+>;
+
+function combatClaimTransitionCheckpointId(
+	checkpoint: UnsignedCombatClaimTransitionCheckpoint
+): string {
+	return deterministicUuid(
+		`${checkpoint.attemptId}:combat-claim-transition:${hashCanonical(checkpoint)}`
+	);
+}
+
+export function parseCombatClaimTransitionCheckpoint(
+	input: unknown
+): CombatClaimTransitionCheckpoint {
+	const checkpoint = CombatClaimTransitionCheckpointSchema.parse(input);
+	const unsigned: UnsignedCombatClaimTransitionCheckpoint = {
+		checkpointVersion: checkpoint.checkpointVersion,
+		attemptId: checkpoint.attemptId,
+		beforeMissionHash: checkpoint.beforeMissionHash,
+		beforeProgressionHash: checkpoint.beforeProgressionHash,
+		resultHash: checkpoint.resultHash,
+		claimManifestHash: checkpoint.claimManifestHash,
+		authorityHash: checkpoint.authorityHash,
+		afterMissionHash: checkpoint.afterMissionHash,
+		afterProgressionHash: checkpoint.afterProgressionHash,
+		receiptManifestHash: checkpoint.receiptManifestHash
+	};
+	if (checkpoint.checkpointId !== combatClaimTransitionCheckpointId(unsigned)) {
+		throw new Error(
+			`Combat claim transition checkpoint identity is invalid: ${checkpoint.attemptId}`
+		);
+	}
+	return checkpoint;
+}
+
+export function combatClaimTransitionCheckpoint(
+	input: UnsignedCombatClaimTransitionCheckpoint
+): CombatClaimTransitionCheckpoint {
+	return parseCombatClaimTransitionCheckpoint({
+		...input,
+		checkpointId: combatClaimTransitionCheckpointId(input)
+	});
+}
+
 function receiptIdFor(
 	idempotencyKey: string,
 	owner: CombatClaimReceipt['owner'],

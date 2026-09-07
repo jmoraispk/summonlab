@@ -26,6 +26,15 @@ or permanent-loss state.
 - Every readiness safety constructor and ordinary readiness completion uses one finalizer. The
   frozen V25 legacy runner is unchanged; only the additive V26 orchestration boundary adapts its
   terminal evidence into the common result.
+- Each V26 readiness state carries private, schema-bound accumulated outcome evidence. Applied,
+  canceled, and scheduled events update that evidence before any terminal result is derived; it is
+  included in the canonical state hash and excluded from every provider view.
+- An engine-authorized terminal directive binds extraction or retreat to the exact attempt, tick,
+  and pre-directive state hash. Provider/model text cannot author a terminal outcome.
+- Claim application returns one manifest-level atomic transition checkpoint. It binds the exact
+  before/after hashes of both owner projections, canonical result/authority/claim-manifest hashes,
+  and the complete receipt manifest. Duplicate application authenticates the checkpoint and every
+  receipt, then requires both current owner projections to equal the recorded post-state hashes.
 
 ## TDD evidence
 
@@ -47,14 +56,22 @@ or permanent-loss state.
   separately supplied trusted terminal evidence and re-derived the complete canonical result.
 - The first review-fix full engine run caught a mission→combat domain import, which was moved back
   to the orchestration authentication boundary.
+- Second-review REDs proved that six valid receipts could be retained while their corresponding
+  owner effects were deleted, because no manifest-level atomic checkpoint authenticated the full
+  before/after projections.
+- Readiness safety finalization after a prior action discarded the action's resource, harm,
+  emitted-event, and practice evidence; ordinary terminal causes were exercised only through a
+  helper instead of the production post-batch path.
+- Contract REDs rejected the new private accumulator until it was required and cross-validated
+  against canonical combatants, event counters, and completed-result evidence.
 
 ### GREEN
 
-- Review-focused outcome/readiness/window/owner/engine integration: 142/142.
-- Contract focused rules/result coverage: 30/30.
+- Second-review focused engine coverage: 117/117.
+- Second-review focused contract coverage: 44/44.
 - Content focused rules coverage: 2/2.
 - Contracts full: 146/146; content full: 66/66.
-- Engine full after review fixes: 441/441.
+- Engine full after second-review fixes: 452/452.
 - Public API, replay, and module boundaries: 14/14.
 - Combat balance: 10,000 trials per matchup, rules hash
   `13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`.
@@ -78,6 +95,13 @@ or permanent-loss state.
   output Health/downed/lost/recovered invariants are asserted after both pure projections;
 - ordinary readiness completion requires explicit accumulated engine evidence; actual readiness
   safety stops and the V26 legacy adapter never produce `claims: []`.
+- production post-batch arbitration detects victory, total-party downing, authored deadlines, and
+  authenticated extraction/retreat directives, and sends all of them through the same finalizer;
+- a safety stop after prior applied action preserves exact final Health (including the 70/100
+  regression), harm, four emitted events, and legitimate skill-practice evidence;
+- altered/deleted owner effects cannot be hidden behind otherwise valid per-claim receipts: exact
+  post-projection hashes and the manifest-level checkpoint reject the entire duplicate before any
+  owner transition.
 
 ## Assumptions
 
@@ -87,3 +111,5 @@ or permanent-loss state.
   stop never creates that permanent-loss consequence in this transition.
 - The ephemeral projections are harnessable now and are intended to be atomically applied to the
   canonical V26 owners by the later orchestration task.
+- Persistence of mission-authored extraction/retreat commands belongs to the later V26
+  orchestration task; Task 6 consumes only the strict engine-authorized, state-bound directive.

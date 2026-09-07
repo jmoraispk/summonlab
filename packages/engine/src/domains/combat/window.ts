@@ -512,7 +512,7 @@ function invalidDecisionContextResult(state: ReadinessCombatStateV1): CombatAdva
 	};
 	const { result } = finalizeReadinessCombatOutcome({
 		state,
-		termination: { kind: 'safety-stop', safetyStop }
+		safetyStop
 	});
 	return deepFreeze(CombatAdvanceSchema.parse({ kind: 'combat-result', result }));
 }

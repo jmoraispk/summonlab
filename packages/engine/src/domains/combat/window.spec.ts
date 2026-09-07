@@ -8,6 +8,7 @@ import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical } from '../../hash.js';
+import { createReadinessCombatOutcomeEvidence } from './outcome.js';
 import {
 	advanceUntilDecision,
 	assembleCombatDecisionWindow,
@@ -55,17 +56,18 @@ function combatant(
 }
 
 function state(): ReadinessCombatStateV1 {
+	const combatants = {
+		[ID.hiddenMonster]: combatant(ID.hiddenMonster, { x: 6, y: 6 }, 'enemy', 0),
+		[ID.ally]: combatant(ID.ally, { x: 2, y: 1 }, 'party'),
+		[ID.visibleMonster]: combatant(ID.visibleMonster, { x: 4, y: 1 }, 'enemy', 0),
+		[ID.hero]: combatant(ID.hero, { x: 1, y: 1 }, 'party')
+	};
 	return {
 		stateVersion: 'readiness-combat-state-v1',
 		seed: '5'.repeat(64),
 		attemptId: ID.attempt,
 		tick: 7,
-		combatants: {
-			[ID.hiddenMonster]: combatant(ID.hiddenMonster, { x: 6, y: 6 }, 'enemy', 0),
-			[ID.ally]: combatant(ID.ally, { x: 2, y: 1 }, 'party'),
-			[ID.visibleMonster]: combatant(ID.visibleMonster, { x: 4, y: 1 }, 'enemy', 0),
-			[ID.hero]: combatant(ID.hero, { x: 1, y: 1 }, 'party')
-		},
+		combatants,
 		actorContexts: contexts(),
 		terrain: {
 			width: 8,
@@ -91,6 +93,7 @@ function state(): ReadinessCombatStateV1 {
 		],
 		scheduledEffects: [],
 		safety: { ticksAdvanced: 7, eventsEmitted: 0, noProgressCycles: 0 },
+		outcomeEvidence: createReadinessCombatOutcomeEvidence({ attemptId: ID.attempt, combatants }),
 		status: 'active',
 		result: null
 	};
@@ -271,6 +274,23 @@ function contexts(): Readonly<Record<string, CombatActorContextState>> {
 }
 
 describe('frozen combat decision windows', () => {
+	it('state-hash binds private outcome evidence without exposing it to provider views', () => {
+		const canonical = state();
+		const changed = structuredClone(canonical);
+		changed.outcomeEvidence.partyHeroes[ID.hero]!.startingHealth -= 1;
+		const first = advanceUntilDecision(canonical, COMBAT_RULES_V1);
+		const second = advanceUntilDecision(changed, COMBAT_RULES_V1);
+		expect(first.kind).toBe('decision-window');
+		expect(second.kind).toBe('decision-window');
+		if (first.kind !== 'decision-window' || second.kind !== 'decision-window') return;
+		expect(second.snapshot.stateHash).not.toBe(first.snapshot.stateHash);
+		for (const view of [...first.views, ...second.views]) {
+			const providerJson = JSON.stringify(view);
+			expect(providerJson).not.toContain('outcomeEvidence');
+			expect(providerJson).not.toContain('damageTaken');
+			expect(providerJson).not.toContain('resolvedEvents');
+		}
+	});
 	it('builds one canonical snapshot and distinct provider-safe views for a same-tick cohort', () => {
 		const arranged = state();
 		const inputHash = hashCanonical(arranged);
@@ -322,6 +342,7 @@ describe('frozen combat decision windows', () => {
 	it('gives a zero-Mana ready actor only its authored affordable zero-cost action', () => {
 		const arranged = state();
 		arranged.combatants[ID.hero]!.resources.mana.current = 0;
+		arranged.outcomeEvidence.partyHeroes[ID.hero]!.currentMana = 0;
 		arranged.combatants[ID.ally]!.readiness = {
 			value: 0,
 			exactNumerator: 0,

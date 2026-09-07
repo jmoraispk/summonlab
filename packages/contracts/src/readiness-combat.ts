@@ -780,7 +780,7 @@ export const CombatOutcomeClaimEvidenceSchema = z
 			EntityIdSchema,
 			z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
 		),
-		resolvedEvents: z.array(CombatResolvedEventSchema).max(10_000),
+		resolvedEvents: z.array(CombatResolvedEventSchema).max(100_000),
 		engineRecoveredCombatantIds: z.array(EntityIdSchema).max(100),
 		securedLoot: z
 			.array(
@@ -1118,6 +1118,124 @@ function validateActorContexts(
 	}
 }
 
+const ReadinessOutcomePartyHeroEvidenceSchema = z
+	.object({
+		startingHealth: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		startingMana: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		currentHealth: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		currentMana: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		damageTaken: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		downed: z.boolean()
+	})
+	.strict();
+
+const ReadinessSecuredLootSchema = z
+	.object({
+		ownerId: EntityIdSchema,
+		lootId: z.string().trim().min(1).max(120),
+		quantity: z.number().int().positive()
+	})
+	.strict();
+
+const ReadinessObjectiveStateSchema = z
+	.object({
+		objectiveId: z.string().trim().min(1).max(120),
+		completed: z.boolean()
+	})
+	.strict();
+
+const ReadinessTerminalDirectiveSchema = z
+	.object({
+		directiveVersion: z.literal('readiness-terminal-directive-v1'),
+		directiveId: EntityIdSchema,
+		attemptId: EntityIdSchema,
+		kind: z.enum(['extraction', 'retreat']),
+		authorizedAtTick: TickSchema,
+		authorizedStateHash: StateHashSchema,
+		engineRecoveredCombatantIds: z.array(EntityIdSchema).max(100),
+		securedLoot: z.array(ReadinessSecuredLootSchema).max(1_000),
+		objectiveStates: z.array(ReadinessObjectiveStateSchema).max(1_000)
+	})
+	.strict();
+
+const ReadinessAuthoredDeadlineSchema = z
+	.object({
+		deadlineVersion: z.literal('readiness-authored-deadline-v1'),
+		deadlineId: EntityIdSchema,
+		attemptId: EntityIdSchema,
+		deadlineTick: TickSchema
+	})
+	.strict();
+
+const ReadinessCombatOutcomeEvidenceV1Schema = z
+	.object({
+		evidenceVersion: z.literal('readiness-outcome-evidence-v1'),
+		attemptId: EntityIdSchema,
+		partyHeroes: z.record(EntityIdSchema, ReadinessOutcomePartyHeroEvidenceSchema),
+		resolvedEvents: z.array(CombatResolvedEventSchema).max(100_000),
+		emittedEventIds: z.array(EntityIdSchema).max(100_000),
+		eventsEmitted: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		engineRecoveredCombatantIds: z.array(EntityIdSchema).max(100),
+		securedLoot: z.array(ReadinessSecuredLootSchema).max(1_000),
+		objectiveStates: z.array(ReadinessObjectiveStateSchema).max(1_000),
+		terminalDirective: ReadinessTerminalDirectiveSchema.nullable(),
+		authoredDeadline: ReadinessAuthoredDeadlineSchema.nullable()
+	})
+	.strict()
+	.superRefine((evidence, context) => {
+		const uniqueLists = [
+			['resolvedEvents', evidence.resolvedEvents.map((event) => event.eventId)],
+			['emittedEventIds', evidence.emittedEventIds],
+			['engineRecoveredCombatantIds', evidence.engineRecoveredCombatantIds],
+			['securedLoot', evidence.securedLoot.map((loot) => `${loot.ownerId}:${loot.lootId}`)],
+			['objectiveStates', evidence.objectiveStates.map((objective) => objective.objectiveId)]
+		] as const;
+		for (const [path, values] of uniqueLists) {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({ code: 'custom', path: [path], message: `${path} must be unique` });
+			}
+		}
+		const emittedIds = new Set(evidence.emittedEventIds);
+		if (
+			evidence.emittedEventIds.length > evidence.eventsEmitted ||
+			evidence.resolvedEvents.some(
+				(event) => event.attemptId !== evidence.attemptId || !emittedIds.has(event.eventId)
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['emittedEventIds'],
+				message: 'Outcome evidence event identities must bind to its attempt and emitted count'
+			});
+		}
+		if (
+			evidence.terminalDirective &&
+			(evidence.terminalDirective.attemptId !== evidence.attemptId ||
+				!structurallyEqual(
+					evidence.engineRecoveredCombatantIds,
+					evidence.terminalDirective.engineRecoveredCombatantIds
+				) ||
+				!structurallyEqual(evidence.securedLoot, evidence.terminalDirective.securedLoot) ||
+				!structurallyEqual(evidence.objectiveStates, evidence.terminalDirective.objectiveStates))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['terminalDirective'],
+				message: 'Terminal directive evidence must be exact and attempt-bound'
+			});
+		}
+		if (
+			evidence.authoredDeadline?.attemptId !== undefined &&
+			evidence.authoredDeadline.attemptId !== evidence.attemptId
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['authoredDeadline'],
+				message: 'Authored deadline must belong to the evidence attempt'
+			});
+		}
+	});
+
 export const ReadinessCombatStateV1Schema = z
 	.object({
 		stateVersion: ReadinessCombatStateVersionSchema,
@@ -1130,6 +1248,7 @@ export const ReadinessCombatStateV1Schema = z
 		visibleTelegraphs: z.array(CombatTelegraphSchema).max(1_000),
 		scheduledEffects: z.array(ScheduledCombatEffectSchema).max(10_000),
 		safety: CombatSafetyCountersSchema,
+		outcomeEvidence: ReadinessCombatOutcomeEvidenceV1Schema,
 		status: z.enum(['active', 'complete']),
 		result: CombatResultSchema.nullable()
 	})
@@ -1137,6 +1256,53 @@ export const ReadinessCombatStateV1Schema = z
 	.superRefine((state, context) => {
 		validateCombatantMap(state.combatants, state.terrain, context, state.tick);
 		validateActorContexts(state, context);
+		const partyHeroIds = Object.values(state.combatants)
+			.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+			.map((combatant) => combatant.combatantId)
+			.sort();
+		if (
+			state.outcomeEvidence.attemptId !== state.attemptId ||
+			!structurallyEqual(Object.keys(state.outcomeEvidence.partyHeroes).sort(), partyHeroIds) ||
+			state.outcomeEvidence.eventsEmitted !== state.safety.eventsEmitted
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['outcomeEvidence'],
+				message: 'Outcome evidence must exactly bind the readiness state and party'
+			});
+		}
+		for (const heroId of partyHeroIds) {
+			const hero = state.combatants[heroId]!;
+			const evidence = state.outcomeEvidence.partyHeroes[heroId];
+			if (
+				!evidence ||
+				evidence.currentHealth !== hero.resources.health.current ||
+				evidence.currentMana !== hero.resources.mana.current ||
+				evidence.downed !== hero.downed ||
+				evidence.startingHealth > hero.resources.health.maximum ||
+				evidence.startingMana > hero.resources.mana.maximum
+			) {
+				context.addIssue({
+					code: 'custom',
+					path: ['outcomeEvidence', 'partyHeroes', heroId],
+					message: 'Party outcome evidence must match canonical resources and life state'
+				});
+			}
+		}
+		const directive = state.outcomeEvidence.terminalDirective;
+		if (
+			directive &&
+			(directive.authorizedAtTick > state.tick ||
+				directive.engineRecoveredCombatantIds.some(
+					(heroId) => !partyHeroIds.includes(heroId) || state.combatants[heroId]?.downed !== true
+				))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['outcomeEvidence', 'terminalDirective'],
+				message: 'Terminal directive timing and recovery must bind canonical party state'
+			});
+		}
 		if (state.status === 'active') {
 			for (const [combatantId, combatant] of Object.entries(state.combatants)) {
 				if (!combatant.active || combatant.downed) continue;
@@ -1209,6 +1375,44 @@ export const ReadinessCombatStateV1Schema = z
 				code: 'custom',
 				path: ['result', 'finalCombatants'],
 				message: 'Completed-state combatants must match the combat result final combatants'
+			});
+		}
+		if (
+			state.result !== null &&
+			(!structurallyEqual(
+				state.result.claimEvidence.partyHeroIds,
+				Object.keys(state.outcomeEvidence.partyHeroes).sort()
+			) ||
+				!structurallyEqual(
+					state.result.claimEvidence.engineDamageTakenByHeroId,
+					Object.fromEntries(
+						Object.entries(state.outcomeEvidence.partyHeroes).map(([heroId, evidence]) => [
+							heroId,
+							evidence.damageTaken
+						])
+					)
+				) ||
+				!structurallyEqual(
+					state.result.claimEvidence.resolvedEvents,
+					state.outcomeEvidence.resolvedEvents
+				) ||
+				!structurallyEqual(
+					state.result.claimEvidence.engineRecoveredCombatantIds,
+					state.outcomeEvidence.engineRecoveredCombatantIds
+				) ||
+				!structurallyEqual(
+					state.result.claimEvidence.securedLoot,
+					state.outcomeEvidence.securedLoot
+				) ||
+				!structurallyEqual(
+					state.result.claimEvidence.objectiveStates,
+					state.outcomeEvidence.objectiveStates
+				))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['result', 'claimEvidence'],
+				message: 'Completed result evidence must equal the private canonical accumulator'
 			});
 		}
 	});
@@ -1311,6 +1515,9 @@ export type CombatResult = z.infer<typeof CombatResultSchema>;
 export type CombatOutcomeClaimEvidence = z.infer<typeof CombatOutcomeClaimEvidenceSchema>;
 export type CombatSafetyStop = z.infer<typeof CombatSafetyStopSchema>;
 export type CombatWindowSnapshot = z.infer<typeof CombatWindowSnapshotSchema>;
+export type ReadinessCombatOutcomeEvidenceV1 = z.infer<
+	typeof ReadinessCombatOutcomeEvidenceV1Schema
+>;
 export type ReadinessCombatStateV1 = z.infer<typeof ReadinessCombatStateV1Schema>;
 export type VisibleCombatantDecisionState = z.infer<typeof VisibleCombatantDecisionStateSchema>;
 

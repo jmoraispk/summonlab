@@ -336,6 +336,21 @@ function v26ReadinessStateFromV24Fixture() {
 			}
 		])
 	);
+	const partyHeroes = Object.fromEntries(
+		Object.values(combatants)
+			.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+			.map((combatant) => [
+				combatant.combatantId,
+				{
+					startingHealth: combatant.resources.health.current,
+					startingMana: combatant.resources.mana.current,
+					currentHealth: combatant.resources.health.current,
+					currentMana: combatant.resources.mana.current,
+					damageTaken: 0,
+					downed: combatant.downed
+				}
+			])
+	);
 	return {
 		...v25,
 		schemaVersion: 26,
@@ -367,6 +382,19 @@ function v26ReadinessStateFromV24Fixture() {
 						visibleTelegraphs: [],
 						scheduledEffects: [],
 						safety: { ticksAdvanced: 12, eventsEmitted: 0, noProgressCycles: 0 },
+						outcomeEvidence: {
+							evidenceVersion: 'readiness-outcome-evidence-v1',
+							attemptId: attempt.attemptId,
+							partyHeroes,
+							resolvedEvents: [],
+							emittedEventIds: [],
+							eventsEmitted: 0,
+							engineRecoveredCombatantIds: [],
+							securedLoot: [],
+							objectiveStates: [],
+							terminalDirective: null,
+							authoredDeadline: null
+						},
 						status: 'active',
 						result: null
 					}

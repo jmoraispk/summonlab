@@ -17,6 +17,12 @@ import type { z } from 'zod';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { resolveEntityRelativePosition } from './geometry.js';
+import {
+	appendReadinessResolvedEvents,
+	finalizeReadinessCombatOutcome,
+	finalizeReadinessCombatIfTerminal,
+	synchronizeReadinessOutcomeEvidence
+} from './outcome.js';
 import { purposeKeyedInteger } from './randomness.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 import {
@@ -460,7 +466,17 @@ export function applyCombatChoiceBatch(
 		!Number.isSafeInteger(nextEventsEmitted) ||
 		nextEventsEmitted > rules.readiness.safety.maximumEventsEmitted
 	) {
-		throw new Error('Combat choice batch exceeds the emitted-event safety budget');
+		const safetyStop = {
+			safetyStopVersion: 'combat-safety-stop-v1' as const,
+			reason: 'emitted-events' as const,
+			disposition: 'diagnostic' as const,
+			...preflightResult.stateAtWindow.safety
+		};
+		const terminal = finalizeReadinessCombatOutcome({
+			state: preflightResult.stateAtWindow,
+			safetyStop
+		});
+		return deepFreeze({ state: terminal.state, events: [] });
 	}
 
 	let progressive = ReadinessCombatStateV1Schema.parse(preflightResult.stateAtWindow);
@@ -549,6 +565,10 @@ export function applyCombatChoiceBatch(
 		);
 	}
 	progressive.safety.eventsEmitted = nextEventsEmitted;
+	synchronizeReadinessOutcomeEvidence(progressive);
+	appendReadinessResolvedEvents(progressive, events);
+	const terminal = finalizeReadinessCombatIfTerminal(progressive);
+	if (terminal) progressive = terminal.state;
 	return deepFreeze({
 		state: ReadinessCombatStateV1Schema.parse(progressive),
 		events: events.map((event) => CombatResolvedEventSchema.parse(event))

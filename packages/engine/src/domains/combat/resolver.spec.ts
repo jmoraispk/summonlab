@@ -8,6 +8,7 @@ import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical, sha256Hex } from '../../hash.js';
+import { createReadinessCombatOutcomeEvidence } from './outcome.js';
 import { resolveCombatAction } from './resolver.js';
 import { advanceUntilDecision } from './window.js';
 
@@ -240,6 +241,7 @@ function state(
 		visibleTelegraphs: [],
 		scheduledEffects: [],
 		safety: { ticksAdvanced: 13, eventsEmitted: 0, noProgressCycles: 0 },
+		outcomeEvidence: createReadinessCombatOutcomeEvidence({ attemptId: ID.attempt, combatants }),
 		status: 'active',
 		result: null
 	};

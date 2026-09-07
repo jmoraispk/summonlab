@@ -259,6 +259,74 @@ describe('combat claim process managers', () => {
 		);
 	});
 
+	it('rejects a duplicate whose receipts remain valid but whose owner effects were rolled back', () => {
+		const initial = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+		const combatResult = result('retreat');
+		const applied = applyResultClaims(initial, combatResult);
+		const rolledBack = {
+			...applied,
+			mission: {
+				...applied.mission,
+				harm: {},
+				loot: {},
+				objectives: {},
+				attempts: {}
+			},
+			progression: {
+				...applied.progression,
+				practiceEvidence: {}
+			}
+		};
+		const before = hashCanonical(rolledBack);
+
+		expect(() => applyResultClaims(rolledBack, combatResult)).toThrow(/checkpoint|atomic/iu);
+		expect(hashCanonical(rolledBack)).toBe(before);
+	});
+
+	it.each([
+		['pre-transition mission hash', 'beforeMissionHash'],
+		['post-transition progression hash', 'afterProgressionHash'],
+		['canonical result hash', 'resultHash'],
+		['claim manifest hash', 'claimManifestHash'],
+		['authority hash', 'authorityHash']
+	] as const)('rejects a checkpoint with the wrong %s', (_label, field) => {
+		const initial = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+		const combatResult = result('retreat');
+		const applied = applyResultClaims(initial, combatResult);
+		const poisoned = {
+			...applied,
+			checkpoint: { ...applied.checkpoint, [field]: 'f'.repeat(64) }
+		};
+
+		expect(() => applyResultClaims(poisoned, combatResult)).toThrow(/checkpoint/iu);
+	});
+
 	it('rejects a poisoned deterministic receipt before considering any claim applied', () => {
 		const combatResult = result('retreat');
 		const first = applyResultClaims(

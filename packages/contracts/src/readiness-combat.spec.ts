@@ -291,6 +291,28 @@ const state = {
 	visibleTelegraphs: [telegraph],
 	scheduledEffects: [],
 	safety: { ticksAdvanced: 12, eventsEmitted: 0, noProgressCycles: 0 },
+	outcomeEvidence: {
+		evidenceVersion: 'readiness-outcome-evidence-v1',
+		attemptId: ID.attempt,
+		partyHeroes: {
+			[ID.hero]: {
+				startingHealth: 120,
+				startingMana: 40,
+				currentHealth: 120,
+				currentMana: 40,
+				damageTaken: 0,
+				downed: false
+			}
+		},
+		resolvedEvents: [],
+		emittedEventIds: [],
+		eventsEmitted: 0,
+		engineRecoveredCombatantIds: [],
+		securedLoot: [],
+		objectiveStates: [],
+		terminalDirective: null,
+		authoredDeadline: null
+	},
 	status: 'active',
 	result: null
 } as const;
@@ -511,6 +533,10 @@ describe('readiness combat contracts', () => {
 
 	it('accepts a bounded canonical readiness state and rejects unknown state fields', () => {
 		expect(ReadinessCombatStateV1Schema.parse(state)).toStrictEqual(state);
+		const missingEvidence = Object.fromEntries(
+			Object.entries(state).filter(([key]) => key !== 'outcomeEvidence')
+		);
+		expect(ReadinessCombatStateV1Schema.safeParse(missingEvidence).success).toBe(false);
 		expect(
 			ReadinessCombatStateV1Schema.safeParse({ ...state, seed: 'provider-visible' }).success
 		).toBe(false);

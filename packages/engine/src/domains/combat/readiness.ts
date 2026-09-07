@@ -10,7 +10,12 @@ import {
 import type { ZodError } from 'zod';
 
 import { healthRegeneration, manaRegeneration } from './capability.js';
-import { finalizeReadinessCombatOutcome } from './outcome.js';
+import {
+	appendReadinessEmittedEventIds,
+	finalizeReadinessCombatOutcome,
+	recordReadinessOutcomeDamage,
+	synchronizeReadinessOutcomeEvidence
+} from './outcome.js';
 
 export type ReadyCohortAdvance =
 	| Readonly<{
@@ -83,7 +88,7 @@ function safetyResult(
 	};
 	const finalized = finalizeReadinessCombatOutcome({
 		state,
-		termination: { kind: 'safety-stop', safetyStop }
+		safetyStop
 	});
 	return { kind: 'combat-result', ...finalized };
 }
@@ -115,6 +120,9 @@ function applyScheduledEffect(
 				return false;
 			}
 			resource.current = effect.after;
+			if (effect.resource === 'health' && effect.delta < 0) {
+				recordReadinessOutcomeDamage(state, effect.combatantId, -effect.delta);
+			}
 			if (effect.resource === 'health' && effect.delta < 0) {
 				combatant.lastDamagedAtTick = state.tick;
 			}
@@ -156,6 +164,7 @@ function applyScheduledEffect(
 				combatant.conditions.splice(conditionIndex, 1);
 			}
 		} else {
+			recordReadinessOutcomeDamage(state, effect.combatantId, combatant.resources.health.current);
 			if (combatant.resources.health.current > 0) combatant.lastDamagedAtTick = state.tick;
 			combatant.resources.health.current = 0;
 			combatant.downed = true;
@@ -200,6 +209,11 @@ function resolveDueScheduledEffects(
 			(effect) => !dueIds.has(effect.scheduledEffectId)
 		);
 		candidate.safety.eventsEmitted = nextEventsEmitted;
+		appendReadinessEmittedEventIds(
+			candidate,
+			due.map((effect) => effect.scheduledEffectId)
+		);
+		synchronizeReadinessOutcomeEvidence(candidate);
 	}
 	const parsed = ReadinessCombatStateV1Schema.safeParse(candidate);
 	return parsed.success
@@ -272,6 +286,7 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
 		combatant.readiness.exactNumerator = exactNumerator;
 		combatant.readiness.value = Math.min(rules.readiness.threshold, exactNumerator);
 	}
+	synchronizeReadinessOutcomeEvidence(state);
 	return true;
 }
 

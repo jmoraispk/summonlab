@@ -23,6 +23,7 @@ import {
 import { hashCanonical } from '../../hash.js';
 import { armourReduction } from './capability.js';
 import { positionIsAtFacingRelation } from './geometry.js';
+import { recordReadinessOutcomeDamage, synchronizeReadinessOutcomeEvidence } from './outcome.js';
 import { purposeKeyedInteger } from './randomness.js';
 import { advanceUntilDecision } from './window.js';
 
@@ -468,6 +469,7 @@ function frozenResolution(
 	hitContest: CombatHitContest | null,
 	calculation: CombatDamageCalculation | null
 ): CombatActionResolution {
+	synchronizeReadinessOutcomeEvidence(state);
 	return Object.freeze({
 		state: ReadinessCombatStateV1Schema.parse(state),
 		effects: Object.freeze(effects),
@@ -603,6 +605,7 @@ export function resolveBoundCombatAction(input: {
 	if (manaEffect) effects.push(manaEffect);
 	if (calculation.finalDamage > 0) {
 		target.resources.health.current = healthAfter;
+		recordReadinessOutcomeDamage(state, target.combatantId, calculation.finalDamage);
 		target.lastDamagedAtTick = state.tick;
 		effects.push({
 			kind: 'resource',

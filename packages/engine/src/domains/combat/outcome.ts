@@ -7,6 +7,7 @@ import {
 	type CombatResolvedEvent,
 	type CombatResult,
 	type CombatSafetyStop,
+	type ReadinessCombatOutcomeEvidenceV1,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
@@ -63,13 +64,170 @@ export interface EmitCombatOutcomeInput {
 
 export interface FinalizeReadinessCombatInput {
 	readonly state: ReadinessCombatStateV1;
-	readonly termination: CombatTermination;
+	readonly safetyStop?: CombatSafetyStop;
+}
+
+export type ReadinessTerminalDirective = NonNullable<
+	ReadinessCombatOutcomeEvidenceV1['terminalDirective']
+>;
+
+export interface AuthorizeReadinessTerminalDirectiveInput {
+	readonly state: ReadinessCombatStateV1;
+	readonly directive: ReadinessTerminalDirective;
+}
+
+export function createReadinessCombatOutcomeEvidence(input: {
+	readonly attemptId: string;
+	readonly combatants: ReadinessCombatStateV1['combatants'];
+	readonly eventsEmitted?: number;
+	readonly emittedEventIds?: readonly string[];
 	readonly resolvedEvents?: readonly CombatResolvedEvent[];
-	readonly engineDamageTakenByHeroId?: Readonly<Record<string, number>>;
+	readonly authoredDeadline?: ReadinessCombatOutcomeEvidenceV1['authoredDeadline'];
+}): ReadinessCombatOutcomeEvidenceV1 {
+	return {
+		evidenceVersion: 'readiness-outcome-evidence-v1',
+		attemptId: input.attemptId,
+		partyHeroes: Object.fromEntries(
+			Object.values(input.combatants)
+				.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+				.sort((left, right) => left.combatantId.localeCompare(right.combatantId))
+				.map((combatant) => [
+					combatant.combatantId,
+					{
+						startingHealth: combatant.resources.health.current,
+						startingMana: combatant.resources.mana.current,
+						currentHealth: combatant.resources.health.current,
+						currentMana: combatant.resources.mana.current,
+						damageTaken: 0,
+						downed: combatant.downed
+					}
+				])
+		),
+		resolvedEvents: structuredClone([...(input.resolvedEvents ?? [])]),
+		emittedEventIds: [...(input.emittedEventIds ?? [])],
+		eventsEmitted: input.eventsEmitted ?? 0,
+		engineRecoveredCombatantIds: [],
+		securedLoot: [],
+		objectiveStates: [],
+		terminalDirective: null,
+		authoredDeadline: input.authoredDeadline ?? null
+	};
+}
+
+/** Keeps private outcome evidence synchronized with canonical party resources and downing. */
+export function synchronizeReadinessOutcomeEvidence(state: ReadinessCombatStateV1): void {
+	for (const [heroId, evidence] of Object.entries(state.outcomeEvidence.partyHeroes)) {
+		const hero = state.combatants[heroId];
+		if (!hero) throw new Error(`Readiness outcome evidence lacks party hero ${heroId}`);
+		evidence.currentHealth = hero.resources.health.current;
+		evidence.currentMana = hero.resources.mana.current;
+		evidence.downed = hero.downed;
+	}
+}
+
+export function recordReadinessOutcomeDamage(
+	state: ReadinessCombatStateV1,
+	heroId: string,
+	damage: number
+): void {
+	const evidence = state.outcomeEvidence.partyHeroes[heroId];
+	if (!evidence || damage === 0) return;
+	const next = evidence.damageTaken + damage;
+	if (!Number.isSafeInteger(next) || damage < 0) {
+		throw new Error(`Readiness outcome damage evidence overflowed for ${heroId}`);
+	}
+	evidence.damageTaken = next;
+}
+
+export function appendReadinessResolvedEvents(
+	state: ReadinessCombatStateV1,
+	events: readonly CombatResolvedEvent[]
+): void {
+	appendReadinessEmittedEventIds(
+		state,
+		events.map((event) => event.eventId)
+	);
+	for (const event of events) {
+		if (event.attemptId !== state.attemptId) {
+			throw new Error(
+				'Resolved combat evidence is stale, duplicated, or belongs to another attempt'
+			);
+		}
+		state.outcomeEvidence.resolvedEvents.push(structuredClone(event));
+	}
+	synchronizeReadinessOutcomeEvidence(state);
+}
+
+export function appendReadinessEmittedEventIds(
+	state: ReadinessCombatStateV1,
+	eventIds: readonly string[]
+): void {
+	const knownIds = new Set(state.outcomeEvidence.emittedEventIds);
+	for (const eventId of eventIds) {
+		if (knownIds.has(eventId)) throw new Error('Readiness emitted event evidence is duplicated');
+		knownIds.add(eventId);
+		state.outcomeEvidence.emittedEventIds.push(eventId);
+	}
+	state.outcomeEvidence.eventsEmitted = state.safety.eventsEmitted;
+}
+
+/**
+ * Consumes a mission-engine-authored directive bound to the exact active readiness state. Provider
+ * output has no path to this type; command/event persistence is owned by the later V26 seam.
+ */
+export function authorizeReadinessTerminalDirective(
+	input: AuthorizeReadinessTerminalDirectiveInput
+): ReadinessCombatStateV1 {
+	const state = ReadinessCombatStateV1Schema.parse(input.state);
+	if (state.status !== 'active' || state.outcomeEvidence.terminalDirective !== null) {
+		throw new Error('Readiness terminal directive requires an active unrequested combat');
+	}
+	const directive = input.directive;
+	const expectedStateHash = hashCanonical(state);
+	const expectedDirectiveId = deterministicUuid(
+		`${state.attemptId}:readiness-terminal:${directive.kind}:${state.tick}:${expectedStateHash}`
+	);
+	if (
+		directive.attemptId !== state.attemptId ||
+		directive.authorizedAtTick !== state.tick ||
+		directive.authorizedStateHash !== expectedStateHash ||
+		directive.directiveId !== expectedDirectiveId
+	) {
+		throw new Error('Readiness terminal directive is not bound to the canonical engine state');
+	}
+	const candidate = structuredClone(state);
+	candidate.outcomeEvidence = {
+		...candidate.outcomeEvidence,
+		engineRecoveredCombatantIds: [...directive.engineRecoveredCombatantIds],
+		securedLoot: structuredClone(directive.securedLoot),
+		objectiveStates: structuredClone(directive.objectiveStates),
+		terminalDirective: directive
+	};
+	return deepFreeze(ReadinessCombatStateV1Schema.parse(candidate));
+}
+
+export function readinessTerminalDirective(input: {
+	readonly state: ReadinessCombatStateV1;
+	readonly kind: ReadinessTerminalDirective['kind'];
 	readonly engineRecoveredCombatantIds?: readonly string[];
 	readonly securedLoot?: readonly SecuredCombatLoot[];
 	readonly objectiveStates?: readonly CombatObjectiveState[];
-	readonly decisiveEventIds?: readonly string[];
+}): ReadinessTerminalDirective {
+	const state = ReadinessCombatStateV1Schema.parse(input.state);
+	const authorizedStateHash = hashCanonical(state);
+	return {
+		directiveVersion: 'readiness-terminal-directive-v1',
+		directiveId: deterministicUuid(
+			`${state.attemptId}:readiness-terminal:${input.kind}:${state.tick}:${authorizedStateHash}`
+		),
+		attemptId: state.attemptId,
+		kind: input.kind,
+		authorizedAtTick: state.tick,
+		authorizedStateHash,
+		engineRecoveredCombatantIds: [...(input.engineRecoveredCombatantIds ?? [])],
+		securedLoot: structuredClone([...(input.securedLoot ?? [])]),
+		objectiveStates: structuredClone([...(input.objectiveStates ?? [])])
+	};
 }
 
 function assertUnique(values: readonly string[], label: string): void {
@@ -278,48 +436,90 @@ export function authenticateCombatResult(
 }
 
 /** The sole readiness-kernel terminal transition for ordinary and safety outcomes. */
+function readinessOrdinaryTermination(state: ReadinessCombatStateV1): CombatTermination | null {
+	const partyHeroIds = Object.keys(state.outcomeEvidence.partyHeroes);
+	if (partyHeroIds.every((heroId) => state.combatants[heroId]?.downed === true)) {
+		return { kind: 'party-downed' };
+	}
+	const opponents = Object.values(state.combatants).filter(
+		(combatant) => combatant.teamId !== 'party'
+	);
+	if (
+		opponents.length > 0 &&
+		opponents.every((combatant) => combatant.downed || !combatant.active)
+	) {
+		return { kind: 'victory' };
+	}
+	if (state.outcomeEvidence.terminalDirective) {
+		return { kind: state.outcomeEvidence.terminalDirective.kind };
+	}
+	if (
+		state.outcomeEvidence.authoredDeadline &&
+		state.tick >= state.outcomeEvidence.authoredDeadline.deadlineTick
+	) {
+		return { kind: 'deadline' };
+	}
+	return null;
+}
+
+export function finalizeReadinessCombatIfTerminal(
+	stateInput: ReadinessCombatStateV1
+): ReturnType<typeof finalizeReadinessCombatOutcome> | null {
+	const state = ReadinessCombatStateV1Schema.parse(stateInput);
+	if (state.status !== 'active' || readinessOrdinaryTermination(state) === null) return null;
+	return finalizeReadinessCombatOutcome({ state });
+}
+
 export function finalizeReadinessCombatOutcome(input: FinalizeReadinessCombatInput): Readonly<{
 	state: ReadinessCombatStateV1;
 	result: CombatResult;
 }> {
-	const state = input.state;
+	const state = input.safetyStop
+		? structuredClone(input.state)
+		: ReadinessCombatStateV1Schema.parse(input.state);
 	if (state.status !== 'active' || state.result !== null) {
 		throw new Error('Only an active readiness combat can be finalized');
 	}
-	if (
-		input.termination.kind !== 'safety-stop' &&
-		[
-			input.resolvedEvents,
-			input.engineDamageTakenByHeroId,
-			input.engineRecoveredCombatantIds,
-			input.securedLoot,
-			input.objectiveStates,
-			input.decisiveEventIds
-		].some((evidence) => evidence === undefined)
-	) {
-		throw new Error('Ordinary readiness completion requires explicit accumulated engine evidence');
-	}
-	const partyHeroIds = Object.values(state.combatants)
-		.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
-		.map((combatant) => combatant.combatantId)
-		.sort((left, right) => left.localeCompare(right));
-	const damage = Object.fromEntries(
-		partyHeroIds.map((heroId) => [heroId, input.engineDamageTakenByHeroId?.[heroId] ?? 0])
+	const partyHeroIds = Object.keys(state.outcomeEvidence.partyHeroes).sort((left, right) =>
+		left.localeCompare(right)
 	);
+	let termination: CombatTermination | null;
+	if (input.safetyStop) {
+		if (
+			input.safetyStop.ticksAdvanced !== state.safety.ticksAdvanced ||
+			input.safetyStop.eventsEmitted !== state.safety.eventsEmitted ||
+			input.safetyStop.noProgressCycles !== state.safety.noProgressCycles
+		) {
+			throw new Error('Readiness safety stop must bind to canonical safety counters');
+		}
+		termination = { kind: 'safety-stop', safetyStop: input.safetyStop };
+	} else termination = readinessOrdinaryTermination(state);
+	if (termination === null) {
+		throw new Error('Canonical readiness state has no engine-authorized terminal condition');
+	}
+	const damage = Object.fromEntries(
+		partyHeroIds.map((heroId) => [heroId, state.outcomeEvidence.partyHeroes[heroId]!.damageTaken])
+	);
+	const decisiveEventIds = state.outcomeEvidence.resolvedEvents
+		.filter(
+			(event) =>
+				event.tick === state.tick && event.effects.some((effect) => effect.kind === 'downed')
+		)
+		.map((event) => event.eventId);
 	const result = emitCombatOutcome({
 		attemptId: state.attemptId,
 		modeId: 'agent-readiness-v1',
 		rulesVersion: COMBAT_RULES_V1.rulesVersion,
 		endedAtTick: state.tick,
-		termination: input.termination,
+		termination,
 		partyHeroIds,
 		engineDamageTakenByHeroId: damage,
 		finalCombatants: state.combatants,
-		resolvedEvents: input.resolvedEvents ?? [],
-		engineRecoveredCombatantIds: input.engineRecoveredCombatantIds ?? [],
-		securedLoot: input.securedLoot ?? [],
-		objectiveStates: input.objectiveStates ?? [],
-		decisiveEventIds: input.decisiveEventIds ?? []
+		resolvedEvents: state.outcomeEvidence.resolvedEvents,
+		engineRecoveredCombatantIds: state.outcomeEvidence.engineRecoveredCombatantIds,
+		securedLoot: state.outcomeEvidence.securedLoot,
+		objectiveStates: state.outcomeEvidence.objectiveStates,
+		decisiveEventIds
 	});
 	const completed = ReadinessCombatStateV1Schema.parse({
 		...state,

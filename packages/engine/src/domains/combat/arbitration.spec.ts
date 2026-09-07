@@ -11,8 +11,10 @@ import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
 
-import { hashCanonical, sha256Hex } from '../../hash.js';
+import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
 import { applyCombatChoiceBatch, combatChoiceBatchHash } from './arbitration.js';
+import { authorizeReadinessTerminalDirective, readinessTerminalDirective } from './outcome.js';
+import { advanceUntilReadyCohort } from './readiness.js';
 import { advanceUntilDecision } from './window.js';
 
 const ID = {
@@ -138,6 +140,22 @@ function attackTemplate(
 	};
 }
 
+function lightAttackTemplate(actionId: string, targetId: string): CombatLegalActionTemplate {
+	const template = attackTemplate(actionId, NO_REFUND, targetId);
+	const profile = template.resolutionProfile as AttackProfile;
+	return {
+		...template,
+		resolutionProfile: {
+			...profile,
+			damage: {
+				...profile.damage,
+				baseMagnitude: 25,
+				coefficientBasisPoints: 10_000
+			}
+		}
+	};
+}
+
 function fighter(
 	combatantId: string,
 	position: { x: number; y: number },
@@ -219,6 +237,21 @@ function state(input: {
 			}
 		])
 	) as ReadinessCombatStateV1['actorContexts'];
+	const partyHeroes = Object.fromEntries(
+		Object.values(combatants)
+			.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+			.map((combatant) => [
+				combatant.combatantId,
+				{
+					startingHealth: combatant.resources.health.current,
+					startingMana: combatant.resources.mana.current,
+					currentHealth: combatant.resources.health.current,
+					currentMana: combatant.resources.mana.current,
+					damageTaken: 0,
+					downed: combatant.downed
+				}
+			])
+	);
 	return {
 		stateVersion: 'readiness-combat-state-v1',
 		seed: input.seed ?? sha256Hex('arbitration-seed'),
@@ -230,6 +263,19 @@ function state(input: {
 		visibleTelegraphs: [],
 		scheduledEffects: [],
 		safety: { ticksAdvanced: 20, eventsEmitted: 0, noProgressCycles: 0 },
+		outcomeEvidence: {
+			evidenceVersion: 'readiness-outcome-evidence-v1',
+			attemptId: ID.attempt,
+			partyHeroes,
+			resolvedEvents: [],
+			emittedEventIds: [],
+			eventsEmitted: 0,
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			terminalDirective: null,
+			authoredDeadline: null
+		},
 		status: 'active',
 		result: null
 	};
@@ -403,6 +449,206 @@ describe('same-window combat arbitration', () => {
 		});
 	});
 
+	it('finalizes victory from an actual batch and retains canonical event and practice evidence', () => {
+		let observed: ReturnType<typeof applyCombatChoiceBatch> | undefined;
+		for (let index = 0; index < 100 && !observed; index += 1) {
+			const canonical = state({
+				include: [ID.a, ID.target],
+				actionByActor: { [ID.a]: attackTemplate('winning-strike') },
+				readiness: { [ID.a]: 12_000 },
+				targetHealth: 1,
+				seed: sha256Hex(`arbitration-victory-${index}`)
+			});
+			const candidate = applyCombatChoiceBatch(
+				canonical,
+				choiceBatch(canonical, {
+					[ID.a]: {
+						actionId: 'winning-strike',
+						target: { kind: 'entity', combatantId: ID.target }
+					}
+				}),
+				COMBAT_RULES_V1
+			);
+			if (candidate.state.combatants[ID.target]!.downed) observed = candidate;
+		}
+
+		expect(observed).toBeDefined();
+		expect(observed!.state.status).toBe('complete');
+		expect(observed!.state.result).toMatchObject({ outcome: 'victory' });
+		expect(observed!.state.outcomeEvidence.resolvedEvents).toStrictEqual(observed!.events);
+		expect(
+			observed!.state.result?.claims.some(
+				(claim) => claim.claimType === 'skill-practice' && claim.practiceEvidence === 1
+			)
+		).toBe(true);
+	});
+
+	it('finalizes total party downing from the actual resolved batch', () => {
+		let observed: ReturnType<typeof applyCombatChoiceBatch> | undefined;
+		for (let index = 0; index < 100 && !observed; index += 1) {
+			const canonical = state({
+				include: [ID.a, ID.target],
+				actionByActor: { [ID.target]: attackTemplate('finishing-blow', NO_REFUND, ID.a) },
+				readiness: { [ID.a]: 0, [ID.target]: 10_000 },
+				seed: sha256Hex(`arbitration-party-downed-${index}`)
+			});
+			const candidate = applyCombatChoiceBatch(
+				canonical,
+				choiceBatch(canonical, {
+					[ID.target]: {
+						actionId: 'finishing-blow',
+						target: { kind: 'entity', combatantId: ID.a }
+					}
+				}),
+				COMBAT_RULES_V1
+			);
+			if (candidate.state.combatants[ID.a]!.downed) observed = candidate;
+		}
+
+		expect(observed).toBeDefined();
+		expect(observed!.state.result).toMatchObject({ outcome: 'party-downed' });
+		expect(observed!.state.result?.claimEvidence.engineDamageTakenByHeroId[ID.a]).toBe(100);
+	});
+
+	it('preserves prior damage, events, and practice when safety stops after a resolved batch', () => {
+		let applied: ReturnType<typeof applyCombatChoiceBatch> | undefined;
+		for (let index = 0; index < 100 && !applied; index += 1) {
+			const canonical = state({
+				include: [ID.a, ID.target],
+				actionByActor: {
+					[ID.a]: lightAttackTemplate('hero-light-strike', ID.target),
+					[ID.target]: lightAttackTemplate('enemy-light-strike', ID.a)
+				},
+				readiness: { [ID.a]: 10_000, [ID.target]: 10_000 },
+				seed: sha256Hex(`arbitration-before-safety-${index}`)
+			});
+			const candidate = applyCombatChoiceBatch(
+				canonical,
+				choiceBatch(canonical, {
+					[ID.a]: {
+						actionId: 'hero-light-strike',
+						target: { kind: 'entity', combatantId: ID.target }
+					},
+					[ID.target]: {
+						actionId: 'enemy-light-strike',
+						target: { kind: 'entity', combatantId: ID.a }
+					}
+				}),
+				COMBAT_RULES_V1
+			);
+			if (candidate.state.combatants[ID.a]!.resources.health.current === 70) applied = candidate;
+		}
+		expect(applied).toBeDefined();
+		const beforeSafety = structuredClone(applied!.state);
+		beforeSafety.safety.ticksAdvanced = COMBAT_RULES_V1.readiness.safety.maximumTicksAdvanced;
+		beforeSafety.safety.eventsEmitted = 4;
+		beforeSafety.outcomeEvidence.eventsEmitted = 4;
+
+		const stopped = advanceUntilReadyCohort(beforeSafety, COMBAT_RULES_V1);
+		expect(stopped.kind).toBe('combat-result');
+		if (stopped.kind !== 'combat-result') return;
+		expect(stopped.result).toMatchObject({
+			outcome: 'safety-stop',
+			safetyStop: { eventsEmitted: 4 }
+		});
+		expect(stopped.result.finalCombatants[ID.a]!.resources.health.current).toBe(70);
+		expect(stopped.result.claimEvidence.engineDamageTakenByHeroId[ID.a]).toBe(30);
+		expect(stopped.result.claimEvidence.resolvedEvents).toStrictEqual(applied!.events);
+		expect(
+			stopped.result.claims.some(
+				(claim) => claim.claimType === 'skill-practice' && claim.heroId === ID.a
+			)
+		).toBe(true);
+	});
+
+	it.each(['extraction', 'retreat'] as const)(
+		'finalizes an engine-authorized %s directive after actual batch resolution',
+		(kind) => {
+			const initial = state({
+				include: [ID.a, ID.target],
+				actionByActor: {},
+				readiness: { [ID.a]: 10_000, [ID.target]: 0 }
+			});
+			const directive = readinessTerminalDirective({
+				state: initial,
+				kind,
+				securedLoot: [{ ownerId: ID.a, lootId: 'iron-ore', quantity: 1 }],
+				objectiveStates: [{ objectiveId: 'survive', completed: true }]
+			});
+			const authorized = authorizeReadinessTerminalDirective({ state: initial, directive });
+			const result = applyCombatChoiceBatch(
+				authorized,
+				choiceBatch(authorized, {
+					[ID.a]: { actionId: 'guard-self', target: { kind: 'self' }, fallbackId: 'brace' }
+				}),
+				COMBAT_RULES_V1
+			);
+
+			expect(result.state.result).toMatchObject({ outcome: kind });
+			expect(result.state.result?.claimEvidence.securedLoot).toStrictEqual(directive.securedLoot);
+		}
+	);
+
+	it('rejects a forged terminal directive instead of accepting caller-authored outcome state', () => {
+		const canonical = state({
+			include: [ID.a, ID.target],
+			actionByActor: {},
+			readiness: { [ID.a]: 10_000, [ID.target]: 0 }
+		});
+		const valid = readinessTerminalDirective({ state: canonical, kind: 'retreat' });
+		const forged = { ...valid, authorizedStateHash: 'f'.repeat(64) };
+		const before = hashCanonical(canonical);
+
+		expect(() =>
+			authorizeReadinessTerminalDirective({ state: canonical, directive: forged })
+		).toThrow(/canonical engine state/iu);
+		expect(hashCanonical(canonical)).toBe(before);
+	});
+
+	it('routes an over-budget batch through the same claim-bearing safety finalizer', () => {
+		const canonical = state({
+			include: [ID.a, ID.target],
+			actionByActor: {},
+			readiness: { [ID.a]: 10_000, [ID.target]: 0 }
+		});
+		canonical.safety.eventsEmitted = COMBAT_RULES_V1.readiness.safety.maximumEventsEmitted;
+		canonical.outcomeEvidence.eventsEmitted = canonical.safety.eventsEmitted;
+		const batch = choiceBatch(canonical, {
+			[ID.a]: { actionId: 'guard-self', target: { kind: 'self' }, fallbackId: 'brace' }
+		});
+
+		const stopped = applyCombatChoiceBatch(canonical, batch, COMBAT_RULES_V1);
+		expect(stopped.events).toStrictEqual([]);
+		expect(stopped.state.result).toMatchObject({
+			outcome: 'safety-stop',
+			safetyStop: { reason: 'emitted-events' }
+		});
+		expect(stopped.state.result?.claims).not.toHaveLength(0);
+	});
+
+	it('finalizes an authored deadline after actual batch resolution', () => {
+		const canonical = state({
+			include: [ID.a, ID.target],
+			actionByActor: {},
+			readiness: { [ID.a]: 10_000, [ID.target]: 0 }
+		});
+		canonical.outcomeEvidence.authoredDeadline = {
+			deadlineVersion: 'readiness-authored-deadline-v1',
+			deadlineId: deterministicUuid(`${ID.attempt}:deadline`),
+			attemptId: ID.attempt,
+			deadlineTick: canonical.tick
+		};
+		const result = applyCombatChoiceBatch(
+			canonical,
+			choiceBatch(canonical, {
+				[ID.a]: { actionId: 'guard-self', target: { kind: 'self' }, fallbackId: 'brace' }
+			}),
+			COMBAT_RULES_V1
+		);
+
+		expect(result.state.result).toMatchObject({ outcome: 'deadline' });
+	});
+
 	it('attributes a downed actor cancellation to the earlier downing event even when its intent targets another combatant', () => {
 		const relativeTarget = {
 			kind: 'entity-relative-position' as const,
@@ -432,6 +678,8 @@ describe('same-window combat arbitration', () => {
 				seed: sha256Hex(`arbitration-down-actor-${index}`)
 			});
 			canonical.combatants[ID.b]!.resources.health.current = 1;
+			canonical.outcomeEvidence.partyHeroes[ID.b]!.startingHealth = 1;
+			canonical.outcomeEvidence.partyHeroes[ID.b]!.currentHealth = 1;
 			const candidate = applyCombatChoiceBatch(
 				canonical,
 				choiceBatch(canonical, {
@@ -485,6 +733,8 @@ describe('same-window combat arbitration', () => {
 				seed: sha256Hex(`arbitration-down-fallback-actor-${index}`)
 			});
 			canonical.combatants[ID.b]!.resources.health.current = 1;
+			canonical.outcomeEvidence.partyHeroes[ID.b]!.startingHealth = 1;
+			canonical.outcomeEvidence.partyHeroes[ID.b]!.currentHealth = 1;
 			const candidate = applyCombatChoiceBatch(
 				canonical,
 				choiceBatch(canonical, {

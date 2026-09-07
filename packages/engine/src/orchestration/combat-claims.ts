@@ -7,7 +7,12 @@ import {
 import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 
 import { combatAftermathRulesForBinding } from '../core/combat-aftermath-rules.js';
-import type { CombatClaimReceipt } from '../core/combat-claims.js';
+import {
+	combatClaimTransitionCheckpoint,
+	parseCombatClaimTransitionCheckpoint,
+	type CombatClaimReceipt,
+	type CombatClaimTransitionCheckpoint
+} from '../core/combat-claims.js';
 import {
 	authenticateCombatResult,
 	emitCombatOutcome,
@@ -23,14 +28,17 @@ import {
 	parseCombatProgressionClaimProjection,
 	type CombatProgressionClaimProjection
 } from '../domains/progression/claims.js';
+import { hashCanonical } from '../hash.js';
 
 export interface CombatClaimTransitionInput {
 	readonly mission: CombatMissionClaimProjection;
 	readonly progression: CombatProgressionClaimProjection;
+	readonly checkpoint?: CombatClaimTransitionCheckpoint | null;
 }
 
-export interface CombatClaimTransition extends CombatClaimTransitionInput {
+export interface CombatClaimTransition extends Omit<CombatClaimTransitionInput, 'checkpoint'> {
 	readonly receipts: readonly CombatClaimReceipt[];
+	readonly checkpoint: CombatClaimTransitionCheckpoint;
 }
 
 export type V26LegacyCombatOutcomeInput = Omit<
@@ -83,6 +91,17 @@ export function transitionCombatResultClaims(
 	const result = authenticateCombatResult(CombatResultSchema.parse(resultInput), authorityInput);
 	const missionClaims = result.claims.filter((claim) => claim.claimType !== 'skill-practice');
 	const progressionClaims = result.claims.filter((claim) => claim.claimType === 'skill-practice');
+	const beforeMissionHash = hashCanonical(parsedInput.mission);
+	const beforeProgressionHash = hashCanonical(parsedInput.progression);
+	const resultHash = hashCanonical(result);
+	const claimManifestHash = hashCanonical({
+		manifestVersion: 'combat-claim-manifest-v1',
+		claims: result.claims
+	});
+	const authorityHash = hashCanonical({
+		authorityVersion: 'combat-outcome-authority-v1',
+		authority: authorityInput
+	});
 	const expectedKeys = new Set(result.claims.map((claim) => claim.idempotencyKey));
 	const unexpectedAttemptReceipt = [
 		...Object.keys(parsedInput.mission.receipts),
@@ -108,6 +127,45 @@ export function transitionCombatResultClaims(
 		(missionApplied === missionClaims.length) !== (progressionApplied === progressionClaims.length);
 	if (missionPartial || progressionPartial || crossOwnerPartial) {
 		throw new Error('Combat claims contain a partial non-atomic receipt set');
+	}
+	const allApplied =
+		missionApplied === missionClaims.length && progressionApplied === progressionClaims.length;
+	if (input.checkpoint !== undefined && input.checkpoint !== null) {
+		const checkpoint = parseCombatClaimTransitionCheckpoint(input.checkpoint);
+		if (!allApplied)
+			throw new Error('Combat claim checkpoint lacks its complete atomic receipt set');
+		const receipts = result.claims.map((claim) => {
+			const receipt =
+				parsedInput.mission.receipts[claim.idempotencyKey] ??
+				parsedInput.progression.receipts[claim.idempotencyKey];
+			if (!receipt) throw new Error(`Combat checkpoint lacks receipt ${claim.idempotencyKey}`);
+			return receipt;
+		});
+		const firstMissionReceipt = missionClaims[0]
+			? parsedInput.mission.receipts[missionClaims[0].idempotencyKey]
+			: undefined;
+		const firstProgressionReceipt = progressionClaims[0]
+			? parsedInput.progression.receipts[progressionClaims[0].idempotencyKey]
+			: undefined;
+		if (
+			checkpoint.attemptId !== result.attemptId ||
+			checkpoint.beforeMissionHash !== firstMissionReceipt?.inputHash ||
+			checkpoint.beforeProgressionHash !==
+				(firstProgressionReceipt?.inputHash ?? checkpoint.afterProgressionHash) ||
+			checkpoint.resultHash !== resultHash ||
+			checkpoint.claimManifestHash !== claimManifestHash ||
+			checkpoint.authorityHash !== authorityHash ||
+			checkpoint.afterMissionHash !== beforeMissionHash ||
+			checkpoint.afterProgressionHash !== beforeProgressionHash ||
+			checkpoint.receiptManifestHash !==
+				hashCanonical({ receiptManifestVersion: 'combat-claim-receipts-v1', receipts })
+		) {
+			throw new Error('Combat claim transition checkpoint does not authenticate this atomic state');
+		}
+		return { ...parsedInput, receipts, checkpoint };
+	}
+	if (allApplied) {
+		throw new Error('Combat claim receipts cannot be replayed without their atomic checkpoint');
 	}
 	const missionTransition = transitionCombatMissionClaims(parsedInput.mission, result);
 	let progression = parsedInput.progression;
@@ -152,13 +210,30 @@ export function transitionCombatResultClaims(
 			throw new Error(`Combat aftermath invariant failed for ${heroId}`);
 		}
 	}
+	const receipts = result.claims.map((claim) => {
+		const receipt = receiptsByKey.get(claim.idempotencyKey);
+		if (!receipt) throw new Error(`Combat claim lacks an owner: ${claim.idempotencyKey}`);
+		return receipt;
+	});
+	const checkpoint = combatClaimTransitionCheckpoint({
+		checkpointVersion: 'combat-claim-transition-checkpoint-v1',
+		attemptId: result.attemptId,
+		beforeMissionHash,
+		beforeProgressionHash,
+		resultHash,
+		claimManifestHash,
+		authorityHash,
+		afterMissionHash: hashCanonical(mission),
+		afterProgressionHash: hashCanonical(progression),
+		receiptManifestHash: hashCanonical({
+			receiptManifestVersion: 'combat-claim-receipts-v1',
+			receipts
+		})
+	});
 	return {
 		mission,
 		progression,
-		receipts: result.claims.map((claim) => {
-			const receipt = receiptsByKey.get(claim.idempotencyKey);
-			if (!receipt) throw new Error(`Combat claim lacks an owner: ${claim.idempotencyKey}`);
-			return receipt;
-		})
+		receipts,
+		checkpoint
 	};
 }
