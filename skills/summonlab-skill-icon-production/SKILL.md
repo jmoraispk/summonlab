@@ -112,6 +112,22 @@ must be absent at preflight.
 8. Return the status, candidate path when retained, result path, and verification outcome. Stop.
    Candidate means awaiting owner review, never approved.
 
+## Coordinator-owned `skill-art` handoff
+
+When returning a retained `skill-art`, explicitly report this deterministic handoff without executing
+any part of it. The coordinator—not this producer—centers the exact provider artwork at
+`artworkScale: 0.9`, producing `922x922` pixels at `(51,51)` on the `1024x1024` canvas. The
+coordinator verifies complete aperture coverage, extracts the aperture interior, adds canonical
+backing, then applies the canonical rarity frame with `compositionProfile: 'frame-opening-v3'`.
+The frame is the final layer.
+
+The coordinator must fail closed on every one of these composition gates, which the producer reports
+as handoff constraints only: complete aperture coverage, baked frame traces, exterior opacity,
+backing-only components, layer-hash mismatch, non-exact recomposition, protected-band mismatch, and
+any composition where the frame is not the final layer. This handoff does not authorize the producer
+to resize, position, mask, extract, add backing, apply a frame, composite, promote, or otherwise
+change the returned provider image.
+
 ## Hard boundaries
 
 - Write only the assignment's candidate and result paths. Never edit a catalog, visual spec,

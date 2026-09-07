@@ -42,7 +42,7 @@ engine-gated for Node 24.
 - Focused static contract test: passed (1 test).
 - `validate:skill-icon-creation-skill` package entrypoint: passed via the cached pnpm runtime
   (with the expected Node 22 versus Node 24 engine warning).
-- Producer Python verification suite: passed (8 tests).
+- Producer Python verification suite: passed.
 - `tools/tsconfig.skill-icon-production.json` typecheck: passed.
 - Prettier check for the modified task files: passed.
 - `git diff --check`: passed.
@@ -67,3 +67,31 @@ No code or instruction conflict remains in the reviewed scope. A fresh isolated 
 evaluation was not run because the task explicitly prohibits dispatching additional agents; the
 recorded baseline, focused contract test, and instruction-level self-review provide the available
 evidence for this task.
+
+## Fix round 1 — role-separated handoff contract
+
+Addressed the Task 3 review findings without touching the deferred Minor or any accepted overlay
+artifact.
+
+- The producer skill now requires its output handoff to recite the coordinator-owned `0.9` scale,
+  `922x922` size, `(51,51)` offset, aperture extraction and coverage, canonical backing,
+  `frame-opening-v3`, final-frame order, and every fail-closed composition gate. It explicitly says
+  this is a report-only handoff and grants no resize, masking, backing, framing, compositing, or
+  promotion authority to the producer.
+- The static contract test is split by role and file. Producer assertions read only its `SKILL.md`
+  plus its rubric boundary; coordinator assertions read only the creation skill and repository
+  workflow. The creation workflow is also checked for positive no-frame generation constraints and
+  for forbidden imperatives that supply a frame for generation, retain/bake ornaments, or generate a
+  complete framed individual tile.
+
+### Fix-round RED → GREEN evidence
+
+- RED, Node `v24.14.1`: after writing the role-separated assertions, the focused test failed with
+  `expected ... to contain 'artworkScale: 0.9'` in the producer-specific handoff test. The final RED
+  run had 1 failed and 2 passed tests, confirming the missing producer handoff rather than a test
+  setup error.
+- GREEN, Node `v24.14.1`: `corepack pnpm vitest run
+  tools/summonlab-skill-creation-skill.spec.ts` passed with 3 tests.
+- `python3 -m unittest skills/summonlab-skill-icon-production/scripts/test_verify_result.py` passed;
+  `corepack pnpm typecheck:skill-icons`, focused Prettier check, and `git diff --check` also passed
+  under Node `v24.14.1`.
