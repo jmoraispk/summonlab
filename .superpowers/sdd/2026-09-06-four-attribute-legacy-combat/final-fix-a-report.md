@@ -174,3 +174,51 @@ control, decision-window, campaign, onboarding, conversation, projection, and eq
 - `git diff --check` — passed.
 
 No blocking design seam remains for this slice.
+
+## Review round 3 — rerunnable entropy constraint
+
+### RED evidence
+
+The coordinated `0020_private_capability_entropy_shape.sql` migration used an unconditional
+`ADD CONSTRAINT`, so reapplying its SQL or recovering from a missing migration-ledger row would
+raise PostgreSQL duplicate-object error `42710`. The focused migration integration test was added
+first for both cases.
+
+The retained integration database then exposed an important historical condition before the
+duplicate-object case: two character-v2 receipts predate canonical entropy validation and contain
+non-null 72-character private entropy. The original fully validated `ADD CONSTRAINT` therefore
+failed with check-violation `23514`. Their values were neither logged nor rewritten.
+
+### GREEN implementation
+
+Migration 0020 now uses a PostgreSQL catalog guard keyed to the exact constraint name and relation.
+It creates the same lowercase-64-hex-or-null `CHECK` as `NOT VALID`, which preserves historical
+receipts while PostgreSQL still enforces the check on every future insert or update. If the table
+contains no historical violation, the same migration immediately validates the complete
+constraint. A rerun also conditionally validates a previously unvalidated constraint once its
+table is clean.
+
+Focused integration coverage now proves:
+
+- applying the migration SQL twice preserves one exact named constraint;
+- a future uppercase 64-character entropy insert is rejected with `23514` even on a retained
+  database whose constraint remains `NOT VALID`;
+- the constraint becomes fully validated when no historical violations exist;
+- production migration recovery succeeds when the constraint exists but the 0020 ledger row is
+  absent, and a second production migrator run is a no-op.
+
+### Verification and historical limitation
+
+- Retained database focused migration suite: 4/4 passed.
+- Retained database aggregate suite: 34/35 passed. The unrelated playtest analytics test assumes
+  one lifetime session, while this retained database already contains four; the migration tests
+  and all other database integration tests passed.
+- Fresh isolated database, after the production migrator: 14/14 files and 35/35 integration tests
+  passed. The temporary database was removed after verification.
+- `pnpm --filter @summonlab/database test`: 4/4 non-database tests passed.
+- Database typecheck, lint, and `git diff --check`: passed.
+
+The two historical noncanonical private receipts prevent full-table validation on the retained
+database. This is intentional compatibility behavior, not weakened validation for new data. No
+destructive rewrite is attempted; a later explicit data-repair policy could make that existing
+constraint eligible for full validation.
