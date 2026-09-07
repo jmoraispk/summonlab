@@ -258,8 +258,8 @@ describe('American English migration planning', () => {
 		const color = retired('color');
 		const sharpMethod = `to${titleCase(color)}space`;
 		const repository = await makeRepository({
-			'.gitattributes': 'assets/*.bin -text\n',
-			[`assets/${gray}.bin`]: Buffer.concat([Buffer.from([0, 1, 2]), Buffer.from(color)]),
+			'.gitattributes': 'assets/heroes/*.png -text\n',
+			[`assets/heroes/${gray}.png`]: Buffer.concat([Buffer.from([0, 1, 2]), Buffer.from(color)]),
 			[`docs/${gray}/nested/${armor}-note.txt`]: Buffer.from(
 				`\uFEFFcombat${titleCase(behavior)}\r\n${armor}\r\n`,
 				'utf8'
@@ -281,13 +281,13 @@ describe('American English migration planning', () => {
 
 		expect(second).toEqual(first);
 		expect(planPaths(first)).toEqual([
-			`assets/${gray}.bin -> assets/gray.bin`,
+			`assets/heroes/${gray}.png -> assets/heroes/gray.png`,
 			`docs/${gray}/nested/${armor}-note.txt -> docs/gray/nested/armor-note.txt`,
 			`links/${gray}-alias -> links/gray-alias`
 		]);
-		expect(first.pathMoves.find(({ source }) => source === `assets/${gray}.bin`)?.binary).toBe(
-			true
-		);
+		expect(
+			first.pathMoves.find(({ source }) => source === `assets/heroes/${gray}.png`)?.binary
+		).toBe(true);
 		expect(first.textEdits).toEqual([
 			{ path: `docs/${gray}/nested/${armor}-note.txt`, violationCount: 2 },
 			{ path: `links/${gray}-alias`, violationCount: 1 }
@@ -416,6 +416,12 @@ describe('American English migration planning', () => {
 				id: 'runtime-and-engine',
 				bindingCount: 1,
 				pathCount: 1,
+				successorIntents: [
+					expect.objectContaining({
+						path: 'packages/engine/src/fixture.ts',
+						languageMigrationSuccessor: true
+					})
+				],
 				writeCommand: expect.stringContaining('export:playtest-release'),
 				checkCommand: expect.stringContaining('validate:playtest-release')
 			})
@@ -708,8 +714,8 @@ describe('American English transactional application', () => {
 		const sourceText = Buffer.from(`\uFEFFcombat${titleCase(behavior)}\r\n${armor}`, 'utf8');
 		const binaryBytes = Buffer.concat([Buffer.from([0, 255, 4]), Buffer.from(color)]);
 		const repository = await makeRepository({
-			'.gitattributes': 'assets/*.bin -text\n',
-			[`assets/${gray}.bin`]: binaryBytes,
+			'.gitattributes': 'assets/heroes/*.png -text\n',
+			[`assets/heroes/${gray}.png`]: binaryBytes,
 			[`docs/${gray}/${armor}.txt`]: sourceText,
 			[`links/${gray}`]: { symlink: `../${color}` }
 		});
@@ -745,7 +751,9 @@ describe('American English transactional application', () => {
 		expect(await readFile(path.join(repository.root, 'docs/gray/armor.txt'))).toEqual(
 			Buffer.from('\uFEFFcombatBehavior\r\narmor', 'utf8')
 		);
-		expect(await readFile(path.join(repository.root, 'assets/gray.bin'))).toEqual(binaryBytes);
+		expect(await readFile(path.join(repository.root, 'assets/heroes/gray.png'))).toEqual(
+			binaryBytes
+		);
 		expect(await readlink(path.join(repository.root, 'links/gray'))).toBe('../color');
 		const successorMode = Number.parseInt(
 			git(repository.root, ['ls-files', '-s', 'docs/gray/armor.txt']).slice(0, 6),
@@ -756,11 +764,11 @@ describe('American English transactional application', () => {
 		expect(receipt.baselineCommit).toBe(baseline);
 		expect(receipt.policyVersion).toBe(1);
 		expect(receipt.ruleCounts).toMatchObject({ armor: 2, behavior: 1, color: 1, gray: 3 });
-		expect(receipt.ownerCounts).toEqual({ 'migration-planner': 3 });
+		expect(receipt.ownerCounts).toEqual({ 'migration-planner': 2, 'visual-production': 1 });
 		expect(receipt.files).toHaveLength(3);
 		expect(
 			receipt.files.find(
-				({ successorPathHash }) => successorPathHash === pathHash('assets/gray.bin')
+				({ successorPathHash }) => successorPathHash === pathHash('assets/heroes/gray.png')
 			)
 		).toMatchObject({ unchangedBinary: true });
 		const serialized = JSON.stringify(receipt);

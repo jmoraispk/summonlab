@@ -9,7 +9,8 @@ import {
 	verifyTopologicalIntegritySuccessors,
 	type AmericanEnglishIntegrityOwner,
 	type IntegritySerializerId
-} from './american-english-integrity.js';
+} from './american-english-integrity-contracts.js';
+import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
 
 export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 	/^apps\/web\/src\/lib\/components\/living-village\//u,
@@ -19,6 +20,13 @@ export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 	/^packages\/content\/src\/(?:tower-|story)/u,
 	/^packages\/contracts\/src\/(?:contracts\.spec\.ts$|engine\/|final-controlled-)/u,
 	/^packages\/(?:engine|evaluation|policies)\//u,
+	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness)\.ts$/u
+] as const;
+
+export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
+	/^apps\/web\/src\/(?:lib\/components\/living-village|routes\/story-patch)\/.*\.(?:ts|svelte)$/u,
+	/^docs\/(?:evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
+	/^packages\/(?:content\/src\/(?:tower-|story)|contracts\/src\/(?:contracts\.spec\.ts$|engine\/|final-controlled-)|engine\/|evaluation\/|policies\/)/u,
 	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness)\.ts$/u
 ] as const;
 
@@ -35,14 +43,24 @@ export const runtimeCanonicalSerializers = {
 
 export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'runtime-and-engine',
+	serializer: 'engine',
 	regeneration: {
 		writeCommand:
-			'pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest',
+			'pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
 			'pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
 	},
-	owns(path) {
+	ownsPath(path) {
 		return RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));
+	},
+	owns(path, jsonPointer) {
+		if (!this.ownsPath(path)) return false;
+		if (jsonPointer === '') {
+			return RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS.some((pattern) => pattern.test(path));
+		}
+		return OWNER_DIGEST_POINTER_PATTERNS['runtime-and-engine'].some((pattern) =>
+			pattern.test(jsonPointer)
+		);
 	},
 	planSuccessors(context) {
 		return planTopologicalIntegritySuccessors(context, runtimeDigest);

@@ -1,3 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
 import { describe, expect, it } from 'vitest';
 
 import { canonicalSha256 } from './equipment-rank-first-production-v3.js';
@@ -6,8 +10,10 @@ import { canonicalJson as imageCanonicalJson, sha256Json } from './image-product
 import {
 	AMERICAN_ENGLISH_INTEGRITY_OWNERS,
 	classifyIntegrityBindings,
+	validateIntegrityOwnerCommandContracts,
 	type AmericanEnglishIntegrityOwner,
 	type IntegrityPlanningContext,
+	type IntegritySuccessor,
 	type TrackedTreeSnapshot
 } from './american-english-integrity.js';
 import { equipmentIntegrityOwner } from './american-english-equipment-successors.js';
@@ -194,6 +200,30 @@ describe('integrity owner successor planning', () => {
 		).rejects.toThrow(/missing source node/i);
 	});
 
+	it('rejects a successor whose path no longer links to its source node', async () => {
+		const context = chain('packages/engine/fixtures/path-link', 'engine');
+		const successors = await runtimeAndEngineIntegrityOwner.planSuccessors(context);
+		const tampered = successors.map((successor, index) =>
+			index === 1 ? { ...successor, path: `${successor.path}.forged` } : successor
+		);
+		const problems = await runtimeAndEngineIntegrityOwner.verify({
+			nodes: context.nodes,
+			successors: tampered
+		});
+		expect(problems).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					code: 'digest-mismatch',
+					path: 'packages/engine/fixtures/path-link/target.json'
+				}),
+				expect.objectContaining({
+					code: 'missing-node',
+					path: 'packages/engine/fixtures/path-link/target.json.forged'
+				})
+			])
+		);
+	});
+
 	it('reports a successor whose digest no longer matches its live serializer', async () => {
 		const context = chain('packages/engine/fixtures/verification', 'engine');
 		const successors = await runtimeAndEngineIntegrityOwner.planSuccessors(context);
@@ -210,6 +240,31 @@ describe('integrity owner successor planning', () => {
 			})
 		]);
 	});
+
+	it.each([
+		['value', (successor: IntegritySuccessor) => ({ ...successor, value: { forged: true } })],
+		['kind', (successor: IntegritySuccessor) => ({ ...successor, kind: 'raw-file' as const })],
+		['dependencies', (successor: IntegritySuccessor) => ({ ...successor, dependencies: [] })]
+	] as const)(
+		'rejects a successor with tampered %s even when its digest is copied',
+		async (_field, tamper) => {
+			const context = chain('packages/engine/fixtures/adversarial', 'engine');
+			const baseSuccessors = await runtimeAndEngineIntegrityOwner.planSuccessors(context);
+			const successors = baseSuccessors.map((successor, index) =>
+				index === 1 ? tamper(successor) : successor
+			);
+			const problems = await runtimeAndEngineIntegrityOwner.verify({
+				nodes: context.nodes,
+				successors
+			});
+			expect(problems).toEqual([
+				expect.objectContaining({
+					code: 'digest-mismatch',
+					path: 'packages/engine/fixtures/adversarial/target.json'
+				})
+			]);
+		}
+	);
 
 	it('uses the live family-affinity digest without hashing the persisted line feed', async () => {
 		const successors = await visualProductionIntegrityOwner.planSuccessors({
@@ -230,6 +285,25 @@ describe('integrity owner successor planning', () => {
 });
 
 describe('integrity binding classification', () => {
+	it('can import every owner adapter directly in a fresh runtime', () => {
+		for (const modulePath of [
+			'tools/american-english-equipment-successors.ts',
+			'tools/american-english-visual-successors.ts',
+			'tools/american-english-runtime-successors.ts'
+		]) {
+			const result = spawnSync(
+				process.execPath,
+				[
+					path.resolve('node_modules/tsx/dist/cli.mjs'),
+					'--eval',
+					`import(${JSON.stringify(pathToFileURL(path.resolve(modulePath)).href)})`
+				],
+				{ encoding: 'utf8' }
+			);
+			expect(result.status, `${modulePath}: ${result.stderr}`).toBe(0);
+		}
+	});
+
 	it('keeps the three owner path registries explicit and mutually exclusive', () => {
 		expect(equipmentIntegrityOwner.owns('assets/equipment/experiments/v3/manifest.json', '')).toBe(
 			true
@@ -305,6 +379,131 @@ describe('integrity binding classification', () => {
 		]);
 	});
 
+	it('does not classify a plain file merely because it is below an owner subtree', async () => {
+		const path = 'assets/heroes/plain-not-an-integrity-record.md';
+		const report = await classifyIntegrityBindings(
+			{ entries: [{ path, bytes: Buffer.from('Gray prose.\n'), binary: false }] },
+			proposed([path])
+		);
+		expect(report.problems).toEqual([]);
+		expect(report.bindings).toEqual([]);
+		expect(report.ownerPlans).toEqual([]);
+	});
+
+	it('requires a registered path and exact pointer for every digest', async () => {
+		const path = 'assets/equipment/experiments/fixture/manifest.json';
+		const known = await classifyIntegrityBindings(
+			snapshot({ [path]: { contentHash: HASH } }),
+			proposed([path])
+		);
+		expect(known.problems).toEqual([]);
+
+		const nested = await classifyIntegrityBindings(
+			snapshot({ [path]: { nested: { contentHash: HASH } } }),
+			proposed([path])
+		);
+		expect(nested.problems).toEqual([
+			expect.objectContaining({ code: 'unknown-digest', jsonPointer: '/nested/contentHash' })
+		]);
+
+		const intermediate = await classifyIntegrityBindings(
+			snapshot({
+				'assets/heroes/experiments/fixture/manifest.json': {
+					intermediateHashes: {
+						'progression-nera-voss': HASH,
+						rogue: HASH
+					}
+				}
+			}),
+			proposed(['assets/heroes/experiments/fixture/manifest.json'])
+		);
+		expect(intermediate.problems).toEqual([
+			expect.objectContaining({
+				code: 'unknown-digest',
+				jsonPointer: '/intermediateHashes/rogue'
+			})
+		]);
+
+		const visualPath = 'assets/heroes/experiments/fixture/result.json';
+		const boundedArray = await classifyIntegrityBindings(
+			snapshot({ [visualPath]: { references: [{ sha256: HASH }] } }),
+			proposed([visualPath])
+		);
+		expect(boundedArray.problems).toEqual([]);
+		const unboundedMap = await classifyIntegrityBindings(
+			snapshot({ [visualPath]: { references: { arbitrary: { sha256: HASH } } } }),
+			proposed([visualPath])
+		);
+		expect(unboundedMap.problems).toEqual([
+			expect.objectContaining({
+				code: 'unknown-digest',
+				jsonPointer: '/references/arbitrary/sha256'
+			})
+		]);
+	});
+
+	it('blocks every selected binary move without exactly one raw-file owner', async () => {
+		const path = 'unregistered/gray.png';
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path,
+						bytes: Uint8Array.of(1, 2, 3),
+						baselineBytes: Uint8Array.of(1, 2, 3),
+						binary: true
+					}
+				]
+			},
+			{ textEdits: [], pathMoves: [{ source: path }] }
+		);
+		expect(report.problems).toEqual([expect.objectContaining({ code: 'unowned-binding', path })]);
+	});
+
+	it('includes adapter-produced and verified successor intent for real bindings', async () => {
+		const path = 'packages/engine/src/fixture.ts';
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{ path, bytes: Buffer.from(`export const contentHash = '${HASH}';`), binary: false }
+				]
+			},
+			proposed([path])
+		);
+		expect(report.problems).toEqual([]);
+		expect(report.ownerPlans[0]).toEqual(
+			expect.objectContaining({
+				id: 'runtime-and-engine',
+				successorIntents: [expect.objectContaining({ path, languageMigrationSuccessor: true })]
+			})
+		);
+	});
+
+	it('blocks classification when an owner adapter rejects its successor intent', async () => {
+		const rejectingOwner: AmericanEnglishIntegrityOwner = {
+			...runtimeAndEngineIntegrityOwner,
+			verify: async () => [
+				{
+					path: 'packages/engine/src/fixture.ts',
+					jsonPointer: '',
+					code: 'digest-mismatch',
+					message: 'Injected adapter verification failure'
+				}
+			]
+		};
+		const path = 'packages/engine/src/fixture.ts';
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{ path, bytes: Buffer.from(`export const contentHash = '${HASH}';`), binary: false }
+				]
+			},
+			proposed([path]),
+			[rejectingOwner]
+		);
+		expect(report.problems).toEqual([expect.objectContaining({ code: 'digest-mismatch', path })]);
+	});
+
 	it('blocks an unknown digest field, ambiguous owner, changed binary, and absent node', async () => {
 		const unknown = await classifyIntegrityBindings(
 			snapshot({ 'assets/equipment/unknown.json': { unregisteredProof: HASH } }),
@@ -333,7 +532,7 @@ describe('integrity binding classification', () => {
 					binary: true
 				}
 			}),
-			proposed(['assets/heroes/source.png'])
+			{ textEdits: [], pathMoves: [{ source: 'assets/heroes/source.png' }] }
 		);
 		expect(changedBinary.problems).toEqual([expect.objectContaining({ code: 'changed-binary' })]);
 
@@ -362,5 +561,32 @@ describe('integrity binding classification', () => {
 		expect(report.problems).toEqual([
 			expect.objectContaining({ code: 'unowned-binding', path: 'unregistered/receipt.json' })
 		]);
+	});
+
+	it('emits the required private-release acknowledgment in the runtime write command', () => {
+		expect(runtimeAndEngineIntegrityOwner.regeneration?.writeCommand).toContain(
+			'pnpm package:playtest -- --acknowledge-private-release'
+		);
+	});
+
+	it('validates that every owner command references live tools, scripts, and required flags', async () => {
+		expect(
+			await validateIntegrityOwnerCommandContracts(process.cwd(), AMERICAN_ENGLISH_INTEGRITY_OWNERS)
+		).toEqual([]);
+
+		const invalidOwner: AmericanEnglishIntegrityOwner = {
+			...runtimeAndEngineIntegrityOwner,
+			regeneration: {
+				writeCommand: 'pnpm tsx tools/not-a-tool.ts && pnpm package:not-a-script',
+				checkCommand: 'pnpm package:playtest'
+			}
+		};
+		expect(await validateIntegrityOwnerCommandContracts(process.cwd(), [invalidOwner])).toEqual(
+			expect.arrayContaining([
+				expect.stringMatching(/not-a-tool/u),
+				expect.stringMatching(/not-a-script/u),
+				expect.stringMatching(/acknowledge-private-release/u)
+			])
+		);
 	});
 });

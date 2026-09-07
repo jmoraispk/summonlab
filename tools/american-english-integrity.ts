@@ -1,85 +1,18 @@
-import { createHash } from 'node:crypto';
+import { access, readFile } from 'node:fs/promises';
+import path from 'node:path';
 
-import type { AmericanEnglishMigrationPlan } from './american-english-migration.js';
+import {
+	type AmericanEnglishIntegrityOwner,
+	type IntegrityBindingKind,
+	type IntegrityOwnerId,
+	type IntegrityProblem,
+	type IntegritySuccessor
+} from './american-english-integrity-contracts.js';
 import { equipmentIntegrityOwner } from './american-english-equipment-successors.js';
 import { runtimeAndEngineIntegrityOwner } from './american-english-runtime-successors.js';
 import { visualProductionIntegrityOwner } from './american-english-visual-successors.js';
 
-export type IntegrityBindingKind =
-	| 'raw-file'
-	| 'utf8-string'
-	| 'canonical-json'
-	| 'path-and-content'
-	| 'event-chain'
-	| 'generated-output';
-
-export type IntegrityOwnerId = 'equipment' | 'visual-production' | 'runtime-and-engine';
-
-export type IntegritySerializerId =
-	| 'equipment-v1'
-	| 'equipment-v2'
-	| 'equipment-v3'
-	| 'family-affinity'
-	| 'image-production'
-	| 'character-manifest'
-	| 'engine';
-
-export interface IntegrityPlanningNode {
-	readonly path: string;
-	readonly kind: IntegrityBindingKind;
-	readonly serializer: IntegritySerializerId;
-	readonly value: unknown;
-	readonly dependsOn: readonly string[];
-	readonly dependencyBindings?: readonly {
-		readonly sourcePath: string;
-		readonly jsonPointer: string;
-	}[];
-}
-
-export interface IntegrityPlanningContext {
-	readonly nodes: readonly IntegrityPlanningNode[];
-}
-
-export interface IntegrityVerificationContext {
-	readonly nodes: readonly IntegrityPlanningNode[];
-	readonly successors: readonly IntegritySuccessor[];
-}
-
-export interface IntegritySuccessor {
-	readonly path: string;
-	readonly kind: IntegrityBindingKind;
-	readonly digest: string;
-	readonly value: unknown;
-	readonly dependencies: readonly { readonly path: string; readonly digest: string }[];
-	readonly languageMigrationSuccessor: true;
-}
-
-export type IntegrityProblemCode =
-	| 'ambiguous-owner'
-	| 'changed-binary'
-	| 'digest-mismatch'
-	| 'missing-command'
-	| 'missing-node'
-	| 'unknown-digest'
-	| 'unowned-binding';
-
-export interface IntegrityProblem {
-	readonly path: string;
-	readonly jsonPointer: string;
-	readonly code: IntegrityProblemCode;
-	readonly message: string;
-}
-
-export interface AmericanEnglishIntegrityOwner {
-	readonly id: IntegrityOwnerId;
-	readonly regeneration: {
-		readonly writeCommand: string;
-		readonly checkCommand: string;
-	} | null;
-	owns(path: string, jsonPointer: string): boolean;
-	planSuccessors(context: IntegrityPlanningContext): Promise<readonly IntegritySuccessor[]>;
-	verify(context: IntegrityVerificationContext): Promise<readonly IntegrityProblem[]>;
-}
+export * from './american-english-integrity-contracts.js';
 
 export interface TrackedTreeEntry {
 	readonly path: string;
@@ -108,6 +41,7 @@ export interface IntegrityOwnerPlan {
 	readonly paths: readonly string[];
 	readonly writeCommand: string;
 	readonly checkCommand: string;
+	readonly successorIntents: readonly IntegritySuccessor[];
 }
 
 export interface IntegrityBindingReport {
@@ -116,7 +50,10 @@ export interface IntegrityBindingReport {
 	readonly problems: readonly IntegrityProblem[];
 }
 
-type MigrationProjection = Pick<AmericanEnglishMigrationPlan, 'textEdits' | 'pathMoves'>;
+interface MigrationProjection {
+	readonly textEdits: readonly { readonly path: string }[];
+	readonly pathMoves: readonly { readonly source: string }[];
+}
 
 const INTEGRITY_MARKERS = [
 	'canonicalHash',
@@ -128,233 +65,12 @@ const INTEGRITY_MARKERS = [
 	'sourceHash'
 ] as const;
 
-const KNOWN_DIGEST_FIELDS = new Set([
-	'activatedIdentitySignature',
-	'activeQuotaSummarySha256',
-	'activeSelectionSha256',
-	'allocationCanonicalSha256',
-	'approvedSourceManifestHash',
-	'assignmentCanonicalSha256',
-	'assignmentSha256',
-	'byteSha256',
-	'calibrationInspectionSha256',
-	'candidateByteSha256',
-	'candidateHash',
-	'candidateSha256',
-	'canonicalPromptSha256',
-	'canonicalSha256',
-	'catalogHash',
-	'chainHeadSha256',
-	'characterKernelSha256',
-	'checkpointInspectionSha256',
-	'chibiSha256',
-	'chibiSourceSha256',
-	'contentHash',
-	'contentSha256',
-	'corpusHash',
-	'eligibilityHash',
-	'evidenceHash',
-	'evidenceSetCanonicalSha256',
-	'excludedIdentitySignaturesSha256',
-	'excludedIdsSha256',
-	'excludedNormalizedDisplayNamesSha256',
-	'externalArtifactSha256',
-	'failureResultSha256',
-	'familyPacketSha256',
-	'finalImageHash',
-	'frozenIdentitySignature',
-	'identityPacketSha256',
-	'identitySignature',
-	'imageByteSha256',
-	'imageSha256',
-	'integrationReceiptCanonicalSha256',
-	'inventorySha256',
-	'legalActionHash',
-	'manifestCanonicalSha256',
-	'manifestContentHash',
-	'manifestHash',
-	'manifestSha256',
-	'normalCandidateSha256',
-	'normalResultSha256',
-	'normalTargetSha256',
-	'packetHash',
-	'planCanonicalSha256',
-	'planContentSha256',
-	'postRepairContentHash',
-	'preRepairContentHash',
-	'previousActivationSha256',
-	'previousEventCanonicalSha256',
-	'producerIdentitySha256',
-	'profileAcceptanceCanonicalSha256',
-	'profileCanonicalSha256',
-	'promptHash',
-	'promptSha256',
-	'providerSourceHash',
-	'providerSourceSha256',
-	'recomputedContentHash',
-	'referenceSheetHash',
-	'registryCanonicalSha256',
-	'renderedPromptSha256',
-	'reserveAnalysisSha256',
-	'resultCanonicalSha256',
-	'resultHash',
-	'resultSha256',
-	'reviewReceiptSha256',
-	'reviewSha256',
-	'rosterPlanSha256',
-	'runPlanCanonicalSha256',
-	'selectedResultSha256',
-	'sha256',
-	'sourceCandidateSha256',
-	'sourceContentHash',
-	'sourceInventorySha256',
-	'sourceMappingSha256',
-	'sourcePacketSha256',
-	'sourceRosterSha256',
-	'sourceSha256',
-	'sourceVisualIndexSha256',
-	'stateHash',
-	'submittedPromptSha256',
-	'submittedReferenceSha256',
-	'summonSha256',
-	'summonSourceSha256',
-	'supplementalReservePacketSha256',
-	'supplementalReserveSha256',
-	'targetCanonicalSha256',
-	'targetSha256'
-]);
-
 function compareCodepoints(left: string, right: string): number {
 	return left < right ? -1 : left > right ? 1 : 0;
 }
 
-function sha256(value: string | Uint8Array): string {
-	return createHash('sha256').update(value).digest('hex');
-}
-
 function escapePointerToken(value: string): string {
 	return value.replaceAll('~', '~0').replaceAll('/', '~1');
-}
-
-function setJsonPointer(value: unknown, pointer: string, replacement: string): unknown {
-	if (!pointer.startsWith('/') || value === null || typeof value !== 'object') {
-		throw new Error(`Invalid dependency JSON pointer: ${pointer}`);
-	}
-	const clone = structuredClone(value);
-	const components = pointer
-		.slice(1)
-		.split('/')
-		.map((component) => component.replaceAll('~1', '/').replaceAll('~0', '~'));
-	let parent: unknown = clone;
-	for (const component of components.slice(0, -1)) {
-		if (parent === null || typeof parent !== 'object') {
-			throw new Error(`Dependency JSON pointer does not resolve: ${pointer}`);
-		}
-		parent = (parent as Record<string, unknown>)[component];
-	}
-	if (parent === null || typeof parent !== 'object') {
-		throw new Error(`Dependency JSON pointer does not resolve: ${pointer}`);
-	}
-	const leaf = components.at(-1);
-	if (leaf === undefined || !(leaf in parent)) {
-		throw new Error(`Dependency JSON pointer does not resolve: ${pointer}`);
-	}
-	(parent as Record<string, unknown>)[leaf] = replacement;
-	return clone;
-}
-
-export async function planTopologicalIntegritySuccessors(
-	context: IntegrityPlanningContext,
-	digest: (serializer: IntegritySerializerId, value: unknown) => string
-): Promise<readonly IntegritySuccessor[]> {
-	const nodes = new Map<string, IntegrityPlanningNode>();
-	for (const node of context.nodes) {
-		if (nodes.has(node.path)) throw new Error(`Duplicate integrity node: ${node.path}`);
-		nodes.set(node.path, node);
-	}
-	for (const node of nodes.values()) {
-		for (const sourcePath of node.dependsOn) {
-			if (!nodes.has(sourcePath)) {
-				throw new Error(`Missing source node ${sourcePath} required by ${node.path}`);
-			}
-		}
-	}
-
-	const remaining = new Map(nodes);
-	const completed = new Map<string, IntegritySuccessor>();
-	const successors: IntegritySuccessor[] = [];
-	while (remaining.size > 0) {
-		const ready = [...remaining.values()]
-			.filter((node) => node.dependsOn.every((sourcePath) => completed.has(sourcePath)))
-			.sort((left, right) => compareCodepoints(left.path, right.path));
-		if (ready.length === 0) throw new Error('Integrity dependency cycle');
-		for (const node of ready) {
-			let value = structuredClone(node.value);
-			const dependencies = node.dependsOn.map((sourcePath) => {
-				const source = completed.get(sourcePath)!;
-				return { path: sourcePath, digest: source.digest };
-			});
-			for (const binding of node.dependencyBindings ?? []) {
-				if (!node.dependsOn.includes(binding.sourcePath)) {
-					throw new Error(
-						`Dependency binding references undeclared source ${binding.sourcePath} from ${node.path}`
-					);
-				}
-				value = setJsonPointer(
-					value,
-					binding.jsonPointer,
-					completed.get(binding.sourcePath)!.digest
-				);
-			}
-			const successor: IntegritySuccessor = {
-				path: node.path,
-				kind: node.kind,
-				digest: digest(node.serializer, value),
-				value,
-				dependencies,
-				languageMigrationSuccessor: true
-			};
-			completed.set(node.path, successor);
-			successors.push(successor);
-			remaining.delete(node.path);
-		}
-	}
-	return successors;
-}
-
-export async function verifyTopologicalIntegritySuccessors(
-	context: IntegrityVerificationContext,
-	digest: (serializer: IntegritySerializerId, value: unknown) => string
-): Promise<readonly IntegrityProblem[]> {
-	const expected = await planTopologicalIntegritySuccessors({ nodes: context.nodes }, digest);
-	const actualByPath = new Map(context.successors.map((successor) => [successor.path, successor]));
-	const problems: IntegrityProblem[] = [];
-	for (const successor of expected) {
-		const actual = actualByPath.get(successor.path);
-		if (
-			actual === undefined ||
-			actual.digest !== successor.digest ||
-			actual.languageMigrationSuccessor !== true
-		) {
-			problems.push({
-				path: successor.path,
-				jsonPointer: '',
-				code: 'digest-mismatch',
-				message: 'Successor digest does not match the live canonical serializer'
-			});
-		}
-	}
-	for (const actual of context.successors) {
-		if (!expected.some(({ path }) => path === actual.path)) {
-			problems.push({
-				path: actual.path,
-				jsonPointer: '',
-				code: 'missing-node',
-				message: 'Successor has no registered source node'
-			});
-		}
-	}
-	return problems.sort((left, right) => compareCodepoints(left.path, right.path));
 }
 
 function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
@@ -362,6 +78,7 @@ function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
 }
 
 function inferKind(field: string): IntegrityBindingKind {
+	if (field === 'raw-file') return 'raw-file';
 	if (field === 'generated-output') return 'generated-output';
 	if (/prompt/iu.test(field)) return 'utf8-string';
 	if (/canonical/iu.test(field)) return 'canonical-json';
@@ -371,30 +88,25 @@ function inferKind(field: string): IntegrityBindingKind {
 	return 'path-and-content';
 }
 
-function isGeneratedArtifactPath(path: string): boolean {
+function isGeneratedArtifactPath(repositoryPath: string): boolean {
 	return (
-		/\.(?:html|webp)$/u.test(path) ||
-		path.includes('/review/') ||
-		path.includes('/reviews/') ||
-		path.includes('/runtime/') ||
-		path.startsWith('apps/web/static/')
+		/\.(?:html|webp)$/u.test(repositoryPath) ||
+		repositoryPath.includes('/review/') ||
+		repositoryPath.includes('/reviews/') ||
+		repositoryPath.includes('/runtime/') ||
+		repositoryPath.startsWith('apps/web/static/')
 	);
 }
 
-function isKnownDigestField(field: string, parentPointer: string): boolean {
-	return KNOWN_DIGEST_FIELDS.has(field) || parentPointer.endsWith('/intermediateHashes');
-}
-
-function scanJsonBindings(
+function scanJsonDigests(
 	value: unknown,
-	path: string,
+	repositoryPath: string,
 	pointer: string,
-	bindings: { readonly path: string; readonly jsonPointer: string; readonly field: string }[],
-	problems: IntegrityProblem[]
+	bindings: { readonly path: string; readonly jsonPointer: string; readonly field: string }[]
 ): void {
 	if (Array.isArray(value)) {
 		value.forEach((child, index) =>
-			scanJsonBindings(child, path, `${pointer}/${index}`, bindings, problems)
+			scanJsonDigests(child, repositoryPath, `${pointer}/${index}`, bindings)
 		);
 		return;
 	}
@@ -402,18 +114,9 @@ function scanJsonBindings(
 	for (const [field, child] of Object.entries(value as Record<string, unknown>)) {
 		const childPointer = `${pointer}/${escapePointerToken(field)}`;
 		if (typeof child === 'string' && /^[0-9a-f]{64}$/u.test(child)) {
-			if (isKnownDigestField(field, pointer))
-				bindings.push({ path, jsonPointer: childPointer, field });
-			else {
-				problems.push({
-					path,
-					jsonPointer: childPointer,
-					code: 'unknown-digest',
-					message: `Unregistered 64-character digest field: ${field}`
-				});
-			}
+			bindings.push({ path: repositoryPath, jsonPointer: childPointer, field });
 		}
-		scanJsonBindings(child, path, childPointer, bindings, problems);
+		scanJsonDigests(child, repositoryPath, childPointer, bindings);
 	}
 }
 
@@ -423,6 +126,101 @@ export const AMERICAN_ENGLISH_INTEGRITY_OWNERS = [
 	runtimeAndEngineIntegrityOwner
 ] as const satisfies readonly AmericanEnglishIntegrityOwner[];
 
+function ownerMatchesPath(owner: AmericanEnglishIntegrityOwner, repositoryPath: string): boolean {
+	return owner.ownsPath(repositoryPath);
+}
+
+function classifyScannedBinding(
+	scannedBinding: { readonly path: string; readonly jsonPointer: string; readonly field: string },
+	owners: readonly AmericanEnglishIntegrityOwner[],
+	bindings: IntegrityBinding[],
+	problems: IntegrityProblem[]
+): void {
+	const pathOwners = owners.filter((owner) => ownerMatchesPath(owner, scannedBinding.path));
+	const matchingOwners = pathOwners.filter((owner) =>
+		owner.owns(scannedBinding.path, scannedBinding.jsonPointer)
+	);
+	if (matchingOwners.length === 0) {
+		const registeredPath = pathOwners.length > 0;
+		problems.push({
+			path: scannedBinding.path,
+			jsonPointer: scannedBinding.jsonPointer,
+			code:
+				registeredPath && scannedBinding.jsonPointer !== '' ? 'unknown-digest' : 'unowned-binding',
+			message:
+				registeredPath && scannedBinding.jsonPointer !== ''
+					? `Digest pointer is not registered for ${pathOwners.map(({ id }) => id).join(', ')}`
+					: 'No registered integrity owner matches this binding'
+		});
+		return;
+	}
+	if (matchingOwners.length > 1) {
+		problems.push({
+			path: scannedBinding.path,
+			jsonPointer: scannedBinding.jsonPointer,
+			code: 'ambiguous-owner',
+			message: `Multiple integrity owners match: ${matchingOwners.map(({ id }) => id).join(', ')}`
+		});
+		return;
+	}
+	const owner = matchingOwners[0]!;
+	if (owner.regeneration === null) {
+		problems.push({
+			path: scannedBinding.path,
+			jsonPointer: scannedBinding.jsonPointer,
+			code: 'missing-command',
+			message: `Integrity owner ${owner.id} has no regeneration command`
+		});
+		return;
+	}
+	bindings.push({
+		...scannedBinding,
+		kind: inferKind(scannedBinding.field),
+		ownerId: owner.id
+	});
+}
+
+function intentKind(
+	bindings: readonly { readonly kind: IntegrityBindingKind }[]
+): IntegrityBindingKind {
+	if (bindings.some(({ kind }) => kind === 'raw-file')) return 'raw-file';
+	if (bindings.some(({ kind }) => kind === 'generated-output')) return 'generated-output';
+	return 'path-and-content';
+}
+
+async function buildOwnerPlan(
+	owner: AmericanEnglishIntegrityOwner,
+	ownedBindings: readonly IntegrityBinding[],
+	problems: IntegrityProblem[]
+): Promise<IntegrityOwnerPlan | null> {
+	if (ownedBindings.length === 0 || owner.regeneration === null) return null;
+	const paths = [...new Set(ownedBindings.map(({ path: repositoryPath }) => repositoryPath))].sort(
+		compareCodepoints
+	);
+	const nodes = paths.map((repositoryPath) => {
+		const pathBindings = ownedBindings
+			.filter(({ path: candidatePath }) => candidatePath === repositoryPath)
+			.map(({ jsonPointer, field, kind }) => ({ jsonPointer, field, kind }));
+		return {
+			path: repositoryPath,
+			kind: intentKind(pathBindings),
+			serializer: owner.serializer,
+			value: { ownerId: owner.id, path: repositoryPath, bindings: pathBindings },
+			dependsOn: []
+		};
+	});
+	const successorIntents = await owner.planSuccessors({ nodes });
+	problems.push(...(await owner.verify({ nodes, successors: successorIntents })));
+	return {
+		id: owner.id,
+		bindingCount: ownedBindings.length,
+		pathCount: paths.length,
+		paths,
+		...owner.regeneration,
+		successorIntents
+	};
+}
+
 export async function classifyIntegrityBindings(
 	before: TrackedTreeSnapshot,
 	proposed: MigrationProjection,
@@ -430,119 +228,101 @@ export async function classifyIntegrityBindings(
 ): Promise<IntegrityBindingReport> {
 	const affectedPaths = [
 		...new Set([
-			...proposed.textEdits.map(({ path }) => path),
+			...proposed.textEdits.map(({ path: repositoryPath }) => repositoryPath),
 			...proposed.pathMoves.map(({ source }) => source)
 		])
 	].sort(compareCodepoints);
+	const selectedBinaryMoves = new Set(proposed.pathMoves.map(({ source }) => source));
 	const entries = new Map(before.entries.map((entry) => [entry.path, entry]));
 	const bindings: IntegrityBinding[] = [];
 	const problems: IntegrityProblem[] = [];
 
-	for (const path of affectedPaths) {
-		const entry = entries.get(path);
+	for (const repositoryPath of affectedPaths) {
+		const entry = entries.get(repositoryPath);
 		if (entry === undefined) {
 			problems.push({
-				path,
+				path: repositoryPath,
 				jsonPointer: '',
 				code: 'missing-node',
 				message: 'Affected integrity source is absent from the tracked-tree snapshot'
 			});
 			continue;
 		}
-		const registeredBinary = entry.binary && owners.some((owner) => owner.owns(path, ''));
-		if (
-			registeredBinary &&
-			(entry.binaryChanged === true ||
-				(entry.baselineBytes !== undefined && !bytesEqual(entry.bytes, entry.baselineBytes)))
-		) {
-			problems.push({
-				path,
-				jsonPointer: '',
-				code: 'changed-binary',
-				message: 'A moved source binary differs from its baseline bytes'
-			});
+
+		if (entry.binary) {
+			if (!selectedBinaryMoves.has(repositoryPath)) continue;
+			const rawBinding = { path: repositoryPath, jsonPointer: '', field: 'raw-file' } as const;
+			classifyScannedBinding(rawBinding, owners, bindings, problems);
+			const isOwned = owners.some((owner) => owner.owns(repositoryPath, ''));
+			if (
+				isOwned &&
+				(entry.binaryChanged === true ||
+					(entry.baselineBytes !== undefined && !bytesEqual(entry.bytes, entry.baselineBytes)))
+			) {
+				problems.push({
+					path: repositoryPath,
+					jsonPointer: '',
+					code: 'changed-binary',
+					message: 'A moved source binary differs from its baseline bytes'
+				});
+			}
+			continue;
 		}
 
-		const source = entry.binary ? '' : Buffer.from(entry.bytes).toString('utf8');
+		const source = Buffer.from(entry.bytes).toString('utf8');
 		const scanned: {
 			readonly path: string;
 			readonly jsonPointer: string;
 			readonly field: string;
 		}[] = [];
-		if (!entry.binary) {
-			try {
-				scanJsonBindings(JSON.parse(source), path, '', scanned, problems);
-			} catch {
-				// Non-JSON source is classified at the file boundary below.
-			}
+		let parsedJson = false;
+		try {
+			scanJsonDigests(JSON.parse(source), repositoryPath, '', scanned);
+			parsedJson = true;
+		} catch {
+			// Non-JSON integrity source files are matched by an explicit file contract below.
 		}
-		const hasMarker = INTEGRITY_MARKERS.some((marker) => source.includes(marker));
-		const hasRegisteredPath = owners.some((owner) => owner.owns(path, ''));
-		if (registeredBinary) scanned.push({ path, jsonPointer: '', field: 'raw-file' });
-		else if (scanned.length === 0 && hasMarker) {
-			scanned.push({ path, jsonPointer: '', field: 'source-integrity-reference' });
-		} else if (scanned.length === 0 && hasRegisteredPath) {
-			scanned.push({
-				path,
-				jsonPointer: '',
-				field: isGeneratedArtifactPath(path) ? 'generated-output' : 'owned-path'
-			});
+		for (const scannedBinding of scanned) {
+			classifyScannedBinding(scannedBinding, owners, bindings, problems);
 		}
 
-		for (const scannedBinding of scanned) {
-			const matchingOwners = owners.filter((owner) =>
-				owner.owns(scannedBinding.path, scannedBinding.jsonPointer)
-			);
-			if (matchingOwners.length === 0) {
-				problems.push({
-					path,
-					jsonPointer: scannedBinding.jsonPointer,
-					code: 'unowned-binding',
-					message: 'No registered integrity owner matches this binding'
-				});
-				continue;
+		if (scanned.length === 0) {
+			const matchingFileOwners = owners.filter((owner) => owner.owns(repositoryPath, ''));
+			const hasMarker = INTEGRITY_MARKERS.some((marker) => source.includes(marker));
+			if (matchingFileOwners.length > 0) {
+				classifyScannedBinding(
+					{
+						path: repositoryPath,
+						jsonPointer: '',
+						field: isGeneratedArtifactPath(repositoryPath) ? 'generated-output' : 'path-and-content'
+					},
+					owners,
+					bindings,
+					problems
+				);
+			} else if (!parsedJson && hasMarker) {
+				classifyScannedBinding(
+					{ path: repositoryPath, jsonPointer: '', field: 'source-integrity-reference' },
+					owners,
+					bindings,
+					problems
+				);
 			}
-			if (matchingOwners.length > 1) {
-				problems.push({
-					path,
-					jsonPointer: scannedBinding.jsonPointer,
-					code: 'ambiguous-owner',
-					message: `Multiple integrity owners match: ${matchingOwners.map(({ id }) => id).join(', ')}`
-				});
-				continue;
-			}
-			const owner = matchingOwners[0]!;
-			if (owner.regeneration === null) {
-				problems.push({
-					path,
-					jsonPointer: scannedBinding.jsonPointer,
-					code: 'missing-command',
-					message: `Integrity owner ${owner.id} has no regeneration command`
-				});
-				continue;
-			}
-			bindings.push({
-				...scannedBinding,
-				kind: inferKind(scannedBinding.field),
-				ownerId: owner.id
-			});
 		}
 	}
 
-	const ownerPlans = owners
-		.flatMap((owner): IntegrityOwnerPlan[] => {
-			const ownedBindings = bindings.filter(({ ownerId }) => ownerId === owner.id);
-			if (ownedBindings.length === 0 || owner.regeneration === null) return [];
-			return [
-				{
-					id: owner.id,
-					bindingCount: ownedBindings.length,
-					pathCount: new Set(ownedBindings.map(({ path }) => path)).size,
-					paths: [...new Set(ownedBindings.map(({ path }) => path))].sort(compareCodepoints),
-					...owner.regeneration
-				}
-			];
-		})
+	const ownerPlans = (
+		await Promise.all(
+			owners.map((owner) =>
+				buildOwnerPlan(
+					owner,
+					bindings.filter(({ ownerId }) => ownerId === owner.id),
+					problems
+				)
+			)
+		)
+	)
+		.filter((plan): plan is IntegrityOwnerPlan => plan !== null)
 		.sort((left, right) => compareCodepoints(left.id, right.id));
 	return {
 		bindings: bindings.sort(
@@ -560,6 +340,81 @@ export async function classifyIntegrityBindings(
 	};
 }
 
-export function digestUtf8(value: string): string {
-	return sha256(value);
+function splitCommand(command: string): string[][] {
+	return command.split(' && ').map((segment) => segment.trim().split(/\s+/u));
+}
+
+async function readJsonFile(filePath: string): Promise<Record<string, unknown>> {
+	return JSON.parse(await readFile(filePath, 'utf8')) as Record<string, unknown>;
+}
+
+export async function validateIntegrityOwnerCommandContracts(
+	repositoryRoot: string,
+	owners: readonly AmericanEnglishIntegrityOwner[]
+): Promise<readonly string[]> {
+	const rootPackage = await readJsonFile(path.join(repositoryRoot, 'package.json'));
+	const rootScripts = (rootPackage.scripts ?? {}) as Record<string, string>;
+	const problems: string[] = [];
+	for (const owner of owners) {
+		if (owner.regeneration === null) continue;
+		for (const command of [owner.regeneration.writeCommand, owner.regeneration.checkCommand]) {
+			for (const tokens of splitCommand(command)) {
+				if (tokens[0] !== 'pnpm') {
+					problems.push(`${owner.id}: command must begin with pnpm: ${tokens.join(' ')}`);
+					continue;
+				}
+				if (tokens[1] === 'tsx') {
+					const toolPath = tokens[2];
+					if (toolPath === undefined) problems.push(`${owner.id}: tsx command has no tool path`);
+					else {
+						try {
+							await access(path.join(repositoryRoot, toolPath));
+						} catch {
+							problems.push(`${owner.id}: missing tool ${toolPath}`);
+						}
+					}
+				} else if (tokens[1] === '--filter') {
+					const packageName = tokens[2];
+					const scriptName = tokens[3];
+					let found = false;
+					for (const packageDirectory of [
+						'engine',
+						'characters',
+						'content',
+						'contracts',
+						'evaluation',
+						'policies'
+					]) {
+						try {
+							const packageJson = await readJsonFile(
+								path.join(repositoryRoot, 'packages', packageDirectory, 'package.json')
+							);
+							if (
+								packageJson.name === packageName &&
+								typeof ((packageJson.scripts ?? {}) as Record<string, unknown>)[
+									scriptName ?? ''
+								] === 'string'
+							) {
+								found = true;
+								break;
+							}
+						} catch {
+							// This known package directory is absent or has no readable manifest.
+						}
+					}
+					if (!found)
+						problems.push(`${owner.id}: missing filtered script ${packageName} ${scriptName}`);
+				} else {
+					const scriptName = tokens[1];
+					if (scriptName === undefined || typeof rootScripts[scriptName] !== 'string') {
+						problems.push(`${owner.id}: missing package script ${scriptName ?? '<none>'}`);
+					}
+				}
+				if (tokens[1] === 'package:playtest' && !tokens.includes('--acknowledge-private-release')) {
+					problems.push(`${owner.id}: package:playtest requires --acknowledge-private-release`);
+				}
+			}
+		}
+	}
+	return problems.sort(compareCodepoints);
 }
