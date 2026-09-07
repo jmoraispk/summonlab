@@ -1753,7 +1753,7 @@
 			"memberTargetIds": [
 				"magical:restoration:soothe",
 				"magical:restoration:regeneration",
-				"magical:restoration:shared-vigour",
+				"magical:restoration:shared-vigor",
 				"magical:restoration:sanctified-ground"
 			],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/restoration-vital-renewal.json",
@@ -8379,21 +8379,21 @@
 			"resultHash": "760b86a62b199fb14518bb9f3fe6b0b62732720ac702e8ac573a045e26af3464"
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
-			"slug": "magical-restoration-shared-vigour",
-			"name": "Shared Vigour",
+			"targetId": "magical:restoration:shared-vigor",
+			"slug": "magical-restoration-shared-vigor",
+			"name": "Shared Vigor",
 			"domain": "Magical",
 			"family": "Restoration",
 			"motifFamily": "restoration.vital-renewal",
 			"rarity": "E",
 			"primaryVisualParent": "magical:restoration:regeneration",
-			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-shared-vigour.json",
-			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-restoration-shared-vigour.json",
+			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-shared-vigor.json",
+			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigor.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-restoration-shared-vigor.json",
 			"status": "candidate",
 			"finalImageHash": "32cfcf3670ed70ea5a639eb862b35007e75bd1a2689a99499623601f58bc44cf",
 			"providerSourceHash": "a6b9004a5f5ecd53ba1a324a767c226a46560c70331400f5e500ab22a4d7e19b",
-			"resultHash": "0b0d26f5412ccc2c5336140be44a54376f79d42193bed34a0308b272cec91dec"
+			"resultHash": "5ac759fa58445822326c9274c231b224b1db51ed22ee8297e49c909d6c5a3c3f"
 		},
 		{
 			"targetId": "magical:restoration:mass-mending",
@@ -8454,14 +8454,14 @@
 			"family": "Restoration",
 			"motifFamily": "restoration.vital-renewal",
 			"rarity": "C",
-			"primaryVisualParent": "magical:restoration:shared-vigour",
+			"primaryVisualParent": "magical:restoration:shared-vigor",
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-sanctified-ground.json",
 			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-sanctified-ground.png",
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-restoration-sanctified-ground.json",
 			"status": "candidate",
 			"finalImageHash": "132d10fb5e384c14b46426cdc8213cf5966932dabd01390bc868d4873a6d728a",
 			"providerSourceHash": "09c908c3905260cf02654013ab476d06803719c2b35ab73940a3c979509df8c8",
-			"resultHash": "707c101e74ad0d62565a30b1db372350d8b3d5e0df98a68a2987cabaec0f687c"
+			"resultHash": "e4303116e0f6a112df52320a2429eed3cb7222d48268ecce528df90fe23fe1e0"
 		},
 		{
 			"targetId": "magical:restoration:second-life",

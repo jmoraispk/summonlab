@@ -22,8 +22,8 @@
 		},
 		{
 			"index": 3,
-			"targetId": "magical:restoration:shared-vigour",
-			"name": "Shared Vigour",
+			"targetId": "magical:restoration:shared-vigor",
+			"name": "Shared Vigor",
 			"rarity": "E",
 			"row": 1,
 			"column": 3

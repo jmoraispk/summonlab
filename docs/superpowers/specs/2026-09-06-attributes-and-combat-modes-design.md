@@ -160,7 +160,7 @@ The first tuning candidate caps the affinity nudge at ten percent of the matchin
 contribution, not ten percent final damage or durability. The harness must demonstrate credible
 Fire casters, Water martial heroes, and other off-association builds before promotion.
 
-## Damage and defence
+## Damage and defense
 
 The initial target retains physical and magical action types. Might scales physical magnitude;
 Spirit scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
@@ -222,7 +222,7 @@ base attribute.
 ## Equipment compatibility
 
 Skill definitions declare compatible equipment-family delivery tags. A hero's learned-skill state
-records the compatible family or families with which the skill has been practised. Legal-action
+records the compatible family or families with which the skill has been practiced. Legal-action
 enumeration requires an intersection between the equipped item tags, skill delivery tags, and the
 hero's trained tags.
 

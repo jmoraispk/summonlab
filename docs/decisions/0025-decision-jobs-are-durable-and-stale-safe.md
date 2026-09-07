@@ -35,7 +35,7 @@ game state. The durable lifecycle must preserve that boundary across retries, cr
 - The existing First Choice proof projection is updated in the same transaction as its authoritative
   engine command. Engine events and replay remain the source of truth.
 - The default runnable path is a zero-cost scripted job. Model jobs require model mode, a local API
-  key, and explicit cost acknowledgement; the independent preview from ADR 0024 remains non-applying.
+  key, and explicit cost acknowledgment; the independent preview from ADR 0024 remains non-applying.
 
 ## Consequences
 

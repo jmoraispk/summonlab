@@ -12,9 +12,9 @@ Skills may be *authored* around an element — a fire technique from a fire scho
 
 **Affinity rank** is the affinity track's only measure. It runs 0 through V, rises through use, element-aligned training, leyline nodes and absorbed monster cores, and governs proc chance, status potency, environmental interaction, and dual-affinity stability. It is never raised by hero level and it never appears on the attribute sheet.
 
-This produces two independent multipliers on any single action. Attributes decide how hard, how fast, and how precisely it lands. Affinity rank decides what element it carries and whether that element does anything at all. A Fire caster with high Intellect and low affinity rank hits hard, with fire-coloured damage that rarely burns; reverse the two and the strikes land softly, but everything catches.
+This produces two independent multipliers on any single action. Attributes decide how hard, how fast, and how precisely it lands. Affinity rank decides what element it carries and whether that element does anything at all. A Fire caster with high Intellect and low affinity rank hits hard, with fire-colored damage that rarely burns; reverse the two and the strikes land softly, but everything catches.
 
-**The single coupling to attributes.** On level-up, a hero receives a modest attribute bonus matching their affinity. Flavour, not structure — it nudges a build, it does not define one.
+**The single coupling to attributes.** On level-up, a hero receives a modest attribute bonus matching their affinity. Flavor, not structure — it nudges a build, it does not define one.
 
 | Affinity | Attribute nudged | Reason |
 |---|---|---|
@@ -29,9 +29,9 @@ Dual affinities do not nudge attributes at all. Their reward is elemental, not s
 
 ## 2.2 The four affinities
 
-Four base affinities. The set is chosen for legibility over tradition: each one is something a player can picture instantly, name without a glossary, and recognise on a monster at a glance.
+Four base affinities. The set is chosen for legibility over tradition: each one is something a player can picture instantly, name without a glossary, and recognize on a monster at a glance.
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behaviour |
 |---|---|---|---|---|
 | **Fire** | Vermilion | Expansion, aggression, consumption | **Burn** | Damage over time; intensity stacks rather than duration |
 | **Earth** | Ochre-brown | Stability, endurance, weight | **Weight** | Reduces poise and action speed; increases stagger taken |
@@ -89,7 +89,7 @@ Same-affinity attacks remain the one case where attacking is actively counterpro
 
 Two states, one rule. Both unlock at **Rank IV**, both are functions of the gap in affinity rank, and both apply only inside a pairing where the overcoming relationship already exists. Neither can occur across a neutral pairing, against an unaligned combatant, or between two combatants of similar rank.
 
-> **The rule.** Where one party stands **two or more ranks above** the other, and that party is at **Rank IV or above**, the cycle stops behaving normally in their favour.
+> **The rule.** Where one party stands **two or more ranks above** the other, and that party is at **Rank IV or above**, the cycle stops behaving normally in their favor.
 
 Which state results depends only on which side of the attack that party is standing on:
 
@@ -109,9 +109,9 @@ Read only where the attacker's affinity overcomes the defender's. Everywhere els
 | **IV** Resonant | **Overwhelming** | **Overwhelming** | standard | standard | standard |
 | **V** Sovereign | **Overwhelming** | **Overwhelming** | **Overwhelming** | standard | standard |
 
-The grid is **anti-symmetric**: mirror it across the diagonal and every Overwhelming becomes a Reversal and vice versa. Five cells each. Neither state is the privileged one, and neither rank is favoured over the other — the advantage simply follows whoever is further ahead.
+The grid is **anti-symmetric**: mirror it across the diagonal and every Overwhelming becomes a Reversal and vice versa. Five cells each. Neither state is the privileged one, and neither rank is favored over the other — the advantage simply follows whoever is further ahead.
 
-Two consequences worth noting. Ranks III, IV and V can never be reversed by anything on the ladder, since no rank sits two above them from the defender's side of a normal engagement. And Rank III sits at the centre of the grid, triggering nothing and suffering nothing except against a Rank V defender — which makes it the plateau where the cycle behaves exactly as written, and a good default for mid-game content.
+Two consequences worth noting. Ranks III, IV and V can never be reversed by anything on the ladder, since no rank sits two above them from the defender's side of a normal engagement. And Rank III sits at the center of the grid, triggering nothing and suffering nothing except against a Rank V defender — which makes it the plateau where the cycle behaves exactly as written, and a good default for mid-game content.
 
 ## 2.7 Dominion
 
@@ -154,8 +154,8 @@ Affinity progresses on its own track, independent of hero level.
 | Rank | Name | Mechanical unlock | Visual signature |
 |---|---|---|---|
 | **0** | Unaligned | No affinity held. Neutral in all directions. | None |
-| **I** | Dormant | Affinity known. No procs. Elemental rider damage only. | Faint colour tint on skill effects |
-| **II** | Awakened | Status procs unlock at base rate. First affinity slot usable. | Clear elemental colour on all skills; light particle trail |
+| **I** | Dormant | Affinity known. No procs. Elemental rider damage only. | Faint color tint on skill effects |
+| **II** | Awakened | Status procs unlock at base rate. First affinity slot usable. | Clear elemental color on all skills; light particle trail |
 | **III** | Attuned | Second affinity slot. Environmental interaction — Fire ignites terrain, Wind scours it, Water floods it. A second affinity may now be held. | Persistent low aura; the element's material appears on the body |
 | **IV** | Resonant | **Overwhelming and Reversal** both become available. Procs gain area components. Status effects begin spreading between targets. | Full standing aura; local weather shifts to match the element |
 | **V** | Sovereign | **Dominion** — the element expresses without action. | The element manifests in the surroundings regardless of what the hero does |
@@ -172,9 +172,9 @@ Every pair of base affinities produces a **dual affinity**. Four bases, six pair
 
 Produced by two affinities standing in an overcoming relationship. Something is happening, violently, and it does not settle. Harder to hold.
 
-| Dual | From | Colour | Character | Status |
+| Dual | From | Color | Character | Status |
 |---|---|---|---|---|
-| **Mist** | Water ✕ Fire | Near-white grey | Scalding vapour, obscurement, concealment | **Shroud** — accuracy loss; breaks target lock |
+| **Mist** | Water ✕ Fire | Near-white grey | Scalding vapor, obscurement, concealment | **Shroud** — accuracy loss; breaks target lock |
 | **Lightning** | Fire ✕ Wind | Gold-violet | Discharge, instantaneity, the storm's own convection | **Shock** — interrupts casts; chains between nearby targets |
 | **Sand** | Wind ✕ Earth | Tan-ochre | Erosion, abrasion, the scouring storm | **Abrade** — armour shred plus blind |
 | **Rot** | Earth ✕ Water | Sickly green | Decay, disease, waterlogged ground | **Decay** — stacking degeneration that ignores armour |
@@ -183,7 +183,7 @@ Produced by two affinities standing in an overcoming relationship. Something is 
 
 Produced by two affinities with no quarrel. These are stable states of matter rather than ongoing events, and they hold without strain.
 
-| Dual | From | Colour | Character | Status |
+| Dual | From | Color | Character | Status |
 |---|---|---|---|---|
 | **Magma** | Fire ✕ Earth | Molten red-black | Liquid stone; crust over a burning core | **Melt** — destroys armour; denies ground |
 | **Ice** | Water ✕ Wind | Pale cyan | Contraction, stillness, brittleness | **Freeze** — hard stop; bonus stagger taken while frozen |
@@ -203,7 +203,7 @@ Produced by two affinities with no quarrel. These are stable states of matter ra
 
 ![Affinity pairing matrix: rows and columns are Earth, Water, Fire, and Wind. Four base affinities and six dual affinities make ten total.](../../../../assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg)
 
-Every dual is therefore two-up, one-down, one-neutral, which makes it strictly stronger on the wheel than any base affinity. That is deliberate, and it is what the rarity in 2.11 pays for. The reaction-versus-material distinction lives in stability and status flavour, not in cycle position — both groups sit on the wheel identically.
+Every dual is therefore two-up, one-down, one-neutral, which makes it strictly stronger on the wheel than any base affinity. That is deliberate, and it is what the rarity in 2.11 pays for. The reaction-versus-material distinction lives in stability and status flavor, not in cycle position — both groups sit on the wheel identically.
 
 Each weakness is authored for intuition rather than derived from a formula. There is no structural rule that picks Water over Wind as Magma's counter; it is simply the one a player will guess correctly the first time, which is worth more than a tidy derivation.
 

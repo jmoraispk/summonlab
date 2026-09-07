@@ -14,7 +14,7 @@ tradeoffs, and skill compatibility remain later combat work.
 
 | Weapon | Hands | Rank-bearing material | Combat identity |
 | --- | --- | --- | --- |
-| **Sword** | One or two | Metal | Versatile attack and defence |
+| **Sword** | One or two | Metal | Versatile attack and defense |
 | **Dagger** | One | Metal | Speed, precision, and concealment |
 | **Spear** | Two | Metal | Reach, bracing, and control |
 | **Bow** | Two | Wood | Ranged attacks |

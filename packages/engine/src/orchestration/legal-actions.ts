@@ -141,7 +141,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 				kind: 'interact',
 				label: 'Commit an engine-validated story patch',
 				description:
-					'Activate one catalogued optional beat at the open Floor 04 checkpoint without changing fixed story authority.',
+					'Activate one cataloged optional beat at the open Floor 04 checkpoint without changing fixed story authority.',
 				targetIds: [],
 				resourceCosts: {},
 				tags: ['story', 'patch', 'catalog-bound', 'replay']

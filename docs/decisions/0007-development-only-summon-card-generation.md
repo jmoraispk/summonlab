@@ -27,7 +27,7 @@ supports low-quality portrait drafts. The
 - Before execution, the server matches catalog version, asset key, asset hash, and manifest hash,
   then rereads the reference and verifies its byte count and SHA-256.
 - Provider execution requires development routes, `ENABLE_IMAGE_GENERATION=true`, a local
-  `OPENAI_API_KEY`, a verified cost estimate, and an explicit per-request cost acknowledgement.
+  `OPENAI_API_KEY`, a verified cost estimate, and an explicit per-request cost acknowledgment.
 - The adapter performs no automatic retry. Timeouts, rate limits, moderation/user failures, and
   provider failures require a new explicit request so an uncertain response cannot double-spend.
 - The provider response is validated as PNG, hashed, and returned as base64 with a provider request

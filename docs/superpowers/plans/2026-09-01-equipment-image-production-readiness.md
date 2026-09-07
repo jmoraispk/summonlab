@@ -875,7 +875,7 @@ expect(await reconcile(resultWithoutCandidate)).toMatchObject({
 ```
 
 An active started worker is never reaped by elapsed time. Operator-confirmed failure requires an
-exact target, worker, reason, and acknowledgement flag and appends evidence rather than deleting
+exact target, worker, reason, and acknowledgment flag and appends evidence rather than deleting
 anything.
 
 - [ ] **Step 2: Write the failing end-to-end simulation test**

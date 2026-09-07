@@ -69,7 +69,7 @@ function roleCandidate(state: EngineGameStateV21): StoryPatchCandidate {
 }
 
 describe('runtime story patches', () => {
-	it('accepts one catalogued, knowledge-safe role patch and replays it exactly', () => {
+	it('accepts one cataloged, knowledge-safe role patch and replays it exactly', () => {
 		const { bootstrap, state } = checkpoint();
 		const candidate = roleCandidate(state);
 		const preview = validateStoryPatchForState(state, candidate);

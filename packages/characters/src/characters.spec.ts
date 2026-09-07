@@ -267,9 +267,9 @@ describe('deterministic character generation', () => {
 			'a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a',
 			'238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d',
 			'369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d',
-			'98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c',
+			'd6ad6c862670da42158a4d02fcf6111390667d09c26db147f542c9c0d716c7a3',
 			'7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178',
-			'7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183'
+			'b588607c9f54f675078738401ccbae4f1ae79b9ce119fd6c8b63d91851ced00a'
 		]);
 		expect(manifests.map((manifest) => manifest.genderPresentation).sort()).toEqual([
 			'androgynous',

@@ -37,7 +37,7 @@ separate server-only subpath may own an explicitly injected provider transport.
   malformed JSON, invalid schema, and illegal decision. It never retries or falls back internally;
   the durable `AGT-006` job state machine owns those transitions.
 - The only application integration in this slice is a development-only manual preview endpoint.
-  It requires `POLICY_MODE=model`, a local key, explicit click/cost acknowledgement, and a matching
+  It requires `POLICY_MODE=model`, a local key, explicit click/cost acknowledgment, and a matching
   current packet hash. It returns a read-only result and cannot apply state.
 
 ## Consequences

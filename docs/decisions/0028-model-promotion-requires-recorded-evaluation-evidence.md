@@ -39,7 +39,7 @@ while leaving room for actual provider outputs to become auditable evidence late
 - `pnpm validate:agent-evaluation` regenerates both the corpus and report in memory and fails if the
   checked-in artifacts differ. `/debug/evaluations` is a development-only, zero-call evidence view.
 - `pnpm record:agent-evaluation` is never part of CI. It requires both `OPENAI_API_KEY` and an
-  explicit paid-run acknowledgement, evaluates all ten cases, and writes hash-bound local run and
+  explicit paid-run acknowledgment, evaluates all ten cases, and writes hash-bound local run and
   promotion reports under an ignored artifact directory. Partial or missing coverage cannot pass.
 
 ## Consequences

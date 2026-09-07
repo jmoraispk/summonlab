@@ -62,7 +62,7 @@ Wiki ID: \`mechanics.progression.affinities\`
 
 ## 2.2 The four affinities
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behaviour |
 | :--- | ---: | :---: | --- | ---: |
 | Fire | Vermilion | Expansion | Burn | Damage over time |
 | Earth | Ochre-brown | Stability | Weight | Reduces poise |
@@ -204,7 +204,7 @@ describe('active wiki affinity contract', () => {
 			)}
 ## Appendix
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behaviour |
 | --- | --- | --- | --- | --- |
 | Water | Deep blue | Flow | Chill | Reduces attack speed |
 `

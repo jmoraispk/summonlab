@@ -21,7 +21,7 @@
 				"Motion remains smooth, quiet, and self-contained, leaving only a brief colorless distortion with no elemental particles, status cue, or environmental residue."
 			],
 			"counterplaySignal": "The charcoal seed, channel gap, core ring, mantle shutter, or sovereign facet dulls after the form commits to its family mechanic.",
-			"forbidden": ["Affinity-coded body colour or material", "Elemental status or environmental wake", "Radiant halo or void-like absence", "Featureless orb without the form's declared silhouette"]
+			"forbidden": ["Affinity-coded body color or material", "Elemental status or environmental wake", "Radiant halo or void-like absence", "Featureless orb without the form's declared silhouette"]
 		},
 		"fire": {
 			"constructionDimensions": [

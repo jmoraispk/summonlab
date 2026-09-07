@@ -491,7 +491,7 @@ const GOBLIN_EQUIPMENT_BY_DUTY = {
 		'rune-staff-and-charm-bag',
 		'ritual-knife-and-focus-chain'
 	],
-	chieftain: ['broad-cleaver-and-command-token', 'axe-and-round-shield', 'sabre-and-signal-horn'],
+	chieftain: ['broad-cleaver-and-command-token', 'axe-and-round-shield', 'saber-and-signal-horn'],
 	guard: ['spear-and-tower-shield', 'mace-and-round-shield', 'pole-hook-and-lantern'],
 	scout: ['shortbow-and-field-knife', 'javelins-and-map-case', 'hand-axe-and-signal-whistle']
 } as const satisfies Record<(typeof GOBLIN_ATTRIBUTE_OPTIONS.duty)[number], readonly string[]>;

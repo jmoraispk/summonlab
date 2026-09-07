@@ -1,6 +1,6 @@
 {
 	"schemaVersion": "summonlab-skill-taxonomy-migration-v2",
-	"sourceInventorySha256": "c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4",
+	"sourceInventorySha256": "66d77f4f01cb96c74bbe858cdb765d68a6761f81574d8f9e7da146476e8119e7",
 	"sourceRowCount": 520,
 	"records": [
 		{
@@ -29,7 +29,7 @@
 			"rarity": "F",
 			"type": "C",
 			"requires": "Reagent Sense Novice",
-			"effect": "Basic healing and stamina draughts",
+			"effect": "Basic healing and stamina drafts",
 			"disposition": "retain",
 			"target": {
 				"domain": "Craft",
@@ -2092,7 +2092,7 @@
 			"sourcePath": "docs/wiki/mechanics/skills/magical-disciplines.md",
 			"section": "Restoration",
 			"row": 7,
-			"name": "Shared Vigour",
+			"name": "Shared Vigor",
 			"rarity": "E",
 			"type": "A",
 			"requires": "Field Care Master",
@@ -2101,7 +2101,7 @@
 			"target": {
 				"domain": "Magical",
 				"family": "Restoration",
-				"skill": "Shared Vigour"
+				"skill": "Shared Vigor"
 			}
 		},
 		{
@@ -2146,7 +2146,7 @@
 			"name": "Life Link",
 			"rarity": "D",
 			"type": "P",
-			"requires": "Shared Vigour Master, Spirit threshold",
+			"requires": "Shared Vigor Master, Spirit threshold",
 			"effect": "Damage to a linked ally is partly taken by the hero instead",
 			"disposition": "retain",
 			"target": {
@@ -3199,7 +3199,7 @@
 			"rarity": "D",
 			"type": "A",
 			"requires": "Fireball Expert, Spirit threshold",
-			"effect": "Sustained cone; channelled, drains while held",
+			"effect": "Sustained cone; channeled, drains while held",
 			"disposition": "rehome",
 			"target": {
 				"domain": "Magical",
@@ -6550,7 +6550,7 @@
 			"rarity": "F",
 			"type": "A",
 			"requires": "Wrestling Novice",
-			"effect": "Holds a target in place; both are immobilised",
+			"effect": "Holds a target in place; both are immobilized",
 			"disposition": "rehome",
 			"target": {
 				"domain": "Martial",
@@ -7949,7 +7949,7 @@
 			"rarity": "E",
 			"type": "C",
 			"requires": "Archery Intermediate, Gathering prerequisite",
-			"effect": "Craft arrows, including specialised heads",
+			"effect": "Craft arrows, including specialized heads",
 			"disposition": "rehome",
 			"target": {
 				"domain": "Martial",

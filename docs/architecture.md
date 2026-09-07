@@ -476,7 +476,7 @@ private reasoning. Timeout, provider failure, refusal, incomplete output, malfor
 failure, and illegal selection are typed but not retried here. `AGT-006` owns retry and fallback.
 
 `POST /api/runs/:runId/model-preview` is a development-only, read-only bench. It requires
-`POLICY_MODE=model`, a local API key, explicit per-click cost acknowledgement, and the exact current
+`POLICY_MODE=model`, a local API key, explicit per-click cost acknowledgment, and the exact current
 packet hash before it spends one call. The summon inspector never calls it automatically and makes
 the disabled scripted-mode state visible. A successful preview still cannot apply game state.
 
@@ -976,7 +976,7 @@ recorded provider run supplies resolved model identity, full-corpus outputs, tok
 latency. `pnpm validate:agent-evaluation` rejects drift in the checked-in corpus or report, and the
 development-only `/debug/evaluations` route renders the same artifacts without making a provider
 call. The opt-in `pnpm record:agent-evaluation` command is excluded from CI, requires a paid-run
-acknowledgement, and turns actual full-corpus outputs into measured promotion evidence. See ADR
+acknowledgment, and turns actual full-corpus outputs into measured promotion evidence. See ADR
 0028.
 
 ## Implementation order
@@ -1015,7 +1015,7 @@ journey checkpoints, and a `candidate` recommendation with no unverified P0/P1. 
 yields a checked `held` report; build success or an empty finding list cannot override it.
 
 `/playtest-release` is a development-only projection of that report. The operator packaging command
-requires explicit private-release acknowledgement and clean tracked inputs before it builds. A
+requires explicit private-release acknowledgment and clean tracked inputs before it builds. A
 qualified run stages production web/worker/package output, migrations, locked manifests, an
 environment example, and the operator runbook while excluding human notes, identifiers, recordings,
 quotes, secrets, development evidence, and source artwork. The ignored artifact receipt binds the

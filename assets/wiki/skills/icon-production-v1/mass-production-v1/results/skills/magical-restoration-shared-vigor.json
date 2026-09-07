@@ -1,9 +1,9 @@
 {
 	"schemaVersion": "skill-icon-mass-result-v1",
 	"kind": "skill",
-	"identity": "magical:restoration:shared-vigour",
+	"identity": "magical:restoration:shared-vigor",
 	"status": "candidate",
-	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-shared-vigour.json",
+	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-shared-vigor.json",
 	"promptHash": "37fcc8a98390f574539c0e688e268c9d118a4e8d2ce779b25d1d5b51f56c72d6",
 	"references": [
 		{
@@ -24,7 +24,7 @@
 		}
 	],
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-shared-vigour-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-restoration-shared-vigor-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -33,7 +33,7 @@
 		"contentHash": "a6b9004a5f5ecd53ba1a324a767c226a46560c70331400f5e500ab22a4d7e19b"
 	},
 	"output": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigor.png",
 		"mediaType": "image/png",
 		"width": 1024,
 		"height": 1024,

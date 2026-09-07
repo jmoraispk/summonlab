@@ -114,7 +114,7 @@ docs/evidence/
 
 `VillageSummary.svelte`
 
-- Render five compact, clearly labelled status fixtures.
+- Render five compact, clearly labeled status fixtures.
 - Keep current party identity names legible without requiring portraits.
 - Reflow without horizontal scrolling.
 

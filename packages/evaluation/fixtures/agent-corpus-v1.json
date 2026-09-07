@@ -69,7 +69,7 @@
 						"primaryDrive": "connect",
 						"socialStyle": "reserved",
 						"stressResponse": "confront",
-						"dailyHabit": "catalogues-tools",
+						"dailyHabit": "catalogs-tools",
 						"aptitudes": { "might": 2, "finesse": 2, "insight": 5, "resolve": 3 }
 					}
 				},
@@ -112,7 +112,7 @@
 					],
 					"assignment": null,
 					"habit": {
-						"habit": "catalogues-tools",
+						"habit": "catalogs-tools",
 						"strength": 80,
 						"repetitions": 0,
 						"satisfaction": 50,
@@ -2395,7 +2395,7 @@
 						"primaryDrive": "prove",
 						"socialStyle": "direct",
 						"stressResponse": "prepare",
-						"dailyHabit": "practises-knots",
+						"dailyHabit": "practices-knots",
 						"aptitudes": { "might": 7, "finesse": 4, "insight": 2, "resolve": 3 }
 					}
 				},
@@ -2438,7 +2438,7 @@
 					],
 					"assignment": null,
 					"habit": {
-						"habit": "practises-knots",
+						"habit": "practices-knots",
 						"strength": 83,
 						"repetitions": 0,
 						"satisfaction": 50,
@@ -2741,7 +2741,7 @@
 						"primaryDrive": "prove",
 						"socialStyle": "direct",
 						"stressResponse": "prepare",
-						"dailyHabit": "practises-knots",
+						"dailyHabit": "practices-knots",
 						"aptitudes": { "might": 7, "finesse": 4, "insight": 2, "resolve": 3 }
 					}
 				},
@@ -2784,7 +2784,7 @@
 					],
 					"assignment": null,
 					"habit": {
-						"habit": "practises-knots",
+						"habit": "practices-knots",
 						"strength": 83,
 						"repetitions": 0,
 						"satisfaction": 50,

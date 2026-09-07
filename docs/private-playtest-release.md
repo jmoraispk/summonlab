@@ -47,7 +47,7 @@ pnpm package:playtest --acknowledge-private-release
 ```
 
 The command fails before a production build when the report is held, has been edited without
-rehashing, lacks explicit acknowledgement, or has uncommitted tracked inputs. Once qualified, it
+rehashing, lacks explicit acknowledgment, or has uncommitted tracked inputs. Once qualified, it
 builds the web server, worker, and workspace packages; stages only the runtime build, migrations,
 locked manifests, environment example, and this runbook; removes source maps and development-lab
 PNG/JPEG artwork from the staged web build; rejects forbidden archive entries; and writes these

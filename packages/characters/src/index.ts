@@ -802,7 +802,7 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 				'none',
 				'none',
 				'stubble',
-				'moustache',
+				'mustache',
 				'short-beard',
 				'full-beard'
 			] as const)
@@ -1124,9 +1124,9 @@ function generateMind(recipe: CharacterGenerationRecipe): CharacterMind {
 			'checks-exits',
 			'stretches-at-dawn',
 			'shares-breakfast',
-			'catalogues-tools',
+			'catalogs-tools',
 			'walks-the-walls',
-			'practises-knots'
+			'practices-knots'
 		] as const),
 		aptitudes: {
 			might: between(mind, 2, 9),

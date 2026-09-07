@@ -19,7 +19,7 @@
 		"rarity": "F",
 		"type": "C",
 		"requires": "Reagent Sense Novice",
-		"effect": "Basic healing and stamina draughts"
+		"effect": "Basic healing and stamina drafts"
 	},
 	{
 		"sourceId": "craft-and-life.md#alchemy:3",
@@ -1335,7 +1335,7 @@
 		"sourcePath": "docs/wiki/mechanics/skills/magical-disciplines.md",
 		"section": "Restoration",
 		"row": 7,
-		"name": "Shared Vigour",
+		"name": "Shared Vigor",
 		"rarity": "E",
 		"type": "A",
 		"requires": "Field Care Master",
@@ -1371,7 +1371,7 @@
 		"name": "Life Link",
 		"rarity": "D",
 		"type": "P",
-		"requires": "Shared Vigour Master, Spirit threshold",
+		"requires": "Shared Vigor Master, Spirit threshold",
 		"effect": "Damage to a linked ally is partly taken by the hero instead"
 	},
 	{
@@ -1944,7 +1944,7 @@
 		"rarity": "D",
 		"type": "A",
 		"requires": "Fireball Expert, Spirit threshold",
-		"effect": "Sustained cone; channelled, drains while held"
+		"effect": "Sustained cone; channeled, drains while held"
 	},
 	{
 		"sourceId": "magical-evocation.md#evocation-fire:10",
@@ -3759,7 +3759,7 @@
 		"rarity": "F",
 		"type": "A",
 		"requires": "Wrestling Novice",
-		"effect": "Holds a target in place; both are immobilised"
+		"effect": "Holds a target in place; both are immobilized"
 	},
 	{
 		"sourceId": "martial-haft-and-fist.md#grappling:3",
@@ -4452,7 +4452,7 @@
 		"rarity": "E",
 		"type": "C",
 		"requires": "Archery Intermediate, Gathering prerequisite",
-		"effect": "Craft arrows, including specialised heads"
+		"effect": "Craft arrows, including specialized heads"
 	},
 	{
 		"sourceId": "martial-hunt-guard-motion.md#bow:6",

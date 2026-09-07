@@ -340,6 +340,6 @@ Pivot shifts the projection of the local origin in parent space (moves the objec
 - [ContainerOptions](https://pixijs.download/release/docs/scene.ContainerOptions.html.md)
 - [ViewContainer](https://pixijs.download/release/docs/scene.ViewContainer.html.md)
 - [Bounds](https://pixijs.download/release/docs/rendering.Bounds.html.md)
-- [Point](https://pixijs.download/release/docs/maths.Point.html.md)
-- [ObservablePoint](https://pixijs.download/release/docs/maths.ObservablePoint.html.md)
+- [Point](https://pixijs.download/release/docs/math.Point.html.md)
+- [ObservablePoint](https://pixijs.download/release/docs/math.ObservablePoint.html.md)
 - [RenderGroup](https://pixijs.download/release/docs/rendering.RenderGroup.html.md)

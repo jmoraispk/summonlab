@@ -74,7 +74,7 @@ content rather than instructions to repository workers.
 - Rot's status is **Decay**, taking over the prior Blight role; the retired Mire status **Sink** has
   no owner. Magma's **Melt** remains the closest terrain-denial effect.
 - Chill escalates to **torpor**, not Freeze; Freeze remains exclusive to Ice.
-- Earth uses **Weight**; Sediment remains available if accumulation flavour is later wanted.
+- Earth uses **Weight**; Sediment remains available if accumulation flavor is later wanted.
 - The awakening rate remains deliberately unquantified and needs economy review.
 - The manifestation threshold remains qualitative and needs combat-facing numbers.
 - Dual affinities are intentionally stronger on the wheel than bases, so dual scarcity must remain

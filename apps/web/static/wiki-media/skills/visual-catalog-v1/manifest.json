@@ -16,7 +16,7 @@
 		},
 		"massProductionManifest": {
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
-			"contentHash": "7103c8d6c7ac006dcc4c332875ac4b44213d239079219363f9056b78bd3506bf"
+			"contentHash": "22d7e61074efc43150502e82cc7947589f031cf688362c571d6eb3b99b26f0ee"
 		}
 	},
 	"records": [
@@ -1957,11 +1957,11 @@
 			"contentHash": "07b355dbd0019091f8746623201c007847d5a1911dd1089b2c17fe83d5112ad4"
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
-			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
+			"targetId": "magical:restoration:shared-vigor",
+			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigor.png",
 			"sourceContentHash": "32cfcf3670ed70ea5a639eb862b35007e75bd1a2689a99499623601f58bc44cf",
-			"file": "icons/magical-restoration-shared-vigour.32cfcf3670ed.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/magical-restoration-shared-vigour.32cfcf3670ed.webp",
+			"file": "icons/magical-restoration-shared-vigor.32cfcf3670ed.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/magical-restoration-shared-vigor.32cfcf3670ed.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 84708,

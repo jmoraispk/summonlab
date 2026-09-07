@@ -250,7 +250,7 @@ const ARCHIVE_READER_MINDS = [
 		primaryDrive: 'survive',
 		socialStyle: 'reserved',
 		stressResponse: 'prepare',
-		dailyHabit: 'catalogues-tools',
+		dailyHabit: 'catalogs-tools',
 		aptitudes: { might: 10, finesse: 10, insight: 10, resolve: 10 }
 	})
 ] as const;

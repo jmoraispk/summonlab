@@ -204,7 +204,7 @@ FusionReceipt
   costs · power-budget proof · recipeHash · state hashes
 ```
 
-An authored recipe is preferred. A procedural template can compose only catalogued effect
+An authored recipe is preferred. A procedural template can compose only cataloged effect
 operators within a budget. A development model may propose a missing definition for review, but a
 runtime model cannot author effects. Cycles, free refunds, repeated-input duplication, and tier
 growth without a paid power budget are rejected.
@@ -345,7 +345,7 @@ campaign seed + ruleset + compatible approved envelope hashes
 
 Validation proves 100 floors, causal reachability, progression/reward budgets, asset coverage,
 recurrence payoff, secret dependencies, and Floor-100 compatibility. Runtime patches select only
-eligible catalogued proposals. Facts stay separate from cast-bound voice.
+eligible cataloged proposals. Facts stay separate from cast-bound voice.
 
 World truth, Master awareness, and hero belief remain distinct. Narrative discoveries create
 evidence only for explicit holders/witness sets. A hero cannot make a knowledge-backed party

@@ -15,7 +15,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 2 | **Aimed Shot** | Bow | F | A | Archery Novice | Slower, more accurate, more damaging than a loose shot |
 | 3 | **Quick Loose** | Bow | F | A | Archery Novice | Fast, inaccurate, cheap |
 | 4 | **Steady Stance** | Bow | F | P | Archery Intermediate | Accuracy penalty removed while standing still |
-| 5 | **Fletching** | Bow | E | C | Archery Intermediate, Gathering prerequisite | Craft arrows, including specialised heads |
+| 5 | **Fletching** | Bow | E | C | Archery Intermediate, Gathering prerequisite | Craft arrows, including specialized heads |
 | 6 | **Power Draw** | Bow | E | P | Might threshold, 5,000 shots | Increased damage and range on all bow skills |
 | 7 | **Pinning Shot** | Bow | E | A | Aimed Shot Expert | Roots the target briefly |
 | 8 | **Arcing Volley** | Bow | E | A | Archery Expert | Indirect fire over cover into an area |

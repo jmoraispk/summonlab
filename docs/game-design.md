@@ -38,7 +38,7 @@ An endless mode is postgame scope. The finite tower comes first because it provi
 ### Level and skill curve
 
 The tower targets approximately `ceil(floor × 0.7)` as its lower recommended hero level: level 7
-near Floor 10, 35 near Floor 50, and 70 at Floor 100. A party may enter under- or over-levelled;
+near Floor 10, 35 near Floor 50, and 70 at Floor 100. A party may enter under- or over-leveled;
 the range is guidance, never a lock. The curve intentionally crosses each ten-level cap so
 promotion readiness matters before later bands.
 

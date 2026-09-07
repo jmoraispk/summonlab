@@ -69,9 +69,9 @@ describe('settlement presentation projection', () => {
 		expect(routineSettlementPose('meal')).toBe('eat');
 		expect(routineSettlementPose('shares-breakfast')).toBe('eat');
 		expect(routineSettlementPose('stretches-at-dawn')).toBe('train');
-		expect(routineSettlementPose('practises-knots')).toBe('train');
+		expect(routineSettlementPose('practices-knots')).toBe('train');
 		expect(routineSettlementPose('assigned-duty')).toBe('work');
-		expect(routineSettlementPose('catalogues-tools')).toBe('work');
+		expect(routineSettlementPose('catalogs-tools')).toBe('work');
 		expect(routineSettlementPose('self-directed')).toBe('idle');
 	});
 

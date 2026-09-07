@@ -421,9 +421,9 @@ const habitGestures: Record<CharacterMind['dailyHabit'], string> = {
 	'checks-exits': 'Checks the nearest exit before speaking.',
 	'stretches-at-dawn': 'Rolls one shoulder as if preparing for the next effort.',
 	'shares-breakfast': 'Leaves room beside them, making the statement communal.',
-	'catalogues-tools': 'Touches each carried tool in sequence before naming the fact.',
+	'catalogs-tools': 'Touches each carried tool in sequence before naming the fact.',
 	'walks-the-walls': 'Looks toward the perimeter and measures the distance home.',
-	'practises-knots': 'Tightens a familiar knot while choosing the exact words.'
+	'practices-knots': 'Tightens a familiar knot while choosing the exact words.'
 };
 
 const linePrefixes: Record<CharacterMind['socialStyle'], string> = {

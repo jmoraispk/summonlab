@@ -50,7 +50,7 @@ pnpm record:story-workshop
 pnpm export:story-workshop
 ```
 
-`record:story-workshop` requires an explicit paid-provider acknowledgement through its package
+`record:story-workshop` requires an explicit paid-provider acknowledgment through its package
 script. It sends the exact versioned brief with `store: false`, requests strict structured output,
 records model/response/hash/token provenance, clears stale reviews, and refuses to overwrite the
 fixture if any proposal crosses the brief catalogs or production bounds. Never commit a credential.

@@ -72,10 +72,10 @@ Magical family. Healing, curing, revival. Deliberately scarce at high rarity —
 | 4 | **Field Care** | — | F | P | Mending Intermediate | Non-magical first aid; works without mana |
 | 5 | **Regeneration** | — | E | A | Close Wound Expert, Rank II | Healing over time on one ally |
 | 6 | **Cure** | — | E | A | Soothe Expert, Alchemy prerequisite | Removes poison, disease and Blight effects |
-| 7 | **Shared Vigour** | — | E | A | Field Care Master | Transfers the hero's health to an ally |
+| 7 | **Shared Vigor** | — | E | A | Field Care Master | Transfers the hero's health to an ally |
 | 8 | **Mass Mending** | — | D | A | Regeneration Master, Rank II | Heals the whole party at reduced potency |
 | 9 | **Restore Limb** | — | D | A | Cure Master, Intellect threshold | Repairs crippling injuries and lasting wounds |
-| 10 | **Life Link** | — | D | P | Shared Vigour Master, Spirit threshold | Damage to a linked ally is partly taken by the hero instead |
+| 10 | **Life Link** | — | D | P | Shared Vigor Master, Spirit threshold | Damage to a linked ally is partly taken by the hero instead |
 | 11 | **Sanctified Ground** | — | C | A | Mass Mending Master, Rank III | Persistent healing area |
 | 12 | **Second Life** | — | C | A | Life Link Master, Rank III | Revives a recently fallen ally at low health |
 | 13 | **Purity** | — | C | P | Restore Limb Master, 25,000 casts | All cures the hero applies also grant temporary immunity |

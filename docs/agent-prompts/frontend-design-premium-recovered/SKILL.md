@@ -91,7 +91,7 @@ Distinguish authoritative policy from implementation evidence:
   | Consistent sibling-screen behavior | Strong evidence |
   | Premium defaults | Fallback |
 
-If two authoritative sources present conflicting rules and no maintained resolution exists, surface the conflict explicitly — do not silently favour one. Read `references/decision-matrix.md` for conflict-handling rules.
+If two authoritative sources present conflicting rules and no maintained resolution exists, surface the conflict explicitly — do not silently favor one. Read `references/decision-matrix.md` for conflict-handling rules.
 
 Feed the grounded brief to upstream `frontend-design` before it fills subject/audience/visual assumptions.
 
@@ -302,7 +302,7 @@ At minimum:
 4. Exercise the changed workflow in a real browser when available, including success, failure, loading, empty/no-results, keyboard, one narrow viewport, and the open state of any select/listbox popup.
 5. Compare the result with at least one sibling screen for visual language, navigation, feedback, labels, and state behavior.
 6. Exercise applicable offline, stale/conflict, session, locale/theme, long-content, and reduced-motion states rather than testing only the happy path.
-7. Search changed code for the grep-able violations catalogued in `references/anti-patterns.md` — native dialogs, uncancelled search races, non-semantic click targets, missing states, screen-local duplicates, and other common issues. Every match is a bug; fix all of them.
+7. Search changed code for the grep-able violations cataloged in `references/anti-patterns.md` — native dialogs, uncancelled search races, non-semantic click targets, missing states, screen-local duplicates, and other common issues. Every match is a bug; fix all of them.
 8. Add or update component-state stories, interaction/accessibility tests, and visual regression coverage when the repository supports them.
 9. Fix failures and repeat verification.
 

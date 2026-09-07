@@ -3064,7 +3064,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible bow actively performing Fletching, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Craft arrows, including specialised heads",
+				"supportingCue": "one restrained secondary cue communicating this effect: Craft arrows, including specialized heads",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -4934,7 +4934,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly readable human body performing Grab, with the decisive posture and contact point visible",
-				"supportingCue": "one restrained secondary cue communicating this effect: Holds a target in place; both are immobilised",
+				"supportingCue": "one restrained secondary cue communicating this effect: Holds a target in place; both are immobilized",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -5880,7 +5880,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete fire magical operation that visibly causes Flame Jet, expressed through recognizable elemental matter",
-				"supportingCue": "one restrained secondary cue communicating this effect: Sustained cone; channelled, drains while held",
+				"supportingCue": "one restrained secondary cue communicating this effect: Sustained cone; channeled, drains while held",
 				"semanticPalette": [
 					"ember orange",
 					"charcoal black",
@@ -7812,10 +7812,10 @@
 			"review": null
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
+			"targetId": "magical:restoration:shared-vigor",
 			"status": "authored",
 			"visualSpec": {
-				"dominantSubject": "a concrete magical focus, sigil, target, or transformation visibly performing Shared Vigour",
+				"dominantSubject": "a concrete magical focus, sigil, target, or transformation visibly performing Shared Vigor",
 				"supportingCue": "one restrained secondary cue communicating this effect: Transfers the hero's health to an ally",
 				"semanticPalette": [
 					"arcane gold",
@@ -8806,7 +8806,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Simple Brewing",
-				"supportingCue": "one restrained secondary cue communicating this effect: Basic healing and stamina draughts",
+				"supportingCue": "one restrained secondary cue communicating this effect: Basic healing and stamina drafts",
 				"semanticPalette": [
 					"worked bronze",
 					"charcoal black",

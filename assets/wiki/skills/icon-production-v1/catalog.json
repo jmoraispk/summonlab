@@ -5198,14 +5198,14 @@
 			"rarity": "E",
 			"type": "C",
 			"requires": "Archery Intermediate, Gathering prerequisite",
-			"effect": "Craft arrows, including specialised heads",
+			"effect": "Craft arrows, including specialized heads",
 			"mapEntryId": "ranged.arrow-craft",
 			"motifFamily": "ranged.arrow-craft",
 			"primaryVisualParent": null,
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible bow actively performing Fletching, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Craft arrows, including specialised heads",
+				"supportingCue": "one restrained secondary cue communicating this effect: Craft arrows, including specialized heads",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -8223,14 +8223,14 @@
 			"rarity": "F",
 			"type": "A",
 			"requires": "Wrestling Novice",
-			"effect": "Holds a target in place; both are immobilised",
+			"effect": "Holds a target in place; both are immobilized",
 			"mapEntryId": "body.grappling-control",
 			"motifFamily": "body.grappling-control",
 			"primaryVisualParent": "martial:body:wrestling",
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly readable human body performing Grab, with the decisive posture and contact point visible",
-				"supportingCue": "one restrained secondary cue communicating this effect: Holds a target in place; both are immobilised",
+				"supportingCue": "one restrained secondary cue communicating this effect: Holds a target in place; both are immobilized",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -9687,14 +9687,14 @@
 			"rarity": "D",
 			"type": "A",
 			"requires": "Fireball Expert, Spirit threshold",
-			"effect": "Sustained cone; channelled, drains while held",
+			"effect": "Sustained cone; channeled, drains while held",
 			"mapEntryId": "elemental.fire-trail",
 			"motifFamily": "elemental.fire-trail",
 			"primaryVisualParent": "magical:elemental:cinder-trail",
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete fire magical operation that visibly causes Flame Jet, expressed through recognizable elemental matter",
-				"supportingCue": "one restrained secondary cue communicating this effect: Sustained cone; channelled, drains while held",
+				"supportingCue": "one restrained secondary cue communicating this effect: Sustained cone; channeled, drains while held",
 				"semanticPalette": [
 					"ember orange",
 					"charcoal black",
@@ -12833,10 +12833,10 @@
 			"review": null
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
+			"targetId": "magical:restoration:shared-vigor",
 			"domain": "Magical",
 			"family": "Restoration",
-			"name": "Shared Vigour",
+			"name": "Shared Vigor",
 			"labels": [],
 			"rarity": "E",
 			"type": "A",
@@ -12847,7 +12847,7 @@
 			"primaryVisualParent": "magical:restoration:regeneration",
 			"status": "authored",
 			"visualSpec": {
-				"dominantSubject": "a concrete magical focus, sigil, target, or transformation visibly performing Shared Vigour",
+				"dominantSubject": "a concrete magical focus, sigil, target, or transformation visibly performing Shared Vigor",
 				"supportingCue": "one restrained secondary cue communicating this effect: Transfers the hero's health to an ally",
 				"semanticPalette": [
 					"arcane gold",
@@ -12939,7 +12939,7 @@
 			"labels": [],
 			"rarity": "D",
 			"type": "P",
-			"requires": "Shared Vigour Master, Spirit threshold",
+			"requires": "Shared Vigor Master, Spirit threshold",
 			"effect": "Damage to a linked ally is partly taken by the hero instead",
 			"mapEntryId": "restoration.life-thread",
 			"motifFamily": "restoration.life-thread",
@@ -12976,7 +12976,7 @@
 			"effect": "Persistent healing area",
 			"mapEntryId": "restoration.vital-renewal",
 			"motifFamily": "restoration.vital-renewal",
-			"primaryVisualParent": "magical:restoration:shared-vigour",
+			"primaryVisualParent": "magical:restoration:shared-vigor",
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete magical focus, sigil, target, or transformation visibly performing Sanctified Ground",
@@ -14326,14 +14326,14 @@
 			"rarity": "F",
 			"type": "C",
 			"requires": "Reagent Sense Novice",
-			"effect": "Basic healing and stamina draughts",
+			"effect": "Basic healing and stamina drafts",
 			"mapEntryId": "alchemy.brewing",
 			"motifFamily": "alchemy.brewing",
 			"primaryVisualParent": "craft:alchemy:reagent-sense",
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Simple Brewing",
-				"supportingCue": "one restrained secondary cue communicating this effect: Basic healing and stamina draughts",
+				"supportingCue": "one restrained secondary cue communicating this effect: Basic healing and stamina drafts",
 				"semanticPalette": [
 					"worked bronze",
 					"charcoal black",

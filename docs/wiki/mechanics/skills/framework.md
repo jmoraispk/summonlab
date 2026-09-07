@@ -11,7 +11,7 @@ Design status: **draft source import**. This page preserves Parts 4 and 5 of the
 | Axis | What it is | How it moves | Belongs to |
 |---|---|---|---|
 | **Rarity** | What the skill fundamentally is — its power band, its bonus count, its cost efficiency | Fixed at creation. **Never increases.** | The skill |
-| **Mastery** | How much of the skill the bearer has realised | Repetition, quality and variety of practice | This hero's relationship with the skill |
+| **Mastery** | How much of the skill the bearer has realized | Repetition, quality and variety of practice | This hero's relationship with the skill |
 
 **Rarity is real power, immediately.** A Legendary skill is roughly one acquisition in a hundred thousand, with acquisition conditions to match. It is dramatically stronger than a Common skill from the moment it is learned — higher base potency, more promotion bonuses, better cost efficiency, and effects lower tiers simply do not have.
 
@@ -26,7 +26,7 @@ Mastery has three promotions, so a fully mastered skill sits **three to six rari
 | Master Common vs Novice Rare | Common wins comfortably |
 | Master Common vs Novice Epic | Common wins |
 | Master Common vs Novice Mythic | Roughly even |
-| Master Common vs Novice Fabled | Fabled favoured, but not decisively |
+| Master Common vs Novice Fabled | Fabled favored, but not decisively |
 | Master Common vs Novice Legendary | Legendary wins |
 | Master Common vs Master Legendary | Not a contest |
 
@@ -46,7 +46,7 @@ Seven tiers, shared with materials and equipment. Rarity never increases for any
 | **A** | Fabled | Known by name across a region. Its holder is known too. | 1 in 10,000 | ~15 |
 | **S** | Legendary | Existence disputed. One holder, or none. | 1 in 100,000 | ~2 |
 
-**On naming.** Rarity names describe **scarcity and origin**; mastery names describe **the practitioner's command**. The vocabularies must never overlap, which is why *Practiced*, *Refined*, *Adept* and *Seasoned* are unavailable for rarity, and why *Divine* is reserved for off-cycle affinity flavour.
+**On naming.** Rarity names describe **scarcity and origin**; mastery names describe **the practitioner's command**. The vocabularies must never overlap, which is why *Practiced*, *Refined*, *Adept* and *Seasoned* are unavailable for rarity, and why *Divine* is reserved for off-cycle affinity flavor.
 
 *Alternate set if a less gamey register is wanted:* Common, Uncommon, Scarce, Storied, Ancient, Fabled, Legendary.
 
@@ -135,7 +135,7 @@ Variety is deliberately harder to obtain than repetition. It is the difference b
 
 ### 4.6 Practice bonuses
 
-**Promotion bonuses are awarded automatically**, read from how the skill was actually practised. No menu, no choice. Two heroes holding the same skill diverge because they trained differently.
+**Promotion bonuses are awarded automatically**, read from how the skill was actually practiced. No menu, no choice. Two heroes holding the same skill diverge because they trained differently.
 
 | Practice profile | Bonus | Effect |
 |---|---|---|
@@ -144,9 +144,9 @@ Variety is deliberately harder to obtain than repetition. It is the difference b
 | Used while below a health threshold, or outnumbered | **Composure** | Potency rises as the hero's health falls |
 | Used against armoured or resistant targets | **Penetration** | Ignores a portion of mitigation |
 | High proportion of weak-point and critical hits | **Keenness** | Increased critical rate and critical damage |
-| Practised across many distinct contexts | **Adaptability** | Reduced penalty in unfamiliar conditions; broader valid targets |
+| Practiced across many distinct contexts | **Adaptability** | Reduced penalty in unfamiliar conditions; broader valid targets |
 | Long solo repetition with no opponent | **Consistency** | Reduced variance; lower failure and fumble chance |
-| Held or channelled for extended periods | **Endurance** | Longer duration; cheaper stance upkeep |
+| Held or channeled for extended periods | **Endurance** | Longer duration; cheaper stance upkeep |
 | Cast immediately after another skill | **Flow** | Reduced cooldown when chained |
 | Substantial mentored practice | **Insight** | An additional bonus, and faster future progression on this skill |
 | Used against a wide range of opponent types | **Discernment** | Bonus damage against the type most often faced |
@@ -222,7 +222,7 @@ Progression up a ladder comes from:
 
 - **Practice** — mastering the prerequisite and accumulating the repetitions
 - **Mentorship** — a holder of the higher skill willing to teach it
-- **Epiphany** — the skill crystallising unprompted during use under pressure
+- **Epiphany** — the skill crystallizing unprompted during use under pressure
 - **Discovery** — manuals, ruins, boss drops, inherited techniques
 
 **Aptitude drives epiphany.** A hero with a family aptitude has a meaningfully higher chance of an epiphany in that family, and therefore a meaningfully better chance of ever holding its rarest skills. This is the mechanism by which aptitudes translate into access rather than merely speed.
@@ -309,8 +309,8 @@ Merging is **one** route to rare skills, not the main one, and it does not raise
 | Manuals and scrolls | F–C | The main economy; consumed on learning |
 | Teachers and schools | E–B | Also the highest-yield route through Guidance |
 | **Ladder progression** | E–S | Mastering the prerequisite and meeting the conditions. **The main route to high rarity.** |
-| **Epiphany** | D–A | Crystallises during use under pressure. Chance scales with aptitude. |
-| Monster materials | D–A | Rare drops teaching a skill flavoured by the creature |
+| **Epiphany** | D–A | Crystallizes during use under pressure. Chance scales with aptitude. |
+| Monster materials | D–A | Rare drops teaching a skill flavored by the creature |
 | Trial and boss rewards | B–S | Named techniques from named opponents |
 | Merging | C–S | Cross-family combination; late-game |
 
@@ -321,7 +321,7 @@ Merging is **one** route to rare skills, not the main one, and it does not raise
 A **ladder** is a prerequisite chain of skills climbing in rarity. A family may contain several
 chains, and labels can distinguish compatible equipment or elements without owning progression.
 
-**The full catalogue lives in the companion [skill wiki](README.md).** This part defines the framework it is built on.
+**The full catalog lives in the companion [skill wiki](README.md).** This part defines the framework it is built on.
 
 ### 5.1 Structure
 

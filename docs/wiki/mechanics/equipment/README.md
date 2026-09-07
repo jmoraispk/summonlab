@@ -92,7 +92,7 @@ contract without claiming a Gathering economy.
 | Need | Candidate items |
 | --- | --- |
 | Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
-| Defence | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
+| Defense | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
 | Magical equipment | Staff |
 | Seeded material lots | A bounded fixture selected from the canonical materials |
 

@@ -232,7 +232,7 @@ export function generateRuntimeStoryPatchReport(): RuntimeStoryPatchReport {
 	const validation = validateStoryPatchForState(state, roleCandidate);
 	const alternative = validateStoryPatchForState(state, complicationCandidate);
 	if (!validation.accepted || !alternative.accepted) {
-		throw new Error('A catalogued runtime story option failed its checkpoint validation');
+		throw new Error('A cataloged runtime story option failed its checkpoint validation');
 	}
 	const commandId = '15500000-0000-4000-8000-000000000006';
 	const command = EngineCommandSchema.parse({

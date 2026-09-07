@@ -38,7 +38,7 @@ Craft and Life. Potions, poisons, reagents. Feeds every other domain.
 | # | Skill | Label | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |
 | 1 | **Reagent Sense** | — | F | P | None | Identifies herbs, fungi and organs by sight. **Foundation.** |
-| 2 | **Simple Brewing** | — | F | C | Reagent Sense Novice | Basic healing and stamina draughts |
+| 2 | **Simple Brewing** | — | F | C | Reagent Sense Novice | Basic healing and stamina drafts |
 | 3 | **Preservation** | — | F | C | Reagent Sense Novice | Materials and food keep far longer |
 | 4 | **Extraction** | — | F | C | Simple Brewing Intermediate | Separates a material into its usable components |
 | 5 | **Poisoncraft** | — | E | C | Extraction Expert | Weapon coatings; stacking degeneration |

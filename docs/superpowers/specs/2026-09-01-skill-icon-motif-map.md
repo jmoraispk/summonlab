@@ -155,7 +155,7 @@ approved assignment with subject, supporting cue, palette, exclusions, paths, an
 | Motif ID | Proposed primary visual lineage |
 | --- | --- |
 | `restoration.wound-mending` | **Mending** → **Close Wound** → **Field Care** → **Mass Mending** → **Great Renewal** |
-| `restoration.vital-renewal` | **Soothe** → **Regeneration** → **Shared Vigour** → **Sanctified Ground** |
+| `restoration.vital-renewal` | **Soothe** → **Regeneration** → **Shared Vigor** → **Sanctified Ground** |
 | `restoration.purification` | **Cure** → **Purity** |
 | `restoration.return-life` | **Restore Limb** → **Second Life** → **Return** → **What Was Taken Back** |
 | `restoration.life-thread` | **Life Link** → **The Unbroken Thread** |

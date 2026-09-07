@@ -992,7 +992,7 @@
 			"memberTargetIds": [
 				"magical:restoration:soothe",
 				"magical:restoration:regeneration",
-				"magical:restoration:shared-vigour",
+				"magical:restoration:shared-vigor",
 				"magical:restoration:sanctified-ground"
 			]
 		},
@@ -3459,7 +3459,7 @@
 			"primaryVisualParent": null
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
+			"targetId": "magical:restoration:shared-vigor",
 			"mapEntryId": "restoration.vital-renewal",
 			"motifFamily": "restoration.vital-renewal",
 			"primaryVisualParent": "magical:restoration:regeneration"
@@ -3486,7 +3486,7 @@
 			"targetId": "magical:restoration:sanctified-ground",
 			"mapEntryId": "restoration.vital-renewal",
 			"motifFamily": "restoration.vital-renewal",
-			"primaryVisualParent": "magical:restoration:shared-vigour"
+			"primaryVisualParent": "magical:restoration:shared-vigor"
 		},
 		{
 			"targetId": "magical:restoration:second-life",

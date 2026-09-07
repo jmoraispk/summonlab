@@ -27,7 +27,7 @@ Used as the rank-bearing material for most Weapons, Heavy Armour, Shield, Access
 | F | **Bronze** | Familiar early weapon alloy; easy to cast and work for first-rank equipment. |
 | E | **Iron** | The workhorse. Cheap, plentiful, unremarkable. |
 | D | **Steel** | Properly worked. The standard for a serious weapon. |
-| C | **Blacksteel** | Dense, dark, resists heat. Favours heavy weapons and plate. |
+| C | **Blacksteel** | Dense, dark, resists heat. Favors heavy weapons and plate. |
 | B | **Skyiron** | Meteoric. Unnaturally light for its strength; holds enchantment readily. |
 | A | **Starmetal** | Weightless to the touch. Every property is superlative. |
 | S | **Sunsteel** | Exists in fragments. Cannot be worked without Godsmithing. |
@@ -55,7 +55,7 @@ Used for robes, padding, and everything a caster wears.
 | --- | --- | --- |
 | F | **Hemp Weave** | Coarse, durable, cheap |
 | E | **Wool** | Warmth and modest padding |
-| D | **Layered Silk** | Surprisingly good against piercing; favoured by duelists |
+| D | **Layered Silk** | Surprisingly good against piercing; favored by duelists |
 | C | **Spellweave** | Prepared thread woven to receive and hold magic reliably |
 | B | **Moonweave** | Faintly luminous; substantial mana regeneration |
 | A | **Starcloth** | The best caster material in existence |

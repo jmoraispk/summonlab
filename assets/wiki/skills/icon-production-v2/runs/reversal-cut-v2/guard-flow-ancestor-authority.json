@@ -8,11 +8,11 @@
 	},
 	"massManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
-		"contentHash": "7103c8d6c7ac006dcc4c332875ac4b44213d239079219363f9056b78bd3506bf"
+		"contentHash": "22d7e61074efc43150502e82cc7947589f031cf688362c571d6eb3b99b26f0ee"
 	},
 	"catalog": {
 		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-		"contentHash": "aaedbac845e16c065b42885b8e695463ed57da92623a9a4cf5612a4ae059b01e"
+		"contentHash": "86f4f539743126e25f34e53a15de714ecf97645256c71658f3bd14ee00711496"
 	},
 	"masters": [
 		{

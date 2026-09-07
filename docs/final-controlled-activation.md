@@ -6,7 +6,7 @@ The final-controlled manifests remain inert until the human blind review and eve
 pnpm report:affinity-final-controlled-activation
 ```
 
-An authorized report is necessary but is not itself an activation token. The activation command reloads and validates the evidence twice, including once while holding its exclusive lock. Live activation requires a deliberate acknowledgement:
+An authorized report is necessary but is not itself an activation token. The activation command reloads and validates the evidence twice, including once while holding its exclusive lock. Live activation requires a deliberate acknowledgment:
 
 ```sh
 pnpm activate:affinity-final-controlled-rerun -- --acknowledge-live-manifest-activation

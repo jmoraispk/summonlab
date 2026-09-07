@@ -66,7 +66,7 @@ before promoting an entry to canon.
 
 ## 4. Trolls
 
-**What they are.** Tall, gangly, thick-skinned humanoids notorious for regenerating almost any injury within moments. They are ugly by design — warty, lumpen, long-armed, with sagging features and teeth that don't fit the mouth. The regeneration is the whole point of their look: because a troll's body heals faster than it heals *correctly*, an old troll is a catalogue of everything that has ever been done to it. Limbs regrow in the wrong place, wounds seal into ridges of scar, and extra features sprout where they shouldn't. They live under bridges, in caves and in bogs, and they eat more or less anything.
+**What they are.** Tall, gangly, thick-skinned humanoids notorious for regenerating almost any injury within moments. They are ugly by design — warty, lumpen, long-armed, with sagging features and teeth that don't fit the mouth. The regeneration is the whole point of their look: because a troll's body heals faster than it heals *correctly*, an old troll is a catalog of everything that has ever been done to it. Limbs regrow in the wrong place, wounds seal into ridges of scar, and extra features sprout where they shouldn't. They live under bridges, in caves and in bogs, and they eat more or less anything.
 
 **Visual constants**
 - **Silhouette:** Tall, stooped, disproportionately long arms reaching past the knees, small head on a thick neck, potbelly.

@@ -196,7 +196,7 @@ git add packages/contracts packages/engine
 git commit -m "feat(engine): add v25 capability state"
 ```
 
-### Task 5: Add scoped attribute, learning, defence, and regeneration math
+### Task 5: Add scoped attribute, learning, defense, and regeneration math
 
 **Files:**
 

@@ -47,7 +47,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 33 | **Formless Body** | Unarmed | A | St | Diamond Body Master, composite condition | Attacks pass through the hero without effect for the duration |
 | 34 | **The Fist That Ends** | Unarmed | S | A | Empty Force Master, Formless Body Master, composite condition | One strike. Whatever it touches ceases. |
 | 35 | **Wrestling** | — | F | P | Might threshold | Enables grabs and holds. **Foundation.** |
-| 36 | **Grab** | — | F | A | Wrestling Novice | Holds a target in place; both are immobilised |
+| 36 | **Grab** | — | F | A | Wrestling Novice | Holds a target in place; both are immobilized |
 | 37 | **Shove** | — | F | A | Wrestling Novice | Pushes a target back; breaks their stance |
 | 38 | **Trip** | — | E | A | Wrestling Intermediate | Knocks the target prone |
 | 39 | **Joint Lock** | — | E | A | Grab Expert, Dexterity threshold | Prevents the target from using skills while held |
