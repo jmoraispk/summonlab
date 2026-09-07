@@ -1,10 +1,10 @@
 {
 	"schemaVersion": "summonable-hero-runtime-manifest-v2",
 	"catalogVersion": "summonable-heroes-v1",
-	"sourceCatalogContentHash": "cc8d890a191b1783c2413064493b87183df496eb730d8d4313d434e9463af385",
+	"sourceCatalogContentHash": "057f67d2fe69cf9c96b2fa3e9d519b6d04fcf0a42dc87936837a6364ce665672",
 	"exporterVersion": "summonable-hero-runtime-exporter-v2",
 	"loading": "lazy-per-hero",
-	"totalBytes": 17348736,
+	"totalBytes": 17436238,
 	"entries": [
 		{
 			"heroId": "aear-soro",
@@ -5075,8 +5075,8 @@
 			"manifestHash": "1532dbdc8342ee47453c748bdebfabe684ce3208d30231ba46d189425fb1e249",
 			"bundle": {
 				"name": "hero-oren-sorin",
-				"budgetBytes": 420000,
-				"bytes": 97280,
+				"budgetBytes": 540000,
+				"bytes": 127180,
 				"budgetStatus": "within-budget",
 				"assets": [
 					{
@@ -5121,6 +5121,30 @@
 						"encoder": {
 							"format": "webp",
 							"quality": 80,
+							"effort": 6,
+							"preset": "drawing",
+							"smartSubsample": true,
+							"metadata": "stripped"
+						}
+					},
+					{
+						"alias": "hero.oren-sorin.village-cutout",
+						"usage": "village-cutout",
+						"sourceAssetKey": "oren-sorin-village-cutout-v1",
+						"sourceStatus": "approved",
+						"sourceContentHash": "9ddd269e490bd2a294eb3d3c4f7801694232dcdb8d7e5dde9dd9e7483876fadf",
+						"manifestHashes": ["1532dbdc8342ee47453c748bdebfabe684ce3208d30231ba46d189425fb1e249"],
+						"file": "runtime/summonable-heroes-v1/oren-sorin/village-cutout.68870a30726e.webp",
+						"publicPath": "/runtime/summonable-heroes-v1/oren-sorin/village-cutout.68870a30726e.webp",
+						"width": 384,
+						"height": 576,
+						"bytes": 29900,
+						"contentHash": "68870a30726ef0cffd10b65fee578d456fa915dff07bb5edab962cf0f9bbe216",
+						"budgetBytes": 120000,
+						"budgetStatus": "within-budget",
+						"encoder": {
+							"format": "webp",
+							"quality": 82,
 							"effort": 6,
 							"preset": "drawing",
 							"smartSubsample": true,
@@ -8308,8 +8332,8 @@
 			"manifestHash": "6cec5db614ec93fab229d7b24bd4d83bb9255c9ea52bcfadd7ca84bcfcfe1db4",
 			"bundle": {
 				"name": "hero-yaso-dreno",
-				"budgetBytes": 420000,
-				"bytes": 78180,
+				"budgetBytes": 540000,
+				"bytes": 108690,
 				"budgetStatus": "within-budget",
 				"assets": [
 					{
@@ -8354,6 +8378,30 @@
 						"encoder": {
 							"format": "webp",
 							"quality": 80,
+							"effort": 6,
+							"preset": "drawing",
+							"smartSubsample": true,
+							"metadata": "stripped"
+						}
+					},
+					{
+						"alias": "hero.yaso-dreno.village-cutout",
+						"usage": "village-cutout",
+						"sourceAssetKey": "yaso-dreno-village-cutout-v1",
+						"sourceStatus": "approved",
+						"sourceContentHash": "542ead078129c1578bef6c107b75ebfdbed8dfda845ca2de4d9b5e8ed5ae786f",
+						"manifestHashes": ["6cec5db614ec93fab229d7b24bd4d83bb9255c9ea52bcfadd7ca84bcfcfe1db4"],
+						"file": "runtime/summonable-heroes-v1/yaso-dreno/village-cutout.07459c13b322.webp",
+						"publicPath": "/runtime/summonable-heroes-v1/yaso-dreno/village-cutout.07459c13b322.webp",
+						"width": 384,
+						"height": 576,
+						"bytes": 30510,
+						"contentHash": "07459c13b322953de9c1d341566c488ea44919984124d858a61409c9410126f4",
+						"budgetBytes": 120000,
+						"budgetStatus": "within-budget",
+						"encoder": {
+							"format": "webp",
+							"quality": 82,
 							"effort": 6,
 							"preset": "drawing",
 							"smartSubsample": true,
@@ -10626,8 +10674,8 @@
 			"manifestHash": "97667fed1d0ec5be0ca326ef9e364a2bd301ff44f1921656c401295f007ca04b",
 			"bundle": {
 				"name": "hero-joror-pelleth",
-				"budgetBytes": 420000,
-				"bytes": 74932,
+				"budgetBytes": 540000,
+				"bytes": 102024,
 				"budgetStatus": "within-budget",
 				"assets": [
 					{
@@ -10672,6 +10720,30 @@
 						"encoder": {
 							"format": "webp",
 							"quality": 80,
+							"effort": 6,
+							"preset": "drawing",
+							"smartSubsample": true,
+							"metadata": "stripped"
+						}
+					},
+					{
+						"alias": "hero.joror-pelleth.village-cutout",
+						"usage": "village-cutout",
+						"sourceAssetKey": "joror-pelleth-village-cutout-v1",
+						"sourceStatus": "approved",
+						"sourceContentHash": "1758fe2d1d1e46fea3991553ea5a1cd0b73e26b0c818becbd35da47a426427c3",
+						"manifestHashes": ["97667fed1d0ec5be0ca326ef9e364a2bd301ff44f1921656c401295f007ca04b"],
+						"file": "runtime/summonable-heroes-v1/joror-pelleth/village-cutout.174acd04e1bd.webp",
+						"publicPath": "/runtime/summonable-heroes-v1/joror-pelleth/village-cutout.174acd04e1bd.webp",
+						"width": 384,
+						"height": 576,
+						"bytes": 27092,
+						"contentHash": "174acd04e1bd59983da0444e313d2d2cd9afb7edafbe155ec5c6a7598ed3fd34",
+						"budgetBytes": 120000,
+						"budgetStatus": "within-budget",
+						"encoder": {
+							"format": "webp",
+							"quality": 82,
 							"effort": 6,
 							"preset": "drawing",
 							"smartSubsample": true,
@@ -13298,6 +13370,10 @@
 					{
 						"alias": "hero.oren-sorin.combat-chibi",
 						"src": "/runtime/summonable-heroes-v1/oren-sorin/combat-chibi.dd4a7d45180b.webp"
+					},
+					{
+						"alias": "hero.oren-sorin.village-cutout",
+						"src": "/runtime/summonable-heroes-v1/oren-sorin/village-cutout.68870a30726e.webp"
 					}
 				]
 			},
@@ -13987,6 +14063,10 @@
 					{
 						"alias": "hero.yaso-dreno.combat-chibi",
 						"src": "/runtime/summonable-heroes-v1/yaso-dreno/combat-chibi.ef42aa540692.webp"
+					},
+					{
+						"alias": "hero.yaso-dreno.village-cutout",
+						"src": "/runtime/summonable-heroes-v1/yaso-dreno/village-cutout.07459c13b322.webp"
 					}
 				]
 			},
@@ -14481,6 +14561,10 @@
 					{
 						"alias": "hero.joror-pelleth.combat-chibi",
 						"src": "/runtime/summonable-heroes-v1/joror-pelleth/combat-chibi.e65840708ff0.webp"
+					},
+					{
+						"alias": "hero.joror-pelleth.village-cutout",
+						"src": "/runtime/summonable-heroes-v1/joror-pelleth/village-cutout.174acd04e1bd.webp"
 					}
 				]
 			},
@@ -14811,5 +14895,5 @@
 			}
 		]
 	},
-	"manifestHash": "a00d44042424706662a1ab37178ebf9a6ab5233a608d3adaedf20b2176eef1d3"
+	"manifestHash": "324c3d87612e4860a393e9e8f849fe11eb8de00b6c5054edee9ba8c282fc6a7c"
 }

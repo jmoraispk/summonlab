@@ -5,14 +5,48 @@ import { describe, expect, it } from 'vitest';
 import sharp from 'sharp';
 
 import catalogSource from '../assets/heroes/approved/summonable-roster-v1/catalog.json';
+import manifestSource from '../assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/manifest.json';
 import {
 	VillageCutoutBackfillManifestSchema,
 	buildVillageCutoutBackfillManifest,
+	promoteVillageCutouts,
 	validateVillageCutoutCandidate
 } from './village-cutout-backfill-lib.js';
 
 const catalog = SummonableHeroCatalogSchema.parse(catalogSource);
+const manifest = VillageCutoutBackfillManifestSchema.parse(manifestSource);
 const heroIds = ['yaso-dreno', 'oren-sorin', 'joror-pelleth'] as const;
+const approval = {
+	schemaVersion: 'village-cutout-backfill-approval-v1',
+	approvalId: 'village-cutout-backfill-20260906-current-company-001-owner-approval-v1',
+	batchId: 'village-cutout-backfill-20260906-current-company-001',
+	manifestSha256: 'd1241e189493db9f11900d0a854c769b303659cd3549f038db80321630493a37',
+	reviewer: 'owner',
+	reviewDate: '2026-09-06',
+	verdict: 'approved',
+	acceptedHeroIds: heroIds,
+	approvalText: 'approve',
+	acceptedCandidates: [
+		{
+			heroId: 'yaso-dreno',
+			file: 'assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/yaso-dreno/candidate-v1.png',
+			bytes: 962120,
+			contentHash: '542ead078129c1578bef6c107b75ebfdbed8dfda845ca2de4d9b5e8ed5ae786f'
+		},
+		{
+			heroId: 'oren-sorin',
+			file: 'assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/oren-sorin/candidate-v1.png',
+			bytes: 1125692,
+			contentHash: '9ddd269e490bd2a294eb3d3c4f7801694232dcdb8d7e5dde9dd9e7483876fadf'
+		},
+		{
+			heroId: 'joror-pelleth',
+			file: 'assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/joror-pelleth/candidate-v1.png',
+			bytes: 897825,
+			contentHash: '1758fe2d1d1e46fea3991553ea5a1cd0b73e26b0c818becbd35da47a426427c3'
+		}
+	]
+} as const;
 
 async function transparentPngWithRectangle(top: number): Promise<Buffer> {
 	return sharp({
@@ -147,5 +181,73 @@ describe('Village cutout backfill evidence', () => {
 		expect(
 			VillageCutoutBackfillManifestSchema.safeParse({ ...manifest, approval: 'approved' }).success
 		).toBe(false);
+	});
+});
+
+describe('Village cutout promotion', () => {
+	it('rejects a missing approval', () => {
+		expect(() => promoteVillageCutouts(catalog, manifest, undefined)).toThrow(/approval/u);
+	});
+
+	it('rejects a stale manifest hash', () => {
+		expect(() =>
+			promoteVillageCutouts(catalog, manifest, {
+				...approval,
+				manifestSha256: 'f'.repeat(64)
+			})
+		).toThrow(/manifest hash/u);
+	});
+
+	it('rejects an accepted hero outside the exact current company', () => {
+		expect(() =>
+			promoteVillageCutouts(catalog, manifest, {
+				...approval,
+				acceptedHeroIds: ['yaso-dreno', 'oren-sorin', 'wenyn-amarun']
+			})
+		).toThrow(/accepted hero|approval/u);
+	});
+
+	it('rejects a changed candidate hash', () => {
+		const changedManifest = structuredClone(manifest);
+		changedManifest.heroes[0].candidate.sha256 = 'f'.repeat(64);
+		changedManifest.heroes[0].providerSource.sha256 = 'f'.repeat(64);
+
+		expect(() => promoteVillageCutouts(catalog, changedManifest, approval)).toThrow(
+			/manifest hash|candidate hash/u
+		);
+	});
+
+	it('rejects a revise verdict', () => {
+		expect(() =>
+			promoteVillageCutouts(catalog, manifest, { ...approval, verdict: 'revise' })
+		).toThrow(/approved|approval/u);
+	});
+
+	it('promotes exactly the three approved immutable candidates', () => {
+		const promoted = promoteVillageCutouts(catalog, manifest, approval);
+
+		expect(
+			promoted.entries
+				.filter((entry) => entry.visuals.villageCutout)
+				.map((entry) => entry.heroId)
+				.sort()
+		).toEqual(['joror-pelleth', 'oren-sorin', 'yaso-dreno']);
+		for (const candidate of approval.acceptedCandidates) {
+			const binding = promoted.entries.find((entry) => entry.heroId === candidate.heroId)!.visuals
+				.villageCutout!;
+			expect(binding).toMatchObject({
+				sourceSummonAssetKey: `${candidate.heroId}-summon-v1`,
+				asset: {
+					assetKey: `${candidate.heroId}-village-cutout-v1`,
+					role: 'village-cutout',
+					status: 'approved',
+					file: candidate.file,
+					bytes: candidate.bytes,
+					contentHash: candidate.contentHash,
+					sourceExperimentId: approval.batchId,
+					approvalId: approval.approvalId
+				}
+			});
+		}
 	});
 });

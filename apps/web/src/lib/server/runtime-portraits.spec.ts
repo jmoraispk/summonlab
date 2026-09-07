@@ -44,4 +44,16 @@ describe('runtime portraits', () => {
 			runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'village-cutout')
 		).toBeNull();
 	});
+
+	it('resolves the three approved current-company Village cutouts', () => {
+		for (const heroId of ['yaso-dreno', 'oren-sorin', 'joror-pelleth']) {
+			const hero = summonableCatalogSource.entries.find((entry) => entry.heroId === heroId)!;
+			expect(
+				runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'village-cutout')
+					?.publicPath
+			).toMatch(
+				/^\/runtime\/summonable-heroes-v1\/(?:yaso-dreno|oren-sorin|joror-pelleth)\/village-cutout\.[a-f0-9]{12}\.webp$/u
+			);
+		}
+	});
 });

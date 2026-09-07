@@ -42,13 +42,14 @@ async function pngWithOpaqueRectangle(top: number): Promise<Buffer> {
 }
 
 describe('summonable hero runtime export', () => {
-	it('plans one lazy summon and combat-chibi asset for all 200 heroes', () => {
+	it('plans 400 required hero assets plus three approved lazy Village cutouts', () => {
 		const plan = planSummonableHeroRuntime(catalog);
 
-		expect(plan).toHaveLength(400);
+		expect(plan).toHaveLength(403);
 		expect(plan.filter((entry) => entry.usage === 'summon')).toHaveLength(200);
 		expect(plan.filter((entry) => entry.usage === 'combat-chibi')).toHaveLength(200);
-		expect(new Set(plan.map((entry) => entry.alias)).size).toBe(400);
+		expect(plan.filter((entry) => entry.usage === 'village-cutout')).toHaveLength(3);
+		expect(new Set(plan.map((entry) => entry.alias)).size).toBe(403);
 	});
 
 	it('rejects a source whose approved content hash no longer matches', async () => {
@@ -97,12 +98,12 @@ describe('summonable hero runtime export', () => {
 		const edgeTouchingBytes = await pngWithOpaqueRectangle(0);
 
 		expect(first.visuals.villageCutout).toBeUndefined();
-		expect(planSummonableHeroRuntime(catalogWithOneCutout)).toHaveLength(401);
+		expect(planSummonableHeroRuntime(catalogWithOneCutout)).toHaveLength(404);
 		expect(
 			planSummonableHeroRuntime(catalogWithOneCutout).filter(
 				(entry) => entry.usage === 'village-cutout'
 			)
-		).toHaveLength(1);
+		).toHaveLength(4);
 		await expect(assertVillageCutoutAlpha(validCutoutBytes)).resolves.toBeUndefined();
 		await expect(assertVillageCutoutAlpha(opaquePngBytes)).rejects.toThrow(/true alpha/u);
 		await expect(assertVillageCutoutAlpha(edgeTouchingBytes)).rejects.toThrow(/canvas edge/u);

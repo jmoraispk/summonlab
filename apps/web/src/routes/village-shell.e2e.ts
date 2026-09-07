@@ -1,10 +1,11 @@
-import { randomUUID } from 'node:crypto';
-
 import { expect, test, type APIRequestContext } from '@playwright/test';
+
+const campaignSeed = 'village-shell-19aa1947-bcad-4fab-b2f8-e0e34a9b7eb3';
+const expectedHeroNames = ['Yaso Dreno', 'Oren Sorin', 'Joror Pelleth'] as const;
 
 async function prepareArrivedCampaign(request: APIRequestContext) {
 	const creation = await request.post('/api/campaigns', {
-		data: { seed: `village-shell-${randomUUID()}`, controlMode: 'wait' }
+		data: { seed: campaignSeed, controlMode: 'wait' }
 	});
 	expect(creation.status()).toBe(201);
 	const { campaign } = (await creation.json()) as { campaign: { runId: string } };
@@ -24,6 +25,7 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 			objectives: ReadonlyArray<{ title: string; status: 'complete' | 'current' | 'locked' }>;
 		};
 	};
+	expect(view.heroes.map((hero) => hero.draft.manifest.displayName)).toEqual(expectedHeroNames);
 
 	for (const hero of view.heroes) {
 		const conversation = await request.post(`/api/runs/${campaign.runId}/conversations`, {
@@ -54,7 +56,10 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 
 	return {
 		runId: campaign.runId,
-		heroNames: view.heroes.map((hero) => hero.draft.manifest.displayName),
+		heroes: view.heroes.map((hero) => ({
+			heroId: hero.draft.manifest.characterId,
+			name: hero.draft.manifest.displayName
+		})),
 		currentMission: view.objectives.objectives.find((objective) => objective.status === 'current')!
 	};
 }
@@ -64,7 +69,7 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	request
 }) => {
 	test.setTimeout(90_000);
-	const { runId, heroNames, currentMission } = await prepareArrivedCampaign(request);
+	const { runId, heroes, currentMission } = await prepareArrivedCampaign(request);
 	await page.goto(`/play/${runId}`);
 
 	const desktopNav = page.getByRole('navigation', { name: 'Village destinations' });
@@ -78,10 +83,39 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	const desktopScene = page.getByTestId('living-settlement');
 	const sceneResidents = desktopScene.getByTestId('village-scene-resident');
 	await expect(sceneResidents).toHaveCount(3);
-	for (const heroName of heroNames)
-		await expect(desktopScene.getByText(heroName, { exact: true })).toBeVisible();
+	const residentArt = desktopScene.locator('img.village-resident-art');
+	await expect(residentArt).toHaveCount(3);
+	await expect(desktopScene).not.toContainText('Art pending');
+	for (const hero of heroes) {
+		await expect(desktopScene.getByText(hero.name, { exact: true })).toBeVisible();
+	}
+	for (const art of await residentArt.all()) {
+		await expect(art).toBeVisible();
+		const cornerAlpha = await art.evaluate(async (element) => {
+			const image = element as HTMLImageElement;
+			if (!image.complete) {
+				await new Promise<void>((resolve, reject) => {
+					image.addEventListener('load', () => resolve(), { once: true });
+					image.addEventListener('error', () => reject(new Error('Resident art failed to load')), {
+						once: true
+					});
+				});
+			}
+			const canvas = document.createElement('canvas');
+			canvas.width = image.naturalWidth;
+			canvas.height = image.naturalHeight;
+			const context = canvas.getContext('2d', { willReadFrequently: true });
+			if (!context) throw new Error('Canvas 2D context unavailable');
+			context.drawImage(image, 0, 0);
+			return context.getImageData(0, 0, 1, 1).data[3];
+		});
+		expect(cornerAlpha).toBe(0);
+	}
 	await expect(desktopScene).not.toContainText('Dara Zev');
 	await expect(desktopScene).not.toContainText('Mara Vey');
+	await expect(desktopScene.locator('img.environment')).toBeVisible();
+	await expect(desktopScene.locator('.building-chip')).toHaveCount(5);
+	await expect(desktopScene.locator('.time-plaque')).toBeVisible();
 	await expect(desktopScene.getByText('Authoritative world')).toBeVisible();
 	await expect(
 		desktopScene.locator('[aria-label="Settlement occupancy and assignment capacity"]')
@@ -93,18 +127,22 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 		});
 	}
 
-	await desktopNav.getByRole('link', { name: 'Residents', exact: true }).click();
-	await expect(page).toHaveURL(new RegExp(`/play/${runId}\\?mode=residents$`, 'u'));
-	const residents = page.getByTestId('village-residents');
-	await expect(residents.getByTestId('village-resident')).toHaveCount(3);
-	for (const heroName of heroNames) await expect(residents).toContainText(heroName);
-	if (process.env.CAPTURE_VILLAGE_SHELL_DIR) {
-		await page.screenshot({
-			path: `${process.env.CAPTURE_VILLAGE_SHELL_DIR}/residents-desktop.png`,
-			fullPage: true
-		});
+	for (const hero of heroes) {
+		await page.goto(`/play/${runId}`);
+		await page
+			.getByTestId('living-settlement')
+			.getByRole('link', { name: new RegExp(`^${hero.name}:`, 'u') })
+			.click();
+		await expect(page).toHaveURL(
+			new RegExp(`/play/${runId}\\?mode=residents#resident-${hero.heroId}$`, 'u')
+		);
+		const residents = page.getByTestId('village-residents');
+		await expect(residents.getByTestId('village-resident')).toHaveCount(3);
+		await expect(page.locator(`#resident-${hero.heroId}`)).toBeVisible();
+		await expect(residents).toContainText(hero.name);
 	}
 
+	await page.goto(`/play/${runId}`);
 	await page.getByRole('link', { name: 'Missions', exact: true }).click();
 	await expect(page.getByTestId('village-missions')).toContainText(currentMission.title);
 
@@ -115,6 +153,9 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`/play/${runId}`);
+	await expect(
+		page.getByTestId('living-settlement').locator('img.village-resident-art')
+	).toHaveCount(3);
 	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
 	await expect(phoneLinks).toHaveCount(4);

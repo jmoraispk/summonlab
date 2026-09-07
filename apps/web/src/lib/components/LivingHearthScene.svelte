@@ -117,7 +117,7 @@
 				</div>
 				{#if showSceneArt}
 					<img
-						class="resident-cutout"
+						class="resident-cutout village-resident-art"
 						src={knownResident.sceneArt.publicPath}
 						width={knownResident.sceneArt.width}
 						height={knownResident.sceneArt.height}

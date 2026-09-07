@@ -12858,6 +12858,22 @@
 					"contentHash": "d1e7cddf7c9034f22d22289c457db766245dc792f30d08c549f69b6acf23bafa",
 					"sourceExperimentId": "five-head-chibi-regeneration-001",
 					"approvalId": "summonable-heroes-owner-approval-2026-09-05"
+				},
+				"villageCutout": {
+					"sourceSummonAssetKey": "oren-sorin-summon-v1",
+					"sourceSummonContentHash": "00b1cee63c25ce4590afea39e5539c4b1aeb4e63a2dc61ace2bdc830c10a9b4b",
+					"asset": {
+						"assetKey": "oren-sorin-village-cutout-v1",
+						"role": "village-cutout",
+						"status": "approved",
+						"file": "assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/oren-sorin/candidate-v1.png",
+						"width": 1024,
+						"height": 1536,
+						"bytes": 1125692,
+						"contentHash": "9ddd269e490bd2a294eb3d3c4f7801694232dcdb8d7e5dde9dd9e7483876fadf",
+						"sourceExperimentId": "village-cutout-backfill-20260906-current-company-001",
+						"approvalId": "village-cutout-backfill-20260906-current-company-001-owner-approval-v1"
+					}
 				}
 			}
 		},
@@ -20949,6 +20965,22 @@
 					"contentHash": "c7b5d54a526f789ac96d416405e7dc9281944df3327688c68c4defa9346161c6",
 					"sourceExperimentId": "five-head-chibi-regeneration-001",
 					"approvalId": "summonable-heroes-owner-approval-2026-09-05"
+				},
+				"villageCutout": {
+					"sourceSummonAssetKey": "yaso-dreno-summon-v1",
+					"sourceSummonContentHash": "2c757553d089e409e79cdf403b4c170de5e47b84d2f48a25cba57fa8838537e0",
+					"asset": {
+						"assetKey": "yaso-dreno-village-cutout-v1",
+						"role": "village-cutout",
+						"status": "approved",
+						"file": "assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/yaso-dreno/candidate-v1.png",
+						"width": 1024,
+						"height": 1536,
+						"bytes": 962120,
+						"contentHash": "542ead078129c1578bef6c107b75ebfdbed8dfda845ca2de4d9b5e8ed5ae786f",
+						"sourceExperimentId": "village-cutout-backfill-20260906-current-company-001",
+						"approvalId": "village-cutout-backfill-20260906-current-company-001-owner-approval-v1"
+					}
 				}
 			}
 		},
@@ -26770,6 +26802,22 @@
 					"contentHash": "1e1124557dbdf3e424080416fea7797f55c2a283e8b1d2349a0c16cd15f37274",
 					"sourceExperimentId": "five-head-chibi-regeneration-001",
 					"approvalId": "summonable-heroes-owner-approval-2026-09-05"
+				},
+				"villageCutout": {
+					"sourceSummonAssetKey": "joror-pelleth-summon-v1",
+					"sourceSummonContentHash": "130360a4f48dff40971d9039a6a813fa549549f03627cdb87422cd400864819f",
+					"asset": {
+						"assetKey": "joror-pelleth-village-cutout-v1",
+						"role": "village-cutout",
+						"status": "approved",
+						"file": "assets/heroes/experiments/village-cutout-backfill-20260906-current-company-001/heroes/joror-pelleth/candidate-v1.png",
+						"width": 1024,
+						"height": 1536,
+						"bytes": 897825,
+						"contentHash": "1758fe2d1d1e46fea3991553ea5a1cd0b73e26b0c818becbd35da47a426427c3",
+						"sourceExperimentId": "village-cutout-backfill-20260906-current-company-001",
+						"approvalId": "village-cutout-backfill-20260906-current-company-001-owner-approval-v1"
+					}
 				}
 			}
 		},

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 import type { SummonableHeroCatalog } from '../packages/contracts/src/index.js';
+import { SummonableHeroCatalogSchema } from '../packages/contracts/src/index.js';
 import sharp from 'sharp';
 import { z } from 'zod';
 
@@ -10,8 +11,14 @@ export const VILLAGE_CUTOUT_BACKFILL_ROOT =
 	`assets/heroes/experiments/${VILLAGE_CUTOUT_BACKFILL_BATCH_ID}` as const;
 export const VILLAGE_CUTOUT_BACKFILL_MANIFEST_PATH =
 	`${VILLAGE_CUTOUT_BACKFILL_ROOT}/manifest.json` as const;
+export const VILLAGE_CUTOUT_BACKFILL_APPROVAL_PATH =
+	`${VILLAGE_CUTOUT_BACKFILL_ROOT}/approval-v1.json` as const;
 export const VILLAGE_CUTOUT_BACKFILL_REVIEW_PATH =
 	`${VILLAGE_CUTOUT_BACKFILL_ROOT}/review/current-company-cutouts-v1.png` as const;
+export const VILLAGE_CUTOUT_BACKFILL_MANIFEST_SHA256 =
+	'd1241e189493db9f11900d0a854c769b303659cd3549f038db80321630493a37' as const;
+export const VILLAGE_CUTOUT_BACKFILL_APPROVAL_ID =
+	'village-cutout-backfill-20260906-current-company-001-owner-approval-v1' as const;
 export const VILLAGE_CUTOUT_BACKFILL_HERO_IDS = [
 	'yaso-dreno',
 	'oren-sorin',
@@ -112,6 +119,62 @@ export const VillageCutoutBackfillManifestSchema = z
 	});
 
 export type VillageCutoutBackfillManifest = z.infer<typeof VillageCutoutBackfillManifestSchema>;
+
+const AcceptedCandidateSchema = z
+	.object({
+		heroId: z.enum(VILLAGE_CUTOUT_BACKFILL_HERO_IDS),
+		file: RepositoryPathSchema,
+		bytes: z.number().int().positive(),
+		contentHash: Sha256Schema
+	})
+	.strict();
+
+export const VillageCutoutBackfillApprovalSchema = z
+	.object({
+		schemaVersion: z.literal('village-cutout-backfill-approval-v1'),
+		approvalId: z.literal(VILLAGE_CUTOUT_BACKFILL_APPROVAL_ID),
+		batchId: z.literal(VILLAGE_CUTOUT_BACKFILL_BATCH_ID),
+		manifestSha256: Sha256Schema,
+		reviewer: z.literal('owner'),
+		reviewDate: z.literal('2026-09-06'),
+		verdict: z.enum(['approved', 'revise']),
+		acceptedHeroIds: z.tuple([
+			z.enum(VILLAGE_CUTOUT_BACKFILL_HERO_IDS),
+			z.enum(VILLAGE_CUTOUT_BACKFILL_HERO_IDS),
+			z.enum(VILLAGE_CUTOUT_BACKFILL_HERO_IDS)
+		]),
+		approvalText: z.literal('approve'),
+		acceptedCandidates: z.tuple([
+			AcceptedCandidateSchema,
+			AcceptedCandidateSchema,
+			AcceptedCandidateSchema
+		])
+	})
+	.strict()
+	.superRefine((approval, context) => {
+		if (
+			approval.acceptedHeroIds.some(
+				(heroId, index) => heroId !== VILLAGE_CUTOUT_BACKFILL_HERO_IDS[index]
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'approval must use the exact accepted hero set'
+			});
+		}
+		if (
+			approval.acceptedCandidates.some(
+				(candidate, index) => candidate.heroId !== VILLAGE_CUTOUT_BACKFILL_HERO_IDS[index]
+			)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'approval candidates must retain current-company order'
+			});
+		}
+	});
+
+export type VillageCutoutBackfillApproval = z.infer<typeof VillageCutoutBackfillApprovalSchema>;
 
 interface CandidateHashes {
 	readonly 'yaso-dreno': string;
@@ -314,4 +377,93 @@ export function buildVillageCutoutBackfillManifest(
 		}
 	};
 	return VillageCutoutBackfillManifestSchema.parse(manifest);
+}
+
+export function promoteVillageCutouts(
+	catalogInput: SummonableHeroCatalog,
+	manifestInput: VillageCutoutBackfillManifest,
+	approvalInput: unknown
+): SummonableHeroCatalog {
+	if (approvalInput === undefined || approvalInput === null) {
+		throw new Error('Village cutout promotion requires approval');
+	}
+	const approvalResult = VillageCutoutBackfillApprovalSchema.safeParse(approvalInput);
+	if (!approvalResult.success) {
+		throw new Error(`Village cutout approval is invalid: ${approvalResult.error.message}`);
+	}
+	const approval = approvalResult.data;
+	if (approval.verdict !== 'approved') {
+		throw new Error('Village cutout approval verdict must be approved');
+	}
+
+	const manifest = VillageCutoutBackfillManifestSchema.parse(manifestInput);
+	const observedManifestSha256 = villageCutoutSha256(
+		Buffer.from(stableVillageCutoutJson(manifest), 'utf8')
+	);
+	if (
+		approval.manifestSha256 !== VILLAGE_CUTOUT_BACKFILL_MANIFEST_SHA256 ||
+		observedManifestSha256 !== approval.manifestSha256
+	) {
+		throw new Error('Village cutout manifest hash does not match the approved immutable manifest');
+	}
+
+	const catalog = SummonableHeroCatalogSchema.parse(catalogInput);
+	const approvedHeroIds = new Set<string>(approval.acceptedHeroIds);
+	const unapprovedExisting = catalog.entries.find(
+		(entry) => entry.visuals.villageCutout && !approvedHeroIds.has(entry.heroId)
+	);
+	if (unapprovedExisting) {
+		throw new Error(`Unapproved Village cutout already exists for ${unapprovedExisting.heroId}`);
+	}
+
+	const bindings = new Map(
+		manifest.heroes.map((hero, index) => {
+			const authority = assertAuthority(catalog, hero.heroId);
+			if (
+				hero.displayName !== authority.displayName ||
+				hero.summon.assetKey !== authority.assetKey ||
+				hero.summon.path !== authority.path ||
+				hero.summon.sha256 !== authority.sha256 ||
+				hero.summon.manifestSha256 !== authority.manifestSha256
+			) {
+				throw new Error(`Approved summon authority drifted for ${hero.heroId}`);
+			}
+			const candidate = approval.acceptedCandidates[index];
+			if (
+				candidate.heroId !== hero.heroId ||
+				candidate.file !== hero.candidate.path ||
+				candidate.contentHash !== hero.candidate.sha256 ||
+				hero.providerSource.sha256 !== candidate.contentHash
+			) {
+				throw new Error(`Approved candidate hash or path drifted for ${hero.heroId}`);
+			}
+			return [
+				hero.heroId,
+				{
+					sourceSummonAssetKey: authority.assetKey,
+					sourceSummonContentHash: authority.sha256,
+					asset: {
+						assetKey: `${hero.heroId}-village-cutout-v1`,
+						role: 'village-cutout' as const,
+						status: 'approved' as const,
+						file: candidate.file,
+						width: 1024,
+						height: 1536,
+						bytes: candidate.bytes,
+						contentHash: candidate.contentHash,
+						sourceExperimentId: manifest.batchId,
+						approvalId: approval.approvalId
+					}
+				}
+			] as const;
+		})
+	);
+
+	return SummonableHeroCatalogSchema.parse({
+		...catalog,
+		entries: catalog.entries.map((entry) => {
+			const villageCutout = bindings.get(entry.heroId);
+			return villageCutout ? { ...entry, visuals: { ...entry.visuals, villageCutout } } : entry;
+		})
+	});
 }
