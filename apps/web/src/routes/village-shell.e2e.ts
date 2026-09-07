@@ -1,7 +1,36 @@
-import { expect, test, type APIRequestContext } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Locator } from '@playwright/test';
 
 const campaignSeed = 'village-shell-19aa1947-bcad-4fab-b2f8-e0e34a9b7eb3';
 const expectedHeroNames = ['Yaso Dreno', 'Oren Sorin', 'Joror Pelleth'] as const;
+
+interface Box {
+	readonly x: number;
+	readonly y: number;
+	readonly width: number;
+	readonly height: number;
+}
+
+function boxesIntersect(left: Box, right: Box): boolean {
+	return (
+		left.x < right.x + right.width &&
+		left.x + left.width > right.x &&
+		left.y < right.y + right.height &&
+		left.y + left.height > right.y
+	);
+}
+
+async function expectPairwiseNonIntersecting(locator: Locator, label: string) {
+	const boxes = await Promise.all((await locator.all()).map((entry) => entry.boundingBox()));
+	for (const [index, box] of boxes.entries()) {
+		expect(box, `${label} ${index + 1} must have rendered bounds`).not.toBeNull();
+		for (let other = index + 1; other < boxes.length; other += 1) {
+			expect(
+				boxesIntersect(box!, boxes[other]!),
+				`${label} ${index + 1} ${JSON.stringify(box)} and ${other + 1} ${JSON.stringify(boxes[other])} must not intersect`
+			).toBe(false);
+		}
+	}
+}
 
 async function prepareArrivedCampaign(request: APIRequestContext) {
 	const creation = await request.post('/api/campaigns', {
@@ -79,6 +108,12 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 		'page'
 	);
 	await expect(page.getByRole('link', { name: 'summonlab' })).toBeVisible();
+	await expect(page.getByRole('button', { name: /Journal/u })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Replay', exact: true })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'New seed', exact: true })).toBeVisible();
+	const sensoryControls = page.getByTestId('sensory-controls');
+	await expect(sensoryControls).toBeVisible();
+	await expect(sensoryControls.getByRole('button', { name: /sound/u })).toBeVisible();
 	await expect(page.getByTestId('campaign-status-header')).toHaveCount(0);
 	const desktopScene = page.getByTestId('living-settlement');
 	const sceneResidents = desktopScene.getByTestId('village-scene-resident');
@@ -89,6 +124,11 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	for (const hero of heroes) {
 		await expect(desktopScene.getByText(hero.name, { exact: true })).toBeVisible();
 	}
+	await expectPairwiseNonIntersecting(sceneResidents, 'desktop resident link');
+	await expectPairwiseNonIntersecting(
+		desktopScene.locator('.activity-tag'),
+		'desktop resident tag'
+	);
 	for (const art of await residentArt.all()) {
 		await expect(art).toBeVisible();
 		const cornerAlpha = await art.evaluate(async (element) => {
@@ -153,9 +193,38 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`/play/${runId}`);
-	await expect(
-		page.getByTestId('living-settlement').locator('img.village-resident-art')
-	).toHaveCount(3);
+	const phoneScene = page.getByTestId('living-settlement');
+	const phoneResidents = phoneScene.getByTestId('village-scene-resident');
+	const phoneResidentArt = phoneScene.locator('img.village-resident-art');
+	await expect(phoneResidents).toHaveCount(3);
+	await expect(phoneResidentArt).toHaveCount(3);
+	for (const [index, hero] of heroes.entries()) {
+		await expect(phoneResidentArt.nth(index)).toBeVisible();
+		await expect(phoneScene.getByText(hero.name, { exact: true })).toBeVisible();
+		await expect(
+			phoneScene.getByRole('link', { name: new RegExp(`^${hero.name}:`, 'u') })
+		).toBeVisible();
+	}
+	for (const resident of await phoneResidents.all()) {
+		const box = await resident.boundingBox();
+		expect(box?.height).toBeGreaterThanOrEqual(44);
+		expect(box?.width).toBeGreaterThanOrEqual(44);
+	}
+	await expectPairwiseNonIntersecting(phoneResidents, 'phone resident link');
+	await expectPairwiseNonIntersecting(phoneScene.locator('.activity-tag'), 'phone resident tag');
+	await expect(page.getByRole('button', { name: /Journal/u })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Replay', exact: true })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'New seed', exact: true })).toBeVisible();
+	await expect(sensoryControls).toBeVisible();
+	await expect(sensoryControls.getByRole('button', { name: /sound/u })).toBeVisible();
+	const soundBox = await sensoryControls.boundingBox();
+	const timeBox = await phoneScene.locator('.time-plaque').boundingBox();
+	expect(soundBox).not.toBeNull();
+	expect(timeBox).not.toBeNull();
+	expect(
+		boxesIntersect(soundBox!, timeBox!),
+		`phone sound ${JSON.stringify(soundBox)} and time ${JSON.stringify(timeBox)} controls must not intersect`
+	).toBe(false);
 	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
 	await expect(phoneLinks).toHaveCount(4);

@@ -51,7 +51,7 @@ function resident(heroId: string): VillageResident {
 }
 
 describe('Village scene residents', () => {
-	it('preserves authoritative occupant order while separating equal scene points', () => {
+	it('preserves authoritative occupant order while reserving a full label footprint per cluster slot', () => {
 		const projected = projectVillageSceneResidents(scene, presentation, heroIds.map(resident));
 
 		expect(projected.map((entry) => entry.resident?.heroId)).toEqual([
@@ -59,8 +59,9 @@ describe('Village scene residents', () => {
 			presentation.occupants[1]!.heroId,
 			presentation.occupants[2]!.heroId
 		]);
-		expect(projected[0]!.point.x).toBeLessThan(projected[1]!.point.x);
-		expect(projected[1]!.point.x).toBeLessThan(projected[2]!.point.x);
+		expect(projected.map((entry) => entry.point.x)).toEqual([0.5, 0.5, 0.5]);
+		expect(projected.map((entry) => entry.clusterOffsetRem)).toEqual([-7.5, 0, 7.5]);
+		expect(projected.map((entry) => entry.clusterHalfRem)).toEqual([11.25, 11.25, 11.25]);
 		expect(projected.every((entry) => entry.point.x >= 0.08 && entry.point.x <= 0.92)).toBe(true);
 	});
 

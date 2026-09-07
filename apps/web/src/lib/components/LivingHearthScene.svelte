@@ -99,7 +99,7 @@
 		{#if knownResident}
 			<a
 				class={`scene-resident pose-${sceneResident.occupant.pose}`}
-				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%`}
+				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%;--cluster-offset:${sceneResident.clusterOffsetRem}rem;--cluster-half:${sceneResident.clusterHalfRem}rem`}
 				href={`?mode=residents#resident-${knownResident.heroId}`}
 				data-testid="village-scene-resident"
 				aria-label={`${sceneResident.label}: ${sceneResident.occupant.activityLabel}. View resident details.`}
@@ -135,7 +135,7 @@
 		{:else}
 			<div
 				class={`scene-resident unavailable pose-${sceneResident.occupant.pose}`}
-				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%`}
+				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%;--cluster-offset:${sceneResident.clusterOffsetRem}rem;--cluster-half:${sceneResident.clusterHalfRem}rem`}
 				data-testid="village-scene-resident"
 			>
 				<div class="art-pending">{sceneResident.label}</div>
@@ -343,7 +343,7 @@
 	.scene-resident {
 		position: absolute;
 		z-index: 8;
-		left: var(--x);
+		left: clamp(var(--cluster-half), var(--x), calc(100% - var(--cluster-half)));
 		top: var(--y);
 		display: flex;
 		width: clamp(3.6rem, 8vw, 7.2rem);
@@ -352,7 +352,7 @@
 		justify-content: center;
 		color: inherit;
 		text-decoration: none;
-		transform: translate(-50%, -100%);
+		transform: translate(calc(-50% + var(--cluster-offset)), -100%);
 		transition:
 			left 0.8s linear,
 			top 0.8s linear;

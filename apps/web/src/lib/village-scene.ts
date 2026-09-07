@@ -10,12 +10,14 @@ export interface VillageSceneResident {
 	readonly occupant: SettlementPresentation['occupants'][number];
 	readonly resident: VillageResident | null;
 	readonly point: NormalizedScenePoint;
+	readonly clusterOffsetRem: number;
+	readonly clusterHalfRem: number;
 	readonly label: string;
 }
 
 const MINIMUM_SCENE_X = 0.08;
 const MAXIMUM_SCENE_X = 0.92;
-const COLLISION_OFFSET = 0.06;
+const CLUSTER_SLOT_REM = 7.5;
 
 export function projectVillageSceneResidents(
 	scene: SettlementSceneDefinition,
@@ -43,13 +45,11 @@ export function projectVillageSceneResidents(
 			occupant,
 			resident,
 			point: {
-				x: clamp(
-					basePoint.x + (offsetIndex - (group.length - 1) / 2) * COLLISION_OFFSET,
-					MINIMUM_SCENE_X,
-					MAXIMUM_SCENE_X
-				),
+				x: clamp(basePoint.x, MINIMUM_SCENE_X, MAXIMUM_SCENE_X),
 				y: basePoint.y
 			},
+			clusterOffsetRem: (offsetIndex - (group.length - 1) / 2) * CLUSTER_SLOT_REM,
+			clusterHalfRem: (group.length * CLUSTER_SLOT_REM) / 2,
 			label: resident?.name ?? 'Resident unavailable'
 		};
 	});

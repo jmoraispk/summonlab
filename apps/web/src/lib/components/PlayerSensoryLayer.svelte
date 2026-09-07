@@ -239,8 +239,8 @@
 		}
 		.sensory-layer.profile-hearth {
 			top: 6.75rem;
-			right: auto;
-			left: 0.45rem;
+			right: 0.45rem;
+			left: auto;
 		}
 		.sound-caption {
 			top: 7.35rem;
@@ -254,8 +254,8 @@
 		.profile-hearth + .sensory-effect + .sound-caption,
 		.profile-hearth + .sound-caption {
 			top: 9.7rem;
-			right: auto;
-			left: 0.45rem;
+			right: 0.45rem;
+			left: auto;
 		}
 	}
 </style>
