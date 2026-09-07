@@ -59,7 +59,8 @@ export const ArriveDestinationCommandSchema = EngineCommandBaseSchema.extend({
 
 export const StartTravelCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.start.travel'),
-	targetNodeId: SettlementNodeIdSchema
+	targetNodeId: SettlementNodeIdSchema,
+	requestContext: z.literal('mission-readiness').optional()
 }).strict();
 
 export const AssignHeroBuildingCommandSchema = EngineCommandBaseSchema.extend({

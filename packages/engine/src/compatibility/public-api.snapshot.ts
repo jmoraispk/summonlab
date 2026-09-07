@@ -78,6 +78,8 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'masterFallbackSafetySource',
 	'maximumHealth',
 	'maximumMana',
+	'missionHeroReadiness',
+	'missionPreparationReadiness',
 	'missionTurnLegalActions',
 	'monsterArmorReduction',
 	'namedResistanceReduction',

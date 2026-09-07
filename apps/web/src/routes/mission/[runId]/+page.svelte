@@ -13,6 +13,7 @@
 
 	let { data } = $props();
 	let busy = $state(false);
+	let returningForMission = $state(false);
 	let selectedHeroIds = $state<string[]>([]);
 	let selectionInitialized = $state(false);
 	let resultMessage = $state('');
@@ -129,6 +130,10 @@
 			((turnState?.roundNumber ?? 0) + 1) % 2 === 0
 	);
 	const hero = $derived(Object.values(engineState.heroes)[0]);
+	const heroReadiness = $derived(data.missionReadiness?.hero ?? null);
+	const heroCanSelect = $derived(
+		heroReadiness ? heroReadiness.canSelect : hero?.lifeState === 'active'
+	);
 	const heroSelected = $derived(hero ? selectedHeroIds.includes(hero.heroId) : false);
 	const terminal = $derived(
 		attempt
@@ -179,7 +184,7 @@
 		selectedHeroIds =
 			attempt?.status === 'preparing'
 				? [...attempt.party.heroIds]
-				: hero.lifeState === 'active'
+				: heroCanSelect
 					? [hero.heroId]
 					: [];
 		selectionInitialized = true;
@@ -218,7 +223,7 @@
 	});
 
 	$effect(() => {
-		if (hero?.lifeState !== 'active' && selectedHeroIds.includes(hero?.heroId ?? '')) {
+		if (!heroCanSelect && selectedHeroIds.includes(hero?.heroId ?? '')) {
 			selectedHeroIds = selectedHeroIds.filter((heroId) => heroId !== hero?.heroId);
 		}
 	});
@@ -233,8 +238,31 @@
 	});
 
 	function toggleHero() {
-		if (!hero) return;
+		if (!hero || !heroCanSelect) return;
 		selectedHeroIds = heroSelected ? [] : [hero.heroId];
+	}
+
+	async function requestReadinessReturn() {
+		if (!hero || !heroReadiness?.canRequestReturn) return;
+		returningForMission = true;
+		resultMessage = '';
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/mission-readiness`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: '{}'
+			});
+			const body = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(body.message ?? 'The hero could not return.');
+			resultMessage = 'The hero followed the verified route back to the Tower Threshold.';
+			await invalidateAll();
+			selectedHeroIds = [hero.heroId];
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The hero could not return.';
+		} finally {
+			returningForMission = false;
+		}
 	}
 
 	async function act(payload: MissionLifecycleRequest, success: string) {
@@ -443,39 +471,45 @@
 			<p class="eyebrow">
 				{isPortal
 					? 'Portal World / extraction clock'
-					: isMasterFallback
-						? 'Tower Floor 01 / autonomous doctrine'
-						: isMasterTiming
-							? 'Tower Floor 01 / four command tempos'
-							: isMasterRisk
-								? 'Tower Floor 03 / the Master is mortal'
-								: isAftermath
-									? 'Tower Floor 03 / persistent consequences'
-									: 'Tower Floor 01 / authoritative threshold'}
+					: isCapabilityMission
+						? 'Tower Floor 01 / operator-bound combat'
+						: isMasterFallback
+							? 'Tower Floor 01 / autonomous doctrine'
+							: isMasterTiming
+								? 'Tower Floor 01 / four command tempos'
+								: isMasterRisk
+									? 'Tower Floor 03 / the Master is mortal'
+									: isAftermath
+										? 'Tower Floor 03 / persistent consequences'
+										: 'Tower Floor 01 / authoritative threshold'}
 			</p>
 			<h1>
 				{isPortal
 					? 'The Closing'
-					: isMasterFallback
-						? 'The Chosen'
-						: isMasterTiming
-							? 'The Living'
-							: isMasterRisk
-								? 'The Last'
-								: isAftermath
-									? 'The Red'
-									: 'The Unlit'}<br /><em
+					: isCapabilityMission
+						? 'The Unlit'
+						: isMasterFallback
+							? 'The Chosen'
+							: isMasterTiming
+								? 'The Living'
+								: isMasterRisk
+									? 'The Last'
+									: isAftermath
+										? 'The Red'
+										: 'The Unlit'}<br /><em
 					>{isPortal
 						? 'Scar'
-						: isMasterFallback
-							? 'Intent'
-							: isMasterTiming
-								? 'Tempo'
-								: isMasterRisk
-									? 'Command'
-									: isAftermath
-										? 'Tithe'
-										: 'Muster'}</em
+						: isCapabilityMission
+							? 'Muster'
+							: isMasterFallback
+								? 'Intent'
+								: isMasterTiming
+									? 'Tempo'
+									: isMasterRisk
+										? 'Command'
+										: isAftermath
+											? 'Tithe'
+											: 'Muster'}</em
 				>
 			</h1>
 		</div>
@@ -505,7 +539,15 @@
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
 			<div class="tower-number">
-				{isPortal ? '08' : isMasterTiming ? '01' : isAftermath ? '03' : '01'}
+				{isPortal
+					? '08'
+					: isCapabilityMission
+						? '01'
+						: isMasterTiming
+							? '01'
+							: isAftermath
+								? '03'
+								: '01'}
 			</div>
 			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'failure', 'retreat', 'death'].includes(attempt.status)}
 				<div class="tactical-board" data-testid="mission-board">
@@ -546,7 +588,7 @@
 						<div
 							class="monster-token"
 							style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
-							title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} vitality`}
+							title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health`}
 							data-testid="monster-token"
 						>
 							<span>G</span><small>{monster.vitality}</small>
@@ -795,7 +837,7 @@
 						<span>Required · leader</span>
 						<strong>The Master</strong>
 						<small
-							>{engineState.master.health} / {engineState.master.maxHealth} vitality · {engineState
+							>Health {engineState.master.health} / {engineState.master.maxHealth} · {engineState
 								.master.lifeState}{guardFor(engineState.master.masterId)
 								? ` · guard ${guardFor(engineState.master.masterId)!.guard}/${guardFor(engineState.master.masterId)!.maximumGuard}`
 								: ''}</small
@@ -811,7 +853,7 @@
 							? attempt.party.heroIds.includes(hero.heroId)
 							: heroSelected}
 						disabled={busy ||
-							hero.lifeState !== 'active' ||
+							!heroCanSelect ||
 							(attempt !== null && attempt.status !== 'preparing' && !terminal)}
 						onclick={toggleHero}
 						data-testid="hero-roster-card"
@@ -832,7 +874,7 @@
 							<span>{'✦'.repeat(data.proof.manifest.rarityStars)} · summoned hero</span>
 							<strong>{data.proof.manifest.displayName}</strong>
 							<small
-								>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality · {hero.lifeState}{guardFor(
+								>Lv. {hero.progression.level} · Health {hero.health} / {hero.maxHealth} · {hero.lifeState}{guardFor(
 									hero.heroId
 								)
 									? ` · guard ${guardFor(hero.heroId)!.guard}/${guardFor(hero.heroId)!.maximumGuard}`
@@ -840,19 +882,41 @@
 									? ` · gear ${itemForHero(hero.heroId)!.durability}/${itemForHero(hero.heroId)!.maxDurability}`
 									: ''}</small
 							>
+							{#if heroReadiness}<small class="readiness-reason">{heroReadiness.reason}</small>{/if}
 						</div>
 						<b
 							>{isGameOver
 								? 'SEALED'
-								: hero.lifeState === 'active'
-									? heroSelected
-										? 'READY'
-										: 'STAY'
-									: 'DEAD'}</b
+								: heroReadiness?.status === 'unavailable'
+									? 'UNAVAILABLE'
+									: hero.lifeState === 'active'
+										? heroSelected
+											? 'READY'
+											: 'STAY'
+										: 'DEAD'}</b
 						>
 					</button>
 				{/if}
 			</div>
+			{#if isCapabilityMission && heroReadiness?.canRequestReturn && (phase === 'available' || terminal)}
+				<div class="readiness-recovery" data-testid="readiness-recovery">
+					<div>
+						<span>Mission assembly</span>
+						<strong>Request a return to the threshold</strong>
+						<p>
+							This records the Master’s direction, follows the legal settlement route, and advances
+							through arrival. It does not choose a combat action.
+						</p>
+					</div>
+					<button
+						type="button"
+						disabled={busy || returningForMission}
+						onclick={requestReadinessReturn}
+						data-testid="request-readiness-return"
+						>{returningForMission ? 'Returning…' : 'Request return'}</button
+					>
+				</div>
+			{/if}
 
 			<div class="action-deck">
 				{#if isGameOver}
@@ -867,7 +931,14 @@
 						>
 					</div>
 				{:else if phase === 'available' || (terminal && attempt?.status !== 'success')}
-					<button class="primary" disabled={busy} onclick={prepare} data-testid="prepare-party">
+					<button
+						class="primary"
+						disabled={busy ||
+							(isCapabilityMission &&
+								(!data.missionReadiness?.canPrepare || selectedHeroIds.length === 0))}
+						onclick={prepare}
+						data-testid="prepare-party"
+					>
 						<span>Lock threshold roster</span><small
 							>creates attempt {mission ? mission.attemptCount + 1 : 1}</small
 						>
@@ -881,9 +952,11 @@
 						><span
 							>{isPortal
 								? 'Cross the silver scar'
-								: isAftermath
-									? 'Enter Floor 03'
-									: 'Enter Floor 01'}</span
+								: isCapabilityMission
+									? 'Enter Floor 01'
+									: isAftermath
+										? 'Enter Floor 03'
+										: 'Enter Floor 01'}</span
 						><small>commit all selected members</small></button
 					>
 					<button
@@ -1184,28 +1257,32 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: isMasterFallback
-					? 'MIS-014 · authoritative player journal'
-					: isMasterTiming
-						? 'MIS-012 · authoritative Master timing'
-						: isMasterRisk
-							? 'MIS-009 · controllable Master + atomic game over'
-							: isAftermath
-								? 'MIS-008 · persistent mission aftermath'
-								: 'MIS-004 · autonomous monster duties'}</span
+				: isCapabilityMission
+					? 'MIS-025 · operator-bound legacy automatic combat'
+					: isMasterFallback
+						? 'MIS-014 · authoritative player journal'
+						: isMasterTiming
+							? 'MIS-012 · authoritative Master timing'
+							: isMasterRisk
+								? 'MIS-009 · controllable Master + atomic game over'
+								: isAftermath
+									? 'MIS-008 · persistent mission aftermath'
+									: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: isMasterFallback
-					? 'Next: queued agent decisions through provider-neutral model jobs.'
-					: isMasterTiming
-						? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
-						: isMasterRisk
-							? 'Next: selectable control modes and per-turn fallback timing.'
-							: isAftermath
-								? 'Next: controllable Master actions and atomic game-over inside missions.'
-								: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isCapabilityMission
+					? 'Next: agent-readiness combat after replay, collision, provider, safety, and balance gates pass.'
+					: isMasterFallback
+						? 'Next: queued agent decisions through provider-neutral model jobs.'
+						: isMasterTiming
+							? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
+							: isMasterRisk
+								? 'Next: selectable control modes and per-turn fallback timing.'
+								: isAftermath
+									? 'Next: controllable Master actions and atomic game-over inside missions.'
+									: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1979,6 +2056,58 @@
 	}
 	.party-card.selected b {
 		color: #58cac6;
+	}
+	.party-card .readiness-reason {
+		color: #b9a77e;
+		line-height: 1.35;
+	}
+	.readiness-recovery {
+		margin: -0.35rem 0 1.25rem;
+		padding: 0.9rem 1rem;
+		border: 1px solid #3d4647;
+		border-left: 2px solid #bf8d3e;
+		background: #0d1214;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 1rem;
+	}
+	.readiness-recovery > div {
+		display: grid;
+		gap: 0.28rem;
+	}
+	.readiness-recovery span {
+		color: #d5a34e;
+		font-size: 0.54rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.readiness-recovery strong {
+		font:
+			0.95rem Georgia,
+			serif;
+	}
+	.readiness-recovery p {
+		margin: 0;
+		max-width: 34rem;
+		color: #7f8988;
+		font-size: 0.65rem;
+		line-height: 1.45;
+	}
+	.readiness-recovery button {
+		min-height: 2.8rem;
+		border: 1px solid #8f713f;
+		background: #211a10;
+		color: #e8c784;
+		padding: 0.65rem 0.85rem;
+		font-size: 0.58rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+	.readiness-recovery button:disabled {
+		opacity: 0.5;
+		cursor: wait;
 	}
 	.action-deck {
 		margin-top: auto;

@@ -129,67 +129,116 @@ export function normalizedMissionHeroIds(heroIds: readonly string[]): string[] {
 	return [...heroIds].sort((left, right) => left.localeCompare(right));
 }
 
+export type MissionHeroReadinessReason =
+	| 'ready'
+	| 'hero-not-found'
+	| 'hero-terminal'
+	| 'away-from-threshold'
+	| 'active-activity'
+	| 'in-transit'
+	| 'active-routine'
+	| 'active-forging'
+	| 'assigned';
+
+export interface MissionHeroReadiness {
+	readonly heroId: string;
+	readonly ready: boolean;
+	readonly reason: MissionHeroReadinessReason;
+}
+
+export type MissionPreparationReadinessReason =
+	| MissionHeroReadinessReason
+	| 'mission-unavailable'
+	| 'party-duplicate'
+	| 'party-size'
+	| 'master-terminal'
+	| 'master-away';
+
+export interface MissionPreparationReadiness {
+	readonly ready: boolean;
+	readonly reason: MissionPreparationReadinessReason;
+	readonly blockedHeroId: string | null;
+}
+
+export function missionHeroReadiness(
+	state: MissionEngineState,
+	heroId: string
+): MissionHeroReadiness {
+	const hero = state.heroes[heroId];
+	if (!hero) return { heroId, ready: false, reason: 'hero-not-found' };
+	if (hero.lifeState !== 'active') return { heroId, ready: false, reason: 'hero-terminal' };
+	if (hero.currentTravel !== null) return { heroId, ready: false, reason: 'in-transit' };
+	if (hero.currentActivity !== null) return { heroId, ready: false, reason: 'active-activity' };
+	if (hero.currentRoutine !== null) return { heroId, ready: false, reason: 'active-routine' };
+	if ('currentForging' in hero && hero.currentForging !== null) {
+		return { heroId, ready: false, reason: 'active-forging' };
+	}
+	if (hero.assignment !== null) return { heroId, ready: false, reason: 'assigned' };
+	if (
+		hero.location !== 'summoning-gate' ||
+		(state.schemaVersion === 25 && hero.locationNodeId !== 'gate-dais')
+	) {
+		return { heroId, ready: false, reason: 'away-from-threshold' };
+	}
+	return { heroId, ready: true, reason: 'ready' };
+}
+
+export function missionPreparationReadiness(
+	state: MissionEngineState,
+	heroIds: readonly string[],
+	missionId = state.mission.binding.missionId
+): MissionPreparationReadiness {
+	const supportsMissionSelection =
+		state.schemaVersion === 14 ||
+		state.schemaVersion === 15 ||
+		state.schemaVersion === 16 ||
+		state.schemaVersion === 17 ||
+		state.schemaVersion === 18 ||
+		state.schemaVersion === 19 ||
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25;
+	if (
+		(!supportsMissionSelection && missionId !== state.mission.binding.missionId) ||
+		(supportsMissionSelection && !state.mission.availableMissionIds.includes(missionId))
+	) {
+		return { ready: false, reason: 'mission-unavailable', blockedHeroId: null };
+	}
+	const mission = verifiedMissionContent(missionId);
+	const normalized = normalizedMissionHeroIds(heroIds);
+	if (new Set(normalized).size !== normalized.length) {
+		return { ready: false, reason: 'party-duplicate', blockedHeroId: null };
+	}
+	const partySize = normalized.length + 1;
+	if (
+		partySize < mission.deployment.minimumPartyMembers ||
+		partySize > mission.deployment.maximumPartyMembers
+	) {
+		return { ready: false, reason: 'party-size', blockedHeroId: null };
+	}
+	if (state.master.lifeState !== 'alive') {
+		return { ready: false, reason: 'master-terminal', blockedHeroId: null };
+	}
+	if (state.master.location !== 'summoning-gate') {
+		return { ready: false, reason: 'master-away', blockedHeroId: null };
+	}
+	for (const heroId of normalized) {
+		const readiness = missionHeroReadiness(state, heroId);
+		if (!readiness.ready) {
+			return { ready: false, reason: readiness.reason, blockedHeroId: heroId };
+		}
+	}
+	return { ready: true, reason: 'ready', blockedHeroId: null };
+}
+
 export function assertMissionPartyReady(
 	state: MissionEngineState,
 	heroIds: readonly string[],
 	missionId = state.mission.binding.missionId
 ): void {
-	if (
-		state.schemaVersion !== 14 &&
-		state.schemaVersion !== 15 &&
-		state.schemaVersion !== 16 &&
-		state.schemaVersion !== 17 &&
-		state.schemaVersion !== 18 &&
-		state.schemaVersion !== 19 &&
-		state.schemaVersion !== 20 &&
-		state.schemaVersion !== 23 &&
-		state.schemaVersion !== 24 &&
-		state.schemaVersion !== 25 &&
-		missionId !== state.mission.binding.missionId
-	) {
+	if (!missionPreparationReadiness(state, heroIds, missionId).ready) {
 		throw new IllegalActionError('mission.party');
-	}
-	if (
-		(state.schemaVersion === 14 ||
-			state.schemaVersion === 15 ||
-			state.schemaVersion === 16 ||
-			state.schemaVersion === 17 ||
-			state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23 ||
-			state.schemaVersion === 24 ||
-			state.schemaVersion === 25) &&
-		!state.mission.availableMissionIds.includes(missionId)
-	) {
-		throw new IllegalActionError('mission.party');
-	}
-	const mission = verifiedMissionContent(missionId);
-	const normalized = normalizedMissionHeroIds(heroIds);
-	const partySize = normalized.length + 1;
-	if (
-		new Set(normalized).size !== normalized.length ||
-		partySize < mission.deployment.minimumPartyMembers ||
-		partySize > mission.deployment.maximumPartyMembers ||
-		state.master.lifeState !== 'alive' ||
-		state.master.location !== 'summoning-gate'
-	) {
-		throw new IllegalActionError('mission.party');
-	}
-	for (const heroId of normalized) {
-		const hero = state.heroes[heroId];
-		if (
-			!hero ||
-			hero.lifeState !== 'active' ||
-			hero.location !== 'summoning-gate' ||
-			hero.currentActivity !== null ||
-			hero.currentTravel !== null ||
-			hero.currentRoutine !== null ||
-			('currentForging' in hero && hero.currentForging !== null) ||
-			hero.assignment !== null
-		) {
-			throw new IllegalActionError('mission.party');
-		}
 	}
 }
 

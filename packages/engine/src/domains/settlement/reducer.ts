@@ -125,6 +125,7 @@ export const ForgingStartedPayloadSchema = EmptyMetadataSchema.extend({
 export const TravelStartedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	travelId: z.string().uuid(),
+	requestContext: z.literal('mission-readiness').optional(),
 	fromNodeId: z.string(),
 	toNodeId: z.string(),
 	destinationZone: z.enum([

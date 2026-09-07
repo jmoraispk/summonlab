@@ -65,6 +65,7 @@ export {
 	combatModeAvailability,
 	createCombatModeBinding
 } from './domains/mission/combat-mode.js';
+export { missionHeroReadiness, missionPreparationReadiness } from './domains/mission/lifecycle.js';
 export {
 	isIrreversibleMasterAction,
 	masterFallbackActionSource,

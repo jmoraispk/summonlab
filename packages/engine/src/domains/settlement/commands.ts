@@ -924,6 +924,15 @@ function buildModernSettlementEvent(
 	}
 	if (command.commandType === 'hero.start.travel') {
 		if (!hasNavigationState(state)) throw new IllegalActionError(command.commandType);
+		if (
+			command.requestContext !== undefined &&
+			(state.schemaVersion !== 25 ||
+				command.targetNodeId !== 'gate-dais' ||
+				command.source.source !== 'system' ||
+				command.source.timing !== null)
+		) {
+			throw new IllegalActionError(command.commandType);
+		}
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
 		const definition = settlementForState(state);
@@ -956,6 +965,7 @@ function buildModernSettlementEvent(
 			payload: {
 				heroId: command.actorId,
 				travelId,
+				...(command.requestContext === undefined ? {} : { requestContext: command.requestContext }),
 				fromNodeId: route.fromNodeId,
 				toNodeId: route.toNodeId,
 				destinationZone,
@@ -965,7 +975,9 @@ function buildModernSettlementEvent(
 				scheduledEvent,
 				nextVersion: state.version + 1,
 				...emptyMetadata(
-					`The hero began a ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to ${route.toNodeId}; arrival is due at ${dueGameTime}.`
+					command.requestContext === 'mission-readiness'
+						? `At the Master's request, the hero began the verified ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to the Tower Threshold; arrival is due at ${dueGameTime}.`
+						: `The hero began a ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to ${route.toNodeId}; arrival is due at ${dueGameTime}.`
 				)
 			}
 		});

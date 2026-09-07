@@ -10,6 +10,7 @@ import { combatModeAvailability, supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+import { projectMissionReadinessForPublic } from '$lib/server/mission-readiness';
 import { projectProofRunForPublic } from '$lib/server/proof-presentation';
 import { projectEngineReplayForPublic } from '$lib/server/public-engine-presentation';
 
@@ -49,9 +50,14 @@ export const load: PageServerLoad = async ({ params }) => {
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
 	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
 	const publicReport = projectEngineReplayForPublic(report);
+	const missionReadiness =
+		report.snapshot.state.schemaVersion === 25
+			? projectMissionReadinessForPublic(report.snapshot.state, proof.manifest.characterId)
+			: null;
 	return {
 		report: publicReport,
 		proof: projectProofRunForPublic(proof),
+		missionReadiness,
 		combatMode,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {

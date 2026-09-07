@@ -70,6 +70,21 @@ design uses one-tick readiness cohorts, one canonical frozen snapshot per cohort
 views, concurrent intent collection, and deterministic ordered arbitration. It is implemented only
 by the separate readiness plan after its replay, collision, provider, safety, and balance gates pass.
 
+### Mission-assembly return requests
+
+For the v25 beta, the Master may request that a living, idle hero return to the Tower Threshold for
+mission assembly. This is settlement direction, not direct control of a combat action: the request
+cannot choose an attack, target, policy, or later combat intent, and it cannot interrupt travel,
+activity, routine, forging, or settlement duty.
+
+The server fulfills an eligible request through the existing legal route to `gate-dais` and the
+existing scheduled arrival advance in one atomic command batch. It never edits location state or
+teleports the hero. The travel-start event uses the `mission-readiness` request context, a system
+source, and a public summary that identifies the Master's request, so replay and public history show
+why the return occurred. Future agent-readiness or idle-policy work may replace immediate compliance
+with an authored compliance decision or schedule without changing this beta ownership boundary
+retroactively.
+
 ## Legacy compatibility projection
 
 New four-attribute heroes can enter `legacy-auto-v1` only through this mode-local, versioned

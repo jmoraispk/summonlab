@@ -1,4 +1,5 @@
 import { HEARTH_01_DEFINITION } from '@summonlab/content';
+import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -136,6 +137,40 @@ describe('settlement presentation projection', () => {
 			inMotion.buildings.find((building) => building.buildingId === 'summoning-gate')
 				?.occupantHeroIds
 		).toEqual([heroId]);
+	});
+
+	it('projects the authoritative v25 settlement instead of stranding Follow on a static walk', async () => {
+		const draft = await generateSummonableCharacterDraft(
+			{
+				seed: 'presentation-v25',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '7'.repeat(64) }
+		);
+		const bootstrap = createBootstrapEngine({
+			runId: deterministicUuid('presentation-v25-run'),
+			seed: 'presentation-v25-engine',
+			draft
+		});
+		const presentation = projectSettlementPresentation(
+			bootstrap.snapshot,
+			HEARTH_01_DEFINITION,
+			bootstrap.snapshot.state.simulatedAt
+		);
+
+		expect(presentation).toMatchObject({
+			runId: bootstrap.snapshot.state.runId,
+			firstEmber: { status: 'unrecovered' },
+			occupants: [
+				{
+					heroId: draft.manifest.characterId,
+					nodeId: 'gate-dais',
+					buildingId: 'summoning-gate',
+					pose: 'idle'
+				}
+			]
+		});
 	});
 
 	it('projects witnessed words and learned claims without exposing unavailable communication', () => {
