@@ -36,6 +36,7 @@ import {
 	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
 import { loadIntegratedMonsterWikiDatabase } from './wiki-fauna-integration.js';
+import { syncMonsterWikiRuntimeVisuals } from './monster-wiki-runtime-visuals.js';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const productionRoot = resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1');
@@ -330,10 +331,7 @@ async function checkOutputs(database: CanonicalMonsterWikiDatabase): Promise<voi
 	}
 	for (const fileName of generatedMonsterFamilyPageFileNames(database)) {
 		if (existsSync(resolve(monsterFamilyWikiRoot, fileName))) {
-			familyPages.set(
-				fileName,
-				await readFile(resolve(monsterFamilyWikiRoot, fileName), 'utf8')
-			);
+			familyPages.set(fileName, await readFile(resolve(monsterFamilyWikiRoot, fileName), 'utf8'));
 		}
 	}
 	assertGeneratedMonsterWikiFreshness(database, {
@@ -357,14 +355,19 @@ const check = process.argv.includes('--check');
 if (write === check) throw new Error('Pass exactly one of --write or --check');
 
 const database = await loadIntegratedMonsterWikiDatabase(repositoryRoot);
+const visualCatalog = await syncMonsterWikiRuntimeVisuals(
+	repositoryRoot,
+	database,
+	write ? 'write' : 'check'
+);
 if (write) {
 	const deleted = await writeOutputs(database);
 	console.log(
-		`Exported 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
+		`Exported 38 families, 190 canonical forms, ${visualCatalog.records.length} visual coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
 	);
 } else {
 	await checkOutputs(database);
 	console.log(
-		'Validated 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations.'
+		`Validated 38 families, 190 canonical forms, ${visualCatalog.records.length} visual coordinates, and 40 reconciliations.`
 	);
 }
