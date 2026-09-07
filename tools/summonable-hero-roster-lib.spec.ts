@@ -47,4 +47,15 @@ describe('summonable hero roster promotion', () => {
 			'assets/heroes/experiments/five-head-chibi-revisions-001/heroes/coro-reshi/chibi/candidate-v3.png'
 		);
 	});
+
+	it('reconstructs exactly the approved Village cutouts', async () => {
+		const catalog = await buildSummonableHeroCatalog(workspaceRoot);
+
+		expect(
+			catalog.entries
+				.filter((entry) => entry.visuals.villageCutout)
+				.map((entry) => entry.heroId)
+				.sort()
+		).toEqual(['joror-pelleth', 'oren-sorin', 'yaso-dreno']);
+	});
 });

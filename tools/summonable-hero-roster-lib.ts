@@ -16,6 +16,13 @@ import {
 } from '../packages/contracts/src/index.js';
 import sharp from 'sharp';
 
+import {
+	VILLAGE_CUTOUT_BACKFILL_APPROVAL_PATH,
+	VILLAGE_CUTOUT_BACKFILL_MANIFEST_PATH,
+	VillageCutoutBackfillManifestSchema,
+	promoteVillageCutouts
+} from './village-cutout-backfill-lib.js';
+
 const APPROVAL_ID = 'summonable-heroes-owner-approval-2026-09-05';
 const OWNER_INSTRUCTION = 'These 200 are the heroes that can be summoned. proceed';
 
@@ -438,14 +445,23 @@ export async function buildSummonableHeroCatalog(
 ): Promise<SummonableHeroCatalog> {
 	const supplementalDirectory =
 		'assets/heroes/experiments/one-star-overnight-200-001/supplemental-reserves';
-	const [rosterPlan, sourceRoster, approval, supplementalFiles] = await Promise.all([
+	const [
+		rosterPlan,
+		sourceRoster,
+		approval,
+		supplementalFiles,
+		cutoutManifestInput,
+		cutoutApproval
+	] = await Promise.all([
 		readJson<{ active: RosterPlanEntry[]; reserves: RosterPlanEntry[] }>(
 			workspaceRoot,
 			sourcePaths.rosterPlan
 		),
 		readJson<{ records: SourceRosterRecord[] }>(workspaceRoot, sourcePaths.sourceRoster),
 		readJson<{ entries: CorrectionApprovalEntry[] }>(workspaceRoot, sourcePaths.correctionApproval),
-		readdir(resolve(workspaceRoot, supplementalDirectory))
+		readdir(resolve(workspaceRoot, supplementalDirectory)),
+		readJson<unknown>(workspaceRoot, VILLAGE_CUTOUT_BACKFILL_MANIFEST_PATH),
+		readJson<unknown>(workspaceRoot, VILLAGE_CUTOUT_BACKFILL_APPROVAL_PATH)
 	]);
 	const planById = new Map(
 		[...rosterPlan.active, ...rosterPlan.reserves].map((entry) => [entry.heroId, entry])
@@ -544,7 +560,7 @@ export async function buildSummonableHeroCatalog(
 			})
 	);
 
-	return SummonableHeroCatalogSchema.parse({
+	const canonicalCatalog = SummonableHeroCatalogSchema.parse({
 		schemaVersion: 'summonable-hero-catalog-v2',
 		catalogVersion: 'summonable-heroes-v1',
 		status: 'approved',
@@ -555,4 +571,9 @@ export async function buildSummonableHeroCatalog(
 		),
 		entries
 	});
+	return promoteVillageCutouts(
+		canonicalCatalog,
+		VillageCutoutBackfillManifestSchema.parse(cutoutManifestInput),
+		cutoutApproval
+	);
 }
