@@ -265,6 +265,72 @@ function v25StateFromV24Fixture() {
 	};
 }
 
+function v26ReadinessStateFromV24Fixture() {
+	const v25 = v25StateFromV24Fixture();
+	const attempt = v25.mission.attempt;
+	if (!attempt) throw new Error('Expected the frozen replay to contain an active attempt');
+	const combatants = Object.fromEntries(
+		attempt.party.memberIds.map((combatantId: string, index: number) => [
+			combatantId,
+			{
+				combatantId,
+				combatantKind: combatantId === attempt.party.masterId ? 'master' : 'hero',
+				teamId: 'party',
+				position: { x: index + 1, y: 1 },
+				resources: {
+					health: { current: 100, maximum: 100 },
+					mana: { current: 50, maximum: 50 }
+				},
+				attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
+				armour: 0,
+				resistances: {},
+				readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
+				conditions: [],
+				cooldowns: {},
+				downed: false,
+				active: true
+			}
+		])
+	);
+	return {
+		...v25,
+		schemaVersion: 26,
+		contentVersion: 'engine-v26',
+		mission: {
+			...v25.mission,
+			attempt: {
+				...Object.fromEntries(
+					Object.entries(attempt).filter(
+						([key]) => key !== 'turnState' && key !== 'combatModeBinding'
+					)
+				),
+				combatModeBinding: {
+					modeId: 'agent-readiness-v1',
+					rulesVersion: 'combat-rules-v1',
+					contentHash: '2'.repeat(64),
+					boundAt: attempt.preparedAt
+				},
+				combatState: {
+					modeId: 'agent-readiness-v1',
+					readinessState: {
+						stateVersion: 'readiness-combat-state-v1',
+						seed: 'a'.repeat(64),
+						attemptId: attempt.attemptId,
+						tick: 12,
+						combatants,
+						terrain: { width: 16, height: 8, blockedTiles: [], features: [] },
+						visibleTelegraphs: [],
+						scheduledEffects: [],
+						safety: { ticksAdvanced: 12, eventsEmitted: 0, noProgressCycles: 0 },
+						status: 'active',
+						result: null
+					}
+				}
+			}
+		}
+	};
+}
+
 describe('engine contracts compatibility', () => {
 	it('keeps the engine runtime exports available through the contracts entrypoint', async () => {
 		const contracts = await import('@summonlab/contracts');
@@ -380,6 +446,66 @@ describe('engine contracts compatibility', () => {
 			PublicMissionRunStateV10Schema.parse(parsed.mission)
 		);
 		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(v26).success).toBe(false);
+	});
+
+	it('validates inherited mission references and decision lifecycle in readiness mode', () => {
+		const v26 = v26ReadinessStateFromV24Fixture();
+		expect(gameStateContracts.EngineGameStateV26Schema.parse(v26).schemaVersion).toBe(26);
+		const attempt = v26.mission.attempt!;
+		const originalHeroId = attempt.party.heroIds[0]!;
+		const missingHeroId = '99999999-9999-4999-8999-999999999999';
+		const missingPartyMember = structuredClone(v26);
+		missingPartyMember.mission.attempt!.party.heroIds[0] = missingHeroId;
+		missingPartyMember.mission.attempt!.party.memberIds[1] = missingHeroId;
+		missingPartyMember.mission.attempt!.positions[missingHeroId] =
+			missingPartyMember.mission.attempt!.positions[originalHeroId]!;
+		delete missingPartyMember.mission.attempt!.positions[originalHeroId];
+		expect(gameStateContracts.EngineGameStateV26Schema.safeParse(missingPartyMember).success).toBe(
+			false
+		);
+		const nonlivingPartyMember = structuredClone(v26);
+		Object.assign(nonlivingPartyMember.heroes[originalHeroId]!, {
+			lifeState: 'downed',
+			health: 0,
+			currentActivity: null,
+			currentTravel: null,
+			assignment: null,
+			currentRoutine: null,
+			currentForging: null
+		});
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(nonlivingPartyMember).success
+		).toBe(false);
+
+		const evidenceId = '88888888-8888-4888-8888-888888888888';
+		const missingEvidenceHolder = structuredClone(v26);
+		missingEvidenceHolder.mission.evidence[evidenceId] = {
+			evidenceId,
+			evidenceKey: 'missing-holder-evidence',
+			holderActorId: missingHeroId,
+			sourceBinding: missingEvidenceHolder.mission.binding,
+			sourceAttemptId: attempt.attemptId,
+			discoveredOnRound: 1
+		};
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(missingEvidenceHolder).success
+		).toBe(false);
+
+		const invalidDecisionLifecycle = structuredClone(v26);
+		invalidDecisionLifecycle.mission.attempt!.status = 'extraction';
+		invalidDecisionLifecycle.mission.attempt!.extractionOpenedAt = v26.simulatedAt;
+		invalidDecisionLifecycle.masterControl.decisionOrdinal = 1;
+		invalidDecisionLifecycle.masterControl.activeDecision = {
+			decisionId: '77777777-7777-4777-8777-777777777777',
+			ordinal: 1,
+			timing: invalidDecisionLifecycle.masterControl.timing,
+			openedAt: v26.simulatedAt,
+			expiresAt: null,
+			fallback: invalidDecisionLifecycle.masterControl.fallback
+		};
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(invalidDecisionLifecycle).success
+		).toBe(false);
 	});
 
 	it('keeps command discriminators and public version constants stable', () => {

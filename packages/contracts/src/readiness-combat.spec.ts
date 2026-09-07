@@ -22,8 +22,8 @@ const ID = {
 	monster: '10000000-0000-4000-8000-000000000004',
 	action: '10000000-0000-4000-8000-000000000005',
 	event: '10000000-0000-4000-8000-000000000006',
-	claim: '10000000-0000-4000-8000-000000000007'
-	,master: '10000000-0000-4000-8000-000000000008'
+	claim: '10000000-0000-4000-8000-000000000007',
+	master: '10000000-0000-4000-8000-000000000008'
 } as const;
 
 const HASH = {
@@ -114,6 +114,8 @@ const legalAction = {
 
 const intent = {
 	windowId: ID.window,
+	attemptId: ID.attempt,
+	tick: 12,
 	actorId: ID.hero,
 	snapshotHash: HASH.snapshot,
 	actorViewHash: HASH.view,
@@ -139,6 +141,30 @@ const snapshot = {
 	snapshotHash: HASH.snapshot
 } as const;
 
+const selfView = {
+	combatantId: ID.hero,
+	combatantKind: 'hero',
+	teamId: 'party',
+	position: { x: 1, y: 1 },
+	resources: hero.resources,
+	conditions: [{ conditionId: 'burning', stacks: 1, remainingTicks: 6, publicLabel: 'Burning' }],
+	readiness: { ready: true, recoveryTicksRemaining: 0 },
+	downed: false,
+	active: true
+} as const;
+
+const visibleMonsterView = {
+	combatantId: ID.monster,
+	combatantKind: 'monster',
+	teamId: 'enemy',
+	position: { x: 3, y: 1 },
+	resources: monster.resources,
+	conditions: [],
+	readinessStatus: 'recovering',
+	downed: false,
+	active: true
+} as const;
+
 const view = {
 	viewVersion: 'actor-decision-view-v1',
 	windowId: ID.window,
@@ -146,8 +172,8 @@ const view = {
 	snapshotHash: HASH.snapshot,
 	actorViewHash: HASH.view,
 	legalActionSetHash: HASH.legal,
-	self: hero,
-	visibleCombatants: [monster],
+	self: selfView,
+	visibleCombatants: [visibleMonsterView],
 	visibleTerrain: terrain,
 	visibleTelegraphs: [telegraph],
 	rememberedContext: ['The enemy favors the eastern lane.'],
@@ -159,6 +185,7 @@ const view = {
 
 const state = {
 	stateVersion: 'readiness-combat-state-v1',
+	seed: 'a'.repeat(64),
 	attemptId: ID.attempt,
 	tick: 12,
 	combatants: { [ID.hero]: hero, [ID.monster]: monster },
@@ -173,7 +200,10 @@ const state = {
 describe('readiness combat contracts', () => {
 	it('accepts a bounded canonical readiness state and rejects unknown state fields', () => {
 		expect(ReadinessCombatStateV1Schema.parse(state)).toStrictEqual(state);
-		expect(ReadinessCombatStateV1Schema.safeParse({ ...state, seed: 'provider-visible' }).success).toBe(
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({ ...state, seed: 'provider-visible' }).success
+		).toBe(false);
+		expect(ReadinessCombatStateV1Schema.safeParse({ ...state, seed: 'A'.repeat(64) }).success).toBe(
 			false
 		);
 	});
@@ -216,6 +246,9 @@ describe('readiness combat contracts', () => {
 
 	it('accepts one frozen window and rejects a cohort outside its combatant truth', () => {
 		expect(CombatWindowSnapshotSchema.parse(snapshot)).toStrictEqual(snapshot);
+		expect(CombatWindowSnapshotSchema.safeParse({ ...snapshot, seed: state.seed }).success).toBe(
+			false
+		);
 		expect(
 			CombatWindowSnapshotSchema.safeParse({ ...snapshot, readyActorIds: [ID.action] }).success
 		).toBe(false);
@@ -224,13 +257,18 @@ describe('readiness combat contracts', () => {
 	it('keeps actor views perception-filtered and legal choices effect-free', () => {
 		expect(ActorDecisionViewSchema.parse(view)).toStrictEqual(view);
 		expect(
-			ActorDecisionViewSchema.safeParse({ ...view, seed: 'hidden', unresolvedChoices: [intent] }).success
+			ActorDecisionViewSchema.safeParse({ ...view, seed: 'hidden', unresolvedChoices: [intent] })
+				.success
 		).toBe(false);
 		expect(
 			ActorDecisionViewSchema.safeParse({
 				...view,
 				legalActions: [{ ...legalAction, damage: 9001 }]
 			}).success
+		).toBe(false);
+		expect(ActorDecisionViewSchema.safeParse({ ...view, self: hero }).success).toBe(false);
+		expect(
+			ActorDecisionViewSchema.safeParse({ ...view, visibleCombatants: [monster] }).success
 		).toBe(false);
 	});
 
@@ -252,6 +290,16 @@ describe('readiness combat contracts', () => {
 				choices: [{ ...intent, damage: 999, hit: true }]
 			}).success
 		).toBe(false);
+		for (const contradictoryChoice of [
+			{ ...intent, attemptId: ID.event },
+			{ ...intent, tick: 13 },
+			{ ...intent, windowId: ID.event },
+			{ ...intent, snapshotHash: HASH.state }
+		]) {
+			expect(
+				CombatChoiceBatchV1Schema.safeParse({ ...batch, choices: [contradictoryChoice] }).success
+			).toBe(false);
+		}
 	});
 
 	it('validates typed resolved effects without admitting an open payload', () => {
@@ -263,6 +311,9 @@ describe('readiness combat contracts', () => {
 			tick: 12,
 			actorId: ID.hero,
 			actionId: legalAction.actionId,
+			snapshotHash: HASH.snapshot,
+			actorViewHash: HASH.view,
+			legalActionSetHash: HASH.legal,
 			originalIntent: intent,
 			conflictingEventId: null,
 			fallbackApplied: null,
@@ -282,6 +333,18 @@ describe('readiness combat contracts', () => {
 		expect(CombatResolvedEventSchema.safeParse({ ...event, payload: { damage: 28 } }).success).toBe(
 			false
 		);
+		for (const contradictoryEvent of [
+			{ ...event, attemptId: ID.event },
+			{ ...event, windowId: ID.event },
+			{ ...event, tick: 13 },
+			{ ...event, actorId: ID.monster },
+			{ ...event, actionId: 'guard' },
+			{ ...event, snapshotHash: HASH.state },
+			{ ...event, actorViewHash: HASH.state },
+			{ ...event, legalActionSetHash: HASH.state }
+		]) {
+			expect(CombatResolvedEventSchema.safeParse(contradictoryEvent).success).toBe(false);
+		}
 	});
 
 	it('validates safety stops and idempotent typed claims', () => {
@@ -335,6 +398,40 @@ describe('readiness combat contracts', () => {
 		} as const;
 		expect(CombatResultSchema.parse(result)).toStrictEqual(result);
 		expect(CombatAdvanceSchema.parse({ kind: 'combat-result', result })).toBeDefined();
+	});
+
+	it('requires exactly one correctly bound actor view for every ready actor', () => {
+		expect(
+			CombatAdvanceSchema.safeParse({ kind: 'decision-window', snapshot, views: [] }).success
+		).toBe(false);
+		expect(
+			CombatAdvanceSchema.safeParse({
+				kind: 'decision-window',
+				snapshot,
+				views: [view, { ...view, actorViewHash: HASH.state }]
+			}).success
+		).toBe(false);
+		expect(
+			CombatAdvanceSchema.safeParse({
+				kind: 'decision-window',
+				snapshot,
+				views: [{ ...view, windowId: ID.action }]
+			}).success
+		).toBe(false);
+		expect(
+			CombatAdvanceSchema.safeParse({
+				kind: 'decision-window',
+				snapshot,
+				views: [{ ...view, snapshotHash: HASH.state }]
+			}).success
+		).toBe(false);
+		expect(
+			CombatAdvanceSchema.safeParse({
+				kind: 'decision-window',
+				snapshot,
+				views: [{ ...view, actorId: ID.monster, self: { ...selfView, combatantId: ID.monster } }]
+			}).success
+		).toBe(false);
 	});
 
 	it('binds v26 mission attempts to exactly one mode-specific state', () => {

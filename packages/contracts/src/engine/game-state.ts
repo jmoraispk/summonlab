@@ -1718,41 +1718,62 @@ export const EngineGameStateV25Schema = EngineGameStateV25BaseSchema.superRefine
 export const EngineGameStateV26Schema = EngineGameStateV26BaseSchema.superRefine(
 	(state, context) => {
 		const attempt = state.mission.attempt;
-		const validationMission =
-			attempt?.combatState.modeId === 'agent-readiness-v1'
-				? {
-						...state.mission,
-						attemptCount: 0,
-						attempt: null,
-						aftermath: {
-							...state.mission.aftermath,
-							activeAttemptId: null,
-							consequences: []
-						}
-					}
-				: {
-						...state.mission,
-						attempt: attempt
-							? {
-									...Object.fromEntries(
-										Object.entries(attempt).filter(([key]) => key !== 'combatState')
-									),
-									turnState: attempt.combatState.turnState
-								}
-							: null
-					};
-		const validationState = {
-			...state,
-			schemaVersion: 25,
-			contentVersion: 'engine-v25',
-			mission: validationMission,
-			masterControl:
-				attempt?.combatState.modeId === 'agent-readiness-v1'
-					? { ...state.masterControl, activeDecision: null }
-					: state.masterControl
-		};
-		if (!EngineGameStateV25Schema.safeParse(validationState).success) {
-			context.addIssue({ code: 'custom', message: 'Engine v26 inherited state is inconsistent' });
+		const mainHandItemIds = new Set(
+			Object.values(state.heroes)
+				.map((hero) => hero.equipment.mainHand)
+				.filter((itemId): itemId is string => itemId !== null)
+		);
+		validateFirstBandArchiveEngineState(
+			{
+				...state,
+				mission: {
+					...state.mission,
+					aftermath: {
+						aftermathVersion: 'mission-aftermath-v3',
+						activeAttemptId: state.mission.aftermath.activeAttemptId,
+						consequences: state.mission.aftermath.consequences,
+						archives: state.mission.aftermath.archives.map((archive) => ({
+							attemptId: archive.attemptId,
+							ordinal: archive.ordinal,
+							binding: archive.binding,
+							outcome: archive.outcome,
+							preparedAt: archive.preparedAt,
+							deployedAt: archive.deployedAt,
+							endedAt: archive.endedAt,
+							finalRoundNumber: archive.finalRoundNumber,
+							consequences: archive.consequences
+						}))
+					},
+					attempt: attempt
+						? Object.fromEntries(
+								Object.entries(attempt).filter(
+									([key]) => key !== 'combatModeBinding' && key !== 'combatState'
+								)
+							)
+						: null
+				},
+				heroes: Object.fromEntries(
+					Object.entries(state.heroes).map(([heroId, hero]) => [
+						heroId,
+						{ ...hero, equipment: { mainHand: hero.equipment.mainHand } }
+					])
+				),
+				items: Object.fromEntries(
+					Object.entries(state.items).map(([itemId, item]) => [
+						itemId,
+						{ ...item, equippedById: mainHandItemIds.has(itemId) ? item.equippedById : null }
+					])
+				)
+			} as unknown as z.infer<typeof EngineGameStateV23BaseSchema>,
+			context
+		);
+		for (const evidence of Object.values(state.mission.evidence)) {
+			if (
+				evidence.holderActorId !== state.master.masterId &&
+				!state.heroes[evidence.holderActorId]
+			) {
+				context.addIssue({ code: 'custom', message: 'Mission evidence holder must exist' });
+			}
 		}
 		const equippedItemIds = new Set<string>();
 		for (const hero of Object.values(state.heroes)) {
@@ -1760,14 +1781,20 @@ export const EngineGameStateV26Schema = EngineGameStateV26BaseSchema.superRefine
 				if (itemId === null) continue;
 				const item = state.items[itemId];
 				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
-					context.addIssue({ code: 'custom', message: 'Hero equipment must reference an owned v26 item' });
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned v26 item'
+					});
 				}
 				equippedItemIds.add(itemId);
 			}
 		}
 		for (const item of Object.values(state.items)) {
 			if (item.equippedById !== null && !equippedItemIds.has(item.itemId)) {
-				context.addIssue({ code: 'custom', message: 'Equipped v26 item must be linked by its hero loadout' });
+				context.addIssue({
+					code: 'custom',
+					message: 'Equipped v26 item must be linked by its hero loadout'
+				});
 			}
 		}
 	}
