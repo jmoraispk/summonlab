@@ -170,6 +170,29 @@ function planPaths(plan: Awaited<ReturnType<typeof planAmericanEnglishMigration>
 }
 
 describe('American English migration planning', () => {
+	it('plans and applies the prefixed armor adjective in the armor slice', async () => {
+		const derived = ['unarmo', 'u', 'red'].join('');
+		const repository = await makeRepository({
+			'docs/equipment-note.txt': `${derived} ${titleCase(derived)}\n`
+		});
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['armor']
+		});
+		const receiptPath = path.join(tmpdir(), `prefixed-armor-${process.pid}.json`);
+		temporaryRoots.push(receiptPath);
+
+		expect(plan.textEdits).toEqual([{ path: 'docs/equipment-note.txt', violationCount: 2 }]);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+		expect(await readFile(path.join(repository.root, 'docs/equipment-note.txt'), 'utf8')).toBe(
+			'unarmored Unarmored\n'
+		);
+	});
+
 	it('formats TypeScript successors after a replacement changes line wrapping', async () => {
 		const armor = retired('armor');
 		const repository = await makeRepository({

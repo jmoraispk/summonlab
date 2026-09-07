@@ -127,15 +127,18 @@ const definitions: readonly RuleDefinition[] = [
 	{
 		id: 'armor',
 		forms: [
-			'armor',
-			'armors',
-			'armored',
-			'armoring',
-			'armory',
-			'armorer',
-			'armorsmith',
-			'armorsmithing'
-		].map((value) => insert(value, 4, 'u'))
+			...[
+				'armor',
+				'armors',
+				'armored',
+				'armoring',
+				'armory',
+				'armorer',
+				'armorsmith',
+				'armorsmithing'
+			].map((value) => insert(value, 4, 'u')),
+			insert('unarmored', 6, 'u')
+		]
 	},
 	{ id: 'ocher', forms: ['ocher', 'ochers'].map((value) => transpose(value, 3)) },
 	{

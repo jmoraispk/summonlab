@@ -142,6 +142,31 @@ describe('American English finite policy', () => {
 		}
 	});
 
+	it('normalizes the prefixed armor adjective with exact token and case boundaries', () => {
+		const derived = ['unarmo', 'u', 'red'].join('');
+		const title = titleCase(derived);
+		const source = [
+			derived,
+			title,
+			derived.toUpperCase(),
+			`fully${title}`,
+			`${derived}ly`,
+			`dis${derived}`
+		].join(' ');
+
+		expect(deriveRetiredForms('armor')).toContain(derived);
+		expect(replaceRetiredForms(source)).toBe(
+			[
+				'unarmored',
+				'Unarmored',
+				'UNARMORED',
+				'fullyUnarmored',
+				`${derived}ly`,
+				`dis${derived}`
+			].join(' ')
+		);
+	});
+
 	it('does not report American words, near matches, or character names', () => {
 		const source = [
 			'armor ocher gray behavior fiber catalog vigor practice center mustache acknowledgment',
