@@ -1,0 +1,130 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v1",
+	"revision": 1,
+	"targetId": "craft:gathering:the-earth-provides",
+	"name": "The Earth Provides",
+	"domain": "Craft",
+	"family": "Gathering",
+	"rank": "B",
+	"motifFamily": "gathering.harvest",
+	"finding": {
+		"targetId": "craft:gathering:the-earth-provides",
+		"kind": "stray-ui-glyph",
+		"detail": "Circular-arrow badge.",
+		"requiredAction": "revise-art"
+	},
+	"visualSpec": {
+		"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying The Earth Provides",
+		"supportingCue": "one restrained secondary cue communicating this effect: Nodes in the region replenish permanently and yield a tier higher",
+		"semanticPalette": [
+			"worked bronze",
+			"charcoal black",
+			"natural material color"
+		],
+		"composition": "Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.",
+		"exclusions": [
+			"no skill name, mastery, level, caption, logo, watermark, or UI panel",
+			"no extra frame letter or rarity symbol beyond the required integrated crest",
+			"no narrative scenery or unrelated props",
+			"no effect-only abstraction replacing the concrete acting subject from F through A"
+		]
+	},
+	"cleanupManifest": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
+		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+	},
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-the-earth-provides.png",
+		"contentHash": "9b3256eb5b744cb73d184e132cfcca627e56f52e7a440d10904e51c03e1d0ad0"
+	},
+	"currentCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides.png",
+		"contentHash": "125c2e35998281602c0ac11901f033d89f0194df0719ef82a744d2241e71eff9"
+	},
+	"currentResult": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-the-earth-provides.json",
+		"contentHash": "0cd21b014fedf70f150c9baa18e39b98baf20cfd9625c14b7c781c4983e3fb7a"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"normalizationAuthority": {
+		"profile": "skill-icon-cleanup-artwork-resize-mask-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 1024,
+			"height": 1024,
+			"fit": "fill",
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"mask": "geometry-v2-protected-central-aperture",
+		"encoder": {
+			"format": "png",
+			"compressionLevel": 9,
+			"adaptiveFiltering": false,
+			"palette": false,
+			"progressive": false
+		},
+		"sharpVersion": "0.35.3",
+		"vipsVersion": "8.18.3"
+	},
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-harvest.png",
+			"purpose": "Exact gathering.harvest motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "a5b5fc7a515ea58655185c83f8b6b39c2cafbc482a27b6e2e9e57465bda5476e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "14768b9c39ee43560f663dfe86e7cca05c95dac50a0b9f99f76c4493a005b1db"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "125c2e35998281602c0ac11901f033d89f0194df0719ef82a744d2241e71eff9"
+		}
+	],
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for The Earth Provides in the Craft / Gathering taxonomy.\nDominant subject: a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying The Earth Provides\nSupporting cue: one restrained secondary cue communicating this effect: Nodes in the region replenish permanently and yield a tier higher\nPalette: worked bronze, charcoal black, natural material color\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Circular-arrow badge.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and B-rank frame.",
+	"exactPromptHash": "cb4501f7c2bbf9d8ebe3915e5a58f22942bc2595dbab29953fbf1f60ddc22404",
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-the-earth-provides-v1.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides-v1.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v1.json"
+	}
+}

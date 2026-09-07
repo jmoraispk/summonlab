@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:severing-cross",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severing-cross.png",
+		"contentHash": "da2f049d2cd2fd8a89ceb7f61f4287235511f00fbf827e92dddcf2de7cf4befc"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-severing-cross.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-severing-cross.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-severing-cross.png",
+		"contentHash": "36767d493f3007812d8ab7c775d73bb75b4b492da874620fe1336c1b23e410e8",
+		"removedPixels": 165368,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 9,
+			"width": 796,
+			"height": 1007
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "61c89847c3e8bfe1478831de000b83ea3dcccf2a63e1c9058ccd04d23bd4078f",
+	"resultContentHash": "3a0967527620747e8f639874c33b76f800abfcf316d10e1b997b21d1251655bf"
+}

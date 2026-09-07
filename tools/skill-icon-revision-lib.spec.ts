@@ -83,8 +83,40 @@ function targetV3(revision = 4): AnySkillIconTarget {
 			}
 		],
 		normalization: {
-			...base.normalization,
 			profile: 'skill-icon-green-key-role-mask-v3',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: base.normalization.outputContract,
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+			}
+		}
+	};
+}
+
+function targetGeometryRoleMask(revision = 6): AnySkillIconTarget {
+	const profileV3 = targetV3(revision) as Extract<
+		AnySkillIconTarget,
+		{ schemaVersion: 'skill-icon-target-v2' }
+	>;
+	return {
+		...profileV3,
+		normalization: {
+			profile: 'skill-icon-geometry-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: profileV3.normalization.outputContract,
 			geometry: {
 				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
@@ -145,6 +177,15 @@ describe('skill-icon revision resolution', () => {
 		expect(() => assertSkillIconSupersedingRevision(prior, current)).not.toThrow();
 	});
 
+	it('selects a higher geometry-first revision without confusing profile and logical revision', () => {
+		const prior = targetV3(5);
+		const current = targetGeometryRoleMask(6);
+		expect(resolveLatestSkillIconTargets([prior, current])).toEqual([
+			{ target: current, logicalKey: 'backing', revision: 6 }
+		]);
+		expect(() => assertSkillIconSupersedingRevision(prior, current)).not.toThrow();
+	});
+
 	it('rejects duplicate logical identity and revision even under different filenames', () => {
 		const v2 = target('charcoal-forged-stone-v2', 2);
 		expect(() => resolveLatestSkillIconTargets([v2, { ...v2 }])).toThrow(/duplicate/iu);
@@ -197,29 +238,17 @@ describe('skill-icon revision resolution', () => {
 		);
 	});
 
-	it('reports the terminal reference and Reversal Cut failures while accepting F-v5', async () => {
+	it('accepts every completed shared layer while preserving the Reversal Cut failure', async () => {
 		let message = '';
 		try {
 			await validateSkillIconAssets(process.cwd());
 		} catch (error) {
 			message = error instanceof Error ? error.message : String(error);
 		}
-		const diagnostics = message.split('\n');
-		expect(diagnostics).toEqual([
-			'backing latest revision v4 is failed (validation: Initial provider source crossed a role-required transparent region; the sole corrected source inset the backing but covered less than 85% of the aperture after profile-v3 normalization.); create a higher revision',
-			'rarity-frame:A latest revision v5 is failed (validation: The corrected dedicated A-frame provider source remained ineligible because meaningful frame pixels crossed into a role-required transparent region under normalization profile v3; no candidate was retained or promoted.); create a higher revision',
-			'rarity-frame:B latest revision v4 is failed (validation: The corrected provider source exhausted the one permitted edit and deterministic profile-v3 normalization rejected it because the #00FF00 edge matte was not sufficiently clean; no candidate was retained.); create a higher revision',
-			'rarity-frame:C latest revision v4 is failed (validation: Corrected provider source exhausted the two-call imagegen ceiling and deterministic profile-v3 normalization still rejected a meaningful alpha component in a role-required transparent region.); create a higher revision',
-			'rarity-frame:D latest revision v4 is failed (validation: Both authorized provider attempts were rejected by profile-v3 normalization because meaningful foreground remained in a role-required transparent region; no eligible candidate was produced.); create a higher revision',
-			'rarity-frame:E latest revision v4 is failed (validation: Corrected provider source failed profile-v3 role-mask normalization: meaningful alpha component in a role-required transparent region.); create a higher revision',
-			'rarity-frame:S latest revision v4 is failed (validation: Initial provider source failed the required transparent-region gate. The one authorized correction preserved the S-frame design but the corrected provider source failed the clean #00FF00 edge-matte gate; no role-valid candidate was retained.); create a higher revision',
+
+		expect(message.split('\n')).toEqual([
 			'skill-art:martial:blade:reversal-cut latest revision v1 is failed (validation: Initial and corrective provider rasters were both 1254x1254 RGB PNGs with depicted checkerboard backgrounds instead of the required 1024x1024 RGBA skill-art layer with genuine transparency; the retry ceiling was exhausted without a role-valid candidate.); create a higher revision'
 		]);
-		expect(diagnostics).toHaveLength(8);
-		expect(message).not.toMatch(/missing result inventory entry/iu);
-		expect(message).not.toMatch(/rarity-frame:F latest revision v4 is failed/iu);
-		expect(message).not.toMatch(/rarity-frame-f-v5: missing result/iu);
-		expect(message).not.toMatch(/latest revision v2 is failed/iu);
-		expect(message).not.toMatch(/missing candidate/iu);
-	});
+		expect(message).not.toMatch(/(?:backing|rarity-frame):/iu);
+	}, 30_000);
 });

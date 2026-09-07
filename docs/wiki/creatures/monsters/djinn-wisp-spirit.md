@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.djinn-wisp-spirit`
 
-[← Canonical monster database](README.md)
+[← Djinn family](families/djinn.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Djinn are treated as a bound smoke-bodied spirit visual and encounter-production family. Claims about air identity, fire identity, spirit identity, binding, wishes, culture, rank, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- A hovering humanoid upper body tapers into smoke instead of legs; solidity and scale change only at explicit tiers.
-- Sapphire or violet smoke, warm inner light, gold, brass, turquoise, silk, and gemstones remain distinct source materials.
-- Cuffs, rings, headpieces, lamps, and script mark proposed binding status without establishing universal culture or morality.
-- The body becomes less solid and more spatially dominant from half-face vapor to a palace-scale throne vortex.
+Shared visual constants and the complete T1–T5 comparison live on the [Djinn family page](families/djinn.md).
 
 **Escalation axis:** Increasingly coherent command over a smoke body and proposed binding ornaments advances from a small vapor probe to a sovereign lamp-court vortex.
 

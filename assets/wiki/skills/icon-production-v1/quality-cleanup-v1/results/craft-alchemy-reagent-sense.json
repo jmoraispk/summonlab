@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:reagent-sense",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-reagent-sense.png",
+		"contentHash": "5f4bdbfbac948cdab166d5b851e4e6e22668336c2bb7894fbe6a9bbee9fae65d"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-reagent-sense.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-reagent-sense.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-reagent-sense.png",
+		"contentHash": "b3d1ca6c9a8628694d6b0d7b2300c379f5f5125c331660ec7384e1eda7131bbe",
+		"removedPixels": 177436,
+		"removedPixelBounds": {
+			"left": 103,
+			"top": 8,
+			"width": 820,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "abdcc8a2a056b89067eddaecab630b3e922afc8232293da0bda07c09954fedc4",
+	"resultContentHash": "0f13eab11d8288507aaab15e09d5414be3afd91dd7e575c7fa3417e89107d9d4"
+}

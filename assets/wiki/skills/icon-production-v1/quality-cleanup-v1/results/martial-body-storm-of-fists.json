@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:storm-of-fists",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-storm-of-fists.png",
+		"contentHash": "f8ab1ab35697187138e7037ce8239ba82821123b706dd429f2fe8e7286a03138"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-storm-of-fists.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-storm-of-fists.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-storm-of-fists.png",
+		"contentHash": "7039a9ec9fac8a2fa2638d43bf1c6e422513a748156475ba4451dafd9362814d",
+		"removedPixels": 185166,
+		"removedPixelBounds": {
+			"left": 92,
+			"top": 12,
+			"width": 840,
+			"height": 988
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "3f3fb8a6e6fc2b5b50d577cba2e8ce49092f1aeea80ed381f56c6969b73b6d8d",
+	"resultContentHash": "52c3bc78637905a69c91187902a0ff34b695aa6ba65cdb6ca538875ae08622f1"
+}

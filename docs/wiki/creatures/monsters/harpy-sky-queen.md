@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.harpy-sky-queen`
 
-[← Canonical monster database](README.md)
+[← Harpies family](families/harpies.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Harpies are treated as a winged visual and encounter-production family, not as an accepted taxonomy or a universal statement about sex, culture, cognition, personhood, social rank, or hostility. Their cliff-flock language becomes readable aerial combat roles while preserving the source anatomy and plumage escalation.
 
-## Family visual grammar
+## Family context
 
-- A humanoid torso remains joined to large raptor wings that replace or extend the arms, backward-jointed bird legs, oversized talons, and a feathered head crest.
-- Slate grey, brown, and dirty cream mature into iridescent blue-green, storm purple, and white without losing the family feather pattern.
-- Feather, hollow bone, sinew, raw hide, braided hair, and gold ankle ornaments remain physically readable materials.
-- Bone jewelry, trophy feathers, braided hair, ankle rings, and crest height communicate status without changing the core wing-and-talon silhouette.
-- Every attack keeps the wing roots, talons, crest, and flight direction visible enough to preserve counterplay.
+Shared visual constants and the complete T1–T5 comparison live on the [Harpies family page](families/harpies.md).
 
 **Escalation axis:** Feather quality, talon reach, crest authority, and control of aerial lanes grow from a ragged noise probe into flock formations and a cliff-spanning sovereign storm court.
 

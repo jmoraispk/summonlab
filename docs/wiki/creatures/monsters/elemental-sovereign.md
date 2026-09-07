@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.elemental-sovereign`
 
-[← Canonical monster database](README.md)
+[← Elementals family](families/elementals.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Elementals are treated as magical entities whose temporary bodies take on unaffiliated spell-matter or one of the four base affinities. This is a visual and encounter-production family, not an accepted claim about origin, life, cognition, agency, personhood, summoning, or hostility. A flame-like outer contour describes shape and motion only; it does not imply Fire affinity.
 
-## Family visual grammar
+## Family context
 
-- Every form is organized around one readable binding seed or core, with no flesh, worn armor, ordinary clothing, handheld weapon, or fixed face.
-- The T1 Wisp is a small asymmetric teardrop or flame-like shape without limbs; T2–T5 develop a legless hovering upper body with exactly two coherent arm channels and a tapering lower body.
-- Affinity substance forms the complete load-bearing body, limbs, mantle, and directional wake rather than appearing as a colored exterior aura or decorative overlay.
-- Form coherence, core structure, and spatial control progress from one wandering Wisp to a four-facet Sovereign while the active telegraph and exposed counterplay remain readable.
+Shared visual constants and the complete T1–T5 comparison live on the [Elementals family page](families/elementals.md).
 
 **Escalation axis:** Form coherence, core complexity, and control over shaped affinity substance rise from one drifting teardrop to a sovereign that transforms the arena through four learned binding patterns.
 

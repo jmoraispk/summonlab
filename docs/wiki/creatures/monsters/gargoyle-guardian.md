@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.gargoyle-guardian`
 
-[← Canonical monster database](README.md)
+[← Gargoyles family](families/gargoyles.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Gargoyles are treated as an animated architectural-statue visual and encounter-production family. Claims about origin, night behavior, duty, rank, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- Squat crouched construction, hunched shoulders, horned beast face, clawed grip, and folded architectural wings remain recognizable.
-- Sandstone, granite, marble, bronze, mortar, moss, and water staining remain discrete built materials rather than flesh.
-- Relief carving, water-spout mouths, restrained amber seams, and pedestal fragments preserve the architectural source grammar.
-- Stone quality and wing architecture escalate from useless carved flaps to sovereign buttresses while load-bearing joints stay readable.
+Shared visual constants and the complete T1–T5 comparison live on the [Gargoyles family page](families/gargoyles.md).
 
 **Escalation axis:** Material refinement and wing architecture progress from a perched chipped ornament to a sovereign architecture that commands its own statuary court.
 

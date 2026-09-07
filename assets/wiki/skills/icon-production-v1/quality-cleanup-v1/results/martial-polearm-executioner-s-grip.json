@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:executioner-s-grip",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-executioner-s-grip.png",
+		"contentHash": "2a1fd4e3a238a7d3fcc778335221134ecd9684abb69d1fcca60a5cbde7bbf64d"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-executioner-s-grip.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-executioner-s-grip.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-executioner-s-grip.png",
+		"contentHash": "20935eacd1f8d4441e93f4f56cbfc888303e953c7075c2afc827ad65ab91f22d",
+		"removedPixels": 230473,
+		"removedPixelBounds": {
+			"left": 100,
+			"top": 8,
+			"width": 824,
+			"height": 1006
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "a5cb1c566506acdf8d975947f79a7f34040bf74e3205cef059a510319164beb8",
+	"resultContentHash": "53512378dd08c81ce5a66513bc850a7a37ac7f41b7abfa6919934e705751d1ca"
+}

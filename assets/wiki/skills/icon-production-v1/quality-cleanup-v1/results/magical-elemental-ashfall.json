@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:elemental:ashfall",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ashfall.png",
+		"contentHash": "de84441fde9249b4418a88bcb85b532e8906ec077417256a16cb48fc165fcc96"
+	},
+	"rank": "C",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "magical:elemental:ashfall",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached elemental/alchemical glyph row.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-ashfall.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-ashfall.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-ashfall.png",
+		"contentHash": "7d0e7bb07ea5bb0316a6094a3348b5aa297ba8f8c1dde46096ca78412468f226",
+		"removedPixels": 187956,
+		"removedPixelBounds": {
+			"left": 125,
+			"top": 9,
+			"width": 773,
+			"height": 982
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "506664352d7f7dda57fe207bd1f42c85ac97b279afb5bc54aa70330aec7fb8ae",
+	"resultContentHash": "d918a6ffdb24d3b27c44e93790c9e6fcb9bbd3d127701246f68f78683996913e"
+}

@@ -7,9 +7,9 @@
 ## Context
 
 Hero visual production produced 200 reviewed one-star identities. Each identity has a selected
-full-body summon portrait and a summon-bound combat chibi. The images previously remained inside
-versioned experiments, which preserved their provenance but did not make them characters that the
-player could actually summon.
+full-body summon portrait and a summon-bound combat chibi. The images were promoted out of their
+versioned experiments into a stable approved source namespace when the production runs were
+retired.
 
 The owner explicitly approved all 200 identities as the heroes that can be summoned. Nineteen
 heroes received a later, separately approved chibi correction; the remaining 181 use the completed
@@ -33,9 +33,10 @@ selectable.
   the same identity twice.
 - Older procedural generators remain available for laboratories, fixtures, replay compatibility,
   and future authoring. They are not the player summon selector.
-- Experiment PNGs and their receipts remain immutable provenance. The approved catalog records
-  their paths, hashes, dimensions, and approval identity. Runtime WebPs are generated derivatives,
-  kept in lazy per-hero bundles and checked byte-for-byte against that catalog.
+- Approved source PNGs are immutable Git LFS masters. The approved catalog records their stable
+  paths, hashes, dimensions, source experiment IDs, and approval identity. A compact provenance
+  record preserves the hashes of the retired production records. Runtime WebPs are generated
+  derivatives, kept in lazy per-hero bundles and checked byte-for-byte against that catalog.
 
 ## Operative artifacts
 
@@ -43,8 +44,7 @@ selectable.
   `assets/heroes/approved/summonable-roster-v1/catalog.json`
 - Lazy runtime visual binding:
   `apps/web/static/runtime/summonable-heroes-v1/manifest.json`
-- Catalog promotion and validation:
-  `pnpm tsx tools/promote-summonable-hero-roster.ts --check`
+- Catalog and repository retention validation: `pnpm validate:repository-assets`
 - Runtime export validation:
   `pnpm tsx tools/export-summonable-hero-runtime.ts --check`
 

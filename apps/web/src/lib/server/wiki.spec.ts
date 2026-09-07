@@ -2,14 +2,17 @@ import { describe, expect, it } from 'vitest';
 
 import catalog from '../../../../../docs/wiki/catalog.json';
 import monsterIndex from '../../../../../docs/wiki/creatures/monsters/visual-index.json';
+import monsterVisualCatalog from '../../../../../assets/enemies/runtime/monster-wiki-v1/catalog.json';
 
 import {
 	getLegacyMonsterWikiRedirect,
 	getLegacyMonsterWikiRoutes,
+	getMonsterFamilyVisualEntry,
 	getMonsterProductionDatabase,
 	getMonsterProductionEntry,
 	getMonsterVisualDatabase,
 	getMonsterVisualEntry,
+	parseMonsterWikiVisualCatalogV1,
 	parseMonsterVisualIndexV2,
 	type MonsterAffinity,
 	type MonsterProductionStatus,
@@ -123,15 +126,51 @@ describe('online wiki registry', () => {
 		expect(
 			getMonsterProductionEntry('monster.goblin-runt')?.variants.map((entry) => entry.affinity)
 		).toEqual(['normal', 'fire', 'earth', 'wind', 'water']);
-		expect(getMonsterVisualDatabase()).toBeNull();
-		expect(getMonsterVisualEntry('monster.goblin-runt')).toBeNull();
+		const families = getMonsterVisualDatabase();
+		expect(families).toHaveLength(38);
+		expect(families[0]?.forms.map(({ tier }) => tier)).toEqual(['T1', 'T2', 'T3', 'T4', 'T5']);
+		expect(families[0]?.forms.map(({ variants }) => variants[0]?.affinity)).toEqual([
+			'normal',
+			'normal',
+			'normal',
+			'normal',
+			'normal'
+		]);
+		expect(
+			getMonsterFamilyVisualEntry('monster-family.goblins')?.forms.flatMap(
+				({ variants }) => variants
+			)
+		).toHaveLength(25);
+		expect(getMonsterVisualEntry('monster.goblin-runt')?.variants).toHaveLength(5);
+		expect(getMonsterVisualEntry('monster.goblin-runt')?.variants[0]?.thumbnailPath).toMatch(
+			/^\/runtime\/enemies\/monster-wiki-v1\//u
+		);
 		expect(getMonsterVisualEntry('monster.wolf-grey-wolf')).toMatchObject({
 			id: 'wolf-grey-wolf',
 			familyId: 'wolves'
 		});
+		expect(getMonsterVisualEntry('monster.wolf-grey-wolf')?.variants[0]?.thumbnailPath).toMatch(
+			/^\/runtime\/enemies\/fauna-family-v1\//u
+		);
 		expect(
 			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/goblin-runt')
 		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });
+	});
+
+	it('dispatches index, family, and form visual models to their matching wiki routes', () => {
+		const index = loadWikiPage({ params: { slug: 'creatures/monsters' } } as never);
+		const family = loadWikiPage({
+			params: { slug: 'creatures/monsters/families/goblins' }
+		} as never);
+		const form = loadWikiPage({
+			params: { slug: 'creatures/monsters/goblin-runt' }
+		} as never);
+
+		expect(index.monsterDatabase).toHaveLength(38);
+		expect(index.monsterFamily).toBeNull();
+		expect(family.monsterDatabase).toBeNull();
+		expect(family.monsterFamily).toMatchObject({ familyId: 'goblins' });
+		expect(form.monsterVisual).toMatchObject({ id: 'goblin-runt' });
 	});
 
 	it('parses the current monster production presentation states', () => {
@@ -151,6 +190,14 @@ describe('online wiki registry', () => {
 		};
 		invalid.monsters[0]!.tier = 'T6';
 		expect(() => parseMonsterVisualIndexV2(invalid)).toThrow(/tier.*T6|invalid.*tier/iu);
+	});
+
+	it('rejects invalid wiki visual catalog records at the JSON server boundary', () => {
+		const invalid = structuredClone(monsterVisualCatalog) as unknown as {
+			records: Array<{ runtime: { bytes: number } }>;
+		};
+		invalid.records[0]!.runtime.bytes = 0;
+		expect(() => parseMonsterWikiVisualCatalogV1(invalid)).toThrow(/runtime.*bytes/iu);
 	});
 
 	it('rejects unvalidated nested v2 fields at the JSON server boundary', () => {
@@ -179,7 +226,7 @@ describe('online wiki registry', () => {
 	it.each([
 		['hill-giant', '/wiki/creatures/monsters/giant-hill-giant'],
 		['goblin-chieftain', '/wiki/creatures/monsters/goblin-warboss'],
-		['death-knight', '/wiki/creatures/monsters#current-class-reconciliation'],
+		['death-knight', '/wiki/creatures/monsters/reconciliation'],
 		['grey-wolf', '/wiki/creatures/monsters/wolf-grey-wolf']
 	])('returns a permanent redirect for legacy %s', (currentClassId, destination) => {
 		expect(thrownRouteResult(`creatures/monsters/${currentClassId}`)).toMatchObject({

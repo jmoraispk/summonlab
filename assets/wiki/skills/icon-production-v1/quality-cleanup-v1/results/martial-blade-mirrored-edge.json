@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:mirrored-edge",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-mirrored-edge.png",
+		"contentHash": "e354fe1ee9dfd6a3cdc4b2bf23f1a7f54ac9c640cfb2a88212f389ee0a273c44"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-mirrored-edge.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-mirrored-edge.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-mirrored-edge.png",
+		"contentHash": "825620bdb834e605614dd836749df0c38d4e03d05db55da7346a278afd18b0e1",
+		"removedPixels": 179544,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 11,
+			"width": 795,
+			"height": 1001
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "3638b93086de39fe1d8cf8f6b414784a53d3e0411f4ade21e8dd770446cb8620",
+	"resultContentHash": "fa10f4dfe5304a6c70e39be38fb2f02a282ee179829e1d92fa2219310fea108e"
+}

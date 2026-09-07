@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.mummy-tomb-guard`
 
-[← Canonical monster database](README.md)
+[← Mummies family](families/mummies.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Mummies are treated as ritually preserved, linen-wrapped dead whose grave goods and offices supply authored encounter ranks, not as a biological people or evidence about any real culture, religion, ethnicity, divinity, royal legitimacy, morality, or afterlife. Sand and dust are family-native burial residue and non-affinity staging; true affinities require separate material and behavior construction.
 
-## Family visual grammar
+## Family context
 
-- A stiff-limbed human or humanoid silhouette remains wrapped from head to foot, with arms held forward, crossed, guarding, inscribing, or commanding through readable linen tension.
-- Sun-bleached linen, sand beige, desert ochre, deep gold, lapis blue, and turquoise remain funerary materials and symbols rather than affinity colors.
-- Linen bandage, dried flesh, gold leaf, lapis, carnelian, bronze, and sandstone grave goods stay materially distinct and retain visible knots, stitches, glyph routes, and breakable seals.
-- Family-native sand and dust follow disturbed wrappings, tomb movement, and burial objects without becoming Earth or Wind affinity by themselves.
-- Escalation adds precious thread, glyph density, collars, masks, armor, headdresses, and sarcophagus regalia while the bandages never come off and always explain binding and counterplay.
+Shared visual constants and the complete T1–T5 comparison live on the [Mummies family page](families/mummies.md).
 
 **Escalation axis:** Crude wrapping knots become bronze guard bindings, processional glyph circuits, a masked tomb formation, and a royal sarcophagus engine whose dismantled cartouches remove commands and unwrap a simpler final phase.
 

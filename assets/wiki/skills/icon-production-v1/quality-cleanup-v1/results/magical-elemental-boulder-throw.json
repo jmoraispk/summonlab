@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:boulder-throw",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-boulder-throw.png",
+		"contentHash": "862f5c883aa6a2d5fc92baf0fd86127722bd5a840f2ac8c13971d785840c77c7"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-boulder-throw.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-boulder-throw.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-boulder-throw.png",
+		"contentHash": "4b0e607fd7fadfb6b0a5ed930fe512e6ed38cf34679803ba943359d643a3ee28",
+		"removedPixels": 205935,
+		"removedPixelBounds": {
+			"left": 106,
+			"top": 14,
+			"width": 813,
+			"height": 1002
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "dac31551bc50a786a8ac5ae8aec360c72cd36b4a7975c93b7076a696b0de3be8",
+	"resultContentHash": "dc12da0997681dd4c489bf62c569c3d56d69f286108d59a540afa7afa5f27ebd"
+}

@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:polearm:berserk-swing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-berserk-swing.png",
+		"contentHash": "2aa2772ec79e101ab93238bfc52496479eca97b3a868f46c064e955fe281deea"
+	},
+	"rank": "D",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:polearm:berserk-swing",
+			"kind": "stray-ui-glyph",
+			"detail": "Lower-left circular gauge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-berserk-swing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-berserk-swing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-berserk-swing.png",
+		"contentHash": "47528e5677ae768d29c65476219d63c6f69ace4ada464232bd19833cdcd9e668",
+		"removedPixels": 166712,
+		"removedPixelBounds": {
+			"left": 148,
+			"top": 23,
+			"width": 728,
+			"height": 976
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "d3e9b922f307da6bbfbe1df0efce8eba2f0157290cb9be4e3bf6cc44f506e834",
+	"resultContentHash": "092f56a929f1061526fe2c7766035de20478759c518768ab2fa8079465b112c4"
+}

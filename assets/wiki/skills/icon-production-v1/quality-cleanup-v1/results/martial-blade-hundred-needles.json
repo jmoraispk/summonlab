@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:hundred-needles",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-hundred-needles.png",
+		"contentHash": "b7fd8df85f2b1e36524e80e0246dcaf7f175f08aa5b9c8dd1c2b6af78a22f550"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-hundred-needles.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-hundred-needles.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-hundred-needles.png",
+		"contentHash": "609c4da4b9bf33855b03f927512bb33de937770729db7fff9504d5f21e11f444",
+		"removedPixels": 202124,
+		"removedPixelBounds": {
+			"left": 105,
+			"top": 21,
+			"width": 815,
+			"height": 995
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "0d1b3603ebaf7728b5c1db065a7f5db9bd7463bba16fbadaf100d8a010a055ac",
+	"resultContentHash": "6b54695faae9b33a5d1e4432e78ee7c6659c8a8ddde584ac91bf33171d09cf86"
+}

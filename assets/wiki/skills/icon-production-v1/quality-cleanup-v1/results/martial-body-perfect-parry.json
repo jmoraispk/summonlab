@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:body:perfect-parry",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-perfect-parry.png",
+		"contentHash": "881f061b213482447d422c6156078ca9fa9299c337586337702f4f65704c35a5"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-perfect-parry.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-body-perfect-parry.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-body-perfect-parry.png",
+		"contentHash": "95646789a3369f758190217591785271529483eca142775cc04edb932d4bacd2",
+		"removedPixels": 140215,
+		"removedPixelBounds": {
+			"left": 149,
+			"top": 37,
+			"width": 726,
+			"height": 925
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "136454991be85a126bc0c33bc30af7219b79429b18fbc9a0ae39c3f1b5661880",
+	"resultContentHash": "3b77cee368c33ab2025d8726acd54e698ab497d242801e726904aacd59bf5926"
+}

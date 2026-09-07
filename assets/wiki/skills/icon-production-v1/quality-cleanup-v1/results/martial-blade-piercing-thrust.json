@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:blade:piercing-thrust",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-piercing-thrust.png",
+		"contentHash": "050f8589938feaea7433ef673a707ae9520ce56e8d50ec54e623a4bd91db8204"
+	},
+	"rank": "E",
+	"disposition": "recompose",
+	"findings": [
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"kind": "frame-composition",
+			"detail": "Sword enters through the left rail and the generated rail is irregular.",
+			"requiredAction": "recompose"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-piercing-thrust.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-piercing-thrust.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-piercing-thrust.png",
+		"contentHash": "767119e2c44c62ce5ad4627ceac1f3253f9dbaa4efb19f3a4057ec82cd56265f",
+		"removedPixels": 128822,
+		"removedPixelBounds": {
+			"left": 170,
+			"top": 32,
+			"width": 685,
+			"height": 907
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "4540472bbf00f07f8473248f65748afee6f602f8183bbe5530c3881bfc403191",
+	"resultContentHash": "6dd04f29f1f4940cb97d2001f3b1bd078251dde939df744313beca90d08ac6d5"
+}

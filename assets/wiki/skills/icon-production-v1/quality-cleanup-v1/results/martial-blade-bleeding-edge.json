@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:bleeding-edge",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-bleeding-edge.png",
+		"contentHash": "706611f9a26f1d47209a063627de70d692e0c62d19db5a0a92a6ce954ccb6e7a"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-bleeding-edge.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-bleeding-edge.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-bleeding-edge.png",
+		"contentHash": "6f1e846dc6a950e6a5171e57beabf585a431bd9060e0fc9318b1066f2de6c362",
+		"removedPixels": 184781,
+		"removedPixelBounds": {
+			"left": 113,
+			"top": 16,
+			"width": 797,
+			"height": 995
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "61c6f528519f9b50517841937e221b830d38e1c33f8b42954a73db5a612c2e73",
+	"resultContentHash": "7c33631a3dcea4f9e39bee8cd520efae7f0153c46020ab843c5a3ec035cee26f"
+}

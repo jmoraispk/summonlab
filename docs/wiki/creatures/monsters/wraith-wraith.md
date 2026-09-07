@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.wraith-wraith`
 
-[← Canonical monster database](README.md)
+[← Wraiths family](families/wraiths.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Wraiths are treated as hostile incorporeal dead-person spirits for encounter production, not as a biological species or a universal statement about the dead, memory, autonomy, morality, or afterlife. Cold light, frost, and chill are family-native signs of deathly condensation in the source and remain explicitly non-affinity unless an authored elemental construction changes material and behavior.
 
-## Family visual grammar
+## Family context
 
-- A hooded or robed humanoid upper body becomes progressively defined while the lower body always trails into smoke or cold vapor without visible feet.
-- Black, charcoal, deep indigo, and ash grey carry one cold eye accent in pale blue, white, or sickly green; this family-native cold light is not an elemental affinity by itself.
-- Smoke, tattered shroud-cloth, cold vapor, rusted chain, and hollow armor preserve incorporeality through negative space and incomplete edges.
-- Chains, funeral shrouds, spectral crowns, and localized rings of source-native frost become anchors that explain when and where an otherwise incorporeal form can be opposed.
-- Escalation condenses a faint outline into a sharply defined regal silhouette while retaining a vapor tail, empty interior, and one readable anchor for every phase-through action.
+Shared visual constants and the complete T1–T5 comparison live on the [Wraiths family page](families/wraiths.md).
 
 **Escalation axis:** A barely held mist learns to drag anchors, weaponize the boundary between wall and room, spread a crowned cloak territory, and finally command a court through hollow regalia whose seals can be permanently opened.
 

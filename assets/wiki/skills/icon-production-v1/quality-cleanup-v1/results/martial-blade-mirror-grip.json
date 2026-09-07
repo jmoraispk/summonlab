@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:mirror-grip",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-mirror-grip.png",
+		"contentHash": "e57fe590b3b7e644e203a839e9ce20847b8ce41b3e5bcc7228c0dc4098accd8d"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-mirror-grip.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-mirror-grip.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-mirror-grip.png",
+		"contentHash": "d44d27b01a7aafc8bf90ad8e3e3d8b48ba6300629d3d6b83442441fbd3fe079b",
+		"removedPixels": 211435,
+		"removedPixelBounds": {
+			"left": 105,
+			"top": 11,
+			"width": 814,
+			"height": 1005
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "cf7d78e05eef00a308ea77918255d1823646f029d4242a9bf59fbb736e22f1e5",
+	"resultContentHash": "e1111835d29d1885fa44ae222cf236b811fe8192883cc94df30d795cd4e83197"
+}

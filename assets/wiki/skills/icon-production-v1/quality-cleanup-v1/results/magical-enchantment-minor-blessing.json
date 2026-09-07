@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:minor-blessing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-minor-blessing.png",
+		"contentHash": "dbc5cf472cf803ba88a3a03cdf8b4f3cef4311edd7a3bf67c2966a066c85687b"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-minor-blessing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-minor-blessing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-minor-blessing.png",
+		"contentHash": "ec908be8b3e7ecf28d1a92a4333abe0f8f6cb3f3983331c60bce5056e85b3b7d",
+		"removedPixels": 138114,
+		"removedPixelBounds": {
+			"left": 152,
+			"top": 29,
+			"width": 717,
+			"height": 943
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "41454fca6fb7f93f6e22ca4d373bc93e857f3bb7c466aa1365a217bedf5f2e52",
+	"resultContentHash": "565b3ee6750fbfab29c9e2c684e0d1500183e6386c9876b785ec507c43428e73"
+}

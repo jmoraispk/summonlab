@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:glacier",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-glacier.png",
+		"contentHash": "68fce5f97f45c68391a8ac5536f689d0d58165a6ed5da17d538ff45d59a55d63"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-glacier.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-glacier.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-glacier.png",
+		"contentHash": "b29e0c635e5d4a8c7e0359a83cc6190ee3b9a98fcf8e1ed98bf4ccd821672c9e",
+		"removedPixels": 210267,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 24,
+			"width": 783,
+			"height": 977
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "70a082d53e69fcbd50f9cd66fce91cb601f2de0374a46df068669abe41920499",
+	"resultContentHash": "f08a7ef8b2b8545aa8be1504c376b096c8eb6c894abcb0a582296392f167363e"
+}

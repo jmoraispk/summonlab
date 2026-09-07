@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:cleave",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-cleave.png",
+		"contentHash": "e603f19d2a9c19eecfceb6fb024d62221e02e570d832c9834788c04cdf23b791"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-cleave.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-cleave.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-cleave.png",
+		"contentHash": "d6ccad2379116beae46a21dfe04a9a1f6176664efc5101e45486b6150c30ca52",
+		"removedPixels": 158280,
+		"removedPixelBounds": {
+			"left": 138,
+			"top": 32,
+			"width": 750,
+			"height": 960
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "328ae027f1d1b97873d39ec11a3242b703e8ebc94ca2514845c060113901d6d5",
+	"resultContentHash": "6e02f4005a959152cd20b762d7191d8f8da9a9b90c3ef48d0f85874e77fb9ca3"
+}

@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:polearm:reaping-arc",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-reaping-arc.png",
+		"contentHash": "838ef5c16c135347a64d9350a5108f3bb79fc1db538a9c4015f9976b5f32f194"
+	},
+	"rank": "D",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:polearm:reaping-arc",
+			"kind": "stray-ui-glyph",
+			"detail": "Lower-left circular gauge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-reaping-arc.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-reaping-arc.png",
+		"contentHash": "8cd7336fc1c3de3ab25d725dfee430ab8c2ad0ee4025ef375e2d9562c37be074",
+		"removedPixels": 162226,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 24,
+			"width": 735,
+			"height": 975
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "74f2cebaee901e23dc01a870d34d1eb5b2132a515cc3a7afeda022decb7f642a",
+	"resultContentHash": "2fa3b72110f8c23bd0ef303aeb0967367a1df5de95816b76d903b4f113d8a077"
+}

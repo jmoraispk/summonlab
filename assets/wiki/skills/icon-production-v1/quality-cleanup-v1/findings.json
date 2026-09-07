@@ -1,0 +1,293 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-findings-source-v1",
+	"findings": [
+		{
+			"targetId": "martial:blade:one-blade-one-world",
+			"kind": "frame-composition",
+			"detail": "Sword and lower-left action trail cross the outer frame.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"kind": "frame-composition",
+			"detail": "Spear and action line compete with the frame boundary.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"kind": "frame-composition",
+			"detail": "Sword enters through the left rail and the generated rail is irregular.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:blade:blade-throw",
+			"kind": "frame-composition",
+			"detail": "Lower-left frame run is incomplete and visually displaced.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:ranged:quick-loose",
+			"kind": "frame-composition",
+			"detail": "Lower frame reads as a doubled or ghosted rail.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:ranged:fletching",
+			"kind": "frame-composition",
+			"detail": "Crest seating exposes the checker review ground above it.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:ranged:power-draw",
+			"kind": "frame-composition",
+			"detail": "Crest seating exposes the checker review ground above it.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:ranged:archery",
+			"kind": "frame-composition",
+			"detail": "Crest seating exposes the checker review ground above it.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"kind": "frame-composition",
+			"detail": "Generated outer rails leave conspicuous transparent side runs.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"kind": "frame-composition",
+			"detail": "Generated art and semantic overlay approach the lower rail.",
+			"requiredAction": "recompose"
+		},
+		{
+			"targetId": "martial:blade:blade-dance",
+			"kind": "stray-ui-glyph",
+			"detail": "Up/down arrows.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:blade:hamstring",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached foot/boot badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:blade:assassin-s-certainty",
+			"kind": "stray-ui-glyph",
+			"detail": "Broken-heart badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:blade:severed-thread",
+			"kind": "stray-ui-glyph",
+			"detail": "Crossed medical symbol.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:blade:hewing-blow",
+			"kind": "stray-ui-glyph",
+			"detail": "Red circular gauge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"kind": "stray-ui-glyph",
+			"detail": "Three stacked chevrons.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:polearm:berserk-swing",
+			"kind": "stray-ui-glyph",
+			"detail": "Lower-left circular gauge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:polearm:reaping-arc",
+			"kind": "stray-ui-glyph",
+			"detail": "Lower-left circular gauge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:polearm:red-harvest",
+			"kind": "stray-ui-glyph",
+			"detail": "Red medical cross.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:ranged:heartseeker",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached checkmark/target badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:body:low-kick",
+			"kind": "stray-ui-glyph",
+			"detail": "Down arrow.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "martial:body:joint-lock",
+			"kind": "stray-ui-glyph",
+			"detail": "Prohibition badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:elemental:warmth",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached snowflake and shield glyphs.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:elemental:ashfall",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached elemental/alchemical glyph row.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:elemental:still-depths",
+			"kind": "stray-ui-glyph",
+			"detail": "Shield, drop, and information glyphs.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:restoration:soothe",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached shield badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:enchantment:sustained-weave",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached plus/element glyphs.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:forging:ore-sense",
+			"kind": "stray-ui-glyph",
+			"detail": "Corner eye badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:forging:weaponsmithing",
+			"kind": "stray-ui-glyph",
+			"detail": "Green upgrade arrows.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:forging:fuel-craft",
+			"kind": "stray-ui-glyph",
+			"detail": "Three upgrade arrows.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:forging:tempering",
+			"kind": "stray-ui-glyph",
+			"detail": "Curved upgrade arrow.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:forging:living-metal",
+			"kind": "stray-ui-glyph",
+			"detail": "Curved upgrade arrow.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:cooking:cooking",
+			"kind": "stray-ui-glyph",
+			"detail": "Smiling-face/heart badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:cooking:preserving",
+			"kind": "stray-ui-glyph",
+			"detail": "Infinity badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:cooking:restorative-broth",
+			"kind": "stray-ui-glyph",
+			"detail": "Heart/plus glyphs.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:cooking:comfort",
+			"kind": "stray-ui-glyph",
+			"detail": "Heart/plus glyphs.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:gathering:taming",
+			"kind": "stray-ui-glyph",
+			"detail": "Small medallion badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "craft:gathering:the-earth-provides",
+			"kind": "stray-ui-glyph",
+			"detail": "Circular-arrow badge.",
+			"requiredAction": "revise-art"
+		},
+		{
+			"targetId": "magical:ward:warding",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:ward:shield-sigil",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:ward:cleanse",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:enchantment:imbuing",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:enchantment:sigil-binding",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:elemental:tide-sense",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "craft:knowledge:languages",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:mind:read-surface",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "magical:mind:mental-fortress",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		},
+		{
+			"targetId": "craft:knowledge:ancient-script",
+			"kind": "symbolic-owner-review",
+			"detail": "Symbolic language may be the central subject rather than a stray overlay.",
+			"requiredAction": "owner-review"
+		}
+	]
+}

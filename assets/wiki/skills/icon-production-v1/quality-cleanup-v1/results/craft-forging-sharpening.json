@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:forging:sharpening",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-sharpening.png",
+		"contentHash": "4cc54707d8bc5bb1bdbea27e2a03c58c5326ccb6fa1b3f44d65635e04d1d2d7f"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-sharpening.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-sharpening.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-sharpening.png",
+		"contentHash": "e66909e9d86a3db1a360ce101f04a34caa630a3324c2d6ac6f834ebd4a01e04c",
+		"removedPixels": 164106,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 30,
+			"width": 770,
+			"height": 953
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "8abb4dabb89b56d72a5583597178bc7972c7f0019583a7fe5eeae8db21ffe237",
+	"resultContentHash": "05baef8fe4fd7609d1c1f996f7f8b17abaaf498b4a86beab25e0df72ff641b55"
+}

@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:storm-of-blades",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-storm-of-blades.png",
+		"contentHash": "34cefa11954993da19703afafe7763ba3f385eebc88189a596832d8ac51910a8"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-storm-of-blades.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-storm-of-blades.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-storm-of-blades.png",
+		"contentHash": "7307ad8a1a38333c6fe3c03d824b54f80dcc9b8518456cd10f748ff5a451e8da",
+		"removedPixels": 217774,
+		"removedPixelBounds": {
+			"left": 108,
+			"top": 19,
+			"width": 808,
+			"height": 997
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "2af821f98dac09ae0ce2e1dd8d1f78ea270c585f5aad4e4608395ace5156981e",
+	"resultContentHash": "c510c614637ae9a53610473fcf8eea80cd541108ad587f8df7702df5dc160506"
+}

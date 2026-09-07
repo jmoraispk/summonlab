@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:transmutation",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-transmutation.png",
+		"contentHash": "217fe5370f24047935d6ce0e5259580288f25f948b7fb88009ba11f2dc407431"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-transmutation.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-transmutation.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-transmutation.png",
+		"contentHash": "d451b70871a5b3753ade3e6dee34ec4ffa84e0ef5e7cab711a16245e2bfd05cb",
+		"removedPixels": 187160,
+		"removedPixelBounds": {
+			"left": 124,
+			"top": 17,
+			"width": 774,
+			"height": 999
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "27e46a00e26836b3be53a6b62251c4f226b0d19bc573259a19dd09609306a27a",
+	"resultContentHash": "0dd63a32a216205f7e45b3477541f6054ab52dd64bc7738686c0f8733714185e"
+}

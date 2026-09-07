@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:polearm:bracing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-bracing.png",
+		"contentHash": "2474dda89b8ce07d48b05644250aad8424d77983f6366057a6289e76d425b507"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-bracing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-bracing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-bracing.png",
+		"contentHash": "e89821e7568cf57dbf85140b27ba7d15fd560fac858350cd603ba6589ae00071",
+		"removedPixels": 152294,
+		"removedPixelBounds": {
+			"left": 148,
+			"top": 30,
+			"width": 727,
+			"height": 961
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "1751404a3eb421b1a0c19c9975a7f1a8111ae409971111f76f69ff79f6949038",
+	"resultContentHash": "6ab64e8cf4c5f92e29e401aad9682b4ca746aaa8f5b7a38b8d4410005c0af7ff"
+}

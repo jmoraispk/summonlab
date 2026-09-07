@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:restoration:life-link",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-life-link.png",
+		"contentHash": "92f99052f72fc58493ba35ef6a9bb863c0981ed42da93573625e0b4c43cb5b24"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-life-link.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-life-link.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-life-link.png",
+		"contentHash": "3642702c64d46ba72896e0747af3236eecf47f77603138cd004d1d288b798a36",
+		"removedPixels": 189585,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 20,
+			"width": 802,
+			"height": 969
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "56effb52169ef92e1ebf76882473c01a77d6ffae417b8e99de7f9244f253a199",
+	"resultContentHash": "de6ab889ec2482c29b65902d99a2402d5d6dd333be653d84fc4fd92eb9336742"
+}

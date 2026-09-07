@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:ground-slam",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-ground-slam.png",
+		"contentHash": "26f950df301cc1d7b6411f9287adeffb8303e1359a23d78cb06c75140f6b3f6f"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-ground-slam.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-ground-slam.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-ground-slam.png",
+		"contentHash": "6eea41fc71622177ec9f8bf6e795aba43c2dd40b137a44ff9ed104d5edf16c31",
+		"removedPixels": 197022,
+		"removedPixelBounds": {
+			"left": 123,
+			"top": 8,
+			"width": 778,
+			"height": 982
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "69d57ffa38b0afaa269892ac990467a977306c174adf154f9ee7e7fb595dd199",
+	"resultContentHash": "dd79cdaa276d65ac0658981d0a6acb28ca9bed50dbb288679966ff0f2048d0af"
+}

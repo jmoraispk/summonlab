@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:ward:the-unbroken-circle",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-ward-the-unbroken-circle.png",
+		"contentHash": "6428a2ac507b3d22fa165123402a1139304031039f67d5e6e048ba2863bc5e94"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-ward-the-unbroken-circle.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-ward-the-unbroken-circle.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-ward-the-unbroken-circle.png",
+		"contentHash": "ef639008ee5aa6fc250825bd2dfb6d81adb166236a49e478b48b371a9de608dd",
+		"removedPixels": 176223,
+		"removedPixelBounds": {
+			"left": 123,
+			"top": 16,
+			"width": 776,
+			"height": 1000
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "c92838eb53c681528078a76e87daa3ce38cd72eabd4d3fb80d2af416e143662a",
+	"resultContentHash": "cb286d61b3452b6d61ad6e36f4acfcea0eb901dc9040c61a1a5df3d9f3f837ec"
+}

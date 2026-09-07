@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.deep-one-fishman`
 
-[← Canonical monster database](README.md)
+[← Deep Ones family](families/deep-ones.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Deep Ones are treated as a pressure-adapted aquatic visual and encounter-production family. Claims about ancestry, worship, society, raiding, cognition, age, agency, personhood, and hostility are proposals pending taxonomy review. Ocean wetness, coral, native lures, and bioluminescence preserve source identity without making every form Water-affined.
 
-## Family visual grammar
+## Family context
 
-- Hunched long-armed humanoid silhouette, wide flat head, lidless eyes, gill-neck, fins, webbed claws, and needle teeth remain legible.
-- Drowned green, deep-sea blue-black, sickly grey, pearlescent white, and bounded cold native light form the source palette.
-- Wet scale, eel skin, coral, barnacle, driftwood, rusted metal, whale bone, net, pearl, and shell remain distinct materials.
-- Pressure bulk, loss of familiar humanoid proportion, and native light-bearing anatomy escalate at explicit source tiers.
+Shared visual constants and the complete T1–T5 comparison live on the [Deep Ones family page](families/deep-ones.md).
 
 **Escalation axis:** Pressure adaptation and deep-sea command progress from a gasping raider to a sovereign whose court and kraken limbs divide the arena.
 

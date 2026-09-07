@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:leviathan-s-coil",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-leviathan-s-coil.png",
+		"contentHash": "95fcc0f81f86a2b2762f2e82bb7404283be4c710ec89a0fb6ff57297137f6f2b"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-leviathan-s-coil.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-leviathan-s-coil.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-leviathan-s-coil.png",
+		"contentHash": "14237f6338e44814c41e7533ca5aa70544e9e7d5114f57410b27697336a780c4",
+		"removedPixels": 215694,
+		"removedPixelBounds": {
+			"left": 89,
+			"top": 8,
+			"width": 844,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "9302d7a352240a989e65223d8539b6236b59a07bb81c040a63073083781d4185",
+	"resultContentHash": "50f616b372c06ad8bd8eb08abfba95abb45cee885608473d912ea396d3a23935"
+}

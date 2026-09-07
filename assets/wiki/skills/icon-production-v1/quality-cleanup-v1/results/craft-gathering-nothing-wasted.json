@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:gathering:nothing-wasted",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-nothing-wasted.png",
+		"contentHash": "ea4fa3de2c47a4f2364e0b2fe0c7d58327891e5fd05ae5cedc129324a3cd021f"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-nothing-wasted.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-nothing-wasted.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-nothing-wasted.png",
+		"contentHash": "44d9b32d8d4cce70b03850855380ba14e57f5dae9440cfd1f8a76f9f64919ef9",
+		"removedPixels": 207063,
+		"removedPixelBounds": {
+			"left": 131,
+			"top": 13,
+			"width": 763,
+			"height": 1003
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "7c5151ca944a9081c20adbf5a4fee7e72f435f1ebbd031606405e6ac693bed4f",
+	"resultContentHash": "8e7f22b6752542f229bc2b5dfc9819e1f6a4b750388e3d37d81f6980a9e963f0"
+}

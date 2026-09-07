@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:restoration:soothe",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-soothe.png",
+		"contentHash": "098667e60bb2204346a91e2066e94a7df8320e1c4fc20e7602f2b9a5609913e6"
+	},
+	"rank": "F",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "magical:restoration:soothe",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached shield badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-soothe.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-soothe.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-soothe.png",
+		"contentHash": "15986cba45adc355ae7eab8305e4efeeb1560a82e3dd8cf1b04bdf9c1c70e598",
+		"removedPixels": 179757,
+		"removedPixelBounds": {
+			"left": 95,
+			"top": 8,
+			"width": 836,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "b4e3845cdc1d1efe010edfe2d4c26065287a54db7443d047e39387c6b981f5eb",
+	"resultContentHash": "704a9c29588dc7c5121ee327317f2c05eb9dc490f22dd24c55c8eb09fb007359"
+}

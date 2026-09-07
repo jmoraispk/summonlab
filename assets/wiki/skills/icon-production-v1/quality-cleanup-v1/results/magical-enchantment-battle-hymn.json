@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:battle-hymn",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-battle-hymn.png",
+		"contentHash": "f7400047f6b778bdd71865f415b05ac52882e3d20f070e0c239058fef64faeb4"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-battle-hymn.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-battle-hymn.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-battle-hymn.png",
+		"contentHash": "a15f62ab740c4ce1107311421eb1d2f2d3932d2e229bd3da994934ddba44cceb",
+		"removedPixels": 185189,
+		"removedPixelBounds": {
+			"left": 145,
+			"top": 17,
+			"width": 742,
+			"height": 956
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "d2ec3e5f969787ea2dbc4ac75a7918ef6d001249046f17b9982443545b93028e",
+	"resultContentHash": "971347bd575c158c84bb000f72576a118af53031f32d1ec693bbdf3e3a8e2c2d"
+}

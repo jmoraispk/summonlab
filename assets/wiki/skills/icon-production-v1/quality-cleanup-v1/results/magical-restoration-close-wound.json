@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:restoration:close-wound",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-close-wound.png",
+		"contentHash": "22cfe0726251d89cdde082caf533f7ccd006daf00b0ba4e336f2c60a8f273a6c"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-close-wound.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-close-wound.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-close-wound.png",
+		"contentHash": "d49783efbc598824179ebc35ee07cfbe259a32e3f064d84be6e902bba711301d",
+		"removedPixels": 176768,
+		"removedPixelBounds": {
+			"left": 122,
+			"top": 19,
+			"width": 781,
+			"height": 997
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "6e0469bf7bf964b06d88d59a0a3e600fd38b37b91377e6110e6e03faf8d869f2",
+	"resultContentHash": "2b63415475e62110f81424cd0dcee4f51cbb8b9004e9eb7aa6215b8bce758e2b"
+}

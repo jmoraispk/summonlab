@@ -23,6 +23,9 @@ from validate_target import (
     PROFILE_V1,
     PROFILE_V2,
     PROFILE_V3,
+    PROFILE_V4,
+    PROFILE_V5,
+    PROFILE_V6,
     StableFileSnapshot,
     _path_argument,
     absolute_project_path,
@@ -108,7 +111,7 @@ def _validate_profile_normalization_evidence(
         )
         if output_hash is not None and recorded_output_hash != output_hash:
             fail("normalized output hash does not bind retained candidate")
-        if profile in {PROFILE_V2, PROFILE_V3}:
+        if profile in {PROFILE_V2, PROFILE_V3, PROFILE_V4, PROFILE_V5, PROFILE_V6}:
             _require_sha256(
                 evidence.get("decoderInputContentHash"),
                 "canonical decoder input content hash",
@@ -136,7 +139,7 @@ def _validate_profile_normalization_evidence(
                 fail("profile-v2 evidence must record assigned-srgb")
         elif profile != PROFILE_V1:
             fail("normalization evidence uses an unsupported profile")
-    elif profile in {PROFILE_V2, PROFILE_V3}:
+    elif profile in {PROFILE_V2, PROFILE_V3, PROFILE_V4, PROFILE_V5, PROFILE_V6}:
         decoder_hash = evidence.get("decoderInputContentHash")
         container_box = evidence.get("containerBox")
         color_disposition = evidence.get("colorSpaceDisposition")
@@ -1208,7 +1211,13 @@ def persist_failed_result(
                 },
             }
         )
-        if normalization["profile"] in {PROFILE_V2, PROFILE_V3}:
+        if normalization["profile"] in {
+            PROFILE_V2,
+            PROFILE_V3,
+            PROFILE_V4,
+            PROFILE_V5,
+            PROFILE_V6,
+        }:
             result["normalization"].update(
                 {
                     "decoderInputContentHash": None,

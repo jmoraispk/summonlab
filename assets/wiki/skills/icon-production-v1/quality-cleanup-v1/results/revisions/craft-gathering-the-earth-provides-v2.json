@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "craft:gathering:the-earth-provides",
+	"name": "The Earth Provides",
+	"rank": "B",
+	"motifFamily": "gathering.harvest",
+	"finding": {
+		"targetId": "craft:gathering:the-earth-provides",
+		"kind": "stray-ui-glyph",
+		"detail": "Circular-arrow badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-gathering-the-earth-provides-v2.json",
+		"contentHash": "3f4370c0bccc805d554f44286ae9ea75dd2140dff79ee6e19182ca61b4413411"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-the-earth-provides-v1.json",
+			"contentHash": "b28b624bafe81366e69e17438e572a6cf7c9412b49aca1d8f856c98467d2ed4b"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v1.json",
+			"contentHash": "9b64bade512063eaac9285b40e733de97ba491da98cf7e887e2dc8c545d2ed79"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",
+			"contentHash": "4676c24c3c2598f79c07324baee7d02f6cc659d03c72aa7d45324dfb36238544"
+		},
+		"transactionContentHash": "298c41e14ba4f819ce4425a1ac9f04a551baa99e846298d49b6816feaa07080e",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-the-earth-provides-v1.png",
+			"contentHash": "530cfcd5f33159fb4e5ad9efb52b141e180e480c334c03e688b53a085217d221"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides-v1.png",
+			"contentHash": "b70a517feba95bd37b62debc266177127024f1cae13f2d290b7ca7f467698fa4"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1690082,
+		"contentHash": "4676c24c3c2598f79c07324baee7d02f6cc659d03c72aa7d45324dfb36238544",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-the-earth-provides-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 610894,
+		"contentHash": "ca3d918edef04d5eea3c016a8e3228a7c65f3e426c035f202e0f62fa9dc3a4e9"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1154689,
+		"contentHash": "4edd7f082054740f215f41ae61ae85a79acd4797596cf4471db7e5aea7a9d543"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 171408,
+		"contentHash": "814f245d508aa0a85a3cee7860f3e0f8b07be2acf459d6fd53548536f217e8b6"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Circular-arrow badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:26.217Z",
+		"finishedAt": "2026-09-06T09:39:28.221Z",
+		"durationMs": 2004,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:26.217Z",
+				"finishedAt": "2026-09-06T09:39:26.270Z",
+				"durationMs": 53
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:26.279Z",
+				"finishedAt": "2026-09-06T09:39:26.754Z",
+				"durationMs": 475
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:26.754Z",
+				"finishedAt": "2026-09-06T09:39:27.126Z",
+				"durationMs": 371
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:27.126Z",
+				"finishedAt": "2026-09-06T09:39:28.206Z",
+				"durationMs": 1079
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:28.221Z",
+				"finishedAt": "2026-09-06T09:39:28.221Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "fd71660c8660a821fdadd38aef3157ff0a6ef9590a56069fea71cb0a33746a41",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-the-earth-provides-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-the-earth-provides-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

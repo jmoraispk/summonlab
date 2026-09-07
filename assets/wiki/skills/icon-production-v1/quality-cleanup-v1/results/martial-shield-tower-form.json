@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:shield:tower-form",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-shield-tower-form.png",
+		"contentHash": "67ac016477ca12ace824e0ad3236a910b6c7cce2836157d733a1d0a70a141a9c"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-shield-tower-form.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-shield-tower-form.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-shield-tower-form.png",
+		"contentHash": "75c4ae852575fb1df0ea753be3a1de1ead2599d0519e7e59f022810457ee39c5",
+		"removedPixels": 151358,
+		"removedPixelBounds": {
+			"left": 144,
+			"top": 33,
+			"width": 735,
+			"height": 941
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "1c635f7b597e35e57ed4dca6db2e01e3b0fb7165e492179d52ca3a6565d16fce",
+	"resultContentHash": "a5f39720f40e2e5a352f28b301b661bcd5a6d8fc94a3f1b69b9431df992ebaae"
+}

@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.werebeast-werebeast`
 
-[← Canonical monster database](README.md)
+[← Werebeasts family](families/werebeasts.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Werebeasts are treated as a staged hybrid-transformation visual and encounter-production family. Claims about human origin, curse, permanence, culture, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- A human frame progressively stretches toward animal proportions while hands, shoulders, legs, muzzle, and tail change at explicit tiers.
-- Grey, black, russet, or silver fur remains distinct from torn muted human clothing, hide, iron restraints, claw, and fang.
-- Shredded dress, snapped restraints, ritual scars, and restrained moon motifs record the unfinished transformation without defining an affinity.
-- Loss of human proportion escalates from patchy changes to an authored sovereign transformation while readable joints remain exposed.
+Shared visual constants and the complete T1–T5 comparison live on the [Werebeasts family page](families/werebeasts.md).
 
 **Escalation axis:** The visible degree and permanence of hybrid transformation advances from an afflicted human probe to a sovereign that commands staged transformations.
 

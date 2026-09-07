@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.giant-stone-giant`
 
-[← Canonical monster database](README.md)
+[← Giants family](families/giants.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Giants are treated as a scale-and-landscape production family rather than a claim that all enormous humanoids share one species, culture, or allegiance. The packet preserves humanlike heavy anatomy, progressive geology, rough mountain materials, and landscape scale while assigning encounter roles through committed weight and terrain displacement.
 
-## Family visual grammar
+## Family context
 
-- Humanlike proportions scaled upward with a heavy brow, thick limbs, dense bone, and a slight stoop that communicates the body's own weight.
-- Stone grey, granite blue-grey, earth brown, moss green, glacier white, and warm amber eyes remain the family palette without requiring an elemental origin.
-- Rough hide, raw stone, moss, lichen, pine, iron chain, and rope accumulate as bodily geology and oversized practical tools.
-- Chains, standing-stone jewelry, skin runes, and whole trees function as ornament at a scale that stays legible from the arena.
-- Raw scale and geological coverage escalate together until the Sovereign carries a valley, but every form retains recognizable humanoid load paths and slow committed motion.
+Shared visual constants and the complete T1–T5 comparison live on the [Giants family page](families/giants.md).
 
 **Escalation axis:** Each tier expands both physical scale and the amount of lived-in geology across the body, converting a readable tree-club commitment into slope control, chained-megalith orbit, watershed command, and finally an arena that is itself a walking range.
 

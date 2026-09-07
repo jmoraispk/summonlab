@@ -1,7 +1,0 @@
-waves/wave-04/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-05/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-06/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-07/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-08/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-09/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text
-waves/wave-10/candidates/**/*.png filter=lfs diff=lfs merge=lfs -text

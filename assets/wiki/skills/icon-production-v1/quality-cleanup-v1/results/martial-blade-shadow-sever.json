@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:shadow-sever",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-shadow-sever.png",
+		"contentHash": "c8098537222b12768afce993e453d4c0ee5000352cea6532dbe5a25c572b0c15"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-shadow-sever.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-shadow-sever.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-shadow-sever.png",
+		"contentHash": "69452da8175f970b52ca41bf4d498a993570576b4ce8181606954e9e32f30329",
+		"removedPixels": 176642,
+		"removedPixelBounds": {
+			"left": 124,
+			"top": 17,
+			"width": 774,
+			"height": 969
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "ba7102491159bac5eebd6c0f892d4ebb4627512f466641a1ab0478378540c37b",
+	"resultContentHash": "b90fa7810289eb00616585ffd34a80640aed0ee9e6e34fc5b252f7f5dce0c107"
+}

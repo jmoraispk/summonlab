@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "craft:forging:fuel-craft",
+	"name": "Fuel Craft",
+	"rank": "E",
+	"motifFamily": "forging.metallurgy",
+	"finding": {
+		"targetId": "craft:forging:fuel-craft",
+		"kind": "stray-ui-glyph",
+		"detail": "Three upgrade arrows.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-forging-fuel-craft-v3.json",
+		"contentHash": "0631151a3e1093e10a95362f459f010a85f852dd5e98c527f71ef96bd2fa2a44"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-fuel-craft-v2.json",
+			"contentHash": "17d5f42024bf2ae22de1230d6a97b65ddaeaf78250efd7a6f45140da31d50ca0"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v2.json",
+			"contentHash": "e5836845d3117c1d8fc4197ff7602763482b4e95b13a3a6a880fc76df69c7b6e"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v2.png",
+			"contentHash": "e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec"
+		},
+		"transactionContentHash": "f69f90e8cc9943ca1ec1677aff2e0dde4003becda929ff4c68eed2a411c6042c",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-fuel-craft-v2.png",
+			"contentHash": "7a5b20f6d24adb2a81c2e42b90f1765b939be4872eb479e158b537da6d325670"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-fuel-craft-v2.png",
+			"contentHash": "1e077127d62712eba68e37a3c42c174bbcb714e1529644074b364e1512f3e925"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1475212,
+		"contentHash": "e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-fuel-craft-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 585240,
+		"contentHash": "7a5b20f6d24adb2a81c2e42b90f1765b939be4872eb479e158b537da6d325670"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-fuel-craft-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1226235,
+		"contentHash": "1e077127d62712eba68e37a3c42c174bbcb714e1529644074b364e1512f3e925"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 184427,
+		"contentHash": "4201e8655c6109258e45ad41695eca08dc01d06cd786760ae15a5371f86ca480"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Three upgrade arrows."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:04:50.176Z",
+		"finishedAt": "2026-09-06T11:04:52.318Z",
+		"durationMs": 2141,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:04:50.176Z",
+				"finishedAt": "2026-09-06T11:04:50.231Z",
+				"durationMs": 54
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:04:50.238Z",
+				"finishedAt": "2026-09-06T11:04:50.792Z",
+				"durationMs": 554
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:04:50.792Z",
+				"finishedAt": "2026-09-06T11:04:51.185Z",
+				"durationMs": 393
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:04:51.186Z",
+				"finishedAt": "2026-09-06T11:04:52.303Z",
+				"durationMs": 1117
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "b19db4d9327302e1dd405c1a1daba5f63bc42fda3a2ed2b2de2f4d1ccdc2a01d",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-fuel-craft-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-fuel-craft-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

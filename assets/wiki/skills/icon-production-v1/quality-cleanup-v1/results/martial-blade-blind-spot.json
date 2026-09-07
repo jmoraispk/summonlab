@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:blind-spot",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-blind-spot.png",
+		"contentHash": "edf5a369635f21cc2f16140d7ecd82a994b4a12c8491b9d19234b09f63d4d2cd"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-blind-spot.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-blind-spot.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-blind-spot.png",
+		"contentHash": "6f15556c1273871772b394129e25b4ac27a4f2f3b73bed9a0d3221d202078ed5",
+		"removedPixels": 173476,
+		"removedPixelBounds": {
+			"left": 111,
+			"top": 21,
+			"width": 800,
+			"height": 995
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "b1b7c9d51709b72752bde07c5206fc71c98a968eb4febbddc678ba67919b3c71",
+	"resultContentHash": "9dc57e9b27b3c6e6ac9e34900efb4152c624680a049afd37b17a9dad9731f391"
+}

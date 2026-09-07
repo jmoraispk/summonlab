@@ -1,0 +1,47 @@
+{
+	"targetId": "craft:gathering:taming",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-taming.png",
+		"contentHash": "f785652eee7f671eaa4bd2279e9859823c919e81f726b02e46e74499d6648007"
+	},
+	"rank": "E",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "craft:gathering:taming",
+			"kind": "stray-ui-glyph",
+			"detail": "Small medallion badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-gathering-taming.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-gathering-taming.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-gathering-taming.png",
+		"contentHash": "b605661afb3baccfed9163e5c37cf85e24f689318a0d822adfcbbce0a76a1b4a",
+		"removedPixels": 186924,
+		"removedPixelBounds": {
+			"left": 137,
+			"top": 8,
+			"width": 748,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "183b0dd119cdde312fd41ec4879af91896b6d2b0150a53599518f67ed307b827",
+	"resultContentHash": "0a1528fc545c65a0f9852029b551b99fe6bb1beed2c5ba3f1a127a179ed92a66"
+}

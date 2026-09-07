@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:boomerang-arc",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-boomerang-arc.png",
+		"contentHash": "8bb6cd5b162645f5eb0e14b474ad69e81dada78ad7013a08de9145d8301c3a7b"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-boomerang-arc.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-boomerang-arc.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-boomerang-arc.png",
+		"contentHash": "880e1625aa52ab1abe9168ff0bc5f5fd709e75ea29b411e2204a17f2190e954e",
+		"removedPixels": 180759,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 23,
+			"width": 792,
+			"height": 981
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "39950cfc1d78bd64c9e0e0c03bc5b563b478cbcebd53f03f02ba75dd19ba1e04",
+	"resultContentHash": "ab0b36352c75ee80e1b969a5a0a3edcbf855ec4147d87d4f02c32818125e7147"
+}

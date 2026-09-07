@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.slime-droplet`
 
-[← Canonical monster database](README.md)
+[← Slimes family](families/slimes.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Slimes are treated as an amorphous visual and encounter-production family, not as accepted claims about biology, cognition, feeding, agency, personhood, or universal hostility. Engulfing and digestion are encounter proposals; the packet preserves gravity-led jelly, visible contents, and a core weak point while humanoid structure begins only at T3.
 
-## Family visual grammar
+## Family context
 
-- Rounded, drooping, gravity-obeying jelly with surface-tension edges and a readable internal core remains the family silhouette.
-- Translucent blue, acid green, amber, or violet is chosen per individual, with suspended debris and a brighter but bounded core.
-- Viscous flow, drip trails, swallowed objects, crystalline cores, and later crust plates remain spatially coherent.
-- Internal structure emerges by tier: pseudopod, debris-bearing blob, humanoid crust frame, suspended skeleton, then a multicore tide.
+Shared visual constants and the complete T1–T5 comparison live on the [Slimes family page](families/slimes.md).
 
 **Escalation axis:** Internal structure and battlefield coordination emerge from formlessness, culminating in a multicore sovereign that redistributes its own mass through lesser slimes.
 

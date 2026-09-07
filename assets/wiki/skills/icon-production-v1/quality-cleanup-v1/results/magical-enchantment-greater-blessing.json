@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:greater-blessing",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-greater-blessing.png",
+		"contentHash": "5d0cfbd6c0e12a3c0f1068f971b49a94bfc57df91b088da4e1ef2caa4cb562dc"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-greater-blessing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-greater-blessing.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-greater-blessing.png",
+		"contentHash": "3c16426829b72ea0847c26e17eaa15061e413e0051a85642177ddeee8f2e8d91",
+		"removedPixels": 183149,
+		"removedPixelBounds": {
+			"left": 139,
+			"top": 8,
+			"width": 745,
+			"height": 965
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "fc34494c49009811663883b9f447a830a59a4ead6f95ffae847ea08fcc79c728",
+	"resultContentHash": "944a0bb20138f1a6e3641a3299d3d83e1657829791fda4d87dac9b7d7a5a5004"
+}

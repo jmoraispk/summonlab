@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:restoration:mending",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-mending.png",
+		"contentHash": "a0be040431ce805e85b229f90e392ebffbb82c88db95fe441332904fa94cd80f"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-mending.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-mending.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-mending.png",
+		"contentHash": "0b0da3403200a6efbebc42e1e09aa643f63c6e132b1668c21044b106cf94d092",
+		"removedPixels": 176206,
+		"removedPixelBounds": {
+			"left": 126,
+			"top": 17,
+			"width": 774,
+			"height": 999
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "19e45b66aab76f22485e2a79304daac39e49f77d774c8feab6d59513ffe103d7",
+	"resultContentHash": "81f43c30c8c6590a6a96377c7b7503fdd4fb39b8450433577a93121c1352fbd7"
+}

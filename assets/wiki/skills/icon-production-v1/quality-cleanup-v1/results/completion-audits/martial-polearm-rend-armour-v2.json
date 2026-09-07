@@ -1,0 +1,37 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-completion-audit-v1",
+	"revision": 2,
+	"targetId": "martial:polearm:rend-armour",
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-rend-armour-v2.json",
+		"contentHash": "7fe3c752e78809f030ea1201e88a68219f91e1651d93adfac13508a62bb01458"
+	},
+	"result": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v2.json",
+		"contentHash": "c28584c8cf5742f862c6391e559b291de7e0e0f93451509a17c9f798c9b5ea63"
+	},
+	"status": "candidate",
+	"corePublication": {
+		"startedAt": "2026-09-06T12:45:50.255Z",
+		"completedAt": "2026-09-06T12:45:50.296Z",
+		"durationMs": 40,
+		"artifacts": {
+			"providerSource": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v2.png",
+				"contentHash": "111df61b487bfb2283e1938ff96cc097e3907c11855ada881dafc6a1d0cba81b"
+			},
+			"revisedInterior": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v2.png",
+				"contentHash": "13551103f95ad048df6a27d375b15cfa91bb3cb5b3de0fd22a8d335af959ec7c"
+			},
+			"composite": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v2.png",
+				"contentHash": "9a88924b6bd808f921a5455ed9bdcfc9f89e36d928e46a549658ccb83564b2b6"
+			},
+			"result": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v2.json",
+				"contentHash": "c28584c8cf5742f862c6391e559b291de7e0e0f93451509a17c9f798c9b5ea63"
+			}
+		}
+	}
+}

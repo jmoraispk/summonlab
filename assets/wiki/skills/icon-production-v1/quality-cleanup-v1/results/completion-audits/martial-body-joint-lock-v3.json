@@ -1,0 +1,37 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-completion-audit-v1",
+	"revision": 3,
+	"targetId": "martial:body:joint-lock",
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-body-joint-lock-v3.json",
+		"contentHash": "345729958ead6c2ef0089a95b713f629c663e0bcfbe0e0410ad692ad53610c97"
+	},
+	"result": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v3.json",
+		"contentHash": "b2036a10daa05aec1d356376ddb1f5e92a3084f30313dc3442ea451f8d51ee03"
+	},
+	"status": "candidate",
+	"corePublication": {
+		"startedAt": "2026-09-06T11:05:24.303Z",
+		"completedAt": "2026-09-06T11:05:24.329Z",
+		"durationMs": 26,
+		"artifacts": {
+			"providerSource": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v3.png",
+				"contentHash": "ccb115316c821435e6860f1b67cc78a386f9ee6fb9527cd18b62b786da4dc50b"
+			},
+			"revisedInterior": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v3.png",
+				"contentHash": "46745153ed207c9e8b7be1cf22ccde25fcf32336fcedffb50ab74220e0618c9f"
+			},
+			"composite": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-joint-lock-v3.png",
+				"contentHash": "e3e5320f90c728fc9609826b594d7e96a96a07e530541c4c617e2c39a3439dab"
+			},
+			"result": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v3.json",
+				"contentHash": "b2036a10daa05aec1d356376ddb1f5e92a3084f30313dc3442ea451f8d51ee03"
+			}
+		}
+	}
+}

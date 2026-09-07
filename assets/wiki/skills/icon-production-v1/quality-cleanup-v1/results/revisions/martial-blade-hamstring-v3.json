@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:blade:hamstring",
+	"name": "Hamstring",
+	"rank": "E",
+	"motifFamily": "blade.dagger-strike",
+	"finding": {
+		"targetId": "martial:blade:hamstring",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached foot/boot badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-hamstring-v3.json",
+		"contentHash": "9b824ec9ac09eef709c5246a369ef20c3b9c1d0265d6e287225577543c63aeb7"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-hamstring-v2.json",
+			"contentHash": "447d1051b8b386e614a4552bbe1b289292b63abeb4687171d708e83aad33ef19"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v2.json",
+			"contentHash": "02dabe7adb0e4e2900ae2e04dc0f047c445f134ff4723651598d926917d68291"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v2.png",
+			"contentHash": "127dcf280a51e9567a8921164afaff221620e8a379c3d80543f51b002d984953"
+		},
+		"transactionContentHash": "a2aaac9f5cbdf1be000f5e1b02db40e77793098d40b623e4706e8d5c4b05ae99",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hamstring-v2.png",
+			"contentHash": "f966a006637d41b25ba2cfdb1f3d4a73d232280822aad2f2b860f96b85314b01"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-hamstring-v2.png",
+			"contentHash": "cc27b38983b9d29add267f0f2bbff78ccca28177c1bc1603f00fed2d6d60bec6"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1138221,
+		"contentHash": "127dcf280a51e9567a8921164afaff221620e8a379c3d80543f51b002d984953",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hamstring-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 401135,
+		"contentHash": "f966a006637d41b25ba2cfdb1f3d4a73d232280822aad2f2b860f96b85314b01"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-hamstring-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1049058,
+		"contentHash": "cc27b38983b9d29add267f0f2bbff78ccca28177c1bc1603f00fed2d6d60bec6"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 157555,
+		"contentHash": "27eec388ecaaa865a6eada9bdb8e9b96e21e671181107d4d43d345da9c933087"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Detached foot/boot badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:15.017Z",
+		"finishedAt": "2026-09-06T11:05:17.320Z",
+		"durationMs": 2303,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:15.017Z",
+				"finishedAt": "2026-09-06T11:05:15.070Z",
+				"durationMs": 52
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:15.076Z",
+				"finishedAt": "2026-09-06T11:05:15.707Z",
+				"durationMs": 630
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:15.707Z",
+				"finishedAt": "2026-09-06T11:05:16.168Z",
+				"durationMs": 461
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:16.168Z",
+				"finishedAt": "2026-09-06T11:05:17.309Z",
+				"durationMs": 1141
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "89cb9dc1f145766bb037bea68495c039b414354623b6d22cdbe9fbb49eda5b3c",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hamstring-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-hamstring-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

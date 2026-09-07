@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.doppelganger-faceless-sovereign`
 
-[← Canonical monster database](README.md)
+[← Doppelgangers family](families/doppelgangers.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,12 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Doppelgangers are treated as a copy-quality and leaking-disguise visual and encounter-production family. Claims about infiltration, motive, social behavior, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.
 
-## Family visual grammar
+## Family context
 
-- A generic humanoid copy silhouette retains one deliberate flaw until layered face and mask motifs appear at explicit upper tiers.
-- Clay-grey skin, putty, borrowed colors, porcelain, copied cloth, and smooth flesh remain discrete source materials rather than Earth affinity.
-- Seams, wrong joints, ill-fitting clothes, and layered masks reveal copy quality while preserving the readable original-copy relationship.
-- Disguise fidelity escalates from an entirely blank true form to a sovereign carrying many stolen-looking faces at once.
+Shared visual constants and the complete T1–T5 comparison live on the [Doppelgangers family page](families/doppelgangers.md).
 
 **Escalation axis:** Copy fidelity and the number of simultaneous borrowed identities advance from blank smooth flesh to a body-wide sovereign mask procession.
 

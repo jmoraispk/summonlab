@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:grit-throw",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-grit-throw.png",
+		"contentHash": "fe515f1fa7515b2c0626c6cbcf2215a8d787311089fb7cd9e4b646ec9db7fd7a"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-grit-throw.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-grit-throw.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-grit-throw.png",
+		"contentHash": "21ab223cbb4c4cea6824f7bb0eb3af5ca425c4856b58ee5b2dd8cfacc3d0d569",
+		"removedPixels": 151336,
+		"removedPixelBounds": {
+			"left": 144,
+			"top": 23,
+			"width": 738,
+			"height": 949
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "da2974f0606e2f27f44c810f83a02b1f9ec3ff7438366a14ab04ef3afc9039df",
+	"resultContentHash": "cdc254cfddfe8046806cfdf5ee481fa9ee0b261b8ee6b895d5ffad66e5b8ad99"
+}

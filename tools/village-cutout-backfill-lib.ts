@@ -190,6 +190,7 @@ interface ManifestBuildEvidence {
 interface ApprovedAuthority {
 	readonly displayName: string;
 	readonly assetKey: string;
+	readonly catalogPath: string;
 	readonly path: string;
 	readonly sha256: string;
 	readonly manifestSha256: string;
@@ -202,6 +203,7 @@ const APPROVED_AUTHORITY: Record<
 	'yaso-dreno': {
 		displayName: 'Yaso Dreno',
 		assetKey: 'yaso-dreno-summon-v1',
+		catalogPath: 'assets/heroes/approved/summonable-roster-v1/sources/yaso-dreno/summon.png',
 		path: 'assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/yaso-dreno/summon-v1.png',
 		sha256: '2c757553d089e409e79cdf403b4c170de5e47b84d2f48a25cba57fa8838537e0',
 		manifestSha256: '6cec5db614ec93fab229d7b24bd4d83bb9255c9ea52bcfadd7ca84bcfcfe1db4'
@@ -209,6 +211,7 @@ const APPROVED_AUTHORITY: Record<
 	'oren-sorin': {
 		displayName: 'Oren Sorin',
 		assetKey: 'oren-sorin-summon-v1',
+		catalogPath: 'assets/heroes/approved/summonable-roster-v1/sources/oren-sorin/summon.png',
 		path: 'assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/oren-sorin/summon-v2.png',
 		sha256: '00b1cee63c25ce4590afea39e5539c4b1aeb4e63a2dc61ace2bdc830c10a9b4b',
 		manifestSha256: '1532dbdc8342ee47453c748bdebfabe684ce3208d30231ba46d189425fb1e249'
@@ -216,6 +219,7 @@ const APPROVED_AUTHORITY: Record<
 	'joror-pelleth': {
 		displayName: 'Joror Pelleth',
 		assetKey: 'joror-pelleth-summon-v1',
+		catalogPath: 'assets/heroes/approved/summonable-roster-v1/sources/joror-pelleth/summon.png',
 		path: 'assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/joror-pelleth/summon-v1.png',
 		sha256: '130360a4f48dff40971d9039a6a813fa549549f03627cdb87422cd400864819f',
 		manifestSha256: '97667fed1d0ec5be0ca326ef9e364a2bd301ff44f1921656c401295f007ca04b'
@@ -293,7 +297,14 @@ function assertAuthority(
 		sha256: summon.contentHash,
 		manifestSha256: entry.draft.manifestHash
 	};
-	if (JSON.stringify(observed) !== JSON.stringify(expected)) {
+	const currentAuthority = {
+		displayName: expected.displayName,
+		assetKey: expected.assetKey,
+		path: expected.catalogPath,
+		sha256: expected.sha256,
+		manifestSha256: expected.manifestSha256
+	};
+	if (JSON.stringify(observed) !== JSON.stringify(currentAuthority)) {
 		throw new Error(`Approved summon authority drifted for ${heroId}`);
 	}
 	if (

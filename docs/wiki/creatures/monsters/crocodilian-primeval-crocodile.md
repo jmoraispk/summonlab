@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.crocodilian-primeval-crocodile`
 
-[← Canonical monster database](README.md)
+[← Crocodilians family](families/crocodilians.md) · [Monster bestiary](README.md)
 
 Design status: **accepted canonical form**
 
@@ -21,11 +21,9 @@ Visual-production status: **Owner approved — one Normal image plus four affini
 
 A natural quadrupedal reptile family centered on shoreline risk, armored facing, clamping, bank drags, death rolls, and floodplain control. It remains distinct from humanoid Lizardfolk and winged Dragons.
 
-## Family visual grammar
+## Family context
 
-- Every form retains a low four-legged crocodilian body, long tail, scuted back, belly fault, sensory pits, and a jaw-driven attack silhouette.
-- Tier escalation uses snout geometry, scute height, neck mobility, tail mass, scars, and waterline behavior rather than equipment or wings.
-- Eyes, wake direction, jaw angle, foreclaw grooves, tail curve, and exposed belly keep ambush and rotation counterplay readable.
+Shared visual constants and the complete T1–T5 comparison live on the [Crocodilians family page](families/crocodilians.md).
 
 **Escalation axis:** A single waterline snap becomes a backward clamp, lateral bank-drag specialist, armored death-roll champion, and floodplain sovereign controlling multiple channels.
 

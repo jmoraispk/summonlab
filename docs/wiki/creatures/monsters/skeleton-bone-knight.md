@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.skeleton-bone-knight`
 
-[← Canonical monster database](README.md)
+[← Skeletons family](families/skeletons.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: candidate-only; Fire: candidate-only; Earth:
 
 Source-draft Skeletons are treated as a necromantically animated-remains production family, not as a biological species or evidence about the identity, autonomy, rights, or allegiance of the original dead. The packet preserves humanlike bone gaps, grave goods, socket-fire binding, progressive fusion, and cheap reassembly while assigning each hostile form an explicit battlefield duty.
 
-## Family visual grammar
+## Family context
 
-- Human or humanoid skeletal proportions remain narrow, angular, and defined by empty negative space where flesh and organs would be.
-- Bone white or yellowed ivory is paired with rust, black iron, tattered grave-cloth, and one explained necromantic socket-fire accent such as green, blue, or gold.
-- Bone, rusted mail, corroded steel, grave-cloth, funerary jewelry, and crowns remain recognizable mortuary materials rather than living anatomy.
-- Carved skull runes, bone spurs, fused armor-like mass, grave regalia, and orbiting fragments accumulate as binding power becomes denser.
-- Bone density and the intensity and reach of the visible necromantic binding escalate together, but every form preserves gaps, joints, or binding anchors that can be deliberately broken.
+Shared visual constants and the complete T1–T5 comparison live on the [Skeletons family page](families/skeletons.md).
 
 **Escalation axis:** Loose bones become mail-bound ranks, a Specialist that levies battlefield fragments, fused spur architecture, and finally a royal sepulcher engine that commands, rebuilds, and promotes the whole skeletal court.
 

@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:panacea",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-panacea.png",
+		"contentHash": "b9e297a7dc9d1aff5e8ac93bb7a2588311302df182811fb84a8353aefe0e8f3d"
+	},
+	"rank": "B",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-panacea.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-panacea.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-panacea.png",
+		"contentHash": "087766feacbcaea783711bd686bee0994b12822b1f1a04736ce32456251ba26b",
+		"removedPixels": 166415,
+		"removedPixelBounds": {
+			"left": 114,
+			"top": 8,
+			"width": 796,
+			"height": 995
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-b-v9.png",
+			"contentHash": "9ed1e239603294cb0819c79b265da1c7b38a3893da808405db81fbbc06f72e28"
+		}
+	},
+	"cleanupCompositeContentHash": "ae70065c90646181e491d63da3317d8c8fb45490497f2cde74dcf238fd7c5819",
+	"resultContentHash": "346b123fd9c9a466d3e6abd9ba0f2ab85f43efa381ce014b56c7d85f13650905"
+}

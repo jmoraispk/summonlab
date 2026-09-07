@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:spark",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-spark.png",
+		"contentHash": "ca65d2d906870d919d73795c7b92a6330843edf17062a0e81fcfdc79fdee5e5b"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-spark.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-spark.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-spark.png",
+		"contentHash": "d4889a6d63a2671de5cdd08ee3833e66de3bccf31d0e6881654480351e897cbe",
+		"removedPixels": 162541,
+		"removedPixelBounds": {
+			"left": 130,
+			"top": 37,
+			"width": 761,
+			"height": 979
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "18103971bb94b97ee427676f8f375894eae66f6a9ff562da1ee8b73300ece160",
+	"resultContentHash": "22f99581d11bb5f12549a483f5be035ea80ce793dc8683df05ebca011e0f518e"
+}

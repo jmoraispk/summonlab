@@ -1,0 +1,179 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "martial:ranged:heartseeker",
+	"name": "Heartseeker",
+	"rank": "C",
+	"motifFamily": "ranged.precision-arrow",
+	"finding": {
+		"targetId": "martial:ranged:heartseeker",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached checkmark/target badge.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-ranged-heartseeker-v2.json",
+		"contentHash": "181b53316ab85e6921ab5a1c2c135e4e02ee8967290197185acffaa6996c52df"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-ranged-heartseeker-v1.json",
+			"contentHash": "3ad21f00134581f7658dd7b1a605537d01c2e9670d2591e13e6d14c7a7d011b7"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v1.json",
+			"contentHash": "1a643023eaeda90fd13ca7fc56498a220cd850e30884751c55c4634f554be59f"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v1.png",
+			"contentHash": "6277f4f66da64edf1c7f2c529baf925551ad5616a8caccfe7fa3378e9308b8bc"
+		},
+		"transactionContentHash": "960c78b62a5f6ef7b083c584cf362b5847a8984f4a654e6c08eba3d7ad0eb932",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-ranged-heartseeker-v1.png",
+			"contentHash": "a6ceb32a569e38eb77159afdba4b2fefbdda9cfcd2411777ade836919c9a4ede"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-heartseeker-v1.png",
+			"contentHash": "344132e7daf0434208f202a1ccc753d67e7a09457c49343a85c63ced3c28ffd2"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1147147,
+		"contentHash": "6277f4f66da64edf1c7f2c529baf925551ad5616a8caccfe7fa3378e9308b8bc",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-ranged-heartseeker-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 376822,
+		"contentHash": "53526c158b70f99632e532ceb324723f39070447168202dee2934960d656c4db"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-heartseeker-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 999745,
+		"contentHash": "4e3fb218643e5615f7bae5d080949f2eb1257b6d1dd785832ea39e4cadfc8821"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 152295,
+		"contentHash": "93f1d9908b7838a3d6626f6c7e72ac0bcab6fae5161decd38976b1d13fbeecb5"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated provider source was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the v1 requested removal remains free of the named glyph finding: Detached checkmark/target badge."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:40:01.754Z",
+		"finishedAt": "2026-09-06T09:40:04.041Z",
+		"durationMs": 2287,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:40:01.754Z",
+				"finishedAt": "2026-09-06T09:40:01.792Z",
+				"durationMs": 37
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:40:01.800Z",
+				"finishedAt": "2026-09-06T09:40:02.432Z",
+				"durationMs": 631
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:40:02.432Z",
+				"finishedAt": "2026-09-06T09:40:02.877Z",
+				"durationMs": 445
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:40:02.877Z",
+				"finishedAt": "2026-09-06T09:40:04.030Z",
+				"durationMs": 1153
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:40:04.041Z",
+				"finishedAt": "2026-09-06T09:40:04.041Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "00870f75ea0f2363507b4f5465b4ad345641b76355de12e612f14e6eb2289e12",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-ranged-heartseeker-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-heartseeker-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

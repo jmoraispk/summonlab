@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:enchantment:the-written-world",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-the-written-world.png",
+		"contentHash": "626e0e8ef57ca5f1c27a87ac6a990a4f8a798f678f0f9b4aeb9d24d94299889a"
+	},
+	"rank": "A",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-the-written-world.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-the-written-world.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-the-written-world.png",
+		"contentHash": "452697d4a10595903d058f18ae715ddc86d943272a6deb194a4f45647b5a1609",
+		"removedPixels": 214281,
+		"removedPixelBounds": {
+			"left": 95,
+			"top": 8,
+			"width": 832,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"cleanupCompositeContentHash": "44a15ebba9d2318fb294408e4b3c5ba2a0a949809c80cccb3376def4e88712e2",
+	"resultContentHash": "3a90b11bf186dd82ecb465f08e822a3aedcd4c627b4d27b513dccd4d7d80a8b2"
+}

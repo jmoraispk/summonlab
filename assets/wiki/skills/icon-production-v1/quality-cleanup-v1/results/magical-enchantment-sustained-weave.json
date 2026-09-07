@@ -1,0 +1,47 @@
+{
+	"targetId": "magical:enchantment:sustained-weave",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-sustained-weave.png",
+		"contentHash": "18f1f3a3c921df810d66d8a908a06606d8696bdb2400f65942c122306130013a"
+	},
+	"rank": "D",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "magical:enchantment:sustained-weave",
+			"kind": "stray-ui-glyph",
+			"detail": "Detached plus/element glyphs.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-sustained-weave.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-sustained-weave.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-sustained-weave.png",
+		"contentHash": "0ac56cd854b4b4758483c1b058ed97c97ccd566876fec68d255d0f86da25196f",
+		"removedPixels": 168323,
+		"removedPixelBounds": {
+			"left": 125,
+			"top": 17,
+			"width": 772,
+			"height": 953
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "bd789630570d71dfde22903eee907818ce7c410128a21d6b19694ada0a8dde94",
+	"resultContentHash": "fa7fea43f0e39ba094137f17bf7892fd413f0116305f8453f3062de518853705"
+}

@@ -2,8 +2,11 @@
 
 The final file uses the strict result schema matching its packet tuple: `skill-icon-result-v1` for
 exact-source jobs, including current `skill-art` and `calibration-plate` work, and
-`skill-icon-result-v2` for both profile-v1/producer-v2 and profile-v2/producer-v3 green-key
-`rarity-frame` and `backing` retries. Unknown fields and mixed protocol versions are invalid.
+`skill-icon-result-v2` for profile-v1/producer-v2, profile-v2/producer-v3,
+profile-v3/producer-v4, and geometry-first/producer-v5 normalized `rarity-frame` and `backing`
+retries, plus strict geometry-first/producer-v6 normalized `rarity-frame` and `backing` retries and
+black-matte/producer-v7 normalized `rarity-frame` retries.
+Unknown fields and mixed protocol versions are invalid.
 
 ## Required evidence
 
@@ -28,8 +31,10 @@ metadata and no output hash; `not-run` has no source or output evidence. A retai
 finished before a later validation or persistence failure. No normalization evidence has a provider
 path field.
 
-Profile-v2 and profile-v3 `completed` evidence additionally bind `decoderInputContentHash` to the exact canonical
-PNG submitted to the pinned decoder, `containerBox` to the removed pathless
+Profile-v2, profile-v3, both geometry-first revisions, and black-matte `completed` evidence
+additionally bind
+`decoderInputContentHash` to the exact canonical PNG submitted to the pinned decoder, `containerBox`
+to the removed pathless
 `{chunkType: "caBX", bytes, contentHash}` payload descriptor, and
 `colorSpaceDisposition: "assigned-srgb"`. `providerSource.contentHash` and `sourceContentHash`
 always hash the complete original provider PNG, including the container. `containerBox` never
@@ -38,7 +43,12 @@ canonical envelope exists: decoder hash, container evidence, and color dispositi
 present and valid or all null. A `not-run` outcome always leaves all three null. Profile-v3 result
 provenance has exactly this profile-v2 shape; only its profile literal and geometry-v2 hash differ,
 while the guide-v2 authority remains bound through the immutable ordered target references and
-matching `referenceInputs`.
+matching `referenceInputs`. Geometry-first provenance has the same complete shape and geometry-v2
+binding as profile v3; only its profile literal differs. Strict geometry-first provenance has that
+same complete shape; its distinct literal authorizes the zero-offset retained-green clamp.
+Black-matte provenance also has that same complete shape; its distinct frame-only literal authorizes
+the opaque-black source contract, 4–16 alpha/unmatte calculation, and inward-only 4×4 geometry-v2
+coverage.
 
 The only `superseded` result is coordinator-authored evidence for an unattempted obsolete packet.
 It has zero provider attempts, no output or failure reason, a `not-run` normalization outcome, the

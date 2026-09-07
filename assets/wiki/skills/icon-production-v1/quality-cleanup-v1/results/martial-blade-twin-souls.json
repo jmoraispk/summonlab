@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:twin-souls",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-twin-souls.png",
+		"contentHash": "47606ff93bdf9a43186d0dda5fea20743fed8bb4a21d074f6d25f6bddfac6aae"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-twin-souls.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-twin-souls.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-twin-souls.png",
+		"contentHash": "fe9234df97ea85b3ea3677cb88817e8ff43afb0b531e2a75e222f3c8840ace2a",
+		"removedPixels": 234994,
+		"removedPixelBounds": {
+			"left": 80,
+			"top": 8,
+			"width": 865,
+			"height": 1008
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "070d8cfff0d018df734cd6da9124961792f0a46ebef8d9e63fb55ad371b9bba8",
+	"resultContentHash": "1669f8f4a3a17185e22ac43563df83315b4cfa06cb50253a66f7311c12ff6f93"
+}

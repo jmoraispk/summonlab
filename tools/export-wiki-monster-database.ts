@@ -22,8 +22,11 @@ import {
 	assertManagedMonsterCatalogEntries,
 	buildCanonicalMonsterWikiDatabase,
 	buildMonsterDatabaseIndex,
+	buildMonsterFamilyWikiPage,
+	buildMonsterReconciliationWikiPage,
 	buildMonsterVisualIndex,
 	buildMonsterWikiPage,
+	generatedMonsterFamilyPageFileNames,
 	generatedMonsterPageFileNames,
 	obsoleteGeneratedMonsterPages,
 	RETIRED_CANONICAL_MONSTER_FORM_IDS,
@@ -33,10 +36,12 @@ import {
 	type MonsterWikiBuildInput
 } from './wiki-monster-database-lib.js';
 import { loadIntegratedMonsterWikiDatabase } from './wiki-fauna-integration.js';
+import { syncMonsterWikiRuntimeVisuals } from './monster-wiki-runtime-visuals.js';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const productionRoot = resolve(repositoryRoot, 'assets/enemies/experiments/family-affinity-v1');
 const monsterWikiRoot = resolve(repositoryRoot, 'docs/wiki/creatures/monsters');
+const monsterFamilyWikiRoot = resolve(monsterWikiRoot, 'families');
 const visualIndexPath = resolve(monsterWikiRoot, 'visual-index.json');
 const wikiCatalogPath = resolve(repositoryRoot, 'docs/wiki/catalog.json');
 const legacyCatalogPaths = [
@@ -164,6 +169,8 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 	assertManagedMonsterCatalogEntries(database, current.entries);
 	const replaceableWikiIds = new Set([
 		'creatures.monster-database',
+		'creatures.monster-reconciliation',
+		...database.families.map(({ familyId }) => `monster-family.${familyId}`),
 		...database.forms.map(({ formId }) => `monster.${formId}`),
 		...database.reconciliation.map(({ currentClassId }) => `monster.${currentClassId}`),
 		...RETIRED_CANONICAL_MONSTER_FORM_IDS.map((formId) => `monster.${formId}`)
@@ -182,6 +189,26 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 				designStatus: 'draft',
 				implementationStatus: 'partial',
 				visualStatus: 'brief',
+				spoilerScope: 'discoverable'
+			},
+			...database.families.map((family) => ({
+				wikiId: `monster-family.${family.familyId}`,
+				path: `docs/wiki/creatures/monsters/families/${family.familyId}.md`,
+				pageType: 'monster-family',
+				owner: 'visuals-content',
+				designStatus: 'accepted',
+				implementationStatus: 'partial',
+				visualStatus: 'runtime',
+				spoilerScope: 'discoverable'
+			})),
+			{
+				wikiId: 'creatures.monster-reconciliation',
+				path: 'docs/wiki/creatures/monsters/reconciliation.md',
+				pageType: 'monster-reference',
+				owner: 'visuals-content',
+				designStatus: 'accepted',
+				implementationStatus: 'complete',
+				visualStatus: 'not-required',
 				spoilerScope: 'discoverable'
 			},
 			...database.forms.map(({ formId, coordinates }) => ({
@@ -247,7 +274,9 @@ async function validateSourcePages(manifest: FamilyAffinityManifest): Promise<vo
 async function writeOutputs(database: CanonicalMonsterWikiDatabase): Promise<number> {
 	await validateReferenceAssets(database.reconciliation);
 	await mkdir(monsterWikiRoot, { recursive: true });
+	await mkdir(monsterFamilyWikiRoot, { recursive: true });
 	const existingFileNames = await readdir(monsterWikiRoot);
+	const existingFamilyFileNames = await readdir(monsterFamilyWikiRoot);
 	const unmanagedPages = unmanagedMonsterPageCollisions(database, existingFileNames);
 	if (unmanagedPages.length > 0) {
 		throw new Error(`Unmanaged monster page collision: ${unmanagedPages.join(', ')}`);
@@ -256,8 +285,25 @@ async function writeOutputs(database: CanonicalMonsterWikiDatabase): Promise<num
 	assertManagedMonsterCatalogEntries(database, currentCatalog.entries);
 	const obsoletePages = obsoleteGeneratedMonsterPages(database, existingFileNames);
 	for (const fileName of obsoletePages) await unlink(resolve(monsterWikiRoot, fileName));
+	const expectedFamilyFileNames = new Set(generatedMonsterFamilyPageFileNames(database));
+	const obsoleteFamilyPages = existingFamilyFileNames.filter(
+		(fileName) => /^[a-z][a-z0-9-]*\.md$/u.test(fileName) && !expectedFamilyFileNames.has(fileName)
+	);
+	for (const fileName of obsoleteFamilyPages) {
+		await unlink(resolve(monsterFamilyWikiRoot, fileName));
+	}
 
 	await writeFile(resolve(monsterWikiRoot, 'README.md'), buildMonsterDatabaseIndex(database));
+	await writeFile(
+		resolve(monsterWikiRoot, 'reconciliation.md'),
+		buildMonsterReconciliationWikiPage(database)
+	);
+	for (const family of database.families) {
+		await writeFile(
+			resolve(monsterFamilyWikiRoot, `${family.familyId}.md`),
+			buildMonsterFamilyWikiPage(family)
+		);
+	}
 	for (const form of database.forms) {
 		await writeFile(resolve(monsterWikiRoot, `${form.formId}.md`), buildMonsterWikiPage(form));
 	}
@@ -269,23 +315,33 @@ async function writeOutputs(database: CanonicalMonsterWikiDatabase): Promise<num
 		wikiCatalogPath,
 		`${JSON.stringify(buildCatalog(currentCatalog, database), null, 2)}\n`
 	);
-	return obsoletePages.length;
+	return obsoletePages.length + obsoleteFamilyPages.length;
 }
 
 async function checkOutputs(database: CanonicalMonsterWikiDatabase): Promise<void> {
 	await validateReferenceAssets(database.reconciliation);
 	const existingFileNames = await readdir(monsterWikiRoot);
+	const existingFamilyFileNames = await readdir(monsterFamilyWikiRoot).catch(() => []);
 	const pages = new Map<string, string>();
+	const familyPages = new Map<string, string>();
 	for (const fileName of generatedMonsterPageFileNames(database)) {
 		if (existsSync(resolve(monsterWikiRoot, fileName))) {
 			pages.set(fileName, await readFile(resolve(monsterWikiRoot, fileName), 'utf8'));
 		}
 	}
+	for (const fileName of generatedMonsterFamilyPageFileNames(database)) {
+		if (existsSync(resolve(monsterFamilyWikiRoot, fileName))) {
+			familyPages.set(fileName, await readFile(resolve(monsterFamilyWikiRoot, fileName), 'utf8'));
+		}
+	}
 	assertGeneratedMonsterWikiFreshness(database, {
 		readme: await readFile(resolve(monsterWikiRoot, 'README.md'), 'utf8'),
+		reconciliation: await readFile(resolve(monsterWikiRoot, 'reconciliation.md'), 'utf8'),
 		visualIndex: await readFile(visualIndexPath, 'utf8'),
 		pages,
-		existingFileNames
+		familyPages,
+		existingFileNames,
+		existingFamilyFileNames
 	});
 	const catalog = await readJson<WikiCatalog>(wikiCatalogPath);
 	const expectedCatalog = buildCatalog(catalog, database);
@@ -299,14 +355,19 @@ const check = process.argv.includes('--check');
 if (write === check) throw new Error('Pass exactly one of --write or --check');
 
 const database = await loadIntegratedMonsterWikiDatabase(repositoryRoot);
+const visualCatalog = await syncMonsterWikiRuntimeVisuals(
+	repositoryRoot,
+	database,
+	write ? 'write' : 'check'
+);
 if (write) {
 	const deleted = await writeOutputs(database);
 	console.log(
-		`Exported 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
+		`Exported 38 families, 190 canonical forms, ${visualCatalog.records.length} visual coordinates, and 40 reconciliations; removed ${deleted} obsolete generated pages.`
 	);
 } else {
 	await checkOutputs(database);
 	console.log(
-		'Validated 38 families, 190 canonical forms, 950 production coordinates, and 40 reconciliations.'
+		`Validated 38 families, 190 canonical forms, ${visualCatalog.records.length} visual coordinates, and 40 reconciliations.`
 	);
 }

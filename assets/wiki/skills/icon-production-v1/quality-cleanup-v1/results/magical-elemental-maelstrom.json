@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:maelstrom",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-maelstrom.png",
+		"contentHash": "0dee47a89809a17e82673cd6dcebd2ae225095502e3c333c8601c86c674a7f21"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-maelstrom.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-maelstrom.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-maelstrom.png",
+		"contentHash": "4e4d1a56f5fb430bde64007d48dec202c74c22b8bf03dcc4e282b85b27e38ccd",
+		"removedPixels": 201978,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 15,
+			"width": 771,
+			"height": 970
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "88dad5abac5266c798e2ad3605c41d39becce5d8ea419f3abe99ab26546522b0",
+	"resultContentHash": "936b2151d4c8303592f43220bf27474a46477d1bf9fed6d6d70412259b5aff15"
+}

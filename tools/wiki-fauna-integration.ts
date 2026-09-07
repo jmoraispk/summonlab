@@ -291,6 +291,7 @@ async function extendWithFauna(
 					resultPath: approved.provenance.path,
 					version: coordinate.activeVersion,
 					candidateExists: true,
+					sourceContentHash: approved.approved.sha256,
 					historyAttemptCount: 1,
 					historyRevisionRequiredCount: 0,
 					approvedPath: approved.approved.path,

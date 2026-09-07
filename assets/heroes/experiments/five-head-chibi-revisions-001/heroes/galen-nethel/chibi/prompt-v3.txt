@@ -1,7 +1,0 @@
-Use case: precise-object-edit with identity preservation.
-Asset type: Summonlab combat chibi final proportion calibration.
-Input images: Image 1 is the edit target and supplies the complete accepted chibi body, pose, wardrobe, palette, rendering, and facial stylization. Image 2 is the original summon identity authority.
-Change only the size of the entire head in Image 1. It is now slightly too small at roughly 18 percent of full crown-to-sole figure height. Uniformly enlarge the full head—including skull, face, ears, and close-cropped hair—to 111 percent of its current linear height and width. Keep the chin and neck attachment fixed. Do not resize, lengthen, shorten, zoom, or redraw the body. Do not change the figure's overall placement or canvas scale.
-Target final measurement: skull crown to chin = 20 percent of crown-to-sole standing height, acceptable 19–21 percent. Body below chin = four head units.
-Preserve the unmistakable chibi design: simplified facial planes, modestly enlarged eyes, warm painted illustration, adult identity, and readable combat silhouette. Preserve Image 2's identity, skin, red close-cropped hair, facial structure, clothing construction, dark navy and burgundy palette, body build, and restrained expression.
-Exactly one complete figure. No miniature-realistic conversion, child, toddler, mascot, bobble head, photography, plastic 3D, cel shading, magic, stars, UI, text, logo, watermark, extra subject, or anatomy errors.

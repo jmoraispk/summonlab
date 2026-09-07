@@ -2,7 +2,7 @@
 
 Wiki ID: `monster.rotwalker-ghoul`
 
-[← Canonical monster database](README.md)
+[← Rotwalkers family](families/rotwalkers.md) · [Monster bestiary](README.md)
 
 Design status: **draft canonical form**
 
@@ -21,13 +21,9 @@ Visual-production status: **Normal: approved-review; Fire: candidate-only; Earth
 
 Source-draft Rotwalkers are treated as plague-animated human or humanoid corpses, not as a biological people or a claim about the identity, agency, morality, or allegiance of the deceased. Their family identity comes from wet opened remains, wrong-jointed posture, visible death wounds, and an animating rot that reverses decay into increasingly coordinated cohesion.
 
-## Family visual grammar
+## Family context
 
-- A recognizably human but wrong silhouette retains dislocated shoulders, a dragging or mismatched gait, a hanging jaw, and a head or torso held at an impossible angle.
-- Grey-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.
-- Rotting flesh, exposed sinew, wet bone, grave dirt, torn burial clothing, and the visible marks or embedded tools of death preserve each corpse's material history.
-- Every form is wet and partly open, with readable seams at tendons, ribs, sutures, or fused bodies that explain both animation and counterplay.
-- Escalation reverses decay into coordination: sagging fragments become corded muscle, reinforced bone, cooperative corpse anatomy, and finally a plague court built from many still-legible bodies.
+Shared visual constants and the complete T1–T5 comparison live on the [Rotwalkers family page](families/rotwalkers.md).
 
 **Escalation axis:** The animating plague turns loose, death-marked remains into faster tendon systems, bone-bladed pressure, coordinated composite bodies, and a cathedral-like corpse sovereign that manufactures cohesion while preserving breakable seams.
 

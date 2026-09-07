@@ -1,0 +1,47 @@
+{
+	"targetId": "martial:blade:assassin-s-certainty",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-assassin-s-certainty.png",
+		"contentHash": "27bda4ee2ad921c9fdb6c51f483a1a69e372a21df6be2427080c32e07becebd1"
+	},
+	"rank": "A",
+	"disposition": "revise-art",
+	"findings": [
+		{
+			"targetId": "martial:blade:assassin-s-certainty",
+			"kind": "stray-ui-glyph",
+			"detail": "Broken-heart badge.",
+			"requiredAction": "revise-art"
+		}
+	],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-assassin-s-certainty.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-assassin-s-certainty.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-assassin-s-certainty.png",
+		"contentHash": "130ece5b0ec8383df55315c0dd4da64479f4c5d5e8284f445b4106f9d7628a8b",
+		"removedPixels": 204453,
+		"removedPixelBounds": {
+			"left": 109,
+			"top": 16,
+			"width": 805,
+			"height": 1000
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-a-v9.png",
+			"contentHash": "b2abaf8708751d02b6473c77407705df03362c9f25f7db352264d58d897dc7d7"
+		}
+	},
+	"cleanupCompositeContentHash": "b5b2170c635121025252b5c2557d67a8124673039ea376430613979aa7b0a57c",
+	"resultContentHash": "b8fdee23ef743b533074f5c74619cd2258ed1f11912c9fe17ed2b9f442c4f7a1"
+}

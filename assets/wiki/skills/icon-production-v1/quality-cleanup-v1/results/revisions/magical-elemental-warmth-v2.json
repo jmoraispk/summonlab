@@ -1,0 +1,172 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
+	"revision": 2,
+	"status": "candidate",
+	"targetId": "magical:elemental:warmth",
+	"name": "Warmth",
+	"rank": "F",
+	"motifFamily": "elemental.fire-kindling",
+	"finding": {
+		"targetId": "magical:elemental:warmth",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached snowflake and shield glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-warmth-v2.json",
+		"contentHash": "ee57d0f6a5bd4377e1353690dadc32817adf8bca7fd661221098aa7f5d0d9b88"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-warmth-v1.json",
+			"contentHash": "964462ad66d6c52c142820db6ba6a9f96b8d0c2f8655ddfcf5fd225022458411"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v1.json",
+			"contentHash": "b4d4850a10fb8e121179295b949785fdf11140e53d6148d36847059bea66bdf1"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v1.png",
+			"contentHash": "ffbeda486636c808005014f230cfcc16f5b0359c2be2022308253b846c486a3d"
+		},
+		"transactionContentHash": "aad7a770e1989beb709508ef131e7e4fde5cd2709ecc629a3f078aaee8a67712",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v1.png",
+			"contentHash": "8d5ae7417a68149aab4144a9c783473e43fb64004d5efc352b31b9344d0047a5"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-warmth-v1.png",
+			"contentHash": "0a188a43644d49fe953b8e0f19538ceeaa17ec6581c584baf390dea5e74f462d"
+		}
+	},
+	"sourceMode": "identity-adoption",
+	"transform": {
+		"kind": "identity-adoption-v1",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v1.png",
+			"contentHash": "8d5ae7417a68149aab4144a9c783473e43fb64004d5efc352b31b9344d0047a5"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-warmth-v1.png",
+			"contentHash": "0a188a43644d49fe953b8e0f19538ceeaa17ec6581c584baf390dea5e74f462d"
+		},
+		"mask": "v1-approved-composition-retained-byte-for-byte"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v2.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1455806,
+		"contentHash": "ffbeda486636c808005014f230cfcc16f5b0359c2be2022308253b846c486a3d",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 791274,
+		"contentHash": "8d5ae7417a68149aab4144a9c783473e43fb64004d5efc352b31b9344d0047a5"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-warmth-v2.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 1375741,
+		"contentHash": "0a188a43644d49fe953b8e0f19538ceeaa17ec6581c584baf390dea5e74f462d"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 204474,
+		"contentHash": "879117e98d7ebb02d0501c5f2c4c88ee9b4e32f227a6557aa1fcc7dfe721da77"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the approved v1 composition was adopted byte-for-byte into the versioned v2 output; no artwork was changed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the adopted approved composition remains readable; this identity lane made zero generation calls and zero normalization transactions."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T09:39:32.884Z",
+		"finishedAt": "2026-09-06T09:39:34.120Z",
+		"durationMs": 1236,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T09:39:32.884Z",
+				"finishedAt": "2026-09-06T09:39:32.926Z",
+				"durationMs": 42
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T09:39:32.935Z",
+				"finishedAt": "2026-09-06T09:39:32.938Z",
+				"durationMs": 3
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T09:39:32.938Z",
+				"finishedAt": "2026-09-06T09:39:32.939Z",
+				"durationMs": 0
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T09:39:32.939Z",
+				"finishedAt": "2026-09-06T09:39:34.104Z",
+				"durationMs": 1165
+			},
+			{
+				"name": "publication",
+				"startedAt": "2026-09-06T09:39:34.121Z",
+				"finishedAt": "2026-09-06T09:39:34.121Z",
+				"durationMs": 0
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": []
+		},
+		"normalizationTransactionCount": 0,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "cf700874684f2fd3e2e32cc252bab416422f38c76fcd16af26d89bc66a5c3613",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v2.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-warmth-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v2.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

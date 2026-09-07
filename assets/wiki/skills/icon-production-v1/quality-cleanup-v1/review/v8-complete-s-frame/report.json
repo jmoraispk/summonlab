@@ -1,0 +1,128 @@
+{
+	"schemaVersion": "skill-icon-complete-frame-adoption-review-v1",
+	"status": "review-only-not-promoted",
+	"decision": "adopt-complete-generated-s-frame-as-final-layer",
+	"deferred": [
+		"traces-of-previous-frame-inside-accepted-frame"
+	],
+	"assembly": {
+		"mode": "canonical-backing-masked-interior-complete-generated-frame",
+		"frameIsFinalLayer": true,
+		"v9PixelsMergedIntoFrame": false
+	},
+	"artworkSource": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-where-all-rivers-end.png",
+		"contentHash": "9f0ad37fb6b98a80faffc7d2f731547daff8436f8418b97e236282137326a59a",
+		"artworkScale": 1.15
+	},
+	"backing": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+		"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+	},
+	"source": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/rarity-frame-s-v10-badge-tip-source.png",
+		"contentHash": "ba9af5dd964e6e3f4a973af6d433af1e8b4e18e79f643404e56749a942eb30c4"
+	},
+	"sourceProvenance": {
+		"kind": "imagegen-review-source",
+		"generationAttemptCount": 2,
+		"retainedAttempt": 2,
+		"firstAttemptDisposition": "rejected-broad-redraw",
+		"exactPrompt": "Use case: precise-object-edit\nAsset type: existing game UI rarity-frame repair\nInput images: Image 1 is the edit target and sole visual authority.\nPrimary request: Make one surgical edit only. The top-center S badge is clipped flat along its lower edge. Continue the existing lower dark-bronze badge face and its existing antique-gold beveled diagonal edges downward until they converge into a complete centered hexagonal point. The new point should be approximately 45 source pixels tall and approximately 105 pixels wide at its top, aligned to the current flat cut.\nScene/backdrop: preserve Image 1's transparent exterior and transparent central aperture if possible; otherwise use one perfectly uniform flat #00ff00 matte with no variation.\nText (verbatim): \"S\"\nConstraints: preserve the existing canvas, exact frame position, exact scale, exact S letter, all pixels and visual features outside the missing lower badge triangle, upper badge, crown thorns, shoulder ornament, six outer rails, side decorations, bottom decorations, colors, highlights, texture, and line weights. Do not redraw, rescale, recenter, simplify, sharpen, or restyle any existing element. Add only the missing lower badge triangle.\nAvoid: any change outside the missing triangle; new ornament; changed S; moved frame; crop; glow; shadow; artwork; checkerboard; watermark.",
+		"productionEligibility": "review-only; not an ordinary v2 production packet"
+	},
+	"rejectedBaseFrame": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-s-v9.png",
+		"contentHash": "3c2c189312b312d8415852c9222a6018c3dbac31a3784f7d74e2f80bc01f090e"
+	},
+	"rejectedPatchedFrame": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v6-badge-tip-fix/frames/rarity-frame-s-v10-review.png",
+		"disposition": "rejected-visible-splice-and-retained-cutoff-edge"
+	},
+	"completeFrameAudit": {
+		"visiblePixels": 166381,
+		"visibleBounds": {
+			"left": 123,
+			"top": 33,
+			"width": 780,
+			"height": 946
+		}
+	},
+	"completeFrame": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/frames/rarity-frame-s-v11-review.png",
+		"contentHash": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+	},
+	"interior": {
+		"contentHash": "bf64d67a7fad90d8f77fe1124be9b227db2982b47f1971a44852a7d7bb930abb",
+		"removedPixels": 252763
+	},
+	"candidate": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/candidates/magical-elemental-where-all-rivers-end.png",
+		"contentHash": "364ea0fc9887db24c69caa1608b2666c005b7ec02c17be8b911e03c366084676"
+	},
+	"inspection": {
+		"layerHashesMatch": true,
+		"exactComposite": true,
+		"protectedBandMatches": true,
+		"exteriorTransparent": true,
+		"backingOnlyComponents": []
+	},
+	"allRankV9BoundaryAudit": [
+		{
+			"rank": "F",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 47,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "E",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 55,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "D",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 69,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "C",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 101,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "B",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 125,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "A",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 17,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		},
+		{
+			"rank": "S",
+			"lastAuthorizedRow": 219,
+			"visiblePixelsOnLastRow": 106,
+			"visiblePixelsOnNextRow": 0,
+			"status": "boundary-contact"
+		}
+	],
+	"reviewFiles": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/comparison-384.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/comparison-96.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/frames/rarity-frame-s-v11-review.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/candidates/magical-elemental-where-all-rivers-end.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v8-complete-s-frame/report.json"
+	]
+}

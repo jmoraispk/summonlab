@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:firestorm",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-firestorm.png",
+		"contentHash": "1c1c4b72d8cb8ae6ce2ea12ba77605b3e808037dc9b5d3b40155d697ea45dd98"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-firestorm.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-firestorm.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-firestorm.png",
+		"contentHash": "be037b93dc823abfcc10c89b3c5ba07da3485cc930f87568e821b34e84fd83f8",
+		"removedPixels": 179704,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 11,
+			"width": 770,
+			"height": 977
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "a1265bb5557eb9a33bf09352baf5a689e593fdf11768367ad188f9fe4d330975",
+	"resultContentHash": "3c9fdece0b888e4169cac444c30f2ca6c6e1a00a3ba217f477d666fef795d0f8"
+}

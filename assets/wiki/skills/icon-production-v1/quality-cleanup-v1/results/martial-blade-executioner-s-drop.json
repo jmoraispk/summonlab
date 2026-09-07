@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:blade:executioner-s-drop",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-executioner-s-drop.png",
+		"contentHash": "ad1c4dd061468d3a90ac004e89c4784845b94528a595b4209f49bd6e91e47128"
+	},
+	"rank": "C",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-blade-executioner-s-drop.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-blade-executioner-s-drop.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-blade-executioner-s-drop.png",
+		"contentHash": "a6e11be4a05a988442fae7ce98611c48ef39c3b11ccbd44d318a89e492d29ac4",
+		"removedPixels": 206413,
+		"removedPixelBounds": {
+			"left": 117,
+			"top": 8,
+			"width": 787,
+			"height": 974
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-c-v9.png",
+			"contentHash": "a913832a7b8422c6555acec4b537d808dbc7068b4a2737b9571d38b37f2e2aff"
+		}
+	},
+	"cleanupCompositeContentHash": "2c71c2b5ebbdf3a3104d629b8462c91e31617b4e0f212d9eeb48b12950d6bcb8",
+	"resultContentHash": "31b87e25282fb05f82e85b06ce457148c9a339836b7f17250c9e3be67d3da979"
+}

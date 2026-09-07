@@ -1,0 +1,40 @@
+{
+	"targetId": "martial:ranged:reload-drill",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-ranged-reload-drill.png",
+		"contentHash": "71993342b9b4f116ba6966769a9a6cf7458dac651c976ec7ce2b2571b1a3745c"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-ranged-reload-drill.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-ranged-reload-drill.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-ranged-reload-drill.png",
+		"contentHash": "bcb8ab79fd79e9de2116ce8a36e5ce12ef6aec0f47c3314d9f9598343137dd50",
+		"removedPixels": 177308,
+		"removedPixelBounds": {
+			"left": 105,
+			"top": 13,
+			"width": 814,
+			"height": 1000
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "e8c5a05d4df86b6110eac9c372632122accef8bd8a4b78ac534e37fc4a2bc089",
+	"resultContentHash": "76de17a0af32461ed91e94fd3dc076deccfdf932281bdbe8de36d919eea5f68c"
+}

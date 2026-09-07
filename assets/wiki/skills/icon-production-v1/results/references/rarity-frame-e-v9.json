@@ -1,0 +1,92 @@
+{
+	"schemaVersion": "skill-icon-result-v2",
+	"resultId": "result-rarity-frame-e-v9",
+	"jobId": "rarity-frame-e-v9",
+	"logicalIdentity": "rarity-frame-e",
+	"revision": 9,
+	"assignmentId": "assignment-rarity-frame-e-v9",
+	"status": "candidate",
+	"exactPrompt": "Create exactly one 1254×1254 RGB PNG provider-source raster for the tier E rarity-frame layer. Use the supplied Option C comparison only as material and ornament authority, and use the approved seven-frame sheet only as proportional and material-ladder guidance; do not crop or trace either reference or reuse source pixels. Use the supplied geometry guide only as a registration and role-mask reference, never as image content. Render one fully visible regular point-up hexagon with every frame-material pixel confined to the guide's allowed annulus and top-center crest zone. Keep a completely empty aperture and every exterior region free of foreground. Build aged bronze with brown-gold patina and understated corner collars. Include exactly one integrated crest/letter bearing only the uppercase letter E. Render on a perfectly uniform opaque #000000 matte with no baked checkerboard; keep this provider matte perfectly uniform. Require hard clean material edges against the black matte, preserving the approved frame color, bevels, proportions, ornament, and crest without matte-colored fringe or halo. Do not render guide colors, construction marks, labels, UI, shadows, fringe, texture, gradient, or marks in the empty aperture or exterior matte. No art or backing, scenery, glow, emblem, or additional symbol, number, word, label, or text. The pipeline performs deterministic black-matte extraction, resizes to 1024×1024, and applies the fixed geometry-v2 rarity-frame union with inward-only 4×4 subpixel coverage. Output only this isolated provider-source raster.",
+	"promptHash": "7144a3cdce5d9019dd52c214a5f1c504ae25505b77c205f964aa7dc608a6fcbc",
+	"referenceInputs": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
+			"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		}
+	],
+	"normalization": {
+		"profile": "skill-icon-black-matte-geometry-role-mask-v1",
+		"outcome": "completed",
+		"geometryHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab",
+		"providerSource": {
+			"mediaType": "image/png",
+			"width": 1254,
+			"height": 1254,
+			"bytes": 848255,
+			"alphaMode": "rgb",
+			"contentHash": "f24bf2e42b14ad42e0796efbc22a1e8a91bde6980ee8af2f31af89455d1af31f"
+		},
+		"sourceContentHash": "f24bf2e42b14ad42e0796efbc22a1e8a91bde6980ee8af2f31af89455d1af31f",
+		"decoderInputContentHash": "618e5c4f9f7e3756bf0de5265d0f0e63bc174aebd2deace675babe61972d5af8",
+		"containerBox": {
+			"chunkType": "caBX",
+			"bytes": 21783,
+			"contentHash": "65c23078e4468fd90b252847da0f82427d44fc07f7fe73b439b35a191e5435dc"
+		},
+		"colorSpaceDisposition": "assigned-srgb",
+		"outputContentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+	},
+	"output": {
+		"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"alphaMode": "rgba",
+		"bytes": 561862,
+		"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+	},
+	"resultPath": "assets/wiki/skills/icon-production-v1/results/references/rarity-frame-e-v9.json",
+  "findings": [
+    {
+      "category": "geometry",
+      "evaluator": "automated",
+      "outcome": "pass",
+      "observation": "rarity-frame dimensions, media type, alpha, and geometry checks passed."
+    },
+    {
+      "category": "geometry",
+      "evaluator": "producer",
+      "outcome": "pass",
+      "observation": "Full-size retained review: regular point-up hexagon is registered to the frame union; the aperture and exterior are cleanly transparent, with no black-matte halo or colored fringe; the bronze E crest remains clear."
+    },
+    {
+      "category": "recognition",
+      "evaluator": "producer",
+      "outcome": "pass",
+      "observation": "96-pixel retained review: the bronze hexagonal frame and single E crest remain readable and uncluttered; no aperture or exterior artifacts are visible."
+    },
+    {
+      "category": "deterministic-normalization",
+			"evaluator": "producer",
+			"outcome": "pass",
+			"observation": "The exact provider bytes were normalized by the packet-authorized deterministic profile."
+		}
+	],
+	"startedAt": "2026-09-05T22:11:41.022Z",
+	"completedAt": "2026-09-05T22:11:41.022Z",
+	"totalWallTimeMs": 0,
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+		"assets/wiki/skills/icon-production-v1/results/references/rarity-frame-e-v9.json"
+	],
+	"noSharedFilesEdited": true,
+	"selfPromoted": false
+}

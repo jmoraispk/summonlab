@@ -1,0 +1,40 @@
+{
+	"targetId": "magical:elemental:draw-water",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-draw-water.png",
+		"contentHash": "725e9bdde34a40abd5500a273c14352b0cb0f75c102d160d4c4f70135c791d66"
+	},
+	"rank": "F",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-elemental-draw-water.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-elemental-draw-water.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-elemental-draw-water.png",
+		"contentHash": "9d7fc4226d744dfc8b97b2048250e1edaadaa15f23bff464a96c2a767dbdcaf6",
+		"removedPixels": 194048,
+		"removedPixelBounds": {
+			"left": 115,
+			"top": 11,
+			"width": 794,
+			"height": 999
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"cleanupCompositeContentHash": "d78362430e2719fb79e4ccadbe4e510b6c798bdef018fd9d720c8200769ebdb5",
+	"resultContentHash": "e8c84ac898d72360c603cd4206881d1ec80b7db37be3f434462b38b22f514d37"
+}

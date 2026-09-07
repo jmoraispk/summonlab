@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:cooking:monster-cuisine",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-monster-cuisine.png",
+		"contentHash": "43643edc7b8004da25325791896d2adcb39adbdd9975c89911fffb17ca746e96"
+	},
+	"rank": "D",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-cooking-monster-cuisine.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-cooking-monster-cuisine.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-cooking-monster-cuisine.png",
+		"contentHash": "15a42baffd940fce673ba4502f9478faa5ac544a85536e31a0167264c5d8cc38",
+		"removedPixels": 188044,
+		"removedPixelBounds": {
+			"left": 127,
+			"top": 26,
+			"width": 770,
+			"height": 990
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"cleanupCompositeContentHash": "7ceaa6ff2c027e04c05144c6ff0376929949229c56316329ea8c2a3ba1489129",
+	"resultContentHash": "9e252e7da76b7d5c554e3d174726dedccc3c90dc14fa1ff1f6c6b8343d96057c"
+}

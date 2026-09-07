@@ -1,0 +1,37 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-completion-audit-v1",
+	"revision": 3,
+	"targetId": "martial:polearm:reaping-arc",
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-polearm-reaping-arc-v3.json",
+		"contentHash": "9f3cd1a1de1338bddbac5bf210f9fe103e59cd3a75d441e149cd4133cf7d30c6"
+	},
+	"result": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json",
+		"contentHash": "c1b3ad533ea952039e1585ef3f112c6fec4074581228d648bbda849698f36426"
+	},
+	"status": "candidate",
+	"corePublication": {
+		"startedAt": "2026-09-06T11:05:32.010Z",
+		"completedAt": "2026-09-06T11:05:32.036Z",
+		"durationMs": 26,
+		"artifacts": {
+			"providerSource": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v3.png",
+				"contentHash": "c60aca23d5b88a74fab37a256d07fdae3bfcbf6b66008bf77708ae8fff0158b0"
+			},
+			"revisedInterior": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v3.png",
+				"contentHash": "16142e68e992caabd8f45ca845899565d42723f914ed9fe443439e89eda891b1"
+			},
+			"composite": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-reaping-arc-v3.png",
+				"contentHash": "5e4782ac0cd38951362fde6b1c6fd9b3bef245b694aefe45eeef64c03eae2008"
+			},
+			"result": {
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json",
+				"contentHash": "c1b3ad533ea952039e1585ef3f112c6fec4074581228d648bbda849698f36426"
+			}
+		}
+	}
+}

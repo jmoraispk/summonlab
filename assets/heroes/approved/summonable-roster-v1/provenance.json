@@ -1,0 +1,29 @@
+{
+	"schemaVersion": "summonable-hero-approval-provenance-v1",
+	"approvedOn": "2026-09-05",
+	"approvalId": "summonable-heroes-owner-approval-2026-09-05",
+	"ownerInstruction": "These 200 are the heroes that can be summoned. proceed",
+	"sourceExperiments": [
+		{
+			"experimentId": "one-star-overnight-200-001",
+			"recordAtApproval": "assets/heroes/experiments/one-star-overnight-200-001/roster-plan.json",
+			"sha256": "24b73f663502428db894ca6ada6abf0bada7145b29f0fddb0164aa8d85797d81"
+		},
+		{
+			"experimentId": "five-head-chibi-regeneration-001",
+			"recordAtApproval": "assets/heroes/experiments/five-head-chibi-regeneration-001/source-roster.json",
+			"sha256": "994b3f36af5ebb7f8b3e96b345c9a1d7a4470c90232e15e144c4e359c5479157"
+		},
+		{
+			"experimentId": "five-head-chibi-regeneration-001",
+			"recordAtApproval": "assets/heroes/experiments/five-head-chibi-regeneration-001/completion-report.json",
+			"sha256": "03053417f2c3b6ee2885bbfda4138d093302e04ea27c4244d688dc2be7cd3f50"
+		},
+		{
+			"experimentId": "five-head-chibi-revisions-001",
+			"recordAtApproval": "assets/heroes/experiments/five-head-chibi-revisions-001/approval-v1.json",
+			"sha256": "1bff28c63ee545b8a414cac8c36269a502e091ab00ab4240e74bd0998c962aab"
+		}
+	],
+	"retention": "Selected visual bytes, dimensions, hashes, experiment IDs, and approval bindings are preserved in catalog.json. Full experiment runs were retired after promotion."
+}

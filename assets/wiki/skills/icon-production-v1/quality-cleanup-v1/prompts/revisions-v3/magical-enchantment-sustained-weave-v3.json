@@ -1,0 +1,120 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-packet-v3",
+	"revision": 3,
+	"targetId": "magical:enchantment:sustained-weave",
+	"name": "Sustained Weave",
+	"domain": "Magical",
+	"family": "Enchantment",
+	"rank": "D",
+	"motifFamily": "enchantment.power-weave",
+	"finding": {
+		"targetId": "magical:enchantment:sustained-weave",
+		"kind": "stray-ui-glyph",
+		"detail": "Detached plus/element glyphs.",
+		"requiredAction": "revise-art"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-enchantment-sustained-weave-v2.json",
+			"contentHash": "71f2dc85b03ca7240029e1ba141823b671609815760acacf22978ff26c4f9661"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v2.json",
+			"contentHash": "144ecb9963a322f1892d2f5dc6885ee63d63f15e85805d53827ddf2c07b5d0c6"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v2.png",
+			"contentHash": "53d028840a720c8da081303c027dd06f0853a80f1022e85791494262fd2ccc1c"
+		},
+		"transactionContentHash": "b5a75b8fb00f21ace3bc8ff93cc31c548aacddf5f8aa3a3843d520d3c260f847",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-enchantment-sustained-weave-v2.png",
+			"contentHash": "a46ddd19e71c4b2221cf91d5369934bd32c28c68ea363bf0fec491f81007894a"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-sustained-weave-v2.png",
+			"contentHash": "61c144c75afbca669b72583c34a7f2af315ba82d4b2dc4b5dde8f071e755df32"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Sustained Weave in the Magical / Enchantment taxonomy.\nDominant subject: a concrete magical focus, sigil, target, or transformation visibly performing Sustained Weave\nSupporting cue: one restrained secondary cue communicating this effect: Buffs the hero applies last substantially longer\nPalette: arcane gold, deep indigo, pale spectral light\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Detached plus/element glyphs.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and D-rank frame.",
+	"exactPromptHash": "713d9d31840f6f676ca980459f06f12ea4102ab7b6af39624b690b86fa1e35da",
+	"references": [
+		{
+			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",
+			"purpose": "Painted Emblem style authority only; never copy its pixels or rank frame.",
+			"contentHash": "66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png",
+			"purpose": "Protected central-aperture geometry only; never render guide colors or construction marks.",
+			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-power-weave.png",
+			"purpose": "Exact enchantment.power-weave motif-family ancestry only; never crop or copy a complete icon.",
+			"contentHash": "3d54f937a5fe1f58a7eb65db663ffd17d5e12a48d41593cf019adba72a6ce308"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/magical-enchantment-sustained-weave-v1.png",
+			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
+			"contentHash": "79d32b0b10c5728d2d1660da36c6a85082b8af44484ce5d334c2cad36df2da96"
+		},
+		{
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-sustained-weave.png",
+			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
+			"contentHash": "bd789630570d71dfde22903eee907818ce7c410128a21d6b19694ada0a8dde94"
+		}
+	],
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-d-v9.png",
+			"contentHash": "c2953df1ce91291b47a5479ef9014c209d20aa1e8c3560032ced5f73b7a55f22"
+		}
+	},
+	"providerEnvelope": {
+		"profile": "skill-icon-provider-envelope-v3",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"alphaMode": "rgb"
+	},
+	"attempts": {
+		"initial": 1,
+		"correctiveEdits": 1,
+		"maximum": 2
+	},
+	"output": {
+		"providerSourcePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v3.png",
+		"revisedInteriorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-enchantment-sustained-weave-v3.png",
+		"compositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-sustained-weave-v3.png",
+		"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v3.json"
+	}
+}

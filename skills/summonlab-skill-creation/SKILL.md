@@ -63,8 +63,10 @@ Use current repository files as authority; never copy catalog totals from this s
 3. Place every skill in exactly one motif lineage and author its visual specification.
 4. Export a versioned derived icon inventory; do not hand-author catalog or motif-map JSON.
 5. Create a new additive authority/run revision. Never mutate a completed run or its frozen inputs.
-6. Save the affected family sheet, then independently generate each new skill at full resolution
-   through the assigned manifest-bound workflow. Do not revise accepted siblings unless requested.
+6. Save the affected family sheet as reference-only presentation, then independently generate each
+   new skill as one frameless artwork layer through the assigned manifest-bound workflow. The
+   coordinator owns its deterministic resize, masking, backing, and final-frame assembly; do not
+   revise accepted siblings unless requested.
 7. Validate mechanics, wiki, catalog, new-run evidence, raster geometry, types, and tests.
 8. Leave generated art as a review candidate. Promotion and owner approval are separate actions.
 
@@ -89,4 +91,6 @@ legacy rows, extend and test explicit net-new provenance; never falsify legacy i
 - Editing derived JSON before the canonical wiki source.
 - Treating dated plans or a completed run manifest as mutable live inventory.
 - Generating a new icon without its motif-family reference sheet and immediate-parent authority.
+- When `motifFamily` is set, supply the complete framed family sheet solely as the exact purpose-bound family-lineage reference; never use its frame, crop, or composition as individual artwork content.
+- Never supply an approved rarity frame as individual generation content.
 - Using a successful historical-run check as evidence that the new revision is complete.

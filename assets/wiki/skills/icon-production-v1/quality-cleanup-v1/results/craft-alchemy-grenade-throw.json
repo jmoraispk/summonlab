@@ -1,0 +1,40 @@
+{
+	"targetId": "craft:alchemy:grenade-throw",
+	"sourceCandidate": {
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-alchemy-grenade-throw.png",
+		"contentHash": "661e86ff4b2d5a21955f5cc24337490408a9f7947d768bc9315a325325ef10d5"
+	},
+	"rank": "E",
+	"disposition": "accepted-unchanged",
+	"findings": [],
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-alchemy-grenade-throw.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-alchemy-grenade-throw.json",
+	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
+	"cleanupInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-alchemy-grenade-throw.png",
+		"contentHash": "a13aced5a68a8de9a70cb433e3b0d15d8c1c744c177f5468ce198f006497d851",
+		"removedPixels": 163965,
+		"removedPixelBounds": {
+			"left": 130,
+			"top": 23,
+			"width": 771,
+			"height": 928
+		}
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-e-v9.png",
+			"contentHash": "b1537fc73d4d2ee25aa3a0d1cd4da24fa35f707649b269ea662e7f10086fd4bc"
+		}
+	},
+	"cleanupCompositeContentHash": "f04d2a488b63874955677d609206932cf5d076de4ca6a8f82f97e69a0aaeaf8d",
+	"resultContentHash": "400a611becb3582c543287f011eea2a0d92b2f06d9e86f2f1e8e0f3fb324d508"
+}

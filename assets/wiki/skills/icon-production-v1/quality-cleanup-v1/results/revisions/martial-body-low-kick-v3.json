@@ -1,0 +1,174 @@
+{
+	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v3",
+	"revision": 3,
+	"status": "candidate",
+	"targetId": "martial:body:low-kick",
+	"name": "Low Kick",
+	"rank": "F",
+	"motifFamily": "body.striking-form",
+	"finding": {
+		"targetId": "martial:body:low-kick",
+		"kind": "stray-ui-glyph",
+		"detail": "Down arrow.",
+		"requiredAction": "revise-art"
+	},
+	"revisionPacket": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-body-low-kick-v3.json",
+		"contentHash": "cbb6d870fabe5b9a74444a502f2ff343aa35c096afa6612713b74d013113aef8"
+	},
+	"predecessor": {
+		"packet": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-low-kick-v2.json",
+			"contentHash": "fdd09d66e6cdb6a81748190c9dcb37d79055a60fd8d6667282d6e5a521b907ec"
+		},
+		"result": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v2.json",
+			"contentHash": "9bf1ad43b39b94225bceb22c90954dacf4085d0a3dfdc2841ad0caa98714255e"
+		},
+		"providerSource": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v2.png",
+			"contentHash": "bec6b61c11e91d27192f0ef0e92f942ac1a26af68e38be3ac3833e07b25e7a55"
+		},
+		"transactionContentHash": "8b71deb670c5ddfe80bc4e5e948c68d13ecc2627f94c4650366d43d72942d968",
+		"revisedInterior": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v2.png",
+			"contentHash": "bf193c0c65258bbf4db57d96614e109fd9b47325a85cdac19a27e43515fa69be"
+		},
+		"composite": {
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick-v2.png",
+			"contentHash": "656a5845c9daede17e9b1c5993652747d485812422246e83c41f5cde33e5bcae"
+		}
+	},
+	"sourceMode": "deterministic-inset",
+	"transform": {
+		"kind": "inset-87-of-128-v1",
+		"decoderInput": "remove-bounded-cabx-and-assign-srgb",
+		"resize": {
+			"width": 696,
+			"height": 696,
+			"kernel": "lanczos3",
+			"fastShrinkOnLoad": false
+		},
+		"placement": {
+			"left": 164,
+			"top": 192
+		},
+		"canvas": {
+			"width": 1024,
+			"height": 1024
+		},
+		"mask": "geometry-v2-protected-central-aperture"
+	},
+	"providerSource": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v3.png",
+		"mediaType": "image/png",
+		"width": 1254,
+		"height": 1254,
+		"bytes": 1026088,
+		"contentHash": "bec6b61c11e91d27192f0ef0e92f942ac1a26af68e38be3ac3833e07b25e7a55",
+		"alphaMode": "rgb"
+	},
+	"revisedInterior": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 374287,
+		"contentHash": "bf193c0c65258bbf4db57d96614e109fd9b47325a85cdac19a27e43515fa69be"
+	},
+	"compositionAuthority": {
+		"geometry": {
+			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
+			"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+		},
+		"backing": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png",
+			"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+		},
+		"frame": {
+			"path": "assets/wiki/skills/icon-production-v1/candidates/references/rarity-frame-f-v9.png",
+			"contentHash": "a00a70ff0bcb0e854906a86a928de2850e22d425670fad178f7fc17d5b56d27f"
+		}
+	},
+	"composite": {
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick-v3.png",
+		"mediaType": "image/png",
+		"width": 1024,
+		"height": 1024,
+		"bytes": 953737,
+		"contentHash": "656a5845c9daede17e9b1c5993652747d485812422246e83c41f5cde33e5bcae"
+	},
+	"display384": {
+		"mediaType": "image/png",
+		"width": 384,
+		"height": 384,
+		"bytes": 138987,
+		"contentHash": "9c2783181c8d551cb517a6f9e82ddf47b9ee85d38500c6d2b895bf82ac9b485c"
+	},
+	"inspection": {
+		"fullSize": {
+			"outcome": "pass",
+			"observation": "At 1024px, the authenticated immediate-predecessor provider was inset to 696px at (164,192); the complete central subject remains inside the protected aperture and automated compositing checks passed."
+		},
+		"display384": {
+			"outcome": "pass",
+			"observation": "At 384px, the central motif remains readable after the exact inset and the named glyph finding remains absent: Down arrow."
+		}
+	},
+	"execution": {
+		"startedAt": "2026-09-06T11:05:24.385Z",
+		"finishedAt": "2026-09-06T11:05:26.549Z",
+		"durationMs": 2163,
+		"phases": [
+			{
+				"name": "source-read",
+				"startedAt": "2026-09-06T11:05:24.385Z",
+				"finishedAt": "2026-09-06T11:05:24.434Z",
+				"durationMs": 49
+			},
+			{
+				"name": "normalization",
+				"startedAt": "2026-09-06T11:05:24.441Z",
+				"finishedAt": "2026-09-06T11:05:24.976Z",
+				"durationMs": 535
+			},
+			{
+				"name": "composition",
+				"startedAt": "2026-09-06T11:05:24.976Z",
+				"finishedAt": "2026-09-06T11:05:25.407Z",
+				"durationMs": 430
+			},
+			{
+				"name": "inspection",
+				"startedAt": "2026-09-06T11:05:25.407Z",
+				"finishedAt": "2026-09-06T11:05:26.538Z",
+				"durationMs": 1131
+			}
+		],
+		"generation": {
+			"attemptCount": 0,
+			"callIdentifiers": [],
+			"callContentHashes": []
+		},
+		"normalizationTransactionCount": 1,
+		"invocation": {
+			"tool": "tools/persist-skill-icon-cleanup-v2-output.ts",
+			"command": "persist:skill-icon-cleanup-v2-output",
+			"nodeVersion": "v24.19.0",
+			"sharpVersion": "0.35.3",
+			"vipsVersion": "8.18.3"
+		}
+	},
+	"transactionContentHash": "6a53d1e6b26570aef85ce5ca8352e2af4f903706c24243e3c585eb50111d36b4",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v3.json",
+	"writtenOutputPaths": [
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-body-low-kick-v3.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v3.json"
+	],
+	"completionContract": {
+		"sharedFilesRemainUntouched": true,
+		"selfPromotionForbidden": true
+	}
+}

@@ -21,12 +21,18 @@ import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+	SKILL_ICON_APPROVED_FRAME_SHEET_HASH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+	SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_HASH,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_HASH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH,
 	SKILL_ICON_NORMALIZATION_GUIDE_V2_PURPOSE,
+	SKILL_ICON_OPTION_C_FRAME_HASH,
+	SKILL_ICON_OPTION_C_FRAME_PATH,
+	SKILL_ICON_OPTION_C_FRAME_PURPOSE,
 	SkillIconResultV2Schema,
 	SkillIconResultSchema,
 	type SkillIconAssignmentV2,
@@ -62,6 +68,8 @@ const canonicalGeometrySourceBytes = await readFile(
 );
 const canonicalGeometryV2SourceBytes = await readFile(SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH);
 const canonicalGuideV2Bytes = await readFile(SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH);
+const optionCFrameBytes = await readFile(SKILL_ICON_OPTION_C_FRAME_PATH);
+const approvedFrameSheetBytes = await readFile(SKILL_ICON_APPROVED_FRAME_SHEET_PATH);
 const referenceBytes = await readFile(
 	'assets/wiki/skills/icon-production-v1/references/geometry-guide.png'
 );
@@ -78,6 +86,17 @@ async function seedGuideV2(root: string): Promise<void> {
 	const absolute = path.join(root, SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH);
 	await mkdir(path.dirname(absolute), { recursive: true });
 	await writeFile(absolute, canonicalGuideV2Bytes);
+}
+
+async function seedFrameAuthorities(root: string): Promise<void> {
+	for (const [relativePath, bytes] of [
+		[SKILL_ICON_OPTION_C_FRAME_PATH, optionCFrameBytes],
+		[SKILL_ICON_APPROVED_FRAME_SHEET_PATH, approvedFrameSheetBytes]
+	] as const) {
+		const absolute = path.join(root, relativePath);
+		await mkdir(path.dirname(absolute), { recursive: true });
+		await writeFile(absolute, bytes);
+	}
 }
 
 function crc32(bytes: Buffer): number {
@@ -287,7 +306,13 @@ function packetProfileV2(geometrySourceBytes: Buffer) {
 		output: { candidatePath, resultPath },
 		normalization: {
 			profile: 'skill-icon-green-key-role-mask-v2',
-			sourceContract: prior.target.normalization.sourceContract,
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
 			outputContract: prior.target.normalization.outputContract,
 			geometry: {
 				path: 'assets/wiki/skills/icon-production-v1/geometry.json',
@@ -328,7 +353,13 @@ function packetProfileV3() {
 		output: { candidatePath, resultPath },
 		normalization: {
 			profile: 'skill-icon-green-key-role-mask-v3',
-			sourceContract: prior.target.normalization.sourceContract,
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
 			outputContract: prior.target.normalization.outputContract,
 			geometry: {
 				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
@@ -350,11 +381,138 @@ function packetProfileV3() {
 	return { target, assignment, candidatePath };
 }
 
+function packetGeometryRoleMask(
+	profile:
+		| 'skill-icon-geometry-role-mask-v1'
+		| 'skill-icon-geometry-role-mask-v2' = 'skill-icon-geometry-role-mask-v1'
+) {
+	const prior = packetProfileV3();
+	const strict = profile === 'skill-icon-geometry-role-mask-v2';
+	const revision = strict ? 8 : 6;
+	const jobId = `charcoal-forged-stone-v${revision}`;
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const target: SkillIconTargetV2 = {
+		...prior.target,
+		jobId,
+		revision,
+		output: { candidatePath, resultPath },
+		normalization: {
+			profile,
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#00FF00'
+			},
+			outputContract: prior.target.normalization.outputContract,
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+			}
+		}
+	};
+	const assignment: SkillIconAssignmentV2 = {
+		...prior.assignment,
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		revision,
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+		skillVersion: strict
+			? 'summonlab-skill-icon-production-v6'
+			: 'summonlab-skill-icon-production-v5',
+		normalization: { profile },
+		permittedOutputs: { candidatePath, resultPath }
+	};
+	return { target, assignment, candidatePath };
+}
+
+function packetBlackMatteFrame() {
+	const prior = packetProfileV3();
+	const jobId = 'rarity-frame-e-v9';
+	const candidatePath = `assets/wiki/skills/icon-production-v1/candidates/references/${jobId}.png`;
+	const resultPath = `assets/wiki/skills/icon-production-v1/results/references/${jobId}.json`;
+	const exactPrompt =
+		'Paint the E rarity frame over a perfectly uniform opaque #000000 matte with no baked checkerboard.';
+	const target: SkillIconTargetV2 = {
+		...prior.target,
+		jobId,
+		logicalIdentity: 'rarity-frame-e',
+		revision: 9,
+		role: 'rarity-frame',
+		rarity: 'E',
+		exactPrompt,
+		references: [
+			...prior.target.references,
+			{
+				path: SKILL_ICON_OPTION_C_FRAME_PATH,
+				purpose: SKILL_ICON_OPTION_C_FRAME_PURPOSE,
+				contentHash: SKILL_ICON_OPTION_C_FRAME_HASH
+			},
+			{
+				path: SKILL_ICON_APPROVED_FRAME_SHEET_PATH,
+				purpose: SKILL_ICON_APPROVED_FRAME_SHEET_PURPOSE,
+				contentHash: SKILL_ICON_APPROVED_FRAME_SHEET_HASH
+			}
+		],
+		output: { candidatePath, resultPath },
+		normalization: {
+			profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+			sourceContract: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				alphaMode: 'rgb',
+				matteColor: '#000000'
+			},
+			outputContract: prior.target.normalization.outputContract,
+			geometry: {
+				path: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_PATH,
+				contentHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH
+			}
+		}
+	};
+	const assignment: SkillIconAssignmentV2 = {
+		...prior.assignment,
+		assignmentId: `assignment-${jobId}`,
+		jobId,
+		logicalIdentity: 'rarity-frame-e',
+		revision: 9,
+		targetPath: `assets/wiki/skills/icon-production-v1/targets/references/${jobId}.json`,
+		assignmentPath: `assets/wiki/skills/icon-production-v1/assignments/references/${jobId}.json`,
+		skillVersion: 'summonlab-skill-icon-production-v7',
+		normalization: { profile: 'skill-icon-black-matte-geometry-role-mask-v1' },
+		permittedOutputs: { candidatePath, resultPath }
+	};
+	return { target, assignment, candidatePath };
+}
+
+async function blackMatteProviderSource(): Promise<Buffer> {
+	const png = await sharp({
+		create: { width: 1254, height: 1254, channels: 3, background: '#000000' }
+	})
+		.composite([
+			{
+				input: Buffer.from(
+					'<svg width="1254" height="1254" xmlns="http://www.w3.org/2000/svg"><path d="M627 59 L1112 353 L1112 901 L627 1195 L142 901 L142 353 Z M627 214 L1001 428 L1001 826 L627 1040 L253 826 L253 428 Z" fill="#8f6a42" fill-rule="evenodd"/><rect x="520" y="0" width="214" height="250" rx="35" fill="#8f6a42"/></svg>'
+				)
+			}
+		])
+		.removeAlpha()
+		.png({ progressive: false, palette: false })
+		.toBuffer();
+	return declareCabx(withoutPngChunk(png, 'pHYs'));
+}
+
 async function v2ProviderSource(
 	profile:
 		| 'skill-icon-green-key-role-mask-v1'
 		| 'skill-icon-green-key-role-mask-v2'
-		| 'skill-icon-green-key-role-mask-v3' = 'skill-icon-green-key-role-mask-v1'
+		| 'skill-icon-green-key-role-mask-v3'
+		| 'skill-icon-geometry-role-mask-v1'
+		| 'skill-icon-geometry-role-mask-v2' = 'skill-icon-green-key-role-mask-v1'
 ): Promise<Buffer> {
 	const png = await sharp({
 		create: { width: 1254, height: 1254, channels: 3, background: '#00ff00' }
@@ -370,7 +528,9 @@ async function v2ProviderSource(
 		.png({ progressive: false, palette: false })
 		.toBuffer();
 	return profile === 'skill-icon-green-key-role-mask-v2' ||
-		profile === 'skill-icon-green-key-role-mask-v3'
+		profile === 'skill-icon-green-key-role-mask-v3' ||
+		profile === 'skill-icon-geometry-role-mask-v1' ||
+		profile === 'skill-icon-geometry-role-mask-v2'
 		? declareCabx(withoutPngChunk(png, 'pHYs'))
 		: declareSrgb(png);
 }
@@ -666,6 +826,197 @@ describe('persistSkillIconOutput', () => {
 			colorSpaceDisposition: 'assigned-srgb'
 		});
 	}, 15_000);
+
+	it('persists the complete geometry-role-mask v5 provenance tuple', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-geometry-mask-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		const source = await v2ProviderSource('skill-icon-geometry-role-mask-v1');
+		await writeFile(sourcePath, source);
+		const { target, assignment, candidatePath } = packetGeometryRoleMask();
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+		const ihdrEnd = 8 + 12 + source.readUInt32BE(8);
+		const cabxLength = source.readUInt32BE(ihdrEnd);
+		const cabxData = source.subarray(ihdrEnd + 8, ihdrEnd + 8 + cabxLength);
+		const decoderInput = declareSrgb(withoutPngChunk(source, 'caBX'));
+
+		await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath,
+			expectedRole: 'backing',
+			geometry: geometryV2,
+			geometrySourceBytes: canonicalGeometryV2SourceBytes,
+			target,
+			assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+
+		const retained = await readFile(path.join(root, candidatePath));
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toEqual({
+			profile: 'skill-icon-geometry-role-mask-v1',
+			outcome: 'completed',
+			geometryHash: createHash('sha256').update(canonicalGeometryV2SourceBytes).digest('hex'),
+			providerSource: {
+				mediaType: 'image/png',
+				width: 1254,
+				height: 1254,
+				bytes: source.byteLength,
+				alphaMode: 'rgb',
+				contentHash: sourceHash
+			},
+			sourceContentHash: sourceHash,
+			decoderInputContentHash: createHash('sha256').update(decoderInput).digest('hex'),
+			containerBox: {
+				chunkType: 'caBX',
+				bytes: cabxData.byteLength,
+				contentHash: createHash('sha256').update(cabxData).digest('hex')
+			},
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: createHash('sha256').update(retained).digest('hex')
+		});
+	}, 20_000);
+
+	it('persists strict-despill only through the complete profile-v5 and skill-v6 tuple', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-strict-geometry-mask-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		const profile = 'skill-icon-geometry-role-mask-v2' as const;
+		const source = await v2ProviderSource(profile);
+		await writeFile(sourcePath, source);
+		const packet = packetGeometryRoleMask(profile);
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+
+		await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath: packet.candidatePath,
+			expectedRole: 'backing',
+			geometry: geometryV2,
+			geometrySourceBytes: canonicalGeometryV2SourceBytes,
+			target: packet.target,
+			assignment: packet.assignment,
+			receivedAt: '2026-09-05T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, packet.target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toMatchObject({
+			profile,
+			outcome: 'completed',
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+			providerSource: { contentHash: sourceHash },
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: { chunkType: 'caBX' },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+		});
+	}, 30_000);
+
+	it('persists black-matte frames only through the complete profile-v6 and skill-v7 tuple', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-black-matte-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		await seedFrameAuthorities(root);
+		const source = await blackMatteProviderSource();
+		await writeFile(sourcePath, source);
+		const packet = packetBlackMatteFrame();
+		const sourceHash = createHash('sha256').update(source).digest('hex');
+		await seedPackets(root, packet.target, packet.assignment);
+
+		await persistSkillIconOutputBound({
+			root,
+			sourcePath,
+			candidatePath: packet.candidatePath,
+			expectedRole: 'rarity-frame',
+			geometry: geometryV2,
+			geometrySourceBytes: canonicalGeometryV2SourceBytes,
+			target: packet.target,
+			assignment: packet.assignment,
+			receivedAt: '2026-09-05T09:10:11.000Z',
+			expectedSourceHash: sourceHash
+		});
+
+		const result = SkillIconResultV2Schema.parse(
+			JSON.parse(await readFile(path.join(root, packet.target.output.resultPath), 'utf8'))
+		);
+		expect(result.normalization).toMatchObject({
+			profile: 'skill-icon-black-matte-geometry-role-mask-v1',
+			outcome: 'completed',
+			geometryHash: SKILL_ICON_NORMALIZATION_GEOMETRY_V2_HASH,
+			providerSource: { contentHash: sourceHash },
+			decoderInputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u),
+			containerBox: { chunkType: 'caBX' },
+			colorSpaceDisposition: 'assigned-srgb',
+			outputContentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+		});
+	}, 30_000);
+
+	it('never replaces geometry-role-mask candidate or result paths', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-geometry-collision-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		const source = await v2ProviderSource('skill-icon-geometry-role-mask-v1');
+		await writeFile(sourcePath, source);
+		const packet = packetGeometryRoleMask();
+		const request = {
+			root,
+			sourcePath,
+			candidatePath: packet.candidatePath,
+			expectedRole: 'backing' as const,
+			geometry: geometryV2,
+			geometrySourceBytes: canonicalGeometryV2SourceBytes,
+			target: packet.target,
+			assignment: packet.assignment,
+			receivedAt: '2026-09-02T09:10:11.000Z',
+			expectedSourceHash: createHash('sha256').update(source).digest('hex')
+		};
+		await persistSkillIconOutputBound(request);
+		const candidateBefore = await readFile(path.join(root, packet.candidatePath));
+		const resultBefore = await readFile(path.join(root, packet.target.output.resultPath));
+
+		await expect(persistSkillIconOutputBound(request)).rejects.toThrow(
+			/already exists|collision/iu
+		);
+		expect(await readFile(path.join(root, packet.candidatePath))).toEqual(candidateBefore);
+		expect(await readFile(path.join(root, packet.target.output.resultPath))).toEqual(resultBefore);
+	}, 20_000);
+
+	it('rejects changed guide-v2 authority for the geometry-role-mask profile', async () => {
+		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-geometry-guide-'));
+		roots.push(root);
+		const sourcePath = path.join(root, 'provider.png');
+		await seedGuideV2(root);
+		await writeFile(path.join(root, SKILL_ICON_NORMALIZATION_GUIDE_V2_PATH), 'changed guide');
+		const source = await v2ProviderSource('skill-icon-geometry-role-mask-v1');
+		await writeFile(sourcePath, source);
+		const packet = packetGeometryRoleMask();
+
+		await expect(
+			persistSkillIconOutputBound({
+				root,
+				sourcePath,
+				candidatePath: packet.candidatePath,
+				expectedRole: 'backing',
+				geometry: geometryV2,
+				geometrySourceBytes: canonicalGeometryV2SourceBytes,
+				target: packet.target,
+				assignment: packet.assignment,
+				receivedAt: '2026-09-02T09:10:11.000Z',
+				expectedSourceHash: createHash('sha256').update(source).digest('hex')
+			})
+		).rejects.toThrow(/geometry guide|reference hash changed/iu);
+	}, 20_000);
 
 	it('rejects profile-v3 cross-profile, legacy-geometry, and changed-guide authority mixes', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-icon-persist-profile-v3-mix-'));
