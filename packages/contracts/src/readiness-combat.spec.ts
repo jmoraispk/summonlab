@@ -14,9 +14,9 @@ import {
 	CombatWindowSnapshotSchema,
 	ReadinessCombatStateV1Schema
 } from './readiness-combat.js';
-import { ApplyCombatChoiceBatchCommandSchema } from './engine/commands.js';
+import { ApplyCombatChoiceBatchCommandSchema, EngineCommandSchema } from './engine/commands.js';
 import { MissionAttemptV10Schema } from './engine/mission-state.js';
-import { CombatChoiceBatchAppliedEventSchema } from './event.js';
+import { AuthoritativeEventSchema, CombatChoiceBatchAppliedEventSchema } from './event.js';
 
 const ID = {
 	attempt: '10000000-0000-4000-8000-000000000001',
@@ -911,7 +911,7 @@ describe('readiness combat contracts', () => {
 		} as const;
 		const binding = {
 			modeId: 'agent-readiness-v1',
-			rulesVersion: 'combat-rules-v1',
+			rulesVersion: 'agent-readiness-rules-v1',
 			contentHash: HASH.content,
 			boundAt: commonAttempt.preparedAt
 		} as const;
@@ -958,6 +958,7 @@ describe('readiness combat contracts', () => {
 			batch
 		} as const;
 		expect(ApplyCombatChoiceBatchCommandSchema.parse(command)).toStrictEqual(command);
+		expect(EngineCommandSchema.parse(command)).toStrictEqual(command);
 		const event = {
 			eventId: ID.event,
 			runId: ID.attempt,
@@ -977,6 +978,13 @@ describe('readiness combat contracts', () => {
 			payload: { batch, resolvedEvents: [] }
 		} as const;
 		expect(CombatChoiceBatchAppliedEventSchema.parse(event)).toStrictEqual(event);
+		expect(AuthoritativeEventSchema.parse(event)).toStrictEqual(event);
+		expect(
+			AuthoritativeEventSchema.safeParse({
+				...event,
+				eventType: 'mission.combat.other-choice.applied'
+			}).success
+		).toBe(false);
 		expect(
 			CombatChoiceBatchAppliedEventSchema.safeParse({
 				...event,

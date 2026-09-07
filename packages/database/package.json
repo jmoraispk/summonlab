@@ -18,5 +18,8 @@
 		"@summonlab/config": "workspace:*",
 		"@summonlab/engine": "workspace:*",
 		"postgres": "^3.4.9"
+	},
+	"devDependencies": {
+		"@summonlab/content": "workspace:*"
 	}
 }

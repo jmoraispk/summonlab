@@ -126,7 +126,10 @@ alter table summonlab_engine_events
 
 alter table summonlab_engine_events
   add constraint summonlab_engine_events_event_type_check
-  check (event_type ~ '^[a-z][a-z0-9.-]{2,99}$');
+  check (
+    event_type ~ '^[a-z][a-z0-9.]{2,99}$'
+    or event_type = 'mission.combat.choice-batch.applied'
+  );
 
 comment on table summonlab_combat_decision_windows is
   'One frozen readiness cohort. Actor jobs may finish in any order; only a bound complete batch becomes ready.';

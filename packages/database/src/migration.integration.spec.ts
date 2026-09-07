@@ -148,6 +148,13 @@ describe.sequential('database migration', () => {
 		const actorId = randomUUID();
 		const attemptId = randomUUID();
 		const hash = 'e'.repeat(64);
+		const source = {
+			source: 'system',
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		};
 		try {
 			await sql`
 				insert into summonlab_proof_runs (
@@ -195,6 +202,45 @@ describe.sequential('database migration', () => {
 						'settlement-action', 'scripted', 0, 1, now(), ${windowId}, ${hash}, ${hash},
 						${hash}, 'combat-action-prompt-v1', 'actor-decision-view-v1', ${sql.json({})},
 						${windowId}, ${hash}, ${sql.json({})})
+				`
+			).rejects.toMatchObject({ code: '23514' });
+
+			const exactCommandId = randomUUID();
+			await sql`
+				insert into summonlab_engine_commands (
+					command_id, run_id, expected_version, command_type, command, correlation_id,
+					accepted_sequence
+				) values (${exactCommandId}, ${runId}, 0, 'mission.apply.combat-choice-batch',
+					${sql.json({})}, ${exactCommandId}, 2)
+			`;
+			await sql`
+				insert into summonlab_engine_events (
+					event_id, run_id, sequence, schema_version, event_type, simulated_at, actor_id,
+					command_id, causation_id, correlation_id, source, seed_cursor, before_state_hash,
+					after_state_hash, content_version, payload
+				) values (${randomUUID()}, ${runId}, 2, 26,
+					'mission.combat.choice-batch.applied', now(), ${actorId}, ${exactCommandId}, null,
+					${exactCommandId}, ${sql.json(source)}, 0, ${hash}, ${hash}, 'engine-v26',
+					${sql.json({})})
+			`;
+			const wrongCommandId = randomUUID();
+			await sql`
+				insert into summonlab_engine_commands (
+					command_id, run_id, expected_version, command_type, command, correlation_id,
+					accepted_sequence
+				) values (${wrongCommandId}, ${runId}, 0, 'mission.apply.combat-choice-batch',
+					${sql.json({})}, ${wrongCommandId}, 3)
+			`;
+			await expect(
+				sql`
+					insert into summonlab_engine_events (
+						event_id, run_id, sequence, schema_version, event_type, simulated_at, actor_id,
+						command_id, causation_id, correlation_id, source, seed_cursor,
+						before_state_hash, after_state_hash, content_version, payload
+					) values (${randomUUID()}, ${runId}, 3, 26,
+						'mission.combat.other-choice.applied', now(), ${actorId}, ${wrongCommandId}, null,
+						${wrongCommandId}, ${sql.json(source)}, 0, ${hash}, ${hash}, 'engine-v26',
+						${sql.json({})})
 				`
 			).rejects.toMatchObject({ code: '23514' });
 		} finally {

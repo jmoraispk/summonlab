@@ -11,6 +11,7 @@ import {
 	CombatDecisionJobResultBindingSchema,
 	CombatWindowSnapshotSchema,
 	DecisionJobFailureSchema,
+	EngineSnapshotSchema,
 	PolicyModeSchema,
 	type ActorDecisionView,
 	type CombatActionIntent,
@@ -22,6 +23,8 @@ import {
 } from '@summonlab/contracts';
 import { deterministicUuid, hashCanonical } from '@summonlab/engine';
 import postgres from 'postgres';
+
+import { commitEngineCommandInTransaction } from './engine.js';
 
 type Queryable = postgres.Sql | postgres.TransactionSql;
 type CombatDecisionJobStatus =
@@ -111,6 +114,13 @@ interface AppliedEventRow {
 	payload: unknown;
 }
 
+interface EngineSnapshotRow {
+	state: unknown;
+	state_hash: string;
+	version: number;
+	event_cursor: number;
+}
+
 interface WindowLocatorRow {
 	window_id: string;
 	run_id: string;
@@ -166,11 +176,6 @@ export interface CombatDecisionWindow {
 }
 
 type ApplyCombatChoiceBatchCommand = ReturnType<typeof ApplyCombatChoiceBatchCommandSchema.parse>;
-
-export type CombatDecisionBatchCommit = (
-	transaction: postgres.TransactionSql,
-	command: ApplyCombatChoiceBatchCommand
-) => Promise<unknown>;
 
 export interface CombatDecisionBatchReceipt {
 	readonly windowId: string;
@@ -421,25 +426,59 @@ async function appendTransition(
 }
 
 function staleWindowBinding(row: WindowRow, run: RunRow | undefined): boolean {
-	const snapshot = CombatWindowSnapshotSchema.parse(row.snapshot);
 	return (
 		!run ||
 		run.version !== row.expected_run_version ||
-		run.event_cursor !== row.expected_event_cursor ||
-		run.state_hash !== snapshot.stateHash
+		run.event_cursor !== row.expected_event_cursor
 	);
 }
 
-function batchCommand(
+async function engineSnapshotForWindow(
+	sql: Queryable,
 	row: WindowRow,
-	batch: CombatChoiceBatchV1,
-	actorId: string
-): ApplyCombatChoiceBatchCommand {
+	eventCursor = row.expected_event_cursor
+) {
+	const persisted = (
+		await sql<EngineSnapshotRow[]>`
+			select state, state_hash, version, event_cursor
+			from summonlab_engine_snapshots
+			where run_id = ${row.run_id} and event_cursor = ${eventCursor}
+		`
+	)[0];
+	if (!persisted) throw new Error('Combat decision engine snapshot was not persisted');
+	const snapshot = EngineSnapshotSchema.parse({
+		state: persisted.state,
+		stateHash: persisted.state_hash
+	});
+	if (
+		snapshot.state.runId !== row.run_id ||
+		snapshot.state.version !== persisted.version ||
+		snapshot.state.eventCursor !== persisted.event_cursor ||
+		hashCanonical(snapshot.state) !== snapshot.stateHash
+	) {
+		throw new Error('Combat decision engine snapshot hash or cursor is invalid');
+	}
+	return snapshot;
+}
+
+async function batchCommand(
+	sql: Queryable,
+	row: WindowRow,
+	batch: CombatChoiceBatchV1
+): Promise<ApplyCombatChoiceBatchCommand> {
+	const snapshot = await engineSnapshotForWindow(sql, row);
+	if (
+		snapshot.state.schemaVersion !== 26 ||
+		snapshot.state.version !== row.expected_run_version ||
+		snapshot.state.eventCursor !== row.expected_event_cursor
+	) {
+		throw new Error('Combat decision window is not bound to an exact v26 engine snapshot');
+	}
 	const commandId = deterministicUuid(`combat-decision-window:${row.window_id}:${batch.batchHash}`);
 	return ApplyCombatChoiceBatchCommandSchema.parse({
 		commandId,
 		runId: row.run_id,
-		actorId,
+		actorId: snapshot.state.master.masterId,
 		expectedVersion: row.expected_run_version,
 		correlationId: commandId,
 		source: {
@@ -462,6 +501,7 @@ async function verifiedAppliedReceipt(
 	run: RunRow | undefined,
 	requireExactCurrentRun: boolean
 ): Promise<CombatDecisionBatchReceipt> {
+	const beforeSnapshot = await engineSnapshotForWindow(sql, row);
 	const persisted = (
 		await sql<AppliedEventRow[]>`
 			select commands.command as stored_command, commands.accepted_sequence, events.*
@@ -474,6 +514,7 @@ async function verifiedAppliedReceipt(
 	if (!persisted || !run) {
 		throw new Error('Applied combat decision engine receipt was not persisted');
 	}
+	const afterSnapshot = await engineSnapshotForWindow(sql, row, persisted.sequence);
 	const storedCommand = ApplyCombatChoiceBatchCommandSchema.parse(persisted.stored_command);
 	const event = CombatChoiceBatchAppliedEventSchema.parse({
 		eventId: persisted.event_id,
@@ -497,14 +538,23 @@ async function verifiedAppliedReceipt(
 		hashCanonical(storedCommand) !== hashCanonical(command) ||
 		hashCanonical(event.payload.batch) !== hashCanonical(batch) ||
 		event.commandId !== command.commandId ||
+		event.runId !== command.runId ||
 		event.actorId !== command.actorId ||
+		event.causationId !== null ||
+		event.correlationId !== command.correlationId ||
+		hashCanonical(event.source) !== hashCanonical(command.source) ||
+		command.actorId !== beforeSnapshot.state.master.masterId ||
+		command.expectedVersion !== beforeSnapshot.state.version ||
 		persisted.accepted_sequence !== event.sequence ||
 		event.sequence !== row.expected_event_cursor + 1 ||
+		afterSnapshot.state.version !== beforeSnapshot.state.version + 1 ||
+		afterSnapshot.state.eventCursor !== beforeSnapshot.state.eventCursor + 1 ||
 		(requireExactCurrentRun && run.version !== row.expected_run_version + 1) ||
 		(requireExactCurrentRun && run.event_cursor !== event.sequence) ||
 		(!requireExactCurrentRun && run.version < row.expected_run_version + 1) ||
 		(!requireExactCurrentRun && run.event_cursor < event.sequence) ||
-		event.beforeStateHash !== CombatWindowSnapshotSchema.parse(row.snapshot).stateHash ||
+		event.beforeStateHash !== beforeSnapshot.stateHash ||
+		event.afterStateHash !== afterSnapshot.stateHash ||
 		(requireExactCurrentRun && run.state_hash !== event.afterStateHash) ||
 		(row.applied_command_id !== null && row.applied_command_id !== event.commandId) ||
 		(row.applied_event_id !== null && row.applied_event_id !== event.eventId) ||
@@ -602,8 +652,7 @@ export async function createCombatDecisionWindow(
 			if (
 				!run ||
 				run.version !== input.expectedRunVersion ||
-				run.event_cursor !== input.expectedEventCursor ||
-				run.state_hash !== parsed.snapshot.stateHash
+				run.event_cursor !== input.expectedEventCursor
 			) {
 				throw new Error('Combat decision window run binding is stale');
 			}
@@ -1056,9 +1105,7 @@ export async function refreshCombatDecisionWindow(
 export async function applyCombatDecisionWindowBatch(
 	databaseUrl: string,
 	windowId: string,
-	batchInput: CombatChoiceBatchV1,
-	actorId: string,
-	commitBatch: CombatDecisionBatchCommit
+	batchInput: CombatChoiceBatchV1
 ): Promise<{
 	readonly disposition: 'applied' | 'already-applied';
 	readonly window: CombatDecisionWindow;
@@ -1071,7 +1118,7 @@ export async function applyCombatDecisionWindowBatch(
 			const locked = await lockRunThenWindow(transaction, windowId);
 			if (!locked) throw new Error(`Combat decision window not found: ${windowId}`);
 			const { run: initialRun, window: row } = locked;
-			const command = batchCommand(row, batch, actorId);
+			const command = await batchCommand(transaction, row, batch);
 			if (row.status === 'applied') {
 				if (row.batch_hash !== batch.batchHash) {
 					throw new Error('Combat decision batch was already applied with different bindings');
@@ -1099,7 +1146,30 @@ export async function applyCombatDecisionWindowBatch(
 			) {
 				throw new Error('Combat decision window is not ready for this exact batch application');
 			}
-			await commitBatch(transaction, command);
+			const commit = await commitEngineCommandInTransaction(transaction, command);
+			if (
+				commit.idempotentReplay ||
+				commit.events.length !== 1 ||
+				commit.snapshot.state.version !== row.expected_run_version + 1 ||
+				commit.snapshot.state.eventCursor !== row.expected_event_cursor + 1 ||
+				commit.snapshot.stateHash !== commit.events[0]?.afterStateHash
+			) {
+				throw new Error(
+					'Combat decision engine commit did not advance exactly one authoritative event'
+				);
+			}
+			const committedEvent = CombatChoiceBatchAppliedEventSchema.parse(commit.events[0]);
+			if (
+				committedEvent.commandId !== command.commandId ||
+				committedEvent.runId !== command.runId ||
+				committedEvent.actorId !== command.actorId ||
+				committedEvent.causationId !== null ||
+				committedEvent.correlationId !== command.correlationId ||
+				hashCanonical(committedEvent.source) !== hashCanonical(command.source) ||
+				hashCanonical(committedEvent.payload.batch) !== hashCanonical(batch)
+			) {
+				throw new Error('Combat decision engine commit does not match the exact window batch');
+			}
 			const run = (
 				await transaction<RunRow[]>`
 					select version, event_cursor, state_hash from summonlab_engine_runs

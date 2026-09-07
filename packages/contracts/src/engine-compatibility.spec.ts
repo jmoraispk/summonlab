@@ -365,7 +365,7 @@ function v26ReadinessStateFromV24Fixture() {
 				),
 				combatModeBinding: {
 					modeId: 'agent-readiness-v1',
-					rulesVersion: 'combat-rules-v1',
+					rulesVersion: 'agent-readiness-rules-v1',
 					contentHash: '2'.repeat(64),
 					boundAt: attempt.preparedAt
 				},
@@ -606,6 +606,7 @@ describe('engine contracts compatibility', () => {
 		  "master.replace.directive",
 		  "master.revoke.directive",
 		  "mission.advance.automatic",
+		  "mission.apply.combat-choice-batch",
 		  "mission.cancel",
 		  "mission.deploy",
 		  "mission.extract",
@@ -1034,6 +1035,36 @@ describe('engine contracts compatibility', () => {
 			{ ...commandBase, commandType: 'mission.advance.automatic' },
 			{
 				...commandBase,
+				commandType: 'mission.apply.combat-choice-batch',
+				batch: {
+					batchVersion: 'combat-choice-batch-v1',
+					batchId: '50000000-0000-4000-8000-000000000013',
+					windowId: '50000000-0000-4000-8000-000000000014',
+					attemptId: '50000000-0000-4000-8000-000000000015',
+					tick: 1,
+					snapshotHash: '3'.repeat(64),
+					choices: [
+						{
+							windowId: '50000000-0000-4000-8000-000000000014',
+							attemptId: '50000000-0000-4000-8000-000000000015',
+							tick: 1,
+							actorId: heroId,
+							snapshotHash: '3'.repeat(64),
+							actorViewHash: '4'.repeat(64),
+							legalActionSetHash: '5'.repeat(64),
+							actionId: 'guard-self',
+							actionInstanceId: '50000000-0000-4000-8000-000000000016',
+							actionKind: 'guard',
+							skillId: null,
+							target: { kind: 'self' },
+							fallbackId: 'brace'
+						}
+					],
+					batchHash: '6'.repeat(64)
+				}
+			},
+			{
+				...commandBase,
 				commandType: 'mission.open.extraction',
 				completedObjectiveIds: ['first-ember']
 			},
@@ -1092,6 +1123,7 @@ describe('engine contracts compatibility', () => {
 			'mission.deploy',
 			'mission.resolve.turn',
 			'mission.advance.automatic',
+			'mission.apply.combat-choice-batch',
 			'mission.open.extraction',
 			'mission.extract',
 			'mission.retreat',
@@ -1127,7 +1159,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.advance.automatic' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.advance.automatic' | 'mission.apply.combat-choice-batch' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

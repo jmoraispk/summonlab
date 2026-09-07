@@ -180,7 +180,6 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		}
 		return;
 	}
-
 	if (
 		(state.schemaVersion !== 11 &&
 			state.schemaVersion !== 12 &&

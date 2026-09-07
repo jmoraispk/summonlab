@@ -6,7 +6,7 @@ import {
 import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 
 export const LEGACY_AUTO_RULES_VERSION = 'legacy-auto-rules-v1' as const;
-const AGENT_READINESS_RULES_VERSION = 'agent-readiness-rules-v1' as const;
+export const AGENT_READINESS_RULES_VERSION = 'agent-readiness-rules-v1' as const;
 
 export type CombatModeAvailability =
 	| { readonly status: 'available'; readonly modeId: 'legacy-auto-v1'; readonly message: null }

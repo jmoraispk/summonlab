@@ -432,6 +432,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	DeployMissionCommandSchema,
 	ResolveMissionTurnCommandSchema,
 	AdvanceAutomaticCombatCommandSchema,
+	ApplyCombatChoiceBatchCommandSchema,
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
@@ -471,6 +472,7 @@ export const CatchUpRequestSchema = z
 	.strict();
 
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
+export type ApplyCombatChoiceBatchCommand = z.infer<typeof ApplyCombatChoiceBatchCommandSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
 export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;

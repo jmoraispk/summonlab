@@ -10,28 +10,36 @@ import {
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
+	CombatChoiceBatchAppliedEventSchema,
 	type AuthoritativeEvent,
+	type CombatChoiceBatchV1,
 	type EngineCommand,
 	type EngineGameState,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
+	type EngineGameStateV26,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EntropyDraw
 } from '@summonlab/contracts';
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import {
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1,
 	EQUIPMENT_DEFINITION_CATALOG,
 	TOWER_BAND_01_EQUIPMENT_DROP_FIXTURE
 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { createEntropyCursor } from '../../entropy.js';
-import { applyCommand, createBootstrapEngine } from '../../engine.js';
+import { applyCommand, createBootstrapEngine, reduceEvent } from '../../engine.js';
 import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical, sha256Hex } from '../../hash.js';
 import { missionContentForState } from '../../core/content-bindings.js';
 import {
+	FIRST_BAND_MISSION_COMMAND_TYPES,
 	FIRST_BAND_MISSION_EVENT_TYPES,
 	firstBandMissionCommandHandler,
 	firstBandMissionEventReducer
@@ -41,6 +49,9 @@ import { createEquipmentItem, equipEquipmentItem } from '../settlement/equipment
 import { retreatMissionAttempt } from './lifecycle.js';
 import { createCombatModeBinding } from './combat-mode.js';
 import { masterFallbackSafetySource } from './master-control.js';
+import { applyCombatChoiceBatch, combatChoiceBatchHash } from '../combat/arbitration.js';
+import { createReadinessCombatOutcomeEvidence } from '../combat/outcome.js';
+import { advanceUntilDecision } from '../combat/window.js';
 
 import {
 	deriveMonsterIntents,
@@ -128,6 +139,183 @@ function directlyApplyMissionCommand(state: EngineGameState, command: EngineComm
 	return { event, state: reducer.reduce(state, event) };
 }
 
+function readinessV26Fixture(deployed: EngineGameStateV25): {
+	readonly state: EngineGameStateV26;
+	readonly batch: CombatChoiceBatchV1;
+} {
+	const attempt = deployed.mission.attempt;
+	if (!attempt) throw new Error('Expected a deployed v25 attempt');
+	const heroId = attempt.party.heroIds[0]!;
+	const monsterId = deterministicUuid(`${attempt.attemptId}:readiness-monster`);
+	const combatant = (
+		combatantId: string,
+		teamId: 'party' | 'enemy',
+		readiness: number,
+		x: number
+	) => ({
+		combatantId,
+		combatantKind: teamId === 'party' ? ('hero' as const) : ('monster' as const),
+		teamId,
+		position: { x, y: 1 },
+		facing: teamId === 'party' ? ('east' as const) : ('west' as const),
+		resources: { health: { current: 100, maximum: 100 }, mana: { current: 20, maximum: 20 } },
+		lastDamagedAtTick: null,
+		attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+		armour: 0,
+		resistances: {},
+		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },
+		conditions: [],
+		cooldowns: {},
+		downed: false,
+		active: true
+	});
+	const combatants = {
+		[heroId]: combatant(heroId, 'party', 10_000, 1),
+		[monsterId]: combatant(monsterId, 'enemy', 0, 3)
+	};
+	const guard = {
+		actionId: 'guard-self',
+		actionKind: 'guard' as const,
+		skillId: null,
+		publicLabel: 'Guard',
+		targetContract: { kind: 'self' as const },
+		reactionPriority: 0,
+		recoveryTicks: 2,
+		manaCost: 0,
+		conflictPolicy: {
+			invalidTarget: 'cancel' as const,
+			occupiedDestination: 'cancel' as const,
+			cancellationRefund: { mana: 'full' as const, readiness: 'full' as const }
+		},
+		fallbackOptions: [
+			{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' as const } }
+		],
+		resolutionProfile: {
+			profileKind: 'non-damaging' as const,
+			rulesVersion: 'combat-rules-v1' as const,
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		}
+	};
+	const readinessState = {
+		stateVersion: 'readiness-combat-state-v1' as const,
+		seed: sha256Hex(`${attempt.attemptId}:readiness-seed`),
+		attemptId: attempt.attemptId,
+		tick: 12,
+		combatants,
+		actorContexts: {
+			[heroId]: {
+				actorId: heroId,
+				visibleCombatantIds: [monsterId],
+				visibleTelegraphIds: [],
+				observableReadinessActorIds: [],
+				targetablePositions: [{ x: 1, y: 1 }],
+				visibleTerrainFeatureIds: [],
+				rememberedContext: [],
+				doctrine: [],
+				relationships: [],
+				masterDirections: [],
+				legalActionTemplates: [guard]
+			},
+			[monsterId]: {
+				actorId: monsterId,
+				visibleCombatantIds: [heroId],
+				visibleTelegraphIds: [],
+				observableReadinessActorIds: [],
+				targetablePositions: [{ x: 3, y: 1 }],
+				visibleTerrainFeatureIds: [],
+				rememberedContext: [],
+				doctrine: [],
+				relationships: [],
+				masterDirections: [],
+				legalActionTemplates: [guard]
+			}
+		},
+		terrain: { width: 4, height: 3, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		scheduledEffects: [],
+		safety: { ticksAdvanced: 12, eventsEmitted: 0, noProgressCycles: 0 },
+		outcomeEvidence: createReadinessCombatOutcomeEvidence({
+			attemptId: attempt.attemptId,
+			combatants
+		}),
+		status: 'active' as const,
+		result: null
+	};
+	const state = EngineGameStateV26Schema.parse({
+		...deployed,
+		schemaVersion: 26,
+		contentVersion: 'engine-v26',
+		mission: {
+			...deployed.mission,
+			attempt: {
+				...Object.fromEntries(
+					Object.entries(attempt).filter(
+						([key]) => key !== 'turnState' && key !== 'combatModeBinding'
+					)
+				),
+				combatModeBinding: createCombatModeBinding('agent-readiness-v1', attempt.preparedAt),
+				combatState: { modeId: 'agent-readiness-v1', readinessState }
+			}
+		}
+	});
+	const combatState = state.mission.attempt!.combatState;
+	if (combatState.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+	const decision = advanceUntilDecision(combatState.readinessState, COMBAT_RULES_V1);
+	if (decision.kind !== 'decision-window') throw new Error('Expected readiness decision window');
+	const view = decision.views[0]!;
+	const action = view.legalActions[0]!;
+	const unsigned = {
+		batchVersion: 'combat-choice-batch-v1' as const,
+		batchId: deterministicUuid(`${decision.snapshot.windowId}:batch`),
+		windowId: decision.snapshot.windowId,
+		attemptId: decision.snapshot.attemptId,
+		tick: decision.snapshot.tick,
+		snapshotHash: decision.snapshot.snapshotHash,
+		choices: [
+			{
+				windowId: decision.snapshot.windowId,
+				attemptId: decision.snapshot.attemptId,
+				tick: decision.snapshot.tick,
+				actorId: view.actorId,
+				snapshotHash: decision.snapshot.snapshotHash,
+				actorViewHash: view.actorViewHash,
+				legalActionSetHash: view.legalActionSetHash,
+				actionId: action.actionId,
+				actionInstanceId: action.actionInstanceId,
+				actionKind: action.actionKind,
+				skillId: action.skillId,
+				target: { kind: 'self' as const },
+				fallbackId: 'brace'
+			}
+		]
+	};
+	return { state, batch: { ...unsigned, batchHash: combatChoiceBatchHash(unsigned) } };
+}
+
+function combatBatchCommand(
+	state: EngineGameStateV26,
+	batch: CombatChoiceBatchV1,
+	key: string
+): EngineCommand {
+	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
+	return {
+		commandId,
+		runId: state.runId,
+		actorId: state.master.masterId,
+		expectedVersion: state.version,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		commandType: 'mission.apply.combat-choice-batch',
+		batch
+	};
+}
+
 function deployedV24EquipmentMissionState(): EngineGameStateV24 {
 	const heroId = deterministicUuid('v24-conflict-hero');
 	const initial = EngineGameStateV24Schema.parse(
@@ -193,7 +381,8 @@ describe('mission runtime ownership', () => {
 			'mission.preparation.canceled',
 			'mission.deployed',
 			'mission.extracted',
-			'mission.retreated'
+			'mission.retreated',
+			'mission.combat.choice-batch.applied'
 		]);
 		expect(firstBandMissionEventReducer).toMatchObject({
 			ownerId: 'first-band-mission',
@@ -201,7 +390,7 @@ describe('mission runtime ownership', () => {
 		});
 		expect(firstBandMissionCommandHandler).toMatchObject({
 			ownerId: 'mission',
-			commandTypes: MISSION_COMMAND_TYPES
+			commandTypes: FIRST_BAND_MISSION_COMMAND_TYPES
 		});
 		expect(missionEventReducer.eventTypes).not.toContain('mission.preparation.started');
 		expect(missionEventReducer.eventTypes).not.toContain('mission.party.revised');
@@ -222,9 +411,100 @@ describe('mission runtime ownership', () => {
 				'mission.preparation.canceled',
 				'mission.deployed',
 				'mission.extracted',
-				'mission.retreated'
+				'mission.retreated',
+				'mission.combat.choice-batch.applied'
 			]
 		);
+	});
+
+	it('authoritatively applies one readiness cohort under the explicit outer and inner rules bindings', async () => {
+		const draft = await generateSummonableCharacterDraft(
+			{
+				seed: 'readiness-command-character',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '7'.repeat(64) }
+		);
+		const initial = EngineGameStateV25Schema.parse(
+			createBootstrapEngine({
+				runId: deterministicUuid('readiness-command-run'),
+				seed: 'readiness-command-engine',
+				draft
+			}).snapshot.state
+		);
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const prepared = applyCommand(initial, {
+			...missionTestCommand(initial, 'readiness-command-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				combatModeBinding: createCombatModeBinding('legacy-auto-v1', initial.simulatedAt)
+			})
+		}).state;
+		const deployed = applyCommand(prepared, {
+			...missionTestCommand(prepared, 'readiness-command-deploy', {
+				commandType: 'mission.deploy'
+			})
+		}).state;
+		if (deployed.schemaVersion !== 25) throw new Error('Expected deployed v25 state');
+		const fixture = readinessV26Fixture(deployed);
+		const command = combatBatchCommand(fixture.state, fixture.batch, 'readiness-command-apply');
+		const initialCombatState = fixture.state.mission.attempt!.combatState;
+		if (initialCombatState.modeId !== 'agent-readiness-v1') {
+			throw new Error('Expected readiness state');
+		}
+		const direct = applyCombatChoiceBatch(
+			initialCombatState.readinessState,
+			fixture.batch,
+			COMBAT_RULES_V1
+		);
+		const applied = applyCommand(fixture.state, command);
+
+		expect(applied.events).toHaveLength(1);
+		const event = CombatChoiceBatchAppliedEventSchema.parse(applied.events[0]);
+		expect(event).toMatchObject({
+			eventType: 'mission.combat.choice-batch.applied',
+			actorId: fixture.state.master.masterId,
+			commandId: command.commandId,
+			correlationId: command.commandId,
+			payload: { batch: fixture.batch, resolvedEvents: direct.events }
+		});
+		expect(applied.state.version).toBe(fixture.state.version + 1);
+		expect(applied.state.eventCursor).toBe(fixture.state.eventCursor + 1);
+		if (applied.state.schemaVersion !== 26) throw new Error('Expected v26 applied state');
+		expect(applied.state.mission.attempt?.combatState).toStrictEqual({
+			modeId: 'agent-readiness-v1',
+			readinessState: direct.state
+		});
+		expect(reduceEvent(fixture.state, event)).toStrictEqual(applied.state);
+
+		const contradictoryOuter = EngineGameStateV26Schema.parse({
+			...fixture.state,
+			mission: {
+				...fixture.state.mission,
+				attempt: {
+					...fixture.state.mission.attempt!,
+					combatModeBinding: {
+						...fixture.state.mission.attempt!.combatModeBinding,
+						rulesVersion: 'combat-rules-v1'
+					}
+				}
+			}
+		});
+		expect(() => applyCommand(contradictoryOuter, command)).toThrow(IllegalActionError);
+
+		const contradictoryInner = structuredClone(fixture.state);
+		const readiness = contradictoryInner.mission.attempt!.combatState;
+		if (readiness.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+		readiness.readinessState.actorContexts[heroId]!.legalActionTemplates[0]!.resolutionProfile = {
+			...readiness.readinessState.actorContexts[heroId]!.legalActionTemplates[0]!.resolutionProfile,
+			contentHash: 'f'.repeat(64)
+		};
+		expect(() => applyCommand(contradictoryInner, command)).toThrow(IllegalActionError);
+
+		const forged = structuredClone(event);
+		forged.payload.resolvedEvents = [];
+		expect(() => reduceEvent(fixture.state, forged)).toThrow(ReplayIntegrityError);
 	});
 
 	it('round-trips the composed handler through every mission-capable schema version', () => {
@@ -304,6 +584,8 @@ describe('mission runtime ownership', () => {
 				commandType: 'mission.deploy'
 			})
 		).state;
+		if (deployedV25.schemaVersion !== 25) throw new Error('Expected deployed v25 state');
+		const readinessV26 = readinessV26Fixture(deployedV25);
 
 		const initialV12 = missionVersionFixture(12);
 		const heroV12 = Object.keys(initialV12.heroes)[0]!;
@@ -488,6 +770,16 @@ describe('mission runtime ownership', () => {
 				})
 			},
 			{
+				commandType: 'mission.apply.combat-choice-batch',
+				eventType: 'mission.combat.choice-batch.applied',
+				state: readinessV26.state,
+				command: combatBatchCommand(
+					readinessV26.state,
+					readinessV26.batch,
+					'mapping-readiness-batch'
+				)
+			},
+			{
 				commandType: 'mission.open.extraction',
 				eventType: 'mission.extraction.opened',
 				state: deployedV11,
@@ -511,7 +803,9 @@ describe('mission runtime ownership', () => {
 			}
 		] as const;
 
-		expect(cases.map(({ commandType }) => commandType)).toStrictEqual(MISSION_COMMAND_TYPES);
+		expect(cases.map(({ commandType }) => commandType)).toStrictEqual(
+			FIRST_BAND_MISSION_COMMAND_TYPES
+		);
 		const observed = cases.map(({ commandType, eventType, state, command }) => {
 			expect(command.commandType).toBe(commandType);
 			const event = firstBandMissionCommandHandler.buildEvent(state, command as never);
@@ -568,6 +862,11 @@ describe('mission runtime ownership', () => {
 				commandType: 'mission.advance.automatic',
 				eventType: 'mission.round.resolved',
 				eventHash: '266c7b6b111ee64e41062037c0632dbac763d2650ca8eccd860827ee6ff9c96e'
+			},
+			{
+				commandType: 'mission.apply.combat-choice-batch',
+				eventType: 'mission.combat.choice-batch.applied',
+				eventHash: 'd0010a460d82d2a65666d8d3796d99594705e2c0445a6e8968c25668cc4678ca'
 			},
 			{
 				commandType: 'mission.open.extraction',

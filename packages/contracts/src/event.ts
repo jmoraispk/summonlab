@@ -165,7 +165,10 @@ export const AuthoritativeEventSchema = z
 		sequence: z.number().int().positive(),
 		schemaVersion: z.number().int().positive(),
 		gameTime: IsoDateTimeSchema,
-		eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+		eventType: z.union([
+			z.literal('mission.combat.choice-batch.applied'),
+			z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u)
+		]),
 		actorId: EntityIdSchema.nullable(),
 		commandId: EntityIdSchema,
 		causationId: EntityIdSchema.nullable(),
