@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import type {
 		AuthoritativeEvent,
 		SettlementPresentation,
@@ -100,7 +102,7 @@
 			<a
 				class={`scene-resident pose-${sceneResident.occupant.pose}`}
 				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%;--cluster-offset:${sceneResident.clusterOffsetRem}rem;--cluster-half:${sceneResident.clusterHalfRem}rem`}
-				href={`?mode=residents#resident-${knownResident.heroId}`}
+				href={resolve(`/play/${page.params.runId}?mode=residents#resident-${knownResident.heroId}`)}
 				data-testid="village-scene-resident"
 				aria-label={`${sceneResident.label}: ${sceneResident.occupant.activityLabel}. View resident details.`}
 			>
