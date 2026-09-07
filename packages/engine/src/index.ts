@@ -1,6 +1,18 @@
 export * from './catch-up.js';
 export * from './domains/combat/capability.js';
 export * from './domains/combat/readiness.js';
+export {
+	purposeKeyedInteger,
+	type PurposeKeyedIntegerDraw,
+	type PurposeKeyedIntegerInput
+} from './domains/combat/randomness.js';
+export {
+	resolveCombatAction,
+	type CombatActionAuthority,
+	type CombatActionResolution,
+	type CombatDamageCalculation,
+	type ResolveCombatActionInput
+} from './domains/combat/resolver.js';
 export { advanceUntilDecision } from './domains/combat/window.js';
 export * from './context.js';
 export * from './engine.js';
