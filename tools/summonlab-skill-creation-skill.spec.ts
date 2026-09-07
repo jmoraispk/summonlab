@@ -5,6 +5,11 @@ import { describe, expect, it } from 'vitest';
 
 const repositoryRoot = resolve(import.meta.dirname, '..');
 
+type CoordinatorDocument = {
+	path: string;
+	content: string;
+};
+
 async function readRepositoryFile(path: string): Promise<string> {
 	return readFile(resolve(repositoryRoot, path), 'utf8');
 }
@@ -22,6 +27,63 @@ function extractSection(documentation: string, heading: string, nextHeading: str
 
 function normalizeWhitespace(value: string): string {
 	return value.replaceAll(/\s+/g, ' ').trim();
+}
+
+function coordinatorDirectives(documentation: string): Array<{ heading: string; text: string }> {
+	const directives: Array<{ heading: string; text: string }> = [];
+	let heading = '';
+	let current = '';
+
+	const flush = () => {
+		if (current) {
+			directives.push({ heading, text: normalizeWhitespace(current) });
+			current = '';
+		}
+	};
+
+	for (const line of documentation.split('\n')) {
+		const trimmed = line.trim();
+		if (!trimmed) {
+			flush();
+			continue;
+		}
+		if (/^#{1,6}\s/.test(trimmed)) {
+			flush();
+			heading = trimmed;
+			continue;
+		}
+		if (/^(?:[-*]\s+|\d+\.\s+)/.test(trimmed)) {
+			flush();
+		}
+		current = current ? `${current} ${trimmed}` : trimmed;
+	}
+	flush();
+
+	return directives;
+}
+
+function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocument[]): string[] {
+	const positiveFrameVerb =
+		/\b(?:attach|include|add|use|supply|provide|giv(?:e|ing)|embed|render|compose|apply|put|place|generate)\b/i;
+	const frameContent =
+		/\b(?:canonical|approved|rarity)?\s*(?:frame(?:d)?|crest|rank(?:\s+surround)?|border|rail|ornament)s?\b/i;
+	const generationContext =
+		/\b(?:producer|individual|prompt|imagegen|generation|generation-reference|reference)\b/i;
+	const explicitNegativeOrReferenceOnly =
+		/\b(?:no|never|not|without|forbid|forbidden|reject|must not|do not|does not|reference-only|common mistakes)\b/i;
+
+	return documents.flatMap(({ path, content }) =>
+		coordinatorDirectives(content)
+			.filter(({ text }) => {
+				return (
+					positiveFrameVerb.test(text) &&
+					frameContent.test(text) &&
+					generationContext.test(text) &&
+					!explicitNegativeOrReferenceOnly.test(text)
+				);
+			})
+			.map(({ text }) => `${path}: ${text}`)
+	);
 }
 
 const canonicalIndividualProduction = normalizeWhitespace(`
@@ -151,5 +213,50 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 		}
 
 		expect(individualWorkflow).toContain('complete framed review reference');
+	});
+
+	it('rejects positive frame directives anywhere in coordinator-facing instructions', async () => {
+		const coordinatorDocuments = [
+			{
+				path: 'skills/summonlab-skill-creation/SKILL.md',
+				content: await readRepositoryFile('skills/summonlab-skill-creation/SKILL.md')
+			},
+			{
+				path: 'skills/summonlab-skill-creation/references/repository-workflow.md',
+				content: await readRepositoryFile(
+					'skills/summonlab-skill-creation/references/repository-workflow.md'
+				)
+			}
+		];
+
+		expect(findUnapprovedFramedIndividualInstructions(coordinatorDocuments)).toEqual([]);
+
+		for (const directive of [
+			'Attach a canonical frame in the individual prompt.',
+			'Include a canonical crest in the individual generation.',
+			'Add a canonical rank surround to the individual reference.',
+			'Use a canonical border in the individual prompt.',
+			'Supply a canonical rail in the individual generation.',
+			'Provide a canonical ornament to the individual reference.',
+			'Give a canonical frame in the individual prompt.',
+			'Embed a canonical crest in the individual generation.',
+			'Render a canonical rank surround in the individual reference.',
+			'Compose a canonical border in the individual prompt.',
+			'Apply a canonical rail in the individual generation.',
+			'Put a canonical ornament in the individual reference.',
+			'Place a canonical frame in the individual prompt.'
+		]) {
+			for (const document of coordinatorDocuments) {
+				const mutatedDocuments = coordinatorDocuments.map((candidate) =>
+					candidate.path === document.path
+						? { ...candidate, content: `${candidate.content}\n\n${directive}` }
+						: candidate
+				);
+
+				expect(findUnapprovedFramedIndividualInstructions(mutatedDocuments)).toContain(
+					`${document.path}: ${directive}`
+				);
+			}
+		}
 	});
 });

@@ -91,6 +91,6 @@ legacy rows, extend and test explicit net-new provenance; never falsify legacy i
 - Editing derived JSON before the canonical wiki source.
 - Treating dated plans or a completed run manifest as mutable live inventory.
 - Generating a new icon without its motif-family reference sheet and immediate-parent authority.
-- Giving a framed family sheet or an approved rarity frame to individual image generation, or
-  cropping a framed family-sheet cell into an individual artwork layer.
+- Do not give a framed family sheet or an approved rarity frame to individual image generation, or
+  crop a framed family-sheet cell into an individual artwork layer.
 - Using a successful historical-run check as evidence that the new revision is complete.

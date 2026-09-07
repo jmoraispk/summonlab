@@ -122,3 +122,29 @@ artifacts.
 - `python3 -m unittest skills/summonlab-skill-icon-production/scripts/test_verify_result.py` passed
   under the Node `v24.14.1` shell; the focused typecheck, Prettier check, and `git diff --check` are
   recorded with this fix round's final verification.
+
+## Fix round 3 — full coordinator-document negative guard
+
+Addressed the remaining Task 3 finding without changing the deferred Minor or accepted overlay
+artifacts.
+
+- The static contract now scans the complete `summonlab-skill-creation` skill and its repository
+  workflow, in addition to retaining the exact numbered-block equality check. It groups Markdown
+  into directives and rejects a positive frame/crest/rank/border/rail/ornament directive when it
+  also carries producer, individual, prompt, imagegen, generation, or reference context, unless the
+  directive itself states explicit negative or reference-only semantics.
+- The test appends every requested positive imperative outside the canonical block to each document:
+  Attach, Include, Add, Use, Supply, Provide, Give, Embed, Render, Compose, Apply, Put, and Place.
+  Every mutation is detected. The existing common-mistake sentence was made explicitly negative so
+  the guard does not depend on an enclosing heading to infer its meaning.
+
+### Fix-round 3 RED → GREEN evidence
+
+- RED, Node `v24.14.1`: the new scanner initially failed because the legacy common-mistake wording
+  said `Giving a framed family sheet ... to individual image generation` without an explicit
+  negative predicate. The focused suite reported that directive as an unapproved instruction.
+- GREEN, Node `v24.14.1`: after changing the instruction to `Do not give ...`, `corepack pnpm
+  vitest run tools/summonlab-skill-creation-skill.spec.ts` passed with 4 tests, including all
+  outside-block mutations in both documents.
+- The producer Python suite, skill-icon typecheck, Prettier check, and `git diff --check` are
+  recorded with this fix round's final verification.
