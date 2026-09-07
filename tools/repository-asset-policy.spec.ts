@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	expectedApprovedHeroVisualPath,
 	findApprovedHeroPathViolations,
+	findRetainedEnemyPackPathViolations,
 	findRepositoryAssetPathViolations
 } from './repository-asset-policy.js';
 
@@ -49,6 +50,31 @@ describe('repository asset retention policy', () => {
 			'Approved summon path is not canonical for kelu-grelun: assets/heroes/experiments/run-001/kelu-grelun.png',
 			'Approved combat-chibi path is not canonical for kelu-grelun: assets/heroes/approved/summonable-roster-v1/sources/aear-soro/combat-chibi.png',
 			'Duplicate approved hero path: assets/heroes/approved/summonable-roster-v1/sources/aear-soro/combat-chibi.png'
+		]);
+	});
+
+	it('rejects incomplete or contaminated retained enemy candidate roots', () => {
+		const expansionRoot = 'assets/enemies/experiments/affinity-expansion-v1/candidates';
+		const workflowRoot = 'assets/enemies/experiments/affinity-workflow-v1/candidates';
+		const selected = [
+			`${expansionRoot}/wolf/normal-v1.png`,
+			`${expansionRoot}/wolf/normal-v1.png`,
+			`${workflowRoot}/bear/fire-v1.png`,
+			'assets/enemies/experiments/other/candidates/slime/water-v1.png'
+		];
+		const tracked = [`${workflowRoot}/bear/fire-v1.png`, `${expansionRoot}/wolf/fire-v1.png`];
+
+		expect(
+			findRetainedEnemyPackPathViolations({
+				candidateRoots: [expansionRoot, workflowRoot],
+				selectedPaths: selected,
+				trackedPngPaths: tracked
+			})
+		).toEqual([
+			`Duplicate retained enemy candidate: ${expansionRoot}/wolf/normal-v1.png`,
+			'Retained enemy candidate is outside declared roots: assets/enemies/experiments/other/candidates/slime/water-v1.png',
+			`Retained enemy candidate is not tracked: ${expansionRoot}/wolf/normal-v1.png`,
+			`Unselected enemy candidate must not be tracked: ${expansionRoot}/wolf/fire-v1.png`
 		]);
 	});
 });
