@@ -71,18 +71,15 @@ function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocume
 		/\b(?:producer|individual|prompt|imagegen|generation|generation-reference|reference)\b/i;
 	const directlyNegatedAction =
 		/(?:\b(?:do|does|did|must|should|can|may|will|would)\s+not|\bnever|\bnot|\bwithout)\s*$/i;
-	const rejectedAction = /\b(?:forbid(?:s|den)?|rejects?)\b[^,;:.!?]*$/i;
-	const negatedFrameObject = new RegExp(
-		`\\b(?:no|without)\\s+(?:(?:canonical|approved|rarity)\\s+)?${frameContent.source}`,
-		'i'
-	);
-	const referenceOnlyFrameUse = new RegExp(
-		`${frameContent.source}[^,;:.!?]*\\bas\\s+(?:an?\\s+)?reference-only\\b`,
-		'i'
-	);
+	const allowedReferenceOnlyFamilySheetUse =
+		'Use a complete framed family sheet as a reference-only presentation for individual lineage review.';
 	const actionPattern = new RegExp(positiveFrameVerb.source, 'gi');
 
 	const hasUnapprovedAction = (text: string): boolean => {
+		if (text === allowedReferenceOnlyFamilySheetUse) {
+			return false;
+		}
+
 		const clauses = text.split(/(?<=[.!?;])\s+|,\s+(?=(?:and|but|or)\b)/i);
 
 		return clauses.some((clause) => {
@@ -93,14 +90,8 @@ function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocume
 			return Array.from(clause.matchAll(actionPattern)).some((match) => {
 				const actionIndex = match.index;
 				const actionPrefix = clause.slice(0, actionIndex);
-				const actionText = clause.slice(actionIndex);
 
-				return !(
-					directlyNegatedAction.test(actionPrefix) ||
-					rejectedAction.test(actionPrefix) ||
-					negatedFrameObject.test(actionText) ||
-					referenceOnlyFrameUse.test(actionText)
-				);
+				return !directlyNegatedAction.test(actionPrefix);
 			});
 		});
 	};
@@ -270,7 +261,9 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 			'Compose a canonical border in the individual prompt.',
 			'Apply a canonical rail in the individual generation.',
 			'Put a canonical ornament in the individual reference.',
-			'Place a canonical frame in the individual prompt.'
+			'Place a canonical frame in the individual prompt.',
+			'Generate a framed individual image.',
+			'Giving a canonical frame to individual generation is required.'
 		]) {
 			for (const document of coordinatorDocuments) {
 				const mutatedDocuments = coordinatorDocuments.map((candidate) =>
@@ -301,7 +294,8 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 			'Apply a canonical rail in the individual generation',
 			'Put a canonical ornament in the individual reference',
 			'Place a canonical frame in the individual prompt',
-			'Generate a framed individual image'
+			'Generate a framed individual image',
+			'Giving a canonical frame to individual generation is required'
 		];
 
 		for (const action of actions) {
@@ -319,10 +313,33 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 		}
 	});
 
-	it('allows directly negated frame actions and reference-only frame use', () => {
+	it.each([
+		'Use a canonical frame in the individual prompt without ornaments.',
+		'Use a canonical frame in the individual prompt and keep the framed family sheet as a reference-only presentation.',
+		'Reject color changes and use a canonical frame in the individual prompt.'
+	])('rejects an unnegated frame action despite an unrelated exemption: %s', (directive) => {
+		expect(
+			findUnapprovedFramedIndividualInstructions([{ path: 'action-scope.md', content: directive }])
+		).toEqual([`action-scope.md: ${directive}`]);
+	});
+
+	it('allows every directly negated frame action and one exact reference-only family-sheet use', () => {
 		for (const directive of [
-			'Do not use a frame in an individual prompt.',
 			'Never attach a canonical frame to individual generation.',
+			'Do not include a canonical frame in an individual prompt.',
+			'Do not add a canonical frame to individual generation.',
+			'Do not use a canonical frame in an individual prompt.',
+			'Do not supply a canonical frame to individual generation.',
+			'Do not provide a canonical frame to individual generation.',
+			'Do not give a canonical frame to individual generation.',
+			'Not giving a canonical frame to individual generation is required.',
+			'Do not embed a canonical frame in an individual prompt.',
+			'Do not render a canonical frame in individual generation.',
+			'Do not compose a canonical frame in an individual prompt.',
+			'Do not apply a canonical frame to individual generation.',
+			'Do not put a canonical frame in an individual prompt.',
+			'Do not place a canonical frame in an individual prompt.',
+			'Do not generate a framed individual image.',
 			'Use a complete framed family sheet as a reference-only presentation for individual lineage review.'
 		]) {
 			expect(

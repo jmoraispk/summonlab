@@ -189,3 +189,45 @@ prose or accepted assets.
   unrelated negative or reference-only clause cannot license a positive framed-individual action.
 - No skill instruction, producer behavior, composition rule, or accepted raster was changed. No
   concerns remain in the requested scope.
+
+## Fix round 5 — exact action-bound exemptions
+
+Addressed the final Important finding in the Task 3 static contract without changing skill prose or
+accepted assets.
+
+- Removed the broad rejected-action, negated-frame-object, and reference-only suffix exemptions.
+  Every matched guarded action is now allowed only when an immediate negator governs that exact
+  action.
+- Preserved the one legitimate unnegated use through an exact canonical allowlist sentence:
+  `Use a complete framed family sheet as a reference-only presentation for individual lineage
+  review.`
+- Added coverage for all guarded action forms, including `Generate` and `Giving`, and direct-negation
+  pass cases for every guarded form.
+
+### Fix-round 5 RED → GREEN evidence
+
+- RED, Node `v24.14.1`: after adding the three concrete regressions first,
+  `npx --yes -p node@24.14.1 -p pnpm@10.33.0 pnpm exec vitest run
+  tools/summonlab-skill-creation-skill.spec.ts` failed with 3 failed and 6 passed tests. All three
+  false negatives returned `[]`: the later `without ornaments` object, the unpunctuated later framed
+  family-sheet reference presentation, and the unpunctuated earlier rejected color change.
+- GREEN, Node `v24.14.1`: the same focused command passed all 9 tests after the semantic exemptions
+  were removed and the exact canonical family-sheet sentence was allowlisted.
+
+### Fix-round 5 files and verification
+
+- Changed `tools/summonlab-skill-creation-skill.spec.ts` and this report only.
+- `pnpm typecheck:skill-icons` passed, the focused Prettier check passed, and `git diff --check`
+  passed under Node `v24.14.1`.
+- The Python producer suite was not run because no skill prose changed, matching this fix round's
+  conditional verification requirement.
+
+### Fix-round 5 self-review and concerns
+
+- The guard now evaluates direct negation at each action match; unrelated earlier or later language
+  cannot exempt an unnegated framed-individual action.
+- Positive and directly negated cases cover Attach, Include, Add, Use, Supply, Provide, Give,
+  Giving, Embed, Render, Compose, Apply, Put, Place, and Generate.
+- The reference-only exception is deliberately exact. Any future canonical rewording must update the
+  allowlist and its test explicitly rather than weakening action scope. No other concern remains in
+  the requested scope.
